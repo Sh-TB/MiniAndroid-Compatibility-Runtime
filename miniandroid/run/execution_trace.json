@@ -1,67 +1,66 @@
 {
-    "activity_classes": [
-        "Lcom/miniandroid/hello/MainActivity;"
-    ],
     "apk_path": "/home/z/my-project/miniandroid/test_apks/HelloWorld.apk",
     "dex_path": "/home/z/my-project/miniandroid/run/classes.dex",
     "entry_point": {
         "bytecode_offset": "0x1D8",
-        "class_name": "Lcom/miniandroid/hello/MainActivity;",
+        "class": "com.miniandroid.hello.MainActivity",
         "descriptor": "(Landroid/os/Bundle;)V",
-        "has_bytecode": true,
-        "instructions": 13,
-        "is_activity": true,
-        "method_name": "onCreate",
-        "overrides_oncreate": true,
-        "readable_class": "com.miniandroid.hello.MainActivity",
-        "resolved": true,
-        "status": 1
+        "instruction_count": 13,
+        "method": "onCreate",
+        "resolved": true
     },
-    "experiment_id": "EXP-002",
-    "issues": [],
-    "method_map": [
+    "execution_result": {
+        "final_pc": 3,
+        "halt_reason": "UNIMPLEMENTED_OPCODE: new-instance (0x0022) not in scope EXP-003-A",
+        "halted": true,
+        "instructions_executed": 2,
+        "success": false
+    },
+    "experiment_id": "EXP-003-A",
+    "experiment_metadata": {
+        "golden_rule_compliance": {
+            "GR-1_NO_FAKE_SUCCESS": true,
+            "GR-2_TRACE_EVERYTHING": true,
+            "GR-3_EVIDENCE_REQUIRED": true,
+            "GR-4_MARK_SIMULATED": true,
+            "GR-5_FAIL_FAST": true,
+            "GR-6_MINIMAL_IMPLEMENTATION": true
+        },
+        "opcodes_implemented": [
+            "const-string (0x1A)"
+        ],
+        "opcodes_not_implemented": [
+            "new-instance",
+            "invoke-virtual",
+            "return-void"
+        ],
+        "scope": "EXP-003-A",
+        "stop_condition_triggered": "UNIMPLEMENTED_OPCODE: new-instance (0x0022) not in scope EXP-003-A"
+    },
+    "parent_experiment": "EXP-002",
+    "pipeline": [
         {
-            "descriptor": "()V",
-            "has_code": true,
-            "insn_count": 1,
-            "name": "<init>",
-            "offset": "0x1c4"
+            "evidence": "Loaded 1372 bytes",
+            "stage": "APK Loading",
+            "status": "PASS"
         },
         {
-            "descriptor": "(Landroid/os/Bundle;)V",
-            "has_code": true,
-            "insn_count": 13,
-            "name": "onCreate",
-            "offset": "0x1d8"
+            "evidence": "1 classes, 4 methods",
+            "stage": "DEX Parsing",
+            "status": "PASS"
+        },
+        {
+            "evidence": "Resolved com.miniandroid.hello.MainActivity",
+            "stage": "Class Resolution",
+            "status": "PASS"
+        },
+        {
+            "evidence": "2 instruction(s) executed",
+            "stage": "Opcode Execution (const-string)",
+            "status": "PASS"
         }
     ],
-    "pipeline_stages": [
-        {
-            "duration_ms": 0.000648,
-            "evidence": "Found 1 Activity class(es): com.miniandroid.hello.MainActivity",
-            "name": "Activity Discovery",
-            "success": true
-        },
-        {
-            "duration_ms": 0.000167,
-            "evidence": "Resolved class: com.miniandroid.hello.MainActivity extends android.app.Activity",
-            "name": "Class Resolution",
-            "success": true
-        },
-        {
-            "duration_ms": 0.003672,
-            "evidence": "Resolved method: onCreate(Landroid/os/Bundle;)V @ 0x1D8 (13 instructions)",
-            "name": "Method Resolution",
-            "success": true
-        },
-        {
-            "duration_ms": 0.003393,
-            "evidence": "Bytecode @ 0x1D8, 13 instructions",
-            "name": "Bytecode Extraction",
-            "success": true
-        }
-    ],
-    "status_message": "Entry point fully resolved",
-    "success": true,
-    "timestamp": "2026-08-08T16:23:02Z"
+    "status_message": "No instructions executed or error occurred",
+    "success": false,
+    "timestamp": "2026-08-08T16:34:32Z"
 }
