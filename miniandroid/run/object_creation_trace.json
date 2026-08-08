@@ -1,0 +1,14 @@
+{
+    "creations": [
+        {
+            "class": "Landroid/app/Activity;",
+            "object_id": 1,
+            "pc": 3,
+            "sequence": 0,
+            "status": "SUCCESS"
+        }
+    ],
+    "experiment_id": "EXP-003-BATCH",
+    "timestamp": "2026-08-08T16:55:15Z",
+    "total_creations": 1
+}
