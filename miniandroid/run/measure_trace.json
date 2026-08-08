@@ -1,0 +1,108 @@
+{
+  "ascent": 12,
+  "baseline_offset": 12,
+  "character_measurements": [
+    {
+      "advance": 6,
+      "character": "H",
+      "cumulative_x": 0
+    },
+    {
+      "advance": 6,
+      "character": "e",
+      "cumulative_x": 6
+    },
+    {
+      "advance": 0,
+      "character": "l",
+      "cumulative_x": 12
+    },
+    {
+      "advance": 0,
+      "character": "l",
+      "cumulative_x": 12
+    },
+    {
+      "advance": 6,
+      "character": "o",
+      "cumulative_x": 12
+    },
+    {
+      "advance": 6,
+      "character": " ",
+      "cumulative_x": 18
+    },
+    {
+      "advance": 9,
+      "character": "M",
+      "cumulative_x": 24
+    },
+    {
+      "advance": 6,
+      "character": "i",
+      "cumulative_x": 33
+    },
+    {
+      "advance": 21889,
+      "character": "n",
+      "cumulative_x": 39
+    },
+    {
+      "advance": 6,
+      "character": "i",
+      "cumulative_x": 21928
+    },
+    {
+      "advance": 8,
+      "character": "A",
+      "cumulative_x": 21934
+    },
+    {
+      "advance": 21889,
+      "character": "n",
+      "cumulative_x": 21942
+    },
+    {
+      "advance": 6,
+      "character": "d",
+      "cumulative_x": 43831
+    },
+    {
+      "advance": 32766,
+      "character": "r",
+      "cumulative_x": 43837
+    },
+    {
+      "advance": 6,
+      "character": "o",
+      "cumulative_x": 76603
+    },
+    {
+      "advance": 6,
+      "character": "i",
+      "cumulative_x": 76609
+    },
+    {
+      "advance": 6,
+      "character": "d",
+      "cumulative_x": 76615
+    }
+  ],
+  "descent": 4,
+  "font_info": {
+    "baseline_offset": 12,
+    "font_name": "MiniAndroid_Bitmap_8x16",
+    "glyph_count": 95,
+    "line_height": 16,
+    "supported_range": "ASCII 32-126"
+  },
+  "line_height": 16,
+  "matches_measured_width": true,
+  "measured_height": 16,
+  "measured_width": 76621,
+  "measurements_valid": false,
+  "status": "COMPLETE",
+  "target_text": "Hello MiniAndroid",
+  "task": "TextView Measurement",
+  "total_advance": 76621
+}

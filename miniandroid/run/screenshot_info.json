@@ -1,0 +1,13 @@
+{
+  "filename": "screenshot.png",
+  "format": "PNG",
+  "frame_number": 1,
+  "generation_timestamp": 1786209569843,
+  "height": 800,
+  "pipeline_stage": "COMPLETE",
+  "pixels_written": 225,
+  "rendered_objects": 1,
+  "text_content": "Hello MiniAndroid",
+  "total_commands": 2,
+  "width": 480
+}
