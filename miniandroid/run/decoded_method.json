@@ -1,0 +1,103 @@
+{
+  "bytecode_offset": "0x1d8",
+  "class_name": "Lcom/miniandroid/hello/MainActivity;",
+  "descriptor": "(Landroid/os/Bundle;)V",
+  "instructions": [
+    {
+      "byte_offset": 0,
+      "const_string_details": {
+        "destination_register": "v0",
+        "resolved": true,
+        "resolved_value": "Lcom/miniandroid/hello/MainActivity;",
+        "string_index": 0,
+        "string_index_hex": "0x0"
+      },
+      "disassembly": "const-string v0, \"Lcom/miniandroid/hello/MainActivity;\"",
+      "opcode_hex": "0x1a",
+      "opcode_name": "const-string",
+      "operands": [
+        {
+          "name": "vAA",
+          "value": "v0"
+        },
+        {
+          "name": "string@BBBB",
+          "value": "0x0000"
+        }
+      ],
+      "pc": 0,
+      "sequence": 0,
+      "size_code_units": 3
+    },
+    {
+      "byte_offset": 6,
+      "disassembly": "new-instance v0, type@0001",
+      "opcode_hex": "0x22",
+      "opcode_name": "new-instance",
+      "operands": [
+        {
+          "name": "vAA",
+          "value": "v0"
+        },
+        {
+          "name": "type@BBBB",
+          "value": "0x0001"
+        }
+      ],
+      "pc": 3,
+      "sequence": 1,
+      "size_code_units": 3
+    },
+    {
+      "byte_offset": 12,
+      "disassembly": "invoke-direct {args=0}, method@0001",
+      "opcode_hex": "0x70",
+      "opcode_name": "invoke-direct",
+      "operands": [
+        {
+          "name": "args",
+          "value": "0"
+        },
+        {
+          "name": "method@BBBB",
+          "value": "0x0001"
+        }
+      ],
+      "pc": 6,
+      "sequence": 2,
+      "size_code_units": 3
+    },
+    {
+      "byte_offset": 18,
+      "disassembly": "invoke-virtual {args=0}, method@0002",
+      "opcode_hex": "0x6e",
+      "opcode_name": "invoke-virtual",
+      "operands": [
+        {
+          "name": "args",
+          "value": "0"
+        },
+        {
+          "name": "method@BBBB",
+          "value": "0x0002"
+        }
+      ],
+      "pc": 9,
+      "sequence": 3,
+      "size_code_units": 3
+    },
+    {
+      "byte_offset": 24,
+      "disassembly": "return-void",
+      "opcode_hex": "0xe",
+      "opcode_name": "return-void",
+      "operands": [],
+      "pc": 12,
+      "sequence": 4,
+      "size_code_units": 1
+    }
+  ],
+  "method_name": "onCreate",
+  "total_code_units": 13,
+  "total_instructions_decoded": 5
+}

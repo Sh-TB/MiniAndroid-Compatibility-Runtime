@@ -123,6 +123,21 @@ add_executable(miniandroid_exp002
 
 target_link_libraries(miniandroid_exp002 PRIVATE miniandroid_core)
 
+# ============== EXP-003-A Executable (const-string Opcode) ==============
+add_executable(miniandroid_exp003a
+    src/exp003a_main.cpp
+    src/dex/dex_interpreter.cpp
+)
+
+target_link_libraries(miniandroid_exp003a PRIVATE miniandroid_core)
+
+# ============== EXP-003-A.1 Validator (Const-String Validation) ==============
+add_executable(miniandroid_exp003a1_validate
+    src/exp003a1_validate.cpp
+)
+
+target_link_libraries(miniandroid_exp003a1_validate PRIVATE miniandroid_core)
+
 # Install targets
 install(TARGETS miniandroid
     RUNTIME DESTINATION bin
