@@ -1,0 +1,5 @@
+{
+  "must_contain": "TextView",
+  "root_class": "LinearLayout",
+  "textview_must_have_text": "Hello MiniAndroid"
+}
