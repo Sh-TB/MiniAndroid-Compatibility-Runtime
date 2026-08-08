@@ -1,0 +1,65 @@
+{
+  "final_state": {
+    "class_descriptor": "Landroid/view/View;",
+    "creation_sequence": 3,
+    "creation_timestamp": 1786209036163,
+    "creator_pc": 32,
+    "geometry": {
+      "height": 200,
+      "left": 10,
+      "top": 20,
+      "width": 300
+    },
+    "is_initialized": false,
+    "is_invalidated": false,
+    "lifetime_state": "ALLOCATED",
+    "object_id": 3,
+    "parent_reference": 999,
+    "runtime_class": "android.view.View",
+    "visibility": "VISIBLE"
+  },
+  "geometry_after_set": {
+    "height": 200,
+    "left": 10,
+    "top": 20,
+    "width": 300
+  },
+  "initial_invalidated": false,
+  "initial_is_visible": true,
+  "initial_visibility": "VISIBLE",
+  "invalidation_events": [
+    {
+      "action": "initial",
+      "state": false
+    },
+    {
+      "action": "after_invalidate",
+      "state": true
+    },
+    {
+      "action": "after_validate",
+      "state": false
+    }
+  ],
+  "is_Object": true,
+  "is_View": true,
+  "is_not_TextView": true,
+  "parent_ref_after_set": 999,
+  "status": "COMPLETE",
+  "task": "View Base Object with Visibility and Invalidation",
+  "view_id": 3,
+  "visibility_changes": [
+    {
+      "action": "SET_INVISIBLE",
+      "result": "INVISIBLE"
+    },
+    {
+      "action": "SET_GONE",
+      "result": "GONE"
+    },
+    {
+      "action": "SET_VISIBLE",
+      "result": "VISIBLE"
+    }
+  ]
+}

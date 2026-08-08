@@ -1,17 +1,71 @@
 {
-    "checks": {
-        "api_trace": false,
-        "instruction_trace": true,
-        "object_creation": true
-    },
-    "differences": [
-        {
-            "actual": 1,
-            "expected": 2,
-            "field": "api_call_count"
-        }
+  "actual": {
+    "classes_present": [
+      1,
+      2,
+      3,
+      4,
+      5
     ],
-    "experiment_id": "EXP-003-BATCH",
-    "overall_pass": false,
-    "timestamp": "2026-08-08T16:55:15Z"
+    "total_objects": 5
+  },
+  "all_checks_pass": true,
+  "comparisons": [
+    {
+      "check": "Activity exists and initialized",
+      "found": true,
+      "is_initialized": true,
+      "object_id": 2,
+      "passes": true,
+      "state": "CREATED"
+    },
+    {
+      "check": "TextView exists with 'Hello MiniAndroid'",
+      "found": true,
+      "has_correct_text": true,
+      "object_id": 4,
+      "passes": true,
+      "text": "Hello MiniAndroid"
+    },
+    {
+      "activity_is_context_subclass": true,
+      "check": "Inheritance chain: Object → Context → Activity",
+      "context_is_object_subclass": true,
+      "passes": true
+    },
+    {
+      "actual_count": 5,
+      "check": "Object count within expected range",
+      "max_expected": 20,
+      "min_expected": 2,
+      "passes": true
+    }
+  ],
+  "expected": {
+    "experiment": "EXP-004",
+    "required_objects": [
+      {
+        "class": "android.app.Activity",
+        "expected_state": "CREATED",
+        "must_be_initialized": true,
+        "must_exist": true,
+        "type": "Activity"
+      },
+      {
+        "class": "android.widget.TextView",
+        "expected_text": "Hello MiniAndroid",
+        "must_be_initialized": true,
+        "must_exist": true,
+        "type": "TextView"
+      }
+    ],
+    "title": "Android Object Model Foundation"
+  },
+  "golden_files_written": [
+    "golden/expected_object_model.json",
+    "golden/expected_view_tree.json"
+  ],
+  "golden_status": "MATCH",
+  "status": "COMPLETE",
+  "task": "Golden Test Comparison"
 }
