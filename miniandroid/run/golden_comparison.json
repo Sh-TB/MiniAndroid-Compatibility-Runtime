@@ -1,69 +1,59 @@
 {
   "actual": {
-    "classes_present": [
-      1,
-      2,
-      3,
-      4,
-      5
-    ],
-    "total_objects": 5
+    "framebuffer_pixels": 225,
+    "screenshot_generated": true,
+    "text_content": "Hello MiniAndroid",
+    "textview_exists": true
   },
   "all_checks_pass": true,
   "comparisons": [
     {
-      "check": "Activity exists and initialized",
-      "found": true,
-      "is_initialized": true,
-      "object_id": 2,
-      "passes": true,
-      "state": "CREATED"
-    },
-    {
-      "check": "TextView exists with 'Hello MiniAndroid'",
-      "found": true,
-      "has_correct_text": true,
-      "object_id": 4,
-      "passes": true,
-      "text": "Hello MiniAndroid"
-    },
-    {
-      "activity_is_context_subclass": true,
-      "check": "Inheritance chain: Object → Context → Activity",
-      "context_is_object_subclass": true,
+      "check": "Screenshot exists and is valid PNG",
       "passes": true
     },
     {
-      "actual_count": 5,
-      "check": "Object count within expected range",
-      "max_expected": 20,
-      "min_expected": 2,
+      "actual": "Hello MiniAndroid",
+      "check": "Text content is 'Hello MiniAndroid'",
+      "expected": "Hello MiniAndroid",
+      "passes": true
+    },
+    {
+      "check": "TextView exists in runtime object model",
+      "passes": true,
+      "textview_id": 2
+    },
+    {
+      "check": "Framebuffer generated from runtime state",
+      "passes": true,
+      "pixels_written": 225
+    },
+    {
+      "actual_dimensions": {
+        "height": 800,
+        "width": 480
+      },
+      "check": "Screenshot dimensions are reasonable",
       "passes": true
     }
   ],
   "expected": {
-    "experiment": "EXP-004",
-    "required_objects": [
-      {
-        "class": "android.app.Activity",
-        "expected_state": "CREATED",
-        "must_be_initialized": true,
-        "must_exist": true,
-        "type": "Activity"
-      },
-      {
-        "class": "android.widget.TextView",
-        "expected_text": "Hello MiniAndroid",
-        "must_be_initialized": true,
-        "must_exist": true,
-        "type": "TextView"
-      }
-    ],
-    "title": "Android Object Model Foundation"
+    "experiment": "EXP-005",
+    "required_outputs": {
+      "contains_text": "Hello MiniAndroid",
+      "screenshot_file": "run/screenshot.png",
+      "screenshot_format": "PNG"
+    },
+    "screenshot_requirements": {
+      "max_height": 4096,
+      "max_width": 4096,
+      "min_height": 100,
+      "min_width": 100,
+      "must_be_valid_png": true
+    },
+    "title": "Minimal Software Rendering Pipeline"
   },
   "golden_files_written": [
-    "golden/expected_object_model.json",
-    "golden/expected_view_tree.json"
+    "golden/expected_screenshot_info.json"
   ],
   "golden_status": "MATCH",
   "status": "COMPLETE",

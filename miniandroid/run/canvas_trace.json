@@ -1,0 +1,50 @@
+{
+  "canvas_trace": {
+    "canvas_trace": {
+      "commands": [
+        {
+          "params": {
+            "color": {
+              "a": 255,
+              "b": 225,
+              "g": 225,
+              "hex": "#e1e1e1",
+              "r": 225
+            }
+          },
+          "sequence": 1,
+          "type": "drawColor"
+        },
+        {
+          "params": {
+            "color": {
+              "a": 255,
+              "b": 33,
+              "g": 33,
+              "hex": "#212121",
+              "r": 33
+            },
+            "measured_height": 16,
+            "measured_width": 107,
+            "position": {
+              "x": 50,
+              "y": 104
+            },
+            "text": "Hello MiniAndroid"
+          },
+          "sequence": 2,
+          "type": "drawText"
+        }
+      ],
+      "total_commands": 2
+    },
+    "stage": "CANVAS_COMMANDS"
+  },
+  "has_drawColor_command": true,
+  "has_drawText_command": true,
+  "rendered_text_content": "Hello MiniAndroid",
+  "status": "COMPLETE",
+  "task": "Software Canvas Operations",
+  "text_matches_target": true,
+  "total_commands": 2
+}

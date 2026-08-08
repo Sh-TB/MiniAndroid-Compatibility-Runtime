@@ -1,0 +1,16 @@
+{
+  "experiment": "EXP-005",
+  "required_outputs": {
+    "contains_text": "Hello MiniAndroid",
+    "screenshot_file": "run/screenshot.png",
+    "screenshot_format": "PNG"
+  },
+  "screenshot_requirements": {
+    "max_height": 4096,
+    "max_width": 4096,
+    "min_height": 100,
+    "min_width": 100,
+    "must_be_valid_png": true
+  },
+  "title": "Minimal Software Rendering Pipeline"
+}

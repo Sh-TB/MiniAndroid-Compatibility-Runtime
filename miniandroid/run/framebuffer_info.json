@@ -1,0 +1,39 @@
+{
+  "bounds_check": true,
+  "clear_test_color": {
+    "a": 255,
+    "b": 0,
+    "g": 0,
+    "hex": "#ff0000",
+    "r": 255
+  },
+  "clear_works": true,
+  "framebuffer_info": {
+    "clear_count": 0,
+    "draw_count": 0,
+    "height": 800,
+    "operations": [],
+    "pixel_count": 384000,
+    "width": 480
+  },
+  "height": 800,
+  "initial_color": {
+    "a": 255,
+    "b": 255,
+    "g": 255,
+    "hex": "#ffffff",
+    "r": 255
+  },
+  "pixel_count": 384000,
+  "set_pixel_test": {
+    "a": 255,
+    "b": 0,
+    "g": 255,
+    "hex": "#00ff00",
+    "r": 0
+  },
+  "set_pixel_works": true,
+  "status": "COMPLETE",
+  "task": "FrameBuffer System",
+  "width": 480
+}
