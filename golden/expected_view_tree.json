@@ -1,0 +1,10 @@
+{
+  "children": [
+    {
+      "text": "Hello MiniAndroid",
+      "type": "TextView",
+      "visibility": "VISIBLE"
+    }
+  ],
+  "root_type": "Activity"
+}

@@ -138,6 +138,22 @@ add_executable(miniandroid_exp003a1_validate
 
 target_link_libraries(miniandroid_exp003a1_validate PRIVATE miniandroid_core)
 
+# ============== EXP-003-BATCH (Minimal DEX Execution Engine) ==============
+add_executable(miniandroid_batch
+    src/exp003batch_main.cpp
+    src/dex/dex_interpreter_batch.cpp
+)
+
+target_link_libraries(miniandroid_batch PRIVATE miniandroid_core)
+
+# ============== EXP-004 (Android Object Model Foundation) ==============
+add_executable(miniandroid_exp004
+    src/exp004_main.cpp
+    src/dex/dex_interpreter_batch.cpp
+)
+
+target_link_libraries(miniandroid_exp004 PRIVATE miniandroid_core)
+
 # Install targets
 install(TARGETS miniandroid
     RUNTIME DESTINATION bin

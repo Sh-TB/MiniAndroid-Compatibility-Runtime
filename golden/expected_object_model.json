@@ -1,0 +1,20 @@
+{
+  "experiment": "EXP-004",
+  "required_objects": [
+    {
+      "class": "android.app.Activity",
+      "expected_state": "CREATED",
+      "must_be_initialized": true,
+      "must_exist": true,
+      "type": "Activity"
+    },
+    {
+      "class": "android.widget.TextView",
+      "expected_text": "Hello MiniAndroid",
+      "must_be_initialized": true,
+      "must_exist": true,
+      "type": "TextView"
+    }
+  ],
+  "title": "Android Object Model Foundation"
+}

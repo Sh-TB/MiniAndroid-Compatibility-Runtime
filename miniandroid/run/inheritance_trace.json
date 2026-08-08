@@ -1,0 +1,85 @@
+{
+  "activity_chain_correct": true,
+  "activity_inheritance_chain": [
+    "android.app.Activity",
+    "android.content.Context",
+    "java.lang.Object"
+  ],
+  "activity_trace": {
+    "chain": [
+      "android.app.Activity",
+      "android.content.Context",
+      "java.lang.Object"
+    ],
+    "details": [
+      {
+        "class": "android.app.Activity",
+        "inherits_from": "android.content.Context",
+        "position": 0
+      },
+      {
+        "class": "android.content.Context",
+        "inherits_from": "java.lang.Object",
+        "position": 1
+      },
+      {
+        "class": "java.lang.Object",
+        "inherits_from": "(root)",
+        "position": 2
+      }
+    ],
+    "target_class": "android.app.Activity"
+  },
+  "all_registered_classes": [
+    "android.app.Activity",
+    "android.content.Context",
+    "android.view.View",
+    "android.view.ViewGroup",
+    "android.widget.TextView",
+    "java.lang.Object"
+  ],
+  "is_activity_subclass_of_context": true,
+  "is_activity_subclass_of_object": true,
+  "is_context_subclass_of_activity": false,
+  "is_textview_subclass_of_view": true,
+  "is_viewgroup_subclass_of_view": true,
+  "path_activity_to_object": {
+    "found": true,
+    "from": "android.app.Activity",
+    "length": 3,
+    "path": [
+      "android.app.Activity",
+      "android.content.Context",
+      "java.lang.Object"
+    ],
+    "to": "java.lang.Object"
+  },
+  "registry_initial_classes": 6,
+  "status": "COMPLETE",
+  "task": "Inheritance Chain",
+  "textview_trace": {
+    "chain": [
+      "android.widget.TextView",
+      "android.view.View",
+      "java.lang.Object"
+    ],
+    "details": [
+      {
+        "class": "android.widget.TextView",
+        "inherits_from": "android.view.View",
+        "position": 0
+      },
+      {
+        "class": "android.view.View",
+        "inherits_from": "java.lang.Object",
+        "position": 1
+      },
+      {
+        "class": "java.lang.Object",
+        "inherits_from": "(root)",
+        "position": 2
+      }
+    ],
+    "target_class": "android.widget.TextView"
+  }
+}
