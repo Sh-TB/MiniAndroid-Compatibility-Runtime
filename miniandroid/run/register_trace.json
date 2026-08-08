@@ -1,0 +1,72 @@
+{
+    "experiment_id": "EXP-003-BATCH",
+    "registers": [
+        {
+            "is_set": true,
+            "register": "v0",
+            "value": {
+                "class": "Landroid/app/Activity;",
+                "object_id": 1,
+                "type": "OBJECT_REF"
+            }
+        },
+        {
+            "is_set": true,
+            "register": "v1",
+            "value": {
+                "type": "UNINITIALIZED",
+                "value": null
+            }
+        },
+        {
+            "is_set": true,
+            "register": "v2",
+            "value": {
+                "type": "UNINITIALIZED",
+                "value": null
+            }
+        },
+        {
+            "is_set": true,
+            "register": "v3",
+            "value": {
+                "type": "UNINITIALIZED",
+                "value": null
+            }
+        },
+        {
+            "is_set": true,
+            "register": "v4",
+            "value": {
+                "type": "UNINITIALIZED",
+                "value": null
+            }
+        },
+        {
+            "is_set": true,
+            "register": "v5",
+            "value": {
+                "type": "UNINITIALIZED",
+                "value": null
+            }
+        },
+        {
+            "is_set": true,
+            "register": "v6",
+            "value": {
+                "type": "UNINITIALIZED",
+                "value": null
+            }
+        },
+        {
+            "is_set": true,
+            "register": "v7",
+            "value": {
+                "type": "UNINITIALIZED",
+                "value": null
+            }
+        }
+    ],
+    "size": 8,
+    "timestamp": "2026-08-08T16:55:15Z"
+}

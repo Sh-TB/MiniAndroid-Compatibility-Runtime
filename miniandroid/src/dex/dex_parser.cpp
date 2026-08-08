@@ -255,6 +255,7 @@ bool DexParser::parse_types(const uint8_t* data, DexReport& report) {
     }
     
     report.types_count = static_cast<uint32_t>(types_.size());
+    report.types = types_;  // Copy types to report for interpreter use
     
     log("Parsed " + std::to_string(types_.size()) + " types");
     return true;
