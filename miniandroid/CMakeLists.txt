@@ -65,9 +65,16 @@ add_library(miniandroid_core STATIC
     # DEX Parser
     src/dex/dex_parser.cpp
     src/dex/class_resolver.cpp
+    src/dex/dex_interpreter_batch.cpp
     
     # Runtime
     src/runtime/execution_engine.cpp
+    
+    # Resources (EXP-006)
+    src/resources/resource_parser.cpp
+    
+    # Renderer (EXP-005)
+    src/renderer/software_renderer.cpp
     
     # API Stubs
     # (header-only, no separate .cpp needed for now)
@@ -84,6 +91,8 @@ target_include_directories(miniandroid_core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/api
     ${CMAKE_CURRENT_SOURCE_DIR}/src/graphics
     ${CMAKE_CURRENT_SOURCE_DIR}/src/diagnostics
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/resources
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/renderer
 )
 
 target_link_libraries(miniandroid_core PUBLIC
@@ -161,6 +170,21 @@ add_executable(miniandroid_exp005
 )
 
 target_link_libraries(miniandroid_exp005 PRIVATE miniandroid_core)
+
+# ============== EXP-006 (Android Resource and Layout Foundation) ==============
+add_executable(miniandroid_exp006
+    src/exp006_main.cpp
+)
+
+target_link_libraries(miniandroid_exp006 PRIVATE miniandroid_core)
+
+# ============== EXP-007→EXP-012 MEGA BATCH (Unified Runtime Integration) ==============
+add_executable(miniandroid_megabatch
+    src/exp007_012_megabatch_main.cpp
+    src/runtime/application_runtime.cpp
+)
+
+target_link_libraries(miniandroid_megabatch PRIVATE miniandroid_core)
 
 # Install targets
 install(TARGETS miniandroid
