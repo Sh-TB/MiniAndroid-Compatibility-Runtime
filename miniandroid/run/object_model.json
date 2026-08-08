@@ -1,0 +1,39 @@
+{
+  "after_activate": "ACTIVE",
+  "correct_id": true,
+  "heap_size_after_alloc": 1,
+  "initial_lifetime": "ALLOCATED",
+  "initial_state_correct": true,
+  "is_active": true,
+  "object_created": true,
+  "object_id_manager": {
+    "active_count": 3,
+    "actual_sequential": true,
+    "expected_sequence": true,
+    "id1": 1,
+    "id2": 2,
+    "id3": 3,
+    "total_allocated": 3
+  },
+  "status": "COMPLETE",
+  "task": "Base Runtime Object System",
+  "test_object": {
+    "class_descriptor": "Landroid/view/View;",
+    "creation_sequence": 1,
+    "creation_timestamp": 1786209036163,
+    "creator_pc": 0,
+    "geometry": {
+      "height": 0,
+      "left": 0,
+      "top": 0,
+      "width": 0
+    },
+    "is_initialized": false,
+    "is_invalidated": false,
+    "lifetime_state": "ALLOCATED",
+    "object_id": 1,
+    "parent_reference": 0,
+    "runtime_class": "android.view.View",
+    "visibility": "VISIBLE"
+  }
+}
