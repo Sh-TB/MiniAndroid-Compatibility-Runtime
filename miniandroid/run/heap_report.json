@@ -1,0 +1,138 @@
+{
+  "activity_allocated": true,
+  "activity_id": 1,
+  "activity_is_activity_type": true,
+  "activity_is_not_view_type": true,
+  "allocation_sequence": 3,
+  "full_heap_report": {
+    "active_objects": 3,
+    "allocation_history": [
+      {
+        "class_descriptor": "Landroid/app/Activity;",
+        "final_state": "INITIALIZING",
+        "object_id": 1,
+        "pc_hex": "0x0",
+        "sequence": 1,
+        "timestamp_ms": 1786209036163
+      },
+      {
+        "class_descriptor": "Landroid/view/View;",
+        "final_state": "ACTIVE",
+        "object_id": 2,
+        "pc_hex": "0x2",
+        "sequence": 2,
+        "timestamp_ms": 1786209036163
+      },
+      {
+        "class_descriptor": "Landroid/widget/TextView;",
+        "final_state": "ACTIVE",
+        "object_id": 3,
+        "pc_hex": "0x4",
+        "sequence": 3,
+        "timestamp_ms": 1786209036163
+      }
+    ],
+    "allocation_sequence": 3,
+    "heap_size": 3,
+    "id_manager": {
+      "active_count": 3,
+      "allocation_log": [
+        {
+          "action": "ALLOCATED",
+          "object_id": 1
+        },
+        {
+          "action": "ALLOCATED",
+          "object_id": 2
+        },
+        {
+          "action": "ALLOCATED",
+          "object_id": 3
+        }
+      ],
+      "next_id": 4,
+      "total_allocated": 3,
+      "total_freed": 0
+    },
+    "objects": [
+      {
+        "activity_state": "UNINITIALIZED",
+        "class_descriptor": "Landroid/app/Activity;",
+        "content_view_id": 0,
+        "context_reference": 0,
+        "created_flag": false,
+        "creation_sequence": 1,
+        "creation_timestamp": 1786209036163,
+        "creator_pc": 0,
+        "is_initialized": false,
+        "lifetime_state": "INITIALIZING",
+        "object_id": 1,
+        "runtime_class": "android.app.Activity"
+      },
+      {
+        "class_descriptor": "Landroid/view/View;",
+        "creation_sequence": 2,
+        "creation_timestamp": 1786209036163,
+        "creator_pc": 2,
+        "geometry": {
+          "height": 0,
+          "left": 0,
+          "top": 0,
+          "width": 0
+        },
+        "is_initialized": true,
+        "is_invalidated": false,
+        "lifetime_state": "ACTIVE",
+        "object_id": 2,
+        "parent_reference": 0,
+        "runtime_class": "android.view.View",
+        "visibility": "VISIBLE"
+      },
+      {
+        "class_descriptor": "Landroid/widget/TextView;",
+        "creation_sequence": 3,
+        "creation_timestamp": 1786209036163,
+        "creator_pc": 4,
+        "geometry": {
+          "height": 0,
+          "left": 0,
+          "top": 0,
+          "width": 0
+        },
+        "is_initialized": true,
+        "is_invalidated": false,
+        "lifetime_state": "ACTIVE",
+        "object_id": 3,
+        "parent_reference": 0,
+        "runtime_class": "android.widget.TextView",
+        "text": "",
+        "text_color_hex": "#ff000000",
+        "text_size": 16.0,
+        "visibility": "VISIBLE"
+      }
+    ],
+    "total_allocated": 3,
+    "total_freed": 0
+  },
+  "lifetime_tracking": {
+    "1": "INITIALIZING",
+    "2": "ACTIVE",
+    "3": "ACTIVE"
+  },
+  "lookup_by_id_success": true,
+  "lookup_matches_original": true,
+  "objects_by_class_View": [
+    2
+  ],
+  "status": "COMPLETE",
+  "task": "Enhanced ObjectHeap with Allocation Tracking",
+  "textview_allocated": true,
+  "textview_id": 3,
+  "textview_is_textview_type": true,
+  "total_objects": 3,
+  "typed_lookup_null_for_wrong_type": true,
+  "typed_lookup_success": true,
+  "view_allocated": true,
+  "view_id": 2,
+  "view_is_view_type": true
+}
