@@ -214,6 +214,9 @@ struct DexReport {
     // All strings (useful for debugging)
     std::vector<std::string> strings;
     
+    // All types (for opcode resolution)
+    std::vector<std::string> types;
+    
     // All classes with full details
     std::vector<ClassInfo> classes;
     

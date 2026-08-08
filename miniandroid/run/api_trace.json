@@ -1,0 +1,17 @@
+{
+    "calls": [
+        {
+            "api": "<unknown>.<unknown>",
+            "arguments": [],
+            "class": "<unknown>",
+            "method": "<unknown>",
+            "pc": 9,
+            "return_value": "void",
+            "sequence": 0,
+            "status": "STUBBED"
+        }
+    ],
+    "experiment_id": "EXP-003-BATCH",
+    "timestamp": "2026-08-08T16:55:15Z",
+    "total_api_calls": 1
+}

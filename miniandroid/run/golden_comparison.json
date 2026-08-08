@@ -1,0 +1,17 @@
+{
+    "checks": {
+        "api_trace": false,
+        "instruction_trace": true,
+        "object_creation": true
+    },
+    "differences": [
+        {
+            "actual": 1,
+            "expected": 2,
+            "field": "api_call_count"
+        }
+    ],
+    "experiment_id": "EXP-003-BATCH",
+    "overall_pass": false,
+    "timestamp": "2026-08-08T16:55:15Z"
+}

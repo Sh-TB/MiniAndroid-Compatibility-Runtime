@@ -1,12 +1,94 @@
 {
-    "experiment_id": "EXP-003-A",
-    "final_state": {
-        "halt_reason": "UNIMPLEMENTED_OPCODE: new-instance (0x0022) not in scope EXP-003-A",
-        "halted": true,
-        "program_counter": 3
+    "api_calls": [
+        {
+            "api": "<unknown>.<unknown>",
+            "arguments": [],
+            "class": "<unknown>",
+            "method": "<unknown>",
+            "pc": 9,
+            "return_value": "void",
+            "sequence": 0,
+            "status": "STUBBED"
+        }
+    ],
+    "constructor_calls": [],
+    "execution_range": {
+        "executed_instructions": 5,
+        "final_pc": 12,
+        "initial_pc": 0,
+        "total_instructions_in_method": 13
     },
-    "initial_state": {
-        "program_counter": 0
+    "experiment_id": "EXP-003-BATCH",
+    "failures": [],
+    "final_registers": {
+        "registers": [
+            {
+                "is_set": true,
+                "register": "v0",
+                "value": {
+                    "class": "Landroid/app/Activity;",
+                    "object_id": 1,
+                    "type": "OBJECT_REF"
+                }
+            },
+            {
+                "is_set": true,
+                "register": "v1",
+                "value": {
+                    "type": "UNINITIALIZED",
+                    "value": null
+                }
+            },
+            {
+                "is_set": true,
+                "register": "v2",
+                "value": {
+                    "type": "UNINITIALIZED",
+                    "value": null
+                }
+            },
+            {
+                "is_set": true,
+                "register": "v3",
+                "value": {
+                    "type": "UNINITIALIZED",
+                    "value": null
+                }
+            },
+            {
+                "is_set": true,
+                "register": "v4",
+                "value": {
+                    "type": "UNINITIALIZED",
+                    "value": null
+                }
+            },
+            {
+                "is_set": true,
+                "register": "v5",
+                "value": {
+                    "type": "UNINITIALIZED",
+                    "value": null
+                }
+            },
+            {
+                "is_set": true,
+                "register": "v6",
+                "value": {
+                    "type": "UNINITIALIZED",
+                    "value": null
+                }
+            },
+            {
+                "is_set": true,
+                "register": "v7",
+                "value": {
+                    "type": "UNINITIALIZED",
+                    "value": null
+                }
+            }
+        ],
+        "size": 8
     },
     "instructions": [
         {
@@ -18,12 +100,12 @@
             "opcode_hex": "0x001a",
             "operands": [
                 {
-                    "name": "destination_register",
+                    "name": "vAA",
                     "value": "v0"
                 },
                 {
-                    "name": "string_index",
-                    "value": "0"
+                    "name": "string@BBBB",
+                    "value": "0x0000"
                 }
             ],
             "pc_after": 3,
@@ -31,15 +113,58 @@
             "resolved_string": "Lcom/miniandroid/hello/MainActivity;",
             "sequence": 0,
             "state_change": {
-                "register_values": [
+                "register_snapshots": [
                     {
-                        "reference_id": 1,
                         "register": "v0",
-                        "type": "java.lang.String",
-                        "value": "Lcom/miniandroid/hello/MainActivity;"
+                        "value": {
+                            "reference_id": 1,
+                            "type": "STRING_REF",
+                            "value": "Lcom/miniandroid/hello/MainActivity;"
+                        }
                     }
                 ],
-                "registers_written": [
+                "registers_changed": [
+                    "v0"
+                ]
+            }
+        },
+        {
+            "created_object_id": 1,
+            "execution": {
+                "cycles": 1,
+                "status": "SUCCESS"
+            },
+            "opcode": "new-instance",
+            "opcode_hex": "0x0022",
+            "operands": [
+                {
+                    "name": "vAA",
+                    "value": "v0"
+                },
+                {
+                    "name": "type@BBBB",
+                    "value": "0x0001"
+                },
+                {
+                    "name": "resolved_type",
+                    "value": "Landroid/app/Activity;"
+                }
+            ],
+            "pc_after": 6,
+            "pc_before": 3,
+            "sequence": 1,
+            "state_change": {
+                "register_snapshots": [
+                    {
+                        "register": "v0",
+                        "value": {
+                            "class": "Landroid/app/Activity;",
+                            "object_id": 1,
+                            "type": "OBJECT_REF"
+                        }
+                    }
+                ],
+                "registers_changed": [
                     "v0"
                 ]
             }
@@ -47,20 +172,66 @@
         {
             "execution": {
                 "cycles": 1,
-                "status": "HALT_UNIMPLEMENTED"
+                "status": "SUCCESS"
             },
-            "halt_reason": "UNIMPLEMENTED_OPCODE: new-instance (0x0022) not in scope EXP-003-A",
-            "opcode": "new-instance",
-            "opcode_hex": "0x0022",
+            "invoked_method": "<unknown>.<unknown>",
+            "opcode": "invoke-direct",
+            "opcode_hex": "0x0070",
             "operands": [
                 {
-                    "name": "status",
-                    "value": "NOT_IMPLEMENTED"
+                    "name": "args_count",
+                    "value": "0"
+                },
+                {
+                    "name": "method@BBBB",
+                    "value": "0x0001"
+                },
+                {
+                    "name": "resolved_method",
+                    "value": "<unknown>.<unknown>"
                 }
             ],
-            "pc_after": 3,
-            "pc_before": 3,
-            "sequence": 1
+            "pc_after": 9,
+            "pc_before": 6,
+            "sequence": 2
+        },
+        {
+            "execution": {
+                "cycles": 1,
+                "status": "SUCCESS"
+            },
+            "invoked_method": "<unknown>.<unknown>",
+            "opcode": "invoke-virtual",
+            "opcode_hex": "0x006e",
+            "operands": [
+                {
+                    "name": "args_count",
+                    "value": "0"
+                },
+                {
+                    "name": "method@BBBB",
+                    "value": "0x0002"
+                },
+                {
+                    "name": "resolved_method",
+                    "value": "<unknown>.<unknown>"
+                }
+            ],
+            "pc_after": 12,
+            "pc_before": 9,
+            "sequence": 3
+        },
+        {
+            "execution": {
+                "cycles": 1,
+                "status": "HALT_RETURN"
+            },
+            "opcode": "return-void",
+            "opcode_hex": "0x000e",
+            "operands": [],
+            "pc_after": 12,
+            "pc_before": 12,
+            "sequence": 4
         }
     ],
     "method_context": {
@@ -68,11 +239,372 @@
         "descriptor": "(Landroid/os/Bundle;)V",
         "method": "onCreate"
     },
-    "statistics": {
-        "executed_instructions": 2,
-        "success_rate": "2/13 (15%)",
-        "total_instructions": 13,
-        "unimplemented_opcodes_encountered": 0
+    "object_creations": [
+        {
+            "class": "Landroid/app/Activity;",
+            "object_id": 1,
+            "pc": 3,
+            "sequence": 0,
+            "status": "SUCCESS"
+        }
+    ],
+    "object_heap": [],
+    "register_snapshots": [
+        {
+            "registers": [
+                {
+                    "is_set": true,
+                    "register": "v0",
+                    "value": {
+                        "reference_id": 1,
+                        "type": "STRING_REF",
+                        "value": "Lcom/miniandroid/hello/MainActivity;"
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v1",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v2",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v3",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v4",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v5",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v6",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v7",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                }
+            ],
+            "size": 8
+        },
+        {
+            "registers": [
+                {
+                    "is_set": true,
+                    "register": "v0",
+                    "value": {
+                        "class": "Landroid/app/Activity;",
+                        "object_id": 1,
+                        "type": "OBJECT_REF"
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v1",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v2",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v3",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v4",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v5",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v6",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v7",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                }
+            ],
+            "size": 8
+        },
+        {
+            "registers": [
+                {
+                    "is_set": true,
+                    "register": "v0",
+                    "value": {
+                        "class": "Landroid/app/Activity;",
+                        "object_id": 1,
+                        "type": "OBJECT_REF"
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v1",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v2",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v3",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v4",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v5",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v6",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v7",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                }
+            ],
+            "size": 8
+        },
+        {
+            "registers": [
+                {
+                    "is_set": true,
+                    "register": "v0",
+                    "value": {
+                        "class": "Landroid/app/Activity;",
+                        "object_id": 1,
+                        "type": "OBJECT_REF"
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v1",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v2",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v3",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v4",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v5",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v6",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v7",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                }
+            ],
+            "size": 8
+        },
+        {
+            "registers": [
+                {
+                    "is_set": true,
+                    "register": "v0",
+                    "value": {
+                        "class": "Landroid/app/Activity;",
+                        "object_id": 1,
+                        "type": "OBJECT_REF"
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v1",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v2",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v3",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v4",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v5",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v6",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                },
+                {
+                    "is_set": true,
+                    "register": "v7",
+                    "value": {
+                        "type": "UNINITIALIZED",
+                        "value": null
+                    }
+                }
+            ],
+            "size": 8
+        }
+    ],
+    "status": {
+        "completed_successfully": true,
+        "halt_reason": "RETURN_VOID: Normal method return",
+        "result": "PASS"
     },
-    "timestamp": "2026-08-08T16:34:32Z"
+    "timestamp": "2026-08-08T16:55:15Z"
 }
