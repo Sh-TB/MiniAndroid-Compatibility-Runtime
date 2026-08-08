@@ -1,0 +1,67 @@
+{
+    "activity_classes": [
+        "Lcom/miniandroid/hello/MainActivity;"
+    ],
+    "apk_path": "/home/z/my-project/miniandroid/test_apks/HelloWorld.apk",
+    "dex_path": "/home/z/my-project/miniandroid/run/classes.dex",
+    "entry_point": {
+        "bytecode_offset": "0x1D8",
+        "class_name": "Lcom/miniandroid/hello/MainActivity;",
+        "descriptor": "(Landroid/os/Bundle;)V",
+        "has_bytecode": true,
+        "instructions": 13,
+        "is_activity": true,
+        "method_name": "onCreate",
+        "overrides_oncreate": true,
+        "readable_class": "com.miniandroid.hello.MainActivity",
+        "resolved": true,
+        "status": 1
+    },
+    "experiment_id": "EXP-002",
+    "issues": [],
+    "method_map": [
+        {
+            "descriptor": "()V",
+            "has_code": true,
+            "insn_count": 1,
+            "name": "<init>",
+            "offset": "0x1c4"
+        },
+        {
+            "descriptor": "(Landroid/os/Bundle;)V",
+            "has_code": true,
+            "insn_count": 13,
+            "name": "onCreate",
+            "offset": "0x1d8"
+        }
+    ],
+    "pipeline_stages": [
+        {
+            "duration_ms": 0.000648,
+            "evidence": "Found 1 Activity class(es): com.miniandroid.hello.MainActivity",
+            "name": "Activity Discovery",
+            "success": true
+        },
+        {
+            "duration_ms": 0.000167,
+            "evidence": "Resolved class: com.miniandroid.hello.MainActivity extends android.app.Activity",
+            "name": "Class Resolution",
+            "success": true
+        },
+        {
+            "duration_ms": 0.003672,
+            "evidence": "Resolved method: onCreate(Landroid/os/Bundle;)V @ 0x1D8 (13 instructions)",
+            "name": "Method Resolution",
+            "success": true
+        },
+        {
+            "duration_ms": 0.003393,
+            "evidence": "Bytecode @ 0x1D8, 13 instructions",
+            "name": "Bytecode Extraction",
+            "success": true
+        }
+    ],
+    "status_message": "Entry point fully resolved",
+    "success": true,
+    "timestamp": "2026-08-08T16:23:02Z"
+}

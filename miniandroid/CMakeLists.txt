@@ -1,5 +1,6 @@
 # MiniAndroid Runtime v0.1 - CMake Build Configuration
 # EXP-001: HelloWorld Loader
+# EXP-002: Runtime Stub (Class Resolution)
 
 cmake_minimum_required(VERSION 3.16)
 project(MiniAndroid VERSION 0.1 LANGUAGES CXX DESCRIPTION "Minimal Android Compatibility Runtime")
@@ -63,6 +64,7 @@ add_library(miniandroid_core STATIC
     
     # DEX Parser
     src/dex/dex_parser.cpp
+    src/dex/class_resolver.cpp
     
     # Runtime
     src/runtime/execution_engine.cpp
@@ -107,12 +109,19 @@ elseif(UNIX)
     # Linux-specific
 endif()
 
-# ============== Main Executable ==============
+# ============== Main Executable (EXP-001) ==============
 add_executable(miniandroid
     src/main.cpp
 )
 
 target_link_libraries(miniandroid PRIVATE miniandroid_core)
+
+# ============== EXP-002 Executable (Class Resolution) ==============
+add_executable(miniandroid_exp002
+    src/exp002_main.cpp
+)
+
+target_link_libraries(miniandroid_exp002 PRIVATE miniandroid_core)
 
 # Install targets
 install(TARGETS miniandroid
@@ -198,7 +207,10 @@ message(STATUS "Build commands:")
 message(STATUS "  cmake --build . --config Release")
 message(STATUS "")
 message(STATUS "Usage:")
-message(STATUS "  ./miniandroid analyze <apk_path>")
-message(STATUS "  ./miniandroid dex <apk_path>")
-message(STATUS "  ./miniandroid run <apk_path>")
-message(STATUS "  ./miniandroid version")
+message(STATUS "  ./miniandroid analyze <apk_path>     (EXP-001)")
+message(STATUS "  ./miniandroid dex <apk_path>         (EXP-001)")
+message(STATUS "  ./miniandroid run <apk_path>         (Future)")
+message(STATUS "  ./miniandroid version               (EXP-001)")
+message(STATUS "")
+message(STATUS "EXP-002 (Class Resolution):")
+message(STATUS "  ./miniandroid_exp002 [apk_path]     (Default: test_apks/HelloWorld.apk)")
