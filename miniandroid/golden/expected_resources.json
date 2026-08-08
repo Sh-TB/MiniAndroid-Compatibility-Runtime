@@ -1,0 +1,17 @@
+{
+  "layouts": [
+    "main.xml"
+  ],
+  "min_string_count": 2,
+  "must_have_hello_text": true,
+  "strings": [
+    {
+      "name": "app_name",
+      "value": "MiniAndroid"
+    },
+    {
+      "name": "hello_text",
+      "value": "Hello MiniAndroid"
+    }
+  ]
+}
