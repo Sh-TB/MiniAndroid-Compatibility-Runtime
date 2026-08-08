@@ -154,6 +154,14 @@ add_executable(miniandroid_exp004
 
 target_link_libraries(miniandroid_exp004 PRIVATE miniandroid_core)
 
+# ============== EXP-005 (Minimal Software Rendering Pipeline) ==============
+add_executable(miniandroid_exp005
+    src/exp005_main.cpp
+    src/renderer/software_renderer.cpp
+)
+
+target_link_libraries(miniandroid_exp005 PRIVATE miniandroid_core)
+
 # Install targets
 install(TARGETS miniandroid
     RUNTIME DESTINATION bin
