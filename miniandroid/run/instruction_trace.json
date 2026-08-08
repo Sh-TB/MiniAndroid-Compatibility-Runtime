@@ -1,0 +1,78 @@
+{
+    "experiment_id": "EXP-003-A",
+    "final_state": {
+        "halt_reason": "UNIMPLEMENTED_OPCODE: new-instance (0x0022) not in scope EXP-003-A",
+        "halted": true,
+        "program_counter": 3
+    },
+    "initial_state": {
+        "program_counter": 0
+    },
+    "instructions": [
+        {
+            "execution": {
+                "cycles": 1,
+                "status": "SUCCESS"
+            },
+            "opcode": "const-string",
+            "opcode_hex": "0x001a",
+            "operands": [
+                {
+                    "name": "destination_register",
+                    "value": "v0"
+                },
+                {
+                    "name": "string_index",
+                    "value": "0"
+                }
+            ],
+            "pc_after": 3,
+            "pc_before": 0,
+            "resolved_string": "Lcom/miniandroid/hello/MainActivity;",
+            "sequence": 0,
+            "state_change": {
+                "register_values": [
+                    {
+                        "reference_id": 1,
+                        "register": "v0",
+                        "type": "java.lang.String",
+                        "value": "Lcom/miniandroid/hello/MainActivity;"
+                    }
+                ],
+                "registers_written": [
+                    "v0"
+                ]
+            }
+        },
+        {
+            "execution": {
+                "cycles": 1,
+                "status": "HALT_UNIMPLEMENTED"
+            },
+            "halt_reason": "UNIMPLEMENTED_OPCODE: new-instance (0x0022) not in scope EXP-003-A",
+            "opcode": "new-instance",
+            "opcode_hex": "0x0022",
+            "operands": [
+                {
+                    "name": "status",
+                    "value": "NOT_IMPLEMENTED"
+                }
+            ],
+            "pc_after": 3,
+            "pc_before": 3,
+            "sequence": 1
+        }
+    ],
+    "method_context": {
+        "class": "Lcom/miniandroid/hello/MainActivity;",
+        "descriptor": "(Landroid/os/Bundle;)V",
+        "method": "onCreate"
+    },
+    "statistics": {
+        "executed_instructions": 2,
+        "success_rate": "2/13 (15%)",
+        "total_instructions": 13,
+        "unimplemented_opcodes_encountered": 0
+    },
+    "timestamp": "2026-08-08T16:34:32Z"
+}
