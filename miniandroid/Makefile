@@ -13,7 +13,8 @@ TESTDIR = tests
 
 # Source files (excluding main.cpp for library)
 APK_SOURCES = $(SRCDIR)/apk/apk_parser.cpp $(SRCDIR)/apk/manifest_reader.cpp
-DEX_SOURCES = $(SRCDIR)/dex/dex_parser.cpp $(SRCDIR)/dex/class_resolver.cpp $(SRCDIR)/dex/dex_interpreter.cpp $(SRCDIR)/dex/dex_interpreter_batch.cpp
+# Note: Use EITHER dex_interpreter.cpp OR dex_interpreter_batch.cpp, NOT BOTH
+DEX_SOURCES = $(SRCDIR)/dex/dex_parser.cpp $(SRCDIR)/dex/class_resolver.cpp $(SRCDIR)/dex/dex_interpreter_batch.cpp
 RUNTIME_SOURCES = $(SRCDIR)/runtime/execution_engine.cpp $(SRCDIR)/runtime/application_runtime.cpp
 DIAGNOSTICS_SOURCES = $(SRCDIR)/diagnostics/trace_engine.cpp
 RESOURCES_SOURCES = $(SRCDIR)/resources/resource_parser.cpp
