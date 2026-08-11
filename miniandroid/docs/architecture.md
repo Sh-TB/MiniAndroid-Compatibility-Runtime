@@ -2,288 +2,334 @@
 
 ## Project Overview
 
-**Experiment:** EXP-001 MiniAndroid HelloWorld Loader  
+**Experiment:** EXP-001 through EXP-013 (Real Execution Validation)  
 **Goal:** Execute a minimal Android APK without full emulator  
-**Philosophy:** Evidence-driven development, minimal implementation
+**Philosophy:** Evidence-driven development, honest status reporting  
+**Current Phase:** Validation complete - gaps identified and documented
 
 ---
 
-## System Architecture
+## System Architecture (Post-EXP-013 Validation)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    MiniAndroid Runtime v0.1                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌──────────┐    ┌──────────┐    ┌──────────────────────────┐  │
-│  │   APK    │───▶│   DEX    │───▶│     Execution Engine      │  │
-│  │  Parser  │    │  Parser  │    │                          │  │
-│  └──────────┘    └──────────┘    └────────────┬─────────────┘  │
-│       │               │                     │                │
-│       ▼               ▼                     ▼                │
-│  ┌──────────┐    ┌──────────┐    ┌──────────────────────────┐  │
-│  │Manifest  │    │ Classes/ │    │   Android API Stubs      │  │
-│  │ Reader   │    │ Methods  │    │   (Activity, View, etc)  │  │
-│  └──────────┘    └──────────┘    └────────────┬─────────────┘  │
-│                                              │                │
-│                                              ▼                │
-│                                   ┌──────────────────────────┐  │
-│                                   │    Graphics Backend      │  │
-│                                   │    (Vulkan/Software)     │  │
-│                                   └────────────┬─────────────┘  │
-│                                                │                │
-│                                                ▼                │
-│                                   ┌──────────────────────────┐  │
-│                                   │    Diagnostics Engine    │  │
-│                                   │    (Trace, Log, Report)  │  │
-│                                   └──────────────────────────┘  │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    MiniAndroid Runtime v0.1                              │
+│                  ⚠️ VALIDATION COMPLETE - SEE GAPS                      │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌──────────┐    ┌──────────┐    ┌──────────────────────────────────┐   │
+│  │   APK    │───▶│Manifest  │───▶│       Class Resolver             │   │
+│  │  Parser  │    │ Reader   │    │   (REAL - finds onCreate)        │   │
+│  └──────────┘    └──────────┘    └────────────┬─────────────────────┘   │
+│       │               │                     │                          │
+│       ▼               ▼                     ▼                          │
+│  ┌──────────┐    ┌──────────┐    ┌──────────────────────────────────┐   │
+│  │   DEX    │───▶│DEX Interp.│───▶│     ⚠️ HALTS after 1 instruction │   │
+│  │  Parser  │    │(const-   │    │     (only const-string works)     │   │
+│  │          │    │ string)  │    └────────────┬─────────────────────┘   │
+│  └──────────┘    └──────────┘                 │                          │
+│       │               │                       │                          │
+│       ▼               ▼                       ▼ [FALLBACK]              │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │              ApplicationRuntime (COORDINATOR)                     │  │
+│  │  ┌─────────────────────────────────────────────────────────────┐ │  │
+│  │  │  SIMULATION LAYER (activates when interpreter halts)         │ │  │
+│  │  │  • Direct C++ object creation (bypasses new-instance)        │ │  │
+│  │  │  • Direct API calls (bypasses invoke-virtual)                │ │  │
+│  │  │  • State machine transitions (simulates lifecycle)           │ │  │
+│  │  │  • Hardcoded layout geometry                                 │ │  │
+│  │  │  • Direct renderer invocation                               │ │  │
+│  │  └─────────────────────────────────────────────────────────────┘ │  │
+│  └──────────────────────────────────┬───────────────────────────────┘  │
+│                                     │                                  │
+│                                     ▼                                  │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │                    OUTPUT GENERATION                              │  │
+│  │  Object Heap → View Tree → Software Renderer → Framebuffer → PNG │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+│                                                                          │
+│  ┌──────────────────────────────────────────────────────────────────┐  │
+│  │                    Diagnostics Engine                             │  │
+│  │  (Trace, Bypass Detection, API Tracking, Evidence Generation)    │  │
+│  └──────────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Component Breakdown
+## Directory Structure (Clean Architecture)
 
-### 1. APK Parser (`src/apk/`)
+```
+miniandroid/
+├── src/                        # Production source code
+│   ├── runtime/                 # Core runtime components
+│   │   ├── application_runtime.h/cpp   # Central coordinator
+│   │   ├── execution_engine.h/cpp      # Original engine (legacy)
+│   │   └── object_model.h             # Android object model
+│   │
+│   ├── dex/                      # DEX parsing and interpretation
+│   │   ├── dex_parser.h/cpp            # DEX format parser
+│   │   ├── dex_interpreter.h/cpp       # Bytecode interpreter (EXP-003-A)
+│   │   ├── dex_interpreter_batch.h/cpp # Batch interpreter (MEGA BATCH)
+│   │   └── class_resolver.h/cpp        # Method resolution
+│   │
+│   ├── apk/                      # APK handling
+│   │   ├── apk_parser.h/cpp            # ZIP extraction
+│   │   └── manifest_reader.h/cpp       # XML/binary manifest parsing
+│   │
+│   ├── resources/                # Resource system
+│   │   └── resource_parser.h/cpp       # ARSC + XML resource loading
+│   │
+│   ├── renderer/                 # Graphics output
+│   │   └── software_renderer.h/cpp     # Software rendering pipeline
+│   │
+│   ├── diagnostics/              # Testing & tracing
+│   │   └── trace_engine.h/cpp          # Unified diagnostic logging
+│   │
+│   ├── api/                      # Android framework stubs
+│   │   └── android_stubs.h             # API declarations
+│   │
+│   └── experiments/              # Experiment entry points (preserved)
+│       ├── exp002_main.cpp
+│       ├── exp003a_main.cpp
+│       ├── exp004_main.cpp
+│       ├── exp005_main.cpp
+│       ├── exp006_main.cpp
+│       └── exp007_012_megabatch_main.cpp
+│
+├── tests/                       # Test suite
+│   └── simple_test.cpp
+│
+├── tools/                       # Utility scripts
+│   ├── gen_apk_fixed.py
+│   └── generate_hello_world_apk.py
+│
+├── golden/                      # Expected outputs for regression
+│   ├── expected_*.json (8 files)
+│   └── corpus.json
+│
+├── run/                         # Generated evidence output
+│   ├── *.json                   # All trace/evidence files
+│   ├── screenshot.png           # Rendered output
+│   ├── database/                # API/opcode databases
+│   └── golden/                  # Corpus definitions
+│
+├── docs/                        # Documentation
+│   ├── architecture.md          # This file
+│   ├── runtime-status.md        # Live status (UPDATED EXP-013)
+│   ├── execution-flow.md        # Pipeline flow documentation
+│   ├── dependency-map.md        # Component dependencies
+│   └── EXP_RULES.md             # Development rules
+│
+├── test_apks/                   # Test APK files
+│   ├── HelloWorld.apk           # Primary test application
+│   └── classes.dex              # Extracted DEX for analysis
+│
+├── third_party/                 # Dependencies
+│   └── nlohmann_json/           # JSON library
+│
+├── build/                       # Build output (gitignored)
+├── CMakeLists.txt               # Build configuration
+└── Makefile                     # Alternative build
+```
+
+---
+
+## Component Breakdown (With Validation Status)
+
+### 1. APK Parser (`src/apk/`) ✅ REAL
 
 **Responsibility:** Parse Android Package (APK) files
 
-**Input:** `.apk` file (ZIP format)  
-**Output:** Structured package information
+| Aspect | Status | Notes |
+|--------|--------|-------|
+| ZIP Parsing | ✅ IMPLEMENTED | Real extraction |
+| Entry Listing | ✅ WORKING | Full entry map |
+| Integrity Check | ✅ BASIC | ZIP signature verified |
 
-**Components:**
-- `apk_parser.cpp/h` — Main ZIP extraction and parsing
-- `manifest_reader.cpp/h` — AndroidManifest.xml decoder
-
-**Supported Operations:**
-```
-- Extract ZIP contents
-- Parse binary XML (AndroidManifest)
-- Identify main Activity
-- List permissions
-- Extract resources
-- Validate APK integrity
-```
-
-**Evidence Output:**
-```json
-{
-  "apk_name": "HelloWorld.apk",
-  "package_name": "com.miniandroid.helloworld",
-  "version_name": "0.1",
-  "version_code": 1,
-  "main_activity": "com.miniandroid.helloworld.MainActivity",
-  "permissions": [],
-  "native_libraries": [],
-  "dex_files": ["classes.dex"]
-}
-```
+**Validation Result:** Fully real implementation. No simulation detected.
 
 ---
 
-### 2. DEX Parser (`src/dex/`)
+### 2. DEX Parser (`src/dex/`) ✅ REAL
 
 **Responsibility:** Parse Dalvik Executable format
 
-**Input:** `classes.dex` from APK  
-**Output:** Class/method metadata
+| Aspect | Status | Notes |
+|--------|--------|-------|
+| Header Parsing | ✅ COMPLETE | All fields extracted |
+| String Pool | ✅ WORKING | Full extraction |
+| Type List | ✅ WORKING | Class references |
+| Method List | ✅ WORKING | Signatures + offsets |
+| Bytecode Access | ✅ WORKING | Raw bytes available |
 
-**DEX Format Structure:**
+**Validation Result:** Fully real implementation. Provides accurate data to downstream components.
+
+---
+
+### 3. DEX Interpreter (`src/dex/dex_interpreter.cpp`) ⚠️ 0.45% COMPLETE
+
+**Responsibility:** Execute DEX bytecode instructions
+
+| Opcode | Hex | Status | Priority |
+|--------|-----|--------|----------|
+| const-string | 0x1A | ✅ **IMPLEMENTED** | DONE |
+| new-instance | 0x22 | ❌ UNIMPLEMENTED | **P0 BLOCKER** |
+| invoke-direct | 0x70 | ❌ UNIMPLEMENTED | **P0 HIGH** |
+| invoke-virtual | 0x6E | ❌ UNIMPLEMENTED | **P1 HIGH** |
+| return-void | 0x0E | ❌ UNIMPLEMENTED | **P1 HIGH** |
+| All others | ~215 | ❌ UNIMPLEMENTED | Various |
+
+**Execution Flow (Validated):**
 ```
-DEX File Header:
-├── magic: "dex\n035\0"
-├── checksum
-├── signature (SHA-1)
-├── file_size
-├── header_size (0x70)
-├── endian_tag
-├── string_ids_size/offset
-├── type_ids_size/offset
-├── proto_ids_size/offset
-├── field_ids_size/offset
-├── method_ids_size/offset
-├── class_defs_size/offset
-├── data_size/offset
+PC=0: const-string v0, "Hello MiniAndroid"  → ✅ EXECUTED (register v0 set)
+PC=3: new-instance v1, TextView             → ❌ HALTED (unimplemented)
+     ... (remaining instructions NOT REACHED)
 ```
 
-**Components:**
-- `dex_parser.cpp/h` — Full DEX format parser
-- `metadata_reader.cpp/h` — Extract class/method info
+**Validation Result:** Interpreter infrastructure is correct but only 1 opcode works. This is the PRIMARY bottleneck.
 
-**Evidence Output:**
-```json
-{
-  "dex_version": "035",
-  "classes_count": 3,
-  "methods_count": 12,
-  "classes": [
-    {
-      "name": "Lcom/miniandroid/helloworld/MainActivity;",
-      "superclass": "Landroid/app/Activity;",
-      "methods": [
-        {"name": "<init>", "descriptor": "()V"},
-        {"name": "onCreate", "descriptor": "(Landroid/os/Bundle;)V"}
-      ]
+---
+
+### 4. ApplicationRuntime (`src/runtime/application_runtime.cpp`) ⚠️ COORDINATOR + FALLBACK
+
+**Responsibility:** Orchestrate the complete pipeline
+
+**Dual Mode Operation:**
+
+```cpp
+// Pseudo-code of actual behavior:
+bool ApplicationRuntime::execute_on_create() {
+    // 1. Try real DEX execution
+    auto trace = interpreter_->execute(entry_point, strings, config);
+    
+    if (trace.halted || trace.executed_instructions == 0) {
+        // 2. FALLBACK: Simulate via direct C++ calls
+        // This is where all bypasses occur:
+        auto text_view = heap_->create_text_view(activity_id);  // BYPASS-001
+        text_view->set_text(resource_parser->get_string(...));   // BYPASS-002
+        load_content_view();                                     // BYPASS-003 variant
+        // ... etc
     }
-  ]
 }
 ```
 
----
-
-### 3. Execution Engine (`src/runtime/`)
-
-**Responsibility:** Execute DEX bytecode with minimal VM
-
-**Components:**
-- `execution_engine.cpp/h` — Main runtime loop
-- `interpreter.cpp/h` — Bytecode interpreter (minimal)
-- `class_loader.cpp/h` — Class loading and linking
-
-**Implementation Strategy (v0.1):**
-```
-Phase 1: Static analysis only (no execution)
-Phase 2: Interpret onCreate() lifecycle
-Phase 3: Full method interpretation
-```
-
-**Lifecycle Simulation:**
-```
-APK Loaded
-    ↓
-Class Loaded
-    ↓
-Activity.onCreate() called
-    ↓
-setContentView() processed
-    ↓
-View hierarchy built
-    ↓
-onStart() → onResume()
-    ↓
-draw() called
-    ↓
-Framebuffer generated
-```
+**Validation Result:** The coordinator correctly invokes the interpreter but then falls back to C++ simulation when it halts. This fallback is well-documented but means most "execution" is simulated.
 
 ---
 
-### 4. Android API Stubs (`src/api/`)
+### 5. Object Model (`src/runtime/object_model.h`) ✅ EXISTS
 
-**Responsibility:** Provide minimal Android framework implementations
+**Responsibility:** Represent Android objects in C++
 
-**Implemented Stubs (M3 Target):**
+| Class | Purpose | Creation Path |
+|-------|---------|---------------|
+| `RuntimeObject` | Base class | N/A |
+| `ActivityRuntimeObject` | Activity instance | C++ fallback (should be DEX new-instance) |
+| `ViewRuntimeObject` | View base | C++ fallback |
+| `TextViewRuntimeObject` | Text display | C++ fallback |
 
-| Class | Methods | Status |
-|-------|---------|--------|
-| `android.app.Activity` | onCreate, onStart, onResume, setContentView, findViewById | PLANNED |
-| `android.os.Bundle` | getString, getInt, putString, putInt | PLANNED |
-| `android.view.View` | draw, measure, layout, invalidate | PLANNED |
-| `android.view.ViewGroup` | addView, removeView | PLANNED |
-| `android.widget.TextView` | setText, getText, setTextColor | PLANNED |
-| `android.graphics.Canvas` | drawText, drawRect, drawColor | PLANNED |
-| `android.graphics.Paint` | setColor, setTextSize, setAntiAlias | PLANNED |
-| android.content.Context | getResources, getPackageManager | PLANNED |
-
-**Tracing Behavior:**
-Every API call generates a trace entry:
-```json
-{
-  "timestamp": 1001,
-  "thread": "main",
-  "class": "android.app.Activity",
-  "method": "onCreate",
-  "args": ["bundle:non-null"],
-  "return_value": "void",
-  "call_depth": 1
-}
-```
+**Validation Result:** Object model is well-designed but objects are created directly in C++, not through DEX object allocation.
 
 ---
 
-### 5. Graphics Backend (`src/graphics/`)
+### 6. Resource System (`src/resources/`) 🔶 PARTIAL
 
-**Responsibility:** Render Android View hierarchy to image
+**Responsibility:** Load Android resources
 
-**Architecture:**
-```
-Android View Hierarchy
-        ↓
-MiniAndroid Renderer (Custom)
-        ↓
-Software Rasterizer (v0.1)
-        ↓
-Framebuffer (RGBA buffer)
-        ↓
-PNG Encoder
-        ↓
-screenshot.png
-```
+| Feature | Status | Notes |
+|---------|--------|-------|
+| XML Resources | ✅ WORKING | strings.xml, layouts.xml |
+| ARSC Parsing | 🔶 BASIC | Header + string table |
+| Resource ID Resolution | ✅ WORKING | @string/*, @layout/* |
+| Config Qualifiers | ❌ NOT | No locale/density support |
 
-**Vulkan Backend (Future):**
-```
-View Hierarchy → Vulkan Command Buffer → GPU → Screenshot
-```
-
-**v0.1 Implementation:**
-- Software rendering only
-- Basic text rendering (bitmap fonts)
-- Rectangle/Color fill
-- PNG output via stb_image_write or libpng
+**Validation Result:** Works for simple cases but called from C++, not via `getResources()` DEX dispatch.
 
 ---
 
-### 6. Diagnostics Engine (`src/diagnostics/`)
+### 7. Renderer (`src/renderer/`) ✅ DIRECT CALL
 
-**Responsibility:** Trace, log, and report everything
+**Responsibility:** Generate pixel output
 
-**Output Structure:**
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Clear/Fill | ✅ WORKING | Background color |
+| Rectangle | ✅ WORKING | View backgrounds |
+| Text | ✅ BASIC | Bitmap font rendering |
+| PNG Output | ✅ WORKING | screenshot.png generated |
+
+**Validation Result:** Produces real output but invoked directly, not through `View.draw(Canvas)` dispatch chain.
+
+---
+
+### 8. Diagnostics (`src/diagnostics/`) ✅ COMPREHENSIVE
+
+**Responsibility:** Trace, log, and validate everything
+
+**EXP-013 Additions:**
+- Execution path audit (14 stages classified as REAL/SIMULATED)
+- Bypass detection (6 bypass points identified)
+- API dispatch source tracking (all 12 calls tagged)
+- Instruction-level trace with real/simulated markers
+
+---
+
+## Data Flow Reality (EXP-013 Validated)
+
+### What Actually Happens When You Run an APK:
+
 ```
-run/
-├── apk_info.json          # Parsed APK information
-├── dex_report.json        # DEX analysis results
-├── api_trace.json         # All API calls during execution
-├── crash.log              # Error/crash information
-├── screenshot.png         # Final rendered output
-└── report.md              # Human-readable summary
+1. APK Parser extracts classes.dex                    ← REAL
+2. ManifestReader identifies .MainActivity            ← REAL
+3. DexParser loads string pool, methods                ← REAL
+4. ClassResolver finds onCreate(Bundle) method         ← REAL
+5. DexInterpreter.execute(onCreate) entered           ← REAL
+6. const-string executes, "Hello MiniAndroid" → v0     ← REAL (ONLY THIS)
+7. Interpreter halts on new-instance                   ← REAL HALT
+8. ApplicationRuntime detects halt, activates fallback ← DOCUMENTED
+9. TextView created via heap->create_text_view()       ← BYPASS #1
+10. Text set via direct set_text() call                ← BYPASS #2
+11. Layout loaded via C++ resource parser              ← BYPASS #3
+12. State machine records lifecycle transitions        ← BYPASS #4
+13. Hardcoded bounds assigned to Views                ← BYPASS #5
+14. Renderer draws directly from object heap           ← BYPASS #6
+15. Screenshot saved as PNG                            ← REAL OUTPUT
 ```
 
-**Report Template:**
-```markdown
-# MiniAndroid Execution Report
+**Real Execution: Steps 1-7 (47%)**  
+**Simulated Fallback: Steps 8-14 (47%)**  
+**Real Output: Step 15 (6%)**
 
-## Application
-- **APK:** HelloWorld.apk
-- **Package:** com.miniandroid.helloworld
-- **Main Activity:** MainActivity
+---
 
-## Execution Status: SUCCESS / FAILURE
+## Interface Boundaries
 
-## Metrics
-- APIs Called: 37
-- Frames Rendered: 1
-- Execution Time: 45ms
-- Memory Peak: 2.4MB
+### Where Real Meets Simulated:
 
-## API Trace Summary
-| Class | Method | Calls |
-|-------|--------|-------|
-| Activity | onCreate | 1 |
-| TextView | setText | 1 |
-
-## Errors/Warnings
-[None or list of issues]
-
-## Screenshot
-![Screenshot](screenshot.png)
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    REAL ZONE                                 │
+│  APK → Manifest → DEX → ClassResolver → Interpreter Entry  │
+└────────────────────────────────┬────────────────────────────┘
+                                 │
+                       Interpreter Halts
+                        (new-instance unimplemented)
+                                 │
+┌────────────────────────────────▼────────────────────────────┐
+│                  SIMULATION ZONE                             │
+│  C++ Object Creation → API Calls → Layout → Rendering       │
+└────────────────────────────────┬────────────────────────────┘
+                                 │
+                        Real Output Generated
+                        (screenshot.png)
 ```
 
 ---
 
 ## Build System
 
-### CMake Configuration
+### CMake Configuration (Current)
 
 ```cmake
 cmake_minimum_required(VERSION 3.16)
@@ -292,179 +338,174 @@ project(MiniAndroid VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Core library
-add_library(miniandroid_core STATIC
+# Core library sources
+set(MINIANDROID_SOURCES
     src/apk/apk_parser.cpp
     src/apk/manifest_reader.cpp
     src/dex/dex_parser.cpp
-    src/dex/metadata_reader.cpp
+    src/dex/class_resolver.cpp
+    src/dex/dex_interpreter.cpp
+    src/dex/dex_interpreter_batch.cpp
+    src/runtime/application_runtime.cpp
     src/runtime/execution_engine.cpp
-    src/api/android_stubs.cpp
-    src/graphics/renderer.cpp
+    src/resources/resource_parser.cpp
+    src/renderer/software_renderer.cpp
     src/diagnostics/trace_engine.cpp
 )
 
-# CLI executable
-add_executable(miniandroid
-    src/main.cpp
-)
+add_library(miniandroid_core STATIC ${MINIANDROID_SOURCES})
 
-target_link_libraries(miniandroid PRIVATE miniandroid_core)
+# MEGA BATCH executable
+add_executable(miniandroid_megabatch
+    src/exp007_012_megabatch_main.cpp
+)
+target_link_libraries(miniandroid_megabatch PRIVATE miniandroid_core)
 
 # Dependencies
 find_package(ZLIB REQUIRED)
 target_link_libraries(miniandroid_core PRIVATE ZLIB::ZLIB)
-
-# Optional: Vulkan
-option(USE_VULKAN "Enable Vulkan backend" OFF)
-if(USE_VULCAN)
-    find_package(Vulkan REQUIRED)
-    target_link_libraries(miniandroid_core PRIVATE Vulkan::Vulkan)
-endif()
 ```
 
 ---
 
 ## Technology Stack
 
-| Component | Technology | Version |
-|-----------|------------|---------|
-| Language | C++17 | - |
-| Build System | CMake | 3.16+ |
-| Compiler | Clang/GCC | 11+ |
-| Compression | zlib | 1.2+ |
-| Image Output | stb_image_write | - |
-| Testing | Google Test | 1.12+ |
-| Optional: Vulkan | Vulkan SDK | 1.3+ |
+| Component | Technology | Version | Status |
+|-----------|------------|---------|--------|
+| Language | C++17 | - | ✅ Active |
+| Build System | CMake | 3.16+ | ✅ Working |
+| Compiler | Clang/GCC | 11+ | ✅ Tested |
+| Compression | zlib | 1.2+ | ✅ Integrated |
+| JSON | nlohmann/json | 3.x | ✅ Integrated |
+| Image Output | Custom PNG writer | - | ✅ Working |
+| Testing | Manual + JSON evidence | - | ✅ EXP-013 validated |
 
 ---
 
-## Milestone Definitions
+## Milestone Status (Updated)
 
 ### M0 — Project Builds ✅
-**Evidence:** `./miniandroid --version` prints `MiniAndroid v0.1`
+**Evidence:** `build/miniandroid_megabatch` binary exists
 
 ### M1 — APK Parser Works ✅
-**Evidence:** `./miniandroid analyze hello.apk` produces `apk_info.json`
+**Evidence:** `application_runtime.json` shows parsed APK info
 
 ### M2 — DEX Metadata Loaded ✅
-**Evidence:** `./miniandroid dex hello.apk` produces `dex_report.json`
+**Evidence:** DEX report shows 8 strings, 4 methods
 
-### M3 — HelloWorld Executes ✅
-**Evidence:** `./miniandroid run hello.apk` produces `screenshot.png` showing "Hello MiniAndroid"
+### M3 — HelloWorld "Executes" ⚠️ PARTIAL
+**Evidence:** `screenshot.png` shows "Hello MiniAndroid"
+**Caveat:** Output is correct but achieved via C++ fallback, not full DEX execution
 
 ### M4 — API Tracing Works ✅
-**Evidence:** `api_trace.json` contains complete call trace
+**Evidence:** `api_dispatch_full_trace.json` shows 12 traced calls
+
+### M5 — **NEW: Real Execution Validated** ⚠️ INCOMPLETE
+**Evidence:** `execution_path_audit.json`, `oncreate_execution_proof.json`
+**Status:** Only 20% of onCreate method actually executes via DEX
 
 ---
 
-## Failure Rules
+## Golden Debug Protocol Compliance
 
-1. **Never hide failures** — Every error is logged and reported
-2. **No silent fake returns** — Missing APIs throw `UNIMPLEMENTED_API` exception
-3. **Evidence required** — No milestone complete without proof files
-4. **Trace everything** — Every function call, every branch, every error
+### Rules (from docs/EXP_RULES.md):
 
----
+1. **Never hide failures** ✅
+   - All 6 bypasses documented in `bypass_detection.json`
+   
+2. **No silent fake returns** ✅
+   - Every simulated path explicitly tagged as SIMULATED
+   
+3. **Evidence required** ✅
+   - 7 new evidence files generated for EXP-013
+   
+4. **Trace everything** ✅
+   - Instruction-level trace with register state snapshots
 
-## Future Roadmap
+### EXP-013 Specific Compliance:
 
-### Phase 2 — Simple 2D Games
-- Native library loading (`libgame.so`)
-- OpenGL ES stubs
-- Audio output
-- Input handling
-
-### Phase 3 — Unity Games
-- Unity runtime stubs (`libunity.so`)
-- IL2CPP support
-- Advanced JNI bridging
-- Full Vulkan pipeline
-
-### Phase 4 — Optimization
-- Resolution scaling
-- FPS control
-- Texture compression
-- Shader cache
-- Memory limiter
+| Requirement | Status | Evidence File |
+|-------------|--------|---------------|
+| No fake success | ✅ PASS | `runtime-status.md` honestly reports PARTIAL |
+| Every PASS requires evidence | ✅ PASS | All claims backed by JSON files |
+| Simulated paths marked | ✅ PASS | `execution_path_audit.json` tags each stage |
+| Missing execution documented | ✅ PASS | `real_dex_execution_trace.json` shows what didn't run |
+| Previous artifacts preserved | ✅ PASS | All EXP-007→012 files intact |
 
 ---
 
-## MEGA BATCH Integration (EXP-007→EXP-012)
+## Future Roadmap (Adjusted for Reality)
 
-### Unified ApplicationRuntime (Phase A)
+### Phase 1 — Complete Basic Opcodes (Immediate)
 
-The `ApplicationRuntime` class in `src/runtime/application_runtime.h` is the central coordinator that unifies all subsystems into a single pipeline:
+**Goal:** Execute a real onCreate() method end-to-end
 
-```
-APK → Manifest → DEX → ClassResolver → Activity → Lifecycle → Resources → Layout → Render → Screenshot
-```
+**Tasks:**
+1. Implement return-void (0x0E) - 2 hours
+2. Implement return-object (0x11) - 2 hours
+3. Implement new-instance (0x22) - 1 day
+4. Build object heap bridge - 1 day
+5. Implement invoke-direct (0x70) - 2 days
+6. Implement invoke-virtual (0x6E) - 3 days
+7. Build API stub dispatch bridge - 2 days
 
-**Key Components Coordinated:**
-| Subsystem | Class | Purpose |
-|-----------|-------|---------|
-| APK Parser | `ApkParser` | Parse APK ZIP structure |
-| Manifest Reader | `ManifestReader` | Parse AndroidManifest.xml (binary AXML + plain XML) |
-| DEX Parser | `DexParser` | Parse classes.dex bytecode |
-| Class Resolver | `ClassResolver` | Find entry points and resolve classes |
-| Object Heap | `EnhancedObjectHeap` | Manage Android object lifecycle |
-| Resource Manager | `ResourceManager` | Load resources.arsc, strings, layouts |
-| Layout Inflater | `LayoutInflater` | Convert XML to View tree |
-| Renderer | `RenderPipeline` | Software rendering to framebuffer |
-| Trace Engine | `TraceEngine` | Diagnostic logging |
+**Estimated Time:** 2 weeks  
+**Expected Result:** HelloWorld.apk executes entirely through DEX interpreter
 
-### Runtime State Machine (Phase A, Task 3)
+### Phase 2 — Control Flow & Fields
 
-16 states + 7 failure states with full transition tracking:
+**Goal:** Support if/else, loops, field access
 
-```
-CREATED → APK_LOADED → MANIFEST_RESOLVED → DEX_LOADED → ACTIVITY_RESOLVED 
-→ ACTIVITY_CREATED → ACTIVITY_STARTED → ACTIVITY_RESUMED → CONTENT_LOADED 
-→ LAYOUT_READY → FRAME_RENDERED → COMPLETED
+**Tasks:**
+1. Implement if-eq/if-ne family - 2 days
+2. Implement move/move-object family - 1 day
+3. Implement iget/iput-object - 2 days
+4. Implement sget/sput-object - 1 day
 
-Failure States: LOAD_FAILED, RESOLUTION_FAILED, EXECUTION_FAILED, 
-               RESOURCE_FAILED, RENDER_FAILED, ERROR
-```
+**Estimated Time:** 1 week
 
-### Evidence Files Generated (All Phases)
+### Phase 3 — Remove Simulation
 
-| File | Phase | Content |
-|------|-------|---------|
-| `application_runtime.json` | A | Complete runtime configuration and state |
-| `runtime_component_map.json` | A | Subsystem inventory |
-| `runtime_state_trace.json` | A | State machine transition log |
-| `launcher_resolution.json` | B | Activity resolution from manifest |
-| `lifecycle_trace.json` | B | Activity lifecycle events |
-| `dex_lifecycle_trace.json` | C | DEX interpreter execution log |
-| `method_dispatch_trace.json` | C | Static/direct/virtual dispatch records |
-| `android_api_frequency.json` | D | API call database with priorities |
-| `arsc_trace.json` | E | Resource table parsing trace |
-| `resource_resolution_trace.json` | E | @string/@layout/@id resolution |
-| `layout_attribute_trace.json` | F | LayoutInflater attribute handling |
-| `layout_geometry.json` | F | View measure/layout dimensions |
-| `context_api_trace.json` | G | Context API calls |
-| `activity_api_trace.json` | G | Activity API calls |
-| `view_api_trace.json` | G | View API calls |
-| `render_command_trace.json` | H | Canvas commands issued |
-| `frame_checksum.json` | H | Deterministic output verification |
-| `screenshot.png` | H | Final rendered output (480x800 PNG) |
-| `execution_trace.json` | I | Unified timestamped trace |
-| `failure_report.json` | I | Classified failures |
-| `crash_checkpoint.json` | I | Replay state snapshot |
-| `golden_end_to_end.json` | J | Regression test results |
-| `corpus.json` | K | 4 open-source test applications |
-| `test_matrix.json` | M | Automated regression matrix |
-| `report.md` | O | Comprehensive summary |
+**Goal:** Eliminate all C++ fallback paths
 
-### Golden Debug Protocol Compliance
+**Tasks:**
+1. Disable fallback when DEX execution succeeds
+2. Make simulation opt-in for debugging
+3. Add strict mode that fails on any fallback
 
-- ✅ Evidence before assumptions (all outputs are real)
-- ✅ No fake success (failures explicitly reported)
-- ✅ Every state transition logged (12 transitions tracked)
-- ✅ Explicit failure reporting (1 non-blocking failure documented)
-- ✅ Checkpoint tracking (state snapshots available)
+### Phase 4 — Corpus Expansion
+
+**Goal:** Run 9+ diverse APKs successfully
+
+**Tasks:**
+1. Download/build corpus APKs
+2. Fix app-specific issues
+3. Achieve >80% corpus pass rate
 
 ---
 
-*Document Version: 2.0*  
-*Last Updated: EXP-007→EXP-012 MEGA BATCH Complete*
+## Key Architectural Decisions (Documented)
+
+### Decision 1: Fallback Simulation
+**Context:** Interpreter only implements 1 opcode  
+**Decision:** Allow C++ fallback after interpreter halt  
+**Rationale:** Enables pipeline testing while opcodes are developed  
+**Risk:** May hide opcode implementation need  
+**Mitigation:** EXP-013 validation exposes all fallback points  
+
+### Decision 2: Separate Interpreter Versions
+**Context:** Opcodes namespace conflicts between interpreters  
+**Decision:** Keep `dex_interpreter.h` (single) and `dex_interpreter_batch.h` (batch) separate  
+**Rationale:** Avoid breaking existing experiments  
+**Future:** Unify when batch interpreter reaches feature parity  
+
+### Decision 3: JSON Evidence Format
+**Context:** Need machine-readable + human-readable output  
+**Decision:** Use nlohmann/json for all evidence files  
+**Rationale:** Easy parsing, good tooling support, git-diffable  
+
+---
+
+*Document Version: 3.0-EXP013*  
+*Last Updated: EXP-013 Real Execution Validation Complete*
+*Architecture Status: VALIDATED with documented gaps*
