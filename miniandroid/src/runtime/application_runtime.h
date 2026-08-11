@@ -481,6 +481,7 @@ public:
     
     /** Get resource manager */
     resources::ResourceManager* get_resource_manager() { return resource_manager_.get(); }
+    const resources::ResourceManager* get_resource_manager() const { return resource_manager_.get(); }
     
     /** Get render pipeline */
     renderer::RenderPipeline* get_render_pipeline() { return render_pipeline_.get(); }

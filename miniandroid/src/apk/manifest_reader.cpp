@@ -32,14 +32,43 @@ ManifestInfo ManifestReader::parse(const std::vector<uint8_t>& data) {
     depth_ = 0;
     in_activity_ = false;
     
-    if (data.size() < sizeof(AxmlHeader)) {
-        result_.error_message = "Data too small for AXML header";
+    if (data.empty()) {
+        result_.error_message = "Empty manifest data";
         result_.parse_success = false;
         return result_;
     }
     
     const uint8_t* ptr = data.data();
     size_t size = data.size();
+    
+    // Check if this is plain XML (not binary AXML)
+    // Plain XML starts with '<?' or '<', while AXML starts with 0x00080003
+    bool is_plain_xml = false;
+    if (size >= 2 && (ptr[0] == '<')) {
+        is_plain_xml = true;
+        log("Detected plain XML format");
+    } else if (size >= 4) {
+        uint32_t magic = *reinterpret_cast<const uint32_t*>(ptr);
+        if (magic != AXML_MAGIC) {
+            // Not AXML magic - check if it looks like text
+            if (ptr[0] == '<' || (size >= 5 && strncmp(reinterpret_cast<const char*>(ptr), "<?xml", 5) == 0)) {
+                is_plain_xml = true;
+                log("Detected plain XML format (fallback)");
+            }
+        }
+    }
+    
+    // Parse plain XML if detected
+    if (is_plain_xml) {
+        return parse_plain_xml(data);
+    }
+    
+    // Otherwise parse as binary AXML
+    if (size < sizeof(AxmlHeader)) {
+        result_.error_message = "Data too small for AXML header";
+        result_.parse_success = false;
+        return result_;
+    }
     
     // Parse main header
     if (!parse_header(ptr, size)) {
@@ -518,6 +547,168 @@ std::string ManifestReader::int_to_hex(uint32_t value) {
         value >>= 4;
     }
     return result;
+}
+
+ManifestInfo ManifestReader::parse_plain_xml(const std::vector<uint8_t>& data) {
+    // Convert to string
+    std::string xml_content(data.begin(), data.end());
+    log("Parsing plain XML manifest, size: " + std::to_string(xml_content.size()));
+    
+    // Simple state machine parser for AndroidManifest.xml
+    // This handles basic structure: manifest -> application -> activity
+    
+    enum class XmlState {
+        ROOT,
+        MANIFEST,
+        APPLICATION,
+        ACTIVITY,
+        INTENT_FILTER,
+        ACTION,
+        CATEGORY,
+        UNKNOWN
+    };
+    
+    std::vector<XmlState> state_stack;
+    state_stack.push_back(XmlState::ROOT);
+    
+    size_t pos = 0;
+    while (pos < xml_content.size()) {
+        // Find next tag
+        size_t tag_start = xml_content.find('<', pos);
+        if (tag_start == std::string::npos) break;
+        
+        size_t tag_end = xml_content.find('>', tag_start);
+        if (tag_end == std::string::npos) break;
+        
+        std::string tag = xml_content.substr(tag_start, tag_end - tag_start + 1);
+        pos = tag_end + 1;
+        
+        // Check for end tag
+        if (tag.find("</") == 0) {
+            // End tag
+            if (!state_stack.empty()) {
+                state_stack.pop_back();
+            }
+            if (state_stack.back() == XmlState::ACTIVITY) {
+                in_activity_ = false;
+            }
+            continue;
+        }
+        
+        // Check for self-closing or start tag
+        bool self_closing = (tag.find("/>") != std::string::npos);
+        
+        // Extract tag name
+        std::string tag_name;
+        size_t name_start = tag.find_first_not_of("< \t");
+        if (name_start != std::string::npos) {
+            size_t name_end = tag.find_first_of(" \t/>", name_start);
+            if (name_end != std::string::npos) {
+                tag_name = tag.substr(name_start, name_end - name_start);
+            } else {
+                tag_name = tag.substr(name_start);
+            }
+        }
+        
+        // Extract attributes
+        auto extract_attr = [&](const std::string& attr) -> std::string {
+            std::string search = attr + "=\"";
+            size_t attr_pos = tag.find(search);
+            if (attr_pos != std::string::npos) {
+                size_t val_start = attr_pos + search.length();
+                size_t val_end = tag.find('"', val_start);
+                if (val_end != std::string::npos) {
+                    return tag.substr(val_start, val_end - val_start);
+                }
+            }
+            return "";
+        };
+        
+        // Handle different elements
+        if (tag_name == "manifest") {
+            state_stack.push_back(XmlState::MANIFEST);
+            result_.package_name = extract_attr("package");
+            std::string ver_code = extract_attr("android:versionCode");
+            if (!ver_code.empty()) {
+                try { result_.version_code = std::stoi(ver_code); } catch (...) {}
+            }
+            result_.version_name = extract_attr("android:versionName");
+            log("Found manifest, package: " + result_.package_name);
+            
+        } else if (tag_name == "application") {
+            state_stack.push_back(XmlState::APPLICATION);
+            result_.application_label = extract_attr("android:label");
+            log("Found application");
+            
+        } else if (tag_name == "activity") {
+            state_stack.push_back(XmlState::ACTIVITY);
+            in_activity_ = true;
+            current_activity_name_ = extract_attr("android:name");
+            activity_has_main_action_ = false;
+            activity_has_launcher_category_ = false;
+            
+            ManifestInfo::ActivityInfo act;
+            act.name = current_activity_name_;
+            result_.activities.push_back(act);
+            log("Found activity: " + current_activity_name_);
+            
+        } else if (tag_name == "intent-filter" && in_activity_) {
+            state_stack.push_back(XmlState::INTENT_FILTER);
+            
+        } else if (tag_name == "action" && in_activity_) {
+            std::string action_name = extract_attr("android:name");
+            if (action_name == "android.intent.action.MAIN") {
+                activity_has_main_action_ = true;
+                log("Found MAIN action");
+            }
+            
+        } else if (tag_name == "category" && in_activity_) {
+            std::string category_name = extract_attr("android:name");
+            if (category_name == "android.intent.category.LAUNCHER") {
+                activity_has_launcher_category_ = true;
+                log("Found LAUNCHER category");
+            }
+        }
+        
+        // Check for main activity after processing category
+        if (tag_name == "category" && activity_has_main_action_ && activity_has_launcher_category_) {
+            if (!current_activity_name_.empty()) {
+                result_.main_activity = current_activity_name_;
+                
+                // Build fully qualified name
+                if (!current_activity_name_.empty() && current_activity_name_[0] == '.') {
+                    result_.main_activity_full = result_.package_name + current_activity_name_;
+                } else {
+                    result_.main_activity_full = current_activity_name_;
+                }
+                
+                // Mark as launcher activity
+                for (auto& act : result_.activities) {
+                    if (act.name == current_activity_name_) {
+                        act.is_main_activity = true;
+                        act.is_launcher = true;
+                        break;
+                    }
+                }
+                
+                log("Main Activity identified: " + result_.main_activity_full);
+            }
+        }
+        
+        // Pop state if self-closing
+        if (self_closing && !state_stack.empty() && state_stack.back() != XmlState::ROOT) {
+            if (state_stack.back() == XmlState::ACTIVITY) {
+                in_activity_ = false;
+            }
+            state_stack.pop_back();
+        }
+    }
+    
+    result_.parse_success = true;
+    log("Plain XML manifest parsing complete. Package: " + result_.package_name + 
+        ", Main Activity: " + result_.main_activity_full);
+    
+    return result_;
 }
 
 } // namespace apk

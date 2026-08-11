@@ -231,6 +231,9 @@ private:
     // Utility helpers
     static std::string int_to_hex(uint32_t value);
     
+    // Plain XML parser for non-binary manifests
+    ManifestInfo parse_plain_xml(const std::vector<uint8_t>& data);
+    
     // State
     std::vector<std::string> strings_;
     std::vector<uint32_t> resource_ids_;
