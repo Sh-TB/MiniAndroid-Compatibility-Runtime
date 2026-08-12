@@ -1,0 +1,491 @@
+{
+  "experiment_id": "EXP-020",
+  "phase": "PHASE_3_STRICT_REAL_VERIFICATION",
+  "generated_at": "2026-08-12T10:17:14.059251Z",
+  "mode": "--strict-real ENABLED",
+  "summary": {
+    "total_apks_tested": 35,
+    "strict_mode_pass": 35,
+    "strict_mode_fail": 0,
+    "strict_pass_rate": 100.0,
+    "total_violations_found": 1,
+    "blocking_violations": 1,
+    "non_blocking_violations": 0
+  },
+  "violation_breakdown": {
+    "by_type": {
+      "RESOURCE_BYPASS": 1
+    },
+    "by_severity": {
+      "HIGH": 1
+    },
+    "blocking_violations_detail": [
+      {
+        "type": "RESOURCE_BYPASS",
+        "severity": "HIGH",
+        "location": "Resource System",
+        "description": "R.id.XXX to internal ID mapping",
+        "affected_api": "findViewById",
+        "evidence_gap": "Resource resolution may use C++ bypass",
+        "is_blocking": true
+      }
+    ],
+    "all_known_violations": [
+      {
+        "type": "RESOURCE_BYPASS",
+        "severity": "HIGH",
+        "location": "resource_parser.cpp:getString()",
+        "description": "Resources.getString() bypasses DEX interpreter - uses C++ XML parser directly",
+        "evidence_gap": "No DEX invoke-virtual trace for getString calls",
+        "affected_apis": [
+          "android.content.res.Resources.getString"
+        ],
+        "fix_required": "Route through DEX interpreter with proper return-value handling",
+        "exp019_trace_file": "run/resource_runtime_trace.json"
+      },
+      {
+        "type": "DIRECT_CPP_OBJECT_INJECTION",
+        "severity": "CRITICAL",
+        "location": "exp019_main.cpp:createTestViews()",
+        "description": "TextView objects created via C++ new instead of DEX new-instance opcode",
+        "evidence_gap": "No DEX new-instance + invoke-direct <init> sequence",
+        "affected_apis": [
+          "android.widget.TextView.<init>"
+        ],
+        "fix_required": "All View creation must originate from DEX bytecode execution",
+        "exp019_trace_file": "run/view_runtime_trace.json"
+      },
+      {
+        "type": "FAKE_LIFECYCLE",
+        "severity": "CRITICAL",
+        "location": "application_runtime.cpp:simulateLifecycle()",
+        "description": "Lifecycle events dispatched via C++ direct call, not through DEX method lookup",
+        "evidence_gap": "No DEX method resolution trace for onCreate/onStart/onResume",
+        "affected_apis": [
+          "android.app.Activity.onCreate",
+          "android.app.Activity.onStart",
+          "android.app.Activity.onResume"
+        ],
+        "fix_required": "Use DexInterpreter to execute lifecycle methods from DEX",
+        "exp019_trace_file": "run/lifecycle_real_trace.json"
+      },
+      {
+        "type": "HARDCODED_TEXT",
+        "severity": "MEDIUM",
+        "location": "runtime_integration_exp019.cpp:handle_get_string()",
+        "description": "Fallback hardcoded strings when resource lookup fails",
+        "evidence_gap": "String value not traceable to strings.xml resource entry",
+        "affected_apis": [
+          "android.content.res.Resources.getString"
+        ],
+        "fix_required": "Return error/empty string instead of hardcoded fallbacks",
+        "exp019_trace_file": "run/resource_runtime_trace.json"
+      },
+      {
+        "type": "SIMULATED_BEHAVIOR",
+        "severity": "MEDIUM",
+        "location": "android_stubs.h:Activity.startActivity()",
+        "description": "startActivity() logs message but does no real navigation",
+        "evidence_gap": "Intent not processed, target Activity not launched",
+        "affected_apis": [
+          "android.app.Activity.startActivity"
+        ],
+        "fix_required": "Implement Intent resolution and Activity launch or throw UnsupportedOperationException",
+        "exp019_trace_file": "run/intent_trace.json"
+      },
+      {
+        "type": "MISSING_EVIDENCE",
+        "severity": "HIGH",
+        "location": "Multiple locations",
+        "description": "Some API calls lack complete DEX-to-implementation trace chain",
+        "evidence_gap": "Trace files show gaps in instruction \u2192 resolve \u2192 execute chain",
+        "affected_apis": [
+          "Various - see detailed report"
+        ],
+        "fix_required": "Ensure all API calls generate complete trace records",
+        "exp019_trace_file": "Multiple trace files"
+      },
+      {
+        "type": "UNVERIFIED_API_CALL",
+        "severity": "HIGH",
+        "location": "android_stubs.h",
+        "description": "Several APIs are stub implementations that accept parameters but do nothing",
+        "evidence_gap": "No verification that stub behavior matches Android reference",
+        "affected_apis": [
+          "android.widget.TextView.setTextSize",
+          "android.widget.TextView.setTextColor",
+          "android.view.View.setVisibility"
+        ],
+        "fix_required": "Implement real behavior or mark as NOT_SUPPORTED with clear documentation",
+        "exp019_trace_file": "run/view_runtime_trace.json"
+      }
+    ]
+  },
+  "apk_results": [
+    {
+      "apk_id": "HW-001",
+      "apk_name": "android-HelloWorld",
+      "execution_result": "PASS",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "HW-002",
+      "apk_name": "hello-android",
+      "execution_result": "PASS",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "HW-003",
+      "apk_name": "android-hello-world",
+      "execution_result": "PASS",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "HW-004",
+      "apk_name": "minimal-android-app",
+      "execution_result": "PASS",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "HW-005",
+      "apk_name": "hello-world-android",
+      "execution_result": "PASS",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "HW-006",
+      "apk_name": "HelloWorldAndroid (Kotlin)",
+      "execution_result": "PARTIAL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "HW-007",
+      "apk_name": "MinimalDroid",
+      "execution_result": "PASS",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "HW-008",
+      "apk_name": "android-basic-activity",
+      "execution_result": "PARTIAL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "CALC-001",
+      "apk_name": "SimpleCalculator",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 1,
+      "critical_violations": 0,
+      "violations": [
+        {
+          "type": "RESOURCE_BYPASS",
+          "severity": "HIGH",
+          "location": "Resource System",
+          "description": "R.id.XXX to internal ID mapping",
+          "affected_api": "findViewById",
+          "evidence_gap": "Resource resolution may use C++ bypass",
+          "is_blocking": true
+        }
+      ]
+    },
+    {
+      "apk_id": "CALC-002",
+      "apk_name": "AndroidCalculator",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "CALC-003",
+      "apk_name": "calc",
+      "execution_result": "PARTIAL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "CALC-004",
+      "apk_name": "ScientificCalculator",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "CALC-005",
+      "apk_name": "TipCalculator",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "NOTE-001",
+      "apk_name": "SimpleNotes",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "NOTE-002",
+      "apk_name": "MiniNotes",
+      "execution_result": "PARTIAL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "NOTE-003",
+      "apk_name": "QuickNote",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "NOTE-004",
+      "apk_name": "Notepad",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "NOTE-005",
+      "apk_name": "SecureNotes",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "TODO-001",
+      "apk_name": "SimpleTodo",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "TODO-002",
+      "apk_name": "TodoMVC-Android",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "TODO-003",
+      "apk_name": "TaskList",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "TODO-004",
+      "apk_name": "Checklist",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "SET-001",
+      "apk_name": "SettingsDemo",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "SET-002",
+      "apk_name": "AppSettings",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "SET-003",
+      "apk_name": "ProfileSettings",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "SET-004",
+      "apk_name": "NotificationSettings",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "GAME-001",
+      "apk_name": "TicTacToe",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "GAME-002",
+      "apk_name": "GuessNumber",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "GAME-003",
+      "apk_name": "MemoryGame",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "GAME-004",
+      "apk_name": "QuizApp",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "GAME-005",
+      "apk_name": "RockPaperScissors",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "GAME-006",
+      "apk_name": "WhackAMole",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "ADD-001",
+      "apk_name": "AndroidBasicSamples",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "ADD-002",
+      "apk_name": "android-helloworld-patterns",
+      "execution_result": "FAIL",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    },
+    {
+      "apk_id": "ADD-003",
+      "apk_name": "LocalTestAPK-HelloWorld",
+      "execution_result": "PASS",
+      "strict_mode_result": "PASS",
+      "violation_count": 0,
+      "critical_violations": 0,
+      "violations": []
+    }
+  ],
+  "strict_mode_rules_checked": [
+    {
+      "rule": "NO_HARDCODED_ACTIVITY_CREATION",
+      "status": "CHECKED",
+      "description": "Activities must be created via DEX class loading, not C++ instantiation"
+    },
+    {
+      "rule": "NO_FAKE_TEXTVIEW_INJECTION",
+      "status": "CHECKED",
+      "description": "Views must be created via DEX new-instance opcode"
+    },
+    {
+      "rule": "NO_FAKE_LIFECYCLE",
+      "status": "CHECKED",
+      "description": "Lifecycle methods must be dispatched through DEX interpreter"
+    },
+    {
+      "rule": "NO_FAKE_API_CALLS",
+      "status": "CHECKED",
+      "description": "All API calls must have verifiable DEX \u2192 resolver \u2192 impl chain"
+    },
+    {
+      "rule": "EVIDENCE_REQUIRED",
+      "status": "CHECKED",
+      "description": "Every operation must produce trace evidence"
+    }
+  ],
+  "recommendations": [
+    "CRITICAL: Implement invoke-interface for OnClickListener support",
+    "CRITICAL: Implement move-result-object for findViewById/getText returns",
+    "HIGH: Route Resources.getString through DEX interpreter",
+    "HIGH: Implement real lifecycle dispatch via DEX",
+    "MEDIUM: Remove hardcoded string fallbacks",
+    "MEDIUM: Implement or properly stub remaining P1 APIs"
+  ],
+  "verdict": {
+    "strict_mode_ready": false,
+    "reason": "0/35 APKs fail strict validation with 1 blocking violations",
+    "estimated_effort_to_pass": "3-5 days focused work on top blockers"
+  }
+}

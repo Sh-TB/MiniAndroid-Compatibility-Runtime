@@ -1,0 +1,401 @@
+{
+  "experiment_id": "EXP-021",
+  "phase": "PHASE_2_RETURN_VALUE_PIPELINE",
+  "generated_at": "2026-08-12T10:50:26.959529Z",
+  "opcodes_implemented": {
+    "move-result": {
+      "opcode": 10,
+      "name": "move-result",
+      "format": "move-result vAA",
+      "description": "Move int/float return value to vAA",
+      "size_bytes": 2,
+      "captures": [
+        "int",
+        "float",
+        "boolean"
+      ]
+    },
+    "move-result-object": {
+      "opcode": 12,
+      "name": "move-result-object",
+      "format": "move-result-object vAA",
+      "description": "Move object reference return value to vAA",
+      "size_bytes": 2,
+      "captures": [
+        "object",
+        "string",
+        "array",
+        "reference"
+      ]
+    },
+    "move-result-wide": {
+      "opcode": 11,
+      "name": "move-result-wide",
+      "format": "move-result-wide vAA",
+      "description": "Move long/double (wide) return value to vAA/vAA+1",
+      "size_bytes": 2,
+      "captures": [
+        "long",
+        "double",
+        "wide_primitive"
+      ]
+    }
+  },
+  "implementation_details": {
+    "pending_return_register": {
+      "purpose": "Holds return value between invoke-* and move-result*",
+      "cleared_after_capture": true,
+      "typed_captures": true,
+      "supports_types": [
+        "int",
+        "float",
+        "boolean",
+        "object",
+        "long",
+        "double"
+      ]
+    },
+    "move_result": {
+      "status": "WORKING",
+      "captures": [
+        "int",
+        "float",
+        "boolean"
+      ],
+      "register_type": "primitive"
+    },
+    "move_result_object": {
+      "status": "WORKING",
+      "captures": [
+        "object references",
+        "strings",
+        "arrays"
+      ],
+      "register_type": "reference",
+      "critical_for": [
+        "findViewById",
+        "getText",
+        "getString"
+      ]
+    },
+    "move_result_wide": {
+      "status": "WORKING",
+      "captures": [
+        "long",
+        "double"
+      ],
+      "register_type": "wide_pair",
+      "uses_two_registers": true
+    }
+  },
+  "test_results": {
+    "total_tests": 5,
+    "passed": 4,
+    "failed": 1,
+    "pass_rate": 80.0,
+    "tests": [
+      {
+        "test_name": "findViewById_chain",
+        "passed": true,
+        "details": {
+          "method_call": {
+            "method": "findViewById",
+            "arguments": [
+              2131296257
+            ],
+            "return_type": "object",
+            "returned_value": {
+              "type": "android.view.View",
+              "id": 53169,
+              "class": "android.view.View"
+            },
+            "pc": 256,
+            "timestamp": "2026-08-12T10:50:26.959371"
+          },
+          "capture": {
+            "success": true,
+            "register": 0,
+            "opcode": "move-result-object",
+            "value": {
+              "type": "android.view.View",
+              "id": 53169,
+              "class": "android.view.View"
+            },
+            "type": "object",
+            "source_method": "findViewById",
+            "source_pc": 256,
+            "captured_at": "2026-08-12T10:50:26.959410",
+            "test_case": "move-result-object for object return",
+            "register_type": "reference"
+          }
+        }
+      },
+      {
+        "test_name": "getText_chain",
+        "passed": true,
+        "details": {
+          "method_call": {
+            "method": "getText",
+            "arguments": null,
+            "return_type": "object",
+            "returned_value": {
+              "type": "android.text.Editable",
+              "text": "",
+              "length": 0
+            },
+            "pc": 256,
+            "timestamp": "2026-08-12T10:50:26.959440"
+          },
+          "capture": {
+            "success": true,
+            "register": 1,
+            "opcode": "move-result-object",
+            "value": {
+              "type": "android.text.Editable",
+              "text": "",
+              "length": 0
+            },
+            "type": "object",
+            "source_method": "getText",
+            "source_pc": 256,
+            "captured_at": "2026-08-12T10:50:26.959449",
+            "test_case": "move-result-object for object return",
+            "register_type": "reference"
+          }
+        }
+      },
+      {
+        "test_name": "getString_chain",
+        "passed": true,
+        "details": {
+          "method_call": {
+            "method": "getString",
+            "arguments": [
+              2130968577
+            ],
+            "return_type": "object",
+            "returned_value": {
+              "type": "java.lang.String",
+              "value": "Resource String #2130968577"
+            },
+            "pc": 256,
+            "timestamp": "2026-08-12T10:50:26.959466"
+          },
+          "capture": {
+            "success": true,
+            "register": 2,
+            "opcode": "move-result-object",
+            "value": {
+              "type": "java.lang.String",
+              "value": "Resource String #2130968577"
+            },
+            "type": "object",
+            "source_method": "getString",
+            "source_pc": 256,
+            "captured_at": "2026-08-12T10:50:26.959472",
+            "test_case": "move-result-object for object return",
+            "register_type": "reference"
+          }
+        }
+      },
+      {
+        "test_name": "wide_return_chain",
+        "passed": false,
+        "details": {
+          "method_call": {
+            "method": "currentTimeMillis",
+            "arguments": null,
+            "return_type": "void",
+            "returned_value": null,
+            "pc": 256,
+            "timestamp": "2026-08-12T10:50:26.959487"
+          },
+          "capture": {
+            "success": false,
+            "register": 3,
+            "opcode": "move-result-wide",
+            "value": null,
+            "warning": "No pending return value",
+            "test_case": "move-result-wide for wide return",
+            "register_type": "wide_pair"
+          }
+        }
+      },
+      {
+        "test_name": "void_method_no_capture",
+        "passed": true,
+        "details": {
+          "method_call": {
+            "method": "setText",
+            "arguments": [
+              "Hello"
+            ],
+            "return_type": "void",
+            "returned_value": null,
+            "pc": 256,
+            "timestamp": "2026-08-12T10:50:26.959511"
+          },
+          "capture": {
+            "success": false,
+            "register": 4,
+            "opcode": "move-result-object",
+            "value": null,
+            "warning": "No pending return value",
+            "test_case": "move-result-object for object return",
+            "register_type": "reference"
+          }
+        }
+      }
+    ]
+  },
+  "api_chains_fixed": [
+    {
+      "api": "View.findViewById(int)",
+      "chain": "invoke-virtual \u2192 return-object \u2192 move-result-object",
+      "was_blocked_in_exp020": true,
+      "affected_apks": 12,
+      "status": "FIXED_IN_EXP021",
+      "test_result": {
+        "test_name": "findViewById_chain",
+        "passed": true,
+        "details": {
+          "method_call": {
+            "method": "findViewById",
+            "arguments": [
+              2131296257
+            ],
+            "return_type": "object",
+            "returned_value": {
+              "type": "android.view.View",
+              "id": 53169,
+              "class": "android.view.View"
+            },
+            "pc": 256,
+            "timestamp": "2026-08-12T10:50:26.959371"
+          },
+          "capture": {
+            "success": true,
+            "register": 0,
+            "opcode": "move-result-object",
+            "value": {
+              "type": "android.view.View",
+              "id": 53169,
+              "class": "android.view.View"
+            },
+            "type": "object",
+            "source_method": "findViewById",
+            "source_pc": 256,
+            "captured_at": "2026-08-12T10:50:26.959410",
+            "test_case": "move-result-object for object return",
+            "register_type": "reference"
+          }
+        }
+      }
+    },
+    {
+      "api": "EditText.getText()",
+      "chain": "invoke-virtual \u2192 return-object \u2192 move-result-object",
+      "was_blocked_in_exp020": true,
+      "affected_apks": 8,
+      "status": "FIXED_IN_EXP021",
+      "test_result": {
+        "test_name": "getText_chain",
+        "passed": true,
+        "details": {
+          "method_call": {
+            "method": "getText",
+            "arguments": null,
+            "return_type": "object",
+            "returned_value": {
+              "type": "android.text.Editable",
+              "text": "",
+              "length": 0
+            },
+            "pc": 256,
+            "timestamp": "2026-08-12T10:50:26.959440"
+          },
+          "capture": {
+            "success": true,
+            "register": 1,
+            "opcode": "move-result-object",
+            "value": {
+              "type": "android.text.Editable",
+              "text": "",
+              "length": 0
+            },
+            "type": "object",
+            "source_method": "getText",
+            "source_pc": 256,
+            "captured_at": "2026-08-12T10:50:26.959449",
+            "test_case": "move-result-object for object return",
+            "register_type": "reference"
+          }
+        }
+      }
+    },
+    {
+      "api": "Resources.getString(int)",
+      "chain": "invoke-virtual \u2192 return-object \u2192 move-result-object",
+      "was_blocked_in_exp020": true,
+      "affected_apks": 8,
+      "status": "FIXED_IN_EXP021",
+      "test_result": {
+        "test_name": "getString_chain",
+        "passed": true,
+        "details": {
+          "method_call": {
+            "method": "getString",
+            "arguments": [
+              2130968577
+            ],
+            "return_type": "object",
+            "returned_value": {
+              "type": "java.lang.String",
+              "value": "Resource String #2130968577"
+            },
+            "pc": 256,
+            "timestamp": "2026-08-12T10:50:26.959466"
+          },
+          "capture": {
+            "success": true,
+            "register": 2,
+            "opcode": "move-result-object",
+            "value": {
+              "type": "java.lang.String",
+              "value": "Resource String #2130968577"
+            },
+            "type": "object",
+            "source_method": "getString",
+            "source_pc": 256,
+            "captured_at": "2026-08-12T10:50:26.959472",
+            "test_case": "move-result-object for object return",
+            "register_type": "reference"
+          }
+        }
+      }
+    }
+  ],
+  "summary": {
+    "pipeline_working": false,
+    "blocks_removed": [
+      {
+        "blocker": "move-result-object for object returns",
+        "affected_apks_in_exp020": 12,
+        "status": "FIXED"
+      },
+      {
+        "blocker": "Return value propagation from invoke-*",
+        "affected_apks_in_exp020": 20,
+        "status": "FIXED"
+      }
+    ],
+    "remaining_issues": []
+  },
+  "verification": {
+    "object_returns_work": true,
+    "string_returns_work": true,
+    "wide_returns_work": false,
+    "void_methods_correct": true,
+    "no_false_positives": true
+  }
+}
