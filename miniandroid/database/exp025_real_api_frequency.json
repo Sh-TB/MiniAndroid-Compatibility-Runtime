@@ -1,0 +1,20 @@
+{
+  "android.app.Activity.onCreate": {
+    "count": 11,
+    "apps": [
+      "com.miniandroid.hello",
+      "com.test.calculator",
+      "com.test.notes",
+      "com.test.todo",
+      "com.test.clock",
+      "com.test.weather",
+      "com.test.filebrowser",
+      "com.test.game",
+      "com.test.mediaplayer",
+      "com.test.browser",
+      "com.test.settings"
+    ],
+    "success_count": 11,
+    "fail_count": 0
+  }
+}

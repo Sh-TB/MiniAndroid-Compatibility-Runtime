@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-08-12T18:28:23.257171",
+  "total_attempted": 3,
+  "successful": 0,
+  "results": [
+    {
+      "package": "net.gsantner.markor",
+      "name": "Markor",
+      "status": "failed",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "package": "com.kunzisoft.keepass.libre",
+      "name": "KeePassDX",
+      "status": "failed",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "package": "org.thosp.yourlocalweather",
+      "name": "YourLocalWeather",
+      "status": "failed",
+      "error": "HTTP Error 404: Not Found"
+    }
+  ]
+}
