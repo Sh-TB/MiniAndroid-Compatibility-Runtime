@@ -1,0 +1,64 @@
+{
+  "experiment_id": "EXP-019",
+  "timestamp": "2026-08-12T09:46:09Z",
+  "intents": [
+    {
+      "sequence": 1,
+      "timestamp": "2026-08-12T09:46:09Z",
+      "action": "android.intent.action.MAIN",
+      "component": "com.example/.MainActivity",
+      "extras": [
+        {
+          "key": "user_name",
+          "type_name": "String",
+          "value": "John Doe"
+        },
+        {
+          "key": "user_age",
+          "type_name": "int",
+          "value": 25
+        },
+        {
+          "key": "is_premium",
+          "type_name": "boolean",
+          "value": true
+        }
+      ],
+      "flags": 0,
+      "operation": "CREATED",
+      "activity_started": false,
+      "target_activity": ""
+    },
+    {
+      "sequence": 1,
+      "timestamp": "2026-08-12T09:46:09Z",
+      "action": "android.intent.action.MAIN",
+      "component": "com.example/.SecondActivity",
+      "extras": [
+        {
+          "key": "user_name",
+          "type_name": "String",
+          "value": "John Doe"
+        },
+        {
+          "key": "user_age",
+          "type_name": "int",
+          "value": 25
+        },
+        {
+          "key": "session_id",
+          "type_name": "String",
+          "value": "abc123"
+        }
+      ],
+      "flags": 0,
+      "operation": "START_ACTIVITY_CALLED",
+      "activity_started": true,
+      "target_activity": "com.example/.SecondActivity"
+    }
+  ],
+  "pending_intents": [],
+  "total_created": 1,
+  "start_activity_calls": 1,
+  "successful_starts": 1
+}
