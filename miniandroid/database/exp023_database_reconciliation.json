@@ -1,0 +1,97 @@
+{
+  "experiment_id": "EXP-023",
+  "phase": "PHASE_4_DATABASE_RECONCILIATION",
+  "generated_at": "2026-08-12T14:11:55.229275Z",
+  "databases_audited": {
+    "api_priority": {
+      "path": "/home/z/my-project/miniandroid/database/api_priority.json",
+      "exists": false,
+      "size_bytes": 0,
+      "data_type": "UNKNOWN",
+      "record_count": 0,
+      "contains_projected_data": false,
+      "contains_real_data": false,
+      "issues": []
+    },
+    "real_opcode_frequency": {
+      "path": "/home/z/my-project/miniandroid/database/real_opcode_frequency.json",
+      "exists": false,
+      "size_bytes": 0,
+      "data_type": "UNKNOWN",
+      "record_count": 0,
+      "contains_projected_data": false,
+      "contains_real_data": false,
+      "issues": []
+    },
+    "android_api_frequency_v2": {
+      "path": "/home/z/my-project/miniandroid/database/android_api_frequency_v2.json",
+      "exists": false,
+      "size_bytes": 0,
+      "data_type": "UNKNOWN",
+      "record_count": 0,
+      "contains_projected_data": false,
+      "contains_real_data": false,
+      "issues": []
+    },
+    "android_api_frequency": {
+      "path": "/home/z/my-project/miniandroid/database/android_api_frequency.json",
+      "exists": false,
+      "size_bytes": 0,
+      "data_type": "UNKNOWN",
+      "record_count": 0,
+      "contains_projected_data": false,
+      "contains_real_data": false,
+      "issues": []
+    },
+    "runtime_failures": {
+      "path": "/home/z/my-project/miniandroid/database/runtime_failures.json",
+      "exists": true,
+      "size_bytes": 3136,
+      "data_type": "FAILURE_CLASSIFICATION",
+      "record_count": 0,
+      "contains_projected_data": true,
+      "contains_real_data": false,
+      "issues": []
+    },
+    "apk_inventory": {
+      "path": "/home/z/my-project/miniandroid/database/apk_inventory.json",
+      "exists": false,
+      "size_bytes": 0,
+      "data_type": "UNKNOWN",
+      "record_count": 0,
+      "contains_projected_data": false,
+      "contains_real_data": false,
+      "issues": []
+    },
+    "exp022_corpus": {
+      "path": "/home/z/my-project/miniandroid/database/exp022_corpus_inventory.json",
+      "exists": true,
+      "size_bytes": 23334,
+      "data_type": "INVENTORY",
+      "record_count": 36,
+      "contains_projected_data": true,
+      "contains_real_data": true,
+      "issues": []
+    },
+    "exp022_real_api": {
+      "path": "/home/z/my-project/miniandroid/database/exp022_real_api_frequency.json",
+      "exists": true,
+      "size_bytes": 154,
+      "data_type": "UNKNOWN",
+      "record_count": 0,
+      "contains_projected_data": false,
+      "contains_real_data": false,
+      "issues": []
+    }
+  },
+  "issues_found": [],
+  "recommendations": [],
+  "summary": {
+    "total_databases": 8,
+    "databases_exist": 3,
+    "with_projected_data": 2,
+    "with_real_data": 1,
+    "total_issues": 0,
+    "critical_rule": "NEVER merge projected numbers with real execution statistics"
+  }
+}

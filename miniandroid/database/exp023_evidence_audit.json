@@ -1,0 +1,108 @@
+{
+  "experiment_id": "EXP-023",
+  "phase": "PHASE_2_EVIDENCE_AUDIT",
+  "generated_at": "2026-08-12T14:11:55.186595Z",
+  "audited_claims": [
+    {
+      "experiment": "EXP-018",
+      "claim": "Opcode coverage: 29.5%",
+      "evidence_file": "run/exp018_report.md",
+      "evidence_type": "CALCULATED_FROM_CODE_COUNT",
+      "execution_verified": false,
+      "confidence": "MEDIUM",
+      "notes": "Based on counting implemented opcodes vs encountered. Not from real APK batch execution.",
+      "classification": "STATIC_ANALYSIS"
+    },
+    {
+      "experiment": "EXP-018",
+      "claim": "Projected APK pass rate: ~65-70%",
+      "evidence_file": "run/exp018_report.md",
+      "evidence_type": "THEORETICAL_PROJECTION",
+      "execution_verified": false,
+      "confidence": "LOW",
+      "notes": "PROJECTION based on opcode improvements. NOT validated against real APKs.",
+      "classification": "PROJECTED"
+    },
+    {
+      "experiment": "EXP-020",
+      "claim": "35 APKs in corpus",
+      "evidence_file": "run/exp020_corpus_inventory.json",
+      "evidence_type": "CORPUS_INVENTORY_COUNT",
+      "execution_verified": true,
+      "confidence": "HIGH",
+      "notes": "Count matches inventory. BUT most entries are projections, not real APK files.",
+      "classification": "REAL_VERIFIED"
+    },
+    {
+      "experiment": "EXP-020",
+      "claim": "7 PASS, 24 FAIL execution results",
+      "evidence_file": "run/exp020_execution_matrix.json",
+      "evidence_type": "MATRIX_GENERATION",
+      "execution_verified": false,
+      "confidence": "LOW",
+      "notes": "Matrix entries EXIST but represent projected/simulated results, not actual executions.",
+      "classification": "UNVERIFIED"
+    },
+    {
+      "experiment": "EXP-020",
+      "claim": "Compatibility score: 38.0/100 (Grade F)",
+      "evidence_file": "run/compatibility_score.json",
+      "evidence_type": "FORMULA_CALCULATION",
+      "execution_verified": false,
+      "confidence": "LOW-MEDIUM",
+      "notes": "Score calculated from weighted formula using PROJECTED metrics, not empirical measurements.",
+      "classification": "UNVERIFIED"
+    },
+    {
+      "experiment": "EXP-021",
+      "claim": "invoke-interface (0x72) IMPLEMENTED",
+      "evidence_file": "run/exp021_interface_trace.json",
+      "evidence_type": "UNIT_TEST_TRACE",
+      "execution_verified": true,
+      "confidence": "HIGH",
+      "notes": "Unit tests pass with trace evidence. Code exists in interpreter.",
+      "classification": "REAL_VERIFIED"
+    },
+    {
+      "experiment": "EXP-021",
+      "claim": "17/35 APKs now PASS (improvement)",
+      "evidence_file": "run/exp021_matrix.json",
+      "evidence_type": "THEORETICAL_IMPROVEMENT_ESTIMATE",
+      "execution_verified": false,
+      "confidence": "VERY_LOW",
+      "notes": "PROJECTION assuming fixes unblock categories. NO real regression test performed.",
+      "classification": "PROJECTED"
+    },
+    {
+      "experiment": "EXP-021",
+      "claim": "Score improved to 55.2/100",
+      "evidence_file": "run/exp021_report.md",
+      "evidence_type": "RECALCULATED_ESTIMATE",
+      "execution_verified": false,
+      "confidence": "LOW",
+      "notes": "Recalculated using same formula with estimated component improvements.",
+      "classification": "UNVERIFIED"
+    },
+    {
+      "experiment": "EXP-022",
+      "claim": "Only 1 real APK executed (HelloWorld)",
+      "evidence_file": "run/exp022_report.md",
+      "evidence_type": "AUDIT_FINDING",
+      "execution_verified": true,
+      "confidence": "VERY_HIGH",
+      "notes": "VERIFIED by checking actual files on disk. Honest assessment.",
+      "classification": "REAL_VERIFIED"
+    }
+  ],
+  "summary": {
+    "total_claims_audited": 9,
+    "classification_breakdown": {
+      "STATIC_ANALYSIS": 1,
+      "PROJECTED": 2,
+      "REAL_VERIFIED": 3,
+      "UNVERIFIED": 3
+    },
+    "key_finding": "Most quantitative claims (scores, pass rates) are PROJECTED or ESTIMATED. Only structural claims (code existence, file counts) are VERIFIED.",
+    "recommendation": "For true validation: execute real APKs through runtime and measure actual outcomes."
+  }
+}
