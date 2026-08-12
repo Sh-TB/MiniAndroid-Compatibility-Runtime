@@ -1,0 +1,89 @@
+{
+  "experiment_id": "EXP-019",
+  "test_type": "GOLDEN_CORPUS_TEST",
+  "timestamp": "2026-08-12T09:46:09Z",
+  "apk_directory": "test_apks",
+  "max_apks": 20,
+  "apk_results": [
+    {
+      "apk_name": "HelloWorld.apk",
+      "package_name": "com.example.helloworld",
+      "passed": true,
+      "execution_time_ms": 145,
+      "phases_completed": [
+        "LOAD",
+        "MANIFEST",
+        "DEX",
+        "LIFECYCLE",
+        "CONTENT"
+      ],
+      "failure_reason": null,
+      "missing_opcodes": [],
+      "missing_apis": [],
+      "crash_point": null
+    },
+    {
+      "apk_name": "ButtonDemo.apk",
+      "package_name": "com.example.buttondemo",
+      "passed": true,
+      "execution_time_ms": 230,
+      "phases_completed": [
+        "LOAD",
+        "MANIFEST",
+        "DEX",
+        "LIFECYCLE",
+        "CONTENT",
+        "EVENTS"
+      ],
+      "failure_reason": null,
+      "missing_opcodes": [],
+      "missing_apis": [],
+      "crash_point": null
+    },
+    {
+      "apk_name": "IntentTest.apk",
+      "package_name": "com.example.intenttest",
+      "passed": false,
+      "execution_time_ms": 89,
+      "phases_completed": [
+        "LOAD",
+        "MANIFEST",
+        "DEX",
+        "LIFECYCLE"
+      ],
+      "failure_reason": "Missing API: Activity.startActivityForResult",
+      "missing_opcodes": [],
+      "missing_apis": [
+        "startActivityForResult"
+      ],
+      "crash_point": {
+        "method": "SecondActivity.onClick",
+        "pc": 156,
+        "opcode": "invoke-virtual"
+      }
+    }
+  ],
+  "summary": {
+    "total_tested": 3,
+    "passed": 2,
+    "failed": 1,
+    "pass_rate": 66.67,
+    "unique_failure_reasons": 1,
+    "unique_missing_opcodes": 0,
+    "unique_missing_apis": 1
+  },
+  "failure_breakdown": {
+    "MISSING_API": 1
+  },
+  "missing_opcodes": [],
+  "missing_apis": [
+    "startActivityForResult"
+  ],
+  "crash_points": [
+    {
+      "apk": "IntentTest.apk",
+      "method": "SecondActivity.onClick",
+      "pc": 156
+    }
+  ]
+}
