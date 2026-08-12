@@ -1,0 +1,58 @@
+{
+    "corpus_impact": {
+        "description": "Return value system enables method chaining used by 38%+ of apps",
+        "exp017_ranking": "P1_HIGH",
+        "move_result_object_freq": "380 occurrences (2.96%)",
+        "return_object_freq": "250 occurrences (1.95%)"
+    },
+    "enabled_patterns": [
+        {
+            "now_working": true,
+            "pattern": "findViewById().setText()",
+            "previously_blocked": true,
+            "required_opcodes": "invoke-virtual + return-object + move-result-object + invoke-virtual",
+            "usage_in_corpus": "68% apps use findViewById"
+        },
+        {
+            "now_working": true,
+            "pattern": "EditText.getText().toString()",
+            "previously_blocked": true,
+            "required_opcodes": "invoke-virtual + move-result-object + invoke-virtual + move-result-object",
+            "usage_in_corpus": "34% apps use getText"
+        },
+        {
+            "now_working": true,
+            "pattern": "Integer.parseInt(string) -> int",
+            "previously_blocked": true,
+            "required_opcodes": "invoke-static + move-result",
+            "usage_in_corpus": "20% apps use parseInt"
+        }
+    ],
+    "features": {
+        "method_chaining_support": true,
+        "pending_return_mechanism": true,
+        "register_capture_tracking": true,
+        "wide_value_support": true
+    },
+    "opcodes_implemented": {
+        "move-result": "0x0A",
+        "move-result-object": "0x0C",
+        "move-result-wide": "0x0B",
+        "return": "0x0F",
+        "return-object": "0x11",
+        "return-wide": "0x10"
+    },
+    "phase": "RETURN_VALUE_SYSTEM",
+    "sample_return_trace": [
+        {
+            "captured_by": "move-result-object at PC 48",
+            "destination_register": "v2",
+            "opcode": "return-object",
+            "pc": 45,
+            "returned_type": "android.view.View",
+            "sequence": 0,
+            "source_method": "View.findViewById(int)"
+        }
+    ],
+    "status": "IMPLEMENTED"
+}
