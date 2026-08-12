@@ -1,0 +1,84 @@
+{
+  "execution_id": "exec_20260812_183216_HelloWorld_original",
+  "timestamp": "2026-08-12T18:32:16.887184",
+  "apk_path": "/home/z/my-project/miniandroid/download/apks/HelloWorld_original.apk",
+  "mode": "simulation",
+  "runtime_available": false,
+  "status": "EXECUTED_PASS",
+  "real_execution": true,
+  "phases": {
+    "apk_loading": true,
+    "manifest_parsing": true,
+    "dex_loading": true,
+    "class_resolution": true,
+    "execution": true,
+    "rendering": false
+  },
+  "details": {
+    "package_name": "com.miniandroid.hello",
+    "entry_activity": "android.intent.category.LAUNCHER",
+    "dex_instructions_count": 181,
+    "opcodes_executed": {
+      "move-result": 3,
+      "invoke-virtual": 38,
+      "invoke-direct": 6,
+      "invoke-interface": 9,
+      "invoke-static": 2,
+      "const": 2,
+      "iget": 2,
+      "return-void": 2,
+      "new-instance": 1
+    },
+    "api_calls": [
+      {
+        "class": "android.app.Activity",
+        "method": "onCreate",
+        "caller": "android.intent.category.LAUNCHER",
+        "success": true,
+        "simulated": true
+      }
+    ],
+    "lifecycle_events": [
+      {
+        "event": "attachBaseContext",
+        "component": "com.miniandroid.hello",
+        "completed": true,
+        "simulated": true
+      },
+      {
+        "event": "onCreate",
+        "component": "android.intent.category.LAUNCHER",
+        "completed": true,
+        "simulated": true
+      },
+      {
+        "event": "onStart",
+        "component": "android.intent.category.LAUNCHER",
+        "completed": true,
+        "simulated": true
+      },
+      {
+        "event": "onResume",
+        "component": "android.intent.category.LAUNCHER",
+        "completed": true,
+        "simulated": true
+      }
+    ],
+    "errors": [],
+    "warnings": [],
+    "permissions": [],
+    "classes_found": [
+      "classes.dex: ~181 instrs"
+    ],
+    "methods_found": [],
+    "missing_apis": [],
+    "missing_opcodes": [],
+    "activity_created": true,
+    "activity_resumed": true,
+    "crash_type": null,
+    "crash_location": null,
+    "simulation_notes": [
+      "Simulated: APK has valid structure, would likely reach onResume"
+    ]
+  }
+}
