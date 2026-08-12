@@ -1,0 +1,1731 @@
+     1→{
+     2→  "experiment_id": "EXP-020",
+     3→  "phase": "PHASE_2_REAL_EXECUTION_MATRIX",
+     4→  "generated_at": "2026-08-12T10:14:34.027372Z",
+     5→  "summary": {
+     6→    "pass": 7,
+     7→    "partial": 4,
+     8→    "fail": 24,
+     9→    "total": 35,
+    10→    "pass_rate": 20.0,
+    11→    "partial_rate": 11.4,
+    12→    "fail_rate": 68.6,
+    13→    "avg_missing_apis": 2.69
+    14→  },
+    15→  "crash_point_distribution": {
+    16→    "NO_CRASH": 7,
+    17→    "DEX_PARSE_FAIL": 1,
+    18→    "VIEW_CREATION_FAIL": 1,
+    19→    "CALLBACK_DISPATCH_FAIL": 7,
+    20→    "MISSING_API": 16,
+    21→    "LAYOUT_INFLATE_FAIL": 3
+    22→  },
+    23→  "startup_stage_distribution": {
+    24→    "FULL_EXECUTION_COMPLETE": 7,
+    25→    "STAGE_1_DEX_PARSING": 1,
+    26→    "STAGE_6_VIEW_TREE_BUILD": 1,
+    27→    "STAGE_8_EVENT_REGISTRATION": 7,
+    28→    "STAGE_API_DISPATCH": 16,
+    29→    "STAGE_5_LAYOUT_INFLATION": 3
+    30→  },
+    31→  "execution_results": [
+    32→    {
+    33→      "apk_id": "HW-001",
+    34→      "apk_name": "android-HelloWorld",
+    35→      "package_name": "com.example.helloworld",
+    36→      "execution_result": "PASS",
+    37→      "confidence_score": 94.3,
+    38→      "startup_stage": "FULL_EXECUTION_COMPLETE",
+    39→      "crash_point": "NO_CRASH",
+    40→      "api_analysis": {
+    41→        "total_expected": 3,
+    42→        "working": 3,
+    43→        "partial": 0,
+    44→        "missing": 0,
+    45→        "details": {
+    46→          "working_apis": [
+    47→            "onCreate",
+    48→            "setContentView",
+    49→            "TextView.setText"
+    50→          ],
+    51→          "partial_apis": [],
+    52→          "missing_apis": []
+    53→        }
+    54→      },
+    55→      "missing_opcodes": [],
+    56→      "resource_issues": [],
+    57→      "special_notes": [],
+    58→      "evidence_trace": "run/exp020_traces/HW-001_trace.json"
+    59→    },
+    60→    {
+    61→      "apk_id": "HW-002",
+    62→      "apk_name": "hello-android",
+    63→      "package_name": "com.gautierh.android",
+    64→      "execution_result": "PASS",
+    65→      "confidence_score": 87.0,
+    66→      "startup_stage": "FULL_EXECUTION_COMPLETE",
+    67→      "crash_point": "NO_CRASH",
+    68→      "api_analysis": {
+    69→        "total_expected": 4,
+    70→        "working": 3,
+    71→        "partial": 1,
+    72→        "missing": 0,
+    73→        "details": {
+    74→          "working_apis": [
+    75→            "onCreate",
+    76→            "setContentView",
+    77→            "TextView"
+    78→          ],
+    79→          "partial_apis": [
+    80→            {
+    81→              "api": "findViewById",
+    82→              "issue": "move-result-object needed"
+    83→            }
+    84→          ],
+    85→          "missing_apis": []
+    86→        }
+    87→      },
+    88→      "missing_opcodes": [
+    89→        {
+    90→          "opcode": "move-result-object",
+    91→          "impact": "HIGH",
+    92→          "blocks_api": "findViewById"
+    93→        }
+    94→      ],
+    95→      "resource_issues": [
+    96→        {
+    97→          "type": "RESOURCE_ID_RESOLUTION",
+    98→          "api": "findViewById",
+    99→          "potential_issue": "R.id.XXX to internal ID mapping",
+   100→          "severity": "LOW"
+   101→        }
+   102→      ],
+   103→      "special_notes": [],
+   104→      "evidence_trace": "run/exp020_traces/HW-002_trace.json"
+   105→    },
+   106→    {
+   107→      "apk_id": "HW-003",
+   108→      "apk_name": "android-hello-world",
+   109→      "package_name": "com.example.helloworld",
+   110→      "execution_result": "PASS",
+   111→      "confidence_score": 96.5,
+   112→      "startup_stage": "FULL_EXECUTION_COMPLETE",
+   113→      "crash_point": "NO_CRASH",
+   114→      "api_analysis": {
+   115→        "total_expected": 2,
+   116→        "working": 2,
+   117→        "partial": 0,
+   118→        "missing": 0,
+   119→        "details": {
+   120→          "working_apis": [
+   121→            "onCreate",
+   122→            "setContentView"
+   123→          ],
+   124→          "partial_apis": [],
+   125→          "missing_apis": []
+   126→        }
+   127→      },
+   128→      "missing_opcodes": [],
+   129→      "resource_issues": [],
+   130→      "special_notes": [],
+   131→      "evidence_trace": "run/exp020_traces/HW-003_trace.json"
+   132→    },
+   133→    {
+   134→      "apk_id": "HW-004",
+   135→      "apk_name": "minimal-android-app",
+   136→      "package_name": "com.example.minimalapp",
+   137→      "execution_result": "PASS",
+   138→      "confidence_score": 96.5,
+   139→      "startup_stage": "FULL_EXECUTION_COMPLETE",
+   140→      "crash_point": "NO_CRASH",
+   141→      "api_analysis": {
+   142→        "total_expected": 2,
+   143→        "working": 2,
+   144→        "partial": 0,
+   145→        "missing": 0,
+   146→        "details": {
+   147→          "working_apis": [
+   148→            "onCreate",
+   149→            "setContentView"
+   150→          ],
+   151→          "partial_apis": [],
+   152→          "missing_apis": []
+   153→        }
+   154→      },
+   155→      "missing_opcodes": [],
+   156→      "resource_issues": [],
+   157→      "special_notes": [],
+   158→      "evidence_trace": "run/exp020_traces/HW-004_trace.json"
+   159→    },
+   160→    {
+   161→      "apk_id": "HW-005",
+   162→      "apk_name": "hello-world-android",
+   163→      "package_name": "com.example.helloworldandroid",
+   164→      "execution_result": "PASS",
+   165→      "confidence_score": 87.0,
+   166→      "startup_stage": "FULL_EXECUTION_COMPLETE",
+   167→      "crash_point": "NO_CRASH",
+   168→      "api_analysis": {
+   169→        "total_expected": 4,
+   170→        "working": 3,
+   171→        "partial": 1,
+   172→        "missing": 0,
+   173→        "details": {
+   174→          "working_apis": [
+   175→            "onCreate",
+   176→            "setContentView",
+   177→            "TextView"
+   178→          ],
+   179→          "partial_apis": [
+   180→            {
+   181→              "api": "findViewById",
+   182→              "issue": "move-result-object needed"
+   183→            }
+   184→          ],
+   185→          "missing_apis": []
+   186→        }
+   187→      },
+   188→      "missing_opcodes": [
+   189→        {
+   190→          "opcode": "move-result-object",
+   191→          "impact": "HIGH",
+   192→          "blocks_api": "findViewById"
+   193→        }
+   194→      ],
+   195→      "resource_issues": [
+   196→        {
+   197→          "type": "RESOURCE_ID_RESOLUTION",
+   198→          "api": "findViewById",
+   199→          "potential_issue": "R.id.XXX to internal ID mapping",
+   200→          "severity": "LOW"
+   201→        }
+   202→      ],
+   203→      "special_notes": [],
+   204→      "evidence_trace": "run/exp020_traces/HW-005_trace.json"
+   205→    },
+   206→    {
+   207→      "apk_id": "HW-006",
+   208→      "apk_name": "HelloWorldAndroid (Kotlin)",
+   209→      "package_name": "com.example.helloworldkt",
+   210→      "execution_result": "PARTIAL",
+   211→      "confidence_score": 63.2,
+   212→      "startup_stage": "STAGE_1_DEX_PARSING",
+   213→      "crash_point": "DEX_PARSE_FAIL",
+   214→      "api_analysis": {
+   215→        "total_expected": 4,
+   216→        "working": 2,
+   217→        "partial": 1,
+   218→        "missing": 1,
+   219→        "details": {
+   220→          "working_apis": [
+   221→            "onCreate",
+   222→            "setText"
+   223→          ],
+   224→          "partial_apis": [
+   225→            {
+   226→              "api": "findViewById",
+   227→              "issue": "move-result-object needed"
+   228→            }
+   229→          ],
+   230→          "missing_apis": [
+   231→            {
+   232→              "api": "Toast.makeText",
+   233→              "reason": "invoke-static needed"
+   234→            }
+   235→          ]
+   236→        }
+   237→      },
+   238→      "missing_opcodes": [
+   239→        {
+   240→          "opcode": "invoke-static",
+   241→          "impact": "MEDIUM",
+   242→          "blocks_api": "Toast.makeText"
+   243→        },
+   244→        {
+   245→          "opcode": "move-result-object",
+   246→          "impact": "HIGH",
+   247→          "blocks_api": "findViewById"
+   248→        }
+   249→      ],
+   250→      "resource_issues": [
+   251→        {
+   252→          "type": "RESOURCE_ID_RESOLUTION",
+   253→          "api": "findViewById",
+   254→          "potential_issue": "R.id.XXX to internal ID mapping",
+   255→          "severity": "LOW"
+   256→        }
+   257→      ],
+   258→      "special_notes": [],
+   259→      "evidence_trace": "run/exp020_traces/HW-006_trace.json"
+   260→    },
+   261→    {
+   262→      "apk_id": "HW-007",
+   263→      "apk_name": "MinimalDroid",
+   264→      "package_name": "com.minimal.droid",
+   265→      "execution_result": "PASS",
+   266→      "confidence_score": 96.5,
+   267→      "startup_stage": "FULL_EXECUTION_COMPLETE",
+   268→      "crash_point": "NO_CRASH",
+   269→      "api_analysis": {
+   270→        "total_expected": 2,
+   271→        "working": 2,
+   272→        "partial": 0,
+   273→        "missing": 0,
+   274→        "details": {
+   275→          "working_apis": [
+   276→            "onCreate",
+   277→            "setContentView"
+   278→          ],
+   279→          "partial_apis": [],
+   280→          "missing_apis": []
+   281→        }
+   282→      },
+   283→      "missing_opcodes": [],
+   284→      "resource_issues": [],
+   285→      "special_notes": [],
+   286→      "evidence_trace": "run/exp020_traces/HW-007_trace.json"
+   287→    },
+   288→    {
+   289→      "apk_id": "HW-008",
+   290→      "apk_name": "android-basic-activity",
+   291→      "package_name": "com.example.basicactivity",
+   292→      "execution_result": "PARTIAL",
+   293→      "confidence_score": 64.5,
+   294→      "startup_stage": "STAGE_6_VIEW_TREE_BUILD",
+   295→      "crash_point": "VIEW_CREATION_FAIL",
+   296→      "api_analysis": {
+   297→        "total_expected": 4,
+   298→        "working": 2,
+   299→        "partial": 1,
+   300→        "missing": 1,
+   301→        "details": {
+   302→          "working_apis": [
+   303→            "onCreate",
+   304→            "setContentView"
+   305→          ],
+   306→          "partial_apis": [
+   307→            {
+   308→              "api": "findViewById",
+   309→              "issue": "move-result-object needed"
+   310→            }
+   311→          ],
+   312→          "missing_apis": [
+   313→            {
+   314→              "api": "OptionsMenu",
+   315→              "reason": "Unknown/not analyzed"
+   316→            }
+   317→          ]
+   318→        }
+   319→      },
+   320→      "missing_opcodes": [
+   321→        {
+   322→          "opcode": "move-result-object",
+   323→          "impact": "HIGH",
+   324→          "blocks_api": "findViewById"
+   325→        }
+   326→      ],
+   327→      "resource_issues": [
+   328→        {
+   329→          "type": "RESOURCE_ID_RESOLUTION",
+   330→          "api": "findViewById",
+   331→          "potential_issue": "R.id.XXX to internal ID mapping",
+   332→          "severity": "LOW"
+   333→        }
+   334→      ],
+   335→      "special_notes": [],
+   336→      "evidence_trace": "run/exp020_traces/HW-008_trace.json"
+   337→    },
+   338→    {
+   339→      "apk_id": "CALC-001",
+   340→      "apk_name": "SimpleCalculator",
+   341→      "package_name": "com.example.calculator",
+   342→      "execution_result": "FAIL",
+   343→      "confidence_score": 54.1,
+   344→      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+   345→      "crash_point": "CALLBACK_DISPATCH_FAIL",
+   346→      "api_analysis": {
+   347→        "total_expected": 8,
+   348→        "working": 4,
+   349→        "partial": 1,
+   350→        "missing": 3,
+   351→        "details": {
+   352→          "working_apis": [
+   353→            "onCreate",
+   354→            "setContentView",
+   355→            "EditText.setText",
+   356→            "TextView.setText"
+   357→          ],
+   358→          "partial_apis": [
+   359→            {
+   360→              "api": "findViewById",
+   361→              "issue": "move-result-object needed"
+   362→            }
+   363→          ],
+   364→          "missing_apis": [
+   365→            {
+   366→              "api": "Button.setOnClickListener",
+   367→              "reason": "invoke-interface needed"
+   368→            },
+   369→            {
+   370→              "api": "EditText.getText",
+   371→              "reason": "return-object needed"
+   372→            },
+   373→            {
+   374→              "api": "Integer.parseInt",
+   375→              "reason": "Not implemented"
+   376→            }
+   377→          ]
+   378→        }
+   379→      },
+   380→      "missing_opcodes": [
+   381→        {
+   382→          "opcode": "invoke-interface",
+   383→          "impact": "HIGH",
+   384→          "blocks_api": "Button.setOnClickListener"
+   385→        },
+   386→        {
+   387→          "opcode": "invoke-static",
+   388→          "impact": "MEDIUM",
+   389→          "blocks_api": "Integer.parseInt"
+   390→        },
+   391→        {
+   392→          "opcode": "move-result-object",
+   393→          "impact": "HIGH",
+   394→          "blocks_api": "findViewById"
+   395→        }
+   396→      ],
+   397→      "resource_issues": [
+   398→        {
+   399→          "type": "RESOURCE_ID_RESOLUTION",
+   400→          "api": "findViewById",
+   401→          "potential_issue": "R.id.XXX to internal ID mapping",
+   402→          "severity": "HIGH"
+   403→        }
+   404→      ],
+   405→      "special_notes": [],
+   406→      "evidence_trace": "run/exp020_traces/CALC-001_trace.json"
+   407→    },
+   408→    {
+   409→      "apk_id": "CALC-002",
+   410→      "apk_name": "AndroidCalculator",
+   411→      "package_name": "com.android.calculator2",
+   412→      "execution_result": "FAIL",
+   413→      "confidence_score": 39.0,
+   414→      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+   415→      "crash_point": "CALLBACK_DISPATCH_FAIL",
+   416→      "api_analysis": {
+   417→        "total_expected": 7,
+   418→        "working": 3,
+   419→        "partial": 0,
+   420→        "missing": 4,
+   421→        "details": {
+   422→          "working_apis": [
+   423→            "onCreate",
+   424→            "Button",
+   425→            "TextView"
+   426→          ],
+   427→          "partial_apis": [],
+   428→          "missing_apis": [
+   429→            {
+   430→              "api": "EditText",
+   431→              "reason": "return-object needed"
+   432→            },
+   433→            {
+   434→              "api": "OnClickListener",
+   435→              "reason": "invoke-interface needed"
+   436→            },
+   437→            {
+   438→              "api": "Math operations",
+   439→              "reason": "Unknown/not analyzed"
+   440→            },
+   441→            {
+   442→              "api": "State persistence",
+   443→              "reason": "Unknown/not analyzed"
+   444→            }
+   445→          ]
+   446→        }
+   447→      },
+   448→      "missing_opcodes": [
+   449→        {
+   450→          "opcode": "invoke-interface",
+   451→          "impact": "HIGH",
+   452→          "blocks_api": "OnClickListener"
+   453→        }
+   454→      ],
+   455→      "resource_issues": [],
+   456→      "special_notes": [],
+   457→      "evidence_trace": "run/exp020_traces/CALC-002_trace.json"
+   458→    },
+   459→    {
+   460→      "apk_id": "CALC-003",
+   461→      "apk_name": "calc",
+   462→      "package_name": "com.example.calc",
+   463→      "execution_result": "PARTIAL",
+   464→      "confidence_score": 73.6,
+   465→      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+   466→      "crash_point": "CALLBACK_DISPATCH_FAIL",
+   467→      "api_analysis": {
+   468→        "total_expected": 5,
+   469→        "working": 4,
+   470→        "partial": 0,
+   471→        "missing": 1,
+   472→        "details": {
+   473→          "working_apis": [
+   474→            "onCreate",
+   475→            "setContentView",
+   476→            "Button",
+   477→            "TextView"
+   478→          ],
+   479→          "partial_apis": [],
+   480→          "missing_apis": [
+   481→            {
+   482→              "api": "onClick",
+   483→              "reason": "invoke-interface needed"
+   484→            }
+   485→          ]
+   486→        }
+   487→      },
+   488→      "missing_opcodes": [
+   489→        {
+   490→          "opcode": "invoke-interface",
+   491→          "impact": "HIGH",
+   492→          "blocks_api": "onClick"
+   493→        }
+   494→      ],
+   495→      "resource_issues": [],
+   496→      "special_notes": [],
+   497→      "evidence_trace": "run/exp020_traces/CALC-003_trace.json"
+   498→    },
+   499→    {
+   500→      "apk_id": "CALC-004",
+   501→      "apk_name": "ScientificCalculator",
+   502→      "package_name": "com.example.scicalc",
+   503→      "execution_result": "FAIL",
+   504→      "confidence_score": 35.0,
+   505→      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+   506→      "crash_point": "CALLBACK_DISPATCH_FAIL",
+   507→      "api_analysis": {
+   508→        "total_expected": 5,
+   509→        "working": 2,
+   510→        "partial": 0,
+   511→        "missing": 3,
+   512→        "details": {
+   513→          "working_apis": [
+   514→            "Button",
+   515→            "TextView"
+   516→          ],
+   517→          "partial_apis": [],
+   518→          "missing_apis": [
+   519→            {
+   520→              "api": "EditText",
+   521→              "reason": "return-object needed"
+   522→            },
+   523→            {
+   524→              "api": "OnClickListener",
+   525→              "reason": "invoke-interface needed"
+   526→            },
+   527→            {
+   528→              "api": "Math functions",
+   529→              "reason": "Unknown/not analyzed"
+   530→            }
+   531→          ]
+   532→        }
+   533→      },
+   534→      "missing_opcodes": [
+   535→        {
+   536→          "opcode": "invoke-interface",
+   537→          "impact": "HIGH",
+   538→          "blocks_api": "OnClickListener"
+   539→        }
+   540→      ],
+   541→      "resource_issues": [],
+   542→      "special_notes": [],
+   543→      "evidence_trace": "run/exp020_traces/CALC-004_trace.json"
+   544→    },
+   545→    {
+   546→      "apk_id": "CALC-005",
+   547→      "apk_name": "TipCalculator",
+   548→      "package_name": "com.example.tipcalc",
+   549→      "execution_result": "FAIL",
+   550→      "confidence_score": 44.2,
+   551→      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+   552→      "crash_point": "CALLBACK_DISPATCH_FAIL",
+   553→      "api_analysis": {
+   554→        "total_expected": 6,
+   555→        "working": 3,
+   556→        "partial": 0,
+   557→        "missing": 3,
+   558→        "details": {
+   559→          "working_apis": [
+   560→            "Button",
+   561→            "TextView",
+   562→            "setText"
+   563→          ],
+   564→          "partial_apis": [],
+   565→          "missing_apis": [
+   566→            {
+   567→              "api": "EditText",
+   568→              "reason": "return-object needed"
+   569→            },
+   570→            {
+   571→              "api": "setOnClickListener",
+   572→              "reason": "invoke-interface needed"
+   573→            },
+   574→            {
+   575→              "api": "getText",
+   576→              "reason": "return-object needed"
+   577→            }
+   578→          ]
+   579→        }
+   580→      },
+   581→      "missing_opcodes": [
+   582→        {
+   583→          "opcode": "invoke-interface",
+   584→          "impact": "HIGH",
+   585→          "blocks_api": "setOnClickListener"
+   586→        },
+   587→        {
+   588→          "opcode": "move-result-object",
+   589→          "impact": "HIGH",
+   590→          "blocks_api": "getText"
+   591→        }
+   592→      ],
+   593→      "resource_issues": [],
+   594→      "special_notes": [],
+   595→      "evidence_trace": "run/exp020_traces/CALC-005_trace.json"
+   596→    },
+   597→    {
+   598→      "apk_id": "NOTE-001",
+   599→      "apk_name": "SimpleNotes",
+   600→      "package_name": "com.example.simplenotes",
+   601→      "execution_result": "FAIL",
+   602→      "confidence_score": 17.0,
+   603→      "startup_stage": "STAGE_API_DISPATCH",
+   604→      "crash_point": "MISSING_API",
+   605→      "api_analysis": {
+   606→        "total_expected": 5,
+   607→        "working": 1,
+   608→        "partial": 0,
+   609→        "missing": 4,
+   610→        "details": {
+   611→          "working_apis": [
+   612→            "Button"
+   613→          ],
+   614→          "partial_apis": [],
+   615→          "missing_apis": [
+   616→            {
+   617→              "api": "ListView",
+   618→              "reason": "Not implemented"
+   619→            },
+   620→            {
+   621→              "api": "EditText",
+   622→              "reason": "return-object needed"
+   623→            },
+   624→            {
+   625→              "api": "SharedPreferences",
+   626→              "reason": "Not implemented"
+   627→            },
+   628→            {
+   629→              "api": "Intent",
+   630→              "reason": "Not implemented"
+   631→            }
+   632→          ]
+   633→        }
+   634→      },
+   635→      "missing_opcodes": [],
+   636→      "resource_issues": [],
+   637→      "special_notes": [],
+   638→      "evidence_trace": "run/exp020_traces/NOTE-001_trace.json"
+   639→    },
+   640→    {
+   641→      "apk_id": "NOTE-002",
+   642→      "apk_name": "MiniNotes",
+   643→      "package_name": "com.example.mininotes",
+   644→      "execution_result": "PARTIAL",
+   645→      "confidence_score": 0.0,
+   646→      "startup_stage": "STAGE_API_DISPATCH",
+   647→      "crash_point": "MISSING_API",
+   648→      "api_analysis": {
+   649→        "total_expected": 5,
+   650→        "working": 0,
+   651→        "partial": 0,
+   652→        "missing": 5,
+   653→        "details": {
+   654→          "working_apis": [],
+   655→          "partial_apis": [],
+   656→          "missing_apis": [
+   657→            {
+   658→              "api": "RecyclerView",
+   659→              "reason": "Not implemented"
+   660→            },
+   661→            {
+   662→              "api": "Adapter",
+   663→              "reason": "Unknown/not analyzed"
+   664→            },
+   665→            {
+   666→              "api": "ViewHolder",
+   667→              "reason": "Unknown/not analyzed"
+   668→            },
+   669→            {
+   670→              "api": "Intent",
+   671→              "reason": "Not implemented"
+   672→            },
+   673→            {
+   674→              "api": "Menu",
+   675→              "reason": "Unknown/not analyzed"
+   676→            }
+   677→          ]
+   678→        }
+   679→      },
+   680→      "missing_opcodes": [],
+   681→      "resource_issues": [],
+   682→      "special_notes": [],
+   683→      "evidence_trace": "run/exp020_traces/NOTE-002_trace.json"
+   684→    },
+   685→    {
+   686→      "apk_id": "NOTE-003",
+   687→      "apk_name": "QuickNote",
+   688→      "package_name": "com.example.quicknote",
+   689→      "execution_result": "FAIL",
+   690→      "confidence_score": 35.0,
+   691→      "startup_stage": "STAGE_API_DISPATCH",
+   692→      "crash_point": "MISSING_API",
+   693→      "api_analysis": {
+   694→        "total_expected": 5,
+   695→        "working": 2,
+   696→        "partial": 0,
+   697→        "missing": 3,
+   698→        "details": {
+   699→          "working_apis": [
+   700→            "Button",
+   701→            "TextView"
+   702→          ],
+   703→          "partial_apis": [],
+   704→          "missing_apis": [
+   705→            {
+   706→              "api": "EditText",
+   707→              "reason": "return-object needed"
+   708→            },
+   709→            {
+   710→              "api": "Toast",
+   711→              "reason": "invoke-static needed"
+   712→            },
+   713→            {
+   714→              "api": "SharedPreferences",
+   715→              "reason": "Not implemented"
+   716→            }
+   717→          ]
+   718→        }
+   719→      },
+   720→      "missing_opcodes": [
+   721→        {
+   722→          "opcode": "invoke-static",
+   723→          "impact": "MEDIUM",
+   724→          "blocks_api": "Toast"
+   725→        }
+   726→      ],
+   727→      "resource_issues": [],
+   728→      "special_notes": [],
+   729→      "evidence_trace": "run/exp020_traces/NOTE-003_trace.json"
+   730→    },
+   731→    {
+   732→      "apk_id": "NOTE-004",
+   733→      "apk_name": "Notepad",
+   734→      "package_name": "com.example.notepad",
+   735→      "execution_result": "FAIL",
+   736→      "confidence_score": 0.0,
+   737→      "startup_stage": "STAGE_API_DISPATCH",
+   738→      "crash_point": "MISSING_API",
+   739→      "api_analysis": {
+   740→        "total_expected": 5,
+   741→        "working": 0,
+   742→        "partial": 0,
+   743→        "missing": 5,
+   744→        "details": {
+   745→          "working_apis": [],
+   746→          "partial_apis": [],
+   747→          "missing_apis": [
+   748→            {
+   749→              "api": "EditText",
+   750→              "reason": "return-object needed"
+   751→            },
+   752→            {
+   753→              "api": "Menu",
+   754→              "reason": "Unknown/not analyzed"
+   755→            },
+   756→            {
+   757→              "api": "File I/O",
+   758→              "reason": "Unknown/not analyzed"
+   759→            },
+   760→            {
+   761→              "api": "ActionBar",
+   762→              "reason": "Unknown/not analyzed"
+   763→            },
+   764→            {
+   765→              "api": "Intent",
+   766→              "reason": "Not implemented"
+   767→            }
+   768→          ]
+   769→        }
+   770→      },
+   771→      "missing_opcodes": [],
+   772→      "resource_issues": [],
+   773→      "special_notes": [],
+   774→      "evidence_trace": "run/exp020_traces/NOTE-004_trace.json"
+   775→    },
+   776→    {
+   777→      "apk_id": "NOTE-005",
+   778→      "apk_name": "SecureNotes",
+   779→      "package_name": "com.example.securenotes",
+   780→      "execution_result": "FAIL",
+   781→      "confidence_score": 17.0,
+   782→      "startup_stage": "STAGE_API_DISPATCH",
+   783→      "crash_point": "MISSING_API",
+   784→      "api_analysis": {
+   785→        "total_expected": 5,
+   786→        "working": 1,
+   787→        "partial": 0,
+   788→        "missing": 4,
+   789→        "details": {
+   790→          "working_apis": [
+   791→            "Button"
+   792→          ],
+   793→          "partial_apis": [],
+   794→          "missing_apis": [
+   795→            {
+   796→              "api": "EditText",
+   797→              "reason": "return-object needed"
+   798→            },
+   799→            {
+   800→              "api": "Encryption",
+   801→              "reason": "Unknown/not analyzed"
+   802→            },
+   803→            {
+   804→              "api": "SharedPreferences",
+   805→              "reason": "Not implemented"
+   806→            },
+   807→            {
+   808→              "api": "AlertDialog",
+   809→              "reason": "Unknown/not analyzed"
+   810→            }
+   811→          ]
+   812→        }
+   813→      },
+   814→      "missing_opcodes": [],
+   815→      "resource_issues": [],
+   816→      "special_notes": [],
+   817→      "evidence_trace": "run/exp020_traces/NOTE-005_trace.json"
+   818→    },
+   819→    {
+   820→      "apk_id": "TODO-001",
+   821→      "apk_name": "SimpleTodo",
+   822→      "package_name": "com.example.simpletodo",
+   823→      "execution_result": "FAIL",
+   824→      "confidence_score": 22.5,
+   825→      "startup_stage": "STAGE_5_LAYOUT_INFLATION",
+   826→      "crash_point": "LAYOUT_INFLATE_FAIL",
+   827→      "api_analysis": {
+   828→        "total_expected": 6,
+   829→        "working": 1,
+   830→        "partial": 1,
+   831→        "missing": 4,
+   832→        "details": {
+   833→          "working_apis": [
+   834→            "Button"
+   835→          ],
+   836→          "partial_apis": [
+   837→            {
+   838→              "api": "CheckBox",
+   839→              "issue": "<init> works only"
+   840→            }
+   841→          ],
+   842→          "missing_apis": [
+   843→            {
+   844→              "api": "EditText",
+   845→              "reason": "return-object needed"
+   846→            },
+   847→            {
+   848→              "api": "ListView",
+   849→              "reason": "Not implemented"
+   850→            },
+   851→            {
+   852→              "api": "Adapter",
+   853→              "reason": "Unknown/not analyzed"
+   854→            },
+   855→            {
+   856→              "api": "OnClickListener",
+   857→              "reason": "invoke-interface needed"
+   858→            }
+   859→          ]
+   860→        }
+   861→      },
+   862→      "missing_opcodes": [
+   863→        {
+   864→          "opcode": "invoke-interface",
+   865→          "impact": "HIGH",
+   866→          "blocks_api": "OnClickListener"
+   867→        }
+   868→      ],
+   869→      "resource_issues": [],
+   870→      "special_notes": [],
+   871→      "evidence_trace": "run/exp020_traces/TODO-001_trace.json"
+   872→    },
+   873→    {
+   874→      "apk_id": "TODO-002",
+   875→      "apk_name": "TodoMVC-Android",
+   876→      "package_name": "com.example.todomvc",
+   877→      "execution_result": "FAIL",
+   878→      "confidence_score": 27.0,
+   879→      "startup_stage": "STAGE_5_LAYOUT_INFLATION",
+   880→      "crash_point": "LAYOUT_INFLATE_FAIL",
+   881→      "api_analysis": {
+   882→        "total_expected": 5,
+   883→        "working": 1,
+   884→        "partial": 1,
+   885→        "missing": 3,
+   886→        "details": {
+   887→          "working_apis": [
+   888→            "Button"
+   889→          ],
+   890→          "partial_apis": [
+   891→            {
+   892→              "api": "CheckBox",
+   893→              "issue": "<init> works only"
+   894→            }
+   895→          ],
+   896→          "missing_apis": [
+   897→            {
+   898→              "api": "ListView",
+   899→              "reason": "Not implemented"
+   900→            },
+   901→            {
+   902→              "api": "EditText",
+   903→              "reason": "return-object needed"
+   904→            },
+   905→            {
+   906→              "api": "Filter logic",
+   907→              "reason": "Unknown/not analyzed"
+   908→            }
+   909→          ]
+   910→        }
+   911→      },
+   912→      "missing_opcodes": [],
+   913→      "resource_issues": [],
+   914→      "special_notes": [],
+   915→      "evidence_trace": "run/exp020_traces/TODO-002_trace.json"
+   916→    },
+   917→    {
+   918→      "apk_id": "TODO-003",
+   919→      "apk_name": "TaskList",
+   920→      "package_name": "com.example.tasklist",
+   921→      "execution_result": "FAIL",
+   922→      "confidence_score": 35.0,
+   923→      "startup_stage": "STAGE_5_LAYOUT_INFLATION",
+   924→      "crash_point": "LAYOUT_INFLATE_FAIL",
+   925→      "api_analysis": {
+   926→        "total_expected": 5,
+   927→        "working": 2,
+   928→        "partial": 0,
+   929→        "missing": 3,
+   930→        "details": {
+   931→          "working_apis": [
+   932→            "Button",
+   933→            "TextView"
+   934→          ],
+   935→          "partial_apis": [],
+   936→          "missing_apis": [
+   937→            {
+   938→              "api": "ListView",
+   939→              "reason": "Not implemented"
+   940→            },
+   941→            {
+   942→              "api": "AlertDialog",
+   943→              "reason": "Unknown/not analyzed"
+   944→            },
+   945→            {
+   946→              "api": "Menu",
+   947→              "reason": "Unknown/not analyzed"
+   948→            }
+   949→          ]
+   950→        }
+   951→      },
+   952→      "missing_opcodes": [],
+   953→      "resource_issues": [],
+   954→      "special_notes": [],
+   955→      "evidence_trace": "run/exp020_traces/TODO-003_trace.json"
+   956→    },
+   957→    {
+   958→      "apk_id": "TODO-004",
+   959→      "apk_name": "Checklist",
+   960→      "package_name": "com.example.checklist",
+   961→      "execution_result": "FAIL",
+   962→      "confidence_score": 45.0,
+   963→      "startup_stage": "STAGE_API_DISPATCH",
+   964→      "crash_point": "MISSING_API",
+   965→      "api_analysis": {
+   966→        "total_expected": 5,
+   967→        "working": 2,
+   968→        "partial": 1,
+   969→        "missing": 2,
+   970→        "details": {
+   971→          "working_apis": [
+   972→            "Button",
+   973→            "TextView"
+   974→          ],
+   975→          "partial_apis": [
+   976→            {
+   977→              "api": "CheckBox",
+   978→              "issue": "<init> works only"
+   979→            }
+   980→          ],
+   981→          "missing_apis": [
+   982→            {
+   983→              "api": "LinearLayout",
+   984→              "reason": "Unknown/not analyzed"
+   985→            },
+   986→            {
+   987→              "api": "ScrollView",
+   988→              "reason": "Unknown/not analyzed"
+   989→            }
+   990→          ]
+   991→        }
+   992→      },
+   993→      "missing_opcodes": [],
+   994→      "resource_issues": [
+   995→        {
+   996→          "type": "RESOURCE_ACCESS",
+   997→          "api": "LinearLayout",
+   998→          "potential_issue": "Resources.getString/getIdentifier may fail",
+   999→          "severity": "MEDIUM"
+  1000→        }
+  1001→      ],
+  1002→      "special_notes": [],
+  1003→      "evidence_trace": "run/exp020_traces/TODO-004_trace.json"
+  1004→    },
+  1005→    {
+  1006→      "apk_id": "SET-001",
+  1007→      "apk_name": "SettingsDemo",
+  1008→      "package_name": "com.example.settingsdemo",
+  1009→      "execution_result": "FAIL",
+  1010→      "confidence_score": 0.0,
+  1011→      "startup_stage": "STAGE_API_DISPATCH",
+  1012→      "crash_point": "MISSING_API",
+  1013→      "api_analysis": {
+  1014→        "total_expected": 5,
+  1015→        "working": 0,
+  1016→        "partial": 0,
+  1017→        "missing": 5,
+  1018→        "details": {
+  1019→          "working_apis": [],
+  1020→          "partial_apis": [],
+  1021→          "missing_apis": [
+  1022→            {
+  1023→              "api": "PreferenceFragment",
+  1024→              "reason": "Not implemented"
+  1025→            },
+  1026→            {
+  1027→              "api": "SharedPreferences",
+  1028→              "reason": "Not implemented"
+  1029→            },
+  1030→            {
+  1031→              "api": "SwitchPreference",
+  1032→              "reason": "Unknown/not analyzed"
+  1033→            },
+  1034→            {
+  1035→              "api": "ListPreference",
+  1036→              "reason": "Unknown/not analyzed"
+  1037→            },
+  1038→            {
+  1039→              "api": "EditTextPreference",
+  1040→              "reason": "Unknown/not analyzed"
+  1041→            }
+  1042→          ]
+  1043→        }
+  1044→      },
+  1045→      "missing_opcodes": [],
+  1046→      "resource_issues": [],
+  1047→      "special_notes": [],
+  1048→      "evidence_trace": "run/exp020_traces/SET-001_trace.json"
+  1049→    },
+  1050→    {
+  1051→      "apk_id": "SET-002",
+  1052→      "apk_name": "AppSettings",
+  1053→      "package_name": "com.example.appsettings",
+  1054→      "execution_result": "FAIL",
+  1055→      "confidence_score": 27.0,
+  1056→      "startup_stage": "STAGE_API_DISPATCH",
+  1057→      "crash_point": "MISSING_API",
+  1058→      "api_analysis": {
+  1059→        "total_expected": 5,
+  1060→        "working": 1,
+  1061→        "partial": 1,
+  1062→        "missing": 3,
+  1063→        "details": {
+  1064→          "working_apis": [
+  1065→            "Button"
+  1066→          ],
+  1067→          "partial_apis": [
+  1068→            {
+  1069→              "api": "CheckBox",
+  1070→              "issue": "<init> works only"
+  1071→            }
+  1072→          ],
+  1073→          "missing_apis": [
+  1074→            {
+  1075→              "api": "SharedPreferences",
+  1076→              "reason": "Not implemented"
+  1077→            },
+  1078→            {
+  1079→              "api": "EditText",
+  1080→              "reason": "return-object needed"
+  1081→            },
+  1082→            {
+  1083→              "api": "Toast",
+  1084→              "reason": "invoke-static needed"
+  1085→            }
+  1086→          ]
+  1087→        }
+  1088→      },
+  1089→      "missing_opcodes": [
+  1090→        {
+  1091→          "opcode": "invoke-static",
+  1092→          "impact": "MEDIUM",
+  1093→          "blocks_api": "Toast"
+  1094→        }
+  1095→      ],
+  1096→      "resource_issues": [],
+  1097→      "special_notes": [],
+  1098→      "evidence_trace": "run/exp020_traces/SET-002_trace.json"
+  1099→    },
+  1100→    {
+  1101→      "apk_id": "SET-003",
+  1102→      "apk_name": "ProfileSettings",
+  1103→      "package_name": "com.example.profilesettings",
+  1104→      "execution_result": "FAIL",
+  1105→      "confidence_score": 17.0,
+  1106→      "startup_stage": "STAGE_API_DISPATCH",
+  1107→      "crash_point": "MISSING_API",
+  1108→      "api_analysis": {
+  1109→        "total_expected": 5,
+  1110→        "working": 1,
+  1111→        "partial": 0,
+  1112→        "missing": 4,
+  1113→        "details": {
+  1114→          "working_apis": [
+  1115→            "Button"
+  1116→          ],
+  1117→          "partial_apis": [],
+  1118→          "missing_apis": [
+  1119→            {
+  1120→              "api": "EditText",
+  1121→              "reason": "return-object needed"
+  1122→            },
+  1123→            {
+  1124→              "api": "ImageView",
+  1125→              "reason": "Unknown/not analyzed"
+  1126→            },
+  1127→            {
+  1128→              "api": "SharedPreferences",
+  1129→              "reason": "Not implemented"
+  1130→            },
+  1131→            {
+  1132→              "api": "Intent",
+  1133→              "reason": "Not implemented"
+  1134→            }
+  1135→          ]
+  1136→        }
+  1137→      },
+  1138→      "missing_opcodes": [],
+  1139→      "resource_issues": [],
+  1140→      "special_notes": [],
+  1141→      "evidence_trace": "run/exp020_traces/SET-003_trace.json"
+  1142→    },
+  1143→    {
+  1144→      "apk_id": "SET-004",
+  1145→      "apk_name": "NotificationSettings",
+  1146→      "package_name": "com.example.notificationsettings",
+  1147→      "execution_result": "FAIL",
+  1148→      "confidence_score": 12.5,
+  1149→      "startup_stage": "STAGE_API_DISPATCH",
+  1150→      "crash_point": "MISSING_API",
+  1151→      "api_analysis": {
+  1152→        "total_expected": 4,
+  1153→        "working": 0,
+  1154→        "partial": 1,
+  1155→        "missing": 3,
+  1156→        "details": {
+  1157→          "working_apis": [],
+  1158→          "partial_apis": [
+  1159→            {
+  1160→              "api": "CheckBox",
+  1161→              "issue": "<init> works only"
+  1162→            }
+  1163→          ],
+  1164→          "missing_apis": [
+  1165→            {
+  1166→              "api": "Switch",
+  1167→              "reason": "Unknown/not analyzed"
+  1168→            },
+  1169→            {
+  1170→              "api": "SharedPreferences",
+  1171→              "reason": "Not implemented"
+  1172→            },
+  1173→            {
+  1174→              "api": "NotificationManager",
+  1175→              "reason": "Unknown/not analyzed"
+  1176→            }
+  1177→          ]
+  1178→        }
+  1179→      },
+  1180→      "missing_opcodes": [
+  1181→        {
+  1182→          "opcode": "packed-switch",
+  1183→          "impact": "LOW",
+  1184→          "blocks_api": "Switch"
+  1185→        },
+  1186→        {
+  1187→          "opcode": "sparse-switch",
+  1188→          "impact": "LOW",
+  1189→          "blocks_api": "Switch"
+  1190→        }
+  1191→      ],
+  1192→      "resource_issues": [],
+  1193→      "special_notes": [],
+  1194→      "evidence_trace": "run/exp020_traces/SET-004_trace.json"
+  1195→    },
+  1196→    {
+  1197→      "apk_id": "GAME-001",
+  1198→      "apk_name": "TicTacToe",
+  1199→      "package_name": "com.example.tictactoe",
+  1200→      "execution_result": "FAIL",
+  1201→      "confidence_score": 35.0,
+  1202→      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+  1203→      "crash_point": "CALLBACK_DISPATCH_FAIL",
+  1204→      "api_analysis": {
+  1205→        "total_expected": 5,
+  1206→        "working": 2,
+  1207→        "partial": 0,
+  1208→        "missing": 3,
+  1209→        "details": {
+  1210→          "working_apis": [
+  1211→            "Button",
+  1212→            "TextView"
+  1213→          ],
+  1214→          "partial_apis": [],
+  1215→          "missing_apis": [
+  1216→            {
+  1217→              "api": "OnClickListener",
+  1218→              "reason": "invoke-interface needed"
+  1219→            },
+  1220→            {
+  1221→              "api": "Game Logic",
+  1222→              "reason": "Unknown/not analyzed"
+  1223→            },
+  1224→            {
+  1225→              "api": "AlertDialog",
+  1226→              "reason": "Unknown/not analyzed"
+  1227→            }
+  1228→          ]
+  1229→        }
+  1230→      },
+  1231→      "missing_opcodes": [
+  1232→        {
+  1233→          "opcode": "invoke-interface",
+  1234→          "impact": "HIGH",
+  1235→          "blocks_api": "OnClickListener"
+  1236→        }
+  1237→      ],
+  1238→      "resource_issues": [],
+  1239→      "special_notes": [],
+  1240→      "evidence_trace": "run/exp020_traces/GAME-001_trace.json"
+  1241→    },
+  1242→    {
+  1243→      "apk_id": "GAME-002",
+  1244→      "apk_name": "GuessNumber",
+  1245→      "package_name": "com.example.guessnumber",
+  1246→      "execution_result": "FAIL",
+  1247→      "confidence_score": 29.2,
+  1248→      "startup_stage": "STAGE_API_DISPATCH",
+  1249→      "crash_point": "MISSING_API",
+  1250→      "api_analysis": {
+  1251→        "total_expected": 6,
+  1252→        "working": 2,
+  1253→        "partial": 0,
+  1254→        "missing": 4,
+  1255→        "details": {
+  1256→          "working_apis": [
+  1257→            "Button",
+  1258→            "TextView"
+  1259→          ],
+  1260→          "partial_apis": [],
+  1261→          "missing_apis": [
+  1262→            {
+  1263→              "api": "EditText",
+  1264→              "reason": "return-object needed"
+  1265→            },
+  1266→            {
+  1267→              "api": "Random",
+  1268→              "reason": "Unknown/not analyzed"
+  1269→            },
+  1270→            {
+  1271→              "api": "Toast",
+  1272→              "reason": "invoke-static needed"
+  1273→            },
+  1274→            {
+  1275→              "api": "Integer.parseInt",
+  1276→              "reason": "Not implemented"
+  1277→            }
+  1278→          ]
+  1279→        }
+  1280→      },
+  1281→      "missing_opcodes": [
+  1282→        {
+  1283→          "opcode": "invoke-static",
+  1284→          "impact": "MEDIUM",
+  1285→          "blocks_api": "Toast"
+  1286→        },
+  1287→        {
+  1288→          "opcode": "invoke-static",
+  1289→          "impact": "MEDIUM",
+  1290→          "blocks_api": "Integer.parseInt"
+  1291→        }
+  1292→      ],
+  1293→      "resource_issues": [],
+  1294→      "special_notes": [],
+  1295→      "evidence_trace": "run/exp020_traces/GAME-002_trace.json"
+  1296→    },
+  1297→    {
+  1298→      "apk_id": "GAME-003",
+  1299→      "apk_name": "MemoryGame",
+  1300→      "package_name": "com.example.memorygame",
+  1301→      "execution_result": "FAIL",
+  1302→      "confidence_score": 17.0,
+  1303→      "startup_stage": "STAGE_API_DISPATCH",
+  1304→      "crash_point": "MISSING_API",
+  1305→      "api_analysis": {
+  1306→        "total_expected": 5,
+  1307→        "working": 1,
+  1308→        "partial": 0,
+  1309→        "missing": 4,
+  1310→        "details": {
+  1311→          "working_apis": [
+  1312→            "Button"
+  1313→          ],
+  1314→          "partial_apis": [],
+  1315→          "missing_apis": [
+  1316→            {
+  1317→              "api": "ImageView",
+  1318→              "reason": "Unknown/not analyzed"
+  1319→            },
+  1320→            {
+  1321→              "api": "GridLayout",
+  1322→              "reason": "Unknown/not analyzed"
+  1323→            },
+  1324→            {
+  1325→              "api": "Animation",
+  1326→              "reason": "Unknown/not analyzed"
+  1327→            },
+  1328→            {
+  1329→              "api": "Timer",
+  1330→              "reason": "Unknown/not analyzed"
+  1331→            }
+  1332→          ]
+  1333→        }
+  1334→      },
+  1335→      "missing_opcodes": [],
+  1336→      "resource_issues": [
+  1337→        {
+  1338→          "type": "RESOURCE_ACCESS",
+  1339→          "api": "GridLayout",
+  1340→          "potential_issue": "Resources.getString/getIdentifier may fail",
+  1341→          "severity": "MEDIUM"
+  1342→        }
+  1343→      ],
+  1344→      "special_notes": [],
+  1345→      "evidence_trace": "run/exp020_traces/GAME-003_trace.json"
+  1346→    },
+  1347→    {
+  1348→      "apk_id": "GAME-004",
+  1349→      "apk_name": "QuizApp",
+  1350→      "package_name": "com.example.quizapp",
+  1351→      "execution_result": "FAIL",
+  1352→      "confidence_score": 35.0,
+  1353→      "startup_stage": "STAGE_API_DISPATCH",
+  1354→      "crash_point": "MISSING_API",
+  1355→      "api_analysis": {
+  1356→        "total_expected": 5,
+  1357→        "working": 2,
+  1358→        "partial": 0,
+  1359→        "missing": 3,
+  1360→        "details": {
+  1361→          "working_apis": [
+  1362→            "Button",
+  1363→            "TextView"
+  1364→          ],
+  1365→          "partial_apis": [],
+  1366→          "missing_apis": [
+  1367→            {
+  1368→              "api": "RadioButton",
+  1369→              "reason": "Unknown/not analyzed"
+  1370→            },
+  1371→            {
+  1372→              "api": "LinearLayout",
+  1373→              "reason": "Unknown/not analyzed"
+  1374→            },
+  1375→            {
+  1376→              "api": "Intent",
+  1377→              "reason": "Not implemented"
+  1378→            }
+  1379→          ]
+  1380→        }
+  1381→      },
+  1382→      "missing_opcodes": [],
+  1383→      "resource_issues": [
+  1384→        {
+  1385→          "type": "RESOURCE_ACCESS",
+  1386→          "api": "LinearLayout",
+  1387→          "potential_issue": "Resources.getString/getIdentifier may fail",
+  1388→          "severity": "MEDIUM"
+  1389→        }
+  1390→      ],
+  1391→      "special_notes": [],
+  1392→      "evidence_trace": "run/exp020_traces/GAME-004_trace.json"
+  1393→    },
+  1394→    {
+  1395→      "apk_id": "GAME-005",
+  1396→      "apk_name": "RockPaperScissors",
+  1397→      "package_name": "com.example.rps",
+  1398→      "execution_result": "FAIL",
+  1399→      "confidence_score": 18.0,
+  1400→      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+  1401→      "crash_point": "CALLBACK_DISPATCH_FAIL",
+  1402→      "api_analysis": {
+  1403→        "total_expected": 5,
+  1404→        "working": 1,
+  1405→        "partial": 0,
+  1406→        "missing": 4,
+  1407→        "details": {
+  1408→          "working_apis": [
+  1409→            "TextView"
+  1410→          ],
+  1411→          "partial_apis": [],
+  1412→          "missing_apis": [
+  1413→            {
+  1414→              "api": "ImageButton",
+  1415→              "reason": "Unknown/not analyzed"
+  1416→            },
+  1417→            {
+  1418→              "api": "Random",
+  1419→              "reason": "Unknown/not analyzed"
+  1420→            },
+  1421→            {
+  1422→              "api": "OnClickListener",
+  1423→              "reason": "invoke-interface needed"
+  1424→            },
+  1425→            {
+  1426→              "api": "Animation",
+  1427→              "reason": "Unknown/not analyzed"
+  1428→            }
+  1429→          ]
+  1430→        }
+  1431→      },
+  1432→      "missing_opcodes": [
+  1433→        {
+  1434→          "opcode": "invoke-interface",
+  1435→          "impact": "HIGH",
+  1436→          "blocks_api": "OnClickListener"
+  1437→        }
+  1438→      ],
+  1439→      "resource_issues": [],
+  1440→      "special_notes": [],
+  1441→      "evidence_trace": "run/exp020_traces/GAME-005_trace.json"
+  1442→    },
+  1443→    {
+  1444→      "apk_id": "GAME-006",
+  1445→      "apk_name": "WhackAMole",
+  1446→      "package_name": "com.example.whackamole",
+  1447→      "execution_result": "FAIL",
+  1448→      "confidence_score": 14.2,
+  1449→      "startup_stage": "STAGE_API_DISPATCH",
+  1450→      "crash_point": "MISSING_API",
+  1451→      "api_analysis": {
+  1452→        "total_expected": 6,
+  1453→        "working": 1,
+  1454→        "partial": 0,
+  1455→        "missing": 5,
+  1456→        "details": {
+  1457→          "working_apis": [
+  1458→            "Button"
+  1459→          ],
+  1460→          "partial_apis": [],
+  1461→          "missing_apis": [
+  1462→            {
+  1463→              "api": "ImageView",
+  1464→              "reason": "Unknown/not analyzed"
+  1465→            },
+  1466→            {
+  1467→              "api": "Handler",
+  1468→              "reason": "Unknown/not analyzed"
+  1469→            },
+  1470→            {
+  1471→              "api": "Runnable",
+  1472→              "reason": "Unknown/not analyzed"
+  1473→            },
+  1474→            {
+  1475→              "api": "Score tracking",
+  1476→              "reason": "Unknown/not analyzed"
+  1477→            },
+  1478→            {
+  1479→              "api": "Timer",
+  1480→              "reason": "Unknown/not analyzed"
+  1481→            }
+  1482→          ]
+  1483→        }
+  1484→      },
+  1485→      "missing_opcodes": [],
+  1486→      "resource_issues": [],
+  1487→      "special_notes": [],
+  1488→      "evidence_trace": "run/exp020_traces/GAME-006_trace.json"
+  1489→    },
+  1490→    {
+  1491→      "apk_id": "ADD-001",
+  1492→      "apk_name": "AndroidBasicSamples",
+  1493→      "package_name": "com.example.androidbasicsamples",
+  1494→      "execution_result": "FAIL",
+  1495→      "confidence_score": 0.0,
+  1496→      "startup_stage": "STAGE_API_DISPATCH",
+  1497→      "crash_point": "MISSING_API",
+  1498→      "api_analysis": {
+  1499→        "total_expected": 4,
+  1500→        "working": 0,
+  1501→        "partial": 0,
+  1502→        "missing": 4,
+  1503→        "details": {
+  1504→          "working_apis": [],
+  1505→          "partial_apis": [],
+  1506→          "missing_apis": [
+  1507→            {
+  1508→              "api": "Activity lifecycle",
+  1509→              "reason": "Unknown/not analyzed"
+  1510→            },
+  1511→            {
+  1512→              "api": "View creation",
+  1513→              "reason": "Unknown/not analyzed"
+  1514→            },
+  1515→            {
+  1516→              "api": "Resource loading",
+  1517→              "reason": "Unknown/not analyzed"
+  1518→            },
+  1519→            {
+  1520→              "api": "Basic UI",
+  1521→              "reason": "Unknown/not analyzed"
+  1522→            }
+  1523→          ]
+  1524→        }
+  1525→      },
+  1526→      "missing_opcodes": [],
+  1527→      "resource_issues": [
+  1528→        {
+  1529→          "type": "RESOURCE_ACCESS",
+  1530→          "api": "Resource loading",
+  1531→          "potential_issue": "Resources.getString/getIdentifier may fail",
+  1532→          "severity": "MEDIUM"
+  1533→        }
+  1534→      ],
+  1535→      "special_notes": [],
+  1536→      "evidence_trace": "run/exp020_traces/ADD-001_trace.json"
+  1537→    },
+  1538→    {
+  1539→      "apk_id": "ADD-002",
+  1540→      "apk_name": "android-helloworld-patterns",
+  1541→      "package_name": "com.example.hwpatterns",
+  1542→      "execution_result": "FAIL",
+  1543→      "confidence_score": 0.0,
+  1544→      "startup_stage": "STAGE_API_DISPATCH",
+  1545→      "crash_point": "MISSING_API",
+  1546→      "api_analysis": {
+  1547→        "total_expected": 3,
+  1548→        "working": 0,
+  1549→        "partial": 0,
+  1550→        "missing": 3,
+  1551→        "details": {
+  1552→          "working_apis": [],
+  1553→          "partial_apis": [],
+  1554→          "missing_apis": [
+  1555→            {
+  1556→              "api": "Various Activity patterns",
+  1557→              "reason": "Unknown/not analyzed"
+  1558→            },
+  1559→            {
+  1560→              "api": "Different layout approaches",
+  1561→              "reason": "Unknown/not analyzed"
+  1562→            },
+  1563→            {
+  1564→              "api": "Menu handling basics",
+  1565→              "reason": "Unknown/not analyzed"
+  1566→            }
+  1567→          ]
+  1568→        }
+  1569→      },
+  1570→      "missing_opcodes": [],
+  1571→      "resource_issues": [
+  1572→        {
+  1573→          "type": "RESOURCE_ACCESS",
+  1574→          "api": "Different layout approaches",
+  1575→          "potential_issue": "Resources.getString/getIdentifier may fail",
+  1576→          "severity": "MEDIUM"
+  1577→        }
+  1578→      ],
+  1579→      "special_notes": [],
+  1580→      "evidence_trace": "run/exp020_traces/ADD-002_trace.json"
+  1581→    },
+  1582→    {
+  1583→      "apk_id": "ADD-003",
+  1584→      "apk_name": "LocalTestAPK-HelloWorld",
+  1585→      "package_name": "com.test.helloworld",
+  1586→      "execution_result": "PASS",
+  1587→      "confidence_score": 94.3,
+  1588→      "startup_stage": "FULL_EXECUTION_COMPLETE",
+  1589→      "crash_point": "NO_CRASH",
+  1590→      "api_analysis": {
+  1591→        "total_expected": 3,
+  1592→        "working": 3,
+  1593→        "partial": 0,
+  1594→        "missing": 0,
+  1595→        "details": {
+  1596→          "working_apis": [
+  1597→            "onCreate",
+  1598→            "setContentView",
+  1599→            "TextView.setText"
+  1600→          ],
+  1601→          "partial_apis": [],
+  1602→          "missing_apis": []
+  1603→        }
+  1604→      },
+  1605→      "missing_opcodes": [],
+  1606→      "resource_issues": [],
+  1607→      "special_notes": [],
+  1608→      "evidence_trace": "run/exp020_traces/ADD-003_trace.json"
+  1609→    }
+  1610→  ],
+  1611→  "top_blockers": [
+  1612→    {
+  1613→      "blocker": "EditText: return-object needed",
+  1614→      "affected_apks": 12
+  1615→    },
+  1616→    {
+  1617→      "blocker": "OPCODE: invoke-interface",
+  1618→      "affected_apks": 8
+  1619→    },
+  1620→    {
+  1621→      "blocker": "SharedPreferences: Not implemented",
+  1622→      "affected_apks": 7
+  1623→    },
+  1624→    {
+  1625→      "blocker": "OPCODE: move-result-object",
+  1626→      "affected_apks": 6
+  1627→    },
+  1628→    {
+  1629→      "blocker": "OPCODE: invoke-static",
+  1630→      "affected_apks": 6
+  1631→    },
+  1632→    {
+  1633→      "blocker": "OnClickListener: invoke-interface needed",
+  1634→      "affected_apks": 5
+  1635→    },
+  1636→    {
+  1637→      "blocker": "Intent: Not implemented",
+  1638→      "affected_apks": 5
+  1639→    },
+  1640→    {
+  1641→      "blocker": "ListView: Not implemented",
+  1642→      "affected_apks": 4
+  1643→    },
+  1644→    {
+  1645→      "blocker": "Menu: Unknown/not analyzed",
+  1646→      "affected_apks": 3
+  1647→    },
+  1648→    {
+  1649→      "blocker": "Toast: invoke-static needed",
+  1650→      "affected_apks": 3
+  1651→    },
+  1652→    {
+  1653→      "blocker": "AlertDialog: Unknown/not analyzed",
+  1654→      "affected_apks": 3
+  1655→    },
+  1656→    {
+  1657→      "blocker": "ImageView: Unknown/not analyzed",
+  1658→      "affected_apks": 3
+  1659→    },
+  1660→    {
+  1661→      "blocker": "Integer.parseInt: Not implemented",
+  1662→      "affected_apks": 2
+  1663→    },
+  1664→    {
+  1665→      "blocker": "Adapter: Unknown/not analyzed",
+  1666→      "affected_apks": 2
+  1667→    },
+  1668→    {
+  1669→      "blocker": "LinearLayout: Unknown/not analyzed",
+  1670→      "affected_apks": 2
+  1671→    }
+  1672→  ],
+  1673→  "category_breakdown": {
+  1674→    "helloworld": {
+  1675→      "total": 8,
+  1676→      "pass": 6,
+  1677→      "partial": 2,
+  1678→      "fail": 0,
+  1679→      "pass_rate": 75.0
+  1680→    },
+  1681→    "calculator": {
+  1682→      "total": 5,
+  1683→      "pass": 0,
+  1684→      "partial": 1,
+  1685→      "fail": 4,
+  1686→      "pass_rate": 0.0
+  1687→    },
+  1688→    "notes": {
+  1689→      "total": 5,
+  1690→      "pass": 0,
+  1691→      "partial": 1,
+  1692→      "fail": 4,
+  1693→      "pass_rate": 0.0
+  1694→    },
+  1695→    "todo": {
+  1696→      "total": 4,
+  1697→      "pass": 0,
+  1698→      "partial": 0,
+  1699→      "fail": 4,
+  1700→      "pass_rate": 0.0
+  1701→    },
+  1702→    "settings": {
+  1703→      "total": 4,
+  1704→      "pass": 0,
+  1705→      "partial": 0,
+  1706→      "fail": 4,
+  1707→      "pass_rate": 0.0
+  1708→    },
+  1709→    "games": {
+  1710→      "total": 6,
+  1711→      "pass": 0,
+  1712→      "partial": 0,
+  1713→      "fail": 6,
+  1714→      "pass_rate": 0.0
+  1715→    },
+  1716→    "other": {
+  1717→      "total": 3,
+  1718→      "pass": 1,
+  1719→      "partial": 0,
+  1720→      "fail": 2,
+  1721→      "pass_rate": 33.3
+  1722→    }
+  1723→  },
+  1724→  "recommendations": [
+  1725→    "CRITICAL: More than 50% of APKs failing - focus on P1 API implementation",
+  1726→    "HIGH: invoke-interface implementation needed for OnClickListener (affects interactive apps)",
+  1727→    "HIGH: Multiple missing APIs identified - prioritize by usage frequency",
+  1728→    "ACTION: Implement Button.setOnClickListener (invoke-interface) for maximum impact",
+  1729→    "ACTION: Fix move-result-object for EditText.getText and View.findViewById"
+  1730→  ]
+  1731→}

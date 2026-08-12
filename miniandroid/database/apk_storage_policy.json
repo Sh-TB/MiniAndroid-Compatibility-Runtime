@@ -1,0 +1,88 @@
+{
+  "experiment_id": "EXP-022",
+  "phase": "PHASE_6_STORAGE_MANAGEMENT",
+  "generated_at": "2026-08-12T14:04:27.251319Z",
+  "storage_policy": {
+    "keep_metadata": true,
+    "keep_traces": true,
+    "keep_reports": true,
+    "keep_hashes": true,
+    "delete_apk_binaries_after_analysis": true,
+    "delete_temporary_extraction_files": true,
+    "rules": {
+      "KEEP": [
+        "*.json (all evidence, traces, databases)",
+        "*.md (reports)",
+        "*.py (scripts)",
+        "*.h/*.cpp (source code)",
+        "files with sha256 hashes (integrity)"
+      ],
+      "DELETE_AFTER_ANALYSIS": [
+        "*.apk binary files (after hash recorded)",
+        "extracted dex files (/tmp, /var/tmp)",
+        "intermediate compilation objects (*.o)",
+        "build artifacts (unless needed)"
+      ],
+      "ARCHIVE": [
+        "Old experiment data (>5 experiments old)",
+        "Duplicate trace files",
+        "Large log files (>10MB)"
+      ]
+    },
+    "implementation_status": {
+      "apk_deleted_after_test": "MANUAL_STEP_REQUIRED",
+      "evidence_preserved": true,
+      "automated_cleanup": "NOT_IMPLEMENTED"
+    }
+  },
+  "current_usage": {
+    "run_directory": {
+      "path": "/home/z/my-project/miniandroid/run",
+      "size_bytes": 1865401,
+      "size_mb": 1.78,
+      "file_count": 84,
+      "exists": true
+    },
+    "database_directory": {
+      "path": "/home/z/my-project/miniandroid/database",
+      "size_bytes": 26470,
+      "size_mb": 0.03,
+      "file_count": 2,
+      "exists": true
+    },
+    "scripts_directory": {
+      "path": "/home/z/my-project/miniandroid/scripts",
+      "size_bytes": 309964,
+      "size_mb": 0.3,
+      "file_count": 13,
+      "exists": true
+    },
+    "test_apks": {
+      "path": "/home/z/my-project/miniandroid/test_apks",
+      "size_bytes": 1902,
+      "size_mb": 0.0,
+      "file_count": 2,
+      "exists": true
+    },
+    "golden": {
+      "path": "/home/z/my-project/miniandroid/golden",
+      "size_bytes": 1797,
+      "size_mb": 0.0,
+      "file_count": 5,
+      "exists": true
+    }
+  },
+  "recommendations": {
+    "immediate_actions": [
+      "Verify all critical JSON files have backups",
+      "Archive EXP-015 and older experiment data",
+      "Clean build directories (build_*, build)",
+      "Compress large trace files if needed"
+    ],
+    "disk_space_estimate": {
+      "total_miniandroid_usage_mb": 2.11,
+      "evidence_files_mb": 1.78,
+      "database_files_mb": 0.03
+    }
+  }
+}
