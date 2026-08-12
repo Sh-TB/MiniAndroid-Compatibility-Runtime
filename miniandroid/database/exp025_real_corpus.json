@@ -1,0 +1,103 @@
+{
+  "created": "2026-08-12T18:29:36.555040",
+  "corpus": [
+    {
+      "method": "github",
+      "repo": "nicedayzhu/Android-HelloWorld",
+      "package": "com.example.helloworld",
+      "name": "HelloWorld",
+      "category": "Demo",
+      "tier": 1
+    },
+    {
+      "method": "github",
+      "repo": "nicbuber/Android-Calculator",
+      "package": "com.example.calculator",
+      "name": "Calculator",
+      "category": "Productivity",
+      "tier": 1
+    },
+    {
+      "method": "fdroid",
+      "package": "net.gsantner.markor",
+      "name": "Markor",
+      "category": "Productivity",
+      "tier": 2
+    },
+    {
+      "method": "fdroid",
+      "package": "com.kunzisoft.keepass.libre",
+      "name": "KeePassDX",
+      "category": "Security",
+      "tier": 1
+    },
+    {
+      "method": "fdroid",
+      "package": "org.mozilla.firefox_beta",
+      "name": "Firefox Beta",
+      "category": "Browser",
+      "tier": 3
+    },
+    {
+      "method": "fdroid",
+      "package": "com.github.libretube",
+      "name": "LibreTube",
+      "category": "Multimedia",
+      "tier": 2
+    },
+    {
+      "method": "fdroid",
+      "package": "org.schabi.newpipe",
+      "name": "NewPipe",
+      "category": "Multimedia",
+      "tier": 2
+    },
+    {
+      "method": "fdroid",
+      "package": "me.ccrama.redditslide",
+      "name": "Slide",
+      "category": "News",
+      "tier": 2
+    },
+    {
+      "method": "fdroid",
+      "package": "org.videolan.vlc",
+      "name": "VLC",
+      "category": "Multimedia",
+      "tier": 2
+    },
+    {
+      "method": "fdroid",
+      "package": "com.nutomic.syncthingandroid",
+      "name": "Syncthing",
+      "category": "System",
+      "tier": 2
+    },
+    {
+      "method": "local",
+      "package": "local.test.notes",
+      "name": "TestNotes",
+      "app_type": "notes",
+      "category": "Test",
+      "tier": 1
+    },
+    {
+      "method": "local",
+      "package": "local.test.todo",
+      "name": "TestTodo",
+      "app_type": "todo",
+      "category": "Test",
+      "tier": 1
+    },
+    {
+      "method": "local",
+      "package": "local.test.clock",
+      "name": "TestClock",
+      "app_type": "clock",
+      "category": "Test",
+      "tier": 1
+    }
+  ],
+  "results_count": 13,
+  "successful": 0
+}
