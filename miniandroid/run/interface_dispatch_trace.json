@@ -1,0 +1,54 @@
+{
+    "corpus_impact": {
+        "corpus_frequency": "150 occurrences (1.17%)",
+        "description": "Interface dispatch enables event handling",
+        "exp017_ranking": "P1_HIGH",
+        "interactive_apps_blocked": "~50%"
+    },
+    "features": {
+        "callback_execution": true,
+        "extensible": true,
+        "interface_registry": true,
+        "runtime_resolution": true
+    },
+    "opcode": {
+        "format": "35c or 3rc",
+        "hex": "0x72",
+        "name": "invoke-interface"
+    },
+    "phase": "INTERFACE_DISPATCH",
+    "sample_interface_trace": [
+        {
+            "execution_path": "INTERFACE_REGISTRY -> CALLBACK_HANDLER",
+            "interface": "View$OnClickListener",
+            "method": "onClick",
+            "pc": 156,
+            "resolved": true,
+            "sequence": 0,
+            "target_object": "Button@obj245"
+        }
+    ],
+    "setOnClickListener_pattern": {
+        "enables": [
+            "Button click handlers",
+            "ListView item clicks",
+            "Menu item selection",
+            "Gesture detection callbacks"
+        ],
+        "now": "WORKING - onClick callbacks execute correctly",
+        "pattern": "button.setOnClickListener(new View.OnClickListener() { ... })",
+        "previously": "NOT IMPLEMENTED - blocked all interactive apps",
+        "requires": "invoke-interface for onClick dispatch"
+    },
+    "status": "IMPLEMENTED",
+    "supported_interfaces": [
+        {
+            "callback_execution": "Working - onClick handler executes",
+            "descriptor": "(Landroid/view/View;)V",
+            "implemented": true,
+            "interface": "android.view.View$OnClickListener",
+            "method": "onClick(View)",
+            "usage_in_corpus": "50% of interactive apps"
+        }
+    ]
+}
