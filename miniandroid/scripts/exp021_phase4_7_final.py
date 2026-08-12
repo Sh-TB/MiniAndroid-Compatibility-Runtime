@@ -320,7 +320,7 @@ def run_regression_test(exp020_data: Dict) -> Dict:
         
         "improvement": {
             "score_increase": round(new_score - exp020_score, 1),
-            "pass_rate_increase": round(new_apk_rate * 100 - exp020_baseline["apk_pass_rate"], 1),
+            "pass_rate_increase": round(new_apk_rate * 100 - (exp020_matrix.get("pass", 7) / max(exp020_matrix.get("total", 35), 1) * 100), 1),
             "additional_apks_passing": new_pass - 7,
             "grade_change": "F→D" if new_score >= 50 else "F→F" if new_score >= 40 else "F→F"
         },
@@ -350,9 +350,12 @@ def run_regression_test(exp020_data: Dict) -> Dict:
     print(f"\n{'='*70}")
     print(f"REGRESSION TEST SUMMARY")
     print(f"{'='*70}")
+    
+    exp020_pass_rate = round(exp020_matrix.get("pass", 7) / max(exp020_matrix.get("total", 35), 1) * 100, 1)
+    
     print(f"\n📊 BEFORE (EXP-020):")
     print(f"   Score: {exp020_score}/100 ({'F' if exp020_score < 60 else 'D' if exp020_score < 70 else 'C'})")
-    print(f"   Pass rate: {exp020_baseline['apk_pass_rate']}% ({exp020_baseline['passed']}/{exp020_baseline['total_apks']})")
+    print(f"   Pass rate: {exp020_pass_rate}% ({exp020_matrix.get('pass', 7)}/{exp020_matrix.get('total', 35)})")
     
     print(f"\n📈 AFTER (EXP-021):")
     print(f"   Score: {regression_result['exp021_results']['compatibility_score']}/100 ({'F' if new_score < 60 else 'D' if new_score < 70 else 'C' if new_score < 80 else 'B'})")
@@ -767,7 +770,7 @@ def generate_markdown_report(report: Dict) -> str:
 | Metric | EXP-020 (Before) | EXP-021 (After) | Change |
 |--------|-------------------|----------------|--------|
 | **Overall Score** | 38/100 (F) | {report['before_after_comparison']['after']['score']}/100 ({report['before_after_comparison']['after']['grade']}) | **+{report['score_improvement']['absolute_gain']}** |
-| **APK Pass Rate** | {report['before_after_comparison']['before']['apk_pass_rate']}% ({report['before_after_comparison']['before']['passed']}/{report['before_after_comparison']['before']['total_apks']}) | {report['before_after_comparison']['after']['apk_pass_rate']}% ({report['before_after_comparison']['after']['passed']}/{report['before_after_comparison']['after']['total_apks']}) | **+{report['metrics_detail']['apk_pass_rate']['improvement']}%** |
+| **APK Pass Rate** | {report['before_after_comparison']['before']['apk_pass_rate']}% ({report['before_after_comparison']['before']['passed_apks']}/35) | {report['before_after_comparison']['after']['apk_pass_rate']}% ({report['before_after_comparison']['after']['passed_apks']}/35) | **+{report['metrics_detail']['apk_pass_rate']['improvement']}%** |
 | **API Coverage** | 35.3% | {report['metrics_detail']['api_coverage']['after']}% | **+{report['metrics_detail']['api_coverage']['improvement']}%** |
 | **Opcode Coverage** | 32.1% | {report['metrics_detail']['opcode_coverage']['after']}% | **+{report['metrics_detail']['opcode_coverage']['improvement']}%** |
 | **Strict Mode** | 95.0% (A) | {report['metrics_detail']['strict_mode']['after']}% (A+) | **+{report['metrics_detail']['strict_mode']['improvement']}%** |

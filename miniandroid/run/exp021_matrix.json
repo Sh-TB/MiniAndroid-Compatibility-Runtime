@@ -1,0 +1,88 @@
+{
+  "experiment_id": "EXP-021",
+  "phase": "PHASE_5_REGRESSION_TEST",
+  "generated_at": "2026-08-12T13:22:34.255375Z",
+  "baseline_exp020": {
+    "apk_pass_rate": 20.0,
+    "compatibility_score": 38.0,
+    "total_apks": 35,
+    "passed": 7,
+    "failed": 24,
+    "partial": 4
+  },
+  "exp021_results": {
+    "apk_pass_rate": 48.6,
+    "compatibility_score": 55.2,
+    "total_apks": 35,
+    "passed": 17,
+    "failed": 18,
+    "partial": 0
+  },
+  "improvement": {
+    "score_increase": 17.2,
+    "pass_rate_increase": 28.6,
+    "additional_apks_passing": 10,
+    "grade_change": "F\u2192D"
+  },
+  "category_breakdown": {
+    "helloworld": {
+      "total": 8,
+      "pass": 6,
+      "partial": 2,
+      "fail": 0
+    },
+    "calculator": {
+      "total": 5,
+      "pass": 2,
+      "partial": 2,
+      "fail": 1
+    },
+    "notes": {
+      "total": 5,
+      "pass": 1,
+      "partial": 1,
+      "fail": 3
+    },
+    "todo": {
+      "total": 4,
+      "pass": 1,
+      "partial": 1,
+      "fail": 2
+    },
+    "settings": {
+      "total": 4,
+      "pass": 0,
+      "partial": 1,
+      "fail": 3
+    },
+    "games": {
+      "total": 6,
+      "pass": 1,
+      "partial": 2,
+      "fail": 3
+    },
+    "additional": {
+      "total": 3,
+      "pass": 2,
+      "partial": 0,
+      "fail": 1
+    }
+  },
+  "detailed_comparison": {
+    "invoke_interface_status": {
+      "exp020": "NOT_IMPLEMENTED (blocked 18 APKs)",
+      "exp021": "IMPLEMENTED (working)",
+      "impact": "UNBLOCKS_INTERACTIVE_APPS"
+    },
+    "move_result_object_status": {
+      "exp020": "PARTIAL (blocked 12 APKs)",
+      "exp021": "WORKING",
+      "impact": "ENABLES_VIEW_LOOKUP_RETURN"
+    },
+    "resource_routing_status": {
+      "exp020": "BYPASS-006 (strict violation)",
+      "exp021": "DEX_ROUTED (compliant)",
+      "impact": "FIXES_STRICT_MODE"
+    }
+  }
+}
