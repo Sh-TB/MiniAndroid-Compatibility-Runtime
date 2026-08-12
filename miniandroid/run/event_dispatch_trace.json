@@ -1,0 +1,57 @@
+{
+  "experiment_id": "EXP-019",
+  "timestamp": "2026-08-12T09:46:09Z",
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": "2026-08-12T09:46:09Z",
+      "event": {
+        "type": "CLICK",
+        "target_view_id": 103,
+        "target_android_id": 2131165187,
+        "x": 150.0,
+        "y": 200.0,
+        "key_code": 0,
+        "consumed": true
+      },
+      "dispatched": true,
+      "dispatch_path": "INTERFACE_DISPATCH",
+      "has_listener": true,
+      "listener_interface": "android.view.View$OnClickListener",
+      "listener_method": "onClick",
+      "listener_object_id": 500,
+      "handler_executed": true,
+      "execution_result": "onClick dispatched to listener object 500"
+    },
+    {
+      "sequence": 2,
+      "timestamp": "2026-08-12T09:46:09Z",
+      "event": {
+        "type": "CLICK",
+        "target_view_id": 102,
+        "target_android_id": 2131165186,
+        "x": 150.0,
+        "y": 100.0,
+        "key_code": 0,
+        "consumed": false
+      },
+      "dispatched": true,
+      "dispatch_path": "NO_HANDLER",
+      "has_listener": false,
+      "handler_executed": false,
+      "execution_result": "No click listener registered"
+    }
+  ],
+  "registered_listeners": [
+    {
+      "view_id": 103,
+      "interface_name": "android.view.View$OnClickListener",
+      "listener_object_id": 500,
+      "active": true
+    }
+  ],
+  "total_events": 2,
+  "dispatched_events": 2,
+  "handled_events": 1,
+  "unhandled_events": 1
+}
