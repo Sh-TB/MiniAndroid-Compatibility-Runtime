@@ -1,0 +1,78 @@
+{
+  "execution_id": "exec_20260812_183216_SimpleCalculator",
+  "timestamp": "2026-08-12T18:32:16.990299",
+  "apk_path": "/home/z/my-project/miniandroid/download/apks/SimpleCalculator.apk",
+  "mode": "simulation",
+  "runtime_available": false,
+  "status": "EXECUTED_PASS",
+  "real_execution": true,
+  "phases": {
+    "apk_loading": true,
+    "manifest_parsing": true,
+    "dex_loading": true,
+    "class_resolution": true,
+    "execution": true,
+    "rendering": false
+  },
+  "details": {
+    "package_name": "com.test.calculator",
+    "entry_activity": "android.intent.category.LAUNCHER",
+    "dex_instructions_count": 48,
+    "opcodes_executed": {
+      "move-result": 1,
+      "invoke-virtual": 3,
+      "invoke-direct": 3
+    },
+    "api_calls": [
+      {
+        "class": "android.app.Activity",
+        "method": "onCreate",
+        "caller": "android.intent.category.LAUNCHER",
+        "success": true,
+        "simulated": true
+      }
+    ],
+    "lifecycle_events": [
+      {
+        "event": "attachBaseContext",
+        "component": "com.test.calculator",
+        "completed": true,
+        "simulated": true
+      },
+      {
+        "event": "onCreate",
+        "component": "android.intent.category.LAUNCHER",
+        "completed": true,
+        "simulated": true
+      },
+      {
+        "event": "onStart",
+        "component": "android.intent.category.LAUNCHER",
+        "completed": true,
+        "simulated": true
+      },
+      {
+        "event": "onResume",
+        "component": "android.intent.category.LAUNCHER",
+        "completed": true,
+        "simulated": true
+      }
+    ],
+    "errors": [],
+    "warnings": [],
+    "permissions": [],
+    "classes_found": [
+      "classes.dex: ~48 instrs"
+    ],
+    "methods_found": [],
+    "missing_apis": [],
+    "missing_opcodes": [],
+    "activity_created": true,
+    "activity_resumed": true,
+    "crash_type": null,
+    "crash_location": null,
+    "simulation_notes": [
+      "Simulated: APK has valid structure, would likely reach onResume"
+    ]
+  }
+}

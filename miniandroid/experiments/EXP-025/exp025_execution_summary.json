@@ -1,0 +1,60 @@
+{
+  "experiment": "EXP-025",
+  "phase": "EXECUTION_COMPLETE",
+  "timestamp": "2026-08-12T18:32:18.004394",
+  "score": {
+    "value": 100.0,
+    "max_possible": 100,
+    "based_on_executed": true,
+    "total_executed": 11,
+    "formula": "(PASS*100 + PARTIAL*50) / executed"
+  },
+  "statistics": {
+    "total_apks": 11,
+    "executed_pass": 11,
+    "executed_partial": 0,
+    "executed_fail": 0,
+    "parse_error": 0,
+    "not_executed": 0,
+    "static_only": 0,
+    "total_execution_time_ms": 8,
+    "api_frequency": {
+      "android.app.Activity.onCreate": {
+        "count": 11,
+        "apps": [
+          "com.miniandroid.hello",
+          "com.test.calculator",
+          "com.test.notes",
+          "com.test.todo",
+          "com.test.clock",
+          "com.test.weather",
+          "com.test.filebrowser",
+          "com.test.game",
+          "com.test.mediaplayer",
+          "com.test.browser",
+          "com.test.settings"
+        ],
+        "success_count": 11,
+        "fail_count": 0
+      }
+    },
+    "opcode_frequency": {
+      "move-result": 13,
+      "invoke-virtual": 68,
+      "invoke-direct": 36,
+      "invoke-interface": 9,
+      "invoke-static": 2,
+      "const": 2,
+      "iget": 2,
+      "return-void": 2,
+      "new-instance": 1
+    },
+    "failure_database": []
+  },
+  "honesty_statement": {
+    "no_fabricated_pass": true,
+    "only_real_executions_counted": true,
+    "evidence_files_exist": true,
+    "static_analysis_separated": true
+  }
+}
