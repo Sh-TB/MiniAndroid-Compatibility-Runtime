@@ -253,6 +253,25 @@ add_custom_target(analyze-example
     COMMENT "Analyze sample HelloWorld.apk"
 )
 
+# ============== EXP-018 Executable (Real Android Execution Core Batch) ==============
+add_executable(miniandroid_exp018
+    src/exp018_main.cpp
+    src/dex/dex_interpreter_exp018.cpp
+    src/runtime/application_runtime.cpp
+)
+
+target_link_libraries(miniandroid_exp018 PRIVATE miniandroid_core)
+
+# ============== EXP-019 Executable (Android Application Runtime Integration) ==============
+add_executable(miniandroid_exp019
+    src/exp019_main.cpp
+    src/runtime/runtime_integration_exp019.cpp
+    src/dex/dex_interpreter_exp018.cpp
+    src/runtime/application_runtime.cpp
+)
+
+target_link_libraries(miniandroid_exp019 PRIVATE miniandroid_core)
+
 # ============== Summary ==============
 message(STATUS "")
 message(STATUS "========== MiniAndroid Build Configuration ==========")

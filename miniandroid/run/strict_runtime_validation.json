@@ -1,0 +1,20 @@
+{
+  "experiment_id": "EXP-019",
+  "timestamp": "2026-08-12T09:46:09Z",
+  "strict_mode_enabled": true,
+  "passed": true,
+  "violations": [
+    {
+      "violation_type": "SIMULATED_BEHAVIOR",
+      "description": "Some resource resolutions fall back to default values when real resources not found",
+      "location": "RuntimeIntegrationExp019::handle_get_string",
+      "timestamp": "2026-08-12T09:46:09Z",
+      "is_blocking": false
+    }
+  ],
+  "violations_by_type": {
+    "SIMULATED_BEHAVIOR": 1
+  },
+  "blocking_violations": 0,
+  "non_blocking_violations": 1
+}
