@@ -1,2 +1,47 @@
-skills/
+# Dependencies
 node_modules/
+skills/
+
+# Build artifacts
+miniandroid/build/
+miniandroid/build_exp*/
+
+# Object files and binaries
+*.o
+*.bin
+*.exe
+*.out
+*.so
+*.dylib
+*.a
+
+# Temporary files
+temp_apk_downloads/
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.idea/
+.vscode/
+*.xcodeproj/
+*.xcworkspace/
+*.iml
+
+# Environment files (may contain secrets)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Upload directory (transient)
+upload/
+
+# Tool results (transient)
+tool-results/
