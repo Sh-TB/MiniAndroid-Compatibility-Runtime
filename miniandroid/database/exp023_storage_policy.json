@@ -1,0 +1,43 @@
+{
+  "experiment_id": "EXP-023",
+  "phase": "PHASE_6_STORAGE_POLICY",
+  "generated_at": "2026-08-12T14:18:54.177542Z",
+  "policy_rules": {
+    "keep_permanently": [
+      "*.json (all evidence, traces, databases)",
+      "*.md (reports, documentation)",
+      "*.py (scripts)",
+      "*.h/*.cpp (source code)",
+      "*.png (screenshots - evidence)",
+      "checksum files (SHA256 records)"
+    ],
+    "delete_after_processing": [
+      "*.apk binary files (after hash recorded)",
+      "extracted dex files (/tmp, temp directories)",
+      "intermediate build artifacts (*.o files > 1 week old)",
+      "large log files (>10MB)"
+    ],
+    "never_commit": [
+      "GitHub tokens or credentials",
+      "Downloaded APK binaries",
+      "Temporary extraction files",
+      "Binary executables (unless tiny)"
+    ]
+  },
+  "implementation": {
+    "temp_directory": "/home/z/my-project/miniandroid/temp_apk_downloads",
+    "cleanup_after_each_apk": true,
+    "verify_deletion": true,
+    "evidence_preserved": true
+  },
+  "current_usage": {
+    "temp_dir_exists": true,
+    "temp_dir_clean": true
+  },
+  "verification_checklist": [
+    "APK hashed before any processing?",
+    "Evidence saved before deletion?",
+    "Deletion verified (file gone)?",
+    "Evidence still accessible?"
+  ]
+}

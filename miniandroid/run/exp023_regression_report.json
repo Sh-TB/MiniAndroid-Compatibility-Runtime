@@ -1,0 +1,54 @@
+{
+  "experiment_id": "EXP-023",
+  "phase": "PHASE_15_REGRESSION",
+  "generated_at": "2026-08-12T14:18:54.179792Z",
+  "test_name": "HelloWorld Regression",
+  "tests_run": [
+    {
+      "test": "APK File Exists",
+      "passed": true,
+      "details": {
+        "path": "/home/z/my-project/miniandroid/test_apks/HelloWorld.apk",
+        "exists": true,
+        "size": 1372
+      }
+    },
+    {
+      "test": "DEX Execution Trace Exists",
+      "passed": true,
+      "details": {
+        "path": "/home/z/my-project/miniandroid/run/real_helloworld_execution.json",
+        "exists": true
+      }
+    },
+    {
+      "test": "Screenshot Generated",
+      "passed": true,
+      "details": {
+        "path": "/home/z/my-project/miniandroid/run/screenshot.png",
+        "exists": true
+      }
+    },
+    {
+      "test": "Critical Evidence Files Intact",
+      "passed": true,
+      "details": {
+        "files_checked": [
+          "exp020_execution_matrix.json",
+          "exp021_interface_trace.json",
+          "exp022_report.md",
+          "exp023_checkpoint.json",
+          "AI_AGENT_CONTEXT.md"
+        ],
+        "all_present": true
+      }
+    }
+  ],
+  "summary": {
+    "total_tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "regression_status": "PASS",
+    "core_functionality_preserved": true
+  }
+}

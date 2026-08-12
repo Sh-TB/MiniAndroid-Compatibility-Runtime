@@ -1,0 +1,51 @@
+{
+  "experiment_id": "EXP-023",
+  "phase": "PHASE_17_FINAL_REPORT",
+  "generated_at": "2026-08-12T14:20:34.960639Z",
+  "status": "COMPLETE",
+  "real_execution_summary": {
+    "apks_downloaded": 1,
+    "actually_executed": 1,
+    "real_pass": 1,
+    "real_partial": 0,
+    "real_fail": 0,
+    "static_only": 18,
+    "screenshots": 1,
+    "real_api_db_size": 0,
+    "real_opcode_db_size": 21,
+    "top_blockers": [
+      "ListView/RecyclerView support",
+      "SharedPreferences persistence",
+      "colors.xml/theme parsing",
+      "invoke-static (Toast/Log)",
+      "Multi-Activity navigation"
+    ],
+    "real_corpus_pass_rate": 100.0
+  },
+  "critical_statements": {
+    "whatsapp_tested": false,
+    "telegram_tested": false,
+    "tiktok_tested": false,
+    "instagram_tested": false,
+    "any_commercial_app_tested": false,
+    "statement": "MiniAndroid was tested against 1 real application (HelloWorld.apk) with confirmed execution. All other compatibility claims are PROJECTIONS or ESTIMATES unless backed by execution proof."
+  },
+  "deliverables_created": [
+    "docs/AI_AGENT_CONTEXT.md",
+    "docs/architecture-current.md",
+    "run/exp023_checkpoint.json",
+    "database/exp023_evidence_audit.json",
+    "database/exp023_database_reconciliation.json",
+    "database/exp023_real_corpus.json",
+    "database/exp023_storage_policy.json",
+    "database/exp023_opcode_frequency.json",
+    "database/exp023_api_frequency.json",
+    "database/exp023_runtime_failures.json",
+    "database/exp023_api_priority_real.json",
+    "database/exp023_opcode_priority_real.json",
+    "run/exp023_real_compatibility.json",
+    "run/exp023_regression_report.json",
+    "run/exp023_category_gap_analysis.md",
+    "run/exp023_report.md"
+  ]
+}
