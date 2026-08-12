@@ -1,0 +1,39 @@
+{
+  "experiment": "EXP-024",
+  "phase": "API Frequency",
+  "generated": "2026-08-12T17:03:47.194448Z",
+  "basis": "REAL_EXECUTION_DATA_ONLY",
+  "total_apps": 1,
+  "unique_apis": 4,
+  "implemented": 4,
+  "rankings": [
+    {
+      "total": 1,
+      "success": 0,
+      "apps": 0,
+      "implemented": true,
+      "priority": 0.5
+    },
+    {
+      "total": 1,
+      "success": 0,
+      "apps": 0,
+      "implemented": true,
+      "priority": 0.5
+    },
+    {
+      "total": 1,
+      "success": 0,
+      "apps": 0,
+      "implemented": true,
+      "priority": 0.5
+    },
+    {
+      "total": 1,
+      "success": 0,
+      "apps": 0,
+      "implemented": true,
+      "priority": 0.5
+    }
+  ]
+}
