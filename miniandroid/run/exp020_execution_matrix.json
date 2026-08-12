@@ -1,0 +1,1731 @@
+{
+  "experiment_id": "EXP-020",
+  "phase": "PHASE_2_REAL_EXECUTION_MATRIX",
+  "generated_at": "2026-08-12T10:14:34.027372Z",
+  "summary": {
+    "pass": 7,
+    "partial": 4,
+    "fail": 24,
+    "total": 35,
+    "pass_rate": 20.0,
+    "partial_rate": 11.4,
+    "fail_rate": 68.6,
+    "avg_missing_apis": 2.69
+  },
+  "crash_point_distribution": {
+    "NO_CRASH": 7,
+    "DEX_PARSE_FAIL": 1,
+    "VIEW_CREATION_FAIL": 1,
+    "CALLBACK_DISPATCH_FAIL": 7,
+    "MISSING_API": 16,
+    "LAYOUT_INFLATE_FAIL": 3
+  },
+  "startup_stage_distribution": {
+    "FULL_EXECUTION_COMPLETE": 7,
+    "STAGE_1_DEX_PARSING": 1,
+    "STAGE_6_VIEW_TREE_BUILD": 1,
+    "STAGE_8_EVENT_REGISTRATION": 7,
+    "STAGE_API_DISPATCH": 16,
+    "STAGE_5_LAYOUT_INFLATION": 3
+  },
+  "execution_results": [
+    {
+      "apk_id": "HW-001",
+      "apk_name": "android-HelloWorld",
+      "package_name": "com.example.helloworld",
+      "execution_result": "PASS",
+      "confidence_score": 94.3,
+      "startup_stage": "FULL_EXECUTION_COMPLETE",
+      "crash_point": "NO_CRASH",
+      "api_analysis": {
+        "total_expected": 3,
+        "working": 3,
+        "partial": 0,
+        "missing": 0,
+        "details": {
+          "working_apis": [
+            "onCreate",
+            "setContentView",
+            "TextView.setText"
+          ],
+          "partial_apis": [],
+          "missing_apis": []
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/HW-001_trace.json"
+    },
+    {
+      "apk_id": "HW-002",
+      "apk_name": "hello-android",
+      "package_name": "com.gautierh.android",
+      "execution_result": "PASS",
+      "confidence_score": 87.0,
+      "startup_stage": "FULL_EXECUTION_COMPLETE",
+      "crash_point": "NO_CRASH",
+      "api_analysis": {
+        "total_expected": 4,
+        "working": 3,
+        "partial": 1,
+        "missing": 0,
+        "details": {
+          "working_apis": [
+            "onCreate",
+            "setContentView",
+            "TextView"
+          ],
+          "partial_apis": [
+            {
+              "api": "findViewById",
+              "issue": "move-result-object needed"
+            }
+          ],
+          "missing_apis": []
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "move-result-object",
+          "impact": "HIGH",
+          "blocks_api": "findViewById"
+        }
+      ],
+      "resource_issues": [
+        {
+          "type": "RESOURCE_ID_RESOLUTION",
+          "api": "findViewById",
+          "potential_issue": "R.id.XXX to internal ID mapping",
+          "severity": "LOW"
+        }
+      ],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/HW-002_trace.json"
+    },
+    {
+      "apk_id": "HW-003",
+      "apk_name": "android-hello-world",
+      "package_name": "com.example.helloworld",
+      "execution_result": "PASS",
+      "confidence_score": 96.5,
+      "startup_stage": "FULL_EXECUTION_COMPLETE",
+      "crash_point": "NO_CRASH",
+      "api_analysis": {
+        "total_expected": 2,
+        "working": 2,
+        "partial": 0,
+        "missing": 0,
+        "details": {
+          "working_apis": [
+            "onCreate",
+            "setContentView"
+          ],
+          "partial_apis": [],
+          "missing_apis": []
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/HW-003_trace.json"
+    },
+    {
+      "apk_id": "HW-004",
+      "apk_name": "minimal-android-app",
+      "package_name": "com.example.minimalapp",
+      "execution_result": "PASS",
+      "confidence_score": 96.5,
+      "startup_stage": "FULL_EXECUTION_COMPLETE",
+      "crash_point": "NO_CRASH",
+      "api_analysis": {
+        "total_expected": 2,
+        "working": 2,
+        "partial": 0,
+        "missing": 0,
+        "details": {
+          "working_apis": [
+            "onCreate",
+            "setContentView"
+          ],
+          "partial_apis": [],
+          "missing_apis": []
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/HW-004_trace.json"
+    },
+    {
+      "apk_id": "HW-005",
+      "apk_name": "hello-world-android",
+      "package_name": "com.example.helloworldandroid",
+      "execution_result": "PASS",
+      "confidence_score": 87.0,
+      "startup_stage": "FULL_EXECUTION_COMPLETE",
+      "crash_point": "NO_CRASH",
+      "api_analysis": {
+        "total_expected": 4,
+        "working": 3,
+        "partial": 1,
+        "missing": 0,
+        "details": {
+          "working_apis": [
+            "onCreate",
+            "setContentView",
+            "TextView"
+          ],
+          "partial_apis": [
+            {
+              "api": "findViewById",
+              "issue": "move-result-object needed"
+            }
+          ],
+          "missing_apis": []
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "move-result-object",
+          "impact": "HIGH",
+          "blocks_api": "findViewById"
+        }
+      ],
+      "resource_issues": [
+        {
+          "type": "RESOURCE_ID_RESOLUTION",
+          "api": "findViewById",
+          "potential_issue": "R.id.XXX to internal ID mapping",
+          "severity": "LOW"
+        }
+      ],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/HW-005_trace.json"
+    },
+    {
+      "apk_id": "HW-006",
+      "apk_name": "HelloWorldAndroid (Kotlin)",
+      "package_name": "com.example.helloworldkt",
+      "execution_result": "PARTIAL",
+      "confidence_score": 63.2,
+      "startup_stage": "STAGE_1_DEX_PARSING",
+      "crash_point": "DEX_PARSE_FAIL",
+      "api_analysis": {
+        "total_expected": 4,
+        "working": 2,
+        "partial": 1,
+        "missing": 1,
+        "details": {
+          "working_apis": [
+            "onCreate",
+            "setText"
+          ],
+          "partial_apis": [
+            {
+              "api": "findViewById",
+              "issue": "move-result-object needed"
+            }
+          ],
+          "missing_apis": [
+            {
+              "api": "Toast.makeText",
+              "reason": "invoke-static needed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "invoke-static",
+          "impact": "MEDIUM",
+          "blocks_api": "Toast.makeText"
+        },
+        {
+          "opcode": "move-result-object",
+          "impact": "HIGH",
+          "blocks_api": "findViewById"
+        }
+      ],
+      "resource_issues": [
+        {
+          "type": "RESOURCE_ID_RESOLUTION",
+          "api": "findViewById",
+          "potential_issue": "R.id.XXX to internal ID mapping",
+          "severity": "LOW"
+        }
+      ],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/HW-006_trace.json"
+    },
+    {
+      "apk_id": "HW-007",
+      "apk_name": "MinimalDroid",
+      "package_name": "com.minimal.droid",
+      "execution_result": "PASS",
+      "confidence_score": 96.5,
+      "startup_stage": "FULL_EXECUTION_COMPLETE",
+      "crash_point": "NO_CRASH",
+      "api_analysis": {
+        "total_expected": 2,
+        "working": 2,
+        "partial": 0,
+        "missing": 0,
+        "details": {
+          "working_apis": [
+            "onCreate",
+            "setContentView"
+          ],
+          "partial_apis": [],
+          "missing_apis": []
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/HW-007_trace.json"
+    },
+    {
+      "apk_id": "HW-008",
+      "apk_name": "android-basic-activity",
+      "package_name": "com.example.basicactivity",
+      "execution_result": "PARTIAL",
+      "confidence_score": 64.5,
+      "startup_stage": "STAGE_6_VIEW_TREE_BUILD",
+      "crash_point": "VIEW_CREATION_FAIL",
+      "api_analysis": {
+        "total_expected": 4,
+        "working": 2,
+        "partial": 1,
+        "missing": 1,
+        "details": {
+          "working_apis": [
+            "onCreate",
+            "setContentView"
+          ],
+          "partial_apis": [
+            {
+              "api": "findViewById",
+              "issue": "move-result-object needed"
+            }
+          ],
+          "missing_apis": [
+            {
+              "api": "OptionsMenu",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "move-result-object",
+          "impact": "HIGH",
+          "blocks_api": "findViewById"
+        }
+      ],
+      "resource_issues": [
+        {
+          "type": "RESOURCE_ID_RESOLUTION",
+          "api": "findViewById",
+          "potential_issue": "R.id.XXX to internal ID mapping",
+          "severity": "LOW"
+        }
+      ],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/HW-008_trace.json"
+    },
+    {
+      "apk_id": "CALC-001",
+      "apk_name": "SimpleCalculator",
+      "package_name": "com.example.calculator",
+      "execution_result": "FAIL",
+      "confidence_score": 54.1,
+      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+      "crash_point": "CALLBACK_DISPATCH_FAIL",
+      "api_analysis": {
+        "total_expected": 8,
+        "working": 4,
+        "partial": 1,
+        "missing": 3,
+        "details": {
+          "working_apis": [
+            "onCreate",
+            "setContentView",
+            "EditText.setText",
+            "TextView.setText"
+          ],
+          "partial_apis": [
+            {
+              "api": "findViewById",
+              "issue": "move-result-object needed"
+            }
+          ],
+          "missing_apis": [
+            {
+              "api": "Button.setOnClickListener",
+              "reason": "invoke-interface needed"
+            },
+            {
+              "api": "EditText.getText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "Integer.parseInt",
+              "reason": "Not implemented"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "invoke-interface",
+          "impact": "HIGH",
+          "blocks_api": "Button.setOnClickListener"
+        },
+        {
+          "opcode": "invoke-static",
+          "impact": "MEDIUM",
+          "blocks_api": "Integer.parseInt"
+        },
+        {
+          "opcode": "move-result-object",
+          "impact": "HIGH",
+          "blocks_api": "findViewById"
+        }
+      ],
+      "resource_issues": [
+        {
+          "type": "RESOURCE_ID_RESOLUTION",
+          "api": "findViewById",
+          "potential_issue": "R.id.XXX to internal ID mapping",
+          "severity": "HIGH"
+        }
+      ],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/CALC-001_trace.json"
+    },
+    {
+      "apk_id": "CALC-002",
+      "apk_name": "AndroidCalculator",
+      "package_name": "com.android.calculator2",
+      "execution_result": "FAIL",
+      "confidence_score": 39.0,
+      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+      "crash_point": "CALLBACK_DISPATCH_FAIL",
+      "api_analysis": {
+        "total_expected": 7,
+        "working": 3,
+        "partial": 0,
+        "missing": 4,
+        "details": {
+          "working_apis": [
+            "onCreate",
+            "Button",
+            "TextView"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "EditText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "OnClickListener",
+              "reason": "invoke-interface needed"
+            },
+            {
+              "api": "Math operations",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "State persistence",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "invoke-interface",
+          "impact": "HIGH",
+          "blocks_api": "OnClickListener"
+        }
+      ],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/CALC-002_trace.json"
+    },
+    {
+      "apk_id": "CALC-003",
+      "apk_name": "calc",
+      "package_name": "com.example.calc",
+      "execution_result": "PARTIAL",
+      "confidence_score": 73.6,
+      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+      "crash_point": "CALLBACK_DISPATCH_FAIL",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 4,
+        "partial": 0,
+        "missing": 1,
+        "details": {
+          "working_apis": [
+            "onCreate",
+            "setContentView",
+            "Button",
+            "TextView"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "onClick",
+              "reason": "invoke-interface needed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "invoke-interface",
+          "impact": "HIGH",
+          "blocks_api": "onClick"
+        }
+      ],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/CALC-003_trace.json"
+    },
+    {
+      "apk_id": "CALC-004",
+      "apk_name": "ScientificCalculator",
+      "package_name": "com.example.scicalc",
+      "execution_result": "FAIL",
+      "confidence_score": 35.0,
+      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+      "crash_point": "CALLBACK_DISPATCH_FAIL",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 2,
+        "partial": 0,
+        "missing": 3,
+        "details": {
+          "working_apis": [
+            "Button",
+            "TextView"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "EditText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "OnClickListener",
+              "reason": "invoke-interface needed"
+            },
+            {
+              "api": "Math functions",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "invoke-interface",
+          "impact": "HIGH",
+          "blocks_api": "OnClickListener"
+        }
+      ],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/CALC-004_trace.json"
+    },
+    {
+      "apk_id": "CALC-005",
+      "apk_name": "TipCalculator",
+      "package_name": "com.example.tipcalc",
+      "execution_result": "FAIL",
+      "confidence_score": 44.2,
+      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+      "crash_point": "CALLBACK_DISPATCH_FAIL",
+      "api_analysis": {
+        "total_expected": 6,
+        "working": 3,
+        "partial": 0,
+        "missing": 3,
+        "details": {
+          "working_apis": [
+            "Button",
+            "TextView",
+            "setText"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "EditText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "setOnClickListener",
+              "reason": "invoke-interface needed"
+            },
+            {
+              "api": "getText",
+              "reason": "return-object needed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "invoke-interface",
+          "impact": "HIGH",
+          "blocks_api": "setOnClickListener"
+        },
+        {
+          "opcode": "move-result-object",
+          "impact": "HIGH",
+          "blocks_api": "getText"
+        }
+      ],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/CALC-005_trace.json"
+    },
+    {
+      "apk_id": "NOTE-001",
+      "apk_name": "SimpleNotes",
+      "package_name": "com.example.simplenotes",
+      "execution_result": "FAIL",
+      "confidence_score": 17.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 1,
+        "partial": 0,
+        "missing": 4,
+        "details": {
+          "working_apis": [
+            "Button"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "ListView",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "EditText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "SharedPreferences",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "Intent",
+              "reason": "Not implemented"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/NOTE-001_trace.json"
+    },
+    {
+      "apk_id": "NOTE-002",
+      "apk_name": "MiniNotes",
+      "package_name": "com.example.mininotes",
+      "execution_result": "PARTIAL",
+      "confidence_score": 0.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 0,
+        "partial": 0,
+        "missing": 5,
+        "details": {
+          "working_apis": [],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "RecyclerView",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "Adapter",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "ViewHolder",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Intent",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "Menu",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/NOTE-002_trace.json"
+    },
+    {
+      "apk_id": "NOTE-003",
+      "apk_name": "QuickNote",
+      "package_name": "com.example.quicknote",
+      "execution_result": "FAIL",
+      "confidence_score": 35.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 2,
+        "partial": 0,
+        "missing": 3,
+        "details": {
+          "working_apis": [
+            "Button",
+            "TextView"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "EditText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "Toast",
+              "reason": "invoke-static needed"
+            },
+            {
+              "api": "SharedPreferences",
+              "reason": "Not implemented"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "invoke-static",
+          "impact": "MEDIUM",
+          "blocks_api": "Toast"
+        }
+      ],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/NOTE-003_trace.json"
+    },
+    {
+      "apk_id": "NOTE-004",
+      "apk_name": "Notepad",
+      "package_name": "com.example.notepad",
+      "execution_result": "FAIL",
+      "confidence_score": 0.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 0,
+        "partial": 0,
+        "missing": 5,
+        "details": {
+          "working_apis": [],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "EditText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "Menu",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "File I/O",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "ActionBar",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Intent",
+              "reason": "Not implemented"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/NOTE-004_trace.json"
+    },
+    {
+      "apk_id": "NOTE-005",
+      "apk_name": "SecureNotes",
+      "package_name": "com.example.securenotes",
+      "execution_result": "FAIL",
+      "confidence_score": 17.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 1,
+        "partial": 0,
+        "missing": 4,
+        "details": {
+          "working_apis": [
+            "Button"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "EditText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "Encryption",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "SharedPreferences",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "AlertDialog",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/NOTE-005_trace.json"
+    },
+    {
+      "apk_id": "TODO-001",
+      "apk_name": "SimpleTodo",
+      "package_name": "com.example.simpletodo",
+      "execution_result": "FAIL",
+      "confidence_score": 22.5,
+      "startup_stage": "STAGE_5_LAYOUT_INFLATION",
+      "crash_point": "LAYOUT_INFLATE_FAIL",
+      "api_analysis": {
+        "total_expected": 6,
+        "working": 1,
+        "partial": 1,
+        "missing": 4,
+        "details": {
+          "working_apis": [
+            "Button"
+          ],
+          "partial_apis": [
+            {
+              "api": "CheckBox",
+              "issue": "<init> works only"
+            }
+          ],
+          "missing_apis": [
+            {
+              "api": "EditText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "ListView",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "Adapter",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "OnClickListener",
+              "reason": "invoke-interface needed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "invoke-interface",
+          "impact": "HIGH",
+          "blocks_api": "OnClickListener"
+        }
+      ],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/TODO-001_trace.json"
+    },
+    {
+      "apk_id": "TODO-002",
+      "apk_name": "TodoMVC-Android",
+      "package_name": "com.example.todomvc",
+      "execution_result": "FAIL",
+      "confidence_score": 27.0,
+      "startup_stage": "STAGE_5_LAYOUT_INFLATION",
+      "crash_point": "LAYOUT_INFLATE_FAIL",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 1,
+        "partial": 1,
+        "missing": 3,
+        "details": {
+          "working_apis": [
+            "Button"
+          ],
+          "partial_apis": [
+            {
+              "api": "CheckBox",
+              "issue": "<init> works only"
+            }
+          ],
+          "missing_apis": [
+            {
+              "api": "ListView",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "EditText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "Filter logic",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/TODO-002_trace.json"
+    },
+    {
+      "apk_id": "TODO-003",
+      "apk_name": "TaskList",
+      "package_name": "com.example.tasklist",
+      "execution_result": "FAIL",
+      "confidence_score": 35.0,
+      "startup_stage": "STAGE_5_LAYOUT_INFLATION",
+      "crash_point": "LAYOUT_INFLATE_FAIL",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 2,
+        "partial": 0,
+        "missing": 3,
+        "details": {
+          "working_apis": [
+            "Button",
+            "TextView"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "ListView",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "AlertDialog",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Menu",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/TODO-003_trace.json"
+    },
+    {
+      "apk_id": "TODO-004",
+      "apk_name": "Checklist",
+      "package_name": "com.example.checklist",
+      "execution_result": "FAIL",
+      "confidence_score": 45.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 2,
+        "partial": 1,
+        "missing": 2,
+        "details": {
+          "working_apis": [
+            "Button",
+            "TextView"
+          ],
+          "partial_apis": [
+            {
+              "api": "CheckBox",
+              "issue": "<init> works only"
+            }
+          ],
+          "missing_apis": [
+            {
+              "api": "LinearLayout",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "ScrollView",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [
+        {
+          "type": "RESOURCE_ACCESS",
+          "api": "LinearLayout",
+          "potential_issue": "Resources.getString/getIdentifier may fail",
+          "severity": "MEDIUM"
+        }
+      ],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/TODO-004_trace.json"
+    },
+    {
+      "apk_id": "SET-001",
+      "apk_name": "SettingsDemo",
+      "package_name": "com.example.settingsdemo",
+      "execution_result": "FAIL",
+      "confidence_score": 0.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 0,
+        "partial": 0,
+        "missing": 5,
+        "details": {
+          "working_apis": [],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "PreferenceFragment",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "SharedPreferences",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "SwitchPreference",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "ListPreference",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "EditTextPreference",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/SET-001_trace.json"
+    },
+    {
+      "apk_id": "SET-002",
+      "apk_name": "AppSettings",
+      "package_name": "com.example.appsettings",
+      "execution_result": "FAIL",
+      "confidence_score": 27.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 1,
+        "partial": 1,
+        "missing": 3,
+        "details": {
+          "working_apis": [
+            "Button"
+          ],
+          "partial_apis": [
+            {
+              "api": "CheckBox",
+              "issue": "<init> works only"
+            }
+          ],
+          "missing_apis": [
+            {
+              "api": "SharedPreferences",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "EditText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "Toast",
+              "reason": "invoke-static needed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "invoke-static",
+          "impact": "MEDIUM",
+          "blocks_api": "Toast"
+        }
+      ],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/SET-002_trace.json"
+    },
+    {
+      "apk_id": "SET-003",
+      "apk_name": "ProfileSettings",
+      "package_name": "com.example.profilesettings",
+      "execution_result": "FAIL",
+      "confidence_score": 17.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 1,
+        "partial": 0,
+        "missing": 4,
+        "details": {
+          "working_apis": [
+            "Button"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "EditText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "ImageView",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "SharedPreferences",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "Intent",
+              "reason": "Not implemented"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/SET-003_trace.json"
+    },
+    {
+      "apk_id": "SET-004",
+      "apk_name": "NotificationSettings",
+      "package_name": "com.example.notificationsettings",
+      "execution_result": "FAIL",
+      "confidence_score": 12.5,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 4,
+        "working": 0,
+        "partial": 1,
+        "missing": 3,
+        "details": {
+          "working_apis": [],
+          "partial_apis": [
+            {
+              "api": "CheckBox",
+              "issue": "<init> works only"
+            }
+          ],
+          "missing_apis": [
+            {
+              "api": "Switch",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "SharedPreferences",
+              "reason": "Not implemented"
+            },
+            {
+              "api": "NotificationManager",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "packed-switch",
+          "impact": "LOW",
+          "blocks_api": "Switch"
+        },
+        {
+          "opcode": "sparse-switch",
+          "impact": "LOW",
+          "blocks_api": "Switch"
+        }
+      ],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/SET-004_trace.json"
+    },
+    {
+      "apk_id": "GAME-001",
+      "apk_name": "TicTacToe",
+      "package_name": "com.example.tictactoe",
+      "execution_result": "FAIL",
+      "confidence_score": 35.0,
+      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+      "crash_point": "CALLBACK_DISPATCH_FAIL",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 2,
+        "partial": 0,
+        "missing": 3,
+        "details": {
+          "working_apis": [
+            "Button",
+            "TextView"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "OnClickListener",
+              "reason": "invoke-interface needed"
+            },
+            {
+              "api": "Game Logic",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "AlertDialog",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "invoke-interface",
+          "impact": "HIGH",
+          "blocks_api": "OnClickListener"
+        }
+      ],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/GAME-001_trace.json"
+    },
+    {
+      "apk_id": "GAME-002",
+      "apk_name": "GuessNumber",
+      "package_name": "com.example.guessnumber",
+      "execution_result": "FAIL",
+      "confidence_score": 29.2,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 6,
+        "working": 2,
+        "partial": 0,
+        "missing": 4,
+        "details": {
+          "working_apis": [
+            "Button",
+            "TextView"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "EditText",
+              "reason": "return-object needed"
+            },
+            {
+              "api": "Random",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Toast",
+              "reason": "invoke-static needed"
+            },
+            {
+              "api": "Integer.parseInt",
+              "reason": "Not implemented"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "invoke-static",
+          "impact": "MEDIUM",
+          "blocks_api": "Toast"
+        },
+        {
+          "opcode": "invoke-static",
+          "impact": "MEDIUM",
+          "blocks_api": "Integer.parseInt"
+        }
+      ],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/GAME-002_trace.json"
+    },
+    {
+      "apk_id": "GAME-003",
+      "apk_name": "MemoryGame",
+      "package_name": "com.example.memorygame",
+      "execution_result": "FAIL",
+      "confidence_score": 17.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 1,
+        "partial": 0,
+        "missing": 4,
+        "details": {
+          "working_apis": [
+            "Button"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "ImageView",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "GridLayout",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Animation",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Timer",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [
+        {
+          "type": "RESOURCE_ACCESS",
+          "api": "GridLayout",
+          "potential_issue": "Resources.getString/getIdentifier may fail",
+          "severity": "MEDIUM"
+        }
+      ],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/GAME-003_trace.json"
+    },
+    {
+      "apk_id": "GAME-004",
+      "apk_name": "QuizApp",
+      "package_name": "com.example.quizapp",
+      "execution_result": "FAIL",
+      "confidence_score": 35.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 2,
+        "partial": 0,
+        "missing": 3,
+        "details": {
+          "working_apis": [
+            "Button",
+            "TextView"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "RadioButton",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "LinearLayout",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Intent",
+              "reason": "Not implemented"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [
+        {
+          "type": "RESOURCE_ACCESS",
+          "api": "LinearLayout",
+          "potential_issue": "Resources.getString/getIdentifier may fail",
+          "severity": "MEDIUM"
+        }
+      ],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/GAME-004_trace.json"
+    },
+    {
+      "apk_id": "GAME-005",
+      "apk_name": "RockPaperScissors",
+      "package_name": "com.example.rps",
+      "execution_result": "FAIL",
+      "confidence_score": 18.0,
+      "startup_stage": "STAGE_8_EVENT_REGISTRATION",
+      "crash_point": "CALLBACK_DISPATCH_FAIL",
+      "api_analysis": {
+        "total_expected": 5,
+        "working": 1,
+        "partial": 0,
+        "missing": 4,
+        "details": {
+          "working_apis": [
+            "TextView"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "ImageButton",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Random",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "OnClickListener",
+              "reason": "invoke-interface needed"
+            },
+            {
+              "api": "Animation",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [
+        {
+          "opcode": "invoke-interface",
+          "impact": "HIGH",
+          "blocks_api": "OnClickListener"
+        }
+      ],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/GAME-005_trace.json"
+    },
+    {
+      "apk_id": "GAME-006",
+      "apk_name": "WhackAMole",
+      "package_name": "com.example.whackamole",
+      "execution_result": "FAIL",
+      "confidence_score": 14.2,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 6,
+        "working": 1,
+        "partial": 0,
+        "missing": 5,
+        "details": {
+          "working_apis": [
+            "Button"
+          ],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "ImageView",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Handler",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Runnable",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Score tracking",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Timer",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/GAME-006_trace.json"
+    },
+    {
+      "apk_id": "ADD-001",
+      "apk_name": "AndroidBasicSamples",
+      "package_name": "com.example.androidbasicsamples",
+      "execution_result": "FAIL",
+      "confidence_score": 0.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 4,
+        "working": 0,
+        "partial": 0,
+        "missing": 4,
+        "details": {
+          "working_apis": [],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "Activity lifecycle",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "View creation",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Resource loading",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Basic UI",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [
+        {
+          "type": "RESOURCE_ACCESS",
+          "api": "Resource loading",
+          "potential_issue": "Resources.getString/getIdentifier may fail",
+          "severity": "MEDIUM"
+        }
+      ],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/ADD-001_trace.json"
+    },
+    {
+      "apk_id": "ADD-002",
+      "apk_name": "android-helloworld-patterns",
+      "package_name": "com.example.hwpatterns",
+      "execution_result": "FAIL",
+      "confidence_score": 0.0,
+      "startup_stage": "STAGE_API_DISPATCH",
+      "crash_point": "MISSING_API",
+      "api_analysis": {
+        "total_expected": 3,
+        "working": 0,
+        "partial": 0,
+        "missing": 3,
+        "details": {
+          "working_apis": [],
+          "partial_apis": [],
+          "missing_apis": [
+            {
+              "api": "Various Activity patterns",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Different layout approaches",
+              "reason": "Unknown/not analyzed"
+            },
+            {
+              "api": "Menu handling basics",
+              "reason": "Unknown/not analyzed"
+            }
+          ]
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [
+        {
+          "type": "RESOURCE_ACCESS",
+          "api": "Different layout approaches",
+          "potential_issue": "Resources.getString/getIdentifier may fail",
+          "severity": "MEDIUM"
+        }
+      ],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/ADD-002_trace.json"
+    },
+    {
+      "apk_id": "ADD-003",
+      "apk_name": "LocalTestAPK-HelloWorld",
+      "package_name": "com.test.helloworld",
+      "execution_result": "PASS",
+      "confidence_score": 94.3,
+      "startup_stage": "FULL_EXECUTION_COMPLETE",
+      "crash_point": "NO_CRASH",
+      "api_analysis": {
+        "total_expected": 3,
+        "working": 3,
+        "partial": 0,
+        "missing": 0,
+        "details": {
+          "working_apis": [
+            "onCreate",
+            "setContentView",
+            "TextView.setText"
+          ],
+          "partial_apis": [],
+          "missing_apis": []
+        }
+      },
+      "missing_opcodes": [],
+      "resource_issues": [],
+      "special_notes": [],
+      "evidence_trace": "run/exp020_traces/ADD-003_trace.json"
+    }
+  ],
+  "top_blockers": [
+    {
+      "blocker": "EditText: return-object needed",
+      "affected_apks": 12
+    },
+    {
+      "blocker": "OPCODE: invoke-interface",
+      "affected_apks": 8
+    },
+    {
+      "blocker": "SharedPreferences: Not implemented",
+      "affected_apks": 7
+    },
+    {
+      "blocker": "OPCODE: move-result-object",
+      "affected_apks": 6
+    },
+    {
+      "blocker": "OPCODE: invoke-static",
+      "affected_apks": 6
+    },
+    {
+      "blocker": "OnClickListener: invoke-interface needed",
+      "affected_apks": 5
+    },
+    {
+      "blocker": "Intent: Not implemented",
+      "affected_apks": 5
+    },
+    {
+      "blocker": "ListView: Not implemented",
+      "affected_apks": 4
+    },
+    {
+      "blocker": "Menu: Unknown/not analyzed",
+      "affected_apks": 3
+    },
+    {
+      "blocker": "Toast: invoke-static needed",
+      "affected_apks": 3
+    },
+    {
+      "blocker": "AlertDialog: Unknown/not analyzed",
+      "affected_apks": 3
+    },
+    {
+      "blocker": "ImageView: Unknown/not analyzed",
+      "affected_apks": 3
+    },
+    {
+      "blocker": "Integer.parseInt: Not implemented",
+      "affected_apks": 2
+    },
+    {
+      "blocker": "Adapter: Unknown/not analyzed",
+      "affected_apks": 2
+    },
+    {
+      "blocker": "LinearLayout: Unknown/not analyzed",
+      "affected_apks": 2
+    }
+  ],
+  "category_breakdown": {
+    "helloworld": {
+      "total": 8,
+      "pass": 6,
+      "partial": 2,
+      "fail": 0,
+      "pass_rate": 75.0
+    },
+    "calculator": {
+      "total": 5,
+      "pass": 0,
+      "partial": 1,
+      "fail": 4,
+      "pass_rate": 0.0
+    },
+    "notes": {
+      "total": 5,
+      "pass": 0,
+      "partial": 1,
+      "fail": 4,
+      "pass_rate": 0.0
+    },
+    "todo": {
+      "total": 4,
+      "pass": 0,
+      "partial": 0,
+      "fail": 4,
+      "pass_rate": 0.0
+    },
+    "settings": {
+      "total": 4,
+      "pass": 0,
+      "partial": 0,
+      "fail": 4,
+      "pass_rate": 0.0
+    },
+    "games": {
+      "total": 6,
+      "pass": 0,
+      "partial": 0,
+      "fail": 6,
+      "pass_rate": 0.0
+    },
+    "other": {
+      "total": 3,
+      "pass": 1,
+      "partial": 0,
+      "fail": 2,
+      "pass_rate": 33.3
+    }
+  },
+  "recommendations": [
+    "CRITICAL: More than 50% of APKs failing - focus on P1 API implementation",
+    "HIGH: invoke-interface implementation needed for OnClickListener (affects interactive apps)",
+    "HIGH: Multiple missing APIs identified - prioritize by usage frequency",
+    "ACTION: Implement Button.setOnClickListener (invoke-interface) for maximum impact",
+    "ACTION: Fix move-result-object for EditText.getText and View.findViewById"
+  ]
+}
