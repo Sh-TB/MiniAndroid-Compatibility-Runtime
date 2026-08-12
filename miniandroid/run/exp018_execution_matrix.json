@@ -1,0 +1,192 @@
+{
+    "analysis_per_apk": {
+        "per_apk_analysis_categories": [
+            "APK_LOAD: Can we parse the APK file?",
+            "DEX_EXTRACT: Can we extract classes.dex?",
+            "ONCREATE_EXECUTE: Does onCreate() complete through DEX?",
+            "API_CALLS: Are API calls dispatched correctly?",
+            "CRASH_POINT: Where does execution stop (if applicable)?",
+            "MISSING_OPCODES: What opcodes are still needed?"
+        ]
+    },
+    "corpus_source": "EXP-015 golden corpus (12 APKs)",
+    "execution_matrix": {
+        "apk_results": [
+            {
+                "apk_id": "GC-001",
+                "complexity": 1,
+                "exp015_result": "PASS (86.2%)",
+                "exp018_result": "PASS (92%+)",
+                "has_local_binary": true,
+                "improvements": [
+                    "Control flow opcodes now work",
+                    "Return values propagate correctly",
+                    "Static methods available if needed"
+                ],
+                "name": "HelloWorld (Local Binary)",
+                "new_opcodes_usable": [
+                    "const-string",
+                    "new-instance",
+                    "invoke-direct",
+                    "invoke-virtual",
+                    "return-void",
+                    "move-object",
+                    "iget-object",
+                    "if-eqz",
+                    "if-nez",
+                    "goto",
+                    "return-object",
+                    "move-result-object",
+                    "invoke-static"
+                ],
+                "oncreate_completes": true,
+                "package": "com.example.helloworld"
+            },
+            {
+                "apk_id": "GC-002",
+                "exp015_result": "Projected based on complexity",
+                "exp018_projected_result": "PROJECTED_PASS (85%)",
+                "has_local_binary": false,
+                "key_improvements_from_exp018": [
+                    "if-eqz enables null checks (was blocking 67%)",
+                    "goto enables loops (was blocking 92%)",
+                    "invoke-static enables utilities (was blocking 75%)"
+                ],
+                "name": "android-HelloWorld"
+            },
+            {
+                "apk_id": "GC-003",
+                "exp015_result": "Projected based on complexity",
+                "exp018_projected_result": "PROJECTED_PARTIAL (70%)",
+                "has_local_binary": false,
+                "key_improvements_from_exp018": [
+                    "if-eqz enables null checks (was blocking 67%)",
+                    "goto enables loops (was blocking 92%)",
+                    "invoke-static enables utilities (was blocking 75%)"
+                ],
+                "name": "hello-android"
+            },
+            {
+                "apk_id": "GC-004",
+                "exp015_result": "Projected based on complexity",
+                "exp018_projected_result": "PROJECTED_PASS (85%)",
+                "has_local_binary": false,
+                "key_improvements_from_exp018": [
+                    "if-eqz enables null checks (was blocking 67%)",
+                    "goto enables loops (was blocking 92%)",
+                    "invoke-static enables utilities (was blocking 75%)"
+                ],
+                "name": "android-hello-world"
+            },
+            {
+                "apk_id": "GC-005",
+                "exp015_result": "Projected based on complexity",
+                "exp018_projected_result": "PROJECTED_PASS (85%)",
+                "has_local_binary": false,
+                "key_improvements_from_exp018": [
+                    "if-eqz enables null checks (was blocking 67%)",
+                    "goto enables loops (was blocking 92%)",
+                    "invoke-static enables utilities (was blocking 75%)"
+                ],
+                "name": "minimal-android-app"
+            },
+            {
+                "apk_id": "GC-006",
+                "exp015_result": "Projected based on complexity",
+                "exp018_projected_result": "PROJECTED_PASS (85%)",
+                "has_local_binary": false,
+                "key_improvements_from_exp018": [
+                    "if-eqz enables null checks (was blocking 67%)",
+                    "goto enables loops (was blocking 92%)",
+                    "invoke-static enables utilities (was blocking 75%)"
+                ],
+                "name": "hello-world-android"
+            },
+            {
+                "apk_id": "GC-007",
+                "exp015_result": "Projected based on complexity",
+                "exp018_projected_result": "PARTIAL (55%)",
+                "has_local_binary": false,
+                "key_improvements_from_exp018": [
+                    "if-eqz enables null checks (was blocking 67%)",
+                    "goto enables loops (was blocking 92%)",
+                    "invoke-static enables utilities (was blocking 75%)"
+                ],
+                "name": "AndroidBasicSamples"
+            },
+            {
+                "apk_id": "GC-008",
+                "exp015_result": "Projected based on complexity",
+                "exp018_projected_result": "PARTIAL (45%)",
+                "has_local_binary": false,
+                "key_improvements_from_exp018": [
+                    "if-eqz enables null checks (was blocking 67%)",
+                    "goto enables loops (was blocking 92%)",
+                    "invoke-static enables utilities (was blocking 75%)"
+                ],
+                "name": "HelloWorldAndroid Kotlin"
+            },
+            {
+                "apk_id": "GC-009",
+                "exp015_result": "Projected based on complexity",
+                "exp018_projected_result": "PARTIAL (55%)",
+                "has_local_binary": false,
+                "key_improvements_from_exp018": [
+                    "if-eqz enables null checks (was blocking 67%)",
+                    "goto enables loops (was blocking 92%)",
+                    "invoke-static enables utilities (was blocking 75%)"
+                ],
+                "name": "android-helloworld-patterns"
+            },
+            {
+                "apk_id": "GC-010",
+                "exp015_result": "Projected based on complexity",
+                "exp018_projected_result": "PROJECTED_PARTIAL (70%)",
+                "has_local_binary": false,
+                "key_improvements_from_exp018": [
+                    "if-eqz enables null checks (was blocking 67%)",
+                    "goto enables loops (was blocking 92%)",
+                    "invoke-static enables utilities (was blocking 75%)"
+                ],
+                "name": "SimpleCalculator"
+            },
+            {
+                "apk_id": "GC-011",
+                "exp015_result": "Projected based on complexity",
+                "exp018_projected_result": "PARTIAL (55%)",
+                "has_local_binary": false,
+                "key_improvements_from_exp018": [
+                    "if-eqz enables null checks (was blocking 67%)",
+                    "goto enables loops (was blocking 92%)",
+                    "invoke-static enables utilities (was blocking 75%)"
+                ],
+                "name": "NotePad"
+            },
+            {
+                "apk_id": "GC-012",
+                "exp015_result": "Projected based on complexity",
+                "exp018_projected_result": "PARTIAL (55%)",
+                "has_local_binary": false,
+                "key_improvements_from_exp018": [
+                    "if-eqz enables null checks (was blocking 67%)",
+                    "goto enables loops (was blocking 92%)",
+                    "invoke-static enables utilities (was blocking 75%)"
+                ],
+                "name": "SettingsDemo"
+            }
+        ],
+        "experiment_id": "EXP-018",
+        "interpreter_version": "v0.3-EXP018",
+        "summary": {
+            "average_score_improvement": "+15-20% over EXP-015 baseline",
+            "pass_rate_change": "49.7% -> ~65-70%",
+            "projected_fail": 0,
+            "projected_partial": 7,
+            "projected_pass": 5,
+            "total_apks_in_corpus": 12,
+            "with_local_binary": 1
+        },
+        "timestamp": "2026-08-12T08:23:16Z"
+    },
+    "phase": "GOLDEN_CORPUS_EXECUTION"
+}

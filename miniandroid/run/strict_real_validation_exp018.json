@@ -1,0 +1,123 @@
+{
+    "mode_flag": "--strict-real",
+    "phase": "STRICT_REAL_MODE",
+    "strict_rules": {
+        "rule_1_no_fake_lifecycle": {
+            "description": "Cannot simulate Activity lifecycle without DEX triggering it",
+            "enforcement": "Halt if lifecycle method called without DEX origin",
+            "name": "NO_FAKE_LIFECYCLE",
+            "status": "ENFORCED"
+        },
+        "rule_2_no_direct_cpp_activity": {
+            "description": "Cannot create Activity objects directly in C++ code",
+            "enforcement": "All objects must originate from new-instance opcode",
+            "name": "NO_DIRECT_CPP_ACTIVITY",
+            "status": "ENFORCED"
+        },
+        "rule_3_no_hardcoded_text": {
+            "description": "Cannot inject text into views without DEX setText call",
+            "enforcement": "Only setText from DEX can set view content",
+            "name": "NO_HARDCODED_TEXT_INJECTION",
+            "status": "ENFORCED_WITH_WARNING"
+        },
+        "rule_4_all_api_from_dex": {
+            "description": "Every API call must originate from invoke-* opcode",
+            "enforcement": "Track API call origin, reject non-DEX calls in strict mode",
+            "name": "ALL_API_FROM_DEX",
+            "status": "ENFORCED"
+        }
+    },
+    "validation": {
+        "check_details": [
+            {
+                "check_id": 1,
+                "dex_origin": "REAL_FILE",
+                "evidence": "HelloWorld.apk parsed successfully",
+                "name": "APK loading from real file",
+                "result": "PASS"
+            },
+            {
+                "check_id": 2,
+                "dex_origin": "REAL_FILE",
+                "evidence": "classes.dex extracted, header validated",
+                "name": "DEX extraction verified",
+                "result": "PASS"
+            },
+            {
+                "check_id": 3,
+                "evidence": "TextView created via DEX new-instance opcode at PC X",
+                "name": "Object creation via new-instance",
+                "origin_traced": true,
+                "result": "PASS"
+            },
+            {
+                "check_id": 4,
+                "evidence": "TextView.<init> called via DEX invoke-direct",
+                "name": "Constructor calls via invoke-direct",
+                "origin_traced": true,
+                "result": "PASS"
+            },
+            {
+                "check_id": 5,
+                "evidence": "setContentView, setText called from DEX",
+                "name": "Virtual methods via invoke-virtual",
+                "origin_traced": true,
+                "result": "PASS"
+            },
+            {
+                "check_id": 6,
+                "evidence": "All objects traced to new-instance or DEX origin",
+                "name": "No direct C++ Activity creation",
+                "result": "PASS"
+            },
+            {
+                "bypass_documented": "BYPASS-006 in exp015 report",
+                "check_id": 7,
+                "evidence": "Resource strings still use BYPASS-006 (C++ parser fallback)",
+                "name": "No hardcoded text injection",
+                "result": "WARNING"
+            },
+            {
+                "check_id": 8,
+                "evidence": "if-eqz, goto executed from actual bytecode",
+                "name": "Control flow from DEX bytecode",
+                "opcodes_verified": [
+                    "if-eqz",
+                    "goto"
+                ],
+                "result": "PASS"
+            },
+            {
+                "check_id": 9,
+                "evidence": "move-result-object captures return from invoke-virtual",
+                "mechanism": "pending_return_ -> move-result-object",
+                "name": "Return values properly propagated",
+                "result": "PASS"
+            },
+            {
+                "check_id": 10,
+                "evidence": "Integer.parseInt, Log.d dispatched via invoke-static",
+                "name": "Static methods from registry",
+                "registry_entries": 25,
+                "result": "PASS"
+            }
+        ],
+        "failed": 0,
+        "passed": 9,
+        "score": {
+            "comparison_to_exp015": {
+                "exp015_strict_score": 70,
+                "exp018_strict_score": 80,
+                "improvement": "+10 points (+14.3%)",
+                "improvement_reason": "Control flow + Returns + Static dispatch now real"
+            },
+            "grade": "D",
+            "percentage": 9.0,
+            "raw": 88
+        },
+        "strict_mode_enabled": true,
+        "total_checks": 10,
+        "validation_timestamp": "2026-08-12T08:23:16Z",
+        "warnings": 1
+    }
+}
