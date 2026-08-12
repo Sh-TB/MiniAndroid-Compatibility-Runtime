@@ -1,0 +1,21 @@
+{
+  "experiment": "EXP-024",
+  "phase": "Dashboard",
+  "generated": "2026-08-12T17:03:47.194741Z",
+  "statistics": {
+    "total": 1,
+    "executed": 1,
+    "passes": 1,
+    "partials": 0,
+    "fails": 0,
+    "not_executed": 0,
+    "pass_rate": 100.0,
+    "score": 100.0
+  },
+  "honesty": {
+    "projected": 0,
+    "real_only": true,
+    "note": "Score from actual executions only"
+  },
+  "top_blockers": []
+}

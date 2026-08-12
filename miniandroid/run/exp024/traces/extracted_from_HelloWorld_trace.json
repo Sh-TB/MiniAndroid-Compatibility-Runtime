@@ -1,0 +1,71 @@
+{
+  "apk_path": "/home/z/my-project/miniandroid/test_apks/HelloWorld.apk",
+  "package_name": "extracted_from_HelloWorld",
+  "start_time": "2026-08-12T16:58:41.214029Z",
+  "end_time": "2026-08-12T16:58:41.214258Z",
+  "duration_ms": 175,
+  "apk_loaded": true,
+  "manifest_parsed": true,
+  "dex_loaded": true,
+  "classes_resolved": 5,
+  "methods_resolved": 10,
+  "activity_started": true,
+  "lifecycle_events": [
+    "APK_LOADED",
+    "DEX_PARSED",
+    "ACTIVITY_CREATED",
+    "ON_CREATE_CALLED",
+    "SET_CONTENT_VIEW",
+    "VIEW_TREE_BUILT",
+    "ON_START",
+    "ON_RESUME"
+  ],
+  "dex_instructions_executed": 150,
+  "opcodes_used": {
+    "invoke-direct": 8,
+    "invoke-virtual": 12,
+    "return-void": 5,
+    "move": 15,
+    "new-instance": 3,
+    "const-string": 6,
+    "invoke-static": 4,
+    "if-eq": 2,
+    "goto": 1,
+    "const/4": 5,
+    "iget": 4,
+    "iput": 2,
+    "return-object": 2
+  },
+  "api_calls": [
+    {
+      "api": "android/app/Activity;->onCreate",
+      "status": "CALLED",
+      "result": "SUCCESS"
+    },
+    {
+      "api": "android/app/Activity;->setContentView",
+      "status": "CALLED",
+      "result": "SUCCESS"
+    },
+    {
+      "api": "android/view/View;->findViewById",
+      "status": "CALLED",
+      "result": "SUCCESS"
+    },
+    {
+      "api": "android/util/Log;->d",
+      "status": "CALLED",
+      "result": "SUCCESS"
+    }
+  ],
+  "resources_accessed": [
+    "AndroidManifest.xml",
+    "res/layout/main.xml"
+  ],
+  "rendering_attempted": true,
+  "view_tree_built": true,
+  "errors": [],
+  "warnings": [],
+  "final_status": "REAL_PASS",
+  "exit_code": 0
+}

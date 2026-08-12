@@ -1,0 +1,24 @@
+{
+  "experiment": "EXP-024",
+  "phase": "Regression Validation",
+  "generated": "2026-08-12T17:03:47.195630Z",
+  "passed": true,
+  "tests": [
+    {
+      "name": "HelloWorld Execution",
+      "passed": true,
+      "critical": true
+    },
+    {
+      "name": "APK Parsing",
+      "passed": true,
+      "critical": true
+    },
+    {
+      "name": "DEX Loading",
+      "passed": true,
+      "critical": false
+    }
+  ],
+  "conclusion": "\u2705 No regression"
+}
