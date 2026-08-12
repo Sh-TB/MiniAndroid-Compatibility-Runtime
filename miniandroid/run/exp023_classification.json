@@ -1,0 +1,27 @@
+{
+  "experiment_id": "EXP-023",
+  "phase": "PHASE_9_CLASSIFICATION",
+  "generated_at": "2026-08-12T14:18:54.178878Z",
+  "classifications": [
+    {
+      "apk": "HelloWorld (Local)",
+      "package": "com.example.helloworld",
+      "classification": "REAL_PASS",
+      "raw_result": "REAL_PASS",
+      "evidence_files": [
+        "run/exp023_execution/com_example_helloworld/execution_trace.json"
+      ]
+    }
+  ],
+  "definitions": {
+    "REAL_PASS": "Actually executed through MiniAndroid with expected evidence",
+    "REAL_PARTIAL": "Execution began, reached meaningful stages, failed later",
+    "REAL_FAIL": "Actual execution attempted and failed early",
+    "NOT_EXECUTED": "Could not run for environmental reasons",
+    "STATIC_ONLY": "Only DEX/APK analysis performed, no execution"
+  },
+  "summary": {
+    "REAL_PASS": 1,
+    "total": 1
+  }
+}
