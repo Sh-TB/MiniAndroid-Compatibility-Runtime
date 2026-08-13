@@ -1,0 +1,112 @@
+[
+  {
+    "package": "unknown",
+    "status": "EXECUTED_FAIL",
+    "errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052849-4557\nGenerated: 2026-08-13 05:28:49 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "has_crash_log": true,
+    "timestamp": "2026-08-13T05:28:49.903200"
+  },
+  {
+    "package": "unknown",
+    "status": "EXECUTED_FAIL",
+    "errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052850-7969\nGenerated: 2026-08-13 05:28:50 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "has_crash_log": true,
+    "timestamp": "2026-08-13T05:28:50.406311"
+  },
+  {
+    "package": "unknown",
+    "status": "EXECUTED_FAIL",
+    "errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052850-4989\nGenerated: 2026-08-13 05:28:50 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "has_crash_log": true,
+    "timestamp": "2026-08-13T05:28:50.909757"
+  },
+  {
+    "package": "unknown",
+    "status": "EXECUTED_FAIL",
+    "errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052851-7139\nGenerated: 2026-08-13 05:28:51 UTC\nTotal Errors: 0\n\n[No errors recorded]"
+    ],
+    "has_crash_log": true,
+    "timestamp": "2026-08-13T05:28:51.412995"
+  },
+  {
+    "package": "unknown",
+    "status": "EXECUTED_FAIL",
+    "errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052852-7130\nGenerated: 2026-08-13 05:28:52 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "has_crash_log": true,
+    "timestamp": "2026-08-13T05:28:52.004772"
+  },
+  {
+    "package": "unknown",
+    "status": "EXECUTED_FAIL",
+    "errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052852-7884\nGenerated: 2026-08-13 05:28:52 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "has_crash_log": true,
+    "timestamp": "2026-08-13T05:28:52.507941"
+  },
+  {
+    "package": "unknown",
+    "status": "EXECUTED_FAIL",
+    "errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052853-5224\nGenerated: 2026-08-13 05:28:53 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "has_crash_log": true,
+    "timestamp": "2026-08-13T05:28:53.010843"
+  },
+  {
+    "package": "unknown",
+    "status": "EXECUTED_FAIL",
+    "errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052853-1725\nGenerated: 2026-08-13 05:28:53 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "has_crash_log": true,
+    "timestamp": "2026-08-13T05:28:53.513871"
+  },
+  {
+    "package": "unknown",
+    "status": "EXECUTED_FAIL",
+    "errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052854-5345\nGenerated: 2026-08-13 05:28:54 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "has_crash_log": true,
+    "timestamp": "2026-08-13T05:28:54.016763"
+  },
+  {
+    "package": "unknown",
+    "status": "EXECUTED_FAIL",
+    "errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052854-2154\nGenerated: 2026-08-13 05:28:54 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "has_crash_log": true,
+    "timestamp": "2026-08-13T05:28:54.519659"
+  },
+  {
+    "package": "unknown",
+    "status": "EXECUTED_FAIL",
+    "errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052855-2210\nGenerated: 2026-08-13 05:28:55 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "has_crash_log": true,
+    "timestamp": "2026-08-13T05:28:55.022644"
+  }
+]
