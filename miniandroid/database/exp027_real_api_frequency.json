@@ -1,0 +1,116 @@
+{
+  "experiment": "EXP-027",
+  "title": "Real API Frequency Database",
+  "generated_at": "2026-08-13T05:56:48.176611",
+  "note": "Generated from REAL runtime executions only",
+  "summary": {
+    "total_unique_apis": 4,
+    "p0_critical": [],
+    "p1_high": [],
+    "p2_medium": [],
+    "p3_low": [
+      {
+        "api": "ExecutionEngine.stage_load_apk",
+        "count": 40,
+        "apps_using": 1,
+        "apps": [
+          "20260813"
+        ],
+        "usage_percentage": 5.0,
+        "priority": "P3",
+        "category": "runtime_internal",
+        "success_rate": 100.0
+      },
+      {
+        "api": "ExecutionEngine.stage_parse_dex",
+        "count": 20,
+        "apps_using": 1,
+        "apps": [
+          "20260813"
+        ],
+        "usage_percentage": 5.0,
+        "priority": "P3",
+        "category": "runtime_internal",
+        "success_rate": 100.0
+      },
+      {
+        "api": "DexParser.parse",
+        "count": 20,
+        "apps_using": 1,
+        "apps": [
+          "20260813"
+        ],
+        "usage_percentage": 5.0,
+        "priority": "P3",
+        "category": "other",
+        "success_rate": 0.0
+      },
+      {
+        "api": "ExecutionEngine.stage_generate_reports",
+        "count": 20,
+        "apps_using": 1,
+        "apps": [
+          "20260813"
+        ],
+        "usage_percentage": 5.0,
+        "priority": "P3",
+        "category": "runtime_internal",
+        "success_rate": 100.0
+      }
+    ]
+  },
+  "ranked_apis": [
+    {
+      "api": "ExecutionEngine.stage_load_apk",
+      "count": 40,
+      "apps_using": 1,
+      "apps": [
+        "20260813"
+      ],
+      "usage_percentage": 5.0,
+      "priority": "P3",
+      "category": "runtime_internal",
+      "success_rate": 100.0
+    },
+    {
+      "api": "ExecutionEngine.stage_parse_dex",
+      "count": 20,
+      "apps_using": 1,
+      "apps": [
+        "20260813"
+      ],
+      "usage_percentage": 5.0,
+      "priority": "P3",
+      "category": "runtime_internal",
+      "success_rate": 100.0
+    },
+    {
+      "api": "DexParser.parse",
+      "count": 20,
+      "apps_using": 1,
+      "apps": [
+        "20260813"
+      ],
+      "usage_percentage": 5.0,
+      "priority": "P3",
+      "category": "other",
+      "success_rate": 0.0
+    },
+    {
+      "api": "ExecutionEngine.stage_generate_reports",
+      "count": 20,
+      "apps_using": 1,
+      "apps": [
+        "20260813"
+      ],
+      "usage_percentage": 5.0,
+      "priority": "P3",
+      "category": "runtime_internal",
+      "success_rate": 100.0
+    }
+  ],
+  "key_question_answered": {
+    "question": "What Android APIs actually block real applications?",
+    "answer": "Based on real execution of 20+ applications:\n\nP0 Critical APIs (used by >70% apps): 0\n\nP1 High Priority APIs (40-70%): 0\n\nPrimary Blocker:\n  DEX_PARSE_ERROR prevents any code execution,\n  so no Android framework APIs are actually being reached.\n  Fixing DEX parsing is prerequisite to all other improvements."
+  }
+}

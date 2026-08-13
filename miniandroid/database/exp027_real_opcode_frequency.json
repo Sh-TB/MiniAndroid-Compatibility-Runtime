@@ -1,0 +1,77 @@
+{
+  "experiment": "EXP-027",
+  "title": "Real Opcode Frequency Database",
+  "generated_at": "2026-08-13T05:56:48.176938",
+  "note": "Opcodes GENERATED in test DEX files (not all executed due to DEX parse errors)",
+  "summary": {
+    "total_opcodes_targeted": 195,
+    "unique_opcodes": 11,
+    "by_complexity": {
+      "simple": 4,
+      "medium": 4,
+      "complex": 3
+    }
+  },
+  "opcode_details": {
+    "invoke-super": {
+      "count": 20,
+      "complexity": "simple",
+      "description": "Call superclass method"
+    },
+    "const-string": {
+      "count": 40,
+      "complexity": "simple",
+      "description": "Load string constant"
+    },
+    "invoke-static": {
+      "count": 20,
+      "complexity": "simple",
+      "description": "Call static method"
+    },
+    "return-void": {
+      "count": 20,
+      "complexity": "simple",
+      "description": "Return void"
+    },
+    "new-instance": {
+      "count": 15,
+      "complexity": "medium",
+      "description": "Create new object"
+    },
+    "invoke-direct": {
+      "count": 15,
+      "complexity": "medium",
+      "description": "Call constructor directly"
+    },
+    "const/16": {
+      "count": 15,
+      "complexity": "medium",
+      "description": "Load 16-bit constant"
+    },
+    "invoke-virtual": {
+      "count": 15,
+      "complexity": "medium",
+      "description": "Call virtual method"
+    },
+    "new-array": {
+      "count": 5,
+      "complexity": "complex",
+      "description": "Create array"
+    },
+    "aput": {
+      "count": 25,
+      "complexity": "complex",
+      "description": "Store into array"
+    },
+    "const/4": {
+      "count": 5,
+      "complexity": "complex",
+      "description": "Load 4-bit constant"
+    }
+  },
+  "analysis": {
+    "most_common": "const-string",
+    "least_common": "new-array",
+    "execution_status": "NOT_EXECUTED - blocked by DEX_PARSE_ERROR"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "apk_name": "PDFViewerApp",
+  "package": "com.pdfviewerapp.app",
+  "status": "EXECUTED_FAIL",
+  "real_execution": true,
+  "dex_loaded": false,
+  "instructions_executed": 0,
+  "methods_entered": [],
+  "api_calls": [],
+  "opcodes_used": {},
+  "render_status": "",
+  "screenshot_captured": false,
+  "error_messages": [
+    "Execution error: cannot access local variable 're' where it is not associated with a value"
+  ],
+  "crash_log": "cannot access local variable 're' where it is not associated with a value",
+  "execution_time_ms": 2,
+  "timestamp": "2026-08-13T05:53:36.110328",
+  "evidence_files": [
+    "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_PDFViewerApp/crash.log",
+    "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_PDFViewerApp/api_trace.json",
+    "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_PDFViewerApp/report.md"
+  ]
+}

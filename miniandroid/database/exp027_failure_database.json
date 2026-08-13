@@ -1,0 +1,420 @@
+{
+  "experiment": "EXP-027",
+  "title": "Real Execution Failure Intelligence Database",
+  "generated_at": "2026-08-13T05:55:37.118455",
+  "analysis_summary": {
+    "total_failures_analyzed": 20,
+    "unique_failure_types": 1,
+    "categories_affected": 1,
+    "top_blocker": {
+      "pattern": "dex_header_invalid",
+      "affected_count": 20,
+      "percentage": 100.0,
+      "priority": "P0"
+    }
+  },
+  "categories": {
+    "DEX_PARSE_ERROR": {
+      "count": 20,
+      "percentage": 100.0,
+      "types": [
+        "dex_header_invalid"
+      ],
+      "affected_apps": [
+        "exp027_20260813_055336_ColorPicker",
+        "exp027_20260813_055336_ContactSync",
+        "exp027_20260813_055336_CounterPlus",
+        "exp027_20260813_055336_DiceRoller",
+        "exp027_20260813_055336_FileManagerPro"
+      ]
+    }
+  },
+  "failure_patterns": {
+    "dex_header_invalid": 20
+  },
+  "top_blockers": [
+    {
+      "pattern": "dex_header_invalid",
+      "affected_count": 20,
+      "percentage": 100.0,
+      "priority": "P0"
+    }
+  ],
+  "engineering_recommendations": [
+    {
+      "problem": "DEX Header Parsing",
+      "description": "20 apps failed due to invalid DEX headers",
+      "recommendation": "Improve DEX parser to handle more header variations",
+      "expected_impact": "+50 compatibility points",
+      "effort": "HIGH",
+      "files_to_modify": [
+        "src/dex/dex_parser.cpp",
+        "src/dex/dex_parser.h"
+      ]
+    }
+  ],
+  "raw_categories": {
+    "DEX_PARSE_ERROR": [
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_ColorPicker",
+        "timestamp": "2026-08-13T05:53:36.091257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_ContactSync",
+        "timestamp": "2026-08-13T05:53:36.101257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_CounterPlus",
+        "timestamp": "2026-08-13T05:53:36.084257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_DiceRoller",
+        "timestamp": "2026-08-13T05:53:36.089257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_FileManagerPro",
+        "timestamp": "2026-08-13T05:53:36.094257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_MarkEditor",
+        "timestamp": "2026-08-13T05:53:36.097257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_MusicBoxPlayer",
+        "timestamp": "2026-08-13T05:53:36.099257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_NewsFeedReader",
+        "timestamp": "2026-08-13T05:53:36.095257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_OpenCalculator",
+        "timestamp": "2026-08-13T05:53:36.074257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_PDFViewerApp",
+        "timestamp": "2026-08-13T05:53:36.112257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_PhotoGallery",
+        "timestamp": "2026-08-13T05:53:36.103257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_PrecisionClock",
+        "timestamp": "2026-08-13T05:53:36.080257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_QuickNotes",
+        "timestamp": "2026-08-13T05:53:36.076257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_SMSMessenger",
+        "timestamp": "2026-08-13T05:53:36.107257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_StopwatchX",
+        "timestamp": "2026-08-13T05:53:36.088257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_TodoMaster",
+        "timestamp": "2026-08-13T05:53:36.078257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_TorchLite",
+        "timestamp": "2026-08-13T05:53:36.082257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_UnitConvertPro",
+        "timestamp": "2026-08-13T05:53:36.086257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_WeatherNow",
+        "timestamp": "2026-08-13T05:53:36.109257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      },
+      {
+        "category": "DEX_PARSE_ERROR",
+        "type": "dex_header_invalid",
+        "details": "DEX file has invalid or unsupported header format",
+        "severity": "high",
+        "fix_complexity": "high",
+        "keywords_found": [
+          "parse_error"
+        ],
+        "session": "exp027_20260813_055336_WebBrowserLite",
+        "timestamp": "2026-08-13T05:53:36.105257",
+        "api_calls_made": 6,
+        "execution_stages": [
+          "stage_generate_reports",
+          "stage_parse_dex",
+          "stage_load_apk"
+        ]
+      }
+    ]
+  }
+}

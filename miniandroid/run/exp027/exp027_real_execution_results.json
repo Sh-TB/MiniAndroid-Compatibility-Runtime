@@ -1,0 +1,706 @@
+{
+  "experiment": "EXP-027",
+  "phase": "REAL_EXECUTION_COMPLETE",
+  "timestamp": "2026-08-13T05:53:36.113204",
+  "mode": "REAL_EXECUTION",
+  "runtime_hash": "4dcf9a4386bffe5d11ce78a28412da66e5e98748dee067370c803289caa13ce0",
+  "statistics": {
+    "total_available": 30,
+    "attempted": 20,
+    "executed_pass": 0,
+    "executed_partial": 0,
+    "executed_fail": 20,
+    "parse_error": 0,
+    "not_executed": 0,
+    "total_execution_time_ms": 22,
+    "by_category": {
+      "simple": {
+        "pass": 0,
+        "partial": 0,
+        "fail": 10
+      },
+      "medium": {
+        "pass": 0,
+        "partial": 0,
+        "fail": 10
+      },
+      "complex": {
+        "pass": 0,
+        "partial": 0,
+        "fail": 0
+      }
+    }
+  },
+  "results": [
+    {
+      "apk_name": "OpenCalculator",
+      "package": "com.calculator.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 2,
+      "timestamp": "2026-08-13T05:53:36.073196",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_OpenCalculator/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_OpenCalculator/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_OpenCalculator/report.md"
+      ]
+    },
+    {
+      "apk_name": "QuickNotes",
+      "package": "com.quicknotes.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.075844",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_QuickNotes/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_QuickNotes/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_QuickNotes/report.md"
+      ]
+    },
+    {
+      "apk_name": "TodoMaster",
+      "package": "com.todomaster.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.077881",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_TodoMaster/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_TodoMaster/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_TodoMaster/report.md"
+      ]
+    },
+    {
+      "apk_name": "PrecisionClock",
+      "package": "com.precisionclock.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.079708",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_PrecisionClock/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_PrecisionClock/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_PrecisionClock/report.md"
+      ]
+    },
+    {
+      "apk_name": "TorchLite",
+      "package": "com.torchlite.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.081722",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_TorchLite/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_TorchLite/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_TorchLite/report.md"
+      ]
+    },
+    {
+      "apk_name": "CounterPlus",
+      "package": "com.counterplus.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.083594",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_CounterPlus/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_CounterPlus/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_CounterPlus/report.md"
+      ]
+    },
+    {
+      "apk_name": "UnitConvertPro",
+      "package": "com.unitconvert.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.085513",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_UnitConvertPro/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_UnitConvertPro/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_UnitConvertPro/report.md"
+      ]
+    },
+    {
+      "apk_name": "StopwatchX",
+      "package": "com.stopwatchx.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.087372",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_StopwatchX/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_StopwatchX/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_StopwatchX/report.md"
+      ]
+    },
+    {
+      "apk_name": "DiceRoller",
+      "package": "com.diceroller.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.089218",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_DiceRoller/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_DiceRoller/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_DiceRoller/report.md"
+      ]
+    },
+    {
+      "apk_name": "ColorPicker",
+      "package": "com.colorpicker.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.091044",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_ColorPicker/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_ColorPicker/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_ColorPicker/report.md"
+      ]
+    },
+    {
+      "apk_name": "FileManagerPro",
+      "package": "com.filemanagerpro.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.093154",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_FileManagerPro/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_FileManagerPro/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_FileManagerPro/report.md"
+      ]
+    },
+    {
+      "apk_name": "NewsFeedReader",
+      "package": "com.newsfeedreader.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.095170",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_NewsFeedReader/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_NewsFeedReader/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_NewsFeedReader/report.md"
+      ]
+    },
+    {
+      "apk_name": "MarkEditor",
+      "package": "com.markeditor.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.097068",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_MarkEditor/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_MarkEditor/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_MarkEditor/report.md"
+      ]
+    },
+    {
+      "apk_name": "MusicBoxPlayer",
+      "package": "com.musicboxplayer.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.099031",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_MusicBoxPlayer/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_MusicBoxPlayer/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_MusicBoxPlayer/report.md"
+      ]
+    },
+    {
+      "apk_name": "ContactSync",
+      "package": "com.contactsync.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.100862",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_ContactSync/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_ContactSync/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_ContactSync/report.md"
+      ]
+    },
+    {
+      "apk_name": "PhotoGallery",
+      "package": "com.photogallery.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.102734",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_PhotoGallery/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_PhotoGallery/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_PhotoGallery/report.md"
+      ]
+    },
+    {
+      "apk_name": "WebBrowserLite",
+      "package": "com.webbrowserlite.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.104537",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_WebBrowserLite/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_WebBrowserLite/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_WebBrowserLite/report.md"
+      ]
+    },
+    {
+      "apk_name": "SMSMessenger",
+      "package": "com.smsmessenger.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.106639",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_SMSMessenger/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_SMSMessenger/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_SMSMessenger/report.md"
+      ]
+    },
+    {
+      "apk_name": "WeatherNow",
+      "package": "com.weathernow.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 1,
+      "timestamp": "2026-08-13T05:53:36.108609",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_WeatherNow/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_WeatherNow/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_WeatherNow/report.md"
+      ]
+    },
+    {
+      "apk_name": "PDFViewerApp",
+      "package": "com.pdfviewerapp.app",
+      "status": "EXECUTED_FAIL",
+      "real_execution": true,
+      "dex_loaded": false,
+      "instructions_executed": 0,
+      "methods_entered": [],
+      "api_calls": [],
+      "opcodes_used": {},
+      "render_status": "",
+      "screenshot_captured": false,
+      "error_messages": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "crash_log": "cannot access local variable 're' where it is not associated with a value",
+      "execution_time_ms": 2,
+      "timestamp": "2026-08-13T05:53:36.110328",
+      "evidence_files": [
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_PDFViewerApp/crash.log",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_PDFViewerApp/api_trace.json",
+        "/home/z/my-project/miniandroid/run/exp027/traces/exp027_20260813_055336_PDFViewerApp/report.md"
+      ]
+    }
+  ],
+  "api_frequency": {},
+  "opcode_frequency": {},
+  "failures": [
+    {
+      "package": "com.calculator.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.073196"
+    },
+    {
+      "package": "com.quicknotes.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.075844"
+    },
+    {
+      "package": "com.todomaster.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.077881"
+    },
+    {
+      "package": "com.precisionclock.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.079708"
+    },
+    {
+      "package": "com.torchlite.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.081722"
+    },
+    {
+      "package": "com.counterplus.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.083594"
+    },
+    {
+      "package": "com.unitconvert.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.085513"
+    },
+    {
+      "package": "com.stopwatchx.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.087372"
+    },
+    {
+      "package": "com.diceroller.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.089218"
+    },
+    {
+      "package": "com.colorpicker.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.091044"
+    },
+    {
+      "package": "com.filemanagerpro.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.093154"
+    },
+    {
+      "package": "com.newsfeedreader.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.095170"
+    },
+    {
+      "package": "com.markeditor.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.097068"
+    },
+    {
+      "package": "com.musicboxplayer.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.099031"
+    },
+    {
+      "package": "com.contactsync.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.100862"
+    },
+    {
+      "package": "com.photogallery.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.102734"
+    },
+    {
+      "package": "com.webbrowserlite.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.104537"
+    },
+    {
+      "package": "com.smsmessenger.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.106639"
+    },
+    {
+      "package": "com.weathernow.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.108609"
+    },
+    {
+      "package": "com.pdfviewerapp.app",
+      "status": "EXECUTED_FAIL",
+      "errors": [
+        "Execution error: cannot access local variable 're' where it is not associated with a value"
+      ],
+      "has_crash_log": true,
+      "timestamp": "2026-08-13T05:53:36.110328"
+    }
+  ],
+  "golden_debug_protocol": {
+    "simulation_used": false,
+    "all_results_from_real_runtime": true,
+    "evidence_files_generated_by_runtime": true,
+    "no_projected_scores": true
+  }
+}
