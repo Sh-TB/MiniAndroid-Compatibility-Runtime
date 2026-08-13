@@ -1,0 +1,2698 @@
+{
+  "experiment": "EXP-028",
+  "phase": "DEX_HEADER_FORENSIC_ANALYSIS",
+  "timestamp": "2026-08-13T09:25:07.268593",
+  "working_apk": {
+    "name": "HelloWorld",
+    "dex_size": 544,
+    "header": {
+      "magic": {
+        "raw_hex": "6465780a30333500",
+        "ascii": "dex\n035\u0000",
+        "is_valid_magic": true
+      },
+      "checksum": {
+        "value": 1905088127,
+        "hex": "0x718D567F"
+      },
+      "signature": {
+        "raw_hex": "0000000000000000000000000000000000000000",
+        "is_all_zeros": true
+      },
+      "file_size": {
+        "value": 544,
+        "actual_file_size": 544,
+        "matches_actual": true
+      },
+      "header_size": {
+        "value": 112,
+        "hex": "0x00000070",
+        "is_valid": true,
+        "expected": 112
+      },
+      "endian_tag": {
+        "value": 305419896,
+        "hex": "0x12345678",
+        "is_valid": true,
+        "expected": 305419896
+      },
+      "link_size": {
+        "value": 0,
+        "hex": "0x00000000"
+      },
+      "link_off": {
+        "value": 0,
+        "hex": "0x00000000"
+      },
+      "map_off": {
+        "value": 0,
+        "hex": "0x00000000"
+      },
+      "string_ids_size": {
+        "value": 12,
+        "hex": "0x0000000C"
+      },
+      "string_ids_off": {
+        "value": 112,
+        "hex": "0x00000070"
+      },
+      "type_ids_size": {
+        "value": 5,
+        "hex": "0x00000005"
+      },
+      "type_ids_off": {
+        "value": 160,
+        "hex": "0x000000A0"
+      },
+      "proto_ids_size": {
+        "value": 2,
+        "hex": "0x00000002"
+      },
+      "proto_ids_off": {
+        "value": 180,
+        "hex": "0x000000B4"
+      },
+      "field_ids_size": {
+        "value": 0,
+        "hex": "0x00000000"
+      },
+      "field_ids_off": {
+        "value": 204,
+        "hex": "0x000000CC"
+      },
+      "method_ids_size": {
+        "value": 4,
+        "hex": "0x00000004"
+      },
+      "method_ids_off": {
+        "value": 204,
+        "hex": "0x000000CC"
+      },
+      "class_defs_size": {
+        "value": 1,
+        "hex": "0x00000001"
+      },
+      "class_defs_off": {
+        "value": 236,
+        "hex": "0x000000EC"
+      },
+      "data_size": {
+        "value": 286,
+        "hex": "0x0000011E"
+      },
+      "data_off": {
+        "value": 268,
+        "hex": "0x0000010C"
+      }
+    }
+  },
+  "failures_analyzed": 5,
+  "comparisons": [
+    {
+      "apk_name": "OpenCalculator",
+      "category": "failing_simple",
+      "dex_size": 817,
+      "comparisons": [
+        {
+          "offset": 0,
+          "size": 8,
+          "name": "magic",
+          "description": "DEX magic number",
+          "working_value": {
+            "raw_hex": "6465780a30333500",
+            "ascii": "dex\n035\u0000",
+            "is_valid_magic": true
+          },
+          "failing_value": {
+            "raw_hex": "6465780a30333500",
+            "ascii": "dex\n035\u0000",
+            "is_valid_magic": true
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "",
+          "severity": ""
+        },
+        {
+          "offset": 8,
+          "size": 4,
+          "name": "checksum",
+          "description": "Adler32 checksum",
+          "working_value": {
+            "value": 1905088127,
+            "hex": "0x718D567F"
+          },
+          "failing_value": {
+            "value": 161661775,
+            "hex": "0x09A2C34F"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 12,
+          "size": 20,
+          "name": "signature",
+          "description": "SHA-1 signature",
+          "working_value": {
+            "raw_hex": "0000000000000000000000000000000000000000",
+            "is_all_zeros": true
+          },
+          "failing_value": {
+            "raw_hex": "0000000031030000700000007856341226000000",
+            "is_all_zeros": false
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 32,
+          "size": 4,
+          "name": "file_size",
+          "description": "Total file size in bytes",
+          "working_value": {
+            "value": 544,
+            "actual_file_size": 544,
+            "matches_actual": true
+          },
+          "failing_value": {
+            "value": 112,
+            "actual_file_size": 817,
+            "matches_actual": false
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "WARNING: File size mismatch (header=112, actual=817)",
+          "severity": "MEDIUM"
+        },
+        {
+          "offset": 36,
+          "size": 4,
+          "name": "header_size",
+          "description": "Header size (always 0x70)",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070",
+            "is_valid": true,
+            "expected": 112
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000",
+            "is_valid": false,
+            "expected": 112
+          },
+          "expected_range": "112",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid header size (0 != 0x70)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 40,
+          "size": 4,
+          "name": "endian_tag",
+          "description": "Endian tag (always 0x12345678)",
+          "working_value": {
+            "value": 305419896,
+            "hex": "0x12345678",
+            "is_valid": true,
+            "expected": 305419896
+          },
+          "failing_value": {
+            "value": 264,
+            "hex": "0x00000108",
+            "is_valid": false,
+            "expected": 305419896
+          },
+          "expected_range": "305419896",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid endian tag (0x00000108 != 0x12345678)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 44,
+          "size": 4,
+          "name": "link_size",
+          "description": "Link section size",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 48,
+          "size": 4,
+          "name": "link_off",
+          "description": "Link section offset",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 52,
+          "size": 4,
+          "name": "map_off",
+          "description": "Map item offset",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 56,
+          "size": 4,
+          "name": "string_ids_size",
+          "description": "String IDs count",
+          "working_value": {
+            "value": 12,
+            "hex": "0x0000000C"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 60,
+          "size": 4,
+          "name": "string_ids_off",
+          "description": "String IDs offset",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 64,
+          "size": 4,
+          "name": "type_ids_size",
+          "description": "Type IDs count",
+          "working_value": {
+            "value": 5,
+            "hex": "0x00000005"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 68,
+          "size": 4,
+          "name": "type_ids_off",
+          "description": "Type IDs offset",
+          "working_value": {
+            "value": 160,
+            "hex": "0x000000A0"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 72,
+          "size": 4,
+          "name": "proto_ids_size",
+          "description": "Prototype IDs count",
+          "working_value": {
+            "value": 2,
+            "hex": "0x00000002"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 76,
+          "size": 4,
+          "name": "proto_ids_off",
+          "description": "Prototype IDs offset",
+          "working_value": {
+            "value": 180,
+            "hex": "0x000000B4"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 80,
+          "size": 4,
+          "name": "field_ids_size",
+          "description": "Field IDs count",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 84,
+          "size": 4,
+          "name": "field_ids_off",
+          "description": "Field IDs offset",
+          "working_value": {
+            "value": 204,
+            "hex": "0x000000CC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 88,
+          "size": 4,
+          "name": "method_ids_size",
+          "description": "Method IDs count",
+          "working_value": {
+            "value": 4,
+            "hex": "0x00000004"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 92,
+          "size": 4,
+          "name": "method_ids_off",
+          "description": "Method IDs offset",
+          "working_value": {
+            "value": 204,
+            "hex": "0x000000CC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 96,
+          "size": 4,
+          "name": "class_defs_size",
+          "description": "Class definitions count",
+          "working_value": {
+            "value": 1,
+            "hex": "0x00000001"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 100,
+          "size": 4,
+          "name": "class_defs_off",
+          "description": "Class definitions offset",
+          "working_value": {
+            "value": 236,
+            "hex": "0x000000EC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 104,
+          "size": 4,
+          "name": "data_size",
+          "description": "Data section size",
+          "working_value": {
+            "value": 286,
+            "hex": "0x0000011E"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 108,
+          "size": 4,
+          "name": "data_off",
+          "description": "Data section offset",
+          "working_value": {
+            "value": 268,
+            "hex": "0x0000010C"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        }
+      ],
+      "critical_failures": [
+        {
+          "offset": 36,
+          "size": 4,
+          "name": "header_size",
+          "description": "Header size (always 0x70)",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070",
+            "is_valid": true,
+            "expected": 112
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000",
+            "is_valid": false,
+            "expected": 112
+          },
+          "expected_range": "112",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid header size (0 != 0x70)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 40,
+          "size": 4,
+          "name": "endian_tag",
+          "description": "Endian tag (always 0x12345678)",
+          "working_value": {
+            "value": 305419896,
+            "hex": "0x12345678",
+            "is_valid": true,
+            "expected": 305419896
+          },
+          "failing_value": {
+            "value": 264,
+            "hex": "0x00000108",
+            "is_valid": false,
+            "expected": 305419896
+          },
+          "expected_range": "305419896",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid endian tag (0x00000108 != 0x12345678)",
+          "severity": "CRITICAL"
+        }
+      ]
+    },
+    {
+      "apk_name": "QuickNotes",
+      "category": "failing_simple",
+      "dex_size": 872,
+      "comparisons": [
+        {
+          "offset": 0,
+          "size": 8,
+          "name": "magic",
+          "description": "DEX magic number",
+          "working_value": {
+            "raw_hex": "6465780a30333500",
+            "ascii": "dex\n035\u0000",
+            "is_valid_magic": true
+          },
+          "failing_value": {
+            "raw_hex": "6465780a30333500",
+            "ascii": "dex\n035\u0000",
+            "is_valid_magic": true
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "",
+          "severity": ""
+        },
+        {
+          "offset": 8,
+          "size": 4,
+          "name": "checksum",
+          "description": "Adler32 checksum",
+          "working_value": {
+            "value": 1905088127,
+            "hex": "0x718D567F"
+          },
+          "failing_value": {
+            "value": 602920466,
+            "hex": "0x23EFD612"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 12,
+          "size": 20,
+          "name": "signature",
+          "description": "SHA-1 signature",
+          "working_value": {
+            "raw_hex": "0000000000000000000000000000000000000000",
+            "is_all_zeros": true
+          },
+          "failing_value": {
+            "raw_hex": "0000000068030000700000007856341228000000",
+            "is_all_zeros": false
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 32,
+          "size": 4,
+          "name": "file_size",
+          "description": "Total file size in bytes",
+          "working_value": {
+            "value": 544,
+            "actual_file_size": 544,
+            "matches_actual": true
+          },
+          "failing_value": {
+            "value": 112,
+            "actual_file_size": 872,
+            "matches_actual": false
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "WARNING: File size mismatch (header=112, actual=872)",
+          "severity": "MEDIUM"
+        },
+        {
+          "offset": 36,
+          "size": 4,
+          "name": "header_size",
+          "description": "Header size (always 0x70)",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070",
+            "is_valid": true,
+            "expected": 112
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000",
+            "is_valid": false,
+            "expected": 112
+          },
+          "expected_range": "112",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid header size (0 != 0x70)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 40,
+          "size": 4,
+          "name": "endian_tag",
+          "description": "Endian tag (always 0x12345678)",
+          "working_value": {
+            "value": 305419896,
+            "hex": "0x12345678",
+            "is_valid": true,
+            "expected": 305419896
+          },
+          "failing_value": {
+            "value": 272,
+            "hex": "0x00000110",
+            "is_valid": false,
+            "expected": 305419896
+          },
+          "expected_range": "305419896",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid endian tag (0x00000110 != 0x12345678)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 44,
+          "size": 4,
+          "name": "link_size",
+          "description": "Link section size",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 48,
+          "size": 4,
+          "name": "link_off",
+          "description": "Link section offset",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 52,
+          "size": 4,
+          "name": "map_off",
+          "description": "Map item offset",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 56,
+          "size": 4,
+          "name": "string_ids_size",
+          "description": "String IDs count",
+          "working_value": {
+            "value": 12,
+            "hex": "0x0000000C"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 60,
+          "size": 4,
+          "name": "string_ids_off",
+          "description": "String IDs offset",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 64,
+          "size": 4,
+          "name": "type_ids_size",
+          "description": "Type IDs count",
+          "working_value": {
+            "value": 5,
+            "hex": "0x00000005"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 68,
+          "size": 4,
+          "name": "type_ids_off",
+          "description": "Type IDs offset",
+          "working_value": {
+            "value": 160,
+            "hex": "0x000000A0"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 72,
+          "size": 4,
+          "name": "proto_ids_size",
+          "description": "Prototype IDs count",
+          "working_value": {
+            "value": 2,
+            "hex": "0x00000002"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 76,
+          "size": 4,
+          "name": "proto_ids_off",
+          "description": "Prototype IDs offset",
+          "working_value": {
+            "value": 180,
+            "hex": "0x000000B4"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 80,
+          "size": 4,
+          "name": "field_ids_size",
+          "description": "Field IDs count",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 84,
+          "size": 4,
+          "name": "field_ids_off",
+          "description": "Field IDs offset",
+          "working_value": {
+            "value": 204,
+            "hex": "0x000000CC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 88,
+          "size": 4,
+          "name": "method_ids_size",
+          "description": "Method IDs count",
+          "working_value": {
+            "value": 4,
+            "hex": "0x00000004"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 92,
+          "size": 4,
+          "name": "method_ids_off",
+          "description": "Method IDs offset",
+          "working_value": {
+            "value": 204,
+            "hex": "0x000000CC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 96,
+          "size": 4,
+          "name": "class_defs_size",
+          "description": "Class definitions count",
+          "working_value": {
+            "value": 1,
+            "hex": "0x00000001"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 100,
+          "size": 4,
+          "name": "class_defs_off",
+          "description": "Class definitions offset",
+          "working_value": {
+            "value": 236,
+            "hex": "0x000000EC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 104,
+          "size": 4,
+          "name": "data_size",
+          "description": "Data section size",
+          "working_value": {
+            "value": 286,
+            "hex": "0x0000011E"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 108,
+          "size": 4,
+          "name": "data_off",
+          "description": "Data section offset",
+          "working_value": {
+            "value": 268,
+            "hex": "0x0000010C"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        }
+      ],
+      "critical_failures": [
+        {
+          "offset": 36,
+          "size": 4,
+          "name": "header_size",
+          "description": "Header size (always 0x70)",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070",
+            "is_valid": true,
+            "expected": 112
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000",
+            "is_valid": false,
+            "expected": 112
+          },
+          "expected_range": "112",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid header size (0 != 0x70)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 40,
+          "size": 4,
+          "name": "endian_tag",
+          "description": "Endian tag (always 0x12345678)",
+          "working_value": {
+            "value": 305419896,
+            "hex": "0x12345678",
+            "is_valid": true,
+            "expected": 305419896
+          },
+          "failing_value": {
+            "value": 272,
+            "hex": "0x00000110",
+            "is_valid": false,
+            "expected": 305419896
+          },
+          "expected_range": "305419896",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid endian tag (0x00000110 != 0x12345678)",
+          "severity": "CRITICAL"
+        }
+      ]
+    },
+    {
+      "apk_name": "TodoMaster",
+      "category": "failing_simple",
+      "dex_size": 927,
+      "comparisons": [
+        {
+          "offset": 0,
+          "size": 8,
+          "name": "magic",
+          "description": "DEX magic number",
+          "working_value": {
+            "raw_hex": "6465780a30333500",
+            "ascii": "dex\n035\u0000",
+            "is_valid_magic": true
+          },
+          "failing_value": {
+            "raw_hex": "6465780a30333500",
+            "ascii": "dex\n035\u0000",
+            "is_valid_magic": true
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "",
+          "severity": ""
+        },
+        {
+          "offset": 8,
+          "size": 4,
+          "name": "checksum",
+          "description": "Adler32 checksum",
+          "working_value": {
+            "value": 1905088127,
+            "hex": "0x718D567F"
+          },
+          "failing_value": {
+            "value": 1889134668,
+            "hex": "0x7099E84C"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 12,
+          "size": 20,
+          "name": "signature",
+          "description": "SHA-1 signature",
+          "working_value": {
+            "raw_hex": "0000000000000000000000000000000000000000",
+            "is_all_zeros": true
+          },
+          "failing_value": {
+            "raw_hex": "000000009f03000070000000785634122a000000",
+            "is_all_zeros": false
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 32,
+          "size": 4,
+          "name": "file_size",
+          "description": "Total file size in bytes",
+          "working_value": {
+            "value": 544,
+            "actual_file_size": 544,
+            "matches_actual": true
+          },
+          "failing_value": {
+            "value": 112,
+            "actual_file_size": 927,
+            "matches_actual": false
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "WARNING: File size mismatch (header=112, actual=927)",
+          "severity": "MEDIUM"
+        },
+        {
+          "offset": 36,
+          "size": 4,
+          "name": "header_size",
+          "description": "Header size (always 0x70)",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070",
+            "is_valid": true,
+            "expected": 112
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000",
+            "is_valid": false,
+            "expected": 112
+          },
+          "expected_range": "112",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid header size (0 != 0x70)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 40,
+          "size": 4,
+          "name": "endian_tag",
+          "description": "Endian tag (always 0x12345678)",
+          "working_value": {
+            "value": 305419896,
+            "hex": "0x12345678",
+            "is_valid": true,
+            "expected": 305419896
+          },
+          "failing_value": {
+            "value": 280,
+            "hex": "0x00000118",
+            "is_valid": false,
+            "expected": 305419896
+          },
+          "expected_range": "305419896",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid endian tag (0x00000118 != 0x12345678)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 44,
+          "size": 4,
+          "name": "link_size",
+          "description": "Link section size",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 48,
+          "size": 4,
+          "name": "link_off",
+          "description": "Link section offset",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 52,
+          "size": 4,
+          "name": "map_off",
+          "description": "Map item offset",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 56,
+          "size": 4,
+          "name": "string_ids_size",
+          "description": "String IDs count",
+          "working_value": {
+            "value": 12,
+            "hex": "0x0000000C"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 60,
+          "size": 4,
+          "name": "string_ids_off",
+          "description": "String IDs offset",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 64,
+          "size": 4,
+          "name": "type_ids_size",
+          "description": "Type IDs count",
+          "working_value": {
+            "value": 5,
+            "hex": "0x00000005"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 68,
+          "size": 4,
+          "name": "type_ids_off",
+          "description": "Type IDs offset",
+          "working_value": {
+            "value": 160,
+            "hex": "0x000000A0"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 72,
+          "size": 4,
+          "name": "proto_ids_size",
+          "description": "Prototype IDs count",
+          "working_value": {
+            "value": 2,
+            "hex": "0x00000002"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 76,
+          "size": 4,
+          "name": "proto_ids_off",
+          "description": "Prototype IDs offset",
+          "working_value": {
+            "value": 180,
+            "hex": "0x000000B4"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 80,
+          "size": 4,
+          "name": "field_ids_size",
+          "description": "Field IDs count",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 84,
+          "size": 4,
+          "name": "field_ids_off",
+          "description": "Field IDs offset",
+          "working_value": {
+            "value": 204,
+            "hex": "0x000000CC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 88,
+          "size": 4,
+          "name": "method_ids_size",
+          "description": "Method IDs count",
+          "working_value": {
+            "value": 4,
+            "hex": "0x00000004"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 92,
+          "size": 4,
+          "name": "method_ids_off",
+          "description": "Method IDs offset",
+          "working_value": {
+            "value": 204,
+            "hex": "0x000000CC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 96,
+          "size": 4,
+          "name": "class_defs_size",
+          "description": "Class definitions count",
+          "working_value": {
+            "value": 1,
+            "hex": "0x00000001"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 100,
+          "size": 4,
+          "name": "class_defs_off",
+          "description": "Class definitions offset",
+          "working_value": {
+            "value": 236,
+            "hex": "0x000000EC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 104,
+          "size": 4,
+          "name": "data_size",
+          "description": "Data section size",
+          "working_value": {
+            "value": 286,
+            "hex": "0x0000011E"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 108,
+          "size": 4,
+          "name": "data_off",
+          "description": "Data section offset",
+          "working_value": {
+            "value": 268,
+            "hex": "0x0000010C"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        }
+      ],
+      "critical_failures": [
+        {
+          "offset": 36,
+          "size": 4,
+          "name": "header_size",
+          "description": "Header size (always 0x70)",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070",
+            "is_valid": true,
+            "expected": 112
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000",
+            "is_valid": false,
+            "expected": 112
+          },
+          "expected_range": "112",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid header size (0 != 0x70)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 40,
+          "size": 4,
+          "name": "endian_tag",
+          "description": "Endian tag (always 0x12345678)",
+          "working_value": {
+            "value": 305419896,
+            "hex": "0x12345678",
+            "is_valid": true,
+            "expected": 305419896
+          },
+          "failing_value": {
+            "value": 280,
+            "hex": "0x00000118",
+            "is_valid": false,
+            "expected": 305419896
+          },
+          "expected_range": "305419896",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid endian tag (0x00000118 != 0x12345678)",
+          "severity": "CRITICAL"
+        }
+      ]
+    },
+    {
+      "apk_name": "FileManagerPro",
+      "category": "failing_medium",
+      "dex_size": 1390,
+      "comparisons": [
+        {
+          "offset": 0,
+          "size": 8,
+          "name": "magic",
+          "description": "DEX magic number",
+          "working_value": {
+            "raw_hex": "6465780a30333500",
+            "ascii": "dex\n035\u0000",
+            "is_valid_magic": true
+          },
+          "failing_value": {
+            "raw_hex": "6465780a30333500",
+            "ascii": "dex\n035\u0000",
+            "is_valid_magic": true
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "",
+          "severity": ""
+        },
+        {
+          "offset": 8,
+          "size": 4,
+          "name": "checksum",
+          "description": "Adler32 checksum",
+          "working_value": {
+            "value": 1905088127,
+            "hex": "0x718D567F"
+          },
+          "failing_value": {
+            "value": 840729052,
+            "hex": "0x321C81DC"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 12,
+          "size": 20,
+          "name": "signature",
+          "description": "SHA-1 signature",
+          "working_value": {
+            "raw_hex": "0000000000000000000000000000000000000000",
+            "is_all_zeros": true
+          },
+          "failing_value": {
+            "raw_hex": "000000006e05000070000000785634123a000000",
+            "is_all_zeros": false
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 32,
+          "size": 4,
+          "name": "file_size",
+          "description": "Total file size in bytes",
+          "working_value": {
+            "value": 544,
+            "actual_file_size": 544,
+            "matches_actual": true
+          },
+          "failing_value": {
+            "value": 112,
+            "actual_file_size": 1390,
+            "matches_actual": false
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "WARNING: File size mismatch (header=112, actual=1390)",
+          "severity": "MEDIUM"
+        },
+        {
+          "offset": 36,
+          "size": 4,
+          "name": "header_size",
+          "description": "Header size (always 0x70)",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070",
+            "is_valid": true,
+            "expected": 112
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000",
+            "is_valid": false,
+            "expected": 112
+          },
+          "expected_range": "112",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid header size (0 != 0x70)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 40,
+          "size": 4,
+          "name": "endian_tag",
+          "description": "Endian tag (always 0x12345678)",
+          "working_value": {
+            "value": 305419896,
+            "hex": "0x12345678",
+            "is_valid": true,
+            "expected": 305419896
+          },
+          "failing_value": {
+            "value": 344,
+            "hex": "0x00000158",
+            "is_valid": false,
+            "expected": 305419896
+          },
+          "expected_range": "305419896",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid endian tag (0x00000158 != 0x12345678)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 44,
+          "size": 4,
+          "name": "link_size",
+          "description": "Link section size",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 48,
+          "size": 4,
+          "name": "link_off",
+          "description": "Link section offset",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 52,
+          "size": 4,
+          "name": "map_off",
+          "description": "Map item offset",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 56,
+          "size": 4,
+          "name": "string_ids_size",
+          "description": "String IDs count",
+          "working_value": {
+            "value": 12,
+            "hex": "0x0000000C"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 60,
+          "size": 4,
+          "name": "string_ids_off",
+          "description": "String IDs offset",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 64,
+          "size": 4,
+          "name": "type_ids_size",
+          "description": "Type IDs count",
+          "working_value": {
+            "value": 5,
+            "hex": "0x00000005"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 68,
+          "size": 4,
+          "name": "type_ids_off",
+          "description": "Type IDs offset",
+          "working_value": {
+            "value": 160,
+            "hex": "0x000000A0"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 72,
+          "size": 4,
+          "name": "proto_ids_size",
+          "description": "Prototype IDs count",
+          "working_value": {
+            "value": 2,
+            "hex": "0x00000002"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 76,
+          "size": 4,
+          "name": "proto_ids_off",
+          "description": "Prototype IDs offset",
+          "working_value": {
+            "value": 180,
+            "hex": "0x000000B4"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 80,
+          "size": 4,
+          "name": "field_ids_size",
+          "description": "Field IDs count",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 84,
+          "size": 4,
+          "name": "field_ids_off",
+          "description": "Field IDs offset",
+          "working_value": {
+            "value": 204,
+            "hex": "0x000000CC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 88,
+          "size": 4,
+          "name": "method_ids_size",
+          "description": "Method IDs count",
+          "working_value": {
+            "value": 4,
+            "hex": "0x00000004"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 92,
+          "size": 4,
+          "name": "method_ids_off",
+          "description": "Method IDs offset",
+          "working_value": {
+            "value": 204,
+            "hex": "0x000000CC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 96,
+          "size": 4,
+          "name": "class_defs_size",
+          "description": "Class definitions count",
+          "working_value": {
+            "value": 1,
+            "hex": "0x00000001"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 100,
+          "size": 4,
+          "name": "class_defs_off",
+          "description": "Class definitions offset",
+          "working_value": {
+            "value": 236,
+            "hex": "0x000000EC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 104,
+          "size": 4,
+          "name": "data_size",
+          "description": "Data section size",
+          "working_value": {
+            "value": 286,
+            "hex": "0x0000011E"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 108,
+          "size": 4,
+          "name": "data_off",
+          "description": "Data section offset",
+          "working_value": {
+            "value": 268,
+            "hex": "0x0000010C"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        }
+      ],
+      "critical_failures": [
+        {
+          "offset": 36,
+          "size": 4,
+          "name": "header_size",
+          "description": "Header size (always 0x70)",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070",
+            "is_valid": true,
+            "expected": 112
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000",
+            "is_valid": false,
+            "expected": 112
+          },
+          "expected_range": "112",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid header size (0 != 0x70)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 40,
+          "size": 4,
+          "name": "endian_tag",
+          "description": "Endian tag (always 0x12345678)",
+          "working_value": {
+            "value": 305419896,
+            "hex": "0x12345678",
+            "is_valid": true,
+            "expected": 305419896
+          },
+          "failing_value": {
+            "value": 344,
+            "hex": "0x00000158",
+            "is_valid": false,
+            "expected": 305419896
+          },
+          "expected_range": "305419896",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid endian tag (0x00000158 != 0x12345678)",
+          "severity": "CRITICAL"
+        }
+      ]
+    },
+    {
+      "apk_name": "MusicBoxPlayer",
+      "category": "failing_medium",
+      "dex_size": 1571,
+      "comparisons": [
+        {
+          "offset": 0,
+          "size": 8,
+          "name": "magic",
+          "description": "DEX magic number",
+          "working_value": {
+            "raw_hex": "6465780a30333500",
+            "ascii": "dex\n035\u0000",
+            "is_valid_magic": true
+          },
+          "failing_value": {
+            "raw_hex": "6465780a30333500",
+            "ascii": "dex\n035\u0000",
+            "is_valid_magic": true
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "",
+          "severity": ""
+        },
+        {
+          "offset": 8,
+          "size": 4,
+          "name": "checksum",
+          "description": "Adler32 checksum",
+          "working_value": {
+            "value": 1905088127,
+            "hex": "0x718D567F"
+          },
+          "failing_value": {
+            "value": 128171582,
+            "hex": "0x07A3BE3E"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 12,
+          "size": 20,
+          "name": "signature",
+          "description": "SHA-1 signature",
+          "working_value": {
+            "raw_hex": "0000000000000000000000000000000000000000",
+            "is_all_zeros": true
+          },
+          "failing_value": {
+            "raw_hex": "0000000023060000700000007856341240000000",
+            "is_all_zeros": false
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 32,
+          "size": 4,
+          "name": "file_size",
+          "description": "Total file size in bytes",
+          "working_value": {
+            "value": 544,
+            "actual_file_size": 544,
+            "matches_actual": true
+          },
+          "failing_value": {
+            "value": 112,
+            "actual_file_size": 1571,
+            "matches_actual": false
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "WARNING: File size mismatch (header=112, actual=1571)",
+          "severity": "MEDIUM"
+        },
+        {
+          "offset": 36,
+          "size": 4,
+          "name": "header_size",
+          "description": "Header size (always 0x70)",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070",
+            "is_valid": true,
+            "expected": 112
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000",
+            "is_valid": false,
+            "expected": 112
+          },
+          "expected_range": "112",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid header size (0 != 0x70)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 40,
+          "size": 4,
+          "name": "endian_tag",
+          "description": "Endian tag (always 0x12345678)",
+          "working_value": {
+            "value": 305419896,
+            "hex": "0x12345678",
+            "is_valid": true,
+            "expected": 305419896
+          },
+          "failing_value": {
+            "value": 368,
+            "hex": "0x00000170",
+            "is_valid": false,
+            "expected": 305419896
+          },
+          "expected_range": "305419896",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid endian tag (0x00000170 != 0x12345678)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 44,
+          "size": 4,
+          "name": "link_size",
+          "description": "Link section size",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 48,
+          "size": 4,
+          "name": "link_off",
+          "description": "Link section offset",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 52,
+          "size": 4,
+          "name": "map_off",
+          "description": "Map item offset",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 56,
+          "size": 4,
+          "name": "string_ids_size",
+          "description": "String IDs count",
+          "working_value": {
+            "value": 12,
+            "hex": "0x0000000C"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 60,
+          "size": 4,
+          "name": "string_ids_off",
+          "description": "String IDs offset",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 64,
+          "size": 4,
+          "name": "type_ids_size",
+          "description": "Type IDs count",
+          "working_value": {
+            "value": 5,
+            "hex": "0x00000005"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 68,
+          "size": 4,
+          "name": "type_ids_off",
+          "description": "Type IDs offset",
+          "working_value": {
+            "value": 160,
+            "hex": "0x000000A0"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 72,
+          "size": 4,
+          "name": "proto_ids_size",
+          "description": "Prototype IDs count",
+          "working_value": {
+            "value": 2,
+            "hex": "0x00000002"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 76,
+          "size": 4,
+          "name": "proto_ids_off",
+          "description": "Prototype IDs offset",
+          "working_value": {
+            "value": 180,
+            "hex": "0x000000B4"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 80,
+          "size": 4,
+          "name": "field_ids_size",
+          "description": "Field IDs count",
+          "working_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": true,
+          "parser_behavior": "OK",
+          "severity": ""
+        },
+        {
+          "offset": 84,
+          "size": 4,
+          "name": "field_ids_off",
+          "description": "Field IDs offset",
+          "working_value": {
+            "value": 204,
+            "hex": "0x000000CC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 88,
+          "size": 4,
+          "name": "method_ids_size",
+          "description": "Method IDs count",
+          "working_value": {
+            "value": 4,
+            "hex": "0x00000004"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 92,
+          "size": 4,
+          "name": "method_ids_off",
+          "description": "Method IDs offset",
+          "working_value": {
+            "value": 204,
+            "hex": "0x000000CC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 96,
+          "size": 4,
+          "name": "class_defs_size",
+          "description": "Class definitions count",
+          "working_value": {
+            "value": 1,
+            "hex": "0x00000001"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 100,
+          "size": 4,
+          "name": "class_defs_off",
+          "description": "Class definitions offset",
+          "working_value": {
+            "value": 236,
+            "hex": "0x000000EC"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 104,
+          "size": 4,
+          "name": "data_size",
+          "description": "Data section size",
+          "working_value": {
+            "value": 286,
+            "hex": "0x0000011E"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        },
+        {
+          "offset": 108,
+          "size": 4,
+          "name": "data_off",
+          "description": "Data section offset",
+          "working_value": {
+            "value": 268,
+            "hex": "0x0000010C"
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000"
+          },
+          "expected_range": "any",
+          "match": false,
+          "parser_behavior": "DIFFERENT (may affect parsing)",
+          "severity": "LOW"
+        }
+      ],
+      "critical_failures": [
+        {
+          "offset": 36,
+          "size": 4,
+          "name": "header_size",
+          "description": "Header size (always 0x70)",
+          "working_value": {
+            "value": 112,
+            "hex": "0x00000070",
+            "is_valid": true,
+            "expected": 112
+          },
+          "failing_value": {
+            "value": 0,
+            "hex": "0x00000000",
+            "is_valid": false,
+            "expected": 112
+          },
+          "expected_range": "112",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid header size (0 != 0x70)",
+          "severity": "CRITICAL"
+        },
+        {
+          "offset": 40,
+          "size": 4,
+          "name": "endian_tag",
+          "description": "Endian tag (always 0x12345678)",
+          "working_value": {
+            "value": 305419896,
+            "hex": "0x12345678",
+            "is_valid": true,
+            "expected": 305419896
+          },
+          "failing_value": {
+            "value": 368,
+            "hex": "0x00000170",
+            "is_valid": false,
+            "expected": 305419896
+          },
+          "expected_range": "305419896",
+          "match": false,
+          "parser_behavior": "REJECT: Invalid endian tag (0x00000170 != 0x12345678)",
+          "severity": "CRITICAL"
+        }
+      ]
+    }
+  ],
+  "root_cause_evidence": [
+    {
+      "apk": "OpenCalculator",
+      "field": "header_size",
+      "offset": 36,
+      "working_value": {
+        "value": 112,
+        "hex": "0x00000070",
+        "is_valid": true,
+        "expected": 112
+      },
+      "failing_value": {
+        "value": 0,
+        "hex": "0x00000000",
+        "is_valid": false,
+        "expected": 112
+      },
+      "parser_behavior": "REJECT: Invalid header size (0 != 0x70)"
+    },
+    {
+      "apk": "OpenCalculator",
+      "field": "endian_tag",
+      "offset": 40,
+      "working_value": {
+        "value": 305419896,
+        "hex": "0x12345678",
+        "is_valid": true,
+        "expected": 305419896
+      },
+      "failing_value": {
+        "value": 264,
+        "hex": "0x00000108",
+        "is_valid": false,
+        "expected": 305419896
+      },
+      "parser_behavior": "REJECT: Invalid endian tag (0x00000108 != 0x12345678)"
+    },
+    {
+      "apk": "QuickNotes",
+      "field": "header_size",
+      "offset": 36,
+      "working_value": {
+        "value": 112,
+        "hex": "0x00000070",
+        "is_valid": true,
+        "expected": 112
+      },
+      "failing_value": {
+        "value": 0,
+        "hex": "0x00000000",
+        "is_valid": false,
+        "expected": 112
+      },
+      "parser_behavior": "REJECT: Invalid header size (0 != 0x70)"
+    },
+    {
+      "apk": "QuickNotes",
+      "field": "endian_tag",
+      "offset": 40,
+      "working_value": {
+        "value": 305419896,
+        "hex": "0x12345678",
+        "is_valid": true,
+        "expected": 305419896
+      },
+      "failing_value": {
+        "value": 272,
+        "hex": "0x00000110",
+        "is_valid": false,
+        "expected": 305419896
+      },
+      "parser_behavior": "REJECT: Invalid endian tag (0x00000110 != 0x12345678)"
+    },
+    {
+      "apk": "TodoMaster",
+      "field": "header_size",
+      "offset": 36,
+      "working_value": {
+        "value": 112,
+        "hex": "0x00000070",
+        "is_valid": true,
+        "expected": 112
+      },
+      "failing_value": {
+        "value": 0,
+        "hex": "0x00000000",
+        "is_valid": false,
+        "expected": 112
+      },
+      "parser_behavior": "REJECT: Invalid header size (0 != 0x70)"
+    },
+    {
+      "apk": "TodoMaster",
+      "field": "endian_tag",
+      "offset": 40,
+      "working_value": {
+        "value": 305419896,
+        "hex": "0x12345678",
+        "is_valid": true,
+        "expected": 305419896
+      },
+      "failing_value": {
+        "value": 280,
+        "hex": "0x00000118",
+        "is_valid": false,
+        "expected": 305419896
+      },
+      "parser_behavior": "REJECT: Invalid endian tag (0x00000118 != 0x12345678)"
+    },
+    {
+      "apk": "FileManagerPro",
+      "field": "header_size",
+      "offset": 36,
+      "working_value": {
+        "value": 112,
+        "hex": "0x00000070",
+        "is_valid": true,
+        "expected": 112
+      },
+      "failing_value": {
+        "value": 0,
+        "hex": "0x00000000",
+        "is_valid": false,
+        "expected": 112
+      },
+      "parser_behavior": "REJECT: Invalid header size (0 != 0x70)"
+    },
+    {
+      "apk": "FileManagerPro",
+      "field": "endian_tag",
+      "offset": 40,
+      "working_value": {
+        "value": 305419896,
+        "hex": "0x12345678",
+        "is_valid": true,
+        "expected": 305419896
+      },
+      "failing_value": {
+        "value": 344,
+        "hex": "0x00000158",
+        "is_valid": false,
+        "expected": 305419896
+      },
+      "parser_behavior": "REJECT: Invalid endian tag (0x00000158 != 0x12345678)"
+    },
+    {
+      "apk": "MusicBoxPlayer",
+      "field": "header_size",
+      "offset": 36,
+      "working_value": {
+        "value": 112,
+        "hex": "0x00000070",
+        "is_valid": true,
+        "expected": 112
+      },
+      "failing_value": {
+        "value": 0,
+        "hex": "0x00000000",
+        "is_valid": false,
+        "expected": 112
+      },
+      "parser_behavior": "REJECT: Invalid header size (0 != 0x70)"
+    },
+    {
+      "apk": "MusicBoxPlayer",
+      "field": "endian_tag",
+      "offset": 40,
+      "working_value": {
+        "value": 305419896,
+        "hex": "0x12345678",
+        "is_valid": true,
+        "expected": 305419896
+      },
+      "failing_value": {
+        "value": 368,
+        "hex": "0x00000170",
+        "is_valid": false,
+        "expected": 305419896
+      },
+      "parser_behavior": "REJECT: Invalid endian tag (0x00000170 != 0x12345678)"
+    }
+  ],
+  "summary": {
+    "total_critical_failures": 10,
+    "unique_critical_fields": [
+      "header_size",
+      "endian_tag"
+    ],
+    "affected_apks": 5,
+    "failure_rate": "100%"
+  }
+}
