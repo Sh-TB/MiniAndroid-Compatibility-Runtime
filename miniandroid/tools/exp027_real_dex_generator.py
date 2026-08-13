@@ -359,25 +359,54 @@ class RealDEXGenerator:
         # Allocate full DEX buffer
         dex_data = bytearray(total_estimated)
         
-        # Header (0x70 bytes)
-        dex_data[0:8] = DEX_MAGIC
-        struct.pack_into('<I', dex_data, 8, 0)  # checksum placeholder
-        struct.pack_into('<I', dex_data, 12, 0)  # signature placeholder  
-        struct.pack_into('<I', dex_data, 16, total_estimated)  # file_size - will update
-        struct.pack_into('<I', dex_data, 20, 0x70)  # header_size
-        struct.pack_into('<I', dex_data, 24, DEX_ENDIAN_TAG)  # endian_tag
-        struct.pack_into('<I', dex_data, 28, num_strings)  # string_ids_size
-        struct.pack_into('<I', dex_data, 32, string_ids_start)  # string_ids_off
-        struct.pack_into('<I', dex_data, 36, num_types)  # type_ids_size
-        struct.pack_into('<I', dex_data, 40, type_ids_start)  # type_ids_off
-        struct.pack_into('<I', dex_data, 44, 0)  # proto_ids_size
-        struct.pack_into('<I', dex_data, 48, 0)  # proto_ids_off
-        struct.pack_into('<I', dex_data, 52, len(self.fields))  # field_ids_size
-        struct.pack_into('<I', dex_data, 56, 0)  # field_ids_off
-        struct.pack_into('<I', dex_data, 60, len(self.methods))  # method_ids_size
-        struct.pack_into('<I', dex_data, 64, 0)  # method_ids_off
-        struct.pack_into('<I', dex_data, 68, len(self.classes))  # class_defs_size
-        struct.pack_into('<I', dex_data, 72, 0)  # class_defs_off
+        # Header (0x70 = 112 bytes) - STANDARD DEX LAYOUT
+        # Offset  Field              Size    Description
+        # ------  -----              ----    -----------
+        # 0      magic               8       "dex\n035\0"
+        # 8      checksum            4       Adler32 (calculated later)
+        # 12     signature           20      SHA-1 (all zeros for now)
+        # 32     file_size           4       Total size (updated later)
+        # 36     header_size         4       ALWAYS 0x70 (112)
+        # 40     endian_tag          4       ALWAYS 0x12345678
+        # 44     link_size           4       (unused, 0)
+        # 48     link_off            4       (unused, 0)
+        # 52     map_off             4       (unused, 0)
+        # 56     string_ids_size     4       Count of strings
+        # 60     string_ids_off      4       Offset to string IDs
+        # 64     type_ids_size       4       Count of types
+        # 68     type_ids_off        4       Offset to type IDs
+        # 72     proto_ids_size      4       Count of prototypes
+        # 76     proto_ids_off       4       Offset to prototypes
+        # 80     field_ids_size      4       Count of fields
+        # 84     field_ids_off       4       Offset to fields
+        # 88     method_ids_size     4       Count of methods
+        # 92     method_ids_off      4       Offset to methods
+        # 96     class_defs_size     4       Count of classes
+        # 100    class_defs_off      4       Offset to class defs
+        # 104    data_size           4       Data section size
+        # 108    data_off            4       Data section offset
+        
+        dex_data[0:8] = DEX_MAGIC                                              # 0: magic
+        struct.pack_into('<I', dex_data, 8, 0)                                # 8: checksum (placeholder)
+        # Bytes 12-31 are signature (20 bytes of zeros already in bytearray)   # 12: signature
+        struct.pack_into('<I', dex_data, 32, total_estimated)                 # 32: file_size (updated later)
+        struct.pack_into('<I', dex_data, 36, 0x70)                           # 36: header_size = 112 (REQUIRED!)
+        struct.pack_into('<I', dex_data, 40, 0x12345678)                     # 40: endian_tag (REQUIRED!)
+        struct.pack_into('<I', dex_data, 44, 0)                               # 44: link_size
+        struct.pack_into('<I', dex_data, 48, 0)                               # 48: link_off
+        struct.pack_into('<I', dex_data, 52, 0)                               # 52: map_off
+        struct.pack_into('<I', dex_data, 56, num_strings)                     # 56: string_ids_size
+        struct.pack_into('<I', dex_data, 60, string_ids_start)                # 60: string_ids_off
+        struct.pack_into('<I', dex_data, 64, num_types)                       # 64: type_ids_size
+        struct.pack_into('<I', dex_data, 68, type_ids_start)                  # 68: type_ids_off
+        struct.pack_into('<I', dex_data, 72, 0)                               # 72: proto_ids_size
+        struct.pack_into('<I', dex_data, 76, 0)                               # 76: proto_ids_off
+        struct.pack_into('<I', dex_data, 80, len(self.fields))                # 80: field_ids_size
+        struct.pack_into('<I', dex_data, 84, 0)                               # 84: field_ids_off
+        struct.pack_into('<I', dex_data, 88, len(self.methods))               # 88: method_ids_size
+        struct.pack_into('<I', dex_data, 92, 0)                               # 92: method_ids_off
+        struct.pack_into('<I', dex_data, 96, len(self.classes))               # 96: class_defs_size
+        struct.pack_into('<I', dex_data, 100, 0)                              # 100: class_defs_off
         
         # String IDs table (offsets to string data)
         current_string_offset = string_data_start
@@ -412,13 +441,19 @@ class RealDEXGenerator:
         actual_size = write_offset
         dex_data = dex_data[:actual_size]
         
-        # Update file size
-        struct.pack_into('<I', dex_data, 16, actual_size)
+        # Update file_size at offset 32 (correct DEX header location)
+        struct.pack_into('<I', dex_data, 32, actual_size)
         
-        # Calculate checksum over everything except first 12 bytes
+        # Update data section info at offsets 104-108
+        data_section_start = string_data_start  # Approximate
+        data_section_size = actual_size - data_section_start if actual_size > data_section_start else 0
+        struct.pack_into('<I', dex_data, 104, data_section_size)   # data_size
+        struct.pack_into('<I', dex_data, 108, data_section_start)   # data_off
+        
+        # Calculate checksum over everything except first 12 bytes (offsets 8-11)
         import zlib
         checksum = zlib.adler32(bytes(dex_data[12:])) & 0xFFFFFFFF
-        struct.pack_into('<I', dex_data, 8, checksum)
+        struct.pack_into('<I', dex_data, 8, checksum)  # Checksum at offset 8
         
         return bytes(dex_data)
 
