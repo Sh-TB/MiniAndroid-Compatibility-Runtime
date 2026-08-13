@@ -17,11 +17,25 @@
 
 #include "apk/apk_parser.h"
 #include "dex/dex_parser.h"
+#include "dex/dalvik_engine.h"  // EXP-031: Real Dalvik engine
 #include "api/android_stubs.h"
 #include "diagnostics/trace_engine.h"
 
 namespace miniandroid {
 namespace runtime {
+
+// Execution mode selection (EXP-031)
+enum class ExecutionMode {
+    LEGACY,           // Old behavior - simulated lifecycle (for regression)
+    REAL_DALVIK       // New path - real bytecode interpretation (default for EXP-031)
+};
+
+// Execution source tracking (EXP-031 Golden Debug Protocol)
+enum class ExecutionSource {
+    HOST_SHORTCUT,              // Legacy C++ direct call (fake lifecycle)
+    REAL_DALVIK_INTERPRETER,    // Real DEX opcode execution
+    UNKNOWN                     // Source not tracked (legacy data)
+};
 
 // Execution result status
 enum class ExecutionStatus {
@@ -46,7 +60,10 @@ struct ExecutionConfig {
     bool generate_screenshot = true;
     bool generate_reports = true;
     
-    // Simulation settings (for v0.1)
+    // EXP-031: Execution mode (CRITICAL - determines real vs fake path)
+    ExecutionMode execution_mode = ExecutionMode::REAL_DALVIK;  // Default to REAL!
+    
+    // Legacy simulation settings (only used in LEGACY mode)
     bool simulate_lifecycle = true;
     std::string simulated_text = "";  // Empty = try to extract from APK
 };
@@ -126,6 +143,14 @@ private:
     void setup_api_tracing();
     std::shared_ptr<api::View> create_hello_world_view(const ExecutionConfig& config);
     std::shared_ptr<api::View> create_view_from_layout(const dex::DexReport& report);
+    std::shared_ptr<api::View> create_view_from_dalvik_result(
+        const dalvik::DalvikExecutionResult& dalvik_result,
+        const dex::DexReport& dex_report
+    );  // EXP-031: Real execution view creation
+    
+    // EXP-031: Mode-specific execution paths
+    bool stage_execute_application_real_dalvik(ExecutionResult& result, const ExecutionConfig& config);
+    bool stage_execute_application_legacy(ExecutionResult& result, const ExecutionConfig& config);
     
     // Error handling
     void set_error(const std::string& error) { last_error_ = error; }
@@ -133,6 +158,7 @@ private:
     // Components
     apk::ApkParser apk_parser_;
     dex::DexParser dex_parser_;
+    dalvik::DalvikExecutionEngine dalvik_engine_;  // EXP-031: Real executor
     diagnostics::TraceEngine trace_engine_;
     
     // State
