@@ -1,0 +1,31 @@
+{
+  "apk_name": "DiceRoller.apk",
+  "sha256": "b201a5c94d3d892ddc3a2e9ddf1b9d05fba512a2795d13866977d1938890546e",
+  "max_depth": "DEX_PARSED",
+  "total_opcodes_executed": 0,
+  "unique_opcodes_used": [
+    "const-string",
+    "new-instance",
+    "invoke-direct",
+    "invoke-virtual",
+    "invoke-static",
+    "return-void",
+    "ALLOCATED",
+    "CONSTRUCTOR",
+    "API BRIDGE"
+  ],
+  "registers_modified": false,
+  "objects_allocated": 0,
+  "api_calls_made": 0,
+  "execution_time_ms": 93.49179267883301,
+  "opcode_breakdown": {},
+  "criteria_met": {
+    "dex_parsed": true,
+    "bytecode_extracted": true,
+    "opcodes_executed": false,
+    "registers_exist": false,
+    "execution_completed": true,
+    "evidence_generated": true
+  },
+  "exit_code": 0
+}
