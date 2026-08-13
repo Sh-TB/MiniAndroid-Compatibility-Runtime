@@ -1,0 +1,31 @@
+{
+  "apk_name": "ContactSync.apk",
+  "sha256": "6ff68fa3656202e2e57f182c93489db9e9f526704305e4c76b83d37fcabd5214",
+  "max_depth": "DEX_PARSED",
+  "total_opcodes_executed": 0,
+  "unique_opcodes_used": [
+    "const-string",
+    "new-instance",
+    "invoke-direct",
+    "invoke-virtual",
+    "invoke-static",
+    "return-void",
+    "ALLOCATED",
+    "CONSTRUCTOR",
+    "API BRIDGE"
+  ],
+  "registers_modified": false,
+  "objects_allocated": 0,
+  "api_calls_made": 0,
+  "execution_time_ms": 93.28484535217285,
+  "opcode_breakdown": {},
+  "criteria_met": {
+    "dex_parsed": true,
+    "bytecode_extracted": true,
+    "opcodes_executed": false,
+    "registers_exist": false,
+    "execution_completed": true,
+    "evidence_generated": true
+  },
+  "exit_code": 0
+}
