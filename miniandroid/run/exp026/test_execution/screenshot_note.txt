@@ -1,3 +1,0 @@
-Screenshot saved as PPM: run/exp026/test_execution/screenshot.ppm
-Resolution: 1080x1920
-Convert to PNG using: convert run/exp026/test_execution/screenshot.ppm screenshot.png
