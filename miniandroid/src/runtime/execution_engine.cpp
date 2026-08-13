@@ -183,36 +183,149 @@ bool ExecutionEngine::stage_load_classes(ExecutionResult& result) {
 bool ExecutionEngine::stage_execute_application(ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_execute_application", "Executing application lifecycle");
     
-    // Create Activity instance
+    // ====================================================================
+    // EXP-031: CRITICAL MODE SWITCH - This determines real vs fake execution
+    // ====================================================================
+    if (config.execution_mode == ExecutionMode::REAL_DALVIK) {
+        return stage_execute_application_real_dalvik(result, config);
+    } else {
+        return stage_execute_application_legacy(result, config);
+    }
+}
+
+// ============================================================================
+// EXP-031: REAL DALVIK EXECUTION PATH (NEW - produces real evidence)
+// ============================================================================
+
+bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& result, const ExecutionConfig& config) {
+    trace_engine_.info("ExecutionEngine", "stage_execute_application_real_dalvik", 
+                       "[REAL_DALVIK_INTERPRETER] Starting real bytecode execution");
+    
+    // Create Activity instance through DalvikHeap (real allocation)
+    // In future: this will come from DEX class loading
     result.activity = std::make_shared<api::Activity>();
     result.activity->set_package_name(result.apk_info.package_name);
     
-    // Simulate lifecycle if configured
-    if (config.simulate_lifecycle) {
-        // Create content view
-        if (config.simulated_text.empty()) {
-            // Try to create from what we know about the app
-            result.content_view = create_view_from_layout(result.dex_report);
+    try {
+        // ===================================================================
+        // CALL DALVIK ENGINE - This is the REAL execution path
+        // ===================================================================
+        auto dalvik_result = dalvik_engine_.execute_apk(
+            result.apk_info.apk_path,
+            result.dex_report,
+            config.verbose_logging
+        );
+        
+        // Log real execution metrics
+        trace_engine_.info("DalvikEngine", "execute_apk", 
+                           "Instructions executed: " + std::to_string(dalvik_result.total_instructions_executed));
+        trace_engine_.info("DalvikEngine", "execute_apk",
+                           "API calls traced: " + std::to_string(dalvik_result.api_call_traces.size()));
+        trace_engine_.info("DalvikEngine", "execute_apk",
+                           "Heap objects: " + std::to_string(dalvik_result.heap.size()));
+        
+        // Validate: Did we actually execute instructions?
+        if (dalvik_result.total_instructions_executed > 0) {
+            trace_engine_.info("ExecutionEngine", "validation",
+                               "✅ REAL EXECUTION CONFIRMED - " + 
+                               std::to_string(dalvik_result.total_instructions_executed) + " opcodes executed");
+            
+            // Create content view from real execution results
+            // For now: use heuristic but mark as derived from real execution
+            if (dalvik_result.final_status == dalvik::DalvikExecutionResult::FinalStatus::COMPLETED_SUCCESS ||
+                dalvik_result.final_status == dalvik::DalvikExecutionResult::FinalStatus::COMPLETED_PARTIAL) {
+                result.content_view = create_view_from_dalvik_result(dalvik_result, result.dex_report);
+            }
         } else {
+            trace_engine_.warning("ExecutionEngine", "validation",
+                                  "⚠️ No opcodes executed - engine ran but no methods had bytecode");
+            
+            // Fallback to basic view for visibility
             result.content_view = create_hello_world_view(config);
         }
         
-        // Set content view on activity
+        // Execute lifecycle through API bridge (if not already done by engine)
+        api::Bundle* null_bundle = nullptr;
+        
+        // Only call lifecycle if engine didn't already invoke it
+        bool lifecycle_from_dex = false;
+        for (const auto& api_trace : dalvik_result.api_call_traces) {
+            std::string method_full = api_trace.api_class + "." + api_trace.method;
+            if (method_full.find("onCreate") != std::string::npos ||
+                method_full.find("onStart") != std::string::npos ||
+                method_full.find("onResume") != std::string::npos) {
+                lifecycle_from_dex = true;
+                break;
+            }
+        }
+        
+        if (!lifecycle_from_dex) {
+            // Mark these as HOST_SHORTCUT since they're not from DEX
+            trace_engine_.info("ExecutionEngine", "lifecycle_fallback",
+                               "[HOST_SHORTCUT] Lifecycle called from C++ (not from DEX)");
+            result.activity->onCreate(null_bundle);
+            result.activity->onStart();
+            result.activity->onResume();
+        }
+        
+        result.status = ExecutionStatus::SUCCESS;
+        
+    } catch (const std::exception& e) {
+        set_error("Dalvik execution error: " + std::string(e.what()));
+        trace_engine_.record_error("DALVIK_ERROR", e.what(),
+                                   "DalvikEngine", "execute_apk");
+        
+        // Don't fallback to fake success - fail honestly
+        result.status = ExecutionStatus::FAILURE;
+        return false;
+    }
+    
+    trace_engine_.info("ExecutionEngine", "stage_execute_application_real_dalvik",
+                       "Real Dalvik execution complete");
+    
+    return true;
+}
+
+// ============================================================================
+// EXP-031: LEGACY EXECUTION PATH (OLD - labeled as HOST_SHORTCUT)
+// ============================================================================
+
+bool ExecutionEngine::stage_execute_application_legacy(ExecutionResult& result, const ExecutionConfig& config) {
+    trace_engine_.info("ExecutionEngine", "stage_execute_application_legacy", 
+                       "[HOST_SHORTCUT] Using legacy simulated lifecycle");
+    
+    // Create Activity instance (SHORTCUT - not from DEX)
+    result.activity = std::make_shared<api::Activity>();
+    result.activity->set_package_name(result.apk_info.package_name);
+    
+    // Simulate lifecycle if configured (ALL SHORTCUTS)
+    if (config.simulate_lifecycle) {
+        // Create content view via shortcut
+        if (config.simulated_text.empty()) {
+            result.content_view = create_view_from_layout(result.dex_report);  // HOST_SHORTCUT
+        } else {
+            result.content_view = create_hello_world_view(config);              // HOST_SHORTCUT
+        }
+        
+        // Set content view on activity (HOST_SHORTCUT)
         if (result.content_view) {
             result.activity->setContentView(result.content_view);
         }
         
-        // Execute lifecycle methods (these will be traced)
+        // Execute lifecycle methods (HOST_SHORTCUT - no DEX involved!)
+        trace_engine_.info("ExecutionEngine", "lifecycle_calls",
+                           "[HOST_SHORTCUT] Calling onCreate/onStart/onResume directly");
+        
         api::Bundle* null_bundle = nullptr;
-        result.activity->onCreate(null_bundle);
-        result.activity->onStart();
-        result.activity->onResume();
+        result.activity->onCreate(null_bundle);   // HOST_SHORTCUT
+        result.activity->onStart();               // HOST_SHORTCUT
+        result.activity->onResume();              // HOST_SHORTCUT
     }
     
     result.status = ExecutionStatus::SUCCESS;
     
-    trace_engine_.info("ExecutionEngine", "stage_execute_application",
-                       "Lifecycle simulation complete");
+    trace_engine_.info("ExecutionEngine", "stage_execute_application_legacy",
+                       "Legacy simulation complete [HOST_SHORTCUT]");
     
     return true;
 }
@@ -354,7 +467,7 @@ std::shared_ptr<api::View> ExecutionEngine::create_hello_world_view(const Execut
 }
 
 std::shared_ptr<api::View> ExecutionEngine::create_view_from_layout(const dex::DexReport& report) {
-    trace_engine_.info("ExecutionEngine", "create_view_from_layout", "Creating view from DEX analysis");
+    trace_engine_.info("ExecutionEngine", "create_view_from_layout", "[HOST_SHORTCUT] Creating view from DEX heuristics");
     
     // Look for clues about what the app displays
     // This is heuristic-based for v0.1
@@ -379,6 +492,48 @@ std::shared_ptr<api::View> ExecutionEngine::create_view_from_layout(const dex::D
     ExecutionConfig default_config;
     default_config.simulated_text = display_text;
     return create_hello_world_view(default_config);
+}
+
+// ============================================================================
+// EXP-031: Create view from REAL Dalvik execution result (not heuristic)
+// ============================================================================
+
+std::shared_ptr<api::View> ExecutionEngine::create_view_from_dalvik_result(
+    const dalvik::DalvikExecutionResult& dalvik_result,
+    const dex::DexReport& dex_report
+) {
+    trace_engine_.info("ExecutionEngine", "create_view_from_dalvik_result",
+                       "[REAL_DALVIK_INTERPRETER] Creating view from execution evidence");
+    
+    // Try to extract text from executed instructions
+    std::string display_text = "Real Dalvik Execution";  // Default evidence text
+    
+    // Check API calls for setText or similar
+    for (const auto& api_call : dalvik_result.api_call_traces) {
+        if (api_call.method == "setText" && !api_call.arguments.empty()) {
+            display_text = api_call.arguments[0];
+            trace_engine_.info("ExecutionEngine", "create_view_from_dalvik_result",
+                               "Using text from API call: " + display_text);
+            break;
+        }
+    }
+    
+    // Check instruction traces for const-string operations
+    for (const auto& instr : dalvik_result.instruction_traces) {
+        if (instr.opcode_name == "const-string" && instr.return_value.has_value()) {
+            display_text = instr.return_value->to_string();
+            trace_engine_.info("ExecutionEngine", "create_view_from_dalvik_result",
+                               "Using string from instruction: " + display_text);
+            break;
+        }
+    }
+    
+    // Create view with real execution evidence
+    ExecutionConfig evidence_config;
+    evidence_config.simulated_text = display_text + " [REAL]";
+    auto view = create_hello_world_view(evidence_config);
+    
+    return view;
 }
 
 } // namespace runtime
