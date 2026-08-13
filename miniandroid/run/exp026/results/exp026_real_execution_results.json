@@ -1,0 +1,1151 @@
+[
+  {
+    "apk_name": "BrowserLite.apk",
+    "package_name": "unknown",
+    "execution_id": "real_20260813_052849_BrowserLite",
+    "timestamp": "2026-08-13T05:28:49.903200",
+    "status": "EXECUTED_FAIL",
+    "real_execution": true,
+    "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+    "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+    "start_time": "2026-08-13T05:28:49.903200",
+    "end_time": "2026-08-13T05:28:49.905405",
+    "duration_ms": 2,
+    "apk_sha256": "da9cda4416992511761b0e8db862e3ff806254f4f32e05e68806fefb52a14d57",
+    "dex_loaded": false,
+    "entry_activity": "",
+    "dex_files": [],
+    "instructions_executed": 0,
+    "api_calls": [
+      {
+        "category": "SYSTEM",
+        "class": "TraceEngine",
+        "level": "INFO",
+        "message": "Session started: EXP-001-20260813-052849-4557",
+        "method": "start_session",
+        "timestamp": 1786598929904
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/BrowserLite.apk",
+        "method": "stage_load_apk",
+        "timestamp": 1786598929904
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Package: com.test.browser, Main Activity: com.test.browser.BrowserActivity",
+        "method": "stage_load_apk",
+        "timestamp": 1786598929904
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Parsing DEX files",
+        "method": "stage_parse_dex",
+        "timestamp": 1786598929904
+      },
+      {
+        "category": "ERROR",
+        "class": "DexParser",
+        "level": "ERROR",
+        "message": "[PARSE_ERROR] Error during DEX parsing",
+        "method": "parse",
+        "timestamp": 1786598929904
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Generating reports",
+        "method": "stage_generate_reports",
+        "timestamp": 1786598929904
+      }
+    ],
+    "frames_rendered": 0,
+    "missing_opcodes": [],
+    "missing_apis": [],
+    "runtime_errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052849-4557\nGenerated: 2026-08-13 05:28:49 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "runtime_warnings": [
+      "Runtime reported warnings"
+    ],
+    "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052849-4557\nGenerated: 2026-08-13 05:28:49 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error during DEX parsing\nContext: DexParser.parse\nFatal: NO\nTimestamp: 2026-08-13 05:28:49 UTC",
+    "trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052849_BrowserLite_result.json",
+    "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052849_BrowserLite/api_trace.json",
+    "screenshot_file": "",
+    "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052849_BrowserLite/report.md",
+    "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052849_BrowserLite",
+    "notes": "",
+    "apk_info": {
+      "name": "BrowserLite",
+      "package": "generated.browserlite",
+      "version": "1.0",
+      "source": "local",
+      "status": "verified",
+      "local_path": "/home/z/my-project/miniandroid/download/apks/BrowserLite.apk",
+      "category": "Generated",
+      "tier": 1
+    }
+  },
+  {
+    "apk_name": "ClockApp.apk",
+    "package_name": "unknown",
+    "execution_id": "real_20260813_052850_ClockApp",
+    "timestamp": "2026-08-13T05:28:50.406311",
+    "status": "EXECUTED_FAIL",
+    "real_execution": true,
+    "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+    "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+    "start_time": "2026-08-13T05:28:50.406311",
+    "end_time": "2026-08-13T05:28:50.408786",
+    "duration_ms": 2,
+    "apk_sha256": "cf96594f08194b8a1443007dcdf30adb0cf13b6832592266427be5878c6c3144",
+    "dex_loaded": false,
+    "entry_activity": "",
+    "dex_files": [],
+    "instructions_executed": 0,
+    "api_calls": [
+      {
+        "category": "SYSTEM",
+        "class": "TraceEngine",
+        "level": "INFO",
+        "message": "Session started: EXP-001-20260813-052850-7969",
+        "method": "start_session",
+        "timestamp": 1786598930408
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/ClockApp.apk",
+        "method": "stage_load_apk",
+        "timestamp": 1786598930408
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Package: com.test.clock, Main Activity: com.test.clock.ClockActivity",
+        "method": "stage_load_apk",
+        "timestamp": 1786598930408
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Parsing DEX files",
+        "method": "stage_parse_dex",
+        "timestamp": 1786598930408
+      },
+      {
+        "category": "ERROR",
+        "class": "DexParser",
+        "level": "ERROR",
+        "message": "[PARSE_ERROR] Error during DEX parsing",
+        "method": "parse",
+        "timestamp": 1786598930408
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Generating reports",
+        "method": "stage_generate_reports",
+        "timestamp": 1786598930408
+      }
+    ],
+    "frames_rendered": 0,
+    "missing_opcodes": [],
+    "missing_apis": [],
+    "runtime_errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052850-7969\nGenerated: 2026-08-13 05:28:50 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "runtime_warnings": [
+      "Runtime reported warnings"
+    ],
+    "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052850-7969\nGenerated: 2026-08-13 05:28:50 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error during DEX parsing\nContext: DexParser.parse\nFatal: NO\nTimestamp: 2026-08-13 05:28:50 UTC",
+    "trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052850_ClockApp_result.json",
+    "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052850_ClockApp/api_trace.json",
+    "screenshot_file": "",
+    "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052850_ClockApp/report.md",
+    "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052850_ClockApp",
+    "notes": "",
+    "apk_info": {
+      "name": "ClockApp",
+      "package": "generated.clockapp",
+      "version": "1.0",
+      "source": "local",
+      "status": "verified",
+      "local_path": "/home/z/my-project/miniandroid/download/apks/ClockApp.apk",
+      "category": "Generated",
+      "tier": 1
+    }
+  },
+  {
+    "apk_name": "FileBrowser.apk",
+    "package_name": "unknown",
+    "execution_id": "real_20260813_052850_FileBrowser",
+    "timestamp": "2026-08-13T05:28:50.909757",
+    "status": "EXECUTED_FAIL",
+    "real_execution": true,
+    "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+    "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+    "start_time": "2026-08-13T05:28:50.909757",
+    "end_time": "2026-08-13T05:28:50.912045",
+    "duration_ms": 1,
+    "apk_sha256": "4d234c6c51712e150ce55be7c14c0b98fcb3229a93110d89120902c85222e138",
+    "dex_loaded": false,
+    "entry_activity": "",
+    "dex_files": [],
+    "instructions_executed": 0,
+    "api_calls": [
+      {
+        "category": "SYSTEM",
+        "class": "TraceEngine",
+        "level": "INFO",
+        "message": "Session started: EXP-001-20260813-052850-4989",
+        "method": "start_session",
+        "timestamp": 1786598930911
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/FileBrowser.apk",
+        "method": "stage_load_apk",
+        "timestamp": 1786598930911
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Package: com.test.filebrowser, Main Activity: com.test.filebrowser.FileBrowserActivity",
+        "method": "stage_load_apk",
+        "timestamp": 1786598930911
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Parsing DEX files",
+        "method": "stage_parse_dex",
+        "timestamp": 1786598930911
+      },
+      {
+        "category": "ERROR",
+        "class": "DexParser",
+        "level": "ERROR",
+        "message": "[PARSE_ERROR] Error during DEX parsing",
+        "method": "parse",
+        "timestamp": 1786598930911
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Generating reports",
+        "method": "stage_generate_reports",
+        "timestamp": 1786598930911
+      }
+    ],
+    "frames_rendered": 0,
+    "missing_opcodes": [],
+    "missing_apis": [],
+    "runtime_errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052850-4989\nGenerated: 2026-08-13 05:28:50 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "runtime_warnings": [
+      "Runtime reported warnings"
+    ],
+    "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052850-4989\nGenerated: 2026-08-13 05:28:50 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error during DEX parsing\nContext: DexParser.parse\nFatal: NO\nTimestamp: 2026-08-13 05:28:50 UTC",
+    "trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052850_FileBrowser_result.json",
+    "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052850_FileBrowser/api_trace.json",
+    "screenshot_file": "",
+    "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052850_FileBrowser/report.md",
+    "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052850_FileBrowser",
+    "notes": "",
+    "apk_info": {
+      "name": "FileBrowser",
+      "package": "generated.filebrowser",
+      "version": "1.0",
+      "source": "local",
+      "status": "verified",
+      "local_path": "/home/z/my-project/miniandroid/download/apks/FileBrowser.apk",
+      "category": "Generated",
+      "tier": 1
+    }
+  },
+  {
+    "apk_name": "HelloWorld_original.apk",
+    "package_name": "unknown",
+    "execution_id": "real_20260813_052851_HelloWorld_original",
+    "timestamp": "2026-08-13T05:28:51.412995",
+    "status": "EXECUTED_FAIL",
+    "real_execution": true,
+    "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+    "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+    "start_time": "2026-08-13T05:28:51.412995",
+    "end_time": "2026-08-13T05:28:51.503311",
+    "duration_ms": 90,
+    "apk_sha256": "9d19787d14802a6ac6d26dc4963204592861c2f46f45a009710f297a804675da",
+    "dex_loaded": false,
+    "entry_activity": "",
+    "dex_files": [],
+    "instructions_executed": 0,
+    "api_calls": [
+      {
+        "category": "SYSTEM",
+        "class": "TraceEngine",
+        "level": "INFO",
+        "message": "Session started: EXP-001-20260813-052851-7139",
+        "method": "start_session",
+        "timestamp": 1786598931414
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/HelloWorld_original.apk",
+        "method": "stage_load_apk",
+        "timestamp": 1786598931414
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Package: com.miniandroid.hello, Main Activity: ",
+        "method": "stage_load_apk",
+        "timestamp": 1786598931414
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Parsing DEX files",
+        "method": "stage_parse_dex",
+        "timestamp": 1786598931414
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Parsed 1 classes, 4 methods",
+        "method": "stage_parse_dex",
+        "timestamp": 1786598931414
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Initializing runtime",
+        "method": "stage_initialize_runtime",
+        "timestamp": 1786598931414
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Framebuffer allocated: 1080x1920",
+        "method": "stage_initialize_runtime",
+        "timestamp": 1786598931434
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Loading class definitions",
+        "method": "stage_load_classes",
+        "timestamp": 1786598931434
+      },
+      {
+        "category": "DEBUG",
+        "class": "ExecutionEngine",
+        "level": "DEBUG",
+        "message": "Found class: <invalid string idx:65536> extends <invalid string idx:65536> (0 methods)",
+        "method": "stage_load_classes",
+        "timestamp": 1786598931434
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Executing application lifecycle",
+        "method": "stage_execute_application",
+        "timestamp": 1786598931434
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Creating view from DEX analysis",
+        "method": "create_view_from_layout",
+        "timestamp": 1786598931434
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Creating HelloWorld view",
+        "method": "create_hello_world_view",
+        "timestamp": 1786598931434
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Lifecycle simulation complete",
+        "method": "stage_execute_application",
+        "timestamp": 1786598931434
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Rendering frame",
+        "method": "stage_render_frame",
+        "timestamp": 1786598931434
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Frame rendered successfully",
+        "method": "stage_render_frame",
+        "timestamp": 1786598931434
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Capturing output",
+        "method": "stage_capture_output",
+        "timestamp": 1786598931434
+      },
+      {
+        "category": "SYSTEM",
+        "class": "TraceEngine",
+        "level": "INFO",
+        "message": "Screenshot captured: /home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original/screenshot.ppm (1080x1920, 8294400 bytes)",
+        "method": "log_screenshot",
+        "timestamp": 1786598931502
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Screenshot saved to: /home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original/screenshot.ppm",
+        "method": "stage_capture_output",
+        "timestamp": 1786598931502
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Generating reports",
+        "method": "stage_generate_reports",
+        "timestamp": 1786598931502
+      }
+    ],
+    "frames_rendered": 1,
+    "missing_opcodes": [],
+    "missing_apis": [],
+    "runtime_errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052851-7139\nGenerated: 2026-08-13 05:28:51 UTC\nTotal Errors: 0\n\n[No errors recorded]"
+    ],
+    "runtime_warnings": [
+      "Runtime reported warnings"
+    ],
+    "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052851-7139\nGenerated: 2026-08-13 05:28:51 UTC\nTotal Errors: 0\n\n[No errors recorded]",
+    "trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original_result.json",
+    "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original/api_trace.json",
+    "screenshot_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original/screenshot.ppm",
+    "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original/report.md",
+    "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original",
+    "notes": "",
+    "apk_info": {
+      "name": "HelloWorld_original",
+      "package": "generated.helloworld_original",
+      "version": "1.0",
+      "source": "local",
+      "status": "verified",
+      "local_path": "/home/z/my-project/miniandroid/download/apks/HelloWorld_original.apk",
+      "category": "Generated",
+      "tier": 1
+    }
+  },
+  {
+    "apk_name": "MediaPlayer.apk",
+    "package_name": "unknown",
+    "execution_id": "real_20260813_052852_MediaPlayer",
+    "timestamp": "2026-08-13T05:28:52.004772",
+    "status": "EXECUTED_FAIL",
+    "real_execution": true,
+    "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+    "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+    "start_time": "2026-08-13T05:28:52.004772",
+    "end_time": "2026-08-13T05:28:52.007080",
+    "duration_ms": 1,
+    "apk_sha256": "4f7916c8ca10a08ded02f9ee146483e441cee0b87010491ff04a1dffacde0707",
+    "dex_loaded": false,
+    "entry_activity": "",
+    "dex_files": [],
+    "instructions_executed": 0,
+    "api_calls": [
+      {
+        "category": "SYSTEM",
+        "class": "TraceEngine",
+        "level": "INFO",
+        "message": "Session started: EXP-001-20260813-052852-7130",
+        "method": "start_session",
+        "timestamp": 1786598932006
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/MediaPlayer.apk",
+        "method": "stage_load_apk",
+        "timestamp": 1786598932006
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Package: com.test.mediaplayer, Main Activity: com.test.mediaplayer.MediaPlayerActivity",
+        "method": "stage_load_apk",
+        "timestamp": 1786598932006
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Parsing DEX files",
+        "method": "stage_parse_dex",
+        "timestamp": 1786598932006
+      },
+      {
+        "category": "ERROR",
+        "class": "DexParser",
+        "level": "ERROR",
+        "message": "[PARSE_ERROR] Error during DEX parsing",
+        "method": "parse",
+        "timestamp": 1786598932006
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Generating reports",
+        "method": "stage_generate_reports",
+        "timestamp": 1786598932006
+      }
+    ],
+    "frames_rendered": 0,
+    "missing_opcodes": [],
+    "missing_apis": [],
+    "runtime_errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052852-7130\nGenerated: 2026-08-13 05:28:52 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "runtime_warnings": [
+      "Runtime reported warnings"
+    ],
+    "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052852-7130\nGenerated: 2026-08-13 05:28:52 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error during DEX parsing\nContext: DexParser.parse\nFatal: NO\nTimestamp: 2026-08-13 05:28:52 UTC",
+    "trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052852_MediaPlayer_result.json",
+    "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052852_MediaPlayer/api_trace.json",
+    "screenshot_file": "",
+    "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052852_MediaPlayer/report.md",
+    "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052852_MediaPlayer",
+    "notes": "",
+    "apk_info": {
+      "name": "MediaPlayer",
+      "package": "generated.mediaplayer",
+      "version": "1.0",
+      "source": "local",
+      "status": "verified",
+      "local_path": "/home/z/my-project/miniandroid/download/apks/MediaPlayer.apk",
+      "category": "Generated",
+      "tier": 1
+    }
+  },
+  {
+    "apk_name": "NotesApp.apk",
+    "package_name": "unknown",
+    "execution_id": "real_20260813_052852_NotesApp",
+    "timestamp": "2026-08-13T05:28:52.507941",
+    "status": "EXECUTED_FAIL",
+    "real_execution": true,
+    "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+    "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+    "start_time": "2026-08-13T05:28:52.507941",
+    "end_time": "2026-08-13T05:28:52.510040",
+    "duration_ms": 1,
+    "apk_sha256": "483e8db18751691aff43d46d430178cf0344a0b75c95866f927c5bf579515866",
+    "dex_loaded": false,
+    "entry_activity": "",
+    "dex_files": [],
+    "instructions_executed": 0,
+    "api_calls": [
+      {
+        "category": "SYSTEM",
+        "class": "TraceEngine",
+        "level": "INFO",
+        "message": "Session started: EXP-001-20260813-052852-7884",
+        "method": "start_session",
+        "timestamp": 1786598932509
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/NotesApp.apk",
+        "method": "stage_load_apk",
+        "timestamp": 1786598932509
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Package: com.test.notes, Main Activity: com.test.notes.NotesActivity",
+        "method": "stage_load_apk",
+        "timestamp": 1786598932509
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Parsing DEX files",
+        "method": "stage_parse_dex",
+        "timestamp": 1786598932509
+      },
+      {
+        "category": "ERROR",
+        "class": "DexParser",
+        "level": "ERROR",
+        "message": "[PARSE_ERROR] Error during DEX parsing",
+        "method": "parse",
+        "timestamp": 1786598932509
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Generating reports",
+        "method": "stage_generate_reports",
+        "timestamp": 1786598932509
+      }
+    ],
+    "frames_rendered": 0,
+    "missing_opcodes": [],
+    "missing_apis": [],
+    "runtime_errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052852-7884\nGenerated: 2026-08-13 05:28:52 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "runtime_warnings": [
+      "Runtime reported warnings"
+    ],
+    "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052852-7884\nGenerated: 2026-08-13 05:28:52 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error during DEX parsing\nContext: DexParser.parse\nFatal: NO\nTimestamp: 2026-08-13 05:28:52 UTC",
+    "trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052852_NotesApp_result.json",
+    "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052852_NotesApp/api_trace.json",
+    "screenshot_file": "",
+    "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052852_NotesApp/report.md",
+    "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052852_NotesApp",
+    "notes": "",
+    "apk_info": {
+      "name": "NotesApp",
+      "package": "generated.notesapp",
+      "version": "1.0",
+      "source": "local",
+      "status": "verified",
+      "local_path": "/home/z/my-project/miniandroid/download/apks/NotesApp.apk",
+      "category": "Generated",
+      "tier": 1
+    }
+  },
+  {
+    "apk_name": "SettingsApp.apk",
+    "package_name": "unknown",
+    "execution_id": "real_20260813_052853_SettingsApp",
+    "timestamp": "2026-08-13T05:28:53.010843",
+    "status": "EXECUTED_FAIL",
+    "real_execution": true,
+    "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+    "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+    "start_time": "2026-08-13T05:28:53.010843",
+    "end_time": "2026-08-13T05:28:53.013023",
+    "duration_ms": 1,
+    "apk_sha256": "c4fcb6840e6a6aa30b10da2d685a1ef761933afb7705c95728ffe87d08f5d008",
+    "dex_loaded": false,
+    "entry_activity": "",
+    "dex_files": [],
+    "instructions_executed": 0,
+    "api_calls": [
+      {
+        "category": "SYSTEM",
+        "class": "TraceEngine",
+        "level": "INFO",
+        "message": "Session started: EXP-001-20260813-052853-5224",
+        "method": "start_session",
+        "timestamp": 1786598933012
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/SettingsApp.apk",
+        "method": "stage_load_apk",
+        "timestamp": 1786598933012
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Package: com.test.settings, Main Activity: com.test.settings.SettingsActivity",
+        "method": "stage_load_apk",
+        "timestamp": 1786598933012
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Parsing DEX files",
+        "method": "stage_parse_dex",
+        "timestamp": 1786598933012
+      },
+      {
+        "category": "ERROR",
+        "class": "DexParser",
+        "level": "ERROR",
+        "message": "[PARSE_ERROR] Error during DEX parsing",
+        "method": "parse",
+        "timestamp": 1786598933012
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Generating reports",
+        "method": "stage_generate_reports",
+        "timestamp": 1786598933012
+      }
+    ],
+    "frames_rendered": 0,
+    "missing_opcodes": [],
+    "missing_apis": [],
+    "runtime_errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052853-5224\nGenerated: 2026-08-13 05:28:53 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "runtime_warnings": [
+      "Runtime reported warnings"
+    ],
+    "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052853-5224\nGenerated: 2026-08-13 05:28:53 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error during DEX parsing\nContext: DexParser.parse\nFatal: NO\nTimestamp: 2026-08-13 05:28:53 UTC",
+    "trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052853_SettingsApp_result.json",
+    "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052853_SettingsApp/api_trace.json",
+    "screenshot_file": "",
+    "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052853_SettingsApp/report.md",
+    "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052853_SettingsApp",
+    "notes": "",
+    "apk_info": {
+      "name": "SettingsApp",
+      "package": "generated.settingsapp",
+      "version": "1.0",
+      "source": "local",
+      "status": "verified",
+      "local_path": "/home/z/my-project/miniandroid/download/apks/SettingsApp.apk",
+      "category": "Generated",
+      "tier": 1
+    }
+  },
+  {
+    "apk_name": "SimpleCalculator.apk",
+    "package_name": "unknown",
+    "execution_id": "real_20260813_052853_SimpleCalculator",
+    "timestamp": "2026-08-13T05:28:53.513871",
+    "status": "EXECUTED_FAIL",
+    "real_execution": true,
+    "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+    "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+    "start_time": "2026-08-13T05:28:53.513871",
+    "end_time": "2026-08-13T05:28:53.516044",
+    "duration_ms": 1,
+    "apk_sha256": "9962a85232249901389fed98b85c697c083dd1180b11d49f05970961860ea8e2",
+    "dex_loaded": false,
+    "entry_activity": "",
+    "dex_files": [],
+    "instructions_executed": 0,
+    "api_calls": [
+      {
+        "category": "SYSTEM",
+        "class": "TraceEngine",
+        "level": "INFO",
+        "message": "Session started: EXP-001-20260813-052853-1725",
+        "method": "start_session",
+        "timestamp": 1786598933515
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/SimpleCalculator.apk",
+        "method": "stage_load_apk",
+        "timestamp": 1786598933515
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Package: com.test.calculator, Main Activity: com.test.calculator.CalculatorActivity",
+        "method": "stage_load_apk",
+        "timestamp": 1786598933515
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Parsing DEX files",
+        "method": "stage_parse_dex",
+        "timestamp": 1786598933515
+      },
+      {
+        "category": "ERROR",
+        "class": "DexParser",
+        "level": "ERROR",
+        "message": "[PARSE_ERROR] Error during DEX parsing",
+        "method": "parse",
+        "timestamp": 1786598933515
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Generating reports",
+        "method": "stage_generate_reports",
+        "timestamp": 1786598933515
+      }
+    ],
+    "frames_rendered": 0,
+    "missing_opcodes": [],
+    "missing_apis": [],
+    "runtime_errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052853-1725\nGenerated: 2026-08-13 05:28:53 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "runtime_warnings": [
+      "Runtime reported warnings"
+    ],
+    "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052853-1725\nGenerated: 2026-08-13 05:28:53 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error during DEX parsing\nContext: DexParser.parse\nFatal: NO\nTimestamp: 2026-08-13 05:28:53 UTC",
+    "trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052853_SimpleCalculator_result.json",
+    "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052853_SimpleCalculator/api_trace.json",
+    "screenshot_file": "",
+    "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052853_SimpleCalculator/report.md",
+    "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052853_SimpleCalculator",
+    "notes": "",
+    "apk_info": {
+      "name": "SimpleCalculator",
+      "package": "generated.simplecalculator",
+      "version": "1.0",
+      "source": "local",
+      "status": "verified",
+      "local_path": "/home/z/my-project/miniandroid/download/apks/SimpleCalculator.apk",
+      "category": "Generated",
+      "tier": 1
+    }
+  },
+  {
+    "apk_name": "SimpleGame.apk",
+    "package_name": "unknown",
+    "execution_id": "real_20260813_052854_SimpleGame",
+    "timestamp": "2026-08-13T05:28:54.016763",
+    "status": "EXECUTED_FAIL",
+    "real_execution": true,
+    "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+    "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+    "start_time": "2026-08-13T05:28:54.016763",
+    "end_time": "2026-08-13T05:28:54.018873",
+    "duration_ms": 1,
+    "apk_sha256": "5fc34a85c7281caca04dd70357be74746dc272b1b892e929eca916b1e67d4b59",
+    "dex_loaded": false,
+    "entry_activity": "",
+    "dex_files": [],
+    "instructions_executed": 0,
+    "api_calls": [
+      {
+        "category": "SYSTEM",
+        "class": "TraceEngine",
+        "level": "INFO",
+        "message": "Session started: EXP-001-20260813-052854-5345",
+        "method": "start_session",
+        "timestamp": 1786598934018
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/SimpleGame.apk",
+        "method": "stage_load_apk",
+        "timestamp": 1786598934018
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Package: com.test.game, Main Activity: com.test.game.GameActivity",
+        "method": "stage_load_apk",
+        "timestamp": 1786598934018
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Parsing DEX files",
+        "method": "stage_parse_dex",
+        "timestamp": 1786598934018
+      },
+      {
+        "category": "ERROR",
+        "class": "DexParser",
+        "level": "ERROR",
+        "message": "[PARSE_ERROR] Error during DEX parsing",
+        "method": "parse",
+        "timestamp": 1786598934018
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Generating reports",
+        "method": "stage_generate_reports",
+        "timestamp": 1786598934018
+      }
+    ],
+    "frames_rendered": 0,
+    "missing_opcodes": [],
+    "missing_apis": [],
+    "runtime_errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052854-5345\nGenerated: 2026-08-13 05:28:54 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "runtime_warnings": [
+      "Runtime reported warnings"
+    ],
+    "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052854-5345\nGenerated: 2026-08-13 05:28:54 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error during DEX parsing\nContext: DexParser.parse\nFatal: NO\nTimestamp: 2026-08-13 05:28:54 UTC",
+    "trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052854_SimpleGame_result.json",
+    "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052854_SimpleGame/api_trace.json",
+    "screenshot_file": "",
+    "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052854_SimpleGame/report.md",
+    "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052854_SimpleGame",
+    "notes": "",
+    "apk_info": {
+      "name": "SimpleGame",
+      "package": "generated.simplegame",
+      "version": "1.0",
+      "source": "local",
+      "status": "verified",
+      "local_path": "/home/z/my-project/miniandroid/download/apks/SimpleGame.apk",
+      "category": "Generated",
+      "tier": 1
+    }
+  },
+  {
+    "apk_name": "TodoList.apk",
+    "package_name": "unknown",
+    "execution_id": "real_20260813_052854_TodoList",
+    "timestamp": "2026-08-13T05:28:54.519659",
+    "status": "EXECUTED_FAIL",
+    "real_execution": true,
+    "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+    "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+    "start_time": "2026-08-13T05:28:54.519659",
+    "end_time": "2026-08-13T05:28:54.521849",
+    "duration_ms": 1,
+    "apk_sha256": "a8861039b9a244df2e77d2be798e9e38ac7d6828d4bab5d6dbe64653206e1691",
+    "dex_loaded": false,
+    "entry_activity": "",
+    "dex_files": [],
+    "instructions_executed": 0,
+    "api_calls": [
+      {
+        "category": "SYSTEM",
+        "class": "TraceEngine",
+        "level": "INFO",
+        "message": "Session started: EXP-001-20260813-052854-2154",
+        "method": "start_session",
+        "timestamp": 1786598934521
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/TodoList.apk",
+        "method": "stage_load_apk",
+        "timestamp": 1786598934521
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Package: com.test.todo, Main Activity: com.test.todo.TodoActivity",
+        "method": "stage_load_apk",
+        "timestamp": 1786598934521
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Parsing DEX files",
+        "method": "stage_parse_dex",
+        "timestamp": 1786598934521
+      },
+      {
+        "category": "ERROR",
+        "class": "DexParser",
+        "level": "ERROR",
+        "message": "[PARSE_ERROR] Error during DEX parsing",
+        "method": "parse",
+        "timestamp": 1786598934521
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Generating reports",
+        "method": "stage_generate_reports",
+        "timestamp": 1786598934521
+      }
+    ],
+    "frames_rendered": 0,
+    "missing_opcodes": [],
+    "missing_apis": [],
+    "runtime_errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052854-2154\nGenerated: 2026-08-13 05:28:54 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "runtime_warnings": [
+      "Runtime reported warnings"
+    ],
+    "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052854-2154\nGenerated: 2026-08-13 05:28:54 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error during DEX parsing\nContext: DexParser.parse\nFatal: NO\nTimestamp: 2026-08-13 05:28:54 UTC",
+    "trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052854_TodoList_result.json",
+    "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052854_TodoList/api_trace.json",
+    "screenshot_file": "",
+    "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052854_TodoList/report.md",
+    "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052854_TodoList",
+    "notes": "",
+    "apk_info": {
+      "name": "TodoList",
+      "package": "generated.todolist",
+      "version": "1.0",
+      "source": "local",
+      "status": "verified",
+      "local_path": "/home/z/my-project/miniandroid/download/apks/TodoList.apk",
+      "category": "Generated",
+      "tier": 1
+    }
+  },
+  {
+    "apk_name": "WeatherWidget.apk",
+    "package_name": "unknown",
+    "execution_id": "real_20260813_052855_WeatherWidget",
+    "timestamp": "2026-08-13T05:28:55.022644",
+    "status": "EXECUTED_FAIL",
+    "real_execution": true,
+    "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+    "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+    "start_time": "2026-08-13T05:28:55.022644",
+    "end_time": "2026-08-13T05:28:55.024794",
+    "duration_ms": 1,
+    "apk_sha256": "af8a91130d206817c9d21533fe261b9c63c06abbf01a4249e2b7cc25525a994e",
+    "dex_loaded": false,
+    "entry_activity": "",
+    "dex_files": [],
+    "instructions_executed": 0,
+    "api_calls": [
+      {
+        "category": "SYSTEM",
+        "class": "TraceEngine",
+        "level": "INFO",
+        "message": "Session started: EXP-001-20260813-052855-2210",
+        "method": "start_session",
+        "timestamp": 1786598935024
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/WeatherWidget.apk",
+        "method": "stage_load_apk",
+        "timestamp": 1786598935024
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Package: com.test.weather, Main Activity: com.test.weather.WeatherActivity",
+        "method": "stage_load_apk",
+        "timestamp": 1786598935024
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Parsing DEX files",
+        "method": "stage_parse_dex",
+        "timestamp": 1786598935024
+      },
+      {
+        "category": "ERROR",
+        "class": "DexParser",
+        "level": "ERROR",
+        "message": "[PARSE_ERROR] Error during DEX parsing",
+        "method": "parse",
+        "timestamp": 1786598935024
+      },
+      {
+        "category": "SYSTEM",
+        "class": "ExecutionEngine",
+        "level": "INFO",
+        "message": "Generating reports",
+        "method": "stage_generate_reports",
+        "timestamp": 1786598935024
+      }
+    ],
+    "frames_rendered": 0,
+    "missing_opcodes": [],
+    "missing_apis": [],
+    "runtime_errors": [
+      "Runtime reported errors",
+      "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052855-2210\nGenerated: 2026-08-13 05:28:55 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+    ],
+    "runtime_warnings": [
+      "Runtime reported warnings"
+    ],
+    "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052855-2210\nGenerated: 2026-08-13 05:28:55 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error during DEX parsing\nContext: DexParser.parse\nFatal: NO\nTimestamp: 2026-08-13 05:28:55 UTC",
+    "trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052855_WeatherWidget_result.json",
+    "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052855_WeatherWidget/api_trace.json",
+    "screenshot_file": "",
+    "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052855_WeatherWidget/report.md",
+    "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052855_WeatherWidget",
+    "notes": "",
+    "apk_info": {
+      "name": "WeatherWidget",
+      "package": "generated.weatherwidget",
+      "version": "1.0",
+      "source": "local",
+      "status": "verified",
+      "local_path": "/home/z/my-project/miniandroid/download/apks/WeatherWidget.apk",
+      "category": "Generated",
+      "tier": 1
+    }
+  }
+]

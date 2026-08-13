@@ -1,0 +1,85 @@
+{
+  "apk_name": "SimpleCalculator.apk",
+  "package_name": "unknown",
+  "execution_id": "real_20260813_052853_SimpleCalculator",
+  "timestamp": "2026-08-13T05:28:53.513871",
+  "status": "EXECUTED_FAIL",
+  "real_execution": true,
+  "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+  "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+  "start_time": "2026-08-13T05:28:53.513871",
+  "end_time": "2026-08-13T05:28:53.516044",
+  "duration_ms": 1,
+  "apk_sha256": "9962a85232249901389fed98b85c697c083dd1180b11d49f05970961860ea8e2",
+  "dex_loaded": false,
+  "entry_activity": "",
+  "dex_files": [],
+  "instructions_executed": 0,
+  "api_calls": [
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Session started: EXP-001-20260813-052853-1725",
+      "method": "start_session",
+      "timestamp": 1786598933515
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/SimpleCalculator.apk",
+      "method": "stage_load_apk",
+      "timestamp": 1786598933515
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Package: com.test.calculator, Main Activity: com.test.calculator.CalculatorActivity",
+      "method": "stage_load_apk",
+      "timestamp": 1786598933515
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsing DEX files",
+      "method": "stage_parse_dex",
+      "timestamp": 1786598933515
+    },
+    {
+      "category": "ERROR",
+      "class": "DexParser",
+      "level": "ERROR",
+      "message": "[PARSE_ERROR] Error during DEX parsing",
+      "method": "parse",
+      "timestamp": 1786598933515
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating reports",
+      "method": "stage_generate_reports",
+      "timestamp": 1786598933515
+    }
+  ],
+  "frames_rendered": 0,
+  "missing_opcodes": [],
+  "missing_apis": [],
+  "runtime_errors": [
+    "Runtime reported errors",
+    "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052853-1725\nGenerated: 2026-08-13 05:28:53 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error du"
+  ],
+  "runtime_warnings": [
+    "Runtime reported warnings"
+  ],
+  "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052853-1725\nGenerated: 2026-08-13 05:28:53 UTC\nTotal Errors: 1\n\n--- Error #1 ---\nType: PARSE_ERROR\nMessage: Error during DEX parsing\nContext: DexParser.parse\nFatal: NO\nTimestamp: 2026-08-13 05:28:53 UTC",
+  "trace_file": "",
+  "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052853_SimpleCalculator/api_trace.json",
+  "screenshot_file": "",
+  "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052853_SimpleCalculator/report.md",
+  "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052853_SimpleCalculator",
+  "notes": ""
+}
