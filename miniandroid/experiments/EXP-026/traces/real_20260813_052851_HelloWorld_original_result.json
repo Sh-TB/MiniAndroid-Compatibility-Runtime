@@ -1,0 +1,189 @@
+{
+  "apk_name": "HelloWorld_original.apk",
+  "package_name": "unknown",
+  "execution_id": "real_20260813_052851_HelloWorld_original",
+  "timestamp": "2026-08-13T05:28:51.412995",
+  "status": "EXECUTED_FAIL",
+  "real_execution": true,
+  "runtime_version": "MiniAndroid Runtime v0.1\nEXP-001: HelloWorld Loader\nEvidence-driven Android compatibility runtime",
+  "runtime_path": "/home/z/my-project/miniandroid/build/miniandroid",
+  "start_time": "2026-08-13T05:28:51.412995",
+  "end_time": "2026-08-13T05:28:51.503311",
+  "duration_ms": 90,
+  "apk_sha256": "9d19787d14802a6ac6d26dc4963204592861c2f46f45a009710f297a804675da",
+  "dex_loaded": false,
+  "entry_activity": "",
+  "dex_files": [],
+  "instructions_executed": 0,
+  "api_calls": [
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Session started: EXP-001-20260813-052851-7139",
+      "method": "start_session",
+      "timestamp": 1786598931414
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading APK: /home/z/my-project/miniandroid/download/apks/HelloWorld_original.apk",
+      "method": "stage_load_apk",
+      "timestamp": 1786598931414
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Package: com.miniandroid.hello, Main Activity: ",
+      "method": "stage_load_apk",
+      "timestamp": 1786598931414
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsing DEX files",
+      "method": "stage_parse_dex",
+      "timestamp": 1786598931414
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsed 1 classes, 4 methods",
+      "method": "stage_parse_dex",
+      "timestamp": 1786598931414
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Initializing runtime",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1786598931414
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Framebuffer allocated: 1080x1920",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1786598931434
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading class definitions",
+      "method": "stage_load_classes",
+      "timestamp": 1786598931434
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: <invalid string idx:65536> extends <invalid string idx:65536> (0 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1786598931434
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Executing application lifecycle",
+      "method": "stage_execute_application",
+      "timestamp": 1786598931434
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Creating view from DEX analysis",
+      "method": "create_view_from_layout",
+      "timestamp": 1786598931434
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Creating HelloWorld view",
+      "method": "create_hello_world_view",
+      "timestamp": 1786598931434
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Lifecycle simulation complete",
+      "method": "stage_execute_application",
+      "timestamp": 1786598931434
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1786598931434
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Frame rendered successfully",
+      "method": "stage_render_frame",
+      "timestamp": 1786598931434
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Capturing output",
+      "method": "stage_capture_output",
+      "timestamp": 1786598931434
+    },
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Screenshot captured: /home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original/screenshot.ppm (1080x1920, 8294400 bytes)",
+      "method": "log_screenshot",
+      "timestamp": 1786598931502
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Screenshot saved to: /home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original/screenshot.ppm",
+      "method": "stage_capture_output",
+      "timestamp": 1786598931502
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating reports",
+      "method": "stage_generate_reports",
+      "timestamp": 1786598931502
+    }
+  ],
+  "frames_rendered": 1,
+  "missing_opcodes": [],
+  "missing_apis": [],
+  "runtime_errors": [
+    "Runtime reported errors",
+    "Crash: MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052851-7139\nGenerated: 2026-08-13 05:28:51 UTC\nTotal Errors: 0\n\n[No errors recorded]"
+  ],
+  "runtime_warnings": [
+    "Runtime reported warnings"
+  ],
+  "crash_log": "MiniAndroid Crash/Error Log\n============================\n\nSession: EXP-001-20260813-052851-7139\nGenerated: 2026-08-13 05:28:51 UTC\nTotal Errors: 0\n\n[No errors recorded]",
+  "trace_file": "",
+  "api_trace_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original/api_trace.json",
+  "screenshot_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original/screenshot.ppm",
+  "report_file": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original/report.md",
+  "output_directory": "/home/z/my-project/miniandroid/run/exp026/traces/real_20260813_052851_HelloWorld_original",
+  "notes": ""
+}
