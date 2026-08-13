@@ -38,11 +38,14 @@ void print_usage(const char* program_name) {
     std::cout << "  -v, --verbose          Enable verbose output\n";
     std::cout << "  --width <pixels>       Screen width (default: 1080)\n";
     std::cout << "  --height <pixels>      Screen height (default: 1920)\n";
-    std::cout << "  --text <text>          Override displayed text\n\n";
+    std::cout << "  --text <text>          Override displayed text\n";
+    std::cout << "  --execution-mode <mode> Execution mode: legacy | real-dalvik (default: real-dalvik)\n\n";
     std::cout << "Examples:\n";
     std::cout << "  " << program_name << " analyze HelloWorld.apk\n";
     std::cout << "  " << program_name << " run -o ./output HelloWorld.apk\n";
     std::cout << "  " << program_name << " run --text \"Custom Text\" HelloWorld.apk\n";
+    std::cout << "  " << program_name << " run --execution-mode=real-dalvik HelloWorld.apk\n";
+    std::cout << "  " << program_name << " run --execution-mode=legacy HelloWorld.apk\n";
 }
 
 int cmd_analyze(const std::string& apk_path, bool verbose) {
@@ -263,6 +266,26 @@ int main(int argc, char* argv[]) {
             config.screen_height = std::stoi(argv[++i]);
         } else if (arg == "--text" && i + 1 < argc) {
             config.simulated_text = argv[++i];
+        } else if (arg.find("--execution-mode") == 0) {
+            // EXP-031: Parse execution mode
+            std::string mode_str;
+            if (arg.find('=') != std::string::npos) {
+                mode_str = arg.substr(arg.find('=') + 1);
+            } else if (i + 1 < argc) {
+                mode_str = argv[++i];
+            }
+            
+            if (mode_str == "legacy" || mode_str == "LEGACY") {
+                config.execution_mode = runtime::ExecutionMode::LEGACY;
+                std::cout << "[*] Execution mode: LEGACY (simulated lifecycle)\n";
+            } else if (mode_str == "real-dalvik" || mode_str == "REAL_DALVIK") {
+                config.execution_mode = runtime::ExecutionMode::REAL_DALVIK;
+                std::cout << "[*] Execution mode: REAL_DALVIK (bytecode interpretation)\n";
+            } else {
+                std::cerr << "[ERROR] Unknown execution mode: " << mode_str << std::endl;
+                std::cerr << "[INFO] Valid modes: legacy, real-dalvik\n";
+                return 1;
+            }
         } else if (arg[0] != '-') {
             apk_path = arg;
         } else {
