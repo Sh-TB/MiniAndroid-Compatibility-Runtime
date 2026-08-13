@@ -4,25 +4,25 @@
       "category": "SYSTEM",
       "class": "TraceEngine",
       "level": "INFO",
-      "message": "Session started: EXP-001-20260813-174517-5542",
+      "message": "Session started: EXP-001-20260813-212321-4633",
       "method": "start_session",
-      "timestamp": 1786643117139
+      "timestamp": 1786656201745
     },
     {
       "category": "SYSTEM",
       "class": "ExecutionEngine",
       "level": "INFO",
-      "message": "Loading APK: /home/z/my-project/miniandroid/download/exp027_real_apks/BarcodeReader.apk",
+      "message": "Loading APK: test_apks/HelloWorld.apk",
       "method": "stage_load_apk",
-      "timestamp": 1786643117139
+      "timestamp": 1786656201745
     },
     {
       "category": "SYSTEM",
       "class": "ExecutionEngine",
       "level": "INFO",
-      "message": "Package: com.barcodereader.app, Main Activity: com.barcodereader.app.MainActivity",
+      "message": "Package: com.miniandroid.hello, Main Activity: ",
       "method": "stage_load_apk",
-      "timestamp": 1786643117139
+      "timestamp": 1786656201745
     },
     {
       "category": "SYSTEM",
@@ -30,15 +30,15 @@
       "level": "INFO",
       "message": "Parsing DEX files",
       "method": "stage_parse_dex",
-      "timestamp": 1786643117139
+      "timestamp": 1786656201745
     },
     {
       "category": "SYSTEM",
       "class": "ExecutionEngine",
       "level": "INFO",
-      "message": "Parsed 0 classes, 0 methods",
+      "message": "Parsed 1 classes, 4 methods",
       "method": "stage_parse_dex",
-      "timestamp": 1786643117139
+      "timestamp": 1786656201746
     },
     {
       "category": "SYSTEM",
@@ -46,7 +46,7 @@
       "level": "INFO",
       "message": "Initializing runtime",
       "method": "stage_initialize_runtime",
-      "timestamp": 1786643117139
+      "timestamp": 1786656201746
     },
     {
       "category": "SYSTEM",
@@ -54,7 +54,7 @@
       "level": "INFO",
       "message": "Framebuffer allocated: 1080x1920",
       "method": "stage_initialize_runtime",
-      "timestamp": 1786643117159
+      "timestamp": 1786656201782
     },
     {
       "category": "SYSTEM",
@@ -62,15 +62,15 @@
       "level": "INFO",
       "message": "Loading class definitions",
       "method": "stage_load_classes",
-      "timestamp": 1786643117159
+      "timestamp": 1786656201782
     },
     {
-      "category": "SYSTEM",
+      "category": "DEBUG",
       "class": "ExecutionEngine",
-      "level": "WARNING",
-      "message": "No classes in DEX report",
+      "level": "DEBUG",
+      "message": "Found class: <invalid string idx:65536> extends <invalid string idx:65536> (0 methods)",
       "method": "stage_load_classes",
-      "timestamp": 1786643117159
+      "timestamp": 1786656201782
     },
     {
       "category": "SYSTEM",
@@ -78,15 +78,47 @@
       "level": "INFO",
       "message": "Executing application lifecycle",
       "method": "stage_execute_application",
-      "timestamp": 1786643117159
+      "timestamp": 1786656201782
     },
     {
       "category": "SYSTEM",
       "class": "ExecutionEngine",
       "level": "INFO",
-      "message": "Creating view from DEX analysis",
-      "method": "create_view_from_layout",
-      "timestamp": 1786643117159
+      "message": "[REAL_DALVIK_INTERPRETER] Starting real bytecode execution",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1786656201782
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Instructions executed: 0",
+      "method": "execute_apk",
+      "timestamp": 1786656201782
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "API calls traced: 0",
+      "method": "execute_apk",
+      "timestamp": 1786656201782
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Heap objects: 0",
+      "method": "execute_apk",
+      "timestamp": 1786656201782
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "WARNING",
+      "message": "⚠️ No opcodes executed - engine ran but no methods had bytecode",
+      "method": "validation",
+      "timestamp": 1786656201782
     },
     {
       "category": "SYSTEM",
@@ -94,15 +126,23 @@
       "level": "INFO",
       "message": "Creating HelloWorld view",
       "method": "create_hello_world_view",
-      "timestamp": 1786643117159
+      "timestamp": 1786656201782
     },
     {
       "category": "SYSTEM",
       "class": "ExecutionEngine",
       "level": "INFO",
-      "message": "Lifecycle simulation complete",
-      "method": "stage_execute_application",
-      "timestamp": 1786643117159
+      "message": "[HOST_SHORTCUT] Lifecycle called from C++ (not from DEX)",
+      "method": "lifecycle_fallback",
+      "timestamp": 1786656201782
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Real Dalvik execution complete",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1786656201782
     },
     {
       "category": "SYSTEM",
@@ -110,7 +150,7 @@
       "level": "INFO",
       "message": "Rendering frame",
       "method": "stage_render_frame",
-      "timestamp": 1786643117159
+      "timestamp": 1786656201782
     },
     {
       "category": "SYSTEM",
@@ -118,7 +158,7 @@
       "level": "INFO",
       "message": "Frame rendered successfully",
       "method": "stage_render_frame",
-      "timestamp": 1786643117160
+      "timestamp": 1786656201782
     },
     {
       "category": "SYSTEM",
@@ -126,23 +166,23 @@
       "level": "INFO",
       "message": "Capturing output",
       "method": "stage_capture_output",
-      "timestamp": 1786643117160
+      "timestamp": 1786656201782
     },
     {
       "category": "SYSTEM",
       "class": "TraceEngine",
       "level": "INFO",
-      "message": "Screenshot captured: /home/z/my-project/miniandroid/run/exp030/traces/BarcodeReader/screenshot.ppm (1080x1920, 8294400 bytes)",
+      "message": "Screenshot captured: ./run/screenshot.ppm (1080x1920, 8294400 bytes)",
       "method": "log_screenshot",
-      "timestamp": 1786643117227
+      "timestamp": 1786656201883
     },
     {
       "category": "SYSTEM",
       "class": "ExecutionEngine",
       "level": "INFO",
-      "message": "Screenshot saved to: /home/z/my-project/miniandroid/run/exp030/traces/BarcodeReader/screenshot.ppm",
+      "message": "Screenshot saved to: ./run/screenshot.ppm",
       "method": "stage_capture_output",
-      "timestamp": 1786643117228
+      "timestamp": 1786656201883
     },
     {
       "category": "SYSTEM",
@@ -150,10 +190,10 @@
       "level": "INFO",
       "message": "Generating reports",
       "method": "stage_generate_reports",
-      "timestamp": 1786643117228
+      "timestamp": 1786656201883
     }
   ],
-  "generated_at": "2026-08-13 17:45:17 UTC",
-  "session_id": "EXP-001-20260813-174517-5542",
-  "total_calls": 19
+  "generated_at": "2026-08-13 21:23:21 UTC",
+  "session_id": "EXP-001-20260813-212321-4633",
+  "total_calls": 24
 }
