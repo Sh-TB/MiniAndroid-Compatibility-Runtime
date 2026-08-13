@@ -1,0 +1,91 @@
+{
+  "tests_generated": [
+    {
+      "name": "Test1_Constant",
+      "file": "test_apks/exp031_5/Test1_Constant.dex",
+      "class": "LTest1Constant;",
+      "methods": [
+        "testConstant"
+      ],
+      "opcodes_expected": {
+        "const/4": 1,
+        "return": 1
+      },
+      "status": "GENERATED"
+    },
+    {
+      "name": "Test2_MethodCall",
+      "file": "test_apks/exp031_5/Test2_MethodCall.dex",
+      "class": "LTest2MethodCall;",
+      "methods": [
+        "calculate",
+        "add"
+      ],
+      "opcodes_expected": {
+        "const/4": 2,
+        "invoke-direct": 1,
+        "unknown(0x01)": 1,
+        "unknown(0x00)": 2,
+        "unknown(0x90)": 1,
+        "return": 1
+      },
+      "status": "GENERATED"
+    },
+    {
+      "name": "Test3_ObjectCreation",
+      "file": "test_apks/exp031_5/Test3_ObjectCreation.dex",
+      "class": "LTest3Object;",
+      "methods": [
+        "createCounter"
+      ],
+      "opcodes_expected": {
+        "new-instance": 1,
+        "unknown(0xff)": 1,
+        "invoke-direct": 1,
+        "unknown(0x01)": 1,
+        "unknown(0x00)": 2
+      },
+      "status": "GENERATED"
+    },
+    {
+      "name": "Test4_VirtualDispatch",
+      "file": "test_apks/exp031_5/Test4_VirtualDispatch.dex",
+      "class": "LTest4Virtual;",
+      "methods": [
+        "testDispatch"
+      ],
+      "opcodes_expected": {
+        "new-instance": 1,
+        "unknown(0xff)": 1,
+        "invoke-direct": 1,
+        "unknown(0x01)": 1,
+        "unknown(0x00)": 2,
+        "unknown(0x20)": 1,
+        "return-void": 1
+      },
+      "status": "GENERATED"
+    },
+    {
+      "name": "Test5_MiniActivity",
+      "file": "test_apks/exp031_5/Test5_MiniActivity.dex",
+      "class": "LMiniActivity;",
+      "methods": [
+        "onCreate"
+      ],
+      "opcodes_expected": {
+        "unknown(0x37)": 1,
+        "unknown(0x00)": 6,
+        "unknown(0x62)": 1,
+        "unknown(0x01)": 2,
+        "unknown(0x31)": 1,
+        "const-string": 1,
+        "unknown(0x03)": 1,
+        "unknown(0x32)": 1,
+        "invoke-virtual": 1
+      },
+      "status": "GENERATED"
+    }
+  ],
+  "output_dir": "test_apks/exp031_5",
+  "timestamp": null
+}
