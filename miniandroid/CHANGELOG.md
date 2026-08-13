@@ -2,7 +2,57 @@
 
 All notable changes to the MiniAndroid Runtime project.
 
-## [EXP-030] - 2026-08-13 — Real Dalvik Execution Engine
+## [EXP-031.5] - 2026-08-14 — Real Dalvik Bytecode Execution Proof
+
+### ✅ Added
+
+#### Golden Debug Protocol Enforcement
+- **Hard Runtime Assertion**: REAL_DALVIK mode now FAILS if 0 instructions executed (no fake success)
+- **ExecutionSource Tracking**: All execution paths labeled HOST_SHORTCUT or REAL_DALVIK_INTERPRETER
+- **Status Preservation Logic**: FAILURE status from assertions is never overwritten
+
+#### Mandatory Trace System (`src/dex/trace_exporter.*`)
+- **TraceExporter** class generates 5 evidence files per execution:
+  - `opcode_trace.json` - Every instruction with PC, opcode, registers
+  - `method_trace.json` - Method entry/exit with call stack
+  - `register_trace.json` - Register state changes
+  - `heap_trace.json` - Object allocations
+  - `execution_summary.json` - PASS/FAIL verdict with reasons
+
+#### Lifecycle Source Validation
+- Detects whether lifecycle (onCreate/onStart/onResume) comes from DEX or C++
+- Labels HOST_SHORTCUT lifecycle clearly in logs
+- Returns PARTIAL_SUCCESS if lifecycle not from real execution
+
+#### Test Infrastructure
+- **Test APK Generator** (`tools/exp031_5_test_generator.py`) - Creates 5 deterministic test DEX files
+- **Opcode Validation Matrix** - Documents all 25+ implemented opcodes
+- **Object Model Validation Spec** - Heap and dispatch validation criteria
+
+### 📝 Modified
+
+#### Execution Engine (`src/runtime/execution_engine.cpp`)
+- +120 lines: Hard assertion, lifecycle validation, trace generation call
+- Stage `stage_execute_application_real_dalvik()` now enforces Golden Debug Protocol
+- Fixed status determination to preserve FAILURE from assertions
+
+### 🧪 Verified
+
+| Test | Result | Interpretation |
+|------|--------|----------------|
+| Legacy mode | ✅ SUCCESS | Regression compatible (HOST_SHORTCUT) |
+| Real mode (0 instructions) | ❌ FAILURE | **CORRECT** - Assertion working! |
+
+### 📋 Status
+
+**Infrastructure: ✅ COMPLETE**  
+**Full Proof: ⚠️ Awaits DEX bytecode extraction fix**
+
+The system now correctly identifies and rejects fake execution. Full proof (100+ instructions) requires DEX parser improvements to extract method bytecode properly.
+
+---
+
+## [EXP-031] - 2026-08-13 — Real Dalvik Engine Integration & Fake-Pass Elimination
 
 ### ✅ Added
 
