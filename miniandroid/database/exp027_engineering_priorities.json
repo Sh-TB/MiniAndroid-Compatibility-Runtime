@@ -1,0 +1,126 @@
+{
+  "experiment": "EXP-027",
+  "title": "Engineering Priority Recommendations",
+  "generated_at": "2026-08-13T06:00:02.252851",
+  "based_on": "Real execution of 20 APKs with 100% DEX_PARSE_ERROR rate",
+  "priorities": [
+    {
+      "rank": 1,
+      "problem": "DEX Header Parsing",
+      "affected_apps": "20/20 (100%)",
+      "priority": "P0-CRITICAL",
+      "root_cause": "Generated DEX files have invalid header format",
+      "evidence": "All 20 executions show DEX_PARSE_ERROR with \"Invalid header size: 0\"",
+      "fix_required": "Fix DEX parser to handle our generated header format OR fix generator to produce standard-compliant headers",
+      "expected_impact": "+50 to +100 compatibility points",
+      "effort_estimate": "2-4 days",
+      "files_to_modify": [
+        "src/dex/dex_parser.cpp - Improve header validation",
+        "tools/exp027_real_dex_generator.py - Fix header generation"
+      ],
+      "blocking": true,
+      "dependencies": null
+    },
+    {
+      "rank": 2,
+      "problem": "Opcode Implementation Gap",
+      "affected_apps": "Unknown (blocked by P0)",
+      "priority": "P1-HIGH",
+      "root_cause": "DexInterpreter may not support all opcodes used by real apps",
+      "evidence": "DEX contains invoke-super, const-string, new-instance, etc.",
+      "fix_required": "Implement missing opcodes in interpreter loop",
+      "expected_impact": "+30 compatibility points",
+      "effort_estimate": "3-5 days",
+      "files_to_modify": [
+        "src/dex/dex_interpreter.cpp",
+        "src/dex/dex_interpreter.h"
+      ],
+      "blocking": false,
+      "dependencies": [
+        "P0-DEX-Parsing"
+      ]
+    },
+    {
+      "rank": 3,
+      "problem": "Android API Stub Completeness",
+      "affected_apps": "Unknown (blocked by P0)",
+      "priority": "P1-HIGH",
+      "root_cause": "android_stubs.h has limited method implementations",
+      "evidence": "Apps call Activity.onCreate(), View methods, Log.d(), etc.",
+      "fix_required": "Expand stub implementations with real behavior",
+      "expected_impact": "+40 compatibility points",
+      "effort_estimate": "5-7 days",
+      "files_to_modify": [
+        "src/api/android_stubs.h",
+        "src/api/android_stubs.cpp (if created)"
+      ],
+      "blocking": false,
+      "dependencies": [
+        "P0-DEX-Parsing",
+        "P1-Opcodes"
+      ]
+    },
+    {
+      "rank": 4,
+      "problem": "Resource Loading & Layout Inflation",
+      "affected_apps": "Unknown (blocked by P0)",
+      "priority": "P2-MEDIUM",
+      "root_cause": "Resource parser may not handle all resource types",
+      "evidence": "APKs contain AndroidManifest.xml, resources.arsc",
+      "fix_required": "Improve binary XML parser and view inflation",
+      "expected_impact": "+25 compatibility points",
+      "effort_estimate": "4-6 days",
+      "files_to_modify": [
+        "src/resources/resource_parser.cpp",
+        "src/runtime/application_runtime.cpp"
+      ],
+      "blocking": false,
+      "dependencies": [
+        "P0-DEX-Parsing"
+      ]
+    },
+    {
+      "rank": 5,
+      "problem": "Rendering Pipeline",
+      "affected_apps": "Unknown (blocked by P0)",
+      "priority": "P2-MEDIUM",
+      "root_cause": "Software renderer may not handle all view types",
+      "evidence": "HelloWorld from EXP-026 produced screenshot.ppm",
+      "fix_required": "Expand renderer for TextView, LinearLayout, etc.",
+      "expected_impact": "+20 compatibility points (visual confirmation)",
+      "effort_estimate": "3-5 days",
+      "files_to_modify": [
+        "src/renderer/software_renderer.cpp",
+        "src/renderer/software_renderer.h"
+      ],
+      "blocking": false,
+      "dependencies": [
+        "P3-API-Stubs",
+        "P4-Resources"
+      ]
+    }
+  ],
+  "roadmap_summary": {
+    "immediate": [
+      "Fix DEX header parsing (unblocks everything)"
+    ],
+    "short_term": [
+      "Implement critical opcodes",
+      "Expand API stubs"
+    ],
+    "medium_term": [
+      "Resource loading",
+      "Rendering improvements"
+    ],
+    "long_term": [
+      "Full Activity lifecycle",
+      "Intent system",
+      "Service support"
+    ]
+  },
+  "investment_recommendation": {
+    "focus_area": "DEX Parser",
+    "rationale": "100% of apps fail here. Fixing this single issue will unblock all other improvements.",
+    "estimated_return": "Highest ROI - enables actual code execution data collection"
+  }
+}
