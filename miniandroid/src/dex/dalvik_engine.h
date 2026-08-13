@@ -1,0 +1,892 @@
+/*
+ * MiniAndroid Runtime v0.2 - Real Dalvik Execution Engine
+ * EXP-030: Real Bytecode Execution
+ * 
+ * Complete Dalvik register machine implementation with:
+ * - Full opcode execution (25+ opcodes)
+ * - Method call stack (StackFrame)
+ * - Object heap management
+ * - API bridge integration
+ * - Comprehensive evidence generation
+ */
+
+#ifndef MINIANDROID_REAL_DALVIK_ENGINE_H
+#define MINIANDROID_REAL_DALVIK_ENGINE_H
+
+#include "dex_parser.h"
+#include "class_resolver.h"
+#include "../api/android_stubs.h"
+#include <string>
+#include <vector>
+#include <map>
+#include <stack>
+#include <memory>
+#include <cstdint>
+#include <functional>
+#include <sstream>
+#include <iomanip>
+#include <chrono>
+#include <set>
+
+#include "../../third_party/nlohmann_json/include/nlohmann/json.hpp"
+
+namespace miniandroid {
+namespace dalvik {
+
+using json = nlohmann::json;
+using Clock = std::chrono::high_resolution_clock;
+
+// ============================================================================
+// OPCODE DEFINITIONS — Complete Dalvik Instruction Set (EXP-030 Scope)
+// ============================================================================
+
+namespace Opcode {
+    // Constants (10 opcodes)
+    constexpr uint16_t NOP = 0x0000;
+    constexpr uint16_t CONST_4 = 0x12;       // const/4 vAA, #+BBBB
+    constexpr uint16_t CONST_16 = 0x13;      // const/16 vAA, #+BBBB
+    constexpr uint16_t CONST = 0x14;         // const vAA, #+BBBBBBBB
+    constexpr uint16_t CONST_HIGH16 = 0x15;  // const/high16 vAA, #+BBBB0000
+    constexpr uint16_t CONST_WIDE = 0x16;    // const-wide vAA, #+BBBBBBBBBBBBBBBB
+    constexpr uint16_t CONST_WIDE_16 = 0x18; // const-wide/16 vAA, #+BBBB
+    constexpr uint16_t CONST_WIDE_32 = 0x19; // const-wide/32 vAA, #+BBBBBBBB
+    constexpr uint16_t CONST_STRING = 0x1A;  // const-string vAA, string@BBBB
+    constexpr uint16_t CONST_STRING_JUMBO = 0x1B; // const-string/jumbo vAA, string@BBBBBBBB
+    constexpr uint16_t CONST_CLASS = 0x1C;   // const-class vAA, type@BBBB
+    
+    // Moves (11 opcodes)
+    constexpr uint16_t MOVE = 0x01;          // move vA, vB
+    constexpr uint16_t MOVE_FROM16 = 0x02;   // move/from16 vAA, vBBBB
+    constexpr uint16_t MOVE_16 = 0x03;       // move/16 vAAAA, vBBBB
+    constexpr uint16_t MOVE_WIDE = 0x04;     // move-wide vA, vB
+    constexpr uint16_t MOVE_OBJECT = 0x07;   // move-object vA, vB
+    constexpr uint16_t MOVE_OBJECT_FROM16 = 0x08; // move-object/from16 vAA, vBBBB
+    constexpr uint16_t MOVE_OBJECT_16 = 0x09; // move-object/16 vAAAA, vBBBB
+    constexpr uint16_t MOVE_RESULT = 0x0A;   // move-result vAA
+    constexpr uint16_t MOVE_RESULT_OBJECT = 0x0B; // move-result-object vAA
+    constexpr uint16_t MOVE_RESULT_WIDE = 0x0C; // move-result-wide vAA
+    constexpr uint16_t MOVE_EXCEPTION = 0x0D; // move-exception vAA
+    
+    // Returns (4 opcodes)
+    constexpr uint16_t RETURN_VOID = 0x0E;   // return-void {}
+    constexpr uint16_t RETURN = 0x0F;        // return {} vAA
+    constexpr uint16_t RETURN_WIDE = 0x10;   // return-wide {} vAA
+    constexpr uint16_t RETURN_OBJECT = 0x11; // return-object {} vAA
+    
+    // Objects (3 opcodes)
+    constexpr uint16_t INSTANCE_OF = 0x20;   // instance-of vA, vB, type@CCCC
+    constexpr uint16_t CHECK_CAST = 0x1F;    // check-cast vAA, type@BBBB
+    constexpr uint16_t NEW_INSTANCE = 0x22;  // new-instance vAA, type@BBBB
+    constexpr uint16_t ARRAY_LENGTH = 0x21;  // array-length vA, vB
+    
+    // Invokes (7 core opcodes)
+    constexpr uint16_t INVOKE_VIRTUAL = 0x6E;    // invoke-virtual {vC..}, method@BBBB
+    constexpr uint16_t INVOKE_SUPER = 0x6F;      // invoke-super {vC..}, method@BBBB
+    constexpr uint16_t INVOKE_DIRECT = 0x70;     // invoke-direct {vC..}, method@BBBB
+    constexpr uint16_t INVOKE_STATIC = 0x71;     // invoke-static {vC..}, method@BBBB
+    constexpr uint16_t INVOKE_INTERFACE = 0x72;  // invoke-interface {vC..}, method@BBBB
+    
+    // Control flow (basic set)
+    constexpr uint16_t GOTO = 0x28;           // goto +AA
+    constexpr uint16_t GOTO_16 = 0x29;        // goto/16 +AAAA
+    constexpr uint16_t GOTO_32 = 0x2A;        // goto/32 +AAAAAAAA
+    constexpr uint16_t IF_EQZ = 0x39;         // if-eqz vAA, +BBBB
+    constexpr uint16_t IF_NEZ = 0x3A;         // if-nez vAA, +BBBB
+    constexpr uint16_t IF_EQ = 0x32;          // if-eq vAA, vBB, +CCCC
+    constexpr uint16_t IF_NE = 0x33;          // if-ne vAA, vBB, +CCCC
+}
+
+// ============================================================================
+// VALUE TYPES — Extended Register Value System
+// ============================================================================
+
+enum class DalvikType {
+    UNINITIALIZED,
+    INT32,
+    INT64,      // Long
+    FLOAT32,
+    FLOAT64,    // Double
+    STRING_REF,
+    CLASS_REF,
+    OBJECT_REF,
+    NULL_REF,
+    BOOLEAN,
+    BYTE,
+    SHORT,
+    CHAR,
+    VOID_,
+    REGISTER_UNSET
+};
+
+struct DalvikValue {
+    DalvikType type = DalvikType::REGISTER_UNSET;
+    
+    union {
+        int32_t int_val = 0;
+        int64_t long_val;
+        float float_val;
+        double double_val;
+        bool bool_val;
+        int8_t byte_val;
+        int16_t short_val;
+        char char_val;
+    };
+    
+    // Reference types
+    std::string string_val;       // For STRING_REF
+    std::string class_desc;       // For CLASS_REF or OBJECT_REF
+    uint32_t object_id = 0;       // For OBJECT_REF
+    uint32_t ref_id = 0;          // Unique reference ID
+    
+    bool is_null = false;
+    
+    // Factory methods
+    static DalvikValue make_int(int32_t val) {
+        DalvikValue v; v.type = DalvikType::INT32; v.int_val = val; return v;
+    }
+    
+    static DalvikValue make_long(int64_t val) {
+        DalvikValue v; v.type = DalvikType::INT64; v.long_val = val; return v;
+    }
+    
+    static DalvikValue make_string(const std::string& str, uint32_t id) {
+        DalvikValue v; v.type = DalvikType::STRING_REF; 
+        v.string_val = str; v.ref_id = id; return v;
+    }
+    
+    static DalvikValue make_object(uint32_t obj_id, const std::string& cls) {
+        DalvikValue v; v.type = DalvikType::OBJECT_REF;
+        v.object_id = obj_id; v.class_desc = cls; return v;
+    }
+    
+    static DalvikValue make_class(const std::string& desc, uint32_t id) {
+        DalvikValue v; v.type = DalvikType::CLASS_REF;
+        v.class_desc = desc; v.ref_id = id; return v;
+    }
+    
+    static DalvikValue make_null() {
+        DalvikValue v; v.type = DalvikType::NULL_REF; v.is_null = true; return v;
+    }
+    
+    static DalvikValue make_uninit() {
+        DalvikValue v; v.type = DalvikType::UNINITIALIZED; return v;
+    }
+    
+    static DalvikValue make_void() {
+        DalvikValue v; v.type = DalvikType::VOID_; return v;
+    }
+    
+    static DalvikValue make_bool(bool b) {
+        DalvikValue v; v.type = DalvikType::BOOLEAN; v.bool_val = b; return v;
+    }
+    
+    std::string to_string() const;
+    json to_json() const;
+    
+    bool is_integral() const {
+        return type == DalvikType::INT32 || type == DalvikType::INT64 ||
+               type == DalvikType::BOOLEAN || type == DalvikType::BYTE ||
+               type == DalvikType::SHORT || type == DalvikType::CHAR;
+    }
+    
+    bool is_reference() const {
+        return type == DalvikType::STRING_REF || type == DalvikType::OBJECT_REF ||
+               type == DalvikType::CLASS_REF || type == DalvikType::NULL_REF;
+    }
+};
+
+// ============================================================================
+// REGISTER FILE — Dalvik Virtual Machine Registers
+// ============================================================================
+
+class DexRegisterFile {
+public:
+    DexRegisterFile() : size_(0), pc_(0) {}
+    
+    void initialize(uint32_t count, uint32_t ins_count = 0) {
+        size_ = count;
+        ins_count_ = ins_count;
+        registers_.clear();
+        registers_.resize(count, DalvikValue::make_uninit());
+        
+        // Mark parameter registers (last N registers are 'p' registers)
+        if (ins_count > 0 && ins_count < count) {
+            param_start_ = count - ins_count;
+        } else {
+            param_start_ = count;
+        }
+    }
+    
+    void write_v(uint8_t reg, const DalvikValue& value) {
+        if (reg < size_) {
+            registers_[reg] = value;
+            written_.insert(reg);
+        }
+    }
+    
+    void write_p(uint8_t param_idx, const DalvikValue& value) {
+        uint8_t reg = param_start_ + param_idx;
+        if (reg < size_) {
+            registers_[reg] = value;
+            written_.insert(reg);
+        }
+    }
+    
+    DalvikValue read_v(uint8_t reg) const {
+        if (reg < size_) return registers_[reg];
+        return DalvikValue::make_uninit();
+    }
+    
+    DalvikValue read_p(uint8_t param_idx) const {
+        uint8_t reg = param_start_ + param_idx;
+        if (reg < size_) return registers_[reg];
+        return DalvikValue::make_uninit();
+    }
+    
+    void set_pc(uint32_t pc) { pc_ = pc; }
+    uint32_t get_pc() const { return pc_; }
+    
+    uint32_t get_size() const { return size_; }
+    uint32_t get_ins_count() const { return ins_count_; }
+    
+    std::vector<uint8_t> get_written_registers() const {
+        return std::vector<uint8_t>(written_.begin(), written_.end());
+    }
+    
+    json dump() const {
+        json result;
+        result["size"] = size_;
+        result["ins_count"] = ins_count_;
+        result["param_start"] = param_start_;
+        result["pc"] = pc_;
+        result["registers"] = json::array();
+        
+        for (uint8_t i = 0; i < size_; ++i) {
+            json entry;
+            bool is_param = (i >= param_start_);
+            entry["name"] = is_param ? ("p" + std::to_string(i - param_start_)) 
+                                     : ("v" + std::to_string(i));
+            entry["index"] = i;
+            entry["value"] = registers_[i].to_json();
+            entry["written"] = (written_.count(i) > 0);
+            result["registers"].push_back(entry);
+        }
+        return result;
+    }
+    
+    std::map<std::string, DalvikValue> get_snapshot() const {
+        std::map<std::string, DalvikValue> snap;
+        for (uint8_t i = 0; i < size_; ++i) {
+            bool is_param = (i >= param_start_);
+            std::string name = is_param ? ("p" + std::to_string(i - param_start_)) 
+                                       : ("v" + std::to_string(i));
+            snap[name] = registers_[i];
+        }
+        return snap;
+    }
+
+private:
+    uint32_t size_ = 0;
+    uint32_t ins_count_ = 0;
+    uint32_t param_start_ = 0;
+    uint32_t pc_ = 0;
+    std::vector<DalvikValue> registers_;
+    std::set<uint8_t> written_;
+};
+
+// ============================================================================
+// STACK FRAME — Method Call Context
+// ============================================================================
+
+struct StackFrame {
+    uint32_t frame_id;
+    std::string class_name;
+    std::string method_name;
+    std::string method_descriptor;
+    std::string source_file;
+    
+    // Execution state
+    uint32_t return_address = 0xFFFFFFFF;  // PC to return to
+    uint32_t caller_pc = 0;                // PC of call instruction
+    DalvikValue return_value;              // Return value register
+    
+    // Register file for this frame
+    DexRegisterFile registers;
+    
+    // Method metadata
+    uint32_t code_offset = 0;
+    uint32_t bytecode_length = 0;
+    uint32_t registers_size = 0;
+    uint32_t ins_size = 0;
+    uint32_t outs_size = 0;
+    
+    // Timing
+    Clock::time_point enter_time;
+    Clock::time_point exit_time;
+    double duration_ms = 0;
+    
+    // Status
+    enum class Status {
+        ACTIVE,
+        RETURNED,
+        EXCEPTION_PENDING,
+        HALTED
+    } status = Status::ACTIVE;
+    
+    std::string halt_reason;
+    
+    json to_json() const {
+        json frame;
+        frame["frame_id"] = frame_id;
+        frame["class"] = class_name;
+        frame["method"] = method_name;
+        frame["descriptor"] = method_descriptor;
+        frame["return_address"] = std::string("0x") + 
+            ([&]() { std::ostringstream o; o << std::hex << return_address; return o.str(); })();
+        frame["caller_pc"] = caller_pc;
+        frame["status"] = status == Status::ACTIVE ? "ACTIVE" :
+                           status == Status::RETURNED ? "RETURNED" :
+                           status == Status::EXCEPTION_PENDING ? "EXCEPTION" : "HALTED";
+        frame["duration_ms"] = duration_ms;
+        frame["registers"] = registers.dump();
+        return frame;
+    }
+};
+
+// ============================================================================
+// HEAP OBJECT — Runtime Object Representation
+// ============================================================================
+
+struct HeapObject {
+    uint32_t object_id = 0;
+    std::string class_descriptor;   // Landroid/widget/TextView;
+    std::string readable_class;     // android.widget.TextView
+    
+    bool initialized = false;
+    uint64_t creation_sequence = 0;
+    uint32_t creator_pc = 0;
+    uint32_t creator_frame_id = 0;
+    
+    // Fields (simplified - would be full field table in production)
+    std::map<std::string, DalvikValue> fields;
+    
+    // Bridge to Android API stub
+    std::shared_ptr<api::AndroidObject> api_object;
+    
+    HeapObject() = default;
+    
+    HeapObject(uint32_t id, const std::string& desc, uint64_t seq, uint32_t pc, uint32_t frame)
+        : object_id(id), class_descriptor(desc), creation_sequence(seq), 
+          creator_pc(pc), creator_frame_id(frame) {
+        readable_class = descriptor_to_readable(desc);
+    }
+    
+    void set_field(const std::string& name, const DalvikValue& value) {
+        fields[name] = value;
+    }
+    
+    DalvikValue get_field(const std::string& name) const {
+        auto it = fields.find(name);
+        return (it != fields.end()) ? it->second : DalvikValue::make_uninit();
+    }
+    
+    json to_json() const {
+        json obj;
+        obj["object_id"] = object_id;
+        obj["class_descriptor"] = class_descriptor;
+        obj["readable_class"] = readable_class;
+        obj["initialized"] = initialized;
+        obj["creation_sequence"] = creation_sequence;
+        obj["creator_pc"] = creator_pc;
+        obj["creator_frame_id"] = creator_frame_id;
+        obj["field_count"] = fields.size();
+        return obj;
+    }
+
+private:
+    std::string descriptor_to_readable(const std::string& desc) const {
+        if (desc.empty()) return desc;
+        std::string result = desc;
+        if (result[0] == 'L' && result.back() == ';') {
+            result = result.substr(1, result.size() - 2);
+        }
+        for (char& c : result) { if (c == '/') c = '.'; }
+        return result;
+    }
+};
+
+// ============================================================================
+// OBJECT HEAP — Dynamic Memory Management
+// ============================================================================
+
+class DalvikHeap {
+public:
+    DalvikHeap() : next_id_(1), alloc_sequence_(0) {}
+    
+    uint32_t allocate(const std::string& class_desc, uint32_t pc, uint32_t frame_id) {
+        HeapObject obj(next_id_++, class_desc, alloc_sequence_++, pc, frame_id);
+        objects_[obj.object_id] = obj;
+        
+        // Log allocation
+        allocation_log_.push_back({
+            {"object_id", obj.object_id},
+            {"class", class_desc},
+            {"pc", pc},
+            {"frame_id", frame_id},
+            {"sequence", alloc_sequence_ - 1}
+        });
+        
+        return obj.object_id;
+    }
+    
+    HeapObject* get(uint32_t id) {
+        auto it = objects_.find(id);
+        return (it != objects_.end()) ? &it->second : nullptr;
+    }
+    
+    const HeapObject* get(uint32_t id) const {
+        auto it = objects_.find(id);
+        return (it != objects_.end()) ? &it->second : nullptr;
+    }
+    
+    void mark_initialized(uint32_t id) {
+        if (auto* obj = get(id)) obj->initialized = true;
+    }
+    
+    void bind_api_object(uint32_t id, std::shared_ptr<api::AndroidObject> api_obj) {
+        if (auto* obj = get(id)) obj->api_object = api_obj;
+    }
+    
+    size_t size() const { return objects_.size(); }
+    
+    json dump() const {
+        json arr = json::array();
+        for (const auto& pair : objects_) {
+            arr.push_back(pair.second.to_json());
+        }
+        return arr;
+    }
+    
+    json get_allocation_log() const {
+        return allocation_log_;
+    }
+    
+    std::vector<uint32_t> get_all_ids() const {
+        std::vector<uint32_t> ids;
+        for (const auto& pair : objects_) ids.push_back(pair.first);
+        return ids;
+    }
+
+private:
+    std::map<uint32_t, HeapObject> objects_;
+    uint32_t next_id_;
+    uint64_t alloc_sequence_;
+    json allocation_log_;
+};
+
+// ============================================================================
+// METHOD CALL STACK — Invocation Tracking
+// ============================================================================
+
+class CallStack {
+public:
+    CallStack() : next_frame_id_(1), max_depth_(0), current_depth_(0) {}
+    
+    void push_frame(StackFrame&& frame) {
+        frame.frame_id = next_frame_id_++;
+        frame.enter_time = Clock::now();
+        
+        stack_.push(std::move(frame));
+        current_depth_ = stack_.size();
+        if (current_depth_ > max_depth_) max_depth_ = current_depth_;
+    }
+    
+    StackFrame pop_frame() {
+        if (stack_.empty()) return StackFrame{};
+        
+        Frame frame = std::move(stack_.top());
+        stack_.pop();
+        
+        frame.exit_time = Clock::now();
+        frame.duration_ms = std::chrono::duration<double, std::milli>(
+            frame.exit_time - frame.enter_time).count();
+        frame.status = StackFrame::Status::RETURNED;
+        
+        completed_frames_.push_back(frame);
+        current_depth_ = stack_.size();
+        
+        return frame;
+    }
+    
+    StackFrame& top() { return stack_.top(); }
+    const StackFrame& top() const { return stack_.top(); }
+    
+    bool empty() const { return stack_.empty(); }
+    size_t depth() const { return stack_.size(); }
+    size_t max_depth() const { return max_depth_; }
+    
+    const std::vector<StackFrame>& get_completed_frames() const { 
+        return completed_frames_; 
+    }
+    
+    json dump_current_stack() const {
+        json arr = json::array();
+        
+        // Copy stack to vector (can't iterate stack easily in reverse)
+        std::vector<const Frame*> frames;
+        auto temp = stack_;
+        while (!temp.empty()) {
+            frames.push_back(&temp.top());
+            temp.pop();
+        }
+        
+        for (auto it = frames.rbegin(); it != frames.rend(); ++it) {
+            arr.push_back((*it)->to_json());
+        }
+        
+        return arr;
+    }
+    
+    json dump_all_calls() const {
+        json result;
+        result["max_depth"] = max_depth_;
+        result["total_calls"] = completed_frames_.size() + stack_.size();
+        result["current_stack"] = dump_current_stack();
+        result["completed_calls"] = json::array();
+        for (const auto& f : completed_frames_) {
+            result["completed_calls"].push_back(f.to_json());
+        }
+        return result;
+    }
+
+private:
+    using Frame = StackFrame;
+    std::stack<Frame> stack_;
+    std::vector<Frame> completed_frames_;
+    uint32_t next_frame_id_;
+    size_t max_depth_;
+    size_t current_depth_;
+};
+
+// ============================================================================
+// INSTRUCTION TRACE — Per-Instruction Evidence
+// ============================================================================
+
+struct InstructionTrace {
+    uint64_t sequence = 0;
+    uint32_t pc_before = 0;
+    uint32_t pc_after = 0;
+    
+    std::string opcode_name;
+    uint16_t opcode_hex = 0;
+    
+    struct Operand {
+        std::string name;
+        std::string value;
+        int64_t numeric = 0;
+    };
+    std::vector<Operand> operands;
+    
+    enum class Status {
+        SUCCESS,
+        UNIMPLEMENTED,
+        HALT_RETURN,
+        CRASH_ERROR,
+        BRANCH_TAKEN,
+        BRANCH_NOT_TAKEN
+    };
+    Status status = Status::SUCCESS;
+    
+    // State changes
+    std::map<std::string, DalvikValue> registers_before;
+    std::map<std::string, DalvikValue> registers_after;
+    std::vector<std::string> changed_registers;
+    
+    // Side effects
+    std::optional<uint32_t> allocated_object_id;
+    std::optional<std::string> invoked_method;
+    std::optional<DalvikValue> return_value;
+    
+    // Error info
+    std::optional<std::string> error_message;
+    
+    // Timing
+    double execution_us = 0;
+    
+    json to_json() const {
+        json trace;
+        trace["sequence"] = sequence;
+        trace["pc_before"] = pc_before;
+        trace["pc_after"] = pc_after;
+        trace["opcode"] = opcode_name;
+        trace["opcode_hex"] = "0x" + [this]() {
+            std::ostringstream o; o << std::hex << std::setw(4) << std::setfill('0') << opcode_hex; return o.str();
+        }();
+        trace["status"] = status == Status::SUCCESS ? "SUCCESS" :
+                         status == Status::UNIMPLEMENTED ? "UNIMPLEMENTED" :
+                         status == Status::HALT_RETURN ? "RETURN" :
+                         status == Status::CRASH_ERROR ? "ERROR" :
+                         status == Status::BRANCH_TAKEN ? "BRANCH_TAKEN" : "BRANCH_NOT_TAKEN";
+        trace["operands"] = json::array();
+        for (const auto& op : operands) {
+            trace["operands"].push_back({{"name", op.name}, {"value", op.value}});
+        }
+        trace["changed_registers"] = changed_registers;
+        if (allocated_object_id) trace["allocated_object"] = *allocated_object_id;
+        if (invoked_method) trace["invoked"] = *invoked_method;
+        if (return_value) trace["return_value"] = return_value->to_json();
+        if (error_message) trace["error"] = *error_message;
+        trace["execution_us"] = execution_us;
+        return trace;
+    }
+};
+
+// ============================================================================
+// API CALL TRACE — Android API Invocation Evidence
+// ============================================================================
+
+struct ApiCallTrace {
+    uint64_t sequence = 0;
+    std::string api_class;      // android.widget.TextView
+    std::string method;          // setText
+    std::string descriptor;      // (Ljava/lang/CharSequence;)V
+    std::vector<std::string> arguments;
+    std::string return_value;
+    
+    enum class Status {
+        IMPLEMENTED,
+        STUBBED,
+        MISSING,
+        ERROR
+    };
+    Status status = Status::STUBBED;
+    
+    uint32_t pc = 0;
+    uint32_t frame_id = 0;
+    double execution_us = 0;
+    
+    json to_json() const {
+        json call;
+        call["sequence"] = sequence;
+        call["api"] = api_class + "." + method;
+        call["class"] = api_class;
+        call["method"] = method;
+        call["descriptor"] = descriptor;
+        call["arguments"] = arguments;
+        call["return_value"] = return_value;
+        call["status"] = status == Status::IMPLEMENTED ? "IMPLEMENTED" :
+                        status == Status::STUBBED ? "STUBBED" :
+                        status == Status::MISSING ? "MISSING" : "ERROR";
+        call["pc"] = pc;
+        call["frame_id"] = frame_id;
+        call["execution_us"] = execution_us;
+        return call;
+    }
+};
+
+// ============================================================================
+// EXECUTION RESULT — Complete Run Evidence
+// ============================================================================
+
+struct DalvikExecutionResult {
+    std::string experiment_id = "EXP-030";
+    std::string timestamp;
+    std::string apk_name;
+    std::string apk_sha256;
+    
+    // DEX report reference (non-owning pointer for execution)
+    const dex::DexReport* dex_report = nullptr;
+    
+    // Entry point
+    std::string main_class;
+    std::string main_method;
+    
+    // Final state
+    enum class FinalStatus {
+        COMPLETED_SUCCESS,
+        COMPLETED_PARTIAL,
+        HALTED_UNIMPLEMENTED_OPCODE,
+        HALTED_MISSING_METHOD,
+        HALTED_API_ERROR,
+        HALTED_STACK_OVERFLOW,
+        CRASH_EXCEPTION
+    };
+    FinalStatus final_status = FinalStatus::COMPLETED_SUCCESS;
+    std::string halt_reason;
+    
+    // Statistics
+    uint64_t total_instructions_executed = 0;
+    uint64_t total_opcodes_decoded = 0;
+    double total_execution_ms = 0;
+    
+    // Components
+    CallStack call_stack;
+    DalvikHeap heap;
+    
+    // Traces
+    std::vector<InstructionTrace> instruction_traces;
+    std::vector<ApiCallTrace> api_call_traces;
+    
+    // Final register state (from top frame if exists)
+    json final_registers;
+    
+    // Output artifacts
+    std::string screenshot_path;
+    std::string report_path;
+    
+    json to_full_report() const;
+};
+
+// ============================================================================
+// MAIN DALVIK EXECUTION ENGINE
+// ============================================================================
+
+/**
+ * Real Dalvik Bytecode Execution Engine
+ * 
+ * EXP-030 Implementation:
+ * - Executes actual DEX bytecode instructions
+ * - Maintains real register state
+ * - Allocates objects on heap
+ * - Tracks method invocations via call stack
+ * - Bridges to Android API stubs
+ */
+class DalvikExecutionEngine {
+public:
+    DalvikExecutionEngine();
+    ~DalvikExecutionEngine();
+    
+    /**
+     * Execute APK through real DEX bytecode interpretation
+     */
+    DalvikExecutionResult execute_apk(
+        const std::string& apk_path,
+        const dex::DexReport& dex_report,
+        bool verbose = false
+    );
+    
+    /**
+     * Execute specific method from DEX report
+     */
+    DalvikExecutionResult execute_method(
+        const dex::MethodInfo& method,
+        const dex::DexReport& dex_report,
+        const std::vector<DalvikValue>& args = {},
+        bool verbose = false
+    );
+    
+    /**
+     * Access post-execution state
+     */
+    const CallStack& get_call_stack() const { return call_stack_; }
+    const DalvikHeap& get_heap() const { return heap_; }
+    std::string get_last_error() const { return last_error_; }
+    
+    // Configuration
+    struct Config {
+        bool verbose = false;
+        bool debug_output = false;
+        uint64_t max_instructions = 10000;
+        bool stop_on_unimplemented = true;
+        bool generate_trace = true;
+        bool enable_api_bridge = true;
+    };
+
+private:
+    // Core execution loop
+    bool execute_method_internal(
+        const std::string& class_name,
+        const std::string& method_name,
+        const std::string& descriptor,
+        const std::vector<uint16_t>& bytecode,
+        uint32_t registers_size,
+        uint32_t ins_size,
+        uint32_t outs_size,
+        const std::vector<DalvikValue>& args,
+        DalvikExecutionResult& result
+    );
+    
+    bool fetch_decode_execute(DalvikExecutionResult& result);
+    uint16_t fetch_opcode(uint32_t pc) const;
+    
+    // Opcode implementations — Constants
+    bool execute_const_4(uint32_t pc, InstructionTrace& trace);
+    bool execute_const_16(uint32_t pc, InstructionTrace& trace);
+    bool execute_const(uint32_t pc, InstructionTrace& trace);
+    bool execute_const_string(uint32_t pc, InstructionTrace& trace);
+    bool execute_const_class(uint32_t pc, InstructionTrace& trace);
+    
+    // Opcode implementations — Moves
+    bool execute_move(uint32_t pc, InstructionTrace& trace);
+    bool execute_move_object(uint32_t pc, InstructionTrace& trace);
+    bool execute_move_result(uint32_t pc, InstructionTrace& trace);
+    bool execute_move_result_object(uint32_t pc, InstructionTrace& trace);
+    
+    // Opcode implementations — Objects
+    bool execute_new_instance(uint32_t pc, InstructionTrace& trace);
+    bool execute_check_cast(uint32_t pc, InstructionTrace& trace);
+    bool execute_instance_of(uint32_t pc, InstructionTrace& trace);
+    
+    // Opcode implementations — Invokes
+    bool execute_invoke_virtual(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
+    bool execute_invoke_direct(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
+    bool execute_invoke_static(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
+    bool execute_invoke_interface(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
+    
+    // Opcode implementations — Returns
+    bool execute_return_void(uint32_t pc, InstructionTrace& trace);
+    bool execute_return(uint32_t pc, InstructionTrace& trace);
+    bool execute_return_object(uint32_t pc, InstructionTrace& trace);
+    
+    // Opcode implementations — Control flow
+    bool execute_goto(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_eqz(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_nez(uint32_t pc, InstructionTrace& trace);
+    
+    // Unimplemented handler
+    void handle_unimplemented(uint16_t opcode, uint32_t pc, InstructionTrace& trace);
+    
+    // Register access helpers
+    void set_register(uint8_t reg, const DalvikValue& value);
+    DalvikValue get_register(uint8_t reg) const;
+    std::string register_name(uint8_t reg) const;
+    
+    // API bridge
+    bool bridge_to_api(const std::string& class_name, const std::string& method,
+                       const std::vector<DalvikValue>& args, DalvikValue& result,
+                       ApiCallTrace::Status& status);
+    
+    // Utility
+    void log(const std::string& msg);
+    std::string to_hex(uint32_t val) const;
+    std::string to_hex16(uint16_t val) const;
+    int32_t read_signed_literal(uint16_t val) const;
+    std::string get_timestamp() const;
+    
+    // State
+    std::vector<uint16_t> bytecode_;
+    const dex::DexReport* dex_report_ = nullptr;
+    DexRegisterFile* current_registers_ = nullptr;
+    CallStack call_stack_;
+    DalvikHeap heap_;
+    
+    uint32_t pc_ = 0;
+    uint64_t instruction_sequence_ = 0;
+    uint64_t api_call_sequence_ = 0;
+    uint64_t object_sequence_ = 0;
+    
+    bool halted_ = false;
+    bool halted_on_return_ = false;
+    std::string halt_reason_;
+    std::string last_error_;
+    
+    DalvikExecutionResult* current_result_ = nullptr;
+    Config config_;
+    
+    bool verbose_ = false;
+};
+
+} // namespace dalvik
+} // namespace miniandroid
+
+#endif // MINIANDROID_REAL_DALVIK_ENGINE_H

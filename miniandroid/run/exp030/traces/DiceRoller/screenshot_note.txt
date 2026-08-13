@@ -1,0 +1,3 @@
+Screenshot saved as PPM: /home/z/my-project/miniandroid/run/exp030/traces/DiceRoller/screenshot.ppm
+Resolution: 1080x1920
+Convert to PNG using: convert /home/z/my-project/miniandroid/run/exp030/traces/DiceRoller/screenshot.ppm screenshot.png

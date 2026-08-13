@@ -1,0 +1,31 @@
+{
+  "apk_name": "HelloWorld.apk",
+  "sha256": "9d19787d14802a6ac6d26dc4963204592861c2f46f45a009710f297a804675da",
+  "max_depth": "DEX_PARSED",
+  "total_opcodes_executed": 0,
+  "unique_opcodes_used": [
+    "const-string",
+    "new-instance",
+    "invoke-direct",
+    "invoke-virtual",
+    "invoke-static",
+    "return-void",
+    "ALLOCATED",
+    "CONSTRUCTOR",
+    "API BRIDGE"
+  ],
+  "registers_modified": false,
+  "objects_allocated": 0,
+  "api_calls_made": 0,
+  "execution_time_ms": 95.69048881530762,
+  "opcode_breakdown": {},
+  "criteria_met": {
+    "dex_parsed": true,
+    "bytecode_extracted": true,
+    "opcodes_executed": false,
+    "registers_exist": false,
+    "execution_completed": true,
+    "evidence_generated": true
+  },
+  "exit_code": 0
+}
