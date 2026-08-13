@@ -1,0 +1,55 @@
+{
+  "calls": [
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Session started: EXP-001-20260813-055336-1232",
+      "method": "start_session",
+      "timestamp": 1786600416109
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading APK: /home/z/my-project/miniandroid/download/exp027_real_apks/WeatherNow.apk",
+      "method": "stage_load_apk",
+      "timestamp": 1786600416109
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Package: com.weathernow.app, Main Activity: com.weathernow.app.MainActivity",
+      "method": "stage_load_apk",
+      "timestamp": 1786600416109
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsing DEX files",
+      "method": "stage_parse_dex",
+      "timestamp": 1786600416109
+    },
+    {
+      "category": "ERROR",
+      "class": "DexParser",
+      "level": "ERROR",
+      "message": "[PARSE_ERROR] Invalid header size: 0",
+      "method": "parse",
+      "timestamp": 1786600416109
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating reports",
+      "method": "stage_generate_reports",
+      "timestamp": 1786600416109
+    }
+  ],
+  "generated_at": "2026-08-13 05:53:36 UTC",
+  "session_id": "EXP-001-20260813-055336-1232",
+  "total_calls": 6
+}
