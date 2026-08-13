@@ -1,9 +1,11 @@
 /*
  * MiniAndroid Runtime v0.1 - Execution Engine Implementation
  * EXP-001: HelloWorld Loader
+ * EXP-031.5: Real Dalvik Bytecode Execution Proof
  */
 
 #include "execution_engine.h"
+#include "../dex/trace_exporter.h"  // EXP-031.5: Mandatory trace generation
 
 #include <filesystem>
 #include <fstream>
@@ -49,7 +51,11 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     stage_generate_reports(result, config);
     
     // Determine final status
-    if (success && result.status == ExecutionStatus::SUCCESS) {
+    // EXP-031.5: Preserve FAILURE status from assertions - don't overwrite!
+    if (result.status == ExecutionStatus::FAILURE) {
+        // Keep the failure status and message from the assertion
+        result.status_message = result.status_message.empty() ? "Execution failed" : result.status_message;
+    } else if (success && result.status == ExecutionStatus::SUCCESS) {
         result.status_message = "Execution completed successfully";
     } else if (result.metrics.errors_count > 0) {
         result.status = ExecutionStatus::FAILURE;
@@ -224,30 +230,49 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         trace_engine_.info("DalvikEngine", "execute_apk",
                            "Heap objects: " + std::to_string(dalvik_result.heap.size()));
         
-        // Validate: Did we actually execute instructions?
-        if (dalvik_result.total_instructions_executed > 0) {
-            trace_engine_.info("ExecutionEngine", "validation",
-                               "✅ REAL EXECUTION CONFIRMED - " + 
-                               std::to_string(dalvik_result.total_instructions_executed) + " opcodes executed");
+        // ===================================================================
+        // EXP-031.5 HARD ASSERTION: Real execution MUST occur in REAL_DALVIK mode
+        // NO FALLBACK ALLOWED - Golden Debug Protocol
+        // ===================================================================
+        if (dalvik_result.total_instructions_executed == 0) {
+            // CRITICAL: No bytecode was executed!
+            std::string error_msg = "EXP-031.5 ASSERTION FAILED: REAL_DALVIK mode selected but ExecuteInstruction() was never called. "
+                                   "This means no actual Dalvik bytecode was executed. "
+                                   "Possible causes: (1) DEX parser did not extract method bytecode, "
+                                   "(2) No methods found matching entry point criteria, "
+                                   "(3) All methods had empty bytecode arrays. "
+                                   "Instructions expected: > 0, Actual: 0";
             
-            // Create content view from real execution results
-            // For now: use heuristic but mark as derived from real execution
-            if (dalvik_result.final_status == dalvik::DalvikExecutionResult::FinalStatus::COMPLETED_SUCCESS ||
-                dalvik_result.final_status == dalvik::DalvikExecutionResult::FinalStatus::COMPLETED_PARTIAL) {
-                result.content_view = create_view_from_dalvik_result(dalvik_result, result.dex_report);
-            }
-        } else {
-            trace_engine_.warning("ExecutionEngine", "validation",
-                                  "⚠️ No opcodes executed - engine ran but no methods had bytecode");
+            trace_engine_.record_error("REAL_EXECUTION_ASSERTION_FAIL", error_msg,
+                                       "ExecutionEngine", "stage_execute_application_real_dalvik");
             
-            // Fallback to basic view for visibility
-            result.content_view = create_hello_world_view(config);
+            // DO NOT FALLBACK TO FAKE SUCCESS - Fail honestly per Golden Debug Protocol
+            set_error(error_msg);
+            result.status = ExecutionStatus::FAILURE;
+            return false;
         }
         
-        // Execute lifecycle through API bridge (if not already done by engine)
+        // ===================================================================
+        // REAL EXECUTION CONFIRMED - Continue with evidence-based processing
+        // ===================================================================
+        trace_engine_.info("ExecutionEngine", "validation",
+                           "✅ REAL EXECUTION CONFIRMED - " + 
+                           std::to_string(dalvik_result.total_instructions_executed) + " opcodes executed");
+        trace_engine_.info("ExecutionEngine", "execution_source",
+                           "ExecutionSource = REAL_DALVIK_INTERPRETER (verified)");
+        
+        // Create content view from real execution results only
+        if (dalvik_result.final_status == dalvik::DalvikExecutionResult::FinalStatus::COMPLETED_SUCCESS ||
+            dalvik_result.final_status == dalvik::DalvikExecutionResult::FinalStatus::COMPLETED_PARTIAL) {
+            result.content_view = create_view_from_dalvik_result(dalvik_result, result.dex_report);
+        }
+        
+        // ===================================================================
+        // LIFECYCLE SOURCE VALIDATION (EXP-031.5 Golden Debug Protocol)
+        // ===================================================================
         api::Bundle* null_bundle = nullptr;
         
-        // Only call lifecycle if engine didn't already invoke it
+        // Check if lifecycle methods were invoked through DEX execution
         bool lifecycle_from_dex = false;
         for (const auto& api_trace : dalvik_result.api_call_traces) {
             std::string method_full = api_trace.api_class + "." + api_trace.method;
@@ -255,20 +280,69 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 method_full.find("onStart") != std::string::npos ||
                 method_full.find("onResume") != std::string::npos) {
                 lifecycle_from_dex = true;
+                trace_engine_.info("ExecutionEngine", "lifecycle_source",
+                                   "✅ Lifecycle method '" + method_full + "' from REAL_DALVIK_INTERPRETER");
                 break;
             }
         }
         
         if (!lifecycle_from_dex) {
-            // Mark these as HOST_SHORTCUT since they're not from DEX
+            // WARNING: Lifecycle not from DEX execution
+            // This is allowed for now but MUST be tracked as HOST_SHORTCUT
+            trace_engine_.warning("ExecutionEngine", "lifecycle_source",
+                                  "⚠️ Lifecycle (onCreate/onStart/onResume) NOT found in DEX execution traces. "
+                                  "Falling back to HOST_SHORTCUT lifecycle calls. "
+                                  "This means lifecycle events are NOT consequences of bytecode execution.");
+            
+            // Mark execution as PARTIAL_SUCCESS since lifecycle is fake
+            result.status = ExecutionStatus::PARTIAL_SUCCESS;
+            
+            // Still call lifecycle for visibility, but mark source clearly
             trace_engine_.info("ExecutionEngine", "lifecycle_fallback",
-                               "[HOST_SHORTCUT] Lifecycle called from C++ (not from DEX)");
+                               "[HOST_SHORTCUT] Calling onCreate/onStart/onResume from C++ (NOT from DEX)");
             result.activity->onCreate(null_bundle);
             result.activity->onStart();
             result.activity->onResume();
+        } else {
+            // Lifecycle fully from DEX - this is the goal!
+            trace_engine_.info("ExecutionEngine", "lifecycle_verified",
+                               "✅ All lifecycle events sourced from REAL_DALVIK_INTERPRETER");
+            result.status = ExecutionStatus::SUCCESS;
         }
         
-        result.status = ExecutionStatus::SUCCESS;
+        // ===================================================================
+        // EXP-031.5: GENERATE MANDATORY TRACE FILES (Golden Debug Protocol)
+        // Every real execution MUST produce evidence files
+        // ===================================================================
+        std::string trace_dir = config.output_directory + "/exp031_5/traces/" + 
+                               result.apk_info.package_name;
+        
+        trace_engine_.info("ExecutionEngine", "trace_export",
+                           "Generating mandatory trace files: " + trace_dir);
+        
+        bool traces_ok = dalvik::TraceExporter::export_all_traces(
+            dalvik_result,
+            trace_dir,
+            result.apk_info.apk_path
+        );
+        
+        if (traces_ok) {
+            trace_engine_.info("ExecutionEngine", "trace_export",
+                               "✅ Trace files generated successfully");
+            trace_engine_.info("ExecutionEngine", "trace_files",
+                               "  - opcode_trace.json");
+            trace_engine_.info("ExecutionEngine", "trace_files",
+                               "  - method_trace.json");
+            trace_engine_.info("ExecutionEngine", "trace_files",
+                               "  - register_trace.json");
+            trace_engine_.info("ExecutionEngine", "trace_files",
+                               "  - heap_trace.json");
+            trace_engine_.info("ExecutionEngine", "trace_files",
+                               "  - execution_summary.json (contains verdict)");
+        } else {
+            trace_engine_.warning("ExecutionEngine", "trace_export",
+                                  "⚠️ Failed to generate some trace files");
+        }
         
     } catch (const std::exception& e) {
         set_error("Dalvik execution error: " + std::string(e.what()));
