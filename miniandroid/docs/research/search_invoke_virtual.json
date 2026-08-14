@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://stackoverflow.com/questions/64808615/is-a-vtable-lookup-performed-when-indirectly-calling-a-virtual-method-in-a-non-o",
+    "name": "c++ - Is a vtable lookup performed when indirectly calling",
+    "snippet": "This question is a slightly more convoluted version of the this question which has been very well answered. In the semantics used in the answer, I'm referring ...",
+    "host_name": "stackoverflow.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://algomaster.io/learn/java/dynamic-method-dispatch",
+    "name": "Dynamic Method Dispatch | Java",
+    "snippet": "Jun 6, 2026 — Method Resolution in a Hierarchy For an instance method call, the JVM resolves it by walking from the actual class up toward Object and picking ...",
+    "host_name": "algomaster.io",
+    "rank": 1,
+    "date": "Jun 6, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://source.android.com/docs/core/runtime/dalvik-bytecode",
+    "name": "Dalvik bytecode format",
+    "snippet": "Jan 7, 2025 — invoke-virtual is used to invoke a normal virtual method . This instruction executes in two phases: call site resolution and call site ...",
+    "host_name": "source.android.com",
+    "rank": 2,
+    "date": "Jan 7, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.pnfsoftware.com/blog/android-o-and-dex-version-38-new-dalvik-opcodes-to-support-dynamic-invocation",
+    "name": "Android O and DEX 38: Dalvik Opcodes for Dynamic",
+    "snippet": "Jun 26, 2017 — the way to invoke code in Dalvik was through one of the 5 invocation instructions: invoke-virtual for virtual methods (Java's invokevirtual)",
+    "host_name": "www.pnfsoftware.com",
+    "rank": 3,
+    "date": "Jun 26, 2017",
+    "favicon": ""
+  },
+  {
+    "url": "http://mylifewithandroid.blogspot.com/2009/05/about-quick-method-invocation.html",
+    "name": "About quick method invocation",
+    "snippet": "May 13, 2009 — The vtable contains all the methods that can be invoked by invoke - virtual , that is all nonprivate member methods (even those final and native).",
+    "host_name": "mylifewithandroid.blogspot.com",
+    "rank": 4,
+    "date": "May 13, 2009",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@satyadirisala/demystifying-dynamic-dispatch-a-deep-dive-into-virtual-functions-vptr-and-vtable-9574c1ad9bed",
+    "name": "A Deep Dive into Virtual Functions, vptr, and vtable",
+    "snippet": "Dynamic dispatch is a mechanism by which a call to an overridden function (or method ) is resolved dynamically at runtime, rather than at compile",
+    "host_name": "medium.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "http://pallergabor.uw.hu/androidblog/dalvik_opcodes.html",
+    "name": "Dalvik opcodes",
+    "snippet": "Invokes the virtual method of the immediate parent class . The instruction specifies the first register and the number of registers to be passed to the method. Read more",
+    "host_name": "pallergabor.uw.hu",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.quora.com/How-exactly-does-JVM-implement-virtual-method-invocation",
+    "name": "How exactly does JVM implement virtual method invocation?",
+    "snippet": "How exactly does JVM implement virtual method invocation?",
+    "host_name": "www.quora.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "http://www.dre.vanderbilt.edu/~schmidt/android/android-4.0/dalvik/docs/dalvik-bytecode.html",
+    "name": "Bytecode for the Dalvik VM",
+    "snippet": "invoke-virtual is used to invoke a normal virtual method (a method that is not private , static , or final , and is also not a constructor). invoke-super is ... Read more",
+    "host_name": "www.dre.vanderbilt.edu",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  }
+]

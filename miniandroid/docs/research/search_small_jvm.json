@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://bzotto.medium.com/building-a-java-virtual-machine-how-hard-could-it-be-810a98d9c798",
+    "name": "Building a Java Virtual Machine: How hard could it be?",
+    "snippet": "Part 1 of a series discussing the joys and pitfalls (mostly pitfalls) of hacking together a minimal JVM in Javascript. Read more",
+    "host_name": "bzotto.medium.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/Compilers/comments/1e81yfc/minijvm_educational_implementation_of_a",
+    "name": "mini-jvm: Educational implementation of a simplified Java",
+    "snippet": "Educational implementation of a subset of the JVM bytecode to illustrate imperative and object-oriented programming.",
+    "host_name": "www.reddit.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.jmeiners.com/lc3-vm",
+    "name": "Write your Own Virtual Machine",
+    "snippet": "In this tutorial, I will teach you how to write your own virtual machine (VM) that can run assembly language programs, such as my friend's 2048 or my Roguelike.",
+    "host_name": "www.jmeiners.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://news.ycombinator.com/item?id=34936729",
+    "name": "Building a Minimalistic Virtual Machine",
+    "snippet": "Feb 25, 2023 — JVM is a specification which can be implemented . It is a simple stack-machine with 100+ basic instructions, a simple exception mechanism and a ...",
+    "host_name": "news.ycombinator.com",
+    "rank": 3,
+    "date": "Feb 25, 2023",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.quora.com/How-can-I-build-a-lightweight-Operating-system-with-Java-Just-for-learning-and-improving-my-programming",
+    "name": "How to build a lightweight Operating system with Java. Just",
+    "snippet": "How can I build a lightweight Operating system with Java. Just for learning and improving my programming.?",
+    "host_name": "www.quora.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/imkiva/KiVM",
+    "name": "imkiva/KiVM: 🌟This is a pure C++ implementation of Java",
+    "snippet": "This is a pure C++ implementation of Java Virtual Machine (only Java 8 is supported). Small and medium teams. Linux, macOS, or Windows(untested)",
+    "host_name": "github.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/2279229/how-can-a-jvm-be-written-in-java",
+    "name": "How can a JVM be written in Java",
+    "snippet": "I was briefly reading about Maxine which is an open source JVM implementation that written in Java. This sounds circular to me. If java requires a ...",
+    "host_name": "stackoverflow.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=OjaAToVkoTw",
+    "name": "How to Build a Virtual Machine",
+    "snippet": "Terence Parr gives an idea of the core mechanisms behind virtual machines by building one, in front of your eyes, from scratch .",
+    "host_name": "www.youtube.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://zenn.dev/peyang/articles/making-jvm-knowledges?locale=en",
+    "name": "A Guide for Everyone Who Wants to Build Their Own Java",
+    "snippet": "Sep 27, 2025 — A minimal JVM with basic features supports the entire JVM instruction set and implements essential functions such as method invocation, ... Read more",
+    "host_name": "zenn.dev",
+    "rank": 8,
+    "date": "Sep 27, 2025",
+    "favicon": ""
+  }
+]

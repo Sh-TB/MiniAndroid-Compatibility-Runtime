@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://source.android.com/docs/core/runtime/dalvik-bytecode",
+    "name": "Dalvik bytecode format",
+    "snippet": "Jan 7, 2025 — These opcodes are reasonable candidates for static linking, altering the field argument to be a more direct offset . , altering the field ...",
+    "host_name": "source.android.com",
+    "rank": 0,
+    "date": "Jan 7, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "http://www.dre.vanderbilt.edu/~schmidt/android/android-4.0/dalvik/docs/dalvik-bytecode.html",
+    "name": "Bytecode for the Dalvik VM",
+    "snippet": "These opcodes are reasonable candidates for static linking, altering the field argument to be a more direct offset .",
+    "host_name": "www.dre.vanderbilt.edu",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "http://pallergabor.uw.hu/androidblog/dalvik_opcodes.html",
+    "name": "Dalvik opcodes",
+    "snippet": "Puts the value stored in vx to offset in vy instance's data area6. Puts the object reference to offset 170H of the instance pointed by v5. area to vx6.",
+    "host_name": "pallergabor.uw.hu",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.slideshare.net/slideshow/understanding-the-dalvik-bytecode-with-the-dedexer-tool/2634903",
+    "name": "Understanding the Dalvik bytecode with the Dedexer tool",
+    "snippet": "Dec 2, 2009 — This document discusses the Dalvik virtual machine used in Android and how to decompile Dalvik bytecode using the Dedexer tool.",
+    "host_name": "www.slideshare.net",
+    "rank": 3,
+    "date": "Dec 2, 2009",
+    "favicon": ""
+  },
+  {
+    "url": "http://lim.univ-reunion.fr/staff/fred/Publications/14-PayetM-slides.pdf",
+    "name": "Non-termination of Dalvik bytecode via compilation to CLP",
+    "snippet": "▻ iget d,i,f (resp. iput s,i,f ). The content ri of register i must be 0 or a reference to an object o. If ri is 0, the computation stops with an exception. 27 pages",
+    "host_name": "lim.univ-reunion.fr",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.googlesource.com/platform/dalvik/+/kitkat-release/opcode-gen/bytecode.txt",
+    "name": "opcode-gen/bytecode.txt - platform/dalvik - Git at Google",
+    "snippet": "Each line consists of a # series of instruction formats ・ 2 + iget -quick 22cs y field - offset optimized|continue|throw ・ 5 + iput -quick 22cs n field - offset ...",
+    "host_name": "android.googlesource.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.scribd.com/document/769866886/Dalvik-opcodes",
+    "name": "Dalvik Opcodes | PDF | Integer (Computer Science)",
+    "snippet": "The offset can be positive or negative and it is calculated from the offset of the starting byte of the instruction. The offset is always interpreted in",
+    "host_name": "www.scribd.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/378774230_Efficient_Band_Offset_Calculation_Method_for_HEVC_and_Its_VLSI_Implementation",
+    "name": "Efficient Band Offset Calculation Method for HEVC and Its",
+    "snippet": "Mar 7, 2024 — The SAO involves classifying each sample into edge and band, calculates and adds appropriate offset values to the samples.",
+    "host_name": "www.researchgate.net",
+    "rank": 7,
+    "date": "Mar 7, 2024",
+    "favicon": ""
+  },
+  {
+    "url": "https://docs.rs/isa-classifier/latest/src/isa_classifier/architectures/dalvik.rs.html",
+    "name": "isa_classifier/architectures/ dalvik.rs",
+    "snippet": "1//! Dalvik VM bytecode analysis (Android). 2//! 3//! Dalvik uses a register-based architecture with 16-bit code units. 4//! Instructions range from 1 to 5 code ...",
+    "host_name": "docs.rs",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  }
+]

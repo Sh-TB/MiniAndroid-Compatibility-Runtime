@@ -2,6 +2,61 @@
 
 All notable changes to the MiniAndroid Runtime project.
 
+## [EXP-035.1] - 2026-08-14 — External Research & Solution Mining
+
+### ✅ Added
+
+#### Comprehensive Research Report
+- **`docs/EXP035_1_EXTERNAL_RESEARCH.md`** — 500+ line research document
+- Analysis of 30+ sources across 7 research categories
+
+#### Research Categories Completed
+| Category | Sources | Key Output |
+|----------|---------|------------|
+| DEX Parser Problems | AOSP, Androguard, Google Issues | code_off=0 valid for abstract/native |
+| Dalvik Interpreters | AOSP, DaliVM, Academic papers | Two-interpreter pattern standard |
+| Field Opcodes | Android docs, AOSP source | Static linking optimization details |
+| Method Dispatch | Multiple sources | Complete vtable algorithm documented |
+| Object Models | Dalvik, ART, JVM experts | Pre-computed offsets critical |
+| Existing Projects | DaliVM, KiVM, ReDex, mini-jvm | ~40-60 opcodes sufficient |
+| Compatibility Layers | Wine, ReactOS, QEMU | API translation approach |
+
+#### Critical Questions Answered
+1. **Why DEX parsers fail during execution**: class_data_item complexity, register mapping, method resolution gaps
+2. **How real Dalvik resolves fields**: field_id → class hierarchy search → byteOffset → object memory access
+3. **How invoke-virtual works**: Two-phase resolution (cached) + vtable dispatch (polymorphic)
+4. **Minimum runtime for Activity**: ~40-60 opcodes + basic object model + exception handling
+
+#### Important Discoveries (7 total)
+1. Two-interpreter pattern (portable + fast) is AOSP standard
+2. DaliVM proves Python-based Dalvik emulation viable
+3. Field resolution requires inheritance search (not simple lookup)
+4. VTable building during class loading is critical for polymorphism
+5. Optimized DEX uses iget-quick/invoke-quick variants
+6. Minimum viable runtime is smaller than expected
+7. Wine-style API translation more achievable than full emulation
+
+#### Raw Research Data
+- **`docs/research/`** directory with 15+ JSON search result files
+- Includes: DEX parser bugs, interpreter implementations, object models, invoke patterns
+
+### 📝 Modified
+
+#### Documentation
+- **README.md** — Updated to reflect EXP-035.1 as latest phase
+- **worklog.md** — Added comprehensive work log entry
+
+### 📋 Status
+
+**Research: ✅ COMPLETE**  
+**Implementation: ⏳ PENDING**  
+**Next: Apply recommendations to EXP-035 implementation phases**
+
+Risk Assessment: MEDIUM-HIGH (manageable with disciplined approach)  
+Confidence in Success: HIGH (given proven patterns from research)
+
+---
+
 ## [EXP-031.5] - 2026-08-14 — Real Dalvik Bytecode Execution Proof
 
 ### ✅ Added
