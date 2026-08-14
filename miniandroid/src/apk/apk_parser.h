@@ -156,6 +156,19 @@ public:
     
     // Extract to memory using pre-loaded data
     std::vector<uint8_t> extract_entry_from_memory(const std::vector<uint8_t>& apk_data, const std::string& entry_name);
+
+    // EXP-038 (BLOCKER-023): Extract using cached APK data.
+    // After parse() is called, the APK data and central directory entries
+    // are cached. This method uses the cache for O(1) entry lookup instead
+    // of re-parsing the entire central directory on every extraction.
+    // Returns empty vector if entry not found or if parse() was never called.
+    std::vector<uint8_t> extract_entry_cached(const std::string& entry_name);
+    
+    // EXP-038 (BLOCKER-023): Check if cached APK data is available.
+    bool has_cached_data() const { return !cached_apk_data_.empty(); }
+    
+    // EXP-038 (BLOCKER-024): Get list of DEX files found during parse.
+    const std::vector<std::string>& get_cached_dex_files() const { return cached_dex_files_; }
     
     // List all entries in APK
     std::vector<ZipEntry> list_entries(const std::string& path);
@@ -198,6 +211,14 @@ private:
     
     std::string last_error_;
     bool verbose_ = false;
+
+    // EXP-038 (BLOCKER-023): Cached APK data for fast entry extraction.
+    // After parse() is called, the entire APK file data is kept in memory
+    // and the central directory entries are cached in a map for O(1) lookup.
+    // This avoids re-parsing 11,531 ZIP entries on every extract_entry call.
+    std::vector<uint8_t> cached_apk_data_;
+    std::map<std::string, ZipEntry> cached_entries_;
+    std::vector<std::string> cached_dex_files_;  // EXP-038 (BLOCKER-024)
 };
 
 } // namespace apk
