@@ -8,7 +8,7 @@
 
 - **Result:** **PASS**
 - **Final State:** `COMPLETED`
-- **Duration:** 2069.45ms
+- **Duration:** 2678.14ms
 - **APK:** `download/exp038_telegram/Telegram.apk`
 
 ## Milestone Status
@@ -61,8 +61,8 @@ All evidence written to: `run/exp038_telegram//`
 
 ## Statistics
 
-- **API Calls Recorded:** 125
-- **Unique APIs in Database:** 90
+- **API Calls Recorded:** 18
+- **Unique APIs in Database:** 18
 - **Method Dispatches:** 1
 - **Failures:** 2
 - **State Transitions:** 12
