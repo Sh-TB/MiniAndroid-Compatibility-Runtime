@@ -1,0 +1,188 @@
+{
+  "validation_run": {
+    "timestamp": "2026-08-14T12:18:37.772456",
+    "experiment": "EXP-034",
+    "phase": "PHASE_4_VTABLE_DISPATCH",
+    "total_tests": 4,
+    "passed": 4,
+    "failed": 0,
+    "success_rate": 100.0
+  },
+  "test_results": [
+    {
+      "test_name": "Method Resolution",
+      "status": "PASS",
+      "details": {
+        "resolved_index": 0,
+        "expected_index": 0,
+        "eat_resolved": true
+      },
+      "errors": []
+    },
+    {
+      "test_name": "Polymorphic Dispatch",
+      "status": "PASS",
+      "details": {
+        "same_vtable_index_used": true,
+        "animal_result": "...generic animal noise...",
+        "dog_result": "Woof! Woof!",
+        "cat_result": "Meow~",
+        "dog_was_override": true,
+        "cat_was_override": true
+      },
+      "errors": [],
+      "invocations": [
+        {
+          "caller": {
+            "class": "LDemo;",
+            "method": "main"
+          },
+          "invocation": {
+            "opcode": "invoke-virtual",
+            "method": "speak"
+          },
+          "resolution": {
+            "target_class": "LAnimal;",
+            "is_override": false,
+            "vtable_index": 0
+          },
+          "result": {
+            "success": true,
+            "return_value": "...generic animal noise...",
+            "error": ""
+          }
+        },
+        {
+          "caller": {
+            "class": "LDemo;",
+            "method": "main"
+          },
+          "invocation": {
+            "opcode": "invoke-virtual",
+            "method": "speak"
+          },
+          "resolution": {
+            "target_class": "LDog;",
+            "is_override": true,
+            "vtable_index": 0
+          },
+          "result": {
+            "success": true,
+            "return_value": "Woof! Woof!",
+            "error": ""
+          }
+        },
+        {
+          "caller": {
+            "class": "LDemo;",
+            "method": "main"
+          },
+          "invocation": {
+            "opcode": "invoke-virtual",
+            "method": "speak"
+          },
+          "resolution": {
+            "target_class": "LCat;",
+            "is_override": true,
+            "vtable_index": 0
+          },
+          "result": {
+            "success": true,
+            "return_value": "Meow~",
+            "error": ""
+          }
+        }
+      ]
+    },
+    {
+      "test_name": "Direct Call Bypass",
+      "status": "PASS",
+      "details": {
+        "init_found": true,
+        "helper_found": true,
+        "was_marked_override": false
+      },
+      "errors": []
+    },
+    {
+      "test_name": "Invocation Trace Collection",
+      "status": "PASS",
+      "details": {
+        "total_traced": 3,
+        "successful_calls": 2,
+        "failed_calls": 1,
+        "all_have_timing": true,
+        "failures_recorded": true
+      },
+      "trace": {
+        "total_invocations": 3,
+        "successful": 2,
+        "failed": 1,
+        "entries": [
+          {
+            "caller": {
+              "class": "LClient;",
+              "method": "run"
+            },
+            "invocation": {
+              "opcode": "invoke-virtual",
+              "method": "doWork"
+            },
+            "resolution": {
+              "target_class": "LDerived;",
+              "is_override": true,
+              "vtable_index": 0
+            },
+            "result": {
+              "success": true,
+              "return_value": "None",
+              "error": ""
+            }
+          },
+          {
+            "caller": {
+              "class": "LClient;",
+              "method": "init"
+            },
+            "invocation": {
+              "opcode": "invoke-direct",
+              "method": "<init>"
+            },
+            "resolution": {
+              "target_class": "LDerived;",
+              "is_override": false,
+              "vtable_index": -1
+            },
+            "result": {
+              "success": true,
+              "return_value": "None",
+              "error": ""
+            }
+          },
+          {
+            "caller": {
+              "class": "LClient;",
+              "method": "run"
+            },
+            "invocation": {
+              "opcode": "invoke-virtual",
+              "method": ""
+            },
+            "resolution": {
+              "target_class": "",
+              "is_override": false,
+              "vtable_index": 99
+            },
+            "result": {
+              "success": false,
+              "return_value": "None",
+              "error": "VTable index out of bounds"
+            }
+          }
+        ]
+      },
+      "errors": []
+    }
+  ],
+  "conclusion": "PASS"
+}
