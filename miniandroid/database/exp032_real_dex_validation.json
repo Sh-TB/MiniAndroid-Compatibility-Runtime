@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "experiment": "EXP-032",
+    "phase": "PHASE_1_DEX_VALIDATION",
+    "generated_at": "2026-08-14T07:43:01.426153",
+    "tool_version": "1.0.0",
+    "description": "Real DEX file validation against MiniAndroid parser"
+  },
+  "summary": {
+    "total_files_processed": 0,
+    "total_passed": 0,
+    "total_failed": 0,
+    "total_warnings": 0,
+    "skipped": 0,
+    "errors": 0,
+    "code_item_passes": 0,
+    "code_item_fails": 0
+  },
+  "results": [],
+  "golden_debug_rules_applied": [
+    "Every PASS requires evidence",
+    "No PASS without actual data",
+    "All failures classified with root cause hypothesis"
+  ]
+}
