@@ -297,6 +297,7 @@ private:
     int depth_ = 0;
     bool in_activity_ = false;
     std::string current_activity_name_;
+    std::string current_activity_target_;  // EXP-038: targetActivity for activity-alias
     bool activity_has_main_action_ = false;
     bool activity_has_launcher_category_ = false;
     
