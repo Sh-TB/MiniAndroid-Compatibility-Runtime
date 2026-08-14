@@ -15,6 +15,8 @@
 
 #include "dex_parser.h"
 #include "class_resolver.h"
+#include "../runtime/runtime_metadata.h"
+#include "../runtime/vtable_dispatch.h"
 #include "../api/android_stubs.h"
 #include <string>
 #include <vector>
@@ -22,6 +24,7 @@
 #include <stack>
 #include <memory>
 #include <cstdint>
+#include <optional>
 #include <functional>
 #include <sstream>
 #include <iomanip>
@@ -78,6 +81,38 @@ namespace Opcode {
     constexpr uint16_t CHECK_CAST = 0x1F;    // check-cast vAA, type@BBBB
     constexpr uint16_t NEW_INSTANCE = 0x22;  // new-instance vAA, type@BBBB
     constexpr uint16_t ARRAY_LENGTH = 0x21;  // array-length vA, vB
+    
+    // Instance Field Operations (EXP-035: Field System Integration)
+    constexpr uint16_t IGET = 0x52;          // iget vA, vB, field@CCCC
+    constexpr uint16_t IGET_WIDE = 0x53;     // iget-wide vA, vB, field@CCCC
+    constexpr uint16_t IGET_OBJECT = 0x54;   // iget-object vA, vB, field@CCCC
+    constexpr uint16_t IGET_BOOLEAN = 0x55;  // iget-boolean vA, vB, field@CCCC
+    constexpr uint16_t IGET_BYTE = 0x56;     // iget-byte vA, vB, field@CCCC
+    constexpr uint16_t IGET_CHAR = 0x57;     // iget-char vA, vB, field@CCCC
+    constexpr uint16_t IGET_SHORT = 0x58;    // iget-short vA, vB, field@CCCC
+    constexpr uint16_t IPUT = 0x59;          // iput vA, vB, field@CCCC
+    constexpr uint16_t IPUT_WIDE = 0x5A;     // iput-wide vA, vB, field@CCCC
+    constexpr uint16_t IPUT_OBJECT = 0x5B;   // iput-object vA, vB, field@CCCC
+    constexpr uint16_t IPUT_BOOLEAN = 0x5C;  // iput-boolean vA, vB, field@CCCC
+    constexpr uint16_t IPUT_BYTE = 0x5D;     // iput-byte vA, vB, field@CCCC
+    constexpr uint16_t IPUT_CHAR = 0x5E;     // iput-char vA, vB, field@CCCC
+    constexpr uint16_t IPUT_SHORT = 0x5F;    // iput-short vA, vB, field@CCCC
+    
+    // Static Field Operations (EXP-035: Static Field Integration)
+    constexpr uint16_t SGET = 0x60;          // sget vAA, field@BBBB
+    constexpr uint16_t SGET_WIDE = 0x61;     // sget-wide vAA, field@BBBB
+    constexpr uint16_t SGET_OBJECT = 0x62;   // sget-object vAA, field@BBBB
+    constexpr uint16_t SGET_BOOLEAN = 0x63;  // sget-boolean vAA, field@BBBB
+    constexpr uint16_t SGET_BYTE = 0x64;     // sget-byte vAA, field@BBBB
+    constexpr uint16_t SGET_CHAR = 0x65;     // sget-char vAA, field@BBBB
+    constexpr uint16_t SGET_SHORT = 0x66;    // sget-short vAA, field@BBBB
+    constexpr uint16_t SPUT = 0x67;          // sput vAA, field@BBBB
+    constexpr uint16_t SPUT_WIDE = 0x68;     // sput-wide vAA, field@BBBB
+    constexpr uint16_t SPUT_OBJECT = 0x69;   // sput-object vAA, field@BBBB
+    constexpr uint16_t SPUT_BOOLEAN = 0x6A;  // sput-boolean vAA, field@BBBB
+    constexpr uint16_t SPUT_BYTE = 0x6B;     // sput-byte vAA, field@BBBB
+    constexpr uint16_t SPUT_CHAR = 0x6C;     // sput-char vAA, field@BBBB
+    constexpr uint16_t SPUT_SHORT = 0x6D;    // sput-short vAA, field@BBBB
     
     // Invokes (7 core opcodes)
     constexpr uint16_t INVOKE_VIRTUAL = 0x6E;    // invoke-virtual {vC..}, method@BBBB
@@ -476,6 +511,33 @@ public:
         for (const auto& pair : objects_) ids.push_back(pair.first);
         return ids;
     }
+    
+    // EXP-035: Field access helpers
+    bool has_object(uint32_t id) const {
+        return objects_.find(id) != objects_.end();
+    }
+    
+    std::optional<DalvikValue> get_object_field(uint32_t object_id, const std::string& field_name) const {
+        auto it = objects_.find(object_id);
+        if (it == objects_.end()) {
+            return std::nullopt;
+        }
+        
+        DalvikValue val = it->second.get_field(field_name);
+        if (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET) {
+            return std::nullopt;
+        }
+        return val;
+    }
+    
+    bool set_object_field(uint32_t object_id, const std::string& field_name, const DalvikValue& value) {
+        auto it = objects_.find(object_id);
+        if (it == objects_.end()) {
+            return false;
+        }
+        it->second.set_field(field_name, value);
+        return true;
+    }
 
 private:
     std::map<uint32_t, HeapObject> objects_;
@@ -827,6 +889,30 @@ private:
     bool execute_check_cast(uint32_t pc, InstructionTrace& trace);
     bool execute_instance_of(uint32_t pc, InstructionTrace& trace);
     
+    // EXP-035: Field System Integration - Instance Field Operations
+    bool execute_iget(uint32_t pc, InstructionTrace& trace);
+    bool execute_iget_object(uint32_t pc, InstructionTrace& trace);
+    bool execute_iput(uint32_t pc, InstructionTrace& trace);
+    bool execute_iput_object(uint32_t pc, InstructionTrace& trace);
+    
+    // EXP-035: Field System Integration - Static Field Operations  
+    bool execute_sget(uint32_t pc, InstructionTrace& trace);
+    bool execute_sget_object(uint32_t pc, InstructionTrace& trace);
+    bool execute_sput(uint32_t pc, InstructionTrace& trace);
+    bool execute_sput_object(uint32_t pc, InstructionTrace& trace);
+    
+    // EXP-035: Field resolution helper (connects to runtime_metadata.h)
+    struct FieldResolution {
+        std::string class_descriptor;
+        std::string field_name;
+        std::string field_type;
+        uint32_t field_offset = 0;
+        bool is_static = false;
+        bool resolved = false;
+        std::string error_message;
+    };
+    FieldResolution resolve_field(uint16_t field_idx);
+    
     // Opcode implementations — Invokes
     bool execute_invoke_virtual(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
     bool execute_invoke_direct(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
@@ -870,10 +956,21 @@ private:
     CallStack call_stack_;
     DalvikHeap heap_;
     
+    // EXP-035: Field System State
+    std::map<std::string, runtime::DalvikValue> static_field_storage_;  // key: "class_descriptor.field_name"
+    std::map<std::string, std::shared_ptr<runtime::RuntimeClassInfo>> class_info_cache_;  // cached class metadata
+    
+    // EXP-035: VTable Dispatch State
+    runtime::VirtualDispatcher vtable_dispatcher_;  // VTable-based method resolution
+    
     uint32_t pc_ = 0;
     uint64_t instruction_sequence_ = 0;
     uint64_t api_call_sequence_ = 0;
     uint64_t object_sequence_ = 0;
+    
+    // EXP-035: Current execution context (for VTable evidence)
+    std::string current_class_ = "<unknown>";
+    std::string current_method_ = "<unknown>";
     
     bool halted_ = false;
     bool halted_on_return_ = false;

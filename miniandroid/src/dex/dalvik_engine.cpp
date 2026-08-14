@@ -441,6 +441,42 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 trace.opcode_name = "instance-of";
                 break;
             
+            // EXP-035: Instance Field Operations
+            case Opcode::IGET:
+                success = execute_iget(pc_, trace);
+                trace.opcode_name = "iget";
+                break;
+            case Opcode::IGET_OBJECT:
+                success = execute_iget_object(pc_, trace);
+                trace.opcode_name = "iget-object";
+                break;
+            case Opcode::IPUT:
+                success = execute_iput(pc_, trace);
+                trace.opcode_name = "iput";
+                break;
+            case Opcode::IPUT_OBJECT:
+                success = execute_iput_object(pc_, trace);
+                trace.opcode_name = "iput-object";
+                break;
+            
+            // EXP-035: Static Field Operations
+            case Opcode::SGET:
+                success = execute_sget(pc_, trace);
+                trace.opcode_name = "sget";
+                break;
+            case Opcode::SGET_OBJECT:
+                success = execute_sget_object(pc_, trace);
+                trace.opcode_name = "sget-object";
+                break;
+            case Opcode::SPUT:
+                success = execute_sput(pc_, trace);
+                trace.opcode_name = "sput";
+                break;
+            case Opcode::SPUT_OBJECT:
+                success = execute_sput_object(pc_, trace);
+                trace.opcode_name = "sput-object";
+                break;
+            
             // Invokes
             case Opcode::INVOKE_VIRTUAL:
                 success = execute_invoke_virtual(pc_, trace, result);
@@ -837,19 +873,513 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
 }
 
 // ============================================================================
+// EXP-035: OPCODE IMPLEMENTATIONS — Field Operations
+// ============================================================================
+
+DalvikExecutionEngine::FieldResolution DalvikExecutionEngine::resolve_field(uint16_t field_idx) {
+    FieldResolution resolution;
+    
+    if (!dex_report_ || field_idx >= dex_report_->fields.size()) {
+        resolution.error_message = "Field index out of range or no DEX report";
+        log("❌ FIELD RESOLUTION FAILED: " + resolution.error_message);
+        return resolution;
+    }
+    
+    const auto& field = dex_report_->fields[field_idx];
+    resolution.class_descriptor = field.class_descriptor;
+    resolution.field_name = field.name;
+    resolution.field_type = field.type_descriptor;
+    resolution.resolved = true;
+    
+    // Try to get offset from runtime metadata if available
+    auto class_it = class_info_cache_.find(field.class_descriptor);
+    if (class_it != class_info_cache_.end() && class_it->second) {
+        const auto& class_info = *(class_it->second);
+        for (const auto& inst_field : class_info.instance_fields) {
+            if (inst_field.name == field.name) {
+                resolution.field_offset = inst_field.byte_offset;
+                break;
+            }
+        }
+        resolution.is_static = false;
+    } else {
+        // Check if it's a static field by convention
+        // In DEX, we'd need to check class_def static_fields, but for now use heuristic
+        resolution.is_static = false;  // Default to instance field
+    }
+    
+    log("✅ FIELD RESOLVED: " + field.class_descriptor + "." + field.name + 
+        " offset=" + std::to_string(resolution.field_offset) +
+        " type=" + field.type_descriptor);
+    
+    return resolution;
+}
+
+bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
+    // Format: 22c iget vA, vB, field@CCCC
+    // Read instance field from object and place in destination register
+    if (pc + 2 >= bytecode_.size()) return false;
+    
+    uint16_t instr = bytecode_[pc];
+    uint8_t dest_reg = (instr >> 8) & 0xFF;   // vA - destination
+    uint8_t obj_reg = instr & 0xFF;           // vB - object reference
+    uint16_t field_idx = bytecode_[pc + 2];   // CCCC - field index
+    
+    // Resolve field from DEX
+    FieldResolution field_res = resolve_field(field_idx);
+    if (!field_res.resolved) {
+        trace.halt_reason = "Failed to resolve field index " + std::to_string(field_idx);
+        return false;
+    }
+    
+    // Get object reference from register
+    DalvikValue obj_ref = get_register(obj_reg);
+    if (obj_ref.type != DalvikType::OBJECT_REF && obj_ref.type != DalvikType::NULL_REF) {
+        trace.halt_reason = "iget: register v" + std::to_string(obj_reg) + 
+                            " is not an object reference (type=" + 
+                            std::to_string(static_cast<int>(obj_ref.type)) + ")";
+        log("❌ IGET ERROR: " + trace.halt_reason);
+        return false;
+    }
+    
+    DalvikValue result_value;
+    result_value.type = DalvikType::INT32;
+    result_value.int_val = 0;  // Default value
+    
+    if (obj_ref.type == DalvikType::OBJECT_REF) {
+        // Look up field in object heap
+        // For EXP-035, we use a simplified field access pattern
+        // In full implementation, this would use field_res.field_offset
+        std::string field_key = std::to_string(obj_ref.object_id) + "." + field_res.field_name;
+        
+        // Try to get field from heap's object field storage
+        if (heap_.has_object(obj_ref.object_id)) {
+            // Get field value from object (simplified - using heap storage)
+            auto field_val = heap_.get_object_field(obj_ref.object_id, field_res.field_name);
+            if (field_val.has_value()) {
+                result_value = field_val.value();
+                log("✅ IGET: obj=" + std::to_string(obj_ref.object_id) + 
+                    " field=" + field_res.field_name + 
+                    " value=" + result_value.to_string());
+            } else {
+                log("⚠️ IGET: field not found in object, using default");
+            }
+        } else {
+            trace.halt_reason = "iget: object " + std::to_string(obj_ref.object_id) + " not in heap";
+            log("❌ IGET ERROR: " + trace.halt_reason);
+            return false;
+        }
+    } else {
+        // Null reference - would cause NullPointerException in real Dalvik
+        log("⚠️ IGET: null object reference (would be NullPointerException)");
+        result_value = DalvikValue::make_int(0);  // Return default for null
+    }
+    
+    set_register(dest_reg, result_value);
+    
+    // Build evidence trace with ExecutionSource tag
+    trace.operands.push_back({"v" + std::to_string(dest_reg), "destination"});
+    trace.operands.push_back({"v" + std::to_string(obj_reg), "object"});
+    trace.operands.push_back({"field", field_res.class_descriptor + "." + field_res.field_name});
+    trace.operands.push_back({"offset", std::to_string(field_res.field_offset)});
+    trace.operands.push_back({"value", result_value.to_string()});
+    trace.operands.push_back({"object_ref", std::to_string(obj_ref.object_id)});
+    trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});  // MANDATORY EVIDENCE TAG
+    
+    pc_ = pc + 3;
+    return true;
+}
+
+bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& trace) {
+    // Format: 22c iget-object vA, vB, field@CCCC
+    // Read object field from object and place reference in destination register
+    if (pc + 2 >= bytecode_.size()) return false;
+    
+    uint16_t instr = bytecode_[pc];
+    uint8_t dest_reg = (instr >> 8) & 0xFF;   // vA - destination
+    uint8_t obj_reg = instr & 0xFF;           // vB - object reference
+    uint16_t field_idx = bytecode_[pc + 2];   // CCCC - field index
+    
+    // Resolve field from DEX
+    FieldResolution field_res = resolve_field(field_idx);
+    if (!field_res.resolved) {
+        trace.halt_reason = "Failed to resolve field index " + std::to_string(field_idx);
+        return false;
+    }
+    
+    // Get object reference from register
+    DalvikValue obj_ref = get_register(obj_reg);
+    if (obj_ref.type != DalvikType::OBJECT_REF && obj_ref.type != DalvikType::NULL_REF) {
+        trace.halt_reason = "iget-object: register v" + std::to_string(obj_reg) + 
+                            " is not an object reference";
+        log("❌ IGET-OBJECT ERROR: " + trace.halt_reason);
+        return false;
+    }
+    
+    DalvikValue result_value;
+    result_value.type = DalvikType::NULL_REF;
+    result_value.object_id = 0;
+    
+    if (obj_ref.type == DalvikType::OBJECT_REF) {
+        // Look up object field from heap
+        if (heap_.has_object(obj_ref.object_id)) {
+            auto field_val = heap_.get_object_field(obj_ref.object_id, field_res.field_name);
+            if (field_val.has_value()) {
+                result_value = field_val.value();
+                if (result_value.type != DalvikType::OBJECT_REF && 
+                    result_value.type != DalvikType::NULL_REF &&
+                    result_value.type != DalvikType::STRING_REF) {
+                    // Convert to object reference if needed
+                    result_value.type = DalvikType::OBJECT_REF;
+                }
+                log("✅ IGET-OBJECT: obj=" + std::to_string(obj_ref.object_id) + 
+                    " field=" + field_res.field_name + 
+                    " value=" + result_value.to_string());
+            } else {
+                log("⚠️ IGET-OBJECT: field not found, returning null");
+            }
+        } else {
+            trace.halt_reason = "iget-object: object not in heap";
+            log("❌ IGET-OBJECT ERROR: " + trace.halt_reason);
+            return false;
+        }
+    } else {
+        log("⚠️ IGET-OBJECT: null object reference");
+    }
+    
+    set_register(dest_reg, result_value);
+    
+    // Evidence trace with ExecutionSource
+    trace.operands.push_back({"v" + std::to_string(dest_reg), "destination"});
+    trace.operands.push_back({"v" + std::to_string(obj_reg), "object"});
+    trace.operands.push_back({"field", field_res.class_descriptor + "." + field_res.field_name});
+    trace.operands.push_back({"offset", std::to_string(field_res.field_offset)});
+    trace.operands.push_back({"value", result_value.to_string()});
+    trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
+    
+    pc_ = pc + 3;
+    return true;
+}
+
+bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
+    // Format: 22c iput vA, vB, field@CCCC
+    // Store int value to instance field of object
+    if (pc + 2 >= bytecode_.size()) return false;
+    
+    uint16_t instr = bytecode_[pc];
+    uint8_t src_reg = (instr >> 8) & 0xFF;    // vA - source value
+    uint8_t obj_reg = instr & 0xFF;           // vB - object reference
+    uint16_t field_idx = bytecode_[pc + 2];   // CCCC - field index
+    
+    // Resolve field from DEX
+    FieldResolution field_res = resolve_field(field_idx);
+    if (!field_res.resolved) {
+        trace.halt_reason = "Failed to resolve field index " + std::to_string(field_idx);
+        return false;
+    }
+    
+    // Get value to store
+    DalvikValue src_val = get_register(src_reg);
+    
+    // Get object reference
+    DalvikValue obj_ref = get_register(obj_reg);
+    if (obj_ref.type != DalvikType::OBJECT_REF && obj_ref.type != DalvikType::NULL_REF) {
+        trace.halt_reason = "iput: register v" + std::to_string(obj_reg) + 
+                            " is not an object reference";
+        log("❌ IPUT ERROR: " + trace.halt_reason);
+        return false;
+    }
+    
+    if (obj_ref.type == DalvikType::OBJECT_REF) {
+        if (heap_.has_object(obj_ref.object_id)) {
+            // Store field in object (using heap's field storage)
+            bool success = heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
+            if (success) {
+                log("✅ IPUT: obj=" + std::to_string(obj_ref.object_id) + 
+                    " field=" + field_res.field_name + 
+                    " value=" + src_val.to_string());
+            } else {
+                log("⚠️ IPUT: failed to store field");
+            }
+        } else {
+            trace.halt_reason = "iput: object not in heap";
+            log("❌ IPUT ERROR: " + trace.halt_reason);
+            return false;
+        }
+    } else {
+        log("⚠️ IPUT: null object reference (NullPointerException in real Dalvik)");
+    }
+    
+    // Evidence trace with ExecutionSource
+    trace.operands.push_back({"v" + std::to_string(src_reg), "source"});
+    trace.operands.push_back({"v" + std::to_string(obj_reg), "object"});
+    trace.operands.push_back({"field", field_res.class_descriptor + "." + field_res.field_name});
+    trace.operands.push_back({"offset", std::to_string(field_res.field_offset)});
+    trace.operands.push_back({"value", src_val.to_string()});
+    trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
+    
+    pc_ = pc + 3;
+    return true;
+}
+
+bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& trace) {
+    // Format: 22c iput-object vA, vB, field@CCCC
+    // Store object reference to instance field of object
+    if (pc + 2 >= bytecode_.size()) return false;
+    
+    uint16_t instr = bytecode_[pc];
+    uint8_t src_reg = (instr >> 8) & 0xFF;    // vA - source value (object ref)
+    uint8_t obj_reg = instr & 0xFF;           // vB - object reference
+    uint16_t field_idx = bytecode_[pc + 2];   // CCCC - field index
+    
+    // Resolve field from DEX
+    FieldResolution field_res = resolve_field(field_idx);
+    if (!field_res.resolved) {
+        trace.halt_reason = "Failed to resolve field index " + std::to_string(field_idx);
+        return false;
+    }
+    
+    // Get object reference to store
+    DalvikValue src_val = get_register(src_reg);
+    
+    // Get target object
+    DalvikValue obj_ref = get_register(obj_reg);
+    if (obj_ref.type != DalvikType::OBJECT_REF && obj_ref.type != DalvikType::NULL_REF) {
+        trace.halt_reason = "iput-object: target is not an object reference";
+        log("❌ IPUT-OBJECT ERROR: " + trace.halt_reason);
+        return false;
+    }
+    
+    if (obj_ref.type == DalvikType::OBJECT_REF) {
+        if (heap_.has_object(obj_ref.object_id)) {
+            bool success = heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
+            if (success) {
+                log("✅ IPUT-OBJECT: obj=" + std::to_string(obj_ref.object_id) + 
+                    " field=" + field_res.field_name + 
+                    " value=" + src_val.to_string());
+            } else {
+                log("⚠️ IPUT-OBJECT: failed to store field");
+            }
+        } else {
+            trace.halt_reason = "iput-object: target object not in heap";
+            log("❌ IPUT-OBJECT ERROR: " + trace.halt_reason);
+            return false;
+        }
+    } else {
+        log("⚠️ IPUT-OBJECT: null target object");
+    }
+    
+    // Evidence trace with ExecutionSource
+    trace.operands.push_back({"v" + std::to_string(src_reg), "source"});
+    trace.operands.push_back({"v" + std::to_string(obj_reg), "target"});
+    trace.operands.push_back({"field", field_res.class_descriptor + "." + field_res.field_name});
+    trace.operands.push_back({"offset", std::to_string(field_res.field_offset)});
+    trace.operands.push_back({"value", src_val.to_string()});
+    trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
+    
+    pc_ = pc + 3;
+    return true;
+}
+
+// EXP-035: Static Field Operations
+
+bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
+    // Format: 21c sget vAA, field@BBBB
+    // Read static field value into register
+    if (pc + 1 >= bytecode_.size()) return false;
+    
+    uint16_t instr = bytecode_[pc];
+    uint8_t dest_reg = (instr >> 8) & 0xFF;   // vAA - destination
+    uint16_t field_idx = bytecode_[pc + 1];   // BBBB - field index
+    
+    // Resolve field from DEX
+    FieldResolution field_res = resolve_field(field_idx);
+    if (!field_res.resolved) {
+        trace.halt_reason = "Failed to resolve static field index " + std::to_string(field_idx);
+        return false;
+    }
+    
+    field_res.is_static = true;
+    
+    // Build static field key
+    std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
+    
+    // Look up in static field storage
+    DalvikValue result_value;
+    result_value.type = DalvikType::INT32;
+    result_value.int_val = 0;  // Default for primitive fields
+    
+    auto it = static_field_storage_.find(static_key);
+    if (it != static_field_storage_.end()) {
+        result_value = it->second;
+        log("✅ SGET: " + static_key + " = " + result_value.to_string());
+    } else {
+        log("⚠️ SGET: static field " + static_key + " not initialized, using default");
+        // Initialize with default
+        static_field_storage_[static_key] = result_value;
+    }
+    
+    set_register(dest_reg, result_value);
+    
+    // Evidence trace with ExecutionSource
+    trace.operands.push_back({"v" + std::to_string(dest_reg), "destination"});
+    trace.operands.push_back({"static_field", static_key});
+    trace.operands.push_back({"class", field_res.class_descriptor});
+    trace.operands.push_back({"field", field_res.field_name});
+    trace.operands.push_back({"value", result_value.to_string()});
+    trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
+    
+    pc_ = pc + 2;
+    return true;
+}
+
+bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& trace) {
+    // Format: 21c sget-object vAA, field@BBBB
+    // Read static object field into register
+    if (pc + 1 >= bytecode_.size()) return false;
+    
+    uint16_t instr = bytecode_[pc];
+    uint8_t dest_reg = (instr >> 8) & 0xFF;   // vAA - destination
+    uint16_t field_idx = bytecode_[pc + 1];   // BBBB - field index
+    
+    // Resolve field from DEX
+    FieldResolution field_res = resolve_field(field_idx);
+    if (!field_res.resolved) {
+        trace.halt_reason = "Failed to resolve static field index " + std::to_string(field_idx);
+        return false;
+    }
+    
+    field_res.is_static = true;
+    
+    // Build static field key
+    std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
+    
+    // Look up in static field storage
+    DalvikValue result_value;
+    result_value.type = DalvikType::NULL_REF;
+    result_value.object_id = 0;
+    
+    auto it = static_field_storage_.find(static_key);
+    if (it != static_field_storage_.end()) {
+        result_value = it->second;
+        log("✅ SGET-OBJECT: " + static_key + " = " + result_value.to_string());
+    } else {
+        log("⚠️ SGET-OBJECT: static field " + static_key + " not initialized, using null");
+        static_field_storage_[static_key] = result_value;
+    }
+    
+    set_register(dest_reg, result_value);
+    
+    // Evidence trace with ExecutionSource
+    trace.operands.push_back({"v" + std::to_string(dest_reg), "destination"});
+    trace.operands.push_back({"static_field", static_key});
+    trace.operands.push_back({"class", field_res.class_descriptor});
+    trace.operands.push_back({"field", field_res.field_name});
+    trace.operands.push_back({"value", result_value.to_string()});
+    trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
+    
+    pc_ = pc + 2;
+    return true;
+}
+
+bool DalvikExecutionEngine::execute_sput(uint32_t pc, InstructionTrace& trace) {
+    // Format: 21c sput vAA, field@BBBB
+    // Store value to static field
+    if (pc + 1 >= bytecode_.size()) return false;
+    
+    uint16_t instr = bytecode_[pc];
+    uint8_t src_reg = (instr >> 8) & 0xFF;    // vAA - source
+    uint16_t field_idx = bytecode_[pc + 1];   // BBBB - field index
+    
+    // Resolve field from DEX
+    FieldResolution field_res = resolve_field(field_idx);
+    if (!field_res.resolved) {
+        trace.halt_reason = "Failed to resolve static field index " + std::to_string(field_idx);
+        return false;
+    }
+    
+    field_res.is_static = true;
+    
+    // Get value to store
+    DalvikValue src_val = get_register(src_reg);
+    
+    // Build static field key and store
+    std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
+    DalvikValue old_value = static_field_storage_[static_key];  // Default if not exists
+    static_field_storage_[static_key] = src_val;
+    
+    log("✅ SPUT: " + static_key + " = " + src_val.to_string() + 
+        " (was: " + old_value.to_string() + ")");
+    
+    // Evidence trace with ExecutionSource
+    trace.operands.push_back({"v" + std::to_string(src_reg), "source"});
+    trace.operands.push_back({"static_field", static_key});
+    trace.operands.push_back({"class", field_res.class_descriptor});
+    trace.operands.push_back({"field", field_res.field_name});
+    trace.operands.push_back({"old_value", old_value.to_string()});
+    trace.operands.push_back({"new_value", src_val.to_string()});
+    trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
+    
+    pc_ = pc + 2;
+    return true;
+}
+
+bool DalvikExecutionEngine::execute_sput_object(uint32_t pc, InstructionTrace& trace) {
+    // Format: 21c sput-object vAA, field@BBBB
+    // Store object reference to static field
+    if (pc + 1 >= bytecode_.size()) return false;
+    
+    uint16_t instr = bytecode_[pc];
+    uint8_t src_reg = (instr >> 8) & 0xFF;    // vAA - source
+    uint16_t field_idx = bytecode_[pc + 1];   // BBBB - field index
+    
+    // Resolve field from DEX
+    FieldResolution field_res = resolve_field(field_idx);
+    if (!field_res.resolved) {
+        trace.halt_reason = "Failed to resolve static field index " + std::to_string(field_idx);
+        return false;
+    }
+    
+    field_res.is_static = true;
+    
+    // Get value to store
+    DalvikValue src_val = get_register(src_reg);
+    
+    // Build static field key and store
+    std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
+    DalvikValue old_value = static_field_storage_[static_key];
+    static_field_storage_[static_key] = src_val;
+    
+    log("✅ SPUT-OBJECT: " + static_key + " = " + src_val.to_string() + 
+        " (was: " + old_value.to_string() + ")");
+    
+    // Evidence trace with ExecutionSource
+    trace.operands.push_back({"v" + std::to_string(src_reg), "source"});
+    trace.operands.push_back({"static_field", static_key});
+    trace.operands.push_back({"class", field_res.class_descriptor});
+    trace.operands.push_back({"field", field_res.field_name});
+    trace.operands.push_back({"old_value", old_value.to_string()});
+    trace.operands.push_back({"new_value", src_val.to_string()});
+    trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
+    
+    pc_ = pc + 2;
+    return true;
+}
+
+// ============================================================================
 // OPCODE IMPLEMENTATIONS — Invokes
 // ============================================================================
 
 bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace& trace, 
                                                   DalvikExecutionResult& result) {
     // Format: 35c [op] {vC..}, method@BBBB
+    // EXP-035: Now uses VTable dispatch for proper polymorphic method resolution
     if (pc + 2 >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
-    uint8_t arg_count = (instr >> 8) & 0xF;  // Actually encoded differently in 35c
     uint16_t method_idx = bytecode_[pc + 2];  // Full method index in 35c format
     
-    // Parse registers from second word
+    // Parse registers from second word (35c encoding)
     uint16_t regs_word = bytecode_[pc + 1];
     std::vector<DalvikValue> args;
     std::vector<std::string> arg_names;
@@ -869,28 +1399,83 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         arg_names.push_back(register_name(regs[i]));
     }
     
-    // Resolve method
-    std::string method_name = "<method:" + std::to_string(method_idx) + ">";
-    std::string class_name = "<unknown>";
+    // EXP-035: VTable-based method resolution
+    std::string static_type = "<unknown>";      // Declared type in bytecode
+    std::string runtime_type = "<unknown>";     // Actual type of object
+    std::string resolved_method = "<unresolved>";
+    std::string method_name_from_dex = "<method:" + std::to_string(method_idx) + ">";
     
-    if (dex_report_ && method_idx < dex_report_->methods_count) {
-        // Would need to look up method table - simplified here
-        method_name = "invoke_virtual_" + std::to_string(method_idx);
+    // Get the object reference (first arg is 'this' for virtual calls)
+    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+        DalvikValue this_obj = args[0];
+        static_type = this_obj.class_desc;
+        
+        // Look up actual object class from heap
+        if (auto* heap_obj = heap_.get(this_obj.object_id)) {
+            runtime_type = heap_obj->class_descriptor;
+            
+            // Resolve method name from DEX if available
+            if (dex_report_ && method_idx < dex_report_->methods.size()) {
+                const auto& method_info = dex_report_->methods[method_idx];
+                method_name_from_dex = method_info.name;
+                
+                // EXP-035: Use VTable dispatcher for resolution
+                runtime::InvocationContext invocation;
+                invocation.caller_class = current_class_;  // Class containing the invoke instruction
+                invocation.caller_method = current_method_;
+                invocation.target_class_static = static_type;  // Static type from declaration
+                invocation.target_class_runtime = runtime_type;  // Actual runtime type
+                invocation.method_name = method_name_from_dex;
+                invocation.method_descriptor = method_info.descriptor;  // If available
+                
+                // Attempt VTable lookup
+                auto dispatch_result = vtable_dispatcher_.dispatch_virtual_call(invocation);
+                
+                if (dispatch_result.success) {
+                    resolved_method = dispatch_result.resolved_method_class + "." + 
+                                     dispatch_result.resolved_method_name;
+                    
+                    log("✅ VTABLE DISPATCH: " + method_name_from_dex +
+                        " | static=" + static_type +
+                        " | runtime=" + runtime_type +
+                        " | resolved=" + resolved_method);
+                } else {
+                    resolved_method = runtime_type + "." + method_name_from_dex;
+                    log("⚠️ VTABLE DISPATCH: Using fallback resolution (" + 
+                        dispatch_result.failure_reason + ")");
+                }
+            } else {
+                resolved_method = runtime_type + "." + method_name_from_dex;
+            }
+        } else {
+            // Object not in heap - use static type as fallback
+            runtime_type = static_type;
+            resolved_method = static_type + "." + method_name_from_dex;
+            log("⚠️ INVOKE-VIRTUAL: Object not found in heap, using static type");
+        }
+    } else {
+        // No object reference or null - can't do virtual dispatch
+        if (args.empty()) {
+            log("❌ INVOKE-VIRTUAL: No arguments provided");
+        } else if (args[0].type == DalvikType::NULL_REF) {
+            log("⚠️ INVOKE-VIRTUAL: Null object reference (would be NullPointerException)");
+        }
+        resolved_method = static_type + "." + method_name_from_dex;
     }
     
-    // Try API bridge
+    // Try API bridge with resolved method info
     DalvikValue return_val = DalvikValue::make_void();
     ApiCallTrace::Status api_status = ApiCallTrace::Status::STUBBED;
     
     if (config_.enable_api_bridge) {
-        bridge_to_api(class_name, method_name, args, return_val, api_status);
+        bridge_to_api(runtime_type, method_name_from_dex, args, return_val, api_status);
     }
     
-    // Create API call trace
+    // Create API call trace with VTable information
     ApiCallTrace api_trace;
     api_trace.sequence = api_call_sequence_++;
-    api_trace.api_class = class_name;
-    api_trace.method = method_name;
+    api_trace.api_class = runtime_type;  // Use runtime type for accuracy
+    api_trace.method = method_name_from_dex;
     api_trace.arguments = arg_names;
     api_trace.return_value = return_val.to_string();
     api_trace.status = api_status;
@@ -899,9 +1484,15 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     
     result.api_call_traces.push_back(api_trace);
     
-    trace.invoked_method = class_name + "." + method_name;
+    // EXP-035: Evidence trace with VTable dispatch information
+    trace.invoked_method = resolved_method;
     trace.operands.push_back({"args", std::to_string(arg_names.size())});
-    trace.operands.push_back({"method", std::to_string(method_idx)});
+    trace.operands.push_back({"method_idx", std::to_string(method_idx)});
+    trace.operands.push_back({"method_name", method_name_from_dex});
+    trace.operands.push_back({"static_type", static_type});       // CRITICAL EVIDENCE
+    trace.operands.push_back({"runtime_type", runtime_type});     // CRITICAL EVIDENCE  
+    trace.operands.push_back({"resolved_method", resolved_method}); // CRITICAL EVIDENCE
+    trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});  // MANDATORY TAG
     
     pc_ = pc + 3;
     return true;
