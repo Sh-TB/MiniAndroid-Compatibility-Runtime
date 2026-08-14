@@ -8,7 +8,7 @@
 
 - **Result:** **PASS**
 - **Final State:** `COMPLETED`
-- **Duration:** 2261.14ms
+- **Duration:** 2485.38ms
 - **APK:** `download/exp038_telegram/Telegram.apk`
 
 ## Milestone Status
