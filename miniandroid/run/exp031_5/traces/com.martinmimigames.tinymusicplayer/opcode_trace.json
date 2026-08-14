@@ -1,0 +1,1322 @@
+{
+  "apk_name": "TinyMusicPlayer.apk",
+  "execution_source": "REAL_DALVIK_INTERPRETER",
+  "timestamp": "2026-08-14T17:33:31Z",
+  "total_instructions": 16,
+  "traces": [
+    {
+      "execution_us": 15.07,
+      "invoked_method": "Ljava/lang/Thread;.<init>",
+      "opcode": "invoke-direct",
+      "opcode_hex": "0x1070",
+      "pc": "0x0000",
+      "pc_after": "0x0003",
+      "pc_decimal": 0,
+      "registers_after": {
+        "v0": {
+          "type": "uninit",
+          "value": null
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "type": "uninit",
+          "value": null
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 0,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 18.775,
+      "opcode": "iput-object",
+      "opcode_hex": "0x125b",
+      "pc": "0x0003",
+      "pc_after": "0x0005",
+      "pc_decimal": 3,
+      "registers_after": {
+        "v0": {
+          "type": "uninit",
+          "value": null
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "type": "uninit",
+          "value": null
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 1,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "allocated_object_id": 1,
+      "changed_registers": [
+        "v0"
+      ],
+      "execution_us": 19.202,
+      "opcode": "new-instance",
+      "opcode_hex": "0x0022",
+      "pc": "0x0005",
+      "pc_after": "0x0007",
+      "pc_decimal": 5,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "type": "uninit",
+          "value": null
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 2,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 6.884,
+      "invoked_method": "android.media.MediaPlayer.<init>",
+      "opcode": "invoke-direct",
+      "opcode_hex": "0x1070",
+      "pc": "0x0007",
+      "pc_after": "0x000a",
+      "pc_decimal": 7,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 3,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 14.829,
+      "opcode": "iput-object",
+      "opcode_hex": "0x105b",
+      "pc": "0x000a",
+      "pc_after": "0x000c",
+      "pc_decimal": 10,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 4,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 9.656,
+      "invoked_method": "Landroid/media/MediaPlayer;.setDataSource",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x306e",
+      "pc": "0x000c",
+      "pc_after": "0x000f",
+      "pc_decimal": 12,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 5,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "changed_registers": [
+        "v2"
+      ],
+      "execution_us": 10.667,
+      "opcode": "sget",
+      "opcode_hex": "0x0260",
+      "pc": "0x000f",
+      "pc_after": "0x0011",
+      "pc_decimal": 15,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 0
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "uninit",
+          "value": null
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 6,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "changed_registers": [
+        "v3"
+      ],
+      "execution_us": 2.347,
+      "opcode": "const/16",
+      "opcode_hex": "0x0313",
+      "pc": "0x0011",
+      "pc_after": "0x0013",
+      "pc_decimal": 17,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 0
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 0
+        },
+        "v3": {
+          "type": "uninit",
+          "value": null
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 7,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 3.3,
+      "opcode": "if-ge",
+      "opcode_hex": "0x3235",
+      "pc": "0x0013",
+      "pc_after": "0x0015",
+      "pc_decimal": 19,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 0
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 0
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 8,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "BRANCH_NOT_TAKEN"
+    },
+    {
+      "execution_us": 1.688,
+      "opcode": "const/4",
+      "opcode_hex": "0x3212",
+      "pc": "0x0015",
+      "pc_after": "0x0016",
+      "pc_decimal": 21,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 0
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 0
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 9,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 6.314,
+      "invoked_method": "Landroid/media/MediaPlayer;.setAudioStreamType",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x206e",
+      "pc": "0x0016",
+      "pc_after": "0x0019",
+      "pc_decimal": 22,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 0
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 0
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 10,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 2.209,
+      "opcode": "goto",
+      "opcode_hex": "0x1728",
+      "pc": "0x0019",
+      "pc_after": "0x0030",
+      "pc_decimal": 25,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 0
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 0
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 11,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "BRANCH_TAKEN"
+    },
+    {
+      "changed_registers": [
+        "v2"
+      ],
+      "execution_us": 1.716,
+      "opcode": "const/4",
+      "opcode_hex": "0x0212",
+      "pc": "0x0030",
+      "pc_after": "0x0031",
+      "pc_decimal": 48,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 2
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 0
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 12,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 6.786,
+      "invoked_method": "Landroid/media/MediaPlayer;.setLooping",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x206e",
+      "pc": "0x0031",
+      "pc_after": "0x0034",
+      "pc_decimal": 49,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 2
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 2
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 13,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 4.677,
+      "invoked_method": "Landroid/media/MediaPlayer;.setOnCompletionListener",
+      "opcode": "invoke-virtual",
+      "opcode_hex": "0x206e",
+      "pc": "0x0034",
+      "pc_after": "0x0037",
+      "pc_decimal": 52,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 2
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 2
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "sequence": 14,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "SUCCESS"
+    },
+    {
+      "execution_us": 3.54,
+      "opcode": "return-void",
+      "opcode_hex": "0x000e",
+      "pc": "0x0037",
+      "pc_after": "0x0038",
+      "pc_decimal": 55,
+      "registers_after": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 2
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "registers_before": {
+        "v0": {
+          "class": "Landroid/media/MediaPlayer;",
+          "object_id": 1,
+          "type": "object"
+        },
+        "v1": {
+          "type": "uninit",
+          "value": null
+        },
+        "v2": {
+          "type": "int32",
+          "value": 2
+        },
+        "v3": {
+          "type": "int32",
+          "value": 21
+        },
+        "v4": {
+          "type": "uninit",
+          "value": null
+        },
+        "v5": {
+          "type": "uninit",
+          "value": null
+        },
+        "v6": {
+          "type": "uninit",
+          "value": null
+        },
+        "v7": {
+          "type": "uninit",
+          "value": null
+        }
+      },
+      "return_value": {
+        "type": "void",
+        "value": null
+      },
+      "sequence": 15,
+      "source": "REAL_DALVIK_INTERPRETER",
+      "status": "RETURN"
+    }
+  ]
+}

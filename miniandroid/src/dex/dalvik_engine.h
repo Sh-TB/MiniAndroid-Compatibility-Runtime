@@ -129,6 +129,12 @@ namespace Opcode {
     constexpr uint16_t IF_NEZ = 0x3A;         // if-nez vAA, +BBBB
     constexpr uint16_t IF_EQ = 0x32;          // if-eq vAA, vBB, +CCCC
     constexpr uint16_t IF_NE = 0x33;          // if-ne vAA, vBB, +CCCC
+    // EXP-037 Phase B (BLOCKER-018): remaining if-* opcodes (22t format).
+    // Without these, any code that does numeric comparison branching fails.
+    constexpr uint16_t IF_LT = 0x34;          // if-lt vAA, vBB, +CCCC
+    constexpr uint16_t IF_GE = 0x35;          // if-ge vAA, vBB, +CCCC
+    constexpr uint16_t IF_GT = 0x36;          // if-gt vAA, vBB, +CCCC
+    constexpr uint16_t IF_LE = 0x37;          // if-le vAA, vBB, +CCCC
 }
 
 // ============================================================================
@@ -938,6 +944,16 @@ private:
     bool execute_goto(uint32_t pc, InstructionTrace& trace);
     bool execute_if_eqz(uint32_t pc, InstructionTrace& trace);
     bool execute_if_nez(uint32_t pc, InstructionTrace& trace);
+    // EXP-037 Phase B (BLOCKER-018): 22t format if-* opcodes
+    // (if-lt, if-ge, if-gt, if-le) — required for numeric comparisons.
+    // Existing if-eq/if-ne are in a different file path (or unused).
+    bool execute_if_lt(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_ge(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_gt(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_le(uint32_t pc, InstructionTrace& trace);
+    // Also add if-eq/if-ne for completeness (22t format)
+    bool execute_if_eq(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_ne(uint32_t pc, InstructionTrace& trace);
     
     // Unimplemented handler
     void handle_unimplemented(uint16_t opcode, uint32_t pc, InstructionTrace& trace);

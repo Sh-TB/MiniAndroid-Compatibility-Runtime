@@ -1,10 +1,24 @@
 [
   {
-    "path": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp037_real_apks/com_zinaro_cachecleanerwidget_e651d7df72d823438eaf50afe1ceb428496650734b6610bb539d68a925915259.apk",
+    "filename": "TinyMusicPlayer.apk",
+    "path": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp037_real_apks/TinyMusicPlayer.apk",
+    "sha256": "d7bcb24d101b04beb3394b695b24be4e2c3d6ed702f1d0e06bc4dd707f64d86a",
+    "package": "com.martinmimigames.tinymusicplayer",
+    "dex_header": {
+      "file_size": 10848,
+      "string_ids_size": 203,
+      "type_ids_size": 55,
+      "proto_ids_size": 71,
+      "field_ids_size": 20,
+      "method_ids_size": 139,
+      "class_defs_size": 7
+    }
+  },
+  {
+    "filename": "CacheCleanerWidget.apk",
+    "path": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp037_real_apks/CacheCleanerWidget.apk",
     "sha256": "e651d7df72d823438eaf50afe1ceb428496650734b6610bb539d68a925915259",
     "package": "com.zinaro.cachecleanerwidget",
-    "version": "?",
-    "size_bytes": 8947,
     "dex_header": {
       "file_size": 3448,
       "string_ids_size": 78,
@@ -13,28 +27,6 @@
       "field_ids_size": 4,
       "method_ids_size": 32,
       "class_defs_size": 3
-    },
-    "dex_files": [
-      "classes.dex"
-    ]
-  },
-  {
-    "path": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp037_real_apks/pro_rudloff_lineageos_updater_shortcut_7584040eb7d1fad7d3612ad477a111fa0c1b0456c48efa0f5682b2f8e7a27676.apk",
-    "sha256": "7584040eb7d1fad7d3612ad477a111fa0c1b0456c48efa0f5682b2f8e7a27676",
-    "package": "pro.rudloff.lineageos_updater_shortcut",
-    "version": "?",
-    "size_bytes": 12599,
-    "dex_header": {
-      "file_size": 3124,
-      "string_ids_size": 58,
-      "type_ids_size": 23,
-      "proto_ids_size": 5,
-      "field_ids_size": 11,
-      "method_ids_size": 18,
-      "class_defs_size": 8
-    },
-    "dex_files": [
-      "classes.dex"
-    ]
+    }
   }
 ]
