@@ -2,9 +2,9 @@
 
 ## Application
 
-- **APK:** `download/exp037_real_apks/pro_rudloff_lineageos_updater_shortcut_7584040eb7d1fad7d3612ad477a111fa0c1b0456c48efa0f5682b2f8e7a27676.apk`
-- **Package:** `pro.rudloff.lineageos_updater_shortcut`
-- **Status:** **SUCCESS** ✅
+- **APK:** `download/exp037_real_apks/TinyMusicPlayer.apk`
+- **Package:** `com.martinmimigames.tinymusicplayer`
+- **Status:** **FAILURE** ❌
 
 ## Metrics
 
@@ -15,21 +15,21 @@
 | Execution Time | 0ms |
 | Memory Peak | 0.00 B |
 | Errors | 0 |
-| Warnings | 0 |
+| Warnings | 1 |
 
 ## API Trace Summary
 
 | Class | Calls |
 |-------|-------|
 | `DalvikEngine` | 3 |
-| `ExecutionEngine` | 36 |
+| `ExecutionEngine` | 35 |
 | `TraceEngine` | 2 |
 
 ## Top Method Calls
 
 | Method | Calls |
 |--------|-------|
-| `ExecutionEngine.stage_load_classes` | 9 |
+| `ExecutionEngine.stage_load_classes` | 8 |
 | `ExecutionEngine.trace_files` | 5 |
 | `DalvikEngine.execute_apk` | 3 |
 | `ExecutionEngine.trace_export` | 2 |
@@ -44,8 +44,8 @@
 | `ExecutionEngine.validation` | 1 |
 | `ExecutionEngine.stage_generate_reports` | 1 |
 | `ExecutionEngine.stage_execute_application` | 1 |
-| `ExecutionEngine.lifecycle_verified` | 1 |
 | `ExecutionEngine.lifecycle_source` | 1 |
+| `ExecutionEngine.lifecycle_fallback` | 1 |
 | `ExecutionEngine.execution_source` | 1 |
 | `ExecutionEngine.create_view_from_dalvik_result` | 1 |
 | `ExecutionEngine.create_hello_world_view` | 1 |
@@ -62,5 +62,5 @@
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20260814-172132-5483`
-- **Generated:** 2026-08-14 17:21:32 UTC
+- **Session ID:** `EXP-001-20260814-173331-3428`
+- **Generated:** 2026-08-14 17:33:32 UTC
