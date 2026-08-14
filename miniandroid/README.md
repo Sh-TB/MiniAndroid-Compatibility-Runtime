@@ -102,10 +102,44 @@ python3 tools/exp030_real_dalvik_validator.py --apk-dir download/exp027_real_apk
 | **EXP-029** | **Observability** | ✅ **Complete** | State machine, 15/15 APKs |
 | **EXP-030** | **Real Execution** | ✅ **Complete** | Dalvik engine, 25+ opcodes |
 | **EXP-032** | **AOSP Reference Acceleration** | ✅ **Complete** | Object model, API strategy, debug protocol |
+| **EXP-033** | **Architecture Research** | ✅ **Complete** | Dalvik study, comparison, blocker analysis |
 
 ---
 
-## EXP-032: AOSP Reference-Driven Acceleration (Latest)
+## EXP-033: AOSP/Dalvik Architecture Research (Latest)
+
+### Overview
+
+**Pure research phase** - No code implementation. Study of Dalvik/AOSP architecture to find the simplest correct path forward.
+
+### Research Deliverables
+
+| Document | Location | Content |
+|----------|----------|---------|
+| Dalvik Architecture Notes | `research/dalvik_architecture_notes.md` | 5,300 words on VM internals |
+| MiniAndroid vs Dalvik Comparison | `research/miniandroid_vs_dalvik.md` | 10-component gap analysis |
+| Research Report | `docs/EXP033_RESEARCH_REPORT.md` | Full findings + recommendations |
+
+### Key Findings
+
+```
+Architecture Readiness Score: 52% (8/16 components at PASS level)
+
+Critical Blockers Identified:
+├── 🔴 Bytecode Extraction: 20/22 APKs return NO_BYTECODE_FOUND
+├── 🔴 Field Operations: 0% implemented (iget/iput/sget/sput)
+├── 🔴 Virtual Dispatch: No VTable exists
+└── 🔴 Method Invocation: Stubbed (no real dispatch)
+
+Recommended Path:
+1. Fix bytecode extraction (Week 1)
+2. Implement field access + VTable (Weeks 2-3)
+3. Reach MVP: Activity.onCreate() with 50+ instructions
+```
+
+---
+
+## EXP-032: AOSP Reference-Driven Acceleration
 
 ### Overview
 
@@ -303,4 +337,4 @@ MIT License — See [LICENSE](LICENSE) for details.
 ---
 
 *Last Updated: 2026-08-14*
-*Active Development: EXP-032 Complete (Phases 0-8), Object Model Ready for C++ Port*
+*Active Development: EXP-033 Complete (Architecture Research), Ready for EXP-034 Implementation*
