@@ -973,6 +973,21 @@ bool ApplicationRuntime::execute_on_create() {
         // to DEX descriptor form ("Lcom/foo/MainActivity;").
         std::string activity_class = manifest_info_ ? manifest_info_->main_activity_full
                                                     : std::string();
+
+        // EXP-038 (BLOCKER-033): Pass per-DEX raw data to DalvikExecutionEngine.
+        // This enables correct method_idx resolution for multidex APKs.
+        std::vector<std::vector<uint8_t>> per_dex_raw;
+        if (apk_info_) {
+            for (const auto& dex_name : apk_info_->dex_files) {
+                auto raw = apk_parser_->extract_entry_cached(dex_name);
+                if (!raw.empty()) {
+                    per_dex_raw.push_back(std::move(raw));
+                }
+            }
+        }
+        dalvik_engine.set_per_dex_raw_data(std::move(per_dex_raw));
+        dalvik_engine.build_class_dex_index(*dex_report_);
+
         auto dalvik_result = dalvik_engine.execute_apk_with_activity(
             apk_path_, *dex_report_, activity_class, config_.verbose);
 
