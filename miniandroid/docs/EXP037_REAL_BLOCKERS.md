@@ -436,3 +436,175 @@ following new blockers are expected to surface:
    which is itself a stub.
 5. **`Bundle` parameter handling** — `onCreate(Bundle)` requires object
    passing conventions.
+
+---
+
+## BLOCKERS ADDED IN PHASE B (2026-08-14)
+
+### BLOCKER-012: invoke-super opcode (0x6f) not implemented — FIXED
+
+- **ID:** BLOCKER-012
+- **Component:** `src/dex/dalvik_engine.{h,cpp}`
+- **Problem:** The `invoke-super` opcode (0x6f, 35c format) had no handler in the
+  DalvikExecutionEngine dispatch switch. Every real Android app's `onCreate()`
+  starts with `invoke-super {v0, v1}, method@BBBB` to call `super.onCreate(bundle)`.
+  Without this handler, execution halted immediately at PC=0 with
+  "UNIMPLEMENTED: 0x0x206f at 0x0".
+- **Evidence:** Running `miniandroid run -v` on pro.rudloff.lineageos_updater_shortcut.apk
+  produced `[DalvikEngine]   UNIMPLEMENTED: 0x0x206f at 0x0` and stopped after 1 instruction.
+- **Fix:** Added `execute_invoke_super()` handler with same 35c format as invoke-virtual.
+  Added `case Opcode::INVOKE_SUPER:` to dispatch switch.
+- **Status:** FIXED
+
+### BLOCKER-014: goto (0x28) offset decode wrong — FIXED
+
+- **ID:** BLOCKER-014
+- **Component:** `src/dex/dalvik_engine.cpp::execute_goto`
+- **Problem:** `goto` (format 10t) packs the signed 8-bit branch offset in the
+  HIGH BYTE of the opcode word. Previous code read offset from `bytecode_[pc+1]`
+  (the next code unit), which is the first byte of the FOLLOWING instruction.
+- **Evidence:** For TinyMusicPlayer's onCreate at PC=13: `0x0c28` should decode
+  as opcode=0x28 (goto), offset=0x0c (high byte), target=13+12=25. Previous code
+  read offset from bytecode_[14]=0x0214, treating 0x02 as offset, giving target=15
+  (wrong).
+- **Fix:** `int8_t offset = (int8_t)((bytecode_[pc] >> 8) & 0xFF);`
+- **Status:** FIXED
+
+### BLOCKER-015: 35c format method_idx / regs_word order swapped — FIXED
+
+- **ID:** BLOCKER-015
+- **Component:** `src/dex/dalvik_engine.cpp` (all 5 invoke-* handlers)
+- **Problem:** 35c format is `AA|op BBBB FEDC` where:
+  - code[pc+0] = AA|op
+  - code[pc+1] = BBBB (method_idx, 16-bit)
+  - code[pc+2] = FEDC (register list, 4 nibbles packed)
+  Previous code had `method_idx = bytecode_[pc+2]` and `regs_word = bytecode_[pc+1]`,
+  which is REVERSED. This caused every invoke-* to read the register list as the
+  method_idx (often out-of-bounds) and the method_idx as the register list
+  (corrupted register values).
+- **Evidence:** For invoke-super at PC=0: bytecode `0x206f, 0x0001, 0x0021`
+  - Old code: method_idx=0x0021=33 (OUT OF BOUNDS — DEX only has 18 methods)
+  - New code: method_idx=0x0001=1 (in range — resolves to `Landroid/app/Activity;.onCreate`)
+- **Fix:** Swap `method_idx` and `regs_word` reads in all 5 invoke-* handlers.
+- **Status:** FIXED
+
+### BLOCKER-016: 35c arg_count and 5th_reg extraction wrong — FIXED
+
+- **ID:** BLOCKER-016
+- **Component:** `src/dex/dalvik_engine.cpp` (all invoke-* handlers)
+- **Problem:** For 35c format, AA is the high byte of code[pc+0]:
+  - arg_count = HIGH NIBBLE of AA = (instr >> 12) & 0xF
+  - 5th_reg   = LOW NIBBLE of AA  = (instr >> 8) & 0xF
+  Previous code used `(instr >> 4) & 0xF` for BOTH, which extracts bits 4-7
+  (the wrong byte entirely).
+- **Evidence:** For invoke-super `0x206f`: arg_count should be 2 (high nibble of 0x20),
+  but old code reported `arg_count=6` (bits 4-7 of 0x206f = 0x6).
+- **Fix:** Use `(instr >> 12) & 0xF` for arg_count and `(instr >> 8) & 0xF` for 5th_reg.
+- **Status:** FIXED
+
+### BLOCKER-017: 22c format field_idx + register extraction wrong — FIXED
+
+- **ID:** BLOCKER-017
+- **Component:** `src/dex/dalvik_engine.cpp` (iget, iget-object, iput, iput-object, instance-of)
+- **Problem:** 22c format `B1|A|op CCCC` is 2 code units:
+  - code[pc+0]: bits 0-7 = opcode, bits 8-11 = vA (4 bits), bits 12-15 = vB (4 bits)
+  - code[pc+1]: 16-bit field_idx
+  Previous code had THREE bugs:
+  1. `field_idx = bytecode_[pc+2]` — WRONG, should be `bytecode_[pc+1]`
+     (22c is only 2 code units, not 3)
+  2. `vA = (instr >> 8) & 0xFF` — WRONG, should be `(instr >> 8) & 0xF`
+     (4-bit register, not 8-bit)
+  3. `vB = instr & 0xFF` — WRONG, that's the opcode byte!
+     Should be `(instr >> 12) & 0xF` (high nibble of high byte)
+  Also PC advance was `pc+3` — WRONG, should be `pc+2` (22c is 2 code units).
+- **Evidence:** TinyMusicPlayer's `<init>` hits `iput-object` at PC=3 with
+  field_idx=34 (out of bounds, DEX only has 20 fields). After fix, resolves
+  to `La/a;.a type=Lcom/martinmimigames/tinymusicplayer/Service;`.
+- **Fix:** Correct all 5 handlers: field_idx from pc+1, vA/vB as 4-bit nibbles,
+  PC advance by 2. Also made iput-object tolerant of non-object registers.
+- **Status:** FIXED
+
+### BLOCKER-018: if-* opcodes (0x32-0x37) not implemented — FIXED
+
+- **ID:** BLOCKER-018
+- **Component:** `src/dex/dalvik_engine.{h,cpp}`
+- **Problem:** `if-eq`, `if-ne`, `if-lt`, `if-ge`, `if-gt`, `if-le` (22t format)
+  had no handlers. TinyMusicPlayer hits `if-ge` at PC=0x13 (comparing
+  `Build.VERSION.SDK_INT` to a constant). Without this handler, execution
+  halted immediately after the sget.
+- **Fix:** Added 6 new opcode handlers using a macro (IMPLEMENT_IF_22T) that
+  generates identical code with different comparison operators. Format 22t is
+  `B1|A|op CCCC` → 2 code units, same layout as 22c.
+- **Status:** FIXED
+
+### BLOCKER-019: Entry point resolver doesn't use manifest — PARTIAL
+
+- **ID:** BLOCKER-019
+- **Component:** `src/dex/dalvik_engine.cpp::execute_apk`
+- **Problem:** DalvikExecutionEngine scans class names for "Activity"/"Main"/"activity"
+  to find the entry point. For obfuscated APKs (TinyMusicPlayer uses La/a;, La/b;,
+  etc.), no class matches and it falls back to the first class with methods.
+- **Evidence:** Manifest reader correctly identifies launcher activity
+  (com.martinmimigames.tinymusicplayer.Launcher) but DalvikExecutionEngine
+  doesn't use this info. TinyMusicPlayer's onCreate never runs because La/a;
+  (first class) is selected instead.
+- **Status:** PARTIAL — works for non-obfuscated APKs (lineageos_updater_shortcut),
+  fails for obfuscated APKs (TinyMusicPlayer). Needs manifest-based resolution.
+- **Future Fix:** Pass manifest's main_activity into DalvikExecutionEngine::execute_apk
+  and have it use that as the entry point instead of scanning class names.
+
+### BLOCKER-020: ApplicationRuntime used wrong interpreter — FIXED
+
+- **ID:** BLOCKER-020
+- **Component:** `src/runtime/application_runtime.cpp::execute_on_create`
+- **Problem:** ApplicationRuntime::execute_on_create() was calling DexInterpreterBatch
+  (a 5-opcode stub: const-string, new-instance, invoke-direct, invoke-virtual,
+  return-void) instead of DalvikExecutionEngine (the full interpreter I've been
+  improving across BLOCKER-012 through BLOCKER-018).
+- **Evidence:** Megabatch output showed:
+  ```
+  [DEX] UNIMPLEMENTED: UNIMPLEMENTED_OPCODE: unknown_0x006f (0x006f) at PC=0
+  [DEX] Halted: UNIMPLEMENTED_OPCODE: unknown_0x006f (0x006f) at PC=0
+    Instructions executed: 1
+    Halt reason: UNIMPLEMENTED_OPCODE: unknown_0x006f (0x006f) at PC=0
+  ```
+  Even though DalvikExecutionEngine had the invoke-super handler, the megabatch
+  pipeline was bypassing it entirely and using the limited DexInterpreterBatch.
+- **Fix:** Replaced DexInterpreterBatch path with DalvikExecutionEngine in
+  execute_on_create(). Now the megabatch pipeline executes real DEX bytecode
+  end-to-end and reports proper instruction counts, API call traces, and
+  heap allocations.
+- **Status:** FIXED
+
+---
+
+## UPDATED SUMMARY TABLE
+
+| ID    | Component                  | Status  | Impact                                |
+|-------|----------------------------|---------|---------------------------------------|
+| 001   | Build system               | FIXED   | Build was completely broken           |
+| 002   | DexParser method_ids       | FIXED   | invoke-* can now resolve method names |
+| 003   | DexParser field_ids        | FIXED   | iget/iput/sget/sput can now resolve    |
+| 004   | Activity detection         | PARTIAL | Works for real APKs                   |
+| 005   | Real APK corpus            | FIXED   | Was using fake synthetic APKs          |
+| 006   | AXML parser                | FIXED   | Real APKs were rejected                |
+| 006a  | AxmlToken enum             | FIXED   | Sub-blocker of 006                    |
+| 006b  | parse_header type check    | FIXED   | Sub-blocker of 006                    |
+| 006c  | Chunk parse offset         | FIXED   | Sub-blocker of 006                    |
+| 006d  | UTF-16 length decode       | FIXED   | Sub-blocker of 006                    |
+| 007   | String pool alignment      | FIXED   | Garbled string output                 |
+| 008   | Element structs            | FIXED   | Wrong field offsets                   |
+| 009   | Attribute struct           | FIXED   | Attribute values always empty         |
+| 010   | DEX execution in lifecycle | FIXED   | (was stub, now wired via BLOCKER-020) |
+| 011   | HelloWorld.apk malformed    | OPEN    | Low priority                          |
+| 012   | invoke-super handler       | FIXED   | First instruction of every onCreate   |
+| 013   | (merged into 010)          | -       | -                                     |
+| 014   | goto offset decode         | FIXED   | Wrong branch targets                  |
+| 015   | 35c format method_idx swap | FIXED   | Wrong method resolution               |
+| 016   | 35c arg_count extraction   | FIXED   | Wrong argument counts                 |
+| 017   | 22c format field_idx swap  | FIXED   | Wrong field resolution                |
+| 018   | if-* opcodes not impl      | FIXED   | No numeric comparison branching       |
+| 019   | Entry point from manifest   | PARTIAL | Fails for obfuscated APKs             |
+| 020   | Wrong interpreter used     | FIXED   | Megabatch used stub interpreter       |
+
+**Total blockers documented:** 22 (17 FIXED, 2 PARTIAL, 3 OPEN/low-priority)
