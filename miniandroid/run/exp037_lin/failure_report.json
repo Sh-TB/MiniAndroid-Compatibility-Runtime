@@ -1,0 +1,24 @@
+{
+  "apk_path": "download/exp037_real_apks/pro_rudloff_lineageos_updater_shortcut_7584040eb7d1fad7d3612ad477a111fa0c1b0456c48efa0f5682b2f8e7a27676.apk",
+  "blocking_failures": 0,
+  "by_type": {
+    "RESOURCE_RESOLUTION_FAILURE": 1
+  },
+  "experiment": "EXP-007→EXP-012",
+  "failures": [
+    {
+      "apk_path": "download/exp037_real_apks/pro_rudloff_lineageos_updater_shortcut_7584040eb7d1fad7d3612ad477a111fa0c1b0456c48efa0f5682b2f8e7a27676.apk",
+      "details": "",
+      "dex_method": "",
+      "is_blocking": false,
+      "opcode": "",
+      "pc": 0,
+      "stage": "load_content_view",
+      "timestamp": "2026-08-14T17:53:53Z",
+      "type": "RESOURCE_RESOLUTION_FAILURE"
+    }
+  ],
+  "timestamp": "2026-08-14T17:53:53Z",
+  "total_failures": 1,
+  "type": "failure_report"
+}
