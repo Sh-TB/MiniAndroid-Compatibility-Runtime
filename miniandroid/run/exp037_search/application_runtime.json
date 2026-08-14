@@ -1,0 +1,135 @@
+{
+  "apk_info": {
+    "main_activity": "",
+    "package": "pro.rudloff.search_to_browser",
+    "version": "0.1.1"
+  },
+  "apk_path": "download/exp037_real_apks/pro_rudloff_search_to_browser_8dcc801faed47a1d8043083117a09eeee972e0d1affabcacb88eee286e4df0a5.apk",
+  "configuration": {
+    "framebuffer_height": 800,
+    "framebuffer_width": 480,
+    "generate_evidence": true,
+    "max_instructions": 10000,
+    "output_dir": "run/exp037_search/",
+    "save_screenshot": true,
+    "screenshot_path": "run/exp037_search//screenshot.png",
+    "stop_on_unimplemented": false,
+    "verbose": true
+  },
+  "dex": {
+    "classes": 4,
+    "methods": 15,
+    "version": "038"
+  },
+  "experiment": "EXP-007→EXP-012 MEGA BATCH",
+  "final_state": "COMPLETED",
+  "has_error": false,
+  "is_complete": true,
+  "state_transitions": [
+    {
+      "duration_ms": 0.0,
+      "from": "CREATED",
+      "reason": "ApplicationRuntime initialized",
+      "success": true,
+      "timestamp": "2026-08-14T17:55:28Z",
+      "to": "CREATED"
+    },
+    {
+      "duration_ms": 4.1e-05,
+      "from": "CREATED",
+      "reason": "APK loaded successfully: download/exp037_real_apks/pro_rudloff_search_to_browser_8dcc801faed47a1d8043083117a09eeee972e0d1affabcacb88eee286e4df0a5.apk",
+      "success": true,
+      "timestamp": "2026-08-14T17:55:28Z",
+      "to": "APK_LOADED"
+    },
+    {
+      "duration_ms": 3.6e-05,
+      "from": "APK_LOADED",
+      "reason": "Manifest resolved: pro.rudloff.search_to_browser",
+      "success": true,
+      "timestamp": "2026-08-14T17:55:28Z",
+      "to": "MANIFEST_RESOLVED"
+    },
+    {
+      "duration_ms": 4.7e-05,
+      "from": "MANIFEST_RESOLVED",
+      "reason": "DEX loaded: 4 classes",
+      "success": true,
+      "timestamp": "2026-08-14T17:55:28Z",
+      "to": "DEX_LOADED"
+    },
+    {
+      "duration_ms": 3.7e-05,
+      "from": "DEX_LOADED",
+      "reason": "Launcher resolved: pro.rudloff.search_to_browser.MainActivity",
+      "success": true,
+      "timestamp": "2026-08-14T17:55:28Z",
+      "to": "ACTIVITY_RESOLVED"
+    },
+    {
+      "duration_ms": 5e-05,
+      "from": "ACTIVITY_RESOLVED",
+      "reason": "Activity created: ID=1",
+      "success": true,
+      "timestamp": "2026-08-14T17:55:28Z",
+      "to": "ACTIVITY_CREATED"
+    },
+    {
+      "duration_ms": 4.9e-05,
+      "from": "ACTIVITY_CREATED",
+      "reason": "Activity.onStart()",
+      "success": true,
+      "timestamp": "2026-08-14T17:55:28Z",
+      "to": "ACTIVITY_STARTED"
+    },
+    {
+      "duration_ms": 3.9e-05,
+      "from": "ACTIVITY_STARTED",
+      "reason": "Activity.onResume()",
+      "success": true,
+      "timestamp": "2026-08-14T17:55:28Z",
+      "to": "ACTIVITY_RESUMED"
+    },
+    {
+      "duration_ms": 3e-05,
+      "from": "ACTIVITY_RESUMED",
+      "reason": "Content view loaded",
+      "success": true,
+      "timestamp": "2026-08-14T17:55:28Z",
+      "to": "CONTENT_LOADED"
+    },
+    {
+      "duration_ms": 4.1e-05,
+      "from": "CONTENT_LOADED",
+      "reason": "Layout ready for rendering",
+      "success": true,
+      "timestamp": "2026-08-14T17:55:28Z",
+      "to": "LAYOUT_READY"
+    },
+    {
+      "duration_ms": 2.3e-05,
+      "from": "LAYOUT_READY",
+      "reason": "Frame rendered successfully",
+      "success": true,
+      "timestamp": "2026-08-14T17:55:28Z",
+      "to": "FRAME_RENDERED"
+    },
+    {
+      "duration_ms": 3e-05,
+      "from": "FRAME_RENDERED",
+      "reason": "Pipeline completed successfully",
+      "success": true,
+      "timestamp": "2026-08-14T17:55:28Z",
+      "to": "COMPLETED"
+    }
+  ],
+  "statistics": {
+    "api_calls": 17,
+    "api_database_entries": 17,
+    "failures": 1,
+    "method_dispatches": 1
+  },
+  "timestamp": "2026-08-14T17:55:28Z",
+  "total_duration_ms": 0.0,
+  "version": "0.1"
+}
