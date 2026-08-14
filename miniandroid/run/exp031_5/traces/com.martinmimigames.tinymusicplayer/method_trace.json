@@ -1,0 +1,83 @@
+{
+  "apk_name": "TinyMusicPlayer.apk",
+  "main_class": "La/a;",
+  "main_method": "<init>",
+  "methods": [
+    {
+      "class": "La/a;",
+      "entry_point": true,
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "android.media.MediaPlayer",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v0",
+        "v2",
+        "v3",
+        "v0",
+        "v0"
+      ],
+      "class": "Landroid/media/MediaPlayer;",
+      "invocation_type": "virtual",
+      "method": "setDataSource",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v0",
+        "v2",
+        "v0",
+        "v0",
+        "v0"
+      ],
+      "class": "Landroid/media/MediaPlayer;",
+      "invocation_type": "virtual",
+      "method": "setAudioStreamType",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v0",
+        "v2",
+        "v0",
+        "v0",
+        "v0"
+      ],
+      "class": "Landroid/media/MediaPlayer;",
+      "invocation_type": "virtual",
+      "method": "setLooping",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v0",
+        "v1",
+        "v0",
+        "v0",
+        "v0"
+      ],
+      "class": "Landroid/media/MediaPlayer;",
+      "invocation_type": "virtual",
+      "method": "setOnCompletionListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-08-14T17:33:31Z",
+  "total_api_calls": 6
+}

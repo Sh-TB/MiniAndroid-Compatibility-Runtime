@@ -1,11 +1,11 @@
 {
   "apk_name": "pro_rudloff_lineageos_updater_shortcut_7584040eb7d1fad7d3612ad477a111fa0c1b0456c48efa0f5682b2f8e7a27676.apk",
   "execution_source": "REAL_DALVIK_INTERPRETER",
-  "timestamp": "2026-08-14T17:21:32Z",
+  "timestamp": "2026-08-14T17:24:14Z",
   "total_instructions": 8,
   "traces": [
     {
-      "execution_us": 36.706,
+      "execution_us": 50.289,
       "invoked_method": "Landroid/app/Activity;.onCreate (super)",
       "opcode": "invoke-super",
       "opcode_hex": "0x206f",
@@ -105,7 +105,7 @@
       "changed_registers": [
         "v2"
       ],
-      "execution_us": 15.122,
+      "execution_us": 17.958,
       "opcode": "new-instance",
       "opcode_hex": "0x0222",
       "pc": "0x0003",
@@ -204,7 +204,7 @@
       "changed_registers": [
         "v0"
       ],
-      "execution_us": 3.878,
+      "execution_us": 4.232,
       "opcode": "const-string",
       "opcode_hex": "0x001a",
       "pc": "0x0005",
@@ -302,7 +302,7 @@
       "status": "SUCCESS"
     },
     {
-      "execution_us": 9.753,
+      "execution_us": 9.21,
       "invoked_method": "android.content.Intent.<init>",
       "opcode": "invoke-direct",
       "opcode_hex": "0x2070",
@@ -402,7 +402,7 @@
       "status": "SUCCESS"
     },
     {
-      "execution_us": 9.526,
+      "execution_us": 9.22,
       "invoked_method": "Lpro/rudloff/lineageos_updater_shortcut/MainActivity;.startActivity",
       "opcode": "invoke-virtual",
       "opcode_hex": "0x206e",
@@ -502,7 +502,7 @@
       "status": "SUCCESS"
     },
     {
-      "execution_us": 3.407,
+      "execution_us": 3.291,
       "opcode": "goto",
       "opcode_hex": "0x0c28",
       "pc": "0x000d",
@@ -601,7 +601,7 @@
       "status": "BRANCH_TAKEN"
     },
     {
-      "execution_us": 6.309,
+      "execution_us": 5.408,
       "invoked_method": "Lpro/rudloff/lineageos_updater_shortcut/MainActivity;.finish",
       "opcode": "invoke-virtual",
       "opcode_hex": "0x106e",
@@ -701,7 +701,7 @@
       "status": "SUCCESS"
     },
     {
-      "execution_us": 3.671,
+      "execution_us": 2.923,
       "opcode": "return-void",
       "opcode_hex": "0x000e",
       "pc": "0x001c",
