@@ -6,28 +6,35 @@
 
 | Stage | Status | Progress |
 |-------|--------|----------|
-| APK Loading | BLOCKED | 50% (hangs on 82MB APK) |
-| Manifest Parsing | WORKING | 100% |
+| APK Loading | WORKING | 100% (cached, <1 second) |
+| Manifest Parsing | WORKING | 100% (activity-alias, targetActivity) |
 | Launcher Resolution | WORKING | 100% (org.telegram.ui.LaunchActivity) |
-| APK Parser Scalability | BLOCKED | 0% (no caching) |
-| MultiDex | BLOCKED | 0% (only classes.dex) |
-| DEX Execution | BLOCKED | 0% (blocked by above) |
-| Lifecycle Execution | BLOCKED | 0% |
+| MultiDex | WORKING | 100% (5 DEX files, 41,078 classes) |
+| DEX Execution | WORKING | 100% (309 instructions, return-void) |
+| Lifecycle Execution | WORKING | 100% (onCreate executed) |
 | JNI Support | NOT STARTED | 0% |
+| Native Libraries | NOT STARTED | 0% |
 
-## Current Blockers
+## Current Achievement
 
-### BLOCKER-023: APK Parser Scalability — CRITICAL
-- `extract_entry_from_memory` re-parses entire ZIP central directory per lookup
-- Telegram has 11,531 ZIP entries → extreme slowness/hang
-- **Fix needed**: Cache parsed central directory entries
+Telegram's LaunchActivity.onCreate() executes to completion:
+- 309 instructions executed
+- Method returned successfully (return-void)
+- 115 API call traces
+- 19 heap objects allocated
+- 20+ distinct opcode types exercised
 
-### BLOCKER-024: MultiDex Support — CRITICAL
-- Only `classes.dex` loaded (12,521 classes)
-- Telegram has 5 DEX files (41,078 total classes)
-- **Fix needed**: Load all classes*.dex, merge DexReports
+## Next Steps
+
+1. Implement P1: Recursive DEX method invocation
+   - invoke-* should call into nested DEX methods, not just API bridge
+   - This will allow execution of helper methods like Launcher.a()
+2. Implement P2: Android framework API stubs
+   - Real implementations for getIntent, startActivity, etc.
+3. Investigate Application.onCreate() (runs before Activity.onCreate)
+4. Document native library requirements (libtmessages.49.so)
 
 ## Git State
 - Branch: main
-- Last commit: 57347c7
-- 5 commits ahead of origin/main (push failed — no credentials)
+- Last commit: d7f9291
+- 8 commits ahead of origin/main (push failed — no credentials)
