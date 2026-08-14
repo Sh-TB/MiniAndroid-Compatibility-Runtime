@@ -1,11 +1,119 @@
 # MiniAndroid Project Worklog
 
 ---
-Task ID: EXP-032-PHASES4-8 (Object Model, API Strategy, Debug Protocol, Execution Gating, GitHub Preservation)
+Task ID: EXP-033 (AOSP/Dalvik Architecture Research)
 Agent: Main Agent
-Task: Complete remaining phases of EXP-032 AOSP Reference-Driven Acceleration
+Task: Pure research phase - study Dalvik/AOSP architecture before implementation
 
 Work Log:
+
+## Research Completed (NO CODE IMPLEMENTATION)
+
+### 1. Dalvik Architecture Notes Created
+- File: research/dalvik_architecture_notes.md (36KB, 5,300 words)
+- Content: Complete Dalvik VM internals documentation
+- Topics covered:
+  - Register-based execution model (v/p registers, instruction formats)
+  - Stack frame layout (ins[], locals[], outs[])
+  - Method invocation flow (all 5 invoke types)
+  - Object representation (header layout, heap allocation)
+  - Field resolution algorithm (iget/iput/sget/sput mechanics)
+  - Virtual dispatch mechanism (VTable construction and use)
+- References: AOSP dalvik/vm/Interp.c, oo/Object.h, oo/Resolve.c
+
+### 2. MiniAndroid vs Dalvik Comparison Created
+- File: research/miniandroid_vs_dalvik.md (31KB)
+- Analysis: 10-component architecture gap comparison
+- Findings:
+  - 🔴 Critical gaps: 4 (Virtual Dispatch, Object Header, Exception Handling, GC)
+  - 🟡 High gaps: 4 (Class Metadata, Field Table, Method Table, Interface Dispatch)
+  - 🟢 Medium gaps: 2 (Interpreter Loop optimization, Type System edge cases)
+- Each component compared with AOSP reference implementation
+- Implementation complexity estimates provided
+- Priority order recommended
+
+### 3. Main Research Report Created
+- File: docs/EXP033_RESEARCH_REPORT.md (64KB, 6,800 words)
+- Comprehensive analysis including:
+  - Evidence-based current status assessment (16 components scored)
+  - Blocker analysis with real trace evidence from run/ directory
+  - Simplest correct path recommendation (4-week MVP plan)
+  - Lightweight implementation ideas from JamVM, PhoneME, Anbox
+  - Next steps: 5-phase implementation plan
+
+### Key Findings Documented
+
+```
+Architecture Readiness Score: 52% (8/16 components at PASS level)
+
+CRITICAL BLOCKERS (must fix before real app execution):
+1. Bytecode Extraction: 20/22 APKs return NO_BYTECODE_FOUND
+   - Root cause: DEX structure parsing issue or invalid test APKs
+   
+2. Field Operations: 0% implemented (28 opcodes missing)
+   - Blocks: iget, iput, sget, sput and all variants
+   - Impact: Cannot access object fields at all
+   
+3. Virtual Dispatch: No VTable exists
+   - Blocks: invoke-virtual polymorphism
+   - Impact: Cannot call overridden methods correctly
+   
+4. Method Invocation: Stubbed only
+   - Current: Handlers exist but no real dispatch occurs
+   - Need: Integration with ClassInfo and VTable
+```
+
+### Recommended Implementation Path
+
+```
+Week 1: Fix Bytecode Extraction Bug
+  → Investigate why 20/22 APKs have no code_item
+  → Validate DEX parser against dexdump output
+  → Expected outcome: Real bytecode from multiple APKs
+
+Week 2-3: Field Access + VTable Implementation  
+  → Port EnhancedClassInfo from EXP-032 Phase 4 to C++
+  → Implement iget/iput/sget/sput opcodes (28 new opcodes!)
+  → Build VTable during class loading
+  → Expected outcome: Field operations working, virtual dispatch functional
+
+Week 4: Integration & Validation
+  → Wire new components into DalvikEngine
+  → Execute Activity.onCreate() with 50+ instructions
+  → Validate against real APK traces
+  → Expected outcome: MVP Android runtime capability
+```
+
+### Files Created (Research Only)
+
+```
+research/
+  ├── dalvik_architecture_notes.md    (36,866 bytes - Dalvik VM internals)
+  └── miniandroid_vs_dalvik.md        (31,117 bytes - Architecture comparison)
+
+docs/
+  └── EXP033_RESEARCH_REPORT.md       (64,389 bytes - Main report)
+```
+
+### Documentation Updated
+- README.md: Added EXP-033 section with key findings
+- CHANGELOG.md: Added detailed EXP-033 entry with evidence table
+- worklog.md: This entry
+
+Stage Summary:
+- ✅ Research phase complete (no code changes)
+- ✅ Three comprehensive research documents created
+- ✅ Current architecture fully analyzed vs AOSP Dalvik
+- ✅ Critical blockers identified with evidence
+- ✅ Recommended implementation path defined
+- ⏳ Ready for EXP-034 implementation phase
+
+---
+Task ID: EXP-032-PHASES4-8 (Object Model, API Strategy, Debug Protocol, Execution Gating, GitHub Preservation) [PREVIOUS]
+Agent: Main Agent  
+Task: Complete remaining phases of EXP-032 AOSP Reference-Driven Acceleration
+
+Work Log (Summary - see full details in earlier entry):
 
 ## PHASE 4: Object Model Improvement (COMPLETED)
 - Analyzed current object model in dalvik_engine.h/cpp (893 lines)
