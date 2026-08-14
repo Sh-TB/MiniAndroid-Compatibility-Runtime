@@ -611,26 +611,6 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         
         if (name == "category") {
             std::string category_name = get_attribute_value(attrs, "name");
-            // EXP-038 DEBUG: log raw attribute indices to find off-by-1
-            for (size_t ai = 0; ai < attrs.size(); ai++) {
-                // Also log the raw bytes at the attribute position
-                const uint8_t* attr_raw = reinterpret_cast<const uint8_t*>(&attrs[ai]);
-                std::string hex_bytes;
-                char buf[4];
-                for (size_t b = 0; b < sizeof(AxmlAttribute); b++) {
-                    snprintf(buf, sizeof(buf), "%02x", attr_raw[b]);
-                    hex_bytes += buf;
-                }
-                log("  attr[" + std::to_string(ai) + "]: name_idx=" + std::to_string(attrs[ai].name_index) +
-                    " rawValue_idx=" + std::to_string(attrs[ai].value_string_index) +
-                    " type=" + std::to_string(attrs[ai].value_data_type) +
-                    " data=" + std::to_string(attrs[ai].value_data) +
-                    " name='" + get_string(attrs[ai].name_index) + "'" +
-                    " rawValue='" + (attrs[ai].value_string_index < strings_.size() ? get_string(attrs[ai].value_string_index) : "<bad>") + "'" +
-                    " hex=" + hex_bytes);
-            }
-            log("  Category name (raw): '" + category_name + "' (len=" +
-                std::to_string(category_name.length()) + ")");
             if (category_name == "android.intent.category.LAUNCHER" || category_name == "LAUNCHER") {
                 activity_has_launcher_category_ = true;
                 log("Found LAUNCHER category");
@@ -657,13 +637,6 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
 }
 
 void ManifestReader::process_end_element(const std::string& ns, const std::string& name) {
-    // EXP-038 DEBUG: log end element names for activity
-    if (name == "activity" || name == "intent-filter") {
-        log("  END_ELEMENT @ ??? : name='" + name + "' in_activity_=" + (in_activity_ ? "true" : "false") +
-            " has_main=" + (activity_has_main_action_ ? "true" : "false") +
-            " has_launcher=" + (activity_has_launcher_category_ ? "true" : "false") +
-            " current_activity='" + current_activity_name_ + "'");
-    }
     // EXP-038 (BLOCKER-022 FIX): Also handle activity-alias END_ELEMENT
     if ((name == "activity" || name == "activity-alias") && in_activity_) {
         if (activity_has_main_action_ && activity_has_launcher_category_) {
