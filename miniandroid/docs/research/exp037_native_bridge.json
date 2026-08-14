@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://stackoverflow.com/questions/6209070/android-load-native-library",
+    "name": "Android load native library",
+    "snippet": "I'm trying to load a library I built with the standalone NDK toolchain. I built libGLmove.so and placed it in libs/armeabi of my Eclipse project However, ...",
+    "host_name": "stackoverflow.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/scijava/native-lib-loader",
+    "name": "scijava/native-lib-loader: Native library loader for extracting",
+    "snippet": "The native library loader is a utility that assists with loading native libraries from Java. It provides the ability to painlessly identify, extract and load ...",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://developer.android.com/guide/topics/manifest/uses-native-library-element",
+    "name": "<uses-native-library> | App architecture",
+    "snippet": "Specifies a vendor-provided shared native library that the application must be linked against. This element tells the system to make the native library ...",
+    "host_name": "developer.android.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://zhenhuaw.me/blog/2017/nativebridge-on-android.html",
+    "name": "NativeBridge - Manage Java Native Interface Functionality of",
+    "snippet": "The Library Loading on Android The library loading is invoked by System.loadLibrary(libname) (code, doc) in Java code of an application.",
+    "host_name": "zhenhuaw.me",
+    "rank": 3,
+    "date": "Dec 31, 2017",
+    "favicon": ""
+  },
+  {
+    "url": "https://mvnrepository.com/artifact/org.scijava/native-lib-loader",
+    "name": "org.scijava » native-lib-loader",
+    "snippet": "Native Library Loader A library for loading native libraries. Latest Versions 21 versions → Central (19) SciJava Public (2) android apache api",
+    "host_name": "mvnrepository.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.googlesource.com/platform/art/+/refs/heads/main/libnativebridge",
+    "name": "libnativebridge - platform/art - Git at Google",
+    "snippet": "The libnativebridge library handles loading of native libraries with a foreign ISA (aka translated libraries in the guest environment) into a managed JVM ...",
+    "host_name": "android.googlesource.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://packages.ubuntu.com/km/noble/arm64/android-libnativebridge",
+    "name": "Details of package android-libnativebridge in noble",
+    "snippet": "Android native bridge library. packages: android-libnativeloader. Download android-libnativebridge Download for all available architectures",
+    "host_name": "packages.ubuntu.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.kayssel.com/post/android-9",
+    "name": "Enhancing Android Security with Native Libraries",
+    "snippet": "1. Load the Native Library · 2. Declare the Native Function · 3. Call the Native Function in Your UI · 4. Testing the Application.",
+    "host_name": "www.kayssel.com",
+    "rank": 7,
+    "date": "Oct 13, 2024",
+    "favicon": ""
+  },
+  {
+    "url": "https://kotlinlang.org/docs/native-dynamic-libraries.html",
+    "name": "Kotlin/Native as a dynamic library – tutorial",
+    "snippet": "On Windows, you can include dynamic libraries either by generating a static library wrapper or manually with the LoadLibrary or similar Win32API ...",
+    "host_name": "kotlinlang.org",
+    "rank": 8,
+    "date": "Mar 31, 2026",
+    "favicon": ""
+  }
+]

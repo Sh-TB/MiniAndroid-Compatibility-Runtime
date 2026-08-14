@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://www.reddit.com/r/linuxquestions/comments/uo52ik/why_are_all_android_on_linux_projects_emulating",
+    "name": "Why are all \"android on linux\" projects emulating",
+    "snippet": "Anbox and waydoid are running existing android images inside of containers (I know technically this is not emulation, more like a VM), why is there no ...",
+    "host_name": "www.reddit.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/Anbox",
+    "name": "Anbox",
+    "snippet": "Anbox is a free and open-source compatibility layer that allows Android applications to run on Linux distributions by using containerization techniques. Read more",
+    "host_name": "en.wikipedia.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.bleepingcomputer.com/forums/t/770768/anbox-a-android-compatibility-layer-for-linux",
+    "name": "Anbox a Android compatibility layer for Linux. - Linux & Unix",
+    "snippet": "Apr 9, 2022 — I just found out about this Android compatibility layer for Linux called Anbox its made by Canonical it looks promising I only wish it ... Read more",
+    "host_name": "www.bleepingcomputer.com",
+    "rank": 2,
+    "date": "Apr 9, 2022",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.facebook.com/ubuntulinux/posts/one-platform-two-paths-the-latest-release-of-anbox-cloud-now-supports-two-comple/2677037237783656",
+    "name": "One platform, two paths. The latest release of Anbox Cloud",
+    "snippet": "Anbox Cloud now supports. Supported architectures : ARM64 + AMD64 Android versions: 8.1 → 16 Display settings, GPU modes, and GMS. Compatibility ...",
+    "host_name": "www.facebook.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/anbox/anbox",
+    "name": "Anbox is a container-based approach to boot a full Android",
+    "snippet": "Feb 13, 2024 — Anbox is a container-based approach to boot a full Android system on a regular GNU/Linux system like Ubuntu. In other words: Anbox will let you ... Read more",
+    "host_name": "github.com",
+    "rank": 4,
+    "date": "Feb 13, 2024",
+    "favicon": ""
+  },
+  {
+    "url": "https://magazine.odroid.com/article/linux-gaming-anbox-android-in-a-box",
+    "name": "Linux Gaming: Anbox - Android In A Box",
+    "snippet": "Nov 1, 2019 — Anbox is a new form of Android emulation , where you can run Android directly on your Linux OS rather than booting Android directly on the system ... Read more",
+    "host_name": "magazine.odroid.com",
+    "rank": 5,
+    "date": "Nov 1, 2019",
+    "favicon": ""
+  },
+  {
+    "url": "https://source.android.com/docs/core/architecture",
+    "name": "Architecture overview",
+    "snippet": "Jun 17, 2026 — There are two levels of compatibility for devices implementing AOSP: AOSP compatibility and Android compatibility . An AOSP-compatible device ... Read more",
+    "host_name": "source.android.com",
+    "rank": 6,
+    "date": "Jun 17, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://canonical.com/anbox-cloud",
+    "name": "Anbox Cloud",
+    "snippet": "Anbox Cloud provides the operational layer for Android workloads: orchestration, lifecycle management, GPU acceleration, low-latency streaming, and automation.",
+    "host_name": "canonical.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]
