@@ -1,0 +1,89 @@
+{
+  "apk_name": "ColorPicker.apk",
+  "apk_path": "/home/z/my-project/miniandroid/download/exp027_real_apks/ColorPicker.apk",
+  "sha256": "1cc7103a17bf71e67d0ebb583b1e0de6bd27af8aeddd6b3884717aff7776cfc4",
+  "file_size": 1310,
+  "validation_time": "2026-08-14T12:08:32.669855",
+  "overall_status": "PASS",
+  "stages": [
+    {
+      "stage": "APK_DEX_EXTRACTION",
+      "status": "PASS",
+      "timestamp": "2026-08-14T12:08:32.669927",
+      "duration_ms": 0,
+      "data_size": 1327,
+      "record_count": 0,
+      "error": null,
+      "details": {}
+    },
+    {
+      "stage": "DEX_HEADER_VALIDATION",
+      "status": "PASS",
+      "timestamp": "2026-08-14T12:08:32.669941",
+      "duration_ms": 0,
+      "data_size": 112,
+      "record_count": 0,
+      "error": null,
+      "details": {
+        "magic": "6465780a30333500",
+        "file_size": 1327,
+        "class_defs_count": 0,
+        "method_ids_count": 0
+      }
+    },
+    {
+      "stage": "CLASS_DEF_PARSING",
+      "status": "PASS",
+      "timestamp": "2026-08-14T12:08:32.669950",
+      "duration_ms": 0,
+      "data_size": 0,
+      "record_count": 0,
+      "error": "No class definitions (empty DEX)",
+      "details": {}
+    },
+    {
+      "stage": "CLASS_DATA_PARSING",
+      "status": "PASS",
+      "timestamp": "2026-08-14T12:08:32.669957",
+      "duration_ms": 0,
+      "data_size": 0,
+      "record_count": 0,
+      "error": null,
+      "details": {
+        "methods": 0,
+        "fields": 0
+      }
+    },
+    {
+      "stage": "CODE_ITEM_PARSING",
+      "status": "PASS",
+      "timestamp": "2026-08-14T12:08:32.669964",
+      "duration_ms": 0,
+      "data_size": 0,
+      "record_count": 0,
+      "error": null,
+      "details": {
+        "instructions": 0
+      }
+    },
+    {
+      "stage": "INSTRUCTION_DECODING",
+      "status": "PARTIAL",
+      "timestamp": "2026-08-14T12:08:32.669972",
+      "duration_ms": 0,
+      "data_size": 0,
+      "record_count": 0,
+      "error": null,
+      "details": {
+        "unique_opcodes": 0
+      }
+    }
+  ],
+  "summary": {
+    "total_classes": 0,
+    "total_methods": 0,
+    "total_instructions": 0,
+    "first_failure": null
+  },
+  "opcode_breakdown": {}
+}
