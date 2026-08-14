@@ -13,122 +13,105 @@
 | APK Path | `download/exp038_telegram/Telegram.apk` |
 | Size | 82,680,854 bytes (78.9 MB) |
 | SHA256 | `193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e` |
-| SHA1 | `e85eb1668c450fccc64fd87c2b98f8eb43949e16` |
 | Package | `org.telegram.messenger.web` |
-| Min SDK | 21 |
-| Target SDK | 35 |
+| Min SDK | 21, Target SDK | 35 |
 | DEX Files | 5 (classes.dex through classes5.dex) |
 | Total Classes | 41,078 |
 | Total Methods | 253,898 |
 | Total Fields | 167,533 |
-| Total Strings | 259,552 |
-| Native Libraries | 8 (4 architectures × 2 libs) |
-| Native Libs | `libtmessages.49.so`, `liblanguage_id_l2c_jni.so` |
+| Native Libraries | 8 (libtmessages.49.so, liblanguage_id_l2c_jni.so) |
 | Architectures | arm64-v8a, armeabi-v7a, x86, x86_64 |
-| ZIP Entries | 11,531 |
 | Launcher Activity | `org.telegram.ui.LaunchActivity` (via activity-alias) |
 
 ---
 
-## BLOCKER-022: Manifest reader didn't track activity-alias — FIXED
+## MILESTONE: LaunchActivity.onCreate() executes to completion
 
-### Evidence
+**Date:** 2026-08-15
+
+Telegram's `LaunchActivity.onCreate(Bundle)` method executes ALL 309 instructions
+and reaches `return-void`. This is the first time a real Telegram method has been
+fully executed by MiniAndroid.
+
 ```
-[ManifestReader] Activity: org.telegram.ui.LaunchActivity
-[ManifestReader] Found MAIN action
-[ManifestReader] Activity: org.telegram.ui.BubbleActivity
+[DalvikEngine] 🎯 CALLING execute_method_internal() for onCreate with 1330 instructions
+[DalvikEngine] Executing: Lorg/telegram/ui/LaunchActivity;.onCreate(Landroid/os/Bundle;)V
 ...
-(no "Found LAUNCHER category" anywhere)
-Main Activity: (empty)
-Launcher resolved: androidx.activity.ComponentActivity$1
-```
-
-### Root Cause
-Telegram uses `<activity-alias>` elements (not `<activity>`) to declare
-launcher intent-filters. The manifest reader only set `in_activity_=true`
-for `name=="activity"`, not for `name=="activity-alias"`. All LAUNCHER
-categories were inside activity-alias elements and were skipped.
-
-### Fix
-- `process_start_element`: also track `activity-alias` elements
-- `process_end_element`: also check `activity-alias` for END_ELEMENT
-- Capture `targetActivity` attribute and use it as the real main activity
-- Only set `main_activity` on FIRST match (Telegram has 6+ launcher aliases)
-
-### Verification
-After fix:
-```
-[ManifestReader] Found LAUNCHER category
-[ManifestReader] Main Activity: org.telegram.ui.LaunchActivity
+[DalvikEngine]   [308] 0x501: return-void
+[DalvikEngine] Method returned successfully
+[DalvikEngine] Instructions executed: 309
+  Instructions executed: 309
+  Final status: 0 (COMPLETED_SUCCESS)
+  API call traces: 115
+  Heap objects: 19
 ```
 
 ---
 
-## BLOCKER-023: APK parser crashes on 82MB Telegram APK — OPEN
+## BLOCKERS FIXED
 
-### Evidence
-```
-$ ./build/miniandroid_megabatch download/exp038_telegram/Telegram.apk run/exp038_telegram/
-[Phase A] Loading APK: download/exp038_telegram/Telegram.apk
-Segmentation fault (core dumped)
-```
-
-ASan trace:
-```
-ERROR: AddressSanitizer: SEGV on unknown address 0x0000000001a6
-SUMMARY: AddressSanitizer: SEGV src/apk/apk_parser.cpp:264
-```
-
-### Root Cause
-The APK parser loads the entire 82MB APK into memory and parses all
-11,531 ZIP central directory entries. The crash occurs at line 264
-of `apk_parser.cpp` during `parse_apk_data`. Likely a stack overflow
-or memory allocation issue when handling the large ZIP structure.
-
-### Fix
-Not yet implemented. Needs investigation of APK parser memory handling
-for large APKs. Possible approaches:
-1. Use memory-mapped I/O instead of loading entire APK into memory
-2. Optimize ZIP central directory parsing to avoid excessive allocations
-3. Add proper bounds checking for large entry counts
-
-### Status: OPEN
+### BLOCKER-022: activity-alias tracking — FIXED
+### BLOCKER-023: APK parser caching — FIXED (O(1) entry lookup)
+### BLOCKER-024: MultiDex support — FIXED (5 DEX files, 41,078 classes)
+### BLOCKER-025: Launcher resolution via manifest — FIXED (exact match)
+### BLOCKER-026: move-object/from16 (0x08) — FIXED
+### BLOCKER-027: sput-boolean and sget/sput variants — FIXED
+### BLOCKER-028: Arithmetic opcodes (35 new) — FIXED
+### BLOCKER-029: if-eqz/if-nez opcode values off by 1 — FIXED
+### BLOCKER-030: invoke-*/range opcodes — FIXED
+### BLOCKER-031: Array opcodes (new-array, aget, aput) — FIXED
+### BLOCKER-032: const/high16 (0x15) — FIXED
 
 ---
 
-## BLOCKER-024: Multidex — only classes.dex loaded — OPEN
+## OPEN BLOCKERS
 
-### Evidence
-```
-[State] MANIFEST_RESOLVED → DEX_LOADED: DEX loaded: 12521 classes
-  Classes: 12521
-  Methods: 65452
-```
+### BLOCKER-033: Multidex method_idx remapping — OPEN
 
-Telegram has 5 DEX files with 41,078 total classes. Only `classes.dex`
-(12,521 classes) is loaded. The other 4 DEX files (classes2.dex through
-classes5.dex) are not parsed.
+**Problem:** When merging DEX files, method_ids from all 5 DEX files are
+concatenated into one array. But bytecode uses per-DEX method_idx values.
+A method_idx of 100 in classes3.dex now resolves to method 100 in the
+merged array (which is from classes.dex), giving wrong method names.
 
-### Root Cause
-`ApplicationRuntime::load_dex()` only extracts and parses `classes.dex`
-from the APK. It does not handle multidex APKs.
+**Impact:** Method names in the trace are wrong (e.g., showing
+`com.google.android.gms.internal.mlkit_language_id_common.zzig.zze`
+instead of the actual Telegram method). Execution still works because
+all invokes go through the API bridge stub, but proper method resolution
+requires per-DEX index tracking.
 
-### Fix
-Not yet implemented. Need to:
-1. Extract all `classes*.dex` files from the APK
-2. Parse each one
-3. Merge the DexReports (or use a combined DexReport)
+**Fix needed:** Store per-DEX DexReports and track which DEX each class
+came from. When resolving method_idx, use the correct DEX's method_ids.
 
-### Status: OPEN
+### BLOCKER-034: Recursive DEX method invocation — OPEN
+
+**Problem:** invoke-* instructions bridge to API stubs (which return null/void)
+instead of executing the target method's DEX bytecode. Real Android apps call
+helper methods that contain real logic.
+
+**Impact:** Telegram's onCreate calls many helper methods (e.g., ApplicationLoader,
+AndroidUtilities, etc.) whose bytecode is never executed.
+
+**Fix needed:** When invoke-* resolves a method that has bytecode, create a new
+stack frame and recursively call execute_method_internal().
+
+### BLOCKER-035: Native library loading — NOT STARTED
+
+**Problem:** Telegram requires libtmessages.49.so for core functionality.
+The runtime has no JNI bridge or native library loader.
+
+**Impact:** Telegram's Application.onCreate() likely calls
+System.loadLibrary("tmessages") which will fail.
+
+**Status:** Documented but not implemented. Native support is a major milestone.
 
 ---
 
 ## COMPLETION GATE
 
 - [x] Telegram APK downloaded
-- [x] SHA256 recorded (193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e)
-- [ ] DEX parsed (PARTIAL — only classes.dex, BLOCKER-024)
-- [x] Launcher resolved (org.telegram.ui.LaunchActivity via activity-alias)
-- [x] First crash/blocker documented (BLOCKER-023)
-- [x] Fixes committed
-- [ ] Rerun evidence exists (blocked by BLOCKER-023)
+- [x] SHA256 recorded
+- [x] DEX parsed (all 5 DEX files, 41,078 classes)
+- [x] Launcher resolved (org.telegram.ui.LaunchActivity)
+- [x] DEX execution (LaunchActivity.onCreate() — 309 instructions, return-void)
+- [x] Fixes committed (commit d7f9291)
+- [x] Rerun evidence exists (run/exp038_telegram/)
