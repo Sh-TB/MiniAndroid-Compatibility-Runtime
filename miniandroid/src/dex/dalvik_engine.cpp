@@ -90,7 +90,15 @@ json DalvikValue::to_json() const {
 // Constructor/Destructor
 // ============================================================================
 
-DalvikExecutionEngine::DalvikExecutionEngine() {
+DalvikExecutionEngine::DalvikExecutionEngine()
+    // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): VirtualDispatcher requires a
+    // MethodResolver* in its constructor (no default ctor). The previous code
+    // relied on a default ctor that never existed. We pass nullptr for now;
+    // vtable_dispatcher_ is currently unused (the dispatch_virtual_call path
+    // was removed because it referenced API surface that does not exist).
+    // When BLOCKER-002 (method_ids parsing) and BLOCKER-003 (field_ids parsing)
+    // land, a real MethodResolver will be wired in here.
+    : vtable_dispatcher_(nullptr) {
     log("DalvikExecutionEngine initialized");
 }
 
@@ -879,40 +887,70 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
 DalvikExecutionEngine::FieldResolution DalvikExecutionEngine::resolve_field(uint16_t field_idx) {
     FieldResolution resolution;
     
-    if (!dex_report_ || field_idx >= dex_report_->fields.size()) {
-        resolution.error_message = "Field index out of range or no DEX report";
-        log("❌ FIELD RESOLUTION FAILED: " + resolution.error_message);
-        return resolution;
-    }
-    
-    const auto& field = dex_report_->fields[field_idx];
-    resolution.class_descriptor = field.class_descriptor;
-    resolution.field_name = field.name;
-    resolution.field_type = field.type_descriptor;
-    resolution.resolved = true;
-    
-    // Try to get offset from runtime metadata if available
-    auto class_it = class_info_cache_.find(field.class_descriptor);
-    if (class_it != class_info_cache_.end() && class_it->second) {
-        const auto& class_info = *(class_it->second);
-        for (const auto& inst_field : class_info.instance_fields) {
-            if (inst_field.name == field.name) {
-                resolution.field_offset = inst_field.byte_offset;
-                break;
-            }
-        }
-        resolution.is_static = false;
-    } else {
-        // Check if it's a static field by convention
-        // In DEX, we'd need to check class_def static_fields, but for now use heuristic
-        resolution.is_static = false;  // Default to instance field
-    }
-    
-    log("✅ FIELD RESOLVED: " + field.class_descriptor + "." + field.name + 
-        " offset=" + std::to_string(resolution.field_offset) +
-        " type=" + field.type_descriptor);
-    
+    // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX):
+    // The previous code referenced dex_report_->fields (a std::vector) which
+    // does not exist on DexReport. DexReport stores only fields_count from
+    // the DEX header. The actual field_ids[] table is never parsed by
+    // DexParser. As a result, ANY sget/sput/iget/iput instruction that
+    // references a real field_idx cannot be resolved by this function.
+    //
+    // BLOCKER-003: DexParser must parse field_ids[] table and expose it on
+    //   DexReport as a vector<FieldId> with {class_idx, type_idx, name_idx}.
+    //   Without this, the runtime cannot resolve static/instance field
+    //   accesses from real DEX bytecode (any real APK will hit this).
+    //
+    // BLOCKER-002: Same gap exists for method_ids[] (invoke-virtual/direct/
+    //   static/interface cannot resolve method_idx → method name).
+    //
+    // Graceful degradation: return unresolved, log a blocker marker, and let
+    // the calling opcode handler decide how to proceed (typically it will
+    // log + return false, halting execution at that PC).
+    (void)field_idx;  // mark as intentionally unused until BLOCKER-003 fix lands
+    resolution.error_message =
+        "Field index " + std::to_string(field_idx) +
+        " cannot be resolved: DexReport does not expose field_ids[] table "
+        "[BLOCKER-003: DexParser must parse field_ids[] table]";
+    log("❌ FIELD RESOLUTION FAILED: " + resolution.error_message);
     return resolution;
+    
+    // --- ORIGINAL BROKEN CODE (preserved for BLOCKER-003 fix) ---
+    // The block below will be re-enabled once DexParser exposes field_ids[].
+    // if (!dex_report_ || field_idx >= dex_report_->fields.size()) {
+    //     resolution.error_message = "Field index out of range or no DEX report";
+    //     log("❌ FIELD RESOLUTION FAILED: " + resolution.error_message);
+    //     return resolution;
+    // }
+    //
+    // const auto& field = dex_report_->fields[field_idx];
+    // resolution.class_descriptor = field.class_descriptor;
+    // resolution.field_name = field.name;
+    // resolution.field_type = field.type_descriptor;
+    // resolution.resolved = true;
+    
+    // --- END BROKEN CODE ---
+    // The runtime-metadata lookup block below (class_info_cache_.find etc.)
+    // was reachable in the original broken code but referenced `field` which
+    // no longer exists. It is preserved commented-out for the BLOCKER-003 fix.
+    //
+    // auto class_it = class_info_cache_.find(field.class_descriptor);
+    // if (class_it != class_info_cache_.end() && class_it->second) {
+    //     const auto& class_info = *(class_it->second);
+    //     for (const auto& inst_field : class_info.instance_fields) {
+    //         if (inst_field.name == field.name) {
+    //             resolution.field_offset = inst_field.byte_offset;
+    //             break;
+    //         }
+    //     }
+    //     resolution.is_static = false;
+    // } else {
+    //     resolution.is_static = false;
+    // }
+    //
+    // log("✅ FIELD RESOLVED: " + field.class_descriptor + "." + field.name + 
+    //     " offset=" + std::to_string(resolution.field_offset) +
+    //     " type=" + field.type_descriptor);
+    //
+    // return resolution;
 }
 
 bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
@@ -928,7 +966,7 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
     if (!field_res.resolved) {
-        trace.halt_reason = "Failed to resolve field index " + std::to_string(field_idx);
+        trace.error_message = "Failed to resolve field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
         return false;
     }
     
@@ -965,7 +1003,7 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
                 log("⚠️ IGET: field not found in object, using default");
             }
         } else {
-            trace.halt_reason = "iget: object " + std::to_string(obj_ref.object_id) + " not in heap";
+            trace.error_message = "iget: object " + std::to_string(obj_ref.object_id) + " not in heap"; trace.status = InstructionTrace::Status::CRASH_ERROR;
             log("❌ IGET ERROR: " + trace.halt_reason);
             return false;
         }
@@ -1003,7 +1041,7 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
     if (!field_res.resolved) {
-        trace.halt_reason = "Failed to resolve field index " + std::to_string(field_idx);
+        trace.error_message = "Failed to resolve field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
         return false;
     }
     
@@ -1039,7 +1077,7 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                 log("⚠️ IGET-OBJECT: field not found, returning null");
             }
         } else {
-            trace.halt_reason = "iget-object: object not in heap";
+            trace.error_message = "iget-object: object not in heap"; trace.status = InstructionTrace::Status::CRASH_ERROR;
             log("❌ IGET-OBJECT ERROR: " + trace.halt_reason);
             return false;
         }
@@ -1074,7 +1112,7 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
     if (!field_res.resolved) {
-        trace.halt_reason = "Failed to resolve field index " + std::to_string(field_idx);
+        trace.error_message = "Failed to resolve field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
         return false;
     }
     
@@ -1102,7 +1140,7 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
                 log("⚠️ IPUT: failed to store field");
             }
         } else {
-            trace.halt_reason = "iput: object not in heap";
+            trace.error_message = "iput: object not in heap"; trace.status = InstructionTrace::Status::CRASH_ERROR;
             log("❌ IPUT ERROR: " + trace.halt_reason);
             return false;
         }
@@ -1135,7 +1173,7 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
     if (!field_res.resolved) {
-        trace.halt_reason = "Failed to resolve field index " + std::to_string(field_idx);
+        trace.error_message = "Failed to resolve field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
         return false;
     }
     
@@ -1145,7 +1183,7 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
     // Get target object
     DalvikValue obj_ref = get_register(obj_reg);
     if (obj_ref.type != DalvikType::OBJECT_REF && obj_ref.type != DalvikType::NULL_REF) {
-        trace.halt_reason = "iput-object: target is not an object reference";
+        trace.error_message = "iput-object: target is not an object reference"; trace.status = InstructionTrace::Status::CRASH_ERROR;
         log("❌ IPUT-OBJECT ERROR: " + trace.halt_reason);
         return false;
     }
@@ -1161,7 +1199,7 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
                 log("⚠️ IPUT-OBJECT: failed to store field");
             }
         } else {
-            trace.halt_reason = "iput-object: target object not in heap";
+            trace.error_message = "iput-object: target object not in heap"; trace.status = InstructionTrace::Status::CRASH_ERROR;
             log("❌ IPUT-OBJECT ERROR: " + trace.halt_reason);
             return false;
         }
@@ -1195,7 +1233,7 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
     if (!field_res.resolved) {
-        trace.halt_reason = "Failed to resolve static field index " + std::to_string(field_idx);
+        trace.error_message = "Failed to resolve static field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
         return false;
     }
     
@@ -1245,7 +1283,7 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
     if (!field_res.resolved) {
-        trace.halt_reason = "Failed to resolve static field index " + std::to_string(field_idx);
+        trace.error_message = "Failed to resolve static field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
         return false;
     }
     
@@ -1294,7 +1332,7 @@ bool DalvikExecutionEngine::execute_sput(uint32_t pc, InstructionTrace& trace) {
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
     if (!field_res.resolved) {
-        trace.halt_reason = "Failed to resolve static field index " + std::to_string(field_idx);
+        trace.error_message = "Failed to resolve static field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
         return false;
     }
     
@@ -1336,7 +1374,7 @@ bool DalvikExecutionEngine::execute_sput_object(uint32_t pc, InstructionTrace& t
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
     if (!field_res.resolved) {
-        trace.halt_reason = "Failed to resolve static field index " + std::to_string(field_idx);
+        trace.error_message = "Failed to resolve static field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
         return false;
     }
     
@@ -1414,39 +1452,21 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         if (auto* heap_obj = heap_.get(this_obj.object_id)) {
             runtime_type = heap_obj->class_descriptor;
             
-            // Resolve method name from DEX if available
-            if (dex_report_ && method_idx < dex_report_->methods.size()) {
-                const auto& method_info = dex_report_->methods[method_idx];
-                method_name_from_dex = method_info.name;
-                
-                // EXP-035: Use VTable dispatcher for resolution
-                runtime::InvocationContext invocation;
-                invocation.caller_class = current_class_;  // Class containing the invoke instruction
-                invocation.caller_method = current_method_;
-                invocation.target_class_static = static_type;  // Static type from declaration
-                invocation.target_class_runtime = runtime_type;  // Actual runtime type
-                invocation.method_name = method_name_from_dex;
-                invocation.method_descriptor = method_info.descriptor;  // If available
-                
-                // Attempt VTable lookup
-                auto dispatch_result = vtable_dispatcher_.dispatch_virtual_call(invocation);
-                
-                if (dispatch_result.success) {
-                    resolved_method = dispatch_result.resolved_method_class + "." + 
-                                     dispatch_result.resolved_method_name;
-                    
-                    log("✅ VTABLE DISPATCH: " + method_name_from_dex +
-                        " | static=" + static_type +
-                        " | runtime=" + runtime_type +
-                        " | resolved=" + resolved_method);
-                } else {
-                    resolved_method = runtime_type + "." + method_name_from_dex;
-                    log("⚠️ VTABLE DISPATCH: Using fallback resolution (" + 
-                        dispatch_result.failure_reason + ")");
-                }
-            } else {
-                resolved_method = runtime_type + "." + method_name_from_dex;
-            }
+            // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX):
+            // The previous code referenced dex_report_->methods (a std::vector)
+            // and dex_report_->methods[method_idx], neither of which exist on
+            // DexReport. DexReport only stores methods_count (uint32_t from the
+            // DEX header) and a per-class breakdown via classes[].direct_methods /
+            // classes[].virtual_methods. The proper fix is to parse the method_ids[]
+            // table in DexParser and expose it. Until that lands, we degrade
+            // gracefully: skip the VTable dispatch attempt and fall back to the
+            // runtime_type.method_idx form. This unblocks the build without
+            // fabricating API surface.
+            resolved_method = runtime_type + "." + method_name_from_dex;
+            log("⚠️ INVOKE-VIRTUAL: method_idx " + std::to_string(method_idx) +
+                " could not be resolved via DexReport (method_ids[] table not parsed). " +
+                "Falling back to runtime_type.method_idx. " +
+                "[BLOCKER-002: method_ids table parsing required for real VTable dispatch]");
         } else {
             // Object not in heap - use static type as fallback
             runtime_type = static_type;
@@ -1621,7 +1641,10 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // Similar to other invokes but for interface dispatch
     if (pc + 2 >= bytecode_.size()) return false;
     
-    uint16_t instr = bytecode_[pc];
+    // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): removed unused `instr` local
+    // that triggered -Wunused-variable. The 35c format's vA nibble (5th reg)
+    // is only needed for variadic invoke-interface with 5+ args, which this
+    // simplified handler does not yet support.
     uint16_t method_idx = bytecode_[pc + 2];
     
     std::string method_name = "<interface_method:" + std::to_string(method_idx) + ">";

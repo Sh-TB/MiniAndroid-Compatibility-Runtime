@@ -671,6 +671,11 @@ struct InstructionTrace {
     
     // Error info
     std::optional<std::string> error_message;
+    // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): halt_reason was referenced by
+    // execute_iget/iput/sget/sput-object handlers in dalvik_engine.cpp but was
+    // never declared on this struct, breaking the build. Treat it as a peer
+    // of error_message (used by the trace consumer for halt diagnostics).
+    std::string halt_reason;
     
     // Timing
     double execution_us = 0;
@@ -957,7 +962,11 @@ private:
     DalvikHeap heap_;
     
     // EXP-035: Field System State
-    std::map<std::string, runtime::DalvikValue> static_field_storage_;  // key: "class_descriptor.field_name"
+    // NOTE: DalvikValue is in miniandroid::dalvik (this namespace), not miniandroid::runtime.
+    // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): corrected namespace reference; the
+    // previous commit (3392b03 EXP-035) referenced runtime::DalvikValue which does
+    // not exist, breaking the entire build since EXP-035.
+    std::map<std::string, DalvikValue> static_field_storage_;  // key: "class_descriptor.field_name"
     std::map<std::string, std::shared_ptr<runtime::RuntimeClassInfo>> class_info_cache_;  // cached class metadata
     
     // EXP-035: VTable Dispatch State
