@@ -66,8 +66,16 @@ namespace Opcode {
     constexpr uint16_t MOVE_OBJECT_FROM16 = 0x08; // move-object/from16 vAA, vBBBB
     constexpr uint16_t MOVE_OBJECT_16 = 0x09; // move-object/16 vAAAA, vBBBB
     constexpr uint16_t MOVE_RESULT = 0x0A;   // move-result vAA
-    constexpr uint16_t MOVE_RESULT_OBJECT = 0x0B; // move-result-object vAA
-    constexpr uint16_t MOVE_RESULT_WIDE = 0x0C; // move-result-wide vAA
+    // EXP-037 Phase B (BLOCKER-021 FIX): Previous code had MOVE_RESULT_OBJECT
+    // = 0x0B and MOVE_RESULT_WIDE = 0x0C — SWAPPED. Per AOSP:
+    //   0x0a = move-result
+    //   0x0b = move-result-wide
+    //   0x0c = move-result-object
+    // TinyMusicPlayer's onCreate hits 0x0c (move-result-object) at PC=6 and
+    // was being dispatched to execute_move_result_wide handler (which doesn't
+    // exist — falls through to "unimplemented").
+    constexpr uint16_t MOVE_RESULT_WIDE = 0x0B;   // move-result-wide vAA
+    constexpr uint16_t MOVE_RESULT_OBJECT = 0x0C; // move-result-object vAA
     constexpr uint16_t MOVE_EXCEPTION = 0x0D; // move-exception vAA
     
     // Returns (4 opcodes)
@@ -835,6 +843,23 @@ public:
     DalvikExecutionResult execute_apk(
         const std::string& apk_path,
         const dex::DexReport& dex_report,
+        bool verbose = false
+    );
+
+    /**
+     * EXP-037 Phase B (BLOCKER-019): Execute APK with explicit activity class
+     * name from the AndroidManifest.xml. This bypasses the class-name-scan
+     * heuristic in execute_apk() which fails for obfuscated APKs (e.g.
+     * TinyMusicPlayer uses La/a;, La/b;, etc.).
+     *
+     * `activity_class_name` is the manifest's main_activity in DEX type
+     * descriptor form, e.g. "Lcom/martinmimigames/tinymusicplayer/Launcher;".
+     * If empty, falls back to the scan-based heuristic.
+     */
+    DalvikExecutionResult execute_apk_with_activity(
+        const std::string& apk_path,
+        const dex::DexReport& dex_report,
+        const std::string& activity_class_name,
         bool verbose = false
     );
     

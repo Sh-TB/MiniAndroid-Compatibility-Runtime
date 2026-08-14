@@ -115,6 +115,17 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk(
     const dex::DexReport& dex_report,
     bool verbose
 ) {
+    // EXP-037 Phase B (BLOCKER-019): delegate to execute_apk_with_activity
+    // with empty activity name (falls back to scan-based heuristic).
+    return execute_apk_with_activity(apk_path, dex_report, std::string(), verbose);
+}
+
+DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
+    const std::string& apk_path,
+    const dex::DexReport& dex_report,
+    const std::string& activity_class_name,
+    bool verbose
+) {
     verbose_ = verbose;
     // EXP-037 Phase B (BLOCKER-002 + BLOCKER-015 FIX):
     // Store the DexReport pointer so invoke-* / iget/iput/sget/sput handlers
@@ -188,11 +199,69 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk(
     // Find main activity entry point
     if (!dex_report.classes.empty()) {
         log("🔍 Searching " + std::to_string(dex_report.classes.size()) + " classes for entry point...");
-        
-        // Look for Activity-like classes
+
+        // EXP-037 Phase B (BLOCKER-019 FIX): If the caller provided an explicit
+        // activity_class_name from the AndroidManifest, look for that class
+        // first. This bypasses the "Activity"/"Main"/"activity" name scan
+        // which fails for obfuscated APKs (e.g. TinyMusicPlayer uses La/a;,
+        // La/b;, etc.).
+        //
+        // The activity_class_name is expected to be in DEX type descriptor
+        // form, e.g. "Lcom/martinmimigames/tinymusicplayer/Launcher;".
+        // If the manifest gives it in dotted form ("com.foo.Launcher"),
+        // the caller should convert it.
+        if (!activity_class_name.empty()) {
+            log("🎯 Manifest-provided activity class: " + activity_class_name);
+            for (const auto& cls : dex_report.classes) {
+                bool match = (cls.name == activity_class_name);
+                // Also try with L prefix + ; suffix if caller passed dotted form
+                if (!match) {
+                    std::string descriptor_form = "L" + activity_class_name + ";";
+                    match = (cls.name == descriptor_form);
+                }
+                // Also try replacing '.' with '/' (dotted → descriptor form)
+                if (!match) {
+                    std::string converted = activity_class_name;
+                    for (auto& c : converted) if (c == '.') c = '/';
+                    std::string descriptor_form2 = "L" + converted + ";";
+                    match = (cls.name == descriptor_form2);
+                }
+                if (match) {
+                    log("  ✅ Found manifest activity class in DEX: " + cls.name);
+                    result.main_class = cls.name;
+                    // Find onCreate method
+                    for (const auto& method : cls.all_methods()) {
+                        if (method.name == "onCreate" || method.name == "main") {
+                            result.main_method = method.name;
+                            log("Found entry point: " + method.name + method.descriptor);
+                            if (!method.bytecode.empty()) {
+                                log("🎯 CALLING execute_method_internal() for " + method.name +
+                                    " with " + std::to_string(method.bytecode.size()) + " instructions");
+                                execute_method_internal(
+                                    cls.name,
+                                    method.name,
+                                    method.descriptor,
+                                    method.bytecode,
+                                    10, 1, 4, {}, result
+                                );
+                                log("✅ execute_method_internal() returned");
+                            } else {
+                                log("⚠️ Method " + method.name + " has EMPTY bytecode - skipping");
+                            }
+                            break;
+                        }
+                    }
+                    // Skip the legacy scan loop
+                    goto entry_point_search_done;
+                }
+            }
+            log("⚠️ Manifest activity class '" + activity_class_name + "' not found in DEX — falling back to scan");
+        }
+
+        // Look for Activity-like classes (legacy heuristic)
         for (const auto& cls : dex_report.classes) {
             log("  Checking class: [" + cls.name + "] for Activity/Main/activity");
-            
+
             if (cls.name.find("Activity") != std::string::npos ||
                 cls.name.find("Main") != std::string::npos ||
                 cls.name.find("activity") != std::string::npos) {
@@ -231,7 +300,8 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk(
                 break;
             }
         }
-        
+        entry_point_search_done: ;
+
         // If no Activity found, try first class with methods
         log("🔍 main_method is " + (result.main_method.empty() ? "EMPTY" : result.main_method) + ", trying fallback...");
         if (result.main_method.empty()) {

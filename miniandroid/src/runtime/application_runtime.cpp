@@ -838,20 +838,16 @@ bool ApplicationRuntime::execute_on_create() {
 
         // Use DalvikExecutionEngine — the full-featured interpreter.
         miniandroid::dalvik::DalvikExecutionEngine dalvik_engine;
-        // Configure: enable API bridge, allow up to config_.max_instructions
-        // instructions, do NOT stop on unimplemented (we want to find more
-        // downstream blockers, not halt at the first one).
-        // The DalvikExecutionEngine::execute_apk overload takes (apk_path,
-        // dex_report, verbose) and internally searches for the entry point.
-        // We want it to execute the entry_point_ we already resolved, so
-        // we use execute_method directly.
-        //
-        // Note: DalvikExecutionEngine uses its own entry point search
-        // (looking for "Activity"/"Main"/"activity" in class names). For
-        // obfuscated APKs this fails — but for our test APK
-        // (lineageos_updater_shortcut, MainActivity) it works.
-        auto dalvik_result = dalvik_engine.execute_apk(
-            apk_path_, *dex_report_, config_.verbose);
+        // EXP-037 Phase B (BLOCKER-019): Pass the manifest's main activity
+        // class name so DalvikExecutionEngine can find the entry point in
+        // obfuscated APKs (where class names don't contain "Activity"/"Main").
+        // main_activity_full is in dotted form ("com.foo.MainActivity") and
+        // DalvikExecutionEngine::execute_apk_with_activity handles conversion
+        // to DEX descriptor form ("Lcom/foo/MainActivity;").
+        std::string activity_class = manifest_info_ ? manifest_info_->main_activity_full
+                                                    : std::string();
+        auto dalvik_result = dalvik_engine.execute_apk_with_activity(
+            apk_path_, *dex_report_, activity_class, config_.verbose);
 
         // Extract evidence
         bool success = (dalvik_result.total_instructions_executed > 0);
