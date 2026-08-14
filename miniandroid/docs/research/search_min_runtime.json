@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://czak.pl/posts/minimal-android-project",
+    "name": "Absolutely minimal Android project - Łukasz Adamczak",
+    "snippet": "Jan 13, 2016 — Every application must have an AndroidManifest.xml file (with precisely that name) in its root directory. build, install, and run the project ...",
+    "host_name": "czak.pl",
+    "rank": 0,
+    "date": "Jan 13, 2016",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/mateedevs/learning-about-android-runtime-56b409aeb9b2",
+    "name": "Learning about Android runtime | by Filip Wiesner",
+    "snippet": "So, in theory, any language that compiles for the JVM could run on Android . But Android has its own runtime , aptly called Android Runtime (ART), ... Read more",
+    "host_name": "medium.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/androiddev/comments/1berxjn/question_about_jvm_versions_on_android_devices",
+    "name": "Question about JVM versions on Android devices",
+    "snippet": "What matters is your minSdk, not targetSdk. Your app will be executed by ART ( Android's JVM ) and it must be compatible with ART and standard ... Read more",
+    "host_name": "www.reddit.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://developer.android.com/studio/run",
+    "name": "Build and run your app | Android Studio",
+    "snippet": "Mar 6, 2026 — Apply Changes uses capabilities in the Android JVMTI implementation that are supported on devices running Android 8.0 (API level 26) or higher.",
+    "host_name": "developer.android.com",
+    "rank": 3,
+    "date": "Mar 6, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/77520506/inconsistent-jvm-target-compatibility-detected-for-tasks-despite-already-definin",
+    "name": "Inconsistent JVM-target compatibility detected for tasks",
+    "snippet": "I'm running a flutter project and recently updated a bunch of dependencies. I'm getting this error: * What went wrong: Execution failed for task ':flutter_googl ...",
+    "host_name": "stackoverflow.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://kotlinlang.org/docs/multiplatform/quickstart.html",
+    "name": "Kotlin Multiplatform quickstart",
+    "snippet": "Jul 21, 2026 — The plugins necessary for Kotlin Multiplatform require at least IntelliJ IDEA 2025.2.2 or Android Studio Otter 2025.2.1. JetBrains Runtime (JBR)",
+    "host_name": "kotlinlang.org",
+    "rank": 5,
+    "date": "Jul 21, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.facebook.com/groups/403936963680774/posts/1652500602157731",
+    "name": "How to start native Android development using Java?",
+    "snippet": "Launch Android Studio and follow the setup wizard to install the Android SDK, Android Emulator, and other necessary components. 2.2. Create. ...",
+    "host_name": "www.facebook.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.linkedin.com/posts/sourabh-dey_process-of-compiling-android-app-with-java-activity-7263836237617078272-ndQK",
+    "name": "Process of compiling Android app with Java/Kotlin code",
+    "snippet": "DVM is specifically designed for Android , optimizing performance for low memory usage and faster execution . This is why Android doesn't. Java ...",
+    "host_name": "www.linkedin.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.intuz.com/android-app-development-guide",
+    "name": "Android App Development Guide: Step by Step",
+    "snippet": "Jun 18, 2026 — A step by step guide to Android app development in 2026 covering architecture, tools, Kotlin and deployment best practices. Built by Intuz.",
+    "host_name": "www.intuz.com",
+    "rank": 8,
+    "date": "Jun 18, 2026",
+    "favicon": ""
+  }
+]
