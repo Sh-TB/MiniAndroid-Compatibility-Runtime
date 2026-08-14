@@ -302,7 +302,10 @@ bool DexParser::parse_fields(const uint8_t* data, DexReport& report) {
     
     fields_ = field_ids;
     report.fields_count = static_cast<uint32_t>(field_ids.size());
-    
+    // EXP-037 Phase B (BLOCKER-003): expose field_ids on DexReport so
+    // iget/iput/sget/sput handlers can resolve field_idx → field name.
+    report.field_ids = field_ids;
+
     log("Parsed " + std::to_string(field_ids.size()) + " fields");
     return true;
 }
@@ -325,7 +328,11 @@ bool DexParser::parse_methods(const uint8_t* data, DexReport& report) {
     
     methods_ = method_ids;
     report.methods_count = static_cast<uint32_t>(method_ids.size());
-    
+    // EXP-037 Phase B (BLOCKER-002): expose method_ids on DexReport so
+    // invoke-virtual/super/direct/static/interface handlers can resolve
+    // method_idx → method name + declaring class.
+    report.method_ids = method_ids;
+
     log("Parsed " + std::to_string(method_ids.size()) + " method IDs");
     return true;
 }

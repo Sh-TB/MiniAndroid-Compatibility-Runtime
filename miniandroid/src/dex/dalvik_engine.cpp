@@ -116,6 +116,13 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk(
     bool verbose
 ) {
     verbose_ = verbose;
+    // EXP-037 Phase B (BLOCKER-002 + BLOCKER-015 FIX):
+    // Store the DexReport pointer so invoke-* / iget/iput/sget/sput handlers
+    // can resolve method_idx and field_idx via DexReport::method_ids[] /
+    // field_ids[]. Without this, every invoke-* handler sees dex_report_
+    // as nullptr and falls back to "<method_idx:N>" placeholder strings,
+    // which prevents the API bridge from routing framework calls.
+    dex_report_ = &dex_report;
     DalvikExecutionResult result;
     result.apk_name = apk_path.substr(apk_path.find_last_of("/\\") + 1);
     result.timestamp = get_timestamp();
@@ -383,8 +390,24 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         auto start = Clock::now();
         
         // Fetch opcode
-        uint16_t opcode = fetch_opcode(pc_);
-        trace.opcode_hex = opcode;
+        // EXP-037 Phase B (BLOCKER-012 FIX):
+        // Dalvik bytecode packs the opcode in the LOW BYTE of each 16-bit
+        // code unit. The HIGH BYTE contains format-specific data:
+        //   - 35c (invoke-*): high nibble = arg count, low nibble of high byte = 5th reg
+        //   - 11n (const/4): high nibble = register, low nibble of high byte = signed literal
+        //   - 22b (iput): high byte = two register nibbles
+        //   - 10x (return-void): high byte = 0
+        // The previous code passed the full 16-bit word to the switch, which
+        // meant `case Opcode::INVOKE_SUPER (0x6F)` never matched the actual
+        // bytecode value 0x206F (where 0x20 = arg count + 5th reg). The switch
+        // fell through to the default "UNIMPLEMENTED" handler.
+        //
+        // Fix: mask off the high byte before dispatch. The high byte is
+        // re-read by each opcode handler from bytecode_[pc] (e.g. via
+        // `(instr >> 4) & 0xF` for the arg count).
+        uint16_t raw_word = fetch_opcode(pc_);
+        uint16_t opcode = raw_word & 0xFF;  // LOW BYTE only
+        trace.opcode_hex = raw_word;        // Keep raw word for trace evidence
         
         // Capture register state before
         if (current_registers_) {
@@ -489,6 +512,13 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             case Opcode::INVOKE_VIRTUAL:
                 success = execute_invoke_virtual(pc_, trace, result);
                 trace.opcode_name = "invoke-virtual";
+                break;
+            case Opcode::INVOKE_SUPER:
+                // EXP-037 Phase B (BLOCKER-012): invoke-super — required for
+                // super.onCreate() calls. Without this, execution halts at PC=0
+                // of MainActivity.onCreate() for every real Android APK.
+                success = execute_invoke_super(pc_, trace, result);
+                trace.opcode_name = "invoke-super";
                 break;
             case Opcode::INVOKE_DIRECT:
                 success = execute_invoke_direct(pc_, trace, result);
@@ -887,70 +917,54 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
 DalvikExecutionEngine::FieldResolution DalvikExecutionEngine::resolve_field(uint16_t field_idx) {
     FieldResolution resolution;
     
-    // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX):
-    // The previous code referenced dex_report_->fields (a std::vector) which
-    // does not exist on DexReport. DexReport stores only fields_count from
-    // the DEX header. The actual field_ids[] table is never parsed by
-    // DexParser. As a result, ANY sget/sput/iget/iput instruction that
-    // references a real field_idx cannot be resolved by this function.
-    //
-    // BLOCKER-003: DexParser must parse field_ids[] table and expose it on
-    //   DexReport as a vector<FieldId> with {class_idx, type_idx, name_idx}.
-    //   Without this, the runtime cannot resolve static/instance field
-    //   accesses from real DEX bytecode (any real APK will hit this).
-    //
-    // BLOCKER-002: Same gap exists for method_ids[] (invoke-virtual/direct/
-    //   static/interface cannot resolve method_idx → method name).
-    //
-    // Graceful degradation: return unresolved, log a blocker marker, and let
-    // the calling opcode handler decide how to proceed (typically it will
-    // log + return false, halting execution at that PC).
-    (void)field_idx;  // mark as intentionally unused until BLOCKER-003 fix lands
-    resolution.error_message =
-        "Field index " + std::to_string(field_idx) +
-        " cannot be resolved: DexReport does not expose field_ids[] table "
-        "[BLOCKER-003: DexParser must parse field_ids[] table]";
-    log("❌ FIELD RESOLUTION FAILED: " + resolution.error_message);
+    // EXP-037 Phase B (BLOCKER-003 FIX): DexReport now exposes field_ids[]
+    // and the helper methods get_field_name / get_field_class / get_field_type.
+    // Use them to resolve field_idx → {class, type, name}.
+    if (!dex_report_) {
+        resolution.error_message = "No DexReport available (resolve_field)";
+        log("❌ FIELD RESOLUTION FAILED: " + resolution.error_message);
+        return resolution;
+    }
+
+    resolution.class_descriptor = dex_report_->get_field_class(field_idx);
+    resolution.field_name = dex_report_->get_field_name(field_idx);
+    resolution.field_type = dex_report_->get_field_type(field_idx);
+
+    if (resolution.class_descriptor.rfind("<bad_", 0) == 0 ||
+        resolution.field_name.rfind("<bad_", 0) == 0 ||
+        resolution.field_type.rfind("<bad_", 0) == 0) {
+        resolution.error_message =
+            "Field index " + std::to_string(field_idx) +
+            " out of range or references invalid string/type";
+        log("❌ FIELD RESOLUTION FAILED: " + resolution.error_message);
+        return resolution;
+    }
+
+    resolution.resolved = true;
+
+    // Look up field offset from runtime metadata cache if available
+    auto class_it = class_info_cache_.find(resolution.class_descriptor);
+    if (class_it != class_info_cache_.end() && class_it->second) {
+        const auto& class_info = *(class_it->second);
+        for (const auto& inst_field : class_info.instance_fields) {
+            if (inst_field.name == resolution.field_name) {
+                resolution.field_offset = inst_field.byte_offset;
+                break;
+            }
+        }
+        resolution.is_static = false;
+    } else {
+        // Heuristic: if the field is from a framework class like
+        // Landroid/* or Ljava/*, assume instance field for iget/iput and
+        // static for sget/sput. The calling opcode handler will override
+        // is_static as needed (sget/sput set it to true explicitly).
+        resolution.is_static = false;
+    }
+
+    log("✅ FIELD RESOLVED: " + resolution.class_descriptor + "." + resolution.field_name +
+        " type=" + resolution.field_type +
+        " offset=" + std::to_string(resolution.field_offset));
     return resolution;
-    
-    // --- ORIGINAL BROKEN CODE (preserved for BLOCKER-003 fix) ---
-    // The block below will be re-enabled once DexParser exposes field_ids[].
-    // if (!dex_report_ || field_idx >= dex_report_->fields.size()) {
-    //     resolution.error_message = "Field index out of range or no DEX report";
-    //     log("❌ FIELD RESOLUTION FAILED: " + resolution.error_message);
-    //     return resolution;
-    // }
-    //
-    // const auto& field = dex_report_->fields[field_idx];
-    // resolution.class_descriptor = field.class_descriptor;
-    // resolution.field_name = field.name;
-    // resolution.field_type = field.type_descriptor;
-    // resolution.resolved = true;
-    
-    // --- END BROKEN CODE ---
-    // The runtime-metadata lookup block below (class_info_cache_.find etc.)
-    // was reachable in the original broken code but referenced `field` which
-    // no longer exists. It is preserved commented-out for the BLOCKER-003 fix.
-    //
-    // auto class_it = class_info_cache_.find(field.class_descriptor);
-    // if (class_it != class_info_cache_.end() && class_it->second) {
-    //     const auto& class_info = *(class_it->second);
-    //     for (const auto& inst_field : class_info.instance_fields) {
-    //         if (inst_field.name == field.name) {
-    //             resolution.field_offset = inst_field.byte_offset;
-    //             break;
-    //         }
-    //     }
-    //     resolution.is_static = false;
-    // } else {
-    //     resolution.is_static = false;
-    // }
-    //
-    // log("✅ FIELD RESOLVED: " + field.class_descriptor + "." + field.name + 
-    //     " offset=" + std::to_string(resolution.field_offset) +
-    //     " type=" + field.type_descriptor);
-    //
-    // return resolution;
 }
 
 bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
@@ -1415,10 +1429,17 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     if (pc + 2 >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
-    uint16_t method_idx = bytecode_[pc + 2];  // Full method index in 35c format
-    
-    // Parse registers from second word (35c encoding)
-    uint16_t regs_word = bytecode_[pc + 1];
+    // EXP-037 Phase B (BLOCKER-015 FIX): Per AOSP dalvik-bytecode.html,
+    // 35c format is "AA|op BBBB FEDC" where:
+    //   code[pc+0] = AA|op (arg_count + 5th_reg in high byte, opcode in low byte)
+    //   code[pc+1] = BBBB (method_idx, 16-bit)
+    //   code[pc+2] = FEDC (register list, 4 nibbles packed)
+    // The previous code read method_idx from code[pc+2] and regs from code[pc+1],
+    // which is REVERSED. This caused every invoke-* to read the register list
+    // as the method_idx (often out-of-bounds) and the method_idx as the
+    // register list (corrupted register values).
+    uint16_t method_idx = bytecode_[pc + 1];  // method reference (was pc+2)
+    uint16_t regs_word = bytecode_[pc + 2];    // register list (was pc+1)
     std::vector<DalvikValue> args;
     std::vector<std::string> arg_names;
     
@@ -1441,7 +1462,15 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     std::string static_type = "<unknown>";      // Declared type in bytecode
     std::string runtime_type = "<unknown>";     // Actual type of object
     std::string resolved_method = "<unresolved>";
-    std::string method_name_from_dex = "<method:" + std::to_string(method_idx) + ">";
+
+    // EXP-037 Phase B (BLOCKER-002 FIX): Now that DexReport exposes
+    // method_ids[], we can resolve method_idx → method name + declaring class.
+    std::string method_name_from_dex = "<method_idx:" + std::to_string(method_idx) + ">";
+    std::string declaring_class = "<unknown>";
+    if (dex_report_) {
+        method_name_from_dex = dex_report_->get_method_name(method_idx);
+        declaring_class = dex_report_->get_method_class(method_idx);
+    }
     
     // Get the object reference (first arg is 'this' for virtual calls)
     if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
@@ -1451,22 +1480,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         // Look up actual object class from heap
         if (auto* heap_obj = heap_.get(this_obj.object_id)) {
             runtime_type = heap_obj->class_descriptor;
-            
-            // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX):
-            // The previous code referenced dex_report_->methods (a std::vector)
-            // and dex_report_->methods[method_idx], neither of which exist on
-            // DexReport. DexReport only stores methods_count (uint32_t from the
-            // DEX header) and a per-class breakdown via classes[].direct_methods /
-            // classes[].virtual_methods. The proper fix is to parse the method_ids[]
-            // table in DexParser and expose it. Until that lands, we degrade
-            // gracefully: skip the VTable dispatch attempt and fall back to the
-            // runtime_type.method_idx form. This unblocks the build without
-            // fabricating API surface.
             resolved_method = runtime_type + "." + method_name_from_dex;
-            log("⚠️ INVOKE-VIRTUAL: method_idx " + std::to_string(method_idx) +
-                " could not be resolved via DexReport (method_ids[] table not parsed). " +
-                "Falling back to runtime_type.method_idx. " +
-                "[BLOCKER-002: method_ids table parsing required for real VTable dispatch]");
         } else {
             // Object not in heap - use static type as fallback
             runtime_type = static_type;
@@ -1480,7 +1494,8 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         } else if (args[0].type == DalvikType::NULL_REF) {
             log("⚠️ INVOKE-VIRTUAL: Null object reference (would be NullPointerException)");
         }
-        resolved_method = static_type + "." + method_name_from_dex;
+        resolved_method = (declaring_class.empty() ? static_type : declaring_class) +
+                          "." + method_name_from_dex;
     }
     
     // Try API bridge with resolved method info
@@ -1488,7 +1503,11 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     ApiCallTrace::Status api_status = ApiCallTrace::Status::STUBBED;
     
     if (config_.enable_api_bridge) {
-        bridge_to_api(runtime_type, method_name_from_dex, args, return_val, api_status);
+        // Use declaring_class (the static type from method_ids[]) if
+        // runtime_type is unknown — this lets us route framework calls like
+        // android.app.Activity.onCreate to the API stub layer.
+        std::string api_class = (runtime_type != "<unknown>") ? runtime_type : declaring_class;
+        bridge_to_api(api_class, method_name_from_dex, args, return_val, api_status);
     }
     
     // Create API call trace with VTable information
@@ -1518,14 +1537,163 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     return true;
 }
 
+// EXP-037 Phase B (BLOCKER-012): invoke-super
+// Format: 35c [op {vC..vG, vF}], method@BBBB
+//   instr_word[0] = opcode | (arg_count << 4)
+//   instr_word[1] = packed register args (4 nibbles)
+//   instr_word[2] = method_idx
+//
+// Semantics (per AOSP dexlib2):
+//   invoke-super dispatches a virtual method starting from the SUPERCLASS
+//   of the static type of `this`, NOT the runtime type. This is critical
+//   for `super.onCreate(bundle)` calls — the call site declares the parent
+//   class explicitly so the runtime must walk to that class's vtable slot
+//   rather than using the runtime-type vtable.
+//
+//   Without this opcode, NO real Android app can execute past PC=0 of its
+//   onCreate method, because `super.onCreate(bundle)` is always the first
+//   instruction in user onCreate() implementations.
+//
+// Implementation:
+//   Since BLOCKER-002 (method_ids[] parsing) is still open, we cannot yet
+//   resolve method_idx → method name from the DEX. We degrade gracefully:
+//   1. Log the invoke-super attempt with method_idx.
+//   2. Bridge to API layer (which currently has stub onCreate handler).
+//   3. Advance PC by 3 (35c format = 3 code units).
+//   4. Do NOT halt — let execution continue to the next instruction.
+//
+// When BLOCKER-002 lands, this method should be rewritten to:
+//   1. Look up method_idx in DexReport::method_ids[] to get the
+//      declaring class + method name + descriptor.
+//   2. Resolve the parent class of `this`'s static type.
+//   3. Walk the parent's virtual_methods[] to find the matching method.
+//   4. Recursively invoke execute_method_internal() on that method.
+bool DalvikExecutionEngine::execute_invoke_super(uint32_t pc, InstructionTrace& trace,
+                                                  DalvikExecutionResult& result) {
+    // Format: 35c — 3 code units (6 bytes)
+    if (pc + 2 >= bytecode_.size()) {
+        log("❌ INVOKE-SUPER: PC out of bounds");
+        return false;
+    }
+
+    uint16_t instr = bytecode_[pc];
+    // EXP-037 Phase B (BLOCKER-015 FIX): 35c format is "AA|op BBBB FEDC"
+    //   code[pc+0] = AA|op
+    //   code[pc+1] = BBBB (method_idx)
+    //   code[pc+2] = FEDC (register list)
+    uint16_t method_idx = bytecode_[pc + 1];  // was pc+2
+    uint16_t regs_word = bytecode_[pc + 2];    // was pc+1
+
+    // 35c register encoding: 5 nibbles packed
+    //   vA = high nibble of opcode word = arg count (typically 1 or 2)
+    //   vG = low nibble of opcode word = 5th register (or 0 if vA < 5)
+    //   vC..vF = 4 nibbles of regs_word
+    uint8_t arg_count = static_cast<uint8_t>((instr >> 4) & 0xF);
+    uint8_t regs[5] = {
+        static_cast<uint8_t>(regs_word & 0xF),
+        static_cast<uint8_t>((regs_word >> 4) & 0xF),
+        static_cast<uint8_t>((regs_word >> 8) & 0xF),
+        static_cast<uint8_t>((regs_word >> 12) & 0xF),
+        static_cast<uint8_t>((instr >> 4) & 0xF)  // 5th reg (only used if arg_count == 5)
+    };
+
+    // Read up to arg_count registers (cap at 5 for 35c format)
+    std::vector<DalvikValue> args;
+    std::vector<std::string> arg_names;
+    uint8_t n_args = std::min<uint8_t>(arg_count, 5);
+    for (uint8_t i = 0; i < n_args; ++i) {
+        DalvikValue val = get_register(regs[i]);
+        args.push_back(val);
+        arg_names.push_back(register_name(regs[i]));
+    }
+
+    // EXP-037 Phase B (BLOCKER-002 + BLOCKER-012): Now that DexReport exposes
+    // method_ids[], we can resolve method_idx → method name + declaring class.
+    std::string method_name = "<method_idx:" + std::to_string(method_idx) + ">";
+    std::string declaring_class = "<unknown>";
+    if (dex_report_) {
+        method_name = dex_report_->get_method_name(method_idx);
+        declaring_class = dex_report_->get_method_class(method_idx);
+    }
+
+    // Identify `this` (first arg) for diagnostic logging
+    std::string runtime_type = "<unknown>";
+    std::string static_type = "<unknown>";
+    std::string resolved_method = declaring_class + "." + method_name + " (super)";
+
+    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+        const DalvikValue& this_obj = args[0];
+        static_type = this_obj.class_desc;
+        if (auto* heap_obj = heap_.get(this_obj.object_id)) {
+            runtime_type = heap_obj->class_descriptor;
+        } else {
+            runtime_type = static_type;
+        }
+    } else if (!args.empty() && args[0].type == DalvikType::NULL_REF) {
+        log("⚠️ INVOKE-SUPER: Null `this` reference (would be NullPointerException on real Android)");
+        runtime_type = "<null>";
+    } else {
+        log("⚠️ INVOKE-SUPER: First argument is not an object reference (arg_count=" +
+            std::to_string(arg_count) + ", arg[0].type=" +
+            std::to_string(static_cast<int>(args.empty() ? DalvikType::UNINITIALIZED : args[0].type)) + ")");
+    }
+
+    log("📞 INVOKE-SUPER: " + declaring_class + "." + method_name +
+        " (method_idx=" + std::to_string(method_idx) +
+        ", arg_count=" + std::to_string(arg_count) +
+        ", static_type=" + static_type +
+        ", runtime_type=" + runtime_type + ")");
+
+    // Bridge to API layer — for super.onCreate(), the API layer provides
+    // the framework's Activity.onCreate implementation (window setup, etc.).
+    DalvikValue return_val = DalvikValue::make_void();
+    ApiCallTrace::Status api_status = ApiCallTrace::Status::STUBBED;
+    if (config_.enable_api_bridge) {
+        bridge_to_api(declaring_class + "<super>", method_name,
+                      args, return_val, api_status);
+    }
+
+    // Record an API call trace entry so this call shows up in evidence
+    ApiCallTrace api_trace;
+    api_trace.sequence = api_call_sequence_++;
+    api_trace.api_class = declaring_class + "<super>";
+    api_trace.method = method_name;
+    api_trace.arguments = arg_names;
+    api_trace.return_value = return_val.to_string();
+    api_trace.status = api_status;
+    api_trace.pc = pc;
+    api_trace.frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
+    result.api_call_traces.push_back(api_trace);
+
+    // Trace evidence
+    trace.invoked_method = resolved_method;
+    trace.operands.push_back({"invoke_kind", "super"});
+    trace.operands.push_back({"method_idx", std::to_string(method_idx)});
+    trace.operands.push_back({"method_name", method_name});
+    trace.operands.push_back({"declaring_class", declaring_class});
+    trace.operands.push_back({"arg_count", std::to_string(arg_count)});
+    trace.operands.push_back({"args", std::to_string(arg_names.size())});
+    trace.operands.push_back({"static_type", static_type});
+    trace.operands.push_back({"runtime_type", runtime_type});
+    trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
+
+    // Advance PC past the 35c instruction (3 code units = 6 bytes)
+    pc_ = pc + 3;
+    return true;
+}
+
 bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace& trace,
                                                  DalvikExecutionResult& result) {
     // Similar to invoke-virtual but for constructors and private methods
     if (pc + 2 >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
-    uint16_t regs_word = bytecode_[pc + 1];
-    uint16_t method_idx = bytecode_[pc + 2];
+    // EXP-037 Phase B (BLOCKER-015 FIX): 35c format is "AA|op BBBB FEDC"
+    //   code[pc+0] = AA|op
+    //   code[pc+1] = BBBB (method_idx)
+    //   code[pc+2] = FEDC (register list)
+    uint16_t method_idx = bytecode_[pc + 1];  // was pc+2
+    uint16_t regs_word = bytecode_[pc + 2];    // was pc+1
     
     // Extract registers
     uint8_t regs[5] = {
@@ -1542,18 +1710,28 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     }
     
     // Resolve as constructor (<init>) or direct method
-    std::string method_name = "<init>";  // Most common for invoke-direct
+    // EXP-037 Phase B (BLOCKER-002 FIX): use DexReport::method_ids to resolve
+    // method_idx → real method name + declaring class.
+    std::string method_name = "<init>";  // fallback for legacy code paths
     std::string class_name = "<unknown>";
+    if (dex_report_) {
+        method_name = dex_report_->get_method_name(method_idx);
+        class_name = dex_report_->get_method_class(method_idx);
+    }
     
     // Check if first arg is an object we allocated
     if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
         if (auto* obj = heap_.get(args[0].object_id)) {
-            class_name = obj->readable_class;
-            
+            // Prefer runtime class name if available, fall back to declared class
+            if (!obj->readable_class.empty()) {
+                class_name = obj->readable_class;
+            }
             // Mark as initialized (constructor called)
-            heap_.mark_initialized(args[0].object_id);
-            
-            log("  CONSTRUCTOR: " + class_name + ".<init>() on obj#" + std::to_string(args[0].object_id));
+            if (method_name == "<init>") {
+                heap_.mark_initialized(args[0].object_id);
+            }
+            log("  INVOKE-DIRECT: " + class_name + "." + method_name +
+                "() on obj#" + std::to_string(args[0].object_id));
         }
     }
     
@@ -1587,8 +1765,12 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     if (pc + 2 >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
-    uint16_t regs_word = bytecode_[pc + 1];
-    uint16_t method_idx = bytecode_[pc + 2];
+    // EXP-037 Phase B (BLOCKER-015 FIX): 35c format is "AA|op BBBB FEDC"
+    //   code[pc+0] = AA|op
+    //   code[pc+1] = BBBB (method_idx)
+    //   code[pc+2] = FEDC (register list)
+    uint16_t method_idx = bytecode_[pc + 1];  // was pc+2
+    uint16_t regs_word = bytecode_[pc + 2];    // was pc+1
     
     // Extract argument registers
     uint8_t regs[5] = {
@@ -1604,14 +1786,21 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         args.push_back(get_register(regs[i]));
     }
     
+    // EXP-037 Phase B (BLOCKER-002 FIX): resolve method_idx via DexReport.
     std::string method_name = "<static_method:" + std::to_string(method_idx) + ">";
     std::string class_name = "<static_class>";
+    if (dex_report_) {
+        method_name = dex_report_->get_method_name(method_idx);
+        class_name = dex_report_->get_method_class(method_idx);
+    }
     
-    // Common static methods we might recognize
-    if (method_name.find("Log") != std::string::npos) {
-        class_name = "android.util.Log";
-        method_name = args.size() > 0 ? (args[0].type == DalvikType::INT32 ? 
-             (args[0].int_val == 6 ? "e" : args[0].int_val == 5 ? "w" : "i") : "?") : "?";
+    // Common static methods we might recognize (legacy hint — now used only
+    // for routing hints when the API bridge falls through).
+    if (class_name.find("Log") != std::string::npos) {
+        if (args.size() > 0 && args[0].type == DalvikType::INT32) {
+            // args[0].int_val is the Log level: 5=warn, 6=error, etc.
+            // (Just a hint; method_name from DEX is authoritative.)
+        }
     }
     
     // API bridge
@@ -1645,9 +1834,21 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // that triggered -Wunused-variable. The 35c format's vA nibble (5th reg)
     // is only needed for variadic invoke-interface with 5+ args, which this
     // simplified handler does not yet support.
-    uint16_t method_idx = bytecode_[pc + 2];
+    //
+    // EXP-037 Phase B (BLOCKER-015 FIX): 35c format is "AA|op BBBB FEDC"
+    //   code[pc+0] = AA|op
+    //   code[pc+1] = BBBB (method_idx)
+    //   code[pc+2] = FEDC (register list)
+    // Previous code read method_idx from pc+2 (wrong — that's the register list).
+    uint16_t method_idx = bytecode_[pc + 1];
     
+    // EXP-037 Phase B (BLOCKER-002 FIX): resolve method_idx via DexReport.
     std::string method_name = "<interface_method:" + std::to_string(method_idx) + ">";
+    std::string class_name = "<interface>";
+    if (dex_report_) {
+        method_name = dex_report_->get_method_name(method_idx);
+        class_name = dex_report_->get_method_class(method_idx);
+    }
     
     // Simplified interface handling
     DalvikValue return_val = DalvikValue::make_void();
@@ -1655,13 +1856,13 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     
     ApiCallTrace api_trace;
     api_trace.sequence = api_call_sequence_++;
-    api_trace.api_class = "<interface>";
+    api_trace.api_class = class_name;  // EXP-037 Phase B: was hardcoded "<interface>"
     api_trace.method = method_name;
     api_trace.status = status;
     api_trace.pc = pc;
     result.api_call_traces.push_back(api_trace);
     
-    trace.invoked_method = method_name;
+    trace.invoked_method = class_name + "." + method_name;
     
     pc_ = pc + 3;
     return true;
@@ -1734,27 +1935,45 @@ bool DalvikExecutionEngine::execute_return_object(uint32_t pc, InstructionTrace&
 // ============================================================================
 
 bool DalvikExecutionEngine::execute_goto(uint32_t pc, InstructionTrace& trace) {
-    // Format: 10t [op] +AA (signed offset)
-    if (pc + 1 >= bytecode_.size()) return false;
-    
-    int8_t offset = static_cast<int8_t>(bytecode_[pc + 1]);
+    // Format: 10t [AA|op] — single 16-bit code unit
+    //   low byte (0xFF): opcode = 0x28
+    //   high byte (0xFF00): signed 8-bit branch offset
+    //
+    // EXP-037 Phase B (BLOCKER-014 FIX): The previous code read the offset
+    // from `bytecode_[pc + 1]` (the NEXT code unit) which is wrong — goto
+    // is a 10t format instruction with the offset packed into the high
+    // byte of the opcode word itself. This caused every goto to read the
+    // first byte of the FOLLOWING instruction as the offset, which
+    // corrupted the branch target and either jumped to garbage PCs or
+    // silently branched to invalid locations.
+    //
+    // For our test APK's onCreate:
+    //   PC=13: 0x0c28 → opcode=0x28 (goto), offset=0x0c (high byte)
+    //   target = pc + offset = 13 + 12 = 25
+    // After fix, execution will continue at PC=25 instead of reading
+    // bytecode_[14]=0x0214 and treating 0x02 as the offset (target=13+2=15).
+    if (pc >= bytecode_.size()) return false;
+
+    int8_t offset = static_cast<int8_t>((bytecode_[pc] >> 8) & 0xFF);
     uint32_t target = pc + offset;
-    
+
     // Validate target
     if (target < bytecode_.size()) {
         trace.status = InstructionTrace::Status::BRANCH_TAKEN;
         pc_ = target;
-        
+
         trace.operands.push_back({"offset", std::to_string(offset)});
         trace.operands.push_back({"target", to_hex(target)});
     } else {
         trace.status = InstructionTrace::Status::CRASH_ERROR;
-        trace.error_message = "Invalid branch target: " + to_hex(target);
+        trace.error_message = "Invalid goto target: " + to_hex(target) +
+                              " (offset=" + std::to_string(offset) +
+                              ", bytecode_size=" + std::to_string(bytecode_.size()) + ")";
         halted_ = true;
         halt_reason_ = "Invalid goto target";
-        pc_ = pc + 2;
+        pc_ = pc + 1;  // 10t is 1 code unit
     }
-    
+
     return true;
 }
 

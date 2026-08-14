@@ -217,6 +217,19 @@ struct DexReport {
     // All types (for opcode resolution)
     std::vector<std::string> types;
     
+    // EXP-037 Phase B (BLOCKER-002 + BLOCKER-003 FIX):
+    // Previously, DexParser parsed method_ids[] and field_ids[] into private
+    // vectors (methods_ and fields_) but never exposed them on DexReport.
+    // The dalvik_engine then fabricated lookup code that referenced
+    // nonexistent DexReport::methods / DexReport::fields members, breaking
+    // the build (BLOCKER-001). Now we expose the raw ID tables so the
+    // interpreter can resolve method_idx → {class_idx, proto_idx, name_idx}
+    // and field_idx → {class_idx, type_idx, name_idx} properly. The string
+    // and type lookup is done via the already-populated `strings` and
+    // `types` vectors above.
+    std::vector<DexMethodId> method_ids;   // method_ids[] table from DEX header
+    std::vector<DexFieldId>  field_ids;     // field_ids[]  table from DEX header
+    
     // All classes with full details
     std::vector<ClassInfo> classes;
     
@@ -226,6 +239,47 @@ struct DexReport {
     
     // Raw header for debugging
     DexHeader header;
+
+    // EXP-037 Phase B (BLOCKER-002): Resolve method_idx → method name.
+    // Returns "<bad_idx:N>" if out of range.
+    std::string get_method_name(uint32_t method_idx) const {
+        if (method_idx >= method_ids.size()) return "<bad_method_idx:" + std::to_string(method_idx) + ">";
+        uint32_t name_idx = method_ids[method_idx].name_idx;
+        if (name_idx >= strings.size()) return "<bad_name_idx:" + std::to_string(name_idx) + ">";
+        return strings[name_idx];
+    }
+
+    // EXP-037 Phase B (BLOCKER-002): Resolve method_idx → declaring class type descriptor.
+    std::string get_method_class(uint32_t method_idx) const {
+        if (method_idx >= method_ids.size()) return "<bad_method_idx:" + std::to_string(method_idx) + ">";
+        uint16_t class_idx = method_ids[method_idx].class_idx;
+        if (class_idx >= types.size()) return "<bad_class_idx:" + std::to_string(class_idx) + ">";
+        return types[class_idx];
+    }
+
+    // EXP-037 Phase B (BLOCKER-003): Resolve field_idx → field name.
+    std::string get_field_name(uint32_t field_idx) const {
+        if (field_idx >= field_ids.size()) return "<bad_field_idx:" + std::to_string(field_idx) + ">";
+        uint32_t name_idx = field_ids[field_idx].name_idx;
+        if (name_idx >= strings.size()) return "<bad_name_idx:" + std::to_string(name_idx) + ">";
+        return strings[name_idx];
+    }
+
+    // EXP-037 Phase B (BLOCKER-003): Resolve field_idx → declaring class type descriptor.
+    std::string get_field_class(uint32_t field_idx) const {
+        if (field_idx >= field_ids.size()) return "<bad_field_idx:" + std::to_string(field_idx) + ">";
+        uint16_t class_idx = field_ids[field_idx].class_idx;
+        if (class_idx >= types.size()) return "<bad_class_idx:" + std::to_string(class_idx) + ">";
+        return types[class_idx];
+    }
+
+    // EXP-037 Phase B (BLOCKER-003): Resolve field_idx → field type descriptor.
+    std::string get_field_type(uint32_t field_idx) const {
+        if (field_idx >= field_ids.size()) return "<bad_field_idx:" + std::to_string(field_idx) + ">";
+        uint16_t type_idx = field_ids[field_idx].type_idx;
+        if (type_idx >= types.size()) return "<bad_type_idx:" + std::to_string(type_idx) + ">";
+        return types[type_idx];
+    }
 };
 
 /**
