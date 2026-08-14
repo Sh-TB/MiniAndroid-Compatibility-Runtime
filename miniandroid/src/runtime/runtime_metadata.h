@@ -668,7 +668,7 @@ struct VirtualDispatchTable {
      * @param method Pointer to method to add (must outlive this table!)
      * @return Index where method was placed
      */
-    uint32_t add_or_override(const RuntimeMethodInfo* method) {
+    uint32_t add_or_override(RuntimeMethodInfo* method) {
         if (!method) return UINT32_MAX;
         
         std::string sig = method->get_signature();

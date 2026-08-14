@@ -18,13 +18,32 @@ namespace apk {
 
 // AXML token types
 enum class AxmlToken : uint16_t {
-    START_DOCUMENT = 0x0000,
-    END_DOCUMENT = 0x0001,
-    START_NAMESPACE = 0x0100,
-    END_NAMESPACE = 0x0101,
-    START_ELEMENT = 0x0102,
-    END_ELEMENT = 0x0103,
-    CDATA = 0x0104
+    // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+    // The previous token table was wrong. Real AXML chunk types per AOSP
+    // frameworks/base/libs/androidfw/include/androidfw/ResourceTypes.h:
+    //   RES_XML_TYPE              = 0x0003  (outer wrapper of every AXML file)
+    //   RES_STRING_POOL_TYPE      = 0x0001  (string table)
+    //   RES_XML_RESOURCE_MAP_TYPE = 0x0180  (resource ID map)
+    //   RES_XML_START_NAMESPACE   = 0x0100
+    //   RES_XML_END_NAMESPACE     = 0x0101
+    //   RES_XML_START_ELEMENT     = 0x0102
+    //   RES_XML_END_ELEMENT       = 0x0103
+    //   RES_XML_CDATA_TYPE        = 0x0104
+    //
+    // The previous code invented START_DOCUMENT=0x0000 / END_DOCUMENT=0x0001
+    // and the header check required type==0x0000. No real AXML file ever has
+    // type=0x0000 — that corresponds to no chunk at all. END_DOCUMENT=0x0001
+    // was even worse: 0x0001 is RES_STRING_POOL_TYPE, so the switch statement
+    // was silently no-op-ing the string pool (and the positional default-case
+    // fallback happened to handle it correctly by accident).
+    RES_XML_TYPE              = 0x0003,  // Outer AXML file header
+    STRING_POOL               = 0x0001,  // String table chunk
+    RESOURCE_MAP              = 0x0180,  // Resource ID map chunk
+    START_NAMESPACE           = 0x0100,
+    END_NAMESPACE             = 0x0101,
+    START_ELEMENT             = 0x0102,
+    END_ELEMENT               = 0x0103,
+    CDATA                     = 0x0104
 };
 
 // AXML resource values
@@ -120,53 +139,85 @@ struct AxmlResourceIdsHeader {
 #pragma pack(pop)
 
 // Start namespace element
+// EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+// Per AOSP frameworks/base/libs/androidfw/include/androidfw/ResourceTypes.h,
+// ResXMLTree_node extends ResChunk_header with two extra fields:
+//   uint32_t lineNumber;
+//   uint32_t comment;
+// All XML element chunk types (namespace/element/cdata) inherit these
+// fields. The previous code omitted them, causing every field after the
+// chunk_header to be read from the wrong offset (off-by-8).
 #pragma pack(push, 1)
 struct AxmlStartNamespace {
-    AxmlChunkHeader chunk;
-    uint32_t prefix_index;
-    uint32_t uri_index;
+    AxmlChunkHeader chunk;     // 8 bytes (offset 0)
+    uint32_t lineNumber;       // 4 bytes (offset 8)  — was MISSING
+    uint32_t comment;          // 4 bytes (offset 12) — was MISSING
+    uint32_t prefix_index;    // 4 bytes (offset 16)
+    uint32_t uri_index;        // 4 bytes (offset 20)
 };
 #pragma pack(pop)
 
 // End namespace element
 #pragma pack(push, 1)
 struct AxmlEndNamespace {
-    AxmlChunkHeader chunk;
+    AxmlChunkHeader chunk;     // 8 bytes
+    uint32_t lineNumber;       // 4 bytes — was MISSING
+    uint32_t comment;          // 4 bytes — was MISSING
     uint32_t prefix_index;
     uint32_t uri_index;
 };
 #pragma pack(pop)
 
 // Start element
+// AOSP ResXMLTree_attrExt layout (44-byte total struct, but headerSize in
+// the chunk header is 16 — only ResXMLTree_node part is counted as the
+// "header" by AAPT2; the attrExt-specific fields are part of the body).
 #pragma pack(push, 1)
 struct AxmlStartElement {
-    AxmlChunkHeader chunk;
-    uint32_t namespace_index;
-    uint32_t name_index;
-    uint16_t attribute_count;
-    uint16_t class_attribute_index;
-    uint32_t attribute_ids_offset;
-    // Followed by attributes
+    AxmlChunkHeader chunk;            // 8 bytes (offset 0)
+    uint32_t lineNumber;              // 4 bytes (offset 8)  — was MISSING
+    uint32_t comment;                 // 4 bytes (offset 12) — was MISSING
+    uint32_t namespace_index;        // 4 bytes (offset 16)
+    uint32_t name_index;             // 4 bytes (offset 20)
+    uint16_t attribute_start;        // 2 bytes (offset 24) — was MISSING
+    uint16_t attribute_size;         // 2 bytes (offset 26) — was MISSING
+    uint16_t attribute_count;        // 2 bytes (offset 28)
+    uint16_t id_attribute_index;     // 2 bytes (offset 30) — was class_attribute_index
+    uint16_t class_attribute_index;  // 2 bytes (offset 32)
+    uint16_t style_attribute_index;   // 2 bytes (offset 34) — was MISSING
 };
 #pragma pack(pop)
 
 // End element
 #pragma pack(push, 1)
 struct AxmlEndElement {
-    AxmlChunkHeader chunk;
+    AxmlChunkHeader chunk;     // 8 bytes
+    uint32_t lineNumber;       // 4 bytes — was MISSING
+    uint32_t comment;          // 4 bytes — was MISSING
     uint32_t namespace_index;
     uint32_t name_index;
 };
 #pragma pack(pop)
 
 // Attribute data
+// EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+// Per AOSP ResourceTypes.h, ResXMLTree_attribute is:
+//   ns(4) + name(4) + rawValue(4) + Res_value{size(2)+res0(1)+dataType(1)+data(4)}
+// The previous struct read Res_value's first 4 bytes as a single u32
+// "value_type", which conflated size, res0, and dataType. The actual
+// dataType is in the HIGH byte (byte 3) of that u32 when read as LE.
+// Code that checks `value_type == AxmlDataType::STRING` therefore never
+// matched, because the comparison was against the low 8 bits (size=8)
+// not the high 8 bits (dataType=1 for STRING).
 #pragma pack(push, 1)
 struct AxmlAttribute {
-    uint32_t namespace_index;
-    uint32_t name_index;
-    uint32_t value_string_index;
-    uint32_t value_type;
-    uint32_t value_data;
+    uint32_t namespace_index;        // 4 bytes (offset 0)
+    uint32_t name_index;              // 4 bytes (offset 4)
+    uint32_t value_string_index;     // 4 bytes (offset 8) — rawValue, string index or -1
+    uint16_t value_size;             // 2 bytes (offset 12) — size of Res_value (always 8)
+    uint8_t  value_res0;             // 1 byte  (offset 14) — always 0
+    uint8_t  value_data_type;        // 1 byte  (offset 15) — Res_value dataType
+    uint32_t value_data;              // 4 bytes (offset 16) — Res_value data
 };
 #pragma pack(pop)
 

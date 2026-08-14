@@ -4,8 +4,8 @@
 
 set -e
 
-SRC_DIR="/home/z/my-project/miniandroid/src"
-BUILD_DIR="/home/z/my-project/miniandroid/build_exp019"
+SRC_DIR="/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/src"
+BUILD_DIR="/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/build_exp019"
 OUTPUT="$BUILD_DIR/miniandroid_exp019"
 
 echo "============================================"
@@ -16,7 +16,7 @@ mkdir -p $BUILD_DIR
 
 # Compiler flags
 CXXFLAGS="-std=c++17 -Wall -Wextra -O2"
-INCLUDES="-I$SRC_DIR -I$SRC_DIR/third_party/nlohmann_json/include -I/home/z/my-project/miniandroid/third_party/nlohmann_json/include"
+INCLUDES="-I$SRC_DIR -I$SRC_DIR/third_party/nlohmann_json/include -I/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/third_party/nlohmann_json/include"
 
 # Object files
 OBJS=""

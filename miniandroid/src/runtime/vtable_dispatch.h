@@ -506,12 +506,36 @@ public:
         animal->access_flags = AccessFlags::ACC_PUBLIC;
         animal->dex_class_idx = 0;
         
-        animal->virtual_methods = {
-            {0, "speak", "()V", "V", AccessFlags::ACC_PUBLIC, 0, 
-             false, true, false, false, true, 100, 5, 1, 1, 3},
-            {1, "eat", "()V", "V", AccessFlags::ACC_PUBLIC, 0,
-             false, true, false, false, true, 120, 3, 1, 1, 2}
-        };
+        // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX):
+        // The original code used positional brace-init for RuntimeMethodInfo
+        // like `{0, "speak", "()V", ...}`. RuntimeMethodInfo is NOT an
+        // aggregate (it has a user-provided default ctor), so positional
+        // brace-init does not compile. Rewrote to use default construction
+        // + field assignment. Also fixed a data bug in the original demo:
+        // the 11th positional value was being assigned to is_constructor,
+        // but `speak`/`eat`/`bark`/`meow` are NOT constructors. The intended
+        // mapping was has_code=true at that position.
+        animal->virtual_methods.clear();
+        {
+            RuntimeMethodInfo m;
+            m.method_idx = 0; m.name = "speak"; m.descriptor = "()V"; m.shorty = "V";
+            m.access_flags = AccessFlags::ACC_PUBLIC; m.declaring_class_idx = 0;
+            m.is_direct = false; m.is_virtual = true; m.is_static = false;
+            m.is_abstract = false; m.is_constructor = false;
+            m.has_code = true; m.code_item_offset = 100;
+            m.registers_size = 5; m.ins_size = 1; m.outs_size = 1; m.insns_count = 3;
+            animal->virtual_methods.push_back(std::move(m));
+        }
+        {
+            RuntimeMethodInfo m;
+            m.method_idx = 1; m.name = "eat"; m.descriptor = "()V"; m.shorty = "V";
+            m.access_flags = AccessFlags::ACC_PUBLIC; m.declaring_class_idx = 0;
+            m.is_direct = false; m.is_virtual = true; m.is_static = false;
+            m.is_abstract = false; m.is_constructor = false;
+            m.has_code = true; m.code_item_offset = 120;
+            m.registers_size = 3; m.ins_size = 1; m.outs_size = 1; m.insns_count = 2;
+            animal->virtual_methods.push_back(std::move(m));
+        }
         
         // Build Animal's VTable (it has no parent)
         VirtualDispatchTable empty_vtable;
@@ -532,12 +556,29 @@ public:
             {1, "age", "I", 0, 0}                        // dog's age
         };
         
-        dog->virtual_methods = {
-            {2, "speak", "()V", "V", AccessFlags::ACC_PUBLIC, 1,
-             false, true, false, false, true, 200, 5, 1, 1, 3},  // Override speak!
-            {3, "bark", "()V", "V", AccessFlags::ACC_PUBLIC, 1,
-             false, true, false, false, true, 220, 2, 1, 1, 2}   // New method
-        };
+        // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): see Animal block above.
+        // RuntimeMethodInfo is non-aggregate; use default ctor + assignment.
+        dog->virtual_methods.clear();
+        {
+            RuntimeMethodInfo m;
+            m.method_idx = 2; m.name = "speak"; m.descriptor = "()V"; m.shorty = "V";
+            m.access_flags = AccessFlags::ACC_PUBLIC; m.declaring_class_idx = 1;
+            m.is_direct = false; m.is_virtual = true; m.is_static = false;
+            m.is_abstract = false; m.is_constructor = false;
+            m.has_code = true; m.code_item_offset = 200;
+            m.registers_size = 5; m.ins_size = 1; m.outs_size = 1; m.insns_count = 3;
+            dog->virtual_methods.push_back(std::move(m));
+        }
+        {
+            RuntimeMethodInfo m;
+            m.method_idx = 3; m.name = "bark"; m.descriptor = "()V"; m.shorty = "V";
+            m.access_flags = AccessFlags::ACC_PUBLIC; m.declaring_class_idx = 1;
+            m.is_direct = false; m.is_virtual = true; m.is_static = false;
+            m.is_abstract = false; m.is_constructor = false;
+            m.has_code = true; m.code_item_offset = 220;
+            m.registers_size = 2; m.ins_size = 1; m.outs_size = 1; m.insns_count = 2;
+            dog->virtual_methods.push_back(std::move(m));
+        }
         
         // Link to parent and build VTable
         RuntimeClassInfo* animal_cls = container.find_class("LAnimal;");
@@ -559,12 +600,28 @@ public:
             {1, "livesLeft", "I", 0, 0}  // cats have 9 lives!
         };
         
-        cat->virtual_methods = {
-            {4, "speak", "()V", "V", AccessFlags::ACC_PUBLIC, 2,
-             false, true, false, false, true, 300, 5, 1, 1, 3},  // Override speak!
-            {5, "meow", "()V", "V", AccessFlags::ACC_PUBLIC, 2,
-             false, true, false, false, true, 320, 2, 1, 1, 2}   // New method
-        };
+        // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): see Animal block above.
+        cat->virtual_methods.clear();
+        {
+            RuntimeMethodInfo m;
+            m.method_idx = 4; m.name = "speak"; m.descriptor = "()V"; m.shorty = "V";
+            m.access_flags = AccessFlags::ACC_PUBLIC; m.declaring_class_idx = 2;
+            m.is_direct = false; m.is_virtual = true; m.is_static = false;
+            m.is_abstract = false; m.is_constructor = false;
+            m.has_code = true; m.code_item_offset = 300;
+            m.registers_size = 5; m.ins_size = 1; m.outs_size = 1; m.insns_count = 3;
+            cat->virtual_methods.push_back(std::move(m));
+        }
+        {
+            RuntimeMethodInfo m;
+            m.method_idx = 5; m.name = "meow"; m.descriptor = "()V"; m.shorty = "V";
+            m.access_flags = AccessFlags::ACC_PUBLIC; m.declaring_class_idx = 2;
+            m.is_direct = false; m.is_virtual = true; m.is_static = false;
+            m.is_abstract = false; m.is_constructor = false;
+            m.has_code = true; m.code_item_offset = 320;
+            m.registers_size = 2; m.ins_size = 1; m.outs_size = 1; m.insns_count = 2;
+            cat->virtual_methods.push_back(std::move(m));
+        }
         
         cat->calculate_field_offsets(animal_cls);
         cat->build_vtable(animal_cls);
@@ -609,7 +666,12 @@ public:
      */
     json run_polymorphic_demo() {
         if (!initialized) {
-            return {"error": "System not initialized"};
+            // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): the original syntax
+            // `return {"error": "..."};` is ambiguous to the C++ parser when
+            // the return type is `json` (nlohmann::json). It is parsed as a
+            // brace-enclosed initializer with a colon label, not as a JSON
+            // object literal. Use json::parse or json::object() explicitly.
+            return json::object({{"error", "System not initialized"}});
         }
         
         dispatcher.clear_trace();
