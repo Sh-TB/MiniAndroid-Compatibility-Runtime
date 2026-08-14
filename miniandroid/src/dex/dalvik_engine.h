@@ -88,7 +88,24 @@ namespace Opcode {
     constexpr uint16_t INSTANCE_OF = 0x20;   // instance-of vA, vB, type@CCCC
     constexpr uint16_t CHECK_CAST = 0x1F;    // check-cast vAA, type@BBBB
     constexpr uint16_t NEW_INSTANCE = 0x22;  // new-instance vAA, type@BBBB
+    constexpr uint16_t NEW_ARRAY = 0x23;     // new-array vA, vB, type@CCCC (EXP-038)
     constexpr uint16_t ARRAY_LENGTH = 0x21;  // array-length vA, vB
+
+    // EXP-038 (BLOCKER-031): Array get/put opcodes (23x format)
+    constexpr uint16_t AGET = 0x44;           // aget vAA, vBB, vCC
+    constexpr uint16_t AGET_WIDE = 0x45;      // aget-wide vAA, vBB, vCC
+    constexpr uint16_t AGET_OBJECT = 0x46;     // aget-object vAA, vBB, vCC
+    constexpr uint16_t AGET_BOOLEAN = 0x47;    // aget-boolean vAA, vBB, vCC
+    constexpr uint16_t AGET_BYTE = 0x48;      // aget-byte vAA, vBB, vCC
+    constexpr uint16_t AGET_CHAR = 0x49;      // aget-char vAA, vBB, vCC
+    constexpr uint16_t AGET_SHORT = 0x4A;     // aget-short vAA, vBB, vCC
+    constexpr uint16_t APUT = 0x4B;           // aput vAA, vBB, vCC
+    constexpr uint16_t APUT_WIDE = 0x4C;      // aput-wide vAA, vBB, vCC
+    constexpr uint16_t APUT_OBJECT = 0x4D;    // aput-object vAA, vBB, vCC
+    constexpr uint16_t APUT_BOOLEAN = 0x4E;   // aput-boolean vAA, vBB, vCC
+    constexpr uint16_t APUT_BYTE = 0x4F;      // aput-byte vAA, vBB, vCC
+    constexpr uint16_t APUT_CHAR = 0x50;      // aput-char vAA, vBB, vCC
+    constexpr uint16_t APUT_SHORT = 0x51;     // aput-short vAA, vBB, vCC
     
     // Instance Field Operations (EXP-035: Field System Integration)
     constexpr uint16_t IGET = 0x52;          // iget vA, vB, field@CCCC
@@ -128,13 +145,29 @@ namespace Opcode {
     constexpr uint16_t INVOKE_DIRECT = 0x70;     // invoke-direct {vC..}, method@BBBB
     constexpr uint16_t INVOKE_STATIC = 0x71;     // invoke-static {vC..}, method@BBBB
     constexpr uint16_t INVOKE_INTERFACE = 0x72;  // invoke-interface {vC..}, method@BBBB
+
+    // EXP-038 (BLOCKER-030): invoke-*/range opcodes (3rc format)
+    // These are used for method calls with many arguments (>5).
+    constexpr uint16_t INVOKE_VIRTUAL_RANGE = 0x74;   // invoke-virtual/range {vCCCC..vNNNN}, meth@BBBB
+    constexpr uint16_t INVOKE_SUPER_RANGE = 0x75;     // invoke-super/range
+    constexpr uint16_t INVOKE_DIRECT_RANGE = 0x76;    // invoke-direct/range
+    constexpr uint16_t INVOKE_STATIC_RANGE = 0x77;    // invoke-static/range
+    constexpr uint16_t INVOKE_INTERFACE_RANGE = 0x78; // invoke-interface/range
     
     // Control flow (basic set)
     constexpr uint16_t GOTO = 0x28;           // goto +AA
     constexpr uint16_t GOTO_16 = 0x29;        // goto/16 +AAAA
     constexpr uint16_t GOTO_32 = 0x2A;        // goto/32 +AAAAAAAA
-    constexpr uint16_t IF_EQZ = 0x39;         // if-eqz vAA, +BBBB
-    constexpr uint16_t IF_NEZ = 0x3A;         // if-nez vAA, +BBBB
+    // EXP-038 (BLOCKER-029): Fixed if-eqz/if-nez opcode values.
+    // Per AOSP: if-eqz=0x38, if-nez=0x39, if-ltz=0x3a, if-gez=0x3b,
+    // if-gtz=0x3c, if-lez=0x3d
+    // Previous code had IF_EQZ=0x39 and IF_NEZ=0x3A — off by 1!
+    constexpr uint16_t IF_EQZ = 0x38;         // if-eqz vAA, +BBBB
+    constexpr uint16_t IF_NEZ = 0x39;         // if-nez vAA, +BBBB
+    constexpr uint16_t IF_LTZ = 0x3A;         // if-ltz vAA, +BBBB
+    constexpr uint16_t IF_GEZ = 0x3B;         // if-gez vAA, +BBBB
+    constexpr uint16_t IF_GTZ = 0x3C;          // if-gtz vAA, +BBBB
+    constexpr uint16_t IF_LEZ = 0x3D;          // if-lez vAA, +BBBB
     constexpr uint16_t IF_EQ = 0x32;          // if-eq vAA, vBB, +CCCC
     constexpr uint16_t IF_NE = 0x33;          // if-ne vAA, vBB, +CCCC
     // EXP-037 Phase B (BLOCKER-018): remaining if-* opcodes (22t format).
@@ -143,6 +176,48 @@ namespace Opcode {
     constexpr uint16_t IF_GE = 0x35;          // if-ge vAA, vBB, +CCCC
     constexpr uint16_t IF_GT = 0x36;          // if-gt vAA, vBB, +CCCC
     constexpr uint16_t IF_LE = 0x37;          // if-le vAA, vBB, +CCCC
+
+    // EXP-038 (BLOCKER-028): Arithmetic 2addr opcodes (12x format)
+    // These are heavily used in real Android bytecode for local variable math.
+    constexpr uint16_t ADD_INT_2ADDR = 0xB0;    // add-int/2addr vA, vB
+    constexpr uint16_t SUB_INT_2ADDR = 0xB1;    // sub-int/2addr vA, vB
+    constexpr uint16_t MUL_INT_2ADDR = 0xB2;    // mul-int/2addr vA, vB
+    constexpr uint16_t DIV_INT_2ADDR = 0xB3;    // div-int/2addr vA, vB
+    constexpr uint16_t REM_INT_2ADDR = 0xB4;    // rem-int/2addr vA, vB
+    constexpr uint16_t AND_INT_2ADDR = 0xB5;    // and-int/2addr vA, vB
+    constexpr uint16_t OR_INT_2ADDR  = 0xB6;    // or-int/2addr vA, vB
+    constexpr uint16_t XOR_INT_2ADDR = 0xB7;    // xor-int/2addr vA, vB
+    constexpr uint16_t SHL_INT_2ADDR = 0xB8;    // shl-int/2addr vA, vB
+    constexpr uint16_t SHR_INT_2ADDR = 0xB9;    // shr-int/2addr vA, vB
+    constexpr uint16_t USHR_INT_2ADDR = 0xBA;   // ushr-int/2addr vA, vB
+
+    // Arithmetic lit8 (22b format: AA|op BB|CC)
+    constexpr uint16_t ADD_INT_LIT8 = 0xD8;     // add-int/lit8 vAA, vBB, #+CC
+    constexpr uint16_t SUB_INT_LIT8 = 0xD9;     // sub-int/lit8 vAA, vBB, #+CC
+    constexpr uint16_t MUL_INT_LIT8 = 0xDA;     // mul-int/lit8 vAA, vBB, #+CC
+    constexpr uint16_t AND_INT_LIT8 = 0xDB;     // and-int/lit8 vAA, vBB, #+CC
+    constexpr uint16_t OR_INT_LIT8  = 0xDC;     // or-int/lit8 vAA, vBB, #+CC
+    constexpr uint16_t XOR_INT_LIT8 = 0xDD;     // xor-int/lit8 vAA, vBB, #+CC
+
+    // Arithmetic lit16 (22s format: AA|op BBBB)
+    constexpr uint16_t ADD_INT_LIT16 = 0xD0;    // add-int/lit16 vA, vB, #+BBBB
+    constexpr uint16_t SUB_INT_LIT16 = 0xD1;     // rsub-int (reverse subtract)
+    constexpr uint16_t MUL_INT_LIT16 = 0xD2;    // mul-int/lit16
+    constexpr uint16_t DIV_INT_LIT16 = 0xD3;    // div-int/lit16
+    constexpr uint16_t REM_INT_LIT16 = 0xD4;    // rem-int/lit16
+    constexpr uint16_t AND_INT_LIT16 = 0xD5;    // and-int/lit16
+    constexpr uint16_t OR_INT_LIT16  = 0xD6;    // or-int/lit16
+    constexpr uint16_t XOR_INT_LIT16 = 0xD7;     // xor-int/lit16
+
+    // Binary 23x format: AA|op BB|CC (3 registers)
+    constexpr uint16_t ADD_INT = 0x90;          // add-int vAA, vBB, vCC
+    constexpr uint16_t SUB_INT = 0x91;          // sub-int vAA, vBB, vCC
+    constexpr uint16_t MUL_INT = 0x92;          // mul-int vAA, vBB, vCC
+    constexpr uint16_t DIV_INT = 0x93;          // div-int vAA, vBB, vCC
+    constexpr uint16_t REM_INT = 0x94;          // rem-int vAA, vBB, vCC
+    constexpr uint16_t AND_INT = 0x95;          // and-int vAA, vBB, vCC
+    constexpr uint16_t OR_INT  = 0x96;          // or-int vAA, vBB, vCC
+    constexpr uint16_t XOR_INT = 0x97;          // xor-int vAA, vBB, vCC
 }
 
 // ============================================================================
@@ -917,6 +992,9 @@ private:
     // Opcode implementations — Moves
     bool execute_move(uint32_t pc, InstructionTrace& trace);
     bool execute_move_object(uint32_t pc, InstructionTrace& trace);
+    // EXP-038 (BLOCKER-026): move-object/from16 (0x08, format 22x)
+    // Required by Telegram's LaunchActivity.onCreate() at PC=1.
+    bool execute_move_object_from16(uint32_t pc, InstructionTrace& trace);
     bool execute_move_result(uint32_t pc, InstructionTrace& trace);
     bool execute_move_result_object(uint32_t pc, InstructionTrace& trace);
     

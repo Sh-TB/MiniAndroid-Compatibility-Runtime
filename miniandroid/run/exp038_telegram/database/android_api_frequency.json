@@ -1,0 +1,908 @@
+{
+  "apis": [
+    {
+      "call_count": 9,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "addContentView",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "consumeTextFutureAndSetBlocking",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "createFromParcel",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "createPlaybackSession",
+      "priority": 3
+    },
+    {
+      "call_count": 5,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "dump",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "flush",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getAuthenticationType",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getColorStateList",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getDefaultSensor",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getElapsedRealtimeNanos",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getInflater",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getLatitude",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getMaxAvailableHeight",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getMinBufferSize",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getNumberOfLayers",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getQueueItem",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "isActionViewExpanded",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onConfigurationChanged",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onCreate",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onMenuItemSelected",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onStart",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onStop",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onStopRecording",
+      "priority": 3
+    },
+    {
+      "call_count": 15,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setDisplayHomeAsUpEnabled",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setHideOnContentScrollEnabled",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setupAutoSizeUniformPresetSizes",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setupAutoSizeUniformPresetSizesConfiguration",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "supportsAutoSizeText",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "validateAndSetAutoSizeTextTypeUniformConfiguration",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "attach",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onCreate(executed)",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onResume",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onStart",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "(I)V",
+      "first_seen_exp": 7,
+      "implementation_status": "PARTIAL",
+      "method": "setContentView",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/net/Uri$Builder;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "createPlaybackSession",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/os/Parcel;<super>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "dataSize",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/text/Spanned;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getSpanEnd",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/InflateException;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/KeyEvent;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "hasNoModifiers",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/KeyEvent;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "isShiftPressed",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/View;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getScaleY",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/View;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getStateDescription",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/View;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getTransitionName",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/widget/EditText;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/widget/MultiAutoCompleteTextView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setBackgroundDrawable",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/appcompat/R$layout;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getClassName",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Landroidx/appcompat/app/WindowDecorActionBar;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setShowHideAnimationEnabled",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/appcompat/view/menu/ActionMenuItem;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getOrder",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/appcompat/view/menu/MenuItemWrapperICS$ActionProviderWrapperJB;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/car/app/navigation/model/RoutePreviewNavigationTemplate;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getItemList",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/car/app/navigation/model/RoutePreviewNavigationTemplate;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "isLoading",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/car/app/notification/CarAppNotificationBroadcastReceiver;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "lambda$onReceive$0",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/car/app/suggestion/ISuggestionHost;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "updateSuggestions",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/credentials/playservices/controllers/ResponseUtils$Companion$$ExternalSyntheticLambda2;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lcom/google/android/exoplayer2/source/hls/HlsMediaSource;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "updateLiveConfiguration",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lcom/google/android/exoplayer2/trackselection/DefaultTrackSelector;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "maybeConfigureRenderersForTunneling",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lcom/google/android/gms/internal/fido/zzcf;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "zzm",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lcom/google/android/gms/internal/location/zzbe;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "accept",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lcom/google/android/gms/internal/location/zzbm;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "buildClient",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lcom/google/android/gms/internal/location/zzbn;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "zza",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lcom/google/android/gms/internal/location/zzcs;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "zza",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lcom/google/android/gms/internal/mlkit_common/zzab;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "toArray",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lcom/google/android/gms/internal/mlkit_common/zzae;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "zze",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lcom/google/android/gms/internal/mlkit_language_id_common/zzib;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "equals",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lcom/google/android/gms/internal/mlkit_language_id_common/zzim;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getLatitude",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lcom/google/firebase/installations/local/AutoValue_PersistedInstallationEntry$Builder;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "RESOURCE",
+      "class": "ResourceManager",
+      "descriptor": "(Landroid/content/res/Resources;)V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "initialize",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "RENDERER",
+      "class": "View",
+      "descriptor": "(Landroid/graphics/Canvas;)V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "draw",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "LAYOUT",
+      "class": "View",
+      "descriptor": "(IIII)V",
+      "first_seen_exp": 7,
+      "implementation_status": "PARTIAL",
+      "method": "layout",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "LAYOUT",
+      "class": "View",
+      "descriptor": "(II)V",
+      "first_seen_exp": 7,
+      "implementation_status": "PARTIAL",
+      "method": "measure",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "android.app.Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onPictureInPictureModeChanged",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "android.app.NotificationChannel",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "android.net.Uri$Builder",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "hasHeart",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "androidx.appcompat.R$layout",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getChildCount",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "androidx.credentials.CreatePublicKeyCredentialResponse",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setCompoundDrawablesRelativeWithIntrinsicBounds",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "androidx.credentials.playservices.controllers.CredentialProviderController$Companion",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "androidx.credentials.playservices.controllers.ResponseUtils$Companion$$ExternalSyntheticLambda2",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "com.google.android.gms.cast.framework.media.internal.zzf",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onDashManifestPublishTimeExpired",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "com.google.android.gms.fido.fido2.api.common.ResidentKeyRequirement",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "com.google.android.gms.internal.mlkit_language_id_common.zzel",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "com.google.android.gms.internal.mlkit_language_id_common.zzem",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "zzb",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "com.google.android.gms.internal.mlkit_language_id_common.zzen",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "com.google.android.gms.internal.mlkit_language_id_common.zzhz",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "com.google.android.gms.internal.mlkit_language_id_common.zzia",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "encode",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "com.google.android.gms.internal.mlkit_language_id_common.zzib",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "encode",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "com.google.android.gms.internal.mlkit_language_id_common.zzic",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "com.google.android.gms.internal.mlkit_language_id_common.zzig",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "zze",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "com.google.android.gms.internal.mlkit_language_id_common.zzim",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    }
+  ],
+  "based_on_apk": "download/exp038_telegram/Telegram.apk",
+  "generated": "2026-08-11",
+  "source": "EXP-007->EXP-012 MEGA BATCH execution",
+  "total_unique_apis": 90
+}

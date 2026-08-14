@@ -379,30 +379,30 @@ bool ApplicationRuntime::load_apk(const std::string& apk_path) {
         
         apk_info_ = std::make_unique<ApkInfo>(info);
         
-        // Read full APK data into memory for later extraction
-        std::ifstream file(apk_path, std::ios::binary | std::ios::ate);
-        if (!file.is_open()) {
-            FailureRecord f;
-            f.type = FailureType::FILE_NOT_FOUND;
-            f.stage = "load_apk";
-            f.details = "Cannot open file for reading";
-            f.timestamp = get_timestamp();
-            f.apk_path = apk_path;
-            f.is_blocking = true;
-            record_failure(f);
-            transition_to(RuntimeState::LOAD_FAILED, "Cannot read APK file");
-            return false;
+        // EXP-038 (BLOCKER-023): Use cached APK data instead of re-reading the file.
+        // The ApkParser::parse() call above already loaded the entire APK into
+        // memory and cached all ZIP entries. We can now use extract_entry_cached()
+        // for O(1) entry lookups.
+        // For backward compatibility, we still populate apk_data_ but from
+        // the parser's cached data if available.
+        if (apk_parser_->has_cached_data()) {
+            // Use cached extraction for manifest
+            manifest_data_ = apk_parser_->extract_entry_cached("AndroidManifest.xml");
+        } else {
+            // Fallback: read file and extract manually (legacy path)
+            std::ifstream file(apk_path, std::ios::binary | std::ios::ate);
+            if (!file.is_open()) {
+                transition_to(RuntimeState::LOAD_FAILED, "Cannot open APK file");
+                return false;
+            }
+            size_t size = file.tellg();
+            file.seekg(0, std::ios::beg);
+            apk_data_.resize(size);
+            file.read(reinterpret_cast<char*>(apk_data_.data()), size);
+            file.close();
+            manifest_data_ = apk_parser_->extract_entry(apk_path, "AndroidManifest.xml");
         }
-        
-        size_t size = file.tellg();
-        file.seekg(0, std::ios::beg);
-        apk_data_.resize(size);
-        file.read(reinterpret_cast<char*>(apk_data_.data()), size);
-        file.close();
-        
-        // Extract manifest data
-        manifest_data_ = apk_parser_->extract_entry(apk_path, "AndroidManifest.xml");
-        
+
         auto end = std::chrono::steady_clock::now();
         double duration = std::chrono::duration<double, std::milli>(end - start).count();
         
@@ -411,7 +411,7 @@ bool ApplicationRuntime::load_apk(const std::string& apk_path) {
         if (config_.verbose) {
             std::cout << "  Package: " << info.package_name << std::endl;
             std::cout << "  Main Activity: " << info.main_activity_full << std::endl;
-            std::cout << "  Size: " << size << " bytes" << std::endl;
+            std::cout << "  Size: " << info.file_size << " bytes" << std::endl;
             std::cout << "  Duration: " << duration << "ms" << std::endl;
         }
         
@@ -506,49 +506,134 @@ bool ApplicationRuntime::load_dex() {
             std::cout << "[Phase A] Loading DEX..." << std::endl;
         }
         
-        // Extract classes.dex from APK
-        dex_data_ = apk_parser_->extract_entry_from_memory(apk_data_, "classes.dex");
+        // EXP-038 (BLOCKER-024): MultiDex support.
+        // Load ALL classes*.dex files from the APK, not just classes.dex.
+        // Telegram has 5 DEX files with 41,078 total classes. Without
+        // multidex, the runtime only sees 12,521 classes and can't resolve
+        // org.telegram.ui.LaunchActivity (which is in a later DEX file).
         
-        if (dex_data_.empty()) {
+        // Get list of DEX files from the cached APK info
+        std::vector<std::string> dex_files;
+        if (apk_info_ && !apk_info_->dex_files.empty()) {
+            dex_files = apk_info_->dex_files;
+        } else {
+            dex_files.push_back("classes.dex");  // fallback
+        }
+        
+        // Sort to ensure classes.dex is first, then classes2.dex, etc.
+        std::sort(dex_files.begin(), dex_files.end());
+        
+        // Create a merged DexReport
+        DexReport merged_report;
+        merged_report.is_valid = true;
+        merged_report.dex_path = apk_path_;
+        merged_report.dex_version = "039";  // will be updated from first DEX
+        
+        if (config_.verbose) {
+            std::cout << "  Found " << dex_files.size() << " DEX files" << std::endl;
+        }
+        
+        for (size_t i = 0; i < dex_files.size(); i++) {
+            const std::string& dex_name = dex_files[i];
+            
+            // Extract DEX data using cached lookup
+            std::vector<uint8_t> dex_data;
+            if (apk_parser_->has_cached_data()) {
+                dex_data = apk_parser_->extract_entry_cached(dex_name);
+            } else {
+                dex_data = apk_parser_->extract_entry_from_memory(apk_data_, dex_name);
+            }
+            
+            if (dex_data.empty()) {
+                if (config_.verbose) {
+                    std::cout << "  [SKIP] " << dex_name << " (not found)" << std::endl;
+                }
+                continue;
+            }
+            
+            // Parse this DEX file
+            DexReport report = dex_parser_->parse_data(dex_data, apk_path_ + "/" + dex_name);
+            
+            if (!report.is_valid) {
+                if (config_.verbose) {
+                    std::cout << "  [FAIL] " << dex_name << ": " << report.validation_error << std::endl;
+                }
+                continue;
+            }
+            
+            if (config_.verbose) {
+                std::cout << "  [" << (i+1) << "/" << dex_files.size() << "] "
+                          << dex_name << ": " << report.classes_count << " classes, "
+                          << report.methods_count << " methods" << std::endl;
+            }
+            
+            // Merge into combined report
+            // For the first DEX, use its version info
+            if (i == 0) {
+                merged_report.dex_version = report.dex_version;
+            }
+            
+            // Append all classes
+            for (auto& cls : report.classes) {
+                merged_report.classes.push_back(std::move(cls));
+            }
+            
+            // Append method_ids and field_ids
+            for (auto& mid : report.method_ids) {
+                merged_report.method_ids.push_back(mid);
+            }
+            for (auto& fid : report.field_ids) {
+                merged_report.field_ids.push_back(fid);
+            }
+            
+            // Append strings and types (with offset adjustment to avoid duplicates)
+            // Note: For now, we just concatenate. Cross-DEX references use
+            // method_idx/field_idx which are PER-DEX, not global. This is a
+            // known limitation — proper multidex requires global ID remapping.
+            // For now, the first DEX's strings/types are used for resolution.
+            if (merged_report.strings.empty()) {
+                merged_report.strings = report.strings;
+                merged_report.types = report.types;
+            }
+            
+            // Update counts
+            merged_report.classes_count += report.classes_count;
+            merged_report.methods_count += report.methods_count;
+            merged_report.fields_count += report.fields_count;
+            merged_report.strings_count += report.strings_count;
+            merged_report.types_count += report.types_count;
+            merged_report.prototypes_count += report.prototypes_count;
+        }
+        
+        if (merged_report.classes.empty()) {
             FailureRecord f;
             f.type = FailureType::FILE_NOT_FOUND;
             f.stage = "load_dex";
-            f.details = "classes.dex not found in APK";
+            f.details = "No valid DEX files found in APK";
             f.timestamp = get_timestamp();
             f.apk_path = apk_path_;
             f.is_blocking = true;
             record_failure(f);
-            transition_to(RuntimeState::LOAD_FAILED, "DEX not found in APK");
+            transition_to(RuntimeState::LOAD_FAILED, "No valid DEX files");
             return false;
         }
         
-        // Parse DEX
-        DexReport report = dex_parser_->parse_data(dex_data_, apk_path_ + "/classes.dex");
-        
-        if (!report.is_valid) {
-            FailureRecord f;
-            f.type = FailureType::PARSE_ERROR;
-            f.stage = "load_dex";
-            f.details = dex_parser_->get_last_error();
-            f.timestamp = get_timestamp();
-            f.apk_path = apk_path_;
-            f.is_blocking = true;
-            record_failure(f);
-            transition_to(RuntimeState::LOAD_FAILED, "DEX parsing failed");
-            return false;
+        // Also keep the first DEX's data for backward compatibility (dex_data_)
+        if (apk_parser_->has_cached_data()) {
+            dex_data_ = apk_parser_->extract_entry_cached("classes.dex");
         }
         
-        dex_report_ = std::make_unique<DexReport>(report);
+        dex_report_ = std::make_unique<DexReport>(merged_report);
         
         auto end = std::chrono::steady_clock::now();
         double duration = std::chrono::duration<double, std::milli>(end - start).count();
         
-        transition_to(RuntimeState::DEX_LOADED, "DEX loaded: " + std::to_string(report.classes_count) + " classes");
+        transition_to(RuntimeState::DEX_LOADED, "DEX loaded: " + std::to_string(merged_report.classes_count) + " classes");
         
         if (config_.verbose) {
-            std::cout << "  Version: " << report.dex_version << std::endl;
-            std::cout << "  Classes: " << report.classes_count << std::endl;
-            std::cout << "  Methods: " << report.methods_count << std::endl;
+            std::cout << "  Version: " << merged_report.dex_version << std::endl;
+            std::cout << "  Classes: " << merged_report.classes_count << std::endl;
+            std::cout << "  Methods: " << merged_report.methods_count << std::endl;
             std::cout << "  Duration: " << duration << "ms" << std::endl;
         }
         
@@ -594,7 +679,49 @@ bool ApplicationRuntime::resolve_launcher_activity() {
         }
         
         // Use ClassResolver to find entry point
-        ExecutionTrace trace = class_resolver_->resolve(*dex_report_);
+        // EXP-038 (BLOCKER-025): Pass the manifest's main_activity to the
+        // class resolver so it searches for the specific launcher class
+        // instead of using the "find first Activity with 'Main' in name"
+        // heuristic. For Telegram, the launcher is org.telegram.ui.LaunchActivity
+        // which doesn't contain "Main", so the heuristic picks the wrong class.
+        std::string target_activity;
+        if (manifest_info_ && !manifest_info_->main_activity_full.empty()) {
+            target_activity = manifest_info_->main_activity_full;
+            if (config_.verbose) {
+                std::cout << "  Searching for launcher class: " << target_activity << std::endl;
+            }
+        }
+        
+        // Convert dotted form to descriptor form for matching
+        std::string target_descriptor;
+        if (!target_activity.empty()) {
+            target_descriptor = "L" + target_activity + ";";
+            for (auto& c : target_descriptor) if (c == '.') c = '/';
+        }
+        
+        ExecutionTrace trace;
+        if (!target_activity.empty()) {
+            // Search for the specific class in DEX
+            trace = class_resolver_->resolve_target(*dex_report_, target_activity, "onCreate");
+            
+            // If not found by readable name, try descriptor form
+            if (!trace.success || !trace.entry_point.resolved) {
+                // Direct descriptor match — find class and use its readable name
+                for (const auto& cls : dex_report_->classes) {
+                    if (cls.name == target_descriptor) {
+                        // Convert descriptor (Lcom/foo/Bar;) to readable (com.foo.Bar)
+                        std::string readable = cls.name;
+                        if (!readable.empty() && readable.front() == 'L') readable.erase(0, 1);
+                        if (!readable.empty() && readable.back() == ';') readable.pop_back();
+                        for (auto& c : readable) if (c == '/') c = '.';
+                        trace = class_resolver_->resolve_target(*dex_report_, readable, "onCreate");
+                        break;
+                    }
+                }
+            }
+        } else {
+            trace = class_resolver_->resolve(*dex_report_);
+        }
         
         execution_trace_ = std::make_unique<ExecutionTrace>(trace);
         
