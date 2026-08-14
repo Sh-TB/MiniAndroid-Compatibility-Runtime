@@ -1,0 +1,24 @@
+{
+  "apk_name": "/home/z/my-project/miniandroid/test_apks/exp031_5/Test5_MiniActivity.dex",
+  "timestamp": "2026-08-14T09:08:22.458791",
+  "status": "NO_BYTECODE_FOUND",
+  "dex_files": [
+    {
+      "dex_name": "Test5_MiniActivity.dex",
+      "size_bytes": 314,
+      "sha256": "facfa2bc2f657273",
+      "valid": true,
+      "methods_found": 0,
+      "methods_with_bytecode": 0,
+      "instructions_decoded": 0,
+      "opcodes_found": [],
+      "sample_methods": []
+    }
+  ],
+  "total_methods_found": 0,
+  "methods_with_bytecode": 0,
+  "total_instructions_decoded": 0,
+  "unique_opcodes": [],
+  "evidence_valid": false,
+  "source_type": "standalone_dex"
+}
