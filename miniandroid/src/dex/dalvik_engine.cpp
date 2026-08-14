@@ -451,6 +451,78 @@ bool DalvikExecutionEngine::execute_method_internal(
     return success;
 }
 
+// EXP-038 (BLOCKER-034): Recursive DEX method invocation.
+// Search the DEX for a method matching declaring_class + method_name.
+// If found with bytecode, recursively execute it.
+bool DalvikExecutionEngine::try_recursive_invoke(
+    const std::string& declaring_class,
+    const std::string& method_name,
+    const std::vector<DalvikValue>& args,
+    DalvikValue& return_val,
+    DalvikExecutionResult& result
+) {
+    if (!dex_report_) return false;
+
+    // Convert declaring_class to DEX descriptor form if needed
+    // declaring_class may be "Lcom/foo/Bar;" (descriptor) or "com.foo.Bar" (readable)
+    std::string class_descriptor = declaring_class;
+    if (!class_descriptor.empty() && class_descriptor[0] != 'L') {
+        // Convert readable to descriptor
+        for (auto& c : class_descriptor) if (c == '.') c = '/';
+        class_descriptor = "L" + class_descriptor + ";";
+    }
+
+    // Search for the class in DEX
+    for (const auto& cls : dex_report_->classes) {
+        if (cls.name != class_descriptor) continue;
+
+        // Found the class — search for the method
+        for (const auto& method : cls.all_methods()) {
+            if (method.name != method_name) continue;
+            if (method.bytecode.empty()) continue;  // skip abstract/native
+
+            // Found a method with bytecode — recursively execute!
+            log("🔄 RECURSIVE INVOKE: " + cls.name + "." + method.name +
+                method.descriptor + " (" + std::to_string(method.bytecode.size()) + " instructions)");
+
+            // Save current state
+            auto saved_pc = pc_;
+            auto saved_bytecode = bytecode_;
+            auto* saved_registers = current_registers_;
+
+            // Determine registers/ins/outs from code_item (approximate)
+            uint32_t regs_size = 16;  // default
+            uint32_t ins_size = static_cast<uint32_t>(args.size());
+            uint32_t outs_size = 4;
+
+            // Execute the method recursively
+            execute_method_internal(
+                cls.name,
+                method.name,
+                method.descriptor,
+                method.bytecode,
+                regs_size,
+                ins_size,
+                outs_size,
+                args,
+                result
+            );
+
+            // Restore state
+            bytecode_ = saved_bytecode;
+            pc_ = saved_pc;
+            current_registers_ = saved_registers;
+
+            // Get return value from result (simplified — return void for now)
+            return_val = DalvikValue::make_void();
+            log("✅ RECURSIVE INVOKE completed: " + cls.name + "." + method.name);
+            return true;
+        }
+    }
+
+    return false;  // method not found in DEX, bridge to API
+}
+
 bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) {
     while (!halted_ && pc_ < bytecode_.size()) {
         InstructionTrace trace;
@@ -1980,8 +2052,22 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     // Try API bridge with resolved method info
     DalvikValue return_val = DalvikValue::make_void();
     ApiCallTrace::Status api_status = ApiCallTrace::Status::STUBBED;
-    
+
+    // EXP-038 (BLOCKER-034): Try recursive DEX method invocation first.
+    // If the target method exists in DEX with bytecode, execute it recursively
+    // instead of bridging to the API stub layer. This enables real execution
+    // of helper methods (e.g., ApplicationLoader.init, AndroidUtilities, etc.)
+    bool recursively_invoked = false;
     if (config_.enable_api_bridge) {
+        // Use declaring_class from method_ids[] for lookup
+        if (try_recursive_invoke(declaring_class, method_name_from_dex,
+                                 args, return_val, result)) {
+            recursively_invoked = true;
+            api_status = ApiCallTrace::Status::IMPLEMENTED;
+        }
+    }
+
+    if (!recursively_invoked && config_.enable_api_bridge) {
         // Use declaring_class (the static type from method_ids[]) if
         // runtime_type is unknown — this lets us route framework calls like
         // android.app.Activity.onCreate to the API stub layer.
