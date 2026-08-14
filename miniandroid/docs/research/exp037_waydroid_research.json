@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://waydro.id",
+    "name": "Waydroid | Android in a Linux container",
+    "snippet": "Waydroid uses Linux namespaces (user, pid, uts, net, mount, ipc) to run a full Android system in a container and provide Android applications on any GNU/Linux- ... Read more",
+    "host_name": "waydro.id",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://wiki.archlinux.org/title/Waydroid",
+    "name": "Waydroid - ArchWiki",
+    "snippet": "Waydroid is a container-based approach to boot a full Android system . Waydroid doesn't emulate foreign architectures, only runs native architecture code. best ...",
+    "host_name": "wiki.archlinux.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/waydroid/waydroid",
+    "name": "Waydroid uses a container-based approach to boot a full",
+    "snippet": "Waydroid uses Linux namespaces (user, pid, uts, net, mount, ipc) to run a full Android system in a container and provide Android applications on any GNU/Linux- ...",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://shattered.io/waydroid-setup-guide",
+    "name": "Waydroid Setup: 11.9K GitHub Stars, 12 Steps, 30 Min [2026]",
+    "snippet": "5 days ago — Waydroid runs a full Android system inside a Linux container instead of emulating one, A container shares the host kernel directly, near-native ...",
+    "host_name": "shattered.io",
+    "rank": 3,
+    "date": "Aug 9, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://forum.garudalinux.org/t/ultimate-guide-to-install-waydroid-in-any-arch-based-distro-especially-garuda/15902",
+    "name": "Ultimate Guide to install Waydroid in any Arch-based distro",
+    "snippet": "Jan 1, 2022 — Waydroid supports most of the common architectures (ARM, ARM64, x86 & x86_64 CPUs). Waydroid uses Android's mesa integration for passthrough, ...",
+    "host_name": "forum.garudalinux.org",
+    "rank": 4,
+    "date": "Jan 1, 2022",
+    "favicon": ""
+  },
+  {
+    "url": "https://blog.fernvenue.com/archives/android-application-on-linux-without-virtualization",
+    "name": "Android Application on Linux without Virtualization",
+    "snippet": "Dec 12, 2023 — Waydroid uses Linux namespaces (user, pid, uts, net, mount, ipc) to run a full Android system in a container and provide Android applications ...",
+    "host_name": "blog.fernvenue.com",
+    "rank": 5,
+    "date": "Dec 12, 2023",
+    "favicon": ""
+  },
+  {
+    "url": "https://news.ycombinator.com/item?id=42911042",
+    "name": "Waydroid – Android in a Linux container",
+    "snippet": "Feb 2, 2025 — Waydroid runs Android services and applications natively on your machine in a container with apps launching in windows side-by-side with your ... Read more",
+    "host_name": "news.ycombinator.com",
+    "rank": 6,
+    "date": "Feb 2, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/linux/comments/ptf7f8/waydroid_a_containerbased_approach_to_boot_a_full",
+    "name": "Waydroid - A container-based approach to boot a full",
+    "snippet": "Waydroid is an approach based on containers . It's used to boot a complete Android system on a GNU/Linux system. Waydroid makes use of Linux ... Read more",
+    "host_name": "www.reddit.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]
