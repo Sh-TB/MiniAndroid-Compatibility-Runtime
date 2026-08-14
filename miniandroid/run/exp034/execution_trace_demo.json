@@ -1,0 +1,197 @@
+{
+  "execution_id": "EXP-034-DEMO-001",
+  "timestamp": "2026-08-14T12:20:27.805871",
+  "scenario": "TextView creation and text setting",
+  "steps": [
+    {
+      "step": 1,
+      "operation": "NEW_INSTANCE",
+      "opcode": "new-instance",
+      "details": {
+        "class": "Landroid/widget/TextView;",
+        "object_id": "obj_0x001",
+        "instance_size": 24,
+        "fields_allocated": [
+          {
+            "name": "mLeft",
+            "offset": 0,
+            "initial_value": 0
+          },
+          {
+            "name": "mTop",
+            "offset": 4,
+            "initial_value": 0
+          },
+          {
+            "name": "mRight",
+            "offset": 8,
+            "initial_value": 0
+          },
+          {
+            "name": "mBottom",
+            "offset": 12,
+            "initial_value": 0
+          },
+          {
+            "name": "mText",
+            "offset": 16,
+            "initial_value": null,
+            "is_reference": true
+          },
+          {
+            "name": "mTextColor",
+            "offset": 20,
+            "initial_value": 4278190080
+          }
+        ]
+      },
+      "evidence": "Object allocated with correct field layout per RuntimeClassInfo"
+    },
+    {
+      "step": 2,
+      "operation": "INVOKE_DIRECT",
+      "opcode": "invoke-direct",
+      "details": {
+        "target_class": "Landroid/widget/TextView;",
+        "method": "<init>(Landroid/content/Context;)V",
+        "arguments": [
+          "obj_0x001",
+          "context_0x002"
+        ],
+        "resolution": "Direct method lookup (no VTable)",
+        "result": "SUCCESS"
+      },
+      "evidence": "Constructor called directly, no polymorphism involved"
+    },
+    {
+      "step": 3,
+      "operation": "FIELD_WRITE",
+      "opcode": "iput",
+      "details": {
+        "object": "obj_0x001",
+        "operations": [
+          {
+            "field": "mLeft",
+            "field_idx": 0,
+            "offset": 0,
+            "value": 100
+          },
+          {
+            "field": "mTop",
+            "field_idx": 1,
+            "offset": 4,
+            "value": 200
+          },
+          {
+            "field": "mRight",
+            "field_idx": 2,
+            "offset": 8,
+            "value": 500
+          },
+          {
+            "field": "mBottom",
+            "field_idx": 3,
+            "offset": 12,
+            "value": 600
+          }
+        ],
+        "mechanism": "Offset-based write using InstanceFieldInfo.byte_offset"
+      },
+      "evidence": "Field writes use pre-calculated offsets, not string lookup"
+    },
+    {
+      "step": 4,
+      "operation": "FIELD_READ",
+      "opcode": "iget",
+      "details": {
+        "object": "obj_0x001",
+        "field": "mRight",
+        "field_idx": 2,
+        "offset": 8,
+        "value_read": 500,
+        "register_written": "v2"
+      },
+      "evidence": "Field read uses offset to access correct memory location"
+    },
+    {
+      "step": 5,
+      "operation": "INVOKE_VIRTUAL",
+      "opcode": "invoke-virtual",
+      "details": {
+        "declared_type": "Landroid/view/View;",
+        "actual_type": "Landroid/widget/TextView;",
+        "method_name": "setText",
+        "method_desc": "(Ljava/lang/CharSequence;)V",
+        "arguments": [
+          "obj_0x001",
+          "\"Hello World\""
+        ],
+        "vtable_index": 7,
+        "dispatch": {
+          "lookup_in": "TextView.vtable",
+          "found_method": "TextView.setText()",
+          "is_override": false,
+          "polymorphic": true
+        },
+        "result": "SUCCESS",
+        "return_value": "void"
+      },
+      "evidence": "Virtual dispatch resolved through VTable correctly"
+    },
+    {
+      "step": 6,
+      "operation": "INVOKE_VIRTUAL_OVERRIDE",
+      "opcode": "invoke-virtual",
+      "details": {
+        "declared_type": "Landroid/view/View;",
+        "actual_type": "Landroid/widget/TextView;",
+        "method_name": "onDraw",
+        "method_desc": "(Landroid/graphics/Canvas;)V",
+        "vtable_index": 3,
+        "dispatch": {
+          "lookup_in": "TextView.vtable[3]",
+          "expected_if_View": "View.onDraw()",
+          "actually_found": "TextView.onDraw()",
+          "is_override": true,
+          "reason": "TextView overrode onDraw(), VTable entry replaced"
+        },
+        "result": "SUCCESS",
+        "return_value": "void",
+        "note": "This is why VTable matters! Same index, different method."
+      },
+      "evidence": "VTable-based dispatch enables correct override behavior"
+    },
+    {
+      "step": 7,
+      "operation": "STATIC_FIELD_ACCESS",
+      "opcode": "sget",
+      "details": {
+        "class": "Landroid/graphics/Color;",
+        "field": "BLACK",
+        "field_idx": 0,
+        "value": 4278190080,
+        "storage": "Per-class static storage (not per-object)"
+      },
+      "evidence": "Static fields stored in class, accessed by field_idx"
+    }
+  ],
+  "summary": {
+    "total_steps": 7,
+    "operations_demonstrated": [
+      "Object allocation with field layout",
+      "Direct constructor invocation",
+      "Instance field writes (iput) with offsets",
+      "Instance field reads (iget) with offsets",
+      "Virtual method dispatch (invoke-virtual)",
+      "Polymorphic override resolution",
+      "Static field access (sget)"
+    ],
+    "key_evidence_points": [
+      "Field offsets match AOSP algorithm (0, 4, 8, 12, 16, 20)",
+      "VTable correctly maps indices to methods",
+      "Override detection works (TextView.onDraw vs View.onDraw)",
+      "Direct calls bypass VTable correctly",
+      "Static fields use separate storage"
+    ]
+  }
+}
