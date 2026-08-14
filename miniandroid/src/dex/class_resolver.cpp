@@ -100,12 +100,44 @@ ExecutionTrace ClassResolver::resolve_target(
     const ClassInfo* target_cls = nullptr;
     
     if (!target_class.empty()) {
-        // Search by name
+        // EXP-038 (BLOCKER-025): Search for exact match FIRST, then fall back
+        // to substring. Previous code used substring match which matched
+        // inner classes like "LaunchActivity$$ExternalSyntheticApiModelOutline0"
+        // before the real "LaunchActivity" class.
+        
+        // Convert target_class (dotted form) to descriptor form for exact match
+        std::string target_descriptor = "L" + target_class + ";";
+        for (auto& c : target_descriptor) if (c == '.') c = '/';
+        
+        // Phase 1: Exact descriptor match
         for (const auto& cls : report.classes) {
-            if (cls.name.find(target_class) != std::string::npos ||
-                to_readable_class(cls.name).find(target_class) != std::string::npos) {
+            if (cls.name == target_descriptor) {
                 target_cls = &cls;
+                log("Exact descriptor match: " + cls.name);
                 break;
+            }
+        }
+        
+        // Phase 2: Exact readable match
+        if (!target_cls) {
+            for (const auto& cls : report.classes) {
+                if (to_readable_class(cls.name) == target_class) {
+                    target_cls = &cls;
+                    log("Exact readable match: " + cls.name);
+                    break;
+                }
+            }
+        }
+        
+        // Phase 3: Substring match (fallback — may match inner classes)
+        if (!target_cls) {
+            for (const auto& cls : report.classes) {
+                if (cls.name.find(target_class) != std::string::npos ||
+                    to_readable_class(cls.name).find(target_class) != std::string::npos) {
+                    target_cls = &cls;
+                    log("Substring match: " + cls.name);
+                    break;
+                }
             }
         }
         

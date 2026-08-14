@@ -122,6 +122,60 @@ std::vector<uint8_t> ApkParser::extract_entry_from_memory(const std::vector<uint
     return {};
 }
 
+// EXP-038 (BLOCKER-023): Cached extraction — O(1) lookup instead of O(n) re-parse.
+// Uses cached_apk_data_ and cached_entries_ populated during parse_apk_data().
+std::vector<uint8_t> ApkParser::extract_entry_cached(const std::string& entry_name) {
+    if (cached_apk_data_.empty()) {
+        last_error_ = "No cached APK data — parse() must be called first";
+        return {};
+    }
+    
+    auto it = cached_entries_.find(entry_name);
+    if (it == cached_entries_.end()) {
+        last_error_ = "Entry not found in cache: " + entry_name;
+        return {};
+    }
+    
+    const ZipEntry& entry = it->second;
+    const std::vector<uint8_t>& apk_data = cached_apk_data_;
+    
+    // Read local file header at entry offset
+    ZipLocalFileHeader header;
+    size_t offset = entry.offset;
+    
+    if (offset + sizeof(header) > apk_data.size()) {
+        last_error_ = "Invalid local file header offset";
+        return {};
+    }
+    
+    std::memcpy(&header, &apk_data[offset], sizeof(header));
+    
+    if (header.signature != ZIP_LOCAL_FILE_HEADER_SIG) {
+        last_error_ = "Invalid local file header signature";
+        return {};
+    }
+    
+    // Skip past header + name + extra field to get to data
+    size_t data_offset = offset + sizeof(header) + 
+                         header.file_name_length + 
+                         header.extra_field_length;
+    
+    if (data_offset + header.compressed_size > apk_data.size()) {
+        last_error_ = "Compressed data exceeds file bounds";
+        return {};
+    }
+    
+    // Extract compressed data
+    std::vector<uint8_t> compressed_data(header.compressed_size);
+    std::memcpy(compressed_data.data(), &apk_data[data_offset], header.compressed_size);
+    
+    // Decompress if needed
+    return decompress_data(compressed_data, 
+                           header.compressed_size, 
+                           header.uncompressed_size,
+                           header.compression_method);
+}
+
 std::vector<ZipEntry> ApkParser::list_entries(const std::string& path) {
     std::vector<uint8_t> data;
     if (!read_file_to_memory(path, data)) {
@@ -209,6 +263,17 @@ ApkInfo ApkParser::parse_apk_data(const std::vector<uint8_t>& data, const std::s
         return info;
     }
     
+    // EXP-038 (BLOCKER-023): Cache the APK data and parsed entries for
+    // fast O(1) lookup by extract_entry_cached(). Without this cache,
+    // every extract_entry_from_memory() call re-parses the entire central
+    // directory (11,531 entries for Telegram → extreme slowness).
+    cached_apk_data_ = data;
+    cached_entries_.clear();
+    for (const auto& entry : entries) {
+        cached_entries_[entry.name] = entry;
+    }
+    log("Cached " + std::to_string(cached_entries_.size()) + " ZIP entries for fast lookup");
+    
     // Categorize entries
     for (const auto& entry : entries) {
         info.all_entries.push_back(entry.name);
@@ -229,6 +294,13 @@ ApkInfo ApkParser::parse_apk_data(const std::vector<uint8_t>& data, const std::s
         if (!entry.name.empty() && entry.name.back() == '/') {
             // It's a directory, skip for most purposes
         }
+    }
+    
+    // EXP-038 (BLOCKER-024): Cache DEX file list for multidex loading.
+    cached_dex_files_ = info.dex_files;
+    log("Found " + std::to_string(cached_dex_files_.size()) + " DEX files: ");
+    for (const auto& dex : cached_dex_files_) {
+        log("  - " + dex);
     }
     
     // Validate required entries exist
