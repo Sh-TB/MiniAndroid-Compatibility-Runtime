@@ -115,18 +115,86 @@ python3 tools/exp030_real_dalvik_validator.py --apk-dir download/exp027_real_apk
 | **EXP-033** | **Architecture Research** | ✅ **Complete** | Dalvik study, comparison, blocker analysis |
 | **EXP-034** | **Real APK Compatibility Foundation** | ✅ **Complete** | Runtime metadata, field system, VTable dispatch |
 | **EXP-035** | **Real Dalvik Opcode Integration** | ✅ **Complete** | Field ops integrated, VTable connected, evidence pipeline |
+| **EXP-035.1** | **External Research** | ✅ **Complete** | 30+ sources analyzed, recommendations documented |
+| **EXP-036** | **Execution Pipeline Stabilization** | ✅ **Infrastructure** | Observatory, Guard, Exceptions, API Dispatcher, Evidence Gate |
 
 ---
 
-## EXP-035: Real Dalvik Opcode Integration & Execution Proof (Latest)
+## EXP-036: Execution Pipeline Stabilization (Latest)
 
 ### Overview
 
-**Integration phase** - Connected the runtime architecture from EXP-034 into the actual Dalvik execution path. Field operations and VTable dispatch are now part of the interpreter with full evidence generation.
+**Infrastructure phase** - Created critical components for reliable Android app execution without adding random features. Focus is on observability, protection, and evidence validation.
 
-### What Changed
+### Components Created
 
-| Component | Before EXP-035 | After EXP-035 |
+| Component | Files | Purpose |
+|-----------|-------|---------|
+| **Execution Observatory** | `execution_observatory.h/cpp` | Complete trace system for every operation |
+| **Execution Guard** | `execution_guard.h/cpp` | Timeout and infinite loop protection |
+| **Exception System** | `exception_system.h/cpp` | Dalvik exception handling foundation |
+| **API Dispatcher** | `api_dispatcher.h/cpp` | Scalable Android API architecture |
+| **Evidence Gate** | `exp036_execution_validator.py` | Blocking validator (rejects fake success) |
+
+### Key Features
+
+#### Execution Observatory
+- Method enter/exit tracking with full register state
+- Instruction-level tracing with before/after snapshots
+- Exception event recording
+- API call logging with resolution status
+- JSON + human-readable report generation
+
+#### Execution Guard
+```
+MAX_INSTRUCTIONS_PER_METHOD = 100,000
+MAX_TOTAL_INSTRUCTIONS = 1,000,000
+MAX_CALL_DEPTH = 256
+MAX_METHODS = 10,000
+```
+
+#### Exception System
+- Standard Dalvik exceptions (NPE, ArrayIndexOOB, etc.)
+- Try/catch table parsing support
+- State machine: THROWN → HANDLED → PROPAGATE
+- Stack trace generation
+
+#### API Dispatcher
+Built-in resolvers with priority ordering:
+- ActivityResolver (lifecycle: onCreate, onStart, onResume)
+- TextViewResolver (setText → UI EVIDENCE)
+- LogResolver (Log.d/i/w/e → console output)
+- ViewResolver, BundleResolver, ObjectResolver, StringResolver, ClassResolver
+
+#### Evidence Gate Validator
+Mandatory checks for PASS:
+1. ✅ APK file exists
+2. ✅ DEX extracted
+3. ✅ Interpreter executed
+4. ✅ **REAL_DALVIK_INTERPRETER source tag**
+5. ✅ No HOST_SHORTCUT
+6. ✅ No timeout
+7. ✅ Non-empty trace
+
+### Current Status: INFRASTRUCTURE COMPLETE
+
+```
+Evidence Gate Verdict: REJECTED (EXPECTED)
+Reason: New components created but not yet integrated into dalvik_engine.cpp
+Next: Wire components into execution loop for real evidence
+```
+
+### Validation Results
+```
+APKs Tested: 6
+Passed: 0 (infrastructure not integrated)
+Failed: 6
+Verdict: CORRECT - No fake success allowed
+```
+
+---
+
+## Project Structure
 |-----------|---------------|---------------|
 | Field Opcodes | 0% (not implemented) | **28.57% (8 core ops)** |
 | VTable Dispatch | Design only | **Connected to invoke-virtual** |
@@ -438,4 +506,4 @@ MIT License — See [LICENSE](LICENSE) for details.
 ---
 
 *Last Updated: 2026-08-14*
-*Active Development: EXP-033 Complete (Architecture Research), Ready for EXP-034 Implementation*
+*Active Development: EXP-036 Infrastructure Complete, Integration Pending*
