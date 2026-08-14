@@ -1,0 +1,10 @@
+=== EXP-037 Phase A Week 2 Source Hashes ===
+
+Generated: 2026-08-14 15:43:00 UTC
+
+7616e77145c944e6eae9d4c80740d302bdec6101fe5056489ce16a74427d279a  src/api/shared_prefs.h
+bc119e6c532301d748ad933e224aa73a401d5ed44068306ff2f56bdc87414f80  src/api/shared_prefs.cpp
+29dc268695d45d9e82a87b2df961f50d6dc60dbbc19ad47561d68de3a671272d  tests/test_shared_prefs.cpp
+
+=== Evidence Files ===
+9770b5124e916e9b0e6b24bbb24e557f436c02a931b543ba402bb2250a31a38c  run/exp037a_week2_test_results.txt
