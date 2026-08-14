@@ -889,3 +889,68 @@ Key achievements:
 - Debug workflow improved with AOSP rules
 - Execution gating criteria established
 - All knowledge preserved for GitHub
+
+---
+Task ID: EXP-036 (Execution Pipeline Stabilization - Infrastructure Phase)
+Agent: Main Agent
+Task: Create execution pipeline stabilization components
+
+Work Log:
+- **Phase 0**: Created EXP036_BASELINE.md documenting current state
+  - Git state: commit 6c62faa, branch main, clean working tree
+  - 48 source files, 32 opcodes implemented, 11 test APKs
+  - Known blockers: No exception handling, no array support, no timeout protection
+  
+- **Phase 1**: Built Execution Observatory (execution_observatory.h/cpp)
+  - Complete trace system for Dalvik execution
+  - Method enter/exit tracking with register snapshots
+  - Instruction-level tracing with before/after states
+  - Exception event, API call, timeout recording
+  - JSON + human-readable report generation
+  - ~35KB of production code
+
+- **Phase 2**: Implemented Execution Guard (execution_guard.h/cpp)
+  - Infinite loop protection system
+  - Configurable limits: 100K instructions/method, 1M total, 256 depth
+  - Detailed violation diagnostics with suspected reasons
+  - Observatory integration for timeout events
+  - ~22KB of production code
+
+- **Phase 3**: Created Exception System (exception_system.h/cpp)
+  - 15 standard Dalvik exception types
+  - Try/catch table parsing support
+  - ExceptionManager state machine (THROWN→HANDLED→PROPAGATE)
+  - Stack trace generation
+  - Factory functions for common exceptions
+  - ~25KB of production code
+
+- **Phase 4**: Built API Dispatcher (api_dispatcher.h/cpp)
+  - Scalable plugin architecture with priority ordering
+  - 8 built-in resolvers: Activity, View, TextView, Bundle, Log, Object, String, Class
+  - Activity lifecycle evidence (onCreate/onStart/onResume)
+  - UI evidence (setText)
+  - Console output (Log.d/i/w/e)
+  - Coverage statistics and missing API tracking
+  - ~43KB of production code
+
+- **Phase 5**: Created Evidence Gate Validator (exp036_execution_validator.py)
+  - Mandatory 9-check validation system
+  - Requires REAL_DALVIK_INTERPRETER source tag
+  - Rejects HOST_SHORTCUT and empty traces
+  - JSON report + console output + exit code
+  - ~20KB of Python code
+
+- **Validation Results**:
+  - Ran evidence gate on 6 test APKs
+  - All 6 REJECTED (expected - infrastructure not integrated)
+  - Verdict correct: no fake success allowed
+
+Stage Summary:
+- ✅ 5 major infrastructure components created (~135KB total)
+- ✅ Baseline documentation complete
+- ✅ README updated with EXP-036 section
+- ✅ CHANGELOG updated with detailed entry
+- ✅ Evidence gate validator working correctly
+- ⏳ Components ready for integration into dalvik_engine.cpp
+- 📄 Report saved: docs/exp036/EXP036_REPORT.md
+- 📄 Baseline saved: docs/exp036/EXP036_BASELINE.md

@@ -1,0 +1,546 @@
+{
+  "session_info": {
+    "validator": "EXP-036_Evidence_Gate",
+    "version": "1.0.0",
+    "session_start": "2026-08-14T14:40:54",
+    "session_end": "2026-08-14T14:40:54",
+    "output_directory": "run/exp036"
+  },
+  "summary": {
+    "total_apks_tested": 6,
+    "passed": 0,
+    "failed": 6,
+    "pass_rate": 0.0,
+    "overall_status": "FAIL"
+  },
+  "execution_statistics": {
+    "total_instructions_executed": 0,
+    "total_methods_executed": 0,
+    "total_api_calls": 0,
+    "has_real_interpreter_evidence": false,
+    "has_host_shortcut_detected": true,
+    "has_timeout_detected": false
+  },
+  "evidence_gate_verdict": {
+    "all_checks_pass": false,
+    "real_interpreter_evidence_exists": false,
+    "no_fake_success": false,
+    "no_silent_failures": true,
+    "trace_evidence_complete": false,
+    "final_verdict": "REJECTED"
+  },
+  "individual_results": [
+    {
+      "apk_name": "HelloWorld.apk",
+      "apk_path": "test_apks/HelloWorld.apk",
+      "sha256": "900bcd7a6155f6259e62a05ebb023b9ee8fea6a784e73cd69078dee7e5f6e570",
+      "overall_status": "FAIL",
+      "validations": [
+        {
+          "check": "apk_file_exists",
+          "status": "PASS",
+          "details": "APK file exists, size=1492",
+          "evidence": {
+            "source": "file",
+            "path": "test_apks/HelloWorld.apk",
+            "exists": true,
+            "size_bytes": 1492,
+            "content_preview": "PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000S4\u000e]cC(O\u0001\u0000\u0000\u0014\u0003\u0000\u0000\u0013\u0000\u0000\u0000AndroidManifest.xmlMo \f\u0015\u0011\u00baT~Ik\u000fkEmQ\b  ]\u01d2\u0010%]q`?\u062f_CRe'p^\u001a\tC\u0019hn\u0507\u001cUa?~@\u0648L=E\\)\u0019)rt\fN\t\b%cnJlA\u001cx(2^\u0003(\u0012Z\u0017GP4L\u001bVFD~r3a%4guh(::6z\u0013G~Hg*Y:o\u000eT\u0016>hI\u001cnul~\u007f^\b>N\u0001|X1\u00155l O2\\Hk&M_y}\u0018\u05b8\u0000qmUS5PV:\u000eT\u0001\u0010\u001b}7y\u001b\u0006\u03dbFt\u001c\u000e](|\u07ec\u001e_kQXJWSx\u0011(I_|\u0005PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000S4\u000e]4?.=\u0001\u0000\u0000 \u0002\u0000\u0000\u000b\u0000\u0000\u0000classes.dexKI206e\u000f-d\u0002\u0014\u0018\u0018\ntE\u00108\u000f\u0003D\u0015\u0017\u00001P\u0019\u0016\u0019 f\u048c@\u0006\f\u001e(6\u0002b/ \u0007* \u0007I@<\u000b\u0000Z >\u0000\u0117A&010\u0003a\n\u0002PuF\b\u0001\u001dH2\u00031\u0007fgb\u00102L\u0010Z'9?W?73/31/(?3E?#5''_7131$,\u049aA\u0007&XP\u0010\u0017\u0017;Z3H\u00053SSKCR+J2S\u02d1\u0557\u0001\u0010A0\u00066\u001b\u0003J\u00188R\u0013KR\u0019\u060bSK@\u0018\u0004=@Q\u0005*pe\u0010Dv^VbY\"\u0003S\u0013\u060bLp<\u0007\u0011z\u0017A\t(\fE\u0010\u0007g\u0002)ec\u0003]fF\u000f\u0000PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000S4\u000e]\u0001\u000e\u0001\u0000\u0000[\u0002"
+          }
+        },
+        {
+          "check": "dex_extracted",
+          "status": "FAIL",
+          "details": "DEX extraction evidence NOT FOUND"
+        },
+        {
+          "check": "bytecode_available",
+          "status": "FAIL",
+          "details": "Classes: 0, Method trace: False"
+        },
+        {
+          "check": "interpreter_executed",
+          "status": "FAIL",
+          "details": "Interpreter executed: False, Instructions: 0"
+        },
+        {
+          "check": "execution_source_valid",
+          "status": "FAIL",
+          "details": "\u274c No interpreter execution evidence at all"
+        },
+        {
+          "check": "no_host_shortcut",
+          "status": "PASS",
+          "details": "No HOST_SHORTCUT detected"
+        },
+        {
+          "check": "no_timeout",
+          "status": "PASS",
+          "details": "No execution timeout"
+        },
+        {
+          "check": "evidence_files_created",
+          "status": "SKIP",
+          "details": "Evidence files created: 0/2"
+        },
+        {
+          "check": "trace_non_empty",
+          "status": "FAIL",
+          "details": "Instructions: 0, Methods: 0"
+        },
+        {
+          "check": "api_calls_tracked",
+          "status": "PASS",
+          "details": "API calls tracked: 0, Lifecycle: False"
+        }
+      ],
+      "execution": {
+        "dex_loaded": false,
+        "classes_found": 0,
+        "methods_executed": 0,
+        "instructions_executed": 0,
+        "api_calls_made": 0,
+        "lifecycle_reached": false
+      },
+      "source_tracking": {
+        "has_real_interpreter_evidence": false,
+        "has_host_shortcut": false,
+        "has_timeout": false
+      },
+      "timing": {
+        "start": "2026-08-14T14:40:54",
+        "end": "2026-08-14T14:40:54",
+        "duration_seconds": 0.0003018379211425781
+      }
+    },
+    {
+      "apk_name": "HelloWorld_extracted.dex",
+      "apk_path": "test_apks/HelloWorld_extracted.dex",
+      "sha256": "dcd2a66c84f3f867494485baf34f801f6a08fad99b6b45bbeb57a7a59c6ab6b0",
+      "overall_status": "FAIL",
+      "validations": [
+        {
+          "check": "apk_file_exists",
+          "status": "PASS",
+          "details": "APK file exists, size=544",
+          "evidence": {
+            "source": "file",
+            "path": "test_apks/HelloWorld_extracted.dex",
+            "exists": true,
+            "size_bytes": 544,
+            "content_preview": "dex\n035\u0000\u007fVq\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 \u0002\u0000\u0000p\u0000\u0000\u0000xV4\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\f\u0000\u0000\u0000p\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u001e\u0001\u0000\u0000\f\u0001\u0000\u0000\f\u0001\u0000\u00002\u0001\u0000\u0000J\u0001\u0000\u0000_\u0001\u0000\u0000z\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0001\u0000\u0002\u0000\u0003\u0000\u0005\u0000\u0005\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u000b\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0007\u0000\u0000\u0000\u0003\u0000\u0000\u0000\b\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\n\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001c\u0002\u0000\u0000\u0000\u0000\u0000\u0000$Lcom/miniandroid/hello/MainActivity;\u0000\u0016Landroid/app/Activity;\u0000\u0013Landroid/os/Bundle;\u0000\u0019Landroid/widget/TextView;\u0000\u0013Landroid/view/View;\u0000\u0001V\u0000\u0006<init>\u0000\bonCreate\u0000\u0007setText\u0000\u0011Hello MiniAndroid\u0000\u0011MainActivity.java\u0000\u0002VB\u0000\u0001\u0000\u0000\u0000\u0002\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u000e\u0000\u0000\u0002\u0000\u0001\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\n\u0000\u0000\u0000\u001a\u0000\u0000\u0000\t\u0000\"\u0000\u0001\u0000\u0003\u0000"
+          }
+        },
+        {
+          "check": "dex_extracted",
+          "status": "PASS",
+          "details": "DEX extraction evidence found"
+        },
+        {
+          "check": "bytecode_available",
+          "status": "FAIL",
+          "details": "Classes: 0, Method trace: False"
+        },
+        {
+          "check": "interpreter_executed",
+          "status": "PASS",
+          "details": "Interpreter executed: True, Instructions: 0"
+        },
+        {
+          "check": "execution_source_valid",
+          "status": "FAIL",
+          "details": "\u274c Interpreter executed but NO REAL_DALVIK_INTERPRETER tag - possible HOST_SHORTCUT"
+        },
+        {
+          "check": "no_host_shortcut",
+          "status": "FAIL",
+          "details": "\u26a0\ufe0f HOST_SHORTCUT detected"
+        },
+        {
+          "check": "no_timeout",
+          "status": "PASS",
+          "details": "No execution timeout"
+        },
+        {
+          "check": "evidence_files_created",
+          "status": "SKIP",
+          "details": "Evidence files created: 0/2"
+        },
+        {
+          "check": "trace_non_empty",
+          "status": "FAIL",
+          "details": "Instructions: 0, Methods: 0"
+        },
+        {
+          "check": "api_calls_tracked",
+          "status": "PASS",
+          "details": "API calls tracked: 0, Lifecycle: False"
+        }
+      ],
+      "execution": {
+        "dex_loaded": true,
+        "classes_found": 0,
+        "methods_executed": 0,
+        "instructions_executed": 0,
+        "api_calls_made": 0,
+        "lifecycle_reached": false
+      },
+      "source_tracking": {
+        "has_real_interpreter_evidence": false,
+        "has_host_shortcut": true,
+        "has_timeout": false
+      },
+      "timing": {
+        "start": "2026-08-14T14:40:54",
+        "end": "2026-08-14T14:40:54",
+        "duration_seconds": 0.00030612945556640625
+      }
+    },
+    {
+      "apk_name": "classes.dex",
+      "apk_path": "test_apks/classes.dex",
+      "sha256": "dcd2a66c84f3f867494485baf34f801f6a08fad99b6b45bbeb57a7a59c6ab6b0",
+      "overall_status": "FAIL",
+      "validations": [
+        {
+          "check": "apk_file_exists",
+          "status": "PASS",
+          "details": "APK file exists, size=544",
+          "evidence": {
+            "source": "file",
+            "path": "test_apks/classes.dex",
+            "exists": true,
+            "size_bytes": 544,
+            "content_preview": "dex\n035\u0000\u007fVq\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 \u0002\u0000\u0000p\u0000\u0000\u0000xV4\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\f\u0000\u0000\u0000p\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u001e\u0001\u0000\u0000\f\u0001\u0000\u0000\f\u0001\u0000\u00002\u0001\u0000\u0000J\u0001\u0000\u0000_\u0001\u0000\u0000z\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0001\u0000\u0002\u0000\u0003\u0000\u0005\u0000\u0005\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u000b\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0007\u0000\u0000\u0000\u0003\u0000\u0000\u0000\b\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\n\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001c\u0002\u0000\u0000\u0000\u0000\u0000\u0000$Lcom/miniandroid/hello/MainActivity;\u0000\u0016Landroid/app/Activity;\u0000\u0013Landroid/os/Bundle;\u0000\u0019Landroid/widget/TextView;\u0000\u0013Landroid/view/View;\u0000\u0001V\u0000\u0006<init>\u0000\bonCreate\u0000\u0007setText\u0000\u0011Hello MiniAndroid\u0000\u0011MainActivity.java\u0000\u0002VB\u0000\u0001\u0000\u0000\u0000\u0002\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u000e\u0000\u0000\u0002\u0000\u0001\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\n\u0000\u0000\u0000\u001a\u0000\u0000\u0000\t\u0000\"\u0000\u0001\u0000\u0003\u0000"
+          }
+        },
+        {
+          "check": "dex_extracted",
+          "status": "PASS",
+          "details": "DEX extraction evidence found"
+        },
+        {
+          "check": "bytecode_available",
+          "status": "FAIL",
+          "details": "Classes: 0, Method trace: False"
+        },
+        {
+          "check": "interpreter_executed",
+          "status": "PASS",
+          "details": "Interpreter executed: True, Instructions: 0"
+        },
+        {
+          "check": "execution_source_valid",
+          "status": "FAIL",
+          "details": "\u274c Interpreter executed but NO REAL_DALVIK_INTERPRETER tag - possible HOST_SHORTCUT"
+        },
+        {
+          "check": "no_host_shortcut",
+          "status": "FAIL",
+          "details": "\u26a0\ufe0f HOST_SHORTCUT detected"
+        },
+        {
+          "check": "no_timeout",
+          "status": "PASS",
+          "details": "No execution timeout"
+        },
+        {
+          "check": "evidence_files_created",
+          "status": "SKIP",
+          "details": "Evidence files created: 0/2"
+        },
+        {
+          "check": "trace_non_empty",
+          "status": "FAIL",
+          "details": "Instructions: 0, Methods: 0"
+        },
+        {
+          "check": "api_calls_tracked",
+          "status": "PASS",
+          "details": "API calls tracked: 0, Lifecycle: False"
+        }
+      ],
+      "execution": {
+        "dex_loaded": true,
+        "classes_found": 0,
+        "methods_executed": 0,
+        "instructions_executed": 0,
+        "api_calls_made": 0,
+        "lifecycle_reached": false
+      },
+      "source_tracking": {
+        "has_real_interpreter_evidence": false,
+        "has_host_shortcut": true,
+        "has_timeout": false
+      },
+      "timing": {
+        "start": "2026-08-14T14:40:54",
+        "end": "2026-08-14T14:40:54",
+        "duration_seconds": 0.0002276897430419922
+      }
+    },
+    {
+      "apk_name": "debug_extracted.dex",
+      "apk_path": "test_apks/debug_extracted.dex",
+      "sha256": "dcd2a66c84f3f867494485baf34f801f6a08fad99b6b45bbeb57a7a59c6ab6b0",
+      "overall_status": "FAIL",
+      "validations": [
+        {
+          "check": "apk_file_exists",
+          "status": "PASS",
+          "details": "APK file exists, size=544",
+          "evidence": {
+            "source": "file",
+            "path": "test_apks/debug_extracted.dex",
+            "exists": true,
+            "size_bytes": 544,
+            "content_preview": "dex\n035\u0000\u007fVq\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 \u0002\u0000\u0000p\u0000\u0000\u0000xV4\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\f\u0000\u0000\u0000p\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u001e\u0001\u0000\u0000\f\u0001\u0000\u0000\f\u0001\u0000\u00002\u0001\u0000\u0000J\u0001\u0000\u0000_\u0001\u0000\u0000z\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0001\u0000\u0002\u0000\u0003\u0000\u0005\u0000\u0005\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u000b\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0007\u0000\u0000\u0000\u0003\u0000\u0000\u0000\b\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\n\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001c\u0002\u0000\u0000\u0000\u0000\u0000\u0000$Lcom/miniandroid/hello/MainActivity;\u0000\u0016Landroid/app/Activity;\u0000\u0013Landroid/os/Bundle;\u0000\u0019Landroid/widget/TextView;\u0000\u0013Landroid/view/View;\u0000\u0001V\u0000\u0006<init>\u0000\bonCreate\u0000\u0007setText\u0000\u0011Hello MiniAndroid\u0000\u0011MainActivity.java\u0000\u0002VB\u0000\u0001\u0000\u0000\u0000\u0002\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u000e\u0000\u0000\u0002\u0000\u0001\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\n\u0000\u0000\u0000\u001a\u0000\u0000\u0000\t\u0000\"\u0000\u0001\u0000\u0003\u0000"
+          }
+        },
+        {
+          "check": "dex_extracted",
+          "status": "PASS",
+          "details": "DEX extraction evidence found"
+        },
+        {
+          "check": "bytecode_available",
+          "status": "FAIL",
+          "details": "Classes: 0, Method trace: False"
+        },
+        {
+          "check": "interpreter_executed",
+          "status": "PASS",
+          "details": "Interpreter executed: True, Instructions: 0"
+        },
+        {
+          "check": "execution_source_valid",
+          "status": "FAIL",
+          "details": "\u274c Interpreter executed but NO REAL_DALVIK_INTERPRETER tag - possible HOST_SHORTCUT"
+        },
+        {
+          "check": "no_host_shortcut",
+          "status": "FAIL",
+          "details": "\u26a0\ufe0f HOST_SHORTCUT detected"
+        },
+        {
+          "check": "no_timeout",
+          "status": "PASS",
+          "details": "No execution timeout"
+        },
+        {
+          "check": "evidence_files_created",
+          "status": "SKIP",
+          "details": "Evidence files created: 0/2"
+        },
+        {
+          "check": "trace_non_empty",
+          "status": "FAIL",
+          "details": "Instructions: 0, Methods: 0"
+        },
+        {
+          "check": "api_calls_tracked",
+          "status": "PASS",
+          "details": "API calls tracked: 0, Lifecycle: False"
+        }
+      ],
+      "execution": {
+        "dex_loaded": true,
+        "classes_found": 0,
+        "methods_executed": 0,
+        "instructions_executed": 0,
+        "api_calls_made": 0,
+        "lifecycle_reached": false
+      },
+      "source_tracking": {
+        "has_real_interpreter_evidence": false,
+        "has_host_shortcut": true,
+        "has_timeout": false
+      },
+      "timing": {
+        "start": "2026-08-14T14:40:54",
+        "end": "2026-08-14T14:40:54",
+        "duration_seconds": 0.00022268295288085938
+      }
+    },
+    {
+      "apk_name": "exp032_valid_test.dex",
+      "apk_path": "test_apks/exp032_valid_test.dex",
+      "sha256": "4564bbc092eb1c560c0cd7ede10319fe89666b39888687f02686176b76f08b65",
+      "overall_status": "FAIL",
+      "validations": [
+        {
+          "check": "apk_file_exists",
+          "status": "PASS",
+          "details": "APK file exists, size=266",
+          "evidence": {
+            "source": "file",
+            "path": "test_apks/exp032_valid_test.dex",
+            "exists": true,
+            "size_bytes": 266,
+            "content_preview": "dex\n035\u0000\u0000\u0000\u0000\u0000\u001dqH-%\u0492`T[\n\u0001\u0000\u0000p\u0000\u0000\u0000xV4\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0005\u0000\u0000\u0000p\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003LT;\u0000\u0005Hello\u0000\u0001V\u0000\u0006<init>\u0000\u0003()V\u0000\u0000\u0000\u0001\u0001\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0001,\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u001a\u0000\u0001\u0000\u000e\u0000"
+          }
+        },
+        {
+          "check": "dex_extracted",
+          "status": "PASS",
+          "details": "DEX extraction evidence found"
+        },
+        {
+          "check": "bytecode_available",
+          "status": "FAIL",
+          "details": "Classes: 0, Method trace: False"
+        },
+        {
+          "check": "interpreter_executed",
+          "status": "PASS",
+          "details": "Interpreter executed: True, Instructions: 0"
+        },
+        {
+          "check": "execution_source_valid",
+          "status": "FAIL",
+          "details": "\u274c Interpreter executed but NO REAL_DALVIK_INTERPRETER tag - possible HOST_SHORTCUT"
+        },
+        {
+          "check": "no_host_shortcut",
+          "status": "FAIL",
+          "details": "\u26a0\ufe0f HOST_SHORTCUT detected"
+        },
+        {
+          "check": "no_timeout",
+          "status": "PASS",
+          "details": "No execution timeout"
+        },
+        {
+          "check": "evidence_files_created",
+          "status": "SKIP",
+          "details": "Evidence files created: 0/2"
+        },
+        {
+          "check": "trace_non_empty",
+          "status": "FAIL",
+          "details": "Instructions: 0, Methods: 0"
+        },
+        {
+          "check": "api_calls_tracked",
+          "status": "PASS",
+          "details": "API calls tracked: 0, Lifecycle: False"
+        }
+      ],
+      "execution": {
+        "dex_loaded": true,
+        "classes_found": 0,
+        "methods_executed": 0,
+        "instructions_executed": 0,
+        "api_calls_made": 0,
+        "lifecycle_reached": false
+      },
+      "source_tracking": {
+        "has_real_interpreter_evidence": false,
+        "has_host_shortcut": true,
+        "has_timeout": false
+      },
+      "timing": {
+        "start": "2026-08-14T14:40:54",
+        "end": "2026-08-14T14:40:54",
+        "duration_seconds": 0.00022149085998535156
+      }
+    },
+    {
+      "apk_name": "valid_test.dex",
+      "apk_path": "test_apks/valid_test.dex",
+      "sha256": "0c3773d5f47c2d4e1ef0fbfab4145db82d8f20949a91ee262e8a5464fc43c18f",
+      "overall_status": "FAIL",
+      "validations": [
+        {
+          "check": "apk_file_exists",
+          "status": "PASS",
+          "details": "APK file exists, size=382",
+          "evidence": {
+            "source": "file",
+            "path": "test_apks/valid_test.dex",
+            "exists": true,
+            "size_bytes": 382,
+            "content_preview": "dex\n035\u00000\u001c\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000~\u0001\u0000\u0000p\u0000\u0000\u0000xV4\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0007\u0000\u0000\u0000p\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\n\u0001\u0000\u0000\u0010\u0001\u0000\u0000\u0018\u0001\u0000\u0000\"\u0001\u0000\u00007\u0001\u0000\u0000\u0000\u0000\u0001\u0000\u0002\u0000\u0005\u0000\u0002\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0002\u0000\u0000\u0000a\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000p\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0017Lcom/test/MainActivity;\u0000\u0016Landroid/app/Activity;\u0000\u0001V\u0000\u0006<init>\u0000\bonCreate\u0000\u0013Landroid/os/Bundle;\u0000\u0004Code\u0000\u0001\u0000\u0000\u0000\u0003\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u000e\u0000\u0000\u0000\u0002\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0005\u0000\u000f\u0000\u0000\u0000\u0002\u0000\u0000\u0004\u0002\u0001\u0004\u0002"
+          }
+        },
+        {
+          "check": "dex_extracted",
+          "status": "PASS",
+          "details": "DEX extraction evidence found"
+        },
+        {
+          "check": "bytecode_available",
+          "status": "FAIL",
+          "details": "Classes: 0, Method trace: False"
+        },
+        {
+          "check": "interpreter_executed",
+          "status": "PASS",
+          "details": "Interpreter executed: True, Instructions: 0"
+        },
+        {
+          "check": "execution_source_valid",
+          "status": "FAIL",
+          "details": "\u274c Interpreter executed but NO REAL_DALVIK_INTERPRETER tag - possible HOST_SHORTCUT"
+        },
+        {
+          "check": "no_host_shortcut",
+          "status": "FAIL",
+          "details": "\u26a0\ufe0f HOST_SHORTCUT detected"
+        },
+        {
+          "check": "no_timeout",
+          "status": "PASS",
+          "details": "No execution timeout"
+        },
+        {
+          "check": "evidence_files_created",
+          "status": "SKIP",
+          "details": "Evidence files created: 0/2"
+        },
+        {
+          "check": "trace_non_empty",
+          "status": "FAIL",
+          "details": "Instructions: 0, Methods: 0"
+        },
+        {
+          "check": "api_calls_tracked",
+          "status": "PASS",
+          "details": "API calls tracked: 0, Lifecycle: True"
+        }
+      ],
+      "execution": {
+        "dex_loaded": true,
+        "classes_found": 0,
+        "methods_executed": 0,
+        "instructions_executed": 0,
+        "api_calls_made": 0,
+        "lifecycle_reached": true
+      },
+      "source_tracking": {
+        "has_real_interpreter_evidence": false,
+        "has_host_shortcut": true,
+        "has_timeout": false
+      },
+      "timing": {
+        "start": "2026-08-14T14:40:54",
+        "end": "2026-08-14T14:40:54",
+        "duration_seconds": 0.0003707408905029297
+      }
+    }
+  ],
+  "required_checks": [
+    "apk_file_exists",
+    "dex_extracted",
+    "dex_parsed",
+    "classes_loaded",
+    "bytecode_available",
+    "interpreter_executed",
+    "execution_source_valid",
+    "no_host_shortcut",
+    "no_timeout",
+    "evidence_files_created",
+    "trace_non_empty",
+    "api_calls_tracked"
+  ]
+}
