@@ -1,0 +1,240 @@
+=========================================
+Android Context Unit Tests
+EXP-037 Phase A, Week 3 Validation
+=========================================
+
+[SUITE 1] Construction & Initialization
+
+  [TEST] Test_DefaultConstruction_CreatesInstance... ✓ PASSED
+  [TEST] Test_Initialize_CreatesDirectories... [FileSandbox] Initialized sandbox for: org.test.ctx_init_1786722990786479360
+[FileSandbox] Root path: runtime/data/org.test.ctx_init_1786722990786479360
+[ApplicationContext] Initialized for package: org.test.ctx_init_1786722990786479360
+[ApplicationContext] Files dir: runtime/data/org.test.ctx_init_1786722990786479360/files
+[ApplicationContext] Cache dir: runtime/data/org.test.ctx_init_1786722990786479360/cache
+✓ PASSED
+  [TEST] Test_LazyInitialization_OnFirstAccess... [FileSandbox] Initialized sandbox for: org.test.ctx_lazy_1786722990786809596
+[FileSandbox] Root path: runtime/data/org.test.ctx_lazy_1786722990786809596
+[ApplicationContext] Initialized for package: org.test.ctx_lazy_1786722990786809596
+[ApplicationContext] Files dir: runtime/data/org.test.ctx_lazy_1786722990786809596/files
+[ApplicationContext] Cache dir: runtime/data/org.test.ctx_lazy_1786722990786809596/cache
+✓ PASSED
+  [TEST] Test_CustomConfig_BasePath... [FileSandbox] Initialized sandbox for: org.test.ctx_config_1786722990786956872
+[FileSandbox] Root path: custom_runtime/data/org.test.ctx_config_1786722990786956872
+[ApplicationContext] Initialized for package: org.test.ctx_config_1786722990786956872
+[ApplicationContext] Files dir: custom_runtime/data/org.test.ctx_config_1786722990786956872/files
+[ApplicationContext] Cache dir: custom_runtime/data/org.test.ctx_config_1786722990786956872/cache
+✓ PASSED
+  [TEST] Test_DebugInfo_ContainsUsefulData... [FileSandbox] Initialized sandbox for: org.test.ctx_debug_1786722990787174378
+[FileSandbox] Root path: runtime/data/org.test.ctx_debug_1786722990787174378
+[ApplicationContext] Initialized for package: org.test.ctx_debug_1786722990787174378
+[ApplicationContext] Files dir: runtime/data/org.test.ctx_debug_1786722990787174378/files
+[ApplicationContext] Cache dir: runtime/data/org.test.ctx_debug_1786722990787174378/cache
+✓ PASSED
+
+[SUITE 2] Package Information
+
+  [TEST] Test_GetPackageName_ReturnsCorrectName... ✓ PASSED
+  [TEST] Test_GetPackageName_TelegramFormat... ✓ PASSED
+  [TEST] Test_GetApplicationInfo_BasicFields... [FileSandbox] Initialized sandbox for: org.test.appinfo_1786722990787334367
+[FileSandbox] Root path: runtime/data/org.test.appinfo_1786722990787334367
+[ApplicationContext] Initialized for package: org.test.appinfo_1786722990787334367
+[ApplicationContext] Files dir: runtime/data/org.test.appinfo_1786722990787334367/files
+[ApplicationContext] Cache dir: runtime/data/org.test.appinfo_1786722990787334367/cache
+✓ PASSED
+  [TEST] Test_GetApplicationInfo_DataDir... [FileSandbox] Initialized sandbox for: org.test.datadir_1786722990787469263
+[FileSandbox] Root path: runtime/data/org.test.datadir_1786722990787469263
+[ApplicationContext] Initialized for package: org.test.datadir_1786722990787469263
+[ApplicationContext] Files dir: runtime/data/org.test.datadir_1786722990787469263/files
+[ApplicationContext] Cache dir: runtime/data/org.test.datadir_1786722990787469263/cache
+✓ PASSED
+
+[SUITE 3] File System Operations
+
+  [TEST] Test_GetFilesDir_ReturnsValidPath... [FileSandbox] Initialized sandbox for: org.test.filesdir_1786722990787615313
+[FileSandbox] Root path: runtime/data/org.test.filesdir_1786722990787615313
+[ApplicationContext] Initialized for package: org.test.filesdir_1786722990787615313
+[ApplicationContext] Files dir: runtime/data/org.test.filesdir_1786722990787615313/files
+[ApplicationContext] Cache dir: runtime/data/org.test.filesdir_1786722990787615313/cache
+✓ PASSED
+  [TEST] Test_GetCacheDir_ReturnsValidPath... [FileSandbox] Initialized sandbox for: org.test.cachedir_1786722990787802998
+[FileSandbox] Root path: runtime/data/org.test.cachedir_1786722990787802998
+[ApplicationContext] Initialized for package: org.test.cachedir_1786722990787802998
+[ApplicationContext] Files dir: runtime/data/org.test.cachedir_1786722990787802998/files
+[ApplicationContext] Cache dir: runtime/data/org.test.cachedir_1786722990787802998/cache
+✓ PASSED
+  [TEST] Test_OpenFileOutput_And_Write... [FileSandbox] Initialized sandbox for: org.test.filewrite_1786722990787935521
+[FileSandbox] Root path: runtime/data/org.test.filewrite_1786722990787935521
+[ApplicationContext] Initialized for package: org.test.filewrite_1786722990787935521
+[ApplicationContext] Files dir: runtime/data/org.test.filewrite_1786722990787935521/files
+[ApplicationContext] Cache dir: runtime/data/org.test.filewrite_1786722990787935521/cache
+✓ PASSED
+  [TEST] Test_OpenFileInput_And_Read... [FileSandbox] Initialized sandbox for: org.test.fileread_1786722990788185609
+[FileSandbox] Root path: runtime/data/org.test.fileread_1786722990788185609
+[ApplicationContext] Initialized for package: org.test.fileread_1786722990788185609
+[ApplicationContext] Files dir: runtime/data/org.test.fileread_1786722990788185609/files
+[ApplicationContext] Cache dir: runtime/data/org.test.fileread_1786722990788185609/cache
+✓ PASSED
+  [TEST] Test_DeleteFile... [FileSandbox] Initialized sandbox for: org.test.filedelete_1786722990788406757
+[FileSandbox] Root path: runtime/data/org.test.filedelete_1786722990788406757
+[ApplicationContext] Initialized for package: org.test.filedelete_1786722990788406757
+[ApplicationContext] Files dir: runtime/data/org.test.filedelete_1786722990788406757/files
+[ApplicationContext] Cache dir: runtime/data/org.test.filedelete_1786722990788406757/cache
+✓ PASSED
+  [TEST] Test_FileList... [FileSandbox] Initialized sandbox for: org.test.filelist_1786722990788576411
+[FileSandbox] Root path: runtime/data/org.test.filelist_1786722990788576411
+[ApplicationContext] Initialized for package: org.test.filelist_1786722990788576411
+[ApplicationContext] Files dir: runtime/data/org.test.filelist_1786722990788576411/files
+[ApplicationContext] Cache dir: runtime/data/org.test.filelist_1786722990788576411/cache
+✓ PASSED
+  [TEST] Test_GetDatabasePath... [FileSandbox] Initialized sandbox for: org.test.dbpath_1786722990788835810
+[FileSandbox] Root path: runtime/data/org.test.dbpath_1786722990788835810
+[ApplicationContext] Initialized for package: org.test.dbpath_1786722990788835810
+[ApplicationContext] Files dir: runtime/data/org.test.dbpath_1786722990788835810/files
+[ApplicationContext] Cache dir: runtime/data/org.test.dbpath_1786722990788835810/cache
+✓ PASSED
+  [TEST] Test_FilesAndCache_AreDifferentDirs... [FileSandbox] Initialized sandbox for: org.test.differentdirs_1786722990788977825
+[FileSandbox] Root path: runtime/data/org.test.differentdirs_1786722990788977825
+[ApplicationContext] Initialized for package: org.test.differentdirs_1786722990788977825
+[ApplicationContext] Files dir: runtime/data/org.test.differentdirs_1786722990788977825/files
+[ApplicationContext] Cache dir: runtime/data/org.test.differentdirs_1786722990788977825/cache
+✓ PASSED
+
+[SUITE 4] SharedPreferences Integration
+
+  [TEST] Test_GetSharedPreferences_ReturnsWorkingPrefs... [FileSandbox] Initialized sandbox for: org.test.prefs_int_1786722990789113609
+[FileSandbox] Root path: runtime/data/org.test.prefs_int_1786722990789113609
+[ApplicationContext] Initialized for package: org.test.prefs_int_1786722990789113609
+[ApplicationContext] Files dir: runtime/data/org.test.prefs_int_1786722990789113609/files
+[ApplicationContext] Cache dir: runtime/data/org.test.prefs_int_1786722990789113609/cache
+✓ PASSED
+  [TEST] Test_PrefsIntegration_WriteAndRead... [FileSandbox] Initialized sandbox for: org.test.prefs_write_1786722990789280056
+[FileSandbox] Root path: runtime/data/org.test.prefs_write_1786722990789280056
+[ApplicationContext] Initialized for package: org.test.prefs_write_1786722990789280056
+[ApplicationContext] Files dir: runtime/data/org.test.prefs_write_1786722990789280056/files
+[ApplicationContext] Cache dir: runtime/data/org.test.prefs_write_1786722990789280056/cache
+✓ PASSED
+  [TEST] Test_MultiplePrefsInstances_DifferentNames... [FileSandbox] Initialized sandbox for: org.test.prefs_multi_1786722990789520457
+[FileSandbox] Root path: runtime/data/org.test.prefs_multi_1786722990789520457
+[ApplicationContext] Initialized for package: org.test.prefs_multi_1786722990789520457
+[ApplicationContext] Files dir: runtime/data/org.test.prefs_multi_1786722990789520457/files
+[ApplicationContext] Cache dir: runtime/data/org.test.prefs_multi_1786722990789520457/cache
+✓ PASSED
+  [TEST] Test_SamePrefsName_ReturnsCachedInstance... [FileSandbox] Initialized sandbox for: org.test.prefs_cache_1786722990789753595
+[FileSandbox] Root path: runtime/data/org.test.prefs_cache_1786722990789753595
+[ApplicationContext] Initialized for package: org.test.prefs_cache_1786722990789753595
+[ApplicationContext] Files dir: runtime/data/org.test.prefs_cache_1786722990789753595/files
+[ApplicationContext] Cache dir: runtime/data/org.test.prefs_cache_1786722990789753595/cache
+✓ PASSED
+  [TEST] Test_PrefsPersist_ViaContext... [FileSandbox] Initialized sandbox for: org.test.prefs_persist_1786722990789893567
+[FileSandbox] Root path: runtime/data/org.test.prefs_persist_1786722990789893567
+[ApplicationContext] Initialized for package: org.test.prefs_persist_1786722990789893567
+[ApplicationContext] Files dir: runtime/data/org.test.prefs_persist_1786722990789893567/files
+[ApplicationContext] Cache dir: runtime/data/org.test.prefs_persist_1786722990789893567/cache
+[FileSandbox] Initialized sandbox for: org.test.prefs_persist_1786722990789893567
+[FileSandbox] Root path: runtime/data/org.test.prefs_persist_1786722990789893567
+[ApplicationContext] Initialized for package: org.test.prefs_persist_1786722990789893567
+[ApplicationContext] Files dir: runtime/data/org.test.prefs_persist_1786722990789893567/files
+[ApplicationContext] Cache dir: runtime/data/org.test.prefs_persist_1786722990789893567/cache
+✓ PASSED
+  [TEST] Test_GetPreferencesList... [FileSandbox] Initialized sandbox for: org.test.prefs_list_1786722990790127668
+[FileSandbox] Root path: runtime/data/org.test.prefs_list_1786722990790127668
+[ApplicationContext] Initialized for package: org.test.prefs_list_1786722990790127668
+[ApplicationContext] Files dir: runtime/data/org.test.prefs_list_1786722990790127668/files
+[ApplicationContext] Cache dir: runtime/data/org.test.prefs_list_1786722990790127668/cache
+✓ PASSED
+
+[SUITE 5: Resources & Assets (Stubs)]
+
+  [TEST] Test_GetResources_ReturnsNonNull... [FileSandbox] Initialized sandbox for: org.test.res_notnull_1786722990790280905
+[FileSandbox] Root path: runtime/data/org.test.res_notnull_1786722990790280905
+[ApplicationContext] Initialized for package: org.test.res_notnull_1786722990790280905
+[ApplicationContext] Files dir: runtime/data/org.test.res_notnull_1786722990790280905/files
+[ApplicationContext] Cache dir: runtime/data/org.test.res_notnull_1786722990790280905/cache
+✓ PASSED
+  [TEST] Test_GetAssets_ReturnsNonNull... [FileSandbox] Initialized sandbox for: org.test.assets_notnull_1786722990790416886
+[FileSandbox] Root path: runtime/data/org.test.assets_notnull_1786722990790416886
+[ApplicationContext] Initialized for package: org.test.assets_notnull_1786722990790416886
+[ApplicationContext] Files dir: runtime/data/org.test.assets_notnull_1786722990790416886/files
+[ApplicationContext] Cache dir: runtime/data/org.test.assets_notnull_1786722990790416886/cache
+✓ PASSED
+  [TEST] Test_GetString_ReturnsDefaultForUnknownId... [FileSandbox] Initialized sandbox for: org.test.str_default_1786722990790553002
+[FileSandbox] Root path: runtime/data/org.test.str_default_1786722990790553002
+[ApplicationContext] Initialized for package: org.test.str_default_1786722990790553002
+[ApplicationContext] Files dir: runtime/data/org.test.str_default_1786722990790553002/files
+[ApplicationContext] Cache dir: runtime/data/org.test.str_default_1786722990790553002/cache
+✓ PASSED
+
+[SUITE 6] ContextWrapper Delegation
+
+  [TEST] Test_Wrapper_DelegatesToBaseContext... [FileSandbox] Initialized sandbox for: org.test.wrap_delegate_1786722990790701716
+[FileSandbox] Root path: runtime/data/org.test.wrap_delegate_1786722990790701716
+[ApplicationContext] Initialized for package: org.test.wrap_delegate_1786722990790701716
+[ApplicationContext] Files dir: runtime/data/org.test.wrap_delegate_1786722990790701716/files
+[ApplicationContext] Cache dir: runtime/data/org.test.wrap_delegate_1786722990790701716/cache
+✓ PASSED
+  [TEST] Test_SetBaseContext_ChangesDelegation... [FileSandbox] Initialized sandbox for: org.test.wrap_base1_1786722990790839191
+[FileSandbox] Root path: runtime/data/org.test.wrap_base1_1786722990790839191
+[ApplicationContext] Initialized for package: org.test.wrap_base1_1786722990790839191
+[ApplicationContext] Files dir: runtime/data/org.test.wrap_base1_1786722990790839191/files
+[ApplicationContext] Cache dir: runtime/data/org.test.wrap_base1_1786722990790839191/cache
+[FileSandbox] Initialized sandbox for: org.test.wrap_base2_1786722990790839369
+[FileSandbox] Root path: runtime/data/org.test.wrap_base2_1786722990790839369
+[ApplicationContext] Initialized for package: org.test.wrap_base2_1786722990790839369
+[ApplicationContext] Files dir: runtime/data/org.test.wrap_base2_1786722990790839369/files
+[ApplicationContext] Cache dir: runtime/data/org.test.wrap_base2_1786722990790839369/cache
+✓ PASSED
+  [TEST] Test_Wrapper_NoBase_Throws... ✓ PASSED
+
+[SUITE 7] Factory Functions
+
+  [TEST] Test_Create_ForAnyPackage... [FileSandbox] Initialized sandbox for: org.test.factory_any_1786722990791203482
+[FileSandbox] Root path: runtime/data/org.test.factory_any_1786722990791203482
+[ApplicationContext] Initialized for package: org.test.factory_any_1786722990791203482
+[ApplicationContext] Files dir: runtime/data/org.test.factory_any_1786722990791203482/files
+[ApplicationContext] Cache dir: runtime/data/org.test.factory_any_1786722990791203482/cache
+✓ PASSED
+  [TEST] Test_CreateForTelegram_Preconfigured... [FileSandbox] Initialized sandbox for: org.telegram.messenger
+[FileSandbox] Root path: runtime/data/org.telegram.messenger
+[ApplicationContext] Initialized for package: org.telegram.messenger
+[ApplicationContext] Files dir: runtime/data/org.telegram.messenger/files
+[ApplicationContext] Cache dir: runtime/data/org.telegram.messenger/cache
+✓ PASSED
+
+[SUITE 8] Thread Safety
+
+  [TEST] Test_ConcurrentContextAccess_NoCrash... [FileSandbox] Initialized sandbox for: org.test.thread_ctx_1786722990791358644
+[FileSandbox] Root path: runtime/data/org.test.thread_ctx_1786722990791358644
+[ApplicationContext] Initialized for package: org.test.thread_ctx_1786722990791358644
+[ApplicationContext] Files dir: runtime/data/org.test.thread_ctx_1786722990791358644/files
+[ApplicationContext] Cache dir: runtime/data/org.test.thread_ctx_1786722990791358644/cache
+✓ PASSED
+  [TEST] Test_ConcurrentPrefWrites_LastWriteWins... [FileSandbox] Initialized sandbox for: org.test.thread_prefs_1786722990792566260
+[FileSandbox] Root path: runtime/data/org.test.thread_prefs_1786722990792566260
+[ApplicationContext] Initialized for package: org.test.thread_prefs_1786722990792566260
+[ApplicationContext] Files dir: runtime/data/org.test.thread_prefs_1786722990792566260/files
+[ApplicationContext] Cache dir: runtime/data/org.test.thread_prefs_1786722990792566260/cache
+✓ PASSED
+
+[SUITE 9] Telegram-Specific Scenarios
+
+  [TEST] Test_TelegramStartupSequence... [FileSandbox] Initialized sandbox for: org.telegram.messenger
+[FileSandbox] Root path: runtime/data/org.telegram.messenger
+[ApplicationContext] Initialized for package: org.telegram.messenger
+[ApplicationContext] Files dir: runtime/data/org.telegram.messenger/files
+[ApplicationContext] Cache dir: runtime/data/org.telegram.messenger/cache
+✗ FAILED
+         Error: Assertion failed: Initial state: not logged in
+  [TEST] Test_TelegramMultiplePreferenceFiles... [FileSandbox] Initialized sandbox for: org.telegram.messenger
+[FileSandbox] Root path: runtime/data/org.telegram.messenger
+[ApplicationContext] Initialized for package: org.telegram.messenger
+[ApplicationContext] Files dir: runtime/data/org.telegram.messenger/files
+[ApplicationContext] Cache dir: runtime/data/org.telegram.messenger/cache
+
+    [Telegram Scenario] Multiple pref files work independently!
+✓ PASSED
+  [TEST] Test_TelegramFileOperations... [FileSandbox] Initialized sandbox for: org.telegram.messenger
+[FileSandbox] Root path: runtime/data/org.telegram.messenger
+[ApplicationContext] Initialized for package: org.telegram.messenger
+[ApplicationContext] Files dir: runtime/data/org.telegram.messenger/files
+[ApplicationContext] Cache dir: runtime/data/org.telegram.messenger/cache
+[FileSandbox] Error (4): Cannot open file for writing: cache/avatar_12345.jpg
