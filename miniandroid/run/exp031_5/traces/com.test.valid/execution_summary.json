@@ -1,0 +1,40 @@
+{
+  "apk_name": "./test_apks/exp031_6/valid_test.apk",
+  "criteria_checklist": {
+    "At_least_one_invoke_executed": false,
+    "At_least_one_object_allocated": false,
+    "DalvikEngine_ExecuteInstruction_called": true,
+    "ExecutionSource_is_REAL_DALVIK_INTERPRETER": true,
+    "More_than_100_real_instructions": false,
+    "PC_changes_through_real_code_item": true,
+    "Registers_change_according_to_instructions": false
+  },
+  "experiment": "EXP-031.5",
+  "final_status": "COMPLETED_SUCCESS",
+  "golden_debug_protocol": {
+    "compliant": false,
+    "requirement": "This APK ran because MiniAndroid executed its bytecode, NOT because the framework pretended it ran."
+  },
+  "metrics": {
+    "execution_time_ms": 0.143058,
+    "main_class": "<invalid string idx:65536>",
+    "main_method": "<init>",
+    "total_api_calls": 0,
+    "total_heap_objects": 0,
+    "total_instructions_executed": 1,
+    "total_opcodes_decoded": 1
+  },
+  "reasons": [
+    "Less than 100 instructions executed (1)"
+  ],
+  "timestamp": "2026-08-14T06:54:52Z",
+  "title": "Real Dalvik Bytecode Execution Proof",
+  "trace_files_generated": [
+    "opcode_trace.json",
+    "method_trace.json",
+    "register_trace.json",
+    "heap_trace.json",
+    "execution_summary.json"
+  ],
+  "verdict": "PARTIAL"
+}
