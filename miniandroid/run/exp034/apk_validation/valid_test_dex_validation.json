@@ -1,0 +1,27 @@
+{
+  "apk_name": "valid_test.dex",
+  "apk_path": "/home/z/my-project/miniandroid/test_apks/valid_test.dex",
+  "sha256": "0c3773d5f47c2d4e1ef0fbfab4145db82d8f20949a91ee262e8a5464fc43c18f",
+  "file_size": 382,
+  "validation_time": "2026-08-14T12:08:32.675183",
+  "overall_status": "FAIL",
+  "stages": [
+    {
+      "stage": "APK_DEX_EXTRACTION",
+      "status": "FAIL",
+      "timestamp": "2026-08-14T12:08:32.675206",
+      "duration_ms": 0,
+      "data_size": 0,
+      "record_count": 0,
+      "error": "Invalid ZIP/APK format: File is not a zip file",
+      "details": {}
+    }
+  ],
+  "summary": {
+    "total_classes": 0,
+    "total_methods": 0,
+    "total_instructions": 0,
+    "first_failure": "APK_DEX_EXTRACTION"
+  },
+  "opcode_breakdown": {}
+}

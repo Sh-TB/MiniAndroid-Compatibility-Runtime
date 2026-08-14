@@ -1,0 +1,52 @@
+{
+  "apk_name": "SimpleGame.apk",
+  "apk_path": "/home/z/my-project/miniandroid/download/apks/SimpleGame.apk",
+  "sha256": "5fc34a85c7281caca04dd70357be74746dc272b1b892e929eca916b1e67d4b59",
+  "file_size": 681,
+  "validation_time": "2026-08-14T12:08:32.669175",
+  "overall_status": "FAIL",
+  "stages": [
+    {
+      "stage": "APK_DEX_EXTRACTION",
+      "status": "PASS",
+      "timestamp": "2026-08-14T12:08:32.669233",
+      "duration_ms": 0,
+      "data_size": 144,
+      "record_count": 0,
+      "error": null,
+      "details": {}
+    },
+    {
+      "stage": "DEX_HEADER_VALIDATION",
+      "status": "PARTIAL",
+      "timestamp": "2026-08-14T12:08:32.669247",
+      "duration_ms": 0,
+      "data_size": 112,
+      "record_count": 0,
+      "error": "Size mismatch: header=112, actual=144",
+      "details": {
+        "magic": "6465780a30333500",
+        "file_size": 112,
+        "class_defs_count": 1,
+        "method_ids_count": 2
+      }
+    },
+    {
+      "stage": "CLASS_DEF_PARSING",
+      "status": "FAIL",
+      "timestamp": "2026-08-14T12:08:32.669256",
+      "duration_ms": 0,
+      "data_size": 0,
+      "record_count": 0,
+      "error": "Failed to parse class definitions",
+      "details": {}
+    }
+  ],
+  "summary": {
+    "total_classes": 0,
+    "total_methods": 0,
+    "total_instructions": 0,
+    "first_failure": "CLASS_DEF_PARSING"
+  },
+  "opcode_breakdown": {}
+}

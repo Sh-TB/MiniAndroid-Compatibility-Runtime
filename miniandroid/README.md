@@ -103,10 +103,84 @@ python3 tools/exp030_real_dalvik_validator.py --apk-dir download/exp027_real_apk
 | **EXP-030** | **Real Execution** | ✅ **Complete** | Dalvik engine, 25+ opcodes |
 | **EXP-032** | **AOSP Reference Acceleration** | ✅ **Complete** | Object model, API strategy, debug protocol |
 | **EXP-033** | **Architecture Research** | ✅ **Complete** | Dalvik study, comparison, blocker analysis |
+| **EXP-034** | **Real APK Compatibility Foundation** | ✅ **Complete** | Runtime metadata, field system, VTable dispatch |
 
 ---
 
-## EXP-033: AOSP/Dalvik Architecture Research (Latest)
+## EXP-034: Real APK Compatibility Foundation (Latest)
+
+### Overview
+
+**Architecture stabilization phase** - Before adding more opcodes, we established a proper runtime foundation matching AOSP Dalvik structures.
+
+### What Changed
+
+| Component | Before EXP-034 | After EXP-034 |
+|-----------|---------------|---------------|
+| Class Representation | Basic ClassMetadata | **RuntimeClassInfo** (AOSP-compatible) |
+| Field Storage | `map<string, value>` (string-keyed) | **Offset-based byte array** (AOSP algorithm) |
+| Method Info | None | **RuntimeMethodInfo** with code_item reference |
+| Virtual Dispatch | None | **VirtualDispatchTable** with polymorphism |
+| Field Operations | Not possible | **iget/iput/sget/sput ready** to implement |
+
+### New Files Created
+
+```
+src/runtime/
+├── runtime_metadata.h      # RuntimeClassInfo, InstanceFieldInfo, etc.
+└── vtable_dispatch.h       # MethodResolver, VirtualDispatcher
+
+docs/
+├── EXP034_BASELINE.md      # Starting state documentation
+└── EXP034_RUNTIME_DESIGN.md # Complete architecture design
+
+tools/
+├── exp034_apk_bytecode_validator.py     # Phase 1: APK pipeline validation
+├── exp034_field_system_validator.py     # Phase 3: Field system tests
+├── exp034_vtable_dispatch_validator.py   # Phase 4: VTable tests
+└── exp034_real_execution_validator.py   # Phase 5: Integration evidence
+
+run/exp034/
+├── apk_validation/        # Phase 1 results (47 APKs tested)
+├── field_system_validation.json
+├── vtable_dispatch_validation.json
+├── sample_runtime_metadata.json
+├── execution_trace_demo.json
+└── integration_report.json
+```
+
+### Validation Results
+
+| Test Suite | Tests | Result | Evidence |
+|------------|-------|--------|----------|
+| APK Bytecode Pipeline | 47 APKs | 68.1% pass | Real DEX extraction validated |
+| Field System | 4 tests | **100% pass** | Offset calculation, alignment, lookup |
+| VTable Dispatch | 4 tests | **100% pass** | Resolution, polymorphism, traces |
+| Integration Demo | 7 steps | **Complete** | End-to-end flow demonstrated |
+
+### Key Achievements
+
+✅ **Field offset calculation matches AOSP `dvmComputeInstanceFieldOffsets` algorithm**  
+✅ **VTable construction matches AOSP `dvmBuildVTable` algorithm**  
+✅ **Polymorphic dispatch proven working** (Animal→Dog/Cat demo)  
+✅ **9/10 acceptance criteria PASS** (only GitHub commit pending)  
+✅ **All evidence collected as JSON trace files**
+
+### Architecture Decision Record
+
+**Decision**: Use AOSP-compatible structures instead of simplified custom ones
+
+**Rationale**:
+- Avoids costly redesign later
+- Enables direct comparison with Android behavior
+- Field offsets and VTable indices are deterministic algorithms
+- Evidence shows our implementation matches expected values exactly
+
+**Result**: Ready for opcode implementation phase (iget/iput/invoke-virtual)
+
+---
+
+## EXP-033: AOSP/Dalvik Architecture Research
 
 ### Overview
 
