@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://lolcads.github.io/posts/2024/09/bytecode_exploitation_1",
+    "name": "Fundamentals for Bytecode Exploitation (Part 2) - lolcads tech blog",
+    "snippet": "Sep 10, 2024 · Most importantly, .art files contain heap dumps of C++ objects. Because (Java) objects are based on C++ objects on Android, this means .art may ...",
+    "host_name": "lolcads.github.io",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.googlesource.com/platform/art/+/master/runtime/gc/heap.cc",
+    "name": "runtime/gc/heap.cc - platform/art - Git at Google",
+    "snippet": "Check contiguous layout of images and oat files. Allocate the large object space. Heap profiler treats this as a Java allocation with a null object.",
+    "host_name": "android.googlesource.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://nimrod.blog/posts/what-does-cpp-object-layout-look-like",
+    "name": "What does C++ Object Layout Look Like? | Nimrod's Coding Lab",
+    "snippet": "May 8, 2022 · Visual walkthrough of C++ object memory layout: member ordering, padding, base class subobjects, vtable pointers, and how multiple ...",
+    "host_name": "nimrod.blog",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=vU7Rhcl9x5o",
+    "name": "Deep dive into the ART runtime (Android Dev Summit '18) - YouTube",
+    "snippet": "Nov 8, 2018 · ... application startup. Presented by: Nicolas Geoffray & David Sehr ... Deep dive into the ART runtime (Android Dev Summit '18).",
+    "host_name": "www.youtube.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://perfetto.dev/docs/data-sources/java-heap-profiler",
+    "name": "Memory: ART Heap Dumps for Java/Kotlin Heap - Perfetto",
+    "snippet": "ART (Android RunTime) heap dumps. heap dumps report full retention graphs of Java objects but not call-stacks. is available only on Android 13 or higher.",
+    "host_name": "perfetto.dev",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://cs61.seas.harvard.edu/site/2018/Datarep3",
+    "name": "Data representation 3: Layout – CS 61 2018",
+    "snippet": "This lecture concerns layout: the ways that compilers and operating systems place multiple objects in relationship to one another.",
+    "host_name": "cs61.seas.harvard.edu",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/12378271/what-does-an-object-look-like-in-memory",
+    "name": "What does an object look like in memory? [duplicate] - Stack Overflow",
+    "snippet": "Sep 11, 2012 · 60 Structure of a C++ Object in Memory layout C++ objects 4 Can I construct an object without allocating memory or copying data?",
+    "host_name": "stackoverflow.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openjdk.org/jeps/8249196",
+    "name": "JEP draft: Low-level Object layout introspection methods - OpenJDK",
+    "snippet": "Jul 10, 2020 · Provide the methods for polling implementation-dependent object sizes, field offsets, object addresses, to enable low-level introspection of JVM ...",
+    "host_name": "openjdk.org",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/cpp/comments/1oawh97/visualizing_the_c_object_memory_layout_part_1",
+    "name": "Visualizing the C++ Object Memory Layout Part 1: Single Inheritance",
+    "snippet": "Oct 19, 2025 · 53 votes, 17 comments. I recently embarked on a journey to (try to) demystify how C++ objects look like in memory.",
+    "host_name": "www.reddit.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://inria.hal.science/hal-00674174/PDF/cpp-object-layout.pdf",
+    "name": "[PDF] Formal verification of object layout for C++ multiple inheritance",
+    "snippet": "Feb 25, 2012 · The concrete representation for objects of these dynamic classes must include dynamic type data (usually as a pointer to a data structure ...",
+    "host_name": "inria.hal.science",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

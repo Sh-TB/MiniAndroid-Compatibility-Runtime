@@ -101,42 +101,58 @@ python3 tools/exp030_real_dalvik_validator.py --apk-dir download/exp027_real_apk
 | EXP-027-028 | DEX Fix | ✅ Complete | Root cause fix for parsing |
 | **EXP-029** | **Observability** | ✅ **Complete** | State machine, 15/15 APKs |
 | **EXP-030** | **Real Execution** | ✅ **Complete** | Dalvik engine, 25+ opcodes |
+| **EXP-035.1** | **External Research** | ✅ **Complete** | Solution mining, 30+ sources analyzed |
 
 ---
 
-## EXP-030: Real Dalvik Engine (Latest)
+## EXP-035.1: External Research & Solution Mining (Latest)
 
-### What Was Built
+### What Was Researched
 
-**`src/dex/dalvik_engine.h/cpp`** — 2,218 lines of production C++:
+**`docs/EXP035_1_EXTERNAL_RESEARCH.md`** — Comprehensive external research report:
 
-1. **DalvikValue** — Complete type system (15 value types)
-2. **DexRegisterFile** — Virtual register file (v + p registers)
-3. **DalvikHeap** — Object allocation with unique IDs
-4. **CallStack/StackFrame** — Method invocation context
-5. **InstructionTrace** — Per-opcode evidence capture
-6. **ApiCallTrace** — Android API call logging
-7. **DalvikExecutionEngine** — Main orchestrator
+### Research Categories Covered
 
-### Opcodes Implemented (25+)
+| Category | Sources Analyzed | Key Findings |
+|----------|------------------|--------------|
+| DEX Parser Issues | AOSP, Androguard, Google Issues | code_off=0 is valid (abstract/native) |
+| Dalvik Interpreters | AOSP (portable+fast), DaliVM, Academic | Two-interpreter pattern is standard |
+| Field Opcodes | Android docs, AOSP bytecode.txt | Static linking optimization exists |
+| Method Dispatch | Multiple sources | Two-phase resolution + vtable algorithm |
+| Object Models | Dalvik Object.h, ART source | Pre-computed field offsets critical |
+| Existing Projects | DaliVM, KiVM, mini-jvm, ReDex | ~40-60 opcodes sufficient for basic Activity |
+| Compatibility Layers | Wine, ReactOS, QEMU | API translation approach recommended |
 
-| Category | Opcodes |
-|----------|---------|
-| Constants | `const/4`, `const/16`, `const`, `const-string`, `const-class` |
-| Moves | `move`, `move-object`, `move-result`, `move-result-object` |
-| Objects | `new-instance`, `check-cast`, `instance-of` |
-| Invokes | `invoke-virtual`, `invoke-direct`, `invoke-static`, `invoke-interface` |
-| Returns | `return-void`, `return`, `return-object` |
-| Control Flow | `goto`, `if-eqz`, `if-nez` |
+### Important Discoveries
 
-### Validation Results
+1. **Two-Interpreter Pattern**: AOSP uses portable (debuggable) + fast (optimized) interpreters
+2. **DaliVM Validation**: Python-based Dalvik emulation IS viable for our use case
+3. **Field Inheritance**: Simple field_id→offset fails; must search class hierarchy
+4. **VTable Critical**: Without proper vtable building, invoke-virtual breaks polymorphism
+5. **Optimized DEX**: Real apps use iget-quick/invoke-quick variants post-dexopt
+6. **Minimum Runtime**: ~40-60 opcodes sufficient for trivial Activity execution
+7. **Compatibility Model**: Wine-style API translation more achievable than full emulation
+
+### Recommendations Summary
+
+**Adopt**:
+- ✅ Portable interpreter pattern first (correctness over speed)
+- ✅ Two-phase method resolution with caching
+- ✅ Pre-computed field offsets during class loading
+- ✅ VTable construction during class loading phase
+- ✅ All 5 invoke types with different dispatch logic
+
+**Avoid**:
+- ❌ Optimizing before working correctly
+- ❌ Full ART memory layout replication
+- ❌ All 200+ opcodes at once
+- ❌ Ignoring optimized DEX variants
+
+### Report Location
 
 ```
-APKs Tested: 12
-Depth Achieved: BYTECODE_LOADED (all)
-Opcodes Executed: 0 (engine built, integration pending)
-Binary Size: 23.7MB (+14% from engine)
-Status: CORE ENGINE COMPLETE
+docs/EXP035_1_EXTERNAL_RESEARCH.md  # Full research report (~500 lines)
+docs/research/                      # Raw search results (JSON)
 ```
 
 ---
@@ -233,4 +249,4 @@ MIT License — See [LICENSE](LICENSE) for details.
 ---
 
 *Last Updated: 2026-08-14*
-*Active Development: EXP-030 Complete, Integration Pending*
+*Active Development: EXP-035.1 Research Complete, EXP-035 Implementation Pending*

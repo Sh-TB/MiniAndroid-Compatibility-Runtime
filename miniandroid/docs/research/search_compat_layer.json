@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://reactos.org/forum/viewtopic.php?t=14176",
+    "name": "ReactOS and Android",
+    "snippet": "I'd either use Android with WINE or ReactOS with some sort of Android compatibility subsystem (Unix subsystem + some kind of SurfaceFlinger port) ...",
+    "host_name": "reactos.org",
+    "rank": 0,
+    "date": "Apr 30, 2015",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/programming/comments/8cefk8/reactos_releases_048_with_experimental_vista710",
+    "name": "ReactOS releases 0.4.8 with experimental Vista/7/10",
+    "snippet": "Wine is a compatibility layer that runs on top of an operating system. Wine, at its core, is a compatibility layer which allows Windows ...",
+    "host_name": "www.reddit.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.quora.com/How-can-WINE-and-ReactOS-share-much-of-the-source-code-when-they-are-doing-completely-different-things-WINE-translates-Windows-system-calls-so-that-Linux-can-understand-them-ReactOS-actually-implements-those-system",
+    "name": "How can WINE and ReactOS share much of the source",
+    "snippet": "How can WINE and ReactOS share much of the source code, when they are doing completely different things? WINE translates Windows system calls so that Linux ...",
+    "host_name": "www.quora.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://news.ycombinator.com/item?id=24787318",
+    "name": "ReactOS",
+    "snippet": "Another API implementation is compatibility layer ... implementation decisions of Linux and Wine architectures which prevent 100% compatibility.",
+    "host_name": "news.ycombinator.com",
+    "rank": 3,
+    "date": "Oct 15, 2020",
+    "favicon": ""
+  },
+  {
+    "url": "https://reactos.org/wiki/ReactOS",
+    "name": "ReactOS Wiki",
+    "snippet": "The ReactOS project is an open-source implementation of the NT architecture, with the goal of creating an NT-like operating system. It comes ...",
+    "host_name": "reactos.org",
+    "rank": 4,
+    "date": "Aug 11, 2020",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.facebook.com/groups/linux.fans.group/posts/24869395416008906",
+    "name": "Why isn't there a Linux package to run Android and",
+    "snippet": "If all programmers use Linux, why has no package been created yet to run Android and Windows programs directly and with high compatibility? I know that ...",
+    "host_name": "www.facebook.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/ReactOS",
+    "name": "ReactOS",
+    "snippet": "Wine project that presents a Windows compatibility layer for Unix-like operating systems.",
+    "host_name": "en.wikipedia.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=Cdz-yY5hbi8",
+    "name": "WINE Makes ReactOS Actually Possible",
+    "snippet": "WINE is incredibly important component on Linux but its also absolutely crucial to the work being done by ReactOS. WINE Makes ReactOS Actually ...",
+    "host_name": "www.youtube.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://reactos.org/wiki/WINE",
+    "name": "WINE - ReactOS Wiki",
+    "snippet": "Wine is an Open Source implementation of the Windows API on top of X and Unix. It is a completely free alternative implementation of the ...",
+    "host_name": "reactos.org",
+    "rank": 8,
+    "date": "Jan 3, 2026",
+    "favicon": ""
+  }
+]
