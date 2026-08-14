@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://formats.kaitai.io/dex/csharp.html",
+    "name": "Android Dalvik VM executable (dex): C# parsing library",
+    "snippet": "extension dex KS implementation details ・ parse or serialize any data. public Dex . ClassDataItem ・ public partial class EncodedMethod :",
+    "host_name": "formats.kaitai.io",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/androguard/dex-parser",
+    "name": "DEX-Parser: The Scalpel for Dalvik Executables",
+    "snippet": "Class & Method Enumeration : Provides a clean, Pythonic API to iterate through all defined classes, their methods (both direct and virtual), and their fields.",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://source.android.com/docs/core/runtime/dex-format",
+    "name": "Dalvik executable format",
+    "snippet": "Oct 3, 2025 — In Android 10, version 039 extends the DEX file format to include hidden API information that's only applicable to DEX files on the boot class ... Read more",
+    "host_name": "source.android.com",
+    "rank": 2,
+    "date": "Oct 3, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://javadoc.io/static/com.android.tools/sdk-common/25.3.0-alpha3/com/android/ide/common/blame/parser/DexParser.html",
+    "name": "DexParser (Android Tools sdk-common library)",
+    "snippet": "Implemented Interfaces: Parses the given output line. Methods inherited from class java.lang.Object. Parses the given output line. to parse more lines in order ...",
+    "host_name": "javadoc.io",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://cloud.google.com/blog/topics/threat-intelligence/dalvik-look-into-dex-files",
+    "name": "Delving into Dalvik: A Look Into DEX Files",
+    "snippet": "Mar 6, 2024 — The class_def_item has another member ( class_data_off ), an offset to a class_data_item that represents the data associated with the class.",
+    "host_name": "cloud.google.com",
+    "rank": 4,
+    "date": "Mar 6, 2024",
+    "favicon": ""
+  },
+  {
+    "url": "http://www.dre.vanderbilt.edu/~schmidt/android/android-4.0/dalvik/docs/dex-format.html",
+    "name": ".dex — Dalvik Executable Format",
+    "snippet": "This document describes the layout and contents of . dex files, which are used to hold a set of class definitions and their associated adjunct data.",
+    "host_name": "www.dre.vanderbilt.edu",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dexparser.readthedocs.io/_/downloads/en/latest/pdf",
+    "name": "dexparser",
+    "snippet": "Get class definition data from DEX file Returns list of class definition data extracted from class_def_item example: >>> dex = Dexparser(filedir='path/to/ ...",
+    "host_name": "dexparser.readthedocs.io",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://hitcon.org/2015/ENT/PDF/The%20Terminator%20to%20Android%20Hardening%20Services_Yueqian%20Zhang,%20Xiapu%20Luo,%20Haoyang%20Yin.pdf",
+    "name": "The Terminator to Android Hardening Services",
+    "snippet": "by Y Zhang · Cited by 4 — We check each: class_data_off in class_def_item. accessflag and codeoff in DexMethod of parsed class_data_item (i.e., DexClassData object). 41. Page 42 ... Read more 61 pages",
+    "host_name": "hitcon.org",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.infosecinstitute.com/resources/hacking/writing-your-own-parser",
+    "name": "Writing Your Own Parser",
+    "snippet": "Aug 10, 2013 — The insns field within the code_item structure contains an array of 2-byte sized elements (4-byte alignment is also done with larger opcodes, ... Read more",
+    "host_name": "www.infosecinstitute.com",
+    "rank": 8,
+    "date": "Aug 10, 2013",
+    "favicon": ""
+  }
+]

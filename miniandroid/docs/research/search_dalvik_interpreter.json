@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://wladimir-tm4pda.github.io/porting/dalvik.html",
+    "name": "Dalvik | Android Open Source",
+    "snippet": "The Dalvik virtual machine is intended to run on a variety of platforms. is written in C/C ++ and is expected to work without modification in a Linux ...",
+    "host_name": "wladimir-tm4pda.github.io",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/16787979/dalvik-virtual-machine-source-codes-development-approach",
+    "name": "Dalvik Virtual Machine source codes development approach",
+    "snippet": "The source code of Dalvik can be found in here, and Virtual Machines related code is located in the folder called vm. Nearly all the codes are written ...",
+    "host_name": "stackoverflow.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.googlesource.com/platform/dalvik/+/lollipop-release/docs/porting-guide.html",
+    "name": "docs/porting-guide.html - platform/dalvik - Git at Google",
+    "snippet": "The Dalvik virtual machine is intended to run on a variety of platforms. is written in C/C ++ and is expected to work without modification in a Linux ...",
+    "host_name": "android.googlesource.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/ProgrammingLanguages/comments/a9htdk/im_looking_for_a_text_on_virtual_machines_and",
+    "name": "I'm looking for a text on virtual machines and interpreters.",
+    "snippet": "I am wanting a text on virtual machines from the perspective of writing interpreters (as opposed to, say, making a cloud cluster). Read more",
+    "host_name": "www.reddit.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dl.acm.org/doi/pdf/10.1145/2388936.2388956",
+    "name": "Evaluation of Android Dalvik virtual machine",
+    "snippet": "by HS Oh · 2012 · Cited by 74 — DalviN slightly outperforms HotSpot in the interpreter mode due to its registerYbased bytecode. the C version of the interpreter , C++ as a basis of 1.0.",
+    "host_name": "dl.acm.org",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ptacts.uspto.gov/ptacts/public-informations/petitions/1557142/download-documents?artifactId=5TNeA72AHRUCpvMAlXOvjfXFCvUJI4swwzUsjEBFFEqP22S8HgVanDs",
+    "name": "Analysis of Dalvik Virtual Machine and Class Path Library",
+    "snippet": "Process VM is implemented using an interpreter ; Dalvik architecture is register based. It is optimized to use less space. The interpreter is simplified for ...",
+    "host_name": "ptacts.uspto.gov",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/figure/Typical-Dalvik-interpreter-C-source-code_fig1_276864791",
+    "name": "Typical Dalvik interpreter C source code.",
+    "snippet": "The Dalvik virtual machine ( Dalvik VM ) is an essential piece of software that runs applications on the Android operating system. Read more",
+    "host_name": "www.researchgate.net",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@pcm4150/dalvik-virtual-machine-d0c5f9ae7f03",
+    "name": "Dalvik Virtual Machine",
+    "snippet": "The Dalvik virtual machine is implemented by Google for the Android OS , and functions as the Interpreter for Java code running on Android ... Read more",
+    "host_name": "medium.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

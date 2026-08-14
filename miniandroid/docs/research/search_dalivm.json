@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://github.com/fatalSec/DaliVM",
+    "name": "fatalSec/DaliVM: Dalvik bytecode emulator for Android",
+    "snippet": "A Python-based Dalvik VM emulator designed for static analysis and string decryption in Android applications. Execute targeted methods within APK",
+    "host_name": "github.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.sciencedirect.com/science/article/pii/S0167642313003304",
+    "name": "Formalisation and analysis of Dalvik bytecode",
+    "snippet": "by ER Wognsen · 2014 · Cited by 53 — A prototype implementation of the analysis is discussed. ComDroid is described as a tool that performs “flow sensitive, intra-procedural static analysis with ...",
+    "host_name": "www.sciencedirect.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://source.android.com/docs/core/runtime/dalvik-bytecode",
+    "name": "Dalvik bytecode format",
+    "snippet": "Jan 7, 2025 — When installed on a running system, some instructions may be altered, changing their format, as an install-time static linking optimization. Read more",
+    "host_name": "source.android.com",
+    "rank": 2,
+    "date": "Jan 7, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://bravenewgeek.com/dalvik-bytecode-generation",
+    "name": "Dalvik Bytecode Generation",
+    "snippet": "Dec 17, 2012 — It has a small, close-to-the-metal API. This API mirrors the Dalvik bytecode specification giving you tight control over the bytecode emitted. Read more",
+    "host_name": "bravenewgeek.com",
+    "rank": 3,
+    "date": "Dec 17, 2012",
+    "favicon": ""
+  },
+  {
+    "url": "https://cloud.google.com/blog/topics/threat-intelligence/dalvik-look-into-dex-files",
+    "name": "Delving into Dalvik: A Look Into DEX Files",
+    "snippet": "Mar 6, 2024 — Insight into the Dalvik Executable file format, how it is constructed, and how it can be altered to make analysis easier.",
+    "host_name": "cloud.google.com",
+    "rank": 4,
+    "date": "Mar 6, 2024",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/45437576/a-compiler-that-compiles-down-to-dalvik-bytecode",
+    "name": "a compiler that compiles down to dalvik bytecode?",
+    "snippet": "So i have been trying to understand how android works and from what i have gathered so far: -It seems that the only way to write an android app is by using ...",
+    "host_name": "stackoverflow.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://hal.science/hal-00697421/document",
+    "name": "Dexpler: Converting Android Dalvik Bytecode to Jimple for",
+    "snippet": "by A Bartel · 2012 · Cited by 320 — This paper introduces Dexpler, a software package which converts Dalvik bytecode to Jimple . Dexpler is built on top of Dedexer and Soot.",
+    "host_name": "hal.science",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.pnfsoftware.com/jeb/manual/android",
+    "name": "Android Analysis",
+    "snippet": "Debug Android applications ( Dalvik and Native - x86, arm, mips - code ) and transition seamlessly from Dalvik to Native, and vice-versa. Write your own ... Read more",
+    "host_name": "www.pnfsoftware.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ptacts.uspto.gov/ptacts/public-informations/petitions/1557142/download-documents?artifactId=5TNeA72AHRUCpvMAlXOvjfXFCvUJI4swwzUsjEBFFEqP22S8HgVanDs",
+    "name": "Analysis of Dalvik Virtual Machine and Class Path Library",
+    "snippet": "Dalvik is a register based architecture making it faster and performance efficient for running application code. It has to operate on Dalvik byte code rather ... Read more",
+    "host_name": "ptacts.uspto.gov",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  }
+]
