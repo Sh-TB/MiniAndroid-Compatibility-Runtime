@@ -978,6 +978,20 @@ private:
         const std::vector<DalvikValue>& args,
         DalvikExecutionResult& result
     );
+
+    // EXP-038 (BLOCKER-034): Recursive DEX method invocation.
+    // Given a declaring_class and method_name, search the DEX for a matching
+    // method with bytecode. If found, recursively call execute_method_internal()
+    // and return true (with result stored in return_val).
+    // If not found (framework method), return false and let the caller bridge
+    // to the API stub layer.
+    bool try_recursive_invoke(
+        const std::string& declaring_class,
+        const std::string& method_name,
+        const std::vector<DalvikValue>& args,
+        DalvikValue& return_val,
+        DalvikExecutionResult& result
+    );
     
     bool fetch_decode_execute(DalvikExecutionResult& result);
     uint16_t fetch_opcode(uint32_t pc) const;
