@@ -1,0 +1,24 @@
+{
+  "apk_name": "/home/z/my-project/miniandroid/test_apks/exp032_valid_test.dex",
+  "timestamp": "2026-08-14T09:08:22.460030",
+  "status": "NO_BYTECODE_FOUND",
+  "dex_files": [
+    {
+      "dex_name": "exp032_valid_test.dex",
+      "size_bytes": 266,
+      "sha256": "4564bbc092eb1c56",
+      "valid": true,
+      "methods_found": 143,
+      "methods_with_bytecode": 0,
+      "instructions_decoded": 0,
+      "opcodes_found": [],
+      "sample_methods": []
+    }
+  ],
+  "total_methods_found": 143,
+  "methods_with_bytecode": 0,
+  "total_instructions_decoded": 0,
+  "unique_opcodes": [],
+  "evidence_valid": false,
+  "source_type": "standalone_dex"
+}
