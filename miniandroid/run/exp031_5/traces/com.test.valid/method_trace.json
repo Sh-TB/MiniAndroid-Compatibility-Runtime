@@ -1,0 +1,15 @@
+{
+  "apk_name": "valid_test.apk",
+  "main_class": "<invalid string idx:65536>",
+  "main_method": "<init>",
+  "methods": [
+    {
+      "class": "<invalid string idx:65536>",
+      "entry_point": true,
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-08-14T06:54:52Z",
+  "total_api_calls": 0
+}

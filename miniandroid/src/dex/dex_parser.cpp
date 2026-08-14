@@ -339,10 +339,22 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
     std::vector<DexClassDef> class_defs(report.header.class_defs_size);
     size_t defs_offset = report.header.class_defs_off;
     
+    // ====================================================================
+    // EXP-031.6 DEBUG: Trace class_def parsing
+    // ====================================================================
+    log("=== EXP-031.6 CLASS_DEF PARSING ===");
+    log("class_defs_size: " + std::to_string(report.header.class_defs_size));
+    log("class_defs_off: 0x" + std::to_string(defs_offset));
+    log("file_size: 0x" + std::to_string(current_size_));
+    
     if (defs_offset + class_defs.size() * sizeof(DexClassDef) > current_size_) {
         last_error_ = "Class definitions extend beyond file";
+        log("ERROR: Class defs extend beyond file!");
         return false;
     }
+    
+    log("Reading " + std::to_string(class_defs.size()) + " class_defs (" + 
+        std::to_string(sizeof(DexClassDef)) + " bytes each)...");
     
     std::memcpy(class_defs.data(), data + defs_offset,
                 class_defs.size() * sizeof(DexClassDef));
@@ -350,11 +362,24 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
     // Parse each class
     report.classes.reserve(class_defs.size());
     
-    for (const auto& class_def : class_defs) {
+    for (size_t i = 0; i < class_defs.size(); i++) {
+        const auto& class_def = class_defs[i];
         ClassInfo info;
+        
+        // ====================================================================
+        // EXP-031.6 DEBUG: Log raw class_def fields
+        // ====================================================================
+        log("CLASS_DEF[" + std::to_string(i) + "] @ offset 0x" + 
+            std::to_string(defs_offset + i * sizeof(DexClassDef)) + ":");
+        log("  class_idx: " + std::to_string(class_def.class_idx) + 
+            " (max valid: " + std::to_string(report.header.type_ids_size) + ")");
+        log("  access_flags: 0x" + std::to_string(class_def.access_flags));
+        log("  superclass_idx: " + std::to_string(class_def.superclass_idx));
+        log("  class_data_off: 0x" + std::to_string(class_def.class_data_off));
         
         // Get class name from type index
         info.name = get_type(class_def.class_idx);
+        log("  → Resolved name: [" + info.name + "]");
         
         // Get superclass name
         if (class_def.superclass_idx != 0xFFFFFFFF) {
@@ -370,11 +395,20 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
         
         // Parse class data (fields and methods)
         if (class_def.class_data_off != 0 && class_def.class_data_off < current_size_) {
+            log("  → Parsing class_data at 0x" + std::to_string(class_def.class_data_off));
             parse_class_data(data, class_def, info);
+        } else {
+            log("  → NO class_data (off=0x" + std::to_string(class_def.class_data_off) + 
+                ", size=0x" + std::to_string(current_size_) + ")");
         }
         
         report.classes.push_back(info);
+        
+        log("  → Result: " + std::to_string(info.direct_methods.size()) + " direct methods, " +
+            std::to_string(info.virtual_methods.size()) + " virtual methods");
     }
+    
+    log("=== END CLASS_DEF PARSING ===");
     
     report.classes_count = static_cast<uint32_t>(report.classes.size());
     
@@ -385,40 +419,72 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
 bool DexParser::parse_class_data(const uint8_t* data, const DexClassDef& class_def, ClassInfo& info) {
     size_t offset = class_def.class_data_off;
     
+    // ====================================================================
+    // EXP-031.6 DEBUG: Trace class_data parsing
+    // ====================================================================
+    log("  === EXP-031.6 CLASS_DATA PARSING @ 0x" + std::to_string(offset) + " ===");
+    
     if (offset >= current_size_) {
+        log("  ERROR: offset beyond file end!");
         return false;
     }
     
+    // Show first 32 bytes at class_data location for debugging
+    {
+        std::string hex_dump;
+        size_t show_bytes = std::min((size_t)32, current_size_ - offset);
+        for (size_t i = 0; i < show_bytes; i++) {
+            char buf[4];
+            snprintf(buf, sizeof(buf), "%02x ", data[offset + i]);
+            hex_dump += buf;
+        }
+        log("  First bytes: " + hex_dump);
+    }
+    
     // Read encoded header using ULEB128
-    auto read_uleb128 = [&data, &offset, this](uint32_t& value) -> bool {
-        if (offset >= current_size_) return false;
+    auto read_uleb128 = [&data, &offset, this](uint32_t& value, const char* field_name) -> bool {
+        if (offset >= current_size_) {
+            log("  ULEB128 ERROR at " + std::string(field_name) + ": offset beyond end");
+            return false;
+        }
         
         value = 0;
         int shift = 0;
         uint8_t byte;
+        size_t start_offset = offset;
         
         do {
-            if (offset >= current_size_) return false;
+            if (offset >= current_size_) {
+                log("  ULEB128 TRUNCATE at " + std::string(field_name));
+                return false;
+            }
             byte = data[offset++];
             value |= static_cast<uint32_t>(byte & 0x7F) << shift;
             shift += 7;
         } while (byte & 0x80);
         
+        log("  ULEB128[" + std::string(field_name) + "] @ 0x" + std::to_string(start_offset) + 
+            " = " + std::to_string(value));
         return true;
     };
     
     DexClassDataHeader header;
-    if (!read_uleb128(header.static_fields_size)) return false;
-    if (!read_uleb128(header.instance_fields_size)) return false;
-    if (!read_uleb128(header.direct_methods_size)) return false;
-    if (!read_uleb128(header.virtual_methods_size)) return false;
+    if (!read_uleb128(header.static_fields_size, "static_fields_size")) return false;
+    if (!read_uleb128(header.instance_fields_size, "instance_fields_size")) return false;
+    if (!read_uleb128(header.direct_methods_size, "direct_methods_size")) return false;
+    if (!read_uleb128(header.virtual_methods_size, "virtual_methods_size")) return false;
+    
+    log("  → Header: static=" + std::to_string(header.static_fields_size) +
+        ", instance=" + std::to_string(header.instance_fields_size) +
+        ", direct=" + std::to_string(header.direct_methods_size) +
+        ", virtual=" + std::to_string(header.virtual_methods_size));
     
     // Read static fields
     uint32_t field_idx = 0;
     for (uint32_t i = 0; i < header.static_fields_size; i++) {
         DexEncodedField encoded_field;
-        if (!read_uleb128(encoded_field.field_idx_diff)) break;
-        if (!read_uleb128(encoded_field.access_flags)) break;
+        if (!read_uleb128(encoded_field.field_idx_diff, "sf_field_diff")) break;
+        if (!read_uleb128(encoded_field.access_flags, "sf_access_flags")) break;
         
         field_idx += encoded_field.field_idx_diff;
         
@@ -438,8 +504,8 @@ bool DexParser::parse_class_data(const uint8_t* data, const DexClassDef& class_d
     field_idx = 0;
     for (uint32_t i = 0; i < header.instance_fields_size; i++) {
         DexEncodedField encoded_field;
-        if (!read_uleb128(encoded_field.field_idx_diff)) break;
-        if (!read_uleb128(encoded_field.access_flags)) break;
+        if (!read_uleb128(encoded_field.field_idx_diff, "if_field_diff")) break;
+        if (!read_uleb128(encoded_field.access_flags, "if_access_flags")) break;
         
         field_idx += encoded_field.field_idx_diff;
         
@@ -459,9 +525,10 @@ bool DexParser::parse_class_data(const uint8_t* data, const DexClassDef& class_d
     uint32_t method_idx = 0;
     for (uint32_t i = 0; i < header.direct_methods_size; i++) {
         DexEncodedMethod encoded_method;
-        if (!read_uleb128(encoded_method.method_idx_diff)) break;
-        if (!read_uleb128(encoded_method.access_flags)) break;
-        if (!read_uleb128(encoded_method.code_off)) break;
+        log("  → Direct method[" + std::to_string(i) + "]:");
+        if (!read_uleb128(encoded_method.method_idx_diff, "dm_method_diff")) break;
+        if (!read_uleb128(encoded_method.access_flags, "dm_access_flags")) break;
+        if (!read_uleb128(encoded_method.code_off, "dm_code_off")) break;
         
         method_idx += encoded_method.method_idx_diff;
         
@@ -520,9 +587,10 @@ bool DexParser::parse_class_data(const uint8_t* data, const DexClassDef& class_d
     method_idx = 0;
     for (uint32_t i = 0; i < header.virtual_methods_size; i++) {
         DexEncodedMethod encoded_method;
-        if (!read_uleb128(encoded_method.method_idx_diff)) break;
-        if (!read_uleb128(encoded_method.access_flags)) break;
-        if (!read_uleb128(encoded_method.code_off)) break;
+        log("  → Virtual method[" + std::to_string(i) + "]:");
+        if (!read_uleb128(encoded_method.method_idx_diff, "vm_method_diff")) break;
+        if (!read_uleb128(encoded_method.access_flags, "vm_access_flags")) break;
+        if (!read_uleb128(encoded_method.code_off, "vm_code_off")) break;
         
         method_idx += encoded_method.method_idx_diff;
         
@@ -624,7 +692,15 @@ std::string DexParser::get_type(uint32_t index) const {
 }
 
 bool DexParser::parse_code_item(const uint8_t* data, uint32_t offset, MethodInfo& method) {
+    // ====================================================================
+    // EXP-031.6 DEBUG: Trace code_item extraction
+    // ====================================================================
+    log("  === EXP-031.6 CODE_ITEM @ 0x" + std::to_string(offset) + " for " + method.name + " ===");
+    
     if (offset + sizeof(DexCodeItem) > current_size_) {
+        log("  ERROR: code_item header extends beyond file (off=0x" + std::to_string(offset) + 
+            ", need=0x" + std::to_string(sizeof(DexCodeItem)) + 
+            ", have=0x" + std::to_string(current_size_) + ")");
         return false;
     }
     
@@ -632,6 +708,13 @@ bool DexParser::parse_code_item(const uint8_t* data, uint32_t offset, MethodInfo
     std::memcpy(&code_item, data + offset, sizeof(DexCodeItem));
     
     method.code_offset = offset;
+    
+    log("  registers_size: " + std::to_string(code_item.registers_size));
+    log("  ins_size: " + std::to_string(code_item.ins_size));
+    log("  outs_size: " + std::to_string(code_item.outs_size));
+    log("  tries_size: " + std::to_string(code_item.tries_size));
+    log("  debug_info_off: 0x" + std::to_string(code_item.debug_info_off));
+    log("  insns_size: " + std::to_string(code_item.insns_size) + " ← KEY FIELD!");
     
     // Copy bytecode instructions
     if (code_item.insns_size > 0 && 
@@ -641,6 +724,25 @@ bool DexParser::parse_code_item(const uint8_t* data, uint32_t offset, MethodInfo
         std::memcpy(method.bytecode.data(),
                    data + offset + sizeof(DexCodeItem),
                    code_item.insns_size * sizeof(uint16_t));
+        
+        log("  ✅ EXTRACTED " + std::to_string(code_item.insns_size) + " INSTRUCTIONS!");
+        
+        // Show first few opcodes
+        std::string first_insns;
+        size_t show_count = std::min((size_t)5, method.bytecode.size());
+        for (size_t i = 0; i < show_count; i++) {
+            char buf[16];
+            snprintf(buf, sizeof(buf), "%04x ", method.bytecode[i]);
+            first_insns += buf;
+        }
+        log("  First opcodes: " + first_insns);
+        
+    } else {
+        if (code_item.insns_size == 0) {
+            log("  ⚠️ insns_size = 0 (empty method body)");
+        } else {
+            log("  ❌ Instructions extend beyond file! insns_size=" + std::to_string(code_item.insns_size));
+        }
     }
     
     return true;
