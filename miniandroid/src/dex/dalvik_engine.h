@@ -911,6 +911,17 @@ class DalvikExecutionEngine {
 public:
     DalvikExecutionEngine();
     ~DalvikExecutionEngine();
+
+    // EXP-038 (BLOCKER-033): Set per-DEX raw data for correct method_idx resolution.
+    // Call this before execute_apk() to enable per-DEX method resolution.
+    void set_per_dex_raw_data(std::vector<std::vector<uint8_t>> data) {
+        per_dex_raw_data_ = std::move(data);
+        is_multidex_ = (per_dex_raw_data_.size() > 1);
+    }
+
+    // EXP-038 (BLOCKER-033): Build class→DEX index map from DexReport.
+    // Must be called after dex_report is set and before execution begins.
+    void build_class_dex_index(const dex::DexReport& report);
     
     /**
      * Execute APK through real DEX bytecode interpretation
@@ -966,6 +977,18 @@ public:
     };
 
 private:
+    // EXP-038 (BLOCKER-033): Per-DEX raw data for correct method_idx resolution.
+    // Stored in DalvikExecutionEngine (NOT in DexReport) to avoid memory layout
+    // issues that cause SEGV when DexReport struct is modified.
+    // Each entry is the raw bytes of a DEX file, used to resolve method_idx
+    // using the correct per-DEX method_ids[] table.
+    std::vector<std::vector<uint8_t>> per_dex_raw_data_;
+    bool is_multidex_ = false;
+
+    // EXP-038 (BLOCKER-033): Map class descriptor → source DEX index.
+    // Built during execute_apk() by scanning dex_report.classes.
+    std::map<std::string, uint32_t> class_to_dex_index_;
+
     // Core execution loop
     bool execute_method_internal(
         const std::string& class_name,
@@ -1118,6 +1141,14 @@ private:
     // EXP-035: Current execution context (for VTable evidence)
     std::string current_class_ = "<unknown>";
     std::string current_method_ = "<unknown>";
+    // EXP-038 (BLOCKER-033): Current DEX index for per-DEX method resolution.
+    uint32_t current_dex_index_ = 0;
+
+    // EXP-038 (BLOCKER-033): Per-DEX method name resolution using raw DEX bytes.
+    std::string resolve_method_name_for_dex(uint32_t method_idx, uint32_t dex_index) const;
+    std::string resolve_method_class_for_dex(uint32_t method_idx, uint32_t dex_index) const;
+    std::string read_dex_string_from_raw(const std::vector<uint8_t>& raw, uint32_t string_idx,
+                                          const dex::DexHeader& hdr) const;
     
     bool halted_ = false;
     bool halted_on_return_ = false;
