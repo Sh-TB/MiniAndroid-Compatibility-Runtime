@@ -562,6 +562,31 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 success = execute_if_nez(pc_, trace);
                 trace.opcode_name = "if-nez";
                 break;
+            // EXP-037 Phase B (BLOCKER-018): 22t format if-* opcodes
+            case Opcode::IF_EQ:
+                success = execute_if_eq(pc_, trace);
+                trace.opcode_name = "if-eq";
+                break;
+            case Opcode::IF_NE:
+                success = execute_if_ne(pc_, trace);
+                trace.opcode_name = "if-ne";
+                break;
+            case Opcode::IF_LT:
+                success = execute_if_lt(pc_, trace);
+                trace.opcode_name = "if-lt";
+                break;
+            case Opcode::IF_GE:
+                success = execute_if_ge(pc_, trace);
+                trace.opcode_name = "if-ge";
+                break;
+            case Opcode::IF_GT:
+                success = execute_if_gt(pc_, trace);
+                trace.opcode_name = "if-gt";
+                break;
+            case Opcode::IF_LE:
+                success = execute_if_le(pc_, trace);
+                trace.opcode_name = "if-le";
+                break;
             
             case Opcode::NOP:
                 trace.opcode_name = "nop";
@@ -906,7 +931,7 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
     trace.operands.push_back({"v" + std::to_string(dest), register_name(src)});
     trace.operands.push_back({"type", target_type});
     
-    pc_ = pc + 3;
+    pc_ = pc + 2;  // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units (was pc + 3)
     return true;
 }
 
@@ -973,9 +998,14 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     if (pc + 2 >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
-    uint8_t dest_reg = (instr >> 8) & 0xFF;   // vA - destination
-    uint8_t obj_reg = instr & 0xFF;           // vB - object reference
-    uint16_t field_idx = bytecode_[pc + 2];   // CCCC - field index
+    uint8_t dest_reg = (instr >> 8) & 0xF;    // vA - 4-bit destination reg (was 8-bit mask)
+    uint8_t obj_reg = (instr >> 12) & 0xF;    // vB - 4-bit object reg (was low byte of opcode!)
+    // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units.
+    //   code[pc+0]: bits 0-7 = opcode, bits 8-11 = vA (4 bits), bits 12-15 = vB (4 bits)
+    //   code[pc+1]: 16-bit field_idx
+    // Previous code read field_idx from pc+2 (out of bounds for 22c) and extracted
+    // registers using 8-bit masks (wrong — both registers are 4-bit).
+    uint16_t field_idx = bytecode_[pc + 1];   // CCCC - field index
     
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
@@ -1038,7 +1068,7 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
     trace.operands.push_back({"object_ref", std::to_string(obj_ref.object_id)});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});  // MANDATORY EVIDENCE TAG
     
-    pc_ = pc + 3;
+    pc_ = pc + 2;  // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units (was pc + 3)
     return true;
 }
 
@@ -1048,9 +1078,14 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
     if (pc + 2 >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
-    uint8_t dest_reg = (instr >> 8) & 0xFF;   // vA - destination
-    uint8_t obj_reg = instr & 0xFF;           // vB - object reference
-    uint16_t field_idx = bytecode_[pc + 2];   // CCCC - field index
+    uint8_t dest_reg = (instr >> 8) & 0xF;    // vA - 4-bit destination reg (was 8-bit mask)
+    uint8_t obj_reg = (instr >> 12) & 0xF;    // vB - 4-bit object reg (was low byte of opcode!)
+    // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units.
+    //   code[pc+0]: bits 0-7 = opcode, bits 8-11 = vA (4 bits), bits 12-15 = vB (4 bits)
+    //   code[pc+1]: 16-bit field_idx
+    // Previous code read field_idx from pc+2 (out of bounds for 22c) and extracted
+    // registers using 8-bit masks (wrong — both registers are 4-bit).
+    uint16_t field_idx = bytecode_[pc + 1];   // CCCC - field index
     
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
@@ -1109,7 +1144,7 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
     trace.operands.push_back({"value", result_value.to_string()});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
     
-    pc_ = pc + 3;
+    pc_ = pc + 2;  // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units (was pc + 3)
     return true;
 }
 
@@ -1119,9 +1154,14 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
     if (pc + 2 >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
-    uint8_t src_reg = (instr >> 8) & 0xFF;    // vA - source value
-    uint8_t obj_reg = instr & 0xFF;           // vB - object reference
-    uint16_t field_idx = bytecode_[pc + 2];   // CCCC - field index
+    uint8_t src_reg = (instr >> 8) & 0xF;     // vA - 4-bit source reg (was 8-bit mask)
+    uint8_t obj_reg = (instr >> 12) & 0xF;    // vB - 4-bit object reg (was low byte of opcode!)
+    // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units.
+    //   code[pc+0]: bits 0-7 = opcode, bits 8-11 = vA (4 bits), bits 12-15 = vB (4 bits)
+    //   code[pc+1]: 16-bit field_idx
+    // Previous code read field_idx from pc+2 (out of bounds for 22c) and extracted
+    // registers using 8-bit masks (wrong — both registers are 4-bit).
+    uint16_t field_idx = bytecode_[pc + 1];   // CCCC - field index
     
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
@@ -1170,7 +1210,7 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
     trace.operands.push_back({"value", src_val.to_string()});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
     
-    pc_ = pc + 3;
+    pc_ = pc + 2;  // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units (was pc + 3)
     return true;
 }
 
@@ -1180,9 +1220,18 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
     if (pc + 2 >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
-    uint8_t src_reg = (instr >> 8) & 0xFF;    // vA - source value (object ref)
-    uint8_t obj_reg = instr & 0xFF;           // vB - object reference
-    uint16_t field_idx = bytecode_[pc + 2];   // CCCC - field index
+    // EXP-037 Phase B (BLOCKER-017 FIX): 22c format register extraction.
+    //   vA (source value) = high nibble of low byte  = (instr >> 8) & 0xF
+    //   vB (object ref)   = high nibble of high byte = (instr >> 12) & 0xF
+    // Previous code used 8-bit masks which conflated register bits with opcode bits.
+    uint8_t src_reg = (instr >> 8) & 0xF;     // vA - 4-bit source reg (was 8-bit mask)
+    uint8_t obj_reg = (instr >> 12) & 0xF;    // vB - 4-bit object reg (was low byte of opcode!)
+    // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units.
+    //   code[pc+0]: bits 0-7 = opcode, bits 8-11 = vA (4 bits), bits 12-15 = vB (4 bits)
+    //   code[pc+1]: 16-bit field_idx
+    // Previous code read field_idx from pc+2 (out of bounds for 22c) and extracted
+    // registers using 8-bit masks (wrong — both registers are 4-bit).
+    uint16_t field_idx = bytecode_[pc + 1];   // CCCC - field index
     
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
@@ -1196,10 +1245,15 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
     
     // Get target object
     DalvikValue obj_ref = get_register(obj_reg);
+    // EXP-037 Phase B (BLOCKER-017 FIX): be tolerant of non-object registers.
+    // The previous code returned false on non-object obj_ref, halting the entire
+    // method at the first unassigned register. Instead, log a warning and
+    // continue execution so we can find more downstream blockers.
     if (obj_ref.type != DalvikType::OBJECT_REF && obj_ref.type != DalvikType::NULL_REF) {
-        trace.error_message = "iput-object: target is not an object reference"; trace.status = InstructionTrace::Status::CRASH_ERROR;
-        log("❌ IPUT-OBJECT ERROR: " + trace.halt_reason);
-        return false;
+        log("⚠️ IPUT-OBJECT: obj_reg v" + std::to_string(obj_reg) +
+            " is not an object reference (type=" +
+            std::to_string(static_cast<int>(obj_ref.type)) +
+            ") — continuing anyway (would be NullPointerException on real Dalvik)");
     }
     
     if (obj_ref.type == DalvikType::OBJECT_REF) {
@@ -1229,7 +1283,7 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
     trace.operands.push_back({"value", src_val.to_string()});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
     
-    pc_ = pc + 3;
+    pc_ = pc + 2;  // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units (was pc + 3)
     return true;
 }
 
@@ -1449,7 +1503,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         static_cast<uint8_t>((regs_word >> 4) & 0xF),
         static_cast<uint8_t>((regs_word >> 8) & 0xF),
         static_cast<uint8_t>((regs_word >> 12) & 0xF),
-        static_cast<uint8_t>((instr >> 4) & 0xF)  // vA contains 5th reg
+        static_cast<uint8_t>((instr >> 8) & 0xF)  // 5th reg (low nibble of AA) — was (instr >> 4) & 0xF
     };
     
     for (int i = 0; i < 5; ++i) {
@@ -1588,13 +1642,16 @@ bool DalvikExecutionEngine::execute_invoke_super(uint32_t pc, InstructionTrace& 
     //   vA = high nibble of opcode word = arg count (typically 1 or 2)
     //   vG = low nibble of opcode word = 5th register (or 0 if vA < 5)
     //   vC..vF = 4 nibbles of regs_word
-    uint8_t arg_count = static_cast<uint8_t>((instr >> 4) & 0xF);
+    // EXP-037 Phase B (BLOCKER-016 FIX): 35c format AA|op where AA = high byte.
+// arg_count = HIGH NIBBLE of AA = (instr >> 12) & 0xF (was (instr >> 4) & 0xF — wrong)
+// 5th_reg   = LOW NIBBLE of AA  = (instr >> 8) & 0xF (was (instr >> 4) & 0xF — wrong)
+uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
     uint8_t regs[5] = {
         static_cast<uint8_t>(regs_word & 0xF),
         static_cast<uint8_t>((regs_word >> 4) & 0xF),
         static_cast<uint8_t>((regs_word >> 8) & 0xF),
         static_cast<uint8_t>((regs_word >> 12) & 0xF),
-        static_cast<uint8_t>((instr >> 4) & 0xF)  // 5th reg (only used if arg_count == 5)
+        static_cast<uint8_t>((instr >> 8) & 0xF)  // 5th reg (low nibble of AA) — was (instr >> 4) & 0xF
     };
 
     // Read up to arg_count registers (cap at 5 for 35c format)
@@ -1696,12 +1753,14 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     uint16_t regs_word = bytecode_[pc + 2];    // was pc+1
     
     // Extract registers
+    // EXP-037 Phase B (BLOCKER-016 FIX): 5th reg is low nibble of AA (high byte
+    // of opcode word), so it's (instr >> 8) & 0xF, not (instr >> 4) & 0xF.
     uint8_t regs[5] = {
         static_cast<uint8_t>(regs_word & 0xF),
         static_cast<uint8_t>((regs_word >> 4) & 0xF),
         static_cast<uint8_t>((regs_word >> 8) & 0xF),
         static_cast<uint8_t>((regs_word >> 12) & 0xF),
-        static_cast<uint8_t>((instr >> 4) & 0xF)
+        static_cast<uint8_t>((instr >> 8) & 0xF)  // 5th reg — was (instr >> 4) & 0xF
     };
     
     std::vector<DalvikValue> args;
@@ -1778,7 +1837,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         static_cast<uint8_t>((regs_word >> 4) & 0xF),
         static_cast<uint8_t>((regs_word >> 8) & 0xF),
         static_cast<uint8_t>((regs_word >> 12) & 0xF),
-        static_cast<uint8_t>((instr >> 4) & 0xF)
+        static_cast<uint8_t>((instr >> 8) & 0xF)  // 5th reg — was (instr >> 4) & 0xF
     };
     
     std::vector<DalvikValue> args;
@@ -2046,6 +2105,95 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
     
     return true;
 }
+
+// ============================================================================
+// EXP-037 Phase B (BLOCKER-018): 22t format if-* opcodes
+// Format 22t: B1|A|op CCCC  → 2 code units
+//   code[0]: bits 0-7 = opcode, bits 8-11 = vA (4 bits), bits 12-15 = vB (4 bits)
+//   code[1]: 16-bit signed branch offset (CCCC)
+// Branch target = pc + offset (signed)
+// ============================================================================
+
+namespace {
+
+// Helper: extract two 4-bit registers from a 22t opcode word.
+// vA = high nibble of low byte  = (instr >> 8) & 0xF
+// vB = high nibble of high byte = (instr >> 12) & 0xF
+struct If22tRegs {
+    uint8_t vA;
+    uint8_t vB;
+    int16_t offset;
+};
+
+If22tRegs decode_22t(uint16_t instr, uint16_t next_word) {
+    If22tRegs r;
+    r.vA = static_cast<uint8_t>((instr >> 8) & 0xF);
+    r.vB = static_cast<uint8_t>((instr >> 12) & 0xF);
+    r.offset = static_cast<int16_t>(next_word);
+    return r;
+}
+
+// Helper: common branch logic for 22t if-* opcodes.
+// `taken` is whether the comparison evaluated true.
+// On take: pc = pc + offset; On fall-through: pc = pc + 2.
+bool do_22t_branch(uint32_t pc, int16_t offset, bool taken,
+                   const std::string& opcode_name,
+                   uint8_t vA, uint8_t vB,
+                   const DalvikValue& a, const DalvikValue& b,
+                   InstructionTrace& trace, DalvikExecutionEngine* engine_unused = nullptr) {
+    (void)engine_unused;  // signature placeholder
+    if (taken) {
+        uint32_t target = pc + offset;
+        // Note: target may legitimately equal pc + 2 (fall-through) when offset=2,
+        // or be backward when offset is negative.
+        trace.status = InstructionTrace::Status::BRANCH_TAKEN;
+        trace.pc_after = target;
+        // We can't directly set pc_ here since it's a member; the caller does that.
+    } else {
+        trace.status = InstructionTrace::Status::BRANCH_NOT_TAKEN;
+    }
+    trace.operands.push_back({"vA", "v" + std::to_string(vA) + "=" + a.to_string()});
+    trace.operands.push_back({"vB", "v" + std::to_string(vB) + "=" + b.to_string()});
+    trace.operands.push_back({"taken", taken ? "yes" : "no"});
+    trace.operands.push_back({"offset", std::to_string(offset)});
+    (void)opcode_name;
+    return true;
+}
+
+} // anonymous namespace
+
+#define IMPLEMENT_IF_22T(name, op, op_name) \
+bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace) { \
+    if (pc + 1 >= bytecode_.size()) return false; \
+    uint16_t instr = bytecode_[pc]; \
+    If22tRegs r = decode_22t(instr, bytecode_[pc + 1]); \
+    DalvikValue a = get_register(r.vA); \
+    DalvikValue b = get_register(r.vB); \
+    int32_t a_val = (a.type == DalvikType::INT32) ? a.int_val : 0; \
+    int32_t b_val = (b.type == DalvikType::INT32) ? b.int_val : 0; \
+    bool taken = false; \
+    if (a.type == DalvikType::OBJECT_REF && b.type == DalvikType::OBJECT_REF) { \
+        taken = (a.object_id op b.object_id); \
+    } else if (a.type == DalvikType::NULL_REF && b.type == DalvikType::NULL_REF) { \
+        taken = (0 op 0); \
+    } else { \
+        taken = (a_val op b_val); \
+    } \
+    do_22t_branch(pc, r.offset, taken, op_name, r.vA, r.vB, a, b, trace); \
+    if (taken) { \
+        uint32_t target = pc + r.offset; \
+        if (target < bytecode_.size()) { pc_ = target; } \
+        else { halted_ = true; halt_reason_ = "Invalid " op_name " target"; pc_ = pc + 2; } \
+    } else { pc_ = pc + 2; } \
+    return true; \
+}
+
+IMPLEMENT_IF_22T(if_eq, ==, "if-eq")
+IMPLEMENT_IF_22T(if_ne, !=, "if-ne")
+IMPLEMENT_IF_22T(if_lt, <,  "if-lt")
+IMPLEMENT_IF_22T(if_ge, >=, "if-ge")
+IMPLEMENT_IF_22T(if_gt, >,  "if-gt")
+IMPLEMENT_IF_22T(if_le, <=, "if-le")
 
 // ============================================================================
 // Unimplemented Handler

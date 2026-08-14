@@ -12,10 +12,7 @@
     {
       "arguments": [
         "v1",
-        "v2",
-        "p4294967287",
-        "p4294967287",
-        "v6"
+        "v2"
       ],
       "class": "Landroid/app/Activity;<super>",
       "invocation_type": "virtual",
@@ -35,7 +32,7 @@
         "v2",
         "p4294967287",
         "p4294967287",
-        "v6"
+        "p4294967287"
       ],
       "class": "<unknown>",
       "invocation_type": "virtual",
@@ -49,7 +46,7 @@
         "p4294967287",
         "p4294967287",
         "p4294967287",
-        "v6"
+        "p4294967287"
       ],
       "class": "<unknown>",
       "invocation_type": "virtual",
@@ -58,6 +55,6 @@
       "source": "REAL_DALVIK_INTERPRETER"
     }
   ],
-  "timestamp": "2026-08-14T17:21:32Z",
+  "timestamp": "2026-08-14T17:24:14Z",
   "total_api_calls": 4
 }
