@@ -1,0 +1,400 @@
+{
+  "phase": "PHASE_6_DEBUG_PROCESS_IMPROVEMENT",
+  "timestamp": "2026-08-14T10:46:14.056250",
+  "status": "CREATED",
+  "golden_debug_protocol": {
+    "name": "Golden Debug Protocol",
+    "purpose": "Standardized debugging workflow ensuring evidence-based fixes",
+    "phases": [
+      {
+        "phase": "evidence_collection",
+        "name": "Evidence Collection",
+        "description": "Collect logs, traces, dumps, and reproduction cases BEFORE changing code",
+        "rule_reference": "RULE 4.1",
+        "mandatory_artifacts": [
+          "instruction_trace.json",
+          "register_dump.json",
+          "error_log.txt"
+        ]
+      },
+      {
+        "phase": "hypothesis_formation",
+        "name": "Hypothesis Formation",
+        "description": "Form clear hypothesis about root cause",
+        "rule_reference": "RULE 4.3",
+        "output": "DebugHypothesis record with status tracking"
+      },
+      {
+        "phase": "aosp_reference_check",
+        "name": "AOSP Reference Check",
+        "description": "Consult AOSP source code to understand correct behavior",
+        "rule_reference": "RULE 6",
+        "output": "Reference comparison document"
+      },
+      {
+        "phase": "root_cause_identification",
+        "name": "Root Cause Identification",
+        "description": "Identify actual cause, not just symptom",
+        "rule_reference": "RULE 4.2",
+        "output": "Root cause description with evidence"
+      },
+      {
+        "phase": "fix_implementation",
+        "name": "Fix Implementation",
+        "description": "Implement minimal fix addressing root cause",
+        "rule_reference": "Best Practice",
+        "output": "Code changes with clear commit message"
+      },
+      {
+        "phase": "regression_testing",
+        "name": "Regression Testing",
+        "description": "Verify fix doesn't break existing functionality",
+        "rule_reference": "RULE 4.2",
+        "output": "Test results showing pass/fail"
+      },
+      {
+        "phase": "documentation",
+        "name": "Documentation",
+        "description": "Document findings, lessons learned, prevention measures",
+        "rule_reference": "RULE 5",
+        "output": "Updated experiment docs + worklog"
+      }
+    ]
+  },
+  "debug_templates": {
+    "count": 4,
+    "types": [
+      "opcode",
+      "parse",
+      "object_model",
+      "api_bridge"
+    ],
+    "templates": {
+      "opcode": {
+        "session_id": "OPCODE-XXX",
+        "title": "Opcode [NAME] Incorrect Behavior",
+        "severity": "Severity.HIGH",
+        "category": "IssueCategory.OPCODE_ERROR",
+        "problem_description": "Opcode [NAME] produces incorrect results or crashes",
+        "reproduction_steps": [
+          "1. Create DEX file containing opcode [NAME]",
+          "2. Execute through DalvikEngine",
+          "3. Observe register state after execution",
+          "4. Compare with expected AOSP behavior"
+        ],
+        "initial_evidence": {},
+        "logs_collected": [],
+        "traces_collected": [],
+        "expected_behavior": "[Describe correct behavior per AOSP specification]",
+        "actual_behavior": "[Describe what actually happens]",
+        "hypotheses": [],
+        "root_cause_identified": false,
+        "root_cause_description": "",
+        "aosp_reference_checked": false,
+        "aosp_source_file": "dalvik/vm/mterp/[arch]_[opcode].S or dalvik/vm/Interp.c",
+        "aosp_behavior_differs": false,
+        "difference_description": "",
+        "fix_implemented": false,
+        "fix_description": "",
+        "files_changed": [],
+        "lines_changed": 0,
+        "regression_tested": false,
+        "regression_tests_run": [],
+        "regression_results": {},
+        "documented": false,
+        "lessons_learned": [
+          "Always check operand decoding order (vAA vs vA, vB)",
+          "Verify signed/unsigned conversion for literals",
+          "Check register index bounds before access"
+        ],
+        "prevention_measures": [],
+        "created_time": "",
+        "updated_time": "",
+        "status": "OPEN",
+        "assignee": ""
+      },
+      "parse": {
+        "session_id": "PARSE-XXX",
+        "title": "DEX Structure Parsing Error at Offset 0xOFFSET",
+        "severity": "Severity.CRITICAL",
+        "category": "IssueCategory.PARSE_ERROR",
+        "problem_description": "DEX parser fails to correctly read structure at specified offset",
+        "reproduction_steps": [
+          "1. Identify problematic DEX file",
+          "2. Run parser with verbose output",
+          "3. Examine bytes at reported offset",
+          "4. Compare with DEX format specification"
+        ],
+        "initial_evidence": {},
+        "logs_collected": [],
+        "traces_collected": [],
+        "expected_behavior": "Parser reads correct values per DEX format spec",
+        "actual_behavior": "Parser reads incorrect values or crashes",
+        "hypotheses": [],
+        "root_cause_identified": false,
+        "root_cause_description": "",
+        "aosp_reference_checked": false,
+        "aosp_source_file": "dalvik/libdex/DexFile.cpp or art/libdexfile/dex_file_types.h",
+        "aosp_behavior_differs": false,
+        "difference_description": "",
+        "fix_implemented": false,
+        "fix_description": "",
+        "files_changed": [],
+        "lines_changed": 0,
+        "regression_tested": false,
+        "regression_tests_run": [],
+        "regression_results": {},
+        "documented": false,
+        "lessons_learned": [
+          "DEX is little-endian - always use le32toh()/le16toh()",
+          "String IDs are indices into string_ids[] table, not offsets",
+          "MUTF-8 modified encoding for strings"
+        ],
+        "prevention_measures": [],
+        "created_time": "",
+        "updated_time": "",
+        "status": "OPEN",
+        "assignee": ""
+      },
+      "object_model": {
+        "session_id": "OBJMODEL-XXX",
+        "title": "Object Model Field Access Incorrect",
+        "severity": "Severity.HIGH",
+        "category": "IssueCategory.OBJECT_MODEL",
+        "problem_description": "Field operation (iget/iput/sget/sput) produces wrong result",
+        "reproduction_steps": [
+          "1. Create class with instance/static fields",
+          "2. Allocate object and set field value via iput/sput",
+          "3. Read field value via iget/sget",
+          "4. Verify round-trip correctness"
+        ],
+        "initial_evidence": {},
+        "logs_collected": [],
+        "traces_collected": [],
+        "expected_behavior": "Field value matches what was written",
+        "actual_behavior": "Field value differs or is wrong type",
+        "hypotheses": [],
+        "root_cause_identified": false,
+        "root_cause_description": "",
+        "aosp_reference_checked": false,
+        "aosp_source_file": "dalvik/vm/oo/Object.h (Field.byteOffset calculation)",
+        "aosp_behavior_differs": false,
+        "difference_description": "",
+        "fix_implemented": false,
+        "fix_description": "",
+        "files_changed": [],
+        "lines_changed": 0,
+        "regression_tested": false,
+        "regression_tests_run": [],
+        "regression_results": {},
+        "documented": false,
+        "lessons_learned": [
+          "Field offsets must account for superclass fields",
+          "Wide fields (long/double) require 8-byte alignment",
+          "Static fields stored in ClassObject, not instance"
+        ],
+        "prevention_measures": [],
+        "created_time": "",
+        "updated_time": "",
+        "status": "OPEN",
+        "assignee": ""
+      },
+      "api_bridge": {
+        "session_id": "APIBRIDGE-XXX",
+        "title": "Android API Stub Behavior Mismatch",
+        "severity": "Severity.MEDIUM",
+        "category": "IssueCategory.API_BRIDGE",
+        "problem_description": "API call to [CLASS.METHOD] does not match Android behavior",
+        "reproduction_steps": [
+          "1. Invoke method through DalvikEngine",
+          "2. Capture API call trace",
+          "3. Compare stub output with real Android device",
+          "4. Identify behavioral difference"
+        ],
+        "initial_evidence": {},
+        "logs_collected": [],
+        "traces_collected": [],
+        "expected_behavior": "[Describe correct Android behavior]",
+        "actual_behavior": "[Describe MiniAndroid stub behavior]",
+        "hypotheses": [],
+        "root_cause_identified": false,
+        "root_cause_description": "",
+        "aosp_reference_checked": false,
+        "aosp_source_file": "frameworks/base/core/java/[full/class/path].java",
+        "aosp_behavior_differs": false,
+        "difference_description": "",
+        "fix_implemented": false,
+        "fix_description": "",
+        "files_changed": [],
+        "lines_changed": 0,
+        "regression_tested": false,
+        "regression_tests_run": [],
+        "regression_results": {},
+        "documented": false,
+        "lessons_learned": [
+          "Stubs should return sensible defaults, not crash",
+          "Log stub invocations for visibility",
+          "Document what stubs DON'T do yet"
+        ],
+        "prevention_measures": [],
+        "created_time": "",
+        "updated_time": "",
+        "status": "OPEN",
+        "assignee": ""
+      }
+    }
+  },
+  "aosp_reference_map": {
+    "total_components": 8,
+    "components": {
+      "opcode_interpreter": {
+        "paths": [
+          "dalvik/vm/Interp.c",
+          "art/runtime/interpreter/interpreter.cc"
+        ],
+        "description": "Main interpreter switch statement"
+      },
+      "opcode_assembly": {
+        "paths": [
+          "dalvik/vm/mterp/",
+          "art/runtime/interpreter/mterp/"
+        ],
+        "description": "Assembly-optimized opcode implementations"
+      },
+      "dex_format": {
+        "paths": [
+          "dalvik/libdex/DexFile.cpp",
+          "art/libdexfile/dex_file.cc"
+        ],
+        "description": "DEX file format structures and parsing"
+      },
+      "dex_structures": {
+        "paths": [
+          "dalvik/libdex/DexProto.h",
+          "art/libdexfile/dex_file_structs.h"
+        ],
+        "description": "DEX structure definitions (header, class_def, etc.)"
+      },
+      "object_model": {
+        "paths": [
+          "dalvik/vm/oo/Object.h",
+          "art/runtime/mirror/object.h"
+        ],
+        "description": "Runtime object representations"
+      },
+      "field_access": {
+        "paths": [
+          "dalvik/vm/oo/Object.h (Field struct)",
+          "art/runtime/art_field.h (ArtField)"
+        ],
+        "description": "Field offset resolution and access"
+      },
+      "class_loader": {
+        "paths": [
+          "dalvik/vm/Reflect.h",
+          "runtime/class_linker.h"
+        ],
+        "description": "Class loading and resolution"
+      },
+      "method_dispatch": {
+        "paths": [
+          "dalvik/vm/oo/Object.h (vtable)",
+          "art/runtime/art_method.h"
+        ],
+        "description": "Virtual method dispatch mechanism"
+      }
+    }
+  },
+  "debug_checklists": {
+    "opcode_issue": {
+      "before_changing_code": [
+        "\u2610 Captured full instruction trace showing failure",
+        "\u2610 Identified exact opcode hex value causing issue",
+        "\u2610 Recorded PC (program counter) at time of failure",
+        "\u2610 Dumped register state before and after opcode",
+        "\u2610 Verified bytecode is valid (not corrupted)",
+        "\u2610 Checked opcode format matches documentation",
+        "\u2610 Searched AOSP Interp.c for reference implementation",
+        "\u2610 Compared operand decoding with AOSP",
+        "\u2610 Documented hypothesis about root cause",
+        "\u2610 Created minimal reproducer DEX if possible"
+      ],
+      "after_fix": [
+        "\u2610 Fix solves original issue without breaking others",
+        "\u2610 All existing tests still pass",
+        "\u2610 Added specific test for this opcode case",
+        "\u2610 Updated opcode coverage tracking",
+        "\u2610 Documented fix in commit message",
+        "\u2610 Updated CHANGELOG if user-visible"
+      ]
+    },
+    "parse_issue": {
+      "before_changing_code": [
+        "\u2610 Captured raw DEX bytes around error location",
+        "\u2610 Identified which DEX section has the problem",
+        "\u2610 Verified DEX magic number is valid",
+        "\u2610 Checked endianness of all multi-byte reads",
+        "\u2610 Compared parsed values with `dexdump` output",
+        "\u2610 Reviewed DEX format specification for structure",
+        "\u2610 Searched AOSP DexFile.cpp for parsing logic",
+        "\u2610 Validated string pool can be read correctly",
+        "\u2610 Documented offset where parsing diverges",
+        "\u2610 Tested with multiple DEX files (not just one)"
+      ],
+      "after_fix": [
+        "\u2610 Parser handles edge cases (empty tables, max values)",
+        "\u2610 No buffer overflows on malformed input",
+        "\u2610 Error messages are informative",
+        "\u2610 Existing DEX files still parse correctly",
+        "\u2610 Added unit test for previously-failing case"
+      ]
+    },
+    "object_model_issue": {
+      "before_changing_code": [
+        "\u2610 Identified exact field/method causing problem",
+        "\u2610 Traced object allocation path",
+        "\u2610 Verified class metadata loaded correctly",
+        "\u2610 Checked field offset calculation",
+        "\u2610 Confirmed object ID is valid (not freed/null)",
+        "\u2610 Compared with AOSP Object.h field layout",
+        "\u2610 Tested static vs instance field distinction",
+        "\u2610 Verified wide field (long/double) handling",
+        "\u2610 Checked inheritance chain completeness",
+        "\u2610 Documented expected vs actual memory layout"
+      ],
+      "after_fix": [
+        "\u2610 Field read/write round-trip works correctly",
+        "\u2610 Multiple objects of same class independent",
+        "\u2610 Static fields shared across instances",
+        "\u2610 No memory leaks from object allocation",
+        "\u2610 Added object model unit tests"
+      ]
+    },
+    "general": {
+      "always": [
+        "\u2610 Issue reproducible (not one-time flake)",
+        "\u2610 Evidence collected BEFORE code changes",
+        "\u2610 Root cause identified (not just symptom fixed)",
+        "\u2610 Fix is minimal (no unnecessary changes)",
+        "\u2610 Changes don't break existing functionality",
+        "\u2610 Tests added for the specific issue",
+        "\u2610 Documentation updated",
+        "\u2610 Commit message explains 'why' not just 'what'"
+      ]
+    }
+  },
+  "implementation_status": {
+    "protocol_documented": true,
+    "templates_created": true,
+    "checklists_available": true,
+    "integration_needed": "Integrate into development workflow",
+    "training_needed": "Team members must follow protocol"
+  },
+  "next_steps": [
+    "Create new DebugSession for each bug using templates",
+    "Follow phases sequentially (no skipping!)",
+    "Store completed sessions in experiments/ directory",
+    "Review sessions in team meetings for pattern detection",
+    "Update templates based on lessons learned"
+  ]
+}

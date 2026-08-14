@@ -1,0 +1,229 @@
+{
+  "phase": "PHASE_7_EXECUTION_GATING",
+  "timestamp": "2026-08-14T10:50:46.084205",
+  "status": "CREATED",
+  "core_principle": {
+    "rule_reference": "RULE 2 + RULE 8",
+    "statement": "NO CLAIM WITHOUT EVIDENCE - Every execution claim MUST have opcode trace",
+    "enforcement": "Claims without evidence are REJECTED automatically"
+  },
+  "evidence_levels": {
+    "created": {
+      "description": "Requirements for created level",
+      "min_score": 20,
+      "can_claim": "Code exists"
+    },
+    "validated": {
+      "description": "Requirements for validated level",
+      "min_score": 60,
+      "can_claim": "Tested with evidence"
+    },
+    "production_ready": {
+      "description": "Requirements for production_ready level",
+      "min_score": 90,
+      "can_claim": "Real workload validated"
+    }
+  },
+  "execution_sources": {
+    "real_dalvik_interpreter": {
+      "description": "Actual DEX bytecode executed by DalvikEngine interpreter",
+      "validity": "FULLY VALID"
+    },
+    "host_shortcut": {
+      "description": "Native code bypassing bytecode interpretation",
+      "validity": "LIMITED VALIDITY"
+    },
+    "static_analysis": {
+      "description": "DEX parsed but no execution occurred",
+      "validity": "NOT EXECUTION EVIDENCE"
+    },
+    "simulated": {
+      "description": "Results fabricated or mocked",
+      "validity": "NOT EXECUTION EVIDENCE"
+    },
+    "unknown": {
+      "description": "Execution method not documented",
+      "validity": "NOT EXECUTION EVIDENCE"
+    }
+  },
+  "validation_gates": {
+    "opcode_implementation_gate": {
+      "gate_name": "Opcode Implementation Gate",
+      "gate_description": "All opcode implementation claims must have trace evidence",
+      "passed": false,
+      "claims_validated": 2,
+      "claims_rejected": 1,
+      "validation_time": "2026-08-14T10:50:46.084200",
+      "rejected_claims": [
+        {
+          "id": "APK-HW-001",
+          "errors": [
+            "Register dump required for apk_launched at validated level"
+          ]
+        }
+      ]
+    },
+    "method_execution_gate": {
+      "gate_name": "Method Execution Gate",
+      "gate_description": "All method execution claims must show actual bytecode execution",
+      "passed": false,
+      "claims_validated": 2,
+      "claims_rejected": 1,
+      "validation_time": "2026-08-14T10:50:46.084202",
+      "rejected_claims": [
+        {
+          "id": "APK-HW-001",
+          "errors": [
+            "Register dump required for apk_launched at validated level"
+          ]
+        }
+      ]
+    },
+    "apk_launch_gate": {
+      "gate_name": "APK Launch Gate",
+      "gate_description": "All APK launch claims must have complete lifecycle traces",
+      "passed": false,
+      "claims_validated": 2,
+      "claims_rejected": 1,
+      "validation_time": "2026-08-14T10:50:46.084203",
+      "rejected_claims": [
+        {
+          "id": "APK-HW-001",
+          "errors": [
+            "Register dump required for apk_launched at validated level"
+          ]
+        }
+      ]
+    },
+    "api_compatibility_gate": {
+      "gate_name": "API Compatibility Gate",
+      "gate_description": "All API call claims must have API trace entries",
+      "passed": true,
+      "claims_validated": 0,
+      "claims_rejected": 0,
+      "validation_time": "2026-08-14T10:50:46.084204",
+      "rejected_claims": []
+    },
+    "production_readiness_gate": {
+      "gate_name": "Production Readiness Gate",
+      "gate_description": "Production-ready claims require comprehensive evidence",
+      "passed": true,
+      "claims_validated": 0,
+      "claims_rejected": 0,
+      "validation_time": "2026-08-14T10:50:46.084205",
+      "rejected_claims": []
+    }
+  },
+  "example_claims_evaluated": 3,
+  "example_claim_details": [
+    {
+      "claim_id": "OPCODE-CONST4-001",
+      "claim_type": "ClaimType.OPCODE_IMPLEMENTED",
+      "description": "const/4 opcode correctly loads small literals into registers",
+      "claimed_by": "dalvik_engine.cpp",
+      "timestamp": "2026-08-14T10:00:00Z",
+      "evidence_level": "EvidenceLevel.VALIDATED",
+      "execution_source": "ExecutionSource.REAL_DALVIK_INTERPRETER",
+      "opcode_trace_file": "/home/z/my-project/miniandroid/run/exp031_5/traces/com.test.valid/opcode_trace.json",
+      "register_dump_file": "/home/z/my-project/miniandroid/run/exp031_5/traces/com.test.valid/register_trace.json",
+      "heap_dump_file": null,
+      "api_trace_file": null,
+      "screenshot_file": null,
+      "additional_evidence": [
+        "Test case: Test1_Constant.dex executes const/4 successfully",
+        "Opcode hex: 0x12, format: 22s"
+      ],
+      "validated": true,
+      "validation_errors": [],
+      "validation_warnings": [],
+      "validator": "",
+      "validation_time": "2026-08-14T10:50:46.084009",
+      "evidence_quality_score": 80
+    },
+    {
+      "claim_id": "METHOD-ONCREATE-001",
+      "claim_type": "ClaimType.METHOD_EXECUTED",
+      "description": "Activity.onCreate() method executes completely",
+      "claimed_by": "manual_test",
+      "timestamp": "2026-08-14T11:00:00Z",
+      "evidence_level": "EvidenceLevel.CREATED",
+      "execution_source": "ExecutionSource.REAL_DALVIK_INTERPRETER",
+      "opcode_trace_file": null,
+      "register_dump_file": null,
+      "heap_dump_file": null,
+      "api_trace_file": null,
+      "screenshot_file": null,
+      "additional_evidence": [],
+      "validated": true,
+      "validation_errors": [],
+      "validation_warnings": [],
+      "validator": "",
+      "validation_time": "2026-08-14T10:50:46.084071",
+      "evidence_quality_score": 30
+    },
+    {
+      "claim_id": "APK-HW-001",
+      "claim_type": "ClaimType.APK_LAUNCHED",
+      "description": "HelloWorld.apk launches and shows Activity",
+      "claimed_by": "exp032_runner.py",
+      "timestamp": "2026-08-14T12:00:00Z",
+      "evidence_level": "EvidenceLevel.VALIDATED",
+      "execution_source": "ExecutionSource.REAL_DALVIK_INTERPRETER",
+      "opcode_trace_file": "/home/z/my-project/miniandroid/run/exp032_phase3/execution_proofs/HelloWorld_original/evidence_summary.json",
+      "register_dump_file": null,
+      "heap_dump_file": null,
+      "api_trace_file": null,
+      "screenshot_file": null,
+      "additional_evidence": [
+        "APK SHA256: abc123...",
+        "Entry point: com.example.HelloWorld.onCreate()"
+      ],
+      "validated": false,
+      "validation_errors": [
+        "Register dump required for apk_launched at validated level"
+      ],
+      "validation_warnings": [],
+      "validator": "",
+      "validation_time": "2026-08-14T10:50:46.084197",
+      "evidence_quality_score": 65
+    }
+  ],
+  "quality_thresholds": {
+    "minimum_acceptable": 40,
+    "good": 60,
+    "excellent": 80,
+    "perfect": 100
+  },
+  "implementation_checklist": [
+    "\u2610 Before claiming 'opcode implemented': Run test, collect trace",
+    "\u2610 Before claiming 'method executed': Capture register state",
+    "\u2610 Before claiming 'APK launched': Record full lifecycle",
+    "\u2610 Before claiming 'API works': Log API trace entry",
+    "\u2610 Always specify execution source (Rule 8)",
+    "\u2610 Score must exceed threshold for claim level",
+    "\u2610 Store evidence files in run/ directory",
+    "\u2610 Include evidence paths in claim record"
+  ],
+  "common_violations": [
+    {
+      "violation": "Claiming 'works' without trace file",
+      "severity": "CRITICAL",
+      "fix": "Run execution with tracing enabled, save output"
+    },
+    {
+      "violation": "Using HOST_SHORTCUT but claiming REAL execution",
+      "severity": "HIGH",
+      "fix": "Clearly label execution source; only REAL counts for opcode claims"
+    },
+    {
+      "violation": "Evidence file doesn't exist or is empty",
+      "severity": "MEDIUM",
+      "fix": "Verify artifact paths before submitting claim"
+    },
+    {
+      "violation": "Missing timestamp on claim",
+      "severity": "LOW",
+      "fix": "Always include ISO timestamp when creating claim"
+    }
+  ]
+}
