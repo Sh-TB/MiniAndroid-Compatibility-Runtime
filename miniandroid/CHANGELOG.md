@@ -2,7 +2,127 @@
 
 All notable changes to the MiniAndroid Runtime project.
 
-## [EXP-035] - 2026-08-14 — Real Dalvik Opcode Integration & Execution Proof
+## [EXP-036] - 2026-08-14 — Execution Pipeline Stabilization
+
+### 🛡️ Infrastructure Phase (5 Major Components Created)
+
+#### Component 1: Execution Observatory ✅ COMPLETE
+- **Created `src/dex/execution_observatory.h/cpp`** (~35KB total)
+- **Complete trace system** for Dalvik execution:
+  - Method enter/exit tracking with full register state snapshots
+  - Instruction-level tracing with before/after comparison
+  - Exception event recording (thrown/caught)
+  - API call logging with resolution status
+  - Timeout event capture
+- **Data structures**:
+  - `InstructionRecord` - PC, opcode, operands, register states
+  - `MethodExecutionRecord` - Full method lifecycle with instructions list
+  - `ApiCallRecord` - API call with status and return value
+  - `TimeoutRecord` - Timeout diagnostic information
+  - `ExceptionRecord` - Exception with stack trace
+- **Output formats**: JSON report + human-readable summary
+- **Integration point**: Add to DalvikExecutionEngine as member
+
+#### Component 2: Execution Guard ✅ COMPLETE
+- **Created `src/dex/execution_guard.h/cpp`** (~22KB total)
+- **Infinite loop protection** system:
+  - Per-method instruction limit: 100,000
+  - Total session instruction limit: 1,000,000
+  - Call depth limit: 256 (prevents stack overflow)
+  - Total method count limit: 10,000
+- **Configurable limits**: Strict/Lenient presets or custom
+- **Diagnostic output**: Detailed violation reports with suspected reasons
+- **Exception support**: Can throw or return error on limit hit
+- **Observatory integration**: Auto-records timeout events
+
+#### Component 3: Exception System ✅ COMPLETE
+- **Created `src/dex/exception_system.h/cpp`** (~25KB total)
+- **Dalvik exception types** (15 standard exceptions):
+  - NullPointerException, ArrayIndexOutOfBoundsException
+  - ArithmeticException, ClassCastException
+  - NegativeArraySizeException, IllegalArgumentException
+  - And more...
+- **Try/catch table support**:
+  - `TryCatchEntry` - try range + handler PC + exception type
+  - `TryCatchTable` - collection of entries with lookup
+  - `find_handler(pc, exception_type)` → handler PC or UINT32_MAX
+- **ExceptionManager state machine**:
+  - NO_EXCEPTION → THROWN → BEING_HANDLED → HANDLED
+  - UNHANDLED state for propagation to caller
+- **Stack trace generation**: Automatic frame recording
+- **Factory functions**: Quick exception creation helpers
+
+#### Component 4: API Dispatcher ✅ COMPLETE
+- **Created `src/dex/api_dispatcher.h/cpp`** (~43KB total)
+- **Scalable plugin architecture** for Android API calls:
+  - Resolver interface with priority ordering
+  - Default stub fallback for missing APIs
+  - Coverage statistics tracking
+- **Built-in resolvers (8)**:
+
+| Resolver | Priority | APIs | Evidence |
+|----------|----------|------|----------|
+| LogResolver | 95 | v/d/i/w/e/println | ✅ Console output |
+| ObjectResolver | 100 | getClass/hashCode/equals/toString | Core |
+| StringResolver | 100 | length/charAt/equals/toString | Core |
+| ClassResolver | 100 | getName/getSimpleName/forName | Core |
+| ActivityResolver | 90 | onCreate/onStart/onResume/setContentView | ✅ LIFECYCLE |
+| BundleResolver | 85 | getInt/getString/putInt/putString | Data |
+| ViewResolver | 80 | <init>/setId/getId/setOnClickListener | UI |
+| TextViewResolver | 70 | setText/getText/<init> | ✅ UI EVIDENCE |
+
+- **API result types**: OK / FAIL / STUB / MISSING_CRITICAL
+- **Coverage report generator**: Statistics + missing APIs list
+
+#### Component 5: Evidence Gate Validator ✅ COMPLETE
+- **Created `tools/exp036_execution_validator.py`** (~20KB)
+- **Mandatory validation checks** (9 required):
+  1. APK file exists
+  2. DEX extracted/parsed
+  3. Bytecode available
+  4. Interpreter executed
+  5. **REAL_DALVIK_INTERPRETER source tag present**
+  6. No HOST_SHORTCUT detected
+  7. No timeout occurred
+  8. Evidence files created
+  9. Trace non-empty (instructions > 0)
+- **Verdict logic**: ALL must pass → ACCEPTED, any fail → REJECTED
+- **Output**: JSON report + console summary + exit code
+
+#### Baseline Documentation ✅ COMPLETE
+- **Created `docs/exp036/EXP036_BASELINE.md`** (~12KB)
+- Current state audit:
+  - Git state: clean, commit 6c62faa, branch main
+  - 48 source files, 32 opcodes implemented
+  - 11 test APKs available
+  - Known blockers documented
+  - Success criteria defined
+
+#### Validation Results (Evidence Gate)
+```
+APKs Tested: 6
+Passed: 0
+Failed: 6
+Verdict: REJECTED (CORRECT - infrastructure not yet integrated)
+```
+
+### 📝 Modified
+
+#### Documentation
+- **README.md** — Added EXP-036 to experiments history, new latest section
+- **CHANGELOG.md** — This entry
+
+### 📋 Status
+
+**Infrastructure: ✅ COMPLETE (5 components)**
+**Integration: ⏳ PENDING (next phase)**
+**Evidence Gate: ⏸️ REJECTED (expected until integration)**
+
+**Next Phase**: Wire all components into dalvik_engine.cpp execution loop
+
+---
+
+## [EXP-035.1] - 2026-08-14 — External Research & Solution Mining
 
 ### 🚀 Integration Phase (8 Phases Completed)
 
