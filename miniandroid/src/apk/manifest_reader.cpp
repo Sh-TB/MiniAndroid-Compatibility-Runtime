@@ -95,6 +95,33 @@ ManifestInfo ManifestReader::parse(const std::vector<uint8_t>& data) {
         
         const AxmlChunkHeader* chunk = reinterpret_cast<const AxmlChunkHeader*>(ptr + offset);
         
+        // EXP-038 DEBUG: log every chunk's type and size (not just elements)
+        {
+            std::string type_name = "type=0x" + int_to_hex(chunk->type);
+            switch (static_cast<AxmlToken>(chunk->type)) {
+                case AxmlToken::RES_XML_TYPE: type_name = "RES_XML_TYPE"; break;
+                case AxmlToken::STRING_POOL: type_name = "STRING_POOL"; break;
+                case AxmlToken::RESOURCE_MAP: type_name = "RESOURCE_MAP"; break;
+                case AxmlToken::START_NAMESPACE: type_name = "START_NS"; break;
+                case AxmlToken::END_NAMESPACE: type_name = "END_NS"; break;
+                case AxmlToken::START_ELEMENT: type_name = "START_ELEM"; break;
+                case AxmlToken::END_ELEMENT: type_name = "END_ELEM"; break;
+                case AxmlToken::CDATA: type_name = "CDATA"; break;
+                default: break;
+            }
+            // Only log around the LaunchActivity area (offset 43000-49000)
+            if (offset >= 43000 && offset <= 49000) {
+                std::string elem_name;
+                if (static_cast<AxmlToken>(chunk->type) == AxmlToken::START_ELEMENT) {
+                    const AxmlStartElement* se = reinterpret_cast<const AxmlStartElement*>(ptr + offset);
+                    elem_name = " elem=" + get_string(se->name_index);
+                }
+                log("CHUNK @ " + std::to_string(offset) + ": " + type_name +
+                    " hs=" + std::to_string(chunk->header_size) +
+                    " size=" + std::to_string(chunk->size) + elem_name);
+            }
+        }
+        
         if (chunk->size < sizeof(AxmlChunkHeader) || offset + chunk->size > size) {
             log("Invalid chunk size at offset " + std::to_string(offset) +
                 " (type=0x" + int_to_hex(chunk->type) + " size=" + std::to_string(chunk->size) + ")");
@@ -332,6 +359,16 @@ bool ManifestReader::parse_element(const uint8_t* data, size_t size, size_t& off
             std::string ns = resolve_namespace(elem->namespace_index);
             std::string name = get_string(elem->name_index);
             
+            // EXP-038 DEBUG: log EVERY START_ELEMENT's offset and name
+            if (offset >= 48000 && offset <= 49000) {
+                log("  parse_element START_ELEM @ " + std::to_string(offset) +
+                    ": name_idx=" + std::to_string(elem->name_index) +
+                    " name='" + name + "'" +
+                    " header_size=" + std::to_string(chunk->header_size) +
+                    " attr_start=" + std::to_string(elem->attribute_start) +
+                    " attr_count=" + std::to_string(elem->attribute_count));
+            }
+            
             // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
             // The previous code computed the attribute offset as
             //   offset + sizeof(AxmlStartElement) + attr_count * sizeof(uint32_t)
@@ -360,6 +397,25 @@ bool ManifestReader::parse_element(const uint8_t* data, size_t size, size_t& off
             //   → total chunk size = 36 + 140 = 176 ✓ matches chunk.size
             size_t attr_array_offset = offset + chunk->header_size + elem->attribute_start;
             size_t attr_array_end = offset + chunk->size;
+            
+            // EXP-038 DEBUG: print the offset calculation for category elements
+            if (name == "category") {
+                log("  CATEGORY parse_element: offset=" + std::to_string(offset) +
+                    " header_size=" + std::to_string(chunk->header_size) +
+                    " attr_start=" + std::to_string(elem->attribute_start) +
+                    " attr_array_offset=" + std::to_string(attr_array_offset) +
+                    " attr_count=" + std::to_string(elem->attribute_count));
+                // Also print raw bytes at attr_array_offset
+                if (attr_array_offset + 20 <= size) {
+                    std::string hex;
+                    char buf[4];
+                    for (int b = 0; b < 20; b++) {
+                        snprintf(buf, sizeof(buf), "%02x", data[attr_array_offset + b]);
+                        hex += buf;
+                    }
+                    log("  CATEGORY raw bytes at " + std::to_string(attr_array_offset) + ": " + hex);
+                }
+            }
             
             std::vector<AxmlAttribute> attrs;
             attrs.reserve(elem->attribute_count);
@@ -491,6 +547,14 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
                                            const std::vector<AxmlAttribute>& attrs) {
     std::string full_path = std::string(depth_ * 2, ' ') + (ns.empty() ? "" : ns + ":") + name;
     log("Element: " + full_path);
+
+    // EXP-038 DEBUG: Always log category processing state
+    if (name == "category") {
+        std::string cat_val = get_attribute_value(attrs, "name");
+        log("  CATEGORY process_start_element: in_activity_=" + std::string(in_activity_ ? "true" : "false") +
+            " attrs.size()=" + std::to_string(attrs.size()) +
+            " value='" + cat_val + "'");
+    }
     
     // Handle manifest element
     if (name == "manifest") {
@@ -515,8 +579,15 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
     }
     
     // Handle activity element
-    if (name == "activity") {
+    // EXP-038 (BLOCKER-022 FIX): Also track activity-alias elements.
+    // Telegram (and many real apps) use <activity-alias> to declare launcher
+    // intent-filters. Without tracking activity-alias, the LAUNCHER category
+    // inside activity-alias elements is never detected, and the main activity
+    // is never resolved.
+    if (name == "activity" || name == "activity-alias") {
         current_activity_name_ = get_attribute_value(attrs, "name");
+        // EXP-038: For activity-alias, also capture targetActivity (the real class)
+        current_activity_target_ = get_attribute_value(attrs, "targetActivity");
         activity_has_main_action_ = false;
         activity_has_launcher_category_ = false;
         in_activity_ = true;
@@ -525,7 +596,7 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         act_info.name = current_activity_name_;
         result_.activities.push_back(act_info);
         
-        log("Activity: " + current_activity_name_);
+        log("Activity: " + current_activity_name_ + (name == "activity-alias" ? " (alias, target=" + current_activity_target_ + ")" : ""));
     }
     
     // Handle intent-filter elements inside activity
@@ -540,6 +611,26 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         
         if (name == "category") {
             std::string category_name = get_attribute_value(attrs, "name");
+            // EXP-038 DEBUG: log raw attribute indices to find off-by-1
+            for (size_t ai = 0; ai < attrs.size(); ai++) {
+                // Also log the raw bytes at the attribute position
+                const uint8_t* attr_raw = reinterpret_cast<const uint8_t*>(&attrs[ai]);
+                std::string hex_bytes;
+                char buf[4];
+                for (size_t b = 0; b < sizeof(AxmlAttribute); b++) {
+                    snprintf(buf, sizeof(buf), "%02x", attr_raw[b]);
+                    hex_bytes += buf;
+                }
+                log("  attr[" + std::to_string(ai) + "]: name_idx=" + std::to_string(attrs[ai].name_index) +
+                    " rawValue_idx=" + std::to_string(attrs[ai].value_string_index) +
+                    " type=" + std::to_string(attrs[ai].value_data_type) +
+                    " data=" + std::to_string(attrs[ai].value_data) +
+                    " name='" + get_string(attrs[ai].name_index) + "'" +
+                    " rawValue='" + (attrs[ai].value_string_index < strings_.size() ? get_string(attrs[ai].value_string_index) : "<bad>") + "'" +
+                    " hex=" + hex_bytes);
+            }
+            log("  Category name (raw): '" + category_name + "' (len=" +
+                std::to_string(category_name.length()) + ")");
             if (category_name == "android.intent.category.LAUNCHER" || category_name == "LAUNCHER") {
                 activity_has_launcher_category_ = true;
                 log("Found LAUNCHER category");
@@ -566,32 +657,53 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
 }
 
 void ManifestReader::process_end_element(const std::string& ns, const std::string& name) {
-    // When closing an activity, check if it's the main launcher
-    if (name == "activity" && in_activity_) {
+    // EXP-038 DEBUG: log end element names for activity
+    if (name == "activity" || name == "intent-filter") {
+        log("  END_ELEMENT @ ??? : name='" + name + "' in_activity_=" + (in_activity_ ? "true" : "false") +
+            " has_main=" + (activity_has_main_action_ ? "true" : "false") +
+            " has_launcher=" + (activity_has_launcher_category_ ? "true" : "false") +
+            " current_activity='" + current_activity_name_ + "'");
+    }
+    // EXP-038 (BLOCKER-022 FIX): Also handle activity-alias END_ELEMENT
+    if ((name == "activity" || name == "activity-alias") && in_activity_) {
         if (activity_has_main_action_ && activity_has_launcher_category_) {
-            result_.main_activity = current_activity_name_;
-            
-            // Convert to full class name if needed
-            if (!current_activity_name_.empty()) {
-                if (current_activity_name_[0] == '.') {
-                    result_.main_activity_full = result_.package_name + current_activity_name_;
-                } else if (current_activity_name_.find('.') == std::string::npos) {
-                    result_.main_activity_full = result_.package_name + "." + current_activity_name_;
-                } else {
-                    result_.main_activity_full = current_activity_name_;
+            // EXP-038: Only set main_activity on FIRST match (don't overwrite).
+            // Telegram has 6+ activity-alias elements with MAIN+LAUNCHER
+            // (DefaultIcon, NoxIcon, TurboIcon, PremiumIcon, AquaIcon, VintageIcon).
+            // The first one is typically the default launcher.
+            if (result_.main_activity.empty()) {
+                // EXP-038: For activity-alias, use targetActivity as the real
+                // main activity (the alias itself doesn't exist as a class in DEX).
+                std::string effective_activity = current_activity_name_;
+                if (!current_activity_target_.empty()) {
+                    effective_activity = current_activity_target_;
+                    log("  → Using targetActivity for alias: " + effective_activity);
                 }
-            }
-            
-            // Mark as main activity in activities list
-            for (auto& act : result_.activities) {
-                if (act.name == current_activity_name_) {
-                    act.is_main_activity = true;
-                    act.is_launcher = true;
-                    break;
+                
+                result_.main_activity = effective_activity;
+                
+                // Convert to full class name if needed
+                if (!effective_activity.empty()) {
+                    if (effective_activity[0] == '.') {
+                        result_.main_activity_full = result_.package_name + effective_activity;
+                    } else if (effective_activity.find('.') == std::string::npos) {
+                        result_.main_activity_full = result_.package_name + "." + effective_activity;
+                    } else {
+                        result_.main_activity_full = effective_activity;
+                    }
                 }
+                
+                // Mark as main activity in activities list
+                for (auto& act : result_.activities) {
+                    if (act.name == current_activity_name_) {
+                        act.is_main_activity = true;
+                        act.is_launcher = true;
+                        break;
+                    }
+                }
+                
+                log("Main Activity: " + result_.main_activity + " (" + result_.main_activity_full + ")");
             }
-            
-            log("Main Activity: " + result_.main_activity + " (" + result_.main_activity_full + ")");
         }
         
         in_activity_ = false;
