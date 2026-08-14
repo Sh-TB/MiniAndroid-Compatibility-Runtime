@@ -1,0 +1,46 @@
+{
+  "apk_name": "pro_rudloff_lineageos_updater_shortcut_7584040eb7d1fad7d3612ad477a111fa0c1b0456c48efa0f5682b2f8e7a27676.apk",
+  "changes": [
+    {
+      "at_pc": "0x0003",
+      "changes": [
+        {
+          "after": {
+            "class": "Landroid/content/Intent;",
+            "object_id": 1,
+            "type": "object"
+          },
+          "before": {
+            "type": "uninit",
+            "value": null
+          },
+          "register": "v2"
+        }
+      ],
+      "opcode": "new-instance",
+      "sequence": 1
+    },
+    {
+      "at_pc": "0x0005",
+      "changes": [
+        {
+          "after": {
+            "ref_id": 3,
+            "type": "string",
+            "value": "android.settings.SYSTEM_UPDATE_SETTINGS"
+          },
+          "before": {
+            "type": "uninit",
+            "value": null
+          },
+          "register": "v0"
+        }
+      ],
+      "opcode": "const-string",
+      "sequence": 2
+    }
+  ],
+  "final_register_state": {},
+  "timestamp": "2026-08-14T17:21:32Z",
+  "total_register_changes": 2
+}
