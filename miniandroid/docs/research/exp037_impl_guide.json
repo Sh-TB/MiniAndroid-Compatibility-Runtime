@@ -1,0 +1,65 @@
+[
+  {
+    "url": "https://developer.android.com/training/data-storage/shared-preferences",
+    "name": "Save simple data with SharedPreferences",
+    "snippet": "Mar 5, 2026 — Learn how to use the SharedPreferences API to store and retrieve small collections of key-value pairs for your Android app.",
+    "host_name": "developer.android.com",
+    "rank": 0,
+    "date": "Mar 5, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/11567134/sharedpreferences-application-context-vs-activity-context",
+    "name": "SharedPreferences application context vs activity context",
+    "snippet": "It is worth reviewing the sources that show that a Context instance (be it an Activity or an Application instance) share the same static map ... Read more",
+    "host_name": "stackoverflow.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.topcoder.com/thrive/articles/shared-preferences-in-android",
+    "name": "Shared Preferences in Android",
+    "snippet": "Jun 2, 2022 — What are SharedPreferences? Android provides many ways of storing app data such as an SQLiteDatabase, saving a data text file, etc. Read more",
+    "host_name": "www.topcoder.com",
+    "rank": 2,
+    "date": "Jun 2, 2022",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@manuchekhrdev/android-shared-preferences-vs-sqlite-database-examples-of-using-in-kotlin-e18512100043",
+    "name": "Android Shared Preferences vs SQLite Database.",
+    "snippet": "Feb 23, 2023 — Data Retrieval: Retrieving data from Shared Preferences is faster and simpler compared to SQLite, as Shared Preferences use in-memory caching. Read more",
+    "host_name": "medium.com",
+    "rank": 3,
+    "date": "Feb 23, 2023",
+    "favicon": ""
+  },
+  {
+    "url": "https://forums.androidcentral.com/threads/tutorial-learn-to-save-data-with-sqlite-on-android.750200",
+    "name": "[Tutorial] Learn to save data with SQLite on Android",
+    "snippet": "Nov 30, 2016 — When you want to work with a SQLite database in Android , you must extend SQLiteOpenHelper class. In the constructor of your subclass you call ... Read more",
+    "host_name": "forums.androidcentral.com",
+    "rank": 4,
+    "date": "Nov 30, 2016",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.geeksforgeeks.org/android/shared-preferences-in-android-with-examples",
+    "name": "Shared Preferences in Android with Example",
+    "snippet": "Jul 12, 2025 — Shared Preferences is the way in which one can store and retrieve small amounts of primitive data as key/value pairs to a file on the device ... Read more",
+    "host_name": "www.geeksforgeeks.org",
+    "rank": 5,
+    "date": "Jul 12, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://blog.devgenius.io/baking-shared-preferences-unveiling-internal-implementation-3b9fb823c809",
+    "name": "Baking Shared Preferences: Unveiling Internal Implementation",
+    "snippet": "Sep 28, 2024 — This article is your ultimate guide to uncovering the inner workings of Shared Preferences in Android . From the basics to advanced ... Read more",
+    "host_name": "blog.devgenius.io",
+    "rank": 6,
+    "date": "Sep 28, 2024",
+    "favicon": ""
+  }
+]
