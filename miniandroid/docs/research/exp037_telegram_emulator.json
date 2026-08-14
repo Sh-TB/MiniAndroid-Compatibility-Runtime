@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://www.reddit.com/r/degoogle/comments/koap1t/telegram_from_play_store_without_google_play",
+    "name": "Telegram from Play store without Google Play Services??",
+    "snippet": "Hi there, I had the same belief that most apps won't work without Play Services , but luckily that was not the case. I run the DeCloudUs project ... Read more",
+    "host_name": "www.reddit.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://forums.crackberry.com/blackberry-10-os-f269/telegram-wont-run-unless-you-update-google-play-services-1155015",
+    "name": "\"Telegram won't run unless you update Google Play services\"",
+    "snippet": "Aug 29, 2018 — Telegram X works perfectly, and doesn't require Google Play Services . There's an official Telegram Android client mod named Telegram-FOSS that ...",
+    "host_name": "forums.crackberry.com",
+    "rank": 1,
+    "date": "Aug 29, 2018",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/32856919/androidstudio-emulator-wont-run-unless-you-update-google-play-services",
+    "name": "java - AndroidStudio emulator \"won't run unless you update",
+    "snippet": "Navigate to settings--> apps in your emulator and then find Google Play Services , check the version number and use it in you build.gradle. Read more",
+    "host_name": "stackoverflow.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@dai_shi/installing-google-play-services-on-an-android-studio-emulator-fffceb2c28a1",
+    "name": "Installing Google Play Services on an Android Studio",
+    "snippet": "This short article shows the steps how to install Google Play Services on Android Studio emulators . We assume that Android Studio is already ... Read more",
+    "host_name": "medium.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://developers.google.com/android/guides/setup",
+    "name": "Set up Google Play services",
+    "snippet": "If your app runs on devices without Google Play services , you should always check if Google Play services is installed before you attempt to use Google APIs",
+    "host_name": "developers.google.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://discuss.grapheneos.org/d/36708-telegram-android-login-issue-without-play-services",
+    "name": "Telegram Android login issue without Play Services",
+    "snippet": "Jun 23, 2026 — Telegram Android may rely on Google Play Services , Play Integrity, or related device-trust signals during login. Maybe not as a universal hard ...",
+    "host_name": "discuss.grapheneos.org",
+    "rank": 5,
+    "date": "Jun 23, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://xdaforums.com/t/alternative-solution-app-wont-run-without-google-play-services-cn-rom.4375609",
+    "name": "[Alternative Solution] App won't run without google play",
+    "snippet": "Dec 15, 2021 — updating “ Google Services Framework”, does solve this issue. 1) Download Google Services Framework 11-6684105 2) Install & enable Autostart & ...",
+    "host_name": "xdaforums.com",
+    "rank": 6,
+    "date": "Dec 15, 2021",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.facebook.com/groups/localquestions/posts/9932418580198943",
+    "name": "How to get Google Play on a non-Android device?",
+    "snippet": "Hi! The easiest way is to install a program called Bluestacks . It's essentially an emulator for Android. Gives you play store to load games etc. Read more",
+    "host_name": "www.facebook.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

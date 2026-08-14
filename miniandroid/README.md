@@ -12,21 +12,46 @@
 
 MiniAndroid is a research-grade Android APK execution runtime built in C++17. It parses real APK files, extracts DEX bytecode, and executes Dalvik instructions through a register-based virtual machine.
 
-### Current Status (Post EXP-035)
+### Current Status (Post EXP-037 Phase 1 - Research)
 
 | Component | Status | Details |
 |-----------|--------|---------|
-| APK Parser | ✅ Complete | Parses real APKs from F-Droid |
+| APK Parser | ✅ Complete | Parses real APKs including Telegram |
 | DEX Parser | ✅ Complete | Full DEX format support |
-| **Dalvik Engine** | ✅ **ENHANCED** | 2,400+ lines, **44 opcodes** (was 28) |
+| **Dalvik Engine** | ✅ **ENHANCED** | 2,400+ lines, **32 opcodes** (14.8% coverage) |
 | Register Machine | ✅ Implemented | v0-vN + p0-pN registers |
 | Object Heap | ✅ **ENHANCED** | Field access helpers added |
 | Call Stack | ✅ Implemented | StackFrame with full context |
-| API Bridge | ✅ Implemented | invoke → Android stub mapping |
-| **Field System** | ✅ **NEW** | iget/iput/sget/sput (8 ops) |
-| **VTable Dispatch** | ✅ **NEW** | Polymorphic invoke-virtual |
-| **Evidence Pipeline** | ✅ **NEW** | ExecutionSource=REAL_DALVIK_INTERPRETER |
+| API Bridge | ✅ **ENHANCED** | Dispatcher architecture with priority levels |
+| **Field System** | ✅ **COMPLETE** | iget/iput/sget/sput (8 ops) |
+| **VTable Dispatch** | ✅ **COMPLETE** | Polymorphic invoke-virtual |
+| **Evidence Pipeline** | ✅ **COMPLETE** | Execution Observatory with source tracking |
+| **Exception System** | ⚠️ Foundation | Data structures defined, not integrated |
+| **Execution Guard** | ✅ **COMPLETE** | Timeout protection (100K instruction limit) |
+| **Telegram Research** | ✅ **NEW** | Comprehensive API usage & native dependency analysis |
+| **Architecture Decision** | ✅ **NEW** | Hybrid approach selected (Option A+B) |
+| **Implementation Roadmap** | ✅ **NEW** | 16-week phased plan created |
 | Validation | ✅ 45+ APKs | Real APK field/VTable validation |
+
+### EXP-037: Telegram Compatibility Target
+
+**Mission**: Run real Telegram APK with persistent session data.
+
+**Research Completed** (Phase 1):
+- [x] Telegram API usage analysis (`docs/EXP037_TELEGRAM_API_USAGE.md`)
+- [x] Native dependency investigation (`docs/EXP037_NATIVE_DEPENDENCY_ANALYSIS.md`)
+- [x] External solutions study (`docs/EXP037_EXTERNAL_RESEARCH.md`)
+- [x] Architecture decision report (`docs/EXP037_ARCHITECTURE_DECISION.md`)
+- [x] Implementation roadmap (`docs/EXP037_IMPLEMENTATION_ROADMAP.md`)
+
+**Key Findings**:
+1. Telegram requires native code (libtgnet.so) — cannot run without JNI
+2. First barrier: `System.loadLibrary("tgnet")` in ApplicationLoader.onCreate()
+3. Need: SharedPreferences, SQLite, File Sandbox, Context, Activity Lifecycle
+4. Estimated effort: 6-12 months for full compatibility
+5. Recommended path: Hybrid approach (build infrastructure first)
+
+**Next**: Phase A implementation (File Sandbox → SharedPreferences → Context)
 
 ---
 
