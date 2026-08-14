@@ -60,8 +60,8 @@
     "total_researched": 4
   },
   "evidence_statistics": {
-    "api_calls_recorded": 18,
-    "api_database_entries": 18,
+    "api_calls_recorded": 17,
+    "api_database_entries": 17,
     "failures": 2,
     "method_dispatches": 1,
     "state_transitions": 12
@@ -165,7 +165,7 @@
   },
   "summary": {
     "apk_processed": "download/exp038_telegram/Telegram.apk",
-    "duration_ms": 2678.140574,
+    "duration_ms": 2626.499018,
     "final_state": "COMPLETED",
     "has_errors": false,
     "is_complete": true,

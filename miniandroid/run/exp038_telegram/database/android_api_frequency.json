@@ -16,16 +16,6 @@
       "class": "<unknown>",
       "descriptor": "()V",
       "first_seen_exp": 7,
-      "implementation_status": "IMPLEMENTED",
-      "method": "isActionViewExpanded",
-      "priority": 3
-    },
-    {
-      "call_count": 1,
-      "category": "ACTIVITY",
-      "class": "<unknown>",
-      "descriptor": "()V",
-      "first_seen_exp": 7,
       "implementation_status": "STUBBED",
       "method": "onCreate",
       "priority": 3
@@ -126,7 +116,7 @@
       "class": "Landroidx/appcompat/view/menu/ActionMenuItem;",
       "descriptor": "()V",
       "first_seen_exp": 7,
-      "implementation_status": "STUBBED",
+      "implementation_status": "IMPLEMENTED",
       "method": "getOrder",
       "priority": 3
     },
@@ -184,5 +174,5 @@
   "based_on_apk": "download/exp038_telegram/Telegram.apk",
   "generated": "2026-08-11",
   "source": "EXP-007->EXP-012 MEGA BATCH execution",
-  "total_unique_apis": 18
+  "total_unique_apis": 17
 }
