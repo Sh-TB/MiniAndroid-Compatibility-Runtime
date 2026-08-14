@@ -6,6 +6,7 @@
 #include "manifest_reader.h"
 
 #include <cstring>
+#include <cstdio>      // snprintf (used by parse_header)
 #include <iostream>
 #include <algorithm>
 
@@ -76,8 +77,16 @@ ManifestInfo ManifestReader::parse(const std::vector<uint8_t>& data) {
         return result_;
     }
     
-    // Parse chunks
-    size_t offset = sizeof(AxmlHeader);
+    // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+    // The outer AXML file header (RES_XML_TYPE) is exactly 8 bytes:
+    //   uint16_t type         = 0x0003
+    //   uint16_t header_size  = 0x0008
+    //   uint32_t size         = file_size
+    // Inner chunks (STRING_POOL, RESOURCE_MAP, START_NAMESPACE, etc.) begin
+    // at offset 8. The previous code used `sizeof(AxmlHeader)` (= 12) which
+    // skipped 4 bytes into the middle of the STRING_POOL chunk header,
+    // corrupting all subsequent chunk parsing.
+    size_t offset = 8;  // was: sizeof(AxmlHeader) — wrong, that's 12 bytes
     
     while (offset < size) {
         if (offset + sizeof(AxmlChunkHeader) > size) {
@@ -87,17 +96,27 @@ ManifestInfo ManifestReader::parse(const std::vector<uint8_t>& data) {
         const AxmlChunkHeader* chunk = reinterpret_cast<const AxmlChunkHeader*>(ptr + offset);
         
         if (chunk->size < sizeof(AxmlChunkHeader) || offset + chunk->size > size) {
-            log("Invalid chunk size at offset " + std::to_string(offset));
+            log("Invalid chunk size at offset " + std::to_string(offset) +
+                " (type=0x" + int_to_hex(chunk->type) + " size=" + std::to_string(chunk->size) + ")");
             break;
         }
         
+        // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+        // Real AXML chunk types per AOSP ResourceTypes.h:
         switch (static_cast<AxmlToken>(chunk->type)) {
-            case AxmlToken::START_DOCUMENT:
-                log("Start document");
+            case AxmlToken::RES_XML_TYPE:
+                // Outer wrapper — already consumed at offset 0, should not appear again
+                log("Unexpected nested RES_XML_TYPE at offset " + std::to_string(offset));
                 break;
                 
-            case AxmlToken::END_DOCUMENT:
-                log("End document");
+            case AxmlToken::STRING_POOL:
+                if (!parse_string_pool(ptr + offset, chunk->size)) {
+                    log("Failed to parse string pool at offset " + std::to_string(offset));
+                }
+                break;
+                
+            case AxmlToken::RESOURCE_MAP:
+                parse_resource_ids(ptr + offset, chunk->size);
                 break;
                 
             case AxmlToken::START_NAMESPACE:
@@ -109,16 +128,8 @@ ManifestInfo ManifestReader::parse(const std::vector<uint8_t>& data) {
                 break;
                 
             default:
-                // Check for string pool or resource IDs by position
-                if (offset == sizeof(AxmlHeader)) {
-                    // First chunk should be string pool
-                    if (!parse_string_pool(ptr + offset, chunk->size)) {
-                        log("Failed to parse string pool");
-                    }
-                } else if (!strings_.empty() && resource_ids_.empty()) {
-                    // Might be resource IDs
-                    parse_resource_ids(ptr + offset, chunk->size);
-                }
+                log("Unknown AXML chunk type 0x" + int_to_hex(chunk->type) +
+                    " at offset " + std::to_string(offset));
                 break;
         }
         
@@ -132,21 +143,56 @@ ManifestInfo ManifestReader::parse(const std::vector<uint8_t>& data) {
 }
 
 bool ManifestReader::parse_header(const uint8_t* data, size_t size) {
+    // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+    // The real AXML file header is just 8 bytes:
+    //   uint16_t type        = 0x0003 (RES_XML_TYPE)
+    //   uint16_t header_size = 0x0008
+    //   uint32_t size        = file_size
+    //
+    // The previous code read this as AxmlHeader{magic(4), header(8)} = 12 bytes,
+    // where `magic` happened to be (header_size<<16)|type = 0x00080003. The
+    // magic check therefore worked by accident. BUT the subsequent check
+    // `header.header.type != START_DOCUMENT (0x0000)` read bytes 4-5, which
+    // are actually the LOW 16 BITS of the file size — for any AXML file
+    // larger than 64KB, this would coincidentally match 0x0000; for any file
+    // smaller than 64KB it would be the size value itself. For our 2056-byte
+    // test APK, bytes 4-5 are `0x08 0x08` = 0x0808, which doesn't match 0x0000,
+    // so EVERY real AXML file was rejected with "Invalid AXML header type".
+    //
+    // Fix: validate only the magic (which encodes both type=0x0003 and
+    // header_size=0x0008). Don't validate the type field separately, since
+    // there is no separate type field at byte 4 — byte 4 is the start of the
+    // size field.
+    if (size < 8) {
+        result_.error_message = "Data too small for AXML header (need 8 bytes)";
+        log(result_.error_message);
+        return false;
+    }
+
     const AxmlHeader* header = reinterpret_cast<const AxmlHeader*>(data);
-    
+
+    // magic = (header_size << 16) | type = (0x0008 << 16) | 0x0003 = 0x00080003
     if (header->magic != AXML_MAGIC) {
-        result_.error_message = "Invalid AXML magic number";
+        // Bytes 0-3 don't match the RES_XML_TYPE + header_size=8 pattern.
+        // This is not a valid AXML file.
+        char hex[16];
+        snprintf(hex, sizeof(hex), "%08x", header->magic);
+        result_.error_message = "Invalid AXML magic number: got 0x" + std::string(hex) +
+                               ", expected 0x00080003 (RES_XML_TYPE + header_size=8)";
         log(result_.error_message);
         return false;
     }
-    
-    if (header->header.type != static_cast<uint16_t>(AxmlToken::START_DOCUMENT)) {
-        result_.error_message = "Invalid AXML header type";
-        log(result_.error_message);
-        return false;
+
+    // The file size encoded at offset 4 should match the actual data size.
+    // (Optional sanity check — some AXML files pad the size, so we log only.)
+    uint32_t declared_size = header->header.size;
+    if (declared_size != size) {
+        log("AXML header size mismatch: declared=" + std::to_string(declared_size) +
+            ", actual=" + std::to_string(size) + " (continuing anyway)");
     }
-    
-    log("AXML header valid, document size: " + std::to_string(header->header.size));
+
+    log("AXML header valid, RES_XML_TYPE outer wrapper, document size: " +
+        std::to_string(declared_size));
     return true;
 }
 
@@ -213,10 +259,16 @@ bool ManifestReader::parse_string_pool(const uint8_t* chunk, size_t size) {
             offset += 2;  // 2 byte null terminator
         }
         
-        // Align to 4 bytes
-        while (offset % 4 != 0) {
-            offset++;
-        }
+        // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+        // The previous code aligned `offset` to 4 bytes between strings.
+        // Real AXML string pools do NOT pad strings — they are tightly
+        // packed. Verified against the cachecleanerwidget.apk AndroidManifest:
+        //   string[0]="label" (5 chars UTF-16) = 2 (len) + 10 (chars) + 2 (null) = 14 bytes
+        //   string[1] starts at offset 14 (NOT 16)
+        // The previous alignment logic caused every other string to be
+        // misaligned, producing the garbled "Parsed 7 strings from pool"
+        // output (out of 30 actual strings).
+        // No alignment between strings.
     }
     
     log("Parsed " + std::to_string(strings_.size()) + " strings from pool");
@@ -280,24 +332,48 @@ bool ManifestReader::parse_element(const uint8_t* data, size_t size, size_t& off
             std::string ns = resolve_namespace(elem->namespace_index);
             std::string name = get_string(elem->name_index);
             
-            // Parse attributes
-            std::vector<AxmlAttribute> attrs(elem->attribute_count);
-            size_t attr_offset = offset + sizeof(AxmlStartElement) + 
-                                 (elem->attribute_ids_offset ? 0 : elem->attribute_count * sizeof(uint32_t));
+            // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+            // The previous code computed the attribute offset as
+            //   offset + sizeof(AxmlStartElement) + attr_count * sizeof(uint32_t)
+            // which was wrong on TWO counts:
+            //   1. sizeof(AxmlStartElement) was 24 in the old struct (no
+            //      lineNumber/comment/attrStart/attrSize/styleIndex fields),
+            //      so it skipped too few bytes.
+            //   2. The "+attr_count*4" was meant to skip a per-element
+            //      resource-id array, but AXML stores resource IDs in a
+            //      separate RESOURCE_MAP chunk at the start of the file,
+            //      not inline before each element's attributes.
+            //
+            // Per AOSP ResourceTypes.h, the correct attribute offset is:
+            //   chunk_start + chunk_header.header_size + attrExt.attributeStart
+            // where chunk_header.header_size is the size of ResXMLTree_node
+            // (= 16 for AAPT2: chunk_header(8) + lineNumber(4) + comment(4))
+            // and attributeStart is the offset from the end of the header
+            // to where attributes begin (typically = size of attrExt body
+            // fields = 4+4+2+2+2+2+2+2 = 20 bytes).
+            //
+            // For the cachecleanerwidget APK manifest:
+            //   chunk_header.header_size = 16
+            //   attributeStart = 20
+            //   → attrs start at offset 16+20 = 36 from chunk start
+            //   → 7 attributes × 20 bytes each = 140 bytes
+            //   → total chunk size = 36 + 140 = 176 ✓ matches chunk.size
+            size_t attr_array_offset = offset + chunk->header_size + elem->attribute_start;
+            size_t attr_array_end = offset + chunk->size;
             
-            // Attributes follow the element structure
-            const uint8_t* attr_ptr = data + offset + sizeof(AxmlStartElement);
+            std::vector<AxmlAttribute> attrs;
+            attrs.reserve(elem->attribute_count);
             
-            // Skip attribute resource IDs if present
-            if (elem->attribute_count > 0) {
-                attr_ptr += elem->attribute_count * sizeof(uint32_t);  // Resource IDs
-            }
-            
+            const uint8_t* attr_ptr = data + attr_array_offset;
             for (uint16_t i = 0; i < elem->attribute_count; i++) {
-                if (attr_ptr + sizeof(AxmlAttribute) <= data + size) {
-                    std::memcpy(&attrs[i], attr_ptr, sizeof(AxmlAttribute));
-                    attr_ptr += sizeof(AxmlAttribute);
+                if (attr_ptr + sizeof(AxmlAttribute) > data + attr_array_end) {
+                    log("Attribute " + std::to_string(i) + " extends beyond chunk");
+                    break;
                 }
+                AxmlAttribute attr;
+                std::memcpy(&attr, attr_ptr, sizeof(AxmlAttribute));
+                attrs.push_back(attr);
+                attr_ptr += sizeof(AxmlAttribute);
             }
             
             process_start_element(ns, name, attrs);
@@ -341,27 +417,50 @@ std::string ManifestReader::get_string(size_t index) const {
 
 size_t ManifestReader::decode_string_length(const uint8_t* data, size_t offset, 
                                             size_t& out_length, bool utf8) {
+    // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+    // The previous UTF-16 branch treated the length prefix as a 1-or-2 byte
+    // variable-length encoding (like UTF-8). The AOSP ResStringPool spec
+    // (frameworks/base/libs/androidfw/ResourceTypes.cpp) defines different
+    // encodings for UTF-8 vs UTF-16:
+    //
+    // UTF-8 length prefix:
+    //   - 1 byte if length <= 0x7F: just the length, high bit clear
+    //   - 2 bytes if length > 0x7F: (first & 0x7F) << 8 | second_byte
+    //   (followed by a SECOND uleb128-style byte count for the byte length)
+    //
+    // UTF-16 length prefix:
+    //   - 2 bytes (uint16 LE) by default: length = u16 value
+    //   - 4 bytes if (u16 & 0x8000): length = ((u16 & 0x7FFF) << 16) | next_u16
+    //
+    // The previous code read UTF-16 length as 1 byte (for short) which
+    // caused every UTF-16 string to be misaligned by 1 byte — the parser
+    // then read the second byte of the length prefix as the first UTF-16
+    // character, producing garbled CJK output like "欀嘀攀爀猀...".
     if (utf8) {
-        // UTF-8: length is 1 or 2 bytes
         uint8_t first = data[offset];
         if ((first & 0x80) == 0) {
             out_length = first;
             return 1;
         } else {
-            uint16_t len = (first & 0x7F) | (static_cast<uint16_t>(data[offset + 1]) << 7);
+            uint16_t len = (static_cast<uint16_t>(first & 0x7F) << 8) |
+                           static_cast<uint16_t>(data[offset + 1]);
             out_length = len;
             return 2;
         }
     } else {
-        // UTF-16: length is 1 or 2 bytes (gives character count)
-        uint8_t first = data[offset];
-        if ((first & 0x80) == 0) {
-            out_length = first;
-            return 1;
-        } else {
-            uint16_t len = (first & 0x7F) | (static_cast<uint16_t>(data[offset + 1]) << 7);
-            out_length = len;
+        // UTF-16: always at least 2 bytes
+        uint16_t first_u16 = static_cast<uint16_t>(data[offset]) |
+                              (static_cast<uint16_t>(data[offset + 1]) << 8);
+        if ((first_u16 & 0x8000) == 0) {
+            out_length = first_u16;
             return 2;
+        } else {
+            // Long form: 4 bytes total
+            uint32_t len = (static_cast<uint32_t>(first_u16 & 0x7FFF) << 16) |
+                           (static_cast<uint32_t>(data[offset + 2]) |
+                            (static_cast<uint32_t>(data[offset + 3]) << 8));
+            out_length = len;
+            return 4;
         }
     }
 }
@@ -507,12 +606,36 @@ std::string ManifestReader::get_attribute_value(const std::vector<AxmlAttribute>
         
         // Try with and without android: prefix
         if (attr_name == name || attr_name == "android:" + name) {
-            if (attr.value_type == static_cast<uint32_t>(AxmlDataType::STRING)) {
-                return get_string(attr.value_string_index);
-            } else if (attr.value_type == static_cast<uint32_t>(AxmlDataType::REFERENCE)) {
+            // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+            // The previous code compared attr.value_type (u32) to AxmlDataType
+            // enum values, but value_type conflated size+res0+dataType into
+            // one u32. The real dataType is now in attr.value_data_type (u8).
+            uint8_t dt = attr.value_data_type;
+            if (dt == static_cast<uint8_t>(AxmlDataType::STRING)) {
+                // For STRING type, value_data holds a string index (or value_string_index does)
+                // Per AOSP, value_data IS the string index for STRING type
+                if (attr.value_string_index != 0xFFFFFFFF && attr.value_string_index < strings_.size()) {
+                    return get_string(attr.value_string_index);
+                }
+                return get_string(attr.value_data);
+            } else if (dt == static_cast<uint8_t>(AxmlDataType::REFERENCE)) {
                 return "@0x" + int_to_hex(attr.value_data);
-            } else if (attr.value_type == static_cast<uint32_t>(AxmlDataType::INT) ||
-                       attr.value_type == static_cast<uint32_t>(AxmlDataType::ATTRIBUTE_INT)) {
+            } else if (dt == static_cast<uint8_t>(AxmlDataType::INT) ||
+                       dt == static_cast<uint8_t>(AxmlDataType::ATTRIBUTE_INT) ||
+                       dt == static_cast<uint8_t>(AxmlDataType::INT_HEX) ||
+                       dt == static_cast<uint8_t>(AxmlDataType::INT_BOOLEAN)) {
+                return std::to_string(static_cast<int32_t>(attr.value_data));
+            } else if (dt == static_cast<uint8_t>(AxmlDataType::STRING_INT)) {
+                // Some AXML files use STRING_INT(17) for string-as-int
+                if (attr.value_string_index != 0xFFFFFFFF && attr.value_string_index < strings_.size()) {
+                    return get_string(attr.value_string_index);
+                }
+                return get_string(attr.value_data);
+            } else {
+                // Default: try value_string_index first, fall back to value_data
+                if (attr.value_string_index != 0xFFFFFFFF && attr.value_string_index < strings_.size()) {
+                    return get_string(attr.value_string_index);
+                }
                 return std::to_string(static_cast<int32_t>(attr.value_data));
             }
         }
