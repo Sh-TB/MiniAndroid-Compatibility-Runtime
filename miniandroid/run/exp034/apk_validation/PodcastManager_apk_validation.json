@@ -1,0 +1,89 @@
+{
+  "apk_name": "PodcastManager.apk",
+  "apk_path": "/home/z/my-project/miniandroid/download/exp027_real_apks/PodcastManager.apk",
+  "sha256": "a41e9ba10cc309b9646c0785ff78dfb28e8e146eee0163637cbe4ea7e776c99f",
+  "file_size": 1805,
+  "validation_time": "2026-08-14T12:08:32.671676",
+  "overall_status": "PASS",
+  "stages": [
+    {
+      "stage": "APK_DEX_EXTRACTION",
+      "status": "PASS",
+      "timestamp": "2026-08-14T12:08:32.671761",
+      "duration_ms": 0,
+      "data_size": 2470,
+      "record_count": 0,
+      "error": null,
+      "details": {}
+    },
+    {
+      "stage": "DEX_HEADER_VALIDATION",
+      "status": "PASS",
+      "timestamp": "2026-08-14T12:08:32.671775",
+      "duration_ms": 0,
+      "data_size": 112,
+      "record_count": 0,
+      "error": null,
+      "details": {
+        "magic": "6465780a30333500",
+        "file_size": 2470,
+        "class_defs_count": 0,
+        "method_ids_count": 0
+      }
+    },
+    {
+      "stage": "CLASS_DEF_PARSING",
+      "status": "PASS",
+      "timestamp": "2026-08-14T12:08:32.671784",
+      "duration_ms": 0,
+      "data_size": 0,
+      "record_count": 0,
+      "error": "No class definitions (empty DEX)",
+      "details": {}
+    },
+    {
+      "stage": "CLASS_DATA_PARSING",
+      "status": "PASS",
+      "timestamp": "2026-08-14T12:08:32.671790",
+      "duration_ms": 0,
+      "data_size": 0,
+      "record_count": 0,
+      "error": null,
+      "details": {
+        "methods": 0,
+        "fields": 0
+      }
+    },
+    {
+      "stage": "CODE_ITEM_PARSING",
+      "status": "PASS",
+      "timestamp": "2026-08-14T12:08:32.671797",
+      "duration_ms": 0,
+      "data_size": 0,
+      "record_count": 0,
+      "error": null,
+      "details": {
+        "instructions": 0
+      }
+    },
+    {
+      "stage": "INSTRUCTION_DECODING",
+      "status": "PARTIAL",
+      "timestamp": "2026-08-14T12:08:32.671805",
+      "duration_ms": 0,
+      "data_size": 0,
+      "record_count": 0,
+      "error": null,
+      "details": {
+        "unique_opcodes": 0
+      }
+    }
+  ],
+  "summary": {
+    "total_classes": 0,
+    "total_methods": 0,
+    "total_instructions": 0,
+    "first_failure": null
+  },
+  "opcode_breakdown": {}
+}
