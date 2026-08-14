@@ -1,0 +1,28 @@
+{
+  "allocations": [
+    {
+      "at_pc": "0x0003",
+      "object_id": 1,
+      "opcode": "new-instance",
+      "sequence": 1,
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "apk_name": "pro_rudloff_lineageos_updater_shortcut_7584040eb7d1fad7d3612ad477a111fa0c1b0456c48efa0f5682b2f8e7a27676.apk",
+  "objects": [
+    {
+      "class_descriptor": "Landroid/content/Intent;",
+      "creation_sequence": 0,
+      "creator_frame_id": 1,
+      "creator_pc": 3,
+      "field_count": 0,
+      "initialized": true,
+      "object_id": 1,
+      "readable_class": "android.content.Intent",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-08-14T17:21:32Z",
+  "total_allocations": 1,
+  "total_objects": 1
+}
