@@ -1,0 +1,279 @@
+{
+  "calls": [
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Session started: EXP-001-20260814-065451-6799",
+      "method": "start_session",
+      "timestamp": 1786690491779
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading APK: ./test_apks/exp031_6/valid_test.apk",
+      "method": "stage_load_apk",
+      "timestamp": 1786690491779
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Package: com.test.valid, Main Activity: .MainActivity",
+      "method": "stage_load_apk",
+      "timestamp": 1786690491779
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsing DEX files",
+      "method": "stage_parse_dex",
+      "timestamp": 1786690491779
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsed 1 classes, 2 methods",
+      "method": "stage_parse_dex",
+      "timestamp": 1786690492828
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Initializing runtime",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1786690492828
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Framebuffer allocated: 1080x1920",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading class definitions",
+      "method": "stage_load_classes",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: <invalid string idx:65536> extends <invalid string idx:327682> (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Executing application lifecycle",
+      "method": "stage_execute_application",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Starting real bytecode execution",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Instructions executed: 1",
+      "method": "execute_apk",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "API calls traced: 0",
+      "method": "execute_apk",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Heap objects: 0",
+      "method": "execute_apk",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ REAL EXECUTION CONFIRMED - 1 opcodes executed",
+      "method": "validation",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "ExecutionSource = REAL_DALVIK_INTERPRETER (verified)",
+      "method": "execution_source",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Creating view from execution evidence",
+      "method": "create_view_from_dalvik_result",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Creating HelloWorld view",
+      "method": "create_hello_world_view",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "WARNING",
+      "message": "⚠️ Lifecycle (onCreate/onStart/onResume) NOT found in DEX execution traces. Falling back to HOST_SHORTCUT lifecycle calls. This means lifecycle events are NOT consequences of bytecode execution.",
+      "method": "lifecycle_source",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[HOST_SHORTCUT] Calling onCreate/onStart/onResume from C++ (NOT from DEX)",
+      "method": "lifecycle_fallback",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating mandatory trace files: ./run/exp031_5/traces/com.test.valid",
+      "method": "trace_export",
+      "timestamp": 1786690492848
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Trace files generated successfully",
+      "method": "trace_export",
+      "timestamp": 1786690492849
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - opcode_trace.json",
+      "method": "trace_files",
+      "timestamp": 1786690492849
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - method_trace.json",
+      "method": "trace_files",
+      "timestamp": 1786690492849
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - register_trace.json",
+      "method": "trace_files",
+      "timestamp": 1786690492849
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - heap_trace.json",
+      "method": "trace_files",
+      "timestamp": 1786690492849
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - execution_summary.json (contains verdict)",
+      "method": "trace_files",
+      "timestamp": 1786690492849
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Real Dalvik execution complete",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1786690492849
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1786690492849
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Frame rendered successfully",
+      "method": "stage_render_frame",
+      "timestamp": 1786690492849
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Capturing output",
+      "method": "stage_capture_output",
+      "timestamp": 1786690492849
+    },
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Screenshot captured: ./run/screenshot.ppm (1080x1920, 8294400 bytes)",
+      "method": "log_screenshot",
+      "timestamp": 1786690492918
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Screenshot saved to: ./run/screenshot.ppm",
+      "method": "stage_capture_output",
+      "timestamp": 1786690492918
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating reports",
+      "method": "stage_generate_reports",
+      "timestamp": 1786690492918
+    }
+  ],
+  "generated_at": "2026-08-14 06:54:52 UTC",
+  "session_id": "EXP-001-20260814-065451-6799",
+  "total_calls": 34
+}
