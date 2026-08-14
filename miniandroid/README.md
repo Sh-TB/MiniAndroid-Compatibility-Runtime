@@ -101,10 +101,80 @@ python3 tools/exp030_real_dalvik_validator.py --apk-dir download/exp027_real_apk
 | EXP-027-028 | DEX Fix | ✅ Complete | Root cause fix for parsing |
 | **EXP-029** | **Observability** | ✅ **Complete** | State machine, 15/15 APKs |
 | **EXP-030** | **Real Execution** | ✅ **Complete** | Dalvik engine, 25+ opcodes |
+| **EXP-032** | **AOSP Reference Acceleration** | ✅ **Complete** | Object model, API strategy, debug protocol |
 
 ---
 
-## EXP-030: Real Dalvik Engine (Latest)
+## EXP-032: AOSP Reference-Driven Acceleration (Latest)
+
+### Overview
+
+EXP-032 uses AOSP/Dalvik/ART source code as reference to accelerate MiniAndroid into a **real Android-compatible runtime**.
+
+### Phases Completed
+
+| Phase | Task | Status | Key Output |
+|-------|------|--------|------------|
+| PHASE 0 | AOSP Reference Mapping | ✅ Complete | `docs/EXP032_AOSP_REFERENCE_MAP.md` |
+| PHASE 1 | Real APK DEX Validation | ✅ Complete | 22 files tested, 2 valid DEX found |
+| PHASE 2 | Opcode Coverage Analysis | ✅ Complete | 28/210 opcodes (13.33%) |
+| PHASE 3 | Real Execution Proof | ✅ Complete | 4 methods extracted, 48 instructions decoded |
+| **PHASE 4** | **Object Model Improvement** | ✅ **Complete** | EnhancedClassInfo, VTable, field offsets |
+| **PHASE 5** | **API Compatibility Strategy** | ✅ **Complete** | 68 APIs cataloged, 5-phase plan |
+| **PHASE 6** | **Debug Process Improvement** | ✅ **Complete** | Golden Debug Protocol established |
+| **PHASE 7** | **Execution Gating System** | ✅ **Complete** | Evidence validation gates defined |
+| **PHASE 8** | **GitHub Knowledge Preservation** | ✅ **Complete** | This documentation update |
+
+### Critical Findings
+
+```
+Opcode Coverage Gap Analysis:
+├── Field Operations:    0/28   (0%)   ← CRITICAL BLOCKER
+├── Array Operations:    0/19   (0%)   ← HIGH PRIORITY
+├── Math Operations:     0/32   (0%)   ← MEDIUM
+├── Invoke Types:        5/11   (45%)  ← Partial
+└── Constants/Moves:     18/24  (75%)  → Good foundation
+```
+
+### New Infrastructure (Phase 4)
+
+**Enhanced Object Model** (AOSP-inspired):
+
+```python
+@dataclass
+class EnhancedClassInfo:
+    class_descriptor: str           # Landroid/app/Activity;
+    instance_fields: List[EnhancedFieldInfo]  # With calculated byte offsets
+    static_fields: List[EnhancedFieldInfo]    # Per-class storage
+    vtable: List[EnhancedMethodInfo]          # Virtual dispatch table
+    
+    def calculate_field_offsets(self) -> None:  # Matches dvmComputeInstanceFieldOffsets
+        ...
+    
+    def build_vtable(self, parent_vtable) -> None:  # Matches dvmBuildVTable
+        ...
+```
+
+### API Implementation Strategy (Phase 5)
+
+**Priority Queue** (Top 10):
+1. `java.lang.String.toString` — Score: 100.1
+2. `android.app.Activity.onCreate` — Score: 78.5
+3. `android.app.Activity.setContentView` — Score: 76.2
+4. `android.widget.TextView.setText` — Score: 74.8
+5. `android.view.View.setOnClickListener` — Score: 68.3
+... (68 total APIs cataloged)
+
+### Engineering Protocol Established (Phases 6-7)
+
+**Golden Debug Protocol** (Mandatory for all debugging):
+1. Evidence Collection → 2. Hypothesis Formation → 3. AOSP Reference Check → 
+4. Root Cause ID → 5. Fix Implementation → 6. Regression Testing → 7. Documentation
+
+**Execution Gating** (Rule 2: No Claim Without Evidence):
+- All execution claims MUST have opcode trace files
+- Quality scoring: 0-100 based on evidence completeness
+- Claims below threshold are auto-rejected
 
 ### What Was Built
 
@@ -233,4 +303,4 @@ MIT License — See [LICENSE](LICENSE) for details.
 ---
 
 *Last Updated: 2026-08-14*
-*Active Development: EXP-030 Complete, Integration Pending*
+*Active Development: EXP-032 Complete (Phases 0-8), Object Model Ready for C++ Port*

@@ -2,6 +2,73 @@
 
 All notable changes to the MiniAndroid Runtime project.
 
+## [EXP-032] - 2026-08-14 — AOSP Reference-Driven Acceleration (Phases 0-8)
+
+### ✅ Added
+
+#### Phase 4: Object Model Improvement
+- **EnhancedClassInfo** structure with AOSP-compatible field offset calculation
+- **VTable construction algorithm** matching `dvmBuildVTable()` behavior
+- **EnhancedDalvikHeap** with iget/iput/sget/sput operations
+- Field offset tables for proper instance field access
+- Static field storage per-class (matching ClassObject design)
+- Files: `tools/exp032_phase4_object_model_improver.py`, `database/exp032_phase4_object_model_improvement.json`
+
+#### Phase 5: API Compatibility Strategy
+- **68 Android framework APIs cataloged** across 11 categories
+- **Evidence-based priority scoring** using frequency + diversity + critical path
+- **5-phase implementation plan**: Critical Path → UI → Interaction → Persistence → Advanced
+- Dependency graph for API implementation order
+- Files: `tools/exp032_phase5_api_strategy_generator.py`, `docs/EXP032_PHASE5_API_COMPATIBILITY_STRATEGY.md`
+
+#### Phase 6: Debug Process Improvement
+- **Golden Debug Protocol** with 7 mandatory phases
+- **Debug session templates** for opcode, parse, object_model, api_bridge issues
+- **AOSP reference map** with 8 components and source paths
+- **Pre/post debug checklists** ensuring evidence collection
+- Files: `tools/exp032_phase6_debug_process_improver.py`, `docs/EXP032_PHASE6_DEBUG_PROCESS_IMPROVEMENT.md`
+
+#### Phase 7: Execution Gating System
+- **ExecutionClaim format** requiring evidence artifacts
+- **5 validation gates** (opcode, method, APK, API, production)
+- **0-100 quality scoring** based on evidence completeness
+- **Execution source classification** enforcing Rule 8
+- Files: `tools/exp032_phase7_execution_gating.py`, `docs/EXP032_PHASE7_EXECUTION_GATING.md`
+
+#### Phase 8: GitHub Knowledge Preservation
+- Updated README.md with EXP-032 summary
+- Documented all phases and key findings
+- Preserved engineering protocol for future developers
+
+### 📊 Analysis Results
+
+#### Opcode Coverage Gap (from Phase 2)
+```
+Total Opcodes: 210
+Implemented:    28 (13.33%)
+
+Critical Gaps:
+├── Field Operations:  0/28   (0%)   ← BLOCKS iget/iput/sget/sput
+├── Array Operations:  0/19   (0%)   ← BLOCKS array handling
+├── Math Operations:   0/32   (0%)   ← Limits computation
+└── Invoke Types:      5/11   (45%)  → Partial coverage
+```
+
+#### Object Model Improvements (Phase 4)
+- EnhancedClassInfo: ✅ Designed and validated in Python
+- Field Offset Calculation: ✅ Matches AOSP dvmComputeInstanceFieldOffsets
+- VTable Construction: ✅ Matches AOSP dvmBuildVTable
+- C++ Port Status: ⏳ Pending (next step)
+
+### 🎯 Next Steps (Post-EXP-032)
+
+1. **Port EnhancedClassInfo to C++** (`dalvik_engine.h`)
+2. **Implement field operation opcodes** using new object model
+3. **Increase opcode coverage** from 13.33% → 40%+ target
+4. **Integrate with real DEX parsing** for end-to-end validation
+
+---
+
 ## [EXP-031.5] - 2026-08-14 — Real Dalvik Bytecode Execution Proof
 
 ### ✅ Added
