@@ -8,7 +8,7 @@
 
 - **Result:** **PASS**
 - **Final State:** `COMPLETED`
-- **Duration:** 18.56ms
+- **Duration:** 18.06ms
 - **APK:** `download/exp037_real_apks/TinyMusicPlayer.apk`
 
 ## Milestone Status
@@ -61,9 +61,9 @@ All evidence written to: `run/exp037_tiny//`
 
 ## Statistics
 
-- **API Calls Recorded:** 9
-- **Unique APIs in Database:** 9
-- **Method Dispatches:** 0
+- **API Calls Recorded:** 16
+- **Unique APIs in Database:** 15
+- **Method Dispatches:** 1
 - **Failures:** 1
 - **State Transitions:** 12
 

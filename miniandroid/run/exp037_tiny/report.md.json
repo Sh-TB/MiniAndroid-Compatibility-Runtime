@@ -60,10 +60,10 @@
     "total_researched": 4
   },
   "evidence_statistics": {
-    "api_calls_recorded": 9,
-    "api_database_entries": 9,
+    "api_calls_recorded": 16,
+    "api_database_entries": 15,
     "failures": 1,
-    "method_dispatches": 0,
+    "method_dispatches": 1,
     "state_transitions": 12
   },
   "golden_apk_results": {
@@ -165,7 +165,7 @@
   },
   "summary": {
     "apk_processed": "download/exp037_real_apks/TinyMusicPlayer.apk",
-    "duration_ms": 18.56089,
+    "duration_ms": 18.058575,
     "final_state": "COMPLETED",
     "has_errors": false,
     "is_complete": true,
