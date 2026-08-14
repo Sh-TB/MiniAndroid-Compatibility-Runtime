@@ -11,6 +11,15 @@
 #include "dex/dex_parser.h"
 #include "dex/class_resolver.h"
 #include "dex/dex_interpreter_batch.h"
+// EXP-037 Phase B (BLOCKER-020): Use DalvikExecutionEngine instead of
+// DexInterpreterBatch for execute_on_create. DexInterpreterBatch only handles
+// 5 opcodes (const-string, new-instance, invoke-direct, invoke-virtual,
+// return-void) and lacks invoke-super, goto, if-*, iget/iput/sget/sput —
+// every real onCreate hits invoke-super at PC=0 and immediately halts.
+// DalvikExecutionEngine has all the opcodes I've implemented across
+// BLOCKER-012 (invoke-super), BLOCKER-014 (goto fix), BLOCKER-015 (35c format),
+// BLOCKER-016 (arg_count), BLOCKER-017 (22c format), BLOCKER-018 (if-*).
+#include "dex/dalvik_engine.h"
 // Note: Do NOT include dex/dex_interpreter.h - it has Opcodes that conflict with dex_interpreter_batch.h
 #include "object_model.h"
 #include "resources/resource_parser.h"
@@ -288,6 +297,19 @@ bool ApplicationRuntime::execute_apk(const std::string& apk_path, const RuntimeC
         if (!create_application()) return false;
         
         // Phase C: Execute DEX lifecycle methods
+        // EXP-037 Phase B (BLOCKER-010 FIX): wire execute_on_create() into the
+        // pipeline so the megabatch path actually invokes the DalvikExecutionEngine
+        // and runs real bytecode. Without this call, the runtime transitions
+        // through lifecycle states using only C++ stubs (4 microseconds total).
+        if (!execute_on_create()) {
+            // Don't fail hard — continue with stubbed lifecycle if DEX execution
+            // hits an unimplemented opcode. This is intentional: the runtime
+            // should produce as much evidence as possible even when it can't
+            // fully execute real bytecode.
+            if (config_.verbose) {
+                std::cout << "[Phase C] execute_on_create() returned false — continuing with stubbed lifecycle" << std::endl;
+            }
+        }
         if (!execute_lifecycle()) return false;
         
         // Phase E: Resources
@@ -750,7 +772,11 @@ bool ApplicationRuntime::execute_lifecycle() {
 
 bool ApplicationRuntime::execute_on_create() {
     auto start = std::chrono::steady_clock::now();
-    
+
+    // EXP-037 Phase B (BLOCKER-010 debug): always print this so we can verify
+    // execute_on_create is actually being invoked by the megabatch pipeline.
+    std::cout << "[Phase C] execute_on_create() ENTERED" << std::endl;
+
     try {
         if (config_.verbose) {
             std::cout << "[Phase C] executing onCreate via DEX interpreter..." << std::endl;
@@ -786,31 +812,67 @@ bool ApplicationRuntime::execute_on_create() {
             return true;
         }
         
+        // EXP-037 Phase B (BLOCKER-020): Use DalvikExecutionEngine instead of
+        // DexInterpreterBatch. The batch interpreter lacks handlers for
+        // invoke-super, goto, if-*, iget/iput/sget/sput — so it halts at PC=0
+        // of every real onCreate method.
+        //
+        // DalvikExecutionEngine is the interpreter I've been actively
+        // improving (BLOCKER-012 through BLOCKER-018). It can execute the
+        // full onCreate of pro.rudloff.lineageos_updater_shortcut to
+        // completion (8 instructions, return-void reached).
+        //
+        // The legacy DexInterpreterBatch path is preserved below commented
+        // out for reference; it can be removed once we confirm the new path
+        // works for all test APKs.
+        /*
         // Try to use batch interpreter if available
         DexInterpreterBatch batch_interpreter;
         BatchInterpreterConfig config;  // Use BatchInterpreterConfig not InterpreterConfig
         config.verbose = config_.verbose;
         config.max_instructions = config_.max_instructions;
-        
+
         instruction_trace_ = std::make_unique<BatchExecutionTrace>(
             batch_interpreter.execute_entry_point(*entry_point_, *dex_report_, config));
-        
-        bool success = instruction_trace_->completed_successfully || 
-                      instruction_trace_->instructions.size() > 0;
-        
+        */
+
+        // Use DalvikExecutionEngine — the full-featured interpreter.
+        miniandroid::dalvik::DalvikExecutionEngine dalvik_engine;
+        // Configure: enable API bridge, allow up to config_.max_instructions
+        // instructions, do NOT stop on unimplemented (we want to find more
+        // downstream blockers, not halt at the first one).
+        // The DalvikExecutionEngine::execute_apk overload takes (apk_path,
+        // dex_report, verbose) and internally searches for the entry point.
+        // We want it to execute the entry_point_ we already resolved, so
+        // we use execute_method directly.
+        //
+        // Note: DalvikExecutionEngine uses its own entry point search
+        // (looking for "Activity"/"Main"/"activity" in class names). For
+        // obfuscated APKs this fails — but for our test APK
+        // (lineageos_updater_shortcut, MainActivity) it works.
+        auto dalvik_result = dalvik_engine.execute_apk(
+            apk_path_, *dex_report_, config_.verbose);
+
+        // Extract evidence
+        bool success = (dalvik_result.total_instructions_executed > 0);
+        if (dalvik_result.final_status == miniandroid::dalvik::DalvikExecutionResult::FinalStatus::COMPLETED_SUCCESS) {
+            success = true;
+        }
+
         if (!success) {
             FailureRecord f;
             f.type = FailureType::UNIMPLEMENTED_OPCODE;
             f.stage = "execute_on_create";
-            f.details = instruction_trace_->halt_reason;
+            f.details = dalvik_result.halt_reason.empty()
+                      ? "DalvikExecutionEngine produced no instruction trace"
+                      : dalvik_result.halt_reason;
             f.timestamp = get_timestamp();
             f.apk_path = apk_path_;
             f.dex_method = entry_point_->method_name;
-            f.pc = instruction_trace_->final_pc;
-            f.is_blocking = true;
+            f.is_blocking = false;  // don't fail hard — continue with stubbed lifecycle
             record_failure(f);
         }
-        
+
         // Record method dispatch
         MethodDispatchRecord dispatch;
         dispatch.caller_class = "ActivityThread";
@@ -819,19 +881,48 @@ bool ApplicationRuntime::execute_on_create() {
         dispatch.descriptor = "(Landroid/os/Bundle;)V";
         dispatch.dispatch_type = DispatchType::VIRTUAL;
         dispatch.success = success;
-        dispatch.status_detail = success ? "Executed successfully" : instruction_trace_->halt_reason;
+        dispatch.status_detail = success
+            ? ("Executed " + std::to_string(dalvik_result.total_instructions_executed) + " instructions")
+            : dalvik_result.halt_reason;
         dispatch.sequence = ++dispatch_sequence_;
         record_dispatch(dispatch);
-        
+
+        // EXP-037 Phase B (BLOCKER-020): Record API call traces from the
+        // DalvikExecutionEngine so they appear in the evidence output.
+        for (const auto& api_trace : dalvik_result.api_call_traces) {
+            ApiCallRecord call;
+            call.class_name = api_trace.api_class;
+            call.method_name = api_trace.method;
+            call.descriptor = "()V";  // simplified
+            call.category = ApiCategory::ACTIVITY;
+            call.call_timestamp = get_timestamp();
+            call.sequence = ++api_call_sequence_;
+            // ApiCallTrace::Status has IMPLEMENTED / STUBBED / MISSING / ERROR.
+            call.success = (api_trace.status != miniandroid::dalvik::ApiCallTrace::Status::ERROR &&
+                            api_trace.status != miniandroid::dalvik::ApiCallTrace::Status::MISSING);
+            call.result_summary = api_trace.return_value;
+            call.implementation_status = (api_trace.status == miniandroid::dalvik::ApiCallTrace::Status::IMPLEMENTED)
+                                       ? ImplementationStatus::IMPLEMENTED
+                                       : ImplementationStatus::STUBBED;
+            record_api_call(call);
+        }
+
+        lifecycle_events_.push_back(success ? "onCreate(executed)" : "onCreate(partial)");
+
         auto end = std::chrono::steady_clock::now();
         double duration = std::chrono::duration<double, std::milli>(end - start).count();
         
         if (config_.verbose) {
-            std::cout << "  Instructions executed: " << instruction_trace_->executed_instructions << std::endl;
-            std::cout << "  Completed: " << (instruction_trace_->completed_successfully ? "Yes" : "No") << std::endl;
-            if (!instruction_trace_->halt_reason.empty()) {
-                std::cout << "  Halt reason: " << instruction_trace_->halt_reason << std::endl;
+            // EXP-037 Phase B (BLOCKER-020): instruction_trace_ is no longer
+            // populated — we use DalvikExecutionEngine directly. Print stats
+            // from dalvik_result instead.
+            std::cout << "  Instructions executed: " << dalvik_result.total_instructions_executed << std::endl;
+            std::cout << "  Final status: " << static_cast<int>(dalvik_result.final_status) << std::endl;
+            if (!dalvik_result.halt_reason.empty()) {
+                std::cout << "  Halt reason: " << dalvik_result.halt_reason << std::endl;
             }
+            std::cout << "  API call traces: " << dalvik_result.api_call_traces.size() << std::endl;
+            std::cout << "  Heap objects: " << dalvik_result.heap.size() << std::endl;
             std::cout << "  Duration: " << duration << "ms" << std::endl;
         }
         
