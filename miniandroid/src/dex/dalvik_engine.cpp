@@ -2216,7 +2216,16 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
     // the framework's Activity.onCreate implementation (window setup, etc.).
     DalvikValue return_val = DalvikValue::make_void();
     ApiCallTrace::Status api_status = ApiCallTrace::Status::STUBBED;
+
+    // EXP-038 (BLOCKER-034): Try recursive invocation for super calls too.
+    bool recursively_invoked = false;
     if (config_.enable_api_bridge) {
+        if (try_recursive_invoke(declaring_class, method_name, args, return_val, result)) {
+            recursively_invoked = true;
+            api_status = ApiCallTrace::Status::IMPLEMENTED;
+        }
+    }
+    if (!recursively_invoked && config_.enable_api_bridge) {
         bridge_to_api(declaring_class + "<super>", method_name,
                       args, return_val, api_status);
     }
@@ -2308,8 +2317,16 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     // API bridge
     DalvikValue return_val = DalvikValue::make_void();
     ApiCallTrace::Status status = ApiCallTrace::Status::STUBBED;
-    
+
+    // EXP-038 (BLOCKER-034): Try recursive invocation.
+    bool recursively_invoked = false;
     if (config_.enable_api_bridge) {
+        if (try_recursive_invoke(class_name, method_name, args, return_val, result)) {
+            recursively_invoked = true;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+        }
+    }
+    if (!recursively_invoked && config_.enable_api_bridge) {
         bridge_to_api(class_name, method_name, args, return_val, status);
     }
     
@@ -2376,8 +2393,16 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     // API bridge
     DalvikValue return_val = DalvikValue::make_void();
     ApiCallTrace::Status status = ApiCallTrace::Status::STUBBED;
-    
+
+    // EXP-038 (BLOCKER-034): Try recursive invocation.
+    bool recursively_invoked = false;
     if (config_.enable_api_bridge) {
+        if (try_recursive_invoke(class_name, method_name, args, return_val, result)) {
+            recursively_invoked = true;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+        }
+    }
+    if (!recursively_invoked && config_.enable_api_bridge) {
         bridge_to_api(class_name, method_name, args, return_val, status);
     }
     
