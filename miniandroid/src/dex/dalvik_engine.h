@@ -923,6 +923,11 @@ private:
     bool execute_invoke_direct(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
     bool execute_invoke_static(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
     bool execute_invoke_interface(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
+    // EXP-037 Phase B (BLOCKER-012): invoke-super — needed for super.onCreate()
+    // calls. Real Android apps almost always call super.onCreate(bundle) as the
+    // first instruction in their onCreate; without this handler, NO real app
+    // can execute past its entry method's first instruction.
+    bool execute_invoke_super(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
     
     // Opcode implementations — Returns
     bool execute_return_void(uint32_t pc, InstructionTrace& trace);

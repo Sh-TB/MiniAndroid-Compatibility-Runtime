@@ -1,0 +1,21 @@
+[DalvikEngine] 🎯 CALLING execute_method_internal() for onCreate with 29 instructions
+[DalvikEngine] Executing: Lpro/rudloff/lineageos_updater_shortcut/MainActivity;.onCreate(Landroid/os/Bundle;)V
+[DalvikEngine] Bytecode size: 29 instructions
+[DalvikEngine] ⚠️ INVOKE-SUPER: First argument is not an object reference (arg_count=6, arg[0].type=0)
+[DalvikEngine] 📞 INVOKE-SUPER: Landroid/app/Activity;.onCreate (method_idx=1, arg_count=6, static_type=<unknown>, runtime_type=<unknown>)
+[DalvikEngine]   API BRIDGE: Landroid/app/Activity;<super>.onCreate
+[DalvikEngine]   [0]  0x0: invoke-super → Landroid/app/Activity;.onCreate (super)
+[DalvikEngine]   ALLOCATED: Landroid/content/Intent; -> obj#1
+[DalvikEngine]   [1]  0x3: new-instance [obj:1]
+[DalvikEngine]   [2]  0x5: const-string
+[DalvikEngine]   INVOKE-DIRECT: android.content.Intent.<init>() on obj#1
+[DalvikEngine]   API BRIDGE: android.content.Intent.<init>
+[DalvikEngine]   [3]  0x7: invoke-direct → android.content.Intent.<init>
+[DalvikEngine]   API BRIDGE: Lpro/rudloff/lineageos_updater_shortcut/MainActivity;.startActivity
+[DalvikEngine]   [4]  0xa: invoke-virtual → Lpro/rudloff/lineageos_updater_shortcut/MainActivity;.startActivity
+[DalvikEngine]   [5]  0xd: goto
+[DalvikEngine]   API BRIDGE: Lpro/rudloff/lineageos_updater_shortcut/MainActivity;.finish
+[DalvikEngine]   [6]  0x19: invoke-virtual → Lpro/rudloff/lineageos_updater_shortcut/MainActivity;.finish
+[DalvikEngine]   RETURN_VOID at 0x1c
+[DalvikEngine]   [7]  0x1c: return-void
+[DalvikEngine] Method returned successfully
