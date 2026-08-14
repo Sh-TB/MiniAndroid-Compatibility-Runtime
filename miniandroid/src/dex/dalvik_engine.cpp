@@ -118,10 +118,66 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk(
     log("Executing APK: " + apk_path);
     log("DEX classes: " + std::to_string(dex_report.classes_count));
     
+    // ====================================================================
+    // EXP-031.6 DEBUG: Trace complete DEX extraction pipeline
+    // ====================================================================
+    log("=== EXP-031.6 PIPELINE TRACE ===");
+    
+    int total_methods = 0;
+    int methods_with_bytecode = 0;
+    int methods_without_bytecode = 0;
+    int total_instructions = 0;
+    
+    for (const auto& cls : dex_report.classes) {
+        log("CLASS: " + cls.name + " (" + std::to_string(cls.all_methods().size()) + " methods)");
+        
+        for (const auto& method : cls.all_methods()) {
+            total_methods++;
+            
+            bool has_code = !method.bytecode.empty();
+            size_t insn_count = method.bytecode.size();
+            
+            if (has_code) {
+                methods_with_bytecode++;
+                total_instructions += insn_count;
+                log("  METHOD [HAS CODE]: " + method.name + method.descriptor + 
+                    " | code_off=0x" + std::to_string(method.code_offset) +
+                    " | insns_size=" + std::to_string(insn_count) +
+                    " | first_insn=0x" + (insn_count > 0 ? 
+                        std::to_string(method.bytecode[0]) : "N/A"));
+            } else {
+                methods_without_bytecode++;
+                log("  METHOD [NO CODE]:  " + method.name + method.descriptor +
+                    " | code_off=0x" + std::to_string(method.code_offset) +
+                    " | is_native=" + (method.is_native ? "Y" : "N") +
+                    " | is_abstract=" + (method.is_abstract ? "Y" : "N"));
+            }
+        }
+    }
+    
+    log("=== PIPELINE SUMMARY ===");
+    log("Total methods: " + std::to_string(total_methods));
+    log("With bytecode: " + std::to_string(methods_with_bytecode));
+    log("Without bytecode: " + std::to_string(methods_without_bytecode));
+    log("Total instructions: " + std::to_string(total_instructions));
+    
+    if (total_instructions == 0) {
+        log("🔴 CRITICAL: ZERO INSTRUCTIONS EXTRACTED FROM DEX!");
+        log("Root cause candidates:");
+        log("  1. parse_code_item() not called (check class_data parsing)");
+        log("  2. parse_code_item() called but insns_size=0");
+        log("  3. parse_code_item() fails bounds check silently");
+    }
+    log("=== END EXP-031.6 TRACE ===");
+    
     // Find main activity entry point
     if (!dex_report.classes.empty()) {
+        log("🔍 Searching " + std::to_string(dex_report.classes.size()) + " classes for entry point...");
+        
         // Look for Activity-like classes
         for (const auto& cls : dex_report.classes) {
+            log("  Checking class: [" + cls.name + "] for Activity/Main/activity");
+            
             if (cls.name.find("Activity") != std::string::npos ||
                 cls.name.find("Main") != std::string::npos ||
                 cls.name.find("activity") != std::string::npos) {
@@ -137,6 +193,8 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk(
                         
                         // Execute this method
                         if (!method.bytecode.empty()) {
+                            log("🎯 CALLING execute_method_internal() for " + method.name + 
+                                " with " + std::to_string(method.bytecode.size()) + " instructions");
                             execute_method_internal(
                                 cls.name,
                                 method.name,
@@ -148,6 +206,9 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk(
                                 {},  // No args for now
                                 result
                             );
+                            log("✅ execute_method_internal() returned");
+                        } else {
+                            log("⚠️ Method " + method.name + " has EMPTY bytecode - skipping");
                         }
                         break;
                     }
@@ -157,20 +218,35 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk(
         }
         
         // If no Activity found, try first class with methods
+        log("🔍 main_method is " + (result.main_method.empty() ? "EMPTY" : result.main_method) + ", trying fallback...");
         if (result.main_method.empty()) {
+            log("📋 Entering fallback mode - looking for any class with methods");
             for (const auto& cls : dex_report.classes) {
-                if (!cls.all_methods().empty()) {
+                log("  📋 Checking fallback class: [" + cls.name + "] with " + 
+                    std::to_string(cls.all_methods().size()) + " methods");
+                auto methods = cls.all_methods();
+                log("  📋 all_methods() returned " + std::to_string(methods.size()) + " entries");
+                if (!methods.empty()) {
                     result.main_class = cls.name;
-                    const auto& method = cls.all_methods()[0];
+                    const auto& method = methods[0];  // Use local copy
                     result.main_method = method.name;
                     
-                    log("Using fallback entry: " + cls.name + "." + method.name);
+                    log("🎯 Using fallback entry: " + cls.name + "." + method.name);
+                    log("🎯 Bytecode size: " + std::to_string(method.bytecode.size()));
                     
                     if (!method.bytecode.empty()) {
-                        execute_method_internal(
-                            cls.name, method.name, method.descriptor,
-                            method.bytecode, 8, 0, 2, {}, result
-                        );
+                        log("🚀 ABOUT TO CALL execute_method_internal() for fallback!");
+                        try {
+                            execute_method_internal(
+                                cls.name, method.name, method.descriptor,
+                                method.bytecode, 8, 0, 2, {}, result
+                            );
+                            log("✅ execute_method_internal() completed successfully");
+                        } catch (const std::exception& e) {
+                            log("❌ execute_method_internal() threw exception: " + std::string(e.what()));
+                        }
+                    } else {
+                        log("⚠️ Fallback method has empty bytecode!");
                     }
                     break;
                 }

@@ -118,6 +118,9 @@ bool ExecutionEngine::stage_parse_dex( ExecutionResult& result) {
         return false;
     }
     
+    // EXP-031.6: Enable verbose DEX parser logging for debugging
+    dex_parser_.set_verbose(true);
+    
     result.dex_report = dex_parser_.parse_data(dex_data, "classes.dex");
     
     if (!result.dex_report.is_valid) {
