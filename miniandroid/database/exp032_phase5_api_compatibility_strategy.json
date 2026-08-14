@@ -1,0 +1,696 @@
+{
+  "strategy_timestamp": "2026-08-14T10:40:46.183230",
+  "strategy_version": "1.0",
+  "catalog_summary": {
+    "total_apis_cataloged": 68,
+    "categories_covered": 5,
+    "total_estimated_call_volume": 3372,
+    "implementation_status_breakdown": {
+      "validated": 0,
+      "implemented": 0,
+      "stubbed": 13,
+      "not_started": 55
+    }
+  },
+  "category_analysis": {
+    "activity_lifecycle": {
+      "total_apis": 15,
+      "implemented": 0,
+      "stubbed": 4,
+      "not_started": 11,
+      "total_call_volume": 1058,
+      "avg_priority": 74.00800000000001
+    },
+    "view_system": {
+      "total_apis": 17,
+      "implemented": 0,
+      "stubbed": 3,
+      "not_started": 14,
+      "total_call_volume": 780,
+      "avg_priority": 34.29529411764706
+    },
+    "intent_system": {
+      "total_apis": 8,
+      "implemented": 0,
+      "stubbed": 3,
+      "not_started": 5,
+      "total_call_volume": 318,
+      "avg_priority": 24.993750000000002
+    },
+    "data_storage": {
+      "total_apis": 8,
+      "implemented": 0,
+      "stubbed": 0,
+      "not_started": 8,
+      "total_call_volume": 166,
+      "avg_priority": 16.05
+    },
+    "java_core": {
+      "total_apis": 20,
+      "implemented": 0,
+      "stubbed": 3,
+      "not_started": 17,
+      "total_call_volume": 1050,
+      "avg_priority": 57.8125
+    }
+  },
+  "top_20_priority_apis": [
+    {
+      "api": "java.lang.String.toString",
+      "api_class": "java.lang.String",
+      "method": "toString",
+      "descriptor": "()Ljava/lang/String;",
+      "category": "java_core",
+      "call_count": 95,
+      "apps_using": 19,
+      "success_rate": 0.0,
+      "status": "stubbed",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 100.1,
+      "aosp_source": "libcore/ojluni/src/main/java/java/lang/String.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.app.Activity.onCreate",
+      "api_class": "android.app.Activity",
+      "method": "onCreate",
+      "descriptor": "(Landroid/os/Bundle;)V",
+      "category": "activity_lifecycle",
+      "call_count": 100,
+      "apps_using": 10,
+      "success_rate": 0.0,
+      "status": "stubbed",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 99.0,
+      "aosp_source": "frameworks/base/core/java/android/app/Activity.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.app.Activity.setContentView",
+      "api_class": "android.app.Activity",
+      "method": "setContentView",
+      "descriptor": "(I)V",
+      "category": "activity_lifecycle",
+      "call_count": 98,
+      "apps_using": 9,
+      "success_rate": 0.0,
+      "status": "stubbed",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 95.92,
+      "aosp_source": "frameworks/base/core/java/android/app/Activity.java",
+      "aosp_complexity": "MEDIUM"
+    },
+    {
+      "api": "java.lang.Object.<init>",
+      "api_class": "java.lang.Object",
+      "method": "<init>",
+      "descriptor": "()V",
+      "category": "java_core",
+      "call_count": 90,
+      "apps_using": 18,
+      "success_rate": 0.0,
+      "status": "stubbed",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 95.7,
+      "aosp_source": "libcore/ojluni/src/main/java/java/lang/Object.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.app.Activity.onStart",
+      "api_class": "android.app.Activity",
+      "method": "onStart",
+      "descriptor": "()V",
+      "category": "activity_lifecycle",
+      "call_count": 95,
+      "apps_using": 9,
+      "success_rate": 0.0,
+      "status": "stubbed",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 94.6,
+      "aosp_source": "frameworks/base/core/java/android/app/Activity.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.app.Activity.findViewById",
+      "api_class": "android.app.Activity",
+      "method": "findViewById",
+      "descriptor": "(I)Landroid/view/View;",
+      "category": "activity_lifecycle",
+      "call_count": 95,
+      "apps_using": 9,
+      "success_rate": 0.0,
+      "status": "stubbed",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 94.6,
+      "aosp_source": "frameworks/base/core/java/android/app/Activity.java",
+      "aosp_complexity": "MEDIUM"
+    },
+    {
+      "api": "java.lang.String.equals",
+      "api_class": "java.lang.String",
+      "method": "equals",
+      "descriptor": "(Ljava/lang/Object;)Z",
+      "category": "java_core",
+      "call_count": 85,
+      "apps_using": 17,
+      "success_rate": 0.0,
+      "status": "stubbed",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 91.3,
+      "aosp_source": "libcore/ojluni/src/main/java/java/lang/String.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.app.Activity.onResume",
+      "api_class": "android.app.Activity",
+      "method": "onResume",
+      "descriptor": "()V",
+      "category": "activity_lifecycle",
+      "call_count": 90,
+      "apps_using": 9,
+      "success_rate": 0.0,
+      "status": "not_started",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 84.0,
+      "aosp_source": "frameworks/base/core/java/android/app/Activity.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.app.Activity.onPause",
+      "api_class": "android.app.Activity",
+      "method": "onPause",
+      "descriptor": "()V",
+      "category": "activity_lifecycle",
+      "call_count": 85,
+      "apps_using": 8,
+      "success_rate": 0.0,
+      "status": "not_started",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 80.0,
+      "aosp_source": "frameworks/base/core/java/android/app/Activity.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "java.lang.String.length",
+      "api_class": "java.lang.String",
+      "method": "length",
+      "descriptor": "()I",
+      "category": "java_core",
+      "call_count": 80,
+      "apps_using": 16,
+      "success_rate": 0.0,
+      "status": "not_started",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 79.0,
+      "aosp_source": "libcore/ojluni/src/main/java/java/lang/String.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.app.Activity.getApplicationContext",
+      "api_class": "android.app.Activity",
+      "method": "getApplicationContext",
+      "descriptor": "()Landroid/content/Context;",
+      "category": "activity_lifecycle",
+      "call_count": 75,
+      "apps_using": 7,
+      "success_rate": 0.0,
+      "status": "not_started",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 74.0,
+      "aosp_source": "frameworks/base/core/java/android/app/Activity.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.app.Activity.onStop",
+      "api_class": "android.app.Activity",
+      "method": "onStop",
+      "descriptor": "()V",
+      "category": "activity_lifecycle",
+      "call_count": 70,
+      "apps_using": 7,
+      "success_rate": 0.0,
+      "status": "not_started",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 72.0,
+      "aosp_source": "frameworks/base/core/java/android/app/Activity.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.app.Activity.onDestroy",
+      "api_class": "android.app.Activity",
+      "method": "onDestroy",
+      "descriptor": "()V",
+      "category": "activity_lifecycle",
+      "call_count": 65,
+      "apps_using": 6,
+      "success_rate": 0.0,
+      "status": "not_started",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 68.0,
+      "aosp_source": "frameworks/base/core/java/android/app/Activity.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "java.lang.StringBuilder.append",
+      "api_class": "java.lang.StringBuilder",
+      "method": "append",
+      "descriptor": "(Ljava/lang/String;)Ljava/lang/StringBuilder;",
+      "category": "java_core",
+      "call_count": 65,
+      "apps_using": 13,
+      "success_rate": 0.0,
+      "status": "not_started",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 67.0,
+      "aosp_source": "libcore/ojluni/src/main/java/java/lang/StringBuilder.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.app.Activity.getIntent",
+      "api_class": "android.app.Activity",
+      "method": "getIntent",
+      "descriptor": "()Landroid/content/Intent;",
+      "category": "activity_lifecycle",
+      "call_count": 60,
+      "apps_using": 6,
+      "success_rate": 0.0,
+      "status": "not_started",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 66.0,
+      "aosp_source": "frameworks/base/core/java/android/app/Activity.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.widget.TextView.setText",
+      "api_class": "android.widget.TextView",
+      "method": "setText",
+      "descriptor": "(Ljava/lang/CharSequence;)V",
+      "category": "view_system",
+      "call_count": 90,
+      "apps_using": 6,
+      "success_rate": 0.0,
+      "status": "stubbed",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct",
+        "iget",
+        "iput"
+      ],
+      "required_fields": [
+        "mText",
+        "mOnClickListener"
+      ],
+      "depends_on_apis": [],
+      "priority_score": 63.8,
+      "aosp_source": "frameworks/base/core/java/android/widget/TextView.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "java.lang.StringBuilder.<init>",
+      "api_class": "java.lang.StringBuilder",
+      "method": "<init>",
+      "descriptor": "()V",
+      "category": "java_core",
+      "call_count": 60,
+      "apps_using": 12,
+      "success_rate": 0.0,
+      "status": "not_started",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 63.0,
+      "aosp_source": "libcore/ojluni/src/main/java/java/lang/StringBuilder.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.app.Activity.getResources",
+      "api_class": "android.app.Activity",
+      "method": "getResources",
+      "descriptor": "()Landroid/content/res/Resources;",
+      "category": "activity_lifecycle",
+      "call_count": 55,
+      "apps_using": 5,
+      "success_rate": 0.0,
+      "status": "not_started",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 62.0,
+      "aosp_source": "frameworks/base/core/java/android/app/Activity.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "java.lang.StringBuilder.toString",
+      "api_class": "java.lang.StringBuilder",
+      "method": "toString",
+      "descriptor": "()Ljava/lang/String;",
+      "category": "java_core",
+      "call_count": 58,
+      "apps_using": 11,
+      "success_rate": 0.0,
+      "status": "not_started",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 60.2,
+      "aosp_source": "libcore/ojluni/src/main/java/java/lang/StringBuilder.java",
+      "aosp_complexity": "EASY"
+    },
+    {
+      "api": "android.app.Activity.finish",
+      "api_class": "android.app.Activity",
+      "method": "finish",
+      "descriptor": "()V",
+      "category": "activity_lifecycle",
+      "call_count": 50,
+      "apps_using": 5,
+      "success_rate": 0.0,
+      "status": "not_started",
+      "stub_behavior": "",
+      "required_opcodes": [
+        "invoke-virtual",
+        "invoke-direct"
+      ],
+      "required_fields": [],
+      "depends_on_apis": [],
+      "priority_score": 60.0,
+      "aosp_source": "frameworks/base/core/java/android/app/Activity.java",
+      "aosp_complexity": "EASY"
+    }
+  ],
+  "dependency_graph": {
+    "android.app.Activity.onCreate": [],
+    "android.app.Activity.onStart": [],
+    "android.app.Activity.onResume": [],
+    "android.app.Activity.onPause": [],
+    "android.app.Activity.onStop": [],
+    "android.app.Activity.onDestroy": [],
+    "android.app.Activity.setContentView": [],
+    "android.app.Activity.findViewById": [],
+    "android.app.Activity.getIntent": [],
+    "android.app.Activity.setResult": [],
+    "android.app.Activity.finish": [],
+    "android.app.Activity.getApplicationContext": [],
+    "android.app.Activity.getResources": [],
+    "android.app.Activity.getPackageName": [],
+    "android.app.Activity.getWindow": [],
+    "android.widget.TextView.setText": [],
+    "android.widget.TextView.getText": [],
+    "android.widget.TextView.setTextColor": [],
+    "android.widget.TextView.setTextSize": [],
+    "android.view.View.setOnClickListener": [],
+    "android.view.View.setVisibility": [],
+    "android.view.View.setEnabled": [],
+    "android.view.View.getId": [],
+    "android.view.View.getParent": [],
+    "android.view.ViewGroup.addView": [],
+    "android.view.ViewGroup.removeView": [],
+    "android.view.ViewGroup.getChildCount": [],
+    "android.widget.LinearLayout.setOrientation": [],
+    "android.widget.Button.<init>": [],
+    "android.widget.ImageView.setImageResource": []
+  },
+  "phased_implementation_plan": {
+    "PHASE_A_CRITICAL_PATH": {
+      "description": "Critical path APIs - Activity lifecycle + basic Views",
+      "apis": [
+        "ApiEntry(api_class='java.lang.String', method='toString', descriptor='()Ljava/lang/String;', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=95, apps_using=19, success_rate=0.0, status=<ImplementationStatus.STUBBED: 'stubbed'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=100.10000000000001, aosp_source='libcore/ojluni/src/main/java/java/lang/String.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.app.Activity', method='onCreate', descriptor='(Landroid/os/Bundle;)V', category=<ApiCategory.ACTIVITY_LIFECYCLE: 'activity_lifecycle'>, call_count=100, apps_using=10, success_rate=0.0, status=<ImplementationStatus.STUBBED: 'stubbed'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=99.00000000000001, aosp_source='frameworks/base/core/java/android/app/Activity.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.app.Activity', method='setContentView', descriptor='(I)V', category=<ApiCategory.ACTIVITY_LIFECYCLE: 'activity_lifecycle'>, call_count=98, apps_using=9, success_rate=0.0, status=<ImplementationStatus.STUBBED: 'stubbed'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=95.92000000000002, aosp_source='frameworks/base/core/java/android/app/Activity.java', aosp_complexity='MEDIUM')",
+        "ApiEntry(api_class='java.lang.Object', method='<init>', descriptor='()V', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=90, apps_using=18, success_rate=0.0, status=<ImplementationStatus.STUBBED: 'stubbed'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=95.7, aosp_source='libcore/ojluni/src/main/java/java/lang/Object.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.app.Activity', method='onStart', descriptor='()V', category=<ApiCategory.ACTIVITY_LIFECYCLE: 'activity_lifecycle'>, call_count=95, apps_using=9, success_rate=0.0, status=<ImplementationStatus.STUBBED: 'stubbed'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=94.60000000000001, aosp_source='frameworks/base/core/java/android/app/Activity.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.app.Activity', method='findViewById', descriptor='(I)Landroid/view/View;', category=<ApiCategory.ACTIVITY_LIFECYCLE: 'activity_lifecycle'>, call_count=95, apps_using=9, success_rate=0.0, status=<ImplementationStatus.STUBBED: 'stubbed'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=94.60000000000001, aosp_source='frameworks/base/core/java/android/app/Activity.java', aosp_complexity='MEDIUM')",
+        "ApiEntry(api_class='java.lang.String', method='equals', descriptor='(Ljava/lang/Object;)Z', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=85, apps_using=17, success_rate=0.0, status=<ImplementationStatus.STUBBED: 'stubbed'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=91.30000000000001, aosp_source='libcore/ojluni/src/main/java/java/lang/String.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.app.Activity', method='onResume', descriptor='()V', category=<ApiCategory.ACTIVITY_LIFECYCLE: 'activity_lifecycle'>, call_count=90, apps_using=9, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=84.0, aosp_source='frameworks/base/core/java/android/app/Activity.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.app.Activity', method='onPause', descriptor='()V', category=<ApiCategory.ACTIVITY_LIFECYCLE: 'activity_lifecycle'>, call_count=85, apps_using=8, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=80.0, aosp_source='frameworks/base/core/java/android/app/Activity.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='java.lang.String', method='length', descriptor='()I', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=80, apps_using=16, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=79.0, aosp_source='libcore/ojluni/src/main/java/java/lang/String.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.app.Activity', method='getApplicationContext', descriptor='()Landroid/content/Context;', category=<ApiCategory.ACTIVITY_LIFECYCLE: 'activity_lifecycle'>, call_count=75, apps_using=7, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=74.0, aosp_source='frameworks/base/core/java/android/app/Activity.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.app.Activity', method='onStop', descriptor='()V', category=<ApiCategory.ACTIVITY_LIFECYCLE: 'activity_lifecycle'>, call_count=70, apps_using=7, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=72.0, aosp_source='frameworks/base/core/java/android/app/Activity.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.app.Activity', method='onDestroy', descriptor='()V', category=<ApiCategory.ACTIVITY_LIFECYCLE: 'activity_lifecycle'>, call_count=65, apps_using=6, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=68.0, aosp_source='frameworks/base/core/java/android/app/Activity.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='java.lang.StringBuilder', method='append', descriptor='(Ljava/lang/String;)Ljava/lang/StringBuilder;', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=65, apps_using=13, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=67.0, aosp_source='libcore/ojluni/src/main/java/java/lang/StringBuilder.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.app.Activity', method='getIntent', descriptor='()Landroid/content/Intent;', category=<ApiCategory.ACTIVITY_LIFECYCLE: 'activity_lifecycle'>, call_count=60, apps_using=6, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=66.0, aosp_source='frameworks/base/core/java/android/app/Activity.java', aosp_complexity='EASY')"
+      ],
+      "estimated_effort": "2-3 days",
+      "prerequisites": [
+        "Basic opcode support (const, move, invoke, return)",
+        "Object allocation (new-instance)"
+      ],
+      "api_names": [
+        "java.lang.String.toString",
+        "android.app.Activity.onCreate",
+        "android.app.Activity.setContentView",
+        "java.lang.Object.<init>",
+        "android.app.Activity.onStart",
+        "android.app.Activity.findViewById",
+        "java.lang.String.equals",
+        "android.app.Activity.onResume",
+        "android.app.Activity.onPause",
+        "java.lang.String.length",
+        "android.app.Activity.getApplicationContext",
+        "android.app.Activity.onStop",
+        "android.app.Activity.onDestroy",
+        "java.lang.StringBuilder.append",
+        "android.app.Activity.getIntent"
+      ]
+    },
+    "PHASE_B_UI_VISIBILITY": {
+      "description": "UI rendering APIs - TextView, Button, LinearLayout",
+      "apis": [
+        "ApiEntry(api_class='android.view.ViewGroup', method='addView', descriptor='(Landroid/view/View;)V', category=<ApiCategory.VIEW_SYSTEM: 'view_system'>, call_count=80, apps_using=5, success_rate=0.0, status=<ImplementationStatus.STUBBED: 'stubbed'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct', 'iget', 'iput'], required_fields=['mText', 'mOnClickListener'], depends_on_apis=[], priority_score=48.62, aosp_source='frameworks/base/core/java/android/view/ViewGroup.java', aosp_complexity='HARD')",
+        "ApiEntry(api_class='java.lang.Integer', method='intValue', descriptor='()I', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=42, apps_using=8, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=47.8, aosp_source='libcore/ojluni/src/main/java/java/lang/Integer.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='java.lang.String', method='charAt', descriptor='(I)C', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=40, apps_using=8, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=47.0, aosp_source='libcore/ojluni/src/main/java/java/lang/String.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='java.lang.String', method='substring', descriptor='(II)Ljava/lang/String;', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=35, apps_using=7, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=43.0, aosp_source='libcore/ojluni/src/main/java/java/lang/String.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='java.util.HashMap', method='put', descriptor='(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=35, apps_using=7, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=43.0, aosp_source='libcore/ojluni/src/main/java/java/util/HashMap.java', aosp_complexity='MEDIUM')",
+        "ApiEntry(api_class='android.widget.TextView', method='getText', descriptor='()Ljava/lang/CharSequence;', category=<ApiCategory.VIEW_SYSTEM: 'view_system'>, call_count=60, apps_using=4, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct', 'iget', 'iput'], required_fields=['mText', 'mOnClickListener'], depends_on_apis=[], priority_score=42.0, aosp_source='frameworks/base/core/java/android/widget/TextView.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.widget.Button', method='<init>', descriptor='(Landroid/content/Context;Landroid/util/AttributeSet;)V', category=<ApiCategory.VIEW_SYSTEM: 'view_system'>, call_count=60, apps_using=4, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct', 'iget', 'iput'], required_fields=[], depends_on_apis=[], priority_score=42.0, aosp_source='frameworks/base/core/java/android/widget/Button.java', aosp_complexity='MEDIUM')",
+        "ApiEntry(api_class='java.util.HashMap', method='get', descriptor='(Ljava/lang/Object;)Ljava/lang/Object;', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=32, apps_using=6, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=39.8, aosp_source='libcore/ojluni/src/main/java/java/util/HashMap.java', aosp_complexity='MEDIUM')",
+        "ApiEntry(api_class='java.util.HashMap', method='<init>', descriptor='()V', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=30, apps_using=6, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=39.0, aosp_source='libcore/ojluni/src/main/java/java/util/HashMap.java', aosp_complexity='MEDIUM')",
+        "ApiEntry(api_class='android.view.View', method='setVisibility', descriptor='(I)V', category=<ApiCategory.VIEW_SYSTEM: 'view_system'>, call_count=50, apps_using=3, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct', 'iget', 'iput'], required_fields=['mText', 'mOnClickListener'], depends_on_apis=[], priority_score=36.0, aosp_source='frameworks/base/core/java/android/view/View.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='java.lang.String', method='concat', descriptor='(Ljava/lang/String;)Ljava/lang/String;', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=25, apps_using=5, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=35.0, aosp_source='libcore/ojluni/src/main/java/java/lang/String.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.widget.EditText', method='getText', descriptor='()Landroid/text/Editable;', category=<ApiCategory.VIEW_SYSTEM: 'view_system'>, call_count=45, apps_using=3, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct', 'iget', 'iput'], required_fields=[], depends_on_apis=[], priority_score=34.0, aosp_source='frameworks/base/core/java/android/widget/EditText.java', aosp_complexity='MEDIUM')",
+        "ApiEntry(api_class='android.widget.EditText', method='setText', descriptor='(Ljava/lang/CharSequence;)V', category=<ApiCategory.VIEW_SYSTEM: 'view_system'>, call_count=45, apps_using=3, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct', 'iget', 'iput'], required_fields=[], depends_on_apis=[], priority_score=34.0, aosp_source='frameworks/base/core/java/android/widget/EditText.java', aosp_complexity='MEDIUM')",
+        "ApiEntry(api_class='java.lang.Object', method='getClass', descriptor='()Ljava/lang/Class;', category=<ApiCategory.JAVA_CORE: 'java_core'>, call_count=30, apps_using=6, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct'], required_fields=[], depends_on_apis=[], priority_score=33.15, aosp_source='libcore/ojluni/src/main/java/java/lang/Object.java', aosp_complexity='HARD')",
+        "ApiEntry(api_class='android.view.View', method='getId', descriptor='()I', category=<ApiCategory.VIEW_SYSTEM: 'view_system'>, call_count=40, apps_using=2, success_rate=0.0, status=<ImplementationStatus.NOT_STARTED: 'not_started'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct', 'iget', 'iput'], required_fields=['mText', 'mOnClickListener'], depends_on_apis=[], priority_score=30.0, aosp_source='frameworks/base/core/java/android/view/View.java', aosp_complexity='EASY')"
+      ],
+      "estimated_effort": "3-5 days",
+      "prerequisites": [
+        "PHASE_A_COMPLETE",
+        "Field operation opcodes (iget/iput)"
+      ],
+      "api_names": [
+        "android.view.ViewGroup.addView",
+        "java.lang.Integer.intValue",
+        "java.lang.String.charAt",
+        "java.lang.String.substring",
+        "java.util.HashMap.put",
+        "android.widget.TextView.getText",
+        "android.widget.Button.<init>",
+        "java.util.HashMap.get",
+        "java.util.HashMap.<init>",
+        "android.view.View.setVisibility",
+        "java.lang.String.concat",
+        "android.widget.EditText.getText",
+        "android.widget.EditText.setText",
+        "java.lang.Object.getClass",
+        "android.view.View.getId"
+      ]
+    },
+    "PHASE_C_INTERACTION": {
+      "description": "User interaction - Click handlers, Intents, navigation",
+      "apis": [
+        "ApiEntry(api_class='android.app.Activity', method='startActivity', descriptor='(Landroid/content/Intent;)V', category=<ApiCategory.INTENT_SYSTEM: 'intent_system'>, call_count=60, apps_using=7, success_rate=0.0, status=<ImplementationStatus.STUBBED: 'stubbed'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct', 'new-instance'], required_fields=[], depends_on_apis=[], priority_score=35.53, aosp_source='frameworks/base/core/java/android/app/Activity.java', aosp_complexity='HARD')",
+        "ApiEntry(api_class='android.content.Intent', method='putExtra', descriptor='(Ljava/lang/String;Ljava/lang/String;)Landroid/content/Intent;', category=<ApiCategory.INTENT_SYSTEM: 'intent_system'>, call_count=50, apps_using=6, success_rate=0.0, status=<ImplementationStatus.STUBBED: 'stubbed'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct', 'new-instance'], required_fields=[], depends_on_apis=[], priority_score=35.2, aosp_source='frameworks/base/core/java/android/content/Intent.java', aosp_complexity='EASY')",
+        "ApiEntry(api_class='android.content.Intent', method='getStringExtra', descriptor='(Ljava/lang/String;)Ljava/lang/String;', category=<ApiCategory.INTENT_SYSTEM: 'intent_system'>, call_count=48, apps_using=6, success_rate=0.0, status=<ImplementationStatus.STUBBED: 'stubbed'>, stub_behavior='', required_opcodes=['invoke-virtual', 'invoke-direct', 'new-instance'], required_fields=[], depends_on_apis=[], priority_score=34.32000000000001, aosp_source='frameworks/base/core/java/android/content/Intent.java', aosp_complexity='EASY')"
+      ],
+      "estimated_effort": "3-4 days",
+      "prerequisites": [
+        "PHASE_B_COMPLETE",
+        "Virtual dispatch (VTable)"
+      ],
+      "api_names": [
+        "android.app.Activity.startActivity",
+        "android.content.Intent.putExtra",
+        "android.content.Intent.getStringExtra"
+      ]
+    },
+    "PHASE_D_PERSISTENCE": {
+      "description": "Data persistence - SharedPreferences, files",
+      "apis": [],
+      "estimated_effort": "2-3 days",
+      "prerequisites": [
+        "PHASE_C_COMPLETE",
+        "Interface invocation"
+      ],
+      "api_names": []
+    },
+    "PHASE_E_ADVANCED": {
+      "description": "Advanced features - Graphics, networking, services",
+      "apis": [],
+      "estimated_effort": "5-7 days",
+      "prerequisites": [
+        "PHASE_D_COMPLETE",
+        "Full opcode coverage"
+      ],
+      "api_names": []
+    }
+  },
+  "infrastructure_requirements": {
+    "opcode_coverage_needed": {
+      "current_percent": 13.33,
+      "target_for_phase_a": 25,
+      "target_for_phase_b": 40,
+      "target_for_phase_c": 55,
+      "target_for_complete": 100
+    },
+    "object_model_features": {
+      "phase_4_status": "CREATED",
+      "needed_for_phase_a": [
+        "Basic HeapObject",
+        "ClassInfo lookup"
+      ],
+      "needed_for_phase_b": [
+        "Field offset tables",
+        "Instance field storage"
+      ],
+      "needed_for_phase_c": [
+        "VTable construction",
+        "Interface dispatch"
+      ]
+    },
+    "test_apks_needed": {
+      "minimum_viable": 5,
+      "recommended": 15,
+      "current_valid": 2
+    }
+  },
+  "risk_assessment": [
+    {
+      "risk": "Field operations (iget/iput) are 0% implemented but needed for 28+ opcodes",
+      "probability": "HIGH",
+      "impact": "BLOCKS most UI APIs",
+      "mitigation": "Phase 4 object model improvements address this"
+    },
+    {
+      "risk": "Virtual dispatch through VTable not implemented",
+      "probability": "HIGH",
+      "impact": "Blocks polymorphic calls (onClick, etc.)",
+      "mitigation": "Phase 4 VTable design ready for C++ port"
+    },
+    {
+      "risk": "Limited test APK coverage may miss edge cases",
+      "probability": "MEDIUM",
+      "impact": "False confidence in implementation correctness",
+      "mitigation": "Acquire more diverse test APKs; focus on synthetic DEX for specific opcodes"
+    }
+  ],
+  "success_metrics": {
+    "phase_a_success": "Can execute onCreate() \u2192 setContentView() \u2192 findViewById() trace",
+    "phase_b_success": "Can render TextView with setText() output visible",
+    "phase_c_success": "Button click triggers onClick handler correctly",
+    "phase_d_success": "SharedPreferences persist and restore values",
+    "overall_success": "Real F-Droid app launches and shows UI"
+  }
+}
