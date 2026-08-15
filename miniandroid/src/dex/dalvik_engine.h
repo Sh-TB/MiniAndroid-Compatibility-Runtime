@@ -634,13 +634,25 @@ private:
 
 class DalvikHeap {
 public:
-    DalvikHeap() : next_id_(1), alloc_sequence_(0) {}
+    DalvikHeap() : next_id_(1), alloc_sequence_(0), allocation_log_cap_(1000) {}
+    
+    // EXP-042 Phase 1: cap the allocation log ring buffer.
+    void set_allocation_log_cap(size_t cap) { allocation_log_cap_ = cap; }
     
     uint32_t allocate(const std::string& class_desc, uint32_t pc, uint32_t frame_id) {
         HeapObject obj(next_id_++, class_desc, alloc_sequence_++, pc, frame_id);
         objects_[obj.object_id] = obj;
         
-        // Log allocation
+        // EXP-042 Phase 1: ring-buffer the allocation log. Each json entry is
+        // ~256 B; uncapped, 10 M allocations would consume 2.5 GB. With cap=1000
+        // we keep the last 1 000 allocations (~256 KB) — enough for diagnostic
+        // purposes.
+        if (allocation_log_cap_ > 0 &&
+            allocation_log_.size() >= allocation_log_cap_) {
+            // nlohmann::json::array() uses a vector internally; erase from
+            // the front is O(N) but N=1000 is trivial.
+            allocation_log_.erase(allocation_log_.begin());
+        }
         allocation_log_.push_back({
             {"object_id", obj.object_id},
             {"class", class_desc},
@@ -722,6 +734,7 @@ private:
     uint32_t next_id_;
     uint64_t alloc_sequence_;
     json allocation_log_;
+    size_t allocation_log_cap_;  // EXP-042 Phase 1: 0 = unbounded.
 };
 
 // ============================================================================
@@ -730,7 +743,13 @@ private:
 
 class CallStack {
 public:
-    CallStack() : next_frame_id_(1), max_depth_(0), current_depth_(0) {}
+    CallStack() : next_frame_id_(1), max_depth_(0), current_depth_(0),
+                  completed_frame_cap_(100) {}
+    
+    // EXP-042 Phase 1: Ring-buffer cap on completed frames. Older frames are
+    // evicted to bound memory. The cap is consulted from DalvikExecutionEngine
+    // via set_completed_frame_cap() once config is loaded.
+    void set_completed_frame_cap(size_t cap) { completed_frame_cap_ = cap; }
     
     void push_frame(StackFrame&& frame) {
         frame.frame_id = next_frame_id_++;
@@ -752,6 +771,15 @@ public:
             frame.exit_time - frame.enter_time).count();
         frame.status = StackFrame::Status::RETURNED;
         
+        // EXP-042 Phase 1: Cap completed_frames_ to bound memory. Each frame
+        // embeds a DexRegisterFile (~16 DalvikValue entries × 88 B + set + map
+        // = ~2 KB). For deep recursive APKs (Telegram's Theme.getColor recurses
+        // 6 000+ times), an uncapped vector grows past 12 MB and pushes toward
+        // OOM. The cap keeps the last N frames; older frames are discarded.
+        if (completed_frame_cap_ > 0 &&
+            completed_frames_.size() >= completed_frame_cap_) {
+            completed_frames_.erase(completed_frames_.begin());
+        }
         completed_frames_.push_back(frame);
         current_depth_ = stack_.size();
         
@@ -806,6 +834,8 @@ private:
     uint32_t next_frame_id_;
     size_t max_depth_;
     size_t current_depth_;
+    // EXP-042 Phase 1: 0 = unbounded (NOT recommended for real APKs).
+    size_t completed_frame_cap_;
 };
 
 // ============================================================================
@@ -1053,16 +1083,38 @@ public:
      */
     const CallStack& get_call_stack() const { return call_stack_; }
     const DalvikHeap& get_heap() const { return heap_; }
+    // EXP-042 Phase 1: non-const accessors so ApplicationRuntime can configure
+    // ring-buffer caps before execution begins.
+    CallStack& get_call_stack() { return call_stack_; }
+    DalvikHeap& get_heap() { return heap_; }
     std::string get_last_error() const { return last_error_; }
     
     // Configuration
     struct Config {
         bool verbose = false;
         bool debug_output = false;
-        uint64_t max_instructions = 10000000;
+        uint64_t max_instructions = 100000000;  // EXP-042: 100M (was 10M)
         bool stop_on_unimplemented = true;
         bool generate_trace = true;
         bool enable_api_bridge = true;
+        // EXP-042 Phase 1: Per-instruction register snapshots are the #1 memory
+        // offender (registers_before + registers_after = 2 × 16 × 152 B ≈ 5 KB
+        // per instruction). When disabled (default), trace.registers_before/after
+        // remain empty and the diff loop is skipped. Enable explicitly only when
+        // debugging a specific opcode.
+        bool trace_register_snapshots = false;
+        // EXP-042 Phase 1: Ring-buffer caps. These bound memory regardless of
+        // how many instructions execute. Set to 0 to disable capping (NOT
+        // recommended for real APKs — will OOM).
+        size_t trace_cap = 2000;             // last N instruction traces
+        size_t api_call_trace_cap = 5000;    // last N API call traces
+        size_t completed_frame_cap = 100;   // last N completed stack frames
+        size_t allocation_log_cap = 1000;    // last N heap allocations
+        // EXP-042 Phase 1: Loop detection. Halts only when the same PC is
+        // visited this many times within the SAME frame. 50 000 allows
+        // legitimate loops (e.g. Theme.getColor iterating color tables) while
+        // still catching true infinite loops.
+        uint32_t loop_visit_threshold = 50000;
     };
 
     // EXP-039: Public access to config for ApplicationRuntime
@@ -1203,6 +1255,8 @@ private:
     bool bridge_to_api(const std::string& class_name, const std::string& method,
                        const std::vector<DalvikValue>& args, DalvikValue& result,
                        ApiCallTrace::Status& status);
+    // EXP-042 Phase 4: Singleton cache helper for Android framework objects.
+    DalvikValue get_or_create_singleton(const std::string& class_desc);
     
     // Utility
     void log(const std::string& msg);
@@ -1225,6 +1279,13 @@ private:
     // not exist, breaking the entire build since EXP-035.
     std::map<std::string, DalvikValue> static_field_storage_;  // key: "class_descriptor.field_name"
     std::map<std::string, std::shared_ptr<runtime::RuntimeClassInfo>> class_info_cache_;  // cached class metadata
+
+    // EXP-042 Phase 4: Singleton cache for Android framework objects.
+    // Key: class descriptor (e.g. "Landroid/content/res/Resources;").
+    // Value: heap object ID. Returns the same heap object across all calls,
+    // matching real Android behavior where getResources() always returns the
+    // same Resources instance for a given Context.
+    std::map<std::string, uint32_t> api_singletons_;
     
     // EXP-035: VTable Dispatch State
     runtime::VirtualDispatcher vtable_dispatcher_;  // VTable-based method resolution
@@ -1250,6 +1311,8 @@ private:
     bool halted_on_return_ = false;
     std::string halt_reason_;
     std::string last_error_;
+    // EXP-042 Phase 1: Per-frame loop detection. Reset in execute_method_internal().
+    std::map<uint32_t, uint32_t> pc_visit_count_;
     
     DalvikExecutionResult* current_result_ = nullptr;
     // config_ moved to public section above
