@@ -647,6 +647,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 ) {
     if (!dex_report_) return false;
 
+    // EXP-040: Recursion depth protection
+    if (recursion_depth_ >= MAX_RECURSION_DEPTH) {
+        log("⚠️ RECURSION LIMIT: depth=" + std::to_string(recursion_depth_) +
+            " for " + declaring_class + "." + method_name + " — falling back to API bridge");
+        return false;  // Fall back to API bridge
+    }
+    recursion_depth_++;
+
     // Convert declaring_class to DEX descriptor form if needed
     // declaring_class may be "Lcom/foo/Bar;" (descriptor) or "com.foo.Bar" (readable)
     std::string class_descriptor = declaring_class;
@@ -721,10 +729,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // Get return value from result (simplified — return void for now)
             return_val = DalvikValue::make_void();
             log("✅ RECURSIVE INVOKE completed: " + cls.name + "." + method.name);
+            recursion_depth_--;
             return true;
         }
     }
 
+    recursion_depth_--;
     return false;  // method not found in DEX, bridge to API
 }
 
@@ -1226,7 +1236,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 }
 
             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
-            ARITH_LIT8_CASE(SUB_INT_LIT8, "sub-int/lit8", "sub")
+            ARITH_LIT8_CASE(RSUB_INT_LIT8, "sub-int/lit8", "sub")
             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
@@ -1260,7 +1270,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 }
 
             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
-            ARITH_LIT16_CASE(SUB_INT_LIT16, "rsub-int", "sub")
+            ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "sub")
             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
@@ -1268,7 +1278,258 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
             #undef ARITH_LIT16_CASE
-            
+
+            // EXP-040: Missing opcodes from Telegram execution
+            // move/from16 (22x: AA|op BBBB, 2 code units)
+            case Opcode::MOVE_FROM16: {
+                if (pc_ + 1 >= bytecode_.size()) return false;
+                uint8_t dest = (bytecode_[pc_] >> 8) & 0xFF;
+                uint16_t src = bytecode_[pc_ + 1];
+                DalvikValue val = get_register(static_cast<uint8_t>(src));
+                set_register(dest, val);
+                trace.opcode_name = "move/from16";
+                pc_ += 2;
+                break;
+            }
+            // move-result-wide (11x: AA|op, 1 code unit)
+            case Opcode::MOVE_RESULT_WIDE: {
+                uint16_t instr = bytecode_[pc_];
+                uint8_t dest = (instr >> 8) & 0xFF;
+                DalvikValue val = DalvikValue::make_int(0); // simplified
+                set_register(dest, val);
+                trace.opcode_name = "move-result-wide";
+                pc_ += 1;
+                break;
+            }
+            // const-string/jumbo (31c: AA|op BBBBBBBB, 3 code units)
+            case Opcode::CONST_STRING_JUMBO: {
+                if (pc_ + 2 >= bytecode_.size()) return false;
+                uint16_t instr = bytecode_[pc_];
+                uint8_t dest = (instr >> 8) & 0xFF;
+                uint32_t string_idx = (bytecode_[pc_ + 2] << 16) | bytecode_[pc_ + 1];
+                DalvikValue val;
+                val.type = DalvikType::STRING_REF;
+                val.int_val = string_idx;
+                if (dex_report_ && string_idx < dex_report_->strings.size()) {
+                    val.string_val = dex_report_->strings[string_idx];
+                }
+                set_register(dest, val);
+                trace.opcode_name = "const-string/jumbo";
+                pc_ += 3;
+                break;
+            }
+
+            // Conversion opcodes (12x: B|A|op, 1 code unit) — simplified: just copy
+            #define CONV_CASE(opcode, op_name) \
+                case Opcode::opcode: { \
+                    uint16_t instr = bytecode_[pc_]; \
+                    uint8_t vA = (instr >> 8) & 0xF; \
+                    uint8_t vB = (instr >> 12) & 0xF; \
+                    DalvikValue val = get_register(vB); \
+                    val.type = DalvikType::INT32; /* simplified: treat as int */ \
+                    set_register(vA, val); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 1; \
+                    break; \
+                }
+            CONV_CASE(INT_TO_LONG, "int-to-long")
+            CONV_CASE(INT_TO_FLOAT, "int-to-float")
+            CONV_CASE(INT_TO_DOUBLE, "int-to-double")
+            CONV_CASE(LONG_TO_INT, "long-to-int")
+            CONV_CASE(LONG_TO_FLOAT, "long-to-float")
+            CONV_CASE(LONG_TO_DOUBLE, "long-to-double")
+            CONV_CASE(FLOAT_TO_INT, "float-to-int")
+            CONV_CASE(FLOAT_TO_LONG, "float-to-long")
+            CONV_CASE(FLOAT_TO_DOUBLE, "float-to-double")
+            CONV_CASE(DOUBLE_TO_INT, "double-to-int")
+            CONV_CASE(DOUBLE_TO_LONG, "double-to-long")
+            CONV_CASE(DOUBLE_TO_FLOAT, "double-to-float")
+            CONV_CASE(INT_TO_BYTE, "int-to-byte")
+            CONV_CASE(INT_TO_CHAR, "int-to-char")
+            CONV_CASE(INT_TO_SHORT, "int-to-short")
+            #undef CONV_CASE
+
+            // Float/Double/Long arithmetic (23x: AA|op BB|CC, 2 code units)
+            #define ARITH_23X_FLOAT_CASE(opcode, op_name, op) \
+                case Opcode::opcode: { \
+                    uint16_t instr = bytecode_[pc_]; \
+                    uint8_t vAA = (instr >> 8) & 0xFF; \
+                    uint8_t vBB = bytecode_[pc_ + 1] & 0xFF; \
+                    uint8_t vCC = (bytecode_[pc_ + 1] >> 8) & 0xFF; \
+                    DalvikValue b = get_register(vBB); \
+                    DalvikValue c = get_register(vCC); \
+                    DalvikValue result_val; \
+                    result_val.type = DalvikType::FLOAT32; \
+                    float bf = (b.type == DalvikType::FLOAT32) ? b.float_val : (float)b.int_val; \
+                    float cf = (c.type == DalvikType::FLOAT32) ? c.float_val : (float)c.int_val; \
+                    if (op == "add") result_val.float_val = bf + cf; \
+                    else if (op == "sub") result_val.float_val = bf - cf; \
+                    else if (op == "mul") result_val.float_val = bf * cf; \
+                    else if (op == "div") result_val.float_val = (cf != 0) ? bf / cf : 0; \
+                    else if (op == "rem") result_val.float_val = fmodf(bf, cf); \
+                    set_register(vAA, result_val); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 2; \
+                    break; \
+                }
+            ARITH_23X_FLOAT_CASE(ADD_FLOAT, "add-float", "add")
+            ARITH_23X_FLOAT_CASE(SUB_FLOAT, "sub-float", "sub")
+            ARITH_23X_FLOAT_CASE(MUL_FLOAT, "mul-float", "mul")
+            ARITH_23X_FLOAT_CASE(DIV_FLOAT, "div-float", "div")
+            ARITH_23X_FLOAT_CASE(REM_FLOAT, "rem-float", "rem")
+            #undef ARITH_23X_FLOAT_CASE
+
+            // cmp opcodes (23x) — simplified: compare as ints
+            #define CMP_CASE(opcode, op_name) \
+                case Opcode::opcode: { \
+                    uint16_t instr = bytecode_[pc_]; \
+                    uint8_t vAA = (instr >> 8) & 0xFF; \
+                    uint8_t vBB = bytecode_[pc_ + 1] & 0xFF; \
+                    uint8_t vCC = (bytecode_[pc_ + 1] >> 8) & 0xFF; \
+                    DalvikValue b = get_register(vBB); \
+                    DalvikValue c = get_register(vCC); \
+                    DalvikValue result_val; \
+                    result_val.type = DalvikType::INT32; \
+                    int32_t bv = (b.type == DalvikType::INT32) ? b.int_val : 0; \
+                    int32_t cv = (c.type == DalvikType::INT32) ? c.int_val : 0; \
+                    result_val.int_val = (bv < cv) ? -1 : (bv > cv) ? 1 : 0; \
+                    set_register(vAA, result_val); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 2; \
+                    break; \
+                }
+            CMP_CASE(CMPL_FLOAT, "cmpl-float")
+            CMP_CASE(CMPG_FLOAT, "cmpg-float")
+            CMP_CASE(CMPL_DOUBLE, "cmpl-double")
+            CMP_CASE(CMPG_DOUBLE, "cmpg-double")
+            CMP_CASE(CMP_LONG, "cmp-long")
+            #undef CMP_CASE
+
+            // Long arithmetic (23x) — simplified: use int values
+            #define ARITH_LONG_CASE(opcode, op_name, op) \
+                case Opcode::opcode: { \
+                    uint16_t instr = bytecode_[pc_]; \
+                    uint8_t vAA = (instr >> 8) & 0xFF; \
+                    uint8_t vBB = bytecode_[pc_ + 1] & 0xFF; \
+                    uint8_t vCC = (bytecode_[pc_ + 1] >> 8) & 0xFF; \
+                    DalvikValue b = get_register(vBB); \
+                    DalvikValue c = get_register(vCC); \
+                    DalvikValue result_val; \
+                    result_val.type = DalvikType::INT64; \
+                    int32_t bv = (b.type == DalvikType::INT32 || b.type == DalvikType::INT64) ? b.int_val : 0; \
+                    int32_t cv = (c.type == DalvikType::INT32 || c.type == DalvikType::INT64) ? c.int_val : 0; \
+                    if (op == "add") result_val.int_val = bv + cv; \
+                    else if (op == "sub") result_val.int_val = bv - cv; \
+                    else if (op == "mul") result_val.int_val = bv * cv; \
+                    else if (op == "div") result_val.int_val = (cv != 0) ? bv / cv : 0; \
+                    else if (op == "rem") result_val.int_val = (cv != 0) ? bv % cv : 0; \
+                    else if (op == "and") result_val.int_val = bv & cv; \
+                    else if (op == "or")  result_val.int_val = bv | cv; \
+                    else if (op == "xor") result_val.int_val = bv ^ cv; \
+                    else if (op == "shl") result_val.int_val = bv << (cv & 0x3f); \
+                    else if (op == "shr") result_val.int_val = bv >> (cv & 0x3f); \
+                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(bv) >> (cv & 0x3f)); \
+                    set_register(vAA, result_val); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 2; \
+                    break; \
+                }
+            ARITH_LONG_CASE(ADD_LONG, "add-long", "add")
+            ARITH_LONG_CASE(SUB_LONG, "sub-long", "sub")
+            ARITH_LONG_CASE(MUL_LONG, "mul-long", "mul")
+            ARITH_LONG_CASE(DIV_LONG, "div-long", "div")
+            ARITH_LONG_CASE(REM_LONG, "rem-long", "rem")
+            ARITH_LONG_CASE(AND_LONG, "and-long", "and")
+            ARITH_LONG_CASE(OR_LONG, "or-long", "or")
+            ARITH_LONG_CASE(XOR_LONG, "xor-long", "xor")
+            ARITH_LONG_CASE(SHL_LONG, "shl-long", "shl")
+            ARITH_LONG_CASE(SHR_LONG, "shr-long", "shr")
+            ARITH_LONG_CASE(USHR_LONG, "ushr-long", "ushr")
+            #undef ARITH_LONG_CASE
+
+            // EXP-040: Remaining missing opcodes
+            // monitor-enter / monitor-exit (12x: B|A|op, 1 code unit)
+            case Opcode::MONITOR_ENTER: {
+                trace.opcode_name = "monitor-enter";
+                pc_ += 1;  // no-op in single-threaded runtime
+                break;
+            }
+            case Opcode::MONITOR_EXIT: {
+                trace.opcode_name = "monitor-exit";
+                pc_ += 1;  // no-op in single-threaded runtime
+                break;
+            }
+            // const-wide/32 (21i: AA|op BBBB, 2 code units)
+            case Opcode::CONST_WIDE_32: {
+                if (pc_ + 1 >= bytecode_.size()) return false;
+                uint16_t instr = bytecode_[pc_];
+                uint8_t vAA = (instr >> 8) & 0xFF;
+                int32_t val = static_cast<int32_t>(bytecode_[pc_ + 1]);
+                DalvikValue dv;
+                dv.type = DalvikType::INT64;
+                dv.int_val = val;
+                set_register(vAA, dv);
+                trace.opcode_name = "const-wide/32";
+                pc_ += 2;
+                break;
+            }
+            // iget-short / iput-short (22c: same as other iget/iput variants)
+            case Opcode::IGET_SHORT: {
+                success = execute_iget(pc_, trace);
+                trace.opcode_name = "iget-short";
+                break;
+            }
+            case Opcode::IPUT_SHORT: {
+                success = execute_iput(pc_, trace);
+                trace.opcode_name = "iput-short";
+                break;
+            }
+            // rem-double (23x: AA|op BB|CC, 2 code units)
+            case Opcode::REM_DOUBLE: {
+                uint16_t instr = bytecode_[pc_];
+                uint8_t vAA = (instr >> 8) & 0xFF;
+                uint8_t vBB = bytecode_[pc_ + 1] & 0xFF;
+                uint8_t vCC = (bytecode_[pc_ + 1] >> 8) & 0xFF;
+                DalvikValue b = get_register(vBB);
+                DalvikValue c = get_register(vCC);
+                DalvikValue result_val;
+                result_val.type = DalvikType::FLOAT64;
+                double bd = (b.type == DalvikType::FLOAT64) ? b.double_val : (double)b.int_val;
+                double cd = (c.type == DalvikType::FLOAT64) ? c.double_val : (double)c.int_val;
+                result_val.double_val = (cd != 0) ? fmod(bd, cd) : 0;
+                set_register(vAA, result_val);
+                trace.opcode_name = "rem-double";
+                pc_ += 2;
+                break;
+            }
+            // Double arithmetic (23x) — add the rest
+            #define ARITH_23X_DOUBLE_CASE(opcode, op_name, op) \
+                case Opcode::opcode: { \
+                    uint16_t instr = bytecode_[pc_]; \
+                    uint8_t vAA = (instr >> 8) & 0xFF; \
+                    uint8_t vBB = bytecode_[pc_ + 1] & 0xFF; \
+                    uint8_t vCC = (bytecode_[pc_ + 1] >> 8) & 0xFF; \
+                    DalvikValue b = get_register(vBB); \
+                    DalvikValue c = get_register(vCC); \
+                    DalvikValue result_val; \
+                    result_val.type = DalvikType::FLOAT64; \
+                    double bd = (b.type == DalvikType::FLOAT64) ? b.double_val : (double)b.int_val; \
+                    double cd = (c.type == DalvikType::FLOAT64) ? c.double_val : (double)c.int_val; \
+                    if (op == "add") result_val.double_val = bd + cd; \
+                    else if (op == "sub") result_val.double_val = bd - cd; \
+                    else if (op == "mul") result_val.double_val = bd * cd; \
+                    else if (op == "div") result_val.double_val = (cd != 0) ? bd / cd : 0; \
+                    set_register(vAA, result_val); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 2; \
+                    break; \
+                }
+            ARITH_23X_DOUBLE_CASE(ADD_DOUBLE, "add-double", "add")
+            ARITH_23X_DOUBLE_CASE(SUB_DOUBLE, "sub-double", "sub")
+            ARITH_23X_DOUBLE_CASE(MUL_DOUBLE, "mul-double", "mul")
+            ARITH_23X_DOUBLE_CASE(DIV_DOUBLE, "div-double", "div")
+            #undef ARITH_23X_DOUBLE_CASE
+
             default:
                 handle_unimplemented(opcode, pc_, trace);
                 trace.opcode_name = "unimplemented(0x" + to_hex16(opcode) + ")";
