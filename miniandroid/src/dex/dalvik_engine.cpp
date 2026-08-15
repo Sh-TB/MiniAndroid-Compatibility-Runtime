@@ -1279,6 +1279,29 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         result.instruction_traces.push_back(trace);
         result.total_instructions_executed++;
         result.total_opcodes_decoded++;
+
+        // EXP-039 (BLOCKER-036): Detect infinite loops.
+        // If the same PC is executed more than 100 times without any
+        // state change, we have a busy-wait/spin-lock infinite loop.
+        // This happens when real Android apps use synchronization primitives
+        // that rely on multi-threading (which we don't support yet).
+        // Instead of spinning forever, we break with a diagnostic message.
+        static thread_local std::map<uint32_t, uint32_t> pc_visit_count;
+        pc_visit_count[pc_]++;
+        if (pc_visit_count[pc_] > 100) {
+            halt_reason_ = "Infinite loop detected at PC=0x" + to_hex(pc_) +
+                          " (visited " + std::to_string(pc_visit_count[pc_]) +
+                          " times). Likely a busy-wait/spin-lock that requires threading.";
+            halted_ = true;
+            log("HALT: " + halt_reason_);
+            // Clear the map for the next method call
+            pc_visit_count.clear();
+            break;
+        }
+        // Clear visit counts periodically (every 1000 instructions)
+        if (result.total_instructions_executed % 1000 == 0) {
+            pc_visit_count.clear();
+        }
         
         // Log if verbose
         if (verbose_) {
@@ -2714,26 +2737,37 @@ bool DalvikExecutionEngine::execute_return_object(uint32_t pc, InstructionTrace&
 // ============================================================================
 
 bool DalvikExecutionEngine::execute_goto(uint32_t pc, InstructionTrace& trace) {
-    // Format: 10t [AA|op] — single 16-bit code unit
-    //   low byte (0xFF): opcode = 0x28
-    //   high byte (0xFF00): signed 8-bit branch offset
-    //
-    // EXP-037 Phase B (BLOCKER-014 FIX): The previous code read the offset
-    // from `bytecode_[pc + 1]` (the NEXT code unit) which is wrong — goto
-    // is a 10t format instruction with the offset packed into the high
-    // byte of the opcode word itself. This caused every goto to read the
-    // first byte of the FOLLOWING instruction as the offset, which
-    // corrupted the branch target and either jumped to garbage PCs or
-    // silently branched to invalid locations.
-    //
-    // For our test APK's onCreate:
-    //   PC=13: 0x0c28 → opcode=0x28 (goto), offset=0x0c (high byte)
-    //   target = pc + offset = 13 + 12 = 25
-    // After fix, execution will continue at PC=25 instead of reading
-    // bytecode_[14]=0x0214 and treating 0x02 as the offset (target=13+2=15).
+    // EXP-039 (BLOCKER-036 FIX): Handle all goto variants correctly.
+    // goto (0x28) = format 10t: AA|op (1 code unit, offset in high byte)
+    // goto/16 (0x29) = format 20t: op|AAAA (2 code units, offset in next word)
+    // goto/32 (0x2a) = format 30t: op|AAAAAAAA (3 code units, offset in next 2 words)
     if (pc >= bytecode_.size()) return false;
 
-    int8_t offset = static_cast<int8_t>((bytecode_[pc] >> 8) & 0xFF);
+    uint16_t opcode = bytecode_[pc] & 0xFF;
+
+    int32_t offset;
+    uint32_t pc_advance;
+
+    if (opcode == Opcode::GOTO) {
+        // Format 10t: offset is in high byte (signed 8-bit)
+        offset = static_cast<int8_t>((bytecode_[pc] >> 8) & 0xFF);
+        pc_advance = 1;
+    } else if (opcode == Opcode::GOTO_16) {
+        // Format 20t: offset is in next code unit (signed 16-bit)
+        if (pc + 1 >= bytecode_.size()) return false;
+        offset = static_cast<int16_t>(bytecode_[pc + 1]);
+        pc_advance = 2;
+    } else if (opcode == Opcode::GOTO_32) {
+        // Format 30t: offset is in next 2 code units (signed 32-bit)
+        if (pc + 2 >= bytecode_.size()) return false;
+        offset = static_cast<int32_t>((bytecode_[pc + 2] << 16) | bytecode_[pc + 1]);
+        pc_advance = 3;
+    } else {
+        // Unknown goto variant — treat as 10t
+        offset = static_cast<int8_t>((bytecode_[pc] >> 8) & 0xFF);
+        pc_advance = 1;
+    }
+
     uint32_t target = pc + offset;
 
     // Validate target
@@ -2750,7 +2784,7 @@ bool DalvikExecutionEngine::execute_goto(uint32_t pc, InstructionTrace& trace) {
                               ", bytecode_size=" + std::to_string(bytecode_.size()) + ")";
         halted_ = true;
         halt_reason_ = "Invalid goto target";
-        pc_ = pc + 1;  // 10t is 1 code unit
+        pc_ = pc + pc_advance;
     }
 
     return true;
