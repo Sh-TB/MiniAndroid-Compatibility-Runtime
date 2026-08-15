@@ -64,6 +64,7 @@ namespace Opcode {
     constexpr uint16_t MOVE_FROM16 = 0x02;   // move/from16 vAA, vBBBB
     constexpr uint16_t MOVE_16 = 0x03;       // move/16 vAAAA, vBBBB
     constexpr uint16_t MOVE_WIDE = 0x04;     // move-wide vA, vB
+    constexpr uint16_t MOVE_WIDE_FROM16 = 0x05; // move-wide/from16 vAA, vBBBB
     constexpr uint16_t MOVE_OBJECT = 0x07;   // move-object vA, vB
     constexpr uint16_t MOVE_OBJECT_FROM16 = 0x08; // move-object/from16 vAA, vBBBB
     constexpr uint16_t MOVE_OBJECT_16 = 0x09; // move-object/16 vAAAA, vBBBB
@@ -158,8 +159,9 @@ namespace Opcode {
     
     // Control flow (basic set)
     constexpr uint16_t GOTO = 0x28;           // goto +AA
-    constexpr uint16_t GOTO_16 = 0x29;        // goto/16 +AAAA
-    constexpr uint16_t GOTO_32 = 0x2A;        // goto/32 +AAAAAAAA
+    constexpr uint16_t GOTO_16 = 0x27;        // goto/16 +AAAA (EXP-040 FIX: was 0x29, should be 0x27)
+    constexpr uint16_t GOTO_32 = 0x29;        // goto/32 +AAAAAAAA (EXP-040 FIX: was 0x2a, should be 0x29)
+    constexpr uint16_t THROW = 0x26;           // throw vAA
     // EXP-038 (BLOCKER-029): Fixed if-eqz/if-nez opcode values.
     // Per AOSP: if-eqz=0x38, if-nez=0x39, if-ltz=0x3a, if-gez=0x3b,
     // if-gtz=0x3c, if-lez=0x3d
