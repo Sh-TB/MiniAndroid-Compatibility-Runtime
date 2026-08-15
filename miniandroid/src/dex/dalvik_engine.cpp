@@ -1448,6 +1448,37 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             #undef ARITH_LONG_CASE
 
             // EXP-040: Remaining missing opcodes
+            // throw (11x: AA|op, 1 code unit) — simplified: halt execution
+            case Opcode::THROW: {
+                trace.opcode_name = "throw";
+                log("⚠️ THROW at PC=0x" + to_hex(pc_) + " — halting (exception handling not implemented)");
+                halted_ = true;
+                halt_reason_ = "throw instruction executed (exception handling not implemented)";
+                pc_ += 1;
+                break;
+            }
+            // move/16 (32x: AAAA|op BBBB, 3 code units)
+            case Opcode::MOVE_16: {
+                if (pc_ + 2 >= bytecode_.size()) return false;
+                uint16_t src = bytecode_[pc_ + 1];
+                uint16_t dest = bytecode_[pc_ + 2];
+                DalvikValue val = get_register(static_cast<uint8_t>(src));
+                set_register(static_cast<uint8_t>(dest), val);
+                trace.opcode_name = "move/16";
+                pc_ += 3;
+                break;
+            }
+            // move-wide/from16 (22x: AA|op BBBB, 2 code units)
+            case Opcode::MOVE_WIDE_FROM16: {
+                if (pc_ + 1 >= bytecode_.size()) return false;
+                uint8_t dest = (bytecode_[pc_] >> 8) & 0xFF;
+                uint16_t src = bytecode_[pc_ + 1];
+                DalvikValue val = get_register(static_cast<uint8_t>(src));
+                set_register(dest, val);
+                trace.opcode_name = "move-wide/from16";
+                pc_ += 2;
+                break;
+            }
             // monitor-enter / monitor-exit (12x: B|A|op, 1 code unit)
             case Opcode::MONITOR_ENTER: {
                 trace.opcode_name = "monitor-enter";
