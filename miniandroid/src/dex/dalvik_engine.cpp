@@ -673,6 +673,18 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             auto saved_pc = pc_;
             auto saved_bytecode = bytecode_;
             auto* saved_registers = current_registers_;
+            // EXP-039 (BLOCKER-037): Save halted_on_return_ and halted_ to prevent
+            // the recursive call's return from causing the caller to also return.
+            bool saved_halted_on_return = halted_on_return_;
+            bool saved_halted = halted_;
+            std::string saved_halt_reason = halt_reason_;
+            auto saved_class = current_class_;
+            auto saved_method = current_method_;
+            auto saved_dex_index = current_dex_index_;
+
+            // Clear halt flags for the recursive call
+            halted_on_return_ = false;
+            halted_ = false;
 
             // Determine registers/ins/outs from code_item (approximate)
             uint32_t regs_size = 16;  // default
@@ -692,10 +704,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 result
             );
 
-            // Restore state
+            // Restore state — including halt flags
+            // EXP-039 (BLOCKER-037): Clear halted_on_return_ so the caller
+            // continues executing. The recursive call returned, but the
+            // caller should NOT stop.
+            halted_on_return_ = false;
+            halted_ = false;
+            halt_reason_.clear();
             bytecode_ = saved_bytecode;
             pc_ = saved_pc;
             current_registers_ = saved_registers;
+            current_class_ = saved_class;
+            current_method_ = saved_method;
+            current_dex_index_ = saved_dex_index;
 
             // Get return value from result (simplified — return void for now)
             return_val = DalvikValue::make_void();
