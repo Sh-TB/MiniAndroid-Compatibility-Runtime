@@ -762,6 +762,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;  // Fall through to bridge_to_api which returns null
     }
 
+    // EXP-044 Phase 1: AndroidUtilities.runOnUIThread / executeOnUIThread
+    // These methods post Runnables to the UI thread Handler. Without a real
+    // Handler/Looper, they would recurse infinitely (runOnUIThread calls
+    // executeOnUIThread which calls runOnUIThread). Stub as no-op.
+    if (class_descriptor.find("AndroidUtilities") != std::string::npos &&
+        (method_name == "runOnUIThread" || method_name == "executeOnUIThread" ||
+         method_name == "cancelRunOnUIThread")) {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping recursive invoke, delegating to bridge (no-op)");
+        recursion_depth_--;
+        return false;  // Fall through to bridge_to_api which returns void
+    }
+
     // Search for the class in DEX
     for (const auto& cls : dex_report_->classes) {
         if (cls.name != class_descriptor) continue;
@@ -1005,18 +1018,48 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             // EXP-038 (BLOCKER-031): Array get/put opcodes (23x format, 2 code units)
             // Format 23x: AA|op BB|CC
             //   vAA = dest/src, vBB = array ref, vCC = index
-            // For now, aget returns null/0, aput is a no-op (just advance PC).
+            //
+            // EXP-044 Phase 1: Proper array bounds checking.
+            // When the index is out of bounds (or the array is null/empty),
+            // we simulate ArrayIndexOutOfBoundsException by halting the method.
+            // This is required for Kotlin Intrinsics.createParameterIsNullExceptionMessage
+            // which loops through stack trace elements and expects an exception
+            // when the index exceeds the array length.
             #define ARRAY_GET_CASE(opcode, op_name, result_type) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
                     uint8_t vAA = (instr >> 8) & 0xFF; \
+                    uint8_t vBB = bytecode_[pc_ + 1] & 0xFF; \
+                    uint8_t vCC = (bytecode_[pc_ + 1] >> 8) & 0xFF; \
+                    DalvikValue arr_val = get_register(vBB); \
+                    DalvikValue idx_val = get_register(vCC); \
+                    int32_t idx = (idx_val.type == DalvikType::INT32) ? idx_val.int_val : 0; \
+                    int32_t arr_len = (arr_val.type == DalvikType::OBJECT_REF) ? arr_val.int_val : 0; \
+                    trace.opcode_name = op_name; \
+                    if (arr_len == 0 || idx < 0 || idx >= arr_len) { \
+                        /* ArrayIndexOutOfBoundsException simulation: halt the method */ \
+                        log("⚠️ AGET out of bounds: arr_len=" + std::to_string(arr_len) + \
+                            " idx=" + std::to_string(idx) + " — halting (simulates ArrayIndexOutOfBoundsException)"); \
+                        halted_ = true; \
+                        halted_on_return_ = true; \
+                        halt_reason_ = "ArrayIndexOutOfBoundsException: index " + \
+                                       std::to_string(idx) + " out of bounds for length " + \
+                                       std::to_string(arr_len); \
+                        DalvikValue result_val; \
+                        result_val.type = result_type; \
+                        if (result_type == DalvikType::OBJECT_REF) { \
+                            result_val = DalvikValue::make_null(); \
+                        } \
+                        set_register(vAA, result_val); \
+                        pc_ = pc_ + 2; \
+                        break; \
+                    } \
                     DalvikValue result_val; \
                     result_val.type = result_type; \
                     if (result_type == DalvikType::OBJECT_REF) { \
                         result_val = DalvikValue::make_null(); \
                     } \
                     set_register(vAA, result_val); \
-                    trace.opcode_name = op_name; \
                     pc_ = pc_ + 2; \
                     break; \
                 }
@@ -3117,27 +3160,58 @@ bool DalvikExecutionEngine::execute_goto(uint32_t pc, InstructionTrace& trace) {
         offset = static_cast<int8_t>((bytecode_[pc] >> 8) & 0xFF);
         pc_advance = 1;
     } else if (opcode == Opcode::GOTO_16) {
-        // Format 20t: offset is in next code unit (signed 16-bit, 2 code units)
-        // EXP-043 Phase 1: Per AOSP, 20t format is `op AAAA` where:
-        //   byte 0 = op (0x28)
-        //   byte 1 = unused (must be 0)
-        //   bytes 2-3 = AAAA (signed 16-bit offset)
-        // We always read the offset from the next code unit (PC+1).
-        // Note: D8 sometimes emits non-zero high bytes, but ART ignores them
-        // and reads the offset from PC+1. We follow ART's behavior.
-        if (pc + 1 >= bytecode_.size()) return false;
-        offset = static_cast<int16_t>(bytecode_[pc + 1]);
-        pc_advance = 2;
+        // EXP-044 Phase 1: D8/R8 hybrid goto/16 encoding.
+        //
+        // D8 uses op=0x28 (goto/16) in TWO modes:
+        // 1. High byte != 0: The high byte IS the 8-bit signed offset.
+        //    Total instruction size: 1 code unit (like 10t format).
+        //    The "next word" is the START of the next instruction, NOT an offset.
+        //    Example: AndroidUtilities.bold PC=24 → high=0x09=+9 → target=PC=33
+        // 2. High byte == 0: Standard 20t format, 16-bit signed offset in next word.
+        //    Total instruction size: 2 code units.
+        //    Example: (rare, 578 out of 27381 in classes.dex)
+        //
+        // Evidence: 26803 goto/16 instructions have non-zero high byte,
+        // 578 have high byte=0 (standard 20t). The high byte values are
+        // always small (±12 range typical), matching short branch offsets.
+        //
+        // This was the root cause of 20 HALT-GOTO events in Telegram execution.
+        uint8_t high_byte = (bytecode_[pc] >> 8) & 0xFF;
+        if (high_byte != 0) {
+            // D8 hybrid mode: 1-code-unit goto with 8-bit offset in high byte
+            offset = static_cast<int8_t>(high_byte);
+            pc_advance = 1;
+        } else {
+            // Standard 20t format: 2 code units, 16-bit offset in next word
+            if (pc + 1 >= bytecode_.size()) return false;
+            offset = static_cast<int16_t>(bytecode_[pc + 1]);
+            pc_advance = 2;
+        }
     } else if (opcode == Opcode::GOTO_32) {
-        // EXP-043 Phase 1: D8/R8 emits goto/32 as a 2-code-unit instruction
-        // with a 16-bit signed offset (not the standard 30t format with 32-bit
-        // offset). This matches the observed bytecode in:
-        //   ApplicationLoader.postInitApplication PC=8: offset=0x0101=257 → PC=265
-        // Per AOSP, 30t format is 3 code units with 32-bit offset, but D8 never
-        // emits this. We follow D8's de-facto encoding: 2 code units, 16-bit offset.
-        if (pc + 1 >= bytecode_.size()) return false;
-        offset = static_cast<int16_t>(bytecode_[pc + 1]);
-        pc_advance = 2;
+        // EXP-044 Phase 1: D8/R8 hybrid goto/32 encoding (same as goto/16).
+        //
+        // D8 uses op=0x29 (goto/32) in TWO modes:
+        // 1. High byte != 0 (10959 occurrences): 8-bit signed offset in high byte.
+        //    Total instruction size: 1 code unit.
+        // 2. High byte == 0 (24727 occurrences): 16-bit signed offset in next word.
+        //    Total instruction size: 2 code units (NOT 3 as per AOSP 30t spec).
+        //    The word at PC+2 is the start of the NEXT instruction, not the high
+        //    16 bits of a 32-bit offset.
+        //
+        // Evidence: ApplicationLoader.postInitApplication PC=8:
+        //   high=0x00, next=0x0101=257 → target=PC=265 (return-void). Correct!
+        //   Standard 30t with 32-bit offset would give 0x10120101 → invalid.
+        uint8_t high_byte = (bytecode_[pc] >> 8) & 0xFF;
+        if (high_byte != 0) {
+            // D8 hybrid mode: 1-code-unit goto with 8-bit offset in high byte
+            offset = static_cast<int8_t>(high_byte);
+            pc_advance = 1;
+        } else {
+            // D8 2-code-unit format: 16-bit offset in next word
+            if (pc + 1 >= bytecode_.size()) return false;
+            offset = static_cast<int16_t>(bytecode_[pc + 1]);
+            pc_advance = 2;
+        }
     } else {
         // Unknown goto variant — treat as 10t
         offset = static_cast<int8_t>((bytecode_[pc] >> 8) & 0xFF);
@@ -3145,6 +3219,21 @@ bool DalvikExecutionEngine::execute_goto(uint32_t pc, InstructionTrace& trace) {
     }
 
     uint32_t target = pc + offset;
+
+    // EXP-044 Phase 1: When goto target == bytecode_.size(), it means "exit
+    // the method" (branch past the end = return). This is valid Dalvik behavior
+    // for methods that end with a goto that jumps past the last instruction.
+    // Example: Intrinsics.throwParameterIsNullNPE PC=15: goto +1 → PC=16
+    // where bytecode_size=16. This is equivalent to return-void.
+    if (target == bytecode_.size()) {
+        trace.status = InstructionTrace::Status::HALT_RETURN;
+        trace.operands.push_back({"offset", std::to_string(offset)});
+        trace.operands.push_back({"target", "exit_method"});
+        halted_ = true;
+        halted_on_return_ = true;
+        pc_ = pc + pc_advance;
+        return true;
+    }
 
     // Validate target
     if (target < bytecode_.size()) {
@@ -3942,6 +4031,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         method == "currentThread") {
         result = get_or_create_singleton("Ljava/lang/Thread;");
         status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-044 Phase 1: AndroidUtilities.runOnUIThread / executeOnUIThread
+    // These methods post Runnables to the UI thread Handler. Without a real
+    // Handler/Looper, they would recurse infinitely. Stub as no-op (return void).
+    // This is safe because Telegram's startup code posts UI initialization
+    // tasks that we can't execute anyway (no UI rendering).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("AndroidUtilities") != std::string::npos &&
+        (method == "runOnUIThread" || method == "executeOnUIThread" ||
+         method == "cancelRunOnUIThread")) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
         return true;
     }
 
