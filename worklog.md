@@ -1400,3 +1400,56 @@ Stage Summary:
   - `miniandroid/tools/exp043_jni_distance.py` (analyzer script, ~1,200 lines)
   - `miniandroid/docs/EXP043_JNI_DISTANCE.md` (markdown report, 9 sections, ~10.8 KB)
   - `miniandroid/docs/EXP043_JNI_DISTANCE.json` (machine-readable JSON, ~1.4 MB)
+
+---
+Task ID: EXP-043-PHASE7
+Agent: general-purpose
+Task: Diagnostics improvement — execution report with all required fields
+
+Work Log:
+- Read `worklog.md` for context on EXP-042 (Phase 7 test loop) and EXP-043 Phase 2 (JNI distance analysis), then audited the prior `run_telegram_test.sh` (only emitted an `EXP042_REPORT.md` with 7 metrics — missing Instructions / Methods executed / Classes / Missing APIs / Missing JNI / Top blockers as standalone required fields).
+- Audited the actual run.log marker format by inspecting `miniandroid/run/exp042_auto/run.log` and the source: `[METHOD-IN] Lfoo/Bar;.method (bytecode_size=N)` (dalvik_engine.cpp:597), `[MEM] method_exit: Lfoo/Bar;.method insns=NNNN RSS=X.X MB` (mem_probe.h:25, called from dalvik_engine.cpp:644), `[HALT-LOOP] <reason>` (dalvik_engine.cpp:1812), `[HALT-GOTO] Invalid goto target PC=... target=... bytecode_size=...` (dalvik_engine.cpp:3123), and `[EXP-042] DynamiteModule.load stubbed → null (mimics no-Play-Services device)` (dalvik_engine.cpp:3936).
+- Verified that `dalvik_engine.cpp` bridge_to_api default path sets `status = ApiCallTrace::Status::STUBBED` without printing (line 3980), so Missing APIs cannot be extracted from the run log alone — the script must also read `database/android_api_frequency.json` (produced by `exp007_012_megabatch_main.cpp` at line 489 from `runtime.get_api_database()` which is populated by `application_runtime.cpp:1056-1072` from `dalvik_result.api_call_traces`).
+- Verified that `docs/exp042/JNI_INVENTORY.json` stores its 462-entry native-method table under the `inventory` key (NOT `native_methods`) — each entry has `class`, `method`, `shorty`, `library`, `dex`, `priority`, `class_access_flags`, `method_idx`, `method_kind`.
+- Rewrote `miniandroid/run_telegram_test.sh` to (a) emit the report at `run/exp043_auto/EXP043_REPORT.md`, (b) tag the experiment as `EXP-043`, (c) print the 11 required fields in a fenced code block at the top of the report (EXP / APK / SHA256 / Instructions / Methods executed / Classes / Memory / Deepest method / Missing APIs / Missing JNI / Top blockers), and (d) keep the legacy detailed sections (APK Metadata, Execution Metrics, Deepest Method, Memory Profile, Method Execution Path, Success Criteria, Next Steps).
+- Field-extraction implementation:
+  - **Instructions**: `grep -oE 'insns=[0-9]+' run.log | awk -F= '{print $2}' | sort -n | tail -1` — picks the highest instruction count seen across all `[MEM] method_exit: ... insns=N` markers.
+  - **Methods executed**: `grep -E '^\[METHOD-IN\]' run.log | sort -u | wc -l` — count of unique `[METHOD-IN]` lines.
+  - **Classes**: `grep -E '^\[METHOD-IN\]' run.log | sed -E 's/^\[METHOD-IN\] (L[^;]+;)\..*/\1/' | sort -u | wc -l` — count of unique `L...;` class descriptors extracted from METHOD-IN lines.
+  - **Memory**: `PEAK_RSS_KB` tracked in-shell from `/proc/PID/status` VmRSS, cross-checked against the max `rss_mb` column in `rss_samples.csv` (`awk -F, 'NR>1 && $2+0 > max {max=$2+0} END {print max+0}'`), then divided by 1024.
+  - **Deepest method**: `grep -E '^\[METHOD-IN\]' run.log | tail -1 | sed 's/^\[METHOD-IN\] //'` — last METHOD-IN before run ended.
+  - **Missing APIs**: merges two sources and dedupes — (1) Python extraction of `{class, method, descriptor}` entries from `database/android_api_frequency.json` where `implementation_status == "STUBBED"`, and (2) `grep -iE 'stubbed' run.log` lines (captures the `[EXP-042] DynamiteModule.load stubbed` marker that is printed even when the binary is killed before the api_frequency.json is flushed).
+  - **Missing JNI**: Python script that reads `docs/exp042/JNI_INVENTORY.json` (`inventory` key, 462 native methods), cross-references the unique class descriptors reached (saved to `unique_classes_reached.txt`) against the native-method classes, and prints `native_methods_declared_total`, `unique_classes_reached`, `native_classes_reached`, plus a `REACHED <class> :: <method>` line for each native method actually entered. `NATIVE_REACHED` = count of `REACHED ` lines.
+  - **Top blockers**: `{ grep -E '^\[HALT-LOOP\]' run.log | sort -u; grep -E '^\[HALT-GOTO\]' run.log | sort -u; }` — unique HALT-LOOP + HALT-GOTO events with method names embedded in the log line itself.
+- Fixed a `set -e` + `grep -c` interaction bug: when `grep -c PATTERN FILE` finds 0 matches, grep prints `0` to stdout AND exits with status 1, so `$(grep -c ... || echo 0)` was emitting `0\n0` (the `0` from grep plus the `0` from `echo`). Replaced every `grep -c ... || echo 0` with awk-based counting (`awk '/PATTERN/{c++} END {print c+0}'`) which always prints a clean integer and exits 0. Also `tr -d ' '` on the `wc -l` outputs to strip BSD-style leading whitespace.
+- Fixed the JNI inventory key: initial Python script used `native_methods` but the actual key is `inventory` (verified with `python3 -c "import json; print(list(json.load(open('...'))keys()))"`). Updated to `inv.get("inventory", []) or inv.get("native_methods", [])` for forward/back compatibility.
+- Ran the improved script with `./run_telegram_test.sh 30` (30-second timeout). The binary completed naturally within ~12s (exit code 0, no timeout kill). All 11 required fields populated cleanly:
+  - `EXP: EXP-043`
+  - `APK: Telegram.apk`
+  - `SHA256: 193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e`
+  - `Instructions: 6` (highest `insns=` from `[MEM]` markers — only 2 method_exit probes emitted this run)
+  - `Methods executed: 42` (unique `[METHOD-IN]` lines; 5000 total entries logged due to the method-entry cap)
+  - `Classes: 20` (unique `L...;` class descriptors)
+  - `Memory: 440 MB` (peak RSS from `rss_samples.csv`)
+  - `Deepest method: Lorg/telegram/messenger/AndroidUtilities;.runOnUIThread (bytecode_size=6)`
+  - `Missing APIs: 36` (STUBBED entries from `database/android_api_frequency.json`)
+  - `Missing JNI: 0` (cross-ref of 462 declared native methods vs. 20 unique classes reached → 0 native classes entered, consistent with EXP-043 Phase 2 finding)
+  - `Top blockers: 2` (unique HALT-GOTO events in `AndroidUtilities.bold` at PC=0x18 and `Intrinsics.createParameterIsNullExceptionMessage` at PC=0x1d)
+- Verified the report has no embedded newlines in any required-field value (the prior `0\n0` artifacts from the `grep -c || echo 0` bug are gone).
+- Verified the report still contains the detailed supporting sections (Missing APIs full list with class/method/descriptor, Missing JNI breakdown with `native_methods_declared_total=462 / unique_classes_reached=20 / native_classes_reached=0`, Top Blockers full unique-event list, RSS samples CSV tail, first 30 unique METHOD-IN lines, success criteria checklist).
+
+Stage Summary:
+- Fields added to report (all 11 EXP-043 Phase 7 required fields): EXP, APK, SHA256, Instructions, Methods executed, Classes, Memory, Deepest method, Missing APIs, Missing JNI, Top blockers
+- Sample report generated: yes (at `miniandroid/run/exp043_auto/EXP043_REPORT.md`)
+- Files produced:
+  - `miniandroid/run_telegram_test.sh` (improved script — rewritten to emit `EXP043_REPORT.md` with all 11 required fields; ~445 lines)
+  - `miniandroid/run/exp043_auto/EXP043_REPORT.md` (sample report — 170 lines, all required fields populated)
+  - `miniandroid/run/exp043_auto/run.log` (Telegram APK execution log)
+  - `miniandroid/run/exp043_auto/rss_samples.csv` (RSS samples over time)
+  - `miniandroid/run/exp043_auto/missing_apis.txt` (36 STUBBED API entries)
+  - `miniandroid/run/exp043_auto/missing_jni.txt` (JNI cross-reference summary)
+  - `miniandroid/run/exp043_auto/top_blockers.txt` (2 unique HALT-GOTO events)
+  - `miniandroid/run/exp043_auto/unique_classes_reached.txt` (20 unique class descriptors reached)
+
+Post-Cleanup Note:
+- Replaced the `>> $OUT_DIR/.missing_apis.log_raw` temp-file pattern with an in-memory `LOG_STUBS=$(grep ... || true)` + here-string `<<< "$LOG_STUBS"` loop, eliminating leftover empty temp files when grep finds no `stubbed` matches in the log. Re-ran the script and verified the output directory now contains only intended artifacts (no `.missing_apis.log_raw`).
