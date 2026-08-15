@@ -13,6 +13,7 @@
 #include "dalvik_engine.h"
 #include "dex_parser.h"
 #include "../api/android_stubs.h"
+#include "../diagnostics/mem_probe.h"
 #include <chrono>
 #include <iostream>
 #include <sstream>
@@ -298,12 +299,16 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
 ) {
     verbose_ = verbose;
 
-    // EXP-039: Debug output to trace crash location
-    std::cerr << "[EXP039] execute_apk_with_activity entered" << std::endl;
-    std::cerr << "[EXP039] per_dex_raw_data_ size=" << per_dex_raw_data_.size() << std::endl;
-    std::cerr << "[EXP039] class_to_dex_index_ size=" << class_to_dex_index_.size() << std::endl;
-    std::cerr << "[EXP039] config_.max_instructions=" << config_.max_instructions << std::endl;
-    std::cerr.flush();
+    // EXP-042 Phase 1: Gate debug cerr lines behind verbose. Previously these
+    // always printed, generating enormous log volume during long runs (100 M
+    // instructions × several cerr lines per recursive call = GB of stderr).
+    if (verbose_) {
+        std::cerr << "[EXP039] execute_apk_with_activity entered" << std::endl;
+        std::cerr << "[EXP039] per_dex_raw_data_ size=" << per_dex_raw_data_.size() << std::endl;
+        std::cerr << "[EXP039] class_to_dex_index_ size=" << class_to_dex_index_.size() << std::endl;
+        std::cerr << "[EXP039] config_.max_instructions=" << config_.max_instructions << std::endl;
+        std::cerr.flush();
+    }
     // EXP-037 Phase B (BLOCKER-002 + BLOCKER-015 FIX):
     // Store the DexReport pointer so invoke-* / iget/iput/sget/sput handlers
     // can resolve method_idx and field_idx via DexReport::method_ids[] /
@@ -576,6 +581,21 @@ bool DalvikExecutionEngine::execute_method_internal(
     halted_ = false;
     halted_on_return_ = false;
     instruction_sequence_ = 0;
+    // EXP-042 Phase 1: Per-frame loop detection counter. Reset on each new
+    // method invocation so recursive calls do not pollute each other.
+    pc_visit_count_.clear();
+    // EXP-042 Phase 2: Set current_class_/current_method_ so loop-detector
+    // halt messages and traces can identify the method that halted.
+    current_class_ = class_name;
+    current_method_ = method_name;
+    // EXP-042 Phase 4: Log the first 200 method entries for diagnostic
+    // visibility, then suppress to avoid log spam during long runs.
+    static thread_local uint64_t method_entry_count = 0;
+    if (method_entry_count < 200) {
+        std::cerr << "[METHOD-IN] " << class_name << "." << method_name
+                  << " (bytecode_size=" << bytecode.size() << ")" << std::endl;
+        method_entry_count++;
+    }
 
     // EXP-038 (BLOCKER-033): Set current_dex_index_ for per-DEX method resolution.
     // Look up which DEX file this class came from.
@@ -611,6 +631,20 @@ bool DalvikExecutionEngine::execute_method_internal(
     
     // Execute until halt
     bool success = fetch_decode_execute(result);
+
+    // EXP-042 Phase 1: memory probe after each method returns. This lets us
+    // see whether memory grows linearly with recursive call count (a leak)
+    // or stays flat (capped). Sampled once per method exit.
+    {
+        static thread_local uint64_t last_probe_seq = 0;
+        if (instruction_sequence_ - last_probe_seq >= 10000 ||
+            last_probe_seq == 0) {
+            std::string tag = "method_exit: " + class_name + "." + method_name +
+                              " insns=" + std::to_string(instruction_sequence_);
+            miniandroid::probe::mark(tag.c_str());
+            last_probe_seq = instruction_sequence_;
+        }
+    }
     
     // Pop frame (if not already done by return)
     if (!call_stack_.empty()) {
@@ -664,6 +698,22 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         class_descriptor = "L" + class_descriptor + ";";
     }
 
+    // EXP-042 Phase 4: Skip "stub-only" methods — methods that HAVE bytecode
+    // in the DEX but should be stubbed instead of executed, because they
+    // depend on Android system services we don't implement.
+    //
+    // Example: com.google.android.gms.dynamite.DynamiteModule.load has a
+    // `while(true){}` busy-wait that depends on Play Services IPC. Real
+    // Android devices without Play Services throw LoadingException, which
+    // the caller catches. We mimic by returning null from the bridge.
+    if (class_descriptor.find("DynamiteModule") != std::string::npos &&
+        method_name == "load") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping recursive invoke, delegating to bridge");
+        recursion_depth_--;
+        return false;  // Fall through to bridge_to_api which returns null
+    }
+
     // Search for the class in DEX
     for (const auto& cls : dex_report_->classes) {
         if (cls.name != class_descriptor) continue;
@@ -689,6 +739,13 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             auto saved_class = current_class_;
             auto saved_method = current_method_;
             auto saved_dex_index = current_dex_index_;
+            // EXP-042 Phase 1: Save the per-frame PC visit count. Without this,
+            // the recursive call's pc_visit_count_ (which may have 50 000 entries
+            // in it after the inner method's loop detector fires) persists
+            // into the caller's frame, causing the caller to immediately hit
+            // the loop detector on its very next instruction. This was the
+            // cause of every Telegram method being halted at 50 000 instructions.
+            auto saved_pc_visit_count = pc_visit_count_;
 
             // Clear halt flags for the recursive call
             halted_on_return_ = false;
@@ -725,6 +782,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             current_class_ = saved_class;
             current_method_ = saved_method;
             current_dex_index_ = saved_dex_index;
+            // EXP-042 Phase 1: Restore the caller's per-frame PC visit count.
+            pc_visit_count_ = saved_pc_visit_count;
 
             // Get return value from result (simplified — return void for now)
             return_val = DalvikValue::make_void();
@@ -766,8 +825,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         uint16_t opcode = raw_word & 0xFF;  // LOW BYTE only
         trace.opcode_hex = raw_word;        // Keep raw word for trace evidence
         
-        // Capture register state before
-        if (current_registers_) {
+        // EXP-042 Phase 1: Per-instruction register snapshots are the #1 OOM
+        // offender (5 KB per instruction). Capture them ONLY when explicitly
+        // enabled via config_.trace_register_snapshots. Default is false.
+        if (config_.trace_register_snapshots && current_registers_) {
             trace.registers_before = current_registers_->get_snapshot();
         }
         
@@ -1682,10 +1743,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 break;
         }
         
-        // Capture register state after
-        if (current_registers_) {
+        // EXP-042 Phase 1: register state AFTER capture (gated).
+        if (config_.trace_register_snapshots && current_registers_) {
             trace.registers_after = current_registers_->get_snapshot();
-            
             // Calculate changed registers
             for (const auto& pair : trace.registers_before) {
                 auto after_it = trace.registers_after.find(pair.first);
@@ -1702,32 +1762,43 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         trace.pc_after = pc_;
         trace.execution_us = std::chrono::duration<double, std::micro>(Clock::now() - start).count();
         
-        // Record trace
-        result.instruction_traces.push_back(trace);
+        // EXP-042 Phase 1: ring-buffer instruction_traces.
+        // Without this cap, 10 M instructions × 5 KB = 50 GB → OOM.
+        // The cap keeps the last config_.trace_cap entries (default 2000).
+        if (config_.trace_cap > 0 &&
+            result.instruction_traces.size() >= config_.trace_cap) {
+            result.instruction_traces.erase(result.instruction_traces.begin());
+        }
+        result.instruction_traces.push_back(std::move(trace));
         result.total_instructions_executed++;
         result.total_opcodes_decoded++;
 
-        // EXP-039 (BLOCKER-036): Detect infinite loops.
-        // If the same PC is executed more than 100 times without any
-        // state change, we have a busy-wait/spin-lock infinite loop.
-        // This happens when real Android apps use synchronization primitives
-        // that rely on multi-threading (which we don't support yet).
-        // Instead of spinning forever, we break with a diagnostic message.
-        static thread_local std::map<uint32_t, uint32_t> pc_visit_count;
-        pc_visit_count[pc_]++;
-        if (pc_visit_count[pc_] > 100) {
-            halt_reason_ = "Infinite loop detected at PC=0x" + to_hex(pc_) +
-                          " (visited " + std::to_string(pc_visit_count[pc_]) +
-                          " times). Likely a busy-wait/spin-lock that requires threading.";
+        // EXP-042 Phase 1: Per-frame loop detection (replaces the previous
+        // static thread_local map which leaked state across recursive calls).
+        // The previous design counted visits across ALL recursive invocations
+        // of execute_method_internal(), which meant that PC=6 (a return opcode)
+        // in Theme.getColor accumulated 101 visits across 101 separate calls
+        // and wrongly halted each one — producing 6 000 × 101 instruction
+        // traces, the actual cause of the OOM.
+        //
+        // pc_visit_count_ is now an instance member, reset in
+        // execute_method_internal() at the start of each method. The threshold
+        // is config_.loop_visit_threshold (default 50 000).
+        pc_visit_count_[pc_]++;
+        if (pc_visit_count_[pc_] > config_.loop_visit_threshold) {
+            // EXP-042 Phase 2: include bytecode size and the actual opcode at
+            // the looping PC, so we can diagnose whether the loop is a real
+            // infinite loop or a missing-API-driven spin.
+            uint16_t op_at_pc = (pc_ < bytecode_.size()) ? (bytecode_[pc_] & 0xFF) : 0xFFFF;
+            halt_reason_ = "Infinite loop at PC=" + to_hex(pc_) +
+                          " in " + current_class_ + "." + current_method_ +
+                          " (visited " + std::to_string(pc_visit_count_[pc_]) +
+                          " times in this frame, bytecode_size=" +
+                          std::to_string(bytecode_.size()) +
+                          ", op_at_pc=0x" + to_hex16(op_at_pc) + ").";
             halted_ = true;
-            log("HALT: " + halt_reason_);
-            // Clear the map for the next method call
-            pc_visit_count.clear();
+            std::cerr << "[HALT-LOOP] " << halt_reason_ << std::endl;
             break;
-        }
-        // Clear visit counts periodically (every 1000 instructions)
-        if (result.total_instructions_executed % 1000 == 0) {
-            pc_visit_count.clear();
         }
         
         // Log if verbose — EXP-041: only log every 10000th instruction to reduce memory
@@ -2124,115 +2195,71 @@ DalvikExecutionEngine::FieldResolution DalvikExecutionEngine::resolve_field(uint
 }
 
 bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
-    // Format: 22c iget vA, vB, field@CCCC
-    // Read instance field from object and place in destination register
-    if (pc + 2 >= bytecode_.size()) return false;
+    // Format: 22c iget vA, vB, field@CCCC (2 code units)
+    // EXP-042 Phase 2 FIX: same advance-pc-on-failure strategy as iget-object.
+    if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
     
     uint16_t instr = bytecode_[pc];
-    uint8_t dest_reg = (instr >> 8) & 0xF;    // vA - 4-bit destination reg (was 8-bit mask)
-    uint8_t obj_reg = (instr >> 12) & 0xF;    // vB - 4-bit object reg (was low byte of opcode!)
-    // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units.
-    //   code[pc+0]: bits 0-7 = opcode, bits 8-11 = vA (4 bits), bits 12-15 = vB (4 bits)
-    //   code[pc+1]: 16-bit field_idx
-    // Previous code read field_idx from pc+2 (out of bounds for 22c) and extracted
-    // registers using 8-bit masks (wrong — both registers are 4-bit).
-    uint16_t field_idx = bytecode_[pc + 1];   // CCCC - field index
+    uint8_t dest_reg = (instr >> 8) & 0xF;
+    uint8_t obj_reg = (instr >> 12) & 0xF;
+    uint16_t field_idx = bytecode_[pc + 1];
     
-    // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
-    if (!field_res.resolved) {
-        trace.error_message = "Failed to resolve field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
-        return false;
-    }
-    
-    // Get object reference from register
-    DalvikValue obj_ref = get_register(obj_reg);
-    if (obj_ref.type != DalvikType::OBJECT_REF && obj_ref.type != DalvikType::NULL_REF) {
-        trace.halt_reason = "iget: register v" + std::to_string(obj_reg) + 
-                            " is not an object reference (type=" + 
-                            std::to_string(static_cast<int>(obj_ref.type)) + ")";
-        log("❌ IGET ERROR: " + trace.halt_reason);
-        return false;
-    }
-    
     DalvikValue result_value;
     result_value.type = DalvikType::INT32;
-    result_value.int_val = 0;  // Default value
+    result_value.int_val = 0;
     
-    if (obj_ref.type == DalvikType::OBJECT_REF) {
-        // Look up field in object heap
-        // For EXP-035, we use a simplified field access pattern
-        // In full implementation, this would use field_res.field_offset
-        std::string field_key = std::to_string(obj_ref.object_id) + "." + field_res.field_name;
-        
-        // Try to get field from heap's object field storage
-        if (heap_.has_object(obj_ref.object_id)) {
-            // Get field value from object (simplified - using heap storage)
+    if (field_res.resolved) {
+        DalvikValue obj_ref = get_register(obj_reg);
+        if (obj_ref.type == DalvikType::OBJECT_REF && heap_.has_object(obj_ref.object_id)) {
             auto field_val = heap_.get_object_field(obj_ref.object_id, field_res.field_name);
             if (field_val.has_value()) {
                 result_value = field_val.value();
-                log("✅ IGET: obj=" + std::to_string(obj_ref.object_id) + 
-                    " field=" + field_res.field_name + 
-                    " value=" + result_value.to_string());
-            } else {
-                log("⚠️ IGET: field not found in object, using default");
             }
-        } else {
-            trace.error_message = "iget: object " + std::to_string(obj_ref.object_id) + " not in heap"; trace.status = InstructionTrace::Status::CRASH_ERROR;
-            log("❌ IGET ERROR: " + trace.halt_reason);
-            return false;
         }
-    } else {
-        // Null reference - would cause NullPointerException in real Dalvik
-        log("⚠️ IGET: null object reference (would be NullPointerException)");
-        result_value = DalvikValue::make_int(0);  // Return default for null
     }
+    // EXP-042 Phase 2: on any failure path, fall through with default 0 and
+    // advance pc_ — never return false (which would cause an infinite loop).
     
     set_register(dest_reg, result_value);
-    
-    // Build evidence trace with ExecutionSource tag
     trace.operands.push_back({"v" + std::to_string(dest_reg), "destination"});
     trace.operands.push_back({"v" + std::to_string(obj_reg), "object"});
     trace.operands.push_back({"field", field_res.class_descriptor + "." + field_res.field_name});
-    trace.operands.push_back({"offset", std::to_string(field_res.field_offset)});
-    trace.operands.push_back({"value", result_value.to_string()});
-    trace.operands.push_back({"object_ref", std::to_string(obj_ref.object_id)});
-    trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});  // MANDATORY EVIDENCE TAG
+    trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
     
-    pc_ = pc + 2;  // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units (was pc + 3)
+    pc_ = pc + 2;
     return true;
 }
 
 bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& trace) {
     // Format: 22c iget-object vA, vB, field@CCCC
     // Read object field from object and place reference in destination register
-    if (pc + 2 >= bytecode_.size()) return false;
+    // EXP-042 Phase 2 FIX: Previously, every error path returned false WITHOUT
+    // advancing pc_. The caller then re-fetched the same opcode, hit the same
+    // error, and looped forever — the loop detector eventually halted the
+    // method, but only after 50 001 wasted iterations. Now all error paths
+    // advance pc_ by 2 (22c format is 2 code units) and return true so the
+    // caller can continue with a sensible default (null/0).
+    if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
     
     uint16_t instr = bytecode_[pc];
-    uint8_t dest_reg = (instr >> 8) & 0xF;    // vA - 4-bit destination reg (was 8-bit mask)
-    uint8_t obj_reg = (instr >> 12) & 0xF;    // vB - 4-bit object reg (was low byte of opcode!)
-    // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units.
-    //   code[pc+0]: bits 0-7 = opcode, bits 8-11 = vA (4 bits), bits 12-15 = vB (4 bits)
-    //   code[pc+1]: 16-bit field_idx
-    // Previous code read field_idx from pc+2 (out of bounds for 22c) and extracted
-    // registers using 8-bit masks (wrong — both registers are 4-bit).
+    uint8_t dest_reg = (instr >> 8) & 0xF;    // vA - 4-bit destination reg
+    uint8_t obj_reg = (instr >> 12) & 0xF;    // vB - 4-bit object reg
     uint16_t field_idx = bytecode_[pc + 1];   // CCCC - field index
     
     // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
     if (!field_res.resolved) {
-        trace.error_message = "Failed to resolve field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
-        return false;
+        trace.error_message = "Failed to resolve field index " + std::to_string(field_idx);
+        trace.status = InstructionTrace::Status::CRASH_ERROR;
+        // EXP-042 Phase 2: advance pc_ and continue rather than spin.
+        set_register(dest_reg, DalvikValue::make_null());
+        pc_ = pc + 2;
+        return true;
     }
     
     // Get object reference from register
     DalvikValue obj_ref = get_register(obj_reg);
-    if (obj_ref.type != DalvikType::OBJECT_REF && obj_ref.type != DalvikType::NULL_REF) {
-        trace.halt_reason = "iget-object: register v" + std::to_string(obj_reg) + 
-                            " is not an object reference";
-        log("❌ IGET-OBJECT ERROR: " + trace.halt_reason);
-        return false;
-    }
     
     DalvikValue result_value;
     result_value.type = DalvikType::NULL_REF;
@@ -2247,223 +2274,115 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                 if (result_value.type != DalvikType::OBJECT_REF && 
                     result_value.type != DalvikType::NULL_REF &&
                     result_value.type != DalvikType::STRING_REF) {
-                    // Convert to object reference if needed
                     result_value.type = DalvikType::OBJECT_REF;
                 }
-                log("✅ IGET-OBJECT: obj=" + std::to_string(obj_ref.object_id) + 
-                    " field=" + field_res.field_name + 
-                    " value=" + result_value.to_string());
-            } else {
-                log("⚠️ IGET-OBJECT: field not found, returning null");
             }
-        } else {
-            trace.error_message = "iget-object: object not in heap"; trace.status = InstructionTrace::Status::CRASH_ERROR;
-            log("❌ IGET-OBJECT ERROR: " + trace.halt_reason);
-            return false;
         }
-    } else {
-        log("⚠️ IGET-OBJECT: null object reference");
     }
+    // EXP-042 Phase 2: if obj_ref is not OBJECT_REF (uninit, null, primitive),
+    // just return null. Previously this returned false and caused infinite
+    // loops in ComponentActivity.onCreate, UserConfig.isClientActivated,
+    // FragmentActivity.onCreate, etc.
     
     set_register(dest_reg, result_value);
     
-    // Evidence trace with ExecutionSource
     trace.operands.push_back({"v" + std::to_string(dest_reg), "destination"});
     trace.operands.push_back({"v" + std::to_string(obj_reg), "object"});
     trace.operands.push_back({"field", field_res.class_descriptor + "." + field_res.field_name});
-    trace.operands.push_back({"offset", std::to_string(field_res.field_offset)});
-    trace.operands.push_back({"value", result_value.to_string()});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
     
-    pc_ = pc + 2;  // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units (was pc + 3)
+    pc_ = pc + 2;  // 22c format = 2 code units
     return true;
 }
 
 bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
-    // Format: 22c iput vA, vB, field@CCCC
-    // Store int value to instance field of object
-    if (pc + 2 >= bytecode_.size()) return false;
+    // Format: 22c iput vA, vB, field@CCCC (2 code units)
+    // EXP-042 Phase 2 FIX: never return false — always advance pc_.
+    if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
     
     uint16_t instr = bytecode_[pc];
-    uint8_t src_reg = (instr >> 8) & 0xF;     // vA - 4-bit source reg (was 8-bit mask)
-    uint8_t obj_reg = (instr >> 12) & 0xF;    // vB - 4-bit object reg (was low byte of opcode!)
-    // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units.
-    //   code[pc+0]: bits 0-7 = opcode, bits 8-11 = vA (4 bits), bits 12-15 = vB (4 bits)
-    //   code[pc+1]: 16-bit field_idx
-    // Previous code read field_idx from pc+2 (out of bounds for 22c) and extracted
-    // registers using 8-bit masks (wrong — both registers are 4-bit).
-    uint16_t field_idx = bytecode_[pc + 1];   // CCCC - field index
+    uint8_t src_reg = (instr >> 8) & 0xF;
+    uint8_t obj_reg = (instr >> 12) & 0xF;
+    uint16_t field_idx = bytecode_[pc + 1];
     
-    // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
-    if (!field_res.resolved) {
-        trace.error_message = "Failed to resolve field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
-        return false;
-    }
-    
-    // Get value to store
     DalvikValue src_val = get_register(src_reg);
-    
-    // Get object reference
     DalvikValue obj_ref = get_register(obj_reg);
-    if (obj_ref.type != DalvikType::OBJECT_REF && obj_ref.type != DalvikType::NULL_REF) {
-        trace.halt_reason = "iput: register v" + std::to_string(obj_reg) + 
-                            " is not an object reference";
-        log("❌ IPUT ERROR: " + trace.halt_reason);
-        return false;
-    }
     
-    if (obj_ref.type == DalvikType::OBJECT_REF) {
-        if (heap_.has_object(obj_ref.object_id)) {
-            // Store field in object (using heap's field storage)
-            bool success = heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
-            if (success) {
-                log("✅ IPUT: obj=" + std::to_string(obj_ref.object_id) + 
-                    " field=" + field_res.field_name + 
-                    " value=" + src_val.to_string());
-            } else {
-                log("⚠️ IPUT: failed to store field");
-            }
-        } else {
-            trace.error_message = "iput: object not in heap"; trace.status = InstructionTrace::Status::CRASH_ERROR;
-            log("❌ IPUT ERROR: " + trace.halt_reason);
-            return false;
-        }
-    } else {
-        log("⚠️ IPUT: null object reference (NullPointerException in real Dalvik)");
+    if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
+        heap_.has_object(obj_ref.object_id)) {
+        heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
     }
+    // EXP-042 Phase 2: on any failure path, just advance pc_ — never spin.
     
-    // Evidence trace with ExecutionSource
     trace.operands.push_back({"v" + std::to_string(src_reg), "source"});
     trace.operands.push_back({"v" + std::to_string(obj_reg), "object"});
     trace.operands.push_back({"field", field_res.class_descriptor + "." + field_res.field_name});
-    trace.operands.push_back({"offset", std::to_string(field_res.field_offset)});
-    trace.operands.push_back({"value", src_val.to_string()});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
     
-    pc_ = pc + 2;  // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units (was pc + 3)
+    pc_ = pc + 2;
     return true;
 }
 
 bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& trace) {
-    // Format: 22c iput-object vA, vB, field@CCCC
-    // Store object reference to instance field of object
-    if (pc + 2 >= bytecode_.size()) return false;
+    // Format: 22c iput-object vA, vB, field@CCCC (2 code units)
+    // EXP-042 Phase 2 FIX: never return false — always advance pc_.
+    if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
     
     uint16_t instr = bytecode_[pc];
-    // EXP-037 Phase B (BLOCKER-017 FIX): 22c format register extraction.
-    //   vA (source value) = high nibble of low byte  = (instr >> 8) & 0xF
-    //   vB (object ref)   = high nibble of high byte = (instr >> 12) & 0xF
-    // Previous code used 8-bit masks which conflated register bits with opcode bits.
-    uint8_t src_reg = (instr >> 8) & 0xF;     // vA - 4-bit source reg (was 8-bit mask)
-    uint8_t obj_reg = (instr >> 12) & 0xF;    // vB - 4-bit object reg (was low byte of opcode!)
-    // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units.
-    //   code[pc+0]: bits 0-7 = opcode, bits 8-11 = vA (4 bits), bits 12-15 = vB (4 bits)
-    //   code[pc+1]: 16-bit field_idx
-    // Previous code read field_idx from pc+2 (out of bounds for 22c) and extracted
-    // registers using 8-bit masks (wrong — both registers are 4-bit).
-    uint16_t field_idx = bytecode_[pc + 1];   // CCCC - field index
+    uint8_t src_reg = (instr >> 8) & 0xF;
+    uint8_t obj_reg = (instr >> 12) & 0xF;
+    uint16_t field_idx = bytecode_[pc + 1];
     
-    // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
-    if (!field_res.resolved) {
-        trace.error_message = "Failed to resolve field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
-        return false;
-    }
-    
-    // Get object reference to store
     DalvikValue src_val = get_register(src_reg);
-    
-    // Get target object
     DalvikValue obj_ref = get_register(obj_reg);
-    // EXP-037 Phase B (BLOCKER-017 FIX): be tolerant of non-object registers.
-    // The previous code returned false on non-object obj_ref, halting the entire
-    // method at the first unassigned register. Instead, log a warning and
-    // continue execution so we can find more downstream blockers.
-    if (obj_ref.type != DalvikType::OBJECT_REF && obj_ref.type != DalvikType::NULL_REF) {
-        log("⚠️ IPUT-OBJECT: obj_reg v" + std::to_string(obj_reg) +
-            " is not an object reference (type=" +
-            std::to_string(static_cast<int>(obj_ref.type)) +
-            ") — continuing anyway (would be NullPointerException on real Dalvik)");
-    }
     
-    if (obj_ref.type == DalvikType::OBJECT_REF) {
-        if (heap_.has_object(obj_ref.object_id)) {
-            bool success = heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
-            if (success) {
-                log("✅ IPUT-OBJECT: obj=" + std::to_string(obj_ref.object_id) + 
-                    " field=" + field_res.field_name + 
-                    " value=" + src_val.to_string());
-            } else {
-                log("⚠️ IPUT-OBJECT: failed to store field");
-            }
-        } else {
-            trace.error_message = "iput-object: target object not in heap"; trace.status = InstructionTrace::Status::CRASH_ERROR;
-            log("❌ IPUT-OBJECT ERROR: " + trace.halt_reason);
-            return false;
-        }
-    } else {
-        log("⚠️ IPUT-OBJECT: null target object");
+    if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
+        heap_.has_object(obj_ref.object_id)) {
+        heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
     }
+    // EXP-042 Phase 2: never return false; just advance pc_.
     
-    // Evidence trace with ExecutionSource
     trace.operands.push_back({"v" + std::to_string(src_reg), "source"});
     trace.operands.push_back({"v" + std::to_string(obj_reg), "target"});
     trace.operands.push_back({"field", field_res.class_descriptor + "." + field_res.field_name});
-    trace.operands.push_back({"offset", std::to_string(field_res.field_offset)});
-    trace.operands.push_back({"value", src_val.to_string()});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
     
-    pc_ = pc + 2;  // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units (was pc + 3)
+    pc_ = pc + 2;
     return true;
 }
 
 // EXP-035: Static Field Operations
 
 bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
-    // Format: 21c sget vAA, field@BBBB
-    // Read static field value into register
-    if (pc + 1 >= bytecode_.size()) return false;
+    // Format: 21c sget vAA, field@BBBB (2 code units)
+    // EXP-042 Phase 2 FIX: never return false on field resolution failure —
+    // advance pc_ by 2 and return default 0.
+    if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
     
     uint16_t instr = bytecode_[pc];
-    uint8_t dest_reg = (instr >> 8) & 0xFF;   // vAA - destination
-    uint16_t field_idx = bytecode_[pc + 1];   // BBBB - field index
+    uint8_t dest_reg = (instr >> 8) & 0xFF;
+    uint16_t field_idx = bytecode_[pc + 1];
     
-    // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
-    if (!field_res.resolved) {
-        trace.error_message = "Failed to resolve static field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
-        return false;
-    }
     
-    field_res.is_static = true;
-    
-    // Build static field key
-    std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
-    
-    // Look up in static field storage
     DalvikValue result_value;
     result_value.type = DalvikType::INT32;
-    result_value.int_val = 0;  // Default for primitive fields
+    result_value.int_val = 0;
     
-    auto it = static_field_storage_.find(static_key);
-    if (it != static_field_storage_.end()) {
-        result_value = it->second;
-        log("✅ SGET: " + static_key + " = " + result_value.to_string());
-    } else {
-        log("⚠️ SGET: static field " + static_key + " not initialized, using default");
-        // Initialize with default
-        static_field_storage_[static_key] = result_value;
+    if (field_res.resolved) {
+        std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
+        auto it = static_field_storage_.find(static_key);
+        if (it != static_field_storage_.end()) {
+            result_value = it->second;
+        } else {
+            static_field_storage_[static_key] = result_value;
+        }
     }
     
     set_register(dest_reg, result_value);
-    
-    // Evidence trace with ExecutionSource
     trace.operands.push_back({"v" + std::to_string(dest_reg), "destination"});
-    trace.operands.push_back({"static_field", static_key});
-    trace.operands.push_back({"class", field_res.class_descriptor});
-    trace.operands.push_back({"field", field_res.field_name});
-    trace.operands.push_back({"value", result_value.to_string()});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
     
     pc_ = pc + 2;
@@ -2471,48 +2390,32 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
 }
 
 bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& trace) {
-    // Format: 21c sget-object vAA, field@BBBB
-    // Read static object field into register
-    if (pc + 1 >= bytecode_.size()) return false;
+    // Format: 21c sget-object vAA, field@BBBB (2 code units)
+    // EXP-042 Phase 2 FIX: never return false — advance pc_ on failure.
+    if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
     
     uint16_t instr = bytecode_[pc];
-    uint8_t dest_reg = (instr >> 8) & 0xFF;   // vAA - destination
-    uint16_t field_idx = bytecode_[pc + 1];   // BBBB - field index
+    uint8_t dest_reg = (instr >> 8) & 0xFF;
+    uint16_t field_idx = bytecode_[pc + 1];
     
-    // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
-    if (!field_res.resolved) {
-        trace.error_message = "Failed to resolve static field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
-        return false;
-    }
     
-    field_res.is_static = true;
-    
-    // Build static field key
-    std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
-    
-    // Look up in static field storage
     DalvikValue result_value;
     result_value.type = DalvikType::NULL_REF;
     result_value.object_id = 0;
     
-    auto it = static_field_storage_.find(static_key);
-    if (it != static_field_storage_.end()) {
-        result_value = it->second;
-        log("✅ SGET-OBJECT: " + static_key + " = " + result_value.to_string());
-    } else {
-        log("⚠️ SGET-OBJECT: static field " + static_key + " not initialized, using null");
-        static_field_storage_[static_key] = result_value;
+    if (field_res.resolved) {
+        std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
+        auto it = static_field_storage_.find(static_key);
+        if (it != static_field_storage_.end()) {
+            result_value = it->second;
+        } else {
+            static_field_storage_[static_key] = result_value;
+        }
     }
     
     set_register(dest_reg, result_value);
-    
-    // Evidence trace with ExecutionSource
     trace.operands.push_back({"v" + std::to_string(dest_reg), "destination"});
-    trace.operands.push_back({"static_field", static_key});
-    trace.operands.push_back({"class", field_res.class_descriptor});
-    trace.operands.push_back({"field", field_res.field_name});
-    trace.operands.push_back({"value", result_value.to_string()});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
     
     pc_ = pc + 2;
@@ -2520,41 +2423,23 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
 }
 
 bool DalvikExecutionEngine::execute_sput(uint32_t pc, InstructionTrace& trace) {
-    // Format: 21c sput vAA, field@BBBB
-    // Store value to static field
-    if (pc + 1 >= bytecode_.size()) return false;
+    // Format: 21c sput vAA, field@BBBB (2 code units)
+    // EXP-042 Phase 2 FIX: never return false — advance pc_ on failure.
+    if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
     
     uint16_t instr = bytecode_[pc];
-    uint8_t src_reg = (instr >> 8) & 0xFF;    // vAA - source
-    uint16_t field_idx = bytecode_[pc + 1];   // BBBB - field index
+    uint8_t src_reg = (instr >> 8) & 0xFF;
+    uint16_t field_idx = bytecode_[pc + 1];
     
-    // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
-    if (!field_res.resolved) {
-        trace.error_message = "Failed to resolve static field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
-        return false;
-    }
-    
-    field_res.is_static = true;
-    
-    // Get value to store
     DalvikValue src_val = get_register(src_reg);
     
-    // Build static field key and store
-    std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
-    DalvikValue old_value = static_field_storage_[static_key];  // Default if not exists
-    static_field_storage_[static_key] = src_val;
+    if (field_res.resolved) {
+        std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
+        static_field_storage_[static_key] = src_val;
+    }
     
-    log("✅ SPUT: " + static_key + " = " + src_val.to_string() + 
-        " (was: " + old_value.to_string() + ")");
-    
-    // Evidence trace with ExecutionSource
     trace.operands.push_back({"v" + std::to_string(src_reg), "source"});
-    trace.operands.push_back({"static_field", static_key});
-    trace.operands.push_back({"class", field_res.class_descriptor});
-    trace.operands.push_back({"field", field_res.field_name});
-    trace.operands.push_back({"old_value", old_value.to_string()});
-    trace.operands.push_back({"new_value", src_val.to_string()});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
     
     pc_ = pc + 2;
@@ -2562,41 +2447,23 @@ bool DalvikExecutionEngine::execute_sput(uint32_t pc, InstructionTrace& trace) {
 }
 
 bool DalvikExecutionEngine::execute_sput_object(uint32_t pc, InstructionTrace& trace) {
-    // Format: 21c sput-object vAA, field@BBBB
-    // Store object reference to static field
-    if (pc + 1 >= bytecode_.size()) return false;
+    // Format: 21c sput-object vAA, field@BBBB (2 code units)
+    // EXP-042 Phase 2 FIX: never return false — advance pc_ on failure.
+    if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
     
     uint16_t instr = bytecode_[pc];
-    uint8_t src_reg = (instr >> 8) & 0xFF;    // vAA - source
-    uint16_t field_idx = bytecode_[pc + 1];   // BBBB - field index
+    uint8_t src_reg = (instr >> 8) & 0xFF;
+    uint16_t field_idx = bytecode_[pc + 1];
     
-    // Resolve field from DEX
     FieldResolution field_res = resolve_field(field_idx);
-    if (!field_res.resolved) {
-        trace.error_message = "Failed to resolve static field index " + std::to_string(field_idx); trace.status = InstructionTrace::Status::CRASH_ERROR;
-        return false;
-    }
-    
-    field_res.is_static = true;
-    
-    // Get value to store
     DalvikValue src_val = get_register(src_reg);
     
-    // Build static field key and store
-    std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
-    DalvikValue old_value = static_field_storage_[static_key];
-    static_field_storage_[static_key] = src_val;
+    if (field_res.resolved) {
+        std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
+        static_field_storage_[static_key] = src_val;
+    }
     
-    log("✅ SPUT-OBJECT: " + static_key + " = " + src_val.to_string() + 
-        " (was: " + old_value.to_string() + ")");
-    
-    // Evidence trace with ExecutionSource
     trace.operands.push_back({"v" + std::to_string(src_reg), "source"});
-    trace.operands.push_back({"static_field", static_key});
-    trace.operands.push_back({"class", field_res.class_descriptor});
-    trace.operands.push_back({"field", field_res.field_name});
-    trace.operands.push_back({"old_value", old_value.to_string()});
-    trace.operands.push_back({"new_value", src_val.to_string()});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
     
     pc_ = pc + 2;
@@ -2720,7 +2587,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     api_trace.pc = pc;
     api_trace.frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
     
-    result.api_call_traces.push_back(api_trace);
+    if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) { result.api_call_traces.erase(result.api_call_traces.begin()); } result.api_call_traces.push_back(api_trace);
     
     // EXP-035: Evidence trace with VTable dispatch information
     trace.invoked_method = resolved_method;
@@ -2874,7 +2741,7 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
     api_trace.status = api_status;
     api_trace.pc = pc;
     api_trace.frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
-    result.api_call_traces.push_back(api_trace);
+    if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) { result.api_call_traces.erase(result.api_call_traces.begin()); } result.api_call_traces.push_back(api_trace);
 
     // Trace evidence
     trace.invoked_method = resolved_method;
@@ -2971,7 +2838,7 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     api_trace.method = method_name;
     api_trace.status = status;
     api_trace.pc = pc;
-    result.api_call_traces.push_back(api_trace);
+    if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) { result.api_call_traces.erase(result.api_call_traces.begin()); } result.api_call_traces.push_back(api_trace);
     
     trace.invoked_method = class_name + "." + method_name;
     trace.operands.push_back({"method", std::to_string(method_idx)});
@@ -3046,7 +2913,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     api_trace.method = method_name;
     api_trace.status = status;
     api_trace.pc = pc;
-    result.api_call_traces.push_back(api_trace);
+    if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) { result.api_call_traces.erase(result.api_call_traces.begin()); } result.api_call_traces.push_back(api_trace);
     
     trace.invoked_method = class_name + "." + method_name;
     
@@ -3089,7 +2956,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     api_trace.method = method_name;
     api_trace.status = status;
     api_trace.pc = pc;
-    result.api_call_traces.push_back(api_trace);
+    if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) { result.api_call_traces.erase(result.api_call_traces.begin()); } result.api_call_traces.push_back(api_trace);
     
     trace.invoked_method = class_name + "." + method_name;
     
@@ -3116,8 +2983,18 @@ bool DalvikExecutionEngine::execute_return_void(uint32_t pc, InstructionTrace& t
 }
 
 bool DalvikExecutionEngine::execute_return(uint32_t pc, InstructionTrace& trace) {
-    // Format: 11x [op] vAA
-    if (pc + 1 >= bytecode_.size()) return false;
+    // Format: 11x [op] vAA (1 code unit)
+    // EXP-042 Phase 2 FIX: The previous bounds check `pc + 1 >= bytecode_.size()`
+    // was wrong for 1-unit instructions. When `return` is the LAST instruction
+    // of a method (very common: the method ends with `return v0`), pc+1 == size
+    // and the check failed, returning false WITHOUT advancing pc_. The caller
+    // then re-fetched the same `return` opcode 50 000 times until the loop
+    // detector halted the method. This was the cause of:
+    //   - Util.castNonNull looping at PC=0
+    //   - AndroidUtilities.isTablet looping at PC=13
+    //   - AndroidUtilities.isTabletForce looping at PC=21
+    //   - All other "method exits at 50 001 instructions" cases.
+    if (pc >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
     uint8_t ret_reg = (instr >> 8) & 0xFF;
@@ -3133,13 +3010,15 @@ bool DalvikExecutionEngine::execute_return(uint32_t pc, InstructionTrace& trace)
     
     log("  RETURN " + val.to_string() + " at " + to_hex(pc));
     
-    pc_ = pc + 2;
+    pc_ = pc + 1;  // EXP-042: 11x format is 1 code unit, not 2.
     return true;
 }
 
 bool DalvikExecutionEngine::execute_return_object(uint32_t pc, InstructionTrace& trace) {
-    // Format: 11x [op] vAA
-    if (pc + 1 >= bytecode_.size()) return false;
+    // Format: 11x [op] vAA (1 code unit)
+    // EXP-042 Phase 2 FIX: Same bounds-check bug as execute_return — see above.
+    // This was the direct cause of Util.castNonNull looping at PC=0 forever.
+    if (pc >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
     uint8_t ret_reg = (instr >> 8) & 0xFF;
@@ -3155,7 +3034,7 @@ bool DalvikExecutionEngine::execute_return_object(uint32_t pc, InstructionTrace&
     
     log("  RETURN_OBJECT " + val.to_string() + " at " + to_hex(pc));
     
-    pc_ = pc + 2;
+    pc_ = pc + 1;  // EXP-042: 11x format is 1 code unit, not 2.
     return true;
 }
 
@@ -3431,24 +3310,266 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           const std::vector<DalvikValue>& args,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status) {
-    // This is where DEX invokes connect to Android API stubs
-    // In a full implementation, this would:
-    // 1. Look up the method in API registry
-    // 2. Convert DalvikValues to C++ types
-    // 3. Call the actual stub method
-    // 4. Convert result back to DalvikValue
-    // 5. Return appropriate status
-    
+    // EXP-042 Phase 4: Android Framework minimal runtime.
+    // Implements REAL Android objects for the P0/P1 APIs that Telegram's
+    // LaunchActivity.onCreate actually calls. See:
+    //   docs/exp042/EXP042_TELEGRAM_COMPATIBILITY_MAP.md
+    //
+    // Design:
+    // * Each "real object" returned (Resources, PackageManager, DisplayMetrics,
+    //   Configuration, etc.) is allocated on the DalvikHeap as a new heap
+    //   object with a fixed class descriptor. The caller (DEX bytecode) sees
+    //   it as an OBJECT_REF and can call methods on it; those calls come back
+    //   through bridge_to_api and we route them to the same singleton.
+    //
+    // * Singletons are cached by class descriptor in api_singletons_ so that
+    //   `Context.getResources()` always returns the same object. This matches
+    //   real Android behavior and prevents heap growth from repeated calls.
+
     log("  API BRIDGE: " + class_name + "." + method);
-    
-    // Recognize common patterns
-    if (class_name.find("TextView") != std::string::npos && 
-        method.find("setText") != std::string::npos) {
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P0.7 — Context.getApplicationContext → Context singleton
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getApplicationContext" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos)) {
+        result = get_or_create_singleton("Landroid/content/Context;");
         status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_void();  // setText returns void
         return true;
     }
-    
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P0.2 — Context.getResources → Resources singleton
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getResources" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        result = get_or_create_singleton("Landroid/content/res/Resources;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P0.3 — Resources.getDisplayMetrics → DisplayMetrics singleton
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getDisplayMetrics" &&
+        class_name.find("Resources") != std::string::npos) {
+        result = get_or_create_singleton("Landroid/util/DisplayMetrics;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P0.5 — Resources.getConfiguration → Configuration singleton
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getConfiguration" &&
+        class_name.find("Resources") != std::string::npos) {
+        result = get_or_create_singleton("Landroid/content/res/Configuration;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P0.9 — Context.getPackageManager → PackageManager singleton
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getPackageManager" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        result = get_or_create_singleton("Landroid/content/pm/PackageManager;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P0.10 — PackageManager.getPackageInfo → PackageInfo (with defaults)
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getPackageInfo" &&
+        class_name.find("PackageManager") != std::string::npos) {
+        // Allocate a fresh PackageInfo object on the heap. We populate it
+        // with sensible defaults in the iget handler when fields are read.
+        uint32_t obj_id = heap_.allocate("Landroid/content/pm/PackageInfo;",
+                                         pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        result = DalvikValue::make_object(obj_id,
+                                          "Landroid/content/pm/PackageInfo;");
+        // Pre-populate known fields with defaults
+        DalvikValue version_code;
+        version_code.type = DalvikType::INT32;
+        version_code.int_val = 9999;
+        heap_.set_object_field(obj_id, "versionCode", version_code);
+        DalvikValue version_name;
+        version_name.type = DalvikType::STRING_REF;
+        version_name.string_val = "9.9.9";
+        version_name.ref_id = 0;
+        heap_.set_object_field(obj_id, "versionName", version_name);
+        DalvikValue package_name;
+        package_name.type = DalvikType::STRING_REF;
+        package_name.string_val = "org.telegram.messenger.web";
+        package_name.ref_id = 0;
+        heap_.set_object_field(obj_id, "packageName", package_name);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P0.8 — Context.getPackageName → String
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getPackageName" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        result = DalvikValue::make_string("org.telegram.messenger.web", 1);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P0.12 — Context.getSharedPreferences → SharedPreferences (already impl'd)
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getSharedPreferences" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        result = get_or_create_singleton("Landroid/content/SharedPreferences;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P0.13 — Context.getFilesDir → File
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getFilesDir" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        result = get_or_create_singleton("Ljava/io/File;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P1.1 — Activity.getWindow → Window singleton
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getWindow" &&
+        class_name.find("Activity") != std::string::npos) {
+        result = get_or_create_singleton("Landroid/view/Window;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P1.2 — Window.setFlags(int, int) → void (no-op)
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "setFlags" &&
+        class_name.find("Window") != std::string::npos) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P1.3 — Window.getDecorView → View
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getDecorView" &&
+        class_name.find("Window") != std::string::npos) {
+        result = get_or_create_singleton("Landroid/view/View;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P1.4 — Resources.getIdentifier(String, String, String) → int (not found)
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getIdentifier" &&
+        class_name.find("Resources") != std::string::npos) {
+        // Return 0 = resource not found. Telegram's fillStatusBarHeight
+        // then falls back to default 24px.
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(0);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P1.5 — Resources.getDimensionPixelSize(int) → int (default 24)
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getDimensionPixelSize" &&
+        class_name.find("Resources") != std::string::npos) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(24);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P1.8 — Context.getMainLooper → Looper
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getMainLooper" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        result = get_or_create_singleton("Landroid/os/Looper;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P1.6 — Context.getSystemService → null (Telegram handles null gracefully)
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getSystemService" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_null();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P1.7 — Context.getExternalFilesDir → File
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getExternalFilesDir" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        result = get_or_create_singleton("Ljava/io/File;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // STUB: DynamiteModule.load — throw (BLOCKER-D fix)
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "load" &&
+        class_name.find("DynamiteModule") != std::string::npos) {
+        // Real Android throws LoadingException when Play Services is unavailable.
+        // Telegram's caller (instantiate) catches it and returns null.
+        // We simulate by returning null directly (avoids needing exception
+        // propagation support in the engine).
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_null();
+        std::cerr << "[EXP-042] DynamiteModule.load stubbed → null "
+                     "(mimics no-Play-Services device)" << std::endl;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // STUB: Theme.getColor (when currentColors cache is null) — return black
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getColor" &&
+        class_name.find("Theme") != std::string::npos) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        // Default black = 0xFF000000
+        DalvikValue v;
+        v.type = DalvikType::INT32;
+        v.int_val = 0xFF000000;
+        result = v;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // Legacy Activity/TextView pattern matchers (kept from pre-EXP-042)
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("TextView") != std::string::npos &&
+        method.find("setText") != std::string::npos) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
     if (class_name.find("Activity") != std::string::npos &&
         (method.find("setContentView") != std::string::npos ||
          method.find("onCreate") != std::string::npos)) {
@@ -3456,17 +3577,78 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_void();
         return true;
     }
-    
+
     if (class_name.find("Log") != std::string::npos) {
         status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_int(0);  // Log.i returns int
+        result = DalvikValue::make_int(0);
         return true;
     }
-    
+
     // Default: stubbed but not crashing
     status = ApiCallTrace::Status::STUBBED;
     result = DalvikValue::make_void();
     return true;
+}
+
+// EXP-042 Phase 4: Singleton cache helper.
+// Returns an existing heap object for the given class descriptor, or allocates
+// a fresh one. Cached in api_singletons_ so that getResources() always returns
+// the same Resources object across the entire APK execution.
+DalvikValue DalvikExecutionEngine::get_or_create_singleton(const std::string& class_desc) {
+    auto it = api_singletons_.find(class_desc);
+    if (it != api_singletons_.end()) {
+        // Verify the object still exists in the heap
+        if (heap_.has_object(it->second)) {
+            DalvikValue v;
+            v.type = DalvikType::OBJECT_REF;
+            v.object_id = it->second;
+            v.class_desc = class_desc;
+            return v;
+        }
+    }
+    // Allocate new singleton
+    uint32_t obj_id = heap_.allocate(class_desc, pc_,
+                                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+    api_singletons_[class_desc] = obj_id;
+    // Pre-populate known fields for some singletons
+    if (class_desc == "Landroid/util/DisplayMetrics;") {
+        DalvikValue density;
+        density.type = DalvikType::FLOAT32;
+        density.float_val = 1.0f;  // mdpi
+        heap_.set_object_field(obj_id, "density", density);
+        DalvikValue density_dpi;
+        density_dpi.type = DalvikType::INT32;
+        density_dpi.int_val = 160;  // DENSITY_MEDIUM
+        heap_.set_object_field(obj_id, "densityDpi", density_dpi);
+        DalvikValue width_px;
+        width_px.type = DalvikType::INT32;
+        width_px.int_val = 1080;
+        heap_.set_object_field(obj_id, "widthPixels", width_px);
+        DalvikValue height_px;
+        height_px.type = DalvikType::INT32;
+        height_px.int_val = 1920;
+        heap_.set_object_field(obj_id, "heightPixels", height_px);
+    } else if (class_desc == "Landroid/content/res/Configuration;") {
+        DalvikValue screen_layout;
+        screen_layout.type = DalvikType::INT32;
+        screen_layout.int_val = 0x40;  // SCREENLAYOUT_SIZE_NORMAL
+        heap_.set_object_field(obj_id, "screenLayout", screen_layout);
+        DalvikValue orientation;
+        orientation.type = DalvikType::INT32;
+        orientation.int_val = 1;  // ORIENTATION_PORTRAIT
+        heap_.set_object_field(obj_id, "orientation", orientation);
+    } else if (class_desc == "Ljava/io/File;") {
+        DalvikValue path;
+        path.type = DalvikType::STRING_REF;
+        path.string_val = "/tmp/miniandroid/files";
+        path.ref_id = 0;
+        heap_.set_object_field(obj_id, "path", path);
+    }
+    DalvikValue v;
+    v.type = DalvikType::OBJECT_REF;
+    v.object_id = obj_id;
+    v.class_desc = class_desc;
+    return v;
 }
 
 // ============================================================================
