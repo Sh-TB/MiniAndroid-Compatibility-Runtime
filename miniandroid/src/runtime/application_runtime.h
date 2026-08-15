@@ -75,7 +75,7 @@ struct RuntimeConfig {
     std::string screenshot_path = "run/screenshot.png";
     int framebuffer_width = 480;
     int framebuffer_height = 800;
-    uint32_t max_instructions = 10000;
+    uint32_t max_instructions = 100000;
     bool stop_on_unimplemented = false;
     bool generate_evidence = true;
     

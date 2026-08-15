@@ -106,39 +106,77 @@ DalvikExecutionEngine::~DalvikExecutionEngine() {
     log("DalvikExecutionEngine destroyed");
 }
 
-// EXP-038 (BLOCKER-033): Build class→DEX index map.
-// Since we can't add source_dex_index to ClassInfo (it causes memory layout
-// issues), we instead build a map from class descriptor → DEX index by
-// checking which DEX file contains each class.
+// EXP-039 (BLOCKER-035): Build class→DEX index map by searching each DEX's
+// class_defs[] table for the class descriptor.
+//
+// For each DEX file's raw bytes, we parse the class_defs[] table and extract
+// the class_idx → type descriptor. If the descriptor matches a class in the
+// merged report, we record the DEX index.
+//
+// This is the CORRECT way to determine which DEX file owns a class.
 void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) {
     class_to_dex_index_.clear();
-    if (!is_multidex_ || per_dex_raw_data_.empty()) return;
-
-    // For each class in the merged report, find which DEX file contains it.
-    // This is O(classes * dex_files) but only done once.
-    for (const auto& cls : report.classes) {
-        if (class_to_dex_index_.count(cls.name)) continue;  // already mapped
-
-        for (uint32_t di = 0; di < per_dex_raw_data_.size(); di++) {
-            const auto& raw = per_dex_raw_data_[di];
-            if (raw.size() < sizeof(dex::DexHeader)) continue;
-
-            dex::DexHeader hdr;
-            std::memcpy(&hdr, raw.data(), sizeof(dex::DexHeader));
-
-            // Check if this class's type_idx exists in this DEX's type_ids
-            // by searching for the class name string in this DEX's string pool.
-            // This is expensive but correct. For performance, we just use
-            // the first DEX (index 0) as default.
-            // TODO: Proper lookup would search each DEX's class_defs for the class.
-            // For now, assign DEX 0 to all classes — this preserves the existing
-            // behavior (merged method_ids works for classes.dex).
+    if (per_dex_raw_data_.empty()) {
+        // Single DEX — all classes belong to DEX 0
+        for (const auto& cls : report.classes) {
             class_to_dex_index_[cls.name] = 0;
-            break;
+        }
+        log("Single DEX — mapped " + std::to_string(class_to_dex_index_.size()) + " classes to DEX 0");
+        return;
+    }
+
+    // For each DEX file, parse its class_defs[] and build a set of class descriptors
+    for (uint32_t di = 0; di < per_dex_raw_data_.size(); di++) {
+        const auto& raw = per_dex_raw_data_[di];
+        if (raw.size() < sizeof(dex::DexHeader)) continue;
+
+        dex::DexHeader hdr;
+        std::memcpy(&hdr, raw.data(), sizeof(dex::DexHeader));
+
+        uint32_t cd_size = hdr.class_defs_size;
+        uint32_t cd_off = hdr.class_defs_off;
+
+        // Each DexClassDef is 32 bytes
+        for (uint32_t ci = 0; ci < cd_size; ci++) {
+            size_t cd_entry_off = cd_off + ci * 32;  // sizeof(DexClassDef) = 32
+            if (cd_entry_off + 32 > raw.size()) break;
+
+            // Read class_idx (first 4 bytes of DexClassDef)
+            uint32_t class_idx;
+            std::memcpy(&class_idx, raw.data() + cd_entry_off, 4);
+
+            // Resolve class_idx → type_ids[class_idx] → descriptor string
+            if (class_idx >= hdr.type_ids_size) continue;
+            size_t tid_off = hdr.type_ids_off + class_idx * 4;  // type_ids are 4 bytes each
+            if (tid_off + 4 > raw.size()) continue;
+
+            uint32_t descriptor_idx;
+            std::memcpy(&descriptor_idx, raw.data() + tid_off, 4);
+
+            // Resolve descriptor string
+            std::string descriptor = read_dex_string_from_raw(raw, descriptor_idx, hdr);
+
+            if (!descriptor.empty() && descriptor[0] == 'L') {
+                // Only assign if not already mapped (first DEX wins — but
+                // classes shouldn't be duplicated across DEX files)
+                if (class_to_dex_index_.find(descriptor) == class_to_dex_index_.end()) {
+                    class_to_dex_index_[descriptor] = di;
+                }
+            }
         }
     }
 
-    log("Built class→DEX index with " + std::to_string(class_to_dex_index_.size()) + " entries");
+    // Assign DEX 0 to any remaining unmapped classes (safety fallback)
+    uint32_t unmapped = 0;
+    for (const auto& cls : report.classes) {
+        if (class_to_dex_index_.find(cls.name) == class_to_dex_index_.end()) {
+            class_to_dex_index_[cls.name] = 0;
+            unmapped++;
+        }
+    }
+
+    log("Built class→DEX index: " + std::to_string(class_to_dex_index_.size()) +
+        " entries (" + std::to_string(unmapped) + " unmapped, assigned to DEX 0)");
 }
 
 // ============================================================================
@@ -259,6 +297,13 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
     bool verbose
 ) {
     verbose_ = verbose;
+
+    // EXP-039: Debug output to trace crash location
+    std::cerr << "[EXP039] execute_apk_with_activity entered" << std::endl;
+    std::cerr << "[EXP039] per_dex_raw_data_ size=" << per_dex_raw_data_.size() << std::endl;
+    std::cerr << "[EXP039] class_to_dex_index_ size=" << class_to_dex_index_.size() << std::endl;
+    std::cerr << "[EXP039] config_.max_instructions=" << config_.max_instructions << std::endl;
+    std::cerr.flush();
     // EXP-037 Phase B (BLOCKER-002 + BLOCKER-015 FIX):
     // Store the DexReport pointer so invoke-* / iget/iput/sget/sput handlers
     // can resolve method_idx and field_idx via DexReport::method_ids[] /
