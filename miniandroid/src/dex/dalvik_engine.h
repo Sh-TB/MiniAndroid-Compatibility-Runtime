@@ -160,28 +160,45 @@ namespace Opcode {
     constexpr uint16_t INVOKE_INTERFACE_RANGE = 0x78; // invoke-interface/range
     
     // Control flow (basic set)
-    constexpr uint16_t GOTO = 0x28;           // goto +AA
-    constexpr uint16_t GOTO_16 = 0x27;        // goto/16 +AAAA (EXP-040 FIX: was 0x29, should be 0x27)
-    constexpr uint16_t GOTO_32 = 0x29;        // goto/32 +AAAAAAAA (EXP-040 FIX: was 0x2a, should be 0x29)
+    // EXP-043 Phase 1: Fixed goto opcode values (off-by-one regression).
+    // Per AOSP dalvik-bytecode.html:
+    //   0x27 goto (10t format), 0x28 goto/16 (20t), 0x29 goto/32 (30t)
+    // Previous code had GOTO=0x28 (which is goto/16, not goto), and
+    // GOTO_16=0x27 (which is goto, not goto/16). Both were swapped.
+    // This bug caused real `goto` opcodes (most common in Dalvik bytecode)
+    // to be incorrectly dispatched as `goto/16`, which reads the next
+    // code unit as the offset instead of using the high byte of the
+    // current opcode. Result: wrong branch targets, infinite loops
+    // in compact goto-heavy methods.
+    constexpr uint16_t GOTO = 0x27;           // goto +AA (10t format, 1 code unit)
+    constexpr uint16_t GOTO_16 = 0x28;        // goto/16 +AAAA (20t format, 2 code units)
+    constexpr uint16_t GOTO_32 = 0x29;        // goto/32 +AAAAAAAA (30t format, 3 code units)
     constexpr uint16_t THROW = 0x26;           // throw vAA
-    // EXP-038 (BLOCKER-029): Fixed if-eqz/if-nez opcode values.
-    // Per AOSP: if-eqz=0x38, if-nez=0x39, if-ltz=0x3a, if-gez=0x3b,
-    // if-gtz=0x3c, if-lez=0x3d
-    // Previous code had IF_EQZ=0x39 and IF_NEZ=0x3A — off by 1!
-    constexpr uint16_t IF_EQZ = 0x38;         // if-eqz vAA, +BBBB
-    constexpr uint16_t IF_NEZ = 0x39;         // if-nez vAA, +BBBB
-    constexpr uint16_t IF_LTZ = 0x3A;         // if-ltz vAA, +BBBB
-    constexpr uint16_t IF_GEZ = 0x3B;         // if-gez vAA, +BBBB
-    constexpr uint16_t IF_GTZ = 0x3C;          // if-gtz vAA, +BBBB
-    constexpr uint16_t IF_LEZ = 0x3D;          // if-lez vAA, +BBBB
-    constexpr uint16_t IF_EQ = 0x32;          // if-eq vAA, vBB, +CCCC
-    constexpr uint16_t IF_NE = 0x33;          // if-ne vAA, vBB, +CCCC
-    // EXP-037 Phase B (BLOCKER-018): remaining if-* opcodes (22t format).
-    // Without these, any code that does numeric comparison branching fails.
-    constexpr uint16_t IF_LT = 0x34;          // if-lt vAA, vBB, +CCCC
-    constexpr uint16_t IF_GE = 0x35;          // if-ge vAA, vBB, +CCCC
-    constexpr uint16_t IF_GT = 0x36;          // if-gt vAA, vBB, +CCCC
-    constexpr uint16_t IF_LE = 0x37;          // if-le vAA, vBB, +CCCC
+    // EXP-043 Phase 1: Fixed ALL if-* opcode values (off-by-one regression).
+    // Per AOSP dalvik-bytecode.html (https://source.android.com/devices/tech/dalvik/dalvik-bytecode):
+    //   0x31 if-eq, 0x32 if-ne, 0x33 if-lt, 0x34 if-ge, 0x35 if-gt, 0x36 if-le
+    //   0x37 if-eqz, 0x38 if-nez, 0x39 if-ltz, 0x3a if-gez, 0x3b if-gtz, 0x3c if-lez
+    // EXP-038 (BLOCKER-029) attempted to fix if-eqz/if-nez but introduced a new
+    // off-by-one: set IF_EQZ=0x38 (should be 0x37), IF_NEZ=0x39 (should be 0x38),
+    // and propagated the error to all if-* opcodes.
+    //
+    // This was the ROOT CAUSE of the Intrinsics.createParameterIsNullExceptionMessage
+    // infinite loop: Kotlin's checkNotNullParameter uses `if-ltz v0` (op=0x39),
+    // but our engine dispatched op=0x39 to IF_NEZ (which we defined as 0x39),
+    // causing wrong branch behavior and infinite recursion in the NPE message
+    // builder that uses if-ltz to iterate stack frames.
+    constexpr uint16_t IF_EQ = 0x31;          // if-eq vAA, vBB, +CCCC (22t format)
+    constexpr uint16_t IF_NE = 0x32;          // if-ne vAA, vBB, +CCCC
+    constexpr uint16_t IF_LT = 0x33;          // if-lt vAA, vBB, +CCCC
+    constexpr uint16_t IF_GE = 0x34;          // if-ge vAA, vBB, +CCCC
+    constexpr uint16_t IF_GT = 0x35;          // if-gt vAA, vBB, +CCCC
+    constexpr uint16_t IF_LE = 0x36;          // if-le vAA, vBB, +CCCC
+    constexpr uint16_t IF_EQZ = 0x37;         // if-eqz vAA, +BBBB (21t format)
+    constexpr uint16_t IF_NEZ = 0x38;         // if-nez vAA, +BBBB
+    constexpr uint16_t IF_LTZ = 0x39;         // if-ltz vAA, +BBBB
+    constexpr uint16_t IF_GEZ = 0x3A;         // if-gez vAA, +BBBB
+    constexpr uint16_t IF_GTZ = 0x3B;          // if-gtz vAA, +BBBB
+    constexpr uint16_t IF_LEZ = 0x3C;          // if-lez vAA, +BBBB
 
     // EXP-038 (BLOCKER-028): Arithmetic 2addr opcodes (12x format)
     // These are heavily used in real Android bytecode for local variable math.
@@ -277,11 +294,17 @@ namespace Opcode {
     constexpr uint16_t INT_TO_SHORT = 0x90;    // int-to-short vA, vB
 
     // Float/Double arithmetic (23x format: AA|op BB|CC, 2 code units)
-    constexpr uint16_t CMPL_FLOAT = 0x2D;      // cmpl-float vAA, vBB, vCC
-    constexpr uint16_t CMPG_FLOAT = 0x2E;      // cmpg-float vAA, vBB, vCC
-    constexpr uint16_t CMPL_DOUBLE = 0x2F;     // cmpl-double vAA, vBB, vCC
-    constexpr uint16_t CMPG_DOUBLE = 0x30;    // cmpg-double vAA, vBB, vCC
-    constexpr uint16_t CMP_LONG = 0x31;        // cmp-long vAA, vBB, vCC
+    // EXP-043 Phase 1: Fixed cmp-* opcode values (off-by-one regression).
+    // Per AOSP: 0x2c cmpl-float, 0x2d cmpg-float, 0x2e cmpl-double,
+    // 0x2f cmpg-double, 0x30 cmp-long.
+    // Previous code had all values shifted by 1, causing CMP_LONG=0x31
+    // which collided with IF_EQ=0x31 (after the if-* fix above), breaking
+    // the build.
+    constexpr uint16_t CMPL_FLOAT = 0x2C;      // cmpl-float vAA, vBB, vCC
+    constexpr uint16_t CMPG_FLOAT = 0x2D;      // cmpg-float vAA, vBB, vCC
+    constexpr uint16_t CMPL_DOUBLE = 0x2E;     // cmpl-double vAA, vBB, vCC
+    constexpr uint16_t CMPG_DOUBLE = 0x2F;    // cmpg-double vAA, vBB, vCC
+    constexpr uint16_t CMP_LONG = 0x30;        // cmp-long vAA, vBB, vCC
     constexpr uint16_t ADD_FLOAT = 0xA7;        // add-float vAA, vBB, vCC
     constexpr uint16_t SUB_FLOAT = 0xA8;        // sub-float vAA, vBB, vCC
     constexpr uint16_t MUL_FLOAT = 0xA9;        // mul-float vAA, vBB, vCC
@@ -1232,6 +1255,12 @@ private:
     bool execute_goto(uint32_t pc, InstructionTrace& trace);
     bool execute_if_eqz(uint32_t pc, InstructionTrace& trace);
     bool execute_if_nez(uint32_t pc, InstructionTrace& trace);
+    // EXP-043 Phase 1: Proper 21t format if-*z handlers (previously all
+    // dispatched to execute_if_eqz with wrong comparison semantics).
+    bool execute_if_ltz(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_gez(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_gtz(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_lez(uint32_t pc, InstructionTrace& trace);
     // EXP-037 Phase B (BLOCKER-018): 22t format if-* opcodes
     // (if-lt, if-ge, if-gt, if-le) — required for numeric comparisons.
     // Existing if-eq/if-ne are in a different file path (or unused).

@@ -45,3 +45,7 @@ upload/
 
 # Tool results (transient)
 tool-results/
+
+# EXP-043 run artifacts (regenerated each run)
+miniandroid/run/exp042_auto/
+miniandroid/run/exp043_*/

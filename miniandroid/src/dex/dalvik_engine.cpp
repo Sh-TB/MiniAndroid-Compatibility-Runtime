@@ -588,10 +588,12 @@ bool DalvikExecutionEngine::execute_method_internal(
     // halt messages and traces can identify the method that halted.
     current_class_ = class_name;
     current_method_ = method_name;
-    // EXP-042 Phase 4: Log the first 200 method entries for diagnostic
+    // EXP-042 Phase 4: Log the first 5000 method entries for diagnostic
     // visibility, then suppress to avoid log spam during long runs.
+    // EXP-043 Phase 1: raised from 200 to 5000 to capture the full path
+    // to the Intrinsics loop blocker.
     static thread_local uint64_t method_entry_count = 0;
-    if (method_entry_count < 200) {
+    if (method_entry_count < 5000) {
         std::cerr << "[METHOD-IN] " << class_name << "." << method_name
                   << " (bytecode_size=" << bytecode.size() << ")" << std::endl;
         method_entry_count++;
@@ -1167,20 +1169,30 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 break;
 
             // EXP-038 (BLOCKER-029): if-*z opcodes (21t format, like if-eqz)
+            // EXP-043 Phase 1: each if-*z opcode now dispatches to its OWN
+            // handler instead of all routing to execute_if_eqz. Previously
+            // if-ltz/if-gez/if-lez all used execute_if_eqz's "if (v == 0)"
+            // comparison, and if-gtz used execute_if_nez's "if (v != 0)"
+            // comparison. These are WRONG — if-ltz must be "if (v < 0)",
+            // if-gez "if (v >= 0)", if-gtz "if (v > 0)", if-lez "if (v <= 0)".
+            // The bug caused Kotlin Intrinsics.createParameterIsNullExceptionMessage
+            // to loop forever because if-ltz v3 with v3=5 was treated as
+            // if-eqz (5==0 false) instead of if-ltz (5<0 false) — same answer
+            // in that case, but if-ltz v3 with v3=-1 should branch but didn't.
             case Opcode::IF_LTZ:
-                success = execute_if_eqz(pc_, trace);  // same format, different comparison
+                success = execute_if_ltz(pc_, trace);
                 trace.opcode_name = "if-ltz";
                 break;
             case Opcode::IF_GEZ:
-                success = execute_if_eqz(pc_, trace);
+                success = execute_if_gez(pc_, trace);
                 trace.opcode_name = "if-gez";
                 break;
             case Opcode::IF_GTZ:
-                success = execute_if_nez(pc_, trace);  // nonzero = gtz for non-negative
+                success = execute_if_gtz(pc_, trace);
                 trace.opcode_name = "if-gtz";
                 break;
             case Opcode::IF_LEZ:
-                success = execute_if_eqz(pc_, trace);
+                success = execute_if_lez(pc_, trace);
                 trace.opcode_name = "if-lez";
                 break;
             
@@ -3059,14 +3071,28 @@ bool DalvikExecutionEngine::execute_goto(uint32_t pc, InstructionTrace& trace) {
         offset = static_cast<int8_t>((bytecode_[pc] >> 8) & 0xFF);
         pc_advance = 1;
     } else if (opcode == Opcode::GOTO_16) {
-        // Format 20t: offset is in next code unit (signed 16-bit)
+        // Format 20t: offset is in next code unit (signed 16-bit, 2 code units)
+        // EXP-043 Phase 1: Per AOSP, 20t format is `op AAAA` where:
+        //   byte 0 = op (0x28)
+        //   byte 1 = unused (must be 0)
+        //   bytes 2-3 = AAAA (signed 16-bit offset)
+        // The high byte of the first code unit is unused and MUST be 0.
+        // D8 does emit non-zero high bytes in some cases, but ART ignores them.
+        // We follow the AOSP spec: always read offset from the next code unit.
         if (pc + 1 >= bytecode_.size()) return false;
         offset = static_cast<int16_t>(bytecode_[pc + 1]);
         pc_advance = 2;
     } else if (opcode == Opcode::GOTO_32) {
-        // Format 30t: offset is in next 2 code units (signed 32-bit)
+        // Format 30t: offset is in next 2 code units (signed 32-bit, little-endian, 3 code units)
+        // EXP-043 Phase 1: Per AOSP, 30t format is `op AAAAAAAA` where:
+        //   byte 0 = op (0x29)
+        //   byte 1 = unused (must be 0)
+        //   bytes 2-5 = AAAAAAAA (signed 32-bit offset, little-endian)
+        // Low 16 bits at PC+1, high 16 bits at PC+2.
         if (pc + 2 >= bytecode_.size()) return false;
-        offset = static_cast<int32_t>((bytecode_[pc + 2] << 16) | bytecode_[pc + 1]);
+        uint32_t low = static_cast<uint32_t>(bytecode_[pc + 1]);
+        uint32_t high = static_cast<uint32_t>(bytecode_[pc + 2]);
+        offset = static_cast<int32_t>(low | (high << 16));
         pc_advance = 3;
     } else {
         // Unknown goto variant — treat as 10t
@@ -3091,6 +3117,17 @@ bool DalvikExecutionEngine::execute_goto(uint32_t pc, InstructionTrace& trace) {
         halted_ = true;
         halt_reason_ = "Invalid goto target";
         pc_ = pc + pc_advance;
+        // EXP-043 Phase 1: log invalid goto targets for debugging (first 20 only
+        // to avoid log spam). These indicate either real bytecode verification
+        // issues or goto/32 misinterpretation.
+        static thread_local uint64_t halt_goto_count = 0;
+        if (halt_goto_count < 20) {
+            std::cerr << "[HALT-GOTO] Invalid goto target PC=" << to_hex(pc)
+                      << " in " << current_class_ << "." << current_method_
+                      << " target=" << to_hex(target)
+                      << " bytecode_size=" << bytecode_.size() << std::endl;
+            halt_goto_count++;
+        }
     }
 
     return true;
@@ -3163,6 +3200,151 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
     trace.operands.push_back({"v" + std::to_string(test_reg), val.to_string()});
     trace.operands.push_back({"taken", is_nonzero ? "yes" : "no"});
     
+    return true;
+}
+
+// ============================================================================
+// EXP-043 Phase 1: Proper 21t format if-*z handlers
+// Per AOSP:
+//   if-ltz vAA, +BBBB : branch if (int) vAA < 0
+//   if-gez vAA, +BBBB : branch if (int) vAA >= 0
+//   if-gtz vAA, +BBBB : branch if (int) vAA > 0
+//   if-lez vAA, +BBBB : branch if (int) vAA <= 0
+//
+// For OBJECT_REF, NULL_REF, UNINITIALIZED: the value is treated as 0 (which
+// means if-ltz=fallthrough, if-gez=branch, if-gtz=fallthrough, if-lez=branch).
+// This matches Dalvik's behavior of converting null to 0 for int comparisons.
+// ============================================================================
+
+bool DalvikExecutionEngine::execute_if_ltz(uint32_t pc, InstructionTrace& trace) {
+    // Format: 21t [op] vAA, +BBBB  — branch if (int) vAA < 0
+    if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
+    uint16_t instr = bytecode_[pc];
+    uint8_t test_reg = (instr >> 8) & 0xFF;
+    int16_t offset = static_cast<int16_t>(bytecode_[pc + 1]);
+    DalvikValue val = get_register(test_reg);
+    int32_t ival = 0;
+    if (val.type == DalvikType::INT32 || val.type == DalvikType::BOOLEAN ||
+        val.type == DalvikType::BYTE || val.type == DalvikType::SHORT ||
+        val.type == DalvikType::CHAR) {
+        ival = val.int_val;
+    } else if (val.type == DalvikType::INT64) {
+        ival = static_cast<int32_t>(val.long_val);
+    }
+    bool taken = (ival < 0);
+    if (taken) {
+        uint32_t target = pc + offset;
+        if (target < bytecode_.size()) {
+            trace.status = InstructionTrace::Status::BRANCH_TAKEN;
+            pc_ = target;
+        } else {
+            pc_ = pc + 2;  // fall through if target invalid
+        }
+    } else {
+        trace.status = InstructionTrace::Status::BRANCH_NOT_TAKEN;
+        pc_ = pc + 2;
+    }
+    trace.operands.push_back({"v" + std::to_string(test_reg), std::to_string(ival)});
+    trace.operands.push_back({"taken", taken ? "yes" : "no"});
+    return true;
+}
+
+bool DalvikExecutionEngine::execute_if_gez(uint32_t pc, InstructionTrace& trace) {
+    // Format: 21t [op] vAA, +BBBB  — branch if (int) vAA >= 0
+    if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
+    uint16_t instr = bytecode_[pc];
+    uint8_t test_reg = (instr >> 8) & 0xFF;
+    int16_t offset = static_cast<int16_t>(bytecode_[pc + 1]);
+    DalvikValue val = get_register(test_reg);
+    int32_t ival = 0;
+    if (val.type == DalvikType::INT32 || val.type == DalvikType::BOOLEAN ||
+        val.type == DalvikType::BYTE || val.type == DalvikType::SHORT ||
+        val.type == DalvikType::CHAR) {
+        ival = val.int_val;
+    } else if (val.type == DalvikType::INT64) {
+        ival = static_cast<int32_t>(val.long_val);
+    }
+    bool taken = (ival >= 0);
+    if (taken) {
+        uint32_t target = pc + offset;
+        if (target < bytecode_.size()) {
+            trace.status = InstructionTrace::Status::BRANCH_TAKEN;
+            pc_ = target;
+        } else {
+            pc_ = pc + 2;
+        }
+    } else {
+        trace.status = InstructionTrace::Status::BRANCH_NOT_TAKEN;
+        pc_ = pc + 2;
+    }
+    trace.operands.push_back({"v" + std::to_string(test_reg), std::to_string(ival)});
+    trace.operands.push_back({"taken", taken ? "yes" : "no"});
+    return true;
+}
+
+bool DalvikExecutionEngine::execute_if_gtz(uint32_t pc, InstructionTrace& trace) {
+    // Format: 21t [op] vAA, +BBBB  — branch if (int) vAA > 0
+    if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
+    uint16_t instr = bytecode_[pc];
+    uint8_t test_reg = (instr >> 8) & 0xFF;
+    int16_t offset = static_cast<int16_t>(bytecode_[pc + 1]);
+    DalvikValue val = get_register(test_reg);
+    int32_t ival = 0;
+    if (val.type == DalvikType::INT32 || val.type == DalvikType::BOOLEAN ||
+        val.type == DalvikType::BYTE || val.type == DalvikType::SHORT ||
+        val.type == DalvikType::CHAR) {
+        ival = val.int_val;
+    } else if (val.type == DalvikType::INT64) {
+        ival = static_cast<int32_t>(val.long_val);
+    }
+    bool taken = (ival > 0);
+    if (taken) {
+        uint32_t target = pc + offset;
+        if (target < bytecode_.size()) {
+            trace.status = InstructionTrace::Status::BRANCH_TAKEN;
+            pc_ = target;
+        } else {
+            pc_ = pc + 2;
+        }
+    } else {
+        trace.status = InstructionTrace::Status::BRANCH_NOT_TAKEN;
+        pc_ = pc + 2;
+    }
+    trace.operands.push_back({"v" + std::to_string(test_reg), std::to_string(ival)});
+    trace.operands.push_back({"taken", taken ? "yes" : "no"});
+    return true;
+}
+
+bool DalvikExecutionEngine::execute_if_lez(uint32_t pc, InstructionTrace& trace) {
+    // Format: 21t [op] vAA, +BBBB  — branch if (int) vAA <= 0
+    if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
+    uint16_t instr = bytecode_[pc];
+    uint8_t test_reg = (instr >> 8) & 0xFF;
+    int16_t offset = static_cast<int16_t>(bytecode_[pc + 1]);
+    DalvikValue val = get_register(test_reg);
+    int32_t ival = 0;
+    if (val.type == DalvikType::INT32 || val.type == DalvikType::BOOLEAN ||
+        val.type == DalvikType::BYTE || val.type == DalvikType::SHORT ||
+        val.type == DalvikType::CHAR) {
+        ival = val.int_val;
+    } else if (val.type == DalvikType::INT64) {
+        ival = static_cast<int32_t>(val.long_val);
+    }
+    bool taken = (ival <= 0);
+    if (taken) {
+        uint32_t target = pc + offset;
+        if (target < bytecode_.size()) {
+            trace.status = InstructionTrace::Status::BRANCH_TAKEN;
+            pc_ = target;
+        } else {
+            pc_ = pc + 2;
+        }
+    } else {
+        trace.status = InstructionTrace::Status::BRANCH_NOT_TAKEN;
+        pc_ = pc + 2;
+    }
+    trace.operands.push_back({"v" + std::to_string(test_reg), std::to_string(ival)});
+    trace.operands.push_back({"taken", taken ? "yes" : "no"});
     return true;
 }
 
