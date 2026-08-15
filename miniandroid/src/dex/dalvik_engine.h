@@ -56,6 +56,8 @@ namespace Opcode {
     constexpr uint16_t CONST_STRING = 0x1A;  // const-string vAA, string@BBBB
     constexpr uint16_t CONST_STRING_JUMBO = 0x1B; // const-string/jumbo vAA, string@BBBBBBBB
     constexpr uint16_t CONST_CLASS = 0x1C;   // const-class vAA, type@BBBB
+    constexpr uint16_t MONITOR_ENTER = 0x1D; // monitor-enter vAA
+    constexpr uint16_t MONITOR_EXIT = 0x1E;  // monitor-exit vAA
     
     // Moves (11 opcodes)
     constexpr uint16_t MOVE = 0x01;          // move vA, vB
@@ -179,21 +181,21 @@ namespace Opcode {
 
     // EXP-038 (BLOCKER-028): Arithmetic 2addr opcodes (12x format)
     // These are heavily used in real Android bytecode for local variable math.
-    constexpr uint16_t ADD_INT_2ADDR = 0xB0;    // add-int/2addr vA, vB
-    constexpr uint16_t SUB_INT_2ADDR = 0xB1;    // sub-int/2addr vA, vB
-    constexpr uint16_t MUL_INT_2ADDR = 0xB2;    // mul-int/2addr vA, vB
-    constexpr uint16_t DIV_INT_2ADDR = 0xB3;    // div-int/2addr vA, vB
-    constexpr uint16_t REM_INT_2ADDR = 0xB4;    // rem-int/2addr vA, vB
-    constexpr uint16_t AND_INT_2ADDR = 0xB5;    // and-int/2addr vA, vB
-    constexpr uint16_t OR_INT_2ADDR  = 0xB6;    // or-int/2addr vA, vB
-    constexpr uint16_t XOR_INT_2ADDR = 0xB7;    // xor-int/2addr vA, vB
-    constexpr uint16_t SHL_INT_2ADDR = 0xB8;    // shl-int/2addr vA, vB
-    constexpr uint16_t SHR_INT_2ADDR = 0xB9;    // shr-int/2addr vA, vB
-    constexpr uint16_t USHR_INT_2ADDR = 0xBA;   // ushr-int/2addr vA, vB
+    constexpr uint16_t ADD_INT_2ADDR = 0xB1;    // add-int/2addr vA, vB
+    constexpr uint16_t SUB_INT_2ADDR = 0xB2;    // sub-int/2addr vA, vB
+    constexpr uint16_t MUL_INT_2ADDR = 0xB3;    // mul-int/2addr vA, vB
+    constexpr uint16_t DIV_INT_2ADDR = 0xB4;    // div-int/2addr vA, vB
+    constexpr uint16_t REM_INT_2ADDR = 0xB5;    // rem-int/2addr vA, vB
+    constexpr uint16_t AND_INT_2ADDR = 0xB6;    // and-int/2addr vA, vB
+    constexpr uint16_t OR_INT_2ADDR  = 0xB7;    // or-int/2addr vA, vB
+    constexpr uint16_t XOR_INT_2ADDR = 0xB8;    // xor-int/2addr vA, vB
+    constexpr uint16_t SHL_INT_2ADDR = 0xB9;    // shl-int/2addr vA, vB
+    constexpr uint16_t SHR_INT_2ADDR = 0xBA;    // shr-int/2addr vA, vB
+    constexpr uint16_t USHR_INT_2ADDR = 0xBB;   // ushr-int/2addr vA, vB
 
     // Arithmetic lit8 (22b format: AA|op BB|CC)
     constexpr uint16_t ADD_INT_LIT8 = 0xD8;     // add-int/lit8 vAA, vBB, #+CC
-    constexpr uint16_t SUB_INT_LIT8 = 0xD9;     // sub-int/lit8 vAA, vBB, #+CC
+    constexpr uint16_t RSUB_INT_LIT8 = 0xD9;     // sub-int/lit8 vAA, vBB, #+CC
     constexpr uint16_t MUL_INT_LIT8 = 0xDA;     // mul-int/lit8 vAA, vBB, #+CC
     constexpr uint16_t AND_INT_LIT8 = 0xDB;     // and-int/lit8 vAA, vBB, #+CC
     constexpr uint16_t OR_INT_LIT8  = 0xDC;     // or-int/lit8 vAA, vBB, #+CC
@@ -201,7 +203,7 @@ namespace Opcode {
 
     // Arithmetic lit16 (22s format: AA|op BBBB)
     constexpr uint16_t ADD_INT_LIT16 = 0xD0;    // add-int/lit16 vA, vB, #+BBBB
-    constexpr uint16_t SUB_INT_LIT16 = 0xD1;     // rsub-int (reverse subtract)
+    constexpr uint16_t RSUB_INT_LIT16 = 0xD1;     // rsub-int (reverse subtract)
     constexpr uint16_t MUL_INT_LIT16 = 0xD2;    // mul-int/lit16
     constexpr uint16_t DIV_INT_LIT16 = 0xD3;    // div-int/lit16
     constexpr uint16_t REM_INT_LIT16 = 0xD4;    // rem-int/lit16
@@ -210,14 +212,69 @@ namespace Opcode {
     constexpr uint16_t XOR_INT_LIT16 = 0xD7;     // xor-int/lit16
 
     // Binary 23x format: AA|op BB|CC (3 registers)
-    constexpr uint16_t ADD_INT = 0x90;          // add-int vAA, vBB, vCC
-    constexpr uint16_t SUB_INT = 0x91;          // sub-int vAA, vBB, vCC
-    constexpr uint16_t MUL_INT = 0x92;          // mul-int vAA, vBB, vCC
-    constexpr uint16_t DIV_INT = 0x93;          // div-int vAA, vBB, vCC
-    constexpr uint16_t REM_INT = 0x94;          // rem-int vAA, vBB, vCC
-    constexpr uint16_t AND_INT = 0x95;          // and-int vAA, vBB, vCC
-    constexpr uint16_t OR_INT  = 0x96;          // or-int vAA, vBB, vCC
-    constexpr uint16_t XOR_INT = 0x97;          // xor-int vAA, vBB, vCC
+    // EXP-040 (BLOCKER-038 FIX): Binary int arithmetic opcodes were off by 1!
+    // Per AOSP: 0x90=int-to-short, 0x91=add-int. Previous code had ADD_INT=0x90.
+    constexpr uint16_t ADD_INT = 0x91;          // add-int vAA, vBB, vCC
+    constexpr uint16_t SUB_INT = 0x92;          // sub-int vAA, vBB, vCC
+    constexpr uint16_t MUL_INT = 0x93;          // mul-int vAA, vBB, vCC
+    constexpr uint16_t DIV_INT = 0x94;          // div-int vAA, vBB, vCC
+    constexpr uint16_t REM_INT = 0x95;          // rem-int vAA, vBB, vCC
+    constexpr uint16_t AND_INT = 0x96;          // and-int vAA, vBB, vCC
+    constexpr uint16_t OR_INT  = 0x97;          // or-int vAA, vBB, vCC
+    constexpr uint16_t XOR_INT = 0x98;          // xor-int vAA, vBB, vCC
+    constexpr uint16_t SHL_INT = 0x99;         // shl-int vAA, vBB, vCC
+    constexpr uint16_t SHR_INT = 0x9A;         // shr-int vAA, vBB, vCC
+    constexpr uint16_t USHR_INT = 0x9B;        // ushr-int vAA, vBB, vCC
+
+    // EXP-040: Missing opcodes discovered from Telegram execution
+    // Conversion opcodes (12x format: B|A|op, 1 code unit)
+    constexpr uint16_t INT_TO_LONG = 0x82;     // int-to-long vA, vB
+    constexpr uint16_t INT_TO_FLOAT = 0x83;    // int-to-float vA, vB
+    constexpr uint16_t INT_TO_DOUBLE = 0x84;    // int-to-double vA, vB
+    constexpr uint16_t LONG_TO_INT = 0x85;     // long-to-int vA, vB
+    constexpr uint16_t LONG_TO_FLOAT = 0x86;   // long-to-float vA, vB
+    constexpr uint16_t LONG_TO_DOUBLE = 0x87;  // long-to-double vA, vB
+    constexpr uint16_t FLOAT_TO_INT = 0x88;    // float-to-int vA, vB
+    constexpr uint16_t FLOAT_TO_LONG = 0x89;   // float-to-long vA, vB
+    constexpr uint16_t FLOAT_TO_DOUBLE = 0x8A; // float-to-double vA, vB
+    constexpr uint16_t DOUBLE_TO_INT = 0x8B;   // double-to-int vA, vB
+    constexpr uint16_t DOUBLE_TO_LONG = 0x8C;  // double-to-long vA, vB
+    constexpr uint16_t DOUBLE_TO_FLOAT = 0x8D; // double-to-float vA, vB
+    constexpr uint16_t INT_TO_BYTE = 0x8E;     // int-to-byte vA, vB
+    constexpr uint16_t INT_TO_CHAR = 0x8F;     // int-to-char vA, vB
+    constexpr uint16_t INT_TO_SHORT = 0x90;    // int-to-short vA, vB
+
+    // Float/Double arithmetic (23x format: AA|op BB|CC, 2 code units)
+    constexpr uint16_t CMPL_FLOAT = 0x2D;      // cmpl-float vAA, vBB, vCC
+    constexpr uint16_t CMPG_FLOAT = 0x2E;      // cmpg-float vAA, vBB, vCC
+    constexpr uint16_t CMPL_DOUBLE = 0x2F;     // cmpl-double vAA, vBB, vCC
+    constexpr uint16_t CMPG_DOUBLE = 0x30;    // cmpg-double vAA, vBB, vCC
+    constexpr uint16_t CMP_LONG = 0x31;        // cmp-long vAA, vBB, vCC
+    constexpr uint16_t ADD_FLOAT = 0xA7;        // add-float vAA, vBB, vCC
+    constexpr uint16_t SUB_FLOAT = 0xA8;        // sub-float vAA, vBB, vCC
+    constexpr uint16_t MUL_FLOAT = 0xA9;        // mul-float vAA, vBB, vCC
+    constexpr uint16_t DIV_FLOAT = 0xAA;        // div-float vAA, vBB, vCC
+    constexpr uint16_t REM_FLOAT = 0xAB;        // rem-float vAA, vBB, vCC
+    constexpr uint16_t ADD_DOUBLE = 0xAC;       // add-double vAA, vBB, vCC
+    constexpr uint16_t SUB_DOUBLE = 0xAD;       // sub-double vAA, vBB, vCC
+    constexpr uint16_t MUL_DOUBLE = 0xAE;       // mul-double vAA, vBB, vCC
+    constexpr uint16_t DIV_DOUBLE = 0xAF;       // div-double vAA, vBB, vCC
+    constexpr uint16_t REM_DOUBLE = 0xB0;       // rem-double vAA, vBB, vCC
+
+    // Long arithmetic (23x format)
+    constexpr uint16_t ADD_LONG = 0x9B;         // add-long vAA, vBB, vCC
+    constexpr uint16_t SUB_LONG = 0x9C;         // sub-long vAA, vBB, vCC
+    constexpr uint16_t MUL_LONG = 0x9D;         // mul-long vAA, vBB, vCC
+    constexpr uint16_t DIV_LONG = 0x9E;         // div-long vAA, vBB, vCC
+    constexpr uint16_t REM_LONG = 0x9F;         // rem-long vAA, vBB, vCC
+    constexpr uint16_t AND_LONG = 0xA0;         // and-long vAA, vBB, vCC
+    constexpr uint16_t OR_LONG = 0xA1;          // or-long vAA, vBB, vCC
+    constexpr uint16_t XOR_LONG = 0xA2;         // xor-long vAA, vBB, vCC
+    constexpr uint16_t SHL_LONG = 0xA3;         // shl-long vAA, vBB, vCC
+    constexpr uint16_t SHR_LONG = 0xA4;         // shr-long vAA, vBB, vCC
+    constexpr uint16_t USHR_LONG = 0xA5;        // ushr-long vAA, vBB, vCC
+
+    // EXP-040: Conversion opcodes already defined above, just add dispatch cases
 }
 
 // ============================================================================
@@ -970,7 +1027,7 @@ public:
     struct Config {
         bool verbose = false;
         bool debug_output = false;
-        uint64_t max_instructions = 100000;
+        uint64_t max_instructions = 5000000;
         bool stop_on_unimplemented = true;
         bool generate_trace = true;
         bool enable_api_bridge = true;
@@ -978,6 +1035,10 @@ public:
 
     // EXP-039: Public access to config for ApplicationRuntime
     Config config_;
+
+    // EXP-040: Recursion depth tracking
+    uint32_t recursion_depth_ = 0;
+    static constexpr uint32_t MAX_RECURSION_DEPTH = 200;
 
 private:
     // EXP-038 (BLOCKER-033): Per-DEX raw data for correct method_idx resolution.
