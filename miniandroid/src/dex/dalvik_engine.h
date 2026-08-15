@@ -970,11 +970,14 @@ public:
     struct Config {
         bool verbose = false;
         bool debug_output = false;
-        uint64_t max_instructions = 10000;
+        uint64_t max_instructions = 100000;
         bool stop_on_unimplemented = true;
         bool generate_trace = true;
         bool enable_api_bridge = true;
     };
+
+    // EXP-039: Public access to config for ApplicationRuntime
+    Config config_;
 
 private:
     // EXP-038 (BLOCKER-033): Per-DEX raw data for correct method_idx resolution.
@@ -1156,7 +1159,7 @@ private:
     std::string last_error_;
     
     DalvikExecutionResult* current_result_ = nullptr;
-    Config config_;
+    // config_ moved to public section above
     
     bool verbose_ = false;
 };
