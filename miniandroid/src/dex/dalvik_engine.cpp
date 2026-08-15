@@ -3711,6 +3711,218 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: System.currentTimeMillis() → long
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "currentTimeMillis" &&
+        class_name.find("System") != std::string::npos) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        auto now = std::chrono::system_clock::now();
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+            now.time_since_epoch()).count();
+        DalvikValue v;
+        v.type = DalvikType::INT64;
+        v.long_val = static_cast<int64_t>(ms);
+        result = v;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: System.nanoTime() → long
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "nanoTime" &&
+        class_name.find("System") != std::string::npos) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        auto now = std::chrono::high_resolution_clock::now();
+        auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+            now.time_since_epoch()).count();
+        DalvikValue v;
+        v.type = DalvikType::INT64;
+        v.long_val = static_cast<int64_t>(ns);
+        result = v;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: Context.getCacheDir → File
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getCacheDir" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        result = get_or_create_singleton("Ljava/io/File;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: Log.d/i/w/e → int (returns log level)
+    // ────────────────────────────────────────────────────────────────────────
+    if ((method == "d" || method == "i" || method == "w" || method == "e" ||
+         method == "v" || method == "println") &&
+        class_name.find("Log") != std::string::npos) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(0);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: Resources.getColor(int) → int (default black)
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getColor" &&
+        class_name.find("Resources") != std::string::npos) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        DalvikValue v;
+        v.type = DalvikType::INT32;
+        v.int_val = 0xFF000000;  // black
+        result = v;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: Context.getApplicationInfo → ApplicationInfo singleton
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getApplicationInfo" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        result = get_or_create_singleton("Landroid/content/pm/ApplicationInfo;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: Handler.<init>(Looper) → no-op, return void
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("Handler") != std::string::npos &&
+        (method == "<init>" || method == "post" || method == "postDelayed" ||
+         method == "removeCallbacks" || method == "sendMessage")) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: Looper.getMainLooper → Looper singleton
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getMainLooper" &&
+        class_name.find("Looper") != std::string::npos) {
+        result = get_or_create_singleton("Landroid/os/Looper;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: Looper.myLooper → Looper singleton
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "myLooper" &&
+        class_name.find("Looper") != std::string::npos) {
+        result = get_or_create_singleton("Landroid/os/Looper;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: DisplayMetrics setters — no-op (already populated)
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("DisplayMetrics") != std::string::npos &&
+        (method == "setTo" || method == "setToDefaults")) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: View.<init> — no-op, return void
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("View") != std::string::npos && method == "<init>") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: File.<init> — store path, return void
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/io/File;" && method == "<init>") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: File.getAbsolutePath → String
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/io/File;" && method == "getAbsolutePath") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_string("/tmp/miniandroid/files", 1);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: File.exists → boolean (true, pretend file exists)
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/io/File;" &&
+        (method == "exists" || method == "isDirectory" || method == "canRead" ||
+         method == "canWrite" || method == "mkdirs" || method == "mkdir" ||
+         method == "createNewFile")) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(true);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: String.length → int
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/String;" && method == "length") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(0);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: String.equals → boolean
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/String;" && method == "equals") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(false);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: Thread.currentThread → Thread singleton
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("Thread") != std::string::npos &&
+        method == "currentThread") {
+        result = get_or_create_singleton("Ljava/lang/Thread;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: Thread.getStackTrace → StackTraceElement[] (empty array)
+    // Returns an empty array so loops iterating stack frames terminate immediately.
+    // This unblocks Kotlin Intrinsics.createParameterIsNullExceptionMessage which
+    // loops through stack trace elements looking for non-Intrinsics frames.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("Thread") != std::string::npos &&
+        method == "getStackTrace") {
+        // Return a heap object representing an empty array
+        uint32_t obj_id = heap_.allocate("Larray;", pc_,
+                                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        DalvikValue arr;
+        arr.type = DalvikType::OBJECT_REF;
+        arr.object_id = obj_id;
+        arr.class_desc = "Larray;";
+        arr.int_val = 0;  // array length = 0
+        result = arr;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-043 Phase 3: array-length on our empty array → 0
+    // ────────────────────────────────────────────────────────────────────────
+    // (Handled by the ARRAY_LENGTH opcode handler, which reads int_val as length)
+
+    // ────────────────────────────────────────────────────────────────────────
     // STUB: DynamiteModule.load — throw (BLOCKER-D fix)
     // ────────────────────────────────────────────────────────────────────────
     if (method == "load" &&
