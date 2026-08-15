@@ -411,6 +411,39 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                 if (match) {
                     log("  ✅ Found manifest activity class in DEX: " + cls.name);
                     result.main_class = cls.name;
+
+                    // EXP-043 Phase 4: Pre-populate static fields that Android's
+                    // framework would have set before onCreate is called.
+                    // Without this, ApplicationLoader.applicationContext is null
+                    // and postInitApplication halts at PC=8.
+                    //
+                    // 1. Create the Application/Context singleton
+                    uint32_t app_ctx_id = heap_.allocate(
+                        "Landroid/app/Application;",
+                        0,  // pc=0 (pre-execution)
+                        0   // frame_id=0 (pre-execution)
+                    );
+                    DalvikValue app_ctx_val;
+                    app_ctx_val.type = DalvikType::OBJECT_REF;
+                    app_ctx_val.object_id = app_ctx_id;
+                    app_ctx_val.class_desc = "Landroid/app/Application;";
+                    // Store as ApplicationLoader.applicationContext static field
+                    static_field_storage_["Lorg/telegram/messenger/ApplicationLoader;.applicationContext"]
+                        = app_ctx_val;
+                    // Also cache as the Context singleton so getResources() etc. work
+                    api_singletons_["Landroid/content/Context;"] = app_ctx_id;
+
+                    // 2. Create the Activity object (this) for onCreate
+                    uint32_t activity_obj_id = heap_.allocate(
+                        cls.name,  // "Lorg/telegram/ui/LaunchActivity;"
+                        0,
+                        0
+                    );
+                    DalvikValue activity_val;
+                    activity_val.type = DalvikType::OBJECT_REF;
+                    activity_val.object_id = activity_obj_id;
+                    activity_val.class_desc = cls.name;
+
                     // Find onCreate method
                     for (const auto& method : cls.all_methods()) {
                         if (method.name == "onCreate" || method.name == "main") {
@@ -419,12 +452,25 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                             if (!method.bytecode.empty()) {
                                 log("🎯 CALLING execute_method_internal() for " + method.name +
                                     " with " + std::to_string(method.bytecode.size()) + " instructions");
+
+                                // EXP-043 Phase 4: Pass `this` (Activity) and Bundle
+                                // as args. onCreate(Bundle) has ins=2: p0=this, p1=Bundle.
+                                // The Bundle can be null (real Android passes null on
+                                // first launch).
+                                std::vector<DalvikValue> entry_args;
+                                entry_args.push_back(activity_val);  // p0 = this (Activity)
+                                entry_args.push_back(DalvikValue::make_null());  // p1 = Bundle (null)
+
                                 execute_method_internal(
                                     cls.name,
                                     method.name,
                                     method.descriptor,
                                     method.bytecode,
-                                    10, 1, 4, {}, result
+                                    16,  // registers_size (enough for onCreate)
+                                    2,   // ins_size = 2 (this + Bundle)
+                                    4,   // outs_size
+                                    entry_args,
+                                    result
                                 );
                                 log("✅ execute_method_internal() returned");
                             } else {
@@ -3216,6 +3262,8 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
 
 bool DalvikExecutionEngine::execute_if_ltz(uint32_t pc, InstructionTrace& trace) {
     // Format: 21t [op] vAA, +BBBB  — branch if (int) vAA < 0
+    // Per AOSP standard semantics: branch when the signed int value is < 0.
+    // For OBJECT_REF/NULL_REF/UNINITIALIZED: treated as 0 (not < 0, so don't branch).
     if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
     uint16_t instr = bytecode_[pc];
     uint8_t test_reg = (instr >> 8) & 0xFF;
@@ -3229,6 +3277,7 @@ bool DalvikExecutionEngine::execute_if_ltz(uint32_t pc, InstructionTrace& trace)
     } else if (val.type == DalvikType::INT64) {
         ival = static_cast<int32_t>(val.long_val);
     }
+    // OBJECT_REF, NULL_REF, UNINITIALIZED → ival stays 0 → 0 < 0 is false → don't branch
     bool taken = (ival < 0);
     if (taken) {
         uint32_t target = pc + offset;
@@ -3236,7 +3285,7 @@ bool DalvikExecutionEngine::execute_if_ltz(uint32_t pc, InstructionTrace& trace)
             trace.status = InstructionTrace::Status::BRANCH_TAKEN;
             pc_ = target;
         } else {
-            pc_ = pc + 2;  // fall through if target invalid
+            pc_ = pc + 2;
         }
     } else {
         trace.status = InstructionTrace::Status::BRANCH_NOT_TAKEN;
