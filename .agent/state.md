@@ -1,45 +1,71 @@
-# Current State — EXP-038 Telegram Compatibility
+# MiniAndroid Project State
 
-**Last Updated:** 2026-08-15
+**Last updated:** 2026-08-16 (EXP-043 cycle starting)
+**Latest commit:** d48d479 (EXP-042: 7-phase Telegram reality acceleration cycle)
 
-## Pipeline Progress
+## Telegram Execution Stage
 
-| Stage | Status | Progress |
-|-------|--------|----------|
-| APK Loading | WORKING | 100% (cached, <1 second) |
-| Manifest Parsing | WORKING | 100% (activity-alias, targetActivity) |
-| Launcher Resolution | WORKING | 100% (org.telegram.ui.LaunchActivity) |
-| MultiDex | WORKING | 100% (5 DEX files, 41,078 classes) |
-| DEX Execution | WORKING | 100% (10,001 instructions, hits limit) |
-| Recursive Invocation | WORKING | 100% (invoke-virtual/super/direct/static) |
-| Lifecycle Execution | WORKING | 100% (onCreate executed) |
-| JNI Support | NOT STARTED | 0% |
-| Native Libraries | NOT STARTED | 0% |
+| Layer | Status |
+|-------|--------|
+| APK parsing | DONE |
+| Manifest resolution | DONE |
+| MultiDex loading | DONE (5 DEX, 41078 classes) |
+| Per-DEX method resolution | DONE (BLOCKER-033 fixed) |
+| Dalvik opcode coverage | DONE (0 missing opcodes) |
+| Recursive method invocation | DONE (BLOCKER-034 fixed) |
+| Memory architecture | DONE (peak RSS 439 MB at 400K+ insns) |
+| Android framework stubs | PARTIAL (16 P0/P1 APIs implemented in bridge_to_api) |
+| JNI runtime | NOT STARTED (inventory taken: 462 native methods, 376 Java_* exports) |
+| Native .so loading | NOT STARTED |
+| UI rendering | NOT STARTED |
 
-## Current Achievement
+## Active Blocker
 
-Telegram's LaunchActivity.onCreate() executes with recursive method calls:
-- 10,001 instructions executed (hits max_instructions limit)
-- Recursive DEX method invocation working
-- 115+ API call traces
-- 19+ heap objects allocated
-- 30+ distinct opcode types exercised
+`Intrinsics.createParameterIsNullExceptionMessage` loops at PC=0xf
+(`op_at_pc=0x46` = `iget-object`) because the Kotlin NPE exception
+builder reads an instance field from a null `this` reference. This
+happens when `Intrinsics.checkNotNullParameter` is called with a null
+argument inside `SavedStateRegistryController.performAttach`.
 
-## Key Milestones
+## Solved Blockers (chronological, most recent first)
 
-1. APK loads in <1 second (BLOCKER-023: ZIP entry caching)
-2. All 5 DEX files parsed (BLOCKER-024: MultiDex)
-3. LaunchActivity correctly resolved (BLOCKER-025: exact match)
-4. 309 → 10,001 instructions (BLOCKER-034: recursive invocation)
-5. 12 blockers fixed total
+| ID | Date | Description | Commit |
+|----|------|-------------|--------|
+| EXP-042 Phase 2 | 2026-08-16 | Return-opcode bounds check + iget/iput/sget/sput never-return-false | d48d479 |
+| EXP-042 Phase 1 | 2026-08-16 | Memory ring buffers + per-frame loop detector | d48d479 |
+| BLOCKER-037 | 2026-08-15 | halted_on_return_ leak across recursive calls | b5e02ca |
+| BLOCKER-036 | 2026-08-15 | goto/16 and goto/32 format handling | ecfd785 |
+| BLOCKER-035 | 2026-08-15 | Correct class→DEX ownership mapping | 98ec49e |
+| BLOCKER-034 | 2026-08-15 | Recursive DEX method invocation (309 → 10001 instructions) | 63f8e62 |
+| BLOCKER-033 | 2026-08-15 | Per-DEX method resolution via raw DEX bytes | 00d6fc4 |
+| BLOCKER-032 | 2026-08-15 | const/high16 (0x15) opcode | d7f9291 |
+| BLOCKER-031 | 2026-08-15 | Array opcodes (new-array, aget, aput) | d7f9291 |
+| BLOCKER-030 | 2026-08-15 | invoke-*/range opcodes | d7f9291 |
+| BLOCKER-029 | 2026-08-15 | if-eqz/if-nez opcode values off by 1 | d7f9291 |
+| BLOCKER-028 | 2026-08-15 | 35 new arithmetic opcodes | d7f9291 |
+| BLOCKER-027 | 2026-08-15 | sput-boolean and sget/sput variants | d7f9291 |
+| BLOCKER-026 | 2026-08-15 | move-object/from16 (0x08) | d7f9291 |
+| BLOCKER-025 | 2026-08-15 | Launcher resolution via manifest | d7f9291 |
+| BLOCKER-024 | 2026-08-15 | MultiDex support | d7f9291 |
+| BLOCKER-023 | 2026-08-15 | APK parser caching | 133ec32 |
+| BLOCKER-022 | 2026-08-15 | activity-alias tracking | 133ec32 |
 
-## Open Blockers
+## Architectural Discoveries
 
-1. BLOCKER-033: Multidex method_idx remapping (wrong method names)
-2. BLOCKER-035: Native library loading (libtmessages.49.so)
-3. Max instructions limit (10,000) should be increased
+- Per-DEX method_idx resolution is mandatory for multidex APKs (BLOCKER-033)
+- `static thread_local` state across recursive method calls is dangerous
+  (BLOCKER-036 + EXP-042 Phase 2 bug)
+- `iget`/`iput` error paths MUST advance pc_ — returning false causes
+  infinite loops at every field access on uninitialized `this`
+- Loop detector threshold of 50 000 per-frame allows legitimate loops
+  while catching real `while(true)` busy-waits
 
-## Git State
-- Branch: main
-- Last commit: b0bbd9d
-- 12 commits ahead of origin/main (push failed — no credentials)
+## Key Evidence Files
+
+- `miniandroid/docs/exp042/EXP042_MEMORY_ANALYSIS.md`
+- `miniandroid/docs/exp042/TELEGRAM_EXECUTION_PATH.md`
+- `miniandroid/docs/exp042/EXP042_TELEGRAM_COMPATIBILITY_MAP.md`
+- `miniandroid/docs/exp042/JNI_INVENTORY.md`
+- `miniandroid/docs/exp042/NATIVE_LIBRARIES.md`
+- `miniandroid/run/exp042_auto/EXP042_REPORT.md`
+- `miniandroid/docs/EXP038_TELEGRAM_BLOCKERS.md`
