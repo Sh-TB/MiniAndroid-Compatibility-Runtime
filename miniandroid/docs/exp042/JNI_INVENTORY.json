@@ -1,0 +1,5478 @@
+{
+  "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
+  "total_classes_scanned": 41078,
+  "total_native_methods": 462,
+  "total_classes_with_native_methods": 79,
+  "dex_stats": {
+    "classes.dex": {
+      "file_size_bytes": 8690324,
+      "classes": 12521,
+      "native_methods": 37,
+      "classes_with_native": 7,
+      "strings": 56182,
+      "types": 14382,
+      "protos": 16075,
+      "methods": 65452,
+      "fields": 31552
+    },
+    "classes2.dex": {
+      "file_size_bytes": 511632,
+      "classes": 597,
+      "native_methods": 0,
+      "classes_with_native": 0,
+      "strings": 2225,
+      "types": 806,
+      "protos": 1149,
+      "methods": 5506,
+      "fields": 1116
+    },
+    "classes3.dex": {
+      "file_size_bytes": 11217436,
+      "classes": 11074,
+      "native_methods": 411,
+      "classes_with_native": 70,
+      "strings": 85759,
+      "types": 13285,
+      "protos": 15348,
+      "methods": 62162,
+      "fields": 52664
+    },
+    "classes4.dex": {
+      "file_size_bytes": 10582640,
+      "classes": 8878,
+      "native_methods": 0,
+      "classes_with_native": 0,
+      "strings": 62169,
+      "types": 12362,
+      "protos": 16141,
+      "methods": 65122,
+      "fields": 44061
+    },
+    "classes5.dex": {
+      "file_size_bytes": 8567644,
+      "classes": 8008,
+      "native_methods": 14,
+      "classes_with_native": 2,
+      "strings": 53217,
+      "types": 10705,
+      "protos": 14674,
+      "methods": 55656,
+      "fields": 38140
+    }
+  },
+  "class_summary": [
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "native_method_count": 41
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "native_method_count": 41
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "native_method_count": 38
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "native_method_count": 26
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "native_method_count": 23
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "native_method_count": 23
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "native_method_count": 19
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "native_method_count": 14
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "native_method_count": 13
+    },
+    {
+      "class": "Lorg/webrtc/RtpTransceiver;",
+      "native_method_count": 11
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLitePreparedStatement;",
+      "native_method_count": 10
+    },
+    {
+      "class": "Lorg/webrtc/RtpSender;",
+      "native_method_count": 10
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteCursor;",
+      "native_method_count": 9
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/opus/OpusDecoder;",
+      "native_method_count": 8
+    },
+    {
+      "class": "Lorg/telegram/messenger/MediaController;",
+      "native_method_count": 8
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/AnimatedFileNative;",
+      "native_method_count": 8
+    },
+    {
+      "class": "Lorg/webrtc/DataChannel;",
+      "native_method_count": 8
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/ffmpeg/FfmpegAudioDecoder;",
+      "native_method_count": 6
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/RLottieNative;",
+      "native_method_count": 6
+    },
+    {
+      "class": "Lorg/webrtc/RtpReceiver;",
+      "native_method_count": 6
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VLog;",
+      "native_method_count": 5
+    },
+    {
+      "class": "Lorg/telegram/tgnet/NativeByteBuffer;",
+      "native_method_count": 5
+    },
+    {
+      "class": "Lorg/webrtc/DtmfSender;",
+      "native_method_count": 5
+    },
+    {
+      "class": "Lorg/webrtc/MediaStream;",
+      "native_method_count": 5
+    },
+    {
+      "class": "Lorg/webrtc/MediaStreamTrack;",
+      "native_method_count": 5
+    },
+    {
+      "class": "Lorg/webrtc/NativeAndroidVideoTrackSource;",
+      "native_method_count": 5
+    },
+    {
+      "class": "Lorg/webrtc/NetworkMonitor;",
+      "native_method_count": 5
+    },
+    {
+      "class": "Lorg/webrtc/YuvHelper;",
+      "native_method_count": 5
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteDatabase;",
+      "native_method_count": 4
+    },
+    {
+      "class": "Lorg/telegram/messenger/MrzRecognizer;",
+      "native_method_count": 4
+    },
+    {
+      "class": "Lorg/webrtc/JniCommon;",
+      "native_method_count": 4
+    },
+    {
+      "class": "Lorg/webrtc/Logging;",
+      "native_method_count": 4
+    },
+    {
+      "class": "Lorg/webrtc/SoftwareVideoDecoderFactory;",
+      "native_method_count": 4
+    },
+    {
+      "class": "Lorg/webrtc/TimestampAligner;",
+      "native_method_count": 4
+    },
+    {
+      "class": "Lorg/webrtc/VideoTrack;",
+      "native_method_count": 4
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/ffmpeg/FfmpegLibrary;",
+      "native_method_count": 3
+    },
+    {
+      "class": "Lcom/google/mlkit/nl/languageid/bundled/internal/ThickLanguageIdentifier;",
+      "native_method_count": 3
+    },
+    {
+      "class": "Lorg/telegram/messenger/video/WebmEncoder;",
+      "native_method_count": 3
+    },
+    {
+      "class": "Lorg/webrtc/CallSessionFileRotatingLogSink;",
+      "native_method_count": 3
+    },
+    {
+      "class": "Lorg/webrtc/Histogram;",
+      "native_method_count": 3
+    },
+    {
+      "class": "Lorg/webrtc/SoftwareVideoEncoderFactory;",
+      "native_method_count": 3
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/opus/OpusLibrary;",
+      "native_method_count": 2
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/GroupCallMessagesController;",
+      "native_method_count": 2
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/Resampler;",
+      "native_method_count": 2
+    },
+    {
+      "class": "Lorg/webrtc/LibvpxVp9Decoder;",
+      "native_method_count": 2
+    },
+    {
+      "class": "Lorg/webrtc/LibvpxVp9Encoder;",
+      "native_method_count": 2
+    },
+    {
+      "class": "Lorg/webrtc/Metrics;",
+      "native_method_count": 2
+    },
+    {
+      "class": "Lorg/webrtc/audio/WebRtcAudioRecord;",
+      "native_method_count": 2
+    },
+    {
+      "class": "Lorg/webrtc/audio/WebRtcAudioTrack;",
+      "native_method_count": 2
+    },
+    {
+      "class": "Lorg/webrtc/voiceengine/WebRtcAudioRecord;",
+      "native_method_count": 2
+    },
+    {
+      "class": "Lorg/webrtc/voiceengine/WebRtcAudioTrack;",
+      "native_method_count": 2
+    },
+    {
+      "class": "Lcom/google/android/gms/tasks/NativeOnCompleteListener;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/telegram/messenger/NativeLoader;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/AudioRecordJNI;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/AudioTrackJNI;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VideoCapturerDevice;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPServerConfig;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/telegram/ui/Stories/recorder/FfmpegAudioWaveformLoader;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/AudioTrack;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/BuiltinAudioDecoderFactoryFactory;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/BuiltinAudioEncoderFactoryFactory;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/Dav1dDecoder;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/EglBase10Impl;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/H264Utils;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/JavaI420Buffer;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/LibaomAv1Encoder;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/LibvpxVp8Decoder;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/LibvpxVp8Encoder;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/MediaSource;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/NV12Buffer;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/NV21Buffer;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/RtcCertificatePem;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/TurnCustomizer;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/VideoDecoderFallback;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/VideoDecoderWrapper;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/VideoEncoderFallback;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/VideoEncoderWrapper;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/audio/JavaAudioDeviceModule;",
+      "native_method_count": 1
+    },
+    {
+      "class": "Lorg/webrtc/voiceengine/WebRtcAudioManager;",
+      "native_method_count": 1
+    }
+  ],
+  "library_distribution": {
+    "libtmessages.49.so": 384,
+    "libtmessages.49.so (tgnet module)": 43,
+    "libtmessages.49.so (utilities module)": 26,
+    "libtmessages.49.so (rlottie module)": 6,
+    "libtmessages.49.so (controller module)": 2,
+    "libtmessages.49.so (loader bootstrap)": 1
+  },
+  "priority_distribution": {
+    "P0": 3,
+    "P1": 69,
+    "P2": 390
+  },
+  "inventory": [
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/ffmpeg/FfmpegAudioDecoder;",
+      "method": "ffmpegDecode",
+      "shorty": "IJLILI",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25902,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/ffmpeg/FfmpegAudioDecoder;",
+      "method": "ffmpegGetChannelCount",
+      "shorty": "IJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25903,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/ffmpeg/FfmpegAudioDecoder;",
+      "method": "ffmpegGetSampleRate",
+      "shorty": "IJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25904,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/ffmpeg/FfmpegAudioDecoder;",
+      "method": "ffmpegInitialize",
+      "shorty": "JLLZII",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25905,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/ffmpeg/FfmpegAudioDecoder;",
+      "method": "ffmpegRelease",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25906,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/ffmpeg/FfmpegAudioDecoder;",
+      "method": "ffmpegReset",
+      "shorty": "JJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25907,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/ffmpeg/FfmpegLibrary;",
+      "method": "ffmpegGetInputBufferPaddingSize",
+      "shorty": "I",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 25934,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/ffmpeg/FfmpegLibrary;",
+      "method": "ffmpegGetVersion",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 25935,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/ffmpeg/FfmpegLibrary;",
+      "method": "ffmpegHasDecoder",
+      "shorty": "ZL",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 25936,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacDecodeMetadata",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25975,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacDecodeToArray",
+      "shorty": "IJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25976,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacDecodeToBuffer",
+      "shorty": "IJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25977,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacFlush",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25978,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacGetDecodePosition",
+      "shorty": "JJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25979,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacGetLastFrameFirstSampleIndex",
+      "shorty": "JJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25980,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacGetLastFrameTimestamp",
+      "shorty": "JJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25981,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacGetNextFrameFirstSampleIndex",
+      "shorty": "JJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25982,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacGetSeekPoints",
+      "shorty": "ZJJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25983,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacGetStateString",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25984,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacInit",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25985,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacIsDecoderAtEndOfStream",
+      "shorty": "ZJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25986,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacRelease",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25987,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/flac/FlacDecoderJni;",
+      "method": "flacReset",
+      "shorty": "VJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 16,
+      "method_idx": 25988,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/opus/OpusDecoder;",
+      "method": "opusClose",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 26252,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/opus/OpusDecoder;",
+      "method": "opusDecode",
+      "shorty": "IJJLIL",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 26253,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/opus/OpusDecoder;",
+      "method": "opusGetErrorCode",
+      "shorty": "IJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 26254,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/opus/OpusDecoder;",
+      "method": "opusGetErrorMessage",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 26255,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/opus/OpusDecoder;",
+      "method": "opusInit",
+      "shorty": "JIIIIIL",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 26256,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/opus/OpusDecoder;",
+      "method": "opusReset",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 26257,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/opus/OpusDecoder;",
+      "method": "opusSecureDecode",
+      "shorty": "IJJLILILILLILL",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 26258,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/opus/OpusDecoder;",
+      "method": "opusSetFloatOutput",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 26259,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/opus/OpusLibrary;",
+      "method": "opusGetVersion",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 26269,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/exoplayer2/ext/opus/OpusLibrary;",
+      "method": "opusIsSecureDecodeSupported",
+      "shorty": "Z",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 26270,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/android/gms/tasks/NativeOnCompleteListener;",
+      "method": "nativeOnComplete",
+      "shorty": "VJLZZL",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 50711,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lcom/google/mlkit/nl/languageid/bundled/internal/ThickLanguageIdentifier;",
+      "method": "nativeDestroy",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59594,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/mlkit/nl/languageid/bundled/internal/ThickLanguageIdentifier;",
+      "method": "nativeIdentifyPossibleLanguages",
+      "shorty": "LJLF",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59595,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lcom/google/mlkit/nl/languageid/bundled/internal/ThickLanguageIdentifier;",
+      "method": "nativeInitFromBuffer",
+      "shorty": "JLJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59596,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteCursor;",
+      "method": "columnByteArrayValue",
+      "shorty": "LJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6702,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteCursor;",
+      "method": "columnByteBufferValue",
+      "shorty": "JJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6703,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteCursor;",
+      "method": "columnCount",
+      "shorty": "IJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6704,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteCursor;",
+      "method": "columnDoubleValue",
+      "shorty": "DJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6705,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteCursor;",
+      "method": "columnIntValue",
+      "shorty": "IJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6706,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteCursor;",
+      "method": "columnIsNull",
+      "shorty": "IJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6707,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteCursor;",
+      "method": "columnLongValue",
+      "shorty": "JJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6708,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteCursor;",
+      "method": "columnStringValue",
+      "shorty": "LJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6709,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteCursor;",
+      "method": "columnType",
+      "shorty": "IJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6710,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteDatabase;",
+      "method": "beginTransaction",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6725,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteDatabase;",
+      "method": "closedb",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6728,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteDatabase;",
+      "method": "commitTransaction",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6730,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLiteDatabase;",
+      "method": "opendb",
+      "shorty": "JLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6736,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLitePreparedStatement;",
+      "method": "bindByteBuffer",
+      "shorty": "VJILI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6745,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLitePreparedStatement;",
+      "method": "bindDouble",
+      "shorty": "VJID",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6747,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLitePreparedStatement;",
+      "method": "bindInt",
+      "shorty": "VJII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6748,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLitePreparedStatement;",
+      "method": "bindLong",
+      "shorty": "VJIJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6751,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLitePreparedStatement;",
+      "method": "bindNull",
+      "shorty": "VJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6753,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLitePreparedStatement;",
+      "method": "bindString",
+      "shorty": "VJIL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6755,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLitePreparedStatement;",
+      "method": "finalize",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6759,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLitePreparedStatement;",
+      "method": "prepare",
+      "shorty": "JJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6762,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLitePreparedStatement;",
+      "method": "reset",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6765,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/SQLite/SQLitePreparedStatement;",
+      "method": "step",
+      "shorty": "IJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 6767,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "onDrawFrame",
+      "shorty": "VI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11805,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "onSurfaceChanged",
+      "shorty": "VIIFI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11806,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "onSurfaceCreated",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11807,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "setBackgroundColor",
+      "shorty": "VFFFF",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11808,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "setDate",
+      "shorty": "VF",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11810,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "setFastTextures",
+      "shorty": "VIIII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11811,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "setFreeTextures",
+      "shorty": "VII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11812,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "setIcTextures",
+      "shorty": "VIIIIIIIII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11813,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "setPage",
+      "shorty": "VI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11814,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "setPowerfulTextures",
+      "shorty": "VIIII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11815,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "setPrivateTextures",
+      "shorty": "VII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11816,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "setScrollOffset",
+      "shorty": "VF",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11817,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Intro;",
+      "method": "setTelegramTextures",
+      "shorty": "VIII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 11818,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/MediaController;",
+      "method": "cropOpusFile",
+      "shorty": "ZLLJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 12976,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/MediaController;",
+      "method": "getWaveform",
+      "shorty": "LL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 13003,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/MediaController;",
+      "method": "isOpusFile",
+      "shorty": "IL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 13015,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/MediaController;",
+      "method": "joinOpusFiles",
+      "shorty": "ZLLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 13027,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/MediaController;",
+      "method": "startRecord",
+      "shorty": "ILI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 13152,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/MediaController;",
+      "method": "stopRecord",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 13159,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/MediaController;",
+      "method": "writeFrame",
+      "shorty": "ILI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 13169,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/MediaController;",
+      "method": "getWaveform2",
+      "shorty": "LLI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 13004,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/MrzRecognizer;",
+      "method": "binarizeAndFindCharacters",
+      "shorty": "LLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 19451,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/MrzRecognizer;",
+      "method": "findCornerPoints",
+      "shorty": "LL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 19455,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/MrzRecognizer;",
+      "method": "performRecognition",
+      "shorty": "LLIIL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 19461,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/MrzRecognizer;",
+      "method": "setYuvBitmapPixels",
+      "shorty": "VLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 19467,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/NativeLoader;",
+      "method": "init",
+      "shorty": "VLZ",
+      "library": "libtmessages.49.so (loader bootstrap)",
+      "dex": "classes3.dex",
+      "priority": "P0",
+      "class_access_flags": 1,
+      "method_idx": 19525,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "aesCbcEncryption",
+      "shorty": "VLLLIII",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23363,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "aesCbcEncryptionByteArray",
+      "shorty": "VLLLIIII",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23364,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "aesCtrDecryption",
+      "shorty": "VLLLII",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23366,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "aesCtrDecryptionByteArray",
+      "shorty": "VLLLIJI",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23367,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "aesIgeEncryption",
+      "shorty": "VLLLZII",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23368,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "aesIgeEncryptionByteArray",
+      "shorty": "VLLLZII",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23370,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "applyAlphaInvert",
+      "shorty": "ZLLI",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23372,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "applySoftLight",
+      "shorty": "ZLLI",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23373,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "averageBitmapColor",
+      "shorty": "ILIIII",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23375,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "blurBitmap",
+      "shorty": "VLI",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23376,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "calcCDT",
+      "shorty": "VLIILL",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23381,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "clearDir",
+      "shorty": "VLIJZ",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23387,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "copyBitmaps",
+      "shorty": "ZLL",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23400,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "drawDitheredGradient",
+      "shorty": "VLLIIII",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23405,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "expandAlphaToBlack",
+      "shorty": "ZLL",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23406,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "extractAlpha",
+      "shorty": "ZLL",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23407,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "generateGradient",
+      "shorty": "VLIFL",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23408,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "getDirSize",
+      "shorty": "JLIZ",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23411,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "getLastUsageFileTime",
+      "shorty": "JL",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23413,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "nLibyuvARGBSaleBitmap",
+      "shorty": "ZLLI",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23424,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "needInvert",
+      "shorty": "IL",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23425,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "pbkdf2",
+      "shorty": "ILLLI",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23430,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "readlink",
+      "shorty": "LL",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23432,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "readlinkFd",
+      "shorty": "LI",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23433,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "setupNativeCrashesListener",
+      "shorty": "VL",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23434,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "method": "stackBlurBitmap",
+      "shorty": "VLI",
+      "library": "libtmessages.49.so (utilities module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 23435,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/video/WebmEncoder;",
+      "method": "createEncoder",
+      "shorty": "JLIIIJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26374,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/video/WebmEncoder;",
+      "method": "stop",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26375,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/video/WebmEncoder;",
+      "method": "writeFrame",
+      "shorty": "ZJLII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26376,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/AudioRecordJNI;",
+      "method": "nativeCallback",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26447,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/AudioTrackJNI;",
+      "method": "nativeCallback",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26460,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_apply_block",
+      "shorty": "LJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26532,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_create",
+      "shorty": "JJJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26533,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_create_change_state_block",
+      "shorty": "LJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26534,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_create_self_add_block",
+      "shorty": "LJLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26535,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_create_zero_block",
+      "shorty": "LJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26536,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_describe",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26537,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_describe_block",
+      "shorty": "LL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26538,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_describe_message",
+      "shorty": "LL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26539,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_destroy",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26540,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_destroy_all",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26541,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_get_height",
+      "shorty": "IJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26542,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_get_state",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26543,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_get_verification_state",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26544,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_get_verification_words",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26545,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_pull_outbound_messages",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26546,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "call_receive_inbound_message",
+      "shorty": "LJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26547,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "key_from_public_key",
+      "shorty": "JL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26569,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "key_generate_temporary_private_key",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26570,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/ConferenceCall;",
+      "method": "key_to_public_key",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26571,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/GroupCallMessagesController;",
+      "method": "groupCallMessageDecryptImpl",
+      "shorty": "LJJL",
+      "library": "libtmessages.49.so (controller module)",
+      "dex": "classes3.dex",
+      "priority": "P0",
+      "class_access_flags": 1,
+      "method_idx": 26648,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/GroupCallMessagesController;",
+      "method": "groupCallMessageEncryptImpl",
+      "shorty": "LJL",
+      "library": "libtmessages.49.so (controller module)",
+      "dex": "classes3.dex",
+      "priority": "P0",
+      "class_access_flags": 1,
+      "method_idx": 26649,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "createVideoCapturer",
+      "shorty": "JLI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26730,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "destroyVideoCapturer",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26731,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "getAllVersions",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26732,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "makeGroupNativeInstance",
+      "shorty": "JLLZJZZZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26748,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "makeNativeInstance",
+      "shorty": "JLLLLLLILLJF",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26749,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setVideoStateCapturer",
+      "shorty": "VJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26784,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "stopGroupNative",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26790,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "stopNative",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26791,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "switchCameraCapturer",
+      "shorty": "VJZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26793,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "activateVideoCapturer",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26727,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "addIncomingVideoOutput",
+      "shorty": "JILLLJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26728,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "clearVideoCapturer",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26729,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "getDebugInfo",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26733,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "getLastError",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26734,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "getPersistentState",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26736,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "getPreferredRelayId",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26737,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "getTrafficStats",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26738,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "getVersion",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26739,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "hasVideoCapturer",
+      "shorty": "Z",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26740,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "onMediaDescriptionAvailable",
+      "shorty": "VJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26753,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "onRequestTimeComplete",
+      "shorty": "VJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26758,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "onSignalingDataReceive",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26761,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "onStreamPartAvailable",
+      "shorty": "VJLIJII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26764,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "prepareForStream",
+      "shorty": "VZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26765,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "removeIncomingVideoOutput",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26766,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "resetGroupInstance",
+      "shorty": "VZZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26768,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setAudioOutputGainControlEnabled",
+      "shorty": "VZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26769,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setBufferSize",
+      "shorty": "VI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26770,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setConferenceCallId",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26771,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setEchoCancellationStrength",
+      "shorty": "VI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26772,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setGlobalServerConfig",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26773,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setJoinResponsePayload",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26774,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setMuteMicrophone",
+      "shorty": "VZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26775,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setNetworkType",
+      "shorty": "VI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26776,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setNoiseSuppressionEnabled",
+      "shorty": "VZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26777,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setVideoEndpointQuality",
+      "shorty": "VLI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26782,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setVideoState",
+      "shorty": "VI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26783,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setVolume",
+      "shorty": "VID",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26785,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setupOutgoingVideo",
+      "shorty": "VLI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26786,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "setupOutgoingVideoCreated",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26787,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/NativeInstance;",
+      "method": "switchCamera",
+      "shorty": "VZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26792,
+      "method_kind": "virtual"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/Resampler;",
+      "method": "convert44to48",
+      "shorty": "ILL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26795,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/Resampler;",
+      "method": "convert48to44",
+      "shorty": "ILL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26796,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VLog;",
+      "method": "d",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 26806,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VLog;",
+      "method": "e",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 26807,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VLog;",
+      "method": "i",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 26810,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VLog;",
+      "method": "v",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 26811,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VLog;",
+      "method": "w",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 26812,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VideoCapturerDevice;",
+      "method": "nativeGetJavaVideoCapturerObserver",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26886,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "getConnectionMaxLayer",
+      "shorty": "I",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26901,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeConnect",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26913,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeDebugCtl",
+      "shorty": "VJII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26914,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeGetDebugLog",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26915,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeGetDebugString",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26916,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeGetLastError",
+      "shorty": "IJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26917,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeGetPeerCapabilities",
+      "shorty": "IJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26918,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeGetPreferredRelayID",
+      "shorty": "JJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26919,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeGetStats",
+      "shorty": "VJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26920,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeGetVersion",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26921,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeInit",
+      "shorty": "JL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26922,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeNeedRate",
+      "shorty": "ZJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26923,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeRelease",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26924,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeRequestCallUpgrade",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26925,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeSetAudioOutputGainControlEnabled",
+      "shorty": "VJZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26926,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeSetConfig",
+      "shorty": "VJDDIZZZLLZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26927,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeSetEchoCancellationStrength",
+      "shorty": "VJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26928,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeSetEncryptionKey",
+      "shorty": "VJLZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26929,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeSetMicMute",
+      "shorty": "VJZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26930,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeSetNativeBufferSize",
+      "shorty": "VI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26931,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeSetNetworkType",
+      "shorty": "VJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26932,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeSetProxy",
+      "shorty": "VJLILL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26933,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPController;",
+      "method": "nativeStart",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 26934,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/messenger/voip/VoIPServerConfig;",
+      "method": "nativeSetConfig",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 27091,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_applyDatacenterAddress",
+      "shorty": "VIILI",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28220,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_applyDnsConfig",
+      "shorty": "VIJLI",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28221,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_bindRequestToGuid",
+      "shorty": "VIII",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28222,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_cancelRequest",
+      "shorty": "VIIZ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28223,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_cancelRequestsForGuid",
+      "shorty": "VII",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28224,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_checkProxy",
+      "shorty": "JILILLLL",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28225,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_cleanUp",
+      "shorty": "VIZ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28226,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_discardConnection",
+      "shorty": "VIII",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28227,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_failNotRunningRequest",
+      "shorty": "VII",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28228,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_getConnectionState",
+      "shorty": "II",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28229,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_getCurrentAuthKeyId",
+      "shorty": "JI",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28230,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_getCurrentDatacenterId",
+      "shorty": "II",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28231,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_getCurrentPingTime",
+      "shorty": "II",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28232,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_getCurrentTime",
+      "shorty": "II",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28233,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_getCurrentTimeMillis",
+      "shorty": "JI",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28234,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_getTimeDifference",
+      "shorty": "II",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28235,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_init",
+      "shorty": "VIIIILLLLLLLLLLLIJZZZII",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28236,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_isGoodPrime",
+      "shorty": "ZLI",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28237,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_isTestBackend",
+      "shorty": "II",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28238,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_moveDatacenter",
+      "shorty": "VII",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28239,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_onHostNameResolved",
+      "shorty": "VLJL",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28240,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_pauseNetwork",
+      "shorty": "VI",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28241,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_receivedCaptchaResult",
+      "shorty": "VILL",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28242,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_receivedIntegrityCheckClassic",
+      "shorty": "VIILL",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28243,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_resumeNetwork",
+      "shorty": "VIZ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28244,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_sendRequest",
+      "shorty": "VIJIIIZI",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28245,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_setIpStrategy",
+      "shorty": "VIB",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28246,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_setJava",
+      "shorty": "VZ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28247,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_setLangCode",
+      "shorty": "VIL",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28248,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_setNetworkAvailable",
+      "shorty": "VIZIZ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28249,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_setProxySettings",
+      "shorty": "VILILLL",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28250,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_setPushConnectionEnabled",
+      "shorty": "VIZ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28251,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_setRegId",
+      "shorty": "VIL",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28252,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_setSystemLangCode",
+      "shorty": "VIL",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28253,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_setUserId",
+      "shorty": "VIJ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28254,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_switchBackend",
+      "shorty": "VIZ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28255,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_test_AuthAuthorization",
+      "shorty": "ZJ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28256,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "method": "native_updateDcSettings",
+      "shorty": "VI",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28257,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/NativeByteBuffer;",
+      "method": "native_getFreeBuffer",
+      "shorty": "JI",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28333,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/NativeByteBuffer;",
+      "method": "native_getJavaByteBuffer",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28334,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/NativeByteBuffer;",
+      "method": "native_limit",
+      "shorty": "IJ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28335,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/NativeByteBuffer;",
+      "method": "native_position",
+      "shorty": "IJ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28336,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/tgnet/NativeByteBuffer;",
+      "method": "native_reuse",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so (tgnet module)",
+      "dex": "classes3.dex",
+      "priority": "P1",
+      "class_access_flags": 1,
+      "method_idx": 28337,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Stories/recorder/FfmpegAudioWaveformLoader;",
+      "method": "init",
+      "shorty": "VLI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 47276,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/MediaSource;",
+      "method": "nativeGetState",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59904,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/MediaStreamTrack;",
+      "method": "nativeGetEnabled",
+      "shorty": "ZJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59949,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/MediaStreamTrack;",
+      "method": "nativeGetId",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59950,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/MediaStreamTrack;",
+      "method": "nativeGetKind",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59951,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/MediaStreamTrack;",
+      "method": "nativeGetState",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59952,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/MediaStreamTrack;",
+      "method": "nativeSetEnabled",
+      "shorty": "ZJZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59953,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/AudioTrack;",
+      "method": "nativeSetVolume",
+      "shorty": "VJD",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 58915,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/BuiltinAudioDecoderFactoryFactory;",
+      "method": "nativeCreateBuiltinAudioDecoderFactory",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 58928,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/BuiltinAudioEncoderFactoryFactory;",
+      "method": "nativeCreateBuiltinAudioEncoderFactory",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 58931,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/CallSessionFileRotatingLogSink;",
+      "method": "nativeAddSink",
+      "shorty": "JLII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 58935,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/CallSessionFileRotatingLogSink;",
+      "method": "nativeDeleteSink",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 58936,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/CallSessionFileRotatingLogSink;",
+      "method": "nativeGetLogData",
+      "shorty": "LL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 58937,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DataChannel;",
+      "method": "nativeBufferedAmount",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59312,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DataChannel;",
+      "method": "nativeClose",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59313,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DataChannel;",
+      "method": "nativeId",
+      "shorty": "I",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59314,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DataChannel;",
+      "method": "nativeLabel",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59315,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DataChannel;",
+      "method": "nativeRegisterObserver",
+      "shorty": "JL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59316,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DataChannel;",
+      "method": "nativeSend",
+      "shorty": "ZLZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59317,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DataChannel;",
+      "method": "nativeState",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59318,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DataChannel;",
+      "method": "nativeUnregisterObserver",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59319,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/Dav1dDecoder;",
+      "method": "nativeCreateDecoder",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59326,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DtmfSender;",
+      "method": "nativeCanInsertDtmf",
+      "shorty": "ZJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59344,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DtmfSender;",
+      "method": "nativeDuration",
+      "shorty": "IJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59345,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DtmfSender;",
+      "method": "nativeInsertDtmf",
+      "shorty": "ZJLII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59346,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DtmfSender;",
+      "method": "nativeInterToneGap",
+      "shorty": "IJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59347,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/DtmfSender;",
+      "method": "nativeTones",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59348,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/EglBase10Impl;",
+      "method": "nativeGetCurrentNativeEGLContext",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 59410,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/H264Utils;",
+      "method": "nativeIsSameH264Profile",
+      "shorty": "ZLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 59646,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/Histogram;",
+      "method": "nativeAddSample",
+      "shorty": "VJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 59722,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/Histogram;",
+      "method": "nativeCreateCounts",
+      "shorty": "JLIII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 59723,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/Histogram;",
+      "method": "nativeCreateEnumeration",
+      "shorty": "JLI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 59724,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/JavaI420Buffer;",
+      "method": "nativeCropAndScaleI420",
+      "shorty": "VLILILIIIIILILILIII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59756,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/JniCommon;",
+      "method": "nativeAddRef",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59762,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/JniCommon;",
+      "method": "nativeAllocateByteBuffer",
+      "shorty": "LI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59763,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/JniCommon;",
+      "method": "nativeFreeByteBuffer",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59764,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/JniCommon;",
+      "method": "nativeReleaseRef",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59765,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/LibaomAv1Encoder;",
+      "method": "nativeCreateEncoder",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59774,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/LibvpxVp8Decoder;",
+      "method": "nativeCreateDecoder",
+      "shorty": "JJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59777,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/LibvpxVp8Encoder;",
+      "method": "nativeCreateEncoder",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59781,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/LibvpxVp9Decoder;",
+      "method": "nativeCreateDecoder",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59784,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/LibvpxVp9Decoder;",
+      "method": "nativeIsSupported",
+      "shorty": "Z",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59785,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/LibvpxVp9Encoder;",
+      "method": "nativeCreateEncoder",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59789,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/LibvpxVp9Encoder;",
+      "method": "nativeIsSupported",
+      "shorty": "Z",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59790,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/Logging;",
+      "method": "nativeEnableLogThreads",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59817,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/Logging;",
+      "method": "nativeEnableLogTimeStamps",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59818,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/Logging;",
+      "method": "nativeEnableLogToDebugOutput",
+      "shorty": "VI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59819,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/Logging;",
+      "method": "nativeLog",
+      "shorty": "VILL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59820,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/MediaStream;",
+      "method": "nativeAddAudioTrackToNativeStream",
+      "shorty": "ZJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59917,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/MediaStream;",
+      "method": "nativeAddVideoTrackToNativeStream",
+      "shorty": "ZJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59918,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/MediaStream;",
+      "method": "nativeGetId",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59919,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/MediaStream;",
+      "method": "nativeRemoveAudioTrack",
+      "shorty": "ZJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59920,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/MediaStream;",
+      "method": "nativeRemoveVideoTrack",
+      "shorty": "ZJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59921,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/Metrics;",
+      "method": "nativeEnable",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59962,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/Metrics;",
+      "method": "nativeGetAndReset",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59963,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/NV12Buffer;",
+      "method": "nativeCropAndScale",
+      "shorty": "VIIIIIILIIIILILILI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59969,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/NV21Buffer;",
+      "method": "nativeCropAndScale",
+      "shorty": "VIIIIIILIILILILI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 59978,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/NativeAndroidVideoTrackSource;",
+      "method": "nativeAdaptFrame",
+      "shorty": "LJIIIJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 59986,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/NativeAndroidVideoTrackSource;",
+      "method": "nativeAdaptOutputFormat",
+      "shorty": "VJIILIILL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 59987,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/NativeAndroidVideoTrackSource;",
+      "method": "nativeOnFrameCaptured",
+      "shorty": "VJIJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 59988,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/NativeAndroidVideoTrackSource;",
+      "method": "nativeSetIsScreencast",
+      "shorty": "VJZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 59989,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/NativeAndroidVideoTrackSource;",
+      "method": "nativeSetState",
+      "shorty": "VJZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 59990,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/NetworkMonitor;",
+      "method": "nativeNotifyConnectionTypeChanged",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60060,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/NetworkMonitor;",
+      "method": "nativeNotifyOfActiveNetworkList",
+      "shorty": "VJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60061,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/NetworkMonitor;",
+      "method": "nativeNotifyOfNetworkConnect",
+      "shorty": "VJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60062,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/NetworkMonitor;",
+      "method": "nativeNotifyOfNetworkDisconnect",
+      "shorty": "VJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60063,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/NetworkMonitor;",
+      "method": "nativeNotifyOfNetworkPreference",
+      "shorty": "VJLI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60064,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeAddIceCandidate",
+      "shorty": "ZLIL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60365,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeAddIceCandidateWithObserver",
+      "shorty": "VLILL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60366,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeAddLocalStream",
+      "shorty": "ZJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60367,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeAddTrack",
+      "shorty": "LJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60368,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeAddTransceiverOfType",
+      "shorty": "LLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60369,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeAddTransceiverWithTrack",
+      "shorty": "LJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60370,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeClose",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60371,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeConnectionState",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60372,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeCreateAnswer",
+      "shorty": "VLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60373,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeCreateDataChannel",
+      "shorty": "LLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60374,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeCreateOffer",
+      "shorty": "VLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60375,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeCreatePeerConnectionObserver",
+      "shorty": "JL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60376,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeCreateSender",
+      "shorty": "LLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60377,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeFreeOwnedPeerConnection",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60378,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeGetCertificate",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60379,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeGetLocalDescription",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60380,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeGetNativePeerConnection",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60381,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeGetReceivers",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60382,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeGetRemoteDescription",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60383,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeGetSenders",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60384,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeGetTransceivers",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60385,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeIceConnectionState",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60386,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeIceGatheringState",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60387,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeNewGetStats",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60388,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeNewGetStatsReceiver",
+      "shorty": "VJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60389,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeNewGetStatsSender",
+      "shorty": "VJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60390,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeOldGetStats",
+      "shorty": "ZLJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60391,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeRemoveIceCandidates",
+      "shorty": "ZL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60392,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeRemoveLocalStream",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60393,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeRemoveTrack",
+      "shorty": "ZJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60394,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeRestartIce",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60395,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeSetAudioPlayout",
+      "shorty": "VZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60396,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeSetAudioRecording",
+      "shorty": "VZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60397,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeSetBitrate",
+      "shorty": "ZLLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60398,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeSetConfiguration",
+      "shorty": "ZL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60399,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeSetLocalDescription",
+      "shorty": "VLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60400,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeSetLocalDescriptionAutomatically",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60401,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeSetRemoteDescription",
+      "shorty": "VLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60402,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeSignalingState",
+      "shorty": "L",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60403,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeStartRtcEventLog",
+      "shorty": "ZII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60404,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnection;",
+      "method": "nativeStopRtcEventLog",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60405,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeCreateAudioSource",
+      "shorty": "JJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60486,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeCreateAudioTrack",
+      "shorty": "JJLJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60487,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeCreateLocalMediaStream",
+      "shorty": "JJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60488,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeCreatePeerConnection",
+      "shorty": "JJLLJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60489,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeCreatePeerConnectionFactory",
+      "shorty": "LLLJJJLLJJJJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60490,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeCreateVideoSource",
+      "shorty": "JJZZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60491,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeCreateVideoTrack",
+      "shorty": "JJLJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60492,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeDeleteLoggable",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60493,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeFindFieldTrialsFullName",
+      "shorty": "LL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60494,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeFreeFactory",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60495,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeGetNativePeerConnectionFactory",
+      "shorty": "JJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60496,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeGetRtpReceiverCapabilities",
+      "shorty": "LJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60497,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeGetRtpSenderCapabilities",
+      "shorty": "LJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60498,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeInitializeAndroidGlobals",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60499,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeInitializeFieldTrials",
+      "shorty": "VL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60500,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeInitializeInternalTracer",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60501,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeInjectLoggable",
+      "shorty": "VLI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60502,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativePrintStackTrace",
+      "shorty": "VI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60503,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeShutdownInternalTracer",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60504,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeStartAecDump",
+      "shorty": "ZJII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60505,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeStartInternalTracingCapture",
+      "shorty": "ZL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60506,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeStopAecDump",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60507,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/PeerConnectionFactory;",
+      "method": "nativeStopInternalTracingCapture",
+      "shorty": "V",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60508,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtcCertificatePem;",
+      "method": "nativeGenerateCertificate",
+      "shorty": "LLJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60628,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpReceiver;",
+      "method": "nativeGetId",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60692,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpReceiver;",
+      "method": "nativeGetParameters",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60693,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpReceiver;",
+      "method": "nativeGetTrack",
+      "shorty": "JJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60694,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpReceiver;",
+      "method": "nativeSetFrameDecryptor",
+      "shorty": "VJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60695,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpReceiver;",
+      "method": "nativeSetObserver",
+      "shorty": "JJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60696,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpReceiver;",
+      "method": "nativeUnsetObserver",
+      "shorty": "VJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60697,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpSender;",
+      "method": "nativeGetDtmfSender",
+      "shorty": "JJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60708,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpSender;",
+      "method": "nativeGetId",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60709,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpSender;",
+      "method": "nativeGetMediaType",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60710,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpSender;",
+      "method": "nativeGetParameters",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60711,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpSender;",
+      "method": "nativeGetStreams",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60712,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpSender;",
+      "method": "nativeGetTrack",
+      "shorty": "JJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60713,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpSender;",
+      "method": "nativeSetFrameEncryptor",
+      "shorty": "VJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60714,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpSender;",
+      "method": "nativeSetParameters",
+      "shorty": "ZJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60715,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpSender;",
+      "method": "nativeSetStreams",
+      "shorty": "VJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60716,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpSender;",
+      "method": "nativeSetTrack",
+      "shorty": "ZJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60717,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpTransceiver;",
+      "method": "nativeCurrentDirection",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60747,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpTransceiver;",
+      "method": "nativeDirection",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60748,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpTransceiver;",
+      "method": "nativeGetMediaType",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60749,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpTransceiver;",
+      "method": "nativeGetMid",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60750,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpTransceiver;",
+      "method": "nativeGetReceiver",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60751,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpTransceiver;",
+      "method": "nativeGetSender",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60752,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpTransceiver;",
+      "method": "nativeSetCodecPreferences",
+      "shorty": "VJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60753,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpTransceiver;",
+      "method": "nativeSetDirection",
+      "shorty": "ZJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60754,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpTransceiver;",
+      "method": "nativeStopInternal",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60755,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpTransceiver;",
+      "method": "nativeStopStandard",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60756,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/RtpTransceiver;",
+      "method": "nativeStopped",
+      "shorty": "ZJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60757,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/SoftwareVideoDecoderFactory;",
+      "method": "nativeCreate",
+      "shorty": "JJJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60810,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/SoftwareVideoDecoderFactory;",
+      "method": "nativeCreateFactory",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60811,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/SoftwareVideoDecoderFactory;",
+      "method": "nativeGetSupportedCodecs",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60812,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/SoftwareVideoDecoderFactory;",
+      "method": "nativeIsSupported",
+      "shorty": "ZJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60813,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/SoftwareVideoEncoderFactory;",
+      "method": "nativeCreateEncoder",
+      "shorty": "JJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60822,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/SoftwareVideoEncoderFactory;",
+      "method": "nativeCreateFactory",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60823,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/SoftwareVideoEncoderFactory;",
+      "method": "nativeGetSupportedCodecs",
+      "shorty": "LJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 60824,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/TimestampAligner;",
+      "method": "nativeCreateTimestampAligner",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61096,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/TimestampAligner;",
+      "method": "nativeReleaseTimestampAligner",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61097,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/TimestampAligner;",
+      "method": "nativeRtcTimeNanos",
+      "shorty": "J",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61098,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/TimestampAligner;",
+      "method": "nativeTranslateTimestamp",
+      "shorty": "JJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61099,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/TurnCustomizer;",
+      "method": "nativeFreeTurnCustomizer",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61105,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/VideoDecoderFallback;",
+      "method": "nativeCreate",
+      "shorty": "JJLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61145,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/VideoDecoderWrapper;",
+      "method": "nativeOnDecodedFrame",
+      "shorty": "VJLLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 61152,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/VideoEncoderFallback;",
+      "method": "nativeCreateEncoder",
+      "shorty": "JLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61210,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/VideoEncoderWrapper;",
+      "method": "nativeOnEncodedFrame",
+      "shorty": "VJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 61220,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/VideoTrack;",
+      "method": "nativeAddSink",
+      "shorty": "VJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61344,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/VideoTrack;",
+      "method": "nativeFreeSink",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61345,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/VideoTrack;",
+      "method": "nativeRemoveSink",
+      "shorty": "VJJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61346,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/VideoTrack;",
+      "method": "nativeWrapSink",
+      "shorty": "JL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61347,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/YuvHelper;",
+      "method": "nativeABGRToI420",
+      "shorty": "VLILILILIII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61412,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/YuvHelper;",
+      "method": "nativeCopyPlane",
+      "shorty": "VLILIII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61413,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/YuvHelper;",
+      "method": "nativeI420Copy",
+      "shorty": "VLILILILILILIII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61414,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/YuvHelper;",
+      "method": "nativeI420Rotate",
+      "shorty": "VLILILILILILIIII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61415,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/YuvHelper;",
+      "method": "nativeI420ToNV12",
+      "shorty": "VLILILILILIII",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61416,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/audio/JavaAudioDeviceModule;",
+      "method": "nativeCreateAudioDeviceModule",
+      "shorty": "JLLLLIIZZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61478,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/audio/WebRtcAudioRecord;",
+      "method": "nativeCacheDirectBufferAddress",
+      "shorty": "VJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61589,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/audio/WebRtcAudioRecord;",
+      "method": "nativeDataIsRecorded",
+      "shorty": "VJIJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61590,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/audio/WebRtcAudioTrack;",
+      "method": "nativeCacheDirectBufferAddress",
+      "shorty": "VJL",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 61644,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/audio/WebRtcAudioTrack;",
+      "method": "nativeGetPlayoutData",
+      "shorty": "VJI",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 0,
+      "method_idx": 61645,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/voiceengine/WebRtcAudioManager;",
+      "method": "nativeCacheAudioParameters",
+      "shorty": "VIIIZZZZZZZIIJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61733,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/voiceengine/WebRtcAudioRecord;",
+      "method": "nativeCacheDirectBufferAddress",
+      "shorty": "VLJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61783,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/voiceengine/WebRtcAudioRecord;",
+      "method": "nativeDataIsRecorded",
+      "shorty": "VIJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61784,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/voiceengine/WebRtcAudioTrack;",
+      "method": "nativeCacheDirectBufferAddress",
+      "shorty": "VLJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61838,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/webrtc/voiceengine/WebRtcAudioTrack;",
+      "method": "nativeGetPlayoutData",
+      "shorty": "VIJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes3.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 61839,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/AnimatedFileNative;",
+      "method": "nCreateDecoder",
+      "shorty": "JLLIJLZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 9771,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/AnimatedFileNative;",
+      "method": "nDestroyDecoder",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 9772,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/AnimatedFileNative;",
+      "method": "nGetFrameAtTime",
+      "shorty": "IJJLL",
+      "library": "libtmessages.49.so",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 9773,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/AnimatedFileNative;",
+      "method": "nGetVideoFrame",
+      "shorty": "IJLLZFFZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 9774,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/AnimatedFileNative;",
+      "method": "nGetVideoInfo",
+      "shorty": "VLLJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 9775,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/AnimatedFileNative;",
+      "method": "nPrepareToSeek",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 9776,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/AnimatedFileNative;",
+      "method": "nSeekToMs",
+      "shorty": "VJJLZ",
+      "library": "libtmessages.49.so",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 9777,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/AnimatedFileNative;",
+      "method": "nStopDecoder",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 1,
+      "method_idx": 9778,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/RLottieNative;",
+      "method": "nCreate",
+      "shorty": "JLLIILZLZI",
+      "library": "libtmessages.49.so (rlottie module)",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 35074,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/RLottieNative;",
+      "method": "nCreateWithJson",
+      "shorty": "JLLLL",
+      "library": "libtmessages.49.so (rlottie module)",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 35075,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/RLottieNative;",
+      "method": "nDestroy",
+      "shorty": "VJ",
+      "library": "libtmessages.49.so (rlottie module)",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 35076,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/RLottieNative;",
+      "method": "nGetFrame",
+      "shorty": "IJILZ",
+      "library": "libtmessages.49.so (rlottie module)",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 35077,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/RLottieNative;",
+      "method": "nReplaceColors",
+      "shorty": "VJL",
+      "library": "libtmessages.49.so (rlottie module)",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 35078,
+      "method_kind": "direct"
+    },
+    {
+      "class": "Lorg/telegram/ui/Components/RLottieNative;",
+      "method": "nSetLayerColor",
+      "shorty": "VJLI",
+      "library": "libtmessages.49.so (rlottie module)",
+      "dex": "classes5.dex",
+      "priority": "P2",
+      "class_access_flags": 17,
+      "method_idx": 35079,
+      "method_kind": "direct"
+    }
+  ]
+}

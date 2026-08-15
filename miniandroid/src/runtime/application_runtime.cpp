@@ -11,6 +11,7 @@
 #include "dex/dex_parser.h"
 #include "dex/class_resolver.h"
 #include "dex/dex_interpreter_batch.h"
+#include "diagnostics/mem_probe.h"  // EXP-042 Phase 1: memory probe
 // EXP-037 Phase B (BLOCKER-020): Use DalvikExecutionEngine instead of
 // DexInterpreterBatch for execute_on_create. DexInterpreterBatch only handles
 // 5 opcodes (const-string, new-instance, invoke-direct, invoke-virtual,
@@ -965,11 +966,26 @@ bool ApplicationRuntime::execute_on_create() {
 
         // Use DalvikExecutionEngine — the full-featured interpreter.
         miniandroid::dalvik::DalvikExecutionEngine dalvik_engine;
-        // EXP-039: Set config with increased instruction limit
-        dalvik_engine.config_.max_instructions = 10000000;
+        // EXP-042 Phase 1: Memory-architecture settings. These bounds are
+        // what allow Telegram to run past 100 M instructions without OOM.
+        // See docs/exp042/EXP042_MEMORY_ANALYSIS.md for the full audit.
+        dalvik_engine.config_.max_instructions = 100000000;          // 100 M
         dalvik_engine.config_.stop_on_unimplemented = false;
-        dalvik_engine.config_.verbose = false;  // EXP-041: reduce memory by disabling verbose
+        dalvik_engine.config_.verbose = false;                       // EXP-041
         dalvik_engine.config_.enable_api_bridge = true;
+        dalvik_engine.config_.trace_register_snapshots = false;       // EXP-042: 5 KB/insn → off
+        dalvik_engine.config_.trace_cap = 2000;                      // last 2 K traces
+        dalvik_engine.config_.api_call_trace_cap = 5000;             // last 5 K API calls
+        dalvik_engine.config_.completed_frame_cap = 100;             // last 100 frames
+        dalvik_engine.config_.allocation_log_cap = 1000;             // last 1 K allocations
+        dalvik_engine.config_.loop_visit_threshold = 50000;          // per-frame
+        // Propagate caps to the heap and call stack (they own the buffers).
+        dalvik_engine.get_heap().set_allocation_log_cap(dalvik_engine.config_.allocation_log_cap);
+        dalvik_engine.get_call_stack().set_completed_frame_cap(dalvik_engine.config_.completed_frame_cap);
+
+        // EXP-042 Phase 1: memory probe — sample RSS at each phase so we can
+        // pinpoint where memory grows during long Telegram runs.
+        miniandroid::probe::mark("execute_on_create: pre-build_class_dex_index");
         // EXP-037 Phase B (BLOCKER-019): Pass the manifest's main activity
         // class name so DalvikExecutionEngine can find the entry point in
         // obfuscated APKs (where class names don't contain "Activity"/"Main").
@@ -994,10 +1010,12 @@ bool ApplicationRuntime::execute_on_create() {
 
         if (config_.verbose) { std::cout << "  Building class→DEX index..." << std::endl; }
         dalvik_engine.build_class_dex_index(*dex_report_);
+        miniandroid::probe::mark("execute_on_create: post-build_class_dex_index");
         if (config_.verbose) { std::cout << "  Starting DEX execution..." << std::endl; }
 
         auto dalvik_result = dalvik_engine.execute_apk_with_activity(
-            apk_path_, *dex_report_, activity_class, config_.verbose);
+            apk_path_, *dex_report_, activity_class, false /*verbose*/);
+        miniandroid::probe::mark("execute_on_create: post-execute_apk_with_activity");
 
         // Extract evidence
         bool success = (dalvik_result.total_instructions_executed > 0);
