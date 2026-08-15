@@ -966,7 +966,7 @@ bool ApplicationRuntime::execute_on_create() {
         // Use DalvikExecutionEngine — the full-featured interpreter.
         miniandroid::dalvik::DalvikExecutionEngine dalvik_engine;
         // EXP-039: Set config with increased instruction limit
-        dalvik_engine.config_.max_instructions = 100000;
+        dalvik_engine.config_.max_instructions = 5000000;
         dalvik_engine.config_.stop_on_unimplemented = false;
         dalvik_engine.config_.verbose = config_.verbose;
         dalvik_engine.config_.enable_api_bridge = true;
