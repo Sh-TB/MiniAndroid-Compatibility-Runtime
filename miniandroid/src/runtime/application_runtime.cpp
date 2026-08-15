@@ -965,6 +965,11 @@ bool ApplicationRuntime::execute_on_create() {
 
         // Use DalvikExecutionEngine — the full-featured interpreter.
         miniandroid::dalvik::DalvikExecutionEngine dalvik_engine;
+        // EXP-039: Set config with increased instruction limit
+        dalvik_engine.config_.max_instructions = 100000;
+        dalvik_engine.config_.stop_on_unimplemented = false;
+        dalvik_engine.config_.verbose = config_.verbose;
+        dalvik_engine.config_.enable_api_bridge = true;
         // EXP-037 Phase B (BLOCKER-019): Pass the manifest's main activity
         // class name so DalvikExecutionEngine can find the entry point in
         // obfuscated APKs (where class names don't contain "Activity"/"Main").
@@ -986,7 +991,10 @@ bool ApplicationRuntime::execute_on_create() {
             }
         }
         dalvik_engine.set_per_dex_raw_data(std::move(per_dex_raw));
+
+        if (config_.verbose) { std::cout << "  Building class→DEX index..." << std::endl; }
         dalvik_engine.build_class_dex_index(*dex_report_);
+        if (config_.verbose) { std::cout << "  Starting DEX execution..." << std::endl; }
 
         auto dalvik_result = dalvik_engine.execute_apk_with_activity(
             apk_path_, *dex_report_, activity_class, config_.verbose);
