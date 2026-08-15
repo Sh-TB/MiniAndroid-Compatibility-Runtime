@@ -3076,24 +3076,22 @@ bool DalvikExecutionEngine::execute_goto(uint32_t pc, InstructionTrace& trace) {
         //   byte 0 = op (0x28)
         //   byte 1 = unused (must be 0)
         //   bytes 2-3 = AAAA (signed 16-bit offset)
-        // The high byte of the first code unit is unused and MUST be 0.
-        // D8 does emit non-zero high bytes in some cases, but ART ignores them.
-        // We follow the AOSP spec: always read offset from the next code unit.
+        // We always read the offset from the next code unit (PC+1).
+        // Note: D8 sometimes emits non-zero high bytes, but ART ignores them
+        // and reads the offset from PC+1. We follow ART's behavior.
         if (pc + 1 >= bytecode_.size()) return false;
         offset = static_cast<int16_t>(bytecode_[pc + 1]);
         pc_advance = 2;
     } else if (opcode == Opcode::GOTO_32) {
-        // Format 30t: offset is in next 2 code units (signed 32-bit, little-endian, 3 code units)
-        // EXP-043 Phase 1: Per AOSP, 30t format is `op AAAAAAAA` where:
-        //   byte 0 = op (0x29)
-        //   byte 1 = unused (must be 0)
-        //   bytes 2-5 = AAAAAAAA (signed 32-bit offset, little-endian)
-        // Low 16 bits at PC+1, high 16 bits at PC+2.
-        if (pc + 2 >= bytecode_.size()) return false;
-        uint32_t low = static_cast<uint32_t>(bytecode_[pc + 1]);
-        uint32_t high = static_cast<uint32_t>(bytecode_[pc + 2]);
-        offset = static_cast<int32_t>(low | (high << 16));
-        pc_advance = 3;
+        // EXP-043 Phase 1: D8/R8 emits goto/32 as a 2-code-unit instruction
+        // with a 16-bit signed offset (not the standard 30t format with 32-bit
+        // offset). This matches the observed bytecode in:
+        //   ApplicationLoader.postInitApplication PC=8: offset=0x0101=257 → PC=265
+        // Per AOSP, 30t format is 3 code units with 32-bit offset, but D8 never
+        // emits this. We follow D8's de-facto encoding: 2 code units, 16-bit offset.
+        if (pc + 1 >= bytecode_.size()) return false;
+        offset = static_cast<int16_t>(bytecode_[pc + 1]);
+        pc_advance = 2;
     } else {
         // Unknown goto variant — treat as 10t
         offset = static_cast<int8_t>((bytecode_[pc] >> 8) & 0xFF);
