@@ -1561,6 +1561,120 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             ARITH_23X_DOUBLE_CASE(DIV_DOUBLE, "div-double", "div")
             #undef ARITH_23X_DOUBLE_CASE
 
+            // EXP-041: Long/float/double 2addr opcodes (12x: B|A|op, 1 code unit)
+            // Simplified: reuse the 2addr pattern from ARITH_2ADDR_CASE
+            #define ARITH_WIDE_2ADDR_CASE(opcode, op_name, op_type, op) \
+                case Opcode::opcode: { \
+                    uint16_t instr = bytecode_[pc_]; \
+                    uint8_t vA = (instr >> 8) & 0xF; \
+                    uint8_t vB = (instr >> 4) & 0xF; \
+                    DalvikValue a = get_register(vA); \
+                    DalvikValue b = get_register(vB); \
+                    DalvikValue result_val; \
+                    result_val.type = op_type; \
+                    if (op_type == DalvikType::INT64) { \
+                        int32_t av = a.int_val; int32_t bv = b.int_val; \
+                        if (std::string(op) == "add") result_val.int_val = av + bv; \
+                        else if (std::string(op) == "sub") result_val.int_val = av - bv; \
+                        else if (std::string(op) == "mul") result_val.int_val = av * bv; \
+                        else if (std::string(op) == "div") result_val.int_val = (bv != 0) ? av / bv : 0; \
+                        else if (std::string(op) == "rem") result_val.int_val = (bv != 0) ? av % bv : 0; \
+                        else if (std::string(op) == "and") result_val.int_val = av & bv; \
+                        else if (std::string(op) == "or")  result_val.int_val = av | bv; \
+                        else if (std::string(op) == "xor") result_val.int_val = av ^ bv; \
+                        else if (std::string(op) == "shl") result_val.int_val = av << (bv & 0x3f); \
+                        else if (std::string(op) == "shr") result_val.int_val = av >> (bv & 0x3f); \
+                        else if (std::string(op) == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(av) >> (bv & 0x3f)); \
+                    } else if (op_type == DalvikType::FLOAT32) { \
+                        float af = (a.type == DalvikType::FLOAT32) ? a.float_val : (float)a.int_val; \
+                        float bf = (b.type == DalvikType::FLOAT32) ? b.float_val : (float)b.int_val; \
+                        if (std::string(op) == "add") result_val.float_val = af + bf; \
+                        else if (std::string(op) == "sub") result_val.float_val = af - bf; \
+                        else if (std::string(op) == "mul") result_val.float_val = af * bf; \
+                        else if (std::string(op) == "div") result_val.float_val = (bf != 0) ? af / bf : 0; \
+                        else if (std::string(op) == "rem") result_val.float_val = fmodf(af, bf); \
+                    } else { \
+                        double ad = (a.type == DalvikType::FLOAT64) ? a.double_val : (double)a.int_val; \
+                        double bd = (b.type == DalvikType::FLOAT64) ? b.double_val : (double)b.int_val; \
+                        if (std::string(op) == "add") result_val.double_val = ad + bd; \
+                        else if (std::string(op) == "sub") result_val.double_val = ad - bd; \
+                        else if (std::string(op) == "mul") result_val.double_val = ad * bd; \
+                        else if (std::string(op) == "div") result_val.double_val = (bd != 0) ? ad / bd : 0; \
+                        else if (std::string(op) == "rem") result_val.double_val = fmod(ad, bd); \
+                    } \
+                    set_register(vA, result_val); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 1; \
+                    break; \
+                }
+            ARITH_WIDE_2ADDR_CASE(ADD_LONG_2ADDR, "add-long/2addr", DalvikType::INT64, "add")
+            ARITH_WIDE_2ADDR_CASE(SUB_LONG_2ADDR, "sub-long/2addr", DalvikType::INT64, "sub")
+            ARITH_WIDE_2ADDR_CASE(MUL_LONG_2ADDR, "mul-long/2addr", DalvikType::INT64, "mul")
+            ARITH_WIDE_2ADDR_CASE(DIV_LONG_2ADDR, "div-long/2addr", DalvikType::INT64, "div")
+            ARITH_WIDE_2ADDR_CASE(REM_LONG_2ADDR, "rem-long/2addr", DalvikType::INT64, "rem")
+            ARITH_WIDE_2ADDR_CASE(AND_LONG_2ADDR, "and-long/2addr", DalvikType::INT64, "and")
+            ARITH_WIDE_2ADDR_CASE(OR_LONG_2ADDR,  "or-long/2addr",  DalvikType::INT64, "or")
+            ARITH_WIDE_2ADDR_CASE(XOR_LONG_2ADDR, "xor-long/2addr", DalvikType::INT64, "xor")
+            ARITH_WIDE_2ADDR_CASE(SHL_LONG_2ADDR, "shl-long/2addr", DalvikType::INT64, "shl")
+            ARITH_WIDE_2ADDR_CASE(SHR_LONG_2ADDR, "shr-long/2addr", DalvikType::INT64, "shr")
+            ARITH_WIDE_2ADDR_CASE(USHR_LONG_2ADDR, "ushr-long/2addr", DalvikType::INT64, "ushr")
+            ARITH_WIDE_2ADDR_CASE(ADD_FLOAT_2ADDR, "add-float/2addr", DalvikType::FLOAT32, "add")
+            ARITH_WIDE_2ADDR_CASE(SUB_FLOAT_2ADDR, "sub-float/2addr", DalvikType::FLOAT32, "sub")
+            ARITH_WIDE_2ADDR_CASE(MUL_FLOAT_2ADDR, "mul-float/2addr", DalvikType::FLOAT32, "mul")
+            ARITH_WIDE_2ADDR_CASE(DIV_FLOAT_2ADDR, "div-float/2addr", DalvikType::FLOAT32, "div")
+            ARITH_WIDE_2ADDR_CASE(REM_FLOAT_2ADDR, "rem-float/2addr", DalvikType::FLOAT32, "rem")
+            ARITH_WIDE_2ADDR_CASE(ADD_DOUBLE_2ADDR, "add-double/2addr", DalvikType::FLOAT64, "add")
+            ARITH_WIDE_2ADDR_CASE(SUB_DOUBLE_2ADDR, "sub-double/2addr", DalvikType::FLOAT64, "sub")
+            ARITH_WIDE_2ADDR_CASE(MUL_DOUBLE_2ADDR, "mul-double/2addr", DalvikType::FLOAT64, "mul")
+            ARITH_WIDE_2ADDR_CASE(DIV_DOUBLE_2ADDR, "div-double/2addr", DalvikType::FLOAT64, "div")
+            #undef ARITH_WIDE_2ADDR_CASE
+
+            // const-wide/16 (21s: AA|op BBBB, 2 code units)
+            case Opcode::CONST_WIDE_16: {
+                if (pc_ + 1 >= bytecode_.size()) return false;
+                uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
+                int16_t val = static_cast<int16_t>(bytecode_[pc_ + 1]);
+                DalvikValue dv; dv.type = DalvikType::INT64; dv.int_val = val;
+                set_register(vAA, dv);
+                trace.opcode_name = "const-wide/16";
+                pc_ += 2;
+                break;
+            }
+            // const-wide/high16 (21s: AA|op BBBB, 2 code units)
+            case Opcode::CONST_WIDE_HIGH16: {
+                if (pc_ + 1 >= bytecode_.size()) return false;
+                uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
+                uint16_t val = bytecode_[pc_ + 1];
+                DalvikValue dv; dv.type = DalvikType::INT64; dv.int_val = static_cast<int64_t>(val) << 48;
+                set_register(vAA, dv);
+                trace.opcode_name = "const-wide/high16";
+                pc_ += 2;
+                break;
+            }
+            // const-wide (51l: AA|op + 4 words, 5 code units)
+            case Opcode::CONST_WIDE: {
+                if (pc_ + 4 >= bytecode_.size()) return false;
+                uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
+                uint64_t val = 0;
+                for (int i = 0; i < 4; i++) val |= static_cast<uint64_t>(bytecode_[pc_ + 1 + i]) << (i * 16);
+                DalvikValue dv; dv.type = DalvikType::INT64; dv.int_val = static_cast<int64_t>(val);
+                set_register(vAA, dv);
+                trace.opcode_name = "const-wide";
+                pc_ += 5;
+                break;
+            }
+            // iget-boolean / iput-boolean (22c: same as other iget/iput variants)
+            case Opcode::IGET_BOOLEAN: {
+                success = execute_iget(pc_, trace);
+                trace.opcode_name = "iget-boolean";
+                break;
+            }
+            case Opcode::IPUT_BOOLEAN: {
+                success = execute_iput(pc_, trace);
+                trace.opcode_name = "iput-boolean";
+                break;
+            }
+
             default:
                 handle_unimplemented(opcode, pc_, trace);
                 trace.opcode_name = "unimplemented(0x" + to_hex16(opcode) + ")";
@@ -1616,8 +1730,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             pc_visit_count.clear();
         }
         
-        // Log if verbose
-        if (verbose_) {
+        // Log if verbose — EXP-041: only log every 10000th instruction to reduce memory
+        if (verbose_ && (trace.sequence % 10000 == 0)) {
             log("  [" + std::to_string(trace.sequence) + "] " +
                 std::string(trace.pc_before < 100 ? " " : "") + 
                 to_hex(trace.pc_before) + ": " + trace.opcode_name +

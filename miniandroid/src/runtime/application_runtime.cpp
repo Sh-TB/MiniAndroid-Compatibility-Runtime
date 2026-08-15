@@ -966,9 +966,9 @@ bool ApplicationRuntime::execute_on_create() {
         // Use DalvikExecutionEngine — the full-featured interpreter.
         miniandroid::dalvik::DalvikExecutionEngine dalvik_engine;
         // EXP-039: Set config with increased instruction limit
-        dalvik_engine.config_.max_instructions = 5000000;
+        dalvik_engine.config_.max_instructions = 10000000;
         dalvik_engine.config_.stop_on_unimplemented = false;
-        dalvik_engine.config_.verbose = config_.verbose;
+        dalvik_engine.config_.verbose = false;  // EXP-041: reduce memory by disabling verbose
         dalvik_engine.config_.enable_api_bridge = true;
         // EXP-037 Phase B (BLOCKER-019): Pass the manifest's main activity
         // class name so DalvikExecutionEngine can find the entry point in
