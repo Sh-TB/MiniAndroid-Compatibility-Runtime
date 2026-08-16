@@ -2170,21 +2170,31 @@ uint16_t DalvikExecutionEngine::fetch_opcode(uint32_t pc) const {
 // ============================================================================
 
 bool DalvikExecutionEngine::execute_const_4(uint32_t pc, InstructionTrace& trace) {
-    // Format: 11n [op] vAA, #+BBBB (nibble)
-    if (pc + 1 >= bytecode_.size()) return false;
-    
+    // Format: 11n B|A|op — 1 code unit
+    //   byte 0 (low): op (0x12)
+    //   byte 1 (high): B<<4 | A (A = register nibble, B = literal nibble)
+    // EXP-047 FIX: Previous code extracted dest_reg as the full high byte
+    // and literal as the low nibble of the low byte (always 0x2 from op=0x12).
+    // This caused const/4 to write to the WRONG register and use the WRONG value.
+    // For example, const/4 v3, #4 (word=0x4312) was interpreted as
+    // dest_reg=0x43 (v67) and literal=2, instead of dest_reg=3 and literal=4.
+    // This was the root cause of if-gt at PC=147 in postInitApplication
+    // comparing wrong registers and branching to PC=224, skipping
+    // UserConfig.getInstance, MessagesController.getInstance, and
+    // ConnectionsManager.getInstance.
+    if (pc >= bytecode_.size()) return false;
+
     uint16_t instr = bytecode_[pc];
-    uint8_t dest_reg = (instr >> 8) & 0xFF;
-    int8_t literal = (instr & 0xF);  // Signed nibble
-    
+    uint8_t dest_reg = (instr >> 8) & 0xF;    // A = low nibble of high byte
+    uint8_t literal_nibble = (instr >> 12) & 0xF;  // B = high nibble of high byte
+
     // Sign-extend from 4 bits
-    int32_t value = (literal >= 8) ? (literal - 16) : literal;
-    
+    int32_t value = (literal_nibble >= 8) ? (literal_nibble - 16) : literal_nibble;
+
     set_register(dest_reg, DalvikValue::make_int(value));
-    
+
     trace.operands.push_back({"v" + std::to_string(dest_reg), std::to_string(value)});
-    trace.operands.push_back({"literal", std::to_string(literal)});
-    
+
     pc_ = pc + 1;
     return true;
 }
@@ -2774,7 +2784,13 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
         if (it != static_field_storage_.end()) {
             result_value = it->second;
         } else {
+            if (current_class_.find("ApplicationLoader") != std::string::npos) {
+                std::cerr << "[SGET-MISS] " << current_class_ << "." << current_method_ << " PC=" << pc << " key=" << static_key << std::endl;
+            }
             static_field_storage_[static_key] = result_value;
+        }
+        if (current_class_.find("ApplicationLoader") != std::string::npos) {
+            std::cerr << "[SGET-DBG] " << current_class_ << "." << current_method_ << " PC=" << pc << " key=" << static_key << " type=" << static_cast<int>(result_value.type) << " obj=" << result_value.object_id << std::endl;
         }
     }
     
