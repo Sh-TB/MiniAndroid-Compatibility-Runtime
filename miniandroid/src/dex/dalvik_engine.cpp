@@ -795,13 +795,23 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
-    // EXP-044 Phase 1: FragmentStore methods that iterate over collections.
+    // EXP-045 Phase 2: FragmentStore methods that iterate over collections.
     // These use iterators which we don't support, causing infinite loops.
     if (class_descriptor.find("FragmentStore") != std::string::npos &&
         (method_name == "dispatchStateChange" ||
          method_name == "getActiveFragmentStateManagers")) {
         log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
             " — skipping recursive invoke (collection iteration not supported)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-045 Phase 2: TransactionInactiveError — credentials exception that
+    // loops because its superclass constructor (Exception.<init>) returns
+    // incorrectly. Stub as no-op to unblock deeper execution.
+    if (class_descriptor.find("TransactionInactiveError") != std::string::npos) {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (credentials exception not on startup path)");
         recursion_depth_--;
         return false;
     }
@@ -817,14 +827,16 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // EXP-045 Phase 2: Search for the method within this class.
     // CRITICAL: When multiple overloads exist with the same name, match by
     // argument count to avoid calling the wrong overload.
-    // Without this, sanitizeStackTrace(1-arg, 11 insns) would call itself
-    // recursively instead of sanitizeStackTrace(2-arg, 37 insns).
-    // This caused 34K+ spurious calls and massive performance degradation.
+    // NOTE: all_methods() returns a vector BY VALUE (temporary). We must
+    // store the MethodInfo BY VALUE, not by pointer, because the temporary
+    // vector is destroyed after the for loop — storing a pointer would be
+    // a dangling pointer (use-after-free).
+    auto all_methods = cls_ref.all_methods();  // keep the vector alive
     const dex::MethodInfo* best_match = nullptr;
     const dex::MethodInfo* fallback_match = nullptr;
     size_t arg_count = args.size();
 
-    for (const auto& method : cls_ref.all_methods()) {
+    for (const auto& method : all_methods) {
         if (method.name != method_name) continue;
         if (method.bytecode.empty()) continue;
 
