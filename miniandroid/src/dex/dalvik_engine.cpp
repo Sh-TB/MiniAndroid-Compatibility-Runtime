@@ -816,6 +816,43 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
+    // EXP-045 Phase 3: Google identity credentials classes — not on Telegram
+    // startup path. Stub to prevent NPE cascade from their constructors.
+    if (class_descriptor.find("identitycredentials") != std::string::npos ||
+        class_descriptor.find("ImportCredentials") != std::string::npos) {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (Google credentials, not on startup path)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-045 Phase 3: Stub the expensive NPE message construction path.
+    // When checkNotNullParameter detects a null parameter, it calls
+    // throwParameterIsNullNPE → createParameterIsNullExceptionMessage →
+    // sanitizeStackTrace. This path is ~159 instructions per NPE, called
+    // 1845+ times = ~293K instructions wasted on exception messages that
+    // are never displayed in our headless runtime.
+    // We stub the entire NPE path to return void/null immediately.
+    if (class_descriptor.find("Intrinsics") != std::string::npos &&
+        (method_name == "createParameterIsNullExceptionMessage" ||
+         method_name == "sanitizeStackTrace")) {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (NPE path, not needed in headless runtime)");
+        recursion_depth_--;
+        return false;  // Bridge returns null, short-circuiting the NPE path
+    }
+
+    // EXP-045 Phase 3: Log NPE callers to identify which null parameters
+    // are causing performance degradation. Only log first 50 NPE callers.
+    static thread_local uint64_t npe_caller_count = 0;
+    if (class_descriptor.find("Intrinsics") != std::string::npos &&
+        (method_name == "checkNotNullParameter" || method_name == "checkNotNullExpressionValue") &&
+        npe_caller_count < 50) {
+        std::cerr << "[NPE-CALLER] " << method_name << " called from "
+                  << current_class_ << "." << current_method_ << std::endl;
+        npe_caller_count++;
+    }
+
     // EXP-045 Phase 2: Use O(1) class lookup index instead of linear search.
     auto class_it = class_info_index_.find(class_descriptor);
     if (class_it == class_info_index_.end()) {
