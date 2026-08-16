@@ -442,6 +442,14 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                     // Also cache as the Context singleton so getResources() etc. work
                     api_singletons_["Landroid/content/Context;"] = app_ctx_id;
 
+                    // EXP-046: Pre-populate NativeLoader.nativeLoaded = true.
+                    DalvikValue native_loaded;
+                    native_loaded.type = DalvikType::BOOLEAN;
+                    native_loaded.bool_val = true;
+                    native_loaded.int_val = 1;
+                    static_field_storage_["Lorg/telegram/messenger/NativeLoader;.nativeLoaded"]
+                        = native_loaded;
+
                     // 2. Create the Activity object (this) for onCreate
                     uint32_t activity_obj_id = heap_.allocate(
                         cls.name,  // "Lorg/telegram/ui/LaunchActivity;"
@@ -2465,15 +2473,50 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
 DalvikExecutionEngine::FieldResolution DalvikExecutionEngine::resolve_field(uint16_t field_idx) {
     FieldResolution resolution;
     
-    // EXP-037 Phase B (BLOCKER-003 FIX): DexReport now exposes field_ids[]
-    // and the helper methods get_field_name / get_field_class / get_field_type.
-    // Use them to resolve field_idx → {class, type, name}.
     if (!dex_report_) {
         resolution.error_message = "No DexReport available (resolve_field)";
-        log("❌ FIELD RESOLUTION FAILED: " + resolution.error_message);
         return resolution;
     }
 
+    // EXP-046: Per-DEX field resolution (same issue as BLOCKER-033 for methods).
+    // The merged DexReport concatenates field_ids from all DEX files, so
+    // field_idx from bytecode (which is per-DEX) points to the wrong field.
+    if (is_multidex_ && current_dex_index_ < per_dex_raw_data_.size()) {
+        const auto& raw = per_dex_raw_data_[current_dex_index_];
+        if (raw.size() >= sizeof(dex::DexHeader)) {
+            dex::DexHeader hdr;
+            std::memcpy(&hdr, raw.data(), sizeof(dex::DexHeader));
+            if (field_idx < hdr.field_ids_size) {
+                size_t foff = hdr.field_ids_off + field_idx * 8;
+                if (foff + 8 <= raw.size()) {
+                    uint16_t class_idx, type_idx;
+                    uint32_t name_idx;
+                    std::memcpy(&class_idx, raw.data() + foff, 2);
+                    std::memcpy(&type_idx, raw.data() + foff + 2, 2);
+                    std::memcpy(&name_idx, raw.data() + foff + 4, 4);
+                    if (class_idx < hdr.type_ids_size) {
+                        uint32_t desc_str_idx;
+                        std::memcpy(&desc_str_idx, raw.data() + hdr.type_ids_off + class_idx * 4, 4);
+                        resolution.class_descriptor = read_dex_string_from_raw(raw, desc_str_idx, hdr);
+                    }
+                    resolution.field_name = read_dex_string_from_raw(raw, name_idx, hdr);
+                    if (type_idx < hdr.type_ids_size) {
+                        uint32_t type_str_idx;
+                        std::memcpy(&type_str_idx, raw.data() + hdr.type_ids_off + type_idx * 4, 4);
+                        resolution.field_type = read_dex_string_from_raw(raw, type_str_idx, hdr);
+                    }
+                    if (!resolution.class_descriptor.empty() &&
+                        !resolution.field_name.empty() &&
+                        resolution.class_descriptor[0] == 'L') {
+                        resolution.resolved = true;
+                        return resolution;
+                    }
+                }
+            }
+        }
+    }
+
+    // Fallback: use merged DexReport
     resolution.class_descriptor = dex_report_->get_field_class(field_idx);
     resolution.field_name = dex_report_->get_field_name(field_idx);
     resolution.field_type = dex_report_->get_field_type(field_idx);
@@ -3538,7 +3581,18 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
     DalvikValue val = get_register(test_reg);
     bool is_nonzero = !(val.type == DalvikType::NULL_REF || 
                        (val.type == DalvikType::INT32 && val.int_val == 0) ||
+                       (val.type == DalvikType::BOOLEAN && val.int_val == 0) ||
                        (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET));
+    
+    // EXP-046: Log if-nez in NativeLoader.initNativeLibs
+    if (current_class_.find("NativeLoader") != std::string::npos) {
+        std::cerr << "[IF-NEZ-DBG] " << current_class_ << "." << current_method_
+                  << " PC=" << pc << " v" << (int)test_reg
+                  << " type=" << static_cast<int>(val.type)
+                  << " val=" << val.int_val
+                  << " nonzero=" << is_nonzero
+                  << " target=" << (pc + offset) << std::endl;
+    }
     
     if (is_nonzero) {
         uint32_t target = pc + offset;
