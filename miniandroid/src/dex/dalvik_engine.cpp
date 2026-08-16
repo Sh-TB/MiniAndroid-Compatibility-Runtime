@@ -865,6 +865,22 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
+    // EXP-050: Methods that loop due to missing threading/animation state.
+    // These have bytecode but depend on real thread/animation state we don't have.
+    if ((class_descriptor.find("ArchTaskExecutor") != std::string::npos &&
+         method_name == "isMainThread") ||
+        (class_descriptor.find("BaseFragment") != std::string::npos &&
+         method_name == "getLastStoryViewer") ||
+        (class_descriptor.find("SpringAnimation") != std::string::npos &&
+         (method_name == "sanityCheck" || method_name == "start")) ||
+        (class_descriptor.find("DynamicAnimation") != std::string::npos &&
+         method_name == "startAnimationInternal")) {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (threading/animation loop)");
+        recursion_depth_--;
+        return false;
+    }
+
     // EXP-045 Phase 3: Log NPE callers to identify which null parameters
     // are causing performance degradation. Only log first 50 NPE callers.
     static thread_local uint64_t npe_caller_count = 0;
@@ -4764,6 +4780,46 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (class_name.find("Log") != std::string::npos) {
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_int(0);
+        return true;
+    }
+
+    // EXP-050: ArchTaskExecutor.isMainThread → true
+    // Without this, LifecycleRegistry.enforceMainThreadIfNeeded loops forever
+    // because the thread comparison fails in our single-threaded runtime.
+    if (class_name.find("ArchTaskExecutor") != std::string::npos &&
+        method == "isMainThread") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(true);
+        return true;
+    }
+
+    // EXP-050: BaseFragment.getLastStoryViewer → null (story viewer not available)
+    if (class_name.find("BaseFragment") != std::string::npos &&
+        method == "getLastStoryViewer") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_null();
+        return true;
+    }
+
+    // EXP-050: DynamicAnimation/SpringAnimation methods — return basic defaults
+    if (class_name.find("DynamicAnimation") != std::string::npos ||
+        class_name.find("SpringAnimation") != std::string::npos ||
+        class_name.find("SpringForce") != std::string::npos) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (method == "isRunning") {
+            result = DalvikValue::make_bool(false);
+        } else if (method == "start" || method == "startAnimationInternal" ||
+                   method == "sanityCheck" || method == "setSpring" ||
+                   method == "addUpdateListener") {
+            result = DalvikValue::make_void();
+        } else if (method == "getPropertyValue" || method == "getFinalPosition" ||
+                   method == "getValueThreshold") {
+            result = DalvikValue::make_float(0.0f);
+            DalvikValue v; v.type = DalvikType::FLOAT32; v.float_val = 0.0f;
+            result = v;
+        } else {
+            result = DalvikValue::make_void();
+        }
         return true;
     }
 
