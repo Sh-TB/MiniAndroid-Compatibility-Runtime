@@ -14,6 +14,7 @@
 #include "dex_parser.h"
 #include "../api/android_stubs.h"
 #include "../diagnostics/mem_probe.h"
+#include "../jni/jni_bridge.h"
 #include <chrono>
 #include <iostream>
 #include <sstream>
@@ -873,6 +874,82 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;  // class not found in DEX, bridge to API
     }
     const dex::ClassInfo& cls_ref = dex_report_->classes[class_it->second];
+
+    // EXP-046 Phase 2: Check for native methods and dispatch to JNI bridge.
+    // Native methods have no bytecode (code_off == 0) and access_flags & ACC_NATIVE (0x100).
+    // Before the overload search skips them (bytecode.empty()), we check if a JNI
+    // handler is registered and dispatch to it.
+    {
+        auto all_methods_check = cls_ref.all_methods();
+        for (const auto& method : all_methods_check) {
+            if (method.name != method_name) continue;
+            if (!(method.access_flags & 0x100)) continue;  // Not ACC_NATIVE
+            // Found a native method — dispatch to JNI bridge
+            log("🔌 JNI DISPATCH: " + class_descriptor + "." + method_name +
+                method.descriptor + " (native)");
+            // Build JNI call context from args
+            jni::NativeCallContext jni_ctx;
+            jni_ctx.class_desc = class_descriptor;
+            jni_ctx.method_name = method_name;
+            jni_ctx.signature = method.descriptor;
+            for (const auto& arg : args) {
+                if (arg.type == DalvikType::INT32 || arg.type == DalvikType::BOOLEAN) {
+                    jni_ctx.int_args.push_back(arg.int_val);
+                } else if (arg.type == DalvikType::INT64) {
+                    jni_ctx.int_args.push_back(static_cast<int32_t>(arg.long_val));
+                } else if (arg.type == DalvikType::STRING_REF) {
+                    jni_ctx.string_args.push_back(arg.string_val);
+                } else if (arg.type == DalvikType::OBJECT_REF) {
+                    jni_ctx.object_args.push_back(arg.object_id);
+                } else if (arg.type == DalvikType::NULL_REF) {
+                    jni_ctx.object_args.push_back(0);
+                }
+            }
+            // Dispatch
+            int32_t int_ret = 0;
+            int64_t long_ret = 0;
+            float float_ret = 0.0f;
+            double double_ret = 0.0;
+            std::string string_ret;
+            uint32_t obj_ret = 0;
+            bool is_obj_ret = false;
+            jni::JNIBridge::instance().invoke(jni_ctx, int_ret, long_ret, float_ret,
+                                               double_ret, string_ret, obj_ret, is_obj_ret);
+            // Convert result to DalvikValue based on return type
+            char ret_type = 'V';
+            size_t paren = method.descriptor.rfind(')');
+            if (paren != std::string::npos && paren + 1 < method.descriptor.size()) {
+                ret_type = method.descriptor[paren + 1];
+            }
+            switch (ret_type) {
+                case 'I': case 'Z': case 'B': case 'S': case 'C':
+                    return_val = DalvikValue::make_int(int_ret); break;
+                case 'J': {
+                    DalvikValue v; v.type = DalvikType::INT64; v.long_val = long_ret;
+                    return_val = v; break;
+                }
+                case 'F': {
+                    DalvikValue v; v.type = DalvikType::FLOAT32; v.float_val = float_ret;
+                    return_val = v; break;
+                }
+                case 'D': {
+                    DalvikValue v; v.type = DalvikType::FLOAT64; v.double_val = double_ret;
+                    return_val = v; break;
+                }
+                case 'L': case '[':
+                    if (is_obj_ret && obj_ret > 0) {
+                        return_val = DalvikValue::make_object(obj_ret, "Lnative_result;");
+                    } else {
+                        return_val = DalvikValue::make_null();
+                    }
+                    break;
+                default:
+                    return_val = DalvikValue::make_void(); break;
+            }
+            recursion_depth_--;
+            return true;  // JNI handler dispatched successfully
+        }
+    }
 
     // EXP-045 Phase 2: Search for the method within this class.
     // CRITICAL: When multiple overloads exist with the same name, match by
