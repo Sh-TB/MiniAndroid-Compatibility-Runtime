@@ -1497,3 +1497,106 @@ Stage Summary:
   - `miniandroid/tools/exp046_native_map.py` (analyzer script, ~1,020 lines)
   - `miniandroid/docs/EXP046_NATIVE_MAP.md` (markdown report, 582 lines / ~131 KB)
   - `miniandroid/docs/EXP046_NATIVE_MAP.json` (machine-readable JSON, 8,063 lines / ~301 KB)
+
+---
+Task ID: EXP-049-PHASE2-3
+Agent: general-purpose
+Task: Static call graph analysis + invoke opcode audit
+
+Work Log:
+
+- Read `worklog.md` for EXP-046 / EXP-048 context. Confirmed prior
+  work: 462 native methods already inventoried; LaunchActivity.onCreate
+  is the canonical startup entry point; invoke-super and invoke-*/range
+  were known P0 gaps (EXP-037 BLOCKER-012, EXP-038 BLOCKER-030).
+- Read `miniandroid/src/dex/dalvik_engine.cpp` lines 1350–1470
+  (dispatch loop) and 2858–3370 (every invoke-* handler) plus the
+  `bridge_to_api` and `try_recursive_invoke` plumbing (lines 741–820,
+  3961–4725). Audited each handler against the 5 task-spec criteria
+  (argc / recursive / bridge / retval / pc advance).
+- Wrote `miniandroid/tools/dex_call_graph.py` — a self-contained DEX
+  parser + bytecode scanner (no external deps). Reuses the binary
+  parsing patterns from `tools/exp042_jni_inventory.py` (DexFile
+  class) and adds:
+    * A complete Dalvik opcode-size table (0x00–0xFF) including
+      deprecated quick opcodes (0x63–0x6d) and modern invoke-polymorphic
+      / invoke-custom (0xfa–0xfd).
+    * Per-class bytecode walking with ULEB128-encoded class_data_item
+      decoding and code_item header parsing (registers_size,
+      ins_size, outs_size, tries_size, debug_info_off, insns_size).
+    * A two-pass scanner: pass 1 indexes every method (incl. native
+      and abstract) so callee resolution works during pass 2; pass 2
+      walks insns[] for every method with bytecode and records
+      (caller, callee, invoke_kind, dex_index, pc) edges.
+    * A BFS startup-path traversal from
+      `Lorg/telegram/ui/LaunchActivity;.onCreate` with depth cap = 8
+      and visited cap = 4000. Framework classes (Ljava/, Landroid/,
+      Lkotlin/, Lkotlinx/, Lcom/google/) are recorded as edges past
+      depth 2 but not recursed into, to keep the output bounded.
+- Performance fixes applied during the run:
+    * Batch-unpack method_ids (single `struct.unpack` call per DEX,
+      ~100× faster than per-record unpacking).
+    * Pre-build a per-caller edge index for BFS (1M edges → 169K
+      caller buckets, avoids O(edges²) linear scans).
+    * Compact JSON output (no indentation, short key names) for the
+      global methods index.
+- Found and fixed 2 DEX-parser bugs along the way:
+    * Method_ids was being unpacked per-record (slow) — switched to
+      a single batch unpack with the `<HHI` record reinterpreted as
+      `<4x u16`.
+    * The 0x63–0x6d opcode range was unhandled — initially showed
+      ~24K "unknown opcode 0x69" errors. Empirically verified by
+      dumping `MediaMetadataCompat.<clinit>` that 0x69 is a 22c
+      format (2 code units) — added 0x63–0x69, 0x6d, 0xfe, 0xff as
+      2-unit opcodes and 0x6a, 0x6b, 0x6c as 3-unit opcodes.
+      Scan errors dropped from 23,794 → 3,005 (remaining are rare
+      extended opcodes or odd payload alignments).
+- Wrote `miniandroid/docs/INVOKE_AUDIT_REPORT.md` — per-opcode audit
+  with evidence (line numbers, code excerpts), severity ratings, and
+  concrete fix recommendations for each issue found.
+- Ran the script end-to-end (≈10 seconds total wall-clock):
+
+      5 DEX files parsed in 0.94 s
+      Bytecode scan in 5.6 s
+      BFS in ~1 s
+      Total report size: 65.5 MB
+
+Stage Summary:
+- Call graph entries: 1,039,580 invoke-* edges across 5 DEX files
+  (217,683 unique methods indexed, of which 211,802 have bytecode).
+  Startup-path BFS visited 4,000 methods (depth ≤ 6) and recorded
+  23,319 edges on the path.
+- Native call sites: 462 ACC_NATIVE methods declared across the APK
+  (matches the EXP-042 / EXP-046 inventory). 18 native methods are
+  on the LaunchActivity.onCreate startup path (depth ≤ 6), including
+  `ConnectionsManager.native_init`,
+  `ConnectionsManager.native_getConnectionState`,
+  `Utilities.blurBitmap`, `Utilities.readlink`,
+  `MediaController.isOpusFile`, `NativeInstance.destroyVideoCapturer`.
+- invoke-* audit results:
+    * 0x6e invoke-virtual — WORKING (argc/recursion/bridge/PC all
+      correct; ISSUE-V1 return value discarded)
+    * 0x6f invoke-super — WORKING (same caveats; super-class vtable
+      walk not implemented, but bridge stubs cover super.onCreate)
+    * 0x70 invoke-direct — WORKING (also marks heap object
+      initialized when method_name == "<init>")
+    * 0x71 invoke-static — WORKING with ISSUE-S1 (return value
+      discarded AND not recorded in API trace)
+    * 0x72 invoke-interface — PARTIAL (ISSUE-I1: try_recursive_invoke
+      not guarded by `config_.enable_api_bridge`, unlike the other
+      four handlers)
+    * 0x74–0x78 invoke-*/range — BROKEN (ISSUE-R1: shared 35c
+      handler reads 5 packed register nibbles instead of argc
+      consecutive registers starting at the 16-bit CCCC field; argc
+      is also truncated to 0–15 because it reads `(instr >> 12) & 0xF`
+      instead of `(instr >> 8) & 0xFF`)
+  No silent void-return paths found — every handler attempts both
+  try_recursive_invoke and bridge_to_api before returning.
+- Files produced:
+  - `miniandroid/tools/dex_call_graph.py` (analyzer script, ~1,290
+    lines, no external deps beyond stdlib)
+  - `miniandroid/reports/telegram_call_graph.json` (machine-readable
+    report, 65.5 MB, compact JSON)
+  - `miniandroid/docs/INVOKE_AUDIT_REPORT.md` (audit report, ~400
+    lines, with per-opcode evidence + cross-cutting issue list +
+    recommendations)
