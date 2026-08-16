@@ -1393,31 +1393,78 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 trace.opcode_name = "invoke-interface";
                 break;
 
-            // EXP-038 (BLOCKER-030): invoke-*/range opcodes (3rc format)
+            // EXP-049 Phase 3: invoke-*/range opcodes (3rc format)
             // Format 3rc: AA|op BBBB CCCC (3 code units)
-            //   AA = arg count, BBBB = method_idx, CCCC = first register
-            // For now, route to the same handlers as non-range variants.
+            //   AA = arg count (high byte of first code unit)
+            //   BBBB = method_idx (second code unit)
+            //   CCCC = first register (third code unit)
             // The 3rc format reads AA consecutive registers starting at CCCC.
+            // CRITICAL: The old code routed these to the 35c handlers which
+            // extract registers as 4-bit nibbles from a 16-bit FEDC word.
+            // But 3rc uses CCCC as a 16-bit register base, reading consecutive
+            // 16-bit register indices. This was BROKEN — the 35c handler
+            // reads method_idx from pc+1 (correct) but register list from pc+2
+            // as 4-bit nibbles (WRONG for 3rc). The fix is to build the args
+            // vector from consecutive registers starting at CCCC.
             case Opcode::INVOKE_VIRTUAL_RANGE:
-                success = execute_invoke_virtual(pc_, trace, result);
-                trace.opcode_name = "invoke-virtual/range";
-                break;
             case Opcode::INVOKE_SUPER_RANGE:
-                success = execute_invoke_super(pc_, trace, result);
-                trace.opcode_name = "invoke-super/range";
-                break;
             case Opcode::INVOKE_DIRECT_RANGE:
-                success = execute_invoke_direct(pc_, trace, result);
-                trace.opcode_name = "invoke-direct/range";
-                break;
             case Opcode::INVOKE_STATIC_RANGE:
-                success = execute_invoke_static(pc_, trace, result);
-                trace.opcode_name = "invoke-static/range";
+            case Opcode::INVOKE_INTERFACE_RANGE: {
+                // 3rc format: AA|op BBBB CCCC
+                if (pc_ + 2 >= bytecode_.size()) { pc_ = pc_ + 1; break; }
+                uint16_t instr = bytecode_[pc_];
+                uint8_t argc = (instr >> 8) & 0xFF;  // AA = arg count
+                uint16_t method_idx = bytecode_[pc_ + 1];  // BBBB = method index
+                uint16_t first_reg = bytecode_[pc_ + 2];   // CCCC = first register
+
+                // Build args from consecutive registers
+                std::vector<DalvikValue> args;
+                for (uint8_t i = 0; i < argc; ++i) {
+                    args.push_back(get_register(first_reg + i));
+                }
+
+                // Resolve method name
+                std::string method_name = "<range_method:" + std::to_string(method_idx) + ">";
+                std::string class_name = "<range_class>";
+                if (dex_report_) {
+                    method_name = resolve_method_name_for_dex(method_idx, current_dex_index_);
+                    class_name = resolve_method_class_for_dex(method_idx, current_dex_index_);
+                }
+
+                trace.opcode_name = "invoke-*/range";
+
+                // Try recursive invoke
+                DalvikValue return_val = DalvikValue::make_void();
+                ApiCallTrace::Status status = ApiCallTrace::Status::STUBBED;
+
+                bool recursively_invoked = false;
+                if (config_.enable_api_bridge) {
+                    if (try_recursive_invoke(class_name, method_name, args, return_val, result)) {
+                        recursively_invoked = true;
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                    }
+                }
+                if (!recursively_invoked && config_.enable_api_bridge) {
+                    bridge_to_api(class_name, method_name, args, return_val, status);
+                }
+
+                // Record API trace
+                ApiCallTrace api_trace;
+                api_trace.sequence = api_call_sequence_++;
+                api_trace.api_class = class_name;
+                api_trace.method = method_name;
+                api_trace.status = status;
+                api_trace.pc = pc_;
+                if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) {
+                    result.api_call_traces.erase(result.api_call_traces.begin());
+                }
+                result.api_call_traces.push_back(api_trace);
+
+                trace.invoked_method = class_name + "." + method_name;
+                pc_ = pc_ + 3;
                 break;
-            case Opcode::INVOKE_INTERFACE_RANGE:
-                success = execute_invoke_interface(pc_, trace, result);
-                trace.opcode_name = "invoke-interface/range";
-                break;
+            }
             
             // Returns
             case Opcode::RETURN_VOID:
