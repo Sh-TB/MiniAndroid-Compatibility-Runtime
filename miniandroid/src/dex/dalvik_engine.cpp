@@ -178,6 +178,15 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
 
     log("Built class→DEX index: " + std::to_string(class_to_dex_index_.size()) +
         " entries (" + std::to_string(unmapped) + " unmapped, assigned to DEX 0)");
+
+    // EXP-045 Phase 2: Build O(1) class→ClassInfo index for try_recursive_invoke().
+    // Without this, every invoke-* does a LINEAR SEARCH through 41078 classes.
+    class_info_index_.clear();
+    class_info_index_.reserve(report.classes.size());
+    for (const auto& cls : report.classes) {
+        class_info_index_[cls.name] = &cls;
+    }
+    log("Built class→ClassInfo index: " + std::to_string(class_info_index_.size()) + " entries");
 }
 
 // ============================================================================
@@ -639,7 +648,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     // EXP-043 Phase 1: raised from 200 to 5000 to capture the full path
     // to the Intrinsics loop blocker.
     static thread_local uint64_t method_entry_count = 0;
-    if (method_entry_count < 5000) {
+    if (method_entry_count < 50000) {
         std::cerr << "[METHOD-IN] " << class_name << "." << method_name
                   << " (bytecode_size=" << bytecode.size() << ")" << std::endl;
         method_entry_count++;
@@ -775,83 +784,94 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;  // Fall through to bridge_to_api which returns void
     }
 
-    // Search for the class in DEX
-    for (const auto& cls : dex_report_->classes) {
-        if (cls.name != class_descriptor) continue;
+    // EXP-044 Phase 1: ContextAwareHelper.dispatchOnContextAvailable
+    // This method iterates over a collection of listeners. Without proper
+    // collection/iterator support, it loops forever. Stub as no-op.
+    if (class_descriptor.find("ContextAwareHelper") != std::string::npos &&
+        method_name == "dispatchOnContextAvailable") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping recursive invoke (collection iteration not supported)");
+        recursion_depth_--;
+        return false;
+    }
 
-        // Found the class — search for the method
-        for (const auto& method : cls.all_methods()) {
-            if (method.name != method_name) continue;
-            if (method.bytecode.empty()) continue;  // skip abstract/native
+    // EXP-044 Phase 1: FragmentStore methods that iterate over collections.
+    // These use iterators which we don't support, causing infinite loops.
+    if (class_descriptor.find("FragmentStore") != std::string::npos &&
+        (method_name == "dispatchStateChange" ||
+         method_name == "getActiveFragmentStateManagers")) {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping recursive invoke (collection iteration not supported)");
+        recursion_depth_--;
+        return false;
+    }
 
-            // Found a method with bytecode — recursively execute!
-            log("🔄 RECURSIVE INVOKE: " + cls.name + "." + method.name +
-                method.descriptor + " (" + std::to_string(method.bytecode.size()) + " instructions)");
+    // EXP-045 Phase 2: Use O(1) class lookup index instead of linear search.
+    // Previous code iterated through ALL 41078 classes for every invoke-*,
+    // making execution O(N) per method call. With 5000+ calls and 41078
+    // classes, that's 200M+ string comparisons — the #1 perf bottleneck.
+    auto class_it = class_info_index_.find(class_descriptor);
+    if (class_it == class_info_index_.end()) {
+        recursion_depth_--;
+        return false;  // class not found in DEX, bridge to API
+    }
+    const dex::ClassInfo* cls_ptr = class_it->second;
 
-            // Save current state
-            auto saved_pc = pc_;
-            auto saved_bytecode = bytecode_;
-            auto* saved_registers = current_registers_;
-            // EXP-039 (BLOCKER-037): Save halted_on_return_ and halted_ to prevent
-            // the recursive call's return from causing the caller to also return.
-            bool saved_halted_on_return = halted_on_return_;
-            bool saved_halted = halted_;
-            std::string saved_halt_reason = halt_reason_;
-            auto saved_class = current_class_;
-            auto saved_method = current_method_;
-            auto saved_dex_index = current_dex_index_;
-            // EXP-042 Phase 1: Save the per-frame PC visit count. Without this,
-            // the recursive call's pc_visit_count_ (which may have 50 000 entries
-            // in it after the inner method's loop detector fires) persists
-            // into the caller's frame, causing the caller to immediately hit
-            // the loop detector on its very next instruction. This was the
-            // cause of every Telegram method being halted at 50 000 instructions.
-            auto saved_pc_visit_count = pc_visit_count_;
+    // Search for the method within this class
+    for (const auto& method : cls_ptr->all_methods()) {
+        if (method.name != method_name) continue;
+        if (method.bytecode.empty()) continue;  // skip abstract/native
 
-            // Clear halt flags for the recursive call
-            halted_on_return_ = false;
-            halted_ = false;
+        // Found a method with bytecode — recursively execute!
+        log("🔄 RECURSIVE INVOKE: " + cls_ptr->name + "." + method.name +
+            method.descriptor + " (" + std::to_string(method.bytecode.size()) + " instructions)");
 
-            // Determine registers/ins/outs from code_item (approximate)
-            uint32_t regs_size = 16;  // default
-            uint32_t ins_size = static_cast<uint32_t>(args.size());
-            uint32_t outs_size = 4;
+        // Save current state
+        auto saved_pc = pc_;
+        auto saved_bytecode = bytecode_;
+        auto* saved_registers = current_registers_;
+        bool saved_halted_on_return = halted_on_return_;
+        bool saved_halted = halted_;
+        std::string saved_halt_reason = halt_reason_;
+        auto saved_class = current_class_;
+        auto saved_method = current_method_;
+        auto saved_dex_index = current_dex_index_;
+        auto saved_pc_visit_count = pc_visit_count_;
 
-            // Execute the method recursively
-            execute_method_internal(
-                cls.name,
-                method.name,
-                method.descriptor,
-                method.bytecode,
-                regs_size,
-                ins_size,
-                outs_size,
-                args,
-                result
-            );
+        halted_on_return_ = false;
+        halted_ = false;
 
-            // Restore state — including halt flags
-            // EXP-039 (BLOCKER-037): Clear halted_on_return_ so the caller
-            // continues executing. The recursive call returned, but the
-            // caller should NOT stop.
-            halted_on_return_ = false;
-            halted_ = false;
-            halt_reason_.clear();
-            bytecode_ = saved_bytecode;
-            pc_ = saved_pc;
-            current_registers_ = saved_registers;
-            current_class_ = saved_class;
-            current_method_ = saved_method;
-            current_dex_index_ = saved_dex_index;
-            // EXP-042 Phase 1: Restore the caller's per-frame PC visit count.
-            pc_visit_count_ = saved_pc_visit_count;
+        uint32_t regs_size = 16;
+        uint32_t ins_size = static_cast<uint32_t>(args.size());
+        uint32_t outs_size = 4;
 
-            // Get return value from result (simplified — return void for now)
-            return_val = DalvikValue::make_void();
-            log("✅ RECURSIVE INVOKE completed: " + cls.name + "." + method.name);
-            recursion_depth_--;
-            return true;
-        }
+        execute_method_internal(
+            cls_ptr->name,
+            method.name,
+            method.descriptor,
+            method.bytecode,
+            regs_size,
+            ins_size,
+            outs_size,
+            args,
+            result
+        );
+
+        halted_on_return_ = false;
+        halted_ = false;
+        halt_reason_.clear();
+        bytecode_ = saved_bytecode;
+        pc_ = saved_pc;
+        current_registers_ = saved_registers;
+        current_class_ = saved_class;
+        current_method_ = saved_method;
+        current_dex_index_ = saved_dex_index;
+        pc_visit_count_ = saved_pc_visit_count;
+
+        return_val = DalvikValue::make_void();
+        log("✅ RECURSIVE INVOKE completed: " + cls_ptr->name + "." + method.name);
+        recursion_depth_--;
+        return true;
     }
 
     recursion_depth_--;
@@ -1860,19 +1880,31 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             }
         }
         
-        trace.pc_after = pc_;
-        trace.execution_us = std::chrono::duration<double, std::micro>(Clock::now() - start).count();
-        
-        // EXP-042 Phase 1: ring-buffer instruction_traces.
-        // Without this cap, 10 M instructions × 5 KB = 50 GB → OOM.
-        // The cap keeps the last config_.trace_cap entries (default 2000).
-        if (config_.trace_cap > 0 &&
-            result.instruction_traces.size() >= config_.trace_cap) {
-            result.instruction_traces.erase(result.instruction_traces.begin());
+        // EXP-045 Phase 2: Skip per-instruction trace recording when trace_cap is 0.
+        // This eliminates InstructionTrace construction, Clock::now() calls, and
+        // ring-buffer push_back — the #2 performance bottleneck after class lookup.
+        if (config_.trace_cap > 0) {
+            trace.pc_after = pc_;
+            trace.execution_us = std::chrono::duration<double, std::micro>(Clock::now() - start).count();
+
+            if (result.instruction_traces.size() >= config_.trace_cap) {
+                result.instruction_traces.erase(result.instruction_traces.begin());
+            }
+            result.instruction_traces.push_back(std::move(trace));
         }
-        result.instruction_traces.push_back(std::move(trace));
         result.total_instructions_executed++;
         result.total_opcodes_decoded++;
+
+        // EXP-045 Phase 2: Global instruction counter — log every 100K instructions
+        // to track execution speed and progress.
+        static thread_local uint64_t global_insn_counter = 0;
+        global_insn_counter++;
+        if (global_insn_counter % 100000 == 0) {
+            std::cerr << "[PROGRESS] " << global_insn_counter << " total instructions executed"
+                      << " (currently in " << current_class_ << "." << current_method_
+                      << " PC=" << pc_ << "/" << bytecode_.size() << ")"
+                      << " RSS=" << (miniandroid::probe::rss_kb() / 1024) << " MB" << std::endl;
+        }
 
         // EXP-042 Phase 1: Per-frame loop detection (replaces the previous
         // static thread_local map which leaked state across recursive calls).

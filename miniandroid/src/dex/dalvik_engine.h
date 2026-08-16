@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <stack>
 #include <memory>
 #include <cstdint>
@@ -1160,6 +1161,13 @@ private:
     // Built during execute_apk() by scanning dex_report.classes.
     std::map<std::string, uint32_t> class_to_dex_index_;
 
+    // EXP-045 Phase 2: O(1) class lookup index for try_recursive_invoke().
+    // Maps class descriptor → pointer to ClassInfo in dex_report_->classes.
+    // Without this, every invoke-* does a LINEAR SEARCH through 41078 classes,
+    // making execution O(N) per method call. With 5000+ calls, this is the
+    // #1 performance bottleneck.
+    std::unordered_map<std::string, const dex::ClassInfo*> class_info_index_;
+
     // Core execution loop
     bool execute_method_internal(
         const std::string& class_name,
@@ -1341,7 +1349,8 @@ private:
     std::string halt_reason_;
     std::string last_error_;
     // EXP-042 Phase 1: Per-frame loop detection. Reset in execute_method_internal().
-    std::map<uint32_t, uint32_t> pc_visit_count_;
+    // EXP-045 Phase 2: Changed from std::map to std::unordered_map for O(1) lookups.
+    std::unordered_map<uint32_t, uint32_t> pc_visit_count_;
     
     DalvikExecutionResult* current_result_ = nullptr;
     // config_ moved to public section above
