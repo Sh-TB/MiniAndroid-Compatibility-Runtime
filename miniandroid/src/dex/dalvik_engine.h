@@ -1162,11 +1162,10 @@ private:
     std::map<std::string, uint32_t> class_to_dex_index_;
 
     // EXP-045 Phase 2: O(1) class lookup index for try_recursive_invoke().
-    // Maps class descriptor → pointer to ClassInfo in dex_report_->classes.
-    // Without this, every invoke-* does a LINEAR SEARCH through 41078 classes,
-    // making execution O(N) per method call. With 5000+ calls, this is the
-    // #1 performance bottleneck.
-    std::unordered_map<std::string, const dex::ClassInfo*> class_info_index_;
+    // Maps class descriptor → index into dex_report_->classes vector.
+    // Using index instead of raw pointer to avoid dangling pointer issues
+    // when the classes vector is reallocated.
+    std::unordered_map<std::string, size_t> class_info_index_;
 
     // Core execution loop
     bool execute_method_internal(
@@ -1192,7 +1191,8 @@ private:
         const std::string& method_name,
         const std::vector<DalvikValue>& args,
         DalvikValue& return_val,
-        DalvikExecutionResult& result
+        DalvikExecutionResult& result,
+        const std::string& method_descriptor = ""
     );
     
     bool fetch_decode_execute(DalvikExecutionResult& result);
@@ -1349,8 +1349,7 @@ private:
     std::string halt_reason_;
     std::string last_error_;
     // EXP-042 Phase 1: Per-frame loop detection. Reset in execute_method_internal().
-    // EXP-045 Phase 2: Changed from std::map to std::unordered_map for O(1) lookups.
-    std::unordered_map<uint32_t, uint32_t> pc_visit_count_;
+    std::map<uint32_t, uint32_t> pc_visit_count_;
     
     DalvikExecutionResult* current_result_ = nullptr;
     // config_ moved to public section above
