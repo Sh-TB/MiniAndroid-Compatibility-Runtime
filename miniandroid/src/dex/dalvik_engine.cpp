@@ -180,11 +180,10 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
         " entries (" + std::to_string(unmapped) + " unmapped, assigned to DEX 0)");
 
     // EXP-045 Phase 2: Build O(1) class→ClassInfo index for try_recursive_invoke().
-    // Without this, every invoke-* does a LINEAR SEARCH through 41078 classes.
     class_info_index_.clear();
     class_info_index_.reserve(report.classes.size());
-    for (const auto& cls : report.classes) {
-        class_info_index_[cls.name] = &cls;
+    for (size_t i = 0; i < report.classes.size(); i++) {
+        class_info_index_[report.classes[i].name] = i;
     }
     log("Built class→ClassInfo index: " + std::to_string(class_info_index_.size()) + " entries");
 }
@@ -734,7 +733,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     const std::string& method_name,
     const std::vector<DalvikValue>& args,
     DalvikValue& return_val,
-    DalvikExecutionResult& result
+    DalvikExecutionResult& result,
+    const std::string& method_descriptor
 ) {
     if (!dex_report_) return false;
 
@@ -807,23 +807,72 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     }
 
     // EXP-045 Phase 2: Use O(1) class lookup index instead of linear search.
-    // Previous code iterated through ALL 41078 classes for every invoke-*,
-    // making execution O(N) per method call. With 5000+ calls and 41078
-    // classes, that's 200M+ string comparisons — the #1 perf bottleneck.
     auto class_it = class_info_index_.find(class_descriptor);
     if (class_it == class_info_index_.end()) {
         recursion_depth_--;
         return false;  // class not found in DEX, bridge to API
     }
-    const dex::ClassInfo* cls_ptr = class_it->second;
+    const dex::ClassInfo& cls_ref = dex_report_->classes[class_it->second];
 
-    // Search for the method within this class
-    for (const auto& method : cls_ptr->all_methods()) {
+    // EXP-045 Phase 2: Search for the method within this class.
+    // CRITICAL: When multiple overloads exist with the same name, match by
+    // argument count to avoid calling the wrong overload.
+    // Without this, sanitizeStackTrace(1-arg, 11 insns) would call itself
+    // recursively instead of sanitizeStackTrace(2-arg, 37 insns).
+    // This caused 34K+ spurious calls and massive performance degradation.
+    const dex::MethodInfo* best_match = nullptr;
+    const dex::MethodInfo* fallback_match = nullptr;
+    size_t arg_count = args.size();
+
+    for (const auto& method : cls_ref.all_methods()) {
         if (method.name != method_name) continue;
-        if (method.bytecode.empty()) continue;  // skip abstract/native
+        if (method.bytecode.empty()) continue;
 
+        // Count parameters from descriptor: "(Ltype;Ltype;...)R"
+        // The number of parameters = number of ';' in the parameter list
+        // (for object types) + count of primitive type chars (I, Z, B, etc.)
+        // Simplified: count parameters by parsing the descriptor.
+        size_t param_count = 0;
+        const std::string& desc = method.descriptor;
+        size_t paren_pos = desc.find('(');
+        if (paren_pos != std::string::npos) {
+            size_t end_paren = desc.find(')', paren_pos);
+            if (end_paren != std::string::npos) {
+                std::string params = desc.substr(paren_pos + 1, end_paren - paren_pos - 1);
+                // Count parameters: each is either a class (L...;), array ([...), or primitive (single char)
+                size_t i = 0;
+                while (i < params.size()) {
+                    if (params[i] == 'L') {
+                        // Skip to ';'
+                        i = params.find(';', i);
+                        if (i == std::string::npos) break;
+                        i++;
+                    } else if (params[i] == '[') {
+                        i++;  // array prefix, skip to next type
+                    } else {
+                        i++;  // primitive single char
+                    }
+                    param_count++;
+                }
+            }
+        }
+
+        // If parameter count matches arg count, this is likely the right overload
+        if (param_count == arg_count) {
+            best_match = &method;
+            break;  // exact match, stop searching
+        }
+        if (!fallback_match) {
+            fallback_match = &method;
+        }
+    }
+
+    const dex::MethodInfo* selected = best_match ? best_match : fallback_match;
+
+    if (selected) {
+        const auto& method = *selected;
         // Found a method with bytecode — recursively execute!
-        log("🔄 RECURSIVE INVOKE: " + cls_ptr->name + "." + method.name +
+        log("🔄 RECURSIVE INVOKE: " + cls_ref.name + "." + method.name +
             method.descriptor + " (" + std::to_string(method.bytecode.size()) + " instructions)");
 
         // Save current state
@@ -846,7 +895,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         uint32_t outs_size = 4;
 
         execute_method_internal(
-            cls_ptr->name,
+            cls_ref.name,
             method.name,
             method.descriptor,
             method.bytecode,
@@ -869,7 +918,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         pc_visit_count_ = saved_pc_visit_count;
 
         return_val = DalvikValue::make_void();
-        log("✅ RECURSIVE INVOKE completed: " + cls_ptr->name + "." + method.name);
+        log("✅ RECURSIVE INVOKE completed: " + cls_ref.name + "." + method.name);
         recursion_depth_--;
         return true;
     }
