@@ -1440,13 +1440,13 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
 
                 bool recursively_invoked = false;
                 if (config_.enable_api_bridge) {
-                    if (try_recursive_invoke(class_name, method_name, args, return_val, result)) {
+                    if (try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
                         recursively_invoked = true;
                         status = ApiCallTrace::Status::IMPLEMENTED;
                     }
                 }
                 if (!recursively_invoked && config_.enable_api_bridge) {
-                    bridge_to_api(class_name, method_name, args, return_val, status);
+                    bridge_to_api(class_name, method_name, args, return_val, status); last_invoke_return_ = return_val;
                 }
 
                 // Record API trace
@@ -2396,38 +2396,39 @@ bool DalvikExecutionEngine::execute_move_object_from16(uint32_t pc, InstructionT
 }
 
 bool DalvikExecutionEngine::execute_move_result(uint32_t pc, InstructionTrace& trace) {
-    // Format: 11x [op] vAA
-    if (pc + 1 >= bytecode_.size()) return false;
-    
+    // Format: 11x [op] vAA — move return value from last invoke to register
+    // EXP-050 Phase 2 CRITICAL FIX: Previously returned placeholder 0, silently
+    // discarding ALL return values from ALL method calls. Now reads from
+    // last_invoke_return_ which is set by every invoke-* handler.
+    if (pc >= bytecode_.size()) return false;
+
     uint16_t instr = bytecode_[pc];
     uint8_t dest = (instr >> 8) & 0xFF;
-    
-    // In a real VM, this would move the return value from last invoke
-    // For now, we track that this operation happened
-    DalvikValue return_val = DalvikValue::make_int(0);  // Placeholder
-    set_register(dest, return_val);
-    
-    trace.operands.push_back({"v" + std::to_string(dest), "<return_value>"});
-    trace.return_value = return_val;
-    
+
+    set_register(dest, last_invoke_return_);
+
+    trace.operands.push_back({"v" + std::to_string(dest), last_invoke_return_.to_string()});
+    trace.return_value = last_invoke_return_;
+
     pc_ = pc + 1;
     return true;
 }
 
 bool DalvikExecutionEngine::execute_move_result_object(uint32_t pc, InstructionTrace& trace) {
-    // Format: 11x [op] vAA
-    if (pc + 1 >= bytecode_.size()) return false;
-    
+    // Format: 11x [op] vAA — move object return value from last invoke
+    // EXP-050 Phase 2 CRITICAL FIX: Previously returned placeholder null,
+    // silently discarding ALL object return values. Now reads from
+    // last_invoke_return_ which is set by every invoke-* handler.
+    if (pc >= bytecode_.size()) return false;
+
     uint16_t instr = bytecode_[pc];
     uint8_t dest = (instr >> 8) & 0xFF;
-    
-    // Move object return value
-    DalvikValue return_val = DalvikValue::make_null();  // Placeholder
-    set_register(dest, return_val);
-    
-    trace.operands.push_back({"v" + std::to_string(dest), "<object_return>"});
-    trace.return_value = return_val;
-    
+
+    set_register(dest, last_invoke_return_);
+
+    trace.operands.push_back({"v" + std::to_string(dest), last_invoke_return_.to_string()});
+    trace.return_value = last_invoke_return_;
+
     pc_ = pc + 1;
     return true;
 }
@@ -3003,7 +3004,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         // runtime_type is unknown — this lets us route framework calls like
         // android.app.Activity.onCreate to the API stub layer.
         std::string api_class = (runtime_type != "<unknown>") ? runtime_type : declaring_class;
-        bridge_to_api(api_class, method_name_from_dex, args, return_val, api_status);
+        bridge_to_api(api_class, method_name_from_dex, args, return_val, api_status); last_invoke_return_ = return_val;
     }
     
     // Create API call trace with VTable information
@@ -3151,7 +3152,7 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
     // EXP-038 (BLOCKER-034): Try recursive invocation for super calls too.
     bool recursively_invoked = false;
     if (config_.enable_api_bridge) {
-        if (try_recursive_invoke(declaring_class, method_name, args, return_val, result)) {
+        if (try_recursive_invoke(declaring_class, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
             recursively_invoked = true;
             api_status = ApiCallTrace::Status::IMPLEMENTED;
         }
@@ -3159,6 +3160,7 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
     if (!recursively_invoked && config_.enable_api_bridge) {
         bridge_to_api(declaring_class + "<super>", method_name,
                       args, return_val, api_status);
+        last_invoke_return_ = return_val;
     }
 
     // Record an API call trace entry so this call shows up in evidence
@@ -3254,13 +3256,13 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     // EXP-038 (BLOCKER-034): Try recursive invocation.
     bool recursively_invoked = false;
     if (config_.enable_api_bridge) {
-        if (try_recursive_invoke(class_name, method_name, args, return_val, result)) {
+        if (try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
             recursively_invoked = true;
             status = ApiCallTrace::Status::IMPLEMENTED;
         }
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
-        bridge_to_api(class_name, method_name, args, return_val, status);
+        bridge_to_api(class_name, method_name, args, return_val, status); last_invoke_return_ = return_val;
     }
     
     // Trace
@@ -3332,13 +3334,13 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     // EXP-038 (BLOCKER-034): Try recursive invocation.
     bool recursively_invoked = false;
     if (config_.enable_api_bridge) {
-        if (try_recursive_invoke(class_name, method_name, args, return_val, result)) {
+        if (try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
             recursively_invoked = true;
             status = ApiCallTrace::Status::IMPLEMENTED;
         }
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
-        bridge_to_api(class_name, method_name, args, return_val, status);
+        bridge_to_api(class_name, method_name, args, return_val, status); last_invoke_return_ = return_val;
     }
     
     ApiCallTrace api_trace;
@@ -3389,7 +3391,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
 
     // EXP-048: Try recursive invoke first (some interface methods have impls)
     DalvikValue return_val = DalvikValue::make_void();
-    if (try_recursive_invoke(class_name, method_name, args, return_val, result)) {
+    if (try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
         trace.invoked_method = class_name + "." + method_name;
         pc_ = pc + 3;
         return true;
@@ -3398,7 +3400,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // EXP-048: Fall through to bridge_to_api for interface methods
     ApiCallTrace::Status status = ApiCallTrace::Status::STUBBED;
     if (config_.enable_api_bridge) {
-        bridge_to_api(class_name, method_name, args, return_val, status);
+        bridge_to_api(class_name, method_name, args, return_val, status); last_invoke_return_ = return_val;
     }
 
     ApiCallTrace api_trace;
