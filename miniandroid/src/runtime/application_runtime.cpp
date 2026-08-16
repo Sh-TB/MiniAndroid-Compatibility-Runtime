@@ -1023,7 +1023,7 @@ bool ApplicationRuntime::execute_on_create() {
         if (config_.verbose) { std::cout << "  Starting DEX execution..." << std::endl; }
 
         auto dalvik_result = dalvik_engine.execute_apk_with_activity(
-            apk_path_, *dex_report_, activity_class, false //verbose
+            apk_path_, *dex_report_, activity_class, false /*verbose*/);
         miniandroid::probe::mark("execute_on_create: post-execute_apk_with_activity");
 
         // Extract evidence
