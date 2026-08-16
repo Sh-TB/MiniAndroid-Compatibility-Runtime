@@ -972,7 +972,7 @@ bool ApplicationRuntime::execute_on_create() {
         // See docs/exp042/EXP042_MEMORY_ANALYSIS.md for the full audit.
         dalvik_engine.config_.max_instructions = 100000000;          // 100 M
         dalvik_engine.config_.stop_on_unimplemented = false;
-        dalvik_engine.config_.verbose = false;                       // EXP-041
+        dalvik_engine.config_.verbose = false; // EXP-041
         dalvik_engine.config_.enable_api_bridge = true;
         dalvik_engine.config_.trace_register_snapshots = false;       // EXP-042: 5 KB/insn → off
         dalvik_engine.config_.trace_cap = 0;                         // EXP-045: disable traces (dangling pointer fixed)
@@ -1023,7 +1023,7 @@ bool ApplicationRuntime::execute_on_create() {
         if (config_.verbose) { std::cout << "  Starting DEX execution..." << std::endl; }
 
         auto dalvik_result = dalvik_engine.execute_apk_with_activity(
-            apk_path_, *dex_report_, activity_class, false /*verbose*/);
+            apk_path_, *dex_report_, activity_class, false /*verbose*/: enable verbose
         miniandroid::probe::mark("execute_on_create: post-execute_apk_with_activity");
 
         // Extract evidence

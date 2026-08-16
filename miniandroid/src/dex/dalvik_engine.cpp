@@ -17,6 +17,7 @@
 #include "../jni/jni_bridge.h"
 #include <chrono>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <iomanip>
 #include <cassert>
@@ -4059,14 +4060,268 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // P0.12 — Context.getSharedPreferences → SharedPreferences (already impl'd)
+    // P0.12 — Context.getSharedPreferences → SharedPreferences
+    // EXP-048: Returns a heap-allocated SharedPreferences object with the
+    // preference name stored as a field, enabling per-name persistence.
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getSharedPreferences" &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
-        result = get_or_create_singleton("Landroid/content/SharedPreferences;");
+        // Extract preference name from first argument (String)
+        std::string prefs_name = "default";
+        if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
+            prefs_name = args[0].string_val;
+        }
+        // Create SharedPreferences object on heap
+        std::string prefs_desc = "Landroid/content/SharedPreferences;";
+        uint32_t obj_id = heap_.allocate(prefs_desc, pc_,
+                                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        // Store the prefs name as a field so we can persist by name
+        DalvikValue name_val;
+        name_val.type = DalvikType::STRING_REF;
+        name_val.string_val = prefs_name;
+        name_val.ref_id = 0;
+        heap_.set_object_field(obj_id, "prefs_name", name_val);
+
+        // Try to load existing XML file
+        std::string prefs_dir = "runtime/data/org.telegram.messenger/shared_prefs";
+        std::string prefs_file = prefs_dir + "/" + prefs_name + ".xml";
+        std::ifstream infile(prefs_file);
+        if (infile.is_open()) {
+            // File exists — load values into heap object fields
+            std::string line;
+            while (std::getline(infile, line)) {
+                // Parse XML: <string name="key">value</string>
+                //           <int name="key" value="123" />
+                //           <boolean name="key" value="true" />
+                size_t name_pos = line.find("name=\"");
+                if (name_pos == std::string::npos) continue;
+                size_t name_start = name_pos + 6;
+                size_t name_end = line.find("\"", name_start);
+                if (name_end == std::string::npos) continue;
+                std::string key = line.substr(name_start, name_end - name_start);
+
+                if (line.find("<string ") != std::string::npos) {
+                    // <string name="key">value</string>
+                    size_t val_start = line.find(">", name_end) + 1;
+                    size_t val_end = line.find("</string>", val_start);
+                    if (val_end != std::string::npos) {
+                        std::string val = line.substr(val_start, val_end - val_start);
+                        DalvikValue sv;
+                        sv.type = DalvikType::STRING_REF;
+                        sv.string_val = val;
+                        sv.ref_id = 0;
+                        heap_.set_object_field(obj_id, key, sv);
+                    }
+                } else if (line.find("<int ") != std::string::npos) {
+                    size_t val_pos = line.find("value=\"", name_end);
+                    if (val_pos != std::string::npos) {
+                        size_t val_start = val_pos + 7;
+                        size_t val_end = line.find("\"", val_start);
+                        int32_t v = std::stoi(line.substr(val_start, val_end - val_start));
+                        heap_.set_object_field(obj_id, key, DalvikValue::make_int(v));
+                    }
+                } else if (line.find("<boolean ") != std::string::npos) {
+                    size_t val_pos = line.find("value=\"", name_end);
+                    if (val_pos != std::string::npos) {
+                        size_t val_start = val_pos + 7;
+                        size_t val_end = line.find("\"", val_start);
+                        bool v = line.substr(val_start, val_end - val_start) == "true";
+                        heap_.set_object_field(obj_id, key, DalvikValue::make_bool(v));
+                    }
+                } else if (line.find("<long ") != std::string::npos) {
+                    size_t val_pos = line.find("value=\"", name_end);
+                    if (val_pos != std::string::npos) {
+                        size_t val_start = val_pos + 7;
+                        size_t val_end = line.find("\"", val_start);
+                        int64_t v = std::stoll(line.substr(val_start, val_end - val_start));
+                        DalvikValue lv;
+                        lv.type = DalvikType::INT64;
+                        lv.long_val = v;
+                        heap_.set_object_field(obj_id, key, lv);
+                    }
+                }
+            }
+            std::cerr << "[PREFS] Loaded " << prefs_name << ".xml" << std::endl;
+        }
+
+        result = DalvikValue::make_object(obj_id, prefs_desc);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-048: SharedPreferences methods — getString, getBoolean, getInt,
+    // getLong, contains, edit, Editor.put*, commit, apply
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("SharedPreferences") != std::string::npos ||
+        class_name.find("SharedPreferencesEditor") != std::string::npos ||
+        class_name.find("SharedPreferencesImpl") != std::string::npos) {
+
+        // Get the SharedPreferences object from args[0] (this for instance methods)
+        // or from the singleton for static methods
+        uint32_t prefs_obj_id = 0;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            prefs_obj_id = args[0].object_id;
+        }
+
+        if (method == "getString") {
+            std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+            std::string def = (args.size() > 2 && args[2].type == DalvikType::STRING_REF) ? args[2].string_val : "";
+            if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
+                auto val = heap_.get_object_field(prefs_obj_id, key);
+                if (val.has_value() && val->type == DalvikType::STRING_REF) {
+                    result = DalvikValue::make_string(val->string_val, 1);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            result = DalvikValue::make_string(def, 1);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getBoolean") {
+            std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+            bool def = (args.size() > 2 && args[2].type == DalvikType::BOOLEAN) ? args[2].bool_val : false;
+            if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
+                auto val = heap_.get_object_field(prefs_obj_id, key);
+                if (val.has_value() && (val->type == DalvikType::BOOLEAN || val->type == DalvikType::INT32)) {
+                    result = DalvikValue::make_bool(val->bool_val || val->int_val != 0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            result = DalvikValue::make_bool(def);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getInt") {
+            std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+            int32_t def = (args.size() > 2 && args[2].type == DalvikType::INT32) ? args[2].int_val : 0;
+            if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
+                auto val = heap_.get_object_field(prefs_obj_id, key);
+                if (val.has_value() && val->type == DalvikType::INT32) {
+                    result = DalvikValue::make_int(val->int_val);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            result = DalvikValue::make_int(def);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getLong") {
+            std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+            int64_t def = 0;
+            if (args.size() > 2 && args[2].type == DalvikType::INT64) def = args[2].long_val;
+            if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
+                auto val = heap_.get_object_field(prefs_obj_id, key);
+                if (val.has_value() && val->type == DalvikType::INT64) {
+                    DalvikValue v; v.type = DalvikType::INT64; v.long_val = val->long_val;
+                    result = v;
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            DalvikValue v; v.type = DalvikType::INT64; v.long_val = def;
+            result = v;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "contains") {
+            std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+            if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
+                auto val = heap_.get_object_field(prefs_obj_id, key);
+                result = DalvikValue::make_bool(val.has_value());
+            } else {
+                result = DalvikValue::make_bool(false);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "edit") {
+            // Return the same SharedPreferences object (we treat Editor as the prefs object itself)
+            if (prefs_obj_id) {
+                result = DalvikValue::make_object(prefs_obj_id, "Landroid/content/SharedPreferences$Editor;");
+            } else {
+                result = get_or_create_singleton("Landroid/content/SharedPreferences$Editor;");
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Editor methods
+        if (method == "putString" || method == "putBoolean" || method == "putInt" || method == "putLong" || method == "putFloat") {
+            std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+            if (prefs_obj_id && heap_.has_object(prefs_obj_id) && !key.empty()) {
+                if (args.size() > 2) {
+                    heap_.set_object_field(prefs_obj_id, key, args[2]);
+                }
+            }
+            // Return the editor for chaining
+            result = DalvikValue::make_object(prefs_obj_id, "Landroid/content/SharedPreferences$Editor;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "remove") {
+            std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+            // We don't actually remove from heap (simplification), just set to null
+            if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
+                heap_.set_object_field(prefs_obj_id, key, DalvikValue::make_null());
+            }
+            result = DalvikValue::make_object(prefs_obj_id, "Landroid/content/SharedPreferences$Editor;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "clear") {
+            // Simplification: just return editor
+            result = DalvikValue::make_object(prefs_obj_id, "Landroid/content/SharedPreferences$Editor;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "commit" || method == "apply") {
+            // EXP-048: Persist SharedPreferences to disk
+            if (prefs_obj_id && heap_.has_object(prefs_obj_id)) {
+                auto* prefs_obj = heap_.get(prefs_obj_id);
+                if (prefs_obj) {
+                    // Get prefs name
+                    auto name_val = prefs_obj->get_field("prefs_name");
+                    std::string prefs_name = "default";
+                    if (name_val.type == DalvikType::STRING_REF) {
+                        prefs_name = name_val.string_val;
+                    }
+                    // Write to XML
+                    std::string prefs_dir = "runtime/data/org.telegram.messenger/shared_prefs";
+                    // Create directory
+                    std::string mkdir_cmd = "mkdir -p " + prefs_dir;
+                    system(mkdir_cmd.c_str());
+                    std::string prefs_file = prefs_dir + "/" + prefs_name + ".xml";
+                    std::ofstream out(prefs_file);
+                    if (out.is_open()) {
+                        out << "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n";
+                        for (const auto& [key, val] : prefs_obj->fields) {
+                            if (key == "prefs_name") continue;
+                            if (val.type == DalvikType::STRING_REF) {
+                                out << "    <string name=\"" << key << "\">" << val.string_val << "</string>\n";
+                            } else if (val.type == DalvikType::INT32) {
+                                out << "    <int name=\"" << key << "\" value=\"" << val.int_val << "\" />\n";
+                            } else if (val.type == DalvikType::BOOLEAN) {
+                                out << "    <boolean name=\"" << key << "\" value=\"" << (val.bool_val ? "true" : "false") << "\" />\n";
+                            } else if (val.type == DalvikType::INT64) {
+                                out << "    <long name=\"" << key << "\" value=\"" << val.long_val << "\" />\n";
+                            } else if (val.type == DalvikType::FLOAT32) {
+                                out << "    <float name=\"" << key << "\" value=\"" << val.float_val << "\" />\n";
+                            }
+                        }
+                        out << "</map>\n";
+                        out.close();
+                        std::cerr << "[PREFS] Saved " << prefs_name << ".xml (" << prefs_obj->fields.size() << " entries)" << std::endl;
+                    }
+                }
+            }
+            result = (method == "commit") ? DalvikValue::make_bool(true) : DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────
