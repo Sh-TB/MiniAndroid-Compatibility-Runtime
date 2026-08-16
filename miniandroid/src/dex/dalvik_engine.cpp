@@ -2698,7 +2698,9 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         static_cast<uint8_t>((instr >> 8) & 0xF)  // 5th reg (low nibble of AA) — was (instr >> 4) & 0xF
     };
     
-    for (int i = 0; i < 5; ++i) {
+    // EXP-045: Only push argc registers (from 35c format: high nibble of high byte)
+    uint8_t argc = (instr >> 12) & 0xF;
+    for (int i = 0; i < argc && i < 5; ++i) {
         DalvikValue val = get_register(regs[i]);
         args.push_back(val);
         arg_names.push_back(register_name(regs[i]));
@@ -2979,7 +2981,9 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     };
     
     std::vector<DalvikValue> args;
-    for (int i = 0; i < 5; ++i) {
+    // EXP-045: Only push argc registers (from 35c format: high nibble of high byte)
+    uint8_t argc = (instr >> 12) & 0xF;
+    for (int i = 0; i < argc && i < 5; ++i) {
         args.push_back(get_register(regs[i]));
     }
     
@@ -3064,7 +3068,9 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     };
     
     std::vector<DalvikValue> args;
-    for (int i = 0; i < 5; ++i) {
+    // EXP-045: Only push argc registers (from 35c format: high nibble of high byte)
+    uint8_t argc = (instr >> 12) & 0xF;
+    for (int i = 0; i < argc && i < 5; ++i) {
         args.push_back(get_register(regs[i]));
     }
     
