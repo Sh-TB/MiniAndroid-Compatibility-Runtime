@@ -3312,19 +3312,26 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
                                                    DalvikExecutionResult& result) {
     // Similar to other invokes but for interface dispatch
     if (pc + 2 >= bytecode_.size()) return false;
-    
-    // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): removed unused `instr` local
-    // that triggered -Wunused-variable. The 35c format's vA nibble (5th reg)
-    // is only needed for variadic invoke-interface with 5+ args, which this
-    // simplified handler does not yet support.
-    //
-    // EXP-037 Phase B (BLOCKER-015 FIX): 35c format is "AA|op BBBB FEDC"
-    //   code[pc+0] = AA|op
-    //   code[pc+1] = BBBB (method_idx)
-    //   code[pc+2] = FEDC (register list)
-    // Previous code read method_idx from pc+2 (wrong — that's the register list).
+
+    uint16_t instr = bytecode_[pc];
+    // EXP-045: Only push argc registers (from 35c format: high nibble of high byte)
+    uint8_t argc = (instr >> 12) & 0xF;
     uint16_t method_idx = bytecode_[pc + 1];
-    
+    uint16_t regs_word = bytecode_[pc + 2];
+
+    uint8_t regs[5] = {
+        static_cast<uint8_t>(regs_word & 0xF),
+        static_cast<uint8_t>((regs_word >> 4) & 0xF),
+        static_cast<uint8_t>((regs_word >> 8) & 0xF),
+        static_cast<uint8_t>((regs_word >> 12) & 0xF),
+        static_cast<uint8_t>((instr >> 8) & 0xF)
+    };
+
+    std::vector<DalvikValue> args;
+    for (int i = 0; i < argc && i < 5; ++i) {
+        args.push_back(get_register(regs[i]));
+    }
+
     // EXP-037 Phase B (BLOCKER-002 FIX): resolve method_idx via DexReport.
     std::string method_name = "<interface_method:" + std::to_string(method_idx) + ">";
     std::string class_name = "<interface>";
@@ -3332,21 +3339,31 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
         method_name = resolve_method_name_for_dex(method_idx, current_dex_index_);
         class_name = resolve_method_class_for_dex(method_idx, current_dex_index_);
     }
-    
-    // Simplified interface handling
+
+    // EXP-048: Try recursive invoke first (some interface methods have impls)
     DalvikValue return_val = DalvikValue::make_void();
+    if (try_recursive_invoke(class_name, method_name, args, return_val, result)) {
+        trace.invoked_method = class_name + "." + method_name;
+        pc_ = pc + 3;
+        return true;
+    }
+
+    // EXP-048: Fall through to bridge_to_api for interface methods
     ApiCallTrace::Status status = ApiCallTrace::Status::STUBBED;
-    
+    if (config_.enable_api_bridge) {
+        bridge_to_api(class_name, method_name, args, return_val, status);
+    }
+
     ApiCallTrace api_trace;
     api_trace.sequence = api_call_sequence_++;
-    api_trace.api_class = class_name;  // EXP-037 Phase B: was hardcoded "<interface>"
+    api_trace.api_class = class_name;
     api_trace.method = method_name;
     api_trace.status = status;
     api_trace.pc = pc;
     if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) { result.api_call_traces.erase(result.api_call_traces.begin()); } result.api_call_traces.push_back(api_trace);
-    
+
     trace.invoked_method = class_name + "." + method_name;
-    
+
     pc_ = pc + 3;
     return true;
 }
