@@ -835,7 +835,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // We stub the entire NPE path to return void/null immediately.
     if (class_descriptor.find("Intrinsics") != std::string::npos &&
         (method_name == "createParameterIsNullExceptionMessage" ||
-         method_name == "sanitizeStackTrace")) {
+         method_name == "sanitizeStackTrace" ||
+         method_name == "throwParameterIsNullNPE")) {
         log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
             " — skipping (NPE path, not needed in headless runtime)");
         recursion_depth_--;
