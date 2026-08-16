@@ -974,8 +974,8 @@ bool ApplicationRuntime::execute_on_create() {
         dalvik_engine.config_.verbose = false;                       // EXP-041
         dalvik_engine.config_.enable_api_bridge = true;
         dalvik_engine.config_.trace_register_snapshots = false;       // EXP-042: 5 KB/insn → off
-        dalvik_engine.config_.trace_cap = 2000;                      // last 2 K traces
-        dalvik_engine.config_.api_call_trace_cap = 5000;             // last 5 K API calls
+        dalvik_engine.config_.trace_cap = 0;                         // EXP-045: disable traces for speed
+        dalvik_engine.config_.api_call_trace_cap = 500;             // EXP-045: reduced from 5K
         dalvik_engine.config_.completed_frame_cap = 100;             // last 100 frames
         dalvik_engine.config_.allocation_log_cap = 1000;             // last 1 K allocations
         dalvik_engine.config_.loop_visit_threshold = 50000;          // per-frame
