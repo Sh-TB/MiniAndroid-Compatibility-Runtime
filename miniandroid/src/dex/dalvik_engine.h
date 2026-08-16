@@ -1351,6 +1351,14 @@ private:
     // EXP-042 Phase 1: Per-frame loop detection. Reset in execute_method_internal().
     std::map<uint32_t, uint32_t> pc_visit_count_;
     
+    // EXP-050 Phase 2: Store the return value from the last invoke-* instruction.
+    // move-result and move-result-object read from this. Previously, these
+    // opcodes returned placeholder values (0/null), silently discarding ALL
+    // return values from ALL method calls. This was a critical hidden bug
+    // affecting every if-eqz/if-nez after an invoke, every field access
+    // after a getter, and every object creation after new-instance.
+    DalvikValue last_invoke_return_ = DalvikValue::make_void();
+    
     DalvikExecutionResult* current_result_ = nullptr;
     // config_ moved to public section above
     
