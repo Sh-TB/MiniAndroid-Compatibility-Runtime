@@ -12,6 +12,7 @@
 #include "dex/class_resolver.h"
 #include "dex/dex_interpreter_batch.h"
 #include "diagnostics/mem_probe.h"  // EXP-042 Phase 1: memory probe
+#include "jni/jni_bridge.h"         // EXP-046 Phase 2: JNI bridge
 // EXP-037 Phase B (BLOCKER-020): Use DalvikExecutionEngine instead of
 // DexInterpreterBatch for execute_on_create. DexInterpreterBatch only handles
 // 5 opcodes (const-string, new-instance, invoke-direct, invoke-virtual,
@@ -986,6 +987,14 @@ bool ApplicationRuntime::execute_on_create() {
         // EXP-042 Phase 1: memory probe — sample RSS at each phase so we can
         // pinpoint where memory grows during long Telegram runs.
         miniandroid::probe::mark("execute_on_create: pre-build_class_dex_index");
+
+        // EXP-046 Phase 2: Register JNI bridge default stubs before execution.
+        // This allows native method calls to be dispatched to host-side handlers
+        // instead of silently returning void/null.
+        miniandroid::jni::JNIBridge::instance().register_default_stubs();
+        std::cerr << "[EXP-046] JNI bridge initialized with "
+                  << miniandroid::jni::JNIBridge::instance().registered_count()
+                  << " native method handlers" << std::endl;
         // EXP-037 Phase B (BLOCKER-019): Pass the manifest's main activity
         // class name so DalvikExecutionEngine can find the entry point in
         // obfuscated APKs (where class names don't contain "Activity"/"Main").
