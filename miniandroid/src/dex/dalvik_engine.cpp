@@ -3450,28 +3450,49 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
 
 bool DalvikExecutionEngine::execute_if_ltz(uint32_t pc, InstructionTrace& trace) {
     // Format: 21t [op] vAA, +BBBB  — branch if (int) vAA < 0
-    // Per AOSP standard semantics: branch when the signed int value is < 0.
-    // For OBJECT_REF/NULL_REF/UNINITIALIZED: treated as 0 (not < 0, so don't branch).
+    // EXP-045: D8/R8 uses if-ltz (op=0x39) for BOTH:
+    // 1. Numeric "if < 0" checks (for INT32 registers)
+    // 2. Null checks "if non-null" (for OBJECT_REF registers)
+    // The register TYPE determines the semantics:
+    //   - INT32: branch if val < 0 (standard AOSP if-ltz)
+    //   - OBJECT_REF: branch if object_id > 0 (i.e., non-null)
+    //   - NULL_REF/UNINITIALIZED: don't branch (null → skip, go to throw path)
     if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
     uint16_t instr = bytecode_[pc];
     uint8_t test_reg = (instr >> 8) & 0xFF;
     int16_t offset = static_cast<int16_t>(bytecode_[pc + 1]);
     DalvikValue val = get_register(test_reg);
-    int32_t ival = 0;
-    if (val.type == DalvikType::INT32 || val.type == DalvikType::BOOLEAN ||
-        val.type == DalvikType::BYTE || val.type == DalvikType::SHORT ||
-        val.type == DalvikType::CHAR) {
-        ival = val.int_val;
+
+    bool taken = false;
+    if (val.type == DalvikType::OBJECT_REF) {
+        // D8 null check: branch if non-null (skip the throw/return)
+        taken = (val.object_id > 0);
+    } else if (val.type == DalvikType::NULL_REF) {
+        // null → don't branch (fall through to throw path)
+        taken = false;
+    } else if (val.type == DalvikType::INT32 || val.type == DalvikType::BOOLEAN ||
+               val.type == DalvikType::BYTE || val.type == DalvikType::SHORT ||
+               val.type == DalvikType::CHAR) {
+        // Standard numeric check: branch if < 0
+        taken = (val.int_val < 0);
     } else if (val.type == DalvikType::INT64) {
-        ival = static_cast<int32_t>(val.long_val);
+        taken = (static_cast<int32_t>(val.long_val) < 0);
+    } else {
+        // UNINITIALIZED, REGISTER_UNSET, VOID_ → treat as 0 → don't branch
+        taken = false;
     }
-    // OBJECT_REF, NULL_REF, UNINITIALIZED → ival stays 0 → 0 < 0 is false → don't branch
-    bool taken = (ival < 0);
+
     if (taken) {
         uint32_t target = pc + offset;
         if (target < bytecode_.size()) {
             trace.status = InstructionTrace::Status::BRANCH_TAKEN;
             pc_ = target;
+        } else if (target == bytecode_.size()) {
+            // goto past end = exit method
+            halted_ = true;
+            halted_on_return_ = true;
+            pc_ = pc + 2;
+            return true;
         } else {
             pc_ = pc + 2;
         }
@@ -3479,7 +3500,7 @@ bool DalvikExecutionEngine::execute_if_ltz(uint32_t pc, InstructionTrace& trace)
         trace.status = InstructionTrace::Status::BRANCH_NOT_TAKEN;
         pc_ = pc + 2;
     }
-    trace.operands.push_back({"v" + std::to_string(test_reg), std::to_string(ival)});
+    trace.operands.push_back({"v" + std::to_string(test_reg), val.to_string()});
     trace.operands.push_back({"taken", taken ? "yes" : "no"});
     return true;
 }
