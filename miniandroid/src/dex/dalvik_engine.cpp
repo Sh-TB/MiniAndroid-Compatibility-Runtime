@@ -843,6 +843,18 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;  // Bridge returns null, short-circuiting the NPE path
     }
 
+    // EXP-045 Phase 3: FragmentManager.dispatchStateChange loops infinitely
+    // calling getSpecialEffectsControllerFactory for each Fragment state change.
+    // Without proper Fragment state, this loop never terminates.
+    // Stub to return void (skip Fragment state transitions).
+    if (class_descriptor.find("FragmentManager") != std::string::npos &&
+        method_name == "dispatchStateChange") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (Fragment state change loop)");
+        recursion_depth_--;
+        return false;
+    }
+
     // EXP-045 Phase 3: Log NPE callers to identify which null parameters
     // are causing performance degradation. Only log first 50 NPE callers.
     static thread_local uint64_t npe_caller_count = 0;
