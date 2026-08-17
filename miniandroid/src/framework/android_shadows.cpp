@@ -28,6 +28,60 @@ bool is_context_class(const std::string& class_name) {
 } // anonymous namespace
 
 // ─────────────────────────────────────────────────────────────────────────
+// ArchTaskExecutorShadow
+// ─────────────────────────────────────────────────────────────────────────
+CallResult ArchTaskExecutorShadow::dispatch(const CallContext& ctx) {
+    const auto& m = ctx.method;
+    if (m == "getInstance") {
+        // Returns the singleton ArchTaskExecutor instance.
+        if (instance_id_ == 0 && heap_) {
+            instance_id_ = heap_->get_or_create("Landroidx/arch/core/executor/ArchTaskExecutor;");
+        }
+        return CallResult::handled_object(instance_id_,
+                                           "Landroidx/arch/core/executor/ArchTaskExecutor;");
+    }
+    if (m == "isMainThread") {
+        // Real semantics: mDelegate.isMainThread() which (for DefaultTaskExecutor)
+        // does: return Looper.getMainLooper().getThread() == Thread.currentThread().
+        //
+        // We don't have an mDelegate instance to call into, but we DO have the
+        // ThreadShadow + LooperShadow identity contract. Both Looper.getThread()
+        // and Thread.currentThread() return the SAME object_id. So this is true.
+        //
+        // To prove the identity, look up both shadows via the registry and
+        // verify they're bound to the same id.
+        if (registry_) {
+            if (auto* ts = registry_->find_as<ThreadShadow>()) {
+                if (auto* ls = registry_->find_as<LooperShadow>()) {
+                    uint32_t main_thread = ts->main_thread_id();
+                    uint32_t bound = ls->bound_thread_id();
+                    if (main_thread != 0 && main_thread == bound) {
+                        // Identity contract holds — return true.
+                        return CallResult::handled_bool(true);
+                    }
+                }
+            }
+        }
+        // Identity not yet established — return false (matches real Android
+        // when mDelegate is null, which would NPE).
+        return CallResult::handled_bool(false);
+    }
+    if (m == "executeOnDiskIO" || m == "postToMainThread" ||
+        m == "delegate" || m == "setDelegate") {
+        // executeOnDiskIO(Runnable) → enqueue on disk thread (we use a no-op).
+        // postToMainThread(Runnable) → enqueue via HandlerShadow.
+        if (m == "postToMainThread" && registry_) {
+            if (auto* hs = registry_->find_as<HandlerShadow>()) {
+                uint32_t r = HandlerShadow::extract_runnable(ctx, 0);
+                if (r != 0) hs->enqueue(r, 0, /*cls=*/"ArchTaskExecutor");
+            }
+        }
+        return CallResult::handled_void();
+    }
+    return CallResult::not_handled();
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // ThreadShadow
 // ─────────────────────────────────────────────────────────────────────────
 CallResult ThreadShadow::dispatch(const CallContext& ctx) {
@@ -144,6 +198,12 @@ void HandlerShadow::enqueue(uint32_t runnable_id, int64_t delay_ms,
     q.ready_at_ms = now_ms + delay_ms;
     q.runnable_class = cls;
     queue_.push_back(std::move(q));
+    // EXP-052: Trace queue activity for diagnostics.
+    std::cerr << "[QUEUE] Runnable id=" << runnable_id
+              << " enqueued (delay=" << delay_ms << "ms"
+              << ", queue_depth=" << queue_.size()
+              << (cls.empty() ? "" : (", source=" + cls))
+              << ")" << std::endl;
 }
 
 size_t HandlerShadow::drain_ready(std::vector<uint32_t>* out_drained) {
@@ -179,6 +239,9 @@ size_t HandlerShadow::drain_ready(std::vector<uint32_t>* out_drained) {
               });
     for (auto& q : ready) {
         out_drained->push_back(q.runnable_id);
+        std::cerr << "[QUEUE] Runnable id=" << q.runnable_id
+                  << " dequeued (ready for execution)"
+                  << std::endl;
         drained++;
     }
     return drained;

@@ -32,6 +32,60 @@
 namespace miniandroid { namespace framework {
 
 // ─────────────────────────────────────────────────────────────────────────
+// ArchTaskExecutorShadow — handles ArchTaskExecutor.isMainThread.
+//
+// Real ArchTaskExecutor.isMainThread delegates to mDelegate.isMainThread()
+// which (for DefaultTaskExecutor) does:
+//   return Looper.getMainLooper().getThread() == Thread.currentThread();
+//
+// In our model, both sides return the same canonical main Thread object_id
+// (bound by ThreadShadow and LooperShadow at init). So isMainThread() is
+// always true in the single-threaded runtime.
+//
+// We do NOT short-circuit the bytecode via a legacy bridge stub — instead,
+// we register a Shadow that the bridge consults FIRST. This keeps the
+// architecture clean: shadows handle Android framework behavior, the
+// engine executes bytecode.
+//
+// This shadow handles:
+//   * ArchTaskExecutor.isMainThread → true (the delegate check)
+//   * ArchTaskExecutor.getInstance → singleton ArchTaskExecutor object
+//   * ArchTaskExecutor.executeOnDiskIO → no-op (post to disk thread)
+//   * ArchTaskExecutor.postToMainThread → enqueue via HandlerShadow
+// ─────────────────────────────────────────────────────────────────────────
+class ArchTaskExecutorShadow : public Shadow {
+public:
+    std::string name() const override { return "ArchTaskExecutor"; }
+    void init(HeapAllocator* heap) override {
+        heap_ = heap;
+        if (heap_) {
+            instance_id_ = heap_->get_or_create("Landroidx/arch/core/executor/ArchTaskExecutor;");
+        }
+    }
+
+    bool handles_class(const std::string& class_name) const override {
+        return class_name.find("ArchTaskExecutor") != std::string::npos ||
+               class_name.find("DefaultTaskExecutor") != std::string::npos ||
+               class_name.find("TaskExecutor") != std::string::npos;
+    }
+
+    CallResult dispatch(const CallContext& ctx) override;
+
+    std::vector<std::string> implemented_methods() const override {
+        return {"isMainThread", "getInstance", "executeOnDiskIO",
+                "postToMainThread"};
+    }
+    std::vector<std::string> stubbed_methods() const override {
+        return {"delegate", "setDelegate"};
+    }
+
+    uint32_t instance_id() const { return instance_id_; }
+
+private:
+    uint32_t instance_id_ = 0;
+};
+
+// ─────────────────────────────────────────────────────────────────────────
 // ThreadShadow — owns the single main Thread object.
 //
 // Identity contract:
