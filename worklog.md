@@ -1809,3 +1809,109 @@ NEXT RECOMMENDED EXPERIMENT (EXP-053):
 - Implement R class <clinit> execution during ApplicationRuntime init.
 - Add INavigationLayout shadow or fix interface dispatch.
 
+
+---
+Task ID: EXP-053
+Agent: general-purpose (main agent)
+Task: EXP-053 — Real Android Lifecycle Progression + Fragment Path Validation. Fix semantic blockers discovered in EXP-052 with evidence-first debugging.
+
+Work Log:
+- Created docs/EXP053_REPORT.md skeleton tracking current execution point, last successful method, first semantic failures.
+- Task 1 (P0): Exception catch-all handler dispatch.
+  * Decoded encoded_catch_handler_list format: list_size uleb128, then handlers each with sleb128 size + |size| (type_idx, addr) pairs + catch-all addr if size <= 0.
+  * Implemented catch-all handler jump in THROW opcode handler: when catch-all found AND handler_addr in bounds, set pc_ = handler_addr and continue execution.
+  * Added pending_exception_ member to DalvikExecutionEngine — stores the exception object for move-exception to read.
+  * Implemented move-exception opcode (0x0d) — reads from pending_exception_ and clears it.
+  * Added [EXCEPTION] diagnostic log in required format: method, pc, exception, try_range, handler, catch_type.
+  * Built test cases: case_a_catch_all (try { throw } catch(...) { return }) and case_b_no_catch (throw without try).
+  * Verified: case_a jumps to handler at PC=6, method completes. case_b halts cleanly.
+  * Telegram run: Theme.createCommonMessageResources PC=205 catch-all at PC=200 — JUMPED TO correctly. StoriesIntro.startAnimation PC=10 no try — propagates.
+
+- Task 2: R class static initialization.
+  * Added initialized_classes_ set to DalvikExecutionEngine.
+  * Added ensure_class_initialized(class_descriptor) method.
+  * Framework classes (Landroid/, Landroidx/, Ljava/, Lkotlin/, Lkotlinx/, Lcom/google/, Lj$/) are skipped.
+  * For app classes, looks up <clinit> in DexReport and recursively executes via try_recursive_invoke.
+  * Added [CLASS_INIT] log.
+  * Called ensure_class_initialized from execute_sget and execute_sget_object.
+  * DISCOVERY: First run with class init enabled caused segfault in BuildVars.<clinit> after first SGET.
+  * Investigation: crash happens between SGET returning and next instruction fetch. Likely stack-use-after-free in try_recursive_invoke's MethodInfo* pointer (pointing into a vector that gets moved during recursive call).
+  * Workaround: Disabled <clinit> execution (kept infrastructure for future). R class fields still return 0.
+  * NEW BLOCKER identified: need to store MethodInfo by value, not by pointer.
+
+- Task 2 side-fix: Overload resolution bug.
+  * DISCOVERY: When <init> calls <init>(Context, AttributeSet, int) via invoke-direct with 4 register args, the engine picked the wrong overload (2-param version instead of 3-param).
+  * Root cause: arg_count = args.size() includes `this` for instance methods, but param_count from descriptor doesn't. Comparison was off-by-one.
+  * First fix attempt: check args[0].type == OBJECT_REF — failed because `this` register may be UNINITIALIZED during <init> calls.
+  * Final fix: subtract 1 from arg_count if arg_count > param_count (heuristic: instance methods have one extra `this` arg).
+  * Result: AppCompatCheckBox.<init> no longer recurses infinitely. Unique methods went from 8 (stuck in recursion) to 74.
+  * Lowered MAX_RECURSION_DEPTH from 200 to 80 to avoid stack overflow with deeper call chains.
+
+- Task 3: Fragment navigation investigation.
+  * Added [FRAGMENT_NAV] and [FRAGMENT] trace logs in bridge_to_api for addFragmentToStack, presentFragment, getClientNotActivatedFragment, replaceFragment, showFragment.
+  * Added [INTERFACE_CALL] trace for INavigationLayout and $-CC classes.
+  * Static analysis confirmed: LaunchActivity.onCreate calls UserConfig.isClientActivated at PC=711, getClientNotActivatedFragment at PC=719, addFragmentToStack at PC=723.
+  * getClientNotActivatedFragment creates new LoginActivity() or new IntroActivity().
+  * Runtime trace: NO addFragmentToStack calls reached. Root cause: List.isEmpty at PC=684/699 returns void (0), which is treated as false (non-empty), so the "stack is empty" branch is NOT taken.
+  * NEW BLOCKER: List.isEmpty stub needed.
+
+- Task 4: Interface dispatch audit.
+  * Traced invoke-interface INavigationLayout.getView dispatch path.
+  * Found: ActionBarLayout.getView (concrete impl) is reached via try_recursive_invoke.
+  * ActionBarLayout.getView delegates to INavigationLayout$-CC.$default$getView (default method) — this is correct Java 8 behavior.
+  * No fix needed. Interface dispatch is working correctly.
+  * The [INTERFACE_CALL] log was misleading — it fires from bridge_to_api even when try_recursive_invoke already handled the call.
+
+- Task 5: Thread/Looper identity regression test.
+  * Added [THREAD_IDENTITY_TEST] log in ApplicationRuntime::execute_on_create.
+  * Verified: current=1 main=1 result=TRUE throughout the run.
+  * No regressions in thread identity.
+
+- Task 6: Resource system investigation.
+  * Added [SGET] trace to execute_sget and execute_sget_object (throttled to first 100 per method).
+  * Added [RES] trace to getIdentifier, getDimensionPixelSize, getString, getColor, getDrawable.
+  * Telegram run: 0 getIdentifier calls, 116 getDrawable calls (all resid=0x0), 10 getColor calls (all resid=0x0).
+  * R class SGETs all return 0: R$attr.checkboxStyle=0, R$styleable.AppCompatTheme=0, R$drawable.abc_textfield_*=0.
+  * Non-R-class singletons work: ApplicationLoader.applicationContext=obj_id=4, AppCompatDrawableManager.INSTANCE=obj_id=18.
+  * Confirmed: resource IDs become 0 because R class <clinit> doesn't run (Task 2 disabled).
+
+- Final Telegram validation (run/exp053_task6):
+  * Build: SUCCESS
+  * Exit code: 0
+  * Unique methods: 343 (+4 vs EXP-052's 339)
+  * HALT events: 0
+  * EXCEPTION events: 6 (catch-all handlers firing correctly)
+  * Instructions: 43,901
+  * SGET events logged: 732
+  * Thread identity: TRUE
+  * SharedPreferences: default.xml written
+
+- Files produced:
+  - docs/EXP053_REPORT.md (full report)
+  - docs/EXP053_TASK1_EXCEPTION_TESTS.md (test summary)
+  - tools/exp053_task1_exception.py (exception test cases)
+  - run/exp053_task1_telegram/ (catch-all handler validation)
+  - run/exp053_task6/ (final Telegram run with all traces)
+
+Stage Summary:
+- Task 1 (P0): Catch-all exception handler COMPLETE. Test cases pass. Telegram catch-all jumps correctly.
+- Task 2: R class static init PARTIAL. Infrastructure in place but execution disabled due to segfault in recursive invoke path.
+- Task 3: Fragment navigation investigation COMPLETE. Mapped real path. Root cause: List.isEmpty returns void.
+- Task 4: Interface dispatch audit COMPLETE. No fix needed — dispatch is correct.
+- Task 5: Thread identity regression test COMPLETE. Identity holds (TRUE).
+- Task 6: Resource system investigation COMPLETE. R class fields return 0 because <clinit> doesn't run.
+
+New blockers identified:
+1. Stack-use-after-free in recursive invoke from opcode handlers (try_recursive_invoke stores MethodInfo* pointer to vector element).
+2. List.isEmpty returns void instead of true (blocks Fragment navigation path).
+3. Typed catch handlers not implemented (only catch-all).
+4. Exception propagation across method boundaries not implemented.
+
+Success criteria:
+- Real catch-all exception path executes: ✅ PASS
+- Static class initialization works: ⚠️ PARTIAL (infrastructure in place, execution disabled)
+- Fragment navigation path mapped with evidence: ✅ PASS
+- Interface dispatch behavior understood/fixed: ✅ PASS (no fix needed)
+- No regression in EXP-050/051/052 tests: ✅ PASS (all 10 tests pass)
+- Telegram execution reaches a later point than EXP-052: ✅ PASS (343 vs 339 unique methods)
+
