@@ -1289,21 +1289,21 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         last_invoke_return_ = saved_last_invoke_return;
 
         log("✅ RECURSIVE INVOKE completed: " + cls_ref.name + "." + method.name);
-        // EXP-055: Log isClientActivated return value.
-        // Use both cls_ref.name AND class_descriptor for matching.
-        std::string full_name = cls_ref.name + "." + method.name;
-        // EXP-055: Temporary broad log to verify return value propagation.
-        static thread_local uint64_t ret_log_count = 0;
-        if (ret_log_count < 5 ||
-            full_name.find("isClientActivated") != std::string::npos ||
-            full_name.find("getClientNotActivated") != std::string::npos ||
-            full_name.find("addFragmentToStack") != std::string::npos) {
-            ret_log_count++;
-            std::cerr << "[RET] " << full_name
-                      << " val=" << return_val.int_val
-                      << " type=" << static_cast<int>(return_val.type)
-                      << " obj=" << return_val.object_id
-                      << std::endl;
+        // EXP-056: Log return values for key login-path methods.
+        {
+            std::string full_name = cls_ref.name + "." + method.name;
+            if (full_name.find("isClientActivated") != std::string::npos ||
+                full_name.find("getClientNotActivated") != std::string::npos ||
+                full_name.find("addFragmentToStack") != std::string::npos ||
+                full_name.find("getFragmentStack") != std::string::npos ||
+                full_name.find("isEmpty") != std::string::npos ||
+                full_name.find("checkCurrentAccount") != std::string::npos) {
+                std::cerr << "[RET] " << full_name
+                          << " val=" << return_val.int_val
+                          << " type=" << static_cast<int>(return_val.type)
+                          << " obj=" << return_val.object_id
+                          << std::endl;
+            }
         }
         recursion_depth_--;
         return true;
@@ -5625,6 +5625,30 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_void();
         }
         return true;
+    }
+
+    // EXP-056: When isEmpty() is called on a null object (e.g., getFragmentStack
+    // returned null because the field was never initialized), return false (0).
+    if (method == "isEmpty" &&
+        !args.empty() &&
+        (args[0].type == DalvikType::NULL_REF ||
+         (args[0].type == DalvikType::OBJECT_REF && args[0].object_id == 0))) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(false);
+        std::cerr << "[LOGIN-BRANCH] isEmpty on null receiver → false"
+                  << " (caller=" << current_class_ << "." << current_method_ << ")"
+                  << std::endl;
+        return true;
+    }
+    // EXP-056: Also handle isEmpty when called via shadow dispatch (non-null receiver).
+    if (method == "isEmpty") {
+        int rt = args.empty() ? 0 : static_cast<int>(args[0].type);
+        uint32_t ro = args.empty() ? 0 : args[0].object_id;
+        std::cerr << "[LOGIN-BRANCH] isEmpty called"
+                  << " receiver_type=" << rt
+                  << " receiver_obj=" << ro
+                  << " (caller=" << current_class_ << "." << current_method_ << ")"
+                  << std::endl;
     }
 
     // Default: stubbed but not crashing
