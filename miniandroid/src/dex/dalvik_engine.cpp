@@ -806,18 +806,11 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
         return true;
     }
     // EXP-053: Only run <clinit> for classes in the org.telegram.* namespace.
-    // This avoids the segfault that occurs with AppCompat classes (likely
-    // caused by infinite recursion in their <init> methods calling framework
-    // code that we don't fully support).
-    //
-    // EXP-053: DISABLED for now — even with Telegram-only scope, the
-    // segfault occurs in BuildVars.<clinit> right after the first SGET
-    // returns. Investigation shows it's likely a stack-use-after-free in
-    // the recursive invoke path (MethodInfo* points into a vector that
-    // gets moved/destroyed during the recursive call). Leaving the
-    // infrastructure (initialized_classes_ set, [CLASS_INIT] log) in
-    // place for future investigation.
-    if (true || class_descriptor.rfind("Lorg/telegram/", 0) != 0) {
+    // EXP-054: Re-enabled after MethodInfo lifetime fix (store by value).
+    // Still limiting to org.telegram/* to avoid deep recursion in androidx
+    // classes (which have complex <clinit> methods that call many other
+    // classes' <clinit>, causing stack overflow).
+    if (class_descriptor.rfind("Lorg/telegram/", 0) != 0) {
         initialized_classes_.insert(class_descriptor);
         return true;
     }
@@ -937,6 +930,16 @@ bool DalvikExecutionEngine::try_recursive_invoke(
          method_name == "getActiveFragmentStateManagers")) {
         log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
             " — skipping recursive invoke (collection iteration not supported)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-054: BaseFragment.getLastSheet loops because isShown() returns
+    // void (0/false), and the loop keeps trying the same element. Short-circuit.
+    if (class_descriptor.find("BaseFragment") != std::string::npos &&
+        method_name == "getLastSheet") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (isShown loop)");
         recursion_depth_--;
         return false;
     }
@@ -1111,13 +1114,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // EXP-045 Phase 2: Search for the method within this class.
     // CRITICAL: When multiple overloads exist with the same name, match by
     // argument count to avoid calling the wrong overload.
-    // NOTE: all_methods() returns a vector BY VALUE (temporary). We must
-    // store the MethodInfo BY VALUE, not by pointer, because the temporary
-    // vector is destroyed after the for loop — storing a pointer would be
-    // a dangling pointer (use-after-free).
+    // EXP-054: Store MethodInfo BY VALUE (not by pointer) to eliminate
+    // any theoretical dangling-pointer risk. The `all_methods` vector is
+    // kept alive in this scope, but storing by value makes the code
+    // robust against future refactoring and is safer for recursive
+    // invoke paths where the call stack gets deep.
     auto all_methods = cls_ref.all_methods();  // keep the vector alive
-    const dex::MethodInfo* best_match = nullptr;
-    const dex::MethodInfo* fallback_match = nullptr;
+    std::optional<dex::MethodInfo> best_match;     // by value (EXP-054)
+    std::optional<dex::MethodInfo> fallback_match;  // by value (EXP-054)
     size_t arg_count = args.size();
 
     for (const auto& method : all_methods) {
@@ -1153,62 +1157,24 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             }
         }
 
-        // If parameter count matches arg count, this is likely the right overload.
-        // EXP-053 FIX: args.size() includes `this` for instance methods
-        // (invoke-virtual, invoke-direct, invoke-interface), but the descriptor
-        // counts only the parameters (not `this`). So for instance methods,
-        // we compare param_count + 1 == arg_count. For static methods
-        // (invoke-static), args.size() == param_count.
-        //
-        // Heuristic: invoke-direct/virtual/interface always pass `this` as
-        // the first arg, so when we have arg_count > 0, treat it as an
-        // instance method (subtract 1 from arg_count). The `this` register
-        // may be UNINITIALIZED (e.g. when an <init> calls super.<init>()
-        // before the object is fully constructed) — so we can't reliably
-        // check args[0].type == OBJECT_REF. We just subtract 1 if arg_count > 0.
-        //
-        // For static methods (invoke-static), args.size() == param_count
-        // because there's no `this`. But we can't distinguish here without
-        // knowing the opcode. Safe approximation: only subtract 1 if
-        // arg_count > 0 AND arg_count > param_count (which means we have
-        // an extra `this` arg).
+        // EXP-053 FIX: args.size() includes `this` for instance methods.
         size_t effective_arg_count = arg_count;
         if (arg_count > 0 && arg_count > param_count) {
             effective_arg_count = arg_count - 1;
         }
-        // EXP-053: debug log for overload resolution (commented out after
-        // validation — keep the source for future debugging).
-        // static thread_local uint64_t overload_dbg_count = 0;
-        // if (overload_dbg_count < 30) {
-        //     std::string args_types;
-        //     for (size_t ai = 0; ai < args.size() && ai < 4; ai++) {
-        //         args_types += " arg[" + std::to_string(ai) + "]=" +
-        //                       std::to_string(static_cast<int>(args[ai].type));
-        //     }
-        //     std::cerr << "[OVERLOAD-DBG] class=" << cls_ref.name
-        //               << " method=" << method_name
-        //               << " desc=" << method.descriptor
-        //               << " param_count=" << param_count
-        //               << " arg_count=" << arg_count
-        //               << " effective=" << effective_arg_count
-        //               << " bytecode_size=" << method.bytecode.size()
-        //               << args_types
-        //               << std::endl;
-        //     overload_dbg_count++;
-        // }
         if (param_count == effective_arg_count) {
-            best_match = &method;
+            best_match = method;  // copy by value (EXP-054)
             break;  // exact match, stop searching
         }
         if (!fallback_match) {
-            fallback_match = &method;
+            fallback_match = method;  // copy by value (EXP-054)
         }
     }
 
-    const dex::MethodInfo* selected = best_match ? best_match : fallback_match;
+    std::optional<dex::MethodInfo> selected_opt = best_match ? best_match : fallback_match;
 
-    if (selected) {
-        const auto& method = *selected;
+    if (selected_opt) {
+        const auto& method = *selected_opt;  // safe: selected_opt owns the MethodInfo
         // Found a method with bytecode — recursively execute!
         log("🔄 RECURSIVE INVOKE: " + cls_ref.name + "." + method.name +
             method.descriptor + " (" + std::to_string(method.bytecode.size()) + " instructions)");
@@ -1230,6 +1196,17 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         auto saved_tries_size = current_tries_size_;
         auto saved_tries_data = current_tries_data_;
         auto saved_tries_data_size = current_tries_data_size_;
+        // EXP-054: Save current_result_ so it can be restored after the
+        // recursive call. execute_method_internal sets current_result_ to
+        // its own result parameter, so without saving/restoring, the outer
+        // caller's current_result_ would be lost. This is critical when
+        // ensure_class_initialized calls try_recursive_invoke from inside
+        // an opcode handler (like execute_sget) — the outer method's
+        // current_result_ must be preserved.
+        auto* saved_current_result = current_result_;
+        // EXP-054: Save pending_exception_ so a throw in the callee doesn't
+        // corrupt the caller's exception state.
+        auto saved_pending_exception = pending_exception_;
 
         halted_on_return_ = false;
         halted_ = false;
@@ -1267,6 +1244,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         current_tries_size_ = saved_tries_size;
         current_tries_data_ = saved_tries_data;
         current_tries_data_size_ = saved_tries_data_size;
+        // EXP-054: Restore current_result_ and pending_exception_.
+        current_result_ = saved_current_result;
+        pending_exception_ = saved_pending_exception;
 
         return_val = DalvikValue::make_void();
         log("✅ RECURSIVE INVOKE completed: " + cls_ref.name + "." + method.name);
