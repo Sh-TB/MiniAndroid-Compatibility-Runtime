@@ -1228,7 +1228,13 @@ private:
         uint32_t ins_size,
         uint32_t outs_size,
         const std::vector<DalvikValue>& args,
-        DalvikExecutionResult& result
+        DalvikExecutionResult& result,
+        // EXP-052: optional tries[] data for exception-handling diagnostics.
+        // When non-null, the THROW opcode handler can scan the tries table
+        // for a matching catch handler.
+        uint16_t tries_size = 0,
+        const uint8_t* tries_data = nullptr,
+        size_t tries_data_size = 0
     );
 
     // EXP-038 (BLOCKER-034): Recursive DEX method invocation.
@@ -1414,6 +1420,33 @@ private:
     // before execution begins. When non-null, bridge_to_api consults the
     // registry BEFORE falling through to the legacy if/else chain.
     framework::ShadowRegistry* shadow_registry_ = nullptr;
+
+    // EXP-052: Exception-handling diagnostic state for the currently
+    // executing method. Updated by execute_method_internal() each time
+    // a new method is entered. The THROW opcode handler reads these to
+    // log whether the current method has a try table and (eventually)
+    // find a matching catch handler.
+    //
+    // The real exception-handling flow is:
+    //   1. throw vAA executes.
+    //   2. Engine looks up the exception object's class descriptor.
+    //   3. Engine scans current_method's tries[] for a try_item whose
+    //      [start_addr, start_addr+insn_count) range contains the
+    //      current PC.
+    //   4. Engine decodes the encoded_catch_handler at handler_off.
+    //   5. For each (type_idx, addr) pair in the handler:
+    //        - If type_idx == 0 (catch-all) or matches the exception
+    //          class, jump to addr.
+    //   6. If no handler matched, unwind to the caller's frame and
+    //      repeat from step 3 with the caller's PC = the invoke-*
+    //      site that called this method.
+    //
+    // EXP-052 only implements steps 1 + 3 (lookup + log) — the actual
+    // handler jump (step 5) is implemented in a later experiment after
+    // the diagnostic mode has been validated with small DEX test cases.
+    uint16_t current_tries_size_ = 0;
+    const uint8_t* current_tries_data_ = nullptr;
+    size_t current_tries_data_size_ = 0;
 
     DalvikExecutionResult* current_result_ = nullptr;
     // config_ moved to public section above
