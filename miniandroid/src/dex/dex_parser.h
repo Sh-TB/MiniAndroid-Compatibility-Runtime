@@ -162,6 +162,27 @@ struct MethodInfo {
     
     // Bytecode (if available)
     std::vector<uint16_t> bytecode;
+
+    // EXP-052: Exception-handling diagnostic state.
+    //
+    // Real DEX methods have an optional tries[] + encoded_catch_handler_list
+    // section AFTER the insns[] array (when tries_size > 0). The runtime
+    // does NOT yet implement exception handling — but we capture the raw
+    // bytes here so the THROW handler can at least log whether the current
+    // method has a try table, and (eventually) decode it to find a
+    // matching catch handler.
+    //
+    // tries_size = number of try_item entries (each is 8 bytes:
+    //   u32 start_addr, u16 insn_count, u16 handler_off).
+    // tries_data  = raw bytes of the tries[] array + the
+    //   encoded_catch_handler_list that follows it. The handler list
+    //   uses ULEB128-encoded sizes and offsets — we keep the raw bytes
+    //   and decode on demand.
+    //
+    // When tries_size == 0, the method has no try/catch handlers — any
+    // throw inside it must propagate to the caller.
+    uint16_t tries_size = 0;
+    std::vector<uint8_t> tries_data;
 };
 
 // Parsed field information
