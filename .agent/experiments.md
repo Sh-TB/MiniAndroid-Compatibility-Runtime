@@ -1,75 +1,26 @@
-# EXP-048 Experiment Log
+# Experiments
 
-## EXP-048.1 — SharedPreferences Persistence
+## EXP-050: Return value propagation fix
+- Result: +136 unique methods (200→336)
 
-**OBJECTIVE:** Implement persistent SharedPreferences that survives process restart.
+## EXP-051: Shadow Registry + Thread Identity
+- Result: 7 shadows, 0 HALT, 339 methods
 
-**BASELINE:** 189 methods, 5 JNI calls, 0 HALT, SUCCESS.
+## EXP-052: Exception diagnostic + Thread identity
+- Result: 339 methods, exception tries table captured
 
-**OBSERVATION:** 
-- `getSharedPreferences` is called 5 times (confirmed via verbose API BRIDGE log)
-- `SharedPrefsHelper.init` calls `Context.getSharedPreferences("InviteMessagePremiumBlockedMany_other", 0)` 
-- `SharedConfig.loadConfig` calls `Context.getSharedPreferences("background_activity", 0)` and `Context.getSharedPreferences("userconfing", 0)`
-- But SharedPreferences interface methods (getBoolean, getString, edit, commit) do NOT appear in API BRIDGE log
+## EXP-053: Catch-all handler + overload fix
+- Result: 343 methods, catch-all jump works
 
-**EVIDENCE:**
-- Verbose log shows 1219 API BRIDGE calls total, 5 are getSharedPreferences
-- 0 calls to getBoolean, getString, edit, commit, apply, putString, etc.
-- SharedPreferences interface methods ARE in the DEX (classes.dex, classes3.dex, etc.)
-- They are abstract (no bytecode), so try_recursive_invoke should return false
-- bridge_to_api should then handle them
+## EXP-054: Memory safety + Collection semantics + class init
+- Result: 421 methods, 52 CLASS_INIT, CollectionShadow with real state
 
-**HYPOTHESIS:** 
-The invoke-interface handler may not be correctly routing SharedPreferences
-interface calls to bridge_to_api. The interface methods are abstract in the DEX,
-so try_recursive_invoke should skip them (bytecode.empty()), but the fallback
-to bridge_to_api might not be triggered correctly for invoke-interface.
+## EXP-055: Return value propagation + OBJECT_REF(0)=null
+- Result: 445 methods, isClientActivated returns 1
 
-**EXPERIMENT:** Add diagnostic logging to invoke-interface handler to confirm
-whether SharedPreferences methods reach bridge_to_api.
+## EXP-056: getIntent() null fix + CollectionShadow null handling
+- Result: 442 methods, getIntent returns non-null, D8 inversion rejected
 
-**STATUS:** OPEN
-
----
-
-## EXP-048.2 — Native Method Dispatch
-
-**OBJECTIVE:** Execute multiple native method calls beyond native_getCurrentTime.
-
-**BASELINE:** 5 JNI calls to native_getCurrentTime via HOST_COMPATIBILITY_STUB.
-
-**OBSERVATION:**
-- ConnectionsManager.native_getCurrentTime dispatched 5 times
-- No other native methods dispatched
-- 12 P0 native stubs registered in JNI bridge
-- ConnectionsManager.getInstance reaches the native call
-- Other native methods (native_init, native_setJava, etc.) not yet called
-
-**HYPOTHESIS:** 
-The execution path only reaches getCurrentTime because postInitApplication
-calls it for logging. Other native methods require deeper execution
-(e.g., UserConfig.loadConfig might call native methods, or
-MessagesController might call native_init).
-
-**STATUS:** OPEN
-
----
-
-## EXP-048.3 — const/4 Fix Impact (EXP-047, verified)
-
-**OBJECTIVE:** Verify const/4 fix enables deeper execution.
-
-**BASELINE (before fix):** 184 methods, 0 JNI calls.
-
-**OBSERVATION (after fix):** 189 methods, 5 JNI calls.
-
-**ROOT CAUSE:** const/4 (opcode 0x12, format 11n B|A|op) extracted register
-and literal from wrong nibbles. Old code: dest_reg=(instr>>8)&0xFF,
-literal=(instr&0xF). Correct: dest_reg=(instr>>8)&0xF,
-literal=(instr>>12)&0xF.
-
-**RESULT:** +5 methods, +5 JNI calls. ConnectionsManager.getInstance,
-getCurrentTime, MessagesController.getInstance, UserConfig.loadConfig,
-SendMessagesHelper.getInstance all reached for the first time.
-
-**STATUS:** CONFIRMED
+## EXP-057: IN PROGRESS
+- Target: Reach getClientNotActivatedFragment()
+- Blocker: getFragmentStack returns null → isEmpty on null → jumps to checkLayout
