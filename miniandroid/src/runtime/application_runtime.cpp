@@ -22,6 +22,10 @@
 // BLOCKER-012 (invoke-super), BLOCKER-014 (goto fix), BLOCKER-015 (35c format),
 // BLOCKER-016 (arg_count), BLOCKER-017 (22c format), BLOCKER-018 (if-*).
 #include "dex/dalvik_engine.h"
+// EXP-051: Android framework shadow registry.
+#include "framework/shadow_registry.h"
+#include "framework/android_shadows.h"
+#include "framework/heap_adapter.h"
 // Note: Do NOT include dex/dex_interpreter.h - it has Opcodes that conflict with dex_interpreter_batch.h
 #include "object_model.h"
 #include "resources/resource_parser.h"
@@ -46,6 +50,7 @@ using namespace miniandroid::dex;
 using namespace miniandroid::resources;
 using namespace miniandroid::renderer;
 using namespace miniandroid::diagnostics;
+using namespace miniandroid::framework;
 
 // ============================================================================
 // Utility Functions
@@ -177,7 +182,8 @@ std::string failure_type_to_string(FailureType type) {
 ApplicationRuntime::ApplicationRuntime() {
     start_time_ = std::chrono::steady_clock::now();
     initialize_subsystems();
-    
+    initialize_shadow_registry();
+
     StateTransition initial;
     initial.from_state = RuntimeState::CREATED;
     initial.to_state = RuntimeState::CREATED;
@@ -185,7 +191,7 @@ ApplicationRuntime::ApplicationRuntime() {
     initial.reason = "ApplicationRuntime initialized";
     initial.success = true;
     state_transitions_.push_back(initial);
-    
+
     if (config_.verbose) {
         std::cout << "[MiniAndroid] ApplicationRuntime created" << std::endl;
     }
@@ -193,12 +199,12 @@ ApplicationRuntime::ApplicationRuntime() {
 
 ApplicationRuntime::~ApplicationRuntime() {
     cleanup();
-    
+
     auto end = std::chrono::steady_clock::now();
     total_duration_ms_ = std::chrono::duration<double, std::milli>(end - start_time_).count();
-    
+
     if (config_.verbose) {
-        std::cout << "[MiniAndroid] ApplicationRuntime destroyed (ran for " 
+        std::cout << "[MiniAndroid] ApplicationRuntime destroyed (ran for "
                   << total_duration_ms_ << "ms)" << std::endl;
     }
 }
@@ -214,11 +220,55 @@ void ApplicationRuntime::initialize_subsystems() {
         config_.framebuffer_width, config_.framebuffer_height);
     trace_engine_ = std::make_unique<TraceEngine>();
     // Note: interpreter_ not created - we use DexInterpreterBatch instead
-    
+
     // Configure subsystems
     apk_parser_->set_verbose(config_.verbose);
     dex_parser_->set_verbose(config_.verbose);
     class_resolver_->set_verbose(config_.verbose);
+}
+
+// EXP-051: Initialize the Android framework shadow registry.
+//
+// We register shadows in the following order (first-handler-wins):
+//   1. ThreadShadow     — Thread.currentThread() and friends.
+//   2. LooperShadow     — Looper.getMainLooper() / getThread() / getQueue().
+//   3. HandlerShadow    — Handler + AndroidUtilities.runOnUIThread.
+//   4. ActivityShadow   — Activity instance methods (setContentView, etc.).
+//   5. IntentShadow     — Intent putExtra / getExtra / setClass / startActivity.
+//   6. ViewShadow       — View / ViewGroup / TextView / etc.
+//
+// After registration, we wire the ThreadShadow and LooperShadow together
+// so that Looper.getThread() returns the SAME object_id as
+// Thread.currentThread(). This is the critical identity contract that
+// ArchTaskExecutor.isMainThread() depends on.
+//
+// The heap adapter is created lazily in execute_on_create() once the
+// DalvikExecutionEngine exists (the engine needs to be the source of
+// truth for the singleton cache). Here we just register the shadows.
+void ApplicationRuntime::initialize_shadow_registry() {
+    shadow_registry_ = std::make_unique<ShadowRegistry>();
+
+    // Register all default shadows. The registry takes ownership.
+    shadow_thread_   = shadow_registry_->register_shadow<ThreadShadow>();
+    shadow_looper_   = shadow_registry_->register_shadow<LooperShadow>();
+    shadow_handler_  = shadow_registry_->register_shadow<HandlerShadow>();
+    shadow_activity_ = shadow_registry_->register_shadow<ActivityShadow>();
+    shadow_intent_   = shadow_registry_->register_shadow<IntentShadow>();
+    shadow_view_     = shadow_registry_->register_shadow<ViewShadow>();
+
+    // The heap_adapter_ is created later in execute_on_create() once we
+    // have a DalvikExecutionEngine to wrap. But we set it on the
+    // registry here so shadows' init() can use it (they only need
+    // get_or_create, which falls back to allocate when no engine is
+    // available — they just won't share singletons with the engine
+    // until execute_on_create wires things up properly).
+    //
+    // For now, leave heap_ as nullptr. The shadows will allocate fresh
+    // objects; the engine's bridge_to_api will re-use them via
+    // get_or_create_singleton when it gets called.
+    std::cerr << "[EXP-051] Shadow registry initialized with "
+              << shadow_registry_->stats().shadow_count << " shadows"
+              << std::endl;
 }
 
 void ApplicationRuntime::cleanup() {
@@ -995,6 +1045,44 @@ bool ApplicationRuntime::execute_on_create() {
         std::cerr << "[EXP-046] JNI bridge initialized with "
                   << miniandroid::jni::JNIBridge::instance().registered_count()
                   << " native method handlers" << std::endl;
+
+        // EXP-051: Wire the shadow registry to the engine. The heap
+        // adapter wraps the engine's DalvikHeap + singleton cache so
+        // shadows can share singletons with the legacy bridge.
+        heap_adapter_ = std::make_unique<DalvikHeapAdapter>(
+            &dalvik_engine.get_heap_public(), &dalvik_engine);
+        shadow_registry_->set_heap(heap_adapter_.get());
+
+        // Bind ThreadShadow and LooperShadow together. We pre-allocate
+        // the main Thread singleton NOW (via the engine's cache) and
+        // tell the LooperShadow to return that exact object_id from
+        // Looper.getThread(). This is the critical identity contract:
+        //
+        //     Looper.getMainLooper().getThread() == Thread.currentThread()
+        //
+        // Both sides return the same heap object_id, so the DEX
+        // bytecode's if-eq comparison succeeds and
+        // ArchTaskExecutor.isMainThread() returns true.
+        auto main_thread_v = dalvik_engine.get_or_create_singleton_public("Ljava/lang/Thread;");
+        uint32_t main_thread_id = main_thread_v.object_id;
+        shadow_thread_->set_main_thread_id(main_thread_id);
+        shadow_looper_->bind_to_thread(main_thread_id);
+
+        // Also pre-allocate the Looper singleton so future calls
+        // return the same id.
+        (void)dalvik_engine.get_or_create_singleton_public("Landroid/os/Looper;");
+        (void)dalvik_engine.get_or_create_singleton_public("Landroid/os/Handler;");
+
+        // Hand the registry to the engine. bridge_to_api will consult
+        // it BEFORE the legacy if/else chain.
+        dalvik_engine.set_shadow_registry(shadow_registry_.get());
+
+        std::cerr << "[EXP-051] Shadow registry wired to engine "
+                  << "(main_thread_id=" << main_thread_id << ")"
+                  << std::endl;
+        std::cerr << "[THREAD] Main thread initialized: id=" << main_thread_id << std::endl;
+        std::cerr << "[LOOPER] Main looper created: thread=" << main_thread_id << std::endl;
+
         // EXP-037 Phase B (BLOCKER-019): Pass the manifest's main activity
         // class name so DalvikExecutionEngine can find the entry point in
         // obfuscated APKs (where class names don't contain "Activity"/"Main").
@@ -1024,6 +1112,7 @@ bool ApplicationRuntime::execute_on_create() {
 
         auto dalvik_result = dalvik_engine.execute_apk_with_activity(
             apk_path_, *dex_report_, activity_class, false //verbose
+        );
         miniandroid::probe::mark("execute_on_create: post-execute_apk_with_activity");
 
         // Extract evidence
@@ -1738,6 +1827,8 @@ bool ApplicationRuntime::write_all_evidence(const std::string& output_dir) {
         write_json("runtime_state_trace.json", generate_state_trace());
         write_json("failure_report.json", generate_failure_report());
         write_json("golden_end_to_end.json", generate_golden_end_to_end());
+        // EXP-051: Shadow registry evidence.
+        write_json("shadow_report.json", generate_shadow_report());
         
         if (config_.verbose) {
             std::cout << "\n[Evidence] All files written to: " << output_dir << "/" << std::endl;
@@ -1749,6 +1840,88 @@ bool ApplicationRuntime::write_all_evidence(const std::string& output_dir) {
         std::cerr << "[ERROR] Failed to write evidence: " << e.what() << std::endl;
         return false;
     }
+}
+
+// ============================================================================
+// EXP-051: Shadow Registry Public API Implementation
+// ============================================================================
+
+size_t ApplicationRuntime::drain_handler_queue(std::vector<uint32_t>* out_ids) {
+    if (!shadow_handler_ || !out_ids) return 0;
+    return shadow_handler_->drain_ready(out_ids);
+}
+
+bool ApplicationRuntime::has_pending_intent() const {
+    return shadow_intent_ && shadow_intent_->has_pending();
+}
+
+std::string ApplicationRuntime::take_pending_intent_target_class() {
+    if (!shadow_intent_) return "";
+    auto pi = shadow_intent_->take_pending();
+    if (!pi) return "";
+    return pi->component_class;
+}
+
+uint32_t ApplicationRuntime::get_content_view_id() const {
+    if (!shadow_activity_) return 0;
+    return shadow_activity_->content_view_id();
+}
+
+void ApplicationRuntime::set_current_activity(uint32_t activity_obj_id,
+                                              const std::string& activity_class) {
+    if (!shadow_activity_) return;
+    shadow_activity_->set_current_activity(activity_obj_id, activity_class);
+    std::cerr << "[ACTIVITY] " << activity_class << " detected (id=" << activity_obj_id << ")"
+              << std::endl;
+}
+
+json ApplicationRuntime::generate_shadow_report() const {
+    json j;
+    if (!shadow_registry_) return j;
+
+    auto st = shadow_registry_->stats();
+    j["shadow_count"]         = st.shadow_count;
+    j["total_implemented"]    = st.total_implemented;
+    j["total_stubbed"]       = st.total_stubbed;
+    j["calls_dispatched"]    = st.calls_dispatched;
+    j["calls_handled"]       = st.calls_handled;
+    j["calls_fallback"]      = st.calls_fallback;
+    if (st.calls_dispatched > 0) {
+        j["coverage_percent"] = 100.0 * st.calls_handled / st.calls_dispatched;
+    } else {
+        j["coverage_percent"] = 0.0;
+    }
+
+    // Per-shadow summary.
+    json shadows = json::array();
+    auto add_shadow = [&](const char* name, auto* shadow_ptr) {
+        if (!shadow_ptr) return;
+        json s;
+        s["name"] = name;
+        s["implemented_methods"] = shadow_ptr->implemented_methods();
+        s["stubbed_methods"]     = shadow_ptr->stubbed_methods();
+        shadows.push_back(s);
+    };
+    add_shadow("Thread",   shadow_thread_);
+    add_shadow("Looper",   shadow_looper_);
+    add_shadow("Handler",  shadow_handler_);
+    add_shadow("Activity", shadow_activity_);
+    add_shadow("Intent",   shadow_intent_);
+    add_shadow("View",     shadow_view_);
+    j["shadows"] = shadows;
+
+    // Handler queue depth + Intent pending state.
+    if (shadow_handler_) j["handler_queue_depth"] = shadow_handler_->queue_size();
+    if (shadow_intent_)  j["intent_pending"]     = shadow_intent_->has_pending();
+    if (shadow_activity_) {
+        j["current_activity_class"] = shadow_activity_->current_activity_class();
+        j["current_activity_id"]    = shadow_activity_->current_activity_id();
+        j["content_view_id"]         = shadow_activity_->content_view_id();
+        j["activity_lifecycle_state"] = static_cast<int>(shadow_activity_->state());
+    }
+    if (shadow_view_) j["view_node_count"] = shadow_view_->node_count();
+
+    return j;
 }
 
 } // namespace runtime
