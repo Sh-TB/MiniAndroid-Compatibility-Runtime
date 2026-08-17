@@ -2862,14 +2862,19 @@ bool DalvikExecutionEngine::execute_move_result(uint32_t pc, InstructionTrace& t
 }
 
 bool DalvikExecutionEngine::execute_move_result_object(uint32_t pc, InstructionTrace& trace) {
-    // Format: 11x [op] vAA — move object return value from last invoke
-    // EXP-050 Phase 2 CRITICAL FIX: Previously returned placeholder null,
-    // silently discarding ALL object return values. Now reads from
-    // last_invoke_return_ which is set by every invoke-* handler.
     if (pc >= bytecode_.size()) return false;
 
     uint16_t instr = bytecode_[pc];
     uint8_t dest = (instr >> 8) & 0xFF;
+
+    // EXP-057: Debug — log move-result-object in onCreate for login path.
+    if (current_method_ == "onCreate" && current_class_.find("LaunchActivity") != std::string::npos) {
+        std::cerr << "[EXP057-MRO] move-result-object v" << (int)dest
+                  << " type=" << static_cast<int>(last_invoke_return_.type)
+                  << " obj=" << last_invoke_return_.object_id
+                  << " pc=" << pc
+                  << std::endl;
+    }
 
     set_register(dest, last_invoke_return_);
 
@@ -3495,6 +3500,13 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
                                  args, return_val, result)) {
             recursively_invoked = true;
             api_status = ApiCallTrace::Status::IMPLEMENTED;
+            // EXP-057: CRITICAL FIX — must update last_invoke_return_ after
+            // recursive invoke so move-result/move-result-object can read it.
+            // try_recursive_invoke restores last_invoke_return_ to the saved
+            // value internally, so we must re-set it from return_val here.
+            // Without this, move-result-object reads stale VOID_ from a
+            // previous method's return-void.
+            last_invoke_return_ = return_val;
         }
     }
 
@@ -4740,6 +4752,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     log("  API BRIDGE: " + class_name + "." + method);
+
+    // EXP-057: Debug — log ALL bridge_to_api calls for isEmpty from onCreate.
+    if (method == "isEmpty" && current_method_ == "onCreate") {
+        int arg0_type = args.empty() ? -1 : static_cast<int>(args[0].type);
+        uint32_t arg0_obj = args.empty() ? 0 : args[0].object_id;
+        std::cerr << "[EXP057-BRIDGE] bridge_to_api called"
+                  << " class=" << class_name
+                  << " method=" << method
+                  << " args_size=" << args.size()
+                  << " arg0_type=" << arg0_type
+                  << " arg0_obj=" << arg0_obj
+                  << " caller=" << current_class_ << "." << current_method_
+                  << std::endl;
+    }
 
     // EXP-053: Trace fragment-related calls for the Login path investigation.
     if (method == "addFragmentToStack" ||
