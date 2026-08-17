@@ -62,6 +62,17 @@ namespace miniandroid {
     namespace diagnostics {
         class TraceEngine;
     }
+    // EXP-051: Android framework shadow registry.
+    namespace framework {
+        class ShadowRegistry;
+        class DalvikHeapAdapter;
+        class ThreadShadow;
+        class LooperShadow;
+        class HandlerShadow;
+        class ActivityShadow;
+        class IntentShadow;
+        class ViewShadow;
+    }
 }
 
 // ============================================================================
@@ -587,6 +598,39 @@ public:
     
     /** Write all evidence files to directory */
     bool write_all_evidence(const std::string& output_dir);
+
+    // ========================================================================
+    // EXP-051: Shadow Registry Public API
+    // ========================================================================
+
+    /** Access the shadow registry (never null after construction). */
+    framework::ShadowRegistry* get_shadow_registry() { return shadow_registry_.get(); }
+
+    /** Drain pending Handler/Runnable queue. Returns the number of
+     *  Runnables whose run() method the runtime should now invoke.
+     *  Each drained Runnable's heap object_id is appended to out_ids. */
+    size_t drain_handler_queue(std::vector<uint32_t>* out_ids);
+
+    /** True if a startActivity(Intent) call is pending. */
+    bool has_pending_intent() const;
+
+    /** Take the pending Intent's target class (DEX descriptor).
+     *  Returns empty string if no pending Intent or no component set.
+     *  This is the only piece of Intent state the runtime needs to
+     *  drive Activity transitions — the actual PendingIntent object
+     *  stays inside the IntentShadow. */
+    std::string take_pending_intent_target_class();
+
+    /** Get the ActivityShadow's current content view id (0 if none). */
+    uint32_t get_content_view_id() const;
+
+    /** Record the current Activity on the ActivityShadow. Called by
+     *  the runtime when an Activity is created. */
+    void set_current_activity(uint32_t activity_obj_id,
+                              const std::string& activity_class);
+
+    /** Generate a shadow registry diagnostic report (for evidence). */
+    json generate_shadow_report() const;
     
 private:
     // ========================================================================
@@ -662,6 +706,35 @@ private:
     uint32_t activity_object_id_ = 0;
     std::string activity_class_name_;
     std::vector<std::string> lifecycle_events_;
+
+    // ========================================================================
+    // EXP-051: Android Framework Shadow Registry
+    // ========================================================================
+    //
+    // Owned by ApplicationRuntime so we can:
+    //   * Register all default shadows at construction time.
+    //   * Drain the HandlerShadow queue at well-defined points.
+    //   * Read IntentShadow pending intents after Activity callbacks.
+    //   * Dump stub-debt statistics for the EXP-051 report.
+    //
+    // The DalvikExecutionEngine gets a non-owning pointer to the registry
+    // via set_shadow_registry() before execution begins.
+
+    std::unique_ptr<framework::ShadowRegistry> shadow_registry_;
+    std::unique_ptr<framework::DalvikHeapAdapter> heap_adapter_;
+    // Cached pointers to specific shadows for direct access (no
+    // dynamic_cast needed at drain points).
+    framework::ThreadShadow*   shadow_thread_   = nullptr;
+    framework::LooperShadow*    shadow_looper_   = nullptr;
+    framework::HandlerShadow*   shadow_handler_  = nullptr;
+    framework::ActivityShadow*  shadow_activity_ = nullptr;
+    framework::IntentShadow*    shadow_intent_   = nullptr;
+    framework::ViewShadow*      shadow_view_     = nullptr;
+
+    // EXP-051: Initialize the shadow registry. Called once during
+    // ApplicationRuntime construction. Wires the ThreadShadow and
+    // LooperShadow together so they share the same main_thread_id.
+    void initialize_shadow_registry();
     
     // ========================================================================
     // Timing
