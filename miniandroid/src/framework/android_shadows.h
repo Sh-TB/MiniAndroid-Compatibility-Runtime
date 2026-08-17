@@ -1,0 +1,471 @@
+// SPDX-License-Identifier: MIT
+// MiniAndroid Compatibility Runtime
+// EXP-051 — Concrete Android framework shadows
+//
+// Shadows implemented in this file:
+//   * ThreadShadow       — single deterministic main Thread
+//   * LooperShadow       — single deterministic main Looper bound to main Thread
+//   * HandlerShadow      — single-thread Runnable queue with post/postDelayed
+//   * ActivityShadow     — current Activity tracking + lifecycle state
+//   * IntentShadow       — Intent creation, component resolution, startActivity
+//   * ViewShadow         — minimal View/ViewGroup hierarchy
+//
+// All shadows share a single-threaded execution model. There is exactly
+// one main Thread object, one main Looper object, and one main Handler
+// object — all with the same heap object_id so that
+//     Looper.getMainLooper().getThread() == Thread.currentThread()
+// returns true, which is what ArchTaskExecutor.isMainThread() actually
+// checks.
+
+#ifndef MINIANDROID_FRAMEWORK_ANDROID_SHADOWS_H
+#define MINIANDROID_FRAMEWORK_ANDROID_SHADOWS_H
+
+#include "shadow_registry.h"
+
+#include <chrono>
+#include <deque>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
+
+namespace miniandroid { namespace framework {
+
+// ─────────────────────────────────────────────────────────────────────────
+// ThreadShadow — owns the single main Thread object.
+//
+// Identity contract:
+//   * Thread.currentThread() returns main_thread_id_ always.
+//   * Thread.equals(Object) returns true iff the other object_id is
+//     main_thread_id_ (mimics reference equality).
+//   * Thread.getId() returns MAIN_THREAD_ID = 1.
+//   * Thread.getName() returns "main".
+//   * Thread.getStackTrace() returns an empty array (unblocks Intrinsics).
+//
+// The main_thread_id_ is allocated lazily on first init() call.
+// ─────────────────────────────────────────────────────────────────────────
+class ThreadShadow : public Shadow {
+public:
+    static constexpr uint32_t MAIN_THREAD_TID = 1;
+    static constexpr const char* MAIN_THREAD_NAME = "main";
+
+    std::string name() const override { return "Thread"; }
+    void init(HeapAllocator* heap) override {
+        heap_ = heap;
+        if (heap_) {
+            // Allocate (or look up) the main Thread singleton up-front.
+            // We do NOT cache the ID locally yet because get_or_create
+            // is idempotent — every later call to currentThread() will
+            // return the same heap object.
+            main_thread_id_ = heap_->get_or_create("Ljava/lang/Thread;");
+        }
+    }
+
+    bool handles_class(const std::string& class_name) const override {
+        return class_name == "Ljava/lang/Thread;";
+    }
+
+    CallResult dispatch(const CallContext& ctx) override;
+
+    std::vector<std::string> implemented_methods() const override {
+        return {"currentThread", "getName", "getId", "getStackTrace",
+                "isAlive", "isDaemon", "interrupt"};
+    }
+    std::vector<std::string> stubbed_methods() const override {
+        return {"sleep", "yield", "join", "start", "run", "setDaemon"};
+    }
+
+    // Public accessor: returns the canonical main Thread object_id.
+    uint32_t main_thread_id() const { return main_thread_id_; }
+
+    // Public mutator: allows the LooperShadow to bind to the same id.
+    void set_main_thread_id(uint32_t id) { main_thread_id_ = id; }
+
+private:
+    uint32_t main_thread_id_ = 0;
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// LooperShadow — owns the single main Looper object.
+//
+// Identity contract:
+//   * Looper.getMainLooper() returns main_looper_id_ always.
+//   * Looper.myLooper() returns main_looper_id_ (we have only one thread).
+//   * Looper.getThread() returns the SAME id as Thread.currentThread().
+//     This is the key invariant that makes ArchTaskExecutor.isMainThread()
+//     return true.
+//   * Looper.getQueue() returns a singleton MessageQueue (no real queue).
+//   * Looper.prepare() / Looper.loop() are stubs (return void).
+//
+// On init, the LooperShadow asks the ThreadShadow for the main Thread
+// object_id and binds to it. The LooperShadow and ThreadShadow must be
+// registered in the same registry so the LooperShadow can find the
+// ThreadShadow.
+// ─────────────────────────────────────────────────────────────────────────
+class LooperShadow : public Shadow {
+public:
+    std::string name() const override { return "Looper"; }
+    void init(HeapAllocator* heap) override {
+        heap_ = heap;
+        if (heap_) {
+            main_looper_id_ = heap_->get_or_create("Landroid/os/Looper;");
+            // Also allocate the MessageQueue singleton referenced by getQueue.
+            main_queue_id_  = heap_->get_or_create("Landroid/os/MessageQueue;");
+        }
+    }
+
+    bool handles_class(const std::string& class_name) const override {
+        return class_name == "Landroid/os/Looper;" ||
+               class_name == "Landroid/os/MessageQueue;";
+    }
+
+    CallResult dispatch(const CallContext& ctx) override;
+
+    std::vector<std::string> implemented_methods() const override {
+        return {"getMainLooper", "myLooper", "getThread", "getQueue",
+                "myQueue", "getMainLooper", "prepare", "loop",
+                "quit", "quitSafely", "prepareMainLooper"};
+    }
+    std::vector<std::string> stubbed_methods() const override {
+        return {"loop", "prepare", "prepareMainLooper"};
+    }
+
+    uint32_t main_looper_id() const { return main_looper_id_; }
+    uint32_t main_queue_id()  const { return main_queue_id_; }
+
+    // Bind the Looper to a specific Thread object_id (typically
+    // ThreadShadow.main_thread_id()). The LooperShadow will return this
+    // same id from Looper.getThread().
+    void bind_to_thread(uint32_t thread_id) { bound_thread_id_ = thread_id; }
+    uint32_t bound_thread_id() const { return bound_thread_id_; }
+
+private:
+    uint32_t main_looper_id_ = 0;
+    uint32_t main_queue_id_  = 0;
+    uint32_t bound_thread_id_ = 0;
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// HandlerShadow — deterministic single-thread Runnable queue.
+//
+// Android's Handler is normally a thread-loose, multi-threaded queue
+// backed by a MessageQueue. We don't need real multithreading — we just
+// need to faithfully preserve "post this Runnable, eventually run it".
+//
+// Model:
+//   * Handler(Looper) and Handler() are both no-ops that allocate a
+//     Handler heap object. We don't actually use the Handler object for
+//     dispatch — we maintain a single global queue.
+//   * Handler.post(Runnable)    → enqueue(runnable, delay_ms=0)
+//   * Handler.postDelayed(R,A)  → enqueue(runnable, delay_ms=A)
+//   * Handler.removeCallbacks(R)→ remove from queue
+//   * Handler.getLooper()       → return main Looper singleton
+//   * AndroidUtilities.runOnUIThread(Runnable) → enqueue(runnable, 0)
+//
+// The ApplicationRuntime drains the queue at well-defined points:
+// after Activity.onCreate, after onResume, etc. Runnables that post
+// other Runnables are supported (the drain loop is iterative).
+// ─────────────────────────────────────────────────────────────────────────
+class HandlerShadow : public Shadow {
+public:
+    struct QueuedRunnable {
+        uint32_t runnable_id = 0;        // heap object_id of the Runnable
+        uint32_t enqueue_seq = 0;        // FIFO tiebreaker
+        int64_t  ready_at_ms = 0;        // logical "ready" timestamp
+        std::string runnable_class;     // for diagnostics
+    };
+
+    std::string name() const override { return "Handler"; }
+    void init(HeapAllocator* heap) override {
+        heap_ = heap;
+        if (heap_) {
+            main_handler_id_ = heap_->get_or_create("Landroid/os/Handler;");
+        }
+    }
+
+    bool handles_class(const std::string& class_name) const override {
+        return class_name == "Landroid/os/Handler;" ||
+               class_name == "Lorg/telegram/messenger/AndroidUtilities;";
+    }
+
+    CallResult dispatch(const CallContext& ctx) override;
+
+    std::vector<std::string> implemented_methods() const override {
+        return {"post", "postDelayed", "postAtFrontOfQueue",
+                "removeCallbacks", "removeCallbacksAndMessages",
+                "getLooper", "sendEmptyMessage", "sendMessage"};
+    }
+    std::vector<std::string> stubbed_methods() const override {
+        return {"obtainMessage", "sendMessageDelayed", "sendMessageAtTime"};
+    }
+
+    // Enqueue a Runnable with a delay (in milliseconds).
+    void enqueue(uint32_t runnable_id, int64_t delay_ms,
+                 const std::string& cls);
+
+    // Drain all ready Runnables. Returns the number drained.
+    // Each drained Runnable's heap object_id is appended to `out_drained`.
+    // The ApplicationRuntime is responsible for actually executing the
+    // Runnable's run() method.
+    size_t drain_ready(std::vector<uint32_t>* out_drained);
+
+    // Total queue depth (for diagnostics).
+    size_t queue_size() const { return queue_.size(); }
+
+    // Helper: extract a Runnable argument from a CallContext.
+    // `arg_idx` is the index of the Runnable parameter. Returns 0 if
+    // the arg is null or absent.
+    static uint32_t extract_runnable(const CallContext& ctx, size_t arg_idx);
+
+private:
+    uint32_t main_handler_id_ = 0;
+    std::deque<QueuedRunnable> queue_;
+    uint32_t next_seq_ = 0;
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// IntentShadow — Intent creation, component resolution, startActivity.
+//
+// Tracks:
+//   * The pending Intent set by the most recent startActivity call.
+//   * The resolved target Activity class (component class).
+//   * Intent extras (key/value map, type-erased).
+//
+// The ApplicationRuntime reads pending_intent() after each Activity
+// callback returns and, if set, transitions to the target Activity by
+// invoking its onCreate.
+// ─────────────────────────────────────────────────────────────────────────
+class IntentShadow : public Shadow {
+public:
+    struct PendingIntent {
+        std::string action;            // Intent.getAction()
+        std::string component_class;   // setComponent(...).getClassName()
+        std::string package_name;      // setPackage(...)
+        std::map<std::string, std::string> extras_string;
+        std::map<std::string, int32_t>  extras_int;
+        std::map<std::string, bool>     extras_bool;
+        int flags = 0;
+    };
+
+    std::string name() const override { return "Intent"; }
+    void init(HeapAllocator* heap) override { heap_ = heap; }
+
+    bool handles_class(const std::string& class_name) const override {
+        return class_name == "Landroid/content/Intent;";
+    }
+
+    CallResult dispatch(const CallContext& ctx) override;
+
+    std::vector<std::string> implemented_methods() const override {
+        return {"<init>", "setAction", "getAction", "setClass",
+                "setClassName", "setComponent", "getComponent",
+                "putExtra", "getStringExtra", "getIntExtra",
+                "getBooleanExtra", "setFlags", "addFlags",
+                "getFlags", "setPackage"};
+    }
+    std::vector<std::string> stubbed_methods() const override {
+        return {"createChooser", "parseUri", "toUri"};
+    }
+
+    // Record a startActivity(Intent) call. The ApplicationRuntime will
+    // read this on the next drain point.
+    void set_pending(std::shared_ptr<PendingIntent> intent) {
+        pending_ = std::move(intent);
+    }
+    std::shared_ptr<PendingIntent> take_pending() {
+        auto p = std::move(pending_); pending_.reset(); return p;
+    }
+    bool has_pending() const { return pending_ != nullptr; }
+
+    // EXP-051: Public so ActivityShadow.startActivity can mark an
+    // existing Intent heap object as pending. The Intent must already
+    // have been created (the bytecode allocates it via new-instance +
+    // <init> before calling startActivity).
+    std::shared_ptr<PendingIntent> get_or_create_intent(uint32_t object_id);
+
+private:
+    std::shared_ptr<PendingIntent> pending_;
+    std::map<uint32_t, std::shared_ptr<PendingIntent>> intents_;
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// ActivityShadow — current Activity, lifecycle, view root.
+//
+// Tracks:
+//   * current_activity_id  — heap object_id of the active Activity.
+//   * current_activity_class — class descriptor (e.g. "Lorg/telegram/ui/LaunchActivity;").
+//   * content_view_id     — heap object_id of the View set by setContentView.
+//
+// Lifecycle state machine (deterministic, single-threaded):
+//   CREATED → STARTED → RESUMED → (PAUSED → STOPPED → DESTROYED)
+//
+// Lifecycle method invocations on the Activity heap object are NOT
+// dispatched by this shadow — the engine's recursive invoke path
+// handles those (it can find the Activity's onCreate in DEX bytecode).
+// This shadow only tracks state.
+// ─────────────────────────────────────────────────────────────────────────
+class ActivityShadow : public Shadow {
+public:
+    enum class LifecycleState {
+        NONE, CREATED, STARTED, RESUMED, PAUSED, STOPPED, DESTROYED
+    };
+
+    std::string name() const override { return "Activity"; }
+    void init(HeapAllocator* heap) override { heap_ = heap; }
+
+    bool handles_class(const std::string& class_name) const override {
+        return class_name == "Landroid/app/Activity;" ||
+               class_name.find("/Activity;") != std::string::npos ||
+               class_name.find("LaunchActivity") != std::string::npos ||
+               class_name.find("LoginActivity")  != std::string::npos ||
+               class_name.find("Activity;") != std::string::npos;
+    }
+
+    CallResult dispatch(const CallContext& ctx) override;
+
+    std::vector<std::string> implemented_methods() const override {
+        return {"setContentView", "getContentView", "findViewById",
+                "getIntent", "setIntent", "finish", "getApplicationContext",
+                "getFragmentManager", "getWindow", "getWindowManager",
+                "getResources", "getPackageManager", "getPackageName",
+                "getClassLoader", "getFilesDir", "getCacheDir",
+                "getSharedPreferences", "startActivity", "startActivityForResult",
+                "getCallingActivity", "getCallingPackage"};
+    }
+    std::vector<std::string> stubbed_methods() const override {
+        return {"runOnUiThread", "overridePendingTransition",
+                "findViewById", "registerForContextMenu"};
+    }
+
+    void set_current_activity(uint32_t id, const std::string& cls) {
+        current_activity_id_ = id;
+        current_activity_class_ = cls;
+        state_ = LifecycleState::CREATED;
+    }
+    uint32_t current_activity_id() const { return current_activity_id_; }
+    const std::string& current_activity_class() const { return current_activity_class_; }
+    LifecycleState state() const { return state_; }
+    void set_state(LifecycleState s) { state_ = s; }
+
+    void set_content_view(uint32_t view_id) { content_view_id_ = view_id; }
+    uint32_t content_view_id() const { return content_view_id_; }
+
+private:
+    uint32_t current_activity_id_ = 0;
+    std::string current_activity_class_;
+    uint32_t content_view_id_ = 0;
+    LifecycleState state_ = LifecycleState::NONE;
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// ViewShadow — minimal View/ViewGroup hierarchy (semantic, no rendering).
+//
+// Each View heap object is tracked by:
+//   * view_id           — the object_id (== heap object_id)
+//   * parent_id         — 0 if root, else the parent ViewGroup's view_id
+//   * children           — list of child view_ids (empty for leaf Views)
+//   * view_id_android    — the Android `R.id.*` int set by setId() or XML
+//   * class_desc         — View subclass class descriptor
+//
+// Operations supported:
+//   * View.<init>(Context)   — allocate a fresh View heap object
+//   * View.setId(int)        — record the Android view id
+//   * View.getId()           — return the recorded id
+//   * ViewGroup(View).addView(View) — parent->children.push_back(child)
+//   * ViewGroup(View).removeView(View)
+//   * View.getParent()       — return parent_id (or null)
+//   * View.getChildAt(int)   — return children[i] or null
+//   * View.getChildCount()   — return children.size()
+//   * Activity.setContentView(View) — set the content_view on ActivityShadow
+//   * Activity.findViewById(int)   — BFS the hierarchy for a view with
+//                                       matching view_id_android
+// ─────────────────────────────────────────────────────────────────────────
+class ViewShadow : public Shadow {
+public:
+    struct ViewNode {
+        uint32_t view_id = 0;
+        uint32_t parent_id = 0;
+        std::vector<uint32_t> children;
+        int32_t android_view_id = 0;     // View.getId() value
+        std::string class_desc;
+        // Layout params (semantic only — no real Measure/Layout pass).
+        int width  = -1;  // MATCH_PARENT = -1, WRAP_CONTENT = -2
+        int height = -1;
+        int x = 0, y = 0;
+        // Common properties used by Android code paths.
+        std::string text;     // TextView.getText()
+        bool clickable = false;
+        bool enabled = true;
+        int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8
+    };
+
+    std::string name() const override { return "View"; }
+    void init(HeapAllocator* heap) override { heap_ = heap; }
+
+    bool handles_class(const std::string& class_name) const override {
+        // Match any class ending in "View;" or "ViewGroup;" or containing
+        // well-known View subclasses. Specific dispatch is done by
+        // method name.
+        return class_name.find("View;") != std::string::npos ||
+               class_name == "Landroid/widget/TextView;" ||
+               class_name == "Landroid/widget/EditText;" ||
+               class_name == "Landroid/widget/Button;" ||
+               class_name == "Landroid/widget/ImageView;" ||
+               class_name == "Landroid/view/View;" ||
+               class_name == "Landroid/view/ViewGroup;";
+    }
+
+    CallResult dispatch(const CallContext& ctx) override;
+
+    std::vector<std::string> implemented_methods() const override {
+        return {"<init>", "setId", "getId", "getParent",
+                "addView", "addViewInLayout", "removeView",
+                "removeViewInLayout", "removeAllViews",
+                "getChildAt", "getChildCount",
+                "findViewById", "findViewWithTag",
+                "setVisibility", "getVisibility",
+                "setEnabled", "isEnabled",
+                "setClickable", "isClickable",
+                "setText", "getText",
+                "setBackgroundColor", "setBackground",
+                "setBackgroundResource", "setBackgroundDrawable",
+                "setLayoutParams", "getLayoutParams",
+                "measure", "layout", "draw",
+                "requestLayout", "invalidate"};
+    }
+    std::vector<std::string> stubbed_methods() const override {
+        return {"onMeasure", "onLayout", "onDraw", "onTouchEvent",
+                "onAttachedToWindow", "onDetachedFromWindow"};
+    }
+
+    // Allocate a new ViewNode and bind it to a heap object_id.
+    // Returns the view_id (= heap object_id).
+    uint32_t create_view(const std::string& class_desc);
+
+    // Get-or-create a ViewNode for an existing heap object_id.
+    // Useful when the bytecode allocated the View via new-instance and
+    // then called <init>.
+    ViewNode* get_or_create_node(uint32_t view_id, const std::string& class_desc);
+
+    // Lookup a ViewNode by id (const variant).
+    const ViewNode* find_node(uint32_t view_id) const;
+    ViewNode* find_node(uint32_t view_id);
+
+    // Add child to parent (updates both parent's children and child's parent_id).
+    bool add_child(uint32_t parent_id, uint32_t child_id);
+    bool remove_child(uint32_t parent_id, uint32_t child_id);
+
+    // DFS search for a descendant with the given Android view_id.
+    // Returns 0 if not found.
+    uint32_t find_by_android_id(uint32_t root_id, int32_t android_id) const;
+
+    // Diagnostics: total node count.
+    size_t node_count() const { return nodes_.size(); }
+
+private:
+    std::map<uint32_t, std::unique_ptr<ViewNode>> nodes_;
+};
+
+}} // namespace miniandroid::framework
+
+#endif // MINIANDROID_FRAMEWORK_ANDROID_SHADOWS_H
