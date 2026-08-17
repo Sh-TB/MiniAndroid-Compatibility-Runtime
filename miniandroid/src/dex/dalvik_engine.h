@@ -1171,7 +1171,11 @@ public:
 
     // EXP-040: Recursion depth tracking
     uint32_t recursion_depth_ = 0;
-    static constexpr uint32_t MAX_RECURSION_DEPTH = 200;
+    // EXP-053: Lowered from 200 to 80 to avoid C++ stack overflow when
+    // running with class init enabled. Each recursive invoke uses ~80KB
+    // of C++ stack (InstructionTrace + vectors + locals). 80 * 80KB = 6.4MB
+    // — within the default 8MB stack limit.
+    static constexpr uint32_t MAX_RECURSION_DEPTH = 80;
 
     // EXP-051: Public singleton accessor so the shadow registry can
     // share the engine's singleton cache (which guarantees that
@@ -1447,6 +1451,26 @@ private:
     uint16_t current_tries_size_ = 0;
     const uint8_t* current_tries_data_ = nullptr;
     size_t current_tries_data_size_ = 0;
+
+    // EXP-053: Pending exception for move-exception opcode.
+    // When THROW jumps to a catch handler, the exception object is
+    // stored here. The next move-exception instruction reads from
+    // this slot and clears it.
+    DalvikValue pending_exception_ = DalvikValue::make_null();
+
+    // EXP-053: Set of class descriptors whose <clinit> has been executed.
+    // Used to avoid re-running <clinit> on every sget/sput.
+    // Per JVM spec, <clinit> runs exactly once when a class is first
+    // initialized (typically at first active use: sget/sput/invoke-static
+    // /new-instance on the class).
+    std::set<std::string> initialized_classes_;
+
+    // EXP-053: Ensure a class is initialized before accessing its static
+    // fields. If the class has a <clinit> method and has not been marked
+    // initialized, execute <clinit> recursively, then mark it.
+    // Returns true if the class is initialized (or initialization was
+    // attempted without crashing).
+    bool ensure_class_initialized(const std::string& class_descriptor);
 
     DalvikExecutionResult* current_result_ = nullptr;
     // config_ moved to public section above
