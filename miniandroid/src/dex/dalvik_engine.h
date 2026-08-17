@@ -18,6 +18,11 @@
 #include "../runtime/runtime_metadata.h"
 #include "../runtime/vtable_dispatch.h"
 #include "../api/android_stubs.h"
+// EXP-051: Shadow registry forward-declarations.
+namespace miniandroid { namespace framework {
+class ShadowRegistry;
+class HeapAllocator;
+}}
 #include <string>
 #include <vector>
 #include <map>
@@ -415,6 +420,26 @@ struct DalvikValue {
     
     static DalvikValue make_bool(bool b) {
         DalvikValue v; v.type = DalvikType::BOOLEAN; v.bool_val = b; return v;
+    }
+
+    static DalvikValue make_float(float f) {
+        DalvikValue v; v.type = DalvikType::FLOAT32; v.float_val = f; return v;
+    }
+
+    static DalvikValue make_double(double d) {
+        DalvikValue v; v.type = DalvikType::FLOAT64; v.double_val = d; return v;
+    }
+
+    static DalvikValue make_byte(int8_t b) {
+        DalvikValue v; v.type = DalvikType::BYTE; v.byte_val = b; return v;
+    }
+
+    static DalvikValue make_short(int16_t s) {
+        DalvikValue v; v.type = DalvikType::SHORT; v.short_val = s; return v;
+    }
+
+    static DalvikValue make_char(char c) {
+        DalvikValue v; v.type = DalvikType::CHAR; v.char_val = c; return v;
     }
     
     std::string to_string() const;
@@ -1148,6 +1173,32 @@ public:
     uint32_t recursion_depth_ = 0;
     static constexpr uint32_t MAX_RECURSION_DEPTH = 200;
 
+    // EXP-051: Public singleton accessor so the shadow registry can
+    // share the engine's singleton cache (which guarantees that
+    // getResources(), getMainLooper(), etc. all return the same heap
+    // object_id across the entire APK execution).
+    DalvikValue get_or_create_singleton_public(const std::string& class_desc) {
+        return get_or_create_singleton(class_desc);
+    }
+    // EXP-051: Public heap accessor for the shadow registry adapter.
+    DalvikHeap& get_heap_public() { return heap_; }
+
+    // EXP-051: Attach a shadow registry. The engine does NOT own the
+    // registry — it's owned by ApplicationRuntime so the runtime can
+    // also drain the HandlerShadow queue and read IntentShadow state.
+    void set_shadow_registry(framework::ShadowRegistry* reg) { shadow_registry_ = reg; }
+    framework::ShadowRegistry* get_shadow_registry() const { return shadow_registry_; }
+
+    // EXP-051: Try to dispatch a method call via the shadow registry.
+    // Returns true if a shadow handled the call (in which case `result`
+    // and `status` are populated). Returns false if no shadow claimed
+    // the call — the caller should fall back to the legacy bridge.
+    bool try_shadow_dispatch(const std::string& class_name,
+                              const std::string& method,
+                              const std::vector<DalvikValue>& args,
+                              DalvikValue& result,
+                              ApiCallTrace::Status& status);
+
 private:
     // EXP-038 (BLOCKER-033): Per-DEX raw data for correct method_idx resolution.
     // Stored in DalvikExecutionEngine (NOT in DexReport) to avoid memory layout
@@ -1358,7 +1409,12 @@ private:
     // affecting every if-eqz/if-nez after an invoke, every field access
     // after a getter, and every object creation after new-instance.
     DalvikValue last_invoke_return_ = DalvikValue::make_void();
-    
+
+    // EXP-051: Shadow registry pointer. Non-owning. Set by ApplicationRuntime
+    // before execution begins. When non-null, bridge_to_api consults the
+    // registry BEFORE falling through to the legacy if/else chain.
+    framework::ShadowRegistry* shadow_registry_ = nullptr;
+
     DalvikExecutionResult* current_result_ = nullptr;
     // config_ moved to public section above
     

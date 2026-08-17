@@ -31,6 +31,9 @@ SOURCES=(
     "src/api/application_context.cpp"
     "src/api/shared_prefs.cpp"
     "src/storage/file_sandbox.cpp"
+    # EXP-051: Android framework shadow registry.
+    "src/framework/shadow_registry.cpp"
+    "src/framework/android_shadows.cpp"
     "src/exp007_012_megabatch_main.cpp"
 )
 
