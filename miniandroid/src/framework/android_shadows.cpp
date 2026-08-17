@@ -28,6 +28,180 @@ bool is_context_class(const std::string& class_name) {
 } // anonymous namespace
 
 // ─────────────────────────────────────────────────────────────────────────
+// CollectionShadow — real List/ArrayList/Map semantics.
+// ─────────────────────────────────────────────────────────────────────────
+CollectionShadow::CollectionState* CollectionShadow::get_or_create(uint32_t object_id, bool is_map) {
+    auto it = collections_.find(object_id);
+    if (it != collections_.end()) {
+        if (is_map) it->second.is_map = true;
+        return &it->second;
+    }
+    auto& state = collections_[object_id];
+    state.is_map = is_map;
+    return &state;
+}
+
+CallResult CollectionShadow::dispatch(const CallContext& ctx) {
+    const auto& m = ctx.method;
+    uint32_t obj_id = ctx.receiver_id;
+
+    // <init> — no-op, just mark the collection as existing.
+    if (m == "<init>") {
+        bool is_map = (ctx.class_name.find("Map") != std::string::npos ||
+                       ctx.class_name.find("Set") != std::string::npos);
+        get_or_create(obj_id, is_map);
+        return CallResult::handled_void();
+    }
+
+    // List operations
+    if (m == "add") {
+        // add(item) or add(index, item)
+        auto* state = get_or_create(obj_id);
+        if (ctx.args.size() >= 2) {
+            // add(index, item)
+            int32_t idx = ctx.arg_as_int(0);
+            uint32_t item = ctx.arg_as_object(1, 0);
+            if (idx >= 0 && (size_t)idx <= state->elements.size()) {
+                state->elements.insert(state->elements.begin() + idx, item);
+            }
+        } else if (ctx.args.size() >= 1) {
+            // add(item)
+            uint32_t item = ctx.arg_as_object(0, 0);
+            state->elements.push_back(item);
+        }
+        return CallResult::handled_bool(true);
+    }
+
+    if (m == "get") {
+        // get(index) → element
+        auto* state = get_or_create(obj_id);
+        int32_t idx = ctx.arg_as_int(0, -1);
+        if (idx >= 0 && (size_t)idx < state->elements.size()) {
+            uint32_t elem = state->elements[idx];
+            if (elem != 0) {
+                return CallResult::handled_object(elem, "Ljava/lang/Object;");
+            }
+            return CallResult::handled_null();
+        }
+        return CallResult::handled_null();
+    }
+
+    if (m == "size") {
+        auto* state = get_or_create(obj_id);
+        if (state->is_map) {
+            return CallResult::handled_int(static_cast<int32_t>(state->map_entries.size()));
+        }
+        return CallResult::handled_int(static_cast<int32_t>(state->elements.size()));
+    }
+
+    if (m == "isEmpty") {
+        auto* state = get_or_create(obj_id);
+        if (state->is_map) {
+            return CallResult::handled_bool(state->map_entries.empty());
+        }
+        return CallResult::handled_bool(state->elements.empty());
+    }
+
+    if (m == "clear") {
+        auto* state = get_or_create(obj_id);
+        state->elements.clear();
+        state->map_entries.clear();
+        state->iterator_position = 0;
+        return CallResult::handled_void();
+    }
+
+    if (m == "remove") {
+        auto* state = get_or_create(obj_id);
+        if (ctx.args.size() >= 1) {
+            int32_t idx = ctx.arg_as_int(0, -1);
+            if (idx >= 0 && (size_t)idx < state->elements.size()) {
+                state->elements.erase(state->elements.begin() + idx);
+            }
+        }
+        return CallResult::handled_void();
+    }
+
+    if (m == "contains") {
+        auto* state = get_or_create(obj_id);
+        uint32_t item = ctx.arg_as_object(0, 0);
+        for (uint32_t e : state->elements) {
+            if (e == item) return CallResult::handled_bool(true);
+        }
+        return CallResult::handled_bool(false);
+    }
+
+    if (m == "iterator") {
+        auto* state = get_or_create(obj_id);
+        state->iterator_position = 0;
+        // Return the same object as the iterator (simplified).
+        return CallResult::handled_object(obj_id, ctx.class_name);
+    }
+
+    if (m == "hasNext") {
+        auto* state = get_or_create(obj_id);
+        return CallResult::handled_bool(state->iterator_position < state->elements.size());
+    }
+
+    if (m == "next") {
+        auto* state = get_or_create(obj_id);
+        if (state->iterator_position < state->elements.size()) {
+            uint32_t elem = state->elements[state->iterator_position++];
+            if (elem != 0) {
+                return CallResult::handled_object(elem, "Ljava/lang/Object;");
+            }
+            return CallResult::handled_null();
+        }
+        return CallResult::handled_null();
+    }
+
+    // Map operations
+    if (m == "put") {
+        auto* state = get_or_create(obj_id, true);
+        if (ctx.args.size() >= 2) {
+            std::string key = ctx.arg_as_string(0);
+            uint32_t value = ctx.arg_as_object(1, 0);
+            // Use key as the map key. For object keys, use object_id as string.
+            if (key.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+                key = "obj:" + std::to_string(ctx.args[0].object_id);
+            }
+            state->map_entries[key] = value;
+        }
+        return CallResult::handled_null();
+    }
+
+    if (m == "containsKey") {
+        auto* state = get_or_create(obj_id, true);
+        std::string key = ctx.arg_as_string(0);
+        if (key.empty() && !ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+            key = "obj:" + std::to_string(ctx.args[0].object_id);
+        }
+        return CallResult::handled_bool(state->map_entries.count(key) > 0);
+    }
+
+    if (m == "set") {
+        // set(index, item) — replace element at index
+        auto* state = get_or_create(obj_id);
+        if (ctx.args.size() >= 2) {
+            int32_t idx = ctx.arg_as_int(0, -1);
+            uint32_t item = ctx.arg_as_object(1, 0);
+            if (idx >= 0 && (size_t)idx < state->elements.size()) {
+                state->elements[idx] = item;
+            }
+        }
+        return CallResult::handled_void();
+    }
+
+    // Generic stubs for less common methods.
+    if (m == "keySet" || m == "values" || m == "entrySet" ||
+        m == "subList" || m == "listIterator" || m == "toArray" ||
+        m == "sort" || m == "getIndex") {
+        return CallResult::handled_void();
+    }
+
+    return CallResult::not_handled();
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // ArchTaskExecutorShadow
 // ─────────────────────────────────────────────────────────────────────────
 CallResult ArchTaskExecutorShadow::dispatch(const CallContext& ctx) {
