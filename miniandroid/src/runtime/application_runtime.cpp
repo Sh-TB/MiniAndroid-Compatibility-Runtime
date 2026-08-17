@@ -1135,6 +1135,11 @@ bool ApplicationRuntime::execute_on_create() {
                           << "ArchTaskExecutor.isMainThread will return false"
                           << std::endl;
             }
+            // EXP-053: Regression test log — must remain TRUE throughout the run.
+            std::cerr << "[THREAD_IDENTITY_TEST] current=" << from_thread
+                      << " main=" << from_looper
+                      << " result=" << (identity_ok ? "TRUE" : "FALSE")
+                      << std::endl;
         }
 
         // EXP-037 Phase B (BLOCKER-019): Pass the manifest's main activity

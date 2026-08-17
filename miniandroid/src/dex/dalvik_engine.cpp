@@ -675,12 +675,15 @@ bool DalvikExecutionEngine::execute_method_internal(
     current_tries_size_ = tries_size;
     current_tries_data_ = tries_data;
     current_tries_data_size_ = tries_data_size;
+    // EXP-053: Clear pending exception at method entry.
+    pending_exception_ = DalvikValue::make_null();
     // EXP-042 Phase 4: Log the first 5000 method entries for diagnostic
     // visibility, then suppress to avoid log spam during long runs.
     // EXP-043 Phase 1: raised from 200 to 5000 to capture the full path
     // to the Intrinsics loop blocker.
+    // EXP-053: raised to 100000 to capture <clinit> paths.
     static thread_local uint64_t method_entry_count = 0;
-    if (method_entry_count < 50000) {
+    if (method_entry_count < 100000) {
         std::cerr << "[METHOD-IN] " << class_name << "." << method_name
                   << " (bytecode_size=" << bytecode.size() << ")" << std::endl;
         method_entry_count++;
@@ -756,6 +759,105 @@ bool DalvikExecutionEngine::execute_method_internal(
     
     current_result_ = nullptr;
     return success;
+}
+
+// EXP-053: Ensure a class is initialized before accessing its static fields.
+//
+// Per JVM spec §2.17.4 (Initialization), a class is initialized the first
+// time it is "actively used". Active use includes:
+//   - new-instance on the class
+//   - invoke-static on a method declared by the class
+//   - sget/sput on a field declared by the class
+//
+// Initialization triggers <clinit> (the static initializer block, which
+// may contain `const + sput` pairs that set the field values, plus other
+// side-effecting code).
+//
+// We call this from the sget/sput handlers and from new-instance. The
+// method is idempotent: a class already marked initialized is a no-op.
+//
+// Notes:
+//   - Framework classes (Landroid/*, Ljava/*, Lkotlin/*) do NOT get
+//     <clinit> executed — they're stubbed by the shadow registry / bridge.
+//   - For application classes (Lorg/telegram/*, Lcom/example/*, etc.),
+//     we look up the class in the DexReport, find its <clinit> method,
+//     and recursively execute it.
+//   - We guard against re-entrancy: if the class is currently being
+//     initialized (in_initialization_ set), we return immediately.
+bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_descriptor) {
+    // Already initialized?
+    if (initialized_classes_.count(class_descriptor) > 0) {
+        return true;
+    }
+    // Framework classes — skip <clinit> (they're stubbed).
+    // The shadow registry / bridge_to_api handles their static fields.
+    // EXP-053: expanded to include androidx/* (these are framework-style
+    // libraries that we don't have full bytecode semantics for; their
+    // R classes are auto-generated and would need Resource table parsing
+    // to populate correctly).
+    if (class_descriptor.rfind("Landroid/", 0) == 0 ||
+        class_descriptor.rfind("Landroidx/", 0) == 0 ||
+        class_descriptor.rfind("Ljava/", 0) == 0 ||
+        class_descriptor.rfind("Lkotlin/", 0) == 0 ||
+        class_descriptor.rfind("Lkotlinx/", 0) == 0 ||
+        class_descriptor.rfind("Lcom/google/", 0) == 0 ||
+        class_descriptor.rfind("Lj$/", 0) == 0) {
+        initialized_classes_.insert(class_descriptor);
+        return true;
+    }
+    // EXP-053: Only run <clinit> for classes in the org.telegram.* namespace.
+    // This avoids the segfault that occurs with AppCompat classes (likely
+    // caused by infinite recursion in their <init> methods calling framework
+    // code that we don't fully support).
+    //
+    // EXP-053: DISABLED for now — even with Telegram-only scope, the
+    // segfault occurs in BuildVars.<clinit> right after the first SGET
+    // returns. Investigation shows it's likely a stack-use-after-free in
+    // the recursive invoke path (MethodInfo* points into a vector that
+    // gets moved/destroyed during the recursive call). Leaving the
+    // infrastructure (initialized_classes_ set, [CLASS_INIT] log) in
+    // place for future investigation.
+    if (true || class_descriptor.rfind("Lorg/telegram/", 0) != 0) {
+        initialized_classes_.insert(class_descriptor);
+        return true;
+    }
+    // Need DexReport to find the class.
+    if (!dex_report_) {
+        initialized_classes_.insert(class_descriptor);
+        return false;
+    }
+    // Find the class in the DexReport.
+    auto class_it = class_info_index_.find(class_descriptor);
+    if (class_it == class_info_index_.end()) {
+        initialized_classes_.insert(class_descriptor);
+        return false;
+    }
+    const dex::ClassInfo& cls_ref = dex_report_->classes[class_it->second];
+    // Mark initialized BEFORE running <clinit> to prevent re-entrancy.
+    initialized_classes_.insert(class_descriptor);
+    // Find the <clinit> method.
+    for (const auto& m : cls_ref.direct_methods) {
+        if (m.name != "<clinit>") continue;
+        if (m.bytecode.empty()) continue;
+        std::cerr << "[CLASS_INIT] class=" << class_descriptor
+                  << " method=<clinit>"
+                  << " bytecode_size=" << m.bytecode.size()
+                  << std::endl;
+        DalvikValue dummy_return;
+        bool ok = try_recursive_invoke(
+            class_descriptor,
+            "<clinit>",
+            /*args=*/{},
+            dummy_return,
+            *current_result_
+        );
+        std::cerr << "[CLASS_INIT] class=" << class_descriptor
+                  << " method=<clinit>"
+                  << " result=" << (ok ? "OK" : "FAILED")
+                  << std::endl;
+        break;
+    }
+    return true;
 }
 
 // EXP-038 (BLOCKER-034): Recursive DEX method invocation.
@@ -1051,8 +1153,50 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             }
         }
 
-        // If parameter count matches arg count, this is likely the right overload
-        if (param_count == arg_count) {
+        // If parameter count matches arg count, this is likely the right overload.
+        // EXP-053 FIX: args.size() includes `this` for instance methods
+        // (invoke-virtual, invoke-direct, invoke-interface), but the descriptor
+        // counts only the parameters (not `this`). So for instance methods,
+        // we compare param_count + 1 == arg_count. For static methods
+        // (invoke-static), args.size() == param_count.
+        //
+        // Heuristic: invoke-direct/virtual/interface always pass `this` as
+        // the first arg, so when we have arg_count > 0, treat it as an
+        // instance method (subtract 1 from arg_count). The `this` register
+        // may be UNINITIALIZED (e.g. when an <init> calls super.<init>()
+        // before the object is fully constructed) — so we can't reliably
+        // check args[0].type == OBJECT_REF. We just subtract 1 if arg_count > 0.
+        //
+        // For static methods (invoke-static), args.size() == param_count
+        // because there's no `this`. But we can't distinguish here without
+        // knowing the opcode. Safe approximation: only subtract 1 if
+        // arg_count > 0 AND arg_count > param_count (which means we have
+        // an extra `this` arg).
+        size_t effective_arg_count = arg_count;
+        if (arg_count > 0 && arg_count > param_count) {
+            effective_arg_count = arg_count - 1;
+        }
+        // EXP-053: debug log for overload resolution (commented out after
+        // validation — keep the source for future debugging).
+        // static thread_local uint64_t overload_dbg_count = 0;
+        // if (overload_dbg_count < 30) {
+        //     std::string args_types;
+        //     for (size_t ai = 0; ai < args.size() && ai < 4; ai++) {
+        //         args_types += " arg[" + std::to_string(ai) + "]=" +
+        //                       std::to_string(static_cast<int>(args[ai].type));
+        //     }
+        //     std::cerr << "[OVERLOAD-DBG] class=" << cls_ref.name
+        //               << " method=" << method_name
+        //               << " desc=" << method.descriptor
+        //               << " param_count=" << param_count
+        //               << " arg_count=" << arg_count
+        //               << " effective=" << effective_arg_count
+        //               << " bytecode_size=" << method.bytecode.size()
+        //               << args_types
+        //               << std::endl;
+        //     overload_dbg_count++;
+        // }
+        if (param_count == effective_arg_count) {
             best_match = &method;
             break;  // exact match, stop searching
         }
@@ -1232,6 +1376,25 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 success = execute_move_result_object(pc_, trace);
                 trace.opcode_name = "move-result-object";
                 break;
+
+            // EXP-053: move-exception (11x: AA|op, 1 code unit).
+            // Moves the thrown exception into register vAA so the catch
+            // handler can access it. We store the exception in a per-method
+            // pending_exception_ slot when THROW jumps to a handler; this
+            // opcode reads from that slot.
+            case Opcode::MOVE_EXCEPTION: {
+                trace.opcode_name = "move-exception";
+                uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
+                // Read the pending exception set by THROW.
+                // If no pending exception (shouldn't happen), use null.
+                DalvikValue exc = pending_exception_;
+                set_register(vAA, exc);
+                trace.operands.push_back({"v" + std::to_string(vAA), exc.to_string()});
+                // Clear the pending exception after move.
+                pending_exception_ = DalvikValue::make_null();
+                pc_ += 1;
+                break;
+            }
             
             // Objects
             case Opcode::NEW_INSTANCE:
@@ -1952,6 +2115,26 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             // method has a try table and what kind of handler would have
             // matched. This does NOT yet implement catch-jumping, just
             // collects evidence for the next experiment.
+            // EXP-053: throw (11x: AA|op, 1 code unit).
+            //
+            // EXP-051: Treat as method-level halt (let caller continue).
+            // EXP-052: Added diagnostic — log whether try table exists and
+            //           whether a matching handler was found.
+            // EXP-053: Implement actual catch-all handler dispatch. When a
+            //           throw occurs:
+            //             1. Look up try_items for one covering current PC.
+            //             2. Decode the encoded_catch_handler_list at
+            //                handler_off (byte offset into the list, which
+            //                starts AFTER the tries[] array).
+            //             3. For each handler pair (type_idx, addr):
+            //                  - If type_idx == 0 (catch-all), jump to addr.
+            //                  - If type_idx matches exception class
+            //                    (TODO: needs type resolution), jump to addr.
+            //             4. If no handler matched, propagate to caller
+            //                (method-level halt, as before).
+            //
+            // For now we only support catch-all handlers. Typed catches
+            // require class hierarchy resolution which is a future task.
             case Opcode::THROW: {
                 trace.opcode_name = "throw";
                 uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
@@ -1959,13 +2142,21 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 std::string exc_class = exc.class_desc.empty()
                                       ? "<unknown>" : exc.class_desc;
 
-                // EXP-052: Exception diagnostic.
-                // Try to find a try_item covering the current PC.
+                // EXP-052/053: Find try_item covering current PC, then
+                // decode the encoded_catch_handler_list to find the
+                // actual handler address.
                 bool has_try_table = (current_tries_size_ > 0);
                 bool handler_found = false;
+                uint32_t try_start = 0, try_end = 0;
                 uint32_t handler_addr = 0;
+                std::string catch_type = "<none>";
+                bool is_catch_all = false;
+
                 if (has_try_table && current_tries_data_ != nullptr) {
+                    // Step 1: Find the try_item covering current PC.
                     // try_item layout: u32 start_addr, u16 insn_count, u16 handler_off
+                    // tries[] is at the START of current_tries_data_.
+                    uint16_t matched_try_idx = 0xFFFF;
                     for (uint16_t i = 0; i < current_tries_size_; i++) {
                         size_t off = i * 8;
                         if (off + 8 > current_tries_data_size_) break;
@@ -1976,25 +2167,123 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         std::memcpy(&count, current_tries_data_ + off + 4, 2);
                         std::memcpy(&handler_off, current_tries_data_ + off + 6, 2);
                         if (pc_ >= start && pc_ < start + count) {
-                            handler_found = true;
-                            handler_addr = handler_off;
+                            matched_try_idx = i;
+                            try_start = start;
+                            try_end = start + count;
+                            // Step 2: handler_off is byte offset into the
+                            // encoded_catch_handler_list (which starts at
+                            // current_tries_data_ + tries_size * 8).
+                            // BUT — actually handler_off is offset from the
+                            // start of the encoded_catch_handler_list (which
+                            // begins with the list_size uleb128).
+                            size_t handler_list_start = static_cast<size_t>(current_tries_size_) * 8;
+                            size_t handler_list_end = current_tries_data_size_;
+                            if (handler_list_start >= handler_list_end) break;
+
+                            // The encoded_catch_handler_list starts with a
+                            // uleb128 list_size, then list_size handlers.
+                            // handler_off is byte offset FROM THE START of
+                            // this list (i.e., from the list_size byte).
+                            size_t handler_abs = handler_list_start + handler_off;
+                            if (handler_abs >= handler_list_end) break;
+
+                            // Decode the handler at handler_abs.
+                            // sleb128 size, then |size| pairs of (uleb128 type_idx, uleb128 addr),
+                            // then catch-all addr if size < 0.
+                            auto read_sleb = [&](size_t& p) -> int32_t {
+                                int32_t result = 0;
+                                int shift = 0;
+                                uint8_t b;
+                                do {
+                                    if (p >= handler_list_end) return 0;
+                                    b = current_tries_data_[p++];
+                                    result |= (b & 0x7F) << shift;
+                                    shift += 7;
+                                } while (b & 0x80);
+                                if (shift < 32 && (b & 0x40)) {
+                                    result |= -(1 << shift);
+                                }
+                                return result;
+                            };
+                            auto read_uleb = [&](size_t& p) -> uint32_t {
+                                uint32_t result = 0;
+                                int shift = 0;
+                                uint8_t b;
+                                do {
+                                    if (p >= handler_list_end) return 0;
+                                    b = current_tries_data_[p++];
+                                    result |= (b & 0x7F) << shift;
+                                    shift += 7;
+                                } while (b & 0x80);
+                                return result;
+                            };
+
+                            size_t p = handler_abs;
+                            int32_t size = read_sleb(p);
+                            int32_t n_pairs = (size >= 0) ? size : -(size + 1);
+                            // Read typed handlers first
+                            for (int h = 0; h < n_pairs; h++) {
+                                uint32_t type_idx = read_uleb(p);
+                                uint32_t addr = read_uleb(p);
+                                (void)type_idx;  // TODO: match exception type
+                                (void)addr;
+                            }
+                            // If size <= 0, there's a catch-all handler at the end
+                            if (size <= 0) {
+                                uint32_t addr = read_uleb(p);
+                                handler_found = true;
+                                handler_addr = addr;
+                                is_catch_all = true;
+                                catch_type = "<catch-all>";
+                            }
                             break;
                         }
                     }
                 }
 
-                std::cerr << "[THROW] in " << current_class_ << "."
-                          << current_method_ << " at PC=0x"
-                          << to_hex(pc_)
-                          << " exception_class=" << exc_class
-                          << " has_try_table=" << (has_try_table ? "YES" : "NO")
-                          << " tries_size=" << current_tries_size_
-                          << " matching_handler=" << (handler_found ? "FOUND" : "NOT_FOUND");
-                if (handler_found) {
-                    std::cerr << " handler_addr=" << handler_addr;
+                // EXP-053: Log the exception event in the required format.
+                std::cerr << "[EXCEPTION] method=" << current_class_ << "."
+                          << current_method_
+                          << " pc=" << pc_
+                          << " exception=" << exc_class
+                          << " try_range=";
+                if (has_try_table && handler_found) {
+                    std::cerr << "[" << try_start << "," << try_end << ")";
+                } else if (has_try_table) {
+                    std::cerr << "(no try covering pc)";
+                } else {
+                    std::cerr << "(none)";
                 }
-                std::cerr << " — halting method (exception handling not implemented)"
-                          << std::endl;
+                std::cerr << " handler=" << (handler_found ? "FOUND" : "NOT_FOUND");
+                if (handler_found) {
+                    std::cerr << " handler_addr=" << handler_addr
+                              << " catch_type=" << catch_type;
+                }
+                std::cerr << std::endl;
+
+                // EXP-053: If catch-all handler found, jump to it instead of halting.
+                if (handler_found && is_catch_all) {
+                    if (handler_addr < bytecode_.size()) {
+                        std::cerr << "[EXCEPTION] → jumping to catch-all handler at PC="
+                                  << handler_addr << std::endl;
+                        // Save the exception for move-exception to read.
+                        pending_exception_ = exc;
+                        trace.status = InstructionTrace::Status::BRANCH_TAKEN;
+                        trace.operands.push_back({"reason", "throw (catch-all handler)"});
+                        trace.operands.push_back({"exception_class", exc_class});
+                        trace.operands.push_back({"handler_addr", std::to_string(handler_addr)});
+                        pc_ = handler_addr;
+                        break;
+                    } else {
+                        std::cerr << "[EXCEPTION] WARNING: handler_addr "
+                                  << handler_addr << " out of bounds (bytecode_size="
+                                  << bytecode_.size() << ") — falling through to halt"
+                                  << std::endl;
+                    }
+                }
+
+                // No catch-all handler — halt the method (propagate to caller).
+                // EXP-052 behavior preserved.
                 trace.status = InstructionTrace::Status::HALT_RETURN;
                 trace.operands.push_back({"reason", "throw (method-level halt)"});
                 trace.operands.push_back({"exception_class", exc_class});
@@ -2906,17 +3195,22 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
     // EXP-042 Phase 2 FIX: never return false on field resolution failure —
     // advance pc_ by 2 and return default 0.
     if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
-    
+
     uint16_t instr = bytecode_[pc];
     uint8_t dest_reg = (instr >> 8) & 0xFF;
     uint16_t field_idx = bytecode_[pc + 1];
-    
+
     FieldResolution field_res = resolve_field(field_idx);
-    
+
+    // EXP-053: Ensure the class is initialized before reading its static field.
+    if (field_res.resolved) {
+        ensure_class_initialized(field_res.class_descriptor);
+    }
+
     DalvikValue result_value;
     result_value.type = DalvikType::INT32;
     result_value.int_val = 0;
-    
+
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
         auto it = static_field_storage_.find(static_key);
@@ -2926,11 +3220,35 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
             static_field_storage_[static_key] = result_value;
         }
     }
-    
+
+    // EXP-053: Trace every sget (for resource ID investigation).
+    // Throttled to first 100 to avoid log explosion.
+    if (field_res.resolved) {
+        static thread_local uint64_t sget_log_count = 0;
+        static thread_local std::string last_method = "";
+        static thread_local uint64_t method_sget_count = 0;
+        if (current_method_ != last_method) {
+            last_method = current_method_;
+            method_sget_count = 0;
+        }
+        bool should_log = (sget_log_count < 100 && method_sget_count < 5);
+        if (should_log) {
+            sget_log_count++;
+            method_sget_count++;
+            std::cerr << "[SGET] class=" << current_class_
+                      << " method=" << current_method_
+                      << " pc=" << pc
+                      << " field=" << field_res.class_descriptor << "."
+                      << field_res.field_name
+                      << " value=" << result_value.int_val
+                      << std::endl;
+        }
+    }
+
     set_register(dest_reg, result_value);
     trace.operands.push_back({"v" + std::to_string(dest_reg), "destination"});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
-    
+
     pc_ = pc + 2;
     return true;
 }
@@ -2939,37 +3257,47 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
     // Format: 21c sget-object vAA, field@BBBB (2 code units)
     // EXP-042 Phase 2 FIX: never return false — advance pc_ on failure.
     if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
-    
+
     uint16_t instr = bytecode_[pc];
     uint8_t dest_reg = (instr >> 8) & 0xFF;
     uint16_t field_idx = bytecode_[pc + 1];
-    
+
     FieldResolution field_res = resolve_field(field_idx);
-    
+
+    // EXP-053: Ensure the class is initialized before reading its static field.
+    if (field_res.resolved) {
+        ensure_class_initialized(field_res.class_descriptor);
+    }
+
     DalvikValue result_value;
     result_value.type = DalvikType::NULL_REF;
     result_value.object_id = 0;
-    
+
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
         auto it = static_field_storage_.find(static_key);
         if (it != static_field_storage_.end()) {
             result_value = it->second;
         } else {
-            if (current_class_.find("ApplicationLoader") != std::string::npos) {
-                std::cerr << "[SGET-MISS] " << current_class_ << "." << current_method_ << " PC=" << pc << " key=" << static_key << std::endl;
-            }
             static_field_storage_[static_key] = result_value;
         }
-        if (current_class_.find("ApplicationLoader") != std::string::npos) {
-            std::cerr << "[SGET-DBG] " << current_class_ << "." << current_method_ << " PC=" << pc << " key=" << static_key << " type=" << static_cast<int>(result_value.type) << " obj=" << result_value.object_id << std::endl;
-        }
     }
-    
+
+    // EXP-053: Trace sget-object (for singleton cache observation).
+    if (field_res.resolved) {
+        std::cerr << "[SGET] class=" << current_class_
+                  << " method=" << current_method_
+                  << " pc=" << pc
+                  << " field=" << field_res.class_descriptor << "."
+                  << field_res.field_name
+                  << " obj_id=" << result_value.object_id
+                  << std::endl;
+    }
+
     set_register(dest_reg, result_value);
     trace.operands.push_back({"v" + std::to_string(dest_reg), "destination"});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
-    
+
     pc_ = pc + 2;
     return true;
 }
@@ -4330,6 +4658,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     //   real Android behavior and prevents heap growth from repeated calls.
 
     log("  API BRIDGE: " + class_name + "." + method);
+
+    // EXP-053: Trace fragment-related calls for the Login path investigation.
+    if (method == "addFragmentToStack" ||
+        method == "presentFragment" ||
+        method == "getClientNotActivatedFragment" ||
+        method == "replaceFragment" ||
+        method == "showFragment") {
+        std::cerr << "[FRAGMENT_NAV] method=" << method
+                  << " receiver_class=" << class_name
+                  << " args=" << args.size()
+                  << std::endl;
+        // Log first arg if it's an object (the Fragment).
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            std::cerr << "[FRAGMENT] create: class=" << args[0].class_desc
+                      << " obj_id=" << args[0].object_id
+                      << std::endl;
+        }
+    }
+    // EXP-053: Trace interface dispatch.
+    if (class_name.find("$-CC;") != std::string::npos ||
+        class_name.find("INavigationLayout") != std::string::npos) {
+        // Only log unique (class, method) pairs to avoid spam.
+        static std::set<std::string> logged;
+        std::string key = class_name + "." + method;
+        if (logged.find(key) == logged.end()) {
+            logged.insert(key);
+            std::cerr << "[INTERFACE_CALL] interface=" << class_name
+                      << " method=" << method
+                      << " args=" << args.size()
+                      << std::endl;
+        }
+    }
 
     // EXP-051: Consult the shadow registry FIRST. If a shadow handles
     // this (class, method) pair, we're done — no need to fall through
