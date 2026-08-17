@@ -646,24 +646,13 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_null();
     }
     if (m == "getIntent") {
-        // EXP-056: Real Android ALWAYS passes a non-null Intent to onCreate,
-        // even on first launch. The Intent's getAction() can be null or
-        // "android.intent.action.MAIN", but the Intent object itself must
-        // be non-null.
-        //
-        // Previously we returned null, which caused ALL intent action
-        // checks to fail, leading to an unconditional goto → super.onCreate()
-        // + return — the method exited before reaching the Fragment setup
-        // path at PC=719.
-        //
-        // Now we return a non-null Intent singleton. The IntentShadow will
-        // handle getAction() (returns null — no action set), which lets the
-        // code fall through to the "no intent action" path → reaches
-        // getClientNotActivatedFragment.
+        // EXP-056: Real Android ALWAYS passes a non-null Intent to onCreate.
         if (heap_) {
             uint32_t intent_id = heap_->get_or_create("Landroid/content/Intent;");
+            std::cerr << "[EXP057-INTENT] getIntent → intent_id=" << intent_id << std::endl;
             return CallResult::handled_object(intent_id, "Landroid/content/Intent;");
         }
+        std::cerr << "[EXP057-INTENT] getIntent → null (heap_ is null!)" << std::endl;
         return CallResult::handled_null();
     }
     if (m == "setIntent") {

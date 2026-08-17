@@ -1,45 +1,29 @@
-# MiniAndroid Project State
+# MiniAndroid Agent State
 
-**Last updated:** 2026-08-17 (EXP-047)
-**Latest commit:** ed0879c
+## Current Experiment
+EXP-057 — Final Login-Path Forensic + Sustained Autonomous Execution
 
-## Current Execution Frontier
+## Current Commit
+cdc5c08 — EXP-056: getIntent() null fix + CollectionShadow null handling
 
-**LaunchActivity.onCreate COMPLETES** with 189 unique methods, 5 JNI calls dispatched, 0 HALT events.
-
-### Checkpoints
-
-| Checkpoint | Status | Evidence |
-|-----------|--------|----------|
-| A: LaunchActivity entered | ✅ | METHOD-IN log |
-| B: LaunchActivity completed | ✅ | Result: SUCCESS |
-| C: Application initialized | ✅ | postInitApplication reaches PC=224+ |
-| D: UserConfig initialized | ✅ | UserConfig.getInstance, loadConfig (492 insns) |
-| E: SharedPreferences accessed | ✅ | SharedPrefsHelper.init, getSharedPreferences |
-| F: NativeLoader reached | ✅ | NativeLoader.initNativeLibs (234 insns) |
-| G: First native dispatched | ✅ | native_getCurrentTime × 5 via JNI bridge |
-| H: Persistent state | ❌ | Not yet tested with two-process proof |
-| I: Login UI state | ❌ | Not yet reached |
+## Baseline Metrics (EXP-056)
+- Unique methods: 442
+- HALT: 0
+- Instructions: 60,437
+- CLASS_INIT: 52
+- EXCEPTION: 10
 
 ## Current Blocker
+getFragmentStack() returns NULL_REF → isEmpty() on null → execution jumps to checkLayout (PC 970) instead of reaching getClientNotActivatedFragment (PC 719).
 
-The execution COMPLETES successfully in 3.4s with 189 methods. The next frontier is:
-1. **Persistent SharedPreferences** — need two-process persistence proof
-2. **Deeper LaunchActivity.onCreate** — the method has 1330 instructions and may reach Login UI paths
-3. **More native methods** — ConnectionsManager.native_init, native_setJava not yet dispatched
+## Key Files
+- src/dex/dalvik_engine.cpp — interpreter + bridge_to_api
+- src/framework/android_shadows.cpp — shadow implementations
+- src/runtime/application_runtime.cpp — runtime wiring
+- docs/EXP056_REPORT.md — prior experiment report
 
-## Solved Blockers (EXP-047)
-
-| ID | Description | Commit |
-|----|-------------|--------|
-| const/4 register/literal extraction | 11n format B\|A\|op was decoded wrong | 3b726b6 |
-| Per-DEX field resolution | field_idx was resolved from merged DEX | fd1de55 |
-| JNI bridge | 12 native method stubs registered | 46e1ee3 |
-
-## Key Evidence Files
-
-- `run/exp047/first_native_call.json` — First native method dispatch proof
-- `docs/EXP046_NATIVE_MAP.md` — 462 native methods inventoried
-- `docs/EXP046_PROGRESS.md` — EXP-046 progress summary
-- `docs/exp045/BASELINE.md` — EXP-045 baseline
-- `docs/exp045/FINAL_STATUS.md` — EXP-045 final status
+## Resume Instructions
+1. Build: `cd miniandroid && bash build_exp042.sh`
+2. Run: `./build_exp042/miniandroid_exp042 download/exp038_telegram/Telegram.apk run/exp057`
+3. Read this file + worklog.md for context
+4. Check run/exp057/ for investigation artifacts

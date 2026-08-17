@@ -208,7 +208,19 @@ class ShadowRegistry {
 public:
     ShadowRegistry() = default;
 
-    void set_heap(HeapAllocator* heap) { heap_ = heap; }
+    void set_heap(HeapAllocator* heap) {
+        heap_ = heap;
+        // EXP-057: Must call init(heap) on ALL already-registered shadows.
+        // Previously, init was only called at registration time — but at
+        // that point heap_ was null (set_heap hasn't been called yet).
+        // So all shadows had heap_ = nullptr, causing getIntent() and
+        // other heap-dependent shadow methods to fail.
+        if (heap_) {
+            for (auto& s : shadows_) {
+                s->init(heap_);
+            }
+        }
+    }
 
     // Register a shadow. The registry takes ownership. Shadows are
     // consulted in registration order; first handled=true wins.
