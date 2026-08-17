@@ -864,6 +864,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     DalvikExecutionResult& result,
     const std::string& method_descriptor
 ) {
+    // EXP-055: Debug — log EVERY entry to try_recursive_invoke (first 20 only).
+    static thread_local uint64_t entry_log_count = 0;
+    if (entry_log_count < 20) {
+        entry_log_count++;
+        std::cerr << "[TRY-ENTRY] " << declaring_class << "." << method_name
+                  << " dex_report=" << (dex_report_ ? "YES" : "NULL")
+                  << std::endl;
+    }
     if (!dex_report_) return false;
 
     // EXP-040: Recursion depth protection
@@ -873,6 +881,15 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;  // Fall back to API bridge
     }
     recursion_depth_++;
+
+    // EXP-055: Debug — log entry to try_recursive_invoke for key methods.
+    if (method_name.find("isClientActivated") != std::string::npos ||
+        method_name.find("getClientNotActivated") != std::string::npos ||
+        method_name.find("addFragmentToStack") != std::string::npos) {
+        std::cerr << "[TRY-INVOKE] " << declaring_class << "." << method_name
+                  << " depth=" << recursion_depth_
+                  << std::endl;
+    }
 
     // Convert declaring_class to DEX descriptor form if needed
     // declaring_class may be "Lcom/foo/Bar;" (descriptor) or "com.foo.Bar" (readable)
@@ -1030,6 +1047,15 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // EXP-045 Phase 2: Use O(1) class lookup index instead of linear search.
     auto class_it = class_info_index_.find(class_descriptor);
     if (class_it == class_info_index_.end()) {
+        // EXP-055: Debug — log when class not found.
+        static thread_local uint64_t not_found_count = 0;
+        if (not_found_count < 10 && method_name.find("isClientActivated") != std::string::npos) {
+            not_found_count++;
+            std::cerr << "[RET-NOTFOUND] class_descriptor=" << class_descriptor
+                      << " method=" << method_name
+                      << " (class not in index)"
+                      << std::endl;
+        }
         recursion_depth_--;
         return false;  // class not found in DEX, bridge to API
     }
@@ -1207,6 +1233,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // EXP-054: Save pending_exception_ so a throw in the callee doesn't
         // corrupt the caller's exception state.
         auto saved_pending_exception = pending_exception_;
+        // EXP-055: Save last_invoke_return_ so the callee's return value
+        // doesn't corrupt the caller's pending return from a different call.
+        auto saved_last_invoke_return = last_invoke_return_;
 
         halted_on_return_ = false;
         halted_ = false;
@@ -1214,6 +1243,11 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         uint32_t regs_size = 16;
         uint32_t ins_size = static_cast<uint32_t>(args.size());
         uint32_t outs_size = 4;
+
+        // EXP-055: Debug log before execute_method_internal.
+        std::cerr << "[RET-BEFORE] " << cls_ref.name << "." << method.name
+                  << " bytecode_size=" << method.bytecode.size()
+                  << std::endl;
 
         execute_method_internal(
             cls_ref.name,
@@ -1233,6 +1267,13 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         halted_on_return_ = false;
         halted_ = false;
         halt_reason_.clear();
+
+        // EXP-055: Propagate the return value from execute_method_internal.
+        // execute_return/execute_return_object stores the return value in
+        // last_invoke_return_. Copy it to return_val BEFORE restoring state.
+        return_val = last_invoke_return_;
+
+        // Restore saved state.
         bytecode_ = saved_bytecode;
         pc_ = saved_pc;
         current_registers_ = saved_registers;
@@ -1240,16 +1281,30 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         current_method_ = saved_method;
         current_dex_index_ = saved_dex_index;
         pc_visit_count_ = saved_pc_visit_count;
-        // EXP-052: Restore tries state.
         current_tries_size_ = saved_tries_size;
         current_tries_data_ = saved_tries_data;
         current_tries_data_size_ = saved_tries_data_size;
-        // EXP-054: Restore current_result_ and pending_exception_.
         current_result_ = saved_current_result;
         pending_exception_ = saved_pending_exception;
+        last_invoke_return_ = saved_last_invoke_return;
 
-        return_val = DalvikValue::make_void();
         log("✅ RECURSIVE INVOKE completed: " + cls_ref.name + "." + method.name);
+        // EXP-055: Log isClientActivated return value.
+        // Use both cls_ref.name AND class_descriptor for matching.
+        std::string full_name = cls_ref.name + "." + method.name;
+        // EXP-055: Temporary broad log to verify return value propagation.
+        static thread_local uint64_t ret_log_count = 0;
+        if (ret_log_count < 5 ||
+            full_name.find("isClientActivated") != std::string::npos ||
+            full_name.find("getClientNotActivated") != std::string::npos ||
+            full_name.find("addFragmentToStack") != std::string::npos) {
+            ret_log_count++;
+            std::cerr << "[RET] " << full_name
+                      << " val=" << return_val.int_val
+                      << " type=" << static_cast<int>(return_val.type)
+                      << " obj=" << return_val.object_id
+                      << std::endl;
+        }
         recursion_depth_--;
         return true;
     }
@@ -3098,7 +3153,20 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
     // just return null. Previously this returned false and caused infinite
     // loops in ComponentActivity.onCreate, UserConfig.isClientActivated,
     // FragmentActivity.onCreate, etc.
-    
+
+    // EXP-055: Debug — log iget-object result for isClientActivated investigation.
+    if (current_class_.find("UserConfig") != std::string::npos &&
+        (current_method_ == "isClientActivated" || current_method_ == "getCurrentUser")) {
+        std::cerr << "[IGET-OBJ-DBG] " << current_class_ << "." << current_method_
+                  << " pc=" << pc
+                  << " field=" << field_res.class_descriptor << "." << field_res.field_name
+                  << " obj_reg_type=" << static_cast<int>(obj_ref.type)
+                  << " obj_id=" << obj_ref.object_id
+                  << " result_type=" << static_cast<int>(result_value.type)
+                  << " result_obj=" << result_value.object_id
+                  << std::endl;
+    }
+
     set_register(dest_reg, result_value);
     
     trace.operands.push_back({"v" + std::to_string(dest_reg), "destination"});
@@ -3868,16 +3936,6 @@ bool DalvikExecutionEngine::execute_return_void(uint32_t pc, InstructionTrace& t
 
 bool DalvikExecutionEngine::execute_return(uint32_t pc, InstructionTrace& trace) {
     // Format: 11x [op] vAA (1 code unit)
-    // EXP-042 Phase 2 FIX: The previous bounds check `pc + 1 >= bytecode_.size()`
-    // was wrong for 1-unit instructions. When `return` is the LAST instruction
-    // of a method (very common: the method ends with `return v0`), pc+1 == size
-    // and the check failed, returning false WITHOUT advancing pc_. The caller
-    // then re-fetched the same `return` opcode 50 000 times until the loop
-    // detector halted the method. This was the cause of:
-    //   - Util.castNonNull looping at PC=0
-    //   - AndroidUtilities.isTablet looping at PC=13
-    //   - AndroidUtilities.isTabletForce looping at PC=21
-    //   - All other "method exits at 50 001 instructions" cases.
     if (pc >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
@@ -3888,20 +3946,27 @@ bool DalvikExecutionEngine::execute_return(uint32_t pc, InstructionTrace& trace)
     trace.status = InstructionTrace::Status::HALT_RETURN;
     trace.return_value = val;
     trace.operands.push_back({"v" + std::to_string(ret_reg), val.to_string()});
+    
+    // EXP-055: Store the return value so try_recursive_invoke can
+    // propagate it to the caller. Previously, return_val was always
+    // make_void() — so every recursive invoke returned void, and
+    // move-result after an invoke always got 0/null. This caused
+    // isClientActivated to return void (treated as false), which
+    // happened to be correct for the login path but was fundamentally
+    // broken for any method that returns a non-zero value.
+    last_invoke_return_ = val;
     
     halted_ = true;
     halted_on_return_ = true;
     
     log("  RETURN " + val.to_string() + " at " + to_hex(pc));
     
-    pc_ = pc + 1;  // EXP-042: 11x format is 1 code unit, not 2.
+    pc_ = pc + 1;
     return true;
 }
 
 bool DalvikExecutionEngine::execute_return_object(uint32_t pc, InstructionTrace& trace) {
     // Format: 11x [op] vAA (1 code unit)
-    // EXP-042 Phase 2 FIX: Same bounds-check bug as execute_return — see above.
-    // This was the direct cause of Util.castNonNull looping at PC=0 forever.
     if (pc >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
@@ -3913,12 +3978,15 @@ bool DalvikExecutionEngine::execute_return_object(uint32_t pc, InstructionTrace&
     trace.return_value = val;
     trace.operands.push_back({"v" + std::to_string(ret_reg), val.to_string()});
     
+    // EXP-055: Store the return value (same as execute_return).
+    last_invoke_return_ = val;
+    
     halted_ = true;
     halted_on_return_ = true;
     
     log("  RETURN_OBJECT " + val.to_string() + " at " + to_hex(pc));
     
-    pc_ = pc + 1;  // EXP-042: 11x format is 1 code unit, not 2.
+    pc_ = pc + 1;
     return true;
 }
 
@@ -4091,8 +4159,10 @@ bool DalvikExecutionEngine::execute_if_eqz(uint32_t pc, InstructionTrace& trace)
     int16_t offset = static_cast<int16_t>(bytecode_[pc + 1]);
 
     DalvikValue val = get_register(test_reg);
+    // EXP-055: Treat OBJECT_REF with object_id=0 as null (same as NULL_REF).
     bool is_zero = (val.type == DalvikType::NULL_REF) ||
                    (val.type == DalvikType::INT32 && val.int_val == 0) ||
+                   (val.type == DalvikType::OBJECT_REF && val.object_id == 0) ||
                    (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET);
 
     if (is_zero) {
@@ -4127,9 +4197,15 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
     int16_t offset = static_cast<int16_t>(bytecode_[pc + 1]);
     
     DalvikValue val = get_register(test_reg);
-    bool is_nonzero = !(val.type == DalvikType::NULL_REF || 
+    // EXP-055: Treat OBJECT_REF with object_id=0 as null (same as NULL_REF).
+    // Previously, iget-object on a null field returned OBJECT_REF with
+    // object_id=0, but if-nez treated it as non-zero (because the type
+    // was OBJECT_REF, not NULL_REF). This caused isClientActivated to
+    // return true (1) when currentUser was actually null.
+    bool is_nonzero = !(val.type == DalvikType::NULL_REF ||
                        (val.type == DalvikType::INT32 && val.int_val == 0) ||
                        (val.type == DalvikType::BOOLEAN && val.int_val == 0) ||
+                       (val.type == DalvikType::OBJECT_REF && val.object_id == 0) ||
                        (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET));
     
     // EXP-046: Log if-nez in NativeLoader.initNativeLibs
@@ -4636,6 +4712,32 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // * Singletons are cached by class descriptor in api_singletons_ so that
     //   `Context.getResources()` always returns the same object. This matches
     //   real Android behavior and prevents heap growth from repeated calls.
+
+    // EXP-055: Trace isClientActivated return value for login path investigation.
+    if (current_class_.find("UserConfig") != std::string::npos &&
+        method == "isClientActivated") {
+        std::cerr << "[LOGIN_PATH] UserConfig.isClientActivated in bridge_to_api"
+                  << " (method fell through to API bridge)"
+                  << std::endl;
+    }
+    // EXP-055: Trace getClientNotActivatedFragment for login path.
+    if (current_class_.find("LaunchActivity") != std::string::npos &&
+        method == "getClientNotActivatedFragment") {
+        std::cerr << "[LOGIN_PATH] LaunchActivity.getClientNotActivatedFragment in bridge_to_api"
+                  << std::endl;
+    }
+    // EXP-055: Trace addFragmentToStack for fragment navigation.
+    if (method == "addFragmentToStack") {
+        std::cerr << "[FRAGMENT_PATH] addFragmentToStack called"
+                  << " class=" << class_name
+                  << " args=" << args.size()
+                  << std::endl;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            std::cerr << "[FRAGMENT_CREATE] class=" << args[0].class_desc
+                      << " obj_id=" << args[0].object_id
+                      << std::endl;
+        }
+    }
 
     log("  API BRIDGE: " + class_name + "." + method);
 
