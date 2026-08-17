@@ -45,6 +45,17 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     uint32_t obj_id = ctx.receiver_id;
 
+    // EXP-056: Do not handle calls on null objects (object_id=0).
+    // When a method returns null (e.g., getFragmentStack returns null
+    // because the field was never initialized), calling isEmpty() on
+    // that null should NOT create a fake empty collection — it should
+    // fall through to the legacy bridge which returns void/default.
+    // Otherwise, isEmpty() returns true on a null list, which causes
+    // if-nez to branch incorrectly.
+    if (obj_id == 0 && m != "<init>") {
+        return CallResult::not_handled();
+    }
+
     // <init> — no-op, just mark the collection as existing.
     if (m == "<init>") {
         bool is_map = (ctx.class_name.find("Map") != std::string::npos ||
@@ -528,7 +539,16 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_object(ctx.receiver_id, "Landroid/content/Intent;");
     }
     if (m == "getAction") {
+        // EXP-056: Real Android returns null from Intent.getAction() when
+        // no action is set.
+        if (pi->action.empty()) {
+            return CallResult::handled_null();
+        }
         return CallResult::handled_string(pi->action);
+    }
+    if (m == "getData") {
+        // EXP-056: No URI set on the default Intent — return null.
+        return CallResult::handled_null();
     }
     if (m == "setClass" || m == "setClassName" || m == "setComponent") {
         // setClass(Context, Class), setClassName(Context, String),
@@ -626,7 +646,24 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_null();
     }
     if (m == "getIntent") {
-        // Return null Intent. Telegram checks for null and falls through.
+        // EXP-056: Real Android ALWAYS passes a non-null Intent to onCreate,
+        // even on first launch. The Intent's getAction() can be null or
+        // "android.intent.action.MAIN", but the Intent object itself must
+        // be non-null.
+        //
+        // Previously we returned null, which caused ALL intent action
+        // checks to fail, leading to an unconditional goto → super.onCreate()
+        // + return — the method exited before reaching the Fragment setup
+        // path at PC=719.
+        //
+        // Now we return a non-null Intent singleton. The IntentShadow will
+        // handle getAction() (returns null — no action set), which lets the
+        // code fall through to the "no intent action" path → reaches
+        // getClientNotActivatedFragment.
+        if (heap_) {
+            uint32_t intent_id = heap_->get_or_create("Landroid/content/Intent;");
+            return CallResult::handled_object(intent_id, "Landroid/content/Intent;");
+        }
         return CallResult::handled_null();
     }
     if (m == "setIntent") {
