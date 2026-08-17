@@ -520,6 +520,83 @@ private:
     std::map<uint32_t, std::unique_ptr<ViewNode>> nodes_;
 };
 
+// ─────────────────────────────────────────────────────────────────────────
+// CollectionShadow — real List/ArrayList/Map semantics with per-instance state.
+//
+// Instead of a global `List.isEmpty → true` stub, this shadow tracks real
+// collection state per heap object. Each collection instance gets a
+// CollectionState (vector of elements) keyed by object_id.
+//
+// Supported operations:
+//   * List.add(item) → append, return true
+//   * List.get(index) → return element at index
+//   * List.size() → return count
+//   * List.isEmpty() → return count == 0
+//   * List.clear() → clear elements
+//   * List.remove(index) → remove at index
+//   * Map.put(key, value) → store key-value pair
+//   * Map.get(key) → return value for key
+//   * Map.size() → return count
+//   * Map.isEmpty() → return count == 0
+//   * Map.containsKey(key) → return true if key exists
+//   * Iterator.hasNext() → check position < size
+//   * Iterator.next() → return element at position++
+//
+// This is NOT a stub — it's real state-based semantics. The runtime's
+// List objects actually hold elements and report correct sizes.
+// ─────────────────────────────────────────────────────────────────────────
+class CollectionShadow : public Shadow {
+public:
+    struct CollectionState {
+        std::vector<uint32_t> elements;  // object_ids of elements
+        std::map<std::string, uint32_t> map_entries;  // key → value object_id
+        size_t iterator_position = 0;
+        bool is_map = false;
+    };
+
+    std::string name() const override { return "Collection"; }
+    void init(HeapAllocator* heap) override { heap_ = heap; }
+
+    bool handles_class(const std::string& class_name) const override {
+        return class_name == "Ljava/util/ArrayList;" ||
+               class_name == "Ljava/util/LinkedList;" ||
+               class_name == "Ljava/util/List;" ||
+               class_name == "Ljava/util/Collection;" ||
+               class_name == "Ljava/util/CopyOnWriteArrayList;" ||
+               class_name == "Ljava/util/HashMap;" ||
+               class_name == "Ljava/util/Map;" ||
+               class_name == "Ljava/util/HashSet;" ||
+               class_name == "Ljava/util/Set;" ||
+               class_name == "Ljava/util/Arrays$ArrayList;" ||
+               class_name == "Ljava/util/Collections$UnmodifiableRandomAccessList;" ||
+               class_name == "Ljava/util/Collections$SingletonList;" ||
+               class_name == "Ljava/util/Iterator;" ||
+               class_name == "Ljava/util/ListIterator;" ||
+               class_name.find("/ArrayList;") != std::string::npos ||
+               class_name.find("/HashMap;") != std::string::npos ||
+               class_name.find("/HashSet;") != std::string::npos ||
+               class_name.find("ConcurrentHashMap") != std::string::npos;
+    }
+
+    CallResult dispatch(const CallContext& ctx) override;
+
+    std::vector<std::string> implemented_methods() const override {
+        return {"add", "get", "size", "isEmpty", "clear", "remove",
+                "contains", "iterator", "hasNext", "next",
+                "put", "containsKey", "keySet", "values", "entrySet",
+                "getIndex", "set"};
+    }
+    std::vector<std::string> stubbed_methods() const override {
+        return {"subList", "listIterator", "toArray", "sort"};
+    }
+
+    // Get or create CollectionState for a heap object.
+    CollectionState* get_or_create(uint32_t object_id, bool is_map = false);
+
+private:
+    std::map<uint32_t, CollectionState> collections_;
+};
+
 }} // namespace miniandroid::framework
 
 #endif // MINIANDROID_FRAMEWORK_ANDROID_SHADOWS_H

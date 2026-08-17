@@ -252,6 +252,7 @@ void ApplicationRuntime::initialize_shadow_registry() {
     // EXP-052: ArchTaskExecutorShadow registered FIRST so it wins
     // over the legacy bridge_to_api if/else chain for isMainThread.
     shadow_arch_task_ = shadow_registry_->register_shadow<ArchTaskExecutorShadow>();
+    shadow_collection_ = shadow_registry_->register_shadow<CollectionShadow>();  // EXP-054
     shadow_thread_   = shadow_registry_->register_shadow<ThreadShadow>();
     shadow_looper_   = shadow_registry_->register_shadow<LooperShadow>();
     shadow_handler_  = shadow_registry_->register_shadow<HandlerShadow>();

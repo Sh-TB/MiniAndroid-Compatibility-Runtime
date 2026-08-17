@@ -73,6 +73,7 @@ namespace miniandroid {
         class IntentShadow;
         class ViewShadow;
         class ArchTaskExecutorShadow;  // EXP-052
+        class CollectionShadow;  // EXP-054
     }
 }
 
@@ -732,6 +733,7 @@ private:
     framework::IntentShadow*    shadow_intent_   = nullptr;
     framework::ViewShadow*      shadow_view_     = nullptr;
     framework::ArchTaskExecutorShadow* shadow_arch_task_ = nullptr;  // EXP-052
+    framework::CollectionShadow* shadow_collection_ = nullptr;  // EXP-054
 
     // EXP-051: Initialize the shadow registry. Called once during
     // ApplicationRuntime construction. Wires the ThreadShadow and
