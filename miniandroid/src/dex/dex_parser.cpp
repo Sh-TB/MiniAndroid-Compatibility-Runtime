@@ -751,7 +751,43 @@ bool DexParser::parse_code_item(const uint8_t* data, uint32_t offset, MethodInfo
             log("  ❌ Instructions extend beyond file! insns_size=" + std::to_string(code_item.insns_size));
         }
     }
-    
+
+    // EXP-052: Capture the tries[] + encoded_catch_handler_list section.
+    //
+    // Per AOSP dalvik-format.html: when tries_size > 0, the bytes immediately
+    // after insns[] are:
+    //   padding (4 bytes if insns_size is odd)
+    //   try_item[tries_size]  (each 8 bytes: u32 start_addr, u16 insn_count, u16 handler_off)
+    //   encoded_catch_handler_list (variable length, ULEB128-encoded)
+    //
+    // We don't decode here — we keep the raw bytes in method.tries_data
+    // and let the engine decode them on demand when a throw happens.
+    // This adds at most a few hundred bytes per method that has try/catch.
+    method.tries_size = code_item.tries_size;
+    if (code_item.tries_size > 0) {
+        // Compute the start of the tries[] array.
+        // insns are 2 bytes each; if insns_size is odd, the tries[] array
+        // is padded to 4-byte alignment.
+        size_t insns_bytes = code_item.insns_size * sizeof(uint16_t);
+        size_t padding = (insns_bytes % 4 != 0) ? (4 - insns_bytes % 4) : 0;
+        size_t tries_start = offset + sizeof(DexCodeItem) + insns_bytes + padding;
+        size_t tries_bytes = static_cast<size_t>(code_item.tries_size) * 8;
+        // The encoded_catch_handler_list follows. We don't know its length
+        // up-front, so we copy up to the end of the file (bounded by current_size_).
+        // The engine will decode it lazily.
+        if (tries_start + tries_bytes <= current_size_) {
+            // Be generous: include up to 4 KB of catch-handler data.
+            // Real methods rarely have more than a handful of handlers.
+            size_t max_catch_data = 4096;
+            size_t available = current_size_ - tries_start;
+            size_t to_copy = std::min(available, tries_bytes + max_catch_data);
+            method.tries_data.resize(to_copy);
+            std::memcpy(method.tries_data.data(), data + tries_start, to_copy);
+        } else {
+            log("  ⚠️ tries[] extends beyond file — skipping tries capture");
+        }
+    }
+
     return true;
 }
 

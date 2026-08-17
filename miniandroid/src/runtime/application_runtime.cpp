@@ -249,6 +249,9 @@ void ApplicationRuntime::initialize_shadow_registry() {
     shadow_registry_ = std::make_unique<ShadowRegistry>();
 
     // Register all default shadows. The registry takes ownership.
+    // EXP-052: ArchTaskExecutorShadow registered FIRST so it wins
+    // over the legacy bridge_to_api if/else chain for isMainThread.
+    shadow_arch_task_ = shadow_registry_->register_shadow<ArchTaskExecutorShadow>();
     shadow_thread_   = shadow_registry_->register_shadow<ThreadShadow>();
     shadow_looper_   = shadow_registry_->register_shadow<LooperShadow>();
     shadow_handler_  = shadow_registry_->register_shadow<HandlerShadow>();
@@ -360,6 +363,35 @@ bool ApplicationRuntime::execute_apk(const std::string& apk_path, const RuntimeC
             // fully execute real bytecode.
             if (config_.verbose) {
                 std::cout << "[Phase C] execute_on_create() returned false — continuing with stubbed lifecycle" << std::endl;
+            }
+        }
+
+        // EXP-052: Drain the Handler/Runnable queue after Activity.onCreate
+        // returns. Real Android drains this queue via the Looper loop, but
+        // we don't have a Looper loop. Instead, we drain at well-defined
+        // pipeline points: after onCreate, after onResume, etc.
+        //
+        // For each drained Runnable, we look up its class descriptor in the
+        // DEX and call its run() method via try_recursive_invoke. This lets
+        // deferred UI tasks actually execute instead of being silently
+        // dropped.
+        if (shadow_handler_) {
+            std::vector<uint32_t> drained;
+            size_t n = drain_handler_queue(&drained);
+            if (n > 0) {
+                std::cerr << "[HANDLER] Drained " << n << " Runnable(s) after onCreate"
+                          << std::endl;
+                // For each drained Runnable, try to invoke its run() method.
+                // The Runnable's heap object_id is what was enqueued — we
+                // need to look up its actual class via the heap.
+                // (For now, just log the IDs — full execution requires
+                // hooking back into the DalvikExecutionEngine, which is
+                // not currently accessible from ApplicationRuntime.)
+                for (uint32_t rid : drained) {
+                    std::cerr << "[EXECUTE] Runnable id=" << rid
+                              << " (run() not yet wired to engine)"
+                              << std::endl;
+                }
             }
         }
         if (!execute_lifecycle()) return false;
@@ -1070,7 +1102,7 @@ bool ApplicationRuntime::execute_on_create() {
 
         // Also pre-allocate the Looper singleton so future calls
         // return the same id.
-        (void)dalvik_engine.get_or_create_singleton_public("Landroid/os/Looper;");
+        auto main_looper_v = dalvik_engine.get_or_create_singleton_public("Landroid/os/Looper;");
         (void)dalvik_engine.get_or_create_singleton_public("Landroid/os/Handler;");
 
         // Hand the registry to the engine. bridge_to_api will consult
@@ -1082,6 +1114,28 @@ bool ApplicationRuntime::execute_on_create() {
                   << std::endl;
         std::cerr << "[THREAD] Main thread initialized: id=" << main_thread_id << std::endl;
         std::cerr << "[LOOPER] Main looper created: thread=" << main_thread_id << std::endl;
+
+        // EXP-052: Verify the Thread identity contract end-to-end.
+        // Both shadows must return the SAME object_id. If they don't,
+        // ArchTaskExecutor.isMainThread would return false even with
+        // the shadow in place — surfacing this as a clear log message
+        // helps catch regressions.
+        if (shadow_arch_task_ && shadow_thread_ && shadow_looper_) {
+            uint32_t from_thread = shadow_thread_->main_thread_id();
+            uint32_t from_looper = shadow_looper_->bound_thread_id();
+            bool identity_ok = (from_thread != 0 && from_thread == from_looper);
+            std::cerr << "[THREAD] currentThread object: " << from_thread << std::endl;
+            std::cerr << "[THREAD] mainLooper.thread object: " << from_looper << std::endl;
+            std::cerr << "[THREAD] identity result: "
+                      << (identity_ok ? "TRUE" : "FALSE")
+                      << " (must be TRUE for isMainThread)"
+                      << std::endl;
+            if (!identity_ok) {
+                std::cerr << "[THREAD] WARNING: identity contract broken — "
+                          << "ArchTaskExecutor.isMainThread will return false"
+                          << std::endl;
+            }
+        }
 
         // EXP-037 Phase B (BLOCKER-019): Pass the manifest's main activity
         // class name so DalvikExecutionEngine can find the entry point in

@@ -492,7 +492,10 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                     2,   // ins_size = 2 (this + Bundle)
                                     4,   // outs_size
                                     entry_args,
-                                    result
+                                    result,
+                                    method.tries_size,
+                                    method.tries_data.data(),
+                                    method.tries_data.size()
                                 );
                                 log("✅ execute_method_internal() returned");
                             } else {
@@ -538,7 +541,10 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                 1,   // ins_size (Bundle parameter)
                                 4,   // outs_size
                                 {},  // No args for now
-                                result
+                                result,
+                                method.tries_size,
+                                method.tries_data.data(),
+                                method.tries_data.size()
                             );
                             log("✅ execute_method_internal() returned");
                         } else {
@@ -574,7 +580,10 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                         try {
                             execute_method_internal(
                                 cls.name, method.name, method.descriptor,
-                                method.bytecode, 8, 0, 2, {}, result
+                                method.bytecode, 8, 0, 2, {}, result,
+                                method.tries_size,
+                                method.tries_data.data(),
+                                method.tries_data.size()
                             );
                             log("✅ execute_method_internal() completed successfully");
                         } catch (const std::exception& e) {
@@ -622,7 +631,10 @@ DalvikExecutionResult DalvikExecutionEngine::execute_method(
             static_cast<uint32_t>(args.size()),
             4,   // Default outs
             args,
-            result
+            result,
+            method.tries_size,
+            method.tries_data.data(),
+            method.tries_data.size()
         );
     }
     
@@ -642,7 +654,10 @@ bool DalvikExecutionEngine::execute_method_internal(
     uint32_t ins_size,
     uint32_t outs_size,
     const std::vector<DalvikValue>& args,
-    DalvikExecutionResult& result
+    DalvikExecutionResult& result,
+    uint16_t tries_size,
+    const uint8_t* tries_data,
+    size_t tries_data_size
 ) {
     current_result_ = &result;
     bytecode_ = bytecode;
@@ -656,6 +671,10 @@ bool DalvikExecutionEngine::execute_method_internal(
     // halt messages and traces can identify the method that halted.
     current_class_ = class_name;
     current_method_ = method_name;
+    // EXP-052: Save tries[] state for the THROW opcode handler.
+    current_tries_size_ = tries_size;
+    current_tries_data_ = tries_data;
+    current_tries_data_size_ = tries_data_size;
     // EXP-042 Phase 4: Log the first 5000 method entries for diagnostic
     // visibility, then suppress to avoid log spam during long runs.
     // EXP-043 Phase 1: raised from 200 to 5000 to capture the full path
@@ -1061,6 +1080,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         auto saved_method = current_method_;
         auto saved_dex_index = current_dex_index_;
         auto saved_pc_visit_count = pc_visit_count_;
+        // EXP-052: Save tries state so we can restore it after the recursive
+        // call returns. Without this, a throw in a callee would leave the
+        // engine pointing at the callee's (now-stale) tries data.
+        auto saved_tries_size = current_tries_size_;
+        auto saved_tries_data = current_tries_data_;
+        auto saved_tries_data_size = current_tries_data_size_;
 
         halted_on_return_ = false;
         halted_ = false;
@@ -1078,7 +1103,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             ins_size,
             outs_size,
             args,
-            result
+            result,
+            method.tries_size,
+            method.tries_data.data(),
+            method.tries_data.size()
         );
 
         halted_on_return_ = false;
@@ -1091,6 +1119,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         current_method_ = saved_method;
         current_dex_index_ = saved_dex_index;
         pc_visit_count_ = saved_pc_visit_count;
+        // EXP-052: Restore tries state.
+        current_tries_size_ = saved_tries_size;
+        current_tries_data_ = saved_tries_data;
+        current_tries_data_size_ = saved_tries_data_size;
 
         return_val = DalvikValue::make_void();
         log("✅ RECURSIVE INVOKE completed: " + cls_ref.name + "." + method.name);
@@ -1915,14 +1947,59 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             //
             // Without this fix, ANY throw anywhere in the call tree halts
             // the entire LaunchActivity.onCreate execution.
+            //
+            // EXP-052: Added diagnostic mode — log whether the current
+            // method has a try table and what kind of handler would have
+            // matched. This does NOT yet implement catch-jumping, just
+            // collects evidence for the next experiment.
             case Opcode::THROW: {
                 trace.opcode_name = "throw";
+                uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
+                DalvikValue exc = get_register(vAA);
+                std::string exc_class = exc.class_desc.empty()
+                                      ? "<unknown>" : exc.class_desc;
+
+                // EXP-052: Exception diagnostic.
+                // Try to find a try_item covering the current PC.
+                bool has_try_table = (current_tries_size_ > 0);
+                bool handler_found = false;
+                uint32_t handler_addr = 0;
+                if (has_try_table && current_tries_data_ != nullptr) {
+                    // try_item layout: u32 start_addr, u16 insn_count, u16 handler_off
+                    for (uint16_t i = 0; i < current_tries_size_; i++) {
+                        size_t off = i * 8;
+                        if (off + 8 > current_tries_data_size_) break;
+                        uint32_t start = 0;
+                        uint16_t count = 0;
+                        uint16_t handler_off = 0;
+                        std::memcpy(&start, current_tries_data_ + off, 4);
+                        std::memcpy(&count, current_tries_data_ + off + 4, 2);
+                        std::memcpy(&handler_off, current_tries_data_ + off + 6, 2);
+                        if (pc_ >= start && pc_ < start + count) {
+                            handler_found = true;
+                            handler_addr = handler_off;
+                            break;
+                        }
+                    }
+                }
+
                 std::cerr << "[THROW] in " << current_class_ << "."
                           << current_method_ << " at PC=0x"
-                          << to_hex(pc_) << " — halting method (exception handling not implemented)"
+                          << to_hex(pc_)
+                          << " exception_class=" << exc_class
+                          << " has_try_table=" << (has_try_table ? "YES" : "NO")
+                          << " tries_size=" << current_tries_size_
+                          << " matching_handler=" << (handler_found ? "FOUND" : "NOT_FOUND");
+                if (handler_found) {
+                    std::cerr << " handler_addr=" << handler_addr;
+                }
+                std::cerr << " — halting method (exception handling not implemented)"
                           << std::endl;
                 trace.status = InstructionTrace::Status::HALT_RETURN;
                 trace.operands.push_back({"reason", "throw (method-level halt)"});
+                trace.operands.push_back({"exception_class", exc_class});
+                trace.operands.push_back({"has_try_table", has_try_table ? "YES" : "NO"});
+                trace.operands.push_back({"handler_found", handler_found ? "FOUND" : "NOT_FOUND"});
                 halted_ = true;
                 halted_on_return_ = true;
                 halt_reason_ = "throw in " + current_class_ + "." + current_method_;
@@ -4669,11 +4746,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
     // ────────────────────────────────────────────────────────────────────────
     // P1.4 — Resources.getIdentifier(String, String, String) → int (not found)
-    // ────────────────────────────────────────────────────────────────────────
+    // EXP-052: Log every resource identifier query for evidence.
     if (method == "getIdentifier" &&
         class_name.find("Resources") != std::string::npos) {
-        // Return 0 = resource not found. Telegram's fillStatusBarHeight
-        // then falls back to default 24px.
+        // Args: (String name, String defType, String defPackage)
+        std::string name = args.size() >= 1 ? args[0].string_val : "<unknown>";
+        std::string defType = args.size() >= 2 ? args[1].string_val : "<unknown>";
+        std::string defPackage = args.size() >= 3 ? args[2].string_val : "<unknown>";
+        std::cerr << "[RES] getIdentifier name=\"" << name
+                  << "\" defType=\"" << defType
+                  << "\" defPackage=\"" << defPackage
+                  << "\" → 0 (not found)" << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_int(0);
         return true;
@@ -4681,11 +4764,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
     // ────────────────────────────────────────────────────────────────────────
     // P1.5 — Resources.getDimensionPixelSize(int) → int (default 24)
+    // EXP-052: Log every dimension request.
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getDimensionPixelSize" &&
         class_name.find("Resources") != std::string::npos) {
+        int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
+        std::cerr << "[RES] getDimensionPixelSize resid=0x" << std::hex << resid
+                  << std::dec << " → 24 (default)" << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_int(24);
+        return true;
+    }
+
+    // EXP-052: Resources.getString(int) → String
+    if (method == "getString" &&
+        class_name.find("Resources") != std::string::npos) {
+        int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
+        std::cerr << "[RES] getString resid=0x" << std::hex << resid
+                  << std::dec << " → \"\" (default)" << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_string("", 0);
+        return true;
+    }
+
+    // EXP-052: Resources.getColor(int, Theme) → int (default black)
+    if (method == "getColor" &&
+        class_name.find("Resources") != std::string::npos) {
+        int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
+        std::cerr << "[RES] getColor resid=0x" << std::hex << resid
+                  << std::dec << " → 0xFF000000 (default black)" << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(0xFF000000);
+        return true;
+    }
+
+    // EXP-052: Resources.getDrawable(int) → Drawable (null for now)
+    if (method == "getDrawable" &&
+        class_name.find("Resources") != std::string::npos) {
+        int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
+        std::cerr << "[RES] getDrawable resid=0x" << std::hex << resid
+                  << std::dec << " → null (not found)" << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_null();
         return true;
     }
 
@@ -5003,15 +5123,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
-    // EXP-050: ArchTaskExecutor.isMainThread → true
-    // Without this, LifecycleRegistry.enforceMainThreadIfNeeded loops forever
-    // because the thread comparison fails in our single-threaded runtime.
-    if (class_name.find("ArchTaskExecutor") != std::string::npos &&
-        method == "isMainThread") {
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_bool(true);
-        return true;
-    }
+    // EXP-052: Removed the legacy `ArchTaskExecutor.isMainThread → true` stub.
+    //
+    // EXP-050 added this stub to "fix" the HALT-LOOP in
+    // LifecycleRegistry.enforceMainThreadIfNeeded. But the stub was a
+    // band-aid: it short-circuited the bytecode BEFORE the engine could
+    // exercise the Thread/Looper identity model. EXP-051 introduced the
+    // Shadow Registry with proper ThreadShadow + LooperShadow that should
+    // make the bytecode execute correctly:
+    //
+    //   1. ArchTaskExecutor.isMainThread reads `mDelegate` (a static field)
+    //      → currently returns null because we don't track static fields
+    //        for framework classes. This is the REAL bug we need to fix.
+    //   2. The bytecode calls `mDelegate.isMainThread()` on null → NPE.
+    //
+    // Removing this stub surfaces the REAL bug: ArchTaskExecutor's static
+    // `mDelegate` field is never initialized. The fix is to either:
+    //   a) Pre-populate `mDelegate` with a DefaultTaskExecutor instance
+    //      during ApplicationRuntime init (shadow-side).
+    //   b) Add an `ArchTaskExecutor` shadow that handles `isMainThread`
+    //      directly by delegating to the ThreadShadow + LooperShadow
+    //      identity check (preferred — matches the real semantics).
+    //
+    // For now, removing the stub will cause `isMainThread` to recurse
+    // into bytecode → NPE on mDelegate → the call returns null → fallback
+    // to bridge returns void → if-nez on null returns false →
+    // LifecycleRegistry.enforceMainThreadIfNeeded takes the throw path
+    // → THROW handler fires → we see the diagnostic.
+    //
+    // This is the correct "evidence-based" behavior — we surface the real
+    // bug instead of hiding it.
+    //
+    // (Original stub: if (class_name.find("ArchTaskExecutor") != ... &&
+    //  method == "isMainThread") { return make_bool(true); })
 
     // EXP-050: BaseFragment.getLastStoryViewer → null (story viewer not available)
     if (class_name.find("BaseFragment") != std::string::npos &&
