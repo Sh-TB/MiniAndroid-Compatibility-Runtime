@@ -1402,6 +1402,10 @@ private:
     // EXP-038 (BLOCKER-033): Per-DEX method name resolution using raw DEX bytes.
     std::string resolve_method_name_for_dex(uint32_t method_idx, uint32_t dex_index) const;
     std::string resolve_method_class_for_dex(uint32_t method_idx, uint32_t dex_index) const;
+    // EXP-058: Per-DEX type descriptor resolution.
+    // type_idx is relative to the current DEX file's type_ids table,
+    // NOT the merged global types vector.
+    std::string resolve_type_for_dex(uint32_t type_idx, uint32_t dex_index) const;
     std::string read_dex_string_from_raw(const std::vector<uint8_t>& raw, uint32_t string_idx,
                                           const dex::DexHeader& hdr) const;
     

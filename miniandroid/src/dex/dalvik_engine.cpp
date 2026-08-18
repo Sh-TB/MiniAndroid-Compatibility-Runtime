@@ -293,6 +293,39 @@ fallback:
     return "<unknown>";
 }
 
+// EXP-058: Per-DEX type descriptor resolution.
+// type_idx is relative to the current DEX file's type_ids table.
+// The type_ids table maps type_idx → string_ids_idx → descriptor string.
+// Previously, execute_new_instance used the MERGED global types vector,
+// causing type_idx from one DEX to resolve to a type from a different DEX.
+std::string DalvikExecutionEngine::resolve_type_for_dex(
+    uint32_t type_idx, uint32_t dex_index) const {
+
+    if (dex_index < per_dex_raw_data_.size()) {
+        const auto& raw = per_dex_raw_data_[dex_index];
+        if (raw.size() < sizeof(dex::DexHeader)) goto fallback;
+
+        dex::DexHeader hdr;
+        std::memcpy(&hdr, raw.data(), sizeof(dex::DexHeader));
+
+        if (type_idx < hdr.type_ids_size &&
+            hdr.type_ids_off + (type_idx + 1) * 4 <= raw.size()) {
+
+            // type_ids[type_idx] = string_ids_idx (descriptor string)
+            uint32_t descriptor_idx;
+            std::memcpy(&descriptor_idx, raw.data() + hdr.type_ids_off + type_idx * 4, 4);
+
+            return read_dex_string_from_raw(raw, descriptor_idx, hdr);
+        }
+    }
+
+fallback:
+    if (dex_report_ && type_idx < dex_report_->types.size()) {
+        return dex_report_->types[type_idx];
+    }
+    return "<unknown>";
+}
+
 // ============================================================================
 
 DalvikExecutionResult DalvikExecutionEngine::execute_apk(
@@ -2982,9 +3015,10 @@ bool DalvikExecutionEngine::execute_new_instance(uint32_t pc, InstructionTrace& 
     uint8_t dest_reg = (instr >> 8) & 0xFF;
     uint16_t type_idx = bytecode_[pc + 1];
     
-    // Get class name from DEX report
-    std::string class_desc = "<unknown>";
-    if (dex_report_ && type_idx < dex_report_->types.size()) {
+    // EXP-058: Use per-DEX type resolution instead of merged global types.
+    // type_idx is relative to the current DEX file's type_ids table.
+    std::string class_desc = resolve_type_for_dex(type_idx, current_dex_index_);
+    if (class_desc == "<unknown>" && dex_report_ && type_idx < dex_report_->types.size()) {
         class_desc = dex_report_->types[type_idx];
     }
     
