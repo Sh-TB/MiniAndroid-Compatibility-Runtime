@@ -472,7 +472,11 @@ public:
         registers_.resize(count, DalvikValue::make_uninit());
         
         // Mark parameter registers (last N registers are 'p' registers)
-        if (ins_count > 0 && ins_count < count) {
+        // EXP-058: CRITICAL FIX — was `ins_count < count` which failed when
+        // ins_count == count (all registers are parameters). This caused
+        // param_start_ = count, making all write_p() calls go to non-existent
+        // registers, silently dropping all parameter values.
+        if (ins_count > 0 && ins_count <= count) {
             param_start_ = count - ins_count;
         } else {
             param_start_ = count;
