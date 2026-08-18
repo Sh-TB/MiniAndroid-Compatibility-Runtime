@@ -796,6 +796,47 @@ uint32_t ViewShadow::find_by_android_id(uint32_t root_id, int32_t android_id) co
     return 0;
 }
 
+// EXP-060: Find the most-recently-created view whose class descriptor
+// contains `substring`. Used to locate the startMessagingButton (a
+// TextView subclass like IntroActivity$4) without knowing its Android
+// view_id. Walks the nodes_ map in descending id order so the latest
+// match wins.
+uint32_t ViewShadow::find_by_class_substring(const std::string& substring) const {
+    uint32_t best = 0;
+    uint32_t best_seq = 0;
+    for (const auto& [id, node] : nodes_) {
+        if (node->class_desc.find(substring) != std::string::npos) {
+            // Tie-break by view_id (which monotonically increases with
+            // allocation order — later allocations have higher IDs).
+            if (id >= best) {
+                best = id;
+                best_seq = id;
+            }
+        }
+    }
+    (void)best_seq;
+    return best;
+}
+
+// EXP-060: Return all views with a click listener whose class matches
+// the substring. Used to dispatch synthetic clicks on multiple candidate
+// Views (e.g. startMessagingButton + switchLanguageTextView) when we
+// can't identify the exact one. Ordered by view_id descending so the
+// most-recently-created View is tried first.
+std::vector<uint32_t> ViewShadow::find_all_with_click_listener(
+    const std::string& class_substring) const {
+    std::vector<uint32_t> result;
+    for (const auto& [id, node] : nodes_) {
+        if (node->click_listener_id == 0) continue;
+        if (!class_substring.empty() &&
+            node->class_desc.find(class_substring) == std::string::npos) continue;
+        result.push_back(id);
+    }
+    // Sort descending by view_id (most-recently-created first).
+    std::sort(result.begin(), result.end(), std::greater<uint32_t>());
+    return result;
+}
+
 CallResult ViewShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     // View instance methods — receiver_id is the View heap object_id.
@@ -908,6 +949,53 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "getLayoutParams") {
         return CallResult::handled_null();
+    }
+    // EXP-060: Listener registration — store the listener object_id on the
+    // ViewNode so a later synthetic CLICK event can dispatch through the
+    // listener's onClick method. The listener is an OBJECT_REF passed as
+    // arg 0.
+    if (m == "setOnClickListener") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        uint32_t listener_id = ctx.arg_as_object(0, 0);
+        n->click_listener_id = listener_id;
+        // The listener's class descriptor is not always known here (the
+        // CallContext only sees receiver_class, not arg types). The
+        // dispatcher (dalvik_engine) will look it up from the heap at
+        // dispatch time.
+        n->click_listener_class.clear();
+        n->clickable = true;  // setClickable(true) is implied
+        std::cerr << "[EXP060-LISTENER] setOnClickListener view_id=" << ctx.receiver_id
+                  << " class=" << ctx.class_name
+                  << " listener_id=" << listener_id
+                  << std::endl;
+        return CallResult::handled_void();
+    }
+    if (m == "setOnLongClickListener") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        uint32_t listener_id = ctx.arg_as_object(0, 0);
+        n->long_click_listener_id = listener_id;
+        n->long_click_listener_class.clear();
+        return CallResult::handled_void();
+    }
+    if (m == "setOnTouchListener") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        uint32_t listener_id = ctx.arg_as_object(0, 0);
+        n->touch_listener_id = listener_id;
+        n->touch_listener_class.clear();
+        return CallResult::handled_void();
+    }
+    if (m == "setOnApplyWindowInsetsListener" ||
+        m == "setOnFocusChangeListener" ||
+        m == "setOnLayoutChangeListener" ||
+        m == "setOnDragListener" ||
+        m == "setOnHoverListener" ||
+        m == "setOnGenericMotionListener" ||
+        m == "setOnContextClickListener" ||
+        m == "setOnScrollChangeListener" ||
+        m == "setOnCapturedPointerListener") {
+        // Other listeners — acknowledge but don't store. None are
+        // dispatched by the runtime today.
+        return CallResult::handled_void();
     }
     if (m == "onMeasure" || m == "onLayout" || m == "onDraw" ||
         m == "onTouchEvent" || m == "onAttachedToWindow" ||

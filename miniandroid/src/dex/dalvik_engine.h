@@ -180,6 +180,11 @@ namespace Opcode {
     constexpr uint16_t GOTO_16 = 0x28;        // goto/16 +AAAA (20t format, 2 code units)
     constexpr uint16_t GOTO_32 = 0x29;        // goto/32 +AAAAAAAA (30t format, 3 code units)
     constexpr uint16_t THROW = 0x26;           // throw vAA
+    // EXP-060: fill-array-data (opcode 0x25, 31t format, 3 code units + payload)
+    // Fills an array from a packed data table. Used by D8 for initializing
+    // boolean/int arrays with constant values (e.g. LoginActivity.<init>
+    // fills doneButtonVisible=[true,true] from a fill-array-data-payload).
+    constexpr uint16_t FILL_ARRAY_DATA = 0x25;
     // EXP-059 ROOT CAUSE FIX: The if-* opcode table was OFF BY ONE
     // vs the actual AOSP source code.
     //
@@ -808,6 +813,13 @@ public:
         return true;
     }
 
+    // EXP-060: Read-only access to the entire heap. Used by the
+    // synthetic-click campaign to scan for newly-created objects
+    // (e.g. LoginActivity) after a click is dispatched.
+    const std::map<uint32_t, HeapObject>& all_objects() const {
+        return objects_;
+    }
+
 private:
     std::map<uint32_t, HeapObject> objects_;
     uint32_t next_id_;
@@ -1146,6 +1158,21 @@ public:
         const std::string& activity_class_name,
         bool verbose = false
     );
+
+    // EXP-060: Dispatch a synthetic CLICK event on a View. Looks up the
+    // ViewNode via ViewShadow, retrieves its registered OnClickListener,
+    // and invokes listener.onClick(view) via try_recursive_invoke. This
+    // is the generic event mechanism — no Telegram-specific code.
+    //
+    // `view_object_id` is the heap object_id of the target View.
+    // Returns true if a listener was found and dispatched.
+    bool dispatch_click(uint32_t view_object_id);
+
+    // EXP-060: Convenience wrapper — find a View by class descriptor
+    // substring (e.g. "IntroActivity$4" or "startMessagingButton") and
+    // dispatch a click on it. Returns true if a matching View with a
+    // registered listener was found.
+    bool dispatch_click_by_class(const std::string& class_substring);
     
     /**
      * Execute specific method from DEX report
