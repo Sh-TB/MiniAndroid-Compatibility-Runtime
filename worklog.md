@@ -2003,3 +2003,109 @@ Success criteria:
 - Fragment path mapped: YES
 - Regression tests pass: YES (all 8 tests)
 
+
+---
+Task ID: EXP-059
+Agent: general-purpose (main agent)
+Task: EXP-059 — Fragment State Forensics, Generic Initialization, and Autonomous Login-UI Progression. Move MiniAndroid from addFragmentToStack → setParentLayout → onFragmentCreate to createView → real View objects → View hierarchy → logical Login UI state.
+
+Work Log:
+- Phase 0: Captured baseline (EXP-058 final state) in docs/EXP059_BASELINE.md.
+  - 454 unique methods, 38,879 instructions, 0 HALT, 0 setParentLayout calls, 0 createView calls.
+  - addFragmentToStack entered but returned 0 (false) at PC=26 without calling setParentLayout.
+
+- Phase 1: Forensically traced addFragmentToStack bytecode.
+  - Built tools/exp059_disasm.py (AOSP-standard disassembler).
+  - Built tools/exp059_andro_disasm.py (androguard cross-check).
+  - Dumped ActionBarLayout.addFragmentToStack(BaseFragment, int) — 185 code units.
+  - Identified that bytecode at PC=3 is if-eqz (op=0x38), but runtime dispatched to execute_if_nez.
+
+- Phase 2: Verified field metadata.
+  - fragmentsStack (not fragmentStack as previously documented) is at field_idx 10480, type Ljava/util/List;.
+  - Field IS null at runtime because constructor never initialized it — but that's NOT the actual blocker.
+
+- Phase 3: Verified constructor overload resolution.
+  - addFragmentToStack has 2 overloads: 1-arg (bytecode_size=5, delegates) and 2-arg (bytecode_size=185, real body).
+  - Runtime correctly selects the 2-arg overload. No bug here.
+
+- Phase 4: Verified object initialization order.
+  - ActionBarLayout.<init> (187 bytes) is reached.
+  - fragmentsStack is null because the constructor doesn't initialize it explicitly — not the blocker.
+
+- Phase 5: ROOT CAUSE FOUND — Opcode table off-by-one.
+  - Compared runtime's Opcode enum against AOSP source (art/libdexfile/dex/dex_instruction_list.h).
+  - Runtime had: IF_EQZ=0x37, IF_NEZ=0x38, IF_LTZ=0x39, ... (off by one!)
+  - AOSP says:   IF_EQZ=0x38, IF_NEZ=0x39, IF_LTZ=0x3a, ...
+  - Same off-by-one for 2addr opcodes (0xb1-0xcf vs 0xb0-0xce), INT binops (0x91 vs 0x90), conversion opcodes (0x82-0x90 vs 0x81-0x8f), FLOAT/DOUBLE binops (0xa7-0xb0 vs 0xa6-0xaf), cmp-* opcodes (0x2c-0x30 vs 0x2d-0x31).
+  - FIX: Updated all opcode constants in dalvik_engine.h to AOSP-correct values.
+  - Also removed EXP-058 if-ltz INT32 hack (was a workaround for the opcode bug).
+  - Added PACKED_SWITCH=0x2b and SPARSE_SWITCH=0x2c (were missing).
+  - Re-enabled REM_DOUBLE_2ADDR=0xd0 (was disabled due to conflict with ADD_INT_LIT16).
+
+- Phase 6: Not needed. CollectionShadow already implements needed methods.
+
+- Phase 7: addFragmentToStack end-to-end verified.
+  - With opcode fix, addFragmentToStack now returns TRUE for IntroActivity.
+  - INVOKE-VIRTUAL POLYMORPHISM FIX: BaseFragment.createView (stub) was being called instead of IntroActivity.createView (real override). Fixed by dispatching to runtime_type first, then falling back to declaring_class.
+
+- Phase 8: Fragment lifecycle verified.
+  - Added [FRAGMENT-LIFECYCLE] event log in try_recursive_invoke.
+  - Complete lifecycle observed: onFragmentCreate → setParentLayout → attachView → createView → attachSheets → onResume → onBecomeFullyVisible.
+
+- Phase 9: Login Fragment NOT reached.
+  - getClientNotActivatedFragment bytecode: if-eqz currentViewNum → return IntroActivity (else LoginActivity).
+  - LoginActivity.loadCurrentState executes correctly now (stub removed). Reads SharedPreferences "logininfo2" (empty on first launch) → returns empty Bundle → currentViewNum == 0 → IntroActivity.
+  - This is CORRECT first-launch behavior. Reaching LoginActivity would require seeding SharedPreferences (state hack) or simulating intro completion.
+
+- Phase 10-13: Resource investigation and View hierarchy.
+  - IntroActivity.createView (608 code units) executes end-to-end.
+  - Creates: ViewPager, RLottieImageView (10 of them), BottomPagesView, IntroAdapter, LayoutHelper frames, RLottieDrawable (animation setup), IntroActivity$1-4 (listeners).
+  - Built tools/exp059_dump_view_tree.py — extracts View hierarchy from runtime log.
+  - 1585 total <init> calls, 160 unique classes, 65 view-like classes.
+  - run/exp059_lifecycle/login_view_tree.json saved.
+
+- Phase 14: Login UI detection.
+  - CHECKPOINT_I_INTRO_UI = PROVEN.
+  - CHECKPOINT_L_LOGIN_UI = NOT_PROVEN (correctly returns IntroActivity on first launch).
+
+- Phase 20: Regression tests.
+  - All 6 EXP-052 tests PASS (with updated OP_IF_EQZ=0x38, OP_IF_NEZ=0x39).
+  - Added 4 new EXP-059 tests that DISTINGUISH if-eqz from if-nez (old tests passed by coincidence — same outcome either way). New tests verify via instruction count (3 = branch taken, 4 = not taken).
+  - All 10 tests PASS.
+
+- Final Telegram validation (run/exp059_lifecycle):
+  - Build: SUCCESS
+  - Exit code: 0
+  - Unique methods: 558 (+104 vs EXP-058's 454)
+  - HALT events: 0
+  - Instructions: 50,221
+  - setParentLayout: 4 (was 0)
+  - createView (real subclass): 3 (was 0)
+  - IntroActivity.createView (608 code units): executes end-to-end
+  - View-like classes instantiated: 65
+  - All 10 regression tests PASS
+
+- Files produced:
+  - docs/EXP059_BASELINE.md
+  - docs/EXP059_REPORT.md
+  - tools/exp059_disasm.py
+  - tools/exp059_andro_disasm.py
+  - tools/exp059_opcode_regression.py
+  - tools/exp059_dump_view_tree.py
+  - run/exp059_baseline/, run/exp059_lifecycle/
+  - run/exp059_lifecycle/login_view_tree.json
+
+Stage Summary:
+- Phase 5 ROOT CAUSE: AOSP opcode table was off-by-one. Byte 0x38 (intended: if-eqz) was dispatched to execute_if_nez, INVERTING branch direction. This was the actual blocker — not fragmentsStack being null.
+- Phase 7: invoke-virtual polymorphism fix — dispatch using runtime_type first.
+- Phase 8: Complete Fragment lifecycle now executes on IntroActivity (onFragmentCreate, setParentLayout, attachView, createView, attachSheets, onResume, onBecomeFullyVisible).
+- Phase 9: LoginActivity NOT reached because bytecode correctly returns IntroActivity on first launch.
+- Phase 14: CHECKPOINT_I_INTRO_UI = PROVEN, CHECKPOINT_L_LOGIN_UI = NOT_PROVEN.
+
+Success criteria:
+- addFragmentToStack end-to-end with real Fragment subclass createView: ✅ PASS
+- Fragment lifecycle reaches onResume and onBecomeFullyVisible: ✅ PASS
+- Real View objects created (ViewPager, RLottieImageView, etc.): ✅ PASS
+- All regression tests pass: ✅ PASS (10/10)
+- CHECKPOINT_L_LOGIN_UI = PROVEN: ❌ NOT PROVEN (correctly returns IntroActivity on first launch — would require either SharedPreferences seeding or intro completion simulation, both application-specific)
+
