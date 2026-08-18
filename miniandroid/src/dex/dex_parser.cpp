@@ -715,6 +715,10 @@ bool DexParser::parse_code_item(const uint8_t* data, uint32_t offset, MethodInfo
     std::memcpy(&code_item, data + offset, sizeof(DexCodeItem));
     
     method.code_offset = offset;
+    // EXP-058: Store code_item header fields.
+    method.registers_size = code_item.registers_size;
+    method.ins_size = code_item.ins_size;
+    method.outs_size = code_item.outs_size;
     
     log("  registers_size: " + std::to_string(code_item.registers_size));
     log("  ins_size: " + std::to_string(code_item.ins_size));

@@ -159,7 +159,15 @@ struct MethodInfo {
     
     uint32_t access_flags = 0;
     uint32_t code_offset = 0;     // 0 if abstract/native
-    
+
+    // EXP-058: Store code_item header fields. Previously these were
+    // read from the DEX but NOT stored in MethodInfo, causing callers
+    // to hardcode registers_size=16 which is WRONG for methods with
+    // different register counts (e.g., onCreate has registers_size=17).
+    uint16_t registers_size = 0;
+    uint16_t ins_size = 0;
+    uint16_t outs_size = 0;
+
     // Bytecode (if available)
     std::vector<uint16_t> bytecode;
 
