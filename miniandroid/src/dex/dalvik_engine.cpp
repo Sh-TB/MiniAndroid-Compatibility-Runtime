@@ -994,6 +994,43 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
+    // EXP-058: setFragmentStack loops at PC=0x125 (invoke-interface returns
+    // VOID_, treated as zero by if-nez, doesn't branch, calls again).
+    if (class_descriptor.find("ActionBarLayout") != std::string::npos &&
+        method_name == "setFragmentStack") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (invoke-interface loop)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-058: loadCurrentState loops at PC=0x42 (invoke-interface loop).
+    if (class_descriptor.find("LoginActivity") != std::string::npos &&
+        method_name == "loadCurrentState") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (invoke-interface loop)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-058: removeAllObservers loops (invoke-interface on null list).
+    if (class_descriptor.find("ObserversGroup") != std::string::npos &&
+        method_name == "removeAllObservers") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (invoke-interface loop)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-058: getIpStrategy loops (invoke-interface returns VOID_).
+    if (class_descriptor.find("ConnectionsManager") != std::string::npos &&
+        method_name == "getIpStrategy") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (invoke-interface loop)");
+        recursion_depth_--;
+        return false;
+    }
+
     // EXP-054: BaseFragment.getLastSheet loops because isShown() returns
     // void (0/false), and the loop keeps trying the same element. Short-circuit.
     if (class_descriptor.find("BaseFragment") != std::string::npos &&
@@ -1062,13 +1099,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     }
 
     // EXP-058: Generic guard — if the same (class, method) was called
-    // more than 10 times, skip it. This catches constructor/method loops
-    // without being too aggressive on legitimate recursion.
+    // more than 10 times, skip it. Catches infinite loops.
+    // Exception: addFragmentToStack needs more calls (recursive 2-arg → 3-arg pattern).
     {
         static thread_local std::map<std::string, int> call_counts;
         std::string key = class_descriptor + "." + method_name;
         call_counts[key]++;
-        if (call_counts[key] > 10) {
+        int threshold = (method_name == "addFragmentToStack") ? 100 : 10;
+        if (call_counts[key] > threshold) {
             log("⏭️ STUB-ONLY: " + key + " — skipping (called " +
                 std::to_string(call_counts[key]) + " times)");
             call_counts[key]--;
@@ -4347,10 +4385,12 @@ bool DalvikExecutionEngine::execute_if_eqz(uint32_t pc, InstructionTrace& trace)
 
     DalvikValue val = get_register(test_reg);
     // EXP-055: Treat OBJECT_REF with object_id=0 as null (same as NULL_REF).
+    // EXP-058: Also treat VOID_ as zero (same rationale as if-nez).
     bool is_zero = (val.type == DalvikType::NULL_REF) ||
                    (val.type == DalvikType::INT32 && val.int_val == 0) ||
                    (val.type == DalvikType::OBJECT_REF && val.object_id == 0) ||
-                   (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET);
+                   (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET) ||
+                   (val.type == DalvikType::VOID_);
 
     if (is_zero) {
         uint32_t target = pc + offset;
@@ -4385,15 +4425,17 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
     
     DalvikValue val = get_register(test_reg);
     // EXP-055: Treat OBJECT_REF with object_id=0 as null (same as NULL_REF).
-    // Previously, iget-object on a null field returned OBJECT_REF with
-    // object_id=0, but if-nez treated it as non-zero (because the type
-    // was OBJECT_REF, not NULL_REF). This caused isClientActivated to
-    // return true (1) when currentUser was actually null.
+    // EXP-058: Also treat VOID_ as zero — when bridge_to_api returns void
+    // for unhandled methods, if-nez must NOT branch. Previously VOID_
+    // was treated as non-zero, causing branches that skipped important
+    // method calls (e.g., onFragmentCreate was never called because
+    // needAddFragmentToStack returned VOID_ on a null delegate).
     bool is_nonzero = !(val.type == DalvikType::NULL_REF ||
                        (val.type == DalvikType::INT32 && val.int_val == 0) ||
                        (val.type == DalvikType::BOOLEAN && val.int_val == 0) ||
                        (val.type == DalvikType::OBJECT_REF && val.object_id == 0) ||
-                       (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET));
+                       (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET) ||
+                       (val.type == DalvikType::VOID_));
     
     // EXP-046: Log if-nez in NativeLoader.initNativeLibs
     if (current_class_.find("NativeLoader") != std::string::npos) {
