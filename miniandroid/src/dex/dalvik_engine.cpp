@@ -4440,14 +4440,29 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
         method_name = resolve_method_name_for_dex(method_idx, current_dex_index_);
         class_name = resolve_method_class_for_dex(method_idx, current_dex_index_);
     }
+
+    // EXP-061: Debug — trace invoke-direct inside PhoneView.<init>
+    if (current_class_.find("PhoneView") != std::string::npos &&
+        current_method_ == "<init>") {
+        std::cerr << "[EXP061-INVOKE-DIRECT] caller=PhoneView.<init>"
+                  << " method_idx=" << method_idx
+                  << " dex_index=" << current_dex_index_
+                  << " → class=" << class_name
+                  << " method=" << method_name
+                  << " argc=" << (int)argc
+                  << std::endl;
+    }
     
     // Check if first arg is an object we allocated
+    // EXP-061 FIX: Do NOT overwrite class_name with the runtime class for
+    // invoke-direct. invoke-direct uses the DECLARING class (from method_ids[]),
+    // not the runtime class. Overwriting it causes try_recursive_invoke to
+    // search for <init> in the SUBCLASS (e.g. PhoneView) instead of the
+    // SUPERCLASS (e.g. SlideView), leading to infinite recursion detection
+    // or wrong method selection. Only invoke-virtual should use the runtime
+    // class for polymorphic dispatch.
     if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
         if (auto* obj = heap_.get(args[0].object_id)) {
-            // Prefer runtime class name if available, fall back to declared class
-            if (!obj->readable_class.empty()) {
-                class_name = obj->readable_class;
-            }
             // Mark as initialized (constructor called)
             if (method_name == "<init>") {
                 heap_.mark_initialized(args[0].object_id);
