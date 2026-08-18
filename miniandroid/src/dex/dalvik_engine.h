@@ -1173,6 +1173,12 @@ public:
     // dispatch a click on it. Returns true if a matching View with a
     // registered listener was found.
     bool dispatch_click_by_class(const std::string& class_substring);
+
+    // EXP-061: Dump the full ViewNode tree (from ViewShadow) to a JSON
+    // file. Each node includes object_id, class, parent, children,
+    // geometry (x,y,width,height), text, visibility, clickable,
+    // listener_present. This is the input to the software renderer.
+    bool dump_view_tree(const std::string& path);
     
     /**
      * Execute specific method from DEX report

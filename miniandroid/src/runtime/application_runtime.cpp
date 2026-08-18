@@ -1239,6 +1239,45 @@ bool ApplicationRuntime::execute_on_create() {
         }
         miniandroid::probe::mark("execute_on_create: post-synthetic-click");
 
+        // EXP-061: Dump the ViewNode tree to JSON for the software renderer.
+        // The renderer will read this JSON and produce a PNG screenshot
+        // from the actual View hierarchy created by Telegram's bytecode.
+        std::string view_tree_path = config_.output_dir + "/view_tree.json";
+        if (!view_tree_path.empty()) {
+            // Ensure the directory exists
+            std::string dir = view_tree_path.substr(0, view_tree_path.find_last_of('/'));
+            if (!dir.empty()) {
+                std::error_code ec;
+                std::filesystem::create_directories(dir, ec);
+            }
+        }
+        dalvik_engine.dump_view_tree(view_tree_path);
+        miniandroid::probe::mark("execute_on_create: post-view-tree-dump");
+
+        // EXP-061: Render the View tree to a PNG screenshot using the
+        // CPU software renderer. No GPU, no emulator, no OpenGL.
+        // The renderer reads view_tree.json (in memory via ViewShadow)
+        // and produces login_screen.png.
+        {
+            std::string screenshot_path = config_.output_dir + "/login_screen.png";
+            std::string debug_screenshot_path = config_.output_dir + "/login_screen_debug.png";
+            std::cerr << "[EXP061] Rendering Login UI to PNG..." << std::endl;
+            std::cerr << "[EXP061]   output: " << screenshot_path << std::endl;
+            // The actual rendering is done by a Python post-processing
+            // script (tools/exp061_render.py) that reads view_tree.json
+            // and produces the PNG. This keeps the C++ runtime focused on
+            // DEX execution and the renderer as a separate CPU-only stage.
+            // We write a marker file so the script knows to render.
+            std::ofstream marker(config_.output_dir + "/render_request.txt");
+            marker << "view_tree=" << view_tree_path << "\n";
+            marker << "screenshot=" << screenshot_path << "\n";
+            marker << "debug_screenshot=" << debug_screenshot_path << "\n";
+            marker << "width=1080\n";
+            marker << "height=1920\n";
+            marker.close();
+        }
+        miniandroid::probe::mark("execute_on_create: post-render-request");
+
         // Extract evidence
         bool success = (dalvik_result.total_instructions_executed > 0);
         if (dalvik_result.final_status == miniandroid::dalvik::DalvikExecutionResult::FinalStatus::COMPLETED_SUCCESS) {
