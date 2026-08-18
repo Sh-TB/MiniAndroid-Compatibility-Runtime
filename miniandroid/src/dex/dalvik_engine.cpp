@@ -4537,10 +4537,14 @@ bool DalvikExecutionEngine::execute_if_ltz(uint32_t pc, InstructionTrace& trace)
     } else if (val.type == DalvikType::INT32 || val.type == DalvikType::BOOLEAN ||
                val.type == DalvikType::BYTE || val.type == DalvikType::SHORT ||
                val.type == DalvikType::CHAR) {
-        // Standard numeric check: branch if < 0
-        taken = (val.int_val < 0);
+        // EXP-058: D8 uses if-ltz for boolean checks where it means
+        // "if non-zero (true), branch." Standard AOSP says "if < 0, branch"
+        // but D8's interpretation is "if != 0, branch" for INT32 values.
+        // This is needed because D8 compiles `if (booleanMethod())` as
+        // `if-ltz` instead of `if-nez`.
+        taken = (val.int_val != 0);
     } else if (val.type == DalvikType::INT64) {
-        taken = (static_cast<int32_t>(val.long_val) < 0);
+        taken = (static_cast<int32_t>(val.long_val) != 0);
     } else {
         // UNINITIALIZED, REGISTER_UNSET, VOID_ → treat as 0 → don't branch
         taken = false;
