@@ -583,8 +583,14 @@ OP_RETURN_VOID = 0x0e
 OP_RETURN_OBJECT = 0x11
 OP_THROW = 0x26
 OP_GOTO = 0x27
-OP_IF_NEZ = 0x38
-OP_IF_EQZ = 0x37
+# EXP-059: Fixed opcode values to match AOSP source code.
+# Per https://cs.android.com/android/platform/superproject/+/main:art/libdexfile/dex/dex_instruction_list.h
+#   0x38 if-eqz, 0x39 if-nez, 0x3a if-ltz, 0x3b if-gez, 0x3c if-gtz, 0x3d if-lez
+# Previous values (0x37 if-eqz, 0x38 if-nez) were off-by-one and only worked
+# by coincidence (test outcomes happened to be the same under either
+# interpretation).
+OP_IF_NEZ = 0x39
+OP_IF_EQZ = 0x38
 
 def build_case1_no_catch() -> bytes:
     """Case 1: Method throws, no try table.

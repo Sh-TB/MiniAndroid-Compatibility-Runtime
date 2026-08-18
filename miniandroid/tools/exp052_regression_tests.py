@@ -33,8 +33,9 @@ from exp052_exception_tests import (
 )
 
 # Extra opcode constants not exported by exp052_exception_tests
-OP_IF_EQ = 0x31
-OP_IF_NE = 0x32
+# EXP-059: AOSP-correct values: 0x32 if-eq, 0x33 if-ne
+OP_IF_EQ = 0x32
+OP_IF_NE = 0x33
 
 # ============================================================================
 # Test case builders
