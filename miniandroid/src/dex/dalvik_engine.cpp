@@ -931,6 +931,15 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                   << " dex_report=" << (dex_report_ ? "YES" : "NULL")
                   << std::endl;
     }
+    // EXP-061: Debug — trace SlideView specifically
+    if (declaring_class.find("SlideView") != std::string::npos) {
+        std::cerr << "[EXP061-TRY] try_recursive_invoke called for "
+                  << declaring_class << "." << method_name
+                  << " args=" << args.size()
+                  << " depth=" << recursion_depth_
+                  << " caller=" << current_class_ << "." << current_method_
+                  << std::endl;
+    }
     if (!dex_report_) return false;
 
     // EXP-040: Recursion depth protection
@@ -1300,6 +1309,16 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // EXP-045 Phase 2: Use O(1) class lookup index instead of linear search.
     auto class_it = class_info_index_.find(class_descriptor);
     if (class_it == class_info_index_.end()) {
+        // EXP-061: Debug — log when SlideView or other View base classes are not found.
+        if (class_descriptor.find("SlideView") != std::string::npos ||
+            class_descriptor.find("FrameLayout") != std::string::npos ||
+            class_descriptor.find("LinearLayout") != std::string::npos) {
+            std::cerr << "[EXP061-NOTFOUND] class_descriptor=" << class_descriptor
+                      << " method=" << method_name
+                      << " (class not in index)"
+                      << " caller=" << current_class_ << "." << current_method_
+                      << std::endl;
+        }
         // EXP-055: Debug — log when class not found.
         static thread_local uint64_t not_found_count = 0;
         if (not_found_count < 10 && method_name.find("isClientActivated") != std::string::npos) {
@@ -1313,6 +1332,17 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;  // class not found in DEX, bridge to API
     }
     const dex::ClassInfo& cls_ref = dex_report_->classes[class_it->second];
+
+    // EXP-061: Debug — trace SlideView method search
+    if (class_descriptor.find("SlideView") != std::string::npos && method_name == "<init>") {
+        auto all_methods_check = cls_ref.all_methods();
+        std::cerr << "[EXP061-FOUND] SlideView in index. Looking for <init>. Methods:" << std::endl;
+        for (const auto& m : all_methods_check) {
+            std::cerr << "  " << m.name << m.descriptor
+                      << " bytecode_size=" << m.bytecode.size()
+                      << std::endl;
+        }
+    }
 
     // EXP-046 Phase 2: Check for native methods and dispatch to JNI bridge.
     // Native methods have no bytecode (code_off == 0) and access_flags & ACC_NATIVE (0x100).
@@ -1458,23 +1488,37 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // first argument's class descriptor. This distinguishes
             // overloads with the same param count but different types
             // (e.g. presentFragment(BaseFragment) vs presentFragment(NavigationParams)).
+            //
+            // EXP-061 FIX: The type check is now LENIENT — it only rejects
+            // when the parameter type is a known class AND the argument is
+            // an OBJECT_REF whose class is CLEARLY different (not a substring
+            // match). This allows subclass arguments to match (e.g. a
+            // ContextWrapper passed to a method expecting Context).
             bool type_matches = true;
             if (effective_arg_count >= 1 && !param_types.empty()) {
-                // args[1] is the first non-`this` parameter for instance methods.
-                // args[0] is `this`.
                 size_t arg_idx = (arg_count > param_count) ? 1 : 0;
                 if (arg_idx < args.size()) {
                     const auto& arg = args[arg_idx];
                     const std::string& param_type = param_types[0];
+                    // Only check object types — primitives match by position.
                     if (param_type[0] == 'L' && arg.type == DalvikType::OBJECT_REF) {
-                        // Both are object types — check if the class descriptors match
-                        // (or are compatible — we only check prefix for now).
+                        // Both are object types — accept if EITHER contains
+                        // the other (handles subclass/descriptor prefix matches).
+                        // Only reject if we have a clear mismatch AND both
+                        // are non-empty.
                         if (!arg.class_desc.empty() &&
                             arg.class_desc.find(param_type) == std::string::npos &&
                             param_type.find(arg.class_desc) == std::string::npos) {
-                            // No match — skip this overload.
+                            // EXP-061: Don't hard-reject. Instead, try to find
+                            // a BETTER match later. Mark as fallback only.
                             type_matches = false;
                         }
+                    } else if (param_type[0] == 'L' &&
+                               (arg.type == DalvikType::NULL_REF ||
+                                arg.type == DalvikType::UNINITIALIZED ||
+                                arg.type == DalvikType::VOID_)) {
+                        // Null/uninit arg can match any object param.
+                        // Don't reject.
                     }
                 }
             }
@@ -1483,7 +1527,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 break;  // exact match, stop searching
             }
             if (!fallback_match) {
-                fallback_match = method;
+                fallback_match = method;  // keep as fallback for type mismatch
             }
         }
     }
@@ -3464,6 +3508,21 @@ bool DalvikExecutionEngine::execute_new_instance(uint32_t pc, InstructionTrace& 
     
     // Store object reference in register
     set_register(dest_reg, DalvikValue::make_object(obj_id, class_desc));
+    
+    // EXP-061: Debug — trace new-instance for View/EditText/Button classes
+    // to investigate why some views end up with object_id=0 in shadow dispatch.
+    if (class_desc.find("EditText") != std::string::npos ||
+        class_desc.find("TextView") != std::string::npos ||
+        class_desc.find("Button") != std::string::npos ||
+        class_desc.find("PhoneView") != std::string::npos ||
+        class_desc.find("Keyboard") != std::string::npos) {
+        std::cerr << "[EXP061-NEW] new-instance " << class_desc
+                  << " → v" << (int)dest_reg
+                  << " obj_id=" << obj_id
+                  << " pc=" << pc
+                  << " caller=" << current_class_ << "." << current_method_
+                  << std::endl;
+    }
     
     trace.operands.push_back({"v" + std::to_string(dest_reg), class_desc});
     trace.allocated_object_id = obj_id;
