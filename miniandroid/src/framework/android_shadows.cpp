@@ -863,6 +863,11 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "addView" || m == "addViewInLayout") {
         uint32_t child = ctx.arg_as_object(0, 0);
+        // EXP-061: Trace addView to debug why PhoneView's children aren't connected
+        std::cerr << "[EXP061-ADDVIEW] parent=" << ctx.receiver_id
+                  << " parent_class=" << ctx.class_name
+                  << " child=" << child
+                  << std::endl;
         if (child == 0) return CallResult::handled_void();
         add_child(ctx.receiver_id, child);
         return CallResult::handled_void();
