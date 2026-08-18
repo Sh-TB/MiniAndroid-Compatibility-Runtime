@@ -180,73 +180,87 @@ namespace Opcode {
     constexpr uint16_t GOTO_16 = 0x28;        // goto/16 +AAAA (20t format, 2 code units)
     constexpr uint16_t GOTO_32 = 0x29;        // goto/32 +AAAAAAAA (30t format, 3 code units)
     constexpr uint16_t THROW = 0x26;           // throw vAA
-    // EXP-043 Phase 1: Fixed ALL if-* opcode values (off-by-one regression).
-    // Per AOSP dalvik-bytecode.html (https://source.android.com/devices/tech/dalvik/dalvik-bytecode):
-    //   0x31 if-eq, 0x32 if-ne, 0x33 if-lt, 0x34 if-ge, 0x35 if-gt, 0x36 if-le
-    //   0x37 if-eqz, 0x38 if-nez, 0x39 if-ltz, 0x3a if-gez, 0x3b if-gtz, 0x3c if-lez
-    // EXP-038 (BLOCKER-029) attempted to fix if-eqz/if-nez but introduced a new
-    // off-by-one: set IF_EQZ=0x38 (should be 0x37), IF_NEZ=0x39 (should be 0x38),
-    // and propagated the error to all if-* opcodes.
+    // EXP-059 ROOT CAUSE FIX: The if-* opcode table was OFF BY ONE
+    // vs the actual AOSP source code.
     //
-    // This was the ROOT CAUSE of the Intrinsics.createParameterIsNullExceptionMessage
-    // infinite loop: Kotlin's checkNotNullParameter uses `if-ltz v0` (op=0x39),
-    // but our engine dispatched op=0x39 to IF_NEZ (which we defined as 0x39),
-    // causing wrong branch behavior and infinite recursion in the NPE message
-    // builder that uses if-ltz to iterate stack frames.
-    constexpr uint16_t IF_EQ = 0x31;          // if-eq vAA, vBB, +CCCC (22t format)
-    constexpr uint16_t IF_NE = 0x32;          // if-ne vAA, vBB, +CCCC
-    constexpr uint16_t IF_LT = 0x33;          // if-lt vAA, vBB, +CCCC
-    constexpr uint16_t IF_GE = 0x34;          // if-ge vAA, vBB, +CCCC
-    constexpr uint16_t IF_GT = 0x35;          // if-gt vAA, vBB, +CCCC
-    constexpr uint16_t IF_LE = 0x36;          // if-le vAA, vBB, +CCCC
-    constexpr uint16_t IF_EQZ = 0x37;         // if-eqz vAA, +BBBB (21t format)
-    constexpr uint16_t IF_NEZ = 0x38;         // if-nez vAA, +BBBB
-    constexpr uint16_t IF_LTZ = 0x39;         // if-ltz vAA, +BBBB
-    constexpr uint16_t IF_GEZ = 0x3A;         // if-gez vAA, +BBBB
-    constexpr uint16_t IF_GTZ = 0x3B;          // if-gtz vAA, +BBBB
-    constexpr uint16_t IF_LEZ = 0x3C;          // if-lez vAA, +BBBB
+    // Per https://cs.android.com/android/platform/superproject/+/main:art/libdexfile/dex/dex_instruction_list.h
+    //   0x30 cmpg-double, 0x31 cmp-long
+    //   0x32 if-eq, 0x33 if-ne, 0x34 if-lt, 0x35 if-ge, 0x36 if-gt, 0x37 if-le
+    //   0x38 if-eqz, 0x39 if-nez, 0x3a if-ltz, 0x3b if-gez, 0x3c if-gtz, 0x3d if-lez
+    //
+    // Previously we had: 0x31 if-eq, 0x37 if-eqz, 0x38 if-nez, 0x39 if-ltz.
+    // That was WRONG — every if-* was dispatched to the wrong handler.
+    //
+    // Symptom: ActionBarLayout.addFragmentToStack returned 0 (false) at PC=24
+    // because byte 0x38 (intended: if-eqz) was dispatched to execute_if_nez,
+    // which inverts the branch direction. When fragmentsStack.contains returned
+    // VOID_ (treated as 0), if-eqz should branch to PC=27 (continue with
+    // setParentLayout), but if-nez did not branch, so the method fell through to
+    // `return false`.
+    //
+    // The EXP-058 "if-ltz INT32 hack" was a workaround for this same bug:
+    // when byte 0x39 (intended: if-nez) was dispatched to execute_if_ltz,
+    // we added special INT32 handling that made if-ltz behave like if-nez for
+    // boolean returns. With the opcode table fixed, the hack is no longer
+    // needed and is removed.
+    constexpr uint16_t CMP_LONG = 0x31;       // cmp-long vAA, vBB, vCC (23x format)
+    constexpr uint16_t IF_EQ = 0x32;          // if-eq vAA, vBB, +CCCC (22t format)
+    constexpr uint16_t IF_NE = 0x33;          // if-ne vAA, vBB, +CCCC
+    constexpr uint16_t IF_LT = 0x34;          // if-lt vAA, vBB, +CCCC
+    constexpr uint16_t IF_GE = 0x35;          // if-ge vAA, vBB, +CCCC
+    constexpr uint16_t IF_GT = 0x36;          // if-gt vAA, vBB, +CCCC
+    constexpr uint16_t IF_LE = 0x37;          // if-le vAA, vBB, +CCCC
+    constexpr uint16_t IF_EQZ = 0x38;         // if-eqz vAA, +BBBB (21t format)
+    constexpr uint16_t IF_NEZ = 0x39;         // if-nez vAA, +BBBB
+    constexpr uint16_t IF_LTZ = 0x3A;         // if-ltz vAA, +BBBB
+    constexpr uint16_t IF_GEZ = 0x3B;         // if-gez vAA, +BBBB
+    constexpr uint16_t IF_GTZ = 0x3C;          // if-gtz vAA, +BBBB
+    constexpr uint16_t IF_LEZ = 0x3D;          // if-lez vAA, +BBBB
 
     // EXP-038 (BLOCKER-028): Arithmetic 2addr opcodes (12x format)
     // These are heavily used in real Android bytecode for local variable math.
-    constexpr uint16_t ADD_INT_2ADDR = 0xB1;    // add-int/2addr vA, vB
-    constexpr uint16_t SUB_INT_2ADDR = 0xB2;    // sub-int/2addr vA, vB
-    constexpr uint16_t MUL_INT_2ADDR = 0xB3;    // mul-int/2addr vA, vB
-    constexpr uint16_t DIV_INT_2ADDR = 0xB4;    // div-int/2addr vA, vB
-    constexpr uint16_t REM_INT_2ADDR = 0xB5;    // rem-int/2addr vA, vB
-    constexpr uint16_t AND_INT_2ADDR = 0xB6;    // and-int/2addr vA, vB
-    constexpr uint16_t OR_INT_2ADDR  = 0xB7;    // or-int/2addr vA, vB
-    constexpr uint16_t XOR_INT_2ADDR = 0xB8;    // xor-int/2addr vA, vB
-    constexpr uint16_t SHL_INT_2ADDR = 0xB9;    // shl-int/2addr vA, vB
-    constexpr uint16_t SHR_INT_2ADDR = 0xBA;    // shr-int/2addr vA, vB
-    constexpr uint16_t USHR_INT_2ADDR = 0xBB;   // ushr-int/2addr vA, vB
+    // EXP-059: Also fixed the same off-by-one here. Per AOSP:
+    //   0xB0 add-int/2addr, 0xB1 sub-int/2addr, ..., 0xBA ushr-int/2addr
+    //   0xBB add-long/2addr, 0xBC sub-long/2addr, ..., 0xC5 ushr-long/2addr
+    //   0xC6 add-float/2addr, 0xC7 sub-float/2addr, ..., 0xCA rem-float/2addr
+    //   0xCB add-double/2addr, 0xCC sub-double/2addr, ..., 0xCF div-double/2addr
+    //   0xD0 rem-double/2addr
+    constexpr uint16_t ADD_INT_2ADDR = 0xB0;    // add-int/2addr vA, vB
+    constexpr uint16_t SUB_INT_2ADDR = 0xB1;    // sub-int/2addr vA, vB
+    constexpr uint16_t MUL_INT_2ADDR = 0xB2;    // mul-int/2addr vA, vB
+    constexpr uint16_t DIV_INT_2ADDR = 0xB3;    // div-int/2addr vA, vB
+    constexpr uint16_t REM_INT_2ADDR = 0xB4;    // rem-int/2addr vA, vB
+    constexpr uint16_t AND_INT_2ADDR = 0xB5;    // and-int/2addr vA, vB
+    constexpr uint16_t OR_INT_2ADDR  = 0xB6;    // or-int/2addr vA, vB
+    constexpr uint16_t XOR_INT_2ADDR = 0xB7;    // xor-int/2addr vA, vB
+    constexpr uint16_t SHL_INT_2ADDR = 0xB8;    // shl-int/2addr vA, vB
+    constexpr uint16_t SHR_INT_2ADDR = 0xB9;    // shr-int/2addr vA, vB
+    constexpr uint16_t USHR_INT_2ADDR = 0xBA;   // ushr-int/2addr vA, vB
 
     // EXP-041: Long/float/double 2addr opcodes (12x format)
-    constexpr uint16_t ADD_LONG_2ADDR = 0xBC;  // add-long/2addr vA, vB
-    constexpr uint16_t SUB_LONG_2ADDR = 0xBD;  // sub-long/2addr
-    constexpr uint16_t MUL_LONG_2ADDR = 0xBE;  // mul-long/2addr
-    constexpr uint16_t DIV_LONG_2ADDR = 0xBF;  // div-long/2addr
-    constexpr uint16_t REM_LONG_2ADDR = 0xC0;  // rem-long/2addr
-    constexpr uint16_t AND_LONG_2ADDR = 0xC1;  // and-long/2addr
-    constexpr uint16_t OR_LONG_2ADDR  = 0xC2;  // or-long/2addr
-    constexpr uint16_t XOR_LONG_2ADDR = 0xC3; // xor-long/2addr
-    constexpr uint16_t SHL_LONG_2ADDR = 0xC4;  // shl-long/2addr
-    constexpr uint16_t SHR_LONG_2ADDR = 0xC5;  // shr-long/2addr
-    constexpr uint16_t USHR_LONG_2ADDR = 0xC6; // ushr-long/2addr
-    constexpr uint16_t ADD_FLOAT_2ADDR = 0xC7;  // add-float/2addr
-    constexpr uint16_t SUB_FLOAT_2ADDR = 0xC8;  // sub-float/2addr
-    constexpr uint16_t MUL_FLOAT_2ADDR = 0xC9;  // mul-float/2addr
-    constexpr uint16_t DIV_FLOAT_2ADDR = 0xCA;  // div-float/2addr
-    constexpr uint16_t REM_FLOAT_2ADDR = 0xCB;  // rem-float/2addr
-    constexpr uint16_t ADD_DOUBLE_2ADDR = 0xCC; // add-double/2addr
-    constexpr uint16_t SUB_DOUBLE_2ADDR = 0xCD; // sub-double/2addr
-    constexpr uint16_t MUL_DOUBLE_2ADDR = 0xCE; // mul-double/2addr
-    constexpr uint16_t DIV_DOUBLE_2ADDR = 0xCF; // div-double/2addr
-    // EXP-041: REM_DOUBLE_2ADDR = 0xD0 which conflicts with ADD_INT_LIT16=0xD0
-    // Per AOSP: 0xD0 IS rem-double/2addr. The lit16 range starts at 0xD0 too.
-    // Actually 0xD0 is both! But in practice, the runtime distinguishes them
-    // by context. For our purposes, we'll skip REM_DOUBLE_2ADDR dispatch
-    // since it's extremely rare. The lit16 handler will catch 0xD0.
-    // constexpr uint16_t REM_DOUBLE_2ADDR = 0xD0; // DISABLED — conflicts with ADD_INT_LIT16
+    constexpr uint16_t ADD_LONG_2ADDR = 0xBB;  // add-long/2addr vA, vB
+    constexpr uint16_t SUB_LONG_2ADDR = 0xBC;  // sub-long/2addr
+    constexpr uint16_t MUL_LONG_2ADDR = 0xBD;  // mul-long/2addr
+    constexpr uint16_t DIV_LONG_2ADDR = 0xBE;  // div-long/2addr
+    constexpr uint16_t REM_LONG_2ADDR = 0xBF;  // rem-long/2addr
+    constexpr uint16_t AND_LONG_2ADDR = 0xC0;  // and-long/2addr
+    constexpr uint16_t OR_LONG_2ADDR  = 0xC1;  // or-long/2addr
+    constexpr uint16_t XOR_LONG_2ADDR = 0xC2; // xor-long/2addr
+    constexpr uint16_t SHL_LONG_2ADDR = 0xC3;  // shl-long/2addr
+    constexpr uint16_t SHR_LONG_2ADDR = 0xC4;  // shr-long/2addr
+    constexpr uint16_t USHR_LONG_2ADDR = 0xC5; // ushr-long/2addr
+    constexpr uint16_t ADD_FLOAT_2ADDR = 0xC6;  // add-float/2addr
+    constexpr uint16_t SUB_FLOAT_2ADDR = 0xC7;  // sub-float/2addr
+    constexpr uint16_t MUL_FLOAT_2ADDR = 0xC8;  // mul-float/2addr
+    constexpr uint16_t DIV_FLOAT_2ADDR = 0xC9;  // div-float/2addr
+    constexpr uint16_t REM_FLOAT_2ADDR = 0xCA;  // rem-float/2addr
+    constexpr uint16_t ADD_DOUBLE_2ADDR = 0xCB; // add-double/2addr
+    constexpr uint16_t SUB_DOUBLE_2ADDR = 0xCC; // sub-double/2addr
+    constexpr uint16_t MUL_DOUBLE_2ADDR = 0xCD; // mul-double/2addr
+    constexpr uint16_t DIV_DOUBLE_2ADDR = 0xCE; // div-double/2addr
+    // EXP-059: 0xD0 is now correctly REM_DOUBLE_2ADDR (was disabled due to
+    // a conflict with ADD_INT_LIT16 caused by the off-by-one error).
+    constexpr uint16_t REM_DOUBLE_2ADDR = 0xD0; // rem-double/2addr
 
     // Arithmetic lit8 (22b format: AA|op BB|CC)
     constexpr uint16_t ADD_INT_LIT8 = 0xD8;     // add-int/lit8 vAA, vBB, #+CC
@@ -267,60 +281,72 @@ namespace Opcode {
     constexpr uint16_t XOR_INT_LIT16 = 0xD7;     // xor-int/lit16
 
     // Binary 23x format: AA|op BB|CC (3 registers)
-    // EXP-040 (BLOCKER-038 FIX): Binary int arithmetic opcodes were off by 1!
-    // Per AOSP: 0x90=int-to-short, 0x91=add-int. Previous code had ADD_INT=0x90.
-    constexpr uint16_t ADD_INT = 0x91;          // add-int vAA, vBB, vCC
-    constexpr uint16_t SUB_INT = 0x92;          // sub-int vAA, vBB, vCC
-    constexpr uint16_t MUL_INT = 0x93;          // mul-int vAA, vBB, vCC
-    constexpr uint16_t DIV_INT = 0x94;          // div-int vAA, vBB, vCC
-    constexpr uint16_t REM_INT = 0x95;          // rem-int vAA, vBB, vCC
-    constexpr uint16_t AND_INT = 0x96;          // and-int vAA, vBB, vCC
-    constexpr uint16_t OR_INT  = 0x97;          // or-int vAA, vBB, vCC
-    constexpr uint16_t XOR_INT = 0x98;          // xor-int vAA, vBB, vCC
-    constexpr uint16_t SHL_INT = 0x99;         // shl-int vAA, vBB, vCC
-    constexpr uint16_t SHR_INT = 0x9A;         // shr-int vAA, vBB, vCC
-    constexpr uint16_t USHR_INT = 0x9B;        // ushr-int vAA, vBB, vCC
+    // EXP-059: Fixed off-by-one for INT binop range. Per AOSP:
+    //   0x90 add-int, 0x91 sub-int, 0x92 mul-int, 0x93 div-int, 0x94 rem-int,
+    //   0x95 and-int, 0x96 or-int, 0x97 xor-int, 0x98 shl-int, 0x99 shr-int,
+    //   0x9A ushr-int, 0x9B add-long, ...
+    // Previous code had ADD_INT=0x91 etc. (off by 1, because INT_TO_SHORT was
+    // wrongly placed at 0x90 instead of 0x8F).
+    constexpr uint16_t ADD_INT = 0x90;          // add-int vAA, vBB, vCC
+    constexpr uint16_t SUB_INT = 0x91;          // sub-int vAA, vBB, vCC
+    constexpr uint16_t MUL_INT = 0x92;          // mul-int vAA, vBB, vCC
+    constexpr uint16_t DIV_INT = 0x93;          // div-int vAA, vBB, vCC
+    constexpr uint16_t REM_INT = 0x94;          // rem-int vAA, vBB, vCC
+    constexpr uint16_t AND_INT = 0x95;          // and-int vAA, vBB, vCC
+    constexpr uint16_t OR_INT  = 0x96;          // or-int vAA, vBB, vCC
+    constexpr uint16_t XOR_INT = 0x97;          // xor-int vAA, vBB, vCC
+    constexpr uint16_t SHL_INT = 0x98;         // shl-int vAA, vBB, vCC
+    constexpr uint16_t SHR_INT = 0x99;         // shr-int vAA, vBB, vCC
+    constexpr uint16_t USHR_INT = 0x9A;        // ushr-int vAA, vBB, vCC
 
     // EXP-040: Missing opcodes discovered from Telegram execution
     // Conversion opcodes (12x format: B|A|op, 1 code unit)
-    constexpr uint16_t INT_TO_LONG = 0x82;     // int-to-long vA, vB
-    constexpr uint16_t INT_TO_FLOAT = 0x83;    // int-to-float vA, vB
-    constexpr uint16_t INT_TO_DOUBLE = 0x84;    // int-to-double vA, vB
-    constexpr uint16_t LONG_TO_INT = 0x85;     // long-to-int vA, vB
-    constexpr uint16_t LONG_TO_FLOAT = 0x86;   // long-to-float vA, vB
-    constexpr uint16_t LONG_TO_DOUBLE = 0x87;  // long-to-double vA, vB
-    constexpr uint16_t FLOAT_TO_INT = 0x88;    // float-to-int vA, vB
-    constexpr uint16_t FLOAT_TO_LONG = 0x89;   // float-to-long vA, vB
-    constexpr uint16_t FLOAT_TO_DOUBLE = 0x8A; // float-to-double vA, vB
-    constexpr uint16_t DOUBLE_TO_INT = 0x8B;   // double-to-int vA, vB
-    constexpr uint16_t DOUBLE_TO_LONG = 0x8C;  // double-to-long vA, vB
-    constexpr uint16_t DOUBLE_TO_FLOAT = 0x8D; // double-to-float vA, vB
-    constexpr uint16_t INT_TO_BYTE = 0x8E;     // int-to-byte vA, vB
-    constexpr uint16_t INT_TO_CHAR = 0x8F;     // int-to-char vA, vB
-    constexpr uint16_t INT_TO_SHORT = 0x90;    // int-to-short vA, vB
+    // EXP-059: Fixed off-by-one for conversion range. Per AOSP:
+    //   0x81 int-to-long, 0x82 int-to-float, 0x83 int-to-double,
+    //   0x84 long-to-int, 0x85 long-to-float, 0x86 long-to-double,
+    //   0x87 float-to-int, 0x88 float-to-long, 0x89 float-to-double,
+    //   0x8A double-to-int, 0x8B double-to-long, 0x8C double-to-float,
+    //   0x8D int-to-byte, 0x8E int-to-char, 0x8F int-to-short
+    constexpr uint16_t INT_TO_LONG = 0x81;     // int-to-long vA, vB
+    constexpr uint16_t INT_TO_FLOAT = 0x82;    // int-to-float vA, vB
+    constexpr uint16_t INT_TO_DOUBLE = 0x83;    // int-to-double vA, vB
+    constexpr uint16_t LONG_TO_INT = 0x84;     // long-to-int vA, vB
+    constexpr uint16_t LONG_TO_FLOAT = 0x85;   // long-to-float vA, vB
+    constexpr uint16_t LONG_TO_DOUBLE = 0x86;  // long-to-double vA, vB
+    constexpr uint16_t FLOAT_TO_INT = 0x87;    // float-to-int vA, vB
+    constexpr uint16_t FLOAT_TO_LONG = 0x88;   // float-to-long vA, vB
+    constexpr uint16_t FLOAT_TO_DOUBLE = 0x89; // float-to-double vA, vB
+    constexpr uint16_t DOUBLE_TO_INT = 0x8A;   // double-to-int vA, vB
+    constexpr uint16_t DOUBLE_TO_LONG = 0x8B;  // double-to-long vA, vB
+    constexpr uint16_t DOUBLE_TO_FLOAT = 0x8C; // double-to-float vA, vB
+    constexpr uint16_t INT_TO_BYTE = 0x8D;     // int-to-byte vA, vB
+    constexpr uint16_t INT_TO_CHAR = 0x8E;     // int-to-char vA, vB
+    constexpr uint16_t INT_TO_SHORT = 0x8F;    // int-to-short vA, vB
 
     // Float/Double arithmetic (23x format: AA|op BB|CC, 2 code units)
-    // EXP-043 Phase 1: Fixed cmp-* opcode values (off-by-one regression).
-    // Per AOSP: 0x2c cmpl-float, 0x2d cmpg-float, 0x2e cmpl-double,
-    // 0x2f cmpg-double, 0x30 cmp-long.
-    // Previous code had all values shifted by 1, causing CMP_LONG=0x31
-    // which collided with IF_EQ=0x31 (after the if-* fix above), breaking
-    // the build.
-    constexpr uint16_t CMPL_FLOAT = 0x2C;      // cmpl-float vAA, vBB, vCC
-    constexpr uint16_t CMPG_FLOAT = 0x2D;      // cmpg-float vAA, vBB, vCC
-    constexpr uint16_t CMPL_DOUBLE = 0x2E;     // cmpl-double vAA, vBB, vCC
-    constexpr uint16_t CMPG_DOUBLE = 0x2F;    // cmpg-double vAA, vBB, vCC
-    constexpr uint16_t CMP_LONG = 0x30;        // cmp-long vAA, vBB, vCC
-    constexpr uint16_t ADD_FLOAT = 0xA7;        // add-float vAA, vBB, vCC
-    constexpr uint16_t SUB_FLOAT = 0xA8;        // sub-float vAA, vBB, vCC
-    constexpr uint16_t MUL_FLOAT = 0xA9;        // mul-float vAA, vBB, vCC
-    constexpr uint16_t DIV_FLOAT = 0xAA;        // div-float vAA, vBB, vCC
-    constexpr uint16_t REM_FLOAT = 0xAB;        // rem-float vAA, vBB, vCC
-    constexpr uint16_t ADD_DOUBLE = 0xAC;       // add-double vAA, vBB, vCC
-    constexpr uint16_t SUB_DOUBLE = 0xAD;       // sub-double vAA, vBB, vCC
-    constexpr uint16_t MUL_DOUBLE = 0xAE;       // mul-double vAA, vBB, vCC
-    constexpr uint16_t DIV_DOUBLE = 0xAF;       // div-double vAA, vBB, vCC
-    constexpr uint16_t REM_DOUBLE = 0xB0;       // rem-double vAA, vBB, vCC
+    // EXP-059: Fixed off-by-one for cmp-* opcodes too. Per AOSP:
+    //   0x2B packed-switch, 0x2C sparse-switch
+    //   0x2D cmpl-float, 0x2E cmpg-float, 0x2F cmpl-double, 0x30 cmpg-double, 0x31 cmp-long
+    // Previous code had all values shifted by 1 (CMPL_FLOAT=0x2C etc.).
+    // The duplicate CMP_LONG=0x31 at line 206 is the AOSP-correct one; this
+    // block now uses the same values for cmpl-float etc.
+    constexpr uint16_t PACKED_SWITCH = 0x2B;   // packed-switch vAA, +BBBB (31t format)
+    constexpr uint16_t SPARSE_SWITCH = 0x2C;   // sparse-switch vAA, +BBBB (31t format)
+    constexpr uint16_t CMPL_FLOAT = 0x2D;      // cmpl-float vAA, vBB, vCC
+    constexpr uint16_t CMPG_FLOAT = 0x2E;      // cmpg-float vAA, vBB, vCC
+    constexpr uint16_t CMPL_DOUBLE = 0x2F;     // cmpl-double vAA, vBB, vCC
+    constexpr uint16_t CMPG_DOUBLE = 0x30;    // cmpg-double vAA, vBB, vCC
+    // CMP_LONG = 0x31 is defined above (next to the IF_* opcodes).
+    constexpr uint16_t ADD_FLOAT = 0xA6;        // add-float vAA, vBB, vCC (was 0xA7, AOSP-corrected)
+    constexpr uint16_t SUB_FLOAT = 0xA7;        // sub-float vAA, vBB, vCC
+    constexpr uint16_t MUL_FLOAT = 0xA8;        // mul-float vAA, vBB, vCC (AOSP-corrected)
+    constexpr uint16_t DIV_FLOAT = 0xA9;        // div-float vAA, vBB, vCC
+    constexpr uint16_t REM_FLOAT = 0xAA;        // rem-float vAA, vBB, vCC
+    constexpr uint16_t ADD_DOUBLE = 0xAB;       // add-double vAA, vBB, vCC
+    constexpr uint16_t SUB_DOUBLE = 0xAC;       // sub-double vAA, vBB, vCC
+    constexpr uint16_t MUL_DOUBLE = 0xAD;       // mul-double vAA, vBB, vCC
+    constexpr uint16_t DIV_DOUBLE = 0xAE;       // div-double vAA, vBB, vCC
+    constexpr uint16_t REM_DOUBLE = 0xAF;       // rem-double vAA, vBB, vCC (was 0xB0, AOSP-corrected)
 
     // Long arithmetic (23x format)
     constexpr uint16_t ADD_LONG = 0x9B;         // add-long vAA, vBB, vCC
