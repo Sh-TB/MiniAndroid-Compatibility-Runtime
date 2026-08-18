@@ -748,6 +748,22 @@ bool DalvikExecutionEngine::execute_method_internal(
     for (size_t i = 0; i < args.size() && i < ins_size; ++i) {
         frame.registers.write_p(static_cast<uint8_t>(i), args[i]);
     }
+
+    // EXP-058: Debug — verify parameter writes for addFragmentToStack.
+    if (current_method_.find("addFragmentToStack") != std::string::npos ||
+        method_name.find("addFragmentToStack") != std::string::npos) {
+        for (size_t i = 0; i < args.size() && i < ins_size; ++i) {
+            auto val = frame.registers.read_v(static_cast<uint8_t>(
+                registers_size - ins_size + i));
+            std::cerr << "[EXP058-PARAM] p" << i
+                      << " → v" << (registers_size - ins_size + i)
+                      << " type=" << static_cast<int>(val.type)
+                      << " obj=" << val.object_id
+                      << " (from arg type=" << static_cast<int>(args[i].type)
+                      << " obj=" << args[i].object_id << ")"
+                      << std::endl;
+        }
+    }
     
     // Push frame onto call stack
     call_stack_.push_frame(std::move(frame));
@@ -1398,6 +1414,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         uint32_t regs_size = method.registers_size ? method.registers_size : 16;
         uint32_t ins_size = method.ins_size ? method.ins_size : static_cast<uint32_t>(args.size());
         uint32_t outs_size = method.outs_size ? method.outs_size : 4;
+
+        // EXP-058: Debug — log register sizes for addFragmentToStack.
+        if (method.name.find("addFragmentToStack") != std::string::npos) {
+            std::cerr << "[EXP058-REGS] " << cls_ref.name << "." << method.name
+                      << " method.regs=" << method.registers_size
+                      << " method.ins=" << method.ins_size
+                      << " method.outs=" << method.outs_size
+                      << " → using regs=" << regs_size
+                      << " ins=" << ins_size
+                      << " outs=" << outs_size
+                      << " args=" << args.size()
+                      << std::endl;
+        }
 
         // EXP-055: Debug log before execute_method_internal.
         std::cerr << "[RET-BEFORE] " << cls_ref.name << "." << method.name
