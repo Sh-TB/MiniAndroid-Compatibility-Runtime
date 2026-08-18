@@ -984,6 +984,16 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
+    // EXP-058: checkSystemBarColors loops at PC=0x136 (invoke-interface on
+    // a null window object). Short-circuit.
+    if (class_descriptor.find("LaunchActivity") != std::string::npos &&
+        method_name == "checkSystemBarColors") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (invoke-interface on null window loop)");
+        recursion_depth_--;
+        return false;
+    }
+
     // EXP-054: BaseFragment.getLastSheet loops because isShown() returns
     // void (0/false), and the loop keeps trying the same element. Short-circuit.
     if (class_descriptor.find("BaseFragment") != std::string::npos &&
