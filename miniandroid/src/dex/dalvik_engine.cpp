@@ -1184,7 +1184,27 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         static thread_local std::map<std::string, int> call_counts;
         std::string key = class_descriptor + "." + method_name;
         call_counts[key]++;
-        int threshold = (method_name == "addFragmentToStack") ? 100 : 10;
+        int threshold = 10;
+        // EXP-060: Allow more calls for Fragment lifecycle methods that
+        // are legitimately called multiple times (once per Fragment instance).
+        // NOTE: <init> is NOT included here because constructor loops are
+        // common (e.g. DrawerLayoutContainer calls super which triggers
+        // another allocation). Keeping <init> at threshold=10 prevents
+        // these loops from running forever.
+        if (method_name == "addFragmentToStack" ||
+            method_name == "presentFragment" ||
+            method_name == "onFragmentCreate" ||
+            method_name == "createView" ||
+            method_name == "onResume" ||
+            method_name == "setParentLayout" ||
+            method_name == "attachView" ||
+            method_name == "onCreateView" ||
+            method_name == "onBecomeFullyVisible" ||
+            method_name == "onPause" ||
+            method_name == "onStop" ||
+            method_name == "onDestroy") {
+            threshold = 50;
+        }
         if (call_counts[key] > threshold) {
             log("⏭️ STUB-ONLY: " + key + " — skipping (called " +
                 std::to_string(call_counts[key]) + " times)");
@@ -1392,6 +1412,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // (for object types) + count of primitive type chars (I, Z, B, etc.)
         // Simplified: count parameters by parsing the descriptor.
         size_t param_count = 0;
+        std::vector<std::string> param_types;  // EXP-060: for type matching
         const std::string& desc = method.descriptor;
         size_t paren_pos = desc.find('(');
         if (paren_pos != std::string::npos) {
@@ -1402,14 +1423,25 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 size_t i = 0;
                 while (i < params.size()) {
                     if (params[i] == 'L') {
-                        // Skip to ';'
-                        i = params.find(';', i);
-                        if (i == std::string::npos) break;
-                        i++;
+                        size_t end = params.find(';', i);
+                        if (end == std::string::npos) break;
+                        param_types.push_back(params.substr(i, end - i + 1));
+                        i = end + 1;
                     } else if (params[i] == '[') {
-                        i++;  // array prefix, skip to next type
+                        size_t start = i;
+                        while (i < params.size() && params[i] == '[') i++;
+                        if (i < params.size() && params[i] == 'L') {
+                            size_t end = params.find(';', i);
+                            if (end == std::string::npos) break;
+                            param_types.push_back(params.substr(start, end - start + 1));
+                            i = end + 1;
+                        } else {
+                            param_types.push_back(params.substr(start, i - start + 1));
+                            i++;
+                        }
                     } else {
-                        i++;  // primitive single char
+                        param_types.push_back(std::string(1, params[i]));
+                        i++;
                     }
                     param_count++;
                 }
@@ -1422,11 +1454,37 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             effective_arg_count = arg_count - 1;
         }
         if (param_count == effective_arg_count) {
-            best_match = method;  // copy by value (EXP-054)
-            break;  // exact match, stop searching
-        }
-        if (!fallback_match) {
-            fallback_match = method;  // copy by value (EXP-054)
+            // EXP-060: Check if the first parameter type matches the
+            // first argument's class descriptor. This distinguishes
+            // overloads with the same param count but different types
+            // (e.g. presentFragment(BaseFragment) vs presentFragment(NavigationParams)).
+            bool type_matches = true;
+            if (effective_arg_count >= 1 && !param_types.empty()) {
+                // args[1] is the first non-`this` parameter for instance methods.
+                // args[0] is `this`.
+                size_t arg_idx = (arg_count > param_count) ? 1 : 0;
+                if (arg_idx < args.size()) {
+                    const auto& arg = args[arg_idx];
+                    const std::string& param_type = param_types[0];
+                    if (param_type[0] == 'L' && arg.type == DalvikType::OBJECT_REF) {
+                        // Both are object types — check if the class descriptors match
+                        // (or are compatible — we only check prefix for now).
+                        if (!arg.class_desc.empty() &&
+                            arg.class_desc.find(param_type) == std::string::npos &&
+                            param_type.find(arg.class_desc) == std::string::npos) {
+                            // No match — skip this overload.
+                            type_matches = false;
+                        }
+                    }
+                }
+            }
+            if (type_matches) {
+                best_match = method;  // copy by value (EXP-054)
+                break;  // exact match, stop searching
+            }
+            if (!fallback_match) {
+                fallback_match = method;
+            }
         }
     }
 
@@ -1479,7 +1537,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         uint32_t outs_size = method.outs_size ? method.outs_size : 4;
 
         // EXP-058: Debug — log register sizes for addFragmentToStack.
-        if (method.name.find("addFragmentToStack") != std::string::npos) {
+        // EXP-060: Also log for setParentLayout and presentFragment.
+        if (method.name.find("addFragmentToStack") != std::string::npos ||
+            method.name == "setParentLayout" ||
+            method.name == "presentFragment") {
             std::cerr << "[EXP058-REGS] " << cls_ref.name << "." << method.name
                       << " method.regs=" << method.registers_size
                       << " method.ins=" << method.ins_size
@@ -1489,6 +1550,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                       << " outs=" << outs_size
                       << " args=" << args.size()
                       << std::endl;
+            // EXP-060: Also log the argument values to see what's being passed.
+            for (size_t ai = 0; ai < args.size() && ai < ins_size; ++ai) {
+                std::cerr << "[EXP060-ARG] p" << ai
+                          << " type=" << static_cast<int>(args[ai].type)
+                          << " obj=" << args[ai].object_id
+                          << " class=" << args[ai].class_desc
+                          << std::endl;
+            }
         }
 
         // EXP-055: Debug log before execute_method_internal.
@@ -1558,6 +1627,91 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
     recursion_depth_--;
     return false;  // method not found in DEX, bridge to API
+}
+
+// EXP-060: Dispatch a synthetic CLICK event on a View.
+//
+// This is the generic event mechanism. The runtime:
+//   1. Looks up the ViewNode via ViewShadow.
+//   2. Retrieves the registered OnClickListener object_id.
+//   3. Looks up the listener's runtime class from the heap.
+//   4. Invokes listener.onClick(view) via try_recursive_invoke.
+//
+// The actual navigation logic is in the listener's onClick method —
+// no Telegram-specific code is needed here.
+//
+// Returns true if a listener was found and dispatched.
+bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id) {
+    if (shadow_registry_ == nullptr) {
+        std::cerr << "[EXP060-CLICK] no shadow registry — cannot dispatch" << std::endl;
+        return false;
+    }
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) {
+        std::cerr << "[EXP060-CLICK] no ViewShadow registered" << std::endl;
+        return false;
+    }
+    const auto* node = view_shadow->find_node(view_object_id);
+    if (node == nullptr) {
+        std::cerr << "[EXP060-CLICK] view_id=" << view_object_id
+                  << " not found in ViewShadow" << std::endl;
+        return false;
+    }
+    if (node->click_listener_id == 0) {
+        std::cerr << "[EXP060-CLICK] view_id=" << view_object_id
+                  << " class=" << node->class_desc
+                  << " has no OnClickListener" << std::endl;
+        return false;
+    }
+
+    uint32_t listener_id = node->click_listener_id;
+    std::string listener_class;
+    // Look up the listener's class from the heap.
+    if (heap_.has_object(listener_id)) {
+        listener_class = heap_.get(listener_id)->class_descriptor;
+    }
+    if (listener_class.empty()) {
+        listener_class = "Landroid/view/View$OnClickListener;";
+    }
+
+    std::cerr << "[UI-EVENT] event=CLICK"
+              << " view_object=" << view_object_id
+              << " view_class=" << node->class_desc
+              << " listener=" << listener_id
+              << " listener_class=" << listener_class
+              << std::endl;
+
+    // Build args for onClick(View v):
+    //   args[0] = this (listener)
+    //   args[1] = view (the View that was clicked)
+    std::vector<DalvikValue> args;
+    DalvikValue this_arg = DalvikValue::make_object(listener_id, listener_class);
+    args.push_back(this_arg);
+    DalvikValue view_arg = DalvikValue::make_object(view_object_id, node->class_desc);
+    args.push_back(view_arg);
+
+    DalvikValue return_val = DalvikValue::make_void();
+    DalvikExecutionResult result;
+    bool ok = try_recursive_invoke(listener_class, "onClick", args, return_val, result);
+
+    std::cerr << "[UI-EVENT] event=CLICK result="
+              << (ok ? "DISPATCHED" : "FAILED")
+              << " listener=" << listener_class
+              << std::endl;
+    return ok;
+}
+
+bool DalvikExecutionEngine::dispatch_click_by_class(const std::string& class_substring) {
+    if (shadow_registry_ == nullptr) return false;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) return false;
+    uint32_t view_id = view_shadow->find_by_class_substring(class_substring);
+    if (view_id == 0) {
+        std::cerr << "[EXP060-CLICK] no View found matching '"
+                  << class_substring << "'" << std::endl;
+        return false;
+    }
+    return dispatch_click(view_id);
 }
 
 bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) {
@@ -2417,6 +2571,58 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             //
             // For now we only support catch-all handlers. Typed catches
             // require class hierarchy resolution which is a future task.
+            case Opcode::FILL_ARRAY_DATA: {
+                // EXP-060: fill-array-data vAA, +BBBBBBBB (31t format, 3 code units)
+                // Fills the array in vAA with data from a payload at PC+offset.
+                // The payload format is:
+                //   code_unit[0]: 0x0300 (magic — fill-array-data-payload)
+                //   code_unit[1]: element width (1, 2, 4, or 8 bytes)
+                //   code_unit[2..3]: element count (32-bit)
+                //   followed by element_width * count bytes, padded to 16-bit
+                trace.opcode_name = "fill-array-data";
+                uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
+                int32_t offset = static_cast<int32_t>(bytecode_[pc_ + 1] |
+                    (static_cast<uint32_t>(bytecode_[pc_ + 2]) << 16));
+                uint32_t payload_pc = pc_ + offset;
+
+                DalvikValue array_val = get_register(vAA);
+                // The array must be an OBJECT_REF to an array object.
+                // For now, we don't model array elements per-index.
+                // The fill-array-data payload is typically small (2-4 booleans
+                // or ints) and the array is a local — we just advance PC.
+                // If the array is used later (e.g. aget), it will return 0.
+                //
+                // A more complete implementation would:
+                //   1. Validate payload_pc is within bytecode.
+                //   2. Read the payload header (element_width, count).
+                //   3. Store the raw bytes on the HeapObject as a
+                //      "raw_array_data" field, so aget/aget-boolean can read it.
+                // For now, log and skip.
+                if (payload_pc < bytecode_.size()) {
+                    uint16_t magic = bytecode_[payload_pc];
+                    uint16_t elem_width = bytecode_[payload_pc + 1];
+                    uint32_t count = static_cast<uint32_t>(bytecode_[payload_pc + 2]) |
+                        (static_cast<uint32_t>(bytecode_[payload_pc + 3]) << 16);
+                    (void)magic; (void)elem_width; (void)count;
+                    // Store the payload info on the array's HeapObject for
+                    // potential later use by aget/aget-boolean.
+                    if (array_val.type == DalvikType::OBJECT_REF &&
+                        heap_.has_object(array_val.object_id)) {
+                        heap_.set_object_field(array_val.object_id,
+                            "__fill_array_data_pc__",
+                            DalvikValue::make_int(static_cast<int32_t>(payload_pc)));
+                        heap_.set_object_field(array_val.object_id,
+                            "__fill_array_elem_width__",
+                            DalvikValue::make_int(elem_width));
+                        heap_.set_object_field(array_val.object_id,
+                            "__fill_array_count__",
+                            DalvikValue::make_int(static_cast<int32_t>(count)));
+                    }
+                }
+                pc_ = pc_ + 3;
+                success = true;
+                break;
+            }
             case Opcode::THROW: {
                 trace.opcode_name = "throw";
                 uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
@@ -3469,6 +3675,20 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                   << std::endl;
     }
 
+    // EXP-060: Debug — log iget-object for parentLayout in presentFragment
+    if (field_res.resolved && field_res.field_name == "parentLayout" &&
+        current_method_ == "presentFragment") {
+        std::cerr << "[EXP060-IGET] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " obj=v" << (int)obj_reg
+                  << " field=" << field_res.class_descriptor << "." << field_res.field_name
+                  << " obj_type=" << static_cast<int>(obj_ref.type)
+                  << " obj_id=" << obj_ref.object_id
+                  << " result_type=" << static_cast<int>(result_value.type)
+                  << " result_obj=" << result_value.object_id
+                  << std::endl;
+    }
+
     set_register(dest_reg, result_value);
     
     trace.operands.push_back({"v" + std::to_string(dest_reg), "destination"});
@@ -3526,6 +3746,20 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
     // EXP-058: Debug — log iput-object for actionBarLayout field.
     if (field_res.resolved && field_res.field_name == "actionBarLayout") {
         std::cerr << "[EXP058-IPUT] iput-object actionBarLayout"
+                  << " src_reg=v" << (int)src_reg
+                  << " src_type=" << static_cast<int>(src_val.type)
+                  << " src_obj=" << src_val.object_id
+                  << " obj_reg=v" << (int)obj_reg
+                  << " obj_type=" << static_cast<int>(obj_ref.type)
+                  << " obj_id=" << obj_ref.object_id
+                  << " pc=" << pc
+                  << " field_class=" << field_res.class_descriptor
+                  << std::endl;
+    }
+
+    // EXP-060: Debug — log iput-object for parentLayout field.
+    if (field_res.resolved && field_res.field_name == "parentLayout") {
+        std::cerr << "[EXP060-IPUT] iput-object parentLayout"
                   << " src_reg=v" << (int)src_reg
                   << " src_type=" << static_cast<int>(src_val.type)
                   << " src_obj=" << src_val.object_id
@@ -4910,10 +5144,18 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
     int32_t a_val = (a.type == DalvikType::INT32) ? a.int_val : 0; \
     int32_t b_val = (b.type == DalvikType::INT32) ? b.int_val : 0; \
     bool taken = false; \
-    if (a.type == DalvikType::OBJECT_REF && b.type == DalvikType::OBJECT_REF) { \
-        taken = (a.object_id op b.object_id); \
-    } else if (a.type == DalvikType::NULL_REF && b.type == DalvikType::NULL_REF) { \
-        taken = (0 op 0); \
+    /* EXP-060: Fix if-eq/if-ne for mixed NULL_REF/OBJECT_REF comparisons. */ \
+    /* Per AOSP/JVM spec: null == non-null-object is FALSE, null == null is TRUE. */ \
+    /* Previous code fell into the int comparison branch when one side was */ \
+    /* NULL_REF and the other was OBJECT_REF, treating both as int 0, making */ \
+    /* if-eq always TRUE (incorrectly skipping the iput-object in */ \
+    /* BaseFragment.setParentLayout). */ \
+    bool a_is_ref = (a.type == DalvikType::OBJECT_REF || a.type == DalvikType::NULL_REF); \
+    bool b_is_ref = (b.type == DalvikType::OBJECT_REF || b.type == DalvikType::NULL_REF); \
+    if (a_is_ref && b_is_ref) { \
+        uint32_t a_obj = (a.type == DalvikType::OBJECT_REF) ? a.object_id : 0; \
+        uint32_t b_obj = (b.type == DalvikType::OBJECT_REF) ? b.object_id : 0; \
+        taken = (a_obj op b_obj); \
     } else { \
         taken = (a_val op b_val); \
     } \
@@ -5076,8 +5318,21 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     // Convention: if the first arg is an OBJECT_REF, we treat it as the
     // receiver and shift the remaining args into ctx.args. Otherwise we
     // treat the call as static and put all args in ctx.args.
+    //
+    // EXP-060: Use args[0].class_desc (the RUNTIME class) for ctx.class_name
+    // instead of the passed-in class_name (which may be a parent class like
+    // "Landroid/view/View;" used as a fallback for shadow dispatch). This
+    // ensures the ViewNode stores the correct runtime class descriptor.
     framework::CallContext ctx;
-    ctx.class_name = class_name;
+    // EXP-060: Prefer the receiver's runtime class for ctx.class_name.
+    // Fall back to the passed-in class_name only if there's no receiver
+    // or the receiver has no class_desc.
+    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        !args[0].class_desc.empty()) {
+        ctx.class_name = args[0].class_desc;
+    } else {
+        ctx.class_name = class_name;
+    }
     ctx.method = method;
     // ctx.descriptor is left empty — the engine doesn't have an easy
     // path to the proto descriptor here; shadows that need it can
@@ -5218,9 +5473,33 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // migrate Android framework behavior from inline C++ code in
     // bridge_to_api into per-concept shadow classes without breaking
     // any of the existing paths.
+    //
+    // EXP-060: Try the shadow with multiple class candidates. The runtime_type
+    // (e.g. "Lorg/telegram/ui/IntroActivity$4;") may not be recognized by
+    // ViewShadow because the class name doesn't end in "View;". So we also
+    // try common View/ViewGroup parent classes. This ensures View methods
+    // like setOnClickListener are dispatched to ViewShadow even when the
+    // receiver is a user-defined View subclass.
     if (shadow_registry_ != nullptr) {
         if (try_shadow_dispatch(class_name, method, args, result, status)) {
             return true;
+        }
+        // EXP-060: Try View/ViewGroup parent classes. If the runtime_type
+        // is a subclass of View (which we can't check without a class
+        // hierarchy), trying the View class as a fallback will catch
+        // setOnClickListener, setText, addView, etc.
+        static const std::vector<std::string> view_parents = {
+            "Landroid/view/View;",
+            "Landroid/view/ViewGroup;",
+            "Landroid/widget/TextView;",
+            "Landroid/widget/ImageView;",
+            "Landroid/widget/Button;",
+            "Landroid/widget/EditText;",
+        };
+        for (const auto& parent : view_parents) {
+            if (try_shadow_dispatch(parent, method, args, result, status)) {
+                return true;
+            }
         }
     }
 
