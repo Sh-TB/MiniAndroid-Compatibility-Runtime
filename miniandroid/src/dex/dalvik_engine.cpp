@@ -1714,6 +1714,73 @@ bool DalvikExecutionEngine::dispatch_click_by_class(const std::string& class_sub
     return dispatch_click(view_id);
 }
 
+// EXP-061: Dump the full ViewNode tree to a JSON file.
+// This is the input to the software renderer. Each node includes
+// object_id, class, parent, children, geometry, text, listener info.
+bool DalvikExecutionEngine::dump_view_tree(const std::string& path) {
+    if (shadow_registry_ == nullptr) {
+        std::cerr << "[EXP061] no shadow registry" << std::endl;
+        return false;
+    }
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) {
+        std::cerr << "[EXP061] no ViewShadow registered" << std::endl;
+        return false;
+    }
+
+    // The ViewShadow doesn't expose its internal nodes_ map directly.
+    // We'll iterate using find_node over all known heap object IDs.
+    // A more efficient approach would be to add an iterator to ViewShadow,
+    // but for now we scan all heap objects.
+    json nodes = json::array();
+    size_t count = 0;
+    for (const auto& [oid, obj] : heap_.all_objects()) {
+        const auto* node = view_shadow->find_node(oid);
+        if (node == nullptr) continue;
+        count++;
+        json n;
+        n["object_id"] = node->view_id;
+        n["class"] = node->class_desc;
+        n["parent_id"] = node->parent_id;
+        n["children"] = node->children;
+        n["android_view_id"] = node->android_view_id;
+        n["width"] = node->width;
+        n["height"] = node->height;
+        n["x"] = node->x;
+        n["y"] = node->y;
+        n["text"] = node->text;
+        n["clickable"] = node->clickable;
+        n["enabled"] = node->enabled;
+        n["visibility"] = node->visibility;
+        n["has_click_listener"] = (node->click_listener_id != 0);
+        if (node->click_listener_id != 0) {
+            n["click_listener_id"] = node->click_listener_id;
+            // Look up the listener's class from the heap.
+            if (heap_.has_object(node->click_listener_id)) {
+                n["click_listener_class"] = heap_.get(node->click_listener_id)->class_descriptor;
+            }
+        }
+        nodes.push_back(n);
+    }
+
+    json root;
+    root["experiment"] = "EXP-061";
+    root["view_count"] = count;
+    root["nodes"] = nodes;
+
+    // Write to file
+    std::ofstream out(path);
+    if (!out.is_open()) {
+        std::cerr << "[EXP061] failed to open " << path << " for writing" << std::endl;
+        return false;
+    }
+    out << root.dump(2);
+    out.close();
+
+    std::cerr << "[EXP061] View tree dumped: " << count << " nodes to " << path << std::endl;
+    return true;
+}
+
 bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) {
     while (!halted_ && pc_ < bytecode_.size()) {
         InstructionTrace trace;
