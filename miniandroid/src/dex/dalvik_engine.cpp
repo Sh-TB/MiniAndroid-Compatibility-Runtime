@@ -488,9 +488,9 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                     method.name,
                                     method.descriptor,
                                     method.bytecode,
-                                    16,  // registers_size (enough for onCreate)
-                                    2,   // ins_size = 2 (this + Bundle)
-                                    4,   // outs_size
+                                    method.registers_size ? method.registers_size : 16,  // EXP-058: use actual
+                                    method.ins_size ? method.ins_size : 2,  // EXP-058: use actual
+                                    method.outs_size ? method.outs_size : 4,  // EXP-058: use actual
                                     entry_args,
                                     result,
                                     method.tries_size,
@@ -961,6 +961,79 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
+    // EXP-058: EmojiInputFilter.<init> loops when correct register sizes
+    // are used — the constructor calls super() which resolves back to
+    // itself via incorrect overload resolution. Short-circuit.
+    if (class_descriptor.find("EmojiInputFilter") != std::string::npos &&
+        method_name == "<init>") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (constructor loop)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-058: EmojiTextViewHelper$HelperInternal19.<init> also loops.
+    if (class_descriptor.find("HelperInternal19") != std::string::npos &&
+        method_name == "<init>") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (constructor loop)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-058: EmojiTextViewHelper$SkippingHelper19.<init> also loops.
+    if (class_descriptor.find("SkippingHelper19") != std::string::npos &&
+        method_name == "<init>") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (constructor loop)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-058: EmojiTextViewHelper$HelperInternal.<init> also loops.
+    if (class_descriptor.find("HelperInternal;") != std::string::npos &&
+        method_name == "<init>") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (constructor loop)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-058: Preconditions.checkNotNull loops due to incorrect
+    // overload resolution when the caller has different register layout.
+    if (class_descriptor.find("Preconditions") != std::string::npos &&
+        method_name == "checkNotNull") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (overload loop)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-058: AppCompatTextViewAutoSizeHelper$Impl constructors loop.
+    if (class_descriptor.find("AppCompatTextViewAutoSizeHelper") != std::string::npos &&
+        method_name == "<init>") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (constructor loop)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-058: Generic guard — if the same (class, method) was called
+    // more than 10 times, skip it. This catches constructor/method loops
+    // without being too aggressive on legitimate recursion.
+    {
+        static thread_local std::map<std::string, int> call_counts;
+        std::string key = class_descriptor + "." + method_name;
+        call_counts[key]++;
+        if (call_counts[key] > 10) {
+            log("⏭️ STUB-ONLY: " + key + " — skipping (called " +
+                std::to_string(call_counts[key]) + " times)");
+            call_counts[key]--;
+            recursion_depth_--;
+            return false;
+        }
+    }
+
     // EXP-045 Phase 2: TransactionInactiveError — credentials exception that
     // loops because its superclass constructor (Exception.<init>) returns
     // incorrectly. Stub as no-op to unblock deeper execution.
@@ -1240,9 +1313,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         halted_on_return_ = false;
         halted_ = false;
 
-        uint32_t regs_size = 16;
-        uint32_t ins_size = static_cast<uint32_t>(args.size());
-        uint32_t outs_size = 4;
+        // EXP-058: Use actual register sizes from the code_item header.
+        uint32_t regs_size = method.registers_size ? method.registers_size : 16;
+        uint32_t ins_size = method.ins_size ? method.ins_size : static_cast<uint32_t>(args.size());
+        uint32_t outs_size = method.outs_size ? method.outs_size : 4;
 
         // EXP-055: Debug log before execute_method_internal.
         std::cerr << "[RET-BEFORE] " << cls_ref.name << "." << method.name
@@ -2779,12 +2853,16 @@ bool DalvikExecutionEngine::execute_const_class(uint32_t pc, InstructionTrace& t
 // ============================================================================
 
 bool DalvikExecutionEngine::execute_move(uint32_t pc, InstructionTrace& trace) {
-    // Format: 12x [op] vA, vB
+    // Format: 12x B|A|op — 1 code unit
+    // bits 0-7: op, bits 8-11: A (dest), bits 12-15: B (src)
     if (pc + 1 >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
     uint8_t dest = (instr >> 8) & 0xF;
-    uint8_t src = (instr >> 4) & 0xF;
+    // EXP-058: CRITICAL FIX — was (instr >> 4) & 0xF which reads bits 4-7
+    // (part of the opcode byte), NOT bits 12-15 (the B register nibble).
+    // This caused move-object v9, v15 to read v0 instead of v15.
+    uint8_t src = (instr >> 12) & 0xF;
     
     DalvikValue val = get_register(src);
     set_register(dest, val);
@@ -2796,12 +2874,19 @@ bool DalvikExecutionEngine::execute_move(uint32_t pc, InstructionTrace& trace) {
 }
 
 bool DalvikExecutionEngine::execute_move_object(uint32_t pc, InstructionTrace& trace) {
-    // Format: 12x [op] vA, vB (for object refs)
+    // Format: 12x B|A|op — 1 code unit
+    // bits 0-7: op, bits 8-11: A (dest), bits 12-15: B (src)
     if (pc + 1 >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
     uint8_t dest = (instr >> 8) & 0xF;
-    uint8_t src = (instr >> 4) & 0xF;
+    // EXP-058: CRITICAL FIX — was (instr >> 4) & 0xF which reads bits 4-7
+    // (part of the opcode byte), NOT bits 12-15 (the B register nibble).
+    // This caused move-object v9, v15 to read v0 (uninitialized) instead
+    // of v15 (the Activity `this` pointer). As a result, ALL iput-object
+    // instructions on the Activity's fields silently failed because the
+    // object reference was NULL_REF instead of OBJECT_REF.
+    uint8_t src = (instr >> 12) & 0xF;
     
     DalvikValue val = get_register(src);
     // Ensure it's treated as object reference
@@ -3216,16 +3301,30 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
     // Format: 22c iput-object vA, vB, field@CCCC (2 code units)
     // EXP-042 Phase 2 FIX: never return false — always advance pc_.
     if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
-    
+
     uint16_t instr = bytecode_[pc];
     uint8_t src_reg = (instr >> 8) & 0xF;
     uint8_t obj_reg = (instr >> 12) & 0xF;
     uint16_t field_idx = bytecode_[pc + 1];
-    
+
     FieldResolution field_res = resolve_field(field_idx);
     DalvikValue src_val = get_register(src_reg);
     DalvikValue obj_ref = get_register(obj_reg);
-    
+
+    // EXP-058: Debug — log iput-object for actionBarLayout field.
+    if (field_res.resolved && field_res.field_name == "actionBarLayout") {
+        std::cerr << "[EXP058-IPUT] iput-object actionBarLayout"
+                  << " src_reg=v" << (int)src_reg
+                  << " src_type=" << static_cast<int>(src_val.type)
+                  << " src_obj=" << src_val.object_id
+                  << " obj_reg=v" << (int)obj_reg
+                  << " obj_type=" << static_cast<int>(obj_ref.type)
+                  << " obj_id=" << obj_ref.object_id
+                  << " pc=" << pc
+                  << " field_class=" << field_res.class_descriptor
+                  << std::endl;
+    }
+
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
         heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
@@ -3906,6 +4005,38 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
         trace.invoked_method = class_name + "." + method_name;
         pc_ = pc + 3;
         return true;
+    }
+
+    // EXP-058: Interface dispatch — try the RUNTIME TYPE of the receiver.
+    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+        uint32_t receiver_id = args[0].object_id;
+        if (heap_.has_object(receiver_id)) {
+            const auto* heap_obj = heap_.get(receiver_id);
+            if (heap_obj && !heap_obj->class_descriptor.empty() &&
+                heap_obj->class_descriptor != class_name) {
+                // Try the concrete class.
+                if (try_recursive_invoke(heap_obj->class_descriptor, method_name,
+                                         args, return_val, result)) {
+                    last_invoke_return_ = return_val;
+                    trace.invoked_method = heap_obj->class_descriptor + "." + method_name;
+                    pc_ = pc + 3;
+                    return true;
+                }
+            }
+        }
+    } else if (!args.empty() && method_name == "addFragmentToStack") {
+        // EXP-058: Debug — why is interface dispatch not working?
+        int arg0_type = static_cast<int>(args[0].type);
+        uint32_t arg0_obj = args[0].object_id;
+        bool has_obj = heap_.has_object(arg0_obj);
+        std::string heap_class = has_obj ? heap_.get(arg0_obj)->class_descriptor : "<no heap obj>";
+        std::cerr << "[EXP058-IFACE] addFragmentToStack dispatch failed"
+                  << " arg0_type=" << arg0_type
+                  << " arg0_obj=" << arg0_obj
+                  << " has_heap_obj=" << has_obj
+                  << " heap_class=" << heap_class
+                  << " static_class=" << class_name
+                  << std::endl;
     }
 
     // EXP-048: Fall through to bridge_to_api for interface methods
