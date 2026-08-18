@@ -755,12 +755,22 @@ bool DalvikExecutionEngine::execute_method_internal(
         for (size_t i = 0; i < args.size() && i < ins_size; ++i) {
             auto val = frame.registers.read_v(static_cast<uint8_t>(
                 registers_size - ins_size + i));
+            // EXP-059: For INT32, print int_val (not object_id which is always 0).
+            std::string arg_val_str;
+            if (args[i].type == DalvikType::INT32) {
+                arg_val_str = "int_val=" + std::to_string(args[i].int_val);
+            } else if (args[i].type == DalvikType::OBJECT_REF) {
+                arg_val_str = "obj_id=" + std::to_string(args[i].object_id) +
+                              " class=" + args[i].class_desc;
+            } else {
+                arg_val_str = "obj=" + std::to_string(args[i].object_id);
+            }
             std::cerr << "[EXP058-PARAM] p" << i
                       << " → v" << (registers_size - ins_size + i)
                       << " type=" << static_cast<int>(val.type)
                       << " obj=" << val.object_id
                       << " (from arg type=" << static_cast<int>(args[i].type)
-                      << " obj=" << args[i].object_id << ")"
+                      << " " << arg_val_str << ")"
                       << std::endl;
         }
     }
@@ -1053,6 +1063,18 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         method_name == "getLastSheet") {
         log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
             " — skipping (isShown loop)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-059: Util.toByteArray(InputStream) loops forever because
+    // InputStream.read returns 0 (default stub) instead of -1 (EOF).
+    // The runtime has no real InputStream implementation. Stub to return
+    // an empty byte[] (object_id 0 = null is fine since callers check length).
+    if (class_descriptor.find("exoplayer2/util/Util") != std::string::npos &&
+        method_name == "toByteArray") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (InputStream.read never returns -1)");
         recursion_depth_--;
         return false;
     }
@@ -2872,6 +2894,17 @@ bool DalvikExecutionEngine::execute_const_4(uint32_t pc, InstructionTrace& trace
 
     set_register(dest_reg, DalvikValue::make_int(value));
 
+    // EXP-059: Debug — log const/4 in onFragmentCreate and addFragmentToStack
+    if (current_method_ == "onFragmentCreate" ||
+        (current_method_ == "addFragmentToStack" &&
+         current_class_.find("ActionBarLayout") != std::string::npos)) {
+        std::cerr << "[EXP059-CONST4] " << current_class_ << "." << current_method_
+                  << " PC=" << pc << " v" << (int)dest_reg
+                  << " = " << value
+                  << " (literal_nibble=" << (int)literal_nibble << ")"
+                  << std::endl;
+    }
+
     trace.operands.push_back({"v" + std::to_string(dest_reg), std::to_string(value)});
 
     pc_ = pc + 1;
@@ -3048,6 +3081,18 @@ bool DalvikExecutionEngine::execute_move_result(uint32_t pc, InstructionTrace& t
     uint8_t dest = (instr >> 8) & 0xFF;
 
     set_register(dest, last_invoke_return_);
+
+    // EXP-059: Debug — log move-result in addFragmentToStack
+    if (current_method_ == "addFragmentToStack" &&
+        current_class_.find("ActionBarLayout") != std::string::npos) {
+        std::cerr << "[EXP059-MOVE-RESULT] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " dest=v" << (int)dest
+                  << " type=" << static_cast<int>(last_invoke_return_.type)
+                  << " int_val=" << last_invoke_return_.int_val
+                  << " obj=" << last_invoke_return_.object_id
+                  << std::endl;
+    }
 
     trace.operands.push_back({"v" + std::to_string(dest), last_invoke_return_.to_string()});
     trace.return_value = last_invoke_return_;
@@ -3362,6 +3407,21 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                   << " pc=" << pc
                   << " field=" << field_res.class_descriptor << "." << field_res.field_name
                   << " obj_reg_type=" << static_cast<int>(obj_ref.type)
+                  << " obj_id=" << obj_ref.object_id
+                  << " result_type=" << static_cast<int>(result_value.type)
+                  << " result_obj=" << result_value.object_id
+                  << std::endl;
+    }
+
+    // EXP-059: Debug — log iget-object in addFragmentToStack
+    if (current_method_ == "addFragmentToStack" &&
+        current_class_.find("ActionBarLayout") != std::string::npos) {
+        std::cerr << "[EXP059-IGET] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " dest=v" << (int)dest_reg
+                  << " obj=v" << (int)obj_reg
+                  << " field=" << field_res.class_descriptor << "." << field_res.field_name
+                  << " obj_type=" << static_cast<int>(obj_ref.type)
                   << " obj_id=" << obj_ref.object_id
                   << " result_type=" << static_cast<int>(result_value.type)
                   << " result_obj=" << result_value.object_id
@@ -3705,18 +3765,44 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     // of helper methods (e.g., ApplicationLoader.init, AndroidUtilities, etc.)
     bool recursively_invoked = false;
     if (config_.enable_api_bridge) {
-        // Use declaring_class from method_ids[] for lookup
-        if (try_recursive_invoke(declaring_class, method_name_from_dex,
-                                 args, return_val, result)) {
-            recursively_invoked = true;
-            api_status = ApiCallTrace::Status::IMPLEMENTED;
-            // EXP-057: CRITICAL FIX — must update last_invoke_return_ after
-            // recursive invoke so move-result/move-result-object can read it.
-            // try_recursive_invoke restores last_invoke_return_ to the saved
-            // value internally, so we must re-set it from return_val here.
-            // Without this, move-result-object reads stale VOID_ from a
-            // previous method's return-void.
-            last_invoke_return_ = return_val;
+        // EXP-059: Polymorphism fix — invoke-virtual must dispatch using the
+        // receiver's RUNTIME type, not the static declaring class from the
+        // method_idx. Otherwise `BaseFragment.createView` (declared in the
+        // base class) would be called instead of `MainTabsActivity.createView`
+        // (the override that actually builds the UI).
+        //
+        // Strategy:
+        //   1. If runtime_type is a known subclass of declaring_class, try
+        //      the runtime_type FIRST. If it has the method, dispatch there.
+        //   2. If the runtime_type doesn't have the method (or fails), fall
+        //      back to the declaring_class (which is what the bytecode
+        //      reference points to).
+        bool tried_runtime_type = false;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            runtime_type != "<unknown>" && runtime_type != declaring_class) {
+            // Try the runtime type first — this is the polymorphic dispatch.
+            if (try_recursive_invoke(runtime_type, method_name_from_dex,
+                                     args, return_val, result)) {
+                recursively_invoked = true;
+                tried_runtime_type = true;
+                api_status = ApiCallTrace::Status::IMPLEMENTED;
+                last_invoke_return_ = return_val;
+            }
+        }
+        if (!tried_runtime_type) {
+            // Use declaring_class from method_ids[] for lookup
+            if (try_recursive_invoke(declaring_class, method_name_from_dex,
+                                     args, return_val, result)) {
+                recursively_invoked = true;
+                api_status = ApiCallTrace::Status::IMPLEMENTED;
+                // EXP-057: CRITICAL FIX — must update last_invoke_return_ after
+                // recursive invoke so move-result/move-result-object can read it.
+                // try_recursive_invoke restores last_invoke_return_ to the saved
+                // value internally, so we must re-set it from return_val here.
+                // Without this, move-result-object reads stale VOID_ from a
+                // previous method's return-void.
+                last_invoke_return_ = return_val;
+            }
         }
     }
 
@@ -4210,6 +4296,19 @@ bool DalvikExecutionEngine::execute_return(uint32_t pc, InstructionTrace& trace)
     // broken for any method that returns a non-zero value.
     last_invoke_return_ = val;
     
+    // EXP-059: Debug — log return values for onFragmentCreate and addFragmentToStack
+    if (current_method_ == "onFragmentCreate" ||
+        (current_method_ == "addFragmentToStack" &&
+         current_class_.find("ActionBarLayout") != std::string::npos)) {
+        std::cerr << "[EXP059-RETURN] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " ret_reg=v" << (int)ret_reg
+                  << " type=" << static_cast<int>(val.type)
+                  << " int_val=" << val.int_val
+                  << " obj=" << val.object_id
+                  << std::endl;
+    }
+    
     halted_ = true;
     halted_on_return_ = true;
     
@@ -4421,6 +4520,20 @@ bool DalvikExecutionEngine::execute_if_eqz(uint32_t pc, InstructionTrace& trace)
                    (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET) ||
                    (val.type == DalvikType::VOID_);
 
+    // EXP-059: Debug — log if-eqz in addFragmentToStack
+    if (current_method_ == "addFragmentToStack" &&
+        current_class_.find("ActionBarLayout") != std::string::npos) {
+        std::cerr << "[EXP059-IF-EQZ] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " test_reg=v" << (int)test_reg
+                  << " type=" << static_cast<int>(val.type)
+                  << " int_val=" << val.int_val
+                  << " obj=" << val.object_id
+                  << " is_zero=" << is_zero
+                  << " target=" << (pc + offset)
+                  << std::endl;
+    }
+
     if (is_zero) {
         uint32_t target = pc + offset;
         // EXP-051: target >= bytecode_.size() = D8 unreachable marker (exit method).
@@ -4465,6 +4578,20 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
                        (val.type == DalvikType::OBJECT_REF && val.object_id == 0) ||
                        (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET) ||
                        (val.type == DalvikType::VOID_));
+    
+    // EXP-059: Debug — log if-nez in addFragmentToStack
+    if (current_method_ == "addFragmentToStack" &&
+        current_class_.find("ActionBarLayout") != std::string::npos) {
+        std::cerr << "[EXP059-IF-NEZ] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " test_reg=v" << (int)test_reg
+                  << " type=" << static_cast<int>(val.type)
+                  << " int_val=" << val.int_val
+                  << " obj=" << val.object_id
+                  << " is_nonzero=" << is_nonzero
+                  << " target=" << (pc + offset)
+                  << std::endl;
+    }
     
     // EXP-046: Log if-nez in NativeLoader.initNativeLibs
     if (current_class_.find("NativeLoader") != std::string::npos) {
@@ -4514,13 +4641,12 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
 
 bool DalvikExecutionEngine::execute_if_ltz(uint32_t pc, InstructionTrace& trace) {
     // Format: 21t [op] vAA, +BBBB  — branch if (int) vAA < 0
-    // EXP-045: D8/R8 uses if-ltz (op=0x39) for BOTH:
-    // 1. Numeric "if < 0" checks (for INT32 registers)
-    // 2. Null checks "if non-null" (for OBJECT_REF registers)
-    // The register TYPE determines the semantics:
-    //   - INT32: branch if val < 0 (standard AOSP if-ltz)
-    //   - OBJECT_REF: branch if object_id > 0 (i.e., non-null)
-    //   - NULL_REF/UNINITIALIZED: don't branch (null → skip, go to throw path)
+    // EXP-059: Now correctly dispatched for opcode 0x3A (per AOSP).
+    //   Per AOSP: 0x3A = if-ltz ("branch if v < 0").
+    // Previously the runtime had if-ltz at 0x39 (off-by-one), which collided
+    // with the actual if-nez. The EXP-058 hack treated INT32 if-ltz as if-nez
+    // to work around that collision. With the opcode table fixed, if-ltz now
+    // correctly means "branch if < 0" for INT32, matching AOSP semantics.
     if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
     uint16_t instr = bytecode_[pc];
     uint8_t test_reg = (instr >> 8) & 0xFF;
@@ -4529,24 +4655,20 @@ bool DalvikExecutionEngine::execute_if_ltz(uint32_t pc, InstructionTrace& trace)
 
     bool taken = false;
     if (val.type == DalvikType::OBJECT_REF) {
-        // D8 null check: branch if non-null (skip the throw/return)
-        taken = (val.object_id > 0);
+        // OBJECT_REF can't be < 0; never branch.
+        taken = false;
     } else if (val.type == DalvikType::NULL_REF) {
-        // null → don't branch (fall through to throw path)
+        // null == 0 → 0 < 0 is false; never branch.
         taken = false;
     } else if (val.type == DalvikType::INT32 || val.type == DalvikType::BOOLEAN ||
                val.type == DalvikType::BYTE || val.type == DalvikType::SHORT ||
                val.type == DalvikType::CHAR) {
-        // EXP-058: D8 uses if-ltz for boolean checks where it means
-        // "if non-zero (true), branch." Standard AOSP says "if < 0, branch"
-        // but D8's interpretation is "if != 0, branch" for INT32 values.
-        // This is needed because D8 compiles `if (booleanMethod())` as
-        // `if-ltz` instead of `if-nez`.
-        taken = (val.int_val != 0);
+        // Standard AOSP if-ltz: branch if val < 0.
+        taken = (val.int_val < 0);
     } else if (val.type == DalvikType::INT64) {
-        taken = (static_cast<int32_t>(val.long_val) != 0);
+        taken = (static_cast<int64_t>(val.long_val) < 0);
     } else {
-        // UNINITIALIZED, REGISTER_UNSET, VOID_ → treat as 0 → don't branch
+        // UNINITIALIZED, REGISTER_UNSET, VOID_ → don't branch.
         taken = false;
     }
 
