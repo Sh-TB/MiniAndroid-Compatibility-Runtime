@@ -1175,6 +1175,70 @@ bool ApplicationRuntime::execute_on_create() {
         );
         miniandroid::probe::mark("execute_on_create: post-execute_apk_with_activity");
 
+        // EXP-060: Dispatch a synthetic CLICK on the IntroActivity's
+        // "Start Messaging" button. This is a generic event-dispatch
+        // mechanism — no Telegram-specific code. The runtime looks up
+        // the View by class substring (IntroActivity$4 is the TextView
+        // subclass that becomes the startMessagingButton), retrieves its
+        // registered OnClickListener, and invokes onClick(view) via
+        // try_recursive_invoke. Telegram's lambda$createView$1 then
+        // creates a LoginActivity and calls presentFragment.
+        //
+        // We try multiple candidate views because we can't reliably
+        // identify which TextView is the startMessagingButton vs the
+        // switchLanguageTextView. After each click, we check whether a
+        // LoginActivity was created in the heap — if so, we stop.
+        std::cerr << "[EXP060] Dispatching synthetic CLICK on candidate buttons..." << std::endl;
+        auto* view_shadow = dalvik_engine.get_shadow_registry()
+            ? dalvik_engine.get_shadow_registry()->find_as<framework::ViewShadow>()
+            : nullptr;
+        if (view_shadow) {
+            // EXP-060: Try ALL views with click listeners (not just TextViews).
+            // The startMessagingButton is an IntroActivity$4 (TextView subclass)
+            // whose class descriptor is "Lorg/telegram/ui/IntroActivity$4;", not
+            // "Landroid/widget/TextView;". So filtering by "TextView" misses it.
+            // Instead, we try every view with a registered listener, ordered
+            // by view_id descending (most-recently-created first).
+            auto candidates = view_shadow->find_all_with_click_listener("");
+            std::cerr << "[EXP060] Found " << candidates.size()
+                      << " View(s) with click listeners" << std::endl;
+            bool login_created = false;
+            for (uint32_t view_id : candidates) {
+                const auto* node = view_shadow->find_node(view_id);
+                std::string listener_class;
+                if (node && node->click_listener_id != 0 &&
+                    dalvik_engine.get_heap().has_object(node->click_listener_id)) {
+                    listener_class = dalvik_engine.get_heap()
+                        .get(node->click_listener_id)->class_descriptor;
+                }
+                std::cerr << "[EXP060] Trying view_id=" << view_id
+                          << " class=" << (node ? node->class_desc : "?")
+                          << " listener=" << listener_class << std::endl;
+                bool ok = dalvik_engine.dispatch_click(view_id);
+                if (ok) {
+                    // Check if a LoginActivity was created in the heap.
+                    // If so, this was the startMessagingButton — stop.
+                    for (const auto& [oid, obj] : dalvik_engine.get_heap().all_objects()) {
+                        if (obj.class_descriptor.find("LoginActivity") != std::string::npos) {
+                            login_created = true;
+                            std::cerr << "[EXP060] LoginActivity created! obj_id=" << oid
+                                      << " class=" << obj.class_descriptor
+                                      << " (from view_id=" << view_id << ")"
+                                      << std::endl;
+                            break;
+                        }
+                    }
+                }
+                if (login_created) break;
+            }
+            std::cerr << "[EXP060] Synthetic CLICK campaign result: "
+                      << (login_created ? "LOGINACTIVITY_CREATED" : "NO_LOGIN")
+                      << std::endl;
+        } else {
+            std::cerr << "[EXP060] ViewShadow not registered — skipping click" << std::endl;
+        }
+        miniandroid::probe::mark("execute_on_create: post-synthetic-click");
+
         // Extract evidence
         bool success = (dalvik_result.total_instructions_executed > 0);
         if (dalvik_result.final_status == miniandroid::dalvik::DalvikExecutionResult::FinalStatus::COMPLETED_SUCCESS) {

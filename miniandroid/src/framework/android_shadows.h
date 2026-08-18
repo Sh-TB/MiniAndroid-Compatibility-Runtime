@@ -451,6 +451,15 @@ public:
         bool clickable = false;
         bool enabled = true;
         int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8
+        // EXP-060: Listener storage — the heap object_id of the
+        // OnClickListener (or 0 if none). When dispatchClick is called
+        // the runtime invokes listener.onClick(this_view) via try_recursive_invoke.
+        uint32_t click_listener_id = 0;
+        std::string click_listener_class;  // DEX descriptor of the listener class
+        uint32_t long_click_listener_id = 0;
+        std::string long_click_listener_class;
+        uint32_t touch_listener_id = 0;
+        std::string touch_listener_class;
     };
 
     std::string name() const override { return "View"; }
@@ -460,13 +469,41 @@ public:
         // Match any class ending in "View;" or "ViewGroup;" or containing
         // well-known View subclasses. Specific dispatch is done by
         // method name.
-        return class_name.find("View;") != std::string::npos ||
-               class_name == "Landroid/widget/TextView;" ||
-               class_name == "Landroid/widget/EditText;" ||
-               class_name == "Landroid/widget/Button;" ||
-               class_name == "Landroid/widget/ImageView;" ||
-               class_name == "Landroid/view/View;" ||
-               class_name == "Landroid/view/ViewGroup;";
+        // EXP-060: Also match user-defined View subclasses by checking
+        // if the class_name is NOT a known non-View framework class.
+        // This is a heuristic — if the class isn't one of the known
+        // non-View types, we try ViewShadow dispatch and return
+        // not_handled if the method isn't a View method.
+        if (class_name.find("View;") != std::string::npos ||
+            class_name == "Landroid/widget/TextView;" ||
+            class_name == "Landroid/widget/EditText;" ||
+            class_name == "Landroid/widget/Button;" ||
+            class_name == "Landroid/widget/ImageView;" ||
+            class_name == "Landroid/view/View;" ||
+            class_name == "Landroid/view/ViewGroup;" ||
+            class_name == "Landroid/view/TextureView;" ||
+            class_name == "Landroid/widget/ScrollView;" ||
+            class_name == "Landroid/widget/FrameLayout;" ||
+            class_name == "Landroid/widget/LinearLayout;") {
+            return true;
+        }
+        // EXP-060: For user-defined classes (like IntroActivity$4 which
+        // extends TextView), we can't check the hierarchy here. But if the
+        // class name doesn't match any known non-View framework prefix,
+        // it MIGHT be a View subclass. Let dispatch() figure it out by
+        // method name. This is slightly broader than ideal but matches
+        // how Robolectric handles View subclasses.
+        if (class_name.find("Landroid/") == 0 ||
+            class_name.find("Ljava/") == 0 ||
+            class_name.find("Lkotlin/") == 0 ||
+            class_name.find("Lcom/google/") == 0 ||
+            class_name.find("Landroidx/") == 0) {
+            // Standard framework class — let other shadows handle it.
+            return false;
+        }
+        // User-defined class (e.g. Lorg/telegram/ui/...). Could be a
+        // View subclass. Let dispatch() decide based on method name.
+        return true;
     }
 
     CallResult dispatch(const CallContext& ctx) override;
@@ -485,7 +522,11 @@ public:
                 "setBackgroundResource", "setBackgroundDrawable",
                 "setLayoutParams", "getLayoutParams",
                 "measure", "layout", "draw",
-                "requestLayout", "invalidate"};
+                "requestLayout", "invalidate",
+                // EXP-060: Listener registration + click dispatch.
+                "setOnClickListener",
+                "setOnLongClickListener",
+                "setOnTouchListener"};
     }
     std::vector<std::string> stubbed_methods() const override {
         return {"onMeasure", "onLayout", "onDraw", "onTouchEvent",
@@ -512,6 +553,18 @@ public:
     // DFS search for a descendant with the given Android view_id.
     // Returns 0 if not found.
     uint32_t find_by_android_id(uint32_t root_id, int32_t android_id) const;
+
+    // EXP-060: Lookup a view by class descriptor (substring match).
+    // Used to find the startMessagingButton (a TextView) without knowing
+    // its Android view_id. Returns the most-recently-created match.
+    uint32_t find_by_class_substring(const std::string& substring) const;
+
+    // EXP-060: Return ALL view_ids whose class descriptor contains
+    // `substring` AND that have a click listener registered.
+    // Ordered by view_id descending (most-recently-created first).
+    std::vector<uint32_t> find_all_with_click_listener(
+        const std::string& class_substring) const;
+
 
     // Diagnostics: total node count.
     size_t node_count() const { return nodes_.size(); }
