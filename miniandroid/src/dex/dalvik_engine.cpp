@@ -1030,14 +1030,16 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
-    // EXP-058: loadCurrentState loops at PC=0x42 (invoke-interface loop).
-    if (class_descriptor.find("LoginActivity") != std::string::npos &&
-        method_name == "loadCurrentState") {
-        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
-            " — skipping (invoke-interface loop)");
-        recursion_depth_--;
-        return false;
-    }
+    // EXP-059: loadCurrentState stub REMOVED. With the opcode-table fix,
+    // the previous "invoke-interface loop" no longer occurs. The method
+    // now executes correctly: it creates a Bundle, calls
+    // SharedPreferences.getAll() (returns empty Map since we have no
+    // persisted state), iterates (no entries, exits immediately), and
+    // returns the empty Bundle. This is the correct behavior for a
+    // first-launch scenario — currentViewNum defaults to 0, so
+    // getClientNotActivatedFragment returns IntroActivity (NOT LoginActivity).
+    // The original EXP-058 stub was masking a different bug (opcode
+    // mis-dispatch), now fixed.
 
     // EXP-058: removeAllObservers loops (invoke-interface on null list).
     if (class_descriptor.find("ObserversGroup") != std::string::npos &&
