@@ -950,6 +950,45 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                   << std::endl;
     }
 
+    // EXP-059: [FRAGMENT-LIFECYCLE] — log Fragment lifecycle transitions.
+    // Maps to the standard Android Fragment lifecycle:
+    //   ATTACHED → CREATED → VIEW_CREATED → STARTED → RESUMED
+    // We log when a known lifecycle method is invoked on a Fragment subclass,
+    // along with the actual runtime class (so we can see e.g. that
+    // BaseFragment.onFragmentCreate is called but IntroActivity.onFragmentCreate
+    // is also called via polymorphic dispatch).
+    if (method_name == "onFragmentCreate" ||
+        method_name == "onFragmentDestroy" ||
+        method_name == "setParentLayout" ||
+        method_name == "createView" ||
+        method_name == "onCreateView" ||
+        method_name == "onStart" ||
+        method_name == "onResume" ||
+        method_name == "onPause" ||
+        method_name == "onStop" ||
+        method_name == "onDestroyView" ||
+        method_name == "onDestroy" ||
+        method_name == "onAttach" ||
+        method_name == "onDetach" ||
+        method_name == "onBecomeFullyVisible" ||
+        method_name == "onBecomeFullyHidden" ||
+        method_name == "attachView" ||
+        method_name == "attachSheets") {
+        // Look up runtime class from args[0] (this for instance methods)
+        std::string runtime_cls = declaring_class;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            if (auto* heap_obj = heap_.get(args[0].object_id)) {
+                if (!heap_obj->class_descriptor.empty()) {
+                    runtime_cls = heap_obj->class_descriptor;
+                }
+            }
+        }
+        std::cerr << "[FRAGMENT-LIFECYCLE] method=" << method_name
+                  << " declared_in=" << declaring_class
+                  << " runtime_class=" << runtime_cls
+                  << std::endl;
+    }
+
     // Convert declaring_class to DEX descriptor form if needed
     // declaring_class may be "Lcom/foo/Bar;" (descriptor) or "com.foo.Bar" (readable)
     std::string class_descriptor = declaring_class;
