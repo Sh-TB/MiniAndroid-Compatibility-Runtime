@@ -2109,3 +2109,64 @@ Success criteria:
 - All regression tests pass: ✅ PASS (10/10)
 - CHECKPOINT_L_LOGIN_UI = PROVEN: ❌ NOT PROVEN (correctly returns IntroActivity on first launch — would require either SharedPreferences seeding or intro completion simulation, both application-specific)
 
+
+---
+Task ID: EXP-060
+Agent: general-purpose (main agent)
+Task: EXP-060 — Autonomous Intro-to-Login Campaign. Move from IntroActivity to Login UI via generic synthetic CLICK event dispatch.
+
+Work Log:
+- Phase 0: Captured baseline (EXP-059 final state) in docs/EXP060_BASELINE.md.
+  - 558 methods, 50,221 instructions, 0 HALT, IntroActivity lifecycle proven.
+
+- Phase 1: Static analysis of IntroActivity.createView (608 code units).
+  - Identified startMessagingButton creation (PC=365, IntroActivity$4 extends TextView).
+  - Identified setOnClickListener registration (PC=458, Lambda2).
+  - Traced onClick chain: Lambda2.onClick → $r8$lambda$... → lambda$createView$1 → new LoginActivity() → presentFragment.
+
+- Phase 4-5: Implemented generic event dispatch mechanism.
+  - ViewShadow: added setOnClickListener handler storing listener_id on ViewNode.
+  - ViewShadow: added find_all_with_click_listener to query views with listeners.
+  - DalvikExecutionEngine: added dispatch_click(view_id) and dispatch_click_by_class(substring).
+  - ApplicationRuntime: added synthetic CLICK campaign after execute_apk_with_activity.
+
+- Phase 7: Root cause fixes (5 bugs):
+  1. ViewShadow::handles_class too narrow — broadened for user-defined View subclasses.
+  2. try_shadow_dispatch used wrong class_name — fixed to use args[0].class_desc.
+  3. if-eq/if-ne 22t mixed NULL_REF/OBJECT_REF bug — fixed in IMPLEMENT_IF_22T macro. null==non-null is now FALSE (was incorrectly TRUE).
+  4. fill-array-data (opcode 0x25) unimplemented — implemented handler. Was throwing Larray; exceptions in LoginActivity.<init>.
+  5. Overload resolution by count only — now matches parameter TYPES from descriptor. presentFragment(NavigationParams) correctly selected over presentFragment(BaseFragment).
+
+- Phase 8-9: Fragment lifecycle verified.
+  - LoginActivity.onFragmentCreate REACHED.
+  - LoginActivity.createView (1167 code units) REACHED.
+  - LoginActivity.onResume REACHED.
+  - Complete FRAGMENT-LIFECYCLE events logged.
+
+- Phase 10-11: Login View hierarchy created.
+  - LoginActivity$PhoneView (1292 code units) — phone login form.
+  - AnimatedPhoneNumberEditText with setHintText, setTextSize — phone number input.
+  - CustomPhoneKeyboardView with NumberButtonView × 10+ — keypad buttons.
+  - EditTextBoldCursor — text input field.
+  - LoginActivity$LoadingTextView — loading indicator.
+  - 196 view-like classes instantiated, 309 unique classes, 2626 <init> calls.
+
+- Phase 14: CHECKPOINT_O_LOGIN_UI = PROVEN.
+
+- Final Telegram validation (run/exp060_overload):
+  - Build: SUCCESS
+  - Exit code: 0
+  - Unique methods: 891 (+333 vs EXP-059's 558)
+  - HALT events: 2 (AndroidUtilities.replaceTags — not a blocker)
+  - Instructions: 46,843
+  - LoginActivity methods: 111 (was 3)
+  - LoginActivity.onFragmentCreate: REACHED
+  - LoginActivity.createView: REACHED (1167 code units)
+  - PhoneView, AnimatedPhoneNumberEditText, CustomPhoneKeyboardView: all created
+  - All 10 regression tests PASS
+
+Stage Summary:
+- CHECKPOINT_O_LOGIN_UI = PROVEN. The synthetic CLICK dispatched through Telegram's real callback chain, creating a LoginActivity and triggering its full Fragment lifecycle including createView. Real Login UI views created (PhoneView, AnimatedPhoneNumberEditText, CustomPhoneKeyboardView with NumberButtonView buttons).
+- 5 generic root causes fixed (no Telegram-specific code).
+- All 10 regression tests pass.
+
