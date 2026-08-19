@@ -448,6 +448,7 @@ public:
         int x = 0, y = 0;
         // Common properties used by Android code paths.
         std::string text;     // TextView.getText()
+        std::string hint;     // TextView.getHint() / EditText hint (EXP-065)
         bool clickable = false;
         bool enabled = true;
         int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8
