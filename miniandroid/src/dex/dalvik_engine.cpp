@@ -1351,6 +1351,13 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             method_name == "onDestroy") {
             threshold = 50;
         }
+        // EXP-063: getString is called many times (100+) for each UI string.
+        // The default 10-call threshold stubs it after 10 calls, preventing
+        // resource resolution for later strings.
+        if (method_name == "getString" ||
+            method_name == "getResourceEntryName") {
+            threshold = 500;
+        }
         if (call_counts[key] > threshold) {
             log("⏭️ STUB-ONLY: " + key + " — skipping (called " +
                 std::to_string(call_counts[key]) + " times)");
@@ -1732,9 +1739,11 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
         // EXP-058: Debug — log register sizes for addFragmentToStack.
         // EXP-060: Also log for setParentLayout and presentFragment.
+        // EXP-063: Also log for getString.
         if (method.name.find("addFragmentToStack") != std::string::npos ||
             method.name == "setParentLayout" ||
-            method.name == "presentFragment") {
+            method.name == "presentFragment" ||
+            method.name == "getString") {
             std::cerr << "[EXP058-REGS] " << cls_ref.name << "." << method.name
                       << " method.regs=" << method.registers_size
                       << " method.ins=" << method.ins_size
@@ -2002,6 +2011,17 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         uint16_t raw_word = fetch_opcode(pc_);
         uint16_t opcode = raw_word & 0xFF;  // LOW BYTE only
         trace.opcode_hex = raw_word;        // Keep raw word for trace evidence
+
+        // EXP-063: Trace v3 in getString(I) to find where it gets corrupted
+        if (current_class_.find("LocaleController") != std::string::npos &&
+            current_method_ == "getString" && current_registers_) {
+            auto v3 = current_registers_->read_v(3);
+            std::cerr << "[EXP063-V3] PC=" << pc_ << " op=0x" << std::hex << opcode << std::dec
+                      << " v3_type=" << static_cast<int>(v3.type)
+                      << " v3_int=" << v3.int_val
+                      << " v3_obj=" << v3.object_id
+                      << std::endl;
+        }
         
         // EXP-042 Phase 1: Per-instruction register snapshots are the #1 OOM
         // offender (5 KB per instruction). Capture them ONLY when explicitly
@@ -4409,6 +4429,17 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         }
 
         // EXP-062: Debug — trace v1 in PhoneView.<init> after each invoke-virtual
+        // EXP-063: Also trace getResourceEntryName
+        if (method_name_from_dex == "getResourceEntryName" && args.size() >= 2) {
+            std::cerr << "[EXP063-RES-ARGS] getResourceEntryName"
+                      << " this_id=" << args[0].object_id
+                      << " this_type=" << static_cast<int>(args[0].type)
+                      << " resid_type=" << static_cast<int>(args[1].type)
+                      << " resid=" << args[1].int_val
+                      << " caller=" << current_class_ << "." << current_method_
+                      << " pc=" << pc
+                      << std::endl;
+        }
         if (current_class_.find("PhoneView") != std::string::npos &&
             current_method_ == "<init>" && !args.empty()) {
             auto v1 = get_register(1);
