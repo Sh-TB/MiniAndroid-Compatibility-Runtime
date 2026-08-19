@@ -1525,6 +1525,15 @@ private:
     // this slot and clears it.
     DalvikValue pending_exception_ = DalvikValue::make_null();
 
+    // EXP-063: Resource lookup maps.
+    // field_name_by_resid: maps resource ID → field name (built during R class init)
+    // Used to resolve resources when DEX IDs don't match ARSC IDs.
+public:
+    std::map<int32_t, std::string> field_name_by_resid_;
+    // resource_string_values: maps field name → string value (loaded from JSON)
+    std::map<std::string, std::string> resource_string_values_;
+private:
+
     // EXP-053: Set of class descriptors whose <clinit> has been executed.
     // Used to avoid re-running <clinit> on every sget/sput.
     // Per JVM spec, <clinit> runs exactly once when a class is first
