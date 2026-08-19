@@ -408,9 +408,21 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
             log("  → NO class_data (off=0x" + std::to_string(class_def.class_data_off) + 
                 ", size=0x" + std::to_string(current_size_) + ")");
         }
-        
+
+        // EXP-062: Parse static field default values from encoded_array_item.
+        // MUST be called BEFORE push_back(info) — otherwise the copy in
+        // report.classes won't have the default values.
+        // These are the values baked into the DEX by the build system.
+        // For R classes (R$drawable, R$string, R$color), these contain
+        // the actual resource IDs (e.g., 0x7f010001).
+        if (class_def.static_values_off != 0 &&
+            class_def.static_values_off < current_size_ &&
+            !info.static_fields.empty()) {
+            parse_static_values(data, class_def.static_values_off, info);
+        }
+
         report.classes.push_back(info);
-        
+
         log("  → Result: " + std::to_string(info.direct_methods.size()) + " direct methods, " +
             std::to_string(info.virtual_methods.size()) + " virtual methods");
     }
@@ -423,13 +435,138 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
     return true;
 }
 
+// EXP-062: Parse encoded_array_item for static field default values.
+// Format: ULEB128 count, then count encoded_value entries.
+// Each encoded_value: 1 byte header ((size << 5) | value_type)
+// followed by `size` bytes of value data.
+// Value types per AOSP dex_format.html:
+//   0x00 BYTE, 0x02 SHORT, 0x04 INT, 0x06 LONG
+//   0x10 FLOAT, 0x11 DOUBLE
+//   0x15 METHOD_TYPE, 0x16 METHOD_HANDLE
+//   0x17 STRING, 0x18 TYPE, 0x19 FIELD, 0x1a METHOD, 0x1b ENUM
+//   0x1c ARRAY, 0x1d ANNOTATION
+//   0x1e NULL (no bytes follow)
+//   0x1f BOOLEAN (size IS the value: 0=false, 1=true)
+bool DexParser::parse_static_values(const uint8_t* data, uint32_t offset, ClassInfo& info) {
+    // EXP-062: Debug trace
+    if (info.name.find("R$") != std::string::npos) {
+        int with_defaults = 0;
+        for (const auto& f : info.static_fields) {
+            if (f.has_default_value) with_defaults++;
+        }
+        std::cerr << "[EXP062-SV] parse_static_values for " << info.name
+                  << " offset=0x" << std::hex << offset << std::dec
+                  << " static_fields=" << info.static_fields.size()
+                  << " with_defaults=" << with_defaults
+                  << std::endl;
+    }
+    size_t p = offset;
+    // Read ULEB128 count
+    uint32_t count = 0;
+    int shift = 0;
+    while (p < current_size_) {
+        uint8_t b = data[p++];
+        count |= (b & 0x7f) << shift;
+        shift += 7;
+        if (!(b & 0x80)) break;
+    }
+
+    if (count == 0) return true;
+    if (count > info.static_fields.size()) count = info.static_fields.size();
+
+    for (uint32_t i = 0; i < count && p < current_size_; i++) {
+        if (i >= info.static_fields.size()) break;
+
+        uint8_t header = data[p++];
+        uint8_t value_type = header & 0x1f;
+        uint8_t size_arg = (header >> 5) & 0x07;
+
+        FieldInfo& field = info.static_fields[i];
+
+        switch (value_type) {
+            case 0x00: { // VALUE_BYTE
+                int8_t val = (size_arg > 0 && p < current_size_) ? (int8_t)data[p] : 0;
+                p += size_arg;
+                field.has_default_value = true;
+                field.default_int_value = val;
+                break;
+            }
+            case 0x02: { // VALUE_SHORT
+                int16_t val = 0;
+                for (uint8_t s = 0; s < size_arg && p < current_size_; s++) {
+                    val |= (int16_t)data[p++] << (s * 8);
+                }
+                field.has_default_value = true;
+                field.default_int_value = val;
+                break;
+            }
+            case 0x04: { // VALUE_INT
+                int32_t val = 0;
+                for (uint8_t s = 0; s < size_arg && p < current_size_; s++) {
+                    val |= (int32_t)data[p++] << (s * 8);
+                }
+                field.has_default_value = true;
+                field.default_int_value = val;
+                break;
+            }
+            case 0x06: { // VALUE_LONG
+                int64_t val = 0;
+                for (uint8_t s = 0; s < size_arg && p < current_size_; s++) {
+                    val |= (int64_t)data[p++] << (s * 8);
+                }
+                field.has_default_value = true;
+                field.default_int_value = val;
+                break;
+            }
+            case 0x17: { // VALUE_STRING
+                uint32_t str_idx = 0;
+                for (uint8_t s = 0; s < size_arg && p < current_size_; s++) {
+                    str_idx |= (uint32_t)data[p++] << (s * 8);
+                }
+                field.has_default_value = true;
+                field.default_value_is_string = true;
+                field.default_string_value = get_string(str_idx);
+                break;
+            }
+            case 0x1e: { // VALUE_NULL
+                field.has_default_value = true;
+                break;
+            }
+            case 0x1f: { // VALUE_BOOLEAN (size IS the value: 0=false, 1=true)
+                field.has_default_value = true;
+                field.default_int_value = size_arg;
+                break;
+            }
+            default: {
+                // Skip unknown value types (FLOAT, DOUBLE, TYPE, FIELD, etc.)
+                p += size_arg;
+                break;
+            }
+        }
+    }
+    // EXP-062: Post-parse trace
+    if (info.name.find("R$") != std::string::npos) {
+        int with_defaults = 0;
+        for (const auto& f : info.static_fields) {
+            if (f.has_default_value) with_defaults++;
+        }
+        if (with_defaults > 0) {
+            std::cerr << "[EXP062-SV-DONE] " << info.name
+                      << " with_defaults=" << with_defaults
+                      << "/" << info.static_fields.size()
+                      << std::endl;
+        }
+    }
+    return true;
+}
+
 bool DexParser::parse_class_data(const uint8_t* data, const DexClassDef& class_def, ClassInfo& info) {
     size_t offset = class_def.class_data_off;
     
     // ====================================================================
     // EXP-031.6 DEBUG: Trace class_data parsing
     // ====================================================================
-    log("  === EXP-031.6 CLASS_DATA PARSING @ 0x" + std::to_string(offset) + " ===");
+    log("  === EXP-031.6 CLASS_DATA PARSING @ offset=0x" + std::to_string(offset) + " ===");
     
     if (offset >= current_size_) {
         log("  ERROR: offset beyond file end!");
@@ -702,7 +839,7 @@ bool DexParser::parse_code_item(const uint8_t* data, uint32_t offset, MethodInfo
     // ====================================================================
     // EXP-031.6 DEBUG: Trace code_item extraction
     // ====================================================================
-    log("  === EXP-031.6 CODE_ITEM @ 0x" + std::to_string(offset) + " for " + method.name + " ===");
+    log("  === EXP-031.6 CODE_ITEM @ offset=0x" + std::to_string(offset) + " for " + method.name + " ===");
     
     if (offset + sizeof(DexCodeItem) > current_size_) {
         log("  ERROR: code_item header extends beyond file (off=0x" + std::to_string(offset) + 
