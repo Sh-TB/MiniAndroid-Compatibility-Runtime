@@ -1,8 +1,10 @@
 # MiniAndroid Runtime — Agent State
 
-**Current checkpoint:** `CHECKPOINT_L_LOGIN_UI = PROVEN`
-**Latest commit:** `7f5448a` — EXP-064: REAL LOGIN IMAGE PROVEN BY PIXELS
-**GitHub issue:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/1
+**Current checkpoint:** `CHECKPOINT_L_LOGIN_UI_COMPLETE = PROVEN`
+**Latest commit:** `4bc37dd` — EXP-065: Fix multi-DEX const-string bug
+**GitHub issues:**
+- https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/1 (EXP-064)
+- https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/2 (EXP-065)
 
 ## Active experiment log
 
@@ -12,17 +14,19 @@
 | EXP-062 | Wide opcode + array model + R class static values | ✅ DONE | (in 5f2f4c2) |
 | EXP-063 | ARSC parser + resource resolver + R class values | ✅ DONE | 5f2f4c2 |
 | EXP-064 | Real login image proven by pixels | ✅ DONE | 7f5448a |
+| EXP-065 | Complete Login screen reconstruction (multi-DEX bug fix) | ✅ DONE | b83e8bc |
 
 ## Next high-value targets
 
-- Run-time fix for `dump_view_tree()` to record `children` for ALL parents (currently IntroActivity id=2387 has no `children` field, breaking renderer regression on IntroActivity).
-- ARSC parser entry-index lookup bug in `tools/exp063_arsc_parser.py` (CLI tool returns wrong values; runtime uses `resource_values.json` instead, so not blocking).
-- Layout: implement real `android:orientation` parsing from XML layout attributes for LinearLayout (currently inferred from class name).
-- Real drawable rendering (currently ImageView placeholders are gray rectangles).
-- Color resource resolution (currently `Resources.getColor(int)` returns default black).
+- **Real XML layout attribute parsing** — currently the runtime doesn't parse `android:hint`, `android:text`, `android:src` from XML layout files. This means EditText hints like "Phone number" are never set. Fix: parse `res/layout/*.xml` files and apply attributes during View inflation.
+- **Real drawable decoding** — implement BitmapDrawable (PNG/JPEG/WebP), VectorDrawable (XML), ColorDrawable. Currently ImageView placeholders are gray rectangles.
+- **Real color resolution** — `Resources.getColor(int)` returns default black; should resolve from `<color>` resources.
+- **Country code/country name lookup** — `setCountryButtonText()` is called but the country name requires locale-specific resolution.
+- **Multi-DEX bug sweep** — the const-string bug likely also affects other opcodes that use merged `dex_report_->types[]` / `dex_report_->method_ids[]` instead of per-DEX resolution. Audit: `execute_const_class`, `execute_check_cast`, `execute_instance_of`, and any other 21c/22c-format opcodes.
 
 ## Known issues (non-blocking)
 
-- v3 register "issue" from EXP-063 worklog was a red herring — the trace was inspecting a non-resource-ID local register. No actual bug; resource pipeline works correctly.
-- Androguard's `get_string_resources()` returns empty XML wrapper for Telegram's default-locale strings (locale-overlay system). MiniAndroid's own `tools/exp063_arsc_parser.py` resolves them correctly.
-- `dump_view_tree()` skips `children` array for some top-level root nodes (IntroActivity id=2387). To render IntroActivity, use `--slide-root 2460` (the IntroActivity$4 TextView with "Start Messaging").
+- `AnimatedPhoneNumberEditText.setHintText` still loops infinitely via `DynamicAnimation.cancel()` — but EXP-065 now stubs-and-captures the hint BEFORE bypassing the bytecode. The hint field on ViewNode is now populated.
+- `AndroidUtilities.replaceTags` is still stubbed (string processing loop).
+- Several `EmojiInputFilter` / `HelperInternal19` / `SkippingHelper19` / `AppCompatTextViewAutoSizeHelper` constructors are still stubbed (constructor loops).
+
