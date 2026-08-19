@@ -4883,7 +4883,24 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
 
     // EXP-038 (BLOCKER-034): Try recursive invocation.
     bool recursively_invoked = false;
-    if (config_.enable_api_bridge) {
+    // EXP-063: Intercept getString(String, int) before recursive invoke.
+    if (config_.enable_api_bridge &&
+        method_name == "getString" &&
+        class_name.find("LocaleController") != std::string::npos &&
+        args.size() >= 1 && args[0].type == DalvikType::STRING_REF) {
+        std::string res_name = args[0].string_val;
+        if (!res_name.empty()) {
+            auto it = resource_string_values_.find(res_name);
+            if (it != resource_string_values_.end()) {
+                std::cerr << "[RES] getString name=" << res_name << " val=" << it->second << std::endl;
+                return_val = DalvikValue::make_string(it->second, 0);
+                last_invoke_return_ = return_val;
+                recursively_invoked = true;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+            }
+        }
+    }
+    if (!recursively_invoked && config_.enable_api_bridge) {
         if (try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
             recursively_invoked = true;
             status = ApiCallTrace::Status::IMPLEMENTED;
