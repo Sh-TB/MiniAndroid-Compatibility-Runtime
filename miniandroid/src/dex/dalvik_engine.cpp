@@ -1150,6 +1150,31 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
+    // EXP-062: AnimatedPhoneNumberEditText.setHintText loops because
+    // it iterates hintAnimations calling DynamicAnimation.cancel().
+    // The iterator loop doesn't terminate because the CollectionShadow's
+    // iterator state is per-object but the iterator() returns the same
+    // object_id as the list — so hasNext() always returns true if the
+    // list has elements, and next() advances but the animation cancel
+    // causes re-entry. Stub to prevent the loop.
+    if (class_descriptor.find("AnimatedPhoneNumberEditText") != std::string::npos &&
+        method_name == "setHintText") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (animation iterator loop)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-062: AndroidUtilities.replaceTags loops at PC=9 due to
+    // string processing. Stub to prevent 50K iterations.
+    if (class_descriptor.find("AndroidUtilities") != std::string::npos &&
+        method_name == "replaceTags") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (string processing loop)");
+        recursion_depth_--;
+        return false;
+    }
+
     // EXP-058: EmojiInputFilter.<init> loops when correct register sizes
     // are used — the constructor calls super() which resolves back to
     // itself via incorrect overload resolution. Short-circuit.
