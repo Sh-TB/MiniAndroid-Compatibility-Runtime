@@ -29,6 +29,10 @@
 namespace miniandroid {
 namespace dalvik {
 
+// EXP-065: Forward declaration — used by the setHintText capture stub
+// in try_recursive_invoke (defined later in this file at line ~5795).
+static framework::CallContext::Arg dalvik_value_to_arg(const DalvikValue& v);
+
 // ============================================================================
 // DalvikValue Serialization
 // ============================================================================
@@ -225,6 +229,39 @@ std::string DalvikExecutionEngine::read_dex_string_from_raw(
 
     if (pos + length > raw.size()) return "<str_truncated>";
     return std::string(reinterpret_cast<const char*>(raw.data() + pos), length);
+}
+
+// EXP-065: Per-DEX string resolution.
+// string_idx is relative to the current DEX file's string_ids table.
+// In multi-DEX apps (Telegram has 5 DEX files), the merged dex_report_->strings
+// is the CONCATENATION of all DEX files' string tables — so using the merged
+// index causes const-string to fetch the WRONG string. For example,
+// classes4.dex's string_idx=5975 is "+", but merged_strings[5975] is
+// "FIELD_PREFERRED_AUDIO_LANGUAGES" from classes.dex (which has 56,182 strings
+// before classes4.dex's strings start).
+//
+// This function reads the string directly from the per-DEX raw bytes.
+std::string DalvikExecutionEngine::resolve_string_for_dex(
+    uint32_t string_idx, uint32_t dex_index) const {
+
+    if (dex_index < per_dex_raw_data_.size()) {
+        const auto& raw = per_dex_raw_data_[dex_index];
+        if (raw.size() < sizeof(dex::DexHeader)) goto fallback;
+
+        dex::DexHeader hdr;
+        std::memcpy(&hdr, raw.data(), sizeof(dex::DexHeader));
+
+        if (string_idx < hdr.string_ids_size) {
+            return read_dex_string_from_raw(raw, string_idx, hdr);
+        }
+    }
+
+fallback:
+    // Single-DEX fallback: use the merged dex_report's strings.
+    if (dex_report_ && string_idx < dex_report_->strings.size()) {
+        return dex_report_->strings[string_idx];
+    }
+    return "<bad_str_idx:" + std::to_string(string_idx) + ">";
 }
 
 std::string DalvikExecutionEngine::resolve_method_name_for_dex(
@@ -1241,19 +1278,80 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
-    // EXP-062: AnimatedPhoneNumberEditText.setHintText loops because
-    // it iterates hintAnimations calling DynamicAnimation.cancel().
-    // The iterator loop doesn't terminate because the CollectionShadow's
-    // iterator state is per-object but the iterator() returns the same
-    // object_id as the list — so hasNext() always returns true if the
-    // list has elements, and next() advances but the animation cancel
-    // causes re-entry. Stub to prevent the loop.
-    if (class_descriptor.find("AnimatedPhoneNumberEditText") != std::string::npos &&
-        method_name == "setHintText") {
-        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
-            " — skipping (animation iterator loop)");
-        recursion_depth_--;
-        return false;
+    // EXP-065: AnimatedPhoneNumberEditText.setHintText loops infinitely
+    // at PC=0x1e (invoke-interface) calling DynamicAnimation.cancel()
+    // repeatedly. The original EXP-062 stub skipped the entire call,
+    // which meant the hint text was never captured on the ViewNode.
+    //
+    // Now we intercept the call BEFORE bytecode execution:
+    //   1. Dispatch to the ViewShadow to capture the hint text on the
+    //      ViewNode (so the renderer can show "Phone number" etc.)
+    //   2. Return without executing the bytecode (preventing the loop).
+    //
+    // The check uses method_name=="setHintText" AND a class check that
+    // covers AnimatedPhoneNumberEditText AND its anonymous subclasses
+    // (e.g. LoginActivity$PhoneView$1, LoginActivity$PhoneView$3, which
+    // extend AnimatedPhoneNumberEditText).
+    if (method_name == "setHintText") {
+        bool is_animated_phone_edit_text =
+            class_descriptor.find("AnimatedPhoneNumberEditText") != std::string::npos ||
+            // Anonymous subclasses of AnimatedPhoneNumberEditText
+            (class_descriptor.find("PhoneView$") != std::string::npos &&
+             class_descriptor.find("LoginActivity") != std::string::npos);
+        if (is_animated_phone_edit_text) {
+            // EXP-065: Diagnostic — log what arg kind setHintText received.
+            std::string arg_kind = "none";
+            std::string arg_val = "<no-arg>";
+            int arg1_type = -1;
+            if (args.size() >= 2) {
+                arg1_type = static_cast<int>(args[1].type);
+                const auto& a = dalvik_value_to_arg(args[1]);
+                if (a.kind == framework::CallContext::Arg::Kind::STRING) {
+                    arg_kind = "STRING";
+                    arg_val = "\"" + a.string_val + "\"";
+                } else if (a.kind == framework::CallContext::Arg::Kind::OBJECT) {
+                    arg_kind = "OBJECT";
+                    arg_val = "obj_id=" + std::to_string(a.object_id) + " class=" + a.object_class;
+                } else if (a.kind == framework::CallContext::Arg::Kind::NULL_REF) {
+                    arg_kind = "NULL_REF";
+                    arg_val = "null";
+                } else {
+                    arg_kind = "other";
+                    arg_val = "dalvik_type=" + std::to_string(arg1_type) + " string_val=\"" + args[1].string_val + "\" int_val=" + std::to_string(args[1].int_val);
+                }
+            }
+            std::cerr << "[EXP065-SETHINT-ARG] view_id=" << (args.empty() ? 0 : args[0].object_id)
+                      << " class=" << class_descriptor
+                      << " argc=" << args.size()
+                      << " arg1_dalvik_type=" << arg1_type
+                      << " arg1_kind=" << arg_kind
+                      << " arg1_val=" << arg_val
+                      << std::endl;
+            // Dispatch to the ViewShadow — it has a setHintText handler that
+            // stores the hint on the ViewNode. We then return without recursing
+            // into the bytecode (which would loop).
+            if (shadow_registry_ != nullptr) {
+                framework::CallContext ctx;
+                ctx.has_receiver = !args.empty() && args[0].type == DalvikType::OBJECT_REF;
+                if (ctx.has_receiver) {
+                    ctx.receiver_id = args[0].object_id;
+                    ctx.receiver_class = args[0].class_desc;
+                    ctx.class_name = args[0].class_desc.empty() ? class_descriptor : args[0].class_desc;
+                } else {
+                    ctx.class_name = class_descriptor;
+                }
+                ctx.method = method_name;
+                for (size_t i = 1; i < args.size(); i++) {
+                    ctx.args.push_back(dalvik_value_to_arg(args[i]));
+                }
+                auto cr = shadow_registry_->dispatch(ctx);
+                (void)cr;  // We don't need the result — setHintText returns void.
+            }
+            log("⏭️ STUB-ONLY (with hint capture): " + class_descriptor + "." + method_name +
+                " — skipping bytecode to prevent animation-cancel loop");
+            recursion_depth_--;
+            return false;
+        }
     }
 
     // EXP-062: AndroidUtilities.replaceTags loops at PC=9 due to
@@ -1952,6 +2050,7 @@ bool DalvikExecutionEngine::dump_view_tree(const std::string& path) {
         n["x"] = node->x;
         n["y"] = node->y;
         n["text"] = node->text;
+        n["hint"] = node->hint;  // EXP-065: EditText hint
         n["clickable"] = node->clickable;
         n["enabled"] = node->enabled;
         n["visibility"] = node->visibility;
@@ -2760,9 +2859,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 DalvikValue val;
                 val.type = DalvikType::STRING_REF;
                 val.int_val = string_idx;
-                if (dex_report_ && string_idx < dex_report_->strings.size()) {
-                    val.string_val = dex_report_->strings[string_idx];
-                }
+                // EXP-065: Use per-DEX string resolution (same fix as execute_const_string).
+                val.string_val = resolve_string_for_dex(string_idx, current_dex_index_);
                 set_register(dest, val);
                 trace.opcode_name = "const-string/jumbo";
                 pc_ += 3;
@@ -3547,11 +3645,16 @@ bool DalvikExecutionEngine::execute_const_string(uint32_t pc, InstructionTrace& 
     uint8_t dest_reg = (instr >> 8) & 0xFF;
     uint16_t string_idx = bytecode_[pc + 1];
     
-    // Get string from DEX report
+    // EXP-065: CRITICAL FIX — Use per-DEX string resolution.
+    // The merged dex_report_->strings[] is the concatenation of all DEX
+    // files' string tables. For multi-DEX apps, string_idx is relative to
+    // the CURRENT DEX file, so using the merged index returns the WRONG
+    // string. For example, Telegram's classes4.dex has string_idx=5975="+",
+    // but merged_strings[5975]="FIELD_PREFERRED_AUDIO_LANGUAGES" (from classes.dex).
+    // This bug caused ViewNode.text to leak Android MediaMetadata constant
+    // names into the rendered UI image.
     std::string str_value = "<string:" + std::to_string(string_idx) + ">";
-    if (dex_report_ && string_idx < dex_report_->strings.size()) {
-        str_value = dex_report_->strings[string_idx];
-    }
+    str_value = resolve_string_for_dex(string_idx, current_dex_index_);
     
     uint32_t ref_id = instruction_sequence_;  // Use sequence as ref ID
     set_register(dest_reg, DalvikValue::make_string(str_value, ref_id));

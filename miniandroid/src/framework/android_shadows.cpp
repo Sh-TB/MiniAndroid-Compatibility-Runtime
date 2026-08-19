@@ -937,7 +937,54 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "setText") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        // EXP-065: Trace setText calls to diagnose "FIELD_PREFERRED_AUDIO_LANGUAGES" leak.
+        // (Root cause was elsewhere — see execute_const_string per-DEX fix — but keep
+        // the diagnostic logging for now to verify the fix.)
+        std::string arg_kind = "none";
+        std::string arg_val = "<no-arg>";
+        if (!ctx.args.empty()) {
+            const auto& a = ctx.args[0];
+            switch (a.kind) {
+                case CallContext::Arg::Kind::STRING:
+                    arg_kind = "STRING";
+                    arg_val = "\"" + a.string_val + "\"";
+                    break;
+                case CallContext::Arg::Kind::OBJECT:
+                    arg_kind = "OBJECT";
+                    arg_val = "obj_id=" + std::to_string(a.object_id) + " class=" + a.object_class;
+                    break;
+                case CallContext::Arg::Kind::INT:
+                    arg_kind = "INT";
+                    arg_val = std::to_string(a.int_val);
+                    break;
+                case CallContext::Arg::Kind::NULL_REF:
+                    arg_kind = "NULL_REF";
+                    arg_val = "null";
+                    break;
+                default:
+                    arg_kind = "other";
+                    break;
+            }
+        }
+        std::cerr << "[EXP065-SETTEXT] view_id=" << ctx.receiver_id
+                  << " class=" << ctx.class_name
+                  << " arg_kind=" << arg_kind
+                  << " arg_val=" << arg_val
+                  << std::endl;
         n->text = ctx.arg_as_string(0);
+        return CallResult::handled_void();
+    }
+    // EXP-065: Capture setHint / setHintText — EditText hint text is
+    // important for the Login UI (e.g., "Phone number" appears as a hint).
+    // Previously setHintText was stubbed at the engine level; now it's
+    // allowed to dispatch here and we store the hint on the ViewNode.
+    if (m == "setHint" || m == "setHintText") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        n->hint = ctx.arg_as_string(0);
+        std::cerr << "[EXP065-SETHINT] view_id=" << ctx.receiver_id
+                  << " class=" << ctx.class_name
+                  << " hint=\"" << n->hint << "\""
+                  << std::endl;
         return CallResult::handled_void();
     }
     if (m == "getText") {

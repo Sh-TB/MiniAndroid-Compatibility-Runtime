@@ -2303,3 +2303,17 @@ Work Log:
     - 0 text strings actually visible in the baseline PNG.
   CHECKPOINT_L_LOGIN_UI status at baseline: NOT PROVEN.
 
+
+Stage Summary:
+- **CHECKPOINT_L_LOGIN_UI = PROVEN.**
+- New renderer `tools/exp064_render.py` selects PhoneView (id=2728) as the visible Login slide.
+- Real text rasterization via Pillow + DejaVuSans TTF (CPU-only, no GPU, no emulator).
+- UI_MODE vs DIAGNOSTIC_MODE separated — no class-name labels in `login_ui.png`.
+- Tesseract 5.5.0 OCR detects: "Please confirm your country code and enter your phone number."
+- 3-run reproducibility: identical SHA256 (54c12b710249dbdbe8be955a97fb2cb0c612393ea38b65d855a3e99c7958f8e4)
+- Generic regression test on synthetic non-Telegram view_tree PASSES (Welcome to Acme / Enter your email / Sign In rendered + OCR-validated).
+- Androguard oracle output saved to `run/exp064/androguard_oracle.json` (32,931 strings resolved by Androguard; default-locale empty for Telegram due to locale-overlay system).
+- v3 register "issue" from EXP-063 worklog was a red herring — wrong register inspected. Actual resource pipeline works correctly (proven by 39 real strings in view_tree.json).
+- Commit 7f5448a pushed to main.
+- GitHub issue #1 created: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/1
+
