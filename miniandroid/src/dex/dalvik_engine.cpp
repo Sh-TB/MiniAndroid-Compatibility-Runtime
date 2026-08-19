@@ -902,12 +902,54 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     // Find the class in the DexReport.
     auto class_it = class_info_index_.find(class_descriptor);
     if (class_it == class_info_index_.end()) {
+        // EXP-062: Debug — trace R class lookups
+        if (class_descriptor.find("R$") != std::string::npos) {
+            std::cerr << "[EXP062-RLOOKUP] " << class_descriptor
+                      << " NOT FOUND in class_info_index_ (size="
+                      << class_info_index_.size() << ")"
+                      << std::endl;
+        }
         initialized_classes_.insert(class_descriptor);
         return false;
     }
     const dex::ClassInfo& cls_ref = dex_report_->classes[class_it->second];
     // Mark initialized BEFORE running <clinit> to prevent re-entrancy.
     initialized_classes_.insert(class_descriptor);
+
+    // EXP-062: Count fields with defaults for this class
+    {
+        int with_defaults = 0;
+        for (const auto& f : cls_ref.static_fields) {
+            if (f.has_default_value) with_defaults++;
+        }
+        if (with_defaults > 0 || class_descriptor.find("R$") != std::string::npos) {
+            std::cerr << "[EXP062-INIT] " << class_descriptor
+                      << " static_fields=" << cls_ref.static_fields.size()
+                      << " with_defaults=" << with_defaults
+                      << std::endl;
+        }
+    }
+
+    // EXP-062: Initialize static fields from DEX encoded_array_item
+    // (default values). This is critical for R classes (R$drawable,
+    // R$string, R$color) which have NO <clinit> — their field values
+    // are baked into the DEX by the build system as default values.
+    for (const auto& field : cls_ref.static_fields) {
+        if (!field.has_default_value) continue;
+        std::string static_key = class_descriptor + "." + field.name;
+        if (field.default_value_is_string) {
+            DalvikValue sv = DalvikValue::make_string(field.default_string_value, 0);
+            static_field_storage_[static_key] = sv;
+        } else {
+            static_field_storage_[static_key] = DalvikValue::make_int(
+                static_cast<int32_t>(field.default_int_value));
+        }
+        std::cerr << "[EXP062-RVAL] " << static_key
+                  << " = 0x" << std::hex << field.default_int_value << std::dec
+                  << (field.default_value_is_string ? " (string)" : "")
+                  << std::endl;
+    }
+
     // Find the <clinit> method.
     for (const auto& m : cls_ref.direct_methods) {
         if (m.name != "<clinit>") continue;
