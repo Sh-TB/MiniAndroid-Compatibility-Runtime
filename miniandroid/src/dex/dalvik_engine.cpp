@@ -930,13 +930,39 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
         }
     }
 
+    // EXP-063: Build field_name_by_resid mapping for R classes.
+    // This maps resource ID → field name, so we can resolve resources
+    // by name when DEX IDs don't match ARSC entry indices.
+    if (class_descriptor.find("R$") != std::string::npos) {
+        for (const auto& field : cls_ref.static_fields) {
+            if (field.has_default_value && !field.default_value_is_string) {
+                field_name_by_resid_[static_cast<int32_t>(field.default_int_value)] = field.name;
+            }
+        }
+    }
+
     // EXP-062: Initialize static fields from DEX encoded_array_item
     // (default values). This is critical for R classes (R$drawable,
     // R$string, R$color) which have NO <clinit> — their field values
     // are baked into the DEX by the build system as default values.
+    // EXP-063: Don't overwrite values already set by pre-population
+    // (e.g., ApplicationLoader.applicationContext is set before execution).
+    // But DO overwrite if the existing value is the default 0 (from a
+    // previous SGET that found no stored value).
     for (const auto& field : cls_ref.static_fields) {
         if (!field.has_default_value) continue;
         std::string static_key = class_descriptor + "." + field.name;
+        auto it = static_field_storage_.find(static_key);
+        if (it != static_field_storage_.end()) {
+            // Only skip if the value is non-zero (pre-populated)
+            if (it->second.type == DalvikType::INT32 && it->second.int_val != 0) {
+                continue;
+            }
+            if (it->second.type != DalvikType::INT32) {
+                continue;  // Non-int values (objects, strings) — don't overwrite
+            }
+            // int_val == 0: this is a default, overwrite with DEX default
+        }
         if (field.default_value_is_string) {
             DalvikValue sv = DalvikValue::make_string(field.default_string_value, 0);
             static_field_storage_[static_key] = sv;
@@ -944,10 +970,6 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
             static_field_storage_[static_key] = DalvikValue::make_int(
                 static_cast<int32_t>(field.default_int_value));
         }
-        std::cerr << "[EXP062-RVAL] " << static_key
-                  << " = 0x" << std::hex << field.default_int_value << std::dec
-                  << (field.default_value_is_string ? " (string)" : "")
-                  << std::endl;
     }
 
     // Find the <clinit> method.
@@ -4120,6 +4142,7 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
 
     // EXP-053: Trace every sget (for resource ID investigation).
     // Throttled to first 100 to avoid log explosion.
+    // EXP-063: Also trace R$string and R$drawable specifically.
     if (field_res.resolved) {
         static thread_local uint64_t sget_log_count = 0;
         static thread_local std::string last_method = "";
@@ -4129,6 +4152,9 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
             method_sget_count = 0;
         }
         bool should_log = (sget_log_count < 100 && method_sget_count < 5);
+        // EXP-063: Always log R$ fields
+        bool is_r_field = (field_res.class_descriptor.find("R$") != std::string::npos);
+        should_log = should_log || is_r_field;
         if (should_log) {
             sget_log_count++;
             method_sget_count++;
@@ -6286,12 +6312,84 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // EXP-063: Resources.getResourceEntryName(int) → String
+    // Maps resource ID to resource entry name using field_name_by_resid_.
+    if (method == "getResourceEntryName" &&
+        class_name.find("Resources") != std::string::npos) {
+        int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
+        auto it = field_name_by_resid_.find(resid);
+        if (it != field_name_by_resid_.end()) {
+            std::string name = it->second;
+            std::cerr << "[RES] getResourceEntryName resid=0x" << std::hex << resid
+                      << std::dec << " → \"" << name << "\"" << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(name, 0);
+            return true;
+        }
+        std::cerr << "[RES] getResourceEntryName resid=0x" << std::hex << resid
+                  << std::dec << " → NOT FOUND" << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_string("", 0);
+        return true;
+    }
+
+    // EXP-063: LocaleController.getString(String, int) → String
+    // This is the actual string lookup by name.
+    if (method == "getString" &&
+        class_name.find("LocaleController") != std::string::npos &&
+        args.size() >= 1 && args[0].type == DalvikType::STRING_REF) {
+        // args[0] is the resource entry name (e.g., "StartMessaging")
+        // Look it up in resource_string_values_
+        // We need to get the string value from the heap
+        std::string res_name;
+        if (heap_.has_object(args[0].object_id)) {
+            // The string is stored as a field in the heap object
+            auto sv = heap_.get_object_field(args[0].object_id, "value");
+            if (sv.has_value() && sv->type == DalvikType::STRING_REF) {
+                res_name = sv->string_val;
+            }
+        }
+        if (res_name.empty() && args[0].type == DalvikType::STRING_REF) {
+            // Try using the string_val directly
+            res_name = args[0].string_val;
+        }
+        if (!res_name.empty()) {
+            auto it = resource_string_values_.find(res_name);
+            if (it != resource_string_values_.end()) {
+                std::string val = it->second;
+                std::cerr << "[RES] LocaleController.getString(\"" << res_name
+                          << "\") → \"" << val << "\"" << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_string(val, 0);
+                return true;
+            }
+        }
+    }
+
     // EXP-052: Resources.getString(int) → String
+    // EXP-063: Look up resource by name via field_name_by_resid_
     if (method == "getString" &&
         class_name.find("Resources") != std::string::npos) {
         int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
+        // EXP-063: Try to resolve via resource_name → value mapping
+        std::string resolved;
+        auto it = field_name_by_resid_.find(resid);
+        if (it != field_name_by_resid_.end()) {
+            const std::string& field_name = it->second;
+            auto sit = resource_string_values_.find(field_name);
+            if (sit != resource_string_values_.end()) {
+                resolved = sit->second;
+            }
+        }
+        if (!resolved.empty()) {
+            std::cerr << "[RES] getString resid=0x" << std::hex << resid << std::dec
+                      << " → \"" << resolved << "\"" << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(resolved, 0);
+            return true;
+        }
         std::cerr << "[RES] getString resid=0x" << std::hex << resid
-                  << std::dec << " → \"\" (default)" << std::endl;
+                  << std::dec << " → \"\" (not resolved)" << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_string("", 0);
         return true;
