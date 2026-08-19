@@ -102,7 +102,12 @@ def load_font(size_px, weight='regular'):
 # ============================================================================
 
 def is_text_view(cls):
-    """True if this class is capable of rendering text (TextView or subclass)."""
+    """True if this class is capable of rendering text (TextView or subclass).
+
+    For anonymous subclasses like LoginActivity$PhoneView$1 (which extends
+    AnimatedPhoneNumberEditText), we can't easily walk the superclass chain
+    from the class name alone — but we can recognize common patterns.
+    """
     # Strip L...; descriptor
     if cls.startswith('L') and cls.endswith(';'):
         cls = cls[1:-1]
@@ -124,6 +129,7 @@ def is_text_view(cls):
         'org.telegram.ui.Components.EditTextBoldCursor',
         'org.telegram.ui.Components.EditTextCaption',
         'org.telegram.ui.Components.AnimatedPhoneNumberEditText',
+        'org.telegram.ui.Components.HintEditText',
         'org.telegram.ui.Components.NumberTextView',
         'org.telegram.ui.Components.AnimatedEmojiTextView',
         'org.telegram.ui.Components.TextViewSwitcher',  # container, not text
@@ -137,6 +143,14 @@ def is_text_view(cls):
     # Heuristic fallback: class name ends with TextView / EditText / Button / Link
     short = cls.split('.')[-1]
     if short.endswith(('TextView', 'EditText', 'Button', 'LinksTextView')):
+        return True
+    # EXP-065: Telegram anonymous subclasses like LoginActivity$PhoneView$1/$3
+    # extend AnimatedPhoneNumberEditText — recognize them by pattern.
+    # This is a heuristic; the proper fix would be to expose the superclass
+    # chain in the view_tree.json (TODO).
+    if ('LoginActivity$PhoneView$' in cls or
+        'LoginActivity$LoginActivity' in cls):  # LoginActivitySmsView$1, etc.
+        # The class is likely an anonymous EditText subclass — treat as text view.
         return True
     return False
 
@@ -467,6 +481,11 @@ def render_ui(nodes, slide_root, screen_w, screen_h):
             # Container for EditText — render as input field visual
             draw.rectangle([x, y, x + w_draw - 1, y + h_draw - 1], fill=COLOR_INPUT_BG,
                            outline=COLOR_DIVIDER, width=2)
+        elif 'LoginActivity$PhoneView$' in cls or 'LoginActivity$LoginActivity' in cls:
+            # EXP-065: Anonymous EditText subclasses (extend AnimatedPhoneNumberEditText)
+            # Render as input fields.
+            draw.rectangle([x, y, x + w_draw - 1, y + h_draw - 1], fill=COLOR_INPUT_BG,
+                           outline=COLOR_DIVIDER, width=2)
         elif 'Button' in short and 'ImageButton' not in short:
             draw.rectangle([x, y, x + w_draw - 1, y + h_draw - 1], fill=COLOR_BUTTON_BG)
         elif 'NumberButtonView' in short or 'KeyboardView' in short:
@@ -484,7 +503,7 @@ def render_ui(nodes, slide_root, screen_w, screen_h):
             # Default: transparent (background shows through)
             pass
 
-        # Draw text if present
+        # Draw text if present (or hint if EditText is empty)
         if text and is_text_view(cls):
             # Choose font based on View type and text length
             if 'Button' in short and 'ImageButton' not in short:
@@ -526,6 +545,20 @@ def render_ui(nodes, slide_root, screen_w, screen_h):
             if len(lines) == 1:
                 ty = y + max(0, (h_draw - font.size) // 2)
             for i, line in enumerate(lines[:6]):  # max 6 lines
+                draw.text((tx, ty + i * (font.size + 4)), line, fill=color, font=font)
+        elif n.get('hint') and is_text_view(cls):
+            # EXP-065: Render hint text (greyed out) for EditTexts with no text
+            font = fonts['hint']
+            color = COLOR_TEXT_HINT
+            tx = x + 20
+            ty = y + max(0, (h_draw - font.size) // 2)
+            hint = n['hint']
+            # Wrap hint if too long
+            avail_w = w_draw - 16
+            lines = wrap_text(hint, font, draw, avail_w)
+            if len(lines) == 1:
+                ty = y + max(0, (h_draw - font.size) // 2)
+            for i, line in enumerate(lines[:3]):
                 draw.text((tx, ty + i * (font.size + 4)), line, fill=color, font=font)
 
         rendered.append({

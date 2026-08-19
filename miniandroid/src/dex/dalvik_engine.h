@@ -1471,6 +1471,13 @@ private:
     std::string resolve_type_for_dex(uint32_t type_idx, uint32_t dex_index) const;
     std::string read_dex_string_from_raw(const std::vector<uint8_t>& raw, uint32_t string_idx,
                                           const dex::DexHeader& hdr) const;
+    // EXP-065: Per-DEX string resolution.
+    // string_idx is relative to the current DEX file's string_ids table,
+    // NOT the merged global strings vector. Using the merged index causes
+    // const-string to fetch the WRONG string in multi-DEX apps (e.g.
+    // Telegram's classes4.dex string_idx=5975 is "+", but merged_strings[5975]
+    // is "FIELD_PREFERRED_AUDIO_LANGUAGES" from classes.dex).
+    std::string resolve_string_for_dex(uint32_t string_idx, uint32_t dex_index) const;
     
     bool halted_ = false;
     bool halted_on_return_ = false;
