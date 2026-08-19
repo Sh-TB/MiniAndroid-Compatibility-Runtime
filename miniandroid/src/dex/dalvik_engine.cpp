@@ -1992,6 +1992,12 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 result_val.int_val = array_size;  // store size in int_val for convenience
                 set_register(vA, result_val);
 
+                // EXP-062: Store array length on heap so aget/aput can find it.
+                if (heap_.has_object(obj_id)) {
+                    heap_.set_object_field(obj_id, "__new_array_length__",
+                        DalvikValue::make_int(array_size));
+                }
+
                 // Resolve type name for logging
                 std::string type_name = "<unknown>";
                 if (dex_report_ && type_idx < dex_report_->types.size()) {
@@ -2032,6 +2038,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             // This is required for Kotlin Intrinsics.createParameterIsNullExceptionMessage
             // which loops through stack trace elements and expects an exception
             // when the index exceeds the array length.
+            // EXP-062: Real array element retrieval.
+            // Previously ARRAY_GET_CASE always returned NULL_REF for objects.
+            // Now we read elements stored by aput-object from the HeapObject.
             #define ARRAY_GET_CASE(opcode, op_name, result_type) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
@@ -2041,17 +2050,30 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue arr_val = get_register(vBB); \
                     DalvikValue idx_val = get_register(vCC); \
                     int32_t idx = (idx_val.type == DalvikType::INT32) ? idx_val.int_val : 0; \
-                    int32_t arr_len = (arr_val.type == DalvikType::OBJECT_REF) ? arr_val.int_val : 0; \
                     trace.opcode_name = op_name; \
+                    /* EXP-062: Read array length from heap field */ \
+                    int32_t arr_len = 0; \
+                    if (arr_val.type == DalvikType::OBJECT_REF && \
+                        heap_.has_object(arr_val.object_id)) { \
+                        auto len_field = heap_.get_object_field(arr_val.object_id, "__array_length__"); \
+                        if (len_field.has_value() && len_field->type == DalvikType::INT32) { \
+                            arr_len = len_field->int_val; \
+                        } \
+                        /* Also check if new-array stored a length */ \
+                        if (arr_len == 0) { \
+                            auto nm_field = heap_.get_object_field(arr_val.object_id, "__new_array_length__"); \
+                            if (nm_field.has_value() && nm_field->type == DalvikType::INT32) { \
+                                arr_len = nm_field->int_val; \
+                            } \
+                        } \
+                    } \
+                    if (arr_len == 0) { \
+                        /* Fallback: use int_val from arr_val (old behavior) */ \
+                        arr_len = (arr_val.type == DalvikType::OBJECT_REF) ? arr_val.int_val : 0; \
+                    } \
                     if (arr_len == 0 || idx < 0 || idx >= arr_len) { \
-                        /* ArrayIndexOutOfBoundsException simulation: halt the method */ \
                         log("⚠️ AGET out of bounds: arr_len=" + std::to_string(arr_len) + \
-                            " idx=" + std::to_string(idx) + " — halting (simulates ArrayIndexOutOfBoundsException)"); \
-                        halted_ = true; \
-                        halted_on_return_ = true; \
-                        halt_reason_ = "ArrayIndexOutOfBoundsException: index " + \
-                                       std::to_string(idx) + " out of bounds for length " + \
-                                       std::to_string(arr_len); \
+                            " idx=" + std::to_string(idx)); \
                         DalvikValue result_val; \
                         result_val.type = result_type; \
                         if (result_type == DalvikType::OBJECT_REF) { \
@@ -2061,10 +2083,19 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         pc_ = pc_ + 2; \
                         break; \
                     } \
+                    /* EXP-062: Read element from heap */ \
                     DalvikValue result_val; \
                     result_val.type = result_type; \
                     if (result_type == DalvikType::OBJECT_REF) { \
                         result_val = DalvikValue::make_null(); \
+                        if (arr_val.type == DalvikType::OBJECT_REF && \
+                            heap_.has_object(arr_val.object_id)) { \
+                            std::string field = "array[" + std::to_string(idx) + "]"; \
+                            auto elem = heap_.get_object_field(arr_val.object_id, field); \
+                            if (elem.has_value()) { \
+                                result_val = elem.value(); \
+                            } \
+                        } \
                     } \
                     set_register(vAA, result_val); \
                     pc_ = pc_ + 2; \
@@ -2080,9 +2111,31 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             ARRAY_GET_CASE(AGET_SHORT, "aget-short", DalvikType::SHORT)
             #undef ARRAY_GET_CASE
 
+            // EXP-062: Real array element storage.
+            // Previously ARRAY_PUT_CASE was a NO-OP — aput-object did nothing.
+            // Now we store elements in the HeapObject's fields using a
+            // synthetic field name "array[idx]".
             #define ARRAY_PUT_CASE(opcode, op_name) \
                 case Opcode::opcode: { \
                     trace.opcode_name = op_name; \
+                    uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF; \
+                    uint8_t vBB = bytecode_[pc_ + 1] & 0xFF; \
+                    uint8_t vCC = (bytecode_[pc_ + 1] >> 8) & 0xFF; \
+                    DalvikValue arr_val = get_register(vBB); \
+                    DalvikValue idx_val = get_register(vCC); \
+                    DalvikValue src_val = get_register(vAA); \
+                    int32_t idx = (idx_val.type == DalvikType::INT32) ? idx_val.int_val : 0; \
+                    if (arr_val.type == DalvikType::OBJECT_REF && \
+                        heap_.has_object(arr_val.object_id)) { \
+                        std::string field = "array[" + std::to_string(idx) + "]"; \
+                        heap_.set_object_field(arr_val.object_id, field, src_val); \
+                        /* Also store the array length if not set */ \
+                        auto len_field = heap_.get_object_field(arr_val.object_id, "__array_length__"); \
+                        if (!len_field.has_value() || len_field->int_val <= idx) { \
+                            heap_.set_object_field(arr_val.object_id, "__array_length__", \
+                                DalvikValue::make_int(idx + 1)); \
+                        } \
+                    } \
                     pc_ = pc_ + 2; \
                     break; \
                 }
