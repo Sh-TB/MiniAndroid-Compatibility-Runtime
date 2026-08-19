@@ -198,9 +198,18 @@ struct FieldInfo {
     std::string name;
     std::string type;
     std::string defining_class;
-    
+
     bool is_static = false;
     uint32_t access_flags = 0;
+
+    // EXP-062: Default value from encoded_array_item (static_values_off).
+    // For R classes (R$drawable, R$string, etc.) these are the resource IDs
+    // (e.g., 0x7f010001) that are baked into the DEX by the build system.
+    // Without these, all R.* fields default to 0.
+    bool has_default_value = false;
+    int64_t default_int_value = 0;
+    std::string default_string_value;
+    bool default_value_is_string = false;
 };
 
 // Parsed class information
@@ -363,6 +372,8 @@ private:
     bool parse_methods(const uint8_t* data, DexReport& report);
     bool parse_class_defs(const uint8_t* data, DexReport& report);
     bool parse_class_data(const uint8_t* data, const DexClassDef& class_def, ClassInfo& info);
+    // EXP-062: Parse static field default values from encoded_array_item
+    bool parse_static_values(const uint8_t* data, uint32_t offset, ClassInfo& info);
     
     // String helpers
     std::string read_dex_string(const uint8_t* data, uint32_t offset);
