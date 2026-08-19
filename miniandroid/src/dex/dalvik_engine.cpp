@@ -749,6 +749,27 @@ bool DalvikExecutionEngine::execute_method_internal(
         frame.registers.write_p(static_cast<uint8_t>(i), args[i]);
     }
 
+    // EXP-062: Debug — trace parameter loading for PhoneView.<init>
+    if (class_name.find("PhoneView") != std::string::npos &&
+        method_name == "<init>") {
+        std::cerr << "[EXP062-PARAM] PhoneView.<init> entering"
+                  << " regs=" << registers_size << " ins=" << ins_size
+                  << " param_start=" << (registers_size - ins_size)
+                  << " args=" << args.size()
+                  << std::endl;
+        for (size_t i = 0; i < args.size() && i < ins_size; ++i) {
+            auto val = frame.registers.read_v(static_cast<uint8_t>(
+                registers_size - ins_size + i));
+            std::cerr << "  p" << i << " → v" << (registers_size - ins_size + i)
+                      << " arg_type=" << static_cast<int>(args[i].type)
+                      << " arg_obj=" << args[i].object_id
+                      << " arg_class=" << args[i].class_desc
+                      << " reg_type=" << static_cast<int>(val.type)
+                      << " reg_obj=" << val.object_id
+                      << std::endl;
+        }
+    }
+
     // EXP-058: Debug — verify parameter writes for addFragmentToStack.
     if (current_method_.find("addFragmentToStack") != std::string::npos ||
         method_name.find("addFragmentToStack") != std::string::npos) {
@@ -2092,6 +2113,17 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 success = execute_iget_object(pc_, trace);
                 trace.opcode_name = "iget-object";
                 break;
+            // EXP-062: Add missing iget variants. iget-wide reads a 64-bit
+            // field; iget-boolean/byte/char/short read primitive fields.
+            // All use the same 22c format as iget.
+            case Opcode::IGET_WIDE:
+            case Opcode::IGET_BOOLEAN:
+            case Opcode::IGET_BYTE:
+            case Opcode::IGET_CHAR:
+            case Opcode::IGET_SHORT:
+                success = execute_iget(pc_, trace);
+                trace.opcode_name = "iget-variant";
+                break;
             case Opcode::IPUT:
                 success = execute_iput(pc_, trace);
                 trace.opcode_name = "iput";
@@ -2099,6 +2131,17 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             case Opcode::IPUT_OBJECT:
                 success = execute_iput_object(pc_, trace);
                 trace.opcode_name = "iput-object";
+                break;
+            // EXP-062: iput-wide and other iput variants.
+            // iput-wide writes a 64-bit value (occupying vA and vA+1)
+            // to a field. We store it as a single INT64 DalvikValue.
+            case Opcode::IPUT_WIDE:
+            case Opcode::IPUT_BOOLEAN:
+            case Opcode::IPUT_BYTE:
+            case Opcode::IPUT_CHAR:
+            case Opcode::IPUT_SHORT:
+                success = execute_iput(pc_, trace);
+                trace.opcode_name = "iput-variant";
                 break;
             
             // EXP-035: Static Field Operations
@@ -2110,6 +2153,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 success = execute_sget_object(pc_, trace);
                 trace.opcode_name = "sget-object";
                 break;
+            // EXP-062: Add sget-wide
+            case Opcode::SGET_WIDE:
+                success = execute_sget(pc_, trace);
+                trace.opcode_name = "sget-wide";
+                break;
             case Opcode::SPUT:
                 success = execute_sput(pc_, trace);
                 trace.opcode_name = "sput";
@@ -2117,6 +2165,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             case Opcode::SPUT_OBJECT:
                 success = execute_sput_object(pc_, trace);
                 trace.opcode_name = "sput-object";
+                break;
+            // EXP-062: Add sput-wide
+            case Opcode::SPUT_WIDE:
+                success = execute_sput(pc_, trace);
+                trace.opcode_name = "sput-wide";
                 break;
             // EXP-038 (BLOCKER-027): sput-boolean and other sget/sput variants
             case Opcode::SPUT_BOOLEAN:
@@ -2941,17 +2994,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 pc_ += 2;
                 break;
             }
-            // iget-short / iput-short (22c: same as other iget/iput variants)
-            case Opcode::IGET_SHORT: {
-                success = execute_iget(pc_, trace);
-                trace.opcode_name = "iget-short";
-                break;
-            }
-            case Opcode::IPUT_SHORT: {
-                success = execute_iput(pc_, trace);
-                trace.opcode_name = "iput-short";
-                break;
-            }
+            // iget-short / iput-short — now handled by the consolidated
+            // iget-variant/iput-variant cases above (EXP-062).
             // rem-double (23x: AA|op BB|CC, 2 code units)
             case Opcode::REM_DOUBLE: {
                 uint16_t instr = bytecode_[pc_];
@@ -3100,17 +3144,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 pc_ += 5;
                 break;
             }
-            // iget-boolean / iput-boolean (22c: same as other iget/iput variants)
-            case Opcode::IGET_BOOLEAN: {
-                success = execute_iget(pc_, trace);
-                trace.opcode_name = "iget-boolean";
-                break;
-            }
-            case Opcode::IPUT_BOOLEAN: {
-                success = execute_iput(pc_, trace);
-                trace.opcode_name = "iput-boolean";
-                break;
-            }
+            // iget-boolean / iput-boolean — now handled by the consolidated
+            // iget-variant/iput-variant cases above (EXP-062).
 
             default:
                 handle_unimplemented(opcode, pc_, trace);
@@ -3897,6 +3932,24 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
                   << std::endl;
     }
 
+    // EXP-062: Debug — log ALL iput-object in PhoneView.<init>
+    if (field_res.resolved &&
+        current_class_.find("PhoneView") != std::string::npos &&
+        current_method_ == "<init>") {
+        std::cerr << "[EXP062-IPUT] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " field=" << field_res.class_descriptor << "." << field_res.field_name
+                  << " src=v" << (int)src_reg
+                  << " src_type=" << static_cast<int>(src_val.type)
+                  << " src_obj=" << src_val.object_id
+                  << " obj=v" << (int)obj_reg
+                  << " obj_type=" << static_cast<int>(obj_ref.type)
+                  << " obj_id=" << obj_ref.object_id
+                  << " obj_class=" << obj_ref.class_desc
+                  << " stored=" << (obj_ref.type == DalvikType::OBJECT_REF && heap_.has_object(obj_ref.object_id) ? "YES" : "NO")
+                  << std::endl;
+    }
+
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
         heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
@@ -4078,12 +4131,22 @@ bool DalvikExecutionEngine::execute_sput_object(uint32_t pc, InstructionTrace& t
 // OPCODE IMPLEMENTATIONS — Invokes
 // ============================================================================
 
-bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace& trace, 
+bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace& trace,
                                                   DalvikExecutionResult& result) {
     // Format: 35c [op] {vC..}, method@BBBB
     // EXP-035: Now uses VTable dispatch for proper polymorphic method resolution
     if (pc + 2 >= bytecode_.size()) return false;
-    
+
+    // EXP-062: Debug — trace ALL invoke-virtual entry in PhoneView.<init>
+    if (current_class_.find("PhoneView") != std::string::npos &&
+        current_method_ == "<init>") {
+        auto v1 = get_register(1);
+        std::cerr << "[EXP062-ENTRY] invoke-virtual entry pc=" << pc
+                  << " v1_type=" << static_cast<int>(v1.type)
+                  << " v1_obj=" << v1.object_id
+                  << std::endl;
+    }
+
     uint16_t instr = bytecode_[pc];
     // EXP-037 Phase B (BLOCKER-015 FIX): Per AOSP dalvik-bytecode.html,
     // 35c format is "AA|op BBBB FEDC" where:
@@ -4134,7 +4197,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
         DalvikValue this_obj = args[0];
         static_type = this_obj.class_desc;
-        
+
         // Look up actual object class from heap
         if (auto* heap_obj = heap_.get(this_obj.object_id)) {
             runtime_type = heap_obj->class_descriptor;
@@ -4144,6 +4207,32 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
             runtime_type = static_type;
             resolved_method = static_type + "." + method_name_from_dex;
             log("⚠️ INVOKE-VIRTUAL: Object not found in heap, using static type");
+        }
+
+        // EXP-061: Debug — trace addView calls to find why child=0
+        if (method_name_from_dex == "addView" && args.size() >= 2) {
+            std::cerr << "[EXP062-ADDVIEW-TRACE] invoke-virtual addView"
+                      << " this_id=" << args[0].object_id
+                      << " this_class=" << runtime_type
+                      << " child_type=" << static_cast<int>(args[1].type)
+                      << " child_id=" << args[1].object_id
+                      << " child_class=" << args[1].class_desc
+                      << " caller=" << current_class_ << "." << current_method_
+                      << " pc=" << pc
+                      << std::endl;
+        }
+
+        // EXP-062: Debug — trace v1 in PhoneView.<init> after each invoke-virtual
+        if (current_class_.find("PhoneView") != std::string::npos &&
+            current_method_ == "<init>" && !args.empty()) {
+            auto v1 = get_register(1);
+            std::cerr << "[EXP062-V1] invoke-virtual " << method_name_from_dex
+                      << " pc=" << pc
+                      << " v1_type=" << static_cast<int>(v1.type)
+                      << " v1_obj=" << v1.object_id
+                      << " this_type=" << static_cast<int>(args[0].type)
+                      << " this_obj=" << args[0].object_id
+                      << std::endl;
         }
     } else {
         // No object reference or null - can't do virtual dispatch
