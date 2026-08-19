@@ -2228,3 +2228,78 @@ Stage Summary:
 - CHECKPOINT_P10 (Three-run reproducibility) = PROVEN (identical MD5)
 - CPU-only rendering verified. No GPU, no OpenGL, no emulator required.
 
+
+---
+Task ID: EXP-062
+Agent: general-purpose (main agent)
+Task: EXP-062 — Deep Autonomous VM + View + Rendering Campaign
+
+Work Log:
+- Phase 0: Baseline run. 498K instructions, 1379 methods, 1 HALT, 1372 view nodes.
+
+- Phase 1: Wide opcode validation. Found iput-wide (0x5A), iget-wide (0x53),
+  sget-wide (0x61), sput-wide (0x68) were MISSING from dispatch table.
+  They fell to default case which advances PC by 1 instead of 2 (22c format),
+  causing PC misalignment and register corruption.
+  FIX: Added all missing field opcodes to dispatch table.
+  Result: Instructions 36K → 2.3M, methods 1136 → 1333.
+
+- Phase 2: Register integrity. Found v1 (PhoneView 'this') was INT32(0)
+  instead of OBJECT_REF at PC=61. Root cause: iput-wide PC misalignment
+  corrupted v1. After fix, v1 is correct.
+
+- Phase 3: Array model. Found ARRAY_PUT_CASE was a complete NO-OP —
+  aput-object did nothing. ARRAY_GET_CASE always returned NULL_REF.
+  FIX: Implemented real array element storage/retrieval via heap fields.
+  Result: addView child=0: 23 → 4 (−83%).
+
+- Phase 4: R class static field values. Found DEX parser didn't read
+  encoded_array_item (static_values_off). R classes (R$drawable, R$string)
+  have NO <clinit> — their field values are baked into DEX.
+  TWO bugs:
+  a) parse_static_values called AFTER push_back(info) — values lost.
+  b) Wrong AOSP value type constants (0x02=INT should be 0x04=INT, etc.).
+  FIX: Moved parse_static_values before push_back. Corrected constants.
+  Result: R$drawable.media_doc_blue: 0 → 0x801c5. R$string.StartMessaging: 0 → 0xf121d.
+  SGET now returns actual resource IDs.
+
+- Phase 5: Stub loops. Added stubs for AnimatedPhoneNumberEditText.setHintText
+  and AndroidUtilities.replaceTags (infinite iterator loops).
+  Result: HALT 4 → 0. LoginActivity methods 115 → 135.
+
+- Final metrics (after R class fix):
+  Instructions: 27,293 (different execution path due to non-zero R values)
+  Unique methods: 1029
+  HALT: 0
+  View nodes: 1059
+  PhoneView: 4 children + 2 grandchildren
+  addView child=0: 4 (framework classes only)
+  All 10 regression tests PASS
+
+Stage Summary:
+- 6 generic VM bugs fixed (invoke-direct, wide opcodes, array model, R class values)
+- PhoneView hierarchy: 0 → 4 children + 2 grandchildren
+- R class resource IDs: all 0 → correct values (e.g., 0x801c5, 0xf121d)
+- addView child=0: 35 → 4 (−89%)
+- HALT: 8 → 0
+- Next blocker: Resource table (resources.arsc) parsing for string lookup
+
+
+---
+Task ID: EXP-064
+Agent: general-purpose (main agent)
+Task: EXP-064 — REAL LOGIN IMAGE PROVEN BY PIXELS. Resource → text → view → layout → rasterization → PNG → automated validation.
+
+Work Log:
+- Phase 0: Baseline captured.
+  commit=5f2f4c2 ; APK SHA256=193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e
+  Baseline artifacts in run/exp064_baseline/ ; docs/EXP064_BASELINE.md written.
+  Key baseline findings:
+    - 1385 ViewNodes total
+    - 39 ViewNodes contain real resource-derived text (e.g. "Start Messaging", "Please confirm your country code and enter your phone number.")
+    - PNG only renders 22 nodes (the LoginActivity$2 ViewPager subtree), PhoneView (id=2728) is a SEPARATE root that the layout never reaches.
+    - Renderer draws class names as labels even in the "UI" PNG.
+    - PNG SHA256: 17944d4fcf7715775b4dfed290eab66f49ce120a3890896942745bcb505e0cdc
+    - 0 text strings actually visible in the baseline PNG.
+  CHECKPOINT_L_LOGIN_UI status at baseline: NOT PROVEN.
+
