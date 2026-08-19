@@ -770,6 +770,27 @@ bool DalvikExecutionEngine::execute_method_internal(
         }
     }
 
+    // EXP-063: Trace getString parameter passing
+    if (class_name.find("LocaleController") != std::string::npos &&
+        method_name == "getString") {
+        std::cerr << "[EXP063-GETSTRING] entering"
+                  << " regs=" << registers_size << " ins=" << ins_size
+                  << " param_start=" << (registers_size - ins_size)
+                  << " args=" << args.size()
+                  << std::endl;
+        for (size_t i = 0; i < args.size() && i < ins_size; ++i) {
+            auto val = frame.registers.read_v(static_cast<uint8_t>(
+                registers_size - ins_size + i));
+            std::cerr << "  p" << i << " → v" << (registers_size - ins_size + i)
+                      << " arg_type=" << static_cast<int>(args[i].type)
+                      << " arg_int=" << args[i].int_val
+                      << " arg_obj=" << args[i].object_id
+                      << " reg_type=" << static_cast<int>(val.type)
+                      << " reg_int=" << val.int_val
+                      << std::endl;
+        }
+    }
+
     // EXP-058: Debug — verify parameter writes for addFragmentToStack.
     if (current_method_.find("addFragmentToStack") != std::string::npos ||
         method_name.find("addFragmentToStack") != std::string::npos) {
@@ -933,9 +954,15 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     // EXP-063: Build field_name_by_resid mapping for R classes.
     // This maps resource ID → field name, so we can resolve resources
     // by name when DEX IDs don't match ARSC entry indices.
+    // EXP-063 FIX: Only store INT values (actual resource IDs like 0x000f0000).
+    // BOOLEAN values (true=1, false=0) from resource shrinking must be
+    // excluded because they collide with real resource IDs.
     if (class_descriptor.find("R$") != std::string::npos) {
         for (const auto& field : cls_ref.static_fields) {
-            if (field.has_default_value && !field.default_value_is_string) {
+            if (!field.has_default_value || field.default_value_is_string) continue;
+            // Only store values that look like resource IDs (>= 0x10000)
+            // This excludes BOOLEAN values (0, 1) and small integers.
+            if (field.default_int_value >= 0x10000) {
                 field_name_by_resid_[static_cast<int32_t>(field.default_int_value)] = field.name;
             }
         }
@@ -1589,8 +1616,21 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
 
         // EXP-053 FIX: args.size() includes `this` for instance methods.
+        // EXP-063 FIX: Only subtract 1 for instance methods (args[0] is 'this').
+        // For static methods, ALL args are parameters — don't subtract.
+        // The caller (invoke-static) doesn't include 'this' in args.
+        // The caller (invoke-virtual/direct/interface) includes 'this' as args[0].
+        // We can detect instance vs static by checking if args[0] is OBJECT_REF
+        // AND the method descriptor starts with a non-empty parameter list.
+        // Simpler approach: if arg_count > param_count, it's likely an instance
+        // method with 'this' in args[0]. Subtract 1.
+        // But if arg_count == param_count + 1 AND param_count matches exactly,
+        // it's an instance method with the right number of params.
+        // EXP-063: Only subtract if the method is NOT static.
+        // We check access_flags & 0x0008 (ACC_STATIC).
         size_t effective_arg_count = arg_count;
-        if (arg_count > 0 && arg_count > param_count) {
+        bool is_static_method = (method.access_flags & 0x0008) != 0;
+        if (!is_static_method && arg_count > 0 && arg_count > param_count) {
             effective_arg_count = arg_count - 1;
         }
         if (param_count == effective_arg_count) {
@@ -4768,6 +4808,27 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         args.push_back(get_register(regs[i]));
     }
     
+    // EXP-063: Trace invoke-static for getString
+    if (dex_report_) {
+        std::string mn = resolve_method_name_for_dex(method_idx, current_dex_index_);
+        if (mn == "getString") {
+            std::string cn = resolve_method_class_for_dex(method_idx, current_dex_index_);
+            std::cerr << "[EXP063-ISTATIC] getString"
+                      << " instr=0x" << std::hex << instr << std::dec
+                      << " argc=" << (int)argc
+                      << " regs[0]=" << (int)regs[0]
+                      << " class=" << cn
+                      << " caller=" << current_class_ << "." << current_method_
+                      << " pc=" << pc;
+            if (!args.empty()) {
+                std::cerr << " arg0=" << args[0].int_val;
+            } else {
+                std::cerr << " NO_ARGS";
+            }
+            std::cerr << std::endl;
+        }
+    }
+    
     // EXP-037 Phase B (BLOCKER-002 FIX): resolve method_idx via DexReport.
     std::string method_name = "<static_method:" + std::to_string(method_idx) + ">";
     std::string class_name = "<static_class>";
@@ -6314,9 +6375,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
     // EXP-063: Resources.getResourceEntryName(int) → String
     // Maps resource ID to resource entry name using field_name_by_resid_.
+    // args[0] = this (Resources), args[1] = resid (int)
     if (method == "getResourceEntryName" &&
         class_name.find("Resources") != std::string::npos) {
-        int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
+        int32_t resid = args.size() >= 2 ? args[1].int_val : (args.size() >= 1 ? args[0].int_val : 0);
         auto it = field_name_by_resid_.find(resid);
         if (it != field_name_by_resid_.end()) {
             std::string name = it->second;
