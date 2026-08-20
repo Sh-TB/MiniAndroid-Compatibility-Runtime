@@ -1488,6 +1488,59 @@ bool ApplicationRuntime::execute_on_create() {
             std::cerr << "[EXP069] Click result: "
                       << (click_ok ? "DISPATCHED" : "FAILED") << std::endl;
 
+            // EXP-071: Phase 7 — Dispatch SECOND click on PhoneNumberConfirmView
+            // confirm button. After onNextPressed creates the confirmation dialog,
+            // the user must click "confirm" to trigger auth.sendCode.
+            // We find the confirm button by looking for a View with a click listener
+            // inside PhoneNumberConfirmView.
+            if (click_ok) {
+                std::cerr << "[EXP071] Phase 7: Looking for PhoneNumberConfirmView confirm button..." << std::endl;
+                // The confirm button is a View inside PhoneNumberConfirmView that has
+                // a click listener. We search all views with listeners and try
+                // clicking the ones inside PhoneNumberConfirmView.
+                auto* vs = dalvik_engine.get_shadow_registry()
+                    ? dalvik_engine.get_shadow_registry()->find_as<framework::ViewShadow>()
+                    : nullptr;
+                if (vs) {
+                    auto candidates = vs->find_all_with_click_listener("");
+                    std::cerr << "[EXP071] Found " << candidates.size()
+                              << " views with click listeners" << std::endl;
+                    // Find views created AFTER the first click (high object IDs
+                    // that are inside PhoneNumberConfirmView)
+                    for (uint32_t vid : candidates) {
+                        const auto* node = vs->find_node(vid);
+                        if (!node) continue;
+                        // Skip the FAB we already clicked (the main LoginActivity one)
+                        // But DON'T skip FragmentFloatingButtons inside PhoneNumberConfirmView
+                        if (node->class_desc.find("IntroActivity") != std::string::npos) continue;
+                        if (node->class_desc.find("ActionBar") != std::string::npos) continue;
+                        // EXP-071: Skip TextView class views (these are the "Edit" button)
+                        if (node->class_desc.find("TextView") != std::string::npos) continue;
+                        // Skip plain View class (id=53897, the edit area) — we want the FAB
+                        if (node->class_desc == "Landroid/view/View;") continue;
+                        // Try clicking this view
+                        std::string listener_class;
+                        if (node->click_listener_id != 0 &&
+                            dalvik_engine.get_heap().has_object(node->click_listener_id)) {
+                            listener_class = dalvik_engine.get_heap()
+                                .get(node->click_listener_id)->class_descriptor;
+                        }
+                        std::cerr << "[EXP071-CONFIRM-CLICK] Trying view_id=" << vid
+                                  << " class=" << node->class_desc
+                                  << " listener=" << listener_class << std::endl;
+                        bool confirm_ok = dalvik_engine.dispatch_click(vid);
+                        std::cerr << "[EXP071-CONFIRM-CLICK] result="
+                                  << (confirm_ok ? "DISPATCHED" : "FAILED") << std::endl;
+                        if (confirm_ok) {
+                            // Check if auth.sendCode was triggered by looking for
+                            // new sendRequest calls
+                            std::cerr << "[EXP071] Confirm click dispatched — checking for auth.sendCode..." << std::endl;
+                            break;  // Only click one confirm button
+                        }
+                    }
+                }
+            }
+
             // Re-dump view tree to capture any state changes from the click.
             // If the click triggered a page transition, the new page's views
             // should appear in the updated view tree.
