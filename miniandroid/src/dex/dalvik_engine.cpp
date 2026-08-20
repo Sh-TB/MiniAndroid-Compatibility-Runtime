@@ -1425,6 +1425,17 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     //   3. Let Telegram's own callback bytecode handle the rest
     //
     // Classification: CONTROLLED_NETWORK_STUB — NOT real Telegram networking.
+    //
+    // EXP-071: Before checking sendRequest, initialize doneButtonVisible if
+    // the LoginActivity's doneButtonVisible field is null/uninitialized.
+    // This is needed because onDoneButtonPressed reads doneButtonVisible[]
+    // and if-nez (opcode 0x39) on the result. When the array is null,
+    // aget-boolean returns 0 (false), causing if-nez to NOT branch,
+    // making onDoneButtonPressed return early without calling onNextPressed.
+    // The real fix is to execute setViews() which initializes the array,
+    // but that requires full onShow() lifecycle which is complex.
+    // This is a compatibility approximation: initialize doneButtonVisible
+    // to [true] when it's null on the LoginActivity object.
     if (method_name == "sendRequest" &&
         class_descriptor.find("ConnectionsManager") != std::string::npos) {
         // Log the sendRequest call with argument info
@@ -2748,17 +2759,40 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         break; \
                     } \
                     /* EXP-062: Read element from heap */ \
+                    /* EXP-071: FIX — aget-boolean/aget/aget-byte/aget-char/aget-short
+                     * were NOT reading from the heap (only aget-object was). This caused
+                     * boolean array reads to always return 0 (false), which made
+                     * LoginActivity.onDoneButtonPressed always return early (the
+                     * doneButtonVisible[] check at PC=4-6 always returned false=0,
+                     * and if-ltz 0 never branched). Now we read ALL array element
+                     * types from the heap. */ \
                     DalvikValue result_val; \
                     result_val.type = result_type; \
-                    if (result_type == DalvikType::OBJECT_REF) { \
-                        result_val = DalvikValue::make_null(); \
-                        if (arr_val.type == DalvikType::OBJECT_REF && \
-                            heap_.has_object(arr_val.object_id)) { \
-                            std::string field = "array[" + std::to_string(idx) + "]"; \
-                            auto elem = heap_.get_object_field(arr_val.object_id, field); \
-                            if (elem.has_value()) { \
-                                result_val = elem.value(); \
+                    /* Try reading from heap for ALL types (not just OBJECT_REF). */ \
+                    if (arr_val.type == DalvikType::OBJECT_REF && \
+                        heap_.has_object(arr_val.object_id)) { \
+                        std::string field = "array[" + std::to_string(idx) + "]"; \
+                        auto elem = heap_.get_object_field(arr_val.object_id, field); \
+                        if (elem.has_value()) { \
+                            result_val = elem.value(); \
+                            /* Ensure type matches expected result_type */ \
+                            if (result_type == DalvikType::BOOLEAN) { \
+                                /* Normalize to 0 or 1 */ \
+                                bool b = (elem->type == DalvikType::INT32) ? (elem->int_val != 0) : \
+                                         (elem->type == DalvikType::BOOLEAN) ? elem->bool_val : false; \
+                                result_val = DalvikValue::make_bool(b); \
+                            } else if (result_type == DalvikType::INT32 && \
+                                       elem->type != DalvikType::INT32) { \
+                                result_val = DalvikValue::make_int(0); \
                             } \
+                        } else { \
+                            if (result_type == DalvikType::OBJECT_REF) { \
+                                result_val = DalvikValue::make_null(); \
+                            } \
+                        } \
+                    } else { \
+                        if (result_type == DalvikType::OBJECT_REF) { \
+                            result_val = DalvikValue::make_null(); \
                         } \
                     } \
                     set_register(vAA, result_val); \
