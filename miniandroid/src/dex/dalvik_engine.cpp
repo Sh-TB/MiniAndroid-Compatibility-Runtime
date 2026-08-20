@@ -1278,6 +1278,37 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
+    // EXP-066: OutlineTextContainerView.setText(CharSequence) is a thin wrapper
+    // that just iput-objects the text into the mText field and calls invalidate().
+    // The text is the floating LABEL of the input field (e.g. "Phone number").
+    // The bytecode execution stores the text in the heap field, but the ViewShadow
+    // never sees it. Intercept here to capture the text on the ViewNode so the
+    // renderer can show it.
+    if (method_name == "setText" &&
+        class_descriptor.find("OutlineTextContainerView") != std::string::npos) {
+        // Dispatch to ViewShadow to capture the text on the ViewNode.
+        if (shadow_registry_ != nullptr) {
+            framework::CallContext ctx;
+            ctx.has_receiver = !args.empty() && args[0].type == DalvikType::OBJECT_REF;
+            if (ctx.has_receiver) {
+                ctx.receiver_id = args[0].object_id;
+                ctx.receiver_class = args[0].class_desc;
+                ctx.class_name = args[0].class_desc.empty() ? class_descriptor : args[0].class_desc;
+            } else {
+                ctx.class_name = class_descriptor;
+            }
+            ctx.method = method_name;
+            for (size_t i = 1; i < args.size(); i++) {
+                ctx.args.push_back(dalvik_value_to_arg(args[i]));
+            }
+            auto cr = shadow_registry_->dispatch(ctx);
+            (void)cr;
+        }
+        // Still let the bytecode execute (it just does iput-object + invalidate,
+        // both safe). The shadow dispatch above already captured the text.
+        // Fall through to normal execution.
+    }
+
     // EXP-065: AnimatedPhoneNumberEditText.setHintText loops infinitely
     // at PC=0x1e (invoke-interface) calling DynamicAnimation.cancel()
     // repeatedly. The original EXP-062 stub skipped the entire call,
@@ -2246,11 +2277,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         DalvikValue::make_int(array_size));
                 }
 
-                // Resolve type name for logging
+                // EXP-066: Use per-DEX type resolution for trace evidence.
                 std::string type_name = "<unknown>";
-                if (dex_report_ && type_idx < dex_report_->types.size()) {
-                    type_name = dex_report_->types[type_idx];
-                }
+                type_name = resolve_type_for_dex(type_idx, current_dex_index_);
                 log("✅ NEW-ARRAY: type=" + type_name + " size=" + std::to_string(array_size) + " → obj#" + std::to_string(obj_id));
 
                 trace.opcode_name = "new-array";
@@ -3669,22 +3698,22 @@ bool DalvikExecutionEngine::execute_const_string(uint32_t pc, InstructionTrace& 
 bool DalvikExecutionEngine::execute_const_class(uint32_t pc, InstructionTrace& trace) {
     // Format: 21c [op] vAA, type@BBBB
     if (pc + 1 >= bytecode_.size()) return false;
-    
+
     uint16_t instr = bytecode_[pc];
     uint8_t dest_reg = (instr >> 8) & 0xFF;
     uint16_t type_idx = bytecode_[pc + 1];
-    
-    // Get type from DEX report
+
+    // EXP-066: Use per-DEX type resolution (multi-DEX bug fix — same pattern as
+    // execute_const_string in EXP-065). The merged dex_report_->types[] is the
+    // concatenation of all DEX files' type_ids tables; type_idx is per-DEX.
     std::string type_desc = "<type:" + std::to_string(type_idx) + ">";
-    if (dex_report_ && type_idx < dex_report_->types.size()) {
-        type_desc = dex_report_->types[type_idx];
-    }
-    
+    type_desc = resolve_type_for_dex(type_idx, current_dex_index_);
+
     uint32_t ref_id = instruction_sequence_;
     set_register(dest_reg, DalvikValue::make_class(type_desc, ref_id));
-    
+
     trace.operands.push_back({"v" + std::to_string(dest_reg), type_desc});
-    
+
     pc_ = pc + 2;
     return true;
 }
@@ -3876,28 +3905,26 @@ bool DalvikExecutionEngine::execute_new_instance(uint32_t pc, InstructionTrace& 
 bool DalvikExecutionEngine::execute_check_cast(uint32_t pc, InstructionTrace& trace) {
     // Format: 1c [op] vAA, type@BBBB
     if (pc + 1 >= bytecode_.size()) return false;
-    
+
     uint16_t instr = bytecode_[pc];
     uint8_t reg = (instr >> 8) & 0xFF;
     uint16_t type_idx = bytecode_[pc + 1];
-    
-    // Get target type
+
+    // EXP-066: Use per-DEX type resolution (multi-DEX bug fix).
     std::string target_type = "<unknown>";
-    if (dex_report_ && type_idx < dex_report_->types.size()) {
-        target_type = dex_report_->types[type_idx];
-    }
-    
+    target_type = resolve_type_for_dex(type_idx, current_dex_index_);
+
     // In full implementation, would check if register value is instance of target_type
     // For now, pass through (optimistic cast)
     DalvikValue val = get_register(reg);
     // If null or uninit, it's always ok
-    if (val.type == DalvikType::NULL_REF || val.type == DalvikType::UNINITIALIZED || 
+    if (val.type == DalvikType::NULL_REF || val.type == DalvikType::UNINITIALIZED ||
         val.type == DalvikType::REGISTER_UNSET) {
         // Null passes any check-cast
     }
-    
+
     trace.operands.push_back({"v" + std::to_string(reg), target_type});
-    
+
     pc_ = pc + 2;
     return true;
 }
@@ -3905,28 +3932,26 @@ bool DalvikExecutionEngine::execute_check_cast(uint32_t pc, InstructionTrace& tr
 bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& trace) {
     // Format: 22 [op] vA, vB, type@CCCC
     if (pc + 2 >= bytecode_.size()) return false;
-    
+
     uint16_t instr = bytecode_[pc];
     uint8_t dest = (instr >> 8) & 0xFF;
     uint8_t src = instr & 0xFF;
     uint16_t type_idx = bytecode_[pc + 2];
-    
-    // Get target type
+
+    // EXP-066: Use per-DEX type resolution (multi-DEX bug fix).
     std::string target_type = "<unknown>";
-    if (dex_report_ && type_idx < dex_report_->types.size()) {
-        target_type = dex_report_->types[type_idx];
-    }
-    
+    target_type = resolve_type_for_dex(type_idx, current_dex_index_);
+
     // Check instance-of (simplified - always false unless we track types properly)
     DalvikValue src_val = get_register(src);
-    bool is_instance = (src_val.type == DalvikType::OBJECT_REF && 
+    bool is_instance = (src_val.type == DalvikType::OBJECT_REF &&
                        src_val.class_desc == target_type);
-    
+
     set_register(dest, DalvikValue::make_bool(is_instance));
-    
+
     trace.operands.push_back({"v" + std::to_string(dest), register_name(src)});
     trace.operands.push_back({"type", target_type});
-    
+
     pc_ = pc + 2;  // EXP-037 Phase B (BLOCKER-017 FIX): 22c format is 2 code units (was pc + 3)
     return true;
 }

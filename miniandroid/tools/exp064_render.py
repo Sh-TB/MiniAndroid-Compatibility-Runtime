@@ -504,9 +504,20 @@ def render_ui(nodes, slide_root, screen_w, screen_h):
             pass
 
         # Draw text if present (or hint if EditText is empty)
-        if text and is_text_view(cls):
+        # EXP-066: OutlineTextContainerView has a setText() method that stores
+        # the floating label text (e.g. "Phone number"). The renderer should draw
+        # this text as a small label above the input field.
+        if text and (is_text_view(cls) or 'OutlineTextContainerView' in cls):
             # Choose font based on View type and text length
-            if 'Button' in short and 'ImageButton' not in short:
+            if 'OutlineTextContainerView' in cls:
+                # Floating label — small text at the top of the input field
+                font = fonts['small']
+                color = COLOR_TEXT_HINT
+                tx = x + 20
+                ty = y + 4
+                # Draw the text directly (no centering — it's a top-left label)
+                draw.text((tx, ty), text[:40], fill=color, font=font)
+            elif 'Button' in short and 'ImageButton' not in short:
                 font = fonts['button']
                 color = COLOR_BUTTON_TEXT
                 tx = x + 20
