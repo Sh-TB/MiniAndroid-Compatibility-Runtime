@@ -1541,6 +1541,52 @@ bool ApplicationRuntime::execute_on_create() {
                 }
             }
 
+            // EXP-071 Phase 8: Drain the Handler event queue iteratively.
+            //
+            // The confirm click (onConfirm) creates Lambda0 (a Runnable) and
+            // calls PhoneNumberConfirmView.animateProgress(Lambda0), which calls
+            // AndroidUtilities.runOnUIThread(Lambda0, 400ms) — queuing Lambda0.
+            // When Lambda0.run() fires, it calls lambda$onConfirm$1 which calls
+            // runOnUIThread(Lambda1, 150ms) — queuing Lambda1. When Lambda1.run()
+            // fires, it calls lambda$onConfirm$0 which calls PhoneView.onNextPressed.
+            // Inside onNextPressed, auth.sendCode is constructed and sent.
+            //
+            // All three steps happen via the queue. We drain it iteratively:
+            //   for each iteration:
+            //     1. drain ready runnables from the queue
+            //     2. invoke each runnable's run() via dalvik_engine.dispatch_runnable
+            //     3. if any runnable scheduled more runnables, the next iteration
+            //        will drain them
+            //   stop when the queue is empty OR we hit a safety cap (1000 iterations).
+            //
+            // We also advance the virtual clock so delayed runnables become ready.
+            // In our deterministic model, we treat all delays as zero — the
+            // relative ordering is preserved because we drain in FIFO order
+            // (matching real Android Handler behavior for our purposes).
+            const size_t MAX_DRAIN_ITERATIONS = 1000;
+            for (size_t iter = 0; iter < MAX_DRAIN_ITERATIONS; ++iter) {
+                std::vector<uint32_t> drained;
+                size_t n = drain_handler_queue(&drained);
+                if (n == 0) {
+                    std::cerr << "[EXP071-DRAIN] iter=" << iter
+                              << " queue empty — stopping drain loop" << std::endl;
+                    break;
+                }
+                std::cerr << "[EXP071-DRAIN] iter=" << iter
+                          << " drained " << n << " runnable(s)" << std::endl;
+                for (uint32_t rid : drained) {
+                    // dispatch_runnable is generic — it works for any Runnable.
+                    // For RequestDelegate runnables (which take (TLObject, TL_error)),
+                    // the response delivery path will call dispatch_runnable directly
+                    // with the response and error args. Here in the drain loop, we
+                    // only invoke no-arg Runnable.run() — RequestDelegate is invoked
+                    // separately when the controlled network boundary delivers a response.
+                    bool ok = dalvik_engine.dispatch_runnable(rid);
+                    std::cerr << "[EXP071-DRAIN] runnable id=" << rid
+                              << " → " << (ok ? "EXECUTED" : "FAILED") << std::endl;
+                }
+            }
+
             // Re-dump view tree to capture any state changes from the click.
             // If the click triggered a page transition, the new page's views
             // should appear in the updated view tree.
