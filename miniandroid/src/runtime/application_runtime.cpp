@@ -1468,12 +1468,16 @@ bool ApplicationRuntime::execute_on_create() {
                 }
             }
 
-            // Phase 2: Inject phone number into the phone EditText.
-            // Find the phoneField — it's an EditText subclass (PhoneView$3).
-            // We use dispatch_text_input_by_class which finds it generically.
+            // Phase 2: Inject phone number into the phone EditText AND country code.
+            // PhoneView.onNextPressed checks BOTH codeField.length() and phoneField.length().
+            // codeField (PhoneView$1) is the country code field — needs a country code.
+            // phoneField (PhoneView$3) is the phone number field — needs the phone number.
             std::cerr << "[EXP069] Phase 2: Injecting phone number..." << std::endl;
+            // Inject country code into codeField (PhoneView$1)
+            dalvik_engine.dispatch_text_input_by_class("PhoneView$1", "1");
+            // Inject phone number into phoneField (PhoneView$3)
             bool input_ok = dalvik_engine.dispatch_text_input_by_class(
-                "PhoneView$3", "15551234567");
+                "PhoneView$3", "5551234567");
             std::cerr << "[EXP069] Text input result: "
                       << (input_ok ? "DISPATCHED" : "FAILED") << std::endl;
 
