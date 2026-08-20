@@ -1135,6 +1135,8 @@ public:
         per_dex_raw_data_ = std::move(data);
         is_multidex_ = (per_dex_raw_data_.size() > 1);
     }
+    // EXP-071 Phase 6: Set the APK path so AssetManager.open can read assets.
+    void set_apk_path(const std::string& path) { apk_path_ = path; }
 
     // EXP-038 (BLOCKER-033): Build class→DEX index map from DexReport.
     // Must be called after dex_report is set and before execution begins.
@@ -1610,6 +1612,18 @@ public:
     std::map<std::string, int32_t> resource_integer_values_;
     // EXP-067: resource_bool_values_ maps field name → bool value.
     std::map<std::string, bool> resource_bool_values_;
+    // EXP-071 Phase 6: Asset reading support.
+    // When AssetManager.open(asset_name) is called, we extract the asset
+    // from the APK and store its contents in a per-InputStream buffer.
+    // BufferedReader.readLine() then reads from this buffer line by line.
+    // This is needed because Telegram's PhoneView.<init> reads countries.txt
+    // from assets to populate the country HashMap — without it, the HashMap
+    // is empty, setCountry() returns early, and countryState stays at 1
+    // (NO_SIM), causing onNextPressed to take the wrong "ChooseCountry"
+    // branch instead of reaching auth.sendCode construction.
+    std::string apk_path_;  // path to the APK file
+    // Map: heap object_id (InputStream) → (asset_name, line_index)
+    std::map<uint32_t, std::pair<std::string, size_t>> open_assets_;
 private:
 
     // EXP-053: Set of class descriptors whose <clinit> has been executed.
