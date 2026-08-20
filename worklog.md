@@ -2834,3 +2834,53 @@ Stage Summary:
   These are reusable for any Android app that uses Handler/runOnUIThread.
 
 Commit: pending.
+
+---
+Task ID: EXP-071 (session 5 — continued)
+Agent: general-purpose (main agent)
+
+Additional investigation after commit 5c49527:
+
+- Found the runtime's PC tracking is in CODE UNITS (not bytes).
+  My androguard disasm uses BYTE PCs. The conversion: byte_PC = code_unit_PC * 2.
+  So runtime pc=608 = byte PC 1216 = my disasm's `sget RestorePasswordNoEmailTitle`.
+
+- Traced onNextPressed's path on the second invocation (from lambda$onConfirm$0):
+  PC 510-620: permission checks (READ_PHONE_STATE, CALL_PHONE, READ_CALL_LOG)
+  PC 668: invoke-static access$5400(LoginActivity)Z — boolean check
+  PC 676: if-eqz v4, +102h — branch based on access$5400 result
+  If access$5400 returns false (the not-granted path), execution continues
+  to PC 1204 (iget countryState) and PC 1208 (if-ne v4, v2).
+  If countryState == 1 (or some specific value), we fall through to PC 1216
+  which shows the "Sorry / Choose a country" alert dialog.
+
+  This is the WRONG path — we need to reach PC 2410 (TL_auth_sendCode
+  construction) instead.
+
+- The divergence is at PC 668-676: access$5400's return value determines
+  the path. access$5400 is a LoginActivity boolean field accessor. Need
+  to determine which LoginActivity field it accesses and what value it
+  should return for the auth.sendCode path to be taken.
+
+- Next session should:
+  1. Disassemble LoginActivity.access$5400 to identify the field.
+  2. Determine the expected value (true or false) for the auth.sendCode path.
+  3. Set the field accordingly (either via resource_values.json or via a
+     compatibility intercept in the runtime).
+  4. Verify onNextPressed reaches PC 2410 (TL_auth_sendCode construction).
+  5. Then verify PC 2898 (sendRequest) is reached.
+  6. Then verify the controlled network boundary intercepts the request,
+     constructs a mock TL_auth_sentCode, dispatches Lambda2.run(response, null).
+  7. Then verify fillNextCodeParams → setPage(VIEW_CODE_SMS) executes.
+  8. Generate the SMS view screenshot.
+  9. Run 3 clean reproducibility runs.
+
+Stage Summary:
+- Phase 1-3 (static analysis): COMPLETE.
+- Phase 4-6 (async event loop fixes): COMPLETE.
+- Phase 7-9 (reach auth.sendCode): PARTIALLY COMPLETE.
+  - onNextPressed IS now invoked from lambda$onConfirm$0 (verified).
+  - But onNextPressed takes a side path through needShowAlert.
+  - The divergence is at access$5400 returning the wrong boolean.
+- CHECKPOINT_M: NOT YET PROVEN.
+  Major blocker for next session: investigate access$5400 and countryState.
