@@ -65,10 +65,11 @@ COLOR_BG          = (255, 255, 255)        # app background (light)
 COLOR_TEXT        = (33, 33, 33)          # body text
 COLOR_TEXT_HINT   = (150, 150, 150)       # hint text
 COLOR_TEXT_HEADER = (20, 20, 20)          # header text
-COLOR_INPUT_BG    = (245, 246, 250)       # input field background
+# EXP-067: Make input field background slightly more visible (was too close to white)
+COLOR_INPUT_BG    = (235, 238, 245)       # input field background (light blue-grey)
 COLOR_BUTTON_BG   = (0, 136, 204)         # primary button
 COLOR_BUTTON_TEXT = (255, 255, 255)
-COLOR_DIVIDER     = (220, 220, 220)
+COLOR_DIVIDER     = (200, 200, 200)       # darker divider for visibility
 
 # Debug overlay colors
 COLOR_DEBUG_BOUNDS = (255, 0, 0)
@@ -341,10 +342,10 @@ def _layout_children(node, node_map, parent_map,
             t = child.get('text', '')
 
             if 'EditText' in short or 'AnimatedPhoneNumberEditText' in cls:
-                ch = max(60, (h - 2 * pad_y) // max(len(visible_children), 1))
+                ch = 80   # EditText — fixed height
             elif 'OutlineTextContainerView' in cls:
-                # Container for input field — give it most of the parent's height
-                ch = max(120, (h - 2 * pad_y) // max(len(visible_children), 1))
+                # Container for input field — fixed reasonable height
+                ch = 120
             elif 'TextView' in short or 'LinksTextView' in cls:
                 # Sized by text length
                 if t:
@@ -358,8 +359,8 @@ def _layout_children(node, node_map, parent_map,
             elif 'ScrollView' in short or 'ViewPager' in short:
                 ch = avail_h // 2
             elif 'LinearLayout' in short:
-                # Inner LinearLayout should fill remaining height
-                ch = max(60, (h - 2 * pad_y) // max(len(visible_children), 1))
+                # Inner LinearLayout — WRAP_CONTENT, not fill
+                ch = 100
             elif 'FrameLayout' in short:
                 ch = max(60, (h - 2 * pad_y) // max(len(visible_children), 1))
             elif 'View' == short:
@@ -492,9 +493,37 @@ def render_ui(nodes, slide_root, screen_w, screen_h):
             draw.rectangle([x, y, x + w_draw - 1, y + h_draw - 1], fill=COLOR_INPUT_BG,
                            outline=COLOR_DIVIDER)
         elif 'ImageView' in short:
-            # Draw a placeholder rectangle so the user sees there's an image
-            draw.rectangle([x, y, x + w_draw - 1, y + h_draw - 1],
-                           fill=(230, 230, 230), outline=COLOR_DIVIDER)
+            # EXP-067: Try to load the actual drawable from the APK.
+            # If image_drawable_path is set, decode the bitmap and paste it.
+            # Otherwise, fall back to a gray placeholder.
+            img_drawn = False
+            if n.get('image_drawable_path'):
+                try:
+                    import zipfile, io
+                    apk_path = '/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk'
+                    with zipfile.ZipFile(apk_path) as z:
+                        with z.open(n['image_drawable_path']) as f:
+                            img_data = f.read()
+                    from PIL import Image as PILImage
+                    bitmap = PILImage.open(io.BytesIO(img_data)).convert('RGBA')
+                    # Scale to fit the View bounds (preserve aspect ratio)
+                    bw, bh = bitmap.size
+                    scale = min(w_draw / bw, h_draw / bh, 1.0)  # don't upscale
+                    if scale < 1.0:
+                        new_w = max(1, int(bw * scale))
+                        new_h = max(1, int(bh * scale))
+                        bitmap = bitmap.resize((new_w, new_h), PILImage.LANCZOS)
+                    # Center in the View bounds
+                    bx = x + (w_draw - bitmap.size[0]) // 2
+                    by = y + (h_draw - bitmap.size[1]) // 2
+                    img.paste(bitmap, (bx, by), bitmap)  # use bitmap as alpha mask
+                    img_drawn = True
+                except Exception as e:
+                    pass  # fall through to placeholder
+            if not img_drawn:
+                # Draw a placeholder rectangle
+                draw.rectangle([x, y, x + w_draw - 1, y + h_draw - 1],
+                               fill=(230, 230, 230), outline=COLOR_DIVIDER)
         elif 'View' == short:
             # Plain View — usually a divider; draw as thin gray line
             if h_draw <= 6 or w_draw <= 6:

@@ -56,7 +56,7 @@
         48,
         260,
         984,
-        468
+        120
       ],
       "text": "Country"
     },
@@ -65,9 +65,9 @@
       "class": "Lorg/telegram/ui/Components/OutlineTextContainerView;",
       "bounds": [
         48,
-        736,
+        388,
         984,
-        468
+        120
       ],
       "text": "Phone number"
     },
@@ -78,7 +78,7 @@
         60,
         268,
         960,
-        452
+        100
       ],
       "text": ""
     },
@@ -87,9 +87,9 @@
       "class": "Landroid/widget/LinearLayout;",
       "bounds": [
         60,
-        744,
+        396,
         960,
-        452
+        100
       ],
       "text": ""
     },
@@ -100,7 +100,7 @@
         66,
         272,
         948,
-        40
+        36
       ],
       "text": ""
     },
@@ -109,9 +109,9 @@
       "class": "Landroid/widget/ImageView;",
       "bounds": [
         66,
-        320,
+        316,
         948,
-        60
+        55
       ],
       "text": ""
     },
@@ -120,9 +120,9 @@
       "class": "Landroid/widget/TextView;",
       "bounds": [
         66,
-        748,
+        400,
         948,
-        40
+        20
       ],
       "text": "+"
     },
@@ -131,9 +131,9 @@
       "class": "Lorg/telegram/ui/LoginActivity$PhoneView$1;",
       "bounds": [
         66,
-        796,
+        428,
         948,
-        60
+        30
       ],
       "text": ""
     },
@@ -142,9 +142,9 @@
       "class": "Landroid/view/View;",
       "bounds": [
         66,
-        864,
+        466,
         948,
-        20
+        10
       ],
       "text": ""
     },
@@ -153,9 +153,9 @@
       "class": "Lorg/telegram/ui/LoginActivity$PhoneView$3;",
       "bounds": [
         66,
-        892,
+        484,
         948,
-        60
+        30
       ],
       "text": ""
     }
@@ -180,7 +180,7 @@
         48,
         260,
         984,
-        468
+        120
       ]
     },
     {
@@ -189,9 +189,9 @@
       "text": "Phone number",
       "bounds": [
         48,
-        736,
+        388,
         984,
-        468
+        120
       ]
     },
     {
@@ -200,9 +200,9 @@
       "text": "+",
       "bounds": [
         66,
-        748,
+        400,
         948,
-        40
+        20
       ]
     }
   ]
