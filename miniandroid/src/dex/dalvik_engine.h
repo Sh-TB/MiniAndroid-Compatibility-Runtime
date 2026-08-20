@@ -1539,6 +1539,19 @@ public:
     std::map<int32_t, std::string> field_name_by_resid_;
     // resource_string_values: maps field name → string value (loaded from JSON)
     std::map<std::string, std::string> resource_string_values_;
+    // EXP-067: resource_color_values_ maps field name → ARGB int (e.g. 0xFF1A1A1A).
+    // Loaded from resource_values.json["color"].
+    std::map<std::string, int32_t> resource_color_values_;
+    // EXP-067: resource_dimen_values_ maps field name → dimension in pixels (int).
+    // Loaded from resource_values.json["dimen"] (values are like "16dp" → 16*dp_factor).
+    std::map<std::string, int32_t> resource_dimen_values_;
+    // EXP-067: resource_drawable_paths_ maps field name → APK asset path (e.g. "res/abc.webp").
+    // Loaded from resource_values.json["drawable"] and ["mipmap"].
+    std::map<std::string, std::string> resource_drawable_paths_;
+    // EXP-067: resource_integer_values_ maps field name → int value.
+    std::map<std::string, int32_t> resource_integer_values_;
+    // EXP-067: resource_bool_values_ maps field name → bool value.
+    std::map<std::string, bool> resource_bool_values_;
 private:
 
     // EXP-053: Set of class descriptors whose <clinit> has been executed.

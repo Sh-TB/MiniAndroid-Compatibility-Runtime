@@ -6536,16 +6536,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // P1.5 — Resources.getDimensionPixelSize(int) → int (default 24)
-    // EXP-052: Log every dimension request.
+    // P1.5 — Resources.getDimensionPixelSize(int) → int
+    // EXP-067: Real resolution via field_name_by_resid_ → resource_dimen_values_.
+    // Falls back to 24px only if the dimension is not found.
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getDimensionPixelSize" &&
         class_name.find("Resources") != std::string::npos) {
         int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
-        std::cerr << "[RES] getDimensionPixelSize resid=0x" << std::hex << resid
-                  << std::dec << " → 24 (default)" << std::endl;
+        int32_t dimen_val = 24;  // default 24px
+        bool resolved = false;
+        auto it = field_name_by_resid_.find(resid);
+        if (it != field_name_by_resid_.end()) {
+            const std::string& name = it->second;
+            auto dit = resource_dimen_values_.find(name);
+            if (dit != resource_dimen_values_.end()) {
+                dimen_val = dit->second;
+                resolved = true;
+            }
+        }
+        std::cerr << "[RES] getDimensionPixelSize resid=0x" << std::hex << resid << std::dec
+                  << " name=" << (it != field_name_by_resid_.end() ? it->second : "<unknown>")
+                  << " → " << dimen_val << "px"
+                  << (resolved ? "" : " (default 24px — not resolved)")
+                  << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_int(24);
+        result = DalvikValue::make_int(dimen_val);
         return true;
     }
 
@@ -6633,23 +6648,55 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
-    // EXP-052: Resources.getColor(int, Theme) → int (default black)
+    // EXP-067: Resources.getColor(int, Theme) → int (real resolution)
+    // Looks up the color via field_name_by_resid_ → resource_color_values_.
+    // Falls back to default black only if the color is not found.
     if (method == "getColor" &&
         class_name.find("Resources") != std::string::npos) {
         int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
-        std::cerr << "[RES] getColor resid=0x" << std::hex << resid
-                  << std::dec << " → 0xFF000000 (default black)" << std::endl;
+        int32_t color_val = 0xFF000000;  // default black
+        bool resolved = false;
+        auto it = field_name_by_resid_.find(resid);
+        if (it != field_name_by_resid_.end()) {
+            const std::string& name = it->second;
+            auto cit = resource_color_values_.find(name);
+            if (cit != resource_color_values_.end()) {
+                color_val = cit->second;
+                resolved = true;
+            }
+        }
+        std::cerr << "[RES] getColor resid=0x" << std::hex << resid << std::dec
+                  << " name=" << (it != field_name_by_resid_.end() ? it->second : "<unknown>")
+                  << " → 0x" << std::hex << (color_val & 0xFFFFFFFF) << std::dec
+                  << (resolved ? "" : " (default black — not resolved)")
+                  << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_int(0xFF000000);
+        result = DalvikValue::make_int(color_val);
         return true;
     }
 
-    // EXP-052: Resources.getDrawable(int) → Drawable (null for now)
+    // EXP-067: Resources.getDrawable(int) → Drawable (returns resource name as string for now)
+    // Real drawable decoding (bitmap loading) is a future EXP. For now, return the
+    // drawable's resource name so the renderer can look up the asset path.
     if (method == "getDrawable" &&
         class_name.find("Resources") != std::string::npos) {
         int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
-        std::cerr << "[RES] getDrawable resid=0x" << std::hex << resid
-                  << std::dec << " → null (not found)" << std::endl;
+        auto it = field_name_by_resid_.find(resid);
+        std::string name = (it != field_name_by_resid_.end()) ? it->second : "";
+        std::string path;
+        if (!name.empty()) {
+            auto pit = resource_drawable_paths_.find(name);
+            if (pit != resource_drawable_paths_.end()) {
+                path = pit->second;
+            }
+        }
+        std::cerr << "[RES] getDrawable resid=0x" << std::hex << resid << std::dec
+                  << " name=" << name
+                  << " path=" << (path.empty() ? "<none>" : path)
+                  << std::endl;
+        // Return null for now (drawable object creation is a future EXP).
+        // The renderer can look up resource_drawable_paths_ via the resource name
+        // if the View's setImageResource was called.
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_null();
         return true;

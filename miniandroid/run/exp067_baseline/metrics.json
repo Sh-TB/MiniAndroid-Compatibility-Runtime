@@ -1,0 +1,40 @@
+{
+  "git_commit": "6ea543030a9626d41ae3387f6d8af418b1aa9863",
+  "apk_sha256": "193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e",
+  "runtime_binary_sha256": "e5131978dd4eb948cf3375512653edf069fdbf808681dfb04089bf146b272816",
+  "dex_count": 5,
+  "viewnode_count": 1385,
+  "text_bearing_viewnodes": 49,
+  "hint_bearing_viewnodes": 0,
+  "png_sha256": "9be984fd4559643e9150f231267b2b8b36eb943e81f6d98380dd29d53904fb6b",
+  "png_dimensions": [
+    1080,
+    1920
+  ],
+  "ocr_match_rate": 1.0,
+  "ocr_text_detected": [
+    "Please confirm your country code and enter your phone number",
+    "Phone number",
+    "Country"
+  ],
+  "resource_types": {
+    "anim": 54,
+    "animator": 6,
+    "array": 0,
+    "attr": 0,
+    "bool": 4,
+    "color": 165,
+    "dimen": 179,
+    "drawable": 1965,
+    "id": 481,
+    "integer": 18,
+    "interpolator": 12,
+    "layout": 95,
+    "mipmap": 33,
+    "raw": 423,
+    "string": 11263,
+    "style": 0,
+    "xml": 10
+  },
+  "stub_count_in_dalvik_engine": 34
+}
