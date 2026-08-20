@@ -2612,3 +2612,44 @@ Stage Summary:
 - auth.sendCode: NOT YET REACHED (need to click confirm button)
 - CHECKPOINT_M: NOT YET PROVEN
 
+
+---
+Task ID: EXP-071 (continued — session 3)
+Agent: general-purpose (main agent)
+
+Work Log:
+- Recovered previous test output from /tmp/test_exp071_3/. Run was incomplete
+  (killed by timeout at 3.4M instructions in replaceMultipleCharSequence).
+
+- Identified correct confirm button: FragmentFloatingButton (id=53904/54155)
+  inside PhoneNumberConfirmView. Previous code was clicking the Edit button
+  (TextView id=53935) instead.
+
+- Fixed confirm click code to skip TextView and plain View classes, targeting
+  only FragmentFloatingButton inside PhoneNumberConfirmView.
+
+- Fixed opcode table to match AOSP canonical values:
+  0x24 = filled-new-array (new handler)
+  0x25 = filled-new-array/range (new handler)
+  0x26 = fill-array-data (was 0x25)
+  0x27 = throw (was 0x26, now skips instead of halting)
+  0x28 = goto (was 0x27, has D8/R8 hybrid handler)
+  0x29 = goto/16, 0x2A = goto/32
+
+- Added FactorAnimator.animateTo stub to prevent onFactorChanged infinite loop.
+
+- Result: Confirm FAB click DISPATCHED! onConfirm (446 insns) executes:
+  1. showEditDoneProgress (shows progress spinner)
+  2. FragmentFloatingButton.setProgressVisible
+  3. BoolAnimator.setValue → FactorAnimator.animateTo (stubbed)
+  4. onFactorChanged (HALT-LOOP at 4.4M insns)
+  5. Creates Lambda0 (RequestDelegate, id=54200)
+  6. Calls access$5700 → animateProgress
+  7. Returns without reaching auth.sendCode
+
+- Remaining blocker: onConfirm returns after animation code without
+  constructing the auth.sendCode request. Need to trace onConfirm's
+  bytecode after the animation to find why auth.sendCode is not reached.
+
+- Commit b5b7964 pushed to main.
+
