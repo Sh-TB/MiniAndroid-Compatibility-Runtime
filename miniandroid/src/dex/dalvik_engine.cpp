@@ -25,6 +25,7 @@
 #include <sstream>
 #include <iomanip>
 #include <cassert>
+#include <unordered_set>
 
 namespace miniandroid {
 namespace dalvik {
@@ -189,6 +190,61 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
     log("Built class→DEX index: " + std::to_string(class_to_dex_index_.size()) +
         " entries (" + std::to_string(unmapped) + " unmapped, assigned to DEX 0)");
 
+    // EXP-068: Build class→superclass map from report.classes.
+    // This enables semantic View inheritance queries (is_subclass_of).
+    // NOTE: The APK's DEX only contains class_defs for classes DEFINED in the APK.
+    // Framework classes (android.widget.LinearLayout, etc.) are referenced via
+    // type_idx but their class_defs are not in the APK. So we pre-populate the
+    // map with the known Android framework View hierarchy.
+    class_to_superclass_.clear();
+    // Framework View hierarchy (from AOSP):
+    static const std::pair<std::string, std::string> framework_views[] = {
+        {"Landroid/view/View;", "Ljava/lang/Object;"},
+        {"Landroid/view/ViewGroup;", "Landroid/view/View;"},
+        {"Landroid/widget/LinearLayout;", "Landroid/view/ViewGroup;"},
+        {"Landroid/widget/FrameLayout;", "Landroid/view/ViewGroup;"},
+        {"Landroid/widget/RelativeLayout;", "Landroid/view/ViewGroup;"},
+        {"Landroid/widget/ScrollView;", "Landroid/widget/FrameLayout;"},
+        {"Landroid/widget/HorizontalScrollView;", "Landroid/widget/FrameLayout;"},
+        {"Landroid/widget/TextView;", "Landroid/view/View;"},
+        {"Landroid/widget/EditText;", "Landroid/widget/TextView;"},
+        {"Landroid/widget/Button;", "Landroid/widget/TextView;"},
+        {"Landroid/widget/ImageButton;", "Landroid/widget/ImageView;"},
+        {"Landroid/widget/ImageView;", "Landroid/view/View;"},
+        {"Landroid/widget/CheckBox;", "Landroid/widget/Button;"},
+        {"Landroid/widget/RadioButton;", "Landroid/widget/Button;"},
+        {"Landroid/widget/ToggleButton;", "Landroid/widget/Button;"},
+        {"Landroid/widget/CheckedTextView;", "Landroid/widget/TextView;"},
+        {"Landroid/widget/AutoCompleteTextView;", "Landroid/widget/EditText;"},
+        {"Landroid/widget/MultiAutoCompleteTextView;", "Landroid/widget/AutoCompleteTextView;"},
+        {"Landroid/widget/Space;", "Landroid/view/View;"},
+        {"Landroid/view/TextureView;", "Landroid/view/View;"},
+        {"Landroid/view/SurfaceView;", "Landroid/view/View;"},
+        // AppCompat widgets (AndroidX)
+        {"Landroidx/appcompat/widget/AppCompatTextView;", "Landroid/widget/TextView;"},
+        {"Landroidx/appcompat/widget/AppCompatEditText;", "Landroid/widget/EditText;"},
+        {"Landroidx/appcompat/widget/AppCompatButton;", "Landroid/widget/Button;"},
+        {"Landroidx/appcompat/widget/AppCompatImageView;", "Landroid/widget/ImageView;"},
+        {"Landroidx/appcompat/widget/AppCompatCheckBox;", "Landroid/widget/CheckBox;"},
+    };
+    for (const auto& [cls, sup] : framework_views) {
+        class_to_superclass_[cls] = sup;
+    }
+    // Now add APK-defined classes from the DEX report.
+    int apk_class_count = 0;
+    for (const auto& cls : report.classes) {
+        if (!cls.superclass_name.empty()) {
+            class_to_superclass_[cls.name] = cls.superclass_name;
+            apk_class_count++;
+        }
+    }
+    std::cerr << "[EXP068] Built class→superclass map: " << class_to_superclass_.size()
+              << " entries (" << apk_class_count << " from APK + "
+              << (class_to_superclass_.size() - apk_class_count) << " framework)"
+              << " — LinearLayout present: "
+              << (class_to_superclass_.count("Landroid/widget/LinearLayout;") ? "YES" : "NO")
+              << std::endl;
+
     // EXP-045 Phase 2: Build O(1) class→ClassInfo index for try_recursive_invoke().
     class_info_index_.clear();
     class_info_index_.reserve(report.classes.size());
@@ -262,6 +318,54 @@ fallback:
         return dex_report_->strings[string_idx];
     }
     return "<bad_str_idx:" + std::to_string(string_idx) + ">";
+}
+
+// ============================================================================
+// EXP-068: Generic View inheritance queries.
+// These walk the DEX superclass chain to determine if a class inherits from
+// a known Android View type. This replaces class-name pattern matching with
+// semantic superclass resolution.
+// ============================================================================
+
+bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
+                                             const std::string& ancestor_desc) const {
+    if (class_desc == ancestor_desc) return true;
+    std::string current = class_desc;
+    std::unordered_set<std::string> visited;  // cycle protection
+    for (int i = 0; i < 50; ++i) {  // max depth 50 to prevent infinite loops
+        if (visited.count(current)) return false;  // cycle
+        visited.insert(current);
+        auto it = class_to_superclass_.find(current);
+        if (it == class_to_superclass_.end()) return false;
+        current = it->second;
+        if (current == ancestor_desc) return true;
+        if (current.empty() || current == "Ljava/lang/Object;") return false;
+    }
+    return false;
+}
+
+bool DalvikExecutionEngine::is_view_class(const std::string& class_desc) const {
+    return is_subclass_of(class_desc, "Landroid/view/View;");
+}
+
+bool DalvikExecutionEngine::is_text_view_class(const std::string& class_desc) const {
+    return is_subclass_of(class_desc, "Landroid/widget/TextView;");
+}
+
+bool DalvikExecutionEngine::is_edit_text_class(const std::string& class_desc) const {
+    return is_subclass_of(class_desc, "Landroid/widget/EditText;");
+}
+
+bool DalvikExecutionEngine::is_image_view_class(const std::string& class_desc) const {
+    return is_subclass_of(class_desc, "Landroid/widget/ImageView;");
+}
+
+bool DalvikExecutionEngine::is_button_class(const std::string& class_desc) const {
+    return is_subclass_of(class_desc, "Landroid/widget/Button;");
+}
+
+bool DalvikExecutionEngine::is_view_group_class(const std::string& class_desc) const {
+    return is_subclass_of(class_desc, "Landroid/view/ViewGroup;");
 }
 
 std::string DalvikExecutionEngine::resolve_method_name_for_dex(
@@ -2082,6 +2186,23 @@ bool DalvikExecutionEngine::dump_view_tree(const std::string& path) {
         n["y"] = node->y;
         n["text"] = node->text;
         n["hint"] = node->hint;  // EXP-065: EditText hint
+        // EXP-068: Semantic View type classification via superclass chain.
+        // This replaces class-name pattern matching in the renderer.
+        if (is_edit_text_class(node->class_desc)) {
+            n["view_type"] = "EditText";
+        } else if (is_text_view_class(node->class_desc)) {
+            n["view_type"] = "TextView";
+        } else if (is_image_view_class(node->class_desc)) {
+            n["view_type"] = "ImageView";
+        } else if (is_button_class(node->class_desc)) {
+            n["view_type"] = "Button";
+        } else if (is_view_group_class(node->class_desc)) {
+            n["view_type"] = "ViewGroup";
+        } else if (is_view_class(node->class_desc)) {
+            n["view_type"] = "View";
+        } else {
+            n["view_type"] = "";
+        }
         // EXP-067: Image resource ID and drawable path
         n["image_resource_id"] = node->image_resource_id;
         if (node->image_resource_id != 0) {
