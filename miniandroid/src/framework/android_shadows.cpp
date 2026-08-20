@@ -945,6 +945,30 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                   << std::endl;
         return CallResult::handled_void();
     }
+    // EXP-071: View.getContext() → returns the Context (Activity) that created this View.
+    // This is needed by BaseFragment.getParentActivity() which does:
+    //   getView().getContext() instanceof Activity
+    // We store the context_object_id when the View constructor is called with a Context arg.
+    if (m == "getContext") {
+        const auto* n = find_node(ctx.receiver_id);
+        if (n && n->context_object_id != 0) {
+            return CallResult::handled_object(n->context_object_id, "Landroid/content/Context;");
+        }
+        // Fall back to returning null — no context stored
+        return CallResult::handled_null();
+    }
+    // EXP-071: View constructor — capture Context argument.
+    // When a View subclass <init>(Context, ...) is called, the first arg is the Context
+    // (usually the Activity). We store it so getContext() can return it later.
+    if (m == "<init>" && ctx.args.size() >= 1 &&
+        ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        // Check if the first arg looks like a Context/Activity (it usually is)
+        uint32_t ctx_id = ctx.args[0].object_id;
+        if (ctx_id != 0 && ctx_id != ctx.receiver_id) {
+            n->context_object_id = ctx_id;
+        }
+    }
     if (m == "setImageDrawable" || m == "setImageBitmap" ||
         m == "setImageIcon" || m == "setImageURI") {
         // For now, just mark that an image was set (we don't decode drawables yet).
