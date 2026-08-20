@@ -1,0 +1,35 @@
+{
+  "apk_path": "download/exp038_telegram/Telegram.apk",
+  "blocking_failures": 0,
+  "by_type": {
+    "RESOURCE_RESOLUTION_FAILURE": 2
+  },
+  "experiment": "EXP-007→EXP-012",
+  "failures": [
+    {
+      "apk_path": "download/exp038_telegram/Telegram.apk",
+      "details": "Failed to load some resources",
+      "dex_method": "",
+      "is_blocking": false,
+      "opcode": "",
+      "pc": 0,
+      "stage": "initialize_resources",
+      "timestamp": "2026-08-20T19:22:21Z",
+      "type": "RESOURCE_RESOLUTION_FAILURE"
+    },
+    {
+      "apk_path": "download/exp038_telegram/Telegram.apk",
+      "details": "",
+      "dex_method": "",
+      "is_blocking": false,
+      "opcode": "",
+      "pc": 0,
+      "stage": "load_content_view",
+      "timestamp": "2026-08-20T19:22:21Z",
+      "type": "RESOURCE_RESOLUTION_FAILURE"
+    }
+  ],
+  "timestamp": "2026-08-20T19:22:21Z",
+  "total_failures": 2,
+  "type": "failure_report"
+}
