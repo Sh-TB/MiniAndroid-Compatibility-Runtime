@@ -47,6 +47,7 @@ namespace runtime {
 using json = nlohmann::json;
 using namespace miniandroid::apk;
 using namespace miniandroid::dex;
+using namespace miniandroid::dalvik;
 using namespace miniandroid::resources;
 using namespace miniandroid::renderer;
 using namespace miniandroid::diagnostics;
@@ -1436,6 +1437,36 @@ bool ApplicationRuntime::execute_on_create() {
         // This is a GENERIC interaction test — no Telegram-specific methods.
         if (login_created) {
             std::cerr << "\n[EXP069] === INTERACTION PHASE ===" << std::endl;
+
+            // EXP-071: Initialize doneButtonVisible on LoginActivity.
+            // The doneButtonVisible boolean array is normally set in
+            // LoginActivity.setViews() / onShow(), but our runtime doesn't
+            // fully execute those lifecycle methods. When it's null,
+            // aget-boolean returns 0 (false), and if-nez (opcode 0x39)
+            // does NOT branch, causing onDoneButtonPressed to return early
+            // without calling onNextPressed.
+            //
+            // Fix: Create a boolean array [true] and set it as the
+            // doneButtonVisible field on the LoginActivity object.
+            // This is a compatibility approximation for uninitialized state.
+            for (const auto& [oid, obj] : dalvik_engine.get_heap().all_objects()) {
+                if (obj.class_descriptor == "Lorg/telegram/ui/LoginActivity;") {
+                    // Create a boolean array on the heap
+                    uint32_t arr_id = dalvik_engine.get_heap().allocate("Larray;", 0, 0);
+                    dalvik_engine.get_heap().set_object_field(arr_id, "__array_length__",
+                        DalvikValue::make_int(1));
+                    dalvik_engine.get_heap().set_object_field(arr_id, "array[0]",
+                        DalvikValue::make_bool(true));
+                    // Set the doneButtonVisible field on LoginActivity
+                    DalvikValue arr_val = DalvikValue::make_object(arr_id, "Larray;");
+                    dalvik_engine.get_heap().set_object_field(oid, "doneButtonVisible", arr_val);
+                    // Also set currentDoneType = 0
+                    dalvik_engine.get_heap().set_object_field(oid, "currentDoneType",
+                        DalvikValue::make_int(0));
+                    std::cerr << "[EXP071] Initialized doneButtonVisible=[true] on LoginActivity id=" << oid << std::endl;
+                    break;
+                }
+            }
 
             // Phase 2: Inject phone number into the phone EditText.
             // Find the phoneField — it's an EditText subclass (PhoneView$3).

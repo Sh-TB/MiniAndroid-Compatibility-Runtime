@@ -2511,3 +2511,54 @@ Stage Summary:
 - Remaining: controlled mock network (Phase 11), RequestDelegate callback (Phase 13),
   page transition (Phase 14), SMS View (Phase 15), SMS screenshot (Phase 18).
 
+
+---
+Task ID: EXP-070
+Agent: general-purpose (main agent)
+Task: EXP-070 — Controlled network boundary + SMS transition campaign.
+
+Work Log:
+- Phase 0: Forensic baseline captured.
+  Key metrics: 50 text nodes, 10 onNextPressed, 23 sendRequest, 0 RequestDelegate, 0 setPage.
+
+- Phase 3: Controlled network boundary.
+  Added sendRequest interception in try_recursive_invoke:
+  - Intercepts ConnectionsManager.sendRequest(TLObject, RequestDelegate, ...)
+  - Identifies RequestDelegate by arg position (args[2] = delegate)
+  - Creates mock TL_auth_sentCode response with phone_code_hash, type, length
+  - Invokes RequestDelegate.run(response, null) via try_recursive_invoke
+  - Filters: only auth.sendCode requests get mock responses
+
+  Results:
+  - sendRequest correctly intercepted (23 calls)
+  - RequestDelegate found for ALL calls (was 0 before)
+  - Non-auth requests correctly skipped (TL_contacts_getStatuses, TL_langpack_getLanguages, etc.)
+  - auth.sendCode NOT yet detected — onDoneButtonPressed returns early
+
+- Root cause of onDoneButtonPressed early return:
+  onDoneButtonPressed accesses this.currentView (or this.views[currentViewNum])
+  but the LoginActivity's views[] array and currentViewNum field are not properly set.
+  The method enters (bytecode_size=101) but returns immediately without calling
+  currentView.onNextPressed().
+
+  This is a VM state management issue — LoginActivity needs its views[] array
+  populated with PhoneView before onDoneButtonPressed can dispatch to onNextPressed.
+  The views[] array is set in LoginActivity.setViews() or during addFragmentToStack().
+
+- Network boundary status:
+  Infrastructure: IMPLEMENTED (intercept, classify, mock, deliver)
+  auth.sendCode detection: NOT YET REACHED (blocked by onDoneButtonPressed early return)
+  RequestDelegate callback: NOT YET DELIVERED
+  Classification: CONTROLLED_NETWORK_STUB
+
+- Phase 25: Commit dacd31c pushed to main.
+
+Stage Summary:
+- Controlled network boundary infrastructure: IMPLEMENTED.
+- sendRequest intercepted, RequestDelegate found (was 0 → 23 found).
+- Non-auth requests correctly filtered.
+- Remaining blocker: onDoneButtonPressed returns early because LoginActivity.views[]
+  / currentViewNum state not fully initialized.
+- Next step: trace LoginActivity.setViews() / addFragmentToStack() to understand
+  how views[] is populated, fix the initialization, then auth.sendCode will be reached.
+
