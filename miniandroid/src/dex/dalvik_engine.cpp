@@ -7399,11 +7399,53 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // EXP-043 Phase 3: String.length → int
-    // ────────────────────────────────────────────────────────────────────────
-    if (class_name == "Ljava/lang/String;" && method == "length") {
+    // EXP-071: TextView.length() → int — returns the length of the View's text.
+    // In Android, TextView.length() returns getText().length().
+    // We read from the ViewShadow's ViewNode.text.
+    // This is needed by PhoneView.onNextPressed which checks:
+    //   if (codeField.length() == 0) { onFieldError(); return; }
+    //   if (phoneField.length() == 0) { onFieldError(); return; }
+    if (method == "length" &&
+        (class_name.find("TextView") != std::string::npos ||
+         class_name.find("EditText") != std::string::npos ||
+         class_name.find("View") != std::string::npos)) {
+        // Try shadow dispatch first
+        if (shadow_registry_ != nullptr && !args.empty()) {
+            framework::CallContext ctx;
+            ctx.has_receiver = args[0].type == DalvikType::OBJECT_REF;
+            if (ctx.has_receiver) {
+                ctx.receiver_id = args[0].object_id;
+                ctx.receiver_class = args[0].class_desc;
+                ctx.class_name = args[0].class_desc;
+            }
+            ctx.method = "getText";
+            auto cr = shadow_registry_->dispatch(ctx);
+            if (cr.handled && cr.ret_kind == framework::CallResult::RetKind::STRING) {
+                int32_t len = static_cast<int32_t>(cr.string_val.size());
+                std::cerr << "[EXP071-LENGTH] view_id=" << args[0].object_id
+                          << " text=\"" << cr.string_val.substr(0, 40) << "\""
+                          << " length=" << len << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(len);
+                return true;
+            }
+        }
+        // Fallback: return 0
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_int(0);
+        return true;
+    }
+
+    // EXP-043 Phase 3: String.length → int
+    // EXP-071: Fixed to return actual string length from the arg.
+    if (class_name == "Ljava/lang/String;" && method == "length") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        // Try to get the actual string from args[0] (the String object itself)
+        if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
+            result = DalvikValue::make_int(static_cast<int32_t>(args[0].string_val.size()));
+        } else {
+            result = DalvikValue::make_int(0);
+        }
         return true;
     }
 
