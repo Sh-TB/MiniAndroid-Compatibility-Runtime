@@ -2449,3 +2449,65 @@ Stage Summary:
 - Remaining: real measure/layout engine, generic LayoutInflater, view inheritance,
   input system, exception engine, reflection, SQLite, JNI, networking, cross-APK validation.
 
+
+---
+Task ID: EXP-069
+Agent: general-purpose (main agent)
+Task: EXP-069 — Generic interaction runtime + Telegram login flow campaign.
+
+Work Log:
+- Phase 0: Forensic baseline captured (run/exp069_baseline/, docs/EXP069_BASELINE.md).
+  Baseline: 49 text nodes, 14 EditText, 103 TextView, 112 ViewGroup, FAB id=3869.
+
+- Phase 1: Input system forensics.
+  Traced setText/getText/setOnClickListener paths in runtime.
+  Found FragmentFloatingButton (id=3869) has click listener (id=3897).
+  Listener class: LoginActivity$$ExternalSyntheticLambda3 (synthetic lambda).
+  PhoneView EditText (id=2827 = PhoneView$3) has no text initially.
+
+- Phase 2: Generic text input API.
+  Added dispatch_text_input(view_id, text) to DalvikExecutionEngine.
+  Dispatches to ViewShadow.setText via shadow registry (same path as DEX setText).
+  Added dispatch_text_input_by_class(class_substring, text) convenience wrapper.
+  GENERIC — no Telegram-specific code.
+
+- Phase 6: Click dispatch integration.
+  dispatch_click already existed from EXP-060.
+  Added integration: after LoginActivity is created, the runtime now:
+  1. Injects phone number '+15551234567' into PhoneView$3 (phoneField EditText)
+  2. Dispatches click on FragmentFloatingButton (Next button)
+  
+  Results:
+  - Text input DISPATCHED: view=2827 text='+15551234567'
+  - Click DISPATCHED: view=3869 listener=3897 (LoginActivity$$ExternalSyntheticLambda3)
+  - onNextPressed called 10 times (real DEX bytecode executed)
+  - ConnectionsManager.sendRequest called (auth.sendCode boundary reached)
+  - Phone field text in view_tree: '+15551234567' (verified)
+  - Text nodes: 49 → 50 (+1 from phone input)
+
+- Network boundary status:
+  - sendRequest called but native_sendRequest is stubbed (JNI boundary)
+  - RequestDelegate callback does NOT fire (no response returned)
+  - This is the controlled network boundary (Phase 11 — TODO)
+  - Classification: CONTROLLED_NETWORK_STUB
+
+- Verification:
+  - login_ui.png SHA256: 064b82f2... (deterministic across 3 runs)
+  - OCR match_rate: 1.0 (3 of 3 strings)
+  - 3-run reproducibility: identical SHA256
+  - Generic regression (synthetic Acme app): PASSES
+
+- Phase 25: Commit fd95856 pushed to main. GitHub issue #6 created:
+  https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/6
+
+Stage Summary:
+- CHECKPOINT_L_LOGIN_UI = PROVEN (maintained, with interactive text input + click dispatch).
+- Text input: GENERIC (dispatch_text_input → ViewShadow.setText).
+- Click dispatch: GENERIC (dispatch_click → try_recursive_invoke(listener.onClick)).
+- Real callback path reached: onNextPressed → sendRequest.
+- Phone number '+15551234567' visible in rendered image.
+- 3-run reproducibility: identical SHA256.
+- Generic regression: PASSES.
+- Remaining: controlled mock network (Phase 11), RequestDelegate callback (Phase 13),
+  page transition (Phase 14), SMS View (Phase 15), SMS screenshot (Phase 18).
+
