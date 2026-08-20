@@ -1181,6 +1181,16 @@ public:
     // registered listener was found.
     bool dispatch_click_by_class(const std::string& class_substring);
 
+    // EXP-071 Phase 8: Generic Runnable dispatch.
+    // Invokes run()V (or run(TLObject, TL_error)V for RequestDelegate) on the
+    // heap object identified by runnable_object_id. Used by the event loop
+    // to drain queued Runnables after Handler.post / runOnUIThread calls.
+    // The response/error_object_id args are 0 for plain Runnables, or
+    // non-zero for RequestDelegate runnables that take a (response, error) pair.
+    bool dispatch_runnable(uint32_t runnable_object_id,
+                          uint32_t response_object_id = 0,
+                          uint32_t error_object_id = 0);
+
     // EXP-069: Generic text input dispatch.
     // Injects text into a TextView/EditText by:
     //   1. Storing the text on the ViewNode (ViewShadow.setText)
@@ -1495,12 +1505,24 @@ private:
     // EXP-035: Current execution context (for VTable evidence)
     std::string current_class_ = "<unknown>";
     std::string current_method_ = "<unknown>";
+    // EXP-071 Phase 8: Tracks whether the current invoke is static.
+    // Set to true by execute_invoke_static, false by execute_invoke_virtual/direct.
+    // try_shadow_dispatch uses this to decide whether args[0] is `this` (instance)
+    // or the first parameter (static). Without this flag, static calls like
+    // AndroidUtilities.runOnUIThread(Runnable, long) would have their Runnable
+    // stolen as `this` and never reach HandlerShadow's enqueue.
+    bool current_invoke_is_static_ = false;
     // EXP-038 (BLOCKER-033): Current DEX index for per-DEX method resolution.
     uint32_t current_dex_index_ = 0;
 
     // EXP-038 (BLOCKER-033): Per-DEX method name resolution using raw DEX bytes.
     std::string resolve_method_name_for_dex(uint32_t method_idx, uint32_t dex_index) const;
     std::string resolve_method_class_for_dex(uint32_t method_idx, uint32_t dex_index) const;
+    // EXP-071 Phase 8: Resolve the method's proto descriptor, e.g. "(Ljava/lang/Runnable;J)V".
+    // Used to parse parameter types so we can merge wide register pairs (J=long, D=double)
+    // when invoking static methods. Without this, runOnUIThread(Runnable, long) would
+    // pass 3 args (Runnable, low32, high32) instead of 2 (Runnable, long).
+    std::string resolve_method_proto_for_dex(uint32_t method_idx, uint32_t dex_index) const;
     // EXP-058: Per-DEX type descriptor resolution.
     // type_idx is relative to the current DEX file's type_ids table,
     // NOT the merged global types vector.
