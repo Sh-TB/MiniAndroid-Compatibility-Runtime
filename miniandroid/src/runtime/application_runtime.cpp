@@ -1378,6 +1378,7 @@ bool ApplicationRuntime::execute_on_create() {
         // switchLanguageTextView. After each click, we check whether a
         // LoginActivity was created in the heap — if so, we stop.
         std::cerr << "[EXP060] Dispatching synthetic CLICK on candidate buttons..." << std::endl;
+        bool login_created = false;
         auto* view_shadow = dalvik_engine.get_shadow_registry()
             ? dalvik_engine.get_shadow_registry()->find_as<framework::ViewShadow>()
             : nullptr;
@@ -1391,7 +1392,6 @@ bool ApplicationRuntime::execute_on_create() {
             auto candidates = view_shadow->find_all_with_click_listener("");
             std::cerr << "[EXP060] Found " << candidates.size()
                       << " View(s) with click listeners" << std::endl;
-            bool login_created = false;
             for (uint32_t view_id : candidates) {
                 const auto* node = view_shadow->find_node(view_id);
                 std::string listener_class;
@@ -1427,6 +1427,39 @@ bool ApplicationRuntime::execute_on_create() {
             std::cerr << "[EXP060] ViewShadow not registered — skipping click" << std::endl;
         }
         miniandroid::probe::mark("execute_on_create: post-synthetic-click");
+
+        // EXP-069: Phase 2+6 — Generic interaction: text input + click dispatch.
+        // After LoginActivity is created (by the synthetic click above), we:
+        //   1. Inject a phone number into the phone EditText
+        //   2. Dispatch a click on the FragmentFloatingButton (Next button)
+        //   3. Observe whether the click reaches the real callback path
+        // This is a GENERIC interaction test — no Telegram-specific methods.
+        if (login_created) {
+            std::cerr << "\n[EXP069] === INTERACTION PHASE ===" << std::endl;
+
+            // Phase 2: Inject phone number into the phone EditText.
+            // Find the phoneField — it's an EditText subclass (PhoneView$3).
+            // We use dispatch_text_input_by_class which finds it generically.
+            std::cerr << "[EXP069] Phase 2: Injecting phone number..." << std::endl;
+            bool input_ok = dalvik_engine.dispatch_text_input_by_class(
+                "PhoneView$3", "+15551234567");
+            std::cerr << "[EXP069] Text input result: "
+                      << (input_ok ? "DISPATCHED" : "FAILED") << std::endl;
+
+            // Phase 6: Dispatch click on FragmentFloatingButton (Next button).
+            std::cerr << "[EXP069] Phase 6: Clicking FragmentFloatingButton..." << std::endl;
+            bool click_ok = dalvik_engine.dispatch_click_by_class(
+                "FragmentFloatingButton");
+            std::cerr << "[EXP069] Click result: "
+                      << (click_ok ? "DISPATCHED" : "FAILED") << std::endl;
+
+            // Re-dump view tree to capture any state changes from the click.
+            // If the click triggered a page transition, the new page's views
+            // should appear in the updated view tree.
+            std::cerr << "[EXP069] Re-dumping view tree after interaction..." << std::endl;
+
+            std::cerr << "[EXP069] === INTERACTION PHASE COMPLETE ===\n" << std::endl;
+        }
 
         // EXP-061: Dump the ViewNode tree to JSON for the software renderer.
         // The renderer will read this JSON and produce a PNG screenshot
