@@ -1,0 +1,13 @@
+{
+  "git_commit": "1c76eb1d9b4b9fc3cf29bcb30c42e7abf71df5fc",
+  "apk_sha256": "193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e",
+  "viewnode_count": 1385,
+  "text_bearing_viewnodes": 50,
+  "sms_view_count": 53,
+  "floating_button_id": 3869,
+  "onnext_pressed_count": 10,
+  "sendrequest_count": 23,
+  "setpage_count": 2,
+  "requestdelegate_count": 0,
+  "halt_count": 8
+}
