@@ -1247,6 +1247,18 @@ public:
     DalvikValue get_or_create_singleton_public(const std::string& class_desc) {
         return get_or_create_singleton(class_desc);
     }
+
+    // EXP-068: Generic View inheritance queries.
+    // These walk the DEX superclass chain (class_to_superclass_) to determine
+    // if a class inherits from a known Android View type.
+    bool is_subclass_of(const std::string& class_desc, const std::string& ancestor_desc) const;
+    bool is_view_class(const std::string& class_desc) const;
+    bool is_text_view_class(const std::string& class_desc) const;
+    bool is_edit_text_class(const std::string& class_desc) const;
+    bool is_image_view_class(const std::string& class_desc) const;
+    bool is_button_class(const std::string& class_desc) const;
+    bool is_view_group_class(const std::string& class_desc) const;
+
     // EXP-051: Public heap accessor for the shadow registry adapter.
     DalvikHeap& get_heap_public() { return heap_; }
 
@@ -1278,6 +1290,10 @@ private:
     // EXP-038 (BLOCKER-033): Map class descriptor → source DEX index.
     // Built during execute_apk() by scanning dex_report.classes.
     std::map<std::string, uint32_t> class_to_dex_index_;
+    // EXP-068: class_to_superclass_ maps class descriptor → direct superclass descriptor.
+    // Built from dex_report_->classes[i].superclass_name.
+    // Used by is_subclass_of() for semantic View inheritance resolution.
+    std::map<std::string, std::string> class_to_superclass_;
 
     // EXP-045 Phase 2: O(1) class lookup index for try_recursive_invoke().
     // Maps class descriptor → index into dex_report_->classes vector.
