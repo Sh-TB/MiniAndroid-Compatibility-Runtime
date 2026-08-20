@@ -1354,6 +1354,9 @@ bool ApplicationRuntime::execute_on_create() {
             }
         }
         dalvik_engine.set_per_dex_raw_data(std::move(per_dex_raw));
+        // EXP-071 Phase 6: Set APK path so AssetManager.open can read assets
+        // (e.g. countries.txt) directly from the APK ZIP file.
+        dalvik_engine.set_apk_path(apk_path_);
 
         if (config_.verbose) { std::cout << "  Building class→DEX index..." << std::endl; }
         dalvik_engine.build_class_dex_index(*dex_report_);
@@ -1465,6 +1468,39 @@ bool ApplicationRuntime::execute_on_create() {
                         DalvikValue::make_int(0));
                     std::cerr << "[EXP071] Initialized doneButtonVisible=[true] on LoginActivity id=" << oid << std::endl;
                     break;
+                }
+            }
+
+            // EXP-071 Phase 6: Drain the queue BEFORE text injection.
+            //
+            // PhoneView.<init> sends TL_help_getNearestDc asynchronously (via
+            // runOnUIThread). The mock response is delivered synchronously by
+            // the controlled network boundary, but the response callback
+            // (Lambda14 → lambda$new$13 → Lambda16) schedules ANOTHER
+            // runnable via runOnUIThread. Lambda16.run() → lambda$new$12
+            // checks if codeField.length() == 0 — if true, it calls
+            // setCountry(HashMap, "US") which sets countryState = 0 (LOADED).
+            //
+            // If we inject text into codeField BEFORE Lambda16 runs, the
+            // length check fails and setCountry is never called, leaving
+            // countryState = 1 (NO_SIM). Then onNextPressed takes the wrong
+            // "ChooseCountry" branch.
+            //
+            // Fix: drain the queue BEFORE injecting text. This ensures
+            // Lambda16 runs while codeField is still empty.
+            std::cerr << "[EXP071] Draining queue BEFORE text injection..." << std::endl;
+            for (size_t iter = 0; iter < 1000; ++iter) {
+                std::vector<uint32_t> drained;
+                size_t n = drain_handler_queue(&drained);
+                if (n == 0) {
+                    std::cerr << "[EXP071-PRE-INJECT-DRAIN] iter=" << iter
+                              << " queue empty" << std::endl;
+                    break;
+                }
+                std::cerr << "[EXP071-PRE-INJECT-DRAIN] iter=" << iter
+                          << " drained " << n << " runnable(s)" << std::endl;
+                for (uint32_t rid : drained) {
+                    dalvik_engine.dispatch_runnable(rid);
                 }
             }
 

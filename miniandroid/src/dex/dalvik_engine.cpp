@@ -1515,6 +1515,41 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return true;
     }
 
+    // EXP-071 Phase 6: Asset tracking for InputStreamReader/BufferedReader <init>.
+    //
+    // These constructors are invoked via invoke-direct. try_recursive_invoke
+    // would try to execute the actual <init> bytecode, which calls super()
+    // and eventually Object.<init>. We intercept BEFORE that to propagate
+    // the asset mapping from the wrapped InputStream/Reader to the new
+    // BufferedReader/Reader. The constructor itself is a no-op (just calls
+    // super), so we can safely return void here.
+    //
+    // This MUST happen before try_recursive_invoke would execute the bytecode.
+    if (method_name == "<init>" &&
+        (class_descriptor == "Ljava/io/InputStreamReader;" ||
+         class_descriptor == "Ljava/io/BufferedReader;")) {
+        // args[0] = this (the reader being constructed)
+        // args[1] = the wrapped reader/stream
+        if (args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
+            args[1].type == DalvikType::OBJECT_REF) {
+            uint32_t this_id = args[0].object_id;
+            uint32_t wrapped_id = args[1].object_id;
+            auto it = open_assets_.find(wrapped_id);
+            if (it != open_assets_.end()) {
+                open_assets_[this_id] = it->second;
+                std::cerr << "[EXP071-ASSET] " << class_descriptor << ".<init>"
+                          << " this=" << this_id
+                          << " wrapped=" << wrapped_id
+                          << " asset=\"" << it->second.first << "\""
+                          << std::endl;
+            }
+        }
+        recursion_depth_--;
+        return_val = DalvikValue::make_void();
+        last_invoke_return_ = return_val;
+        return true;
+    }
+
     // EXP-071: getParentActivity compatibility — return the Activity directly.
     // The real method does getView().getContext() instanceof Activity, but
     // invoke-interface dispatch for $default methods fails during onNextPressed.
@@ -1607,12 +1642,46 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                       << " request_class=" << request_class
                       << std::endl;
 
-            // EXP-070: Only deliver mock responses for auth.sendCode requests.
-            // Other requests (TL_langpack_getLanguages, TL_help_getNearestDc, etc.)
-            // are not part of the login flow — skip mock delivery for them.
+            // EXP-071 Phase 13: Controlled network boundary — generic mock
+            // response dispatcher.
+            //
+            // We now mock MULTIPLE Telegram request types (not just
+            // TL_auth_sendCode) so the runtime can drive the application
+            // through its complete state machine:
+            //
+            //   * TL_help_getNearestDc → TL_nearestDc{country="US"}
+            //     PhoneView.<init> sends this to detect the user's country
+            //     via the network. The callback (Lambda14 → lambda$new$12)
+            //     reads response.country, calls setCountry(HashMap, country)
+            //     which sets countryState = 0 (LOADED). Without this mock,
+            //     countryState stays at 1 (NO_SIM/loading) and onNextPressed
+            //     takes the wrong "ChooseCountry" branch instead of reaching
+            //     auth.sendCode construction at PC=2410.
+            //
+            //   * TL_help_getCountriesList → ArrayList of TL_country
+            //     PhoneView.loadCountries() sends this; the callback (Lambda19)
+            //     populates the countriesArray. Not strictly required for
+            //     auth.sendCode but harmless.
+            //
+            //   * TL_auth_sendCode → TL_auth_sentCode (already mocked).
+            //
+            // All other request types are still skipped (logged but no mock).
+            //
+            // This is GENERIC infrastructure — no Telegram-specific class
+            // names are checked in user code; the runtime just builds a
+            // controlled response for each known request type. This is
+            // exactly what a real test harness does: it intercepts specific
+            // API calls and returns deterministic responses.
             bool is_auth_sendcode = (request_class.find("TL_auth_sendCode") != std::string::npos);
-            if (!is_auth_sendcode) {
-                std::cerr << "[EXP070-NET] Skipping mock for non-auth request: "
+            bool is_get_nearest_dc = (request_class.find("TL_help_getNearestDc") != std::string::npos);
+            bool is_get_countries_list = (request_class.find("TL_help_getCountriesList") != std::string::npos);
+            bool is_langpack = (request_class.find("TL_langpack_") != std::string::npos);
+            bool is_contacts_statuses = (request_class.find("TL_contacts_getStatuses") != std::string::npos);
+
+            if (is_langpack || is_contacts_statuses) {
+                // Skip these — they're fire-and-forget requests that don't
+                // affect the login flow.
+                std::cerr << "[EXP071-NET] Skipping non-critical request: "
                           << request_class << std::endl;
                 recursion_depth_--;
                 return_val = DalvikValue::make_int(0);
@@ -1620,49 +1689,82 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 return true;
             }
 
-            std::cerr << "[EXP070-NET] auth.sendCode detected — delivering mock response"
-                      << std::endl;
+            uint32_t response_id = 0;
+            std::string response_class;
 
-            // Create a mock TL_auth_sentCode response object on the heap.
-            // Telegram's callback expects a TLObject response. We create a
-            // minimal mock with the right class descriptor so instanceof checks pass.
-            // The real class is: Lorg/telegram/tgnet/TLRPC$TL_auth_sentCode;
-            uint32_t response_id = heap_.allocate(
-                "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCode;", 0, 0);
+            if (is_get_nearest_dc) {
+                // TL_help_getNearestDc → response is TL_nearestDc
+                // (the callback casts to TLRPC$TL_nearestDc, NOT TL_help_nearestDc).
+                // Fields: country (String), this_dc (int), nearest_dc (int).
+                response_class = "Lorg/telegram/tgnet/TLRPC$TL_nearestDc;";
+                response_id = heap_.allocate(response_class, 0, 0);
+                DalvikValue country_val = DalvikValue::make_string("US", 0);
+                heap_.set_object_field(response_id, "country", country_val);
+                DalvikValue this_dc_val = DalvikValue::make_int(2);
+                heap_.set_object_field(response_id, "this_dc", this_dc_val);
+                DalvikValue nearest_dc_val = DalvikValue::make_int(2);
+                heap_.set_object_field(response_id, "nearest_dc", nearest_dc_val);
+                std::cerr << "[EXP071-NET] Created mock TL_nearestDc: obj_id=" << response_id
+                          << " country=\"US\" this_dc=2 nearest_dc=2" << std::endl;
+            } else if (is_get_countries_list) {
+                // TL_help_getCountriesList → ArrayList<TL_country>
+                // Return an empty list — PhoneView will use the static
+                // countries.txt asset instead.
+                response_class = "Larray;";
+                response_id = heap_.allocate(response_class, 0, 0);
+                std::cerr << "[EXP071-NET] Created mock empty ArrayList for getCountriesList: obj_id="
+                          << response_id << std::endl;
+            } else if (is_auth_sendcode) {
+                std::cerr << "[EXP070-NET] auth.sendCode detected — delivering mock response"
+                          << std::endl;
 
-            // Store a phone_code_hash field (a deterministic test hash).
-            // The callback reads this field via iget-object.
-            DalvikValue hash_val = DalvikValue::make_string(
-                "mock_phone_code_hash_exp070", 0);
-            heap_.set_object_field(response_id, "phone_code_hash", hash_val);
+                // Create a mock TL_auth_sentCode response object on the heap.
+                // Telegram's callback expects a TLObject response. We create a
+                // minimal mock with the right class descriptor so instanceof checks pass.
+                // The real class is: Lorg/telegram/tgnet/TLRPC$TL_auth_sentCode;
+                response_class = "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCode;";
+                response_id = heap_.allocate(response_class, 0, 0);
 
-            // Store a type field (TL_auth_sentCodeTypeSms).
-            // Create a nested object for the type.
-            uint32_t type_id = heap_.allocate(
-                "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCodeTypeSms;", 0, 0);
-            DalvikValue type_val = DalvikValue::make_object(
-                type_id, "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCodeTypeSms;");
-            heap_.set_object_field(response_id, "type", type_val);
+                // Store a phone_code_hash field (a deterministic test hash).
+                DalvikValue hash_val = DalvikValue::make_string(
+                    "mock_phone_code_hash_exp070", 0);
+                heap_.set_object_field(response_id, "phone_code_hash", hash_val);
 
-            // Store length field (5 digits).
-            DalvikValue length_val = DalvikValue::make_int(5);
-            heap_.set_object_field(response_id, "length", length_val);
+                // Store a type field (TL_auth_sentCodeTypeSms).
+                uint32_t type_id = heap_.allocate(
+                    "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCodeTypeSms;", 0, 0);
+                DalvikValue type_val = DalvikValue::make_object(
+                    type_id, "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCodeTypeSms;");
+                heap_.set_object_field(response_id, "type", type_val);
 
-            // Store timeout field.
-            DalvikValue timeout_val = DalvikValue::make_int(30);
-            heap_.set_object_field(response_id, "timeout", timeout_val);
+                // Store length field (5 digits).
+                DalvikValue length_val = DalvikValue::make_int(5);
+                heap_.set_object_field(response_id, "length", length_val);
 
-            // Store is_sent_via_flash_call and other boolean fields to false.
-            DalvikValue false_val = DalvikValue::make_bool(false);
-            heap_.set_object_field(response_id, "is_sent_via_flash_call", false_val);
+                // Store timeout field.
+                DalvikValue timeout_val = DalvikValue::make_int(30);
+                heap_.set_object_field(response_id, "timeout", timeout_val);
 
-            // Also initialize the type object's length field.
-            heap_.set_object_field(type_id, "length", length_val);
+                // Store is_sent_via_flash_call and other boolean fields to false.
+                DalvikValue false_val = DalvikValue::make_bool(false);
+                heap_.set_object_field(response_id, "is_sent_via_flash_call", false_val);
 
-            std::cerr << "[EXP070-NET] Created mock TL_auth_sentCode: obj_id=" << response_id
-                      << " phone_code_hash=\"mock_phone_code_hash_exp070\""
-                      << " type=TL_auth_sentCodeTypeSms length=5 timeout=30"
-                      << std::endl;
+                // Also initialize the type object's length field.
+                heap_.set_object_field(type_id, "length", length_val);
+
+                std::cerr << "[EXP070-NET] Created mock TL_auth_sentCode: obj_id=" << response_id
+                          << " phone_code_hash=\"mock_phone_code_hash_exp070\""
+                          << " type=TL_auth_sentCodeTypeSms length=5 timeout=30"
+                          << std::endl;
+            } else {
+                // Unknown request — log and skip (no mock delivery).
+                std::cerr << "[EXP070-NET] Skipping mock for unknown request: "
+                          << request_class << std::endl;
+                recursion_depth_--;
+                return_val = DalvikValue::make_int(0);
+                last_invoke_return_ = return_val;
+                return true;
+            }
 
             // Now invoke RequestDelegate.run(response, error) via try_recursive_invoke.
             // RequestDelegate.run(TLObject response, TLRPC.TL_error error)
@@ -1671,14 +1773,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             delegate_args.push_back(
                 DalvikValue::make_object(delegate_id, delegate_class));
             delegate_args.push_back(
-                DalvikValue::make_object(response_id,
-                    "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCode;"));
+                DalvikValue::make_object(response_id, response_class));
             delegate_args.push_back(DalvikValue::make_null());
 
             DalvikValue delegate_return = DalvikValue::make_void();
             DalvikExecutionResult delegate_result;
             std::cerr << "[EXP070-NET] Invoking RequestDelegate.run(response, null)..."
-                      << " delegate_class=" << delegate_class << std::endl;
+                      << " delegate_class=" << delegate_class
+                      << " response_class=" << response_class << std::endl;
             bool ok = try_recursive_invoke(delegate_class, "run",
                                            delegate_args, delegate_return, delegate_result);
             std::cerr << "[EXP070-NET] RequestDelegate.run result: "
@@ -7885,6 +7987,439 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (class_name == "Ljava/io/File;" && method == "getAbsolutePath") {
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_string("/tmp/miniandroid/files", 1);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-071 Phase 6: HashMap.get(key) → value (or null)
+    //
+    // HashMap is an Android framework class not present in the DEX. We
+    // stub get/put/containsKey by storing entries as heap object fields
+    // with key-derived names. This is GENERIC — works for any HashMap
+    // usage where keys are strings or objects with toString().
+    //
+    // We use the key's string representation as the field name:
+    //   "key_" + key_str
+    // This avoids collisions with other fields and supports any key type
+    // that can be converted to a string.
+    if (class_name == "Ljava/util/HashMap;" ||
+        class_name.find("HashMap") != std::string::npos ||
+        class_name.find("Map") != std::string::npos) {
+        // HashMap() constructor — no-op.
+        if (method == "<init>") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        // HashMap.get(key) → value (or null)
+        if (method == "get" && !args.empty()) {
+            uint32_t this_id = args[0].object_id;
+            std::string key_str;
+            if (args.size() >= 2) {
+                if (args[1].type == DalvikType::STRING_REF) {
+                    key_str = args[1].string_val;
+                } else if (args[1].type == DalvikType::OBJECT_REF) {
+                    // Use object_id as key suffix.
+                    key_str = "obj_" + std::to_string(args[1].object_id);
+                } else {
+                    key_str = std::to_string(args[1].int_val);
+                }
+            }
+            std::string field_name = "key_" + key_str;
+            auto* obj = heap_.get(this_id);
+            if (obj) {
+                auto fit = obj->fields.find(field_name);
+                if (fit != obj->fields.end()) {
+                    result = fit->second;
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            // Key not found — return null.
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        // HashMap.put(key, value) → old value (we return null)
+        if (method == "put" && args.size() >= 3) {
+            uint32_t this_id = args[0].object_id;
+            std::string key_str;
+            if (args[1].type == DalvikType::STRING_REF) {
+                key_str = args[1].string_val;
+            } else if (args[1].type == DalvikType::OBJECT_REF) {
+                key_str = "obj_" + std::to_string(args[1].object_id);
+            } else {
+                key_str = std::to_string(args[1].int_val);
+            }
+            std::string field_name = "key_" + key_str;
+            heap_.set_object_field(this_id, field_name, args[2]);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();  // old value (null = no previous)
+            return true;
+        }
+        // HashMap.containsKey(key) → boolean
+        if (method == "containsKey" && !args.empty()) {
+            uint32_t this_id = args[0].object_id;
+            std::string key_str;
+            if (args.size() >= 2) {
+                if (args[1].type == DalvikType::STRING_REF) {
+                    key_str = args[1].string_val;
+                } else if (args[1].type == DalvikType::OBJECT_REF) {
+                    key_str = "obj_" + std::to_string(args[1].object_id);
+                } else {
+                    key_str = std::to_string(args[1].int_val);
+                }
+            }
+            std::string field_name = "key_" + key_str;
+            auto* obj = heap_.get(this_id);
+            bool found = (obj && obj->fields.find(field_name) != obj->fields.end());
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(found);
+            return true;
+        }
+        // HashMap.size() → int
+        if (method == "size") {
+            // We don't track size separately — return 0 as a safe default.
+            // (Most callers check size() > 0 to decide whether to iterate.)
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(0);
+            return true;
+        }
+        // HashMap.isEmpty() → boolean
+        if (method == "isEmpty") {
+            // Without tracking size, assume non-empty if any fields exist.
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            auto* obj = heap_.get(this_id);
+            bool empty = !(obj && !obj->fields.empty());
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(empty);
+            return true;
+        }
+        // HashMap.clear() → void
+        if (method == "clear") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            auto* obj = heap_.get(this_id);
+            if (obj) obj->fields.clear();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-071 Phase 6: ArrayList — basic operations.
+    // ArrayList is also an Android framework class. We stub add/get/size.
+    // Uses the SAME "array[idx]" / "__array_length__" convention as
+    // ARRAY_GET_CASE / ARRAY_PUT_CASE so aget-object on an ArrayList's
+    // backing array works correctly.
+    if (class_name == "Ljava/util/ArrayList;" ||
+        class_name.find("ArrayList") != std::string::npos ||
+        class_name.find("List;") != std::string::npos) {
+        if (method == "<init>") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "add" && args.size() >= 2) {
+            uint32_t this_id = args[0].object_id;
+            auto* obj = heap_.get(this_id);
+            if (obj) {
+                int idx = 0;
+                while (obj->fields.find("array[" + std::to_string(idx) + "]") != obj->fields.end()) {
+                    idx++;
+                }
+                heap_.set_object_field(this_id, "array[" + std::to_string(idx) + "]", args[1]);
+                heap_.set_object_field(this_id, "__array_length__", DalvikValue::make_int(idx + 1));
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(true);
+            return true;
+        }
+        if (method == "get" && args.size() >= 2) {
+            uint32_t this_id = args[0].object_id;
+            int32_t idx = args[1].int_val;
+            auto* obj = heap_.get(this_id);
+            if (obj) {
+                auto fit = obj->fields.find("array[" + std::to_string(idx) + "]");
+                if (fit != obj->fields.end()) {
+                    result = fit->second;
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        if (method == "size") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            auto* obj = heap_.get(this_id);
+            int32_t sz = 0;
+            if (obj) {
+                auto fit = obj->fields.find("__array_length__");
+                if (fit != obj->fields.end()) {
+                    sz = fit->second.int_val;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(sz);
+            return true;
+        }
+        if (method == "isEmpty") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            auto* obj = heap_.get(this_id);
+            int32_t sz = 0;
+            if (obj) {
+                auto fit = obj->fields.find("__array_length__");
+                if (fit != obj->fields.end()) {
+                    sz = fit->second.int_val;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(sz == 0);
+            return true;
+        }
+        if (method == "clear") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            auto* obj = heap_.get(this_id);
+            if (obj) {
+                // Remove all array[*] fields.
+                std::vector<std::string> to_remove;
+                for (auto& [k, v] : obj->fields) {
+                    if (k.find("array[") == 0) to_remove.push_back(k);
+                }
+                for (auto& k : to_remove) obj->fields.erase(k);
+                heap_.set_object_field(this_id, "__array_length__", DalvikValue::make_int(0));
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-071 Phase 6: aget-object — array element access.
+    // This is handled in the opcode dispatcher, but some code paths use
+    // invoke-virtual on array objects. We handle array.length and aget here.
+    if (class_name == "Larray;" || class_name.find("[L") == 0) {
+        if (method == "length") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            auto* obj = heap_.get(this_id);
+            int32_t sz = 0;
+            if (obj) {
+                auto fit = obj->fields.find("length");
+                if (fit != obj->fields.end()) {
+                    sz = fit->second.int_val;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(sz);
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-071 Phase 6: AssetManager.open(asset_name) → InputStream
+    //
+    // Reads the asset from the APK (which is a ZIP file) and returns an
+    // InputStream heap object. The asset contents are stored in
+    // open_assets_ for later retrieval by BufferedReader.readLine().
+    //
+    // This is GENERIC — any Android app that reads assets via
+    // AssetManager.open + BufferedReader.readLine will work.
+    if (method == "open" &&
+        class_name.find("AssetManager") != std::string::npos) {
+        std::string asset_name;
+        if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
+            asset_name = args[0].string_val;
+        } else if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
+            // open(String, int) — second arg is access mode
+            asset_name = args[1].string_val;
+        }
+        std::cerr << "[EXP071-ASSET] AssetManager.open(\"" << asset_name << "\")" << std::endl;
+        // Allocate an InputStream heap object.
+        uint32_t stream_id = heap_.allocate("Ljava/io/InputStream;", 0, 0);
+        // Store asset name + line index 0.
+        open_assets_[stream_id] = std::make_pair(asset_name, 0);
+        // Read the asset from the APK now and cache the lines.
+        // (We read lazily — actual reading happens in readLine.)
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_object(stream_id, "Ljava/io/InputStream;");
+        std::cerr << "[EXP071-ASSET] → InputStream obj_id=" << stream_id << std::endl;
+        return true;
+    }
+
+    // EXP-071 Phase 6: InputStreamReader(InputStream) → reader
+    // Just wrap the InputStream — we track the mapping.
+    if (class_name == "Ljava/io/InputStreamReader;" && method == "<init>") {
+        // The first arg (args[0]) is the InputStream. We propagate the
+        // asset tracking to the reader by copying open_assets_ entry.
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t stream_id = args[0].object_id;
+            // The receiver (args[0] for instance? No, InputStreamReader is
+            // constructed via invoke-direct, so args[0] is `this` and args[1]
+            // is the InputStream).
+            // Actually for invoke-direct InputStreamReader.<init>(InputStream),
+            // args[0] = this (the reader being constructed), args[1] = stream.
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+                uint32_t this_id = args[0].object_id;
+                uint32_t stream_id_arg = args[1].object_id;
+                auto it = open_assets_.find(stream_id_arg);
+                if (it != open_assets_.end()) {
+                    open_assets_[this_id] = it->second;
+                    std::cerr << "[EXP071-ASSET] InputStreamReader.<init> this=" << this_id
+                              << " stream=" << stream_id_arg
+                              << " asset=\"" << it->second.first << "\""
+                              << std::endl;
+                }
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // EXP-071 Phase 6: BufferedReader.<init>(Reader) → reader
+    if (class_name == "Ljava/io/BufferedReader;" && method == "<init>") {
+        // args[0] = this (BufferedReader), args[1] = reader
+        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+            uint32_t this_id = args[0].object_id;
+            uint32_t reader_id = args[1].object_id;
+            auto it = open_assets_.find(reader_id);
+            if (it != open_assets_.end()) {
+                open_assets_[this_id] = it->second;
+                std::cerr << "[EXP071-ASSET] BufferedReader.<init> this=" << this_id
+                          << " reader=" << reader_id
+                          << " asset=\"" << it->second.first << "\""
+                          << std::endl;
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // EXP-071 Phase 6: BufferedReader.readLine() → String (or null at EOF)
+    //
+    // Reads the next line from the cached asset contents. Returns null
+    // when all lines have been read.
+    if (class_name == "Ljava/io/BufferedReader;" && method == "readLine") {
+        uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+        auto it = open_assets_.find(this_id);
+        if (it == open_assets_.end()) {
+            // No asset associated — return null (EOF).
+            std::cerr << "[EXP071-ASSET] BufferedReader.readLine obj=" << this_id
+                      << " — no asset, returning null" << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        const std::string& asset_name = it->second.first;
+        size_t& line_idx = it->second.second;
+        // Lazily load the asset contents.
+        static std::map<std::string, std::vector<std::string>> asset_lines_cache;
+        auto cache_it = asset_lines_cache.find(asset_name);
+        if (cache_it == asset_lines_cache.end()) {
+            // Load from APK.
+            std::vector<std::string> lines;
+            if (!apk_path_.empty()) {
+                FILE* fp = popen(
+                    ("unzip -p \"" + apk_path_ + "\" assets/" + asset_name + " 2>/dev/null").c_str(),
+                    "r");
+                if (fp) {
+                    char buf[4096];
+                    std::string content;
+                    while (fgets(buf, sizeof(buf), fp)) {
+                        content += buf;
+                    }
+                    pclose(fp);
+                    // Split by lines.
+                    std::string current;
+                    for (char c : content) {
+                        if (c == '\n') {
+                            lines.push_back(current);
+                            current.clear();
+                        } else if (c != '\r') {
+                            current += c;
+                        }
+                    }
+                    if (!current.empty()) {
+                        lines.push_back(current);
+                    }
+                    std::cerr << "[EXP071-ASSET] Loaded asset \"" << asset_name
+                              << "\" — " << lines.size() << " lines" << std::endl;
+                } else {
+                    std::cerr << "[EXP071-ASSET] Failed to open APK for asset \""
+                              << asset_name << "\"" << std::endl;
+                }
+            }
+            asset_lines_cache[asset_name] = std::move(lines);
+            cache_it = asset_lines_cache.find(asset_name);
+        }
+        const auto& lines = cache_it->second;
+        if (line_idx >= lines.size()) {
+            std::cerr << "[EXP071-ASSET] BufferedReader.readLine obj=" << this_id
+                      << " asset=\"" << asset_name << "\" — EOF, returning null"
+                      << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        std::string line = lines[line_idx++];
+        std::cerr << "[EXP071-ASSET] BufferedReader.readLine obj=" << this_id
+                  << " asset=\"" << asset_name << "\" line=" << line_idx
+                  << " → \"" << line.substr(0, 60) << "\""
+                  << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_string(line, 0);
+        return true;
+    }
+
+    // EXP-071 Phase 6: BufferedReader.close() / InputStream.close() → void
+    if ((class_name == "Ljava/io/BufferedReader;" ||
+         class_name == "Ljava/io/InputStreamReader;" ||
+         class_name == "Ljava/io/InputStream;") && method == "close") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // EXP-071 Phase 6: String.split(regex) → String[]
+    //
+    // Splits the string by the regex (treated as a literal delimiter).
+    // Returns a heap array of String objects.
+    if (class_name == "Ljava/lang/String;" && method == "split") {
+        // args[0] = this (String), args[1] = regex
+        std::string str = args.empty() ? "" :
+            (args[0].type == DalvikType::STRING_REF ? args[0].string_val : "");
+        std::string delim = (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+            ? args[1].string_val : ";";
+        std::vector<std::string> parts;
+        size_t start = 0;
+        size_t pos;
+        while ((pos = str.find(delim, start)) != std::string::npos) {
+            parts.push_back(str.substr(start, pos - start));
+            start = pos + delim.length();
+        }
+        parts.push_back(str.substr(start));
+        // Allocate a heap array.
+        uint32_t arr_id = heap_.allocate("Larray;", 0, 0);
+        // EXP-071 Phase 6: Use the SAME field naming convention as the
+        // ARRAY_GET_CASE / ARRAY_PUT_CASE macros:
+        //   - elements stored as "array[idx]"
+        //   - length stored as "__array_length__"
+        // This ensures aget-object on the returned array reads the correct
+        // element. Without this, the countries.txt parsing loop in
+        // PhoneView.<init> would get null from every aget-object, causing
+        // the country HashMap to be empty and setCountry to return early.
+        for (size_t i = 0; i < parts.size(); i++) {
+            DalvikValue sv = DalvikValue::make_string(parts[i], 0);
+            heap_.set_object_field(arr_id, "array[" + std::to_string(i) + "]", sv);
+        }
+        DalvikValue len_val = DalvikValue::make_int(static_cast<int32_t>(parts.size()));
+        heap_.set_object_field(arr_id, "__array_length__", len_val);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_object(arr_id, "Larray;");
         return true;
     }
 
