@@ -1421,6 +1421,20 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // Fall through to normal execution.
     }
 
+    // EXP-071: AndroidUtilities.isSimAvailable → false
+    // In a headless runtime without a real device, there is no SIM card.
+    // isSimAvailable checks TelephonyManager.getSimState() which would
+    // require real telephony hardware. Return false so that PhoneView.onConfirm
+    // takes the auth.sendCode path (PC=435) instead of the permissions path.
+    if (method_name == "isSimAvailable" &&
+        class_descriptor.find("AndroidUtilities") != std::string::npos) {
+        recursion_depth_--;
+        return_val = DalvikValue::make_bool(false);
+        last_invoke_return_ = return_val;
+        std::cerr << "[EXP071] isSimAvailable → false (headless runtime, no SIM)" << std::endl;
+        return true;
+    }
+
     // EXP-071: getParentActivity compatibility — return the Activity directly.
     // The real method does getView().getContext() instanceof Activity, but
     // invoke-interface dispatch for $default methods fails during onNextPressed.
@@ -6353,12 +6367,6 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
     int32_t a_val = (a.type == DalvikType::INT32) ? a.int_val : 0; \
     int32_t b_val = (b.type == DalvikType::INT32) ? b.int_val : 0; \
     bool taken = false; \
-    /* EXP-060: Fix if-eq/if-ne for mixed NULL_REF/OBJECT_REF comparisons. */ \
-    /* Per AOSP/JVM spec: null == non-null-object is FALSE, null == null is TRUE. */ \
-    /* Previous code fell into the int comparison branch when one side was */ \
-    /* NULL_REF and the other was OBJECT_REF, treating both as int 0, making */ \
-    /* if-eq always TRUE (incorrectly skipping the iput-object in */ \
-    /* BaseFragment.setParentLayout). */ \
     bool a_is_ref = (a.type == DalvikType::OBJECT_REF || a.type == DalvikType::NULL_REF); \
     bool b_is_ref = (b.type == DalvikType::OBJECT_REF || b.type == DalvikType::NULL_REF); \
     if (a_is_ref && b_is_ref) { \
@@ -6367,6 +6375,16 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
         taken = (a_obj op b_obj); \
     } else { \
         taken = (a_val op b_val); \
+    } \
+    /* EXP-071: Diagnostic for if-lt/if-eq in onConfirm */ \
+    if (current_class_.find("PhoneView$6") != std::string::npos && \
+        current_method_ == "onConfirm") { \
+        std::cerr << "[EXP071-IF] " << op_name << " PC=" << pc \
+                  << " v" << (int)r.vA << "(type=" << static_cast<int>(a.type) \
+                  << " val=" << a_val << ") vs v" << (int)r.vB \
+                  << "(type=" << static_cast<int>(b.type) \
+                  << " val=" << b_val << ") → taken=" << (taken ? "YES" : "NO") \
+                  << " target=" << (pc + r.offset) << std::endl; \
     } \
     do_22t_branch(pc, r.offset, taken, op_name, r.vA, r.vB, a, b, trace); \
     if (taken) { \
