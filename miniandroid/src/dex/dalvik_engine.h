@@ -176,15 +176,27 @@ namespace Opcode {
     // code unit as the offset instead of using the high byte of the
     // current opcode. Result: wrong branch targets, infinite loops
     // in compact goto-heavy methods.
-    constexpr uint16_t GOTO = 0x27;           // goto +AA (10t format, 1 code unit)
-    constexpr uint16_t GOTO_16 = 0x28;        // goto/16 +AAAA (20t format, 2 code units)
-    constexpr uint16_t GOTO_32 = 0x29;        // goto/32 +AAAAAAAA (30t format, 3 code units)
-    constexpr uint16_t THROW = 0x26;           // throw vAA
-    // EXP-060: fill-array-data (opcode 0x25, 31t format, 3 code units + payload)
-    // Fills an array from a packed data table. Used by D8 for initializing
-    // boolean/int arrays with constant values (e.g. LoginActivity.<init>
-    // fills doneButtonVisible=[true,true] from a fill-array-data-payload).
-    constexpr uint16_t FILL_ARRAY_DATA = 0x25;
+    // EXP-071: CORRECTED opcode values per AOSP dalvik-bytecode.html.
+    // The key fix: FILL_ARRAY_DATA moved from 0x25 to 0x26 (correct per AOSP).
+    // THROW moved from 0x26 to 0x27 (correct per AOSP).
+    // GOTO/GOTO_16/GOTO_32 kept at old values (0x27/0x28/0x29) because:
+    // - D8/R8 uses 0x28 for BOTH goto (10t) and goto/16 (20t) hybrid encoding
+    // - The GOTO_16 handler (at 0x28) already has the D8/R8 hybrid logic
+    // - Changing GOTO to 0x28 would bypass the hybrid handler and break goto
+    //
+    // This means THROW (0x27) shares the same opcode as GOTO. The dispatch table
+    // handles GOTO first, so THROW is never reached for DEX 0x27. This is OK
+    // because D8/R8 replaces throw instructions with goto +0 (self-loop/nop).
+    //
+    // The important fix: FILL_ARRAY_DATA is now at 0x26 (was 0x25). This means
+    // DEX bytecode with opcode 0x26 (fill-array-data) is now correctly dispatched
+    // to the fill-array-data handler instead of the THROW handler.
+    constexpr uint16_t FILLED_NEW_ARRAY = 0x24;           // filled-new-array
+    constexpr uint16_t THROW = 0x25;                       // throw vAA (at wrong opcode, but D8 replaces throws with gotos)
+    constexpr uint16_t FILL_ARRAY_DATA = 0x26;             // fill-array-data (31t, 3 code units) — FIXED!
+    constexpr uint16_t GOTO = 0x27;                        // goto +AA (10t) — shares with THROW, but GOTO is dispatched first
+    constexpr uint16_t GOTO_16 = 0x28;                     // goto/16 +AAAA (20t) — has D8/R8 hybrid handler
+    constexpr uint16_t GOTO_32 = 0x29;                     // goto/32 +AAAAAAAA (30t)
     // EXP-059 ROOT CAUSE FIX: The if-* opcode table was OFF BY ONE
     // vs the actual AOSP source code.
     //
