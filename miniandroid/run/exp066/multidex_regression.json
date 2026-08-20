@@ -1,0 +1,112 @@
+{
+  "apk_path": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
+  "dex_files": [
+    "classes.dex",
+    "classes2.dex",
+    "classes3.dex",
+    "classes4.dex",
+    "classes5.dex"
+  ],
+  "tests": {
+    "const_string": {
+      "collisions_found": 10,
+      "sample": [
+        {
+          "string_idx": 1,
+          "dex_a_value": "\ufffd\ufffd",
+          "dex_b_value": " ",
+          "dex_c_value": "\t"
+        },
+        {
+          "string_idx": 2,
+          "dex_a_value": "\ufffd\ufffd\u0001\ufffd\ufffd\ufffd\ufffd\u0001\u0001\u0001\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u0001\n",
+          "dex_b_value": " (valid values ",
+          "dex_c_value": "\tat "
+        },
+        {
+          "string_idx": 3,
+          "dex_a_value": "\ufffd\ufffd\u0001\ufffd\ufffd\ufffd\ufffd\u0001\u0001\u0001\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u0001\f",
+          "dex_b_value": " - ",
+          "dex_c_value": "\n"
+        }
+      ],
+      "pass": true
+    },
+    "const_class": {
+      "collisions_found": 10,
+      "sample": [
+        {
+          "type_idx": 6,
+          "dex_a_type": "Landroid/accounts/Account;",
+          "dex_b_type": "Ldalvik/annotation/EnclosingClass;",
+          "dex_c_type": "Landroid/accounts/AbstractAccountAuthenticator;"
+        },
+        {
+          "type_idx": 7,
+          "dex_a_type": "Landroid/accounts/AccountManager;",
+          "dex_b_type": "Ldalvik/annotation/InnerClass;",
+          "dex_c_type": "Landroid/accounts/Account;"
+        },
+        {
+          "type_idx": 8,
+          "dex_a_type": "Landroid/animation/Animator$AnimatorListener;",
+          "dex_b_type": "Ldalvik/annotation/MemberClasses;",
+          "dex_c_type": "Landroid/accounts/AccountAuthenticatorResponse;"
+        }
+      ],
+      "pass": true
+    },
+    "method_resolution": {
+      "collisions_found": 10,
+      "sample": [
+        {
+          "method_idx": 0,
+          "dex_a_method": "Account.<init>",
+          "dex_b_method": "a.a",
+          "dex_c_method": "AbstractAccountAuthenticator.<init>"
+        },
+        {
+          "method_idx": 1,
+          "dex_a_method": "Account.equals",
+          "dex_b_method": "a.b",
+          "dex_c_method": "AbstractAccountAuthenticator.getAccountRemovalAllowed"
+        },
+        {
+          "method_idx": 2,
+          "dex_a_method": "Animator.addListener",
+          "dex_b_method": "a.c",
+          "dex_c_method": "AbstractAccountAuthenticator.getIBinder"
+        }
+      ],
+      "pass": true
+    },
+    "field_resolution": {
+      "collisions_found": 10,
+      "sample": [
+        {
+          "field_idx": 0,
+          "dex_a_field": "Account.CREATOR:Parcelable$Creator",
+          "dex_b_field": "a.a:Unsafe",
+          "dex_c_field": "Account.name:String"
+        },
+        {
+          "field_idx": 1,
+          "dex_a_field": "Account.name:String",
+          "dex_b_field": "a.b:a",
+          "dex_c_field": "Account.type:String"
+        },
+        {
+          "field_idx": 2,
+          "dex_a_field": "ActivityManager$RunningAppProcessInfo.importance:I",
+          "dex_b_field": "b.a:e",
+          "dex_c_field": "ActivityManager$MemoryInfo.totalMem:J"
+        }
+      ],
+      "pass": true
+    }
+  },
+  "summary": {
+    "all_pass": true,
+    "note": "These collisions prove that multi-DEX same-index different-value scenarios are REAL in the Telegram APK. The per-DEX resolution logic in DalvikExecutionEngine must use per_dex_raw_data_[dex_index] instead of the merged dex_report_->strings/types/method_ids/field_ids. If the runtime used the merged table, it would return the wrong value for ANY const-string/const-class/method/field in DEX files 2+."
+  }
+}
