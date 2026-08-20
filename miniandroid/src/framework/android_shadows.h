@@ -449,6 +449,12 @@ public:
         // Common properties used by Android code paths.
         std::string text;     // TextView.getText()
         std::string hint;     // TextView.getHint() / EditText hint (EXP-065)
+        // EXP-071: Context — set during View creation (constructor receives Context).
+        // When getContext() is called on this View, return this object_id.
+        // In real Android, Views store the Context passed to their constructor.
+        // We store it so getParentActivity() can find the Activity via
+        // getView().getContext() instanceof Activity.
+        uint32_t context_object_id = 0;  // The Context (Activity) that created this View
         // EXP-067: Image resource ID — set by ImageView.setImageResource(int)
         // The renderer can look up the drawable path via resource_drawable_paths_.
         int32_t image_resource_id = 0;
