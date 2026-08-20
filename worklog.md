@@ -2653,3 +2653,184 @@ Work Log:
 
 - Commit b5b7964 pushed to main.
 
+
+---
+Task ID: EXP-071 (session 4)
+Agent: general-purpose (main agent)
+
+Work Log:
+- Recovered previous test output. Previous run was killed by timeout.
+- Rebuilt binary with isSimAvailable fix.
+- Found root cause: onConfirm checks isSimAvailable at PC=27-31.
+  When isSimAvailable returns TRUE (1), if-eq v3(1), v0(SDK_INT=0) → 1==0 → false
+  → branch NOT taken → execution goes to permissions path (PC=33+).
+  When isSimAvailable returns FALSE (0), if-eq v3(0), v0(SDK_INT=0) → 0==0 → TRUE
+  → but actually if-lt at PC=25 checks SDK_INT(0) < 23 → TRUE → branches to PC=435!
+
+- Added isSimAvailable stub returning false (generic headless runtime fix).
+
+- Added if-lt diagnostic for onConfirm. Confirmed:
+  if-lt PC=25 v0(type=1, val=0) vs v3(type=1, val=23) → taken=YES target=435
+
+- onConfirm now reaches PC=435 (auth.sendCode path):
+  PC=435: iget-object val$code
+  PC=437: new-instance Lambda0 (RequestDelegate)
+  PC=439: invoke-direct Lambda0.<init>
+  PC=442: invoke-static access$5700 (animateProgress)
+  PC=445: return-void
+
+- But auth.sendCode is NOT in onConfirm's bytecode!
+  onConfirm creates the RequestDelegate (Lambda0) and calls animateProgress,
+  then returns. The actual auth.sendCode call must be elsewhere.
+
+- Next: Search onNextPressed bytecode for auth.sendCode method calls.
+  The request might be constructed in onNextPressed AFTER onConfirm returns,
+  or in a separate async callback.
+
+- Commit f523750 pushed to main.
+
+
+---
+Task ID: EXP-071 (session 5)
+Agent: general-purpose (main agent)
+
+Task:
+- Continue the EXP-071 campaign from commit f523750.
+- Find the actual code path that constructs and sends auth.sendCode.
+- Implement generic async event loop semantics so the chain reaches auth.sendCode.
+- Then continue toward CHECKPOINT_M (controlled response → real setPage(VIEW_CODE_SMS) → SMS view → screenshot).
+
+Work Log:
+- Phase 1: Searched all 5 Telegram DEX files for auth.sendCode / TL_auth_sendCode /
+  sendRequest references via androguard. Found the SINGLE construction site:
+    classes4.dex, LoginActivity$PhoneView.onNextPressed, PC=2414:
+    invoke-direct TLRPC$TL_auth_sendCode.<init>()V
+  And the SINGLE sendRequest call site for the SMS path:
+    classes4.dex, LoginActivity$PhoneView.onNextPressed, PC=2898:
+    invoke-virtual ConnectionsManager.sendRequest(TL_auth_sendCode, Lambda2, 27)I
+
+- Phase 2: Disassembled PhoneView.onNextPressed (2936 bytes / 1468 code units).
+  Confirmed it contains the full request construction path:
+    PC 2382-2404: cleanup + ConnectionsManager.getInstance
+    PC 2410: new-instance TL_auth_sendCode
+    PC 2414: TL_auth_sendCode.<init>()
+    PC 2420-2440: populate api_hash, api_id, phone_number, settings
+    PC 2716-2888: build PhoneInputData + Lambda2 (RequestDelegate)
+    PC 2898: sendRequest(req, Lambda2, 27)
+
+- Phase 3: Disassembled PhoneView$6.onConfirm, onConfirmPressed, onFabPressed,
+  lambda$onConfirm$0/1, Lambda0/1.run, PhoneNumberConfirmView.animateProgress.
+  Discovered the COMPLETE async call chain:
+
+    FAB click → Lambda3 → onConfirmPressed → onConfirm
+    onConfirm (PC 0x874): new-instance Lambda0 (Runnable, NOT RequestDelegate!)
+    onConfirm (PC 0x884): invoke-static PhoneNumberConfirmView.access$5700(view, Lambda0)
+    access$5700 → animateProgress(Lambda0)
+    animateProgress (PC 16): invoke-static runOnUIThread(Lambda0, 400ms)
+    [Lambda0 enqueued on Handler queue]
+
+    [drain] Lambda0.run() → lambda$onConfirm$1
+    lambda$onConfirm$1: dismiss(); new-instance Lambda1; runOnUIThread(Lambda1, 150ms)
+    [Lambda1 enqueued]
+
+    [drain] Lambda1.run() → lambda$onConfirm$0
+    lambda$onConfirm$0 (PC 4): invoke-virtual PhoneView.onNextPressed(code)
+    onNextPressed (PC 2410-2898): construct TL_auth_sendCode + Lambda2 + sendRequest
+
+  Key correction: Lambda0 is NOT the RequestDelegate — it's a plain Runnable
+  whose only job is to schedule Lambda1 via runOnUIThread. The actual
+  RequestDelegate is Lambda2 (PhoneView$$ExternalSyntheticLambda2), created
+  inside onNextPressed at PC 2872.
+
+- Phase 4: Identified THREE independent runtime bugs that broke the async chain:
+
+  Bug 1: runOnUIThread was a silent no-op.
+    Two stubs in dalvik_engine.cpp intercepted AndroidUtilities.runOnUIThread
+    and returned void before reaching HandlerShadow.enqueue.
+
+  Bug 2: try_shadow_dispatch mis-attributed args[0] for static methods.
+    For static runOnUIThread(Runnable, long), args[0] is the Runnable (the
+    first PARAMETER), not `this`. The old code shifted args[0] out as the
+    receiver, leaving ctx.args empty — HandlerShadow couldn't extract the
+    Runnable.
+
+  Bug 3: const-wide/16/32/high16/const-wide wrote to the wrong field.
+    The handlers set dv.int_val (32-bit) while marking the value as INT64.
+    long_val (64-bit) was left with uninitialized garbage. Later, when
+    execute_invoke_static tried to merge the wide register pair, it read
+    long_val and got values like 93862215288784 instead of 400.
+
+- Phase 5: Implemented the fixes:
+
+  Fix 1: Removed the early-return stub in bridge_to_api that swallowed
+    AndroidUtilities.runOnUIThread as void. Now the call falls through to
+    try_shadow_dispatch, which routes to HandlerShadow.enqueue.
+
+  Fix 2: Added a `current_invoke_is_static_` flag (set by execute_invoke_static
+    via a scope guard). try_shadow_dispatch now checks this flag and only
+    shifts args[0] as receiver for INSTANCE methods. For STATIC methods,
+    all args are placed in ctx.args without shifting.
+
+    Also added two-pass class_name lookup in try_shadow_dispatch:
+    Pass 1: try with declared class_name (e.g. "Lorg/telegram/messenger/AndroidUtilities;").
+    Pass 2: try with args[0].class_desc (the runtime class of `this`).
+    This handles both static and instance dispatch correctly.
+
+    Also fixed ViewShadow to prefer ctx.receiver_class over ctx.class_name
+    when creating ViewNodes — otherwise inherited method calls (like
+    View.setOnClickListener on a FragmentFloatingButton) would store the
+    declared class (View) instead of the runtime class (FragmentFloatingButton),
+    breaking find_by_class_substring("FragmentFloatingButton").
+
+  Fix 3: Fixed all const-wide/* handlers to write to long_val (not int_val)
+    for INT64-typed DalvikValues. Also added wide-arg merging in
+    execute_invoke_static that handles TWO cases:
+    Case 1: low register already holds INT64 (the normal case after const-wide/16) → use directly.
+    Case 2: low register holds INT32 (assembled from two writes) → merge with vAA+1.
+
+    Added resolve_method_proto_for_dex() to parse the method's proto
+    descriptor (e.g. "(Ljava/lang/Runnable;J)V") so we know which params
+    are wide (J/D consume 2 register slots).
+
+  Fix 4: Implemented dispatch_runnable(runnable_id, response_id, error_id)
+    on DalvikExecutionEngine. Looks up the heap object's class and invokes
+    run() via try_recursive_invoke. Handles both no-arg Runnable.run() and
+    2-arg RequestDelegate.run(TLObject, TL_error).
+
+  Fix 5: Added iterative queue drain in application_runtime.cpp after the
+    confirm click dispatch. Drains up to 1000 iterations (safety cap) to
+    handle runnables that schedule more runnables.
+
+  Fix 6: Updated HandlerShadow to honor the delay argument from
+    runOnUIThread(Runnable, long) — reads ctx.args[1].long_val instead
+    of hardcoding delay=0.
+
+- Phase 6: Verified end-to-end with the Telegram APK:
+
+  [QUEUE] entries appear in run.log — runOnUIThread IS now enqueuing.
+  [EXP071-DRAIN] iter=1 drained 12 runnable(s) — drain loop fires.
+  [EXP071-RUN] runnable id=54200 (Lambda0) → EXECUTED.
+  [METHOD-IN] PhoneView.onNextPressed — re-invoked from lambda$onConfirm$0.
+
+  The async chain now reaches onNextPressed. However, onNextPressed then
+  takes a side path through needShowAlert (showing a "RestorePasswordNoEmailTitle"
+  / "ChooseCountry" alert) and does NOT yet reach PC=2410 (TL_auth_sendCode
+  construction). This is the next blocker — likely a state issue where the
+  second onNextPressed call (from lambda$onConfirm$0) sees different
+  PhoneView state than the first call (which was triggered directly by the
+  FAB click).
+
+Stage Summary:
+- Phase 1-5 (static analysis): COMPLETE.
+  Real auth.sendCode caller identified: PhoneView.onNextPressed at PC=2410/2898.
+  Full call graph documented in docs/EXP071_AUTH_SENDCODE_CALLGRAPH.md.
+- Phase 6 (runtime trace): COMPLETE.
+  Lambda0/Lambda1/onNextPressed async chain executes via the new drain loop.
+- Phase 7-9 (reach auth.sendCode): BLOCKED.
+  onNextPressed takes a side path through needShowAlert on the second call.
+  This is the next thing to investigate in Session 6.
+- Generic fixes (async event loop, wide register merging, static-method
+  shadow dispatch, const-wide/* field bug) are COMPLETE and verified.
+  These are reusable for any Android app that uses Handler/runOnUIThread.
+
+Commit: pending.
