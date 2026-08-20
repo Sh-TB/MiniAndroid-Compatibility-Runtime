@@ -481,10 +481,25 @@ CallResult HandlerShadow::dispatch(const CallContext& ctx) {
 
     if (ctx.class_name == "Lorg/telegram/messenger/AndroidUtilities;") {
         // Telegram-specific UI scheduling wrappers.
+        // EXP-071 Phase 8: handle BOTH overloads:
+        //   * runOnUIThread(Runnable)             — delay=0
+        //   * runOnUIThread(Runnable, long delay) — delay=arg[1]
+        // The animateProgress() and lambda$onConfirm$1() callers use the
+        // 2-arg overload with delays of 400ms and 150ms respectively.
+        // Without honoring the delay, the runnables would all drain at once,
+        // which is actually fine for our deterministic runtime — but we
+        // still respect the relative ordering by capturing the delay
+        // timestamp so future code that drains incrementally works correctly.
         if (m == "runOnUIThread" || m == "executeOnUIThread") {
             uint32_t r = extract_runnable(ctx, 0);
             if (r == 0) return CallResult::handled_void();
-            enqueue(r, 0, /*cls=*/"");
+            int64_t delay_ms = 0;
+            if (ctx.args.size() >= 2) {
+                // The second argument is the delay (J = long).
+                // dalvik_value_to_arg stores it as long_val.
+                delay_ms = ctx.args[1].long_val;
+            }
+            enqueue(r, delay_ms, /*cls=*/"AndroidUtilities");
             return CallResult::handled_void();
         }
         if (m == "cancelRunOnUIThread") {
@@ -844,11 +859,11 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "<init>") {
         // View(Context), View(Context, AttributeSet), View(Context, AttributeSet, int)
         // Allocate a fresh node bound to this receiver.
-        get_or_create_node(ctx.receiver_id, ctx.class_name);
+        get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         return CallResult::handled_void();
     }
     if (m == "setId") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->android_view_id = ctx.arg_as_int(0);
         return CallResult::handled_void();
     }
@@ -909,7 +924,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_null();
     }
     if (m == "setVisibility") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->visibility = ctx.arg_as_int(0, 0);
         return CallResult::handled_void();
     }
@@ -918,7 +933,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_int(n ? n->visibility : 0);
     }
     if (m == "setEnabled") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->enabled = ctx.arg_as_bool(0, true);
         return CallResult::handled_void();
     }
@@ -927,7 +942,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_bool(n ? n->enabled : true);
     }
     if (m == "setClickable") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->clickable = ctx.arg_as_bool(0, false);
         return CallResult::handled_void();
     }
@@ -938,7 +953,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "setImageResource") {
         // EXP-067: ImageView.setImageResource(int resid)
         // Store the resource ID so the renderer can look up the drawable path.
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->image_resource_id = ctx.arg_as_int(0, 0);
         std::cerr << "[EXP067-SETIMAGE] view_id=" << ctx.receiver_id
                   << " resid=0x" << std::hex << n->image_resource_id << std::dec
@@ -962,7 +977,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // (usually the Activity). We store it so getContext() can return it later.
     if (m == "<init>" && ctx.args.size() >= 1 &&
         ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         // Check if the first arg looks like a Context/Activity (it usually is)
         uint32_t ctx_id = ctx.args[0].object_id;
         if (ctx_id != 0 && ctx_id != ctx.receiver_id) {
@@ -977,7 +992,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "setBackgroundResource") {
         // EXP-067: View.setBackgroundResource(int resid)
         // Store the resource ID for color/drawable resolution.
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         int32_t resid = ctx.arg_as_int(0, 0);
         n->image_resource_id = resid;  // reuse field for background
         std::cerr << "[EXP067-SETBGRES] view_id=" << ctx.receiver_id
@@ -986,7 +1001,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "setText") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         // EXP-065: Trace setText calls to diagnose "FIELD_PREFERRED_AUDIO_LANGUAGES" leak.
         // (Root cause was elsewhere — see execute_const_string per-DEX fix — but keep
         // the diagnostic logging for now to verify the fix.)
@@ -1029,7 +1044,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // Previously setHintText was stubbed at the engine level; now it's
     // allowed to dispatch here and we store the hint on the ViewNode.
     if (m == "setHint" || m == "setHintText") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->hint = ctx.arg_as_string(0);
         std::cerr << "[EXP065-SETHINT] view_id=" << ctx.receiver_id
                   << " class=" << ctx.class_name
@@ -1057,7 +1072,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // listener's onClick method. The listener is an OBJECT_REF passed as
     // arg 0.
     if (m == "setOnClickListener") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         uint32_t listener_id = ctx.arg_as_object(0, 0);
         n->click_listener_id = listener_id;
         // The listener's class descriptor is not always known here (the
@@ -1073,14 +1088,14 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "setOnLongClickListener") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         uint32_t listener_id = ctx.arg_as_object(0, 0);
         n->long_click_listener_id = listener_id;
         n->long_click_listener_class.clear();
         return CallResult::handled_void();
     }
     if (m == "setOnTouchListener") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         uint32_t listener_id = ctx.arg_as_object(0, 0);
         n->touch_listener_id = listener_id;
         n->touch_listener_class.clear();

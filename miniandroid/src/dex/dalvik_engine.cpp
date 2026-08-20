@@ -442,6 +442,86 @@ fallback:
     return "<unknown>";
 }
 
+// EXP-071 Phase 8: Per-DEX method proto (descriptor) resolution.
+// Returns the method's proto string, e.g. "(Ljava/lang/Runnable;J)V".
+// The proto_idx in DexMethodId points into proto_ids, which has a
+// shorty_idx (string_ids index for the shorty like "RLJ") AND a
+// parameters_off pointing to a TypeList of parameter types.
+//
+// We need the FULL proto (not just the shorty) because the shorty "RLJ"
+// doesn't tell us which L-prefixed types are arrays vs objects.
+//
+// We construct the proto string by walking the parameter type list and
+// concatenating descriptors, then wrapping in parens with the return type.
+std::string DalvikExecutionEngine::resolve_method_proto_for_dex(
+    uint32_t method_idx, uint32_t dex_index) const {
+
+    if (dex_index < per_dex_raw_data_.size()) {
+        const auto& raw = per_dex_raw_data_[dex_index];
+        if (raw.size() < sizeof(dex::DexHeader)) goto proto_fallback;
+
+        dex::DexHeader hdr;
+        std::memcpy(&hdr, raw.data(), sizeof(dex::DexHeader));
+
+        if (method_idx < hdr.method_ids_size &&
+            hdr.method_ids_off + (method_idx + 1) * sizeof(dex::DexMethodId) <= raw.size()) {
+
+            dex::DexMethodId mid;
+            std::memcpy(&mid, raw.data() + hdr.method_ids_off + method_idx * sizeof(dex::DexMethodId),
+                        sizeof(dex::DexMethodId));
+
+            // mid.proto_idx indexes into proto_ids table.
+            if (mid.proto_idx < hdr.proto_ids_size &&
+                hdr.proto_ids_off + (mid.proto_idx + 1) * 12 <= raw.size()) {
+
+                // DexProtoId is 12 bytes: shorty_idx (4) + return_type_idx (4) + parameters_off (4).
+                uint32_t shorty_idx, return_type_idx, parameters_off;
+                std::memcpy(&shorty_idx,     raw.data() + hdr.proto_ids_off + mid.proto_idx * 12 + 0, 4);
+                std::memcpy(&return_type_idx, raw.data() + hdr.proto_ids_off + mid.proto_idx * 12 + 4, 4);
+                std::memcpy(&parameters_off, raw.data() + hdr.proto_ids_off + mid.proto_idx * 12 + 8, 4);
+
+                // Resolve return type descriptor.
+                std::string return_desc;
+                if (return_type_idx < hdr.type_ids_size &&
+                    hdr.type_ids_off + (return_type_idx + 1) * 4 <= raw.size()) {
+                    uint32_t ret_str_idx;
+                    std::memcpy(&ret_str_idx, raw.data() + hdr.type_ids_off + return_type_idx * 4, 4);
+                    return_desc = read_dex_string_from_raw(raw, ret_str_idx, hdr);
+                }
+
+                // Build proto: "(" + params + ")" + return.
+                std::string proto = "(";
+                if (parameters_off != 0 && parameters_off + 4 <= raw.size()) {
+                    // TypeList starts with a uint32 size, then size * 4 bytes of type_idx.
+                    uint32_t list_size;
+                    std::memcpy(&list_size, raw.data() + parameters_off, 4);
+                    for (uint32_t i = 0; i < list_size; ++i) {
+                        uint32_t off = parameters_off + 4 + i * 2;  // each entry is 2 bytes (uint16)
+                        if (off + 2 > raw.size()) break;
+                        uint16_t type_idx;
+                        std::memcpy(&type_idx, raw.data() + off, 2);
+                        if (type_idx < hdr.type_ids_size &&
+                            hdr.type_ids_off + (type_idx + 1) * 4 <= raw.size()) {
+                            uint32_t desc_str_idx;
+                            std::memcpy(&desc_str_idx, raw.data() + hdr.type_ids_off + type_idx * 4, 4);
+                            proto += read_dex_string_from_raw(raw, desc_str_idx, hdr);
+                        }
+                    }
+                }
+                proto += ")";
+                proto += return_desc.empty() ? "V" : return_desc;
+                return proto;
+            }
+        }
+    }
+
+proto_fallback:
+    // Fallback: try merged proto_ids from dex_report_ (if available).
+    // The DexReport may not store protos — return "<unknown>" to let
+    // the caller fall back to the old behavior (no wide merging).
+    return "<unknown>";
+}
+
 // EXP-058: Per-DEX type descriptor resolution.
 // type_idx is relative to the current DEX file's type_ids table.
 // The type_ids table maps type_idx → string_ids_idx → descriptor string.
@@ -2374,6 +2454,89 @@ bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id) {
     return ok;
 }
 
+// EXP-071 Phase 8: Generic Runnable dispatch.
+//
+// Looks up a heap object by id, finds its class descriptor, and invokes
+// its run()V method via try_recursive_invoke. This is the bridge between
+// the HandlerShadow's queue (which stores heap object IDs of Runnables
+// scheduled via Handler.post / AndroidUtilities.runOnUIThread) and the
+// actual DEX bytecode execution.
+//
+// This is a GENERIC primitive — it does not check the class name or do
+// anything Telegram-specific. It works for any Runnable the runtime
+// encounters: Lambda0 (PhoneView$6 confirm callback), Lambda1 (delayed
+// onNextPressed trigger), Lambda2 (RequestDelegate), post-Response
+// response handlers, anything.
+//
+// Args:
+//   runnable_object_id — the heap object ID of the Runnable.
+//   response_object_id — optional second arg passed to run() (e.g. for
+//                        RequestDelegate.run(TLObject, TL_error)). 0 = no arg.
+//   error_object_id    — optional third arg (the TL_error). 0 = no arg.
+//
+// Returns true if the run() method was found and dispatched.
+bool DalvikExecutionEngine::dispatch_runnable(uint32_t runnable_object_id,
+                                              uint32_t response_object_id,
+                                              uint32_t error_object_id) {
+    if (runnable_object_id == 0) {
+        std::cerr << "[EXP071-RUN] dispatch_runnable called with id=0 (null)"
+                  << std::endl;
+        return false;
+    }
+    if (!heap_.has_object(runnable_object_id)) {
+        std::cerr << "[EXP071-RUN] dispatch_runnable id=" << runnable_object_id
+                  << " — object not on heap" << std::endl;
+        return false;
+    }
+    std::string runnable_class = heap_.get(runnable_object_id)->class_descriptor;
+    if (runnable_class.empty()) {
+        std::cerr << "[EXP071-RUN] dispatch_runnable id=" << runnable_object_id
+                  << " — object has no class descriptor" << std::endl;
+        return false;
+    }
+
+    // Build args for run():
+    //   No-arg Runnable:  args[0] = this
+    //   RequestDelegate:  args[0] = this, args[1] = response (TLObject), args[2] = error (TL_error)
+    std::vector<DalvikValue> args;
+    DalvikValue this_arg = DalvikValue::make_object(runnable_object_id, runnable_class);
+    args.push_back(this_arg);
+    if (response_object_id != 0) {
+        // The response class is whatever the heap says — typically TL_auth_sentCode.
+        std::string resp_class = "Lorg/telegram/tgnet/TLObject;";
+        if (heap_.has_object(response_object_id)) {
+            resp_class = heap_.get(response_object_id)->class_descriptor;
+        }
+        args.push_back(DalvikValue::make_object(response_object_id, resp_class));
+    }
+    if (error_object_id != 0) {
+        std::string err_class = "Lorg/telegram/tgnet/TLRPC$TL_error;";
+        if (heap_.has_object(error_object_id)) {
+            err_class = heap_.get(error_object_id)->class_descriptor;
+        }
+        args.push_back(DalvikValue::make_object(error_object_id, err_class));
+    } else if (response_object_id != 0) {
+        // RequestDelegate.run(TLObject, TL_error) — pass null as the error.
+        args.push_back(DalvikValue::make_null());
+    }
+
+    std::cerr << "[EXP071-RUN] event=RUNNABLE"
+              << " runnable=" << runnable_object_id
+              << " class=" << runnable_class
+              << " args=" << args.size()
+              << std::endl;
+
+    DalvikValue return_val = DalvikValue::make_void();
+    DalvikExecutionResult result;
+    bool ok = try_recursive_invoke(runnable_class, "run", args, return_val, result);
+
+    std::cerr << "[EXP071-RUN] event=RUNNABLE result="
+              << (ok ? "DISPATCHED" : "FAILED")
+              << " class=" << runnable_class
+              << std::endl;
+    return ok;
+}
+
 bool DalvikExecutionEngine::dispatch_click_by_class(const std::string& class_substring) {
     if (shadow_registry_ == nullptr) return false;
     auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
@@ -3900,7 +4063,12 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 int32_t val = static_cast<int32_t>(bytecode_[pc_ + 1]);
                 DalvikValue dv;
                 dv.type = DalvikType::INT64;
-                dv.int_val = val;
+                // EXP-071 Phase 8: For INT64 values, write to long_val (not int_val).
+                // int_val is a 32-bit field; long_val is the 64-bit field.
+                // Writing to int_val left long_val with uninitialized garbage,
+                // which broke the wide-arg merge in execute_invoke_static
+                // (because the merge reads long_val for INT64 types).
+                dv.long_val = val;
                 set_register(vAA, dv);
                 trace.opcode_name = "const-wide/32";
                 pc_ += 2;
@@ -4027,7 +4195,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 if (pc_ + 1 >= bytecode_.size()) return false;
                 uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
                 int16_t val = static_cast<int16_t>(bytecode_[pc_ + 1]);
-                DalvikValue dv; dv.type = DalvikType::INT64; dv.int_val = val;
+                // EXP-071 Phase 8: write to long_val (64-bit) for INT64 type,
+                // NOT int_val (32-bit). The previous bug left long_val with
+                // garbage, breaking wide-arg merging in execute_invoke_static.
+                DalvikValue dv; dv.type = DalvikType::INT64; dv.long_val = val;
                 set_register(vAA, dv);
                 trace.opcode_name = "const-wide/16";
                 pc_ += 2;
@@ -4038,7 +4209,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 if (pc_ + 1 >= bytecode_.size()) return false;
                 uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
                 uint16_t val = bytecode_[pc_ + 1];
-                DalvikValue dv; dv.type = DalvikType::INT64; dv.int_val = static_cast<int64_t>(val) << 48;
+                // EXP-071 Phase 8: write to long_val for INT64 type.
+                DalvikValue dv; dv.type = DalvikType::INT64; dv.long_val = static_cast<int64_t>(val) << 48;
                 set_register(vAA, dv);
                 trace.opcode_name = "const-wide/high16";
                 pc_ += 2;
@@ -4050,7 +4222,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
                 uint64_t val = 0;
                 for (int i = 0; i < 4; i++) val |= static_cast<uint64_t>(bytecode_[pc_ + 1 + i]) << (i * 16);
-                DalvikValue dv; dv.type = DalvikType::INT64; dv.int_val = static_cast<int64_t>(val);
+                // EXP-071 Phase 8: write to long_val for INT64 type.
+                DalvikValue dv; dv.type = DalvikType::INT64; dv.long_val = static_cast<int64_t>(val);
                 set_register(vAA, dv);
                 trace.opcode_name = "const-wide";
                 pc_ += 5;
@@ -5539,6 +5712,15 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
                                                  DalvikExecutionResult& result) {
     // Format similar to invoke-virtual but for static methods
     if (pc + 2 >= bytecode_.size()) return false;
+
+    // EXP-071 Phase 8: Mark this call as static so try_shadow_dispatch
+    // doesn't treat args[0] as `this`. See header comment for details.
+    current_invoke_is_static_ = true;
+    // Use a scope guard to reset on return (we may have early returns below).
+    struct StaticGuard {
+        bool* p;
+        ~StaticGuard() { *p = false; }
+    } guard{&current_invoke_is_static_};
     
     uint16_t instr = bytecode_[pc];
     // EXP-037 Phase B (BLOCKER-015 FIX): 35c format is "AA|op BBBB FEDC"
@@ -5560,10 +5742,121 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     std::vector<DalvikValue> args;
     // EXP-045: Only push argc registers (from 35c format: high nibble of high byte)
     uint8_t argc = (instr >> 12) & 0xF;
-    for (int i = 0; i < argc && i < 5; ++i) {
-        args.push_back(get_register(regs[i]));
+
+    // EXP-071 Phase 8: Resolve method name and proto EARLY so we can use them
+    // for debug tracing in the wide-merge code below. The original code only
+    // resolved method_name AFTER the args were built, which meant our debug
+    // trace couldn't reference method_name.
+    std::string method_name = "<static_method:" + std::to_string(method_idx) + ">";
+    std::string class_name = "<static_class>";
+    if (dex_report_) {
+        method_name = resolve_method_name_for_dex(method_idx, current_dex_index_);
+        class_name = resolve_method_class_for_dex(method_idx, current_dex_index_);
     }
-    
+
+    // EXP-071 Phase 8: Wide register merging.
+    //
+    // For methods with wide arguments (J = long, D = double), each wide arg
+    // occupies TWO consecutive register slots in the Dalvik register file.
+    // Without merging, `invoke-static {v3, v0, v1}, runOnUIThread(Runnable, J)`
+    // would push 3 args (v3=Runnable, v0=low32, v1=high32) instead of 2
+    // (Runnable, long). This breaks HandlerShadow's delay extraction
+    // because args[1] is a low-half INT32 instead of an INT64 long.
+    //
+    // Fix: parse the method descriptor and merge wide register pairs into
+    // single INT64/FLOAT64 DalvikValues. The descriptor is the (Ljava/lang/Runnable;J)V
+    // string from the DEX method_id table; we walk the parameter types left
+    // to right, consuming registers from the regs[] array in order.
+    std::string method_proto = "<unknown>";
+    if (dex_report_) {
+        method_proto = resolve_method_proto_for_dex(method_idx, current_dex_index_);
+    }
+
+    // Parse the parameter list inside the parens.
+    // Format: "(Ljava/lang/Runnable;J)V" → params = ["Ljava/lang/Runnable;", "J"]
+    std::vector<std::string> param_types;
+    if (method_proto != "<unknown>") {
+        size_t lp = method_proto.find('(');
+        size_t rp = method_proto.find(')');
+        if (lp != std::string::npos && rp != std::string::npos && rp > lp) {
+            std::string params = method_proto.substr(lp + 1, rp - lp - 1);
+            size_t i = 0;
+            while (i < params.size()) {
+                char c = params[i];
+                if (c == 'L') {
+                    size_t semi = params.find(';', i);
+                    if (semi == std::string::npos) break;
+                    param_types.push_back(params.substr(i, semi - i + 1));
+                    i = semi + 1;
+                } else if (c == '[') {
+                    // Array — keep eating [ until non-[
+                    size_t start = i;
+                    while (i < params.size() && params[i] == '[') i++;
+                    if (i < params.size() && params[i] == 'L') {
+                        size_t semi = params.find(';', i);
+                        if (semi == std::string::npos) break;
+                        param_types.push_back(params.substr(start, semi - start + 1));
+                        i = semi + 1;
+                    } else {
+                        param_types.push_back(params.substr(start, i - start + 1));
+                        i += 1;
+                    }
+                } else {
+                    // Primitive — single char (B C D F I J S Z V)
+                    param_types.push_back(std::string(1, c));
+                    i += 1;
+                }
+            }
+        }
+    }
+
+    // Walk params, consuming registers from regs[]. Each wide param (J or D)
+    // consumes TWO register slots; otherwise one.
+    size_t reg_idx = 0;
+    for (size_t p = 0; p < param_types.size() && reg_idx < 5 && (int)reg_idx < argc; ++p) {
+        const std::string& pt = param_types[p];
+        if (pt == "J" || pt == "D") {
+            // Wide: this register pair holds a 64-bit value.
+            DalvikValue lo = get_register(regs[reg_idx]);
+            if (lo.type == DalvikType::INT64) {
+                // Case 1: low register already holds the full INT64 (set by const-wide/*).
+                if (pt == "J") {
+                    args.push_back(lo);
+                } else {
+                    double d;
+                    int64_t bits = lo.long_val;
+                    std::memcpy(&d, &bits, sizeof(d));
+                    args.push_back(DalvikValue::make_double(d));
+                }
+            } else if (lo.type == DalvikType::FLOAT64) {
+                args.push_back(lo);
+            } else {
+                // Case 2: merge two registers (split wide value).
+                DalvikValue hi = get_register(regs[reg_idx + 1]);
+                int64_t combined = (static_cast<int64_t>(hi.int_val) << 32) |
+                                   (static_cast<uint32_t>(lo.int_val));
+                if (pt == "J") {
+                    args.push_back(DalvikValue::make_long(combined));
+                } else {
+                    double d;
+                    int64_t bits = combined;
+                    std::memcpy(&d, &bits, sizeof(d));
+                    args.push_back(DalvikValue::make_double(d));
+                }
+            }
+            reg_idx += 2;
+        } else {
+            args.push_back(get_register(regs[reg_idx]));
+            reg_idx += 1;
+        }
+    }
+    // If we couldn't parse params (proto unavailable), fall back to old behavior.
+    if (param_types.empty() && args.empty()) {
+        for (int i = 0; i < argc && i < 5; ++i) {
+            args.push_back(get_register(regs[i]));
+        }
+    }
+
     // EXP-063: Trace invoke-static for getString
     if (dex_report_) {
         std::string mn = resolve_method_name_for_dex(method_idx, current_dex_index_);
@@ -5584,13 +5877,33 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
             std::cerr << std::endl;
         }
     }
-    
-    // EXP-037 Phase B (BLOCKER-002 FIX): resolve method_idx via DexReport.
-    std::string method_name = "<static_method:" + std::to_string(method_idx) + ">";
-    std::string class_name = "<static_class>";
-    if (dex_report_) {
-        method_name = resolve_method_name_for_dex(method_idx, current_dex_index_);
-        class_name = resolve_method_class_for_dex(method_idx, current_dex_index_);
+
+    // EXP-071 Phase 8: Trace runOnUIThread specifically to verify wide-arg merging.
+    if (method_name == "runOnUIThread" || method_name == "executeOnUIThread") {
+        std::cerr << "[EXP071-RUNONUI] class=" << class_name
+                  << " method=" << method_name
+                  << " argc=" << (int)argc
+                  << " args_count=" << args.size()
+                  << " proto=" << method_proto;
+        for (size_t i = 0; i < args.size(); ++i) {
+            std::cerr << " arg[" << i << "]=";
+            switch (args[i].type) {
+                case DalvikType::OBJECT_REF:
+                    std::cerr << "obj#" << args[i].object_id
+                              << "(" << args[i].class_desc << ")";
+                    break;
+                case DalvikType::INT64:
+                    std::cerr << "long=" << args[i].long_val;
+                    break;
+                case DalvikType::INT32:
+                    std::cerr << "int=" << args[i].int_val;
+                    break;
+                default:
+                    std::cerr << "<other>";
+                    break;
+            }
+        }
+        std::cerr << std::endl;
     }
     
     // Common static methods we might recognize (legacy hint — now used only
@@ -6537,66 +6850,97 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                                                 ApiCallTrace::Status& status) {
     if (shadow_registry_ == nullptr) return false;
 
-    // Build a CallContext. For instance methods, the first arg is `this`.
-    // We don't know from here whether the method is static or instance —
-    // the shadow handles both cases by reading from ctx.receiver_id (if
-    // set) or treating the first arg as the receiver (for instance methods).
+    // EXP-071 Phase 8: Generic static-method shadow dispatch fix.
     //
-    // Convention: if the first arg is an OBJECT_REF, we treat it as the
-    // receiver and shift the remaining args into ctx.args. Otherwise we
-    // treat the call as static and put all args in ctx.args.
+    // For static methods like AndroidUtilities.runOnUIThread(Runnable),
+    // args[0] is the FIRST ARGUMENT (the Runnable), not `this`. The
+    // previous code used args[0].class_desc as ctx.class_name, which
+    // made HandlerShadow's "Lorg/telegram/messenger/AndroidUtilities;"
+    // branch fail to match (because args[0].class_desc was the Runnable's
+    // class, not "AndroidUtilities"). As a result, runOnUIThread was a
+    // silent no-op, the runnable was never enqueued, and the entire
+    // async callback chain (Lambda0 → lambda$onConfirm$1 → Lambda1 →
+    // lambda$onConfirm$0 → onNextPressed → auth.sendCode) was broken.
     //
-    // EXP-060: Use args[0].class_desc (the RUNTIME class) for ctx.class_name
-    // instead of the passed-in class_name (which may be a parent class like
-    // "Landroid/view/View;" used as a fallback for shadow dispatch). This
-    // ensures the ViewNode stores the correct runtime class descriptor.
-    framework::CallContext ctx;
-    // EXP-060: Prefer the receiver's runtime class for ctx.class_name.
-    // Fall back to the passed-in class_name only if there's no receiver
-    // or the receiver has no class_desc.
+    // Fix: try dispatch with the DECLARED class_name FIRST. If the shadow
+    // returns not_handled, retry with args[0].class_desc (the runtime
+    // class of `this` for instance methods). This works for both:
+    //   * Static calls  — class_name="Lorg/telegram/messenger/AndroidUtilities;"
+    //   * Instance calls — class_name="Landroid/view/View;" (or args[0].class_desc
+    //     for the actual runtime subclass like IntroActivity$4).
+    auto build_ctx = [&](const std::string& chosen_class) {
+        framework::CallContext ctx;
+        ctx.class_name = chosen_class;
+        ctx.method = method;
+        // EXP-071 Phase 8: For INSTANCE methods, args[0] is `this` (the receiver)
+        // and the remaining args are the parameters. We shift them so that
+        // ctx.args[0] is the first PARAMETER (not `this`), and set
+        // ctx.receiver_id/receiver_class for `this`.
+        //
+        // For STATIC methods (current_invoke_is_static_), args[0] is already
+        // the first PARAMETER — there's no `this`. We put ALL args in ctx.args
+        // without shifting.
+        //
+        // Without this distinction, static calls like
+        // AndroidUtilities.runOnUIThread(Runnable, long) would have their
+        // Runnable stolen as `this` and never reach HandlerShadow's enqueue
+        // (which expects ctx.args[0] to be the Runnable).
+        if (!current_invoke_is_static_ &&
+            !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            ctx.has_receiver = true;
+            ctx.receiver_id = args[0].object_id;
+            ctx.receiver_class = args[0].class_desc;
+            for (size_t i = 1; i < args.size(); i++) {
+                ctx.args.push_back(dalvik_value_to_arg(args[i]));
+            }
+        } else {
+            for (const auto& a : args) {
+                ctx.args.push_back(dalvik_value_to_arg(a));
+            }
+        }
+        return ctx;
+    };
+
+    // Pass 1: try with the declared class_name.
+    auto cr = shadow_registry_->dispatch(build_ctx(class_name));
+    // EXP-071 Phase 8 debug — log dispatch attempts for runOnUIThread.
+    if (method == "runOnUIThread" || method == "executeOnUIThread") {
+        std::cerr << "[EXP071-SHADOW-DISPATCH] pass1 class_name=" << class_name
+                  << " method=" << method
+                  << " handled=" << (cr.handled ? "YES" : "NO")
+                  << std::endl;
+    }
+    if (cr.handled) {
+        switch (cr.status) {
+            case framework::ApiCallStatus::IMPLEMENTED:
+                status = ApiCallTrace::Status::IMPLEMENTED; break;
+            case framework::ApiCallStatus::STUBBED:
+                status = ApiCallTrace::Status::STUBBED; break;
+            default:
+                status = ApiCallTrace::Status::STUBBED; break;
+        }
+        result = call_result_to_dalvik(cr);
+        return true;
+    }
+
+    // Pass 2: try with args[0].class_desc (runtime class of `this`).
     if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
-        !args[0].class_desc.empty()) {
-        ctx.class_name = args[0].class_desc;
-    } else {
-        ctx.class_name = class_name;
-    }
-    ctx.method = method;
-    // ctx.descriptor is left empty — the engine doesn't have an easy
-    // path to the proto descriptor here; shadows that need it can
-    // re-derive from class_name + method.
-
-    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
-        ctx.has_receiver = true;
-        ctx.receiver_id = args[0].object_id;
-        ctx.receiver_class = args[0].class_desc;
-        for (size_t i = 1; i < args.size(); i++) {
-            ctx.args.push_back(dalvik_value_to_arg(args[i]));
-        }
-    } else {
-        for (const auto& a : args) {
-            ctx.args.push_back(dalvik_value_to_arg(a));
+        !args[0].class_desc.empty() && args[0].class_desc != class_name) {
+        cr = shadow_registry_->dispatch(build_ctx(args[0].class_desc));
+        if (cr.handled) {
+            switch (cr.status) {
+                case framework::ApiCallStatus::IMPLEMENTED:
+                    status = ApiCallTrace::Status::IMPLEMENTED; break;
+                case framework::ApiCallStatus::STUBBED:
+                    status = ApiCallTrace::Status::STUBBED; break;
+                default:
+                    status = ApiCallTrace::Status::STUBBED; break;
+            }
+            result = call_result_to_dalvik(cr);
+            return true;
         }
     }
-
-    auto cr = shadow_registry_->dispatch(ctx);
-    if (!cr.handled) return false;
-
-    // EXP-051: Debug log — uncomment for shadow dispatch tracing.
-    // (Keep stderr noise low; only log unusual cases.)
-    // std::cerr << "[SHADOW] " << class_name << "." << method
-    //           << " → kind=" << static_cast<int>(cr.ret_kind) << std::endl;
-
-    // Map ApiCallStatus → ApiCallTrace::Status.
-    switch (cr.status) {
-        case framework::ApiCallStatus::IMPLEMENTED:
-            status = ApiCallTrace::Status::IMPLEMENTED; break;
-        case framework::ApiCallStatus::STUBBED:
-            status = ApiCallTrace::Status::STUBBED; break;
-        default:
-            status = ApiCallTrace::Status::STUBBED; break;
-    }
-    result = call_result_to_dalvik(cr);
-    return true;
+    return false;
 }
 
 bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
@@ -7627,19 +7971,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // EXP-044 Phase 1: AndroidUtilities.runOnUIThread / executeOnUIThread
-    // These methods post Runnables to the UI thread Handler. Without a real
-    // Handler/Looper, they would recurse infinitely. Stub as no-op (return void).
-    // This is safe because Telegram's startup code posts UI initialization
-    // tasks that we can't execute anyway (no UI rendering).
+    // EXP-071 Phase 8: AndroidUtilities.runOnUIThread / executeOnUIThread
+    //
+    // REMOVED the early-return stub that swallowed these calls as no-ops.
+    // Previously this stub ran AFTER try_shadow_dispatch() and prevented
+    // the HandlerShadow from ever seeing the call — but try_shadow_dispatch
+    // was ALSO misrouting the call (see the static-method fix above). Both
+    // bugs combined to make runOnUIThread a silent no-op.
+    //
+    // Now that try_shadow_dispatch correctly tries the declared class_name
+    // FIRST, HandlerShadow.dispatch("Lorg/telegram/messenger/AndroidUtilities;",
+    //   "runOnUIThread", [Runnable]) will properly enqueue the Runnable
+    // on the global event queue. ApplicationRuntime will drain the queue
+    // and invoke each Runnable's run() method after the click dispatch.
+    //
+    // If shadow dispatch somehow fails, fall through to legacy stub
+    // implementations below (so existing paths don't regress).
     // ────────────────────────────────────────────────────────────────────────
-    if (class_name.find("AndroidUtilities") != std::string::npos &&
-        (method == "runOnUIThread" || method == "executeOnUIThread" ||
-         method == "cancelRunOnUIThread")) {
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_void();
-        return true;
-    }
 
     // ────────────────────────────────────────────────────────────────────────
     // EXP-043 Phase 3: Thread.getStackTrace → StackTraceElement[] (empty array)
