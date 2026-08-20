@@ -449,6 +449,10 @@ public:
         // Common properties used by Android code paths.
         std::string text;     // TextView.getText()
         std::string hint;     // TextView.getHint() / EditText hint (EXP-065)
+        // EXP-067: Image resource ID — set by ImageView.setImageResource(int)
+        // The renderer can look up the drawable path via resource_drawable_paths_.
+        int32_t image_resource_id = 0;
+        std::string image_drawable_path;  // resolved APK asset path (e.g. "res/abc.webp")
         bool clickable = false;
         bool enabled = true;
         int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8

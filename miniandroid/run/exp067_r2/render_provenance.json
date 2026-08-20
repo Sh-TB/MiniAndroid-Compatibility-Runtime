@@ -13,8 +13,8 @@
     "object_id": 2728,
     "class": "Lorg/telegram/ui/LoginActivity$PhoneView;"
   },
-  "login_ui_png": "run/exp067/login_ui.png",
-  "login_debug_png": "run/exp067/login_debug.png",
+  "login_ui_png": "run/exp067_r2/login_ui.png",
+  "login_debug_png": "run/exp067_r2/login_debug.png",
   "rendered_views": [
     {
       "object_id": 2728,

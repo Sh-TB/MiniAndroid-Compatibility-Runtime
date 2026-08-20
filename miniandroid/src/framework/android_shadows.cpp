@@ -935,6 +935,32 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_bool(n ? n->clickable : false);
     }
+    if (m == "setImageResource") {
+        // EXP-067: ImageView.setImageResource(int resid)
+        // Store the resource ID so the renderer can look up the drawable path.
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        n->image_resource_id = ctx.arg_as_int(0, 0);
+        std::cerr << "[EXP067-SETIMAGE] view_id=" << ctx.receiver_id
+                  << " resid=0x" << std::hex << n->image_resource_id << std::dec
+                  << std::endl;
+        return CallResult::handled_void();
+    }
+    if (m == "setImageDrawable" || m == "setImageBitmap" ||
+        m == "setImageIcon" || m == "setImageURI") {
+        // For now, just mark that an image was set (we don't decode drawables yet).
+        return CallResult::handled_void();
+    }
+    if (m == "setBackgroundResource") {
+        // EXP-067: View.setBackgroundResource(int resid)
+        // Store the resource ID for color/drawable resolution.
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        int32_t resid = ctx.arg_as_int(0, 0);
+        n->image_resource_id = resid;  // reuse field for background
+        std::cerr << "[EXP067-SETBGRES] view_id=" << ctx.receiver_id
+                  << " resid=0x" << std::hex << resid << std::dec
+                  << std::endl;
+        return CallResult::handled_void();
+    }
     if (m == "setText") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
         // EXP-065: Trace setText calls to diagnose "FIELD_PREFERRED_AUDIO_LANGUAGES" leak.

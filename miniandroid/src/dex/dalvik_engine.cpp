@@ -2082,6 +2082,20 @@ bool DalvikExecutionEngine::dump_view_tree(const std::string& path) {
         n["y"] = node->y;
         n["text"] = node->text;
         n["hint"] = node->hint;  // EXP-065: EditText hint
+        // EXP-067: Image resource ID and drawable path
+        n["image_resource_id"] = node->image_resource_id;
+        if (node->image_resource_id != 0) {
+            auto it = field_name_by_resid_.find(node->image_resource_id);
+            if (it != field_name_by_resid_.end()) {
+                n["image_resource_name"] = it->second;
+                auto pit = resource_drawable_paths_.find(it->second);
+                if (pit != resource_drawable_paths_.end()) {
+                    n["image_drawable_path"] = pit->second;
+                    // Note: can't modify node here (it's const) — renderer looks up
+                    // the path from image_resource_id at render time.
+                }
+            }
+        }
         n["clickable"] = node->clickable;
         n["enabled"] = node->enabled;
         n["visibility"] = node->visibility;
