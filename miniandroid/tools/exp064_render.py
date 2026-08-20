@@ -102,56 +102,31 @@ def load_font(size_px, weight='regular'):
 # View tree helpers
 # ============================================================================
 
-def is_text_view(cls):
-    """True if this class is capable of rendering text (TextView or subclass).
+def is_text_view(cls, view_type=None):
+    """True if this class is capable of rendering text.
 
-    For anonymous subclasses like LoginActivity$PhoneView$1 (which extends
-    AnimatedPhoneNumberEditText), we can't easily walk the superclass chain
-    from the class name alone — but we can recognize common patterns.
+    EXP-068: Prefer the semantic view_type field (from DEX superclass chain)
+    over class-name pattern matching. Falls back to pattern matching only if
+    view_type is not set.
     """
-    # Strip L...; descriptor
+    if view_type:
+        return view_type in ('TextView', 'EditText', 'Button', 'CheckedTextView')
+    # Fallback: class-name pattern matching (for older view trees without view_type)
     if cls.startswith('L') and cls.endswith(';'):
         cls = cls[1:-1]
     cls = cls.replace('/', '.')
-    # Known text-bearing classes (Android framework + common Telegram custom widgets)
     text_classes = (
-        'android.widget.TextView',
-        'android.widget.EditText',
-        'android.widget.Button',
-        'android.widget.CheckBox',
-        'android.widget.RadioButton',
-        'android.widget.ToggleButton',
-        'android.widget.ImageButton',  # not text-bearing but is a Button subclass
-        'android.widget.CheckedTextView',
-        'android.widget.AutoCompleteTextView',
-        'android.widget.MultiAutoCompleteTextView',
-        # Telegram text widgets
+        'android.widget.TextView', 'android.widget.EditText', 'android.widget.Button',
         'org.telegram.ui.Components.LinkSpanDrawable.LinksTextView',
         'org.telegram.ui.Components.EditTextBoldCursor',
-        'org.telegram.ui.Components.EditTextCaption',
         'org.telegram.ui.Components.AnimatedPhoneNumberEditText',
         'org.telegram.ui.Components.HintEditText',
-        'org.telegram.ui.Components.NumberTextView',
-        'org.telegram.ui.Components.AnimatedEmojiTextView',
-        'org.telegram.ui.Components.TextViewSwitcher',  # container, not text
-        'org.telegram.ui.ActionBar.SimpleTextView',
-        'org.telegram.ui.ActionBar.ActionBarMenu',
-        'org.telegram.ui.Components.RadioButton',
     )
     for tc in text_classes:
-        if cls == tc or cls.startswith(tc + '$') or cls.startswith(tc.split('.')[-1] + '$'):
+        if cls == tc or cls.startswith(tc + '$'):
             return True
-    # Heuristic fallback: class name ends with TextView / EditText / Button / Link
     short = cls.split('.')[-1]
     if short.endswith(('TextView', 'EditText', 'Button', 'LinksTextView')):
-        return True
-    # EXP-065: Telegram anonymous subclasses like LoginActivity$PhoneView$1/$3
-    # extend AnimatedPhoneNumberEditText — recognize them by pattern.
-    # This is a heuristic; the proper fix would be to expose the superclass
-    # chain in the view_tree.json (TODO).
-    if ('LoginActivity$PhoneView$' in cls or
-        'LoginActivity$LoginActivity' in cls):  # LoginActivitySmsView$1, etc.
-        # The class is likely an anonymous EditText subclass — treat as text view.
         return True
     return False
 
@@ -470,29 +445,25 @@ def render_ui(nodes, slide_root, screen_w, screen_h):
         w_draw = x2 - x
         h_draw = y2 - y
         cls = n.get('class', '')
+        view_type = n.get('view_type', '')
         text = n.get('text', '') or ''
         short = short_class_name(cls)
 
+        # EXP-068: Use semantic view_type (from DEX superclass chain) for rendering decisions.
+        # Falls back to class-name patterns for views without view_type.
         # Draw background per View type
-        if 'EditText' in short or 'AnimatedPhoneNumberEditText' in cls:
-            # Input field — light gray with subtle border
+        if view_type == 'EditText' or 'EditText' in short or 'AnimatedPhoneNumberEditText' in cls:
             draw.rectangle([x, y, x + w_draw - 1, y + h_draw - 1], fill=COLOR_INPUT_BG,
                            outline=COLOR_DIVIDER, width=2)
         elif 'OutlineTextContainerView' in cls:
-            # Container for EditText — render as input field visual
             draw.rectangle([x, y, x + w_draw - 1, y + h_draw - 1], fill=COLOR_INPUT_BG,
                            outline=COLOR_DIVIDER, width=2)
-        elif 'LoginActivity$PhoneView$' in cls or 'LoginActivity$LoginActivity' in cls:
-            # EXP-065: Anonymous EditText subclasses (extend AnimatedPhoneNumberEditText)
-            # Render as input fields.
-            draw.rectangle([x, y, x + w_draw - 1, y + h_draw - 1], fill=COLOR_INPUT_BG,
-                           outline=COLOR_DIVIDER, width=2)
-        elif 'Button' in short and 'ImageButton' not in short:
+        elif view_type == 'Button' or ('Button' in short and 'ImageButton' not in short):
             draw.rectangle([x, y, x + w_draw - 1, y + h_draw - 1], fill=COLOR_BUTTON_BG)
         elif 'NumberButtonView' in short or 'KeyboardView' in short:
             draw.rectangle([x, y, x + w_draw - 1, y + h_draw - 1], fill=COLOR_INPUT_BG,
                            outline=COLOR_DIVIDER)
-        elif 'ImageView' in short:
+        elif view_type == 'ImageView' or 'ImageView' in short:
             # EXP-067: Try to load the actual drawable from the APK.
             # If image_drawable_path is set, decode the bitmap and paste it.
             # Otherwise, fall back to a gray placeholder.
@@ -536,7 +507,7 @@ def render_ui(nodes, slide_root, screen_w, screen_h):
         # EXP-066: OutlineTextContainerView has a setText() method that stores
         # the floating label text (e.g. "Phone number"). The renderer should draw
         # this text as a small label above the input field.
-        if text and (is_text_view(cls) or 'OutlineTextContainerView' in cls):
+        if text and (is_text_view(cls, n.get('view_type')) or 'OutlineTextContainerView' in cls):
             # Choose font based on View type and text length
             if 'OutlineTextContainerView' in cls:
                 # Floating label — small text at the top of the input field
@@ -586,7 +557,7 @@ def render_ui(nodes, slide_root, screen_w, screen_h):
                 ty = y + max(0, (h_draw - font.size) // 2)
             for i, line in enumerate(lines[:6]):  # max 6 lines
                 draw.text((tx, ty + i * (font.size + 4)), line, fill=color, font=font)
-        elif n.get('hint') and is_text_view(cls):
+        elif n.get('hint') and is_text_view(cls, n.get('view_type')):
             # EXP-065: Render hint text (greyed out) for EditTexts with no text
             font = fonts['hint']
             color = COLOR_TEXT_HINT
@@ -710,6 +681,33 @@ def main():
         for cid in (node_map[oid].get('children', []) if oid in node_map else []):
             stack.append(cid)
     subtree_nodes = [node_map[oid] for oid in visible_subtree_ids if oid in node_map]
+
+    # EXP-068: Also include FragmentFloatingButton as an overlay.
+    # Telegram's LoginActivity has a FragmentFloatingButton as a SIBLING of the
+    # slide views (it's a child of LoginActivity$2, the ViewPager container).
+    # The button floats above the slide content and is the "Next" action.
+    floating_buttons = [n for n in nodes
+                        if 'FragmentFloatingButton' in n.get('class', '')
+                        and n.get('visibility', 0) == 0]  # VISIBLE
+    for fb in floating_buttons:
+        if fb['object_id'] not in visible_subtree_ids:
+            # Add the floating button and its visible descendants
+            stack = [fb['object_id']]
+            while stack:
+                oid = stack.pop()
+                if oid in visible_subtree_ids:
+                    continue
+                visible_subtree_ids.add(oid)
+                node = node_map.get(oid)
+                if node:
+                    subtree_nodes.append(node)
+                    # Only add visible children (skip GONE/INVISIBLE)
+                    for cid in node.get('children', []):
+                        child = node_map.get(cid)
+                        if child and child.get('visibility', 0) == 0:
+                            stack.append(cid)
+            print(f"[EXP064] Added FragmentFloatingButton overlay: id={fb['object_id']}")
+
     print(f"[EXP064] Subtree size: {len(subtree_nodes)} nodes")
 
     # Count text-bearing nodes in subtree
@@ -720,6 +718,26 @@ def main():
 
     # Phase 10: layout pass on slide subtree
     layout_subtree(slide, node_map, parent_map, args.width, args.height)
+
+    # EXP-068: Layout the FragmentFloatingButton as a floating overlay.
+    # It's positioned at the bottom-right of the screen, above the slide content.
+    for n in subtree_nodes:
+        if 'FragmentFloatingButton' in n.get('class', ''):
+            btn_size = 84  # typical FAB size (56dp * density 1.5)
+            n['layout_x'] = args.width - btn_size - 48  # 48px right margin
+            n['layout_y'] = args.height - btn_size - 144  # 144px bottom margin
+            n['layout_w'] = btn_size
+            n['layout_h'] = btn_size
+            n['layout_depth'] = 0  # render on top
+            # Also layout its visible children
+            for cid in n.get('children', []):
+                child = node_map.get(cid)
+                if child and child.get('visibility', 0) == 0:
+                    child['layout_x'] = n['layout_x'] + 12
+                    child['layout_y'] = n['layout_y'] + 12
+                    child['layout_w'] = btn_size - 24
+                    child['layout_h'] = btn_size - 24
+                    child['layout_depth'] = 1
     laid_out_count = sum(1 for n in subtree_nodes if 'layout_x' in n and n.get('layout_w', 0) > 0)
     print(f"[EXP064] Laid out: {laid_out_count} visible nodes")
 
