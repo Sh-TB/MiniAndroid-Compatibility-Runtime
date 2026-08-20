@@ -1,7 +1,9 @@
 <?xml version='1.0' encoding='utf-8' standalone='yes' ?>
 <map>
     <int name="intro_crashed_time" value="0" />
+    <string name="lastDarkTheme">Dark Blue</string>
     <int name="lastReloadStatusTime" value="0" />
     <int name="needGetStatuses" value="1" />
     <int name="newConfig" value="1" />
+    <int name="remote_version" value="1" />
 </map>
