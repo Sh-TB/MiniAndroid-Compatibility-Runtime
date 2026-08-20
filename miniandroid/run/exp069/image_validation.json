@@ -1,0 +1,99 @@
+{
+  "png_valid": true,
+  "fresh": true,
+  "png_path": "run/exp069/login_ui.png",
+  "png_dimensions": [
+    1080,
+    1920
+  ],
+  "png_sha256": "064b82f2582faf7624f9a6d8f755bee48c4d4d78be115a81fe62fd7e055b1ead",
+  "png_size_bytes": 27369,
+  "non_background_pixel_count": 1261,
+  "non_background_pixel_percent": 1.52,
+  "text_expected": [
+    "Please confirm your country code and enter your phone number",
+    "Phone number",
+    "Country"
+  ],
+  "text_detected": [
+    "Please confirm your country code and enter your phone number",
+    "Phone number",
+    "Country"
+  ],
+  "match_rate": 1.0,
+  "login_ui_confidence": "PROVEN",
+  "checks": {
+    "file_exists": true,
+    "dimensions_ok": true,
+    "fresh": true,
+    "age_seconds": 1.5,
+    "has_content_pixels": true,
+    "text_regions_have_pixels": true,
+    "ocr_ran": true
+  },
+  "text_regions_count": 5,
+  "region_findings": [
+    {
+      "object_id": 2734,
+      "text_snippet": "Please confirm your country code and enter your ph",
+      "bounds": [
+        48,
+        72,
+        984,
+        180
+      ],
+      "dark_pixel_density": 0.0211,
+      "has_text_pixels": true
+    },
+    {
+      "object_id": 2751,
+      "text_snippet": "Country",
+      "bounds": [
+        48,
+        260,
+        984,
+        120
+      ],
+      "dark_pixel_density": 0.0,
+      "has_text_pixels": false
+    },
+    {
+      "object_id": 2777,
+      "text_snippet": "Phone number",
+      "bounds": [
+        48,
+        388,
+        984,
+        120
+      ],
+      "dark_pixel_density": 0.0209,
+      "has_text_pixels": true
+    },
+    {
+      "object_id": 2791,
+      "text_snippet": "+",
+      "bounds": [
+        66,
+        400,
+        948,
+        20
+      ],
+      "dark_pixel_density": 0.0017,
+      "has_text_pixels": false
+    },
+    {
+      "object_id": 2827,
+      "text_snippet": "+15551234567",
+      "bounds": [
+        66,
+        484,
+        948,
+        30
+      ],
+      "dark_pixel_density": 0.1076,
+      "has_text_pixels": true
+    }
+  ],
+  "ocr_raw_text": "Please confirm your country code and enter your phone number.\n\nCountry\n\nCountry\n\nPhone number\n\n+15551234567",
+  "ocr_normalized": "Please confirm your country code and enter your phone number. Country Country Phone number +15551234567"
+}

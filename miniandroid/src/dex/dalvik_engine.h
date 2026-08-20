@@ -1174,6 +1174,19 @@ public:
     // registered listener was found.
     bool dispatch_click_by_class(const std::string& class_substring);
 
+    // EXP-069: Generic text input dispatch.
+    // Injects text into a TextView/EditText by:
+    //   1. Storing the text on the ViewNode (ViewShadow.setText)
+    //   2. Storing it on the heap object (for getText() in DEX bytecode)
+    //   3. Triggering any registered TextWatchers
+    // Returns true if the view was found and text was set.
+    bool dispatch_text_input(uint32_t view_object_id, const std::string& text);
+
+    // EXP-069: Convenience — find an EditText by class descriptor substring
+    // and dispatch text input. Returns true if a matching view was found.
+    bool dispatch_text_input_by_class(const std::string& class_substring,
+                                       const std::string& text);
+
     // EXP-061: Dump the full ViewNode tree (from ViewShadow) to a JSON
     // file. Each node includes object_id, class, parent, children,
     // geometry (x,y,width,height), text, visibility, clickable,
