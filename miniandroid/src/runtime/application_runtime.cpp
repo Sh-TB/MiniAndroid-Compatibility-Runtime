@@ -1473,7 +1473,7 @@ bool ApplicationRuntime::execute_on_create() {
             // We use dispatch_text_input_by_class which finds it generically.
             std::cerr << "[EXP069] Phase 2: Injecting phone number..." << std::endl;
             bool input_ok = dalvik_engine.dispatch_text_input_by_class(
-                "PhoneView$3", "+15551234567");
+                "PhoneView$3", "15551234567");
             std::cerr << "[EXP069] Text input result: "
                       << (input_ok ? "DISPATCHED" : "FAILED") << std::endl;
 

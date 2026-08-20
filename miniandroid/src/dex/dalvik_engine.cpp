@@ -220,6 +220,14 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
         {"Landroid/widget/Space;", "Landroid/view/View;"},
         {"Landroid/view/TextureView;", "Landroid/view/View;"},
         {"Landroid/view/SurfaceView;", "Landroid/view/View;"},
+        // Activity hierarchy (EXP-071: needed for instanceof checks)
+        {"Landroid/content/Context;", "Ljava/lang/Object;"},
+        {"Landroid/content/ContextWrapper;", "Landroid/content/Context;"},
+        {"Landroid/app/Activity;", "Landroid/content/ContextWrapper;"},
+        {"Landroidx/appcompat/app/AppCompatActivity;", "Landroid/app/Activity;"},
+        {"Landroidx/fragment/app/FragmentActivity;", "Landroidx/appcompat/app/AppCompatActivity;"},
+        // Fragment hierarchy
+        {"Landroidx/fragment/app/Fragment;", "Ljava/lang/Object;"},
         // AppCompat widgets (AndroidX)
         {"Landroidx/appcompat/widget/AppCompatTextView;", "Landroid/widget/TextView;"},
         {"Landroidx/appcompat/widget/AppCompatEditText;", "Landroid/widget/EditText;"},
@@ -1411,6 +1419,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // Still let the bytecode execute (it just does iput-object + invalidate,
         // both safe). The shadow dispatch above already captured the text.
         // Fall through to normal execution.
+    }
+
+    // EXP-071: getParentActivity compatibility — return the Activity directly.
+    // The real method does getView().getContext() instanceof Activity, but
+    // invoke-interface dispatch for $default methods fails during onNextPressed.
+    // This returns the LaunchActivity singleton so onNextPressed can proceed.
+    if (method_name == "getParentActivity") {
+        std::cerr << "[EXP071] getParentActivity → LaunchActivity (compatibility intercept)"
+                  << " class=" << class_descriptor << std::endl;
+        recursion_depth_--;
+        return_val = get_or_create_singleton("Lorg/telegram/ui/LaunchActivity;");
+        last_invoke_return_ = return_val;
+        return true;
     }
 
     // EXP-070: Controlled network boundary — intercept ConnectionsManager.sendRequest.
@@ -4363,10 +4384,24 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
     std::string target_type = "<unknown>";
     target_type = resolve_type_for_dex(type_idx, current_dex_index_);
 
-    // Check instance-of (simplified - always false unless we track types properly)
+    // EXP-071: Use semantic superclass chain for instanceof check.
+    // Previously this only did an EXACT class match (src_val.class_desc == target_type),
+    // which failed for subclass checks like `obj instanceof Activity` when obj's
+    // actual class is LaunchActivity (a subclass of Activity).
+    // Now we use is_subclass_of() which walks the DEX superclass chain.
     DalvikValue src_val = get_register(src);
-    bool is_instance = (src_val.type == DalvikType::OBJECT_REF &&
-                       src_val.class_desc == target_type);
+    bool is_instance = false;
+    if (src_val.type == DalvikType::OBJECT_REF && src_val.object_id != 0) {
+        std::string obj_class = src_val.class_desc;
+        if (obj_class.empty() && heap_.has_object(src_val.object_id)) {
+            obj_class = heap_.get(src_val.object_id)->class_descriptor;
+        }
+        if (!obj_class.empty()) {
+            // Check if obj_class is a subclass of target_type (or equal)
+            is_instance = is_subclass_of(obj_class, target_type);
+        }
+    }
+    // Also check if null — null instanceof anything is false (already handled by OBJECT_REF check)
 
     set_register(dest, DalvikValue::make_bool(is_instance));
 
@@ -6538,6 +6573,55 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // EXP-071: BaseFragment.getParentActivity() → returns the Activity.
+    // This is a compatibility handler that returns the LaunchActivity singleton
+    // when getParentActivity() is called on a Fragment. The real Android method
+    // does getView().getContext() instanceof Activity, but our runtime's
+    // invoke-interface dispatch for $default methods sometimes fails.
+    // This handler ensures getParentActivity returns a non-null Activity,
+    // allowing PhoneView.onNextPressed to proceed to auth.sendCode.
+    if (method == "getParentActivity" &&
+        (class_name.find("BaseFragment") != std::string::npos ||
+         class_name.find("ActionBarLayout") != std::string::npos ||
+         class_name.find("Fragment") != std::string::npos)) {
+        result = get_or_create_singleton("Lorg/telegram/ui/LaunchActivity;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        std::cerr << "[EXP071] getParentActivity → LaunchActivity (compatibility)" << std::endl;
+        return true;
+    }
+
+    // EXP-071: View.getContext() → returns the Activity that created this View.
+    // This is called by BaseFragment.getParentActivity() which does:
+    //   getView().getContext() instanceof Activity
+    // We return the LaunchActivity singleton (which extends Activity).
+    // The instanceof check uses is_subclass_of() which walks the superclass chain.
+    if (method == "getContext" &&
+        (class_name.find("View") != std::string::npos ||
+         class_name.find("Context") != std::string::npos)) {
+        // First, try the shadow path — ViewShadow stores context_object_id
+        // when the View constructor captures the Context arg.
+        if (shadow_registry_ != nullptr) {
+            framework::CallContext ctx;
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+                ctx.has_receiver = true;
+                ctx.receiver_id = args[0].object_id;
+                ctx.receiver_class = args[0].class_desc;
+                ctx.class_name = args[0].class_desc;
+            }
+            ctx.method = "getContext";
+            auto cr = shadow_registry_->dispatch(ctx);
+            if (cr.handled) {
+                result = call_result_to_dalvik(cr);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        // Fallback: return the LaunchActivity singleton
+        result = get_or_create_singleton("Lorg/telegram/ui/LaunchActivity;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
     // P0.7 — Context.getApplicationContext → Context singleton
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getApplicationContext" &&
