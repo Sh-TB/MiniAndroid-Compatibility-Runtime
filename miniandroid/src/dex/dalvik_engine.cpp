@@ -1413,6 +1413,183 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // Fall through to normal execution.
     }
 
+    // EXP-070: Controlled network boundary — intercept ConnectionsManager.sendRequest.
+    // Telegram's sendRequest(TLObject, RequestDelegate, ...) internally calls
+    // native_sendRequest (JNI stub). The response never comes back, so the
+    // RequestDelegate callback never fires. This blocks the login→SMS transition.
+    //
+    // We intercept sendRequest here, capture the RequestDelegate argument,
+    // and deliver a controlled mock response through the REAL callback path:
+    //   1. Create a mock TL_auth_sentCode object on the heap
+    //   2. Invoke RequestDelegate.run(response, null_error) via try_recursive_invoke
+    //   3. Let Telegram's own callback bytecode handle the rest
+    //
+    // Classification: CONTROLLED_NETWORK_STUB — NOT real Telegram networking.
+    if (method_name == "sendRequest" &&
+        class_descriptor.find("ConnectionsManager") != std::string::npos) {
+        // Log the sendRequest call with argument info
+        std::cerr << "[EXP070-NET] sendRequest intercepted"
+                  << " class=" << class_descriptor
+                  << " argc=" << args.size()
+                  << std::endl;
+        for (size_t i = 0; i < args.size() && i < 5; ++i) {
+            std::cerr << "  arg[" << i << "] type=" << static_cast<int>(args[i].type);
+            if (args[i].type == DalvikType::OBJECT_REF) {
+                std::string cls = args[i].class_desc;
+                if (cls.empty() && heap_.has_object(args[i].object_id)) {
+                    cls = heap_.get(args[i].object_id)->class_descriptor;
+                }
+                std::cerr << " obj_id=" << args[i].object_id << " class=" << cls;
+            }
+            std::cerr << std::endl;
+        }
+
+        // Find the RequestDelegate argument.
+        // sendRequest overloads (args include 'this' at index 0):
+        //   3-arg: sendRequest(TLObject, RequestDelegate, int) — args[1]=req, args[2]=delegate
+        //   4-arg: sendRequest(TLObject, RequestDelegate, int, int) — args[1]=req, args[2]=delegate
+        //   5-arg: sendRequest(TLObject, RequestDelegate, QuickAckDelegate, int) — args[1]=req, args[2]=delegate
+        // The delegate is always the 2nd non-this arg (index 2 in args).
+        uint32_t delegate_id = 0;
+        uint32_t request_id = 0;
+        std::string delegate_class;
+        std::string request_class;
+
+        if (args.size() >= 3) {
+            // args[1] = request (TLObject subclass)
+            if (args[1].type == DalvikType::OBJECT_REF && args[1].object_id != 0) {
+                request_id = args[1].object_id;
+                request_class = args[1].class_desc;
+                if (request_class.empty() && heap_.has_object(args[1].object_id)) {
+                    request_class = heap_.get(args[1].object_id)->class_descriptor;
+                }
+            }
+            // args[2] = delegate (RequestDelegate — usually an anonymous lambda)
+            if (args[2].type == DalvikType::OBJECT_REF && args[2].object_id != 0) {
+                delegate_id = args[2].object_id;
+                delegate_class = args[2].class_desc;
+                if (delegate_class.empty() && heap_.has_object(args[2].object_id)) {
+                    delegate_class = heap_.get(args[2].object_id)->class_descriptor;
+                }
+            }
+        }
+
+        if (delegate_id != 0) {
+            std::cerr << "[EXP070-NET] RequestDelegate found: obj_id=" << delegate_id
+                      << " class=" << delegate_class
+                      << " request_id=" << request_id
+                      << " request_class=" << request_class
+                      << std::endl;
+
+            // EXP-070: Only deliver mock responses for auth.sendCode requests.
+            // Other requests (TL_langpack_getLanguages, TL_help_getNearestDc, etc.)
+            // are not part of the login flow — skip mock delivery for them.
+            bool is_auth_sendcode = (request_class.find("TL_auth_sendCode") != std::string::npos);
+            if (!is_auth_sendcode) {
+                std::cerr << "[EXP070-NET] Skipping mock for non-auth request: "
+                          << request_class << std::endl;
+                recursion_depth_--;
+                return_val = DalvikValue::make_int(0);
+                last_invoke_return_ = return_val;
+                return true;
+            }
+
+            std::cerr << "[EXP070-NET] auth.sendCode detected — delivering mock response"
+                      << std::endl;
+
+            // Create a mock TL_auth_sentCode response object on the heap.
+            // Telegram's callback expects a TLObject response. We create a
+            // minimal mock with the right class descriptor so instanceof checks pass.
+            // The real class is: Lorg/telegram/tgnet/TLRPC$TL_auth_sentCode;
+            uint32_t response_id = heap_.allocate(
+                "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCode;", 0, 0);
+
+            // Store a phone_code_hash field (a deterministic test hash).
+            // The callback reads this field via iget-object.
+            DalvikValue hash_val = DalvikValue::make_string(
+                "mock_phone_code_hash_exp070", 0);
+            heap_.set_object_field(response_id, "phone_code_hash", hash_val);
+
+            // Store a type field (TL_auth_sentCodeTypeSms).
+            // Create a nested object for the type.
+            uint32_t type_id = heap_.allocate(
+                "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCodeTypeSms;", 0, 0);
+            DalvikValue type_val = DalvikValue::make_object(
+                type_id, "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCodeTypeSms;");
+            heap_.set_object_field(response_id, "type", type_val);
+
+            // Store length field (5 digits).
+            DalvikValue length_val = DalvikValue::make_int(5);
+            heap_.set_object_field(response_id, "length", length_val);
+
+            // Store timeout field.
+            DalvikValue timeout_val = DalvikValue::make_int(30);
+            heap_.set_object_field(response_id, "timeout", timeout_val);
+
+            // Store is_sent_via_flash_call and other boolean fields to false.
+            DalvikValue false_val = DalvikValue::make_bool(false);
+            heap_.set_object_field(response_id, "is_sent_via_flash_call", false_val);
+
+            // Also initialize the type object's length field.
+            heap_.set_object_field(type_id, "length", length_val);
+
+            std::cerr << "[EXP070-NET] Created mock TL_auth_sentCode: obj_id=" << response_id
+                      << " phone_code_hash=\"mock_phone_code_hash_exp070\""
+                      << " type=TL_auth_sentCodeTypeSms length=5 timeout=30"
+                      << std::endl;
+
+            // Now invoke RequestDelegate.run(response, error) via try_recursive_invoke.
+            // RequestDelegate.run(TLObject response, TLRPC.TL_error error)
+            // args[0] = this (delegate), args[1] = response, args[2] = error (null)
+            std::vector<DalvikValue> delegate_args;
+            delegate_args.push_back(
+                DalvikValue::make_object(delegate_id, delegate_class));
+            delegate_args.push_back(
+                DalvikValue::make_object(response_id,
+                    "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCode;"));
+            delegate_args.push_back(DalvikValue::make_null());
+
+            DalvikValue delegate_return = DalvikValue::make_void();
+            DalvikExecutionResult delegate_result;
+            std::cerr << "[EXP070-NET] Invoking RequestDelegate.run(response, null)..."
+                      << " delegate_class=" << delegate_class << std::endl;
+            bool ok = try_recursive_invoke(delegate_class, "run",
+                                           delegate_args, delegate_return, delegate_result);
+            std::cerr << "[EXP070-NET] RequestDelegate.run result: "
+                      << (ok ? "DISPATCHED" : "FAILED") << std::endl;
+
+            // Also try the "run" method on the delegate's superclass if the
+            // delegate itself doesn't have a "run" method.
+            if (!ok && !delegate_class.empty()) {
+                // Try walking the superclass chain
+                std::string current = delegate_class;
+                for (int i = 0; i < 5; ++i) {
+                    auto it = class_to_superclass_.find(current);
+                    if (it == class_to_superclass_.end()) break;
+                    current = it->second;
+                    std::cerr << "[EXP070-NET] Trying superclass: " << current << std::endl;
+                    ok = try_recursive_invoke(current, "run",
+                                              delegate_args, delegate_return, delegate_result);
+                    if (ok) {
+                        std::cerr << "[EXP070-NET] Found run() in " << current << std::endl;
+                        break;
+                    }
+                }
+            }
+        } else {
+            std::cerr << "[EXP070-NET] No RequestDelegate found in args — "
+                      << "sendRequest stubbed without callback delivery" << std::endl;
+        }
+
+        // Return a dummy request ID (0x12345) — sendRequest returns int.
+        // The caller (execute_invoke_virtual) will see true==handled and set
+        // api_status = IMPLEMENTED. We just need to set return_val.
+        recursion_depth_--;
+        return_val = DalvikValue::make_int(0x12345);
+        last_invoke_return_ = return_val;
+        return true;
+    }
+
     // EXP-065: AnimatedPhoneNumberEditText.setHintText loops infinitely
     // at PC=0x1e (invoke-interface) calling DynamicAnimation.cancel()
     // repeatedly. The original EXP-062 stub skipped the entire call,
