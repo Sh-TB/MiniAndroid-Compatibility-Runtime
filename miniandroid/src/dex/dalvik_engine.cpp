@@ -2150,6 +2150,81 @@ bool DalvikExecutionEngine::dispatch_click_by_class(const std::string& class_sub
     return dispatch_click(view_id);
 }
 
+// EXP-069: Generic text input dispatch.
+// Injects text into a TextView/EditText by dispatching to the ViewShadow's
+// setText handler, which stores the text on the ViewNode. This makes
+// subsequent getText() calls in DEX bytecode return the new value.
+// If the View has registered TextWatchers, they would be triggered here
+// (TODO: implement TextWatcher callback dispatch).
+bool DalvikExecutionEngine::dispatch_text_input(uint32_t view_object_id,
+                                                 const std::string& text) {
+    if (shadow_registry_ == nullptr) {
+        std::cerr << "[EXP069-INPUT] no shadow registry — cannot dispatch" << std::endl;
+        return false;
+    }
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) {
+        std::cerr << "[EXP069-INPUT] no ViewShadow registered" << std::endl;
+        return false;
+    }
+    const auto* node = view_shadow->find_node(view_object_id);
+    if (node == nullptr) {
+        std::cerr << "[EXP069-INPUT] view_id=" << view_object_id
+                  << " not found in ViewShadow" << std::endl;
+        return false;
+    }
+
+    std::cerr << "[UI-EVENT] event=TEXT_INPUT"
+              << " view_object=" << view_object_id
+              << " view_class=" << node->class_desc
+              << " old_text=\"" << node->text << "\""
+              << " new_text=\"" << text << "\""
+              << std::endl;
+
+    // Dispatch to ViewShadow.setText — this stores the text on the ViewNode.
+    // We use the shadow dispatch path (same as what DEX setText would use).
+    framework::CallContext ctx;
+    ctx.has_receiver = true;
+    ctx.receiver_id = view_object_id;
+    ctx.receiver_class = node->class_desc;
+    ctx.class_name = node->class_desc;
+    ctx.method = "setText";
+    framework::CallContext::Arg arg;
+    arg.kind = framework::CallContext::Arg::Kind::STRING;
+    arg.string_val = text;
+    ctx.args.push_back(arg);
+    auto cr = shadow_registry_->dispatch(ctx);
+    if (!cr.handled) {
+        std::cerr << "[EXP069-INPUT] setText not handled by ViewShadow" << std::endl;
+        return false;
+    }
+
+    // Also store the text on the heap object so DEX getText() can return it.
+    // The ViewShadow stores text on the ViewNode, but DEX bytecode that calls
+    // getText() would go through the shadow dispatch which reads from ViewNode.
+    // So this is already covered by the shadow dispatch above.
+
+    std::cerr << "[UI-EVENT] event=TEXT_INPUT result=DISPATCHED"
+              << " view=" << view_object_id
+              << " text=\"" << text << "\""
+              << std::endl;
+    return true;
+}
+
+bool DalvikExecutionEngine::dispatch_text_input_by_class(
+    const std::string& class_substring, const std::string& text) {
+    if (shadow_registry_ == nullptr) return false;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) return false;
+    uint32_t view_id = view_shadow->find_by_class_substring(class_substring);
+    if (view_id == 0) {
+        std::cerr << "[EXP069-INPUT] no View found matching '"
+                  << class_substring << "'" << std::endl;
+        return false;
+    }
+    return dispatch_text_input(view_id, text);
+}
+
 // EXP-061: Dump the full ViewNode tree to a JSON file.
 // This is the input to the software renderer. Each node includes
 // object_id, class, parent, children, geometry, text, listener info.

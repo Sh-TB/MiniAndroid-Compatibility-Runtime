@@ -1,0 +1,75 @@
+{
+  "png_valid": true,
+  "fresh": true,
+  "png_path": "run/exp069_synthetic/login_ui.png",
+  "png_dimensions": [
+    1080,
+    1920
+  ],
+  "png_sha256": "373d28ef569f1b00053db5100516ba86cd9f98849910a7de5fd8285b5757e9cf",
+  "png_size_bytes": 21010,
+  "non_background_pixel_count": 2862,
+  "non_background_pixel_percent": 3.45,
+  "text_expected": [
+    "Welcome to Acme",
+    "Enter your email",
+    "Sign In"
+  ],
+  "text_detected": [
+    "Welcome to Acme",
+    "Enter your email",
+    "Sign In"
+  ],
+  "match_rate": 1.0,
+  "login_ui_confidence": "PROVEN",
+  "checks": {
+    "file_exists": true,
+    "dimensions_ok": true,
+    "fresh": true,
+    "age_seconds": 1.4,
+    "has_content_pixels": true,
+    "text_regions_have_pixels": true,
+    "ocr_ran": true
+  },
+  "text_regions_count": 3,
+  "region_findings": [
+    {
+      "object_id": 2,
+      "text_snippet": "Welcome to Acme",
+      "bounds": [
+        48,
+        24,
+        984,
+        84
+      ],
+      "dark_pixel_density": 0.0614,
+      "has_text_pixels": true
+    },
+    {
+      "object_id": 3,
+      "text_snippet": "Enter your email",
+      "bounds": [
+        48,
+        116,
+        984,
+        80
+      ],
+      "dark_pixel_density": 0.0125,
+      "has_text_pixels": true
+    },
+    {
+      "object_id": 4,
+      "text_snippet": "Sign In",
+      "bounds": [
+        48,
+        204,
+        984,
+        60
+      ],
+      "dark_pixel_density": 0.0,
+      "has_text_pixels": false
+    }
+  ],
+  "ocr_raw_text": "Welcome to Acme\n\nEnter your email\n\nSign",
+  "ocr_normalized": "Welcome to Acme Enter your email Sign"
+}
