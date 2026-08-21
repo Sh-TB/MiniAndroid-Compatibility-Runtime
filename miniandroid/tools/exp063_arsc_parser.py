@@ -130,53 +130,55 @@ class ARSCParser:
 
     def _parse_container(self, offset, header_size, total_size):
         """Parse a non-standard container chunk (Telegram resource shrinking format).
-        
+
         The container has header_size bytes of header, then sub-chunks:
         - String pool (type names)
-        - String pool (key names)  
+        - String pool (key names)
         - PACKAGE + TYPE chunk pairs
         """
         # Parse the type name string pool and key name string pool
         sub_pos = offset + header_size
         end_pos = offset + total_size
-        
+
         type_names = []
         key_names = []
-        
+        current_pkg_id = 0  # Track the current package ID for TYPE chunks
+
         # First two sub-chunks should be string pools
         for i in range(2):
             if sub_pos + 8 > len(self.data) or sub_pos >= end_pos: break
             ct = struct.unpack_from('<H', self.data, sub_pos)[0]
             chs = struct.unpack_from('<H', self.data, sub_pos + 2)[0]
             cts = struct.unpack_from('<I', self.data, sub_pos + 4)[0]
-            
+
             if ct == 0x0001:  # STRING_POOL
                 pool = self._parse_string_pool(sub_pos)
                 if i == 0:
                     type_names = pool
                 else:
                     key_names = pool
-            
+
             sub_pos += cts
-        
+
         # Now parse PACKAGE + TYPE pairs
         while sub_pos < end_pos:
             if sub_pos + 8 > len(self.data): break
             ct = struct.unpack_from('<H', self.data, sub_pos)[0]
             chs = struct.unpack_from('<H', self.data, sub_pos + 2)[0]
             cts = struct.unpack_from('<I', self.data, sub_pos + 4)[0]
-            
+
             if ct == 0x0202:  # PACKAGE
                 # ResTable_package: type(2), header(2), total(4), id(4), name[256], type_sp_off(4), key_sp_off(4)
-                pkg_id = struct.unpack_from('<I', self.data, sub_pos + 8)[0]
-                # Package name is at +12 but might not be 256 bytes in shrinking format
-                # Just use pkg_id
-                if pkg_id not in self.packages:
-                    self.packages[pkg_id] = {}
-                    self.package_names[pkg_id] = f"pkg{pkg_id}"
+                current_pkg_id = struct.unpack_from('<I', self.data, sub_pos + 8)[0]
+                if current_pkg_id not in self.packages:
+                    self.packages[current_pkg_id] = {}
+                    self.package_names[current_pkg_id] = f"pkg{current_pkg_id}"
             elif ct == 0x0201:  # TYPE (actual resource data)
-                self._parse_type_data(sub_pos, chs, cts, 0, type_names, key_names)
-            
+                # EXP-075: Use the ACTUAL package ID from the most recent PACKAGE chunk,
+                # not hardcoded 0. This is critical for resolving resource IDs like
+                # 0x7f040008 (package 0x7f, type 0x04, entry 0x0008).
+                self._parse_type_data(sub_pos, chs, cts, current_pkg_id, type_names, key_names)
+
             if cts == 0: break
             sub_pos += cts
 
@@ -294,17 +296,35 @@ class ARSCParser:
                 }
 
     def resolve_string(self, res_id):
-        """Resolve a resource ID to a string value."""
+        """Resolve a resource ID to a string value.
+
+        The AXML uses runtime package IDs (typically 0x7f) but the ARSC
+        stores resource IDs with internal package IDs (e.g., 0x03). We match
+        on the low 24 bits (type_id + entry_idx) which are the same in both.
+        """
+        target_low = res_id & 0x00FFFFFF
+
+        # First try exact match
         pkg_id = (res_id >> 24) & 0xFF
-        type_id = (res_id >> 16) & 0xFF
-        entry_idx = res_id & 0xFFFF
-        
-        if pkg_id not in self.packages:
-            return None
-        for type_name, entries in self.packages[pkg_id].items():
-            for key_name, info in entries.items():
-                if info['res_id'] == res_id:
-                    return info['value']
+        if pkg_id in self.packages:
+            for type_name, entries in self.packages[pkg_id].items():
+                for key_name, info in entries.items():
+                    if info['res_id'] == res_id:
+                        return info['value']
+
+        # Fall back to matching on low 24 bits (type_id + entry_idx)
+        for pid in self.packages:
+            for type_name, entries in self.packages[pid].items():
+                for key_name, info in entries.items():
+                    if (info['res_id'] & 0x00FFFFFF) == target_low:
+                        return info['value']
+        return None
+
+    def resolve_layout_path(self, res_id):
+        """Resolve a layout resource ID to its AXML file path in the APK."""
+        val = self.resolve_string(res_id)
+        if val and isinstance(val, str) and val.startswith('res/layout'):
+            return val
         return None
 
     def dump_summary(self, max_per_type=5):

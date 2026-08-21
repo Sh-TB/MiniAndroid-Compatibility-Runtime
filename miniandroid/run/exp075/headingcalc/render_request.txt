@@ -1,0 +1,5 @@
+view_tree=run/exp075/headingcalc/view_tree.json
+screenshot=run/exp075/headingcalc/login_screen.png
+debug_screenshot=run/exp075/headingcalc/login_screen_debug.png
+width=1080
+height=1920

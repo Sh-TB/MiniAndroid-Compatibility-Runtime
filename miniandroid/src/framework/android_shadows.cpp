@@ -472,7 +472,7 @@ size_t HandlerShadow::drain_ready(std::vector<uint32_t>* out_drained) {
     // Drain in enqueue order (FIFO). This preserves the relative ordering
     // of runnables posted by the application.
     while (!queue_.empty()) {
-        ready.push_back(std::move(queue_.front()));
+        auto q = std::move(queue_.front());
         queue_.pop_front();
         out_drained->push_back(q.runnable_id);
         std::cerr << "[QUEUE] Runnable id=" << q.runnable_id
@@ -708,6 +708,21 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
 // ─────────────────────────────────────────────────────────────────────────
 CallResult ActivityShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
+    // EXP-075: Debug trace to confirm ActivityShadow is being called
+    if (m == "setContentView" || m == "findViewById") {
+        std::cerr << "[EXP075-ACTIVITY] ActivityShadow.dispatch: method=" << m
+                  << " class=" << ctx.class_name
+                  << " args=" << ctx.args.size();
+        if (!ctx.args.empty()) {
+            std::cerr << " arg0_kind=" << (int)ctx.args[0].kind;
+            if (ctx.args[0].kind == CallContext::Arg::Kind::INT) {
+                std::cerr << " arg0_int=" << ctx.args[0].int_val;
+            } else if (ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+                std::cerr << " arg0_obj=" << ctx.args[0].object_id;
+            }
+        }
+        std::cerr << std::endl;
+    }
     // Activity instance methods
     if (m == "setContentView") {
         // setContentView(View) or setContentView(int layoutResId).
