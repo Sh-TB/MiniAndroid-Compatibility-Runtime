@@ -448,6 +448,17 @@ public:
         int x = 0, y = 0;
         // Common properties used by Android code paths.
         std::string text;     // TextView.getText()
+        std::string hint;     // TextView.getHint() / EditText hint (EXP-065)
+        // EXP-071: Context — set during View creation (constructor receives Context).
+        // When getContext() is called on this View, return this object_id.
+        // In real Android, Views store the Context passed to their constructor.
+        // We store it so getParentActivity() can find the Activity via
+        // getView().getContext() instanceof Activity.
+        uint32_t context_object_id = 0;  // The Context (Activity) that created this View
+        // EXP-067: Image resource ID — set by ImageView.setImageResource(int)
+        // The renderer can look up the drawable path via resource_drawable_paths_.
+        int32_t image_resource_id = 0;
+        std::string image_drawable_path;  // resolved APK asset path (e.g. "res/abc.webp")
         bool clickable = false;
         bool enabled = true;
         int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8
@@ -603,12 +614,11 @@ public:
     struct CollectionState {
         std::vector<uint32_t> elements;  // object_ids of elements
         std::map<std::string, uint32_t> map_entries;  // key → value object_id
-        // EXP-071: String-valued map entries. HashMap<String,String> stores
-        // values that aren't heap objects — they're plain strings. Without
-        // this separate map, getString returns null because the value is
-        // stored in the heap as an OBJECT_REF (which doesn't exist for a
-        // primitive String). We store STRING args here.
-        std::map<std::string, std::string> map_string_entries;
+        // EXP-071 Phase 7: Store string values for HashMap.put(key, String).
+        // The original map_entries only stores object_ids, but many HashMap
+        // usages store String values (e.g., shortname → country name).
+        // Without this, HashMap.get returns null for string values.
+        std::map<std::string, std::string> map_string_entries;  // key → string value
         size_t iterator_position = 0;
         bool is_map = false;
     };

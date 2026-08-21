@@ -1,0 +1,187 @@
+{
+  "experiment": "EXP-064",
+  "renderer_backend": "CPU",
+  "gpu_used": false,
+  "screen_width": 1080,
+  "screen_height": 1920,
+  "pixel_format": "RGB888",
+  "view_count_total": 1385,
+  "view_count_subtree": 13,
+  "rendered_count": 13,
+  "text_bearing_count": 2,
+  "slide_root": {
+    "object_id": 2728,
+    "class": "Lorg/telegram/ui/LoginActivity$PhoneView;"
+  },
+  "login_ui_png": "run/exp064_run3/login_ui.png",
+  "login_debug_png": "run/exp064_run3/login_debug.png",
+  "rendered_views": [
+    {
+      "object_id": 2728,
+      "class": "Lorg/telegram/ui/LoginActivity$PhoneView;",
+      "bounds": [
+        0,
+        0,
+        1080,
+        1920
+      ],
+      "text": ""
+    },
+    {
+      "object_id": 2732,
+      "class": "Landroid/widget/TextView;",
+      "bounds": [
+        48,
+        24,
+        984,
+        40
+      ],
+      "text": ""
+    },
+    {
+      "object_id": 2734,
+      "class": "Lorg/telegram/ui/Components/LinkSpanDrawable$LinksTextView;",
+      "bounds": [
+        48,
+        72,
+        984,
+        180
+      ],
+      "text": "Please confirm your country code and enter your phone number."
+    },
+    {
+      "object_id": 2751,
+      "class": "Lorg/telegram/ui/Components/OutlineTextContainerView;",
+      "bounds": [
+        48,
+        260,
+        984,
+        468
+      ],
+      "text": ""
+    },
+    {
+      "object_id": 2777,
+      "class": "Lorg/telegram/ui/Components/OutlineTextContainerView;",
+      "bounds": [
+        48,
+        736,
+        984,
+        468
+      ],
+      "text": ""
+    },
+    {
+      "object_id": 2748,
+      "class": "Landroid/widget/LinearLayout;",
+      "bounds": [
+        60,
+        268,
+        960,
+        452
+      ],
+      "text": ""
+    },
+    {
+      "object_id": 2776,
+      "class": "Landroid/widget/LinearLayout;",
+      "bounds": [
+        60,
+        744,
+        960,
+        452
+      ],
+      "text": ""
+    },
+    {
+      "object_id": 2740,
+      "class": "Lorg/telegram/ui/Components/TextViewSwitcher;",
+      "bounds": [
+        66,
+        272,
+        948,
+        40
+      ],
+      "text": ""
+    },
+    {
+      "object_id": 2747,
+      "class": "Landroid/widget/ImageView;",
+      "bounds": [
+        66,
+        320,
+        948,
+        60
+      ],
+      "text": ""
+    },
+    {
+      "object_id": 2791,
+      "class": "Landroid/widget/TextView;",
+      "bounds": [
+        66,
+        748,
+        948,
+        156
+      ],
+      "text": "FIELD_PREFERRED_AUDIO_LANGUAGES"
+    },
+    {
+      "object_id": 2793,
+      "class": "Lorg/telegram/ui/LoginActivity$PhoneView$1;",
+      "bounds": [
+        66,
+        912,
+        948,
+        60
+      ],
+      "text": ""
+    },
+    {
+      "object_id": 2825,
+      "class": "Landroid/view/View;",
+      "bounds": [
+        66,
+        980,
+        948,
+        20
+      ],
+      "text": ""
+    },
+    {
+      "object_id": 2827,
+      "class": "Lorg/telegram/ui/LoginActivity$PhoneView$3;",
+      "bounds": [
+        66,
+        1008,
+        948,
+        60
+      ],
+      "text": ""
+    }
+  ],
+  "text_rendered": [
+    {
+      "object_id": 2734,
+      "class": "Lorg/telegram/ui/Components/LinkSpanDrawable$LinksTextView;",
+      "text": "Please confirm your country code and enter your phone number.",
+      "bounds": [
+        48,
+        72,
+        984,
+        180
+      ]
+    },
+    {
+      "object_id": 2791,
+      "class": "Landroid/widget/TextView;",
+      "text": "FIELD_PREFERRED_AUDIO_LANGUAGES",
+      "bounds": [
+        66,
+        748,
+        948,
+        156
+      ]
+    }
+  ]
+}
