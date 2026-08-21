@@ -1798,6 +1798,28 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
+    // EXP-077: PathParser.createNodesFromPathData loops infinitely at PC=0x9.
+    // This is called during vector drawable loading. The loop creates 50K
+    // Paint objects and blocks execution before IntroActivity.createView
+    // is reached. Stub it to return early.
+    if (class_descriptor.find("PathParser") != std::string::npos &&
+        method_name == "createNodesFromPathData") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (infinite loop in vector path parsing)");
+        recursion_depth_--;
+        return false;
+    }
+
+    // EXP-077: FireworksOverlay.<clinit> loops infinitely at PC=0x50.
+    // This is a static initializer that creates Path objects. Stub it.
+    if (class_descriptor.find("FireworksOverlay") != std::string::npos &&
+        method_name == "<clinit>") {
+        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
+            " — skipping (infinite loop in static initializer)");
+        recursion_depth_--;
+        return false;
+    }
+
     // EXP-058: setFragmentStack loops at PC=0x125 (invoke-interface returns
     // VOID_, treated as zero by if-nez, doesn't branch, calls again).
     if (class_descriptor.find("ActionBarLayout") != std::string::npos &&
