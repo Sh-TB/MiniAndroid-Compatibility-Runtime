@@ -25,6 +25,7 @@
 #include <sstream>
 #include <iomanip>
 #include <cassert>
+#include <cctype>    // EXP-071 Phase 6: std::toupper/std::tolower for String.toUpperCase/toLowerCase
 #include <unordered_set>
 
 namespace miniandroid {
@@ -1561,6 +1562,23 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return_val = get_or_create_singleton("Lorg/telegram/ui/LaunchActivity;");
         last_invoke_return_ = return_val;
         return true;
+    }
+
+    // EXP-071 Phase 6 debug: Trace setCountry entry to understand why it
+    // returns immediately without executing HashMap.get.
+    if (method_name == "setCountry" && class_descriptor.find("PhoneView") != std::string::npos) {
+        std::cerr << "[EXP071-SETCOUNTRY-ENTRY] class=" << class_descriptor
+                  << " method=" << method_name
+                  << " argc=" << args.size();
+        for (size_t i = 0; i < args.size() && i < 4; ++i) {
+            std::cerr << " arg[" << i << "]type=" << (int)args[i].type;
+            if (args[i].type == DalvikType::OBJECT_REF) {
+                std::cerr << " obj=" << args[i].object_id;
+            } else if (args[i].type == DalvikType::STRING_REF) {
+                std::cerr << " str=\"" << args[i].string_val << "\"";
+            }
+        }
+        std::cerr << std::endl;
     }
 
     // EXP-070: Controlled network boundary — intercept ConnectionsManager.sendRequest.
@@ -5021,6 +5039,22 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                   << " result_type=" << static_cast<int>(result_value.type)
                   << " result_obj=" << result_value.object_id
                   << std::endl;
+    }
+
+    // EXP-071 Phase 6 debug: Trace iget-object for TL_nearestDc.country
+    // to understand why setCountry receives null for the country argument.
+    if (field_res.field_name == "country" &&
+        field_res.class_descriptor.find("nearestDc") != std::string::npos) {
+        std::cerr << "[EXP071-IGET-COUNTRY] " << current_class_ << "." << current_method_
+                  << " pc=" << pc
+                  << " field=" << field_res.class_descriptor << "." << field_res.field_name
+                  << " obj_reg_type=" << static_cast<int>(obj_ref.type)
+                  << " obj_id=" << obj_ref.object_id
+                  << " result_type=" << static_cast<int>(result_value.type);
+        if (result_value.type == DalvikType::STRING_REF) {
+            std::cerr << " str=\"" << result_value.string_val << "\"";
+        }
+        std::cerr << std::endl;
     }
 
     // EXP-059: Debug — log iget-object in addFragmentToStack
@@ -8492,6 +8526,81 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (class_name == "Ljava/lang/String;" && method == "equals") {
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_bool(false);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-071 Phase 6: String.toUpperCase() → String
+    //
+    // Converts the string to uppercase. Needed by PhoneView.lambda$new$12
+    // which reads response.country ("US") and calls toUpperCase() before
+    // passing it to setCountry. Without this stub, toUpperCase returns null,
+    // causing setCountry to receive a null country argument and return early.
+    if (class_name == "Ljava/lang/String;" && method == "toUpperCase") {
+        std::string str = args.empty() ? "" :
+            (args[0].type == DalvikType::STRING_REF ? args[0].string_val : "");
+        std::string upper;
+        upper.reserve(str.size());
+        for (char c : str) {
+            upper += static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_string(upper, 0);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-071 Phase 6: String.toLowerCase() → String
+    if (class_name == "Ljava/lang/String;" && method == "toLowerCase") {
+        std::string str = args.empty() ? "" :
+            (args[0].type == DalvikType::STRING_REF ? args[0].string_val : "");
+        std::string lower;
+        lower.reserve(str.size());
+        for (char c : str) {
+            lower += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_string(lower, 0);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-071 Phase 6: TextUtils.equals(CharSequence, CharSequence) → boolean
+    if (class_name == "Landroid/text/TextUtils;" && method == "equals") {
+        bool equal = false;
+        if (args.size() >= 3) {
+            std::string a, b;
+            if (args[1].type == DalvikType::STRING_REF) a = args[1].string_val;
+            if (args[2].type == DalvikType::STRING_REF) b = args[2].string_val;
+            equal = (a == b);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(equal);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-071 Phase 6: TextUtils.isEmpty(CharSequence) → boolean
+    //
+    // TextUtils.isEmpty is a STATIC method: args[0] = the CharSequence.
+    // But some code paths also call isEmpty() on String/Collection objects
+    // via invoke-virtual, where args[0] = this and args[1] = the arg.
+    // We handle both: check args[0] first (static case), then args[1].
+    if (class_name == "Landroid/text/TextUtils;" && method == "isEmpty") {
+        bool empty = true;
+        // Static case: args[0] = CharSequence
+        if (!args.empty()) {
+            if (args[0].type == DalvikType::STRING_REF) {
+                empty = args[0].string_val.empty();
+            } else if (args[0].type == DalvikType::NULL_REF) {
+                empty = true;
+            } else if (args[0].type == DalvikType::OBJECT_REF) {
+                // Non-null object → not empty
+                empty = false;
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(empty);
         return true;
     }
 
