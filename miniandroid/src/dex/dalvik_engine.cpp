@@ -2559,7 +2559,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
     // EXP-078: Debug — trace LoginActivity method search
     if (class_descriptor.find("LoginActivity") != std::string::npos || class_descriptor.find("BaseFragment") != std::string::npos &&
-        (method_name == "onFragmentCreate" || method_name == "createView" || method_name == "onNextPressed")) {
+        (method_name == "onFragmentCreate" || method_name == "createView" || method_name == "onNextPressed" || method_name == "onDoneButtonPressed")) {
         auto all_methods_check = cls_ref.all_methods();
         std::cerr << "[EXP078-DEBUG] " << class_descriptor << "." << method_name
                   << " class found! methods=" << all_methods_check.size()
@@ -2725,22 +2725,37 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // EXP-053 FIX: args.size() includes `this` for instance methods.
         // EXP-063 FIX: Only subtract 1 for instance methods (args[0] is 'this').
         // For static methods, ALL args are parameters — don't subtract.
-        // The caller (invoke-static) doesn't include 'this' in args.
-        // The caller (invoke-virtual/direct/interface) includes 'this' as args[0].
-        // We can detect instance vs static by checking if args[0] is OBJECT_REF
-        // AND the method descriptor starts with a non-empty parameter list.
-        // Simpler approach: if arg_count > param_count, it's likely an instance
-        // method with 'this' in args[0]. Subtract 1.
-        // But if arg_count == param_count + 1 AND param_count matches exactly,
-        // it's an instance method with the right number of params.
-        // EXP-063: Only subtract if the method is NOT static.
-        // We check access_flags & 0x0008 (ACC_STATIC).
+        // EXP-079: Also accept the case where param_count == arg_count
+        // (static method called via invoke-direct) even if access_flags
+        // doesn't have ACC_STATIC. D8-generated $r8$lambda methods are
+        // static but may not have the ACC_STATIC flag set correctly.
         size_t effective_arg_count = arg_count;
         bool is_static_method = (method.access_flags & 0x0008) != 0;
         if (!is_static_method && arg_count > 0 && arg_count > param_count) {
             effective_arg_count = arg_count - 1;
         }
+        // EXP-079: If param_count == arg_count, accept it as a static-like match
+        if (param_count == arg_count) {
+            effective_arg_count = arg_count;
+        }
         if (param_count == effective_arg_count) {
+            // EXP-079: Debug trace for $r8$lambda method matching
+            if (method.name.find("$r8$lambda") != std::string::npos ||
+                method.name.find("createView") != std::string::npos) {
+                std::cerr << "[EXP079-MATCH] param_count=" << param_count
+                          << " effective_arg_count=" << effective_arg_count
+                          << " arg_count=" << arg_count
+                          << " is_static=" << is_static_method
+                          << " method=" << method.name
+                          << " desc=" << method.descriptor
+                          << std::endl;
+                if (!args.empty()) {
+                    std::cerr << "[EXP079-MATCH]   arg[0] type=" << (int)args[0].type
+                              << " class=" << args[0].class_desc
+                              << " obj=" << args[0].object_id
+                              << std::endl;
+                }
+            }
             // EXP-060: Check if the first parameter type matches the
             // first argument's class descriptor. This distinguishes
             // overloads with the same param count but different types
@@ -2839,6 +2854,16 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
         halted_on_return_ = false;
         halted_ = false;
+
+        // EXP-079: CRITICAL FIX — set current_dex_index_ to the DEX file
+        // that contains the class being executed. This ensures that
+        // resolve_method_name_for_dex, resolve_type_for_dex, etc. use the
+        // CORRECT per-DEX tables when resolving method_idx/type_idx from
+        // bytecode inside this method.
+        auto dex_it = class_to_dex_index_.find(cls_ref.name);
+        if (dex_it != class_to_dex_index_.end()) {
+            current_dex_index_ = dex_it->second;
+        }
 
         // EXP-058: Use actual register sizes from the code_item header.
         uint32_t regs_size = method.registers_size ? method.registers_size : 16;
@@ -5963,6 +5988,18 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     DalvikValue return_val = DalvikValue::make_void();
     ApiCallTrace::Status api_status = ApiCallTrace::Status::STUBBED;
 
+    // EXP-079: Debug — trace onNextPressed dispatch specifically
+    if (method_name_from_dex == "onNextPressed" || method_name_from_dex == "onDoneButtonPressed") {
+        std::cerr << "[EXP079-DISPATCH] method=" << method_name_from_dex
+                  << " declaring_class=" << declaring_class
+                  << " runtime_type=" << runtime_type
+                  << " static_type=" << static_type
+                  << " args[0]_type=" << (args.empty() ? -1 : (int)args[0].type)
+                  << " args[0]_obj=" << (args.empty() ? 0 : args[0].object_id)
+                  << " args[0]_class=" << (args.empty() ? "" : args[0].class_desc)
+                  << std::endl;
+    }
+
     // EXP-038 (BLOCKER-034): Try recursive DEX method invocation first.
     // If the target method exists in DEX with bytecode, execute it recursively
     // instead of bridging to the API stub layer. This enables real execution
@@ -6289,9 +6326,29 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     // EXP-038 (BLOCKER-034): Try recursive invocation.
     bool recursively_invoked = false;
     if (config_.enable_api_bridge) {
+        // EXP-079: Debug trace for lambda$createView$1 dispatch
+        if (method_name.find("createView") != std::string::npos ||
+            method_name.find("onDoneButton") != std::string::npos ||
+            method_name.find("onNextPressed") != std::string::npos) {
+            std::cerr << "[EXP079-DIRECT] invoke-direct: class=" << class_name
+                      << " method=" << method_name
+                      << " method_idx=" << method_idx
+                      << " dex_index=" << current_dex_index_
+                      << " args=" << args.size()
+                      << std::endl;
+        }
         if (try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
             recursively_invoked = true;
             status = ApiCallTrace::Status::IMPLEMENTED;
+            // EXP-079: Debug trace
+            if (method_name.find("createView") != std::string::npos) {
+                std::cerr << "[EXP079-DIRECT] try_recursive_invoke SUCCEEDED for " << method_name << std::endl;
+            }
+        } else {
+            // EXP-079: Debug trace
+            if (method_name.find("createView") != std::string::npos) {
+                std::cerr << "[EXP079-DIRECT] try_recursive_invoke FAILED for " << method_name << std::endl;
+            }
         }
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
