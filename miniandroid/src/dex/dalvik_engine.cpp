@@ -443,86 +443,6 @@ fallback:
     return "<unknown>";
 }
 
-// EXP-071 Phase 8: Per-DEX method proto (descriptor) resolution.
-// Returns the method's proto string, e.g. "(Ljava/lang/Runnable;J)V".
-// The proto_idx in DexMethodId points into proto_ids, which has a
-// shorty_idx (string_ids index for the shorty like "RLJ") AND a
-// parameters_off pointing to a TypeList of parameter types.
-//
-// We need the FULL proto (not just the shorty) because the shorty "RLJ"
-// doesn't tell us which L-prefixed types are arrays vs objects.
-//
-// We construct the proto string by walking the parameter type list and
-// concatenating descriptors, then wrapping in parens with the return type.
-std::string DalvikExecutionEngine::resolve_method_proto_for_dex(
-    uint32_t method_idx, uint32_t dex_index) const {
-
-    if (dex_index < per_dex_raw_data_.size()) {
-        const auto& raw = per_dex_raw_data_[dex_index];
-        if (raw.size() < sizeof(dex::DexHeader)) goto proto_fallback;
-
-        dex::DexHeader hdr;
-        std::memcpy(&hdr, raw.data(), sizeof(dex::DexHeader));
-
-        if (method_idx < hdr.method_ids_size &&
-            hdr.method_ids_off + (method_idx + 1) * sizeof(dex::DexMethodId) <= raw.size()) {
-
-            dex::DexMethodId mid;
-            std::memcpy(&mid, raw.data() + hdr.method_ids_off + method_idx * sizeof(dex::DexMethodId),
-                        sizeof(dex::DexMethodId));
-
-            // mid.proto_idx indexes into proto_ids table.
-            if (mid.proto_idx < hdr.proto_ids_size &&
-                hdr.proto_ids_off + (mid.proto_idx + 1) * 12 <= raw.size()) {
-
-                // DexProtoId is 12 bytes: shorty_idx (4) + return_type_idx (4) + parameters_off (4).
-                uint32_t shorty_idx, return_type_idx, parameters_off;
-                std::memcpy(&shorty_idx,     raw.data() + hdr.proto_ids_off + mid.proto_idx * 12 + 0, 4);
-                std::memcpy(&return_type_idx, raw.data() + hdr.proto_ids_off + mid.proto_idx * 12 + 4, 4);
-                std::memcpy(&parameters_off, raw.data() + hdr.proto_ids_off + mid.proto_idx * 12 + 8, 4);
-
-                // Resolve return type descriptor.
-                std::string return_desc;
-                if (return_type_idx < hdr.type_ids_size &&
-                    hdr.type_ids_off + (return_type_idx + 1) * 4 <= raw.size()) {
-                    uint32_t ret_str_idx;
-                    std::memcpy(&ret_str_idx, raw.data() + hdr.type_ids_off + return_type_idx * 4, 4);
-                    return_desc = read_dex_string_from_raw(raw, ret_str_idx, hdr);
-                }
-
-                // Build proto: "(" + params + ")" + return.
-                std::string proto = "(";
-                if (parameters_off != 0 && parameters_off + 4 <= raw.size()) {
-                    // TypeList starts with a uint32 size, then size * 4 bytes of type_idx.
-                    uint32_t list_size;
-                    std::memcpy(&list_size, raw.data() + parameters_off, 4);
-                    for (uint32_t i = 0; i < list_size; ++i) {
-                        uint32_t off = parameters_off + 4 + i * 2;  // each entry is 2 bytes (uint16)
-                        if (off + 2 > raw.size()) break;
-                        uint16_t type_idx;
-                        std::memcpy(&type_idx, raw.data() + off, 2);
-                        if (type_idx < hdr.type_ids_size &&
-                            hdr.type_ids_off + (type_idx + 1) * 4 <= raw.size()) {
-                            uint32_t desc_str_idx;
-                            std::memcpy(&desc_str_idx, raw.data() + hdr.type_ids_off + type_idx * 4, 4);
-                            proto += read_dex_string_from_raw(raw, desc_str_idx, hdr);
-                        }
-                    }
-                }
-                proto += ")";
-                proto += return_desc.empty() ? "V" : return_desc;
-                return proto;
-            }
-        }
-    }
-
-proto_fallback:
-    // Fallback: try merged proto_ids from dex_report_ (if available).
-    // The DexReport may not store protos — return "<unknown>" to let
-    // the caller fall back to the old behavior (no wide merging).
-    return "<unknown>";
-}
-
 // EXP-058: Per-DEX type descriptor resolution.
 // type_idx is relative to the current DEX file's type_ids table.
 // The type_ids table maps type_idx → string_ids_idx → descriptor string.
@@ -3612,50 +3532,6 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     } else { \
                         if (result_type == DalvikType::OBJECT_REF) { \
                             result_val = DalvikValue::make_null(); \
-                        } \
-                    } else { \
-                        /* EXP-071: Read ALL primitive types (boolean, byte, */ \
-                        /* char, short, int, long) from the heap, not just   */ \
-                        /* OBJECT_REF. Without this, aget-boolean returns    */ \
-                        /* the default value (false) because the boolean    */ \
-                        /* was stored by aput-boolean in the heap, not as    */ \
-                        /* an INT32 register value.                        */ \
-                        result_val = DalvikValue::make_int(0); \
-                        if (result_type == DalvikType::BOOLEAN) { \
-                            result_val = DalvikValue::make_bool(false); \
-                        } else if (result_type == DalvikType::BYTE) { \
-                            result_val = DalvikValue::make_byte(0); \
-                        } else if (result_type == DalvikType::CHAR) { \
-                            result_val = DalvikValue::make_char(0); \
-                        } else if (result_type == DalvikType::SHORT) { \
-                            result_val = DalvikValue::make_short(0); \
-                        } else if (result_type == DalvikType::INT64) { \
-                            DalvikValue lv; lv.type = DalvikType::INT64; lv.long_val = 0; \
-                            result_val = lv; \
-                        } \
-                        if (arr_val.type == DalvikType::OBJECT_REF && \
-                            heap_.has_object(arr_val.object_id)) { \
-                            std::string field = "array[" + std::to_string(idx) + "]"; \
-                            auto elem = heap_.get_object_field(arr_val.object_id, field); \
-                            if (elem.has_value()) { \
-                                /* Coerce the stored value to the expected   */ \
-                                /* primitive type.                           */ \
-                                const auto& ev = elem.value(); \
-                                if (result_type == DalvikType::BOOLEAN) { \
-                                    bool b = ev.bool_val || ev.int_val != 0; \
-                                    result_val = DalvikValue::make_bool(b); \
-                                } else if (result_type == DalvikType::INT32) { \
-                                    int32_t iv = ev.int_val; \
-                                    result_val = DalvikValue::make_int(iv); \
-                                } else if (result_type == DalvikType::INT64) { \
-                                    DalvikValue lv; lv.type = DalvikType::INT64; \
-                                    lv.long_val = ev.long_val ? ev.long_val : ev.int_val; \
-                                    result_val = lv; \
-                                } else { \
-                                    result_val = ev; \
-                                    result_val.type = result_type; \
-                                } \
-                            } \
                         } \
                     } \
                     set_register(vAA, result_val); \
@@ -9343,9 +9219,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // EXP-075: Removed the hardcoded setContentView bypass.
+    // Previously this returned true without calling any shadow, which
+    // prevented ActivityShadow from capturing the layout_resource_id.
+    // Now setContentView flows through to bridge_to_api → try_shadow_dispatch
+    // → ActivityShadow::dispatch which properly captures both View and int args.
+    // onCreate is still bypassed here because it's the entry point (already
+    // executing by the time we reach this code).
     if (class_name.find("Activity") != std::string::npos &&
-        (method.find("setContentView") != std::string::npos ||
-         method.find("onCreate") != std::string::npos)) {
+        method.find("onCreate") != std::string::npos) {
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_void();
         return true;
