@@ -1,0 +1,44 @@
+{
+  "components": [
+    {
+      "name": "ApkParser",
+      "purpose": "ZIP/APK parsing and extraction",
+      "status": "initialized"
+    },
+    {
+      "name": "ManifestReader",
+      "purpose": "AXML binary XML parsing",
+      "status": "loaded"
+    },
+    {
+      "name": "DexParser",
+      "purpose": "Dalvik bytecode parsing",
+      "status": "loaded"
+    },
+    {
+      "name": "ClassResolver",
+      "purpose": "Entry point resolution",
+      "status": "resolved"
+    },
+    {
+      "name": "EnhancedObjectHeap",
+      "object_count": 1,
+      "purpose": "Android object model storage",
+      "status": "active"
+    },
+    {
+      "name": "ResourceManager",
+      "purpose": "Android resource loading",
+      "status": "initialized",
+      "strings_loaded": 0
+    },
+    {
+      "name": "RenderPipeline",
+      "purpose": "Software rendering pipeline",
+      "status": "rendered"
+    }
+  ],
+  "experiment": "EXP-007→EXP-012",
+  "timestamp": "2026-08-18T05:15:25Z",
+  "type": "runtime_component_map"
+}

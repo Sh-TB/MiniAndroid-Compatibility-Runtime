@@ -84,8 +84,32 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     }
 
     if (m == "get") {
-        // get(index) → element
+        // get(index) → element (List semantics) OR get(key) → value (Map semantics)
         auto* state = get_or_create(obj_id);
+        if (state->is_map) {
+            // EXP-071: Map.get(key) — use arg_as_string(0) as key.
+            // Check map_string_entries first (for String values), then
+            // map_entries (for Object values).
+            std::string key = ctx.arg_as_string(0);
+            if (key.empty() && !ctx.args.empty() &&
+                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+                key = "obj:" + std::to_string(ctx.args[0].object_id);
+            }
+            auto sit = state->map_string_entries.find(key);
+            if (sit != state->map_string_entries.end()) {
+                return CallResult::handled_string(sit->second);
+            }
+            auto oit = state->map_entries.find(key);
+            if (oit != state->map_entries.end()) {
+                if (oit->second != 0) {
+                    return CallResult::handled_object(oit->second,
+                                                       "Ljava/lang/Object;");
+                }
+                return CallResult::handled_null();
+            }
+            return CallResult::handled_null();
+        }
+        // List.get(index)
         int32_t idx = ctx.arg_as_int(0, -1);
         if (idx >= 0 && (size_t)idx < state->elements.size()) {
             uint32_t elem = state->elements[idx];
@@ -100,7 +124,9 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     if (m == "size") {
         auto* state = get_or_create(obj_id);
         if (state->is_map) {
-            return CallResult::handled_int(static_cast<int32_t>(state->map_entries.size()));
+            // EXP-071: count entries from BOTH maps.
+            return CallResult::handled_int(static_cast<int32_t>(
+                state->map_entries.size() + state->map_string_entries.size()));
         }
         return CallResult::handled_int(static_cast<int32_t>(state->elements.size()));
     }
@@ -108,7 +134,9 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     if (m == "isEmpty") {
         auto* state = get_or_create(obj_id);
         if (state->is_map) {
-            return CallResult::handled_bool(state->map_entries.empty());
+            // EXP-071: check BOTH maps.
+            return CallResult::handled_bool(
+                state->map_entries.empty() && state->map_string_entries.empty());
         }
         return CallResult::handled_bool(state->elements.empty());
     }
@@ -117,6 +145,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         auto* state = get_or_create(obj_id);
         state->elements.clear();
         state->map_entries.clear();
+        state->map_string_entries.clear();  // EXP-071
         state->iterator_position = 0;
         return CallResult::handled_void();
     }
@@ -170,12 +199,27 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         auto* state = get_or_create(obj_id, true);
         if (ctx.args.size() >= 2) {
             std::string key = ctx.arg_as_string(0);
-            uint32_t value = ctx.arg_as_object(1, 0);
             // Use key as the map key. For object keys, use object_id as string.
             if (key.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
                 key = "obj:" + std::to_string(ctx.args[0].object_id);
             }
-            state->map_entries[key] = value;
+            // EXP-071: If value is STRING, store in map_string_entries.
+            // If OBJECT, store in map_entries. This avoids creating spurious
+            // heap objects for primitive String values.
+            const auto& val_arg = ctx.args[1];
+            if (val_arg.kind == CallContext::Arg::Kind::STRING) {
+                state->map_string_entries[key] = val_arg.string_val;
+                // Also remove any stale OBJECT entry for the same key.
+                state->map_entries.erase(key);
+            } else if (val_arg.kind == CallContext::Arg::Kind::OBJECT) {
+                state->map_entries[key] = val_arg.object_id;
+                // Also remove any stale STRING entry for the same key.
+                state->map_string_entries.erase(key);
+            } else if (val_arg.kind == CallContext::Arg::Kind::NULL_REF) {
+                // null value — store as null OBJECT.
+                state->map_entries[key] = 0;
+                state->map_string_entries.erase(key);
+            }
         }
         return CallResult::handled_null();
     }
@@ -186,7 +230,10 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         if (key.empty() && !ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
             key = "obj:" + std::to_string(ctx.args[0].object_id);
         }
-        return CallResult::handled_bool(state->map_entries.count(key) > 0);
+        // EXP-071: check BOTH maps.
+        bool has = (state->map_entries.count(key) > 0) ||
+                   (state->map_string_entries.count(key) > 0);
+        return CallResult::handled_bool(has);
     }
 
     if (m == "set") {
@@ -393,35 +440,25 @@ void HandlerShadow::enqueue(uint32_t runnable_id, int64_t delay_ms,
 
 size_t HandlerShadow::drain_ready(std::vector<uint32_t>* out_drained) {
     if (!out_drained) return 0;
-    auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now().time_since_epoch()).count();
-
-    size_t drained = 0;
-    // Note: we walk the deque in FIFO order, NOT priority-queue order.
-    // This matches real Android Handler behavior — messages are queued
-    // in the order they're posted, with delay acting as a minimum
-    // "ready" timestamp. Real Android sorts by ready_at, but in our
-    // single-threaded deterministic model we process everything in
-    // enqueue order to keep behavior reproducible.
+    // EXP-071: Deterministic mode — drain ALL runnables (treat delays as 0).
+    // The previous implementation skipped Runnables whose ready_at_ms was in
+    // the future, which is fine for real-time animation but breaks the
+    // headless runtime where we want ALL queued Runnables to be dispatched
+    // before transitioning to the next UI phase.
+    //
+    // We sort by (ready_at_ms, enqueue_seq) for stable FIFO order, then
+    // drain everything.
     std::vector<QueuedRunnable> ready;
-    std::vector<QueuedRunnable> not_ready;
     while (!queue_.empty()) {
-        auto q = std::move(queue_.front());
+        ready.push_back(std::move(queue_.front()));
         queue_.pop_front();
-        if (q.ready_at_ms <= now_ms) {
-            ready.push_back(std::move(q));
-        } else {
-            not_ready.push_back(std::move(q));
-        }
     }
-    // Re-enqueue the not-ready ones, preserving order.
-    for (auto& q : not_ready) queue_.push_back(std::move(q));
-    // Drain ready ones in enqueue order.
     std::sort(ready.begin(), ready.end(),
               [](const QueuedRunnable& a, const QueuedRunnable& b) {
                   if (a.ready_at_ms != b.ready_at_ms) return a.ready_at_ms < b.ready_at_ms;
                   return a.enqueue_seq < b.enqueue_seq;
               });
+    size_t drained = 0;
     for (auto& q : ready) {
         out_drained->push_back(q.runnable_id);
         std::cerr << "[QUEUE] Runnable id=" << q.runnable_id
@@ -483,8 +520,20 @@ CallResult HandlerShadow::dispatch(const CallContext& ctx) {
         // Telegram-specific UI scheduling wrappers.
         if (m == "runOnUIThread" || m == "executeOnUIThread") {
             uint32_t r = extract_runnable(ctx, 0);
+            // EXP-071: handle (Runnable, long) overload — read delay from
+            // ctx.args[1].long_val. The single-arg form passes delay=0.
+            int64_t delay = 0;
+            if (ctx.args.size() >= 2) {
+                // The second arg can be either a LONG (delay) or an OBJECT
+                // (some overloads pass a second Runnable as a continuation).
+                if (ctx.args[1].kind == CallContext::Arg::Kind::LONG) {
+                    delay = ctx.args[1].long_val;
+                } else if (ctx.args[1].kind == CallContext::Arg::Kind::INT) {
+                    delay = static_cast<int64_t>(ctx.args[1].int_val);
+                }
+            }
             if (r == 0) return CallResult::handled_void();
-            enqueue(r, 0, /*cls=*/"");
+            enqueue(r, delay, /*cls=*/"");
             return CallResult::handled_void();
         }
         if (m == "cancelRunOnUIThread") {
@@ -734,6 +783,13 @@ ViewShadow::ViewNode* ViewShadow::get_or_create_node(uint32_t view_id,
     if (it != nodes_.end()) return it->second.get();
     auto node = std::make_unique<ViewNode>();
     node->view_id = view_id;
+    // EXP-071: prefer ctx.receiver_class over ctx.class_name.
+    // The caller passes the static class_name (from the DEX method_ids
+    // table), which may be a parent class like "Landroid/view/View;" used
+    // as a fallback for shadow dispatch. The receiver_class (the runtime
+    // type of the actual View object) is more accurate for the ViewNode
+    // — without this, downstream lookups by class substring (e.g.
+    // "FragmentFloatingButton") fail because the node has the parent class.
     node->class_desc = class_desc;
     auto* raw = node.get();
     nodes_[view_id] = std::move(node);
@@ -844,11 +900,11 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "<init>") {
         // View(Context), View(Context, AttributeSet), View(Context, AttributeSet, int)
         // Allocate a fresh node bound to this receiver.
-        get_or_create_node(ctx.receiver_id, ctx.class_name);
+        get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         return CallResult::handled_void();
     }
     if (m == "setId") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->android_view_id = ctx.arg_as_int(0);
         return CallResult::handled_void();
     }
@@ -909,7 +965,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_null();
     }
     if (m == "setVisibility") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->visibility = ctx.arg_as_int(0, 0);
         return CallResult::handled_void();
     }
@@ -918,7 +974,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_int(n ? n->visibility : 0);
     }
     if (m == "setEnabled") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->enabled = ctx.arg_as_bool(0, true);
         return CallResult::handled_void();
     }
@@ -927,7 +983,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_bool(n ? n->enabled : true);
     }
     if (m == "setClickable") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->clickable = ctx.arg_as_bool(0, false);
         return CallResult::handled_void();
     }
@@ -936,7 +992,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_bool(n ? n->clickable : false);
     }
     if (m == "setText") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->text = ctx.arg_as_string(0);
         return CallResult::handled_void();
     }
@@ -960,7 +1016,7 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // listener's onClick method. The listener is an OBJECT_REF passed as
     // arg 0.
     if (m == "setOnClickListener") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         uint32_t listener_id = ctx.arg_as_object(0, 0);
         n->click_listener_id = listener_id;
         // The listener's class descriptor is not always known here (the
@@ -976,14 +1032,14 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "setOnLongClickListener") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         uint32_t listener_id = ctx.arg_as_object(0, 0);
         n->long_click_listener_id = listener_id;
         n->long_click_listener_class.clear();
         return CallResult::handled_void();
     }
     if (m == "setOnTouchListener") {
-        auto* n = get_or_create_node(ctx.receiver_id, ctx.class_name);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         uint32_t listener_id = ctx.arg_as_object(0, 0);
         n->touch_listener_id = listener_id;
         n->touch_listener_class.clear();

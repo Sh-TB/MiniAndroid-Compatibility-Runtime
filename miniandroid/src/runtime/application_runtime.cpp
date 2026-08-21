@@ -1168,6 +1168,13 @@ bool ApplicationRuntime::execute_on_create() {
         if (config_.verbose) { std::cout << "  Building class→DEX index..." << std::endl; }
         dalvik_engine.build_class_dex_index(*dex_report_);
         miniandroid::probe::mark("execute_on_create: post-build_class_dex_index");
+
+        // EXP-071: Set the APK path so the AssetManager.open / BufferedReader.readLine
+        // intercepts in dalvik_engine can lazily extract assets via popen(unzip).
+        dalvik_engine.set_apk_path(apk_path_);
+        std::cerr << "[EXP071-APK] set_apk_path(\"" << apk_path_ << "\")"
+                  << std::endl;
+
         if (config_.verbose) { std::cout << "  Starting DEX execution..." << std::endl; }
 
         auto dalvik_result = dalvik_engine.execute_apk_with_activity(
@@ -1238,6 +1245,146 @@ bool ApplicationRuntime::execute_on_create() {
             std::cerr << "[EXP060] ViewShadow not registered — skipping click" << std::endl;
         }
         miniandroid::probe::mark("execute_on_create: post-synthetic-click");
+
+        // ====================================================================
+        // EXP-071: Interaction phase — text injection + FAB click.
+        //
+        // After the synthetic CLICK campaign transitions to LoginActivity,
+        // we inject a phone number ("1" + "5551234567") into the PhoneView's
+        // country code and phone EditText fields, then click the floating
+        // action button (FAB) to advance to the SMS code screen.
+        //
+        // The interaction phase is a multi-step process:
+        //   1. Pre-injection drain — flush any pending Runnables queued by
+        //      LoginActivity.onCreate before injecting text.
+        //   2. Text injection — find PhoneView$1 (country code TextView)
+        //      and PhoneView$3 (phone number EditText) and set their text
+        //      via ViewShadow.setText.
+        //   3. FAB click — dispatch a click on FragmentFloatingButton (the
+        //      "Next" button at the bottom of the LoginActivity).
+        //   4. Post-FAB drain — drain the queue up to 1000 iterations to
+        //      let the LoginActivity's onNextPressed execute + queue any
+        //      follow-up Runnables (e.g. sendRequest).
+        //   5. Confirm FAB click — verify the FAB was clicked by finding a
+        //      FragmentFloatingButton with a registered click listener.
+        //      Among multiple candidates, pick the one with the highest
+        //      object_id (most-recently-created).
+        //   6. Post-confirm drain — drain the queue up to 1000 more
+        //      iterations to let the login flow finish.
+        // ====================================================================
+
+        // EXP-071: Helper to drain the Handler queue and dispatch each
+        // Runnable via the engine's dispatch_runnable method.
+        auto drain_queue_and_dispatch = [&](int max_iters) -> int {
+            int total_drained = 0;
+            auto* handler_shadow = shadow_registry_
+                ? shadow_registry_->find_as<framework::HandlerShadow>()
+                : nullptr;
+            if (!handler_shadow) return 0;
+            for (int i = 0; i < max_iters; ++i) {
+                std::vector<uint32_t> drained;
+                size_t n = handler_shadow->drain_ready(&drained);
+                if (n == 0) break;  // queue empty
+                for (uint32_t rid : drained) {
+                    dalvik_engine.dispatch_runnable(rid);
+                    total_drained++;
+                }
+            }
+            return total_drained;
+        };
+
+        // EXP-071: Helper to inject text into a view by class substring.
+        // We update the ViewShadow node's text directly. This mimics the
+        // effect of TextView.setText(String) which the shadow dispatches.
+        auto inject_text = [&](const std::string& class_substring,
+                               const std::string& text) -> bool {
+            if (!view_shadow) return false;
+            uint32_t view_id = view_shadow->find_by_class_substring(class_substring);
+            if (view_id == 0) {
+                std::cerr << "[EXP071-INJECT] no View matching '"
+                          << class_substring << "' — text not injected"
+                          << std::endl;
+                return false;
+            }
+            // EXP-071: We need a non-const node pointer to set text. Find it.
+            auto* node = view_shadow->find_node(view_id);
+            if (!node) {
+                std::cerr << "[EXP071-INJECT] View id=" << view_id
+                          << " not found in ViewShadow — text not injected"
+                          << std::endl;
+                return false;
+            }
+            node->text = text;
+            std::cerr << "[EXP071-INJECT] setText(\"" << text << "\") on "
+                      << class_substring << " view_id=" << view_id
+                      << std::endl;
+            return true;
+        };
+
+        // Phase 1: Pre-injection drain.
+        {
+            int n = drain_queue_and_dispatch(100);
+            std::cerr << "[EXP071-PHASE1] Pre-injection drain: "
+                      << n << " Runnable(s) dispatched" << std::endl;
+        }
+
+        // Phase 2: Text injection — PhoneView$1 = "1", PhoneView$3 = "5551234567".
+        // PhoneView$1 is the country code EditText; PhoneView$3 is the phone
+        // number EditText. (Class names come from Telegram's PhoneView inner
+        // classes — see PhoneView.java in the Telegram source.)
+        {
+            inject_text("PhoneView$1", "1");
+            inject_text("PhoneView$3", "5551234567");
+        }
+
+        // Phase 3: FAB click — dispatch a click on FragmentFloatingButton.
+        // The FAB is Telegram's "Next" button at the bottom of LoginActivity.
+        {
+            bool ok = dalvik_engine.dispatch_click_by_class("FragmentFloatingButton");
+            std::cerr << "[EXP071-PHASE3] FAB click result: "
+                      << (ok ? "DISPATCHED" : "FAILED")
+                      << std::endl;
+        }
+
+        // Phase 4: Post-FAB drain (up to 1000 iterations).
+        {
+            int n = drain_queue_and_dispatch(1000);
+            std::cerr << "[EXP071-PHASE4] Post-FAB drain: "
+                      << n << " Runnable(s) dispatched" << std::endl;
+        }
+
+        // Phase 5: Confirm FAB click — find FragmentFloatingButton with
+        // highest ID among those with click listeners. This catches the
+        // case where the first click didn't dispatch to the right button
+        // (e.g. if there are multiple FABs in the View hierarchy).
+        {
+            uint32_t best_id = 0;
+            if (view_shadow) {
+                auto fab_views = view_shadow->find_all_with_click_listener(
+                    "FragmentFloatingButton");
+                for (uint32_t vid : fab_views) {
+                    if (vid > best_id) best_id = vid;
+                }
+            }
+            if (best_id != 0) {
+                std::cerr << "[EXP071-PHASE5] Confirming FAB click on view_id="
+                          << best_id << std::endl;
+                dalvik_engine.dispatch_click(best_id);
+            } else {
+                std::cerr << "[EXP071-PHASE5] No FragmentFloatingButton with "
+                          << "click listener found — skipping confirm click"
+                          << std::endl;
+            }
+        }
+
+        // Phase 6: Post-confirm drain (up to 1000 iterations).
+        {
+            int n = drain_queue_and_dispatch(1000);
+            std::cerr << "[EXP071-PHASE6] Post-confirm drain: "
+                      << n << " Runnable(s) dispatched" << std::endl;
+        }
+        miniandroid::probe::mark("execute_on_create: post-interaction-phase");
+        // END EXP-071 interaction phase ──────────────────────────────────
 
         // EXP-061: Dump the ViewNode tree to JSON for the software renderer.
         // The renderer will read this JSON and produce a PNG screenshot
