@@ -84,8 +84,39 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     }
 
     if (m == "get") {
-        // get(index) → element
         auto* state = get_or_create(obj_id);
+        // EXP-071 Phase 7: For Map collections (HashMap, ConcurrentHashMap),
+        // get(key) uses the key string to look up map_entries or
+        // map_string_entries. For List collections (ArrayList, LinkedList),
+        // get(index) uses the integer index to look up elements[].
+        if (state->is_map) {
+            std::string key = ctx.arg_as_string(0);
+            if (key.empty() && !ctx.args.empty() &&
+                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+                key = "obj:" + std::to_string(ctx.args[0].object_id);
+            }
+            // EXP-071 diagnostic
+            if (key.find("US") != std::string::npos) {
+                std::cerr << "[EXP071-CS-GET] map=" << obj_id
+                          << " key=\"" << key << "\""
+                          << " is_map=" << state->is_map
+                          << " str_entries=" << state->map_string_entries.size()
+                          << " obj_entries=" << state->map_entries.size()
+                          << " caller=" << ctx.class_name << std::endl;
+            }
+            // Check string entries first.
+            auto sit = state->map_string_entries.find(key);
+            if (sit != state->map_string_entries.end()) {
+                return CallResult::handled_string(sit->second);
+            }
+            // Then check object entries.
+            auto it = state->map_entries.find(key);
+            if (it != state->map_entries.end() && it->second != 0) {
+                return CallResult::handled_object(it->second, "Ljava/lang/Object;");
+            }
+            return CallResult::handled_null();
+        }
+        // List: get(index) → element
         int32_t idx = ctx.arg_as_int(0, -1);
         if (idx >= 0 && (size_t)idx < state->elements.size()) {
             uint32_t elem = state->elements[idx];
@@ -100,7 +131,9 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     if (m == "size") {
         auto* state = get_or_create(obj_id);
         if (state->is_map) {
-            return CallResult::handled_int(static_cast<int32_t>(state->map_entries.size()));
+            // EXP-071 Phase 7: Count both object and string entries.
+            return CallResult::handled_int(static_cast<int32_t>(
+                state->map_entries.size() + state->map_string_entries.size()));
         }
         return CallResult::handled_int(static_cast<int32_t>(state->elements.size()));
     }
@@ -108,7 +141,9 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     if (m == "isEmpty") {
         auto* state = get_or_create(obj_id);
         if (state->is_map) {
-            return CallResult::handled_bool(state->map_entries.empty());
+            // EXP-071 Phase 7: Check both object and string entries.
+            return CallResult::handled_bool(
+                state->map_entries.empty() && state->map_string_entries.empty());
         }
         return CallResult::handled_bool(state->elements.empty());
     }
@@ -117,6 +152,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         auto* state = get_or_create(obj_id);
         state->elements.clear();
         state->map_entries.clear();
+        state->map_string_entries.clear();
         state->iterator_position = 0;
         return CallResult::handled_void();
     }
@@ -170,12 +206,30 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         auto* state = get_or_create(obj_id, true);
         if (ctx.args.size() >= 2) {
             std::string key = ctx.arg_as_string(0);
-            uint32_t value = ctx.arg_as_object(1, 0);
             // Use key as the map key. For object keys, use object_id as string.
             if (key.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
                 key = "obj:" + std::to_string(ctx.args[0].object_id);
             }
-            state->map_entries[key] = value;
+            // EXP-071 Phase 7: Check if the value is a STRING or OBJECT.
+            // For STRING values, store in map_string_entries.
+            // For OBJECT values, store in map_entries.
+            const auto& val_arg = ctx.args[1];
+            if (val_arg.kind == CallContext::Arg::Kind::STRING) {
+                state->map_string_entries[key] = val_arg.string_val;
+                // Also remove from object entries if it was previously there.
+                state->map_entries.erase(key);
+                // EXP-071 diagnostic
+                if (key.find("US") != std::string::npos || key == "US") {
+                    std::cerr << "[EXP071-PUT-STR] map=" << obj_id
+                              << " key=\"" << key << "\" val=\"" << val_arg.string_val << "\""
+                              << " caller=" << ctx.class_name << std::endl;
+                }
+            } else {
+                uint32_t value = ctx.arg_as_object(1, 0);
+                state->map_entries[key] = value;
+                // Also remove from string entries if it was previously there.
+                state->map_string_entries.erase(key);
+            }
         }
         return CallResult::handled_null();
     }
@@ -186,7 +240,10 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         if (key.empty() && !ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
             key = "obj:" + std::to_string(ctx.args[0].object_id);
         }
-        return CallResult::handled_bool(state->map_entries.count(key) > 0);
+        // EXP-071 Phase 7: Check both object and string entries.
+        bool found = (state->map_entries.count(key) > 0) ||
+                     (state->map_string_entries.count(key) > 0);
+        return CallResult::handled_bool(found);
     }
 
     if (m == "set") {

@@ -1349,6 +1349,35 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         class_descriptor = "L" + class_descriptor + ";";
     }
 
+    // EXP-071 Phase 6: Skip try_recursive_invoke for Java/Android framework
+    // classes that are NOT in the DEX. These classes (HashMap, ArrayList,
+    // String, TextUtils, etc.) are referenced in the DEX's type_ids table
+    // but their bytecode is loaded from the Android framework at runtime.
+    // try_recursive_invoke would find the class in dex_report_->classes
+    // but the method would have NO bytecode — it would return true (found)
+    // without executing anything, silently dropping the call.
+    //
+    // By returning false here, we force the caller to fall through to
+    // bridge_to_api, which has stubs for these framework classes.
+    //
+    // EXP-071 Phase 7: BufferedReader/InputStreamReader/InputStream are
+    // EXCLUDED from this bypass because their <init> methods need the
+    // asset-tracking intercept (see below, before getParentActivity). That
+    // intercept propagates the asset name from the wrapped stream to the
+    // reader, so BufferedReader.readLine() can read the correct asset.
+    // If we bypass them here, the asset tracking never fires.
+    if (class_descriptor.find("Ljava/util/HashMap;") == 0 ||
+        class_descriptor.find("Ljava/util/ArrayList;") == 0 ||
+        class_descriptor.find("Ljava/util/AbstractList;") == 0 ||
+        class_descriptor.find("Ljava/util/AbstractMap;") == 0 ||
+        class_descriptor.find("Ljava/lang/String;") == 0 ||
+        class_descriptor.find("Landroid/text/TextUtils;") == 0 ||
+        class_descriptor.find("Ljava/io/File;") == 0) {
+        // Force bridge_to_api for framework classes.
+        recursion_depth_--;
+        return false;
+    }
+
     // EXP-042 Phase 4: Skip "stub-only" methods — methods that HAVE bytecode
     // in the DEX but should be stubbed instead of executed, because they
     // depend on Android system services we don't implement.
@@ -2845,10 +2874,27 @@ bool DalvikExecutionEngine::dump_view_tree(const std::string& path) {
 }
 
 bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) {
+    // EXP-071 Phase 6 debug: Log entry to fetch_decode_execute for setCountry.
+    if (current_method_ == "setCountry" && current_class_.find("PhoneView") != std::string::npos) {
+        std::cerr << "[EXP071-FDE-ENTER] " << current_class_ << "." << current_method_
+                  << " halted_=" << halted_
+                  << " pc_=" << pc_
+                  << " bytecode_.size()=" << bytecode_.size()
+                  << std::endl;
+    }
     while (!halted_ && pc_ < bytecode_.size()) {
         InstructionTrace trace;
         trace.sequence = instruction_sequence_++;
         trace.pc_before = pc_;
+
+        // EXP-071 Phase 6 debug: Log first 20 instructions of setCountry.
+        if (current_method_ == "setCountry" && current_class_.find("PhoneView") != std::string::npos && instruction_sequence_ <= 20) {
+            std::cerr << "[EXP071-FDE-LOOP] " << current_class_ << "." << current_method_
+                      << " iter=" << instruction_sequence_
+                      << " pc_=" << pc_
+                      << " opcode=0x" << std::hex << (int)(bytecode_[pc_] & 0xFF) << std::dec
+                      << std::endl;
+        }
         
         auto start = Clock::now();
         
@@ -5377,6 +5423,12 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     // EXP-035: Now uses VTable dispatch for proper polymorphic method resolution
     if (pc + 2 >= bytecode_.size()) return false;
 
+    // EXP-071 Phase 7: Save and reset current_invoke_is_static_ to false
+    // for invoke-virtual calls. This ensures try_shadow_dispatch correctly
+    // treats args[0] as `this` (instance method, not static).
+    bool saved_is_static = current_invoke_is_static_;
+    current_invoke_is_static_ = false;
+
     // EXP-062: Debug — trace ALL invoke-virtual entry in PhoneView.<init>
     if (current_class_.find("PhoneView") != std::string::npos &&
         current_method_ == "<init>") {
@@ -5577,7 +5629,9 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     trace.operands.push_back({"runtime_type", runtime_type});     // CRITICAL EVIDENCE  
     trace.operands.push_back({"resolved_method", resolved_method}); // CRITICAL EVIDENCE
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});  // MANDATORY TAG
-    
+
+    // EXP-071 Phase 7: Restore the saved static flag.
+    current_invoke_is_static_ = saved_is_static;
     pc_ = pc + 3;
     return true;
 }
@@ -5744,6 +5798,11 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
                                                  DalvikExecutionResult& result) {
     // Similar to invoke-virtual but for constructors and private methods
     if (pc + 2 >= bytecode_.size()) return false;
+
+    // EXP-071 Phase 7: Save and reset current_invoke_is_static_ to false
+    // for invoke-direct calls (instance methods).
+    bool saved_is_static = current_invoke_is_static_;
+    current_invoke_is_static_ = false;
     
     uint16_t instr = bytecode_[pc];
     // EXP-037 Phase B (BLOCKER-015 FIX): 35c format is "AA|op BBBB FEDC"
@@ -5839,7 +5898,9 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     
     trace.invoked_method = class_name + "." + method_name;
     trace.operands.push_back({"method", std::to_string(method_idx)});
-    
+
+    // EXP-071 Phase 7: Restore the saved static flag.
+    current_invoke_is_static_ = saved_is_static;
     pc_ = pc + 3;
     return true;
 }
@@ -5851,12 +5912,15 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
 
     // EXP-071 Phase 8: Mark this call as static so try_shadow_dispatch
     // doesn't treat args[0] as `this`. See header comment for details.
+    //
+    // EXP-071 Phase 7 FIX: The flag stays true during the entire
+    // execute_invoke_static call. execute_invoke_virtual and
+    // execute_invoke_direct SAVE and RESET the flag to false at their
+    // entry, and RESTORE it at their exit. This ensures that:
+    //   - bridge_to_api → try_shadow_dispatch at THIS level sees true (static)
+    //   - bridge_to_api → try_shadow_dispatch inside callees sees false (instance)
+    bool saved_is_static = current_invoke_is_static_;
     current_invoke_is_static_ = true;
-    // Use a scope guard to reset on return (we may have early returns below).
-    struct StaticGuard {
-        bool* p;
-        ~StaticGuard() { *p = false; }
-    } guard{&current_invoke_is_static_};
     
     uint16_t instr = bytecode_[pc];
     // EXP-037 Phase B (BLOCKER-015 FIX): 35c format is "AA|op BBBB FEDC"
@@ -6075,12 +6139,16 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         }
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
+        // current_invoke_is_static_ is already false (reset above).
         if (try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
             recursively_invoked = true;
             status = ApiCallTrace::Status::IMPLEMENTED;
         }
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
+        // current_invoke_is_static_ is still true (set at top of execute_invoke_static).
+        // try_shadow_dispatch inside bridge_to_api will see it and correctly
+        // treat args[0] as the first parameter (not `this`).
         bridge_to_api(class_name, method_name, args, return_val, status); last_invoke_return_ = return_val;
     }
     
@@ -6093,7 +6161,9 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     if (config_.api_call_trace_cap > 0 && result.api_call_traces.size() >= config_.api_call_trace_cap) { result.api_call_traces.erase(result.api_call_traces.begin()); } result.api_call_traces.push_back(api_trace);
     
     trace.invoked_method = class_name + "." + method_name;
-    
+
+    // EXP-071 Phase 7: Restore the saved static flag.
+    current_invoke_is_static_ = saved_is_static;
     pc_ = pc + 3;
     return true;
 }
@@ -7084,6 +7154,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           const std::vector<DalvikValue>& args,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status) {
+    // EXP-071 Phase 7: Diagnostic — log HashMap.put/get entry to bridge_to_api.
+    if (class_name.find("HashMap") != std::string::npos &&
+        (method == "put" || method == "get")) {
+        std::cerr << "[EXP071-BRIDGE-HMAP] " << class_name << "." << method
+                  << " argc=" << args.size()
+                  << " caller=" << current_class_ << "." << current_method_
+                  << " pc=" << pc_
+                  << std::endl;
+    }
     // EXP-042 Phase 4: Android Framework minimal runtime.
     // Implements REAL Android objects for the P0/P1 APIs that Telegram's
     // LaunchActivity.onCreate actually calls. See:
@@ -7188,8 +7267,40 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // like setOnClickListener are dispatched to ViewShadow even when the
     // receiver is a user-defined View subclass.
     if (shadow_registry_ != nullptr) {
+        // EXP-071 diagnostic: log shadow dispatch attempt for HashMap in setCountry.
+        if (class_name.find("HashMap") != std::string::npos &&
+            current_method_ == "setCountry") {
+            std::cerr << "[EXP071-SHADOW-TRY] " << class_name << "." << method
+                      << " caller=" << current_class_ << "." << current_method_
+                      << " pc=" << pc_
+                      << " argc=" << args.size()
+                      << " is_static=" << current_invoke_is_static_
+                      << std::endl;
+            for (size_t i = 0; i < args.size() && i < 3; ++i) {
+                std::cerr << "  arg[" << i << "] type=" << (int)args[i].type;
+                if (args[i].type == DalvikType::OBJECT_REF) std::cerr << " obj=" << args[i].object_id;
+                if (args[i].type == DalvikType::STRING_REF) std::cerr << " str=\"" << args[i].string_val << "\"";
+                std::cerr << std::endl;
+            }
+        }
         if (try_shadow_dispatch(class_name, method, args, result, status)) {
+            // EXP-071: Diagnostic — log when shadow dispatch catches HashMap calls.
+            if (class_name.find("HashMap") != std::string::npos) {
+                if (current_method_ == "setCountry") {
+                    std::cerr << "[EXP071-SHADOW-HIT] " << class_name << "." << method
+                              << " HIT in setCountry"
+                              << " result_type=" << (int)result.type
+                              << std::endl;
+                }
+            }
             return true;
+        }
+        // EXP-071 diagnostic: log shadow miss for HashMap in setCountry.
+        if (class_name.find("HashMap") != std::string::npos &&
+            current_method_ == "setCountry") {
+            std::cerr << "[EXP071-SHADOW-MISS] " << class_name << "." << method
+                      << " MISS in setCountry — falling through to bridge_to_api"
+                      << std::endl;
         }
         // EXP-060: Try View/ViewGroup parent classes. If the runtime_type
         // is a subclass of View (which we can't check without a class
@@ -8025,20 +8136,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // EXP-071 Phase 6: HashMap.get(key) → value (or null)
+    // EXP-071 Phase 7: HashMap/ArrayList fallback in bridge_to_api.
     //
-    // HashMap is an Android framework class not present in the DEX. We
-    // stub get/put/containsKey by storing entries as heap object fields
-    // with key-derived names. This is GENERIC — works for any HashMap
-    // usage where keys are strings or objects with toString().
+    // CollectionShadow in the shadow registry is the PRIMARY handler for
+    // HashMap/ArrayList/Map. It stores entries in per-instance
+    // CollectionState (map_entries / map_string_entries / elements).
     //
-    // We use the key's string representation as the field name:
-    //   "key_" + key_str
-    // This avoids collisions with other fields and supports any key type
-    // that can be converted to a string.
-    if (class_name == "Ljava/util/HashMap;" ||
-        class_name.find("HashMap") != std::string::npos ||
-        class_name.find("Map") != std::string::npos) {
+    // This bridge_to_api stub is a FALLBACK for when shadow dispatch
+    // fails (e.g., when the receiver object wasn't tracked by
+    // CollectionShadow). It uses heap object fields as storage.
+    //
+    // NOTE: If CollectionShadow handles the call, this stub is NEVER
+    // reached (try_shadow_dispatch returns true before bridge_to_api).
+    // If CollectionShadow doesn't handle it, this stub provides a
+    // best-effort fallback.
+    if ((class_name == "Ljava/util/HashMap;" ||
+         class_name.find("HashMap") != std::string::npos ||
+         class_name.find("Map") != std::string::npos) &&
+        shadow_registry_ == nullptr) {
         // HashMap() constructor — no-op.
         if (method == "<init>") {
             status = ApiCallTrace::Status::IMPLEMENTED;
@@ -8061,15 +8176,33 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             std::string field_name = "key_" + key_str;
             auto* obj = heap_.get(this_id);
+            bool hit = false;
             if (obj) {
                 auto fit = obj->fields.find(field_name);
                 if (fit != obj->fields.end()) {
                     result = fit->second;
+                    hit = true;
+                    // EXP-071-HMAP-GET diagnostic
+                    std::cerr << "[EXP071-HMAP-GET] map=" << this_id
+                              << " key=\"" << key_str << "\" HIT"
+                              << " val_type=" << (int)result.type;
+                    if (result.type == DalvikType::STRING_REF) {
+                        std::cerr << " val=\"" << result.string_val << "\"";
+                    } else if (result.type == DalvikType::OBJECT_REF) {
+                        std::cerr << " val_obj=" << result.object_id;
+                    }
+                    std::cerr << " caller=" << current_class_ << "." << current_method_
+                              << " pc=" << pc_ << std::endl;
                     status = ApiCallTrace::Status::IMPLEMENTED;
                     return true;
                 }
             }
             // Key not found — return null.
+            // EXP-071-HMAP-GET diagnostic
+            std::cerr << "[EXP071-HMAP-GET] map=" << this_id
+                      << " key=\"" << key_str << "\" MISS"
+                      << " caller=" << current_class_ << "." << current_method_
+                      << " pc=" << pc_ << std::endl;
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_null();
             return true;
@@ -8087,6 +8220,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             std::string field_name = "key_" + key_str;
             heap_.set_object_field(this_id, field_name, args[2]);
+            // EXP-071-HMAP-PUT diagnostic
+            std::cerr << "[EXP071-HMAP-PUT] map=" << this_id
+                      << " key=\"" << key_str << "\""
+                      << " val_type=" << (int)args[2].type;
+            if (args[2].type == DalvikType::STRING_REF) {
+                std::cerr << " val=\"" << args[2].string_val << "\"";
+            } else if (args[2].type == DalvikType::OBJECT_REF) {
+                std::cerr << " val_obj=" << args[2].object_id;
+            }
+            std::cerr << " caller=" << current_class_ << "." << current_method_
+                      << " pc=" << pc_ << std::endl;
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_null();  // old value (null = no previous)
             return true;
