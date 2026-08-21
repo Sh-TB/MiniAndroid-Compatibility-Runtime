@@ -1174,6 +1174,17 @@ public:
     // registered listener was found.
     bool dispatch_click_by_class(const std::string& class_substring);
 
+    // EXP-071: Set the APK path so intercepts (AssetManager.open,
+    // BufferedReader.readLine) can lazily extract assets via popen(unzip).
+    void set_apk_path(const std::string& path) { apk_path_ = path; }
+
+    // EXP-071: Dispatch a Runnable's run() method via try_recursive_invoke.
+    // Handles both the no-arg run() and the 2-arg run(TLObject, TL_error)
+    // variants used by Telegram's ConnectionsManager delegates.
+    bool dispatch_runnable(uint32_t runnable_object_id,
+                           uint32_t response_object_id = 0,
+                           uint32_t error_object_id = 0);
+
     // EXP-061: Dump the full ViewNode tree (from ViewShadow) to a JSON
     // file. Each node includes object_id, class, parent, children,
     // geometry (x,y,width,height), text, visibility, clickable,
@@ -1471,6 +1482,13 @@ private:
     std::string resolve_type_for_dex(uint32_t type_idx, uint32_t dex_index) const;
     std::string read_dex_string_from_raw(const std::vector<uint8_t>& raw, uint32_t string_idx,
                                           const dex::DexHeader& hdr) const;
+    // EXP-071: Per-DEX proto (method descriptor) resolution.
+    // Reads the proto_ids table from raw DEX bytes to resolve method_idx →
+    // proto descriptor (e.g. "(Lorg/telegram/tgnet/TLRPC$TL_error;)V").
+    // Required because the merged global protos vector has wrong indices for
+    // multi-DEX current_dex_index_ values, which corrupts wide-register
+    // merging for $r8$lambda methods.
+    std::string resolve_method_proto_for_dex(uint32_t method_idx, uint32_t dex_index) const;
     
     bool halted_ = false;
     bool halted_on_return_ = false;
@@ -1543,6 +1561,19 @@ private:
     // config_ moved to public section above
     
     bool verbose_ = false;
+
+    // EXP-071: APK path (for AssetManager.open / BufferedReader.readLine
+    // intercepts that lazily extract assets via popen(unzip)).
+    std::string apk_path_;
+    // EXP-071: Track open asset streams. Maps a heap object_id of an
+    // InputStream/BufferedReader/InputStreamReader to the (path, position)
+    // of the underlying asset. BufferedReader.readLine reads + advances
+    // position; InputStream.close removes the entry.
+    std::map<uint32_t, std::pair<std::string, size_t>> open_assets_;
+    // EXP-071: True while we are inside execute_invoke_static. Used by
+    // $r8$lambda detection to skip wide-register merging when the resolved
+    // proto is wrong (multi-DEX current_dex_index_ issue).
+    bool current_invoke_is_static_ = false;
 };
 
 } // namespace dalvik
