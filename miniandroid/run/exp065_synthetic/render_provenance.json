@@ -1,0 +1,99 @@
+{
+  "experiment": "EXP-064",
+  "renderer_backend": "CPU",
+  "gpu_used": false,
+  "screen_width": 1080,
+  "screen_height": 1920,
+  "pixel_format": "RGB888",
+  "view_count_total": 5,
+  "view_count_subtree": 5,
+  "rendered_count": 4,
+  "text_bearing_count": 3,
+  "slide_root": {
+    "object_id": 1,
+    "class": "Lcom/acme/LoginActivity;"
+  },
+  "login_ui_png": "run/exp065_synthetic/login_ui.png",
+  "login_debug_png": "run/exp065_synthetic/login_debug.png",
+  "rendered_views": [
+    {
+      "object_id": 1,
+      "class": "Lcom/acme/LoginActivity;",
+      "bounds": [
+        0,
+        0,
+        1080,
+        1920
+      ],
+      "text": ""
+    },
+    {
+      "object_id": 2,
+      "class": "Landroid/widget/TextView;",
+      "bounds": [
+        48,
+        24,
+        984,
+        84
+      ],
+      "text": "Welcome to Acme"
+    },
+    {
+      "object_id": 3,
+      "class": "Landroid/widget/EditText;",
+      "bounds": [
+        48,
+        116,
+        984,
+        624
+      ],
+      "text": "Enter your email"
+    },
+    {
+      "object_id": 4,
+      "class": "Landroid/widget/Button;",
+      "bounds": [
+        48,
+        748,
+        984,
+        60
+      ],
+      "text": "Sign In"
+    }
+  ],
+  "text_rendered": [
+    {
+      "object_id": 2,
+      "class": "Landroid/widget/TextView;",
+      "text": "Welcome to Acme",
+      "bounds": [
+        48,
+        24,
+        984,
+        84
+      ]
+    },
+    {
+      "object_id": 3,
+      "class": "Landroid/widget/EditText;",
+      "text": "Enter your email",
+      "bounds": [
+        48,
+        116,
+        984,
+        624
+      ]
+    },
+    {
+      "object_id": 4,
+      "class": "Landroid/widget/Button;",
+      "text": "Sign In",
+      "bounds": [
+        48,
+        748,
+        984,
+        60
+      ]
+    }
+  ]
+}
