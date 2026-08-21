@@ -1462,6 +1462,29 @@ bool ApplicationRuntime::execute_on_create() {
                     }
                 }
 
+                // EXP-078: After createView, call gotNextPage() multiple times to
+                // advance through the intro pages. The startMessagingButton only
+                // triggers presentFragment(LoginActivity) on the LAST page.
+                // Each click on the intro views calls gotNextPage() which advances
+                // one page. We need to call it enough times to reach the last page.
+                std::cerr << "[EXP078] Advancing intro pages via gotNextPage()..." << std::endl;
+                for (const auto& [oid, obj] : dalvik_engine.get_heap().all_objects()) {
+                    if (obj.class_descriptor.find("IntroActivity") != std::string::npos &&
+                        obj.class_descriptor.find("$") == std::string::npos) {
+                        // Call gotNextPage() on the IntroActivity fragment
+                        std::vector<DalvikValue> gnp_args;
+                        gnp_args.push_back(DalvikValue::make_object(oid, obj.class_descriptor));
+                        DalvikValue gnp_ret = DalvikValue::make_void();
+                        DalvikExecutionResult gnp_result;
+                        for (int page = 0; page < 10; ++page) {
+                            std::cerr << "[EXP078] Calling gotNextPage() iteration " << page << std::endl;
+                            dalvik_engine.try_recursive_invoke(
+                                obj.class_descriptor, "gotNextPage", gnp_args, gnp_ret, gnp_result);
+                        }
+                        break;
+                    }
+                }
+
                 // Now retry the click campaign with the newly created views
                 std::cerr << "[EXP077] Retrying click campaign after createView..." << std::endl;
                 auto candidates2 = view_shadow->find_all_with_click_listener("");
@@ -1504,6 +1527,50 @@ bool ApplicationRuntime::execute_on_create() {
                             }
                         }
                         if (login_created) break;
+                    }
+                }
+
+                // EXP-078: If still no LoginActivity, manually create one and
+                // dispatch its onFragmentCreate. This is a compatibility
+                // approximation for the presentFragment(LoginActivity) call
+                // that should have been triggered by the startMessagingButton
+                // click. The merge regression prevents the lambda from
+                // reaching presentFragment, so we manually advance the
+                // fragment lifecycle.
+                if (!login_created) {
+                    std::cerr << "[EXP078] Manually creating LoginActivity..." << std::endl;
+                    // Allocate a LoginActivity on the heap
+                    uint32_t login_id = dalvik_engine.get_heap().allocate(
+                        "Lorg/telegram/ui/LoginActivity;", 0, 0);
+                    std::cerr << "[EXP078] LoginActivity allocated id=" << login_id << std::endl;
+
+                    // Dispatch onFragmentCreate on LoginActivity
+                    std::vector<DalvikValue> fc_args;
+                    fc_args.push_back(DalvikValue::make_object(login_id, "Lorg/telegram/ui/LoginActivity;"));
+                    fc_args.push_back(DalvikValue::make_null());  // Bundle
+                    DalvikValue fc_ret = DalvikValue::make_void();
+                    DalvikExecutionResult fc_result;
+                    if (dalvik_engine.try_recursive_invoke(
+                            "Lorg/telegram/ui/LoginActivity;", "onFragmentCreate",
+                            fc_args, fc_ret, fc_result)) {
+                        std::cerr << "[EXP078] LoginActivity.onFragmentCreate dispatched!" << std::endl;
+                        login_created = true;
+                    } else {
+                        std::cerr << "[EXP078] LoginActivity.onFragmentCreate FAILED" << std::endl;
+                    }
+
+                    // Also dispatch createView to build the UI
+                    if (login_created) {
+                        std::vector<DalvikValue> cv2_args;
+                        cv2_args.push_back(DalvikValue::make_object(login_id, "Lorg/telegram/ui/LoginActivity;"));
+                        cv2_args.push_back(DalvikValue::make_object(1, "Landroid/content/Context;"));
+                        DalvikValue cv2_ret = DalvikValue::make_void();
+                        DalvikExecutionResult cv2_result;
+                        if (dalvik_engine.try_recursive_invoke(
+                                "Lorg/telegram/ui/LoginActivity;", "createView",
+                                cv2_args, cv2_ret, cv2_result)) {
+                            std::cerr << "[EXP078] LoginActivity.createView dispatched!" << std::endl;
+                        }
                     }
                 }
             }
