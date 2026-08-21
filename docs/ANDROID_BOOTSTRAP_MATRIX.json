@@ -1,0 +1,278 @@
+[
+  {
+    "app": "com.chessclock.android_29.apk",
+    "apk_sha256": "5ca6f2c54c05efe7",
+    "dex_sha256": "6ee821eb55eb9990",
+    "class_count": 22,
+    "activity_count": 2,
+    "activities": [
+      {
+        "class": "Lcom/chessclock/android/ChessClock;",
+        "superclass": "Landroid/app/Activity;"
+      },
+      {
+        "class": "Lcom/chessclock/android/Prefs;",
+        "superclass": "Landroid/preference/PreferenceActivity;"
+      }
+    ],
+    "bootstrap_type": "Activity",
+    "has_listactivity": false,
+    "has_fragmentactivity": false,
+    "has_appcompatactivity": false,
+    "has_compose": false,
+    "has_webview": false
+  },
+  {
+    "app": "de.duenndns.gmdice_8.apk",
+    "apk_sha256": "1621eda11b5dbc0c",
+    "dex_sha256": "a3abdced4fcf16ce",
+    "class_count": 23,
+    "activity_count": 1,
+    "activities": [
+      {
+        "class": "Lde/duenndns/gmdice/GameMasterDice;",
+        "superclass": "Landroid/app/ListActivity;"
+      }
+    ],
+    "bootstrap_type": "ListActivity",
+    "has_listactivity": true,
+    "has_fragmentactivity": false,
+    "has_appcompatactivity": false,
+    "has_compose": false,
+    "has_webview": false
+  },
+  {
+    "app": "omegacentauri.mobi.simplestopwatch_26.apk",
+    "apk_sha256": "b3ec1a5ec24ce53b",
+    "dex_sha256": "41293f80cefaf665",
+    "class_count": 130,
+    "activity_count": 2,
+    "activities": [
+      {
+        "class": "Lomegacentauri/mobi/simplestopwatch/Options;",
+        "superclass": "Landroid/preference/PreferenceActivity;"
+      },
+      {
+        "class": "Lomegacentauri/mobi/simplestopwatch/ShowTime;",
+        "superclass": "Landroid/app/Activity;"
+      }
+    ],
+    "bootstrap_type": "Activity",
+    "has_listactivity": false,
+    "has_fragmentactivity": false,
+    "has_appcompatactivity": false,
+    "has_compose": false,
+    "has_webview": false
+  },
+  {
+    "app": "org.billthefarmer.notes_139.apk",
+    "apk_sha256": "82cf8bc44c163748",
+    "dex_sha256": "583cf39517bb8665",
+    "class_count": 373,
+    "activity_count": 4,
+    "activities": [
+      {
+        "class": "Lorg/billthefarmer/notes/Editor;",
+        "superclass": "Landroid/app/Activity;"
+      },
+      {
+        "class": "Lorg/billthefarmer/notes/Notes;",
+        "superclass": "Landroid/app/Activity;"
+      },
+      {
+        "class": "Lorg/billthefarmer/notes/Settings;",
+        "superclass": "Landroid/app/Activity;"
+      }
+    ],
+    "bootstrap_type": "Activity",
+    "has_listactivity": false,
+    "has_fragmentactivity": false,
+    "has_appcompatactivity": false,
+    "has_compose": false,
+    "has_webview": true
+  },
+  {
+    "app": "org.debian.eugen.headingcalculator_1.apk",
+    "apk_sha256": "274ec873098eea51",
+    "dex_sha256": "9542ef9cf5c8f1ce",
+    "class_count": 25,
+    "activity_count": 1,
+    "activities": [
+      {
+        "class": "Lorg/debian/eugen/headingcalculator/MainActivity;",
+        "superclass": "Landroid/app/Activity;"
+      }
+    ],
+    "bootstrap_type": "Activity",
+    "has_listactivity": false,
+    "has_fragmentactivity": false,
+    "has_appcompatactivity": false,
+    "has_compose": false,
+    "has_webview": false
+  },
+  {
+    "app": "app.varlorg.unote_30.apk",
+    "apk_sha256": "be91103f0e7db443",
+    "dex_sha256": "bc149f4780155b55",
+    "class_count": 66,
+    "activity_count": 9,
+    "activities": [
+      {
+        "class": "Lapp/varlorg/unote/NoteEdition;",
+        "superclass": "Landroid/app/Activity;"
+      },
+      {
+        "class": "Lapp/varlorg/unote/NoteMain;",
+        "superclass": "Landroid/app/Activity;"
+      },
+      {
+        "class": "Lapp/varlorg/unote/Preference;",
+        "superclass": "Landroid/preference/PreferenceActivity;"
+      }
+    ],
+    "bootstrap_type": "ListActivity",
+    "has_listactivity": true,
+    "has_fragmentactivity": false,
+    "has_appcompatactivity": false,
+    "has_compose": true,
+    "has_webview": false
+  },
+  {
+    "app": "com.emmanuelmess.tictactoe_3.apk",
+    "apk_sha256": "760fe5acf7b39435",
+    "dex_sha256": "4ac52f40a24dbbea",
+    "class_count": 2137,
+    "activity_count": 1,
+    "activities": [
+      {
+        "class": "Lcom/badlogic/gdx/backends/android/AndroidApplication;",
+        "superclass": "Landroid/app/Activity;"
+      }
+    ],
+    "bootstrap_type": "Activity",
+    "has_listactivity": false,
+    "has_fragmentactivity": false,
+    "has_appcompatactivity": false,
+    "has_compose": false,
+    "has_webview": false
+  },
+  {
+    "app": "com.github.muellerma.stopwatch_6.apk",
+    "apk_sha256": "3b6a10c8dc8ddc72",
+    "dex_sha256": "60f2473eb67d4029",
+    "class_count": 1060,
+    "activity_count": 3,
+    "activities": [
+      {
+        "class": "Landroidx/lifecycle/LifecycleDispatcher$DispatcherActivityCallback;",
+        "superclass": "Landroidx/lifecycle/EmptyActivityLifecycleCallbacks;"
+      },
+      {
+        "class": "Landroidx/lifecycle/ProcessLifecycleOwner$attach$1$onActivityPreCreated$1;",
+        "superclass": "Landroidx/lifecycle/EmptyActivityLifecycleCallbacks;"
+      },
+      {
+        "class": "Landroidx/lifecycle/ProcessLifecycleOwner$attach$1;",
+        "superclass": "Landroidx/lifecycle/EmptyActivityLifecycleCallbacks;"
+      }
+    ],
+    "bootstrap_type": "Activity",
+    "has_listactivity": false,
+    "has_fragmentactivity": false,
+    "has_appcompatactivity": false,
+    "has_compose": false,
+    "has_webview": false
+  },
+  {
+    "app": "dubrowgn.microtimer_8.apk",
+    "apk_sha256": "79c6f730f64886e7",
+    "dex_sha256": "be210ece4f9cc0c6",
+    "class_count": 143,
+    "activity_count": 1,
+    "activities": [
+      {
+        "class": "Ldubrowgn/microtimer/MainActivity;",
+        "superclass": "Landroid/app/Activity;"
+      }
+    ],
+    "bootstrap_type": "Activity",
+    "has_listactivity": false,
+    "has_fragmentactivity": false,
+    "has_appcompatactivity": false,
+    "has_compose": false,
+    "has_webview": false
+  },
+  {
+    "app": "io.github.yamin8000.dooz_18.apk",
+    "apk_sha256": "d81292cd346dcb23",
+    "dex_sha256": "b44dce6063c34d5c",
+    "class_count": 4596,
+    "activity_count": 3,
+    "activities": [
+      {
+        "class": "Landroidx/core/app/ComponentActivity;",
+        "superclass": "Landroid/app/Activity;"
+      },
+      {
+        "class": "Landroidx/activity/ComponentActivity;",
+        "superclass": "Landroidx/core/app/ComponentActivity;"
+      },
+      {
+        "class": "Lio/github/yamin8000/dooz/content/MainActivity;",
+        "superclass": "Landroidx/activity/ComponentActivity;"
+      }
+    ],
+    "bootstrap_type": "Compose",
+    "has_listactivity": false,
+    "has_fragmentactivity": false,
+    "has_appcompatactivity": false,
+    "has_compose": true,
+    "has_webview": false
+  },
+  {
+    "app": "nl.hansdezwart.bgclock_2.apk",
+    "apk_sha256": "72c140b0083ef273",
+    "dex_sha256": "5fdb3dc51f4407e2",
+    "class_count": 1971,
+    "activity_count": 3,
+    "activities": [
+      {
+        "class": "Landroidx/core/app/ActivityOptionsCompat$ActivityOptionsCompatImpl;",
+        "superclass": "Landroidx/core/app/ActivityOptionsCompat;"
+      },
+      {
+        "class": "Landroidx/core/app/ComponentActivity;",
+        "superclass": "Landroid/app/Activity;"
+      },
+      {
+        "class": "Lnl/hansdezwart/bgclock/MainActivity;",
+        "superclass": "Landroid/app/Activity;"
+      }
+    ],
+    "bootstrap_type": "Activity",
+    "has_listactivity": false,
+    "has_fragmentactivity": false,
+    "has_appcompatactivity": false,
+    "has_compose": false,
+    "has_webview": true
+  },
+  {
+    "app": "rkr.simplekeyboard.inputmethod_145.apk",
+    "apk_sha256": "d83060833dc2bc97",
+    "dex_sha256": "48eaddd48ff98ef2",
+    "class_count": 122,
+    "activity_count": 1,
+    "activities": [
+      {
+        "class": "Lrkr/simplekeyboard/inputmethod/latin/settings/SettingsActivity;",
+        "superclass": "Landroid/preference/PreferenceActivity;"
+      }
+    ],
+    "bootstrap_type": "Activity",
+    "has_listactivity": false,
+    "has_fragmentactivity": false,
+    "has_appcompatactivity": false,
+    "has_compose": false,
+    "has_webview": false
+  }
+]
