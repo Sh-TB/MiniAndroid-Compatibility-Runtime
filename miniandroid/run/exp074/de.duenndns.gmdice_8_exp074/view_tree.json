@@ -1,0 +1,22 @@
+{
+  "experiment": "EXP-061",
+  "nodes": [
+    {
+      "android_view_id": 0,
+      "children": [],
+      "class": "Lde/duenndns/gmdice/RollResultAdapter;",
+      "clickable": false,
+      "enabled": true,
+      "has_click_listener": false,
+      "height": -1,
+      "object_id": 9,
+      "parent_id": 0,
+      "text": "",
+      "visibility": 0,
+      "width": -1,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "view_count": 1
+}
