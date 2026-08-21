@@ -1,0 +1,32 @@
+{
+  "png_valid": false,
+  "fresh": true,
+  "png_path": "run/exp064_intro/login_ui.png",
+  "png_dimensions": [
+    1080,
+    1920
+  ],
+  "png_sha256": "ef9a1dd3d5a29e28f05d6043be752813e2e6b015c67f4c7fe35b6a0a9c927789",
+  "png_size_bytes": 10406,
+  "non_background_pixel_count": 0,
+  "non_background_pixel_percent": 0.0,
+  "text_expected": [
+    "Start Messaging"
+  ],
+  "text_detected": [],
+  "match_rate": 0.0,
+  "login_ui_confidence": "NOT_PROVEN",
+  "checks": {
+    "file_exists": true,
+    "dimensions_ok": true,
+    "fresh": true,
+    "age_seconds": 1.4,
+    "has_content_pixels": false,
+    "text_regions_have_pixels": false,
+    "ocr_ran": true
+  },
+  "text_regions_count": 0,
+  "region_findings": [],
+  "ocr_raw_text": "",
+  "ocr_normalized": ""
+}
