@@ -1645,18 +1645,10 @@ private:
     
     bool verbose_ = false;
 
-    // EXP-071: APK path (for AssetManager.open / BufferedReader.readLine
-    // intercepts that lazily extract assets via popen(unzip)).
-    std::string apk_path_;
-    // EXP-071: Track open asset streams. Maps a heap object_id of an
-    // InputStream/BufferedReader/InputStreamReader to the (path, position)
-    // of the underlying asset. BufferedReader.readLine reads + advances
-    // position; InputStream.close removes the entry.
-    std::map<uint32_t, std::pair<std::string, size_t>> open_assets_;
-    // EXP-071: True while we are inside execute_invoke_static. Used by
-    // $r8$lambda detection to skip wide-register merging when the resolved
-    // proto is wrong (multi-DEX current_dex_index_ issue).
-    bool current_invoke_is_static_ = false;
+    // EXP-071: APK path, open_assets_, and current_invoke_is_static_ are
+    // declared earlier in this class (lines ~1624-1640). The duplicate
+    // declarations that were here were removed in EXP-075 to fix a
+    // redeclaration error introduced by the EXP-071 merge.
 };
 
 } // namespace dalvik

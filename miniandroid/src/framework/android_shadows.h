@@ -482,6 +482,11 @@ public:
     void init(HeapAllocator* heap) override { heap_ = heap; }
 
     bool handles_class(const std::string& class_name) const override {
+        // EXP-075: Do NOT handle Activity subclasses — let ActivityShadow handle them.
+        // This prevents ViewShadow from intercepting setContentView calls on Activities.
+        if (class_name.find("Activity;") != std::string::npos) {
+            return false;
+        }
         // Match any class ending in "View;" or "ViewGroup;" or containing
         // well-known View subclasses. Specific dispatch is done by
         // method name.
