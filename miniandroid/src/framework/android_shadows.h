@@ -603,6 +603,12 @@ public:
     struct CollectionState {
         std::vector<uint32_t> elements;  // object_ids of elements
         std::map<std::string, uint32_t> map_entries;  // key → value object_id
+        // EXP-071: String-valued map entries. HashMap<String,String> stores
+        // values that aren't heap objects — they're plain strings. Without
+        // this separate map, getString returns null because the value is
+        // stored in the heap as an OBJECT_REF (which doesn't exist for a
+        // primitive String). We store STRING args here.
+        std::map<std::string, std::string> map_string_entries;
         size_t iterator_position = 0;
         bool is_map = false;
     };
