@@ -2279,7 +2279,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             class_descriptor.find("AnimatedPhoneNumberEditText") != std::string::npos ||
             // Anonymous subclasses of AnimatedPhoneNumberEditText
             (class_descriptor.find("PhoneView$") != std::string::npos &&
-             class_descriptor.find("LoginActivity") != std::string::npos);
+             class_descriptor.find("LoginActivity") != std::string::npos || class_descriptor.find("BaseFragment") != std::string::npos);
         if (is_animated_phone_edit_text) {
             // EXP-065: Diagnostic — log what arg kind setHintText received.
             std::string arg_kind = "none";
@@ -2557,6 +2557,26 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     }
     const dex::ClassInfo& cls_ref = dex_report_->classes[class_it->second];
 
+    // EXP-078: Debug — trace LoginActivity method search
+    if (class_descriptor.find("LoginActivity") != std::string::npos || class_descriptor.find("BaseFragment") != std::string::npos &&
+        (method_name == "onFragmentCreate" || method_name == "createView" || method_name == "onNextPressed")) {
+        auto all_methods_check = cls_ref.all_methods();
+        std::cerr << "[EXP078-DEBUG] " << class_descriptor << "." << method_name
+                  << " class found! methods=" << all_methods_check.size()
+                  << " direct=" << cls_ref.direct_methods.size()
+                  << " virtual=" << cls_ref.virtual_methods.size()
+                  << " superclass=" << cls_ref.superclass_name
+                  << std::endl;
+        for (const auto& m : all_methods_check) {
+            if (m.name == method_name) {
+                std::cerr << "[EXP078-DEBUG]   FOUND " << m.name << m.descriptor
+                          << " bytecode_size=" << m.bytecode.size()
+                          << " code_offset=0x" << std::hex << m.code_offset << std::dec
+                          << std::endl;
+            }
+        }
+    }
+
     // EXP-061: Debug — trace SlideView method search
     if (class_descriptor.find("SlideView") != std::string::npos && method_name == "<init>") {
         auto all_methods_check = cls_ref.all_methods();
@@ -2760,8 +2780,16 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 }
             }
             if (type_matches) {
-                best_match = method;  // copy by value (EXP-054)
-                break;  // exact match, stop searching
+                // EXP-078: Multi-DEX method shadowing fix.
+                // When DEX files are merged, the same method name may appear
+                // in multiple DEX files with different bytecode sizes.
+                // A stub version (bytecode_size=1, return-void) from one DEX
+                // may shadow the real version (bytecode_size=1468) from another.
+                // Fix: prefer the method with the LARGEST bytecode.
+                if (!best_match || method.bytecode.size() > best_match->bytecode.size()) {
+                    best_match = method;  // copy by value (EXP-054)
+                }
+                // Don't break — continue searching for a larger bytecode version
             }
             if (!fallback_match) {
                 fallback_match = method;  // keep as fallback for type mismatch
