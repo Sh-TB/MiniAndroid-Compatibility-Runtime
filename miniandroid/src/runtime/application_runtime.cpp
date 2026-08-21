@@ -1544,10 +1544,10 @@ bool ApplicationRuntime::execute_on_create() {
                         "Lorg/telegram/ui/LoginActivity;", 0, 0);
                     std::cerr << "[EXP078] LoginActivity allocated id=" << login_id << std::endl;
 
-                    // Dispatch onFragmentCreate on LoginActivity
+                    // Dispatch onFragmentCreate()Z on LoginActivity
+                    // onFragmentCreate takes NO parameters (just 'this')
                     std::vector<DalvikValue> fc_args;
                     fc_args.push_back(DalvikValue::make_object(login_id, "Lorg/telegram/ui/LoginActivity;"));
-                    fc_args.push_back(DalvikValue::make_null());  // Bundle
                     DalvikValue fc_ret = DalvikValue::make_void();
                     DalvikExecutionResult fc_result;
                     if (dalvik_engine.try_recursive_invoke(
