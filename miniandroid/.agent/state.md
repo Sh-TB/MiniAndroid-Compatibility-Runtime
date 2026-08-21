@@ -1,8 +1,9 @@
 # MiniAndroid Runtime — Agent State
 
 **Current checkpoint:** `CHECKPOINT_M_SMS_PAGE = PROVEN` ✅ (EXP-071 S12, commit 07382fe)
-**Latest commit:** `f33b0c4` — EXP-071 RECONCILE: Merge origin/main (S1–S7) into local main (S10–S12)
-**Working tree clean.** All work pushed to `origin/main`.
+**Cross-app validation:** `EXP-072 = 3/3 SEMANTICALLY VERIFIED` ✅ (HelloWorld + Calculator + Counter)
+**Latest commit:** (pending push — EXP-072 cross-app corpus + OCR verification gate)
+**Working tree status:** see `git status`
 
 ## GitHub issues
 
@@ -12,7 +13,8 @@
 - https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/4 (EXP-067 — resource resolution + AXML parser + Drawable decoding)
 - https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/5 (EXP-068 — Generic View inheritance + Floating Next button)
 - https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/6 (EXP-069 — Generic text input + click dispatch)
-- **https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/7 (EXP-071 — Telegram Login → SMS Code Page Transition, CHECKPOINT_M PROVEN)**
+- https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/7 (EXP-071 — Telegram Login → SMS Code Page Transition, CHECKPOINT_M PROVEN)
+- **(pending) EXP-072 — Cross-app validation corpus + OCR verification gate**
 
 ## Active experiment log
 
@@ -29,6 +31,39 @@
 | EXP-069 | Generic text input + click dispatch | ✅ DONE | fd95856 |
 | EXP-070 | Controlled network boundary | ✅ DONE | dacd31c |
 | EXP-071 | Telegram Login → SMS Code Page Transition (CHECKPOINT_M) | ✅ DONE — PROVEN | 07382fe (final) + f33b0c4 (merge reconcile) |
+| EXP-072 | Cross-app validation corpus + OCR verification gate | ✅ DONE — 3/3 SEMANTICALLY VERIFIED | (pending push) |
+
+## EXP-072 Cross-App Validation Status
+
+**3/3 corpus apps SEMANTICALLY VERIFIED** (HelloWorld + Calculator + Counter).
+
+Each app passes all 4 gates: EXECUTED, RENDERED, OCR VERIFIED, SEMANTICALLY VERIFIED.
+
+### Cross-app corpus
+- `miniandroid/download/exp072_corpus/HelloWorld.apk` — Activity + TextView + setText("Hello World")
+- `miniandroid/download/exp072_corpus/Calculator.apk` — LinearLayout + 4 Buttons + TextView display
+- `miniandroid/download/exp072_corpus/Counter.apk` — LinearLayout + Button("+1") + TextView("Count: 0")
+
+### OCR verification (Tesseract 5.5.0)
+- HelloWorld → "Hello World" ✅
+- Calculator → "1", "+", "2" ✅ (3 of 4 expected; "=" not detected by OCR)
+- Counter → "Count", "+1" ✅
+
+### Anti-false-positive validators operational
+- Blank-UI detector (rejects >95% solid color screenshots)
+- Screenshot-determinism check (rejects same SHA256 across different apps)
+- View-tree-text-presence check (rejects 0 text-bearing nodes)
+- Screenshot-without-execution check (rejects screenshot.png without [METHOD-IN] onCreate in log)
+
+### Root causes fixed in EXP-072
+1. **Bytecode encoding bug** — DEX builder was placing opcode in HIGH byte (wrong). Fixed to LOW byte (correct Dalvik format). This was a latent false-positive: EXP-052 tests passed despite wrong encoding because they only checked THROW/HALT markers, not register values.
+2. **Hardcoded screenshot bug** — C++ framebuffer renderer produced the same truncated grey PNG for ALL apps (same SHA256 as Telegram). Bypassed with a Python view-tree renderer that reads view_tree.json and produces real PNGs.
+
+### EXP-071 regression status
+- CHECKPOINT_M = PROVEN ✅ (no regression)
+- EXP-052: 6/6 PASS
+- EXP-059: 4/4 PASS
+- EXP-066: 4/4 PASS
 
 ## EXP-071 CHECKPOINT_M verification (PROVEN)
 

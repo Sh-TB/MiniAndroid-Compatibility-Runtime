@@ -1,8 +1,14 @@
 # EXP-071 + EXP-072+ Blockers
 
-Live list of blockers and TODOs. Updated during the EXP-071 reconciliation pass.
+Live list of blockers and TODOs. Updated during the EXP-072 cross-app validation pass.
 
-## EXP-071 status: ✅ CHECKPOINT_M = PROVEN — NO ACTIVE BLOCKERS
+## EXP-072 status: ✅ 3/3 CORPUS APPS SEMANTICALLY VERIFIED
+
+- HelloWorld.apk → "Hello World" ✅
+- Calculator.apk → "1", "+", "2" ✅
+- Counter.apk → "Count", "+1" ✅
+
+OCR verification gate operational. Anti-false-positive validators operational.
 
 All blockers from the EXP-071 campaign have been resolved. The 16 generic fixes listed in `docs/EXP071_FINAL_REPORT.md` section 4 are complete and verified.
 
@@ -46,11 +52,25 @@ These were open before EXP-071, remain open, and do not block any EXP-071 criter
 - `ready` variable shadowing in `HandlerShadow::drain_ready` (android_shadows.cpp:475) — non-fatal.
 - `run.log` is non-deterministic across runs (timestamps). Expected; not a defect.
 
-## Blockers for the NEXT experiment (EXP-072+)
+## Blockers for the NEXT experiment (EXP-073+)
 
 The next experiment should target a GENERIC compatibility feature. Ranked candidates with their blockers:
 
-### Candidate 1: Real drawable decoding (RECOMMENDED)
+### Candidate 0 (NEW — RECOMMENDED): App-agnostic click dispatch
+
+**Why this is now the top candidate:** EXP-072 proved that the cross-app corpus apps execute and render, but the synthetic click campaign (`EXP060-CLICK`) is hardcoded to look for Telegram's `FragmentFloatingButton`. For the corpus apps:
+- Calculator's "=" button is NOT clicked
+- Counter's "+1" button is NOT clicked
+- Input/state mutation is NOT tested
+
+**Blockers:**
+- The click campaign needs to find ANY view with `has_click_listener=true` in the view tree, not just Telegram's FAB.
+- The corpus apps need `setOnClickListener` wiring (currently the corpus apps create Buttons but don't set click listeners — the bytecode would need to be extended).
+- After click dispatch, the view tree should reflect state changes (e.g., Counter's TextView updates from "Count: 0" to "Count: 1").
+
+**Estimated effort:** Medium. 1-2 sessions.
+
+### Candidate 1: Real drawable decoding
 
 **Blockers:**
 - Need to integrate libpng/libjpeg/libwebp into the build (or use existing Android libbitmap equivalents).
