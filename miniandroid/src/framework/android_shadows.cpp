@@ -710,9 +710,19 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     // Activity instance methods
     if (m == "setContentView") {
-        // setContentView(View) or setContentView(int).
-        if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
-            content_view_id_ = ctx.args[0].object_id;
+        // setContentView(View) or setContentView(int layoutResId).
+        if (!ctx.args.empty()) {
+            if (ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+                content_view_id_ = ctx.args[0].object_id;
+            } else if (ctx.args[0].kind == CallContext::Arg::Kind::INT) {
+                // EXP-074: setContentView(int layoutResId) — capture the layout resource ID.
+                // The runtime doesn't yet support XML layout inflation, but we capture
+                // the resource ID so the renderer can at least know which layout was requested.
+                layout_resource_id_ = ctx.args[0].int_val;
+                std::cerr << "[EXP074-LAYOUT] setContentView(layoutResId=0x" << std::hex
+                          << ctx.args[0].int_val << std::dec << ") — layout inflation NOT YET SUPPORTED"
+                          << std::endl;
+            }
         }
         return CallResult::handled_void();
     }
@@ -1073,41 +1083,17 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "setText") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
-        // EXP-065: Trace setText calls to diagnose "FIELD_PREFERRED_AUDIO_LANGUAGES" leak.
-        // (Root cause was elsewhere — see execute_const_string per-DEX fix — but keep
-        // the diagnostic logging for now to verify the fix.)
-        std::string arg_kind = "none";
-        std::string arg_val = "<no-arg>";
-        if (!ctx.args.empty()) {
-            const auto& a = ctx.args[0];
-            switch (a.kind) {
-                case CallContext::Arg::Kind::STRING:
-                    arg_kind = "STRING";
-                    arg_val = "\"" + a.string_val + "\"";
-                    break;
-                case CallContext::Arg::Kind::OBJECT:
-                    arg_kind = "OBJECT";
-                    arg_val = "obj_id=" + std::to_string(a.object_id) + " class=" + a.object_class;
-                    break;
-                case CallContext::Arg::Kind::INT:
-                    arg_kind = "INT";
-                    arg_val = std::to_string(a.int_val);
-                    break;
-                case CallContext::Arg::Kind::NULL_REF:
-                    arg_kind = "NULL_REF";
-                    arg_val = "null";
-                    break;
-                default:
-                    arg_kind = "other";
-                    break;
+        // EXP-074: When setText(int resourceId) is called, capture the resource ID.
+        // The Python renderer will resolve it via the ARSC string table.
+        if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::INT) {
+            n->text_resource_id = ctx.args[0].int_val;
+            // Don't overwrite text if it was already set by a string setText
+            if (n->text.empty()) {
+                n->text = "[resid:0x" + std::to_string(ctx.args[0].int_val) + "]";
             }
+        } else {
+            n->text = ctx.arg_as_string(0);
         }
-        std::cerr << "[EXP065-SETTEXT] view_id=" << ctx.receiver_id
-                  << " class=" << ctx.class_name
-                  << " arg_kind=" << arg_kind
-                  << " arg_val=" << arg_val
-                  << std::endl;
-        n->text = ctx.arg_as_string(0);
         return CallResult::handled_void();
     }
     // EXP-065: Capture setHint / setHintText — EditText hint text is

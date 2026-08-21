@@ -3249,6 +3249,8 @@ bool DalvikExecutionEngine::dump_view_tree(const std::string& path) {
         n["y"] = node->y;
         n["text"] = node->text;
         n["hint"] = node->hint;  // EXP-065: EditText hint
+        // EXP-074: Text resource ID for setText(int) resolution
+        n["text_resource_id"] = node->text_resource_id;
         // EXP-068: Semantic View type classification via superclass chain.
         // This replaces class-name pattern matching in the renderer.
         if (is_edit_text_class(node->class_desc)) {
