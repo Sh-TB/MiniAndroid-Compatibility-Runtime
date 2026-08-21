@@ -408,6 +408,8 @@ private:
     uint32_t current_activity_id_ = 0;
     std::string current_activity_class_;
     uint32_t content_view_id_ = 0;
+    // EXP-074: Layout resource ID from setContentView(int layoutResId).
+    int32_t layout_resource_id_ = 0;
     LifecycleState state_ = LifecycleState::NONE;
 };
 
@@ -459,6 +461,9 @@ public:
         // The renderer can look up the drawable path via resource_drawable_paths_.
         int32_t image_resource_id = 0;
         std::string image_drawable_path;  // resolved APK asset path (e.g. "res/abc.webp")
+        // EXP-074: Text resource ID — set by TextView.setText(int resid).
+        // When non-zero, the renderer resolves it via the ARSC string table.
+        int32_t text_resource_id = 0;
         bool clickable = false;
         bool enabled = true;
         int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8
