@@ -614,6 +614,11 @@ public:
     struct CollectionState {
         std::vector<uint32_t> elements;  // object_ids of elements
         std::map<std::string, uint32_t> map_entries;  // key → value object_id
+        // EXP-071 Phase 7: Store string values for HashMap.put(key, String).
+        // The original map_entries only stores object_ids, but many HashMap
+        // usages store String values (e.g., shortname → country name).
+        // Without this, HashMap.get returns null for string values.
+        std::map<std::string, std::string> map_string_entries;  // key → string value
         size_t iterator_position = 0;
         bool is_map = false;
     };
