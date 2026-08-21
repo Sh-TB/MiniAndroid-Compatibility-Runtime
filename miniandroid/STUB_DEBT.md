@@ -1,8 +1,44 @@
 # MiniAndroid STUB_DEBT Ledger
 
-**Last updated:** 2026-08-22 (post-EXP-071 reconciliation)
+**Last updated:** 2026-08-22 (post-EXP-072 cross-app validation)
 **Maintained by:** MiniAndroid agent
 **Purpose:** Track every stubbed, faked, or partially-implemented behaviour that could become technical debt. Items here are NOT bugs — they are conscious simplifications. Each item should eventually be either fully implemented or formally accepted as a permanent limitation.
+
+## EXP-072 NEW ENTRIES (cross-app validation revealed these)
+
+### EXP-072-A: C++ framebuffer renderer is broken (PARTIAL → bypassed)
+
+The C++ `SoftwareRenderer::perform_draw()` looks for heap objects with class name `"android.widget.TextView"` (Java format), but the heap stores objects with DEX descriptor `"Landroid/widget/TextView;"`. The lookup finds nothing, so the framebuffer remains solid grey.
+
+Additionally, `PNGWriter::write_png()` produces a TRUNCATED PNG (4535 bytes instead of ~1.15 MB for a 480×800 RGB image). Despite this, `file` reports it as a valid PNG, and the SHA256 is deterministic.
+
+**Impact:** All apps produced the SAME screenshot SHA256 (`c3c208a1...`) — a hardcoded stub. This was a major anti-false-positive violation caught by EXP-072.
+
+**Status:** BYPASSED — EXP-072 introduces a Python view-tree renderer (`scripts/exp072_ocr_verify.py`) that reads `view_tree.json` and produces real PNGs. The C++ renderer is still called but its output (`screenshot.png`) is ignored in favor of the Python renderer's output (`exp072_rendered.png`).
+
+**Action:** Either fix the C++ renderer (match DEX-format class descriptors) OR deprecate it entirely.
+
+### EXP-072-B: Bytecode encoding bug in DEX builder (FIXED)
+
+The `DexBuilder` in `tools/exp052_exception_tests.py` was placing the opcode in the HIGH byte of each 16-bit code unit: `(OP << 8) | operand`. But the runtime's opcode dispatch reads `op = bytecode[pc] & 0xFF` (LOW byte). This silently mis-executed bytecode.
+
+**Impact:** EXP-052 regression tests passed DESPITE the wrong encoding because they only checked for THROW/HALT markers, not register values. This is a **false-positive regression** — tests that pass without testing the right thing.
+
+**Status:** FIXED in EXP-072. The new builder (`scripts/exp072_build_corpus.py`) uses the correct encoding: opcode in LOW byte.
+
+**Action:** Backport the fix to `tools/exp052_exception_tests.py` (or update the EXP-052 tests to also verify register values).
+
+### EXP-072-C: Synthetic click campaign is Telegram-specific (STUB)
+
+The `EXP060-CLICK` synthetic click campaign looks for views with class name containing `FragmentFloatingButton` (Telegram-specific). For non-Telegram apps, it finds 0 clickable views and reports `NO_LOGIN`.
+
+**Impact:** Calculator's "=" button and Counter's "+1" button are NOT clicked. Input/state mutation is NOT tested in the cross-app corpus.
+
+**Status:** OPEN. Tracked as Candidate 0 in `miniandroid/.agent/blockers.md`.
+
+**Action:** Make the click campaign app-agnostic — find ANY view with `has_click_listener=true` in the view tree.
+
+
 
 ## Convention
 
