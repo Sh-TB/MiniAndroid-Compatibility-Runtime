@@ -1,50 +1,102 @@
 # MiniAndroid Runtime — Agent State
 
-**Current checkpoint:** `CHECKPOINT_L_LOGIN_UI = PROVEN` (improved in EXP-066)
-**Latest commit:** `7180c2f` — EXP-066: Multi-DEX semantic audit + OutlineTextContainerView text capture
-**GitHub issues:**
-- https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/1 (EXP-064)
-- https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/2 (EXP-065)
-- https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/3 (EXP-066)
+**Current checkpoint:** `CHECKPOINT_M_SMS_PAGE = PROVEN` ✅ (EXP-071 S12, commit 07382fe)
+**Latest commit:** `f33b0c4` — EXP-071 RECONCILE: Merge origin/main (S1–S7) into local main (S10–S12)
+**Working tree clean.** All work pushed to `origin/main`.
+
+## GitHub issues
+
+- https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/1 (EXP-064 — login image by pixels)
+- https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/2 (EXP-065 — multi-DEX const-string bug fix)
+- https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/3 (EXP-066 — multi-DEX semantic audit)
+- https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/4 (EXP-067 — resource resolution + AXML parser + Drawable decoding)
+- https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/5 (EXP-068 — Generic View inheritance + Floating Next button)
+- https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/6 (EXP-069 — Generic text input + click dispatch)
+- **https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/7 (EXP-071 — Telegram Login → SMS Code Page Transition, CHECKPOINT_M PROVEN)**
 
 ## Active experiment log
 
 | EXP | Title | Status | Commit |
 |---|---|---|---|
-| EXP-061 | Headless GPU-Free Login Screen Rendering | ✅ DONE | (in 5f2f4c2) |
-| EXP-062 | Wide opcode + array model + R class static values | ✅ DONE | (in 5f2f4c2) |
+| EXP-061 | Headless GPU-Free Login Screen Rendering | ✅ DONE | 1f0073c |
+| EXP-062 | Wide opcode + array model + R class static values | ✅ DONE | 3ef1fa5 |
 | EXP-063 | ARSC parser + resource resolver + R class values | ✅ DONE | 5f2f4c2 |
 | EXP-064 | Real login image proven by pixels | ✅ DONE | 7f5448a |
 | EXP-065 | Complete Login screen reconstruction (multi-DEX const-string bug fix) | ✅ DONE | b83e8bc |
 | EXP-066 | Multi-DEX semantic audit + OutlineTextContainerView text capture | ✅ DONE | 7180c2f |
+| EXP-067 | Resource resolution + AXML parser + Drawable decoding | ✅ DONE | 6fe0bb9 |
+| EXP-068 | Generic View inheritance + Floating Next button | ✅ DONE | d055dc6 |
+| EXP-069 | Generic text input + click dispatch | ✅ DONE | fd95856 |
+| EXP-070 | Controlled network boundary | ✅ DONE | dacd31c |
+| EXP-071 | Telegram Login → SMS Code Page Transition (CHECKPOINT_M) | ✅ DONE — PROVEN | 07382fe (final) + f33b0c4 (merge reconcile) |
 
-## Multi-DEX audit status (EXP-066)
+## EXP-071 CHECKPOINT_M verification (PROVEN)
+
+All evidence is committed in the repository and was independently verified during the reconciliation pass:
+
+- **Screenshot SHA256** (byte-identical across 6 runs):
+  `c3c208a169a7dadd21b199e6e9f42d919393f5d1951762cdd5841f18fb98136a`
+- **View tree SHA256** (byte-identical across 6 runs):
+  `d69eaa410eec71880b6f3ea6bb50640fbb989c784a1fdf75f774ac11e12d2b9c`
+- **View tree size:** 2284 nodes (53 SmsView-class nodes, 6 LoginActivitySmsView instances)
+- **Three-run metrics** (all identical): exit=0, instructions=578687, sendCode=4, sentCode=2, fillNextCodeParams=5, LoginActivitySmsView=318
+- **onHide analysis:** 21 finite METHOD-IN entries (6 SmsView + 10 SlideView + 5 others). NOT a recursion. NOT a blocker.
+- **Actual HALT events:** `LocaleController.getLocaleFileStrings (PC=0x38)` and `FragmentFloatingButton.onFactorChanged (PC=0x3e)` — both pre-existing, caught by the 50K-iteration loop detector, neither prevents runtime completion or screenshot generation.
+
+## EXP-071 documentation
+
+- `docs/EXP071_GIT_HISTORY.md` — git reconciliation + per-commit inventory + per-criterion verification table
+- `docs/EXP071_FINAL_REPORT.md` — full session-by-session final report
+
+## Multi-DEX audit status (carried over from EXP-066, still valid)
 
 | Opcode | Index type | Status |
 |---|---|---|
-| const-string (0x1a) | string_idx | ✅ FIXED (EXP-065) |
+| const-string (0x1a) | string_idx | ✅ FIXED (EXP-065 + EXP-071 S8 per-DEX raw read) |
 | const-string/jumbo (0x1b) | string_idx | ✅ FIXED (EXP-065) |
 | const-class (0x1c) | type_idx | ✅ FIXED (EXP-066) |
 | new-instance (0x22) | type_idx | ✅ FIXED (EXP-058) |
 | new-array (0x23) | type_idx | ✅ FIXED (EXP-066, trace evidence) |
 | check-cast (0x1f) | type_idx | ✅ FIXED (EXP-066) |
-| instance-of (0x20) | type_idx | ✅ FIXED (EXP-066) |
-| invoke-virtual/super/direct/static/interface (0x6e-0x78) | method_idx | ✅ ALREADY CORRECT (EXP-037) |
+| instance-of (0x20) | type_idx | ✅ FIXED (EXP-066 + EXP-071 S2 shadow type table) |
+| invoke-virtual/super/direct/static/interface (0x6e-0x78) | method_idx | ✅ ALREADY CORRECT (EXP-037 + EXP-071 S10 is_static two-pass) |
 | iget/iput/sget/sput (0x52-0x6d) | field_idx | ✅ ALREADY CORRECT (EXP-046) |
 | **Total remaining UNSAFE** | | **0** |
 
+## Regression suite status (verified post-merge)
+
+- ✅ EXP-052 invoke/branch/exception regression: **6/6 PASS**
+- ✅ EXP-059 opcode regression: **4/4 PASS**
+- ✅ EXP-066 multi-DEX regression: **4/4 PASS** (proves per-DEX const-string fix is necessary)
+
 ## Next high-value targets
 
-- **Real drawable decoding** — implement BitmapDrawable (PNG/JPEG/WebP), VectorDrawable (XML), ColorDrawable. Currently ImageView placeholders are gray rectangles. Login-related drawables available: `login_phone1`, `login_arrow1`, `intro_*` series.
-- **Real color resolution** — `Resources.getColor(int)` returns default black; should resolve from `<color>` resources. 165 color resources available in `resource_values.json`.
-- **Country code/country name lookup** — `setCountryButtonText()` is called but the country name requires locale-specific resolution.
-- **Real XML layout attribute parsing** — for EditTexts that load hints via `android:hint="@string/..."` (Telegram uses programmatic `OutlineTextContainerView.setText` instead, which is now captured).
+EXP-071 is COMPLETE. The next experiment should target a GENERIC compatibility feature (not a Telegram-specific one). Candidates ranked by impact:
 
-## Known issues (non-blocking)
+1. **Real drawable decoding** — BitmapDrawable (PNG/JPEG/WebP), VectorDrawable (XML), ColorDrawable. ImageView placeholders are still gray rectangles. Generic — every APK benefits.
+2. **Real color resolution** — `Resources.getColor(int)` returns default black. 165 color resources available in `resource_values.json`. Generic.
+3. **Real XML layout attribute parsing + generic LayoutInflater** — `setContentView(R.layout.foo)` doesn't work yet. Telegram uses programmatic Views; generic APKs need XML.
+4. **Real measure/layout engine** — heuristic positioning; no MATCH_PARENT/WRAP_CONTENT/weight/margin semantics. Generic.
+5. **JNI / loadLibrary** — native methods all stubbed. Required for any app with native code.
+6. **Java networking (Socket/HttpURLConnection)** — currently the controlled network boundary only intercepts `ConnectionsManager.sendRequest`; general Java networking is unstubbed.
+7. **SQLite** — only SharedPreferences is implemented; many apps need SQLite.
 
-- `AnimatedPhoneNumberEditText.setHintText` still loops infinitely via `DynamicAnimation.cancel()` — stubbed-and-captured in EXP-065.
-- `AndroidUtilities.replaceTags` is still stubbed (string processing loop).
-- Several `EmojiInputFilter` / `HelperInternal19` / `SkippingHelper19` / `AppCompatTextViewAutoSizeHelper` constructors are still stubbed (constructor loops).
-- ImageView drawables are gray placeholders (no bitmap decoding yet).
-- `Resources.getColor` returns default black (no color resource resolution yet).
+## Known issues / STUB_DEBT (non-blocking)
 
+See `miniandroid/STUB_DEBT.md` for the full STUB_DEBT ledger. Highlights:
+
+- `LocaleController.getLocaleFileStrings (PC=0x38)` — infinite loop, caught by detector.
+- `FragmentFloatingButton.onFactorChanged (PC=0x3e)` — infinite loop, caught by detector.
+- Layout is approximate (simple vertical stack, not real Android measure/layout).
+- `apk_path_` redeclaration warning — non-fatal, cleanup TBD.
+- `ready` variable shadowing in `HandlerShadow::drain_ready` — non-fatal, cleanup TBD.
+
+## Resume instructions
+
+1. Build: `cd miniandroid && bash build_exp042.sh`
+2. Run baseline: `bash run_telegram_test.sh 90` (exit code 0 expected)
+3. Inspect EXP-071 artifacts: `ls miniandroid/run/exp071_final_*/`
+4. Verify screenshot: `sha256sum miniandroid/run/exp071_final_1/screenshot.png`
+   (Expected: `c3c208a169a7dadd21b199e6e9f42d919393f5d1951762cdd5841f18fb98136a`)
+
+---
