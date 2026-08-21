@@ -1434,6 +1434,79 @@ bool ApplicationRuntime::execute_on_create() {
             std::cerr << "[EXP060] Synthetic CLICK campaign result: "
                       << (login_created ? "LOGINACTIVITY_CREATED" : "NO_LOGIN")
                       << std::endl;
+
+            // EXP-077: If the generic click campaign didn't create LoginActivity,
+            // try dispatching createView on IntroActivity to advance the
+            // fragment lifecycle. In real Android, after onFragmentCreate
+            // returns, the FragmentManager calls createView to build the UI.
+            // Our runtime doesn't have a real FragmentManager, so we manually
+            // dispatch createView on the IntroActivity fragment.
+            if (!login_created) {
+                std::cerr << "[EXP077] Trying createView dispatch on IntroActivity..." << std::endl;
+                // Find IntroActivity objects on the heap
+                for (const auto& [oid, obj] : dalvik_engine.get_heap().all_objects()) {
+                    if (obj.class_descriptor.find("IntroActivity") != std::string::npos &&
+                        obj.class_descriptor.find("$") == std::string::npos) {
+                        // Dispatch createView(Context) on the IntroActivity
+                        std::vector<DalvikValue> cv_args;
+                        cv_args.push_back(DalvikValue::make_object(oid, obj.class_descriptor));  // this
+                        cv_args.push_back(DalvikValue::make_object(1, "Landroid/content/Context;"));  // context
+                        DalvikValue cv_ret = DalvikValue::make_void();
+                        DalvikExecutionResult cv_result;
+                        std::cerr << "[EXP077] Dispatching createView on IntroActivity id=" << oid << std::endl;
+                        if (dalvik_engine.try_recursive_invoke(
+                                obj.class_descriptor, "createView", cv_args, cv_ret, cv_result)) {
+                            std::cerr << "[EXP077] createView dispatched successfully!" << std::endl;
+                        }
+                        break;  // Only try the first IntroActivity
+                    }
+                }
+
+                // Now retry the click campaign with the newly created views
+                std::cerr << "[EXP077] Retrying click campaign after createView..." << std::endl;
+                auto candidates2 = view_shadow->find_all_with_click_listener("");
+                std::cerr << "[EXP077] Found " << candidates2.size()
+                          << " View(s) with click listeners after createView" << std::endl;
+                for (uint32_t view_id : candidates2) {
+                    bool ok = dalvik_engine.dispatch_click(view_id);
+                    if (ok) {
+                        for (const auto& [oid2, obj2] : dalvik_engine.get_heap().all_objects()) {
+                            if (obj2.class_descriptor.find("LoginActivity") != std::string::npos) {
+                                login_created = true;
+                                std::cerr << "[EXP077] LoginActivity created after createView+click! id=" << oid2 << std::endl;
+                                break;
+                            }
+                        }
+                    }
+                    if (login_created) break;
+                }
+
+                // EXP-077: Drain the handler queue after the createView+click.
+                // The onClick handler calls presentFragment(LoginActivity)
+                // asynchronously via runOnUIThread. We need to drain the queue
+                // to execute that runnable.
+                if (!login_created) {
+                    std::cerr << "[EXP077] Draining handler queue after createView+click..." << std::endl;
+                    for (size_t iter = 0; iter < 100; ++iter) {
+                        std::vector<uint32_t> drained;
+                        size_t n = drain_handler_queue(&drained);
+                        if (n == 0) break;
+                        std::cerr << "[EXP077] Drained " << n << " runnable(s)" << std::endl;
+                        for (uint32_t rid : drained) {
+                            dalvik_engine.dispatch_runnable(rid);
+                        }
+                        // Check if LoginActivity was created
+                        for (const auto& [oid, obj] : dalvik_engine.get_heap().all_objects()) {
+                            if (obj.class_descriptor.find("LoginActivity") != std::string::npos) {
+                                login_created = true;
+                                std::cerr << "[EXP077] LoginActivity created after drain! id=" << oid << std::endl;
+                                break;
+                            }
+                        }
+                        if (login_created) break;
+                    }
+                }
+            }
         } else {
             std::cerr << "[EXP060] ViewShadow not registered — skipping click" << std::endl;
         }

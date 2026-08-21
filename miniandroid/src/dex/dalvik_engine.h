@@ -1310,7 +1310,8 @@ public:
                               DalvikValue& result,
                               ApiCallTrace::Status& status);
 
-private:
+public:
+    // EXP-077: try_recursive_invoke made public for fragment lifecycle advancement
     // EXP-038 (BLOCKER-033): Per-DEX raw data for correct method_idx resolution.
     // Stored in DalvikExecutionEngine (NOT in DexReport) to avoid memory layout
     // issues that cause SEGV when DexReport struct is modified.
@@ -1358,6 +1359,8 @@ private:
     // and return true (with result stored in return_val).
     // If not found (framework method), return false and let the caller bridge
     // to the API stub layer.
+    // EXP-077: Made public so ApplicationRuntime can dispatch createView
+    // on fragments that need lifecycle advancement.
     bool try_recursive_invoke(
         const std::string& declaring_class,
         const std::string& method_name,
