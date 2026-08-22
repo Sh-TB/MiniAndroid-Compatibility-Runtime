@@ -1,0 +1,102 @@
+{
+  "exp": "EXP-072",
+  "phase": "baseline",
+  "ran_at": "2026-08-21T17:00:22",
+  "results": [
+    {
+      "name": "Calculator_baseline",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp072_corpus/Calculator.apk",
+      "exit_code": 0,
+      "elapsed": 0.02634143829345703,
+      "checks": {
+        "screenshot_exists": true,
+        "screenshot_size_bytes": 1152862,
+        "screenshot_sha256": "c3c208a169a7dadd21b199e6e9f42d919393f5d1951762cdd5841f18fb98136a",
+        "screenshot_is_blank": false,
+        "view_tree_exists": true,
+        "view_tree_node_count": 6,
+        "text_bearing_nodes": 5,
+        "unique_texts": [
+          "+",
+          "0",
+          "1",
+          "2",
+          "="
+        ],
+        "executed_on_create": true,
+        "text_dispatched": true,
+        "gates": {
+          "executed": true,
+          "rendered": true,
+          "ocr_verified": false,
+          "semantically_verified": false
+        }
+      },
+      "expected_ocr": [
+        "1",
+        "+",
+        "2",
+        "="
+      ]
+    },
+    {
+      "name": "Counter_baseline",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp072_corpus/Counter.apk",
+      "exit_code": 0,
+      "elapsed": 0.026215314865112305,
+      "checks": {
+        "screenshot_exists": true,
+        "screenshot_size_bytes": 1152862,
+        "screenshot_sha256": "c3c208a169a7dadd21b199e6e9f42d919393f5d1951762cdd5841f18fb98136a",
+        "screenshot_is_blank": false,
+        "view_tree_exists": true,
+        "view_tree_node_count": 3,
+        "text_bearing_nodes": 2,
+        "unique_texts": [
+          "+1",
+          "Count: 0"
+        ],
+        "executed_on_create": true,
+        "text_dispatched": true,
+        "gates": {
+          "executed": true,
+          "rendered": true,
+          "ocr_verified": false,
+          "semantically_verified": false
+        }
+      },
+      "expected_ocr": [
+        "Count"
+      ]
+    },
+    {
+      "name": "HelloWorld_baseline",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp072_corpus/HelloWorld.apk",
+      "exit_code": 0,
+      "elapsed": 0.024468660354614258,
+      "checks": {
+        "screenshot_exists": true,
+        "screenshot_size_bytes": 1152862,
+        "screenshot_sha256": "c3c208a169a7dadd21b199e6e9f42d919393f5d1951762cdd5841f18fb98136a",
+        "screenshot_is_blank": false,
+        "view_tree_exists": true,
+        "view_tree_node_count": 1,
+        "text_bearing_nodes": 1,
+        "unique_texts": [
+          "Hello World"
+        ],
+        "executed_on_create": true,
+        "text_dispatched": true,
+        "gates": {
+          "executed": true,
+          "rendered": true,
+          "ocr_verified": false,
+          "semantically_verified": false
+        }
+      },
+      "expected_ocr": [
+        "Hello World"
+      ]
+    }
+  ]
+}

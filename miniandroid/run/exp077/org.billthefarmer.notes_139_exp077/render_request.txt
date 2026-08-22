@@ -1,0 +1,5 @@
+view_tree=/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp077/org.billthefarmer.notes_139_exp077/view_tree.json
+screenshot=/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp077/org.billthefarmer.notes_139_exp077/login_screen.png
+debug_screenshot=/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp077/org.billthefarmer.notes_139_exp077/login_screen_debug.png
+width=1080
+height=1920
