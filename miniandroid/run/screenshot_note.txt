@@ -1,3 +1,0 @@
-Screenshot saved as PPM: ./run/screenshot.ppm
-Resolution: 1080x1920
-Convert to PNG using: convert ./run/screenshot.ppm screenshot.png

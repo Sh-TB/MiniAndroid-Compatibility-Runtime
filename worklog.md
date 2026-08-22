@@ -3035,3 +3035,47 @@ Stage Summary:
 - Documentation: 5 new EXP-083 reports + 1 TEST_CORPUS_POLICY.md
 - Tools: check_source_tree.py + resolve_corpus.py (new)
 - Git history NOT rewritten — 14 historical blobs >5 MB documented with reviewable cleanup plan
+
+---
+Task ID: EXP-084
+Agent: main
+Task: Hard source-only repository purge (RULES 0–20)
+
+Work Log:
+- Built /home/z/my-project/scripts/exp084_purge.py — idempotent purge tool with DRY-RUN/APPLY modes.
+- RULE 0: Untracked all 113 APK files (91.54 MB). All Telegram/gmdice/tictactoe/etc APKs removed from tracking.
+- RULE 1: Untracked all 4 download/ non-APK files (1.23 MB). download/ now fully gitignored.
+- RULE 2: Untracked all 4,105 run/ files (25.12 MB). run/ now fully gitignored.
+- RULE 3: Confirmed build/ already untracked (Phase 38). No action needed.
+- RULE 4: DELETED local miniandroid/build_asan/ (109.73 MB), miniandroid/build_exp019/ (6.05 MB), miniandroid/build_exp042/ (7.77 MB). Total local delete: 123.55 MB.
+- RULE 5: Kept 26 .md files in experiments/, untracked 54 generated files (12.05 MB).
+- RULE 6: Confirmed reports/ already untracked.
+- RULE 7: Audited large JSON. All >50KB JSON now lives in miniandroid/docs/research/raw/ (intentionally retained research data with documented justification).
+- RULE 8: Untracked all PNG/JPG/WebP/PPM files. 0 images tracked.
+- RULE 9: Audited DEX/ELF. Kept 29 tiny (<1KB each) DEX fixtures in test_apks/. Removed all binaries.
+- RULE 10: third_party/ contains only nlohmann/json (916 KB, MIT, header-only) — legitimate.
+- RULE 11: database/ contains 42 small JSON evidence indices, all <300 KB. All retained.
+- RULE 12: Source-only size = 11.02 MB (471 tracked files).
+- RULE 13: Verified clean-clone build: rm -rf build && mkdir build && make → build/miniandroid (43.5 MB binary, exit 0).
+- RULE 14: git ls-files audit: 0 APKs, 0 build artifacts, 0 run output, 0 ASAN binaries tracked.
+- RULE 15: Git history large blobs documented in EXP083_GIT_HISTORY_LARGE_FILES.md. filter-repo plan prepared but NOT auto-executed (requires user authorization).
+- RULE 16: Rewrote .gitignore with strict EXP-084 policy: build/, build_asan/, run/, download/, reports/, *.apk, *.aab, *.apks, *.xapk, *.log, *.stderr, *.stdout, *.tmp, *.dmp, *.core, *.ppm, *.o, *.obj, *.bin, *.exe, *.out, *.so, *.dylib, *.dll, *.a, __pycache__/, *.pyc, *.pyo, tool-results/, .env, CMakeCache.txt, CMakeFiles/, compile_commands.json.
+- RULE 17: tools/check_source_tree.py --tracked-only --strict → "OK: source tree is pure (no violations)."
+- RULE 18: Every retained "suspiciously large" file documented with justification in EXP084_SOURCE_PURGE_FINAL.md.
+- RULE 19: All find commands return 0 tracked results for *.apk, run/*, build/*, build_asan/*.
+- RULE 20: All 10 validation steps pass.
+
+Additional fix:
+- Fixed miniandroid/Makefile — was missing src/framework/{android_shadows,shadow_registry}.cpp, src/api/{application_context,shared_prefs}.cpp, src/storage/file_sandbox.cpp. Without these, `make` from scratch failed with undefined references. Fixed by adding FRAMEWORK_SOURCES, API_SOURCES, STORAGE_SOURCES variables. Also fixed Makefile recipe indentation (8 spaces → TAB).
+- Verified clean-clone build: rm -rf build && mkdir build && make → builds successfully.
+
+Stage Summary:
+- BEFORE: 4,768 tracked files, 879 MB tracked total, 113 APKs (91.54 MB)
+- AFTER: 471 tracked files, 11.02 MB tracked total, 0 APKs (0 B)
+- 4,297 files untracked, 868 MB of tracked content removed
+- 123.55 MB of local build dirs deleted (build_asan/, build_exp019/, build_exp042/)
+- .git/ size: 145 MB (after git gc --aggressive)
+- Purity checker: PASS (0 violations)
+- Clean-clone build: PASS (make from scratch produces working binary)
+- External APK resolver: works (APK_FOUND / APK_MISSING / HASH_MATCH / HASH_MISMATCH)
+- Deliverable: docs/EXP084_SOURCE_PURGE_FINAL.md
