@@ -1,0 +1,328 @@
+{
+  "apis": [
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setBuiltInZoomControls",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setDomStorageEnabled",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setJavaScriptEnabled",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setMediaPlaybackRequiresUserGesture",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setSupportZoom",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setTextZoom",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "attach",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onCreate(executed)",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onResume",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onStart",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "(I)V",
+      "first_seen_exp": 7,
+      "implementation_status": "PARTIAL",
+      "method": "setContentView",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/webkit/WebView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/webkit/WebView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getSettings",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/webkit/WebView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "loadUrl",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/webkit/WebView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setBackgroundColor",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/webkit/WebView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setHorizontalScrollBarEnabled",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/webkit/WebView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setOverScrollMode",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/webkit/WebView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setVerticalScrollBarEnabled",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/webkit/WebView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setWebViewClient",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/webkit/WebViewClient;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/webkit/WebViewAssetLoader$Builder;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "build",
+      "priority": 3
+    },
+    {
+      "call_count": 121,
+      "category": "ACTIVITY",
+      "class": "Landroidx/webkit/WebViewAssetLoader$PathMatcher;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 120,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/Iterator;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "hasNext",
+      "priority": 3
+    },
+    {
+      "call_count": 120,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/Iterator;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "next",
+      "priority": 3
+    },
+    {
+      "call_count": 121,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/List;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "add",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lnl/hansdezwart/bgclock/MainActivity$1;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lnl/hansdezwart/bgclock/MainActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setContentView",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "RESOURCE",
+      "class": "ResourceManager",
+      "descriptor": "(Landroid/content/res/Resources;)V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "initialize",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "RENDERER",
+      "class": "View",
+      "descriptor": "(Landroid/graphics/Canvas;)V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "draw",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "LAYOUT",
+      "class": "View",
+      "descriptor": "(IIII)V",
+      "first_seen_exp": 7,
+      "implementation_status": "PARTIAL",
+      "method": "layout",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "LAYOUT",
+      "class": "View",
+      "descriptor": "(II)V",
+      "first_seen_exp": 7,
+      "implementation_status": "PARTIAL",
+      "method": "measure",
+      "priority": 3
+    }
+  ],
+  "based_on_apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp076_corpus/nl.hansdezwart.bgclock_2.apk",
+  "generated": "2026-08-11",
+  "source": "EXP-007->EXP-012 MEGA BATCH execution",
+  "total_unique_apis": 32
+}

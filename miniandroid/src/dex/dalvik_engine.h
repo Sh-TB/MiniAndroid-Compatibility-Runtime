@@ -176,15 +176,22 @@ namespace Opcode {
     // code unit as the offset instead of using the high byte of the
     // current opcode. Result: wrong branch targets, infinite loops
     // in compact goto-heavy methods.
-    constexpr uint16_t GOTO = 0x27;           // goto +AA (10t format, 1 code unit)
-    constexpr uint16_t GOTO_16 = 0x28;        // goto/16 +AAAA (20t format, 2 code units)
-    constexpr uint16_t GOTO_32 = 0x29;        // goto/32 +AAAAAAAA (30t format, 3 code units)
-    constexpr uint16_t THROW = 0x26;           // throw vAA
-    // EXP-060: fill-array-data (opcode 0x25, 31t format, 3 code units + payload)
-    // Fills an array from a packed data table. Used by D8 for initializing
-    // boolean/int arrays with constant values (e.g. LoginActivity.<init>
-    // fills doneButtonVisible=[true,true] from a fill-array-data-payload).
-    constexpr uint16_t FILL_ARRAY_DATA = 0x25;
+    // EXP-071: CORRECTED opcode values per AOSP dalvik-bytecode.html.
+    // All opcodes now match AOSP canonical values:
+    //   0x24 = filled-new-array
+    //   0x25 = filled-new-array/range
+    //   0x26 = fill-array-data (FIXED — was 0x25)
+    //   0x27 = throw (FIXED — was 0x26)
+    //   0x28 = goto (FIXED — was 0x27, now has D8/R8 hybrid handler)
+    //   0x29 = goto/16
+    //   0x2A = goto/32
+    constexpr uint16_t FILLED_NEW_ARRAY = 0x24;           // filled-new-array
+    constexpr uint16_t FILLED_NEW_ARRAY_RANGE = 0x25;     // filled-new-array/range
+    constexpr uint16_t FILL_ARRAY_DATA = 0x26;             // fill-array-data (31t, 3 code units) — FIXED!
+    constexpr uint16_t THROW = 0x27;                       // throw vAA (11x, 1 code unit) — FIXED!
+    constexpr uint16_t GOTO = 0x28;                        // goto +AA (10t, 1 code unit) — FIXED!
+    constexpr uint16_t GOTO_16 = 0x29;                     // goto/16 +AAAA (20t, 2 code units)
+    constexpr uint16_t GOTO_32 = 0x2A;                     // goto/32 +AAAAAAAA (30t, 3 code units)
     // EXP-059 ROOT CAUSE FIX: The if-* opcode table was OFF BY ONE
     // vs the actual AOSP source code.
     //
@@ -1128,6 +1135,8 @@ public:
         per_dex_raw_data_ = std::move(data);
         is_multidex_ = (per_dex_raw_data_.size() > 1);
     }
+    // EXP-071 Phase 6: Set the APK path so AssetManager.open can read assets.
+    void set_apk_path(const std::string& path) { apk_path_ = path; }
 
     // EXP-038 (BLOCKER-033): Build class→DEX index map from DexReport.
     // Must be called after dex_report is set and before execution begins.
@@ -1173,6 +1182,29 @@ public:
     // dispatch a click on it. Returns true if a matching View with a
     // registered listener was found.
     bool dispatch_click_by_class(const std::string& class_substring);
+
+    // EXP-071 Phase 8: Generic Runnable dispatch.
+    // Invokes run()V (or run(TLObject, TL_error)V for RequestDelegate) on the
+    // heap object identified by runnable_object_id. Used by the event loop
+    // to drain queued Runnables after Handler.post / runOnUIThread calls.
+    // The response/error_object_id args are 0 for plain Runnables, or
+    // non-zero for RequestDelegate runnables that take a (response, error) pair.
+    bool dispatch_runnable(uint32_t runnable_object_id,
+                          uint32_t response_object_id = 0,
+                          uint32_t error_object_id = 0);
+
+    // EXP-069: Generic text input dispatch.
+    // Injects text into a TextView/EditText by:
+    //   1. Storing the text on the ViewNode (ViewShadow.setText)
+    //   2. Storing it on the heap object (for getText() in DEX bytecode)
+    //   3. Triggering any registered TextWatchers
+    // Returns true if the view was found and text was set.
+    bool dispatch_text_input(uint32_t view_object_id, const std::string& text);
+
+    // EXP-069: Convenience — find an EditText by class descriptor substring
+    // and dispatch text input. Returns true if a matching view was found.
+    bool dispatch_text_input_by_class(const std::string& class_substring,
+                                       const std::string& text);
 
     // EXP-061: Dump the full ViewNode tree (from ViewShadow) to a JSON
     // file. Each node includes object_id, class, parent, children,
@@ -1247,6 +1279,18 @@ public:
     DalvikValue get_or_create_singleton_public(const std::string& class_desc) {
         return get_or_create_singleton(class_desc);
     }
+
+    // EXP-068: Generic View inheritance queries.
+    // These walk the DEX superclass chain (class_to_superclass_) to determine
+    // if a class inherits from a known Android View type.
+    bool is_subclass_of(const std::string& class_desc, const std::string& ancestor_desc) const;
+    bool is_view_class(const std::string& class_desc) const;
+    bool is_text_view_class(const std::string& class_desc) const;
+    bool is_edit_text_class(const std::string& class_desc) const;
+    bool is_image_view_class(const std::string& class_desc) const;
+    bool is_button_class(const std::string& class_desc) const;
+    bool is_view_group_class(const std::string& class_desc) const;
+
     // EXP-051: Public heap accessor for the shadow registry adapter.
     DalvikHeap& get_heap_public() { return heap_; }
 
@@ -1266,7 +1310,8 @@ public:
                               DalvikValue& result,
                               ApiCallTrace::Status& status);
 
-private:
+public:
+    // EXP-077: try_recursive_invoke made public for fragment lifecycle advancement
     // EXP-038 (BLOCKER-033): Per-DEX raw data for correct method_idx resolution.
     // Stored in DalvikExecutionEngine (NOT in DexReport) to avoid memory layout
     // issues that cause SEGV when DexReport struct is modified.
@@ -1278,6 +1323,10 @@ private:
     // EXP-038 (BLOCKER-033): Map class descriptor → source DEX index.
     // Built during execute_apk() by scanning dex_report.classes.
     std::map<std::string, uint32_t> class_to_dex_index_;
+    // EXP-068: class_to_superclass_ maps class descriptor → direct superclass descriptor.
+    // Built from dex_report_->classes[i].superclass_name.
+    // Used by is_subclass_of() for semantic View inheritance resolution.
+    std::map<std::string, std::string> class_to_superclass_;
 
     // EXP-045 Phase 2: O(1) class lookup index for try_recursive_invoke().
     // Maps class descriptor → index into dex_report_->classes vector.
@@ -1310,6 +1359,8 @@ private:
     // and return true (with result stored in return_val).
     // If not found (framework method), return false and let the caller bridge
     // to the API stub layer.
+    // EXP-077: Made public so ApplicationRuntime can dispatch createView
+    // on fragments that need lifecycle advancement.
     bool try_recursive_invoke(
         const std::string& declaring_class,
         const std::string& method_name,
@@ -1459,18 +1510,37 @@ private:
     // EXP-035: Current execution context (for VTable evidence)
     std::string current_class_ = "<unknown>";
     std::string current_method_ = "<unknown>";
+    // EXP-071 Phase 8: Tracks whether the current invoke is static.
+    // Set to true by execute_invoke_static, false by execute_invoke_virtual/direct.
+    // try_shadow_dispatch uses this to decide whether args[0] is `this` (instance)
+    // or the first parameter (static). Without this flag, static calls like
+    // AndroidUtilities.runOnUIThread(Runnable, long) would have their Runnable
+    // stolen as `this` and never reach HandlerShadow's enqueue.
+    bool current_invoke_is_static_ = false;
     // EXP-038 (BLOCKER-033): Current DEX index for per-DEX method resolution.
     uint32_t current_dex_index_ = 0;
 
     // EXP-038 (BLOCKER-033): Per-DEX method name resolution using raw DEX bytes.
     std::string resolve_method_name_for_dex(uint32_t method_idx, uint32_t dex_index) const;
     std::string resolve_method_class_for_dex(uint32_t method_idx, uint32_t dex_index) const;
+    // EXP-071 Phase 8: Resolve the method's proto descriptor, e.g. "(Ljava/lang/Runnable;J)V".
+    // Used to parse parameter types so we can merge wide register pairs (J=long, D=double)
+    // when invoking static methods. Without this, runOnUIThread(Runnable, long) would
+    // pass 3 args (Runnable, low32, high32) instead of 2 (Runnable, long).
+    std::string resolve_method_proto_for_dex(uint32_t method_idx, uint32_t dex_index) const;
     // EXP-058: Per-DEX type descriptor resolution.
     // type_idx is relative to the current DEX file's type_ids table,
     // NOT the merged global types vector.
     std::string resolve_type_for_dex(uint32_t type_idx, uint32_t dex_index) const;
     std::string read_dex_string_from_raw(const std::vector<uint8_t>& raw, uint32_t string_idx,
                                           const dex::DexHeader& hdr) const;
+    // EXP-065: Per-DEX string resolution.
+    // string_idx is relative to the current DEX file's string_ids table,
+    // NOT the merged global strings vector. Using the merged index causes
+    // const-string to fetch the WRONG string in multi-DEX apps (e.g.
+    // Telegram's classes4.dex string_idx=5975 is "+", but merged_strings[5975]
+    // is "FIELD_PREFERRED_AUDIO_LANGUAGES" from classes.dex).
+    std::string resolve_string_for_dex(uint32_t string_idx, uint32_t dex_index) const;
     
     bool halted_ = false;
     bool halted_on_return_ = false;
@@ -1525,6 +1595,40 @@ private:
     // this slot and clears it.
     DalvikValue pending_exception_ = DalvikValue::make_null();
 
+    // EXP-063: Resource lookup maps.
+    // field_name_by_resid: maps resource ID → field name (built during R class init)
+    // Used to resolve resources when DEX IDs don't match ARSC IDs.
+public:
+    std::map<int32_t, std::string> field_name_by_resid_;
+    // resource_string_values: maps field name → string value (loaded from JSON)
+    std::map<std::string, std::string> resource_string_values_;
+    // EXP-067: resource_color_values_ maps field name → ARGB int (e.g. 0xFF1A1A1A).
+    // Loaded from resource_values.json["color"].
+    std::map<std::string, int32_t> resource_color_values_;
+    // EXP-067: resource_dimen_values_ maps field name → dimension in pixels (int).
+    // Loaded from resource_values.json["dimen"] (values are like "16dp" → 16*dp_factor).
+    std::map<std::string, int32_t> resource_dimen_values_;
+    // EXP-067: resource_drawable_paths_ maps field name → APK asset path (e.g. "res/abc.webp").
+    // Loaded from resource_values.json["drawable"] and ["mipmap"].
+    std::map<std::string, std::string> resource_drawable_paths_;
+    // EXP-067: resource_integer_values_ maps field name → int value.
+    std::map<std::string, int32_t> resource_integer_values_;
+    // EXP-067: resource_bool_values_ maps field name → bool value.
+    std::map<std::string, bool> resource_bool_values_;
+    // EXP-071 Phase 6: Asset reading support.
+    // When AssetManager.open(asset_name) is called, we extract the asset
+    // from the APK and store its contents in a per-InputStream buffer.
+    // BufferedReader.readLine() then reads from this buffer line by line.
+    // This is needed because Telegram's PhoneView.<init> reads countries.txt
+    // from assets to populate the country HashMap — without it, the HashMap
+    // is empty, setCountry() returns early, and countryState stays at 1
+    // (NO_SIM), causing onNextPressed to take the wrong "ChooseCountry"
+    // branch instead of reaching auth.sendCode construction.
+    std::string apk_path_;  // path to the APK file
+    // Map: heap object_id (InputStream) → (asset_name, line_index)
+    std::map<uint32_t, std::pair<std::string, size_t>> open_assets_;
+private:
+
     // EXP-053: Set of class descriptors whose <clinit> has been executed.
     // Used to avoid re-running <clinit> on every sget/sput.
     // Per JVM spec, <clinit> runs exactly once when a class is first
@@ -1543,6 +1647,11 @@ private:
     // config_ moved to public section above
     
     bool verbose_ = false;
+
+    // EXP-071: APK path, open_assets_, and current_invoke_is_static_ are
+    // declared earlier in this class (lines ~1624-1640). The duplicate
+    // declarations that were here were removed in EXP-075 to fix a
+    // redeclaration error introduced by the EXP-071 merge.
 };
 
 } // namespace dalvik
