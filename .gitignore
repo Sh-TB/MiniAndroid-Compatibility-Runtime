@@ -82,3 +82,7 @@ miniandroid/run/exp06*/
 miniandroid/run/exp07*/
 
 # Active experiment directories (EXP-081+) remain trackable for in-progress work.
+
+# EXP-083 Phase 39: compiled binary mistakenly committed in EXP-079
+miniandroid/tools/miniandroid_exp042
+miniandroid/tools/miniandroid_exp042.exe
