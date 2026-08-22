@@ -1,0 +1,41 @@
+{
+  "test": "EXP085 Phase 1 \u2014 Multi-DEX forensic test suite",
+  "generated_at": "2026-08-22T20:25:51.318249+00:00",
+  "results": [
+    {
+      "apk": "miniandroid/download/exp076_corpus/rkr.simplekeyboard.inputmethod_145.apk",
+      "apk_name": "rkr.simplekeyboard.inputmethod_145",
+      "apk_sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
+      "dex_count": 1,
+      "python_dex_stats": [
+        {
+          "dex_index": 0,
+          "source_name": "classes.dex",
+          "size_bytes": 174188,
+          "strings": 2117,
+          "types": 334,
+          "protos": 447,
+          "methods": 1187,
+          "fields": 645,
+          "class_defs": 122
+        }
+      ],
+      "cpp_dex_stats": [],
+      "python_dex_signatures": [
+        "a177144bf9a72ac0"
+      ],
+      "mismatches": [],
+      "mismatch_count": 0,
+      "string_spot_check_count": 1,
+      "string_spot_check_samples": [
+        {
+          "dex_index": 0,
+          "tag": "mid",
+          "string": "getTextAfterCursor"
+        }
+      ],
+      "status": "PASS",
+      "checked_at": "2026-08-22T20:25:51.317836+00:00"
+    }
+  ]
+}

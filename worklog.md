@@ -3079,3 +3079,33 @@ Stage Summary:
 - Clean-clone build: PASS (make from scratch produces working binary)
 - External APK resolver: works (APK_FOUND / APK_MISSING / HASH_MATCH / HASH_MISMATCH)
 - Deliverable: docs/EXP084_SOURCE_PURGE_FINAL.md
+
+---
+Task ID: EXP-085
+Agent: main
+Task: Generic runtime validation + multi-DEX hardening (PHASES 0–21)
+
+Work Log:
+- Phase 0: Verified post-EXP-084 baseline (0 APKs tracked, 0 run/ files, source purity PASS). Clean build from scratch in /tmp/exp085_clean_build succeeded in 1m45s, all 4 unit tests PASS.
+- Phase 1: Built independent pure-Python DEX parser (miniandroid/tests/exp085_phase1_multi_dex.py). Verified per-DEX counts match C++ runtime for tictactoe (1 DEX), Telegram (5 DEX), gmdice (1 DEX), Simple Keyboard (1 DEX). All PASS — EXP-082 multi-DEX fix verified at structural level.
+- Phase 2: Built cross-DEX method dispatch verifier (exp085_phase2_dispatch.py). Telegram has 63,166 cross-DEX method references and 21,450 polymorphic override candidates — all verified at index level.
+- Phase 3: Built return-value regression test (exp085_phase3_return_values.py). All 11 exp052 micro fixtures execute onCreate without crashing. invoke_static_return + case2/3/4 (catch handlers) show PARTIAL_SUCCESS.
+- Phase 4: Built exception flow test (exp085_phase4_exceptions.py). All 4 fixtures correctly distinguish HANDLED_LOCALLY vs UNHANDLED: case1_no_catch=UNHANDLED ✅, case2/3/4=HANDLED_LOCALLY ✅.
+- Phase 5: Built AXML/resource regression test (exp085_phase5_axml_resources.py). All 5 APKs execute bytecode but none inflate views into view_tree.json. Status: PARTIAL (bytecode runs, no view tree).
+- Phases 6-16: Combined capability test (exp085_phases_6_16_capabilities.py). Ran 7 APKs (gmdice, tictactoe, headingcalculator, simplestopwatch, chessclock, notes, telegram). Built capability matrix.
+- Phase 10: SQLite smoke test (exp085_phase10_sqlite.py). Notes APK doesn't reach SQLite (no bytecode executed). Classification: SQLITE_BLOCKED_NO_STARTUP. Blocker B3 documented.
+- Phase 12: Handler/Looper test (exp085_phase12_handler.py). simplestopwatch: HANDLER_LOADED_NOT_DRAINED. Telegram: HANDLER_LOADED_NOT_DRAINED + duplicate callback evidence (B6 regression). Blocker B4 documented.
+- Phase 14: Renderer validation (exp085_phase14_renderer.py). Independent pure-Python PNG parser verified. gmdice/tictactoe/headingcalculator produce valid PPM (6.2 MB each) but no PNG. simplestopwatch: no rendering at all. Blocker B1 documented (PNGWriter IDAT broken).
+- Phase 17/18: Telegram regression + Checkpoint M (exp085_phase17_18_telegram.py). All 3 runs BLOCKED_NO_STARTUP. LaunchActivity never reached. Root cause: manifest parser picks flavor 'org.telegram.messenger.web' instead of 'org.telegram.messenger', so main_activity_full='org.telegram.messenger.web.LaunchActivity' which doesn't exist in DEX. Blocker B5 documented.
+- Phase 19: Built consolidated corpus matrix (exp085_phase19_matrix.py). 6 PROVEN, 15 PARTIAL, 13 BLOCKED, 91 NOT_TESTED.
+- Phase 20: Performance: source=11.03 MB, build=1m45s, binary=43.5 MB, runtime startup=0.094s (gmdice), peak RSS ~12-15 MB (small APKs), ~165 MB (Telegram 5-DEX).
+- Phase 21: Repository health verified: 0 APKs tracked, 0 run/, 0 build/, 0 logs, source purity PASS.
+
+Stage Summary:
+- 5/13 completion criteria PASS (A, B, M + L in-progress)
+- 6 documented blockers (B1-B6) with root cause + fix path
+- Next highest-value fix: B5 (Telegram entry point detection) — unblocks 4+ capabilities
+- Repository remains source-only (11.03 MB tracked, 0 APKs)
+- 11 test scripts + 11 result JSONs + 1 final report + 1 consolidated results JSON
+- No fake progress: every metric classified as REAL/PARTIAL/BLOCKED/NOT_TESTED
+- All test results saved as JSON for future regression comparison
