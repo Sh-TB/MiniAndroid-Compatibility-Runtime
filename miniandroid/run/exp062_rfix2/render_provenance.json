@@ -1,0 +1,237 @@
+{
+  "experiment": "EXP-061",
+  "renderer_backend": "CPU",
+  "gpu_used": false,
+  "opengl_used": false,
+  "vulkan_used": false,
+  "emulator_used": false,
+  "virtualization_used": false,
+  "screen_width": 1080,
+  "screen_height": 1920,
+  "pixel_format": "RGBA8888",
+  "view_count": 1059,
+  "rendered_count": 22,
+  "screenshot_path": "run/exp062_rfix2/login_screen.png",
+  "rendered_views": [
+    {
+      "object_id": 1413,
+      "class": "Lorg/telegram/ui/LoginActivity$2;",
+      "bounds": [
+        0,
+        0,
+        1080,
+        1920
+      ]
+    },
+    {
+      "object_id": 1430,
+      "class": "Lorg/telegram/ui/LoginActivity$3;",
+      "bounds": [
+        20,
+        20,
+        1040,
+        60
+      ]
+    },
+    {
+      "object_id": 1431,
+      "class": "Landroid/widget/LinearLayout;",
+      "bounds": [
+        40,
+        40,
+        1000,
+        20
+      ]
+    },
+    {
+      "object_id": 1436,
+      "class": "Lorg/telegram/ui/Components/CustomPhoneKeyboardView;",
+      "bounds": [
+        60,
+        70,
+        960,
+        6
+      ]
+    },
+    {
+      "object_id": 1440,
+      "class": "Lorg/telegram/ui/Components/CustomPhoneKeyboardView$NumberButtonView;",
+      "bounds": [
+        65,
+        75,
+        950,
+        2
+      ]
+    },
+    {
+      "object_id": 1445,
+      "class": "Lorg/telegram/ui/Components/CustomPhoneKeyboardView$NumberButtonView;",
+      "bounds": [
+        65,
+        82,
+        950,
+        2
+      ]
+    },
+    {
+      "object_id": 1450,
+      "class": "Lorg/telegram/ui/Components/CustomPhoneKeyboardView$NumberButtonView;",
+      "bounds": [
+        65,
+        89,
+        950,
+        2
+      ]
+    },
+    {
+      "object_id": 1455,
+      "class": "Lorg/telegram/ui/Components/CustomPhoneKeyboardView$NumberButtonView;",
+      "bounds": [
+        65,
+        96,
+        950,
+        2
+      ]
+    },
+    {
+      "object_id": 1460,
+      "class": "Lorg/telegram/ui/Components/CustomPhoneKeyboardView$NumberButtonView;",
+      "bounds": [
+        65,
+        103,
+        950,
+        2
+      ]
+    },
+    {
+      "object_id": 1465,
+      "class": "Lorg/telegram/ui/Components/CustomPhoneKeyboardView$NumberButtonView;",
+      "bounds": [
+        65,
+        110,
+        950,
+        2
+      ]
+    },
+    {
+      "object_id": 1470,
+      "class": "Lorg/telegram/ui/Components/CustomPhoneKeyboardView$NumberButtonView;",
+      "bounds": [
+        65,
+        117,
+        950,
+        2
+      ]
+    },
+    {
+      "object_id": 1475,
+      "class": "Lorg/telegram/ui/Components/CustomPhoneKeyboardView$NumberButtonView;",
+      "bounds": [
+        65,
+        124,
+        950,
+        2
+      ]
+    },
+    {
+      "object_id": 1480,
+      "class": "Lorg/telegram/ui/Components/CustomPhoneKeyboardView$NumberButtonView;",
+      "bounds": [
+        65,
+        131,
+        950,
+        2
+      ]
+    },
+    {
+      "object_id": 1485,
+      "class": "Lorg/telegram/ui/Components/CustomPhoneKeyboardView$NumberButtonView;",
+      "bounds": [
+        65,
+        138,
+        950,
+        2
+      ]
+    },
+    {
+      "object_id": 1493,
+      "class": "Lorg/telegram/ui/Components/CustomPhoneKeyboardView$1;",
+      "bounds": [
+        65,
+        145,
+        950,
+        2
+      ]
+    },
+    {
+      "object_id": 2580,
+      "class": "Lorg/telegram/ui/Components/FragmentFloatingButton;",
+      "bounds": [
+        20,
+        100,
+        1040,
+        80
+      ]
+    },
+    {
+      "object_id": 2583,
+      "class": "Lorg/telegram/ui/Components/RLottieImageView;",
+      "bounds": [
+        40,
+        120,
+        1000,
+        13
+      ]
+    },
+    {
+      "object_id": 2584,
+      "class": "Lorg/telegram/ui/Components/RadialProgressView;",
+      "bounds": [
+        40,
+        153,
+        1000,
+        13
+      ]
+    },
+    {
+      "object_id": 2610,
+      "class": "Landroid/widget/ImageView;",
+      "bounds": [
+        20,
+        200,
+        1040,
+        60
+      ]
+    },
+    {
+      "object_id": 2612,
+      "class": "Landroid/widget/ImageView;",
+      "bounds": [
+        20,
+        280,
+        1040,
+        60
+      ]
+    },
+    {
+      "object_id": 2618,
+      "class": "Lorg/telegram/ui/Components/RadialProgressView;",
+      "bounds": [
+        20,
+        360,
+        1040,
+        60
+      ]
+    },
+    {
+      "object_id": 2623,
+      "class": "Lorg/telegram/ui/Components/TransformableLoginButtonView;",
+      "bounds": [
+        40,
+        186,
+        1000,
+        8
+      ]
+    }
+  ]
+}
