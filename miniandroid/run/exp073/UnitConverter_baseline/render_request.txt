@@ -1,5 +1,0 @@
-view_tree=/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp073/UnitConverter_baseline/view_tree.json
-screenshot=/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp073/UnitConverter_baseline/login_screen.png
-debug_screenshot=/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp073/UnitConverter_baseline/login_screen_debug.png
-width=1080
-height=1920

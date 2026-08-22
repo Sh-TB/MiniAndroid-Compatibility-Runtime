@@ -1,5 +1,0 @@
-view_tree=/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp075/de.duenndns.gmdice_8_exp075/view_tree.json
-screenshot=/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp075/de.duenndns.gmdice_8_exp075/login_screen.png
-debug_screenshot=/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp075/de.duenndns.gmdice_8_exp075/login_screen_debug.png
-width=1080
-height=1920
