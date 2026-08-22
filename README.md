@@ -1,150 +1,145 @@
-# MiniAndroid Runtime
+# MiniAndroid — Headless Android APK Execution Runtime
 
-**Version:** 0.2.0-exp074
+**Version:** 0.3.0-exp080
 **Date:** 2026-08-22
 **Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime
+**License:** MIT
 
-## WHAT IS MINIANROID?
+## What is MiniAndroid?
 
 MiniAndroid is a **headless Android APK execution runtime** built from scratch in C++. It parses real APK files, executes real Dalvik (DEX) bytecode, and produces view trees + screenshots — **without an Android emulator, without a JVM, without GPU/OpenGL, and without BIOS virtualization**.
 
-## WHAT IS THE DIFFERENCE FROM A NORMAL ANDROID EMULATOR?
+## Why is it different from a traditional Android emulator?
 
 | Feature | Android Emulator | MiniAndroid |
 |---------|-----------------|-------------|
-| Runs real Android OS | ✅ Yes (full system image) | ❌ No (no Android OS) |
-| Runs real APK DEX bytecode | ✅ Yes | ✅ Yes |
+| Runs real Android OS | ✅ Yes | ❌ No |
+| Runs real DEX bytecode | ✅ Yes | ✅ Yes |
 | Requires JVM/ART | ✅ Yes | ❌ No (C++ DEX interpreter) |
-| Requires GPU/OpenGL | ✅ Yes | ❌ No (CPU software rendering) |
-| Requires BIOS virtualization (KVM/HAXM) | ✅ Yes | ❌ No |
-| Produces screenshots | ✅ Yes (GPU framebuffer) | ⚠️ Python view-tree renderer (C++ framebuffer BROKEN) |
-| Executes multi-DEX APKs | ✅ Yes | ✅ Yes |
-| Executes real Telegram APK | ✅ Yes | ✅ Partially (logic yes, visual partial) |
-| Executes synthetic test APKs | ✅ Yes | ✅ Yes (11/11 verified) |
-| Executes real open-source APKs | ✅ Yes | ❌ No (XML layout inflation not supported) |
-| Speed | Slow (full boot) | Fast (<1 second per APK) |
-| Deterministic | ❌ No (timing-dependent) | ✅ Yes (byte-identical across runs) |
+| Requires GPU | ✅ Yes | ❌ No (CPU software rendering) |
+| Requires KVM/HAXM | ✅ Yes | ❌ No |
+| Produces screenshots | ✅ GPU framebuffer | ⚠️ Python view-tree renderer (C++ framebuffer broken) |
+| Multi-DEX APK support | ✅ Yes | ✅ Yes |
+| Deterministic | ❌ No | ✅ Yes |
+| Direct object visibility | ❌ No | ✅ Yes (heap inspection) |
+| AI-agent interaction | ❌ No | ✅ Yes (click/text dispatch) |
+| Speed | Slow (boot) | Fast (<1s per APK) |
 
-## CURRENTLY PROVEN CAPABILITIES
+**A capability is not considered proven from a screenshot alone.**
+
+## Current Proven Capabilities
 
 | Capability | Status | Evidence |
 |-----------|--------|----------|
-| APK parsing | ✅ PROVEN | Real Telegram APK (63MB, 5 DEX files) parses correctly |
-| DEX bytecode execution | ✅ PROVEN | 578,687 instructions executed in Telegram run |
-| Multi-DEX support | ✅ PROVEN | Per-DEX const-string/type/method resolution |
-| Activity lifecycle (onCreate) | ✅ PROVEN | Real onCreate bytecode executes |
-| View hierarchy construction | ✅ PROVEN | 2,284 view nodes from Telegram |
-| TextView/Button/LinearLayout | ✅ PROVEN | 11/11 synthetic apps create real views |
-| Text rendering (setText(String)) | ✅ PROVEN | OCR-verified on 11 synthetic apps |
-| Click listener registration | ✅ PROVEN | setOnClickListener captured |
-| Click dispatch (generic) | ✅ PROVEN | App-agnostic find_all_with_click_listener |
-| State mutation (click → setText) | ✅ PROVEN | CounterV2: "Count: 0" → "Clicked!" |
-| Controlled network boundary | ✅ PROVEN | sendRequest intercepted, mock response delivered |
-| Async Runnable scheduling | ✅ PROVEN | Lambda0/1/2 chain executes |
-| Instance field access (iget/iput) | ✅ PROVEN | CounterV2 display field |
-| Shadow registry (View/Handler/etc.) | ✅ PROVEN | 8 shadow classes operational |
-| OCR verification gate | ✅ PROVEN | Tesseract 5.5.0 on real PNGs |
-| Anti-false-positive validators | ✅ PROVEN | Blank-UI detector, screenshot-determinism check |
-| 3-run reproducibility (synthetic) | ✅ PROVEN | Byte-identical SHA256s |
+| APK parsing | PROVEN | Real Telegram APK (83MB, 5 DEX) |
+| DEX bytecode execution | PROVEN | 7.2M instructions in Telegram run |
+| Multi-DEX support | PROVEN | Per-DEX const-string/type/method resolution |
+| Activity lifecycle | PROVEN | Real onCreate bytecode executes |
+| View hierarchy | PROVEN | 3077 view nodes from Telegram |
+| Click dispatch | PROVEN | App-agnostic find_all_with_click_listener |
+| State mutation | PROVEN | CounterV2: "Count: 0" → "Clicked!" |
+| Controlled network | PROVEN | sendRequest intercepted, mock response |
+| Async Runnable scheduling | PROVEN | Lambda0/1/2 chain executes |
+| SharedPreferences | PARTIAL | Saves to disk, isolation untested |
+| Synthetic corpus | PROVEN | 11/11 OCR-verified |
+| D8 lambda dispatch | PROVEN | $r8$lambda methods match and execute |
 
-## CURRENTLY PARTIAL CAPABILITIES
+## Partial Capabilities
 
 | Capability | Status | Details |
 |-----------|--------|---------|
-| Telegram SMS page (CHECKPOINT_M) | ⚠️ PARTIAL | Logic PROVEN (full chain executes), visual NOT PROVEN (broken screenshot) |
-| Text resource ID resolution | ⚠️ PARTIAL | setText(int) captured, but ARSC resolver not fully wired |
-| Synthetic corpus rendering | ⚠️ PARTIAL | Python renderer works; C++ framebuffer is broken |
+| Telegram SMS page | PARTIAL | LoginActivity created, SmsView exists but no text |
+| Real APK rendering | PARTIAL | headingcalculator: AXML inflated, but child views have no text |
+| Windows runner | PARTIAL | Python diagnostic tool works, no native .exe |
+| Sandbox persistence | PARTIAL | SharedPreferences persists, isolation untested |
 
-## KNOWN LIMITATIONS
+## Blocked Capabilities
 
-| Limitation | Impact | Classification |
-|-----------|--------|---------------|
-| **C++ framebuffer renderer broken** | screenshot.png is invalid PNG for ALL apps | GENERIC — HIGH priority |
-| **XML layout inflation not supported** | Real APKs that use `setContentView(R.layout.*)` fail | GENERIC — HIGHEST priority |
-| **`findViewById` returns null** | No views created from XML layouts | GENERIC (depends on above) |
-| **No JNI/native method support** | All native methods stubbed | GENERIC — MEDIUM priority |
-| **No real SQLite** | Only SharedPreferences implemented | GENERIC — LOW priority |
-| **No real networking** | Only controlled network boundary (mock) | GENERIC — LOW priority |
-| **No real drawable decoding** | ImageView placeholders are grey | GENERIC — MEDIUM priority |
-| **No Fragment/ListActivity support** | Some real APKs can't create their main view | GENERIC — MEDIUM priority |
+| Capability | Blocker |
+|-----------|---------|
+| Valid PNG from C++ renderer | Broken IDAT zlib encoding |
+| Real APK text rendering | setContentView(int) → AXML inflation not integrated in C++ runtime |
+| onNextPressed override dispatch | BaseFragment stub shadows LoginActivity override |
+| SQLite | Not implemented |
+| WebView | Not implemented |
+| JNI/native methods | All stubbed |
+| Jetpack Compose | Different architecture (no View hierarchy) |
+| Native Windows .exe | No cross-compiler available |
 
-## VALIDATION CORPUS
+## Synthetic Corpus (11/11 PROVEN)
 
-### Synthetic Corpus (11 APKs — all PROVEN)
+All synthetic APKs pass the full EXECUTE → RENDER → OCR gate:
+HelloWorld, Calculator, Counter, CounterV2 (state mutation), Notes, UnitConverter, TicTacToe, MemoryGame, Timer, SimpleList, Settings.
 
-| App | Pattern | OCR Verified |
-|-----|---------|-------------|
-| HelloWorld | Activity + TextView | ✅ "Hello World" |
-| Calculator | LinearLayout + 4 Buttons | ✅ "1", "+", "2" |
-| Counter | Button + TextView (state) | ✅ "Count", "+1" |
-| CounterV2 | Click listener + state mutation | ✅ "Clicked!" (after click) |
-| Notes | EditText + Button (input) | ✅ "Save" |
-| UnitConverter | TextViews + EditText (form) | ✅ "Convert", "Miles" |
-| TicTacToe | 3x3 Button grid (game) | ✅ "Tic Tac Toe" |
-| MemoryGame | 4x4 Button grid (game) | ✅ "Memory" |
-| Timer | TextView + Buttons (state) | ✅ "Timer", "Start", "Stop" |
-| SimpleList | Multiple TextViews (list) | ✅ "Apples", "Bananas" |
-| Settings | Multiple labeled TextViews | ✅ "Settings", "Notifications" |
+## Real APK Results
 
-### Real APK Corpus (5 APKs from F-Droid — all BLOCKED)
+| App | Source | Depth | Nodes | Text | OCR | Status |
+|-----|--------|-------|-------|------|-----|--------|
+| headingcalculator | F-Droid | 5% | 4 | 0 | FAIL | AXML inflated, no child text |
+| gmdice | F-Droid | 5% | 1 | 0 | FAIL | ListActivity path |
+| simplestopwatch | F-Droid | 20% | 5 | 0 | FAIL | No setContentView(int) |
+| notes | F-Droid | 95% | 123 | 0 | FAIL | Loop: commonmark |
+| chessclock | F-Droid | 0% | 0 | 0 | FAIL | onCreate not reached |
+| tictactoe | F-Droid | 5% | 3 | 0 | FAIL | Uses libGDX framework |
+| unote | F-Droid | 20% | 9 | 0 | FAIL | Obfuscated classes |
+| dooz | F-Droid | 20% | 20 | 0 | FAIL | Jetpack Compose |
+| bgclock | F-Droid | 95% | 50K | 0 | FAIL | Loop: WebViewAssetLoader |
 
-| App | Size | Execution Depth | Blocker |
-|-----|------|----------------|---------|
-| de.duenndns.gmdice | 64KB | ~10% | setContentView(int) not inflated |
-| omegacentauri.mobi.simplestopwatch | 172KB | ~15% | Same |
-| org.billthefarmer.notes | 217KB | ~70% (802K insns) | 129 view nodes but no text (XML layout) |
-| org.debian.eugen.headingcalculator | 65KB | ~5% | Same |
-| com.chessclock.android | 124KB | 0% (exit 1) | onCreate not reached |
+## Tic-Tac-Toe / Game Testing
 
-### Telegram
+**Status:** BLOCKED
 
-| Checkpoint Dimension | Status |
-|---------------------|--------|
-| LOGIC (bytecode chain) | ✅ PROVEN |
-| CALLBACK (Lambda2.run) | ✅ PROVEN |
-| VIEW (SmsView in view tree) | ✅ PROVEN |
-| RENDER (screenshot) | ❌ NOT_PROVEN (broken PNG) |
-| OCR | ❌ NOT_PROVEN (never run) |
-| REPRODUCIBILITY | ⚠️ PARTIAL (logic yes, visual no) |
+- `com.emmanuelmess.tictactoe` uses libGDX (game framework, not standard Android Views)
+- frame_000.png saved (blank — no board rendered)
+- No clickable views, no text content
 
-## GAME EXPERIMENTS
+## Images
 
-| Game | Board Rendered | OCR Verified | Click Dispatch | State Mutation |
-|------|----------------|-------------|----------------|----------------|
-| TicTacToe (3x3) | ✅ | ✅ "Tic Tac Toe" | ⚠️ Not yet (cells have no listeners) | ❌ Not yet |
-| MemoryGame (4x4) | ✅ | ✅ "Memory Game" | ⚠️ Not yet | ❌ Not yet |
+**Status:** NOT PROVEN
 
-## WEB/NETWORK EXPERIMENTS
+- BitmapFactory.decodeResource: STUBBED (returns placeholder)
+- No PNG/JPEG/GIF decoding implemented
 
-**Status:** NOT STARTED
+## Network/Web
 
-No WebView or network content test has been attempted yet.
+**Status:** NOT PROVEN
 
-## SQLITE EXPERIMENTS
+- Controlled network boundary exists (sendRequest intercepted)
+- No WebView support
+- No HTTP/socket implementation
 
-**Status:** NOT STARTED
+## SQLite
 
-No SQLite test has been attempted yet. Only SharedPreferences is implemented.
+**Status:** NOT IMPLEMENTED
 
-## SANDBOX EXPERIMENTS
+- No SQLite/OpenDatabase/CREATE TABLE support in the runtime
 
-**Status:** NOT STARTED
+## Sandbox
 
-No sandbox close/reopen persistence test has been attempted yet.
+**Status:** PARTIAL
 
-## WINDOWS BUILD
+- SharedPreferences: PROVEN (saves to `runtime/data/<package>/shared_prefs/`)
+- File I/O: NOT TESTED
+- App isolation: NOT TESTED (hardcoded package name)
+- Path traversal: NOT TESTED
 
-**Status:** NOT STARTED
+## Windows
 
-No Windows build has been created yet. The runtime currently builds and runs on Linux only.
+**Status:** PARTIAL
 
-## HOW TO TEST
+- `tools/miniandroid_windows_runner.py`: Python-based diagnostic tool
+- Produces `miniandroid_diagnostic.zip` with all evidence
+- Tested on Linux (works)
+- **No native .exe** — requires Python runtime
+- Cross-compilation not available (no mingw)
+
+## How to Run
 
 ### Prerequisites
 - Linux x86_64
-- g++ with C++17 support
-- Python 3 with PIL/Pillow
-- Tesseract OCR (for OCR verification)
+- g++ with C++17
+- Python 3 with PIL/Pillow (for rendering)
+- Tesseract OCR (for text verification)
 
 ### Build
 ```bash
@@ -152,68 +147,55 @@ cd miniandroid
 bash build_exp042.sh
 ```
 
-### Run a single APK
+### Run an APK
 ```bash
 ./build_exp042/miniandroid_exp042 <apk_path> <output_dir>
 ```
 
-### Run the synthetic corpus + OCR verification
+### Windows Diagnostic Tool
 ```bash
-python3 /home/z/my-project/scripts/exp073_baseline_ocr.py
+python tools/miniandroid_windows_runner.py <apk_path> <output_dir>
 ```
 
-### Run Telegram regression
-```bash
-bash run_telegram_test.sh 90
-```
+## How to Report a Failure
 
-## HOW TO REPORT A FAILURE
+1. Run: `python tools/miniandroid_windows_runner.py <apk> output`
+2. Check `output/miniandroid_diagnostic.zip`
+3. Upload the ZIP to the issue tracker
 
-1. Run the APK: `./build_exp042/miniandroid_exp042 <apk> <output_dir>`
-2. Check `output_dir/run.log` for execution traces
-3. Check `output_dir/view_tree.json` for view hierarchy
-4. Check `output_dir/screenshot.png` (NOTE: C++ renderer is broken — use Python renderer)
-5. Run OCR: `tesseract output_dir/exp073_rendered.png - --psm 6`
-6. Record: APK name, package, version, APK SHA256, DEX SHA256, execution depth, last method, last PC, blocker classification
+## Releases
 
-## ROADMAP
+**No GitHub Release published yet.**
 
-### Immediate (next experiment)
-1. **XML layout inflation** — implement `setContentView(int)` → AXML parsing → view creation. This is THE blocker for all real APKs.
-2. **Fix C++ framebuffer renderer** — or deprecate it and always use Python renderer.
-3. **Wire ARSC string resolution** — connect Python ARSC parser to view-tree renderer.
+The source tree is the current release. A native Windows .exe is not yet available.
 
-### Short-term
-4. Re-run Telegram with Python renderer → produce real screenshot → OCR
-5. Windows minimal build
-6. SQLite support
-7. Drawable decoding (PNG/JPEG/WebP)
+## Validation Methodology
 
-### Long-term
-8. JNI/native method support
-9. Fragment/ListActivity support
-10. WebView support
-11. Full Android API surface coverage
+Every capability claim is supported by evidence:
+- EXECUTION PROOF: bytecode actually entered and progressed
+- CALLBACK PROOF: actual callback method executed with expected arguments
+- VIEW PROOF: actual application View hierarchy created
+- RENDER PROOF: valid image containing pixels from runtime state
+- OCR PROOF: OCR independently detects expected text from the PNG
+- INTERACTION PROOF: input changes application state through real bytecode
+- REPRODUCIBILITY PROOF: same outcome across clean independent runs
 
-## REGRESSION SUITES
+**Never trust a summary. Always verify artifacts.**
 
-| Suite | Tests | Status |
-|-------|-------|--------|
-| EXP-052 (invoke/branch/exception) | 6 | ✅ ALL PASS |
-| EXP-059 (opcode) | 4 | ✅ ALL PASS |
-| EXP-066 (multi-DEX) | 4 | ✅ ALL PASS |
+## Known Limitations
 
-## VERSION HISTORY
+- C++ framebuffer renderer produces broken PNGs (invalid IDAT)
+- Multi-DEX method resolution has edge cases with D8-renamed lambdas
+- No JNI/native method support
+- No SQLite, WebView, or Compose support
+- Real APKs that use `setContentView(R.layout.*)` need AXML inflation (implemented in Python, not yet integrated into C++ runtime)
 
-| Version | Date | Key Achievement |
-|---------|------|-----------------|
-| 0.1.0 | 2026-08-14 | Initial APK parsing + DEX execution |
-| 0.1.5 | 2026-08-15 | EXP-050: 336 methods, SharedPreferences |
-| 0.1.10 | 2026-08-17 | EXP-058: Fragment lifecycle, per-DEX types |
-| 0.1.15 | 2026-08-18 | EXP-061: CPU-only Login UI rendering |
-| 0.1.20 | 2026-08-19 | EXP-066: Multi-DEX semantic audit |
-| 0.1.25 | 2026-08-20 | EXP-069: Generic text input + click dispatch |
-| 0.1.30 | 2026-08-21 | EXP-071: Telegram SMS page transition (LOGIC PROVEN, VISUAL PARTIAL) |
-| 0.1.35 | 2026-08-21 | EXP-072: Cross-app corpus + OCR verification gate |
-| 0.1.40 | 2026-08-22 | EXP-073: 11/11 synthetic apps verified + state mutation PROVEN |
-| **0.2.0** | **2026-08-22** | **EXP-074: Honest reconciliation + setText(int) capture + setContentView(int) capture** |
+## Roadmap
+
+1. Fix C++ framebuffer renderer
+2. Integrate AXML inflation into C++ runtime
+3. Fix polymorphic dispatch for method overrides across class boundaries
+4. Implement SQLite support
+5. Build native Windows .exe
+6. Publish GitHub Release
+7. Test more real APKs
