@@ -1,0 +1,35 @@
+{
+  "runtime_version": "0.2.0-exp079",
+  "git_commit": "unknown",
+  "os": "Linux",
+  "architecture": "x86_64",
+  "timestamp": "2026-08-22T04:07:06.286624",
+  "apk": {
+    "path": "download/exp038_telegram/Telegram.apk",
+    "sha256": "193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e",
+    "size": 82680854
+  },
+  "execution": {
+    "exit_code": 0,
+    "stdout_lines": 125,
+    "stderr_lines": 24639
+  },
+  "artifacts": {
+    "view_tree.json": {
+      "size": 409936,
+      "sha256": "ac6b295139f6d874"
+    },
+    "screenshot.png": {
+      "size": 1152862,
+      "sha256": "c3c208a169a7dadd"
+    },
+    "application_runtime.json": {
+      "size": 3622,
+      "sha256": "1f7c21b069e412fa"
+    },
+    "report.md": {
+      "size": 2883,
+      "sha256": "2379d32731f435af"
+    }
+  }
+}
