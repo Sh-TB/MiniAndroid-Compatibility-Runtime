@@ -2686,14 +2686,22 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // substring, or if the searched name contains the method name.
         bool name_matches = (method.name == method_name);
         if (!name_matches) {
-            // Try substring matching for D8-renamed methods
+            // EXP-081: D8 renames lambda methods during compilation.
+            // method_ids[] resolves to 'lambda$createView$1' but ClassInfo
+            // has '$r8$lambda$8Miu...'. The DESCRIPTOR is preserved by D8.
+            // We match by descriptor when:
+            // 1. The searched name is a lambda (contains 'lambda$')
+            // 2. The candidate name is a D8-renamed lambda (contains '$r8$lambda')
+            // 3. The descriptors match exactly
             if (method_name.find("lambda$") != std::string::npos &&
                 method.name.find("$r8$lambda") != std::string::npos) {
-                // Both are lambda methods — try matching by descriptor
-                // and bytecode_size (D8 renames but keeps the descriptor)
-                // Accept if descriptors match
-                // The descriptor is already checked below via param_count
-                name_matches = true;
+                // EXP-081: Use the method_descriptor parameter (passed from
+                // execute_invoke_direct) to verify the descriptor matches.
+                // This ensures only the CORRECT lambda method is matched,
+                // not just any $r8$lambda with the same param count.
+                if (!method_descriptor.empty() && method.descriptor == method_descriptor) {
+                    name_matches = true;
+                }
             }
         }
         if (!name_matches) continue;
@@ -6304,9 +6312,11 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     // method_idx → real method name + declaring class.
     std::string method_name = "<init>";  // fallback for legacy code paths
     std::string class_name = "<unknown>";
+    std::string method_desc_081;
     if (dex_report_) {
         method_name = resolve_method_name_for_dex(method_idx, current_dex_index_);
         class_name = resolve_method_class_for_dex(method_idx, current_dex_index_);
+        method_desc_081 = resolve_method_proto_for_dex(method_idx, current_dex_index_);
     }
 
     // EXP-061: Debug — trace invoke-direct inside PhoneView.<init>
@@ -6358,7 +6368,7 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
                       << " args=" << args.size()
                       << std::endl;
         }
-        if (try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
+        if (try_recursive_invoke(class_name, method_name, args, return_val, result, method_desc_081)) { last_invoke_return_ = return_val;
             recursively_invoked = true;
             status = ApiCallTrace::Status::IMPLEMENTED;
             // EXP-079: Debug trace
