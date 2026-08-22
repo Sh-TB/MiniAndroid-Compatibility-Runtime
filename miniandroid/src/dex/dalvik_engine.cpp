@@ -2695,12 +2695,34 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // 3. The descriptors match exactly
             if (method_name.find("lambda$") != std::string::npos &&
                 method.name.find("$r8$lambda") != std::string::npos) {
-                // EXP-081: Use the method_descriptor parameter (passed from
-                // execute_invoke_direct) to verify the descriptor matches.
-                // This ensures only the CORRECT lambda method is matched,
-                // not just any $r8$lambda with the same param count.
-                if (!method_descriptor.empty() && method.descriptor == method_descriptor) {
-                    name_matches = true;
+                // EXP-081: D8 converts instance lambda methods to static
+                // by adding the captured receiver as the first parameter.
+                // Original: (Landroid/view/View;)V  (instance, 1 param)
+                // D8 static: (Lorg/.../LoginActivity;Landroid/view/View;)V  (static, 2 params)
+                // We accept the match if the $r8$lambda descriptor has
+                // exactly ONE extra leading parameter compared to the original.
+                if (!method_descriptor.empty()) {
+                    // Parse original descriptor params
+                    size_t orig_start = method_descriptor.find('(');
+                    size_t orig_end = method_descriptor.find(')', orig_start);
+                    if (orig_start != std::string::npos && orig_end != std::string::npos) {
+                        std::string orig_params = method_descriptor.substr(orig_start + 1, orig_end - orig_start - 1);
+                        // Parse $r8$lambda descriptor params
+                        size_t r8_start = method.descriptor.find('(');
+                        size_t r8_end = method.descriptor.find(')', r8_start);
+                        if (r8_start != std::string::npos && r8_end != std::string::npos) {
+                            std::string r8_params = method.descriptor.substr(r8_start + 1, r8_end - r8_start - 1);
+                            // Check if r8_params ends with orig_params (r8 has one extra leading param)
+                            if (r8_params.length() > orig_params.length() &&
+                                r8_params.substr(r8_params.length() - orig_params.length()) == orig_params) {
+                                name_matches = true;
+                            }
+                            // Also check exact match (both static or both instance)
+                            if (method.descriptor == method_descriptor) {
+                                name_matches = true;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -6317,6 +6339,14 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
         method_name = resolve_method_name_for_dex(method_idx, current_dex_index_);
         class_name = resolve_method_class_for_dex(method_idx, current_dex_index_);
         method_desc_081 = resolve_method_proto_for_dex(method_idx, current_dex_index_);
+        // EXP-081: Debug trace
+        if (method_name.find("lambda") != std::string::npos || method_name.find("createView") != std::string::npos) {
+            std::cerr << "[EXP081-DESC] method=" << method_name
+                      << " method_idx=" << method_idx
+                      << " dex=" << current_dex_index_
+                      << " desc=" << method_desc_081
+                      << std::endl;
+        }
     }
 
     // EXP-061: Debug — trace invoke-direct inside PhoneView.<init>
@@ -6639,7 +6669,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
         // current_invoke_is_static_ is already false (reset above).
-        if (try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
+        if (try_recursive_invoke(class_name, method_name, args, return_val, result, method_proto)) { last_invoke_return_ = return_val;
             recursively_invoked = true;
             status = ApiCallTrace::Status::IMPLEMENTED;
         }
