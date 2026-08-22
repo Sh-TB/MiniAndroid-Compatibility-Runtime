@@ -1,0 +1,72 @@
+{
+  "test": "EXP085 Phase 12 \u2014 Handler/Looper/delay test",
+  "generated_at": "2026-08-22T20:39:17.641551+00:00",
+  "results": [
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+      "apk_name": "simplestopwatch",
+      "exit_code": 1,
+      "handler_evidence": {
+        "handler_class_loaded": true,
+        "looper_class_loaded": false,
+        "post_called": false,
+        "drain_handler_queue": false,
+        "runnable_executed": true,
+        "duplicate_callback_evidence": false
+      },
+      "counts": {
+        "onNextPressed_count": 0,
+        "sendRequest_count": 0,
+        "drain_ready_count": 0,
+        "post_count": 0,
+        "postDelayed_count": 0
+      },
+      "classification": "HANDLER_LOADED_NOT_DRAINED",
+      "stdout_tail": "vikEngine]   \ud83d\udccb Checking fallback class: [Lomegacentauri/mobi/simplestopwatch/BigTextView$GetCenter;] with 1 methods\n[DalvikEngine]   \ud83d\udccb all_methods() returned 1 entries\n[DalvikEngine] \ud83c\udfaf Using fallback entry: Lomegacentauri/mobi/simplestopwatch/BigTextView$GetCenter;.getCenter\n[DalvikEngine] \ud83c\udfaf Bytecode size: 0\n[DalvikEngine] \u26a0\ufe0f Fallback method has empty bytecode!\n[DalvikEngine] Execution completed in 1.249438ms\n[DalvikEngine] Instructions executed: 0\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk",
+      "apk_name": "chessclock",
+      "exit_code": 1,
+      "handler_evidence": {
+        "handler_class_loaded": false,
+        "looper_class_loaded": false,
+        "post_called": false,
+        "drain_handler_queue": false,
+        "runnable_executed": false,
+        "duplicate_callback_evidence": false
+      },
+      "counts": {
+        "onNextPressed_count": 0,
+        "sendRequest_count": 0,
+        "drain_ready_count": 0,
+        "post_count": 0,
+        "postDelayed_count": 0
+      },
+      "classification": "HANDLER_BLOCKED_NO_STARTUP",
+      "stdout_tail": "Directory: 19 entries at offset 122880\n[ApkParser] Cached 19 ZIP entries for fast lookup\n[ApkParser] Found 1 DEX files: \n[ApkParser]   - classes.dex\n[ApkParser] Extracting AndroidManifest.xml...\n[ApkParser] Found EOCD at offset 124200\n[ApkParser] Central Directory: 19 entries at offset 122880\n[ApkParser] Warning: Could not extract AndroidManifest.xml\n[ApkParser] APK parsing complete:  (19 entries)\n[ApkParser] Found EOCD at offset 124200\n[ApkParser] Central Directory: 19 entries at offset 122880\n"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
+      "apk_name": "telegram",
+      "exit_code": 1,
+      "handler_evidence": {
+        "handler_class_loaded": true,
+        "looper_class_loaded": true,
+        "post_called": true,
+        "drain_handler_queue": false,
+        "runnable_executed": true,
+        "duplicate_callback_evidence": true
+      },
+      "counts": {
+        "onNextPressed_count": 0,
+        "sendRequest_count": 2,
+        "drain_ready_count": 0,
+        "post_count": 6,
+        "postDelayed_count": 0
+      },
+      "classification": "HANDLER_LOADED_NOT_DRAINED",
+      "stdout_tail": "lvikEngine]   API BRIDGE: Ljava/lang/NoClassDefFoundError;.<init>\n[EXCEPTION] method=Landroid/media/MediaDrmThrowable;.<clinit> pc=5 exception=Ljava/lang/NoClassDefFoundError; try_range=(none) handler=NOT_FOUND\n[MEM] method_exit: Landroid/media/MediaDrmThrowable;.<clinit> insns=3 RSS=165.398 MB\n[DalvikEngine] \u2705 execute_method_internal() completed successfully\n[DalvikEngine] Execution completed in 223.112263ms\n[DalvikEngine] Instructions executed: 3\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+    }
+  ]
+}
