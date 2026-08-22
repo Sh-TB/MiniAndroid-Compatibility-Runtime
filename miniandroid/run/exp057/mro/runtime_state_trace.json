@@ -1,0 +1,105 @@
+{
+  "apk_path": "download/exp038_telegram/Telegram.apk",
+  "experiment": "EXP-007→EXP-012",
+  "final_state": "COMPLETED",
+  "timestamp": "2026-08-17T21:40:26Z",
+  "transitions": [
+    {
+      "duration_ms": 0.0,
+      "from": "CREATED",
+      "reason": "ApplicationRuntime initialized",
+      "success": true,
+      "timestamp": "2026-08-17T21:40:12Z",
+      "to": "CREATED"
+    },
+    {
+      "duration_ms": 4.2e-05,
+      "from": "CREATED",
+      "reason": "APK loaded successfully: download/exp038_telegram/Telegram.apk",
+      "success": true,
+      "timestamp": "2026-08-17T21:40:12Z",
+      "to": "APK_LOADED"
+    },
+    {
+      "duration_ms": 3.3e-05,
+      "from": "APK_LOADED",
+      "reason": "Manifest resolved: org.telegram.messenger.web",
+      "success": true,
+      "timestamp": "2026-08-17T21:40:12Z",
+      "to": "MANIFEST_RESOLVED"
+    },
+    {
+      "duration_ms": 0.000286,
+      "from": "MANIFEST_RESOLVED",
+      "reason": "DEX loaded: 41078 classes",
+      "success": true,
+      "timestamp": "2026-08-17T21:40:13Z",
+      "to": "DEX_LOADED"
+    },
+    {
+      "duration_ms": 5.3e-05,
+      "from": "DEX_LOADED",
+      "reason": "Launcher resolved: org.telegram.ui.LaunchActivity",
+      "success": true,
+      "timestamp": "2026-08-17T21:40:14Z",
+      "to": "ACTIVITY_RESOLVED"
+    },
+    {
+      "duration_ms": 3.2e-05,
+      "from": "ACTIVITY_RESOLVED",
+      "reason": "Activity created: ID=1",
+      "success": true,
+      "timestamp": "2026-08-17T21:40:14Z",
+      "to": "ACTIVITY_CREATED"
+    },
+    {
+      "duration_ms": 0.00016,
+      "from": "ACTIVITY_CREATED",
+      "reason": "Activity.onStart()",
+      "success": true,
+      "timestamp": "2026-08-17T21:40:26Z",
+      "to": "ACTIVITY_STARTED"
+    },
+    {
+      "duration_ms": 3.4e-05,
+      "from": "ACTIVITY_STARTED",
+      "reason": "Activity.onResume()",
+      "success": true,
+      "timestamp": "2026-08-17T21:40:26Z",
+      "to": "ACTIVITY_RESUMED"
+    },
+    {
+      "duration_ms": 3.8e-05,
+      "from": "ACTIVITY_RESUMED",
+      "reason": "Content view loaded",
+      "success": true,
+      "timestamp": "2026-08-17T21:40:26Z",
+      "to": "CONTENT_LOADED"
+    },
+    {
+      "duration_ms": 2.3e-05,
+      "from": "CONTENT_LOADED",
+      "reason": "Layout ready for rendering",
+      "success": true,
+      "timestamp": "2026-08-17T21:40:26Z",
+      "to": "LAYOUT_READY"
+    },
+    {
+      "duration_ms": 2.4e-05,
+      "from": "LAYOUT_READY",
+      "reason": "Frame rendered successfully",
+      "success": true,
+      "timestamp": "2026-08-17T21:40:26Z",
+      "to": "FRAME_RENDERED"
+    },
+    {
+      "duration_ms": 2.3e-05,
+      "from": "FRAME_RENDERED",
+      "reason": "Pipeline completed successfully",
+      "success": true,
+      "timestamp": "2026-08-17T21:40:26Z",
+      "to": "COMPLETED"
+    }
+  ],
+  "type": "runtime_state_trace"
+}
