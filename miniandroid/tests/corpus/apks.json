@@ -1,0 +1,351 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "description": "MiniAndroid external APK corpus manifest. Each entry describes a real APK that the test runner fetches on demand. The runner should report: APK FOUND / APK MISSING / HASH MATCH / HASH MISMATCH.",
+  "manifest_version": "1.0.0",
+  "apks": [
+    {
+      "name": "Telegram",
+      "version": "10.14.5 (arm64-v8a)",
+      "sha256": "193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e",
+      "expected_size_bytes": 82680854,
+      "expected_size_human": "78.85 MB",
+      "source": "https://telegram.org/android",
+      "download_url": "https://telegram.org/dl/android",
+      "local_path": "miniandroid/download/exp038_telegram/Telegram.apk",
+      "required_for": [
+        "exp038_telegram",
+        "exp042_elf_analyzer",
+        "exp057_aosp_disasm",
+        "exp059_andro_disasm",
+        "exp064_androguard_oracle",
+        "exp066_multidex_regression",
+        "exp078_telegram_*",
+        "exp079_*",
+        "exp080_*",
+        "exp081_*",
+        "exp082_*"
+      ],
+      "capabilities": [
+        "multi-dex (5 DEX)",
+        "r8-lambda",
+        "AXML inflation",
+        "polymorphic dispatch",
+        "SQLite",
+        "JNI natives",
+        "permission system",
+        "Intent resolution"
+      ],
+      "external": true,
+      "reason": "Large real-world APK used as the canonical target for compatibility regression",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "gmdice",
+      "version": "8",
+      "sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+      "expected_size_bytes": 63998,
+      "expected_size_human": "62.50 KB",
+      "source": "https://f-droid.org/packages/de.duenndns.gmdice/",
+      "download_url": "https://f-droid.org/repo/de.duenndns.gmdice_8.apk",
+      "local_path": "miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+      "required_for": [
+        "exp073_real_apps",
+        "exp074_real_apk_gate",
+        "exp075_real_apk_pipeline"
+      ],
+      "capabilities": [
+        "single-DEX",
+        "AXML inflation",
+        "text rendering",
+        "button click listener",
+        "resource resolution"
+      ],
+      "external": true,
+      "reason": "Proves AXML+resource text rendering (\"Push buttons to roll!\")",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "TicTacToe (emmanuelmess)",
+      "version": "3",
+      "sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+      "expected_size_bytes": 4474946,
+      "expected_size_human": "4.27 MB",
+      "source": "https://f-droid.org/packages/com.emmanuelmess.tictactoe/",
+      "download_url": "https://f-droid.org/repo/com.emmanuelmess.tictactoe_3.apk",
+      "local_path": "miniandroid/download/tictactoe.apk",
+      "required_for": [
+        "exp076_corpus",
+        "exp077_tictactoe_adversarial"
+      ],
+      "capabilities": [
+        "single-DEX",
+        "AXML inflation",
+        "onClick dispatch",
+        "view_tree.json generation"
+      ],
+      "external": true,
+      "reason": "Simple game for adversarial onClick dispatch regression",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "OpenLauncher",
+      "version": "39",
+      "sha256": "b7900f56ccbe4768701c6e664aca578091ad8d0aa4245d766a3d24b56766e743",
+      "expected_size_bytes": 3457024,
+      "expected_size_human": "3.30 MB",
+      "source": "https://f-droid.org/packages/com.benny.openlauncher/",
+      "download_url": "https://f-droid.org/repo/com.benny.openlauncher_39.apk",
+      "local_path": "miniandroid/download/exp076_corpus/com.benny.openlauncher_39.apk",
+      "required_for": [
+        "exp076_corpus"
+      ],
+      "capabilities": [
+        "multi-DEX",
+        "complex AXML",
+        "RecyclerView"
+      ],
+      "external": true,
+      "reason": "Multi-DEX + complex layout corpus entry",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "Dooz (TicTacToe variant)",
+      "version": "18",
+      "sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
+      "expected_size_bytes": 1749880,
+      "expected_size_human": "1.67 MB",
+      "source": "https://f-droid.org/packages/io.github.yamin8000.dooz/",
+      "download_url": "https://f-droid.org/repo/io.github.yamin8000.dooz_18.apk",
+      "local_path": "miniandroid/download/exp076_corpus/io.github.yamin8000.dooz_18.apk",
+      "required_for": [
+        "exp076_corpus"
+      ],
+      "capabilities": [
+        "single-DEX",
+        "game layout"
+      ],
+      "external": true,
+      "reason": "Game corpus entry",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "BGClock (Hans de Zwart)",
+      "version": "2",
+      "sha256": "72c140b0083ef273bc6452a7f1006e1e2dc4c64c61f8bcc90d082c3f6d1f9dee",
+      "expected_size_bytes": 1040099,
+      "expected_size_human": "1015.72 KB",
+      "source": "https://f-droid.org/packages/nl.hansdezwart.bgclock/",
+      "download_url": "https://f-droid.org/repo/nl.hansdezwart.bgclock_2.apk",
+      "local_path": "miniandroid/download/exp076_corpus/nl.hansdezwart.bgclock_2.apk",
+      "required_for": [
+        "exp076_corpus",
+        "exp077_bgclock"
+      ],
+      "capabilities": [
+        "single-DEX",
+        "widget rendering"
+      ],
+      "external": true,
+      "reason": "Simple widget rendering test",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "Stopwatch (muellerma)",
+      "version": "6",
+      "sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
+      "expected_size_bytes": 738101,
+      "expected_size_human": "720.80 KB",
+      "source": "https://f-droid.org/packages/com.github.muellerma.stopwatch/",
+      "download_url": "https://f-droid.org/repo/com.github.muellerma.stopwatch_6.apk",
+      "local_path": "miniandroid/download/exp076_corpus/com.github.muellerma.stopwatch_6.apk",
+      "required_for": [
+        "exp076_corpus"
+      ],
+      "capabilities": [
+        "single-DEX",
+        "simple UI"
+      ],
+      "external": true,
+      "reason": "Stopwatch corpus entry",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "Simple Keyboard",
+      "version": "145",
+      "sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
+      "expected_size_bytes": 662274,
+      "expected_size_human": "646.75 KB",
+      "source": "https://f-droid.org/packages/rkr.simplekeyboard.inputmethod/",
+      "download_url": "https://f-droid.org/repo/rkr.simplekeyboard.inputmethod_145.apk",
+      "local_path": "miniandroid/download/exp076_corpus/rkr.simplekeyboard.inputmethod_145.apk",
+      "required_for": [
+        "exp076_corpus"
+      ],
+      "capabilities": [
+        "IME service",
+        "complex AXML"
+      ],
+      "external": true,
+      "reason": "IME service rendering test",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "MicroTimer",
+      "version": "8",
+      "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+      "expected_size_bytes": 208895,
+      "expected_size_human": "204.00 KB",
+      "source": "https://f-droid.org/packages/dubrowgn.microtimer/",
+      "download_url": "https://f-droid.org/repo/dubrowgn.microtimer_8.apk",
+      "local_path": "miniandroid/download/exp076_corpus/dubrowgn.microtimer_8.apk",
+      "required_for": [
+        "exp076_corpus"
+      ],
+      "capabilities": [
+        "single-DEX",
+        "timer UI"
+      ],
+      "external": true,
+      "reason": "Timer UI corpus entry",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "uNote",
+      "version": "30",
+      "sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+      "expected_size_bytes": 163498,
+      "expected_size_human": "159.67 KB",
+      "source": "https://f-droid.org/packages/app.varlorg.unote/",
+      "download_url": "https://f-droid.org/repo/app.varlorg.unote_30.apk",
+      "local_path": "miniandroid/download/exp076_corpus/app.varlorg.unote_30.apk",
+      "required_for": [
+        "exp076_corpus"
+      ],
+      "capabilities": [
+        "single-DEX",
+        "note editor",
+        "SQLite"
+      ],
+      "external": true,
+      "reason": "Note + SQLite corpus entry",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "Notes (billthefarmer)",
+      "version": "139",
+      "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+      "expected_size_bytes": 216907,
+      "expected_size_human": "211.82 KB",
+      "source": "https://f-droid.org/packages/org.billthefarmer.notes/",
+      "download_url": "https://f-droid.org/repo/org.billthefarmer.notes_139.apk",
+      "local_path": "miniandroid/download/exp073_real_apps/org.billthefarmer.notes_139.apk",
+      "required_for": [
+        "exp073_real_apps"
+      ],
+      "capabilities": [
+        "single-DEX",
+        "RecyclerView",
+        "SQLite"
+      ],
+      "external": true,
+      "reason": "Notes app regression entry",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "Simple Stopwatch",
+      "version": "26",
+      "sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+      "expected_size_bytes": 172399,
+      "expected_size_human": "168.36 KB",
+      "source": "https://f-droid.org/packages/omegacentauri.mobi.simplestopwatch/",
+      "download_url": "https://f-droid.org/repo/omegacentauri.mobi.simplestopwatch_26.apk",
+      "local_path": "miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+      "required_for": [
+        "exp073_real_apps"
+      ],
+      "capabilities": [
+        "single-DEX",
+        "stopwatch"
+      ],
+      "external": true,
+      "reason": "Stopwatch regression entry",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "Chess Clock",
+      "version": "29",
+      "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+      "expected_size_bytes": 124222,
+      "expected_size_human": "121.31 KB",
+      "source": "https://f-droid.org/packages/com.chessclock.android/",
+      "download_url": "https://f-droid.org/repo/com.chessclock.android_29.apk",
+      "local_path": "miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk",
+      "required_for": [
+        "exp073_real_apps"
+      ],
+      "capabilities": [
+        "single-DEX",
+        "timer UI"
+      ],
+      "external": true,
+      "reason": "Chess clock regression entry",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "Heading Calculator",
+      "version": "1",
+      "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+      "expected_size_bytes": 65417,
+      "expected_size_human": "63.88 KB",
+      "source": "https://f-droid.org/packages/org.debian.eugen.headingcalculator/",
+      "download_url": "https://f-droid.org/repo/org.debian.eugen.headingcalculator_1.apk",
+      "local_path": "miniandroid/download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
+      "required_for": [
+        "exp073_real_apps"
+      ],
+      "capabilities": [
+        "single-DEX",
+        "calculator"
+      ],
+      "external": true,
+      "reason": "Calculator regression entry",
+      "currently_present": true,
+      "currently_tracked": true
+    },
+    {
+      "name": "Tiny Music Player",
+      "version": "1.0",
+      "sha256": "d7bcb24d101b04beb3394b695b24be4e2c3d6ed702f1d0e06bc4dd707f64d86a",
+      "expected_size_bytes": 16520,
+      "expected_size_human": "16.13 KB",
+      "source": "https://f-droid.org/packages/com.martinmimigames.tinymusicplayer/",
+      "download_url": "https://f-droid.org/repo/com.martinmimigames.tinymusicplayer_1.apk",
+      "local_path": "miniandroid/download/exp037_real_apks/TinyMusicPlayer.apk",
+      "required_for": [
+        "exp037_real_apks",
+        "exp031_5_traces"
+      ],
+      "capabilities": [
+        "single-DEX",
+        "music playback"
+      ],
+      "external": true,
+      "reason": "Tiny music player regression entry",
+      "currently_present": true,
+      "currently_tracked": true
+    }
+  ]
+}
