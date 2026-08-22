@@ -1,5 +1,0 @@
-view_tree=run/exp066_run2/view_tree.json
-screenshot=run/exp066_run2/login_screen.png
-debug_screenshot=run/exp066_run2/login_screen_debug.png
-width=1080
-height=1920

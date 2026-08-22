@@ -1,5 +1,0 @@
-view_tree=run/exp079/sandbox_test/view_tree.json
-screenshot=run/exp079/sandbox_test/login_screen.png
-debug_screenshot=run/exp079/sandbox_test/login_screen_debug.png
-width=1080
-height=1920

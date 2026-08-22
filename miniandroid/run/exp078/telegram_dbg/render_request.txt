@@ -1,5 +1,0 @@
-view_tree=run/exp078/telegram_dbg/view_tree.json
-screenshot=run/exp078/telegram_dbg/login_screen.png
-debug_screenshot=run/exp078/telegram_dbg/login_screen_debug.png
-width=1080
-height=1920
