@@ -2952,3 +2952,42 @@ Stage Summary:
 - CHECKPOINT_M: SUBSTANTIALLY PROVEN (SMS view exists, screenshot pending).
 
 Commit 87d7280 pushed to main.
+
+---
+Task ID: EXP-083
+Agent: main
+Task: PHASE 38 — Run Directory Forensic Cleanup (per user spec)
+
+Work Log:
+- Phase 38.1: Built /home/z/my-project/scripts/exp083_run_audit.py to walk miniandroid/run/ and produce full subdir inventory with size, file count, oldest/newest mtime, and EXP# per directory (263 subdirs found).
+- Phase 38.6: Computed SHA256 for 4166 dedup-candidate files; discovered 224 duplicate clusters totaling 529.7 MB of redundant copies (including 331 byte-identical screenshot.png fallback images = 363 MB).
+- Phase 38.7: Large-file threshold report — 460 files >1MB (1532 MB total), 22 files >5MB (991 MB), 16 files >25MB (853 MB), 10 files >50MB (621 MB).
+- Phase 38.10/38.11: APK duplicate detection — found 4 duplicate APK pairs (tictactoe, unote, cachecleaner, exp052 case2/case4).
+- Phase 38.14: Git tracking check — 5661 tracked files, 878 MB tracked total, 606 MB tracked in run/ alone. 14 historical blobs >5MB remain in git history (cannot be purged without rewriting history — user explicitly forbade).
+- Phase 38.2: Classified every artifact — HISTORICAL_EVIDENCE (reports, metrics), GENERATED_OUTPUT (view_tree.json, screenshot.png), DEBUG_TEMP (.log files), CURRENT_EXPERIMENT (EXP-081/082), REGRESSION_FIXTURE (test_apks, golden), CACHE (fdroid_index), APK_EXTRACTION.
+- Phase 38.4: Build /home/z/my-project/scripts/exp083_cleanup.py with DRY-RUN mode + APPLY mode + safe guards (skip test_apks/, golden/, Telegram.apk, files <1KB).
+- Phase 38.8/38.9: Log retention — deleted 217 untracked *.log files (947 MB local disk; already gitignored under *.log).
+- Phase 38.13: build_asan/ audit — only miniandroid_asan (28.6 MB binary) was tracked; git rm --cached applied.
+- Phase 38.15: Updated .gitignore with EXP-083 section: **/view_tree.json, **/stderr.log, **/stdout.log, **/screenshot.ppm, miniandroid/build_asan/, miniandroid/reports/*.json, miniandroid/run/**/AndroidManifest.xml, miniandroid/run/**/classes*.dex, miniandroid/run/**/resources.arsc, miniandroid/download/exp*/fdroid_index*.json, miniandroid/run/exp0*/ through exp07*/ (old EXP dirs gitignored going forward; EXP-081+ remain trackable for active work).
+- Phase 38.16: Reproducibility verification — git status clean (only staged deletions + .gitignore update), git log intact, make miniandroid reports "Nothing to be done" (build intact), source code untouched, golden/test_apks/runtime data untouched. Pre-existing runtime segfault in gmdice is EXP-082 issue, NOT caused by cleanup.
+- Phase 38.18: Before/After report captured. Run git gc --aggressive --prune=now to compact .git (162 MB → 146 MB).
+- Phase 38.21: Generated docs/EXP083_REPOSITORY_SIZE_FINAL.md answering WHY/WHAT/HOW questions.
+
+Stage Summary:
+- BEFORE: 1.60 GB run/ local, 878 MB tracked total, 606 MB tracked run/, 5661 tracked files
+- AFTER:  89.87 MB run/ local, 143 MB tracked total, 19 MB tracked run/, 4756 tracked files
+- Savings: 1.51 GB local disk, 735 MB tracked total, 587 MB tracked run/, 905 tracked files removed
+- .git/ shrunk from 162 MB → 146 MB via git gc (historical blobs retained — no history rewrite)
+- Deliverables:
+  - /home/z/my-project/scripts/exp083_run_audit.py (forensic audit tool, idempotent)
+  - /home/z/my-project/scripts/exp083_cleanup.py (safe cleanup tool with DRY-RUN/APPLY modes)
+  - /home/z/my-project/scripts/exp083_final_report.py (final report generator)
+  - /home/z/my-project/scripts/exp083_cleanup.log (detailed cleanup log)
+  - /home/z/my-project/scripts/exp083_before.txt (captured BEFORE metrics)
+  - miniandroid/docs/EXP083_RUN_FORENSICS.md (38.1/38.6/38.7/38.10/38.11 inventory)
+  - miniandroid/docs/EXP083_REPOSITORY_SIZE_FINAL.md (38.18/38.21 final audit)
+  - miniandroid/docs/EXP083_run_inventory.csv (per-path machine-readable inventory)
+  - miniandroid/docs/EXP083_large_files.csv (460 files >1MB)
+  - miniandroid/docs/EXP083_duplicate_groups.json (224 → 60 duplicate clusters after cleanup)
+- NO source code modified. NO git history rewritten. NO test fixtures deleted. NO active EXP work lost.
+- The user's stated figure of "run = 635,623,929 bytes (~606 MB)" matched exactly our measurement of tracked run/ size BEFORE cleanup.
