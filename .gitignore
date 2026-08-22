@@ -49,3 +49,36 @@ tool-results/
 # EXP-043 run artifacts (regenerated each run)
 miniandroid/run/exp042_auto/
 miniandroid/run/exp043_*/
+
+# === EXP-083 run/ forensics cleanup ===
+
+# Runtime dumps (regenerable on every run)
+**/view_tree.json
+**/stderr.log
+**/stdout.log
+**/screenshot.ppm
+
+# Build ASAN binary (regenerable from CMake)
+miniandroid/build_asan/
+
+# Generated reports (DEX call-graphs, indexes — regenerable from tools)
+miniandroid/reports/*.json
+
+# APK extraction trees (extractable from APK on demand)
+miniandroid/run/**/AndroidManifest.xml
+miniandroid/run/**/classes*.dex
+miniandroid/run/**/resources.arsc
+
+# F-Droid index cache (regenerable)
+miniandroid/download/exp*/fdroid_index*.json
+
+# Old completed EXP dirs (≤ EXP-080) are compacted into archive/.
+# Do not auto-track their regenerated outputs going forward.
+miniandroid/run/exp0*/
+miniandroid/run/exp03*/
+miniandroid/run/exp04*/
+miniandroid/run/exp05*/
+miniandroid/run/exp06*/
+miniandroid/run/exp07*/
+
+# Active experiment directories (EXP-081+) remain trackable for in-progress work.
