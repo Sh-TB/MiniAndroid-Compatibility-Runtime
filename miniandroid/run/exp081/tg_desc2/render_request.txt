@@ -1,0 +1,5 @@
+view_tree=run/exp081/tg_desc2/view_tree.json
+screenshot=run/exp081/tg_desc2/login_screen.png
+debug_screenshot=run/exp081/tg_desc2/login_screen_debug.png
+width=1080
+height=1920
