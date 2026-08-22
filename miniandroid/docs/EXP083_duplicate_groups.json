@@ -1,0 +1,4858 @@
+[
+  {
+    "sha256": "647c390de845e1540e946c6b681469290a99023876e9b9d2a838bd76aaf6c50c",
+    "size_bytes": 2017,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp071_run6/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_sget/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task2r/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_debug/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_diag2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run7/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_debug/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run6/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run4/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp069_run1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_res2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_nez/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_typeres/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rval2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run5/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_confirm/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp070_run2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_ltzfix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp049_range/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_voidfix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp072/HelloWorld_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp072/Counter_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp072/Calculator_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_desc2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_check/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_dispatch/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_desc/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_static/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_d8fix2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_final/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_gnp/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_manual/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_bf/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_dbg/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_debug/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_check/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_shadow/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/headingcalc/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_nextpress/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_fw/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_fix3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_fix2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_jni_probe/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_thread_check/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_gs/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run12/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp068_run3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_haltfix2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_sgetdbg/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp066_run2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_regs/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_tc100/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_intercept/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_guard/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run9/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_iface2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp074/de.duenndns.gmdice_8_exp074/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp074/omegacentauri.mobi.simplestopwatch_26_exp074/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp074/com.chessclock.android_29_exp074/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp074/org.debian.eugen.headingcalculator_1_exp074/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp074/org.billthefarmer.notes_139_exp074/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run8/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp067_run1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run4/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_native/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_stubs/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_jnidiag/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp082/tg_sorted/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp082/tg_check/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp082/tg_proto/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp082/tg_param/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run14/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_if2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_istatic/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_fm/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_debug8/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval4/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case_b_no_catch/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_thread_identity/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_branch_if_nez/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_nez_zero_nottaken/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case3_nested_catch/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case1_no_catch/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case2_local_catch/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case_a_catch_all/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_eqz_nonzero_nottaken/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case4_catch_all/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_goto_simple/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_nez_nonzero_taken/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_invoke_virtual_return/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_eqz_zero_taken/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_branch_if_eqz/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_invoke_static_return/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_final/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_tiny/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_search/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rfix2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_resfix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_real_run/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp067_run3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run13/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp039/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_fix3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_map/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run5/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_v3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_e051_final/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run6/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rval/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_movefix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_final/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_no_stub/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_run1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_fix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run16/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_branch/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv4/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_verbose/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/com.emmanuelmess.tictactoe_3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/SimpleList/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/com.chessclock.android_29/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/org.billthefarmer.notes_139/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Counter/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/nl.hansdezwart.bgclock_2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Telegram/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/CounterV2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/omegacentauri.mobi.simplestopwatch_26/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/com.github.muellerma.stopwatch_6/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Timer/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Notes/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/io.github.yamin8000.dooz_18/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/com.benny.openlauncher_39/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/rkr.simplekeyboard.inputmethod_145/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/de.duenndns.gmdice_8/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/UnitConverter/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/MemoryGame/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/HelloWorld/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Settings/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Calculator/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/TicTacToe/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/org.debian.eugen.headingcalculator_1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/app.varlorg.unote_30/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/dubrowgn.microtimer_8/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_auto/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run24/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/repro_2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/fix3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/repro_3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/fix2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/repro_1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/fix1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/debug/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/mro/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_resargs/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_regs/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_debug7/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_final2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval5/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp066_run1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/tg_perm/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/hc/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/tg_d8fix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/headingcalc/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/gmdice/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_iput/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_final3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp068_run1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_debug6/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp068_run4/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_clean/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp068_run2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp038_telegram/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run8/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_asan2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_isEmpty/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_diag/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp049_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_handler/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_overload/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_final2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_haltfix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_sim2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_deep/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_replay/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_repro_1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_final/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_thresh/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_paramfix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_nullfix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_guard10/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_res/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task6/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_collections/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_stub/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final_1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp047_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp070_run1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/org.debian.eugen.headingcalculator_1_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/io.github.yamin8000.dooz_18_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_cv3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_fix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.github.muellerma.stopwatch_6_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/de.duenndns.gmdice_8_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_cv/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_cv2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_exp071/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_onhide/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/org.billthefarmer.notes_139_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/omegacentauri.mobi.simplestopwatch_26_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.benny.openlauncher_39_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_stubs/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/nl.hansdezwart.bgclock_2_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/headingcalc/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.chessclock.android_29_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.emmanuelmess.tictactoe_3_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/rkr.simplekeyboard.inputmethod_145_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/dubrowgn.microtimer_8_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/app.varlorg.unote_30_exp077/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_intent/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp070_run3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run7/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_iface/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_res/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase5/b_infinite_loop/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase5/a_finite_loop/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_array/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/de.duenndns.gmdice_8_exp075/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/org.debian.eugen.headingcalculator_1_exp075/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/com.chessclock.android_29_exp075/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/org.billthefarmer.notes_139_exp075/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/omegacentauri.mobi.simplestopwatch_26_exp075/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/headingcalc/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_run/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_phase3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_returnval/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_final/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/TicTacToe_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/SimpleList_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/de.duenndns.gmdice_8_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/omegacentauri.mobi.simplestopwatch_26_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/HelloWorld_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Counter_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Calculator_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/MemoryGame_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Notes_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/UnitConverter_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/com.chessclock.android_29_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/org.billthefarmer.notes_139_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/CounterV2_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/gmdice_test/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Settings_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/org.debian.eugen.headingcalculator_1_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Timer_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rfix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task2k/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_repro_2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_iface/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rlookup/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_trace2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_param/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp044_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final_3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_init/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final5/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task1_telegram/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run5/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run4/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp047_diag/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_repro_3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_tc1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run11/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_v2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv5/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp047_const4/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_nullfix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run15/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp047_trace/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_diag1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/calc/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/windows_test/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_match/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_argfix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/tictactoe/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_dexfix/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/tg_test/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/sandbox_test/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/random_apk/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/headingcalc/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_trace/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_dispatch/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_direct/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run10/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_final5/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_jni/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_intercept3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_check/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_final/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase1/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_iget/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_nocheck/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_sget/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final_2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_real_run2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task2_telegram/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase4/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_final/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_debug/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_perdex/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_stubs/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_final/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_lin/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_cache/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_trace/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_overload/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp067_run2/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_baseline/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval3/golden/corpus.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp069_run2/golden/corpus.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "89b80ed0e72c3cc2422c0ca5eef577880a43e77aaf538b26365be1a720b65a30",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp072/HelloWorld_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp072/Counter_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp072/Calculator_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "84a1b2190479a93cd0806550206f821c34a490e00e7e024dd4d314eada9905ec",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp074/org.debian.eugen.headingcalculator_1_exp074/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp074/org.billthefarmer.notes_139_exp074/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "0b3921bac130ca6fbef157ef6191ca08ffe2d56c84a78e26f1c66f860eeb00cc",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp052_exceptions/case_b_no_catch/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case_a_catch_all/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "a858fbff2e9952acab10c3b06350fb462762d899779ab29852b15b4a724ae3ca",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_thread_identity/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_branch_if_nez/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_nez_zero_nottaken/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_eqz_nonzero_nottaken/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_goto_simple/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_nez_nonzero_taken/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_invoke_virtual_return/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_eqz_zero_taken/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_branch_if_eqz/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_invoke_static_return/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "a03009dd8760b431d718ea8c029514d3a455c81876709109e462cb5661162351",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp052_exceptions/case3_nested_catch/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case1_no_catch/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case2_local_catch/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case4_catch_all/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "4b0587164ed57e0ff903cc8edd8b05c1167471928b06aabf67267e86188692d4",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/com.emmanuelmess.tictactoe_3/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/com.github.muellerma.stopwatch_6/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/app.varlorg.unote_30/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/dubrowgn.microtimer_8/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "0fbd3017186691250b1ccea29b465540dd5e3491ec8f2400fa76242cc503ddfd",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/SimpleList/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Timer/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/TicTacToe/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "253dbc6e943f81c267e6d1fbe7a12426491b3808540666b8415baf95c8a453d7",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/org.billthefarmer.notes_139/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/org.debian.eugen.headingcalculator_1/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "f3e6bb5daadb4e624c26c3895f7aa7ac7fe161bd2a203abb8b270717daadc944",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/Counter/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/CounterV2/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Calculator/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "97ba2b6d19b7b043e1092a4fa88a973eb163cb2b1322cd12fbdfac387268354e",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/nl.hansdezwart.bgclock_2/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/rkr.simplekeyboard.inputmethod_145/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "0e12c64ce4a1298523cf36263d53ef1ab9da48553b0768d2a9b11ba0e449c5a7",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/omegacentauri.mobi.simplestopwatch_26/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/de.duenndns.gmdice_8/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/UnitConverter/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "df0f8c28568ce6ffd1bc48a43cc8ca6ca4be248b62fea5c6dd81d94c74a2aa90",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/Notes/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/MemoryGame/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/HelloWorld/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Settings/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "f465676317475b6390a41c53057a9f2a7705fd14c41f0d08da1161f05bf28a94",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp077/org.debian.eugen.headingcalculator_1_exp077/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/org.billthefarmer.notes_139_exp077/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.emmanuelmess.tictactoe_3_exp077/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/app.varlorg.unote_30_exp077/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "5bbb7ba31ed79171bff1bd981bd251fd587a51b7b5edeed3cd80b7bd8fdc2b7e",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp077/io.github.yamin8000.dooz_18_exp077/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.github.muellerma.stopwatch_6_exp077/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/dubrowgn.microtimer_8_exp077/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "4bf588447b3a82240b70845207dd27578cba51bd510573a297a2e55879a7de1a",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp077/de.duenndns.gmdice_8_exp077/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/omegacentauri.mobi.simplestopwatch_26_exp077/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "b8ac57ba807333a27dd72f28d2afbac94e8868ea7db97af6768607da3ee0177d",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp075/de.duenndns.gmdice_8_exp075/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/omegacentauri.mobi.simplestopwatch_26_exp075/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "82fb6ef03e0688405900a12405d9667d5f6ea33a2f00e1da0bb013326af01fe8",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp073/TicTacToe_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/SimpleList_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/UnitConverter_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Settings_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Timer_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "7a4d3515033466ac9fd9d635b868a21fb4dd9b0e0b2290574770de576075ff19",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp073/de.duenndns.gmdice_8_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/omegacentauri.mobi.simplestopwatch_26_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "fbfaceaa9888304d52bdba1e466013b50489480a1506c0ab62681a01551f8671",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp073/HelloWorld_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Counter_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Calculator_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/MemoryGame_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Notes_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/CounterV2_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "8d041839b3920c1e34d8797fb3b81629331df5a1ed5ad967c43a7f4414792d2d",
+    "size_bytes": 1010,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp073/org.billthefarmer.notes_139_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/org.debian.eugen.headingcalculator_1_baseline/runtime_component_map.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "928af0797e8d156c6c4fa802a5746fedbabc41cdea12427f5c755a7b86e01f70",
+    "size_bytes": 884,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp074/com.chessclock.android_29_exp074/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/com.chessclock.android_29/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.chessclock.android_29_exp077/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/com.chessclock.android_29_exp075/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/com.chessclock.android_29_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "283ce5b01a71804b58a9138c33b4c71b9727f932a035a665d6ec2cc3ba6e3424",
+    "size_bytes": 883,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp037_run/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_real_run2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_lin/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "8b1a8c1f6471cded13e456370309fc5c084f4f95339e86a5f149f7d78600f91a",
+    "size_bytes": 882,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp074/omegacentauri.mobi.simplestopwatch_26_exp074/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/omegacentauri.mobi.simplestopwatch_26/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/omegacentauri.mobi.simplestopwatch_26_exp077/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/omegacentauri.mobi.simplestopwatch_26_exp075/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/omegacentauri.mobi.simplestopwatch_26_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "adb36a9a131ba6b92c669fcd773d9ae4b0e1b42d4072292a1ffaf1b62a5047aa",
+    "size_bytes": 881,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp074/org.debian.eugen.headingcalculator_1_exp074/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/org.debian.eugen.headingcalculator_1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/org.debian.eugen.headingcalculator_1_exp077/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/org.debian.eugen.headingcalculator_1_exp075/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/org.debian.eugen.headingcalculator_1_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "fdcc22a38d55555b7aabb17d226bb5756186c9d8859264a5abc9a4c3cc26d559",
+    "size_bytes": 876,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/com.benny.openlauncher_39/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.benny.openlauncher_39_exp077/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "86a1e01b27a9dc496196834fb05aba176c8aa51d10ef5b8c6263720a882f3541",
+    "size_bytes": 876,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/rkr.simplekeyboard.inputmethod_145/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/rkr.simplekeyboard.inputmethod_145_exp077/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "4f8cf9e5de9832a7326af28b1871ff099c62f436a11f5d2c1ceb7f696f90749a",
+    "size_bytes": 874,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/com.github.muellerma.stopwatch_6/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.github.muellerma.stopwatch_6_exp077/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "57f8683e146ab2c870efc5881d4fa9739fd9570dc5b9138b0e7720c16f92b243",
+    "size_bytes": 872,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp074/org.billthefarmer.notes_139_exp074/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/org.billthefarmer.notes_139/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/org.billthefarmer.notes_139_exp077/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/org.billthefarmer.notes_139_exp075/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/org.billthefarmer.notes_139_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "1e35c43993ac4413b7f8eb76d896aafa68e7c331e9a199fe27665a05f6102598",
+    "size_bytes": 870,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/com.emmanuelmess.tictactoe_3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.emmanuelmess.tictactoe_3_exp077/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "045df0a4f9fd8cb9a17b028d250e4db6c5f298d37d07591f5d2e98792a1784b8",
+    "size_bytes": 869,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/io.github.yamin8000.dooz_18/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/io.github.yamin8000.dooz_18_exp077/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "41e55009a9729881d7a0c2970637a0ce3118130b6c9624e8d423c3bb3e2bdb4d",
+    "size_bytes": 866,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/nl.hansdezwart.bgclock_2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/nl.hansdezwart.bgclock_2_exp077/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "ea128f664f5253aafcc9fa80de7dbb3377e6ff4cb392642a6db1a7eca4910cf7",
+    "size_bytes": 865,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp074/de.duenndns.gmdice_8_exp074/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/de.duenndns.gmdice_8/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/de.duenndns.gmdice_8_exp077/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/de.duenndns.gmdice_8_exp075/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/de.duenndns.gmdice_8_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "6205e7043ed2e9c3496fa6a61cb3b6cd92b10d355af29f22fc08834cf4b23e08",
+    "size_bytes": 863,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/dubrowgn.microtimer_8/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/dubrowgn.microtimer_8_exp077/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "38a43fc02653676ac694eedc23b7e58d065208467ef0140cfbd796e024f32f6f",
+    "size_bytes": 862,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/app.varlorg.unote_30/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/app.varlorg.unote_30_exp077/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "99b1d916c8543966c739c5599a7a4651f4db7031ff2401d5a7ac562a97bc30cb",
+    "size_bytes": 855,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/UnitConverter/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/UnitConverter_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "fa178e898d8f059f13bb7d2fed28af8045bdacdee2f3be388aa4793a55b03f2e",
+    "size_bytes": 852,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp072/HelloWorld_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/HelloWorld/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/HelloWorld_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "b08f2cb646d66168507b0ee031b4066f53617bf7a451a0d0e69083edddc34e1e",
+    "size_bytes": 852,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp072/Calculator_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Calculator/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Calculator_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "4f79b8c54b2a797c433fca9a3f08cffd6e08d3c42eb5842d459ee74de7181b43",
+    "size_bytes": 852,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/SimpleList/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/SimpleList_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "0574964afc54e3e28b22adedd47a09cecc2a2c0cf31ed16c6cc1d800296a99c7",
+    "size_bytes": 852,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/Telegram/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_auto/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "d89827f87c37874bd56518aa6bce7b16901b83f582f9b76cbfd4260434ed0389",
+    "size_bytes": 852,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/MemoryGame/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/MemoryGame_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "3a938a4327374e3e9e2055d0fd0f06246d6c2f1514795ea18f3f404d52da94d5",
+    "size_bytes": 851,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/CounterV2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/CounterV2_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "16be533fa1c675d6bc3e2c4f4c63c119b7920215ec8956ec9df379265827bb54",
+    "size_bytes": 851,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/TicTacToe/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/TicTacToe_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "bccb535920abae2857fc2094d372fee8388766c1b2215a1e3fb91a7ab90e2b78",
+    "size_bytes": 850,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/Settings/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Settings_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "101dbd6d74037caf7cf6a30006c13f0f5b6c5de5df6361fab0d6ae19eda082e7",
+    "size_bytes": 849,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp072/Counter_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Counter/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Counter_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "f59891d2b9d3df426aab42223de0505b0458dfe8b2d3f3f66e1bb3887d52e986",
+    "size_bytes": 847,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/Timer/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Timer_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "81ea5f0681f9bf802bea3d2c687abceb29f33b403a7374e267beca861c02c41c",
+    "size_bytes": 847,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/Notes/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Notes_baseline/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "e064ecb3403050d708d75d26e923c40f475325e0b2dd98581fb255306232ee4f",
+    "size_bytes": 816,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp078/headingcalc/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/hc/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/headingcalc/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/headingcalc/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/headingcalc/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "1a0faa48d9277b8c6b21b18479b2260fedb48ad717675734d7ebc9f6b78081a6",
+    "size_bytes": 800,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp080/gmdice/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/gmdice_test/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "63243b7d8fa6bf4b24d63c1375ade1f1f7e5ae90db5c2fd31b0eb49316d14a8e",
+    "size_bytes": 787,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp071_run6/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_sget/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task2r/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_debug/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_diag2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run7/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_debug/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run6/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run4/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp069_run1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_res2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_nez/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_typeres/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rval2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run5/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_confirm/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp070_run2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_ltzfix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp049_range/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_voidfix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_desc2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_check/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_dispatch/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_desc/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_static/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_d8fix2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_final/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_gnp/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_manual/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_bf/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_dbg/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_debug/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_check/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_shadow/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_nextpress/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_fw/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_fix3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_fix2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_jni_probe/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_thread_check/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_gs/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run12/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp068_run3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_haltfix2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_sgetdbg/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp066_run2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_regs/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_tc100/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_intercept/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_guard/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run9/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_iface2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run8/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp067_run1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run4/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_native/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_stubs/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_jnidiag/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp082/tg_sorted/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp082/tg_check/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp082/tg_proto/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp082/tg_param/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run14/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_if2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_istatic/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_fm/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_debug8/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval4/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_final/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rfix2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_resfix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp067_run3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run13/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp039/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_fix3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_map/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run5/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_v3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_e051_final/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run6/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rval/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_movefix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_final/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_no_stub/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_run1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_fix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run16/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_branch/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv4/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_verbose/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run24/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/repro_2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/fix3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/repro_3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/fix2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/repro_1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/fix1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/debug/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/mro/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_resargs/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_regs/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_debug7/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_final2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval5/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp066_run1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/tg_perm/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/tg_d8fix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_iput/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_final3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp068_run1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_debug6/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp068_run4/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_clean/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp068_run2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp038_telegram/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run8/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_asan2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_isEmpty/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_diag/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp049_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_handler/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_overload/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_final2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_haltfix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_sim2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_deep/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_replay/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_repro_1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_final/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_thresh/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_paramfix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_nullfix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_guard10/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_res/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task6/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_collections/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_stub/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final_1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp047_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp070_run1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_cv3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_fix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_cv/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_cv2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_exp071/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_onhide/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_stubs/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_intent/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp070_run3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run7/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_iface/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_res/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_array/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_returnval/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_final/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rfix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task2k/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_repro_2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_iface/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rlookup/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_trace2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_param/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp044_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final_3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_init/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final5/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task1_telegram/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run5/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run4/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp047_diag/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_repro_3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_tc1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run11/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_v2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv5/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp047_const4/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_nullfix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run15/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp047_trace/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_diag1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/windows_test/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_match/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_argfix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_dexfix/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/tg_test/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/sandbox_test/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_trace/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_dispatch/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_direct/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run10/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_final5/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_jni/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_intercept3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_check/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_final/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase1/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_iget/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_nocheck/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_sget/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final_2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task2_telegram/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase4/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_final/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_debug/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_perdex/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_stubs/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_final/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_trace/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_overload/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp067_run2/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_baseline/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval3/test_matrix.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp069_run2/test_matrix.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "4cae7b595dc8ac2837bcd4189699f4512ce8d9264ddaa93ab677cdd00115cd4a",
+    "size_bytes": 771,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/test_apks/exp052/case2_local_catch.apk",
+        "ftype": ""
+      },
+      {
+        "path": "miniandroid/test_apks/exp052/case4_catch_all.apk",
+        "ftype": ""
+      }
+    ]
+  },
+  {
+    "sha256": "24c2192c0d8773ff44dfda0a08acb88ca2f019853a0e22be745b929853387988",
+    "size_bytes": 533,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp078/headingcalc/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp077/headingcalc/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      }
+    ]
+  },
+  {
+    "sha256": "1d9cb9f45ffd768af0c5fb2266f4f8a355a78d0d79351e93620f37061c3e4a4b",
+    "size_bytes": 520,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/de.duenndns.gmdice_8/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp077/de.duenndns.gmdice_8_exp077/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp075/de.duenndns.gmdice_8_exp075/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      }
+    ]
+  },
+  {
+    "sha256": "33e5cea01dad730c1a34cc243c9bc734573e593cb8d26ed1d1e7898595b25c05",
+    "size_bytes": 433,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp074/org.debian.eugen.headingcalculator_1_exp074/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp080/headingcalc/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp073/org.debian.eugen.headingcalculator_1_baseline/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      }
+    ]
+  },
+  {
+    "sha256": "0cf683286a3d298a7cfe70e0c10519e62ca81d562737b77bea84a77929c12c99",
+    "size_bytes": 420,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp074/de.duenndns.gmdice_8_exp074/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp073/de.duenndns.gmdice_8_baseline/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp073/gmdice_test/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      }
+    ]
+  },
+  {
+    "sha256": "ed44620c84eee2f7590db4ddc5f0634ece06b1e55e5ef856e38c220890fe2a62",
+    "size_bytes": 418,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp072/HelloWorld_baseline/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp073/HelloWorld_baseline/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      }
+    ]
+  },
+  {
+    "sha256": "b7486b33602f60bc443de6ec1fa527efdb37ce1e26665c7ffadca4fe818ea9fe",
+    "size_bytes": 267,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp074/com.chessclock.android_29_exp074/database/android_api_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/com.chessclock.android_29/database/android_api_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.chessclock.android_29_exp077/database/android_api_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/com.chessclock.android_29_exp075/database/android_api_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/com.chessclock.android_29_baseline/database/android_api_frequency.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "51960e7e7993add93ef6bdf2fa938ccebab99be42ffa3f03f5cf2c4a7d894104",
+    "size_bytes": 264,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp076/com.benny.openlauncher_39/database/android_api_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.benny.openlauncher_39_exp077/database/android_api_frequency.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "f7db13b55a884b1fd1000373491042334b8e4126355c7a9c95273bc3ebd1c80f",
+    "size_bytes": 219,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp071_run6/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_sget/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task2r/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_debug/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_diag2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run7/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_debug/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run6/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run4/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp069_run1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_res2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_nez/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_typeres/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rval2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run5/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_confirm/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp070_run2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_ltzfix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp049_range/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_voidfix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp072/HelloWorld_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp072/Counter_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp072/Calculator_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_desc2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_check/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_dispatch/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_desc/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_static/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp081/tg_d8fix2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_final/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_gnp/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_manual/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_bf/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_dbg/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_debug/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_check/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_shadow/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/headingcalc/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_nextpress/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_fw/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_fix3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp078/telegram_fix2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_jni_probe/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_thread_check/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_gs/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run12/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp068_run3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_haltfix2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_sgetdbg/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp066_run2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_regs/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_tc100/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_intercept/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_guard/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run9/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_iface2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp074/de.duenndns.gmdice_8_exp074/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp074/omegacentauri.mobi.simplestopwatch_26_exp074/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp074/com.chessclock.android_29_exp074/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp074/org.debian.eugen.headingcalculator_1_exp074/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp074/org.billthefarmer.notes_139_exp074/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run8/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp067_run1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run4/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_native/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_stubs/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_jnidiag/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp082/tg_sorted/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp082/tg_check/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp082/tg_proto/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp082/tg_param/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run14/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_if2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_istatic/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_fm/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_debug8/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval4/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case_b_no_catch/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_thread_identity/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_branch_if_nez/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_nez_zero_nottaken/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case3_nested_catch/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case1_no_catch/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case2_local_catch/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case_a_catch_all/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_eqz_nonzero_nottaken/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/case4_catch_all/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_goto_simple/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_nez_nonzero_taken/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_invoke_virtual_return/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_eqz_zero_taken/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_branch_if_eqz/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_invoke_static_return/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_final/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_tiny/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_search/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rfix2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_resfix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_real_run/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp067_run3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run13/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp039/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_fix3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_map/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run5/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_v3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_e051_final/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run6/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rval/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_movefix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_final/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_no_stub/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_run1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_fix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run16/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_branch/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv4/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_verbose/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/com.emmanuelmess.tictactoe_3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/SimpleList/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/com.chessclock.android_29/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/org.billthefarmer.notes_139/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Counter/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/nl.hansdezwart.bgclock_2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Telegram/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/CounterV2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/omegacentauri.mobi.simplestopwatch_26/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/com.github.muellerma.stopwatch_6/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Timer/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Notes/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/io.github.yamin8000.dooz_18/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/com.benny.openlauncher_39/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/rkr.simplekeyboard.inputmethod_145/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/de.duenndns.gmdice_8/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/UnitConverter/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/MemoryGame/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/HelloWorld/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Settings/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/Calculator/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/TicTacToe/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/org.debian.eugen.headingcalculator_1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/app.varlorg.unote_30/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp076/dubrowgn.microtimer_8/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_auto/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run24/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/repro_2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/fix3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/repro_3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/fix2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/repro_1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/fix1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/debug/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp057/mro/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_resargs/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_regs/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_debug7/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_final2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval5/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp066_run1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/tg_perm/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/hc/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/tg_d8fix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/headingcalc/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp080/gmdice/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_iput/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_final3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp068_run1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_debug6/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp068_run4/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_clean/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp068_run2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp038_telegram/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run8/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_asan2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_isEmpty/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_diag/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp049_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_handler/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_overload/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_final2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_haltfix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_sim2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_deep/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_replay/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_repro_1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_final/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_thresh/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_paramfix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_nullfix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_guard10/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_res/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task6/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_collections/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_stub/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final_1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp047_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp070_run1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/org.debian.eugen.headingcalculator_1_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/io.github.yamin8000.dooz_18_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_cv3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_fix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.github.muellerma.stopwatch_6_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/de.duenndns.gmdice_8_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_cv/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_cv2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_exp071/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_onhide/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/org.billthefarmer.notes_139_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/omegacentauri.mobi.simplestopwatch_26_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.benny.openlauncher_39_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/telegram_stubs/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/nl.hansdezwart.bgclock_2_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/headingcalc/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.chessclock.android_29_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/com.emmanuelmess.tictactoe_3_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/rkr.simplekeyboard.inputmethod_145_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/dubrowgn.microtimer_8_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp077/app.varlorg.unote_30_exp077/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_intent/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp070_run3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run7/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_iface/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_res/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase5/b_infinite_loop/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase5/a_finite_loop/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_array/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/de.duenndns.gmdice_8_exp075/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/org.debian.eugen.headingcalculator_1_exp075/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/com.chessclock.android_29_exp075/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/org.billthefarmer.notes_139_exp075/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/omegacentauri.mobi.simplestopwatch_26_exp075/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp075/headingcalc/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_run/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_phase3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_returnval/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_final/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/TicTacToe_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/SimpleList_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/de.duenndns.gmdice_8_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/omegacentauri.mobi.simplestopwatch_26_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/HelloWorld_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Counter_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Calculator_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/MemoryGame_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Notes_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/UnitConverter_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/com.chessclock.android_29_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/org.billthefarmer.notes_139_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/CounterV2_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/gmdice_test/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Settings_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/org.debian.eugen.headingcalculator_1_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp073/Timer_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rfix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task2k/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_repro_2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_iface/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_rlookup/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_trace2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_param/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp044_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final_3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_init/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final5/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task1_telegram/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run5/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp051_run4/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp047_diag/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_repro_3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_tc1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run11/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp065_run2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_v2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp062_sv5/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp047_const4/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_nullfix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run15/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp047_trace/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp052_diag1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/calc/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/windows_test/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_match/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_argfix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/tictactoe/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_dexfix/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/tg_test/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/sandbox_test/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/random_apk/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/headingcalc/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_trace/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_dispatch/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp079/telegram_direct/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_run10/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_final5/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_jni/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_intercept3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_check/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_final/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase1/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_iget/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_nocheck/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_sget/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp071_final_2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_real_run2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp053_task2_telegram/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp043_phase4/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp063_final/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp050_debug/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp046_perdex/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp058_stubs/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp048_final/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_lin/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp037_cache/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp056_trace/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp045_overload/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp067_run2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp054_baseline/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp055_retval3/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      },
+      {
+        "path": "miniandroid/run/exp069_run2/database/dex_opcode_frequency.json",
+        "ftype": "JSON"
+      }
+    ]
+  },
+  {
+    "sha256": "6e233a8d09bfab4ac799a6dfab91633ee1d926456961cb4ad6aceafbf76f01bb",
+    "size_bytes": 63,
+    "size_mb": 0.0,
+    "copies": [
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_thread_identity/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_branch_if_nez/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_nez_zero_nottaken/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_eqz_nonzero_nottaken/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_goto_simple/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_nez_nonzero_taken/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_invoke_virtual_return/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/if_eqz_zero_taken/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_branch_if_eqz/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp052_exceptions/reg_invoke_static_return/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp076/rkr.simplekeyboard.inputmethod_145/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      },
+      {
+        "path": "miniandroid/run/exp077/rkr.simplekeyboard.inputmethod_145_exp077/view_tree.json",
+        "ftype": "VIEW_TREE_DUMP"
+      }
+    ]
+  }
+]
