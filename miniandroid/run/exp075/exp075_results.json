@@ -1,0 +1,112 @@
+{
+  "results": [
+    {
+      "app": "com.chessclock.android_29.apk",
+      "apk_sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+      "dex_sha256": "6ee821eb55eb99907fe970fe2c31a9d5251a1e5426fa95e20f0bdc42d2cb1c05",
+      "executed": false,
+      "instructions": 0,
+      "layout_resid": 0,
+      "inflated_nodes": 0,
+      "rendered_text_nodes": 0,
+      "resid_resolved": 0,
+      "ocr_text": "",
+      "expected": [
+        "Chess",
+        "Clock",
+        "Player",
+        "Time"
+      ],
+      "matches": [],
+      "ocr_verified": false,
+      "screenshot_sha256": ""
+    },
+    {
+      "app": "de.duenndns.gmdice_8.apk",
+      "apk_sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+      "dex_sha256": "a3abdced4fcf16ce4e218ac5b3b2664c58eda32d6ec141a0f69737244449fbad",
+      "executed": true,
+      "instructions": 56,
+      "layout_resid": 0,
+      "inflated_nodes": 0,
+      "rendered_text_nodes": 0,
+      "resid_resolved": 0,
+      "ocr_text": "",
+      "expected": [
+        "dice",
+        "Dice",
+        "roll",
+        "Roll",
+        "GameMaster",
+        "Push"
+      ],
+      "matches": [],
+      "ocr_verified": false,
+      "screenshot_sha256": "af69ef3e7e03df5adba67d78b9f7d4b0f86ae5494c7aadc44ab9acbdd7e5bd6d"
+    },
+    {
+      "app": "omegacentauri.mobi.simplestopwatch_26.apk",
+      "apk_sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+      "dex_sha256": "41293f80cefaf6658b6860d089b5584804dec594b3ad54ab63594f4fe6a53399",
+      "executed": true,
+      "instructions": 169,
+      "layout_resid": 0,
+      "inflated_nodes": 0,
+      "rendered_text_nodes": 0,
+      "resid_resolved": 0,
+      "ocr_text": "",
+      "expected": [
+        "Start",
+        "Stop",
+        "Reset",
+        "00"
+      ],
+      "matches": [],
+      "ocr_verified": false,
+      "screenshot_sha256": "af69ef3e7e03df5adba67d78b9f7d4b0f86ae5494c7aadc44ab9acbdd7e5bd6d"
+    },
+    {
+      "app": "org.billthefarmer.notes_139.apk",
+      "apk_sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+      "dex_sha256": "583cf39517bb8665f77520dd3fa0d8cc899501b1437eab64cb8e880bbd6b9d07",
+      "executed": true,
+      "instructions": 801920,
+      "layout_resid": 0,
+      "inflated_nodes": 0,
+      "rendered_text_nodes": 0,
+      "resid_resolved": 0,
+      "ocr_text": "",
+      "expected": [
+        "Note",
+        "note",
+        "New",
+        "new"
+      ],
+      "matches": [],
+      "ocr_verified": false,
+      "screenshot_sha256": "af69ef3e7e03df5adba67d78b9f7d4b0f86ae5494c7aadc44ab9acbdd7e5bd6d"
+    },
+    {
+      "app": "org.debian.eugen.headingcalculator_1.apk",
+      "apk_sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+      "dex_sha256": "9542ef9cf5c8f1ceee4059e8fd33545b58a36bd55a034cf7fa456c28f152c855",
+      "executed": true,
+      "instructions": 22,
+      "layout_resid": 2130903042,
+      "inflated_nodes": 3,
+      "rendered_text_nodes": 3,
+      "resid_resolved": 0,
+      "ocr_text": "LinearLayout: <LinearLayout>\nCalculatorDisplay: <CalculatorDisplay>\nCalculatorKeypad: <Calculatorkeypad>",
+      "expected": [
+        "Calculator",
+        "Heading",
+        "Calculate"
+      ],
+      "matches": [
+        "Calculator"
+      ],
+      "ocr_verified": true,
+      "screenshot_sha256": "bf0019d052513fdedffb01bd7f675554337ea8eea711451d13f07ed54f92928a"
+    }
+  ]
+}
