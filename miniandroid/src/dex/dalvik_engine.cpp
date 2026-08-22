@@ -2686,14 +2686,25 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // substring, or if the searched name contains the method name.
         bool name_matches = (method.name == method_name);
         if (!name_matches) {
-            // EXP-081: D8 renames lambda methods during compilation.
-            // method_ids[] resolves to 'lambda$createView$1' but ClassInfo
-            // has '$r8$lambda$8Miu...'. The DESCRIPTOR is preserved by D8.
-            // We match by descriptor when:
-            // 1. The searched name is a lambda (contains 'lambda$')
-            // 2. The candidate name is a D8-renamed lambda (contains '$r8$lambda')
-            // 3. The descriptors match exactly
-            if (method_name.find("lambda$") != std::string::npos &&
+            // EXP-082: D8 renames lambda methods during compilation.
+            // method_ids[] may resolve to EITHER:
+            //   - the original name 'lambda$createView$1' (pre-D8)
+            //   - the D8-renamed name '$r8$lambda$8Miu...' (post-D8)
+            // The ClassInfo method name is always the D8-renamed version.
+            // So method_name == method.name when both come from the same
+            // DEX file with D8 renaming applied.
+            //
+            // The D8 matching is needed when:
+            //   - method_name contains 'lambda' (either 'lambda$' or '$r8$lambda')
+            //   - method.name contains '$r8$lambda'
+            //   - The descriptors are compatible (exact match or suffix match)
+            //
+            // EXP-082 FIX: The previous check used 'lambda$' which fails
+            // when method_name is ALREADY the D8-renamed '$r8$lambda$...'
+            // because '$r8$lambda$8Miu' does NOT contain the substring 'lambda$'
+            // (it contains '$r8$lambda$' which has 'lambda' but not 'lambda$').
+            // Changed to check for 'lambda' (without the trailing $).
+            if (method_name.find("lambda") != std::string::npos &&
                 method.name.find("$r8$lambda") != std::string::npos) {
                 // EXP-081: D8 converts instance lambda methods to static
                 // by adding the captured receiver as the first parameter.
@@ -2727,6 +2738,17 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             }
         }
         if (!name_matches) continue;
+        // EXP-082: Debug trace for the exact rejection point
+        if (method_name.find("$r8$lambda$8Miu") != std::string::npos ||
+            (method_name.find("lambda") != std::string::npos && method_name.find("createView") != std::string::npos)) {
+            std::cerr << "[EXP082-CHECK] name_matches=true"
+                      << " method=" << method.name
+                      << " desc=" << method.descriptor
+                      << " bytecode_size=" << method.bytecode.size()
+                      << " bytecode.empty=" << (method.bytecode.empty() ? "YES" : "NO")
+                      << " code_offset=0x" << std::hex << method.code_offset << std::dec
+                      << std::endl;
+        }
         if (method.bytecode.empty()) continue;
 
         // Count parameters from descriptor: "(Ltype;Ltype;...)R"
@@ -2781,6 +2803,17 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             effective_arg_count = arg_count - 1;
         }
         // EXP-080: Accept param_count matching ANY of the possible interpretations
+        // EXP-082: Add trace for $r8$lambda methods
+        if (method_name.find("$r8$lambda$8Miu") != std::string::npos) {
+            std::cerr << "[EXP082-PARAM] method=" << method.name
+                      << " param_count=" << param_count
+                      << " arg_count=" << arg_count
+                      << " effective_arg_count=" << effective_arg_count
+                      << " is_static=" << is_static_method
+                      << " access_flags=0x" << std::hex << method.access_flags << std::dec
+                      << " desc=" << method.descriptor
+                      << std::endl;
+        }
         bool param_count_matches =
             (param_count == effective_arg_count) ||  // instance method
             (param_count == arg_count) ||              // static method
@@ -6499,6 +6532,15 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     std::string method_proto = "<unknown>";
     if (dex_report_) {
         method_proto = resolve_method_proto_for_dex(method_idx, current_dex_index_);
+    }
+    // EXP-082: Debug trace for $r8$lambda invoke-static
+    if (method_name.find("$r8$lambda") != std::string::npos || method_name.find("createView") != std::string::npos) {
+        std::cerr << "[EXP082-STATIC] method=" << method_name
+                  << " method_idx=" << method_idx
+                  << " dex=" << current_dex_index_
+                  << " proto=" << method_proto
+                  << " argc=" << (int)argc
+                  << std::endl;
     }
 
     // Parse the parameter list inside the parens.
