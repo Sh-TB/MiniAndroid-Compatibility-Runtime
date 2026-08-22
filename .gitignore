@@ -2,43 +2,82 @@
 node_modules/
 skills/
 
-# Build artifacts
-miniandroid/build/
-miniandroid/build_exp*/
+# === EXP-084 STRICT SOURCE-ONLY POLICY ===
+# Per RULES 0–19, no APKs, build artifacts, or run output may be tracked.
 
-# Object files and binaries
+# APK / AAB / archive (RULE 0) — NEVER tracked
+*.apk
+*.aab
+*.apks
+*.xapk
+
+# Build output (RULE 3, 4) — regenerate from CMakeLists.txt + Makefile
+miniandroid/build/
+miniandroid/build_asan/
+miniandroid/build_exp*/
+build/
+build_asan/
+build_exp*/
+
+# Run output (RULE 2) — regenerate on every test run
+miniandroid/run/
+run/
+
+# Download directory (RULE 1) — external inputs only, never tracked
+miniandroid/download/
+
+# Reports (RULE 6) — generated, never tracked
+miniandroid/reports/
+
+# Experiments — only README.md / REPORT.md tracked (RULE 5)
+miniandroid/experiments/*/
+!miniandroid/experiments/*/
+miniandroid/experiments/**/*
+!miniandroid/experiments/**/README.md
+!miniandroid/experiments/**/REPORT.md
+
+# Logs and temporary files
+*.log
+*.stderr
+*.stdout
+*.tmp
+*.dmp
+*.core
+*.swp
+*.swo
+*~
+
+# Raw screenshots (RULE 8) — never tracked
+*.ppm
+
+# Object files and binaries (RULE 9)
 *.o
+*.obj
 *.bin
 *.exe
 *.out
 *.so
 *.dylib
+*.dll
 *.a
 
-# Temporary files
-temp_apk_downloads/
-*.tmp
-*.swp
-*.swo
-*~
-.DS_Store
-Thumbs.db
+# Specifically forbidden binaries
+miniandroid/tools/miniandroid_exp042
+miniandroid/tools/miniandroid_exp042.exe
 
 # IDE and editor files
 .idea/
 .vscode/
 *.xcodeproj/
-*.xcworkspace/
+*.xcworkspace
 *.iml
+.DS_Store
+Thumbs.db
 
-# Environment files (may contain secrets)
+# Environment files
 .env
 .env.local
 .env.*.local
-
-# Logs
-*.log
-npm-debug.log*
 
 # Upload directory (transient)
 upload/
@@ -46,43 +85,21 @@ upload/
 # Tool results (transient)
 tool-results/
 
-# EXP-043 run artifacts (regenerated each run)
-miniandroid/run/exp042_auto/
-miniandroid/run/exp043_*/
+# CMake / build cache
+CMakeCache.txt
+CMakeFiles/
+compile_commands.json
+cmake_install.cmake
+Makefile.in
 
-# === EXP-083 run/ forensics cleanup ===
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
 
-# Runtime dumps (regenerable on every run)
-**/view_tree.json
-**/stderr.log
-**/stdout.log
-**/screenshot.ppm
+# Tool results (transient)
+tool-results/
 
-# Build ASAN binary (regenerable from CMake)
-miniandroid/build_asan/
-
-# Generated reports (DEX call-graphs, indexes — regenerable from tools)
-miniandroid/reports/*.json
-
-# APK extraction trees (extractable from APK on demand)
-miniandroid/run/**/AndroidManifest.xml
-miniandroid/run/**/classes*.dex
-miniandroid/run/**/resources.arsc
-
-# F-Droid index cache (regenerable)
-miniandroid/download/exp*/fdroid_index*.json
-
-# Old completed EXP dirs (≤ EXP-080) are compacted into archive/.
-# Do not auto-track their regenerated outputs going forward.
-miniandroid/run/exp0*/
-miniandroid/run/exp03*/
-miniandroid/run/exp04*/
-miniandroid/run/exp05*/
-miniandroid/run/exp06*/
-miniandroid/run/exp07*/
-
-# Active experiment directories (EXP-081+) remain trackable for in-progress work.
-
-# EXP-083 Phase 39: compiled binary mistakenly committed in EXP-079
-miniandroid/tools/miniandroid_exp042
-miniandroid/tools/miniandroid_exp042.exe
+# Environment
+.env
+.env.local

@@ -1,3 +1,0 @@
-[HALT-GOTO] Invalid goto target PC=0x13 in Landroidx/dynamicanimation/animation/SpringForce;.setDampingRatio target=0x16 bytecode_size=20
-[HALT-GOTO] Invalid goto target PC=0x26 in Landroidx/media/MediaSessionManager$RemoteUserInfo;.<init> target=0x28 bytecode_size=39
-[HALT-LOOP] Infinite loop at PC=0x2e in Landroidx/lifecycle/LifecycleRegistry;.enforceMainThreadIfNeeded (visited 50001 times in this frame, bytecode_size=48, op_at_pc=0x0x0027).
