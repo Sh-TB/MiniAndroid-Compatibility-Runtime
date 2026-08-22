@@ -1344,13 +1344,20 @@ bool ApplicationRuntime::execute_on_create() {
 
         // EXP-038 (BLOCKER-033): Pass per-DEX raw data to DalvikExecutionEngine.
         // This enables correct method_idx resolution for multidex APKs.
-        std::vector<std::vector<uint8_t>> per_dex_raw;
+        // EXP-082: Sort DEX files alphabetically to ensure deterministic
+        // ordering (classes.dex < classes2.dex < classes3.dex < ...).
+        // Without sorting, ZIP iteration order may differ from alphabetical,
+        // causing per_dex_raw_data_[N] to point to the wrong DEX file.
+        std::vector<std::string> sorted_dex_files;
         if (apk_info_) {
-            for (const auto& dex_name : apk_info_->dex_files) {
-                auto raw = apk_parser_->extract_entry_cached(dex_name);
-                if (!raw.empty()) {
-                    per_dex_raw.push_back(std::move(raw));
-                }
+            sorted_dex_files = apk_info_->dex_files;
+            std::sort(sorted_dex_files.begin(), sorted_dex_files.end());
+        }
+        std::vector<std::vector<uint8_t>> per_dex_raw;
+        for (const auto& dex_name : sorted_dex_files) {
+            auto raw = apk_parser_->extract_entry_cached(dex_name);
+            if (!raw.empty()) {
+                per_dex_raw.push_back(std::move(raw));
             }
         }
         dalvik_engine.set_per_dex_raw_data(std::move(per_dex_raw));
