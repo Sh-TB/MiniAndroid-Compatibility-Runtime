@@ -1,0 +1,112 @@
+{
+  "test": "EXP085 Phase 17/18 \u2014 Telegram regression + Checkpoint M",
+  "generated_at": "2026-08-22T20:40:32.192218+00:00",
+  "phase17_result": {
+    "run_id": 1,
+    "exit_code": 1,
+    "counts": {
+      "LaunchActivity": 0,
+      "LoginActivity": 0,
+      "PhoneView": 0,
+      "onNextPressed": 0,
+      "sendRequest": 2,
+      "TL_auth_sentCode": 0,
+      "Lambda2": 164,
+      "setPage": 10,
+      "VIEW_CODE_SMS": 0
+    },
+    "artifacts": {
+      "report_md_exists": true,
+      "view_tree_exists": false,
+      "screenshot_exists": false,
+      "screenshot_size": 0,
+      "ppm_exists": true,
+      "ppm_size": 6220817
+    },
+    "screenshot_sha256": "",
+    "status": "BLOCKED_NO_STARTUP",
+    "stdout_tail": "UT TO CALL execute_method_internal() for fallback!\n[METHOD-IN] Landroid/media/MediaDrmThrowable;.<clinit> (bytecode_size=6)\n[DalvikEngine] Executing: Landroid/media/MediaDrmThrowable;.<clinit>()V\n[DalvikEngine] Bytecode size: 6 instructions\n[DalvikEngine]   ALLOCATED: Ljava/lang/NoClassDefFoundError; -> obj#1\n[DalvikEngine]   [0]  0x0:  [obj:1]\n[DalvikEngine]   INVOKE-DIRECT: Ljava/lang/NoClassDefFoundError;.<init>() on obj#1\n[TRY-ENTRY] Ljava/lang/NoClassDefFoundError;.<init> dex_report=YES\n[DalvikEngine]   API BRIDGE: Ljava/lang/NoClassDefFoundError;.<init>\n[EXCEPTION] method=Landroid/media/MediaDrmThrowable;.<clinit> pc=5 exception=Ljava/lang/NoClassDefFoundError; try_range=(none) handler=NOT_FOUND\n[MEM] method_exit: Landroid/media/MediaDrmThrowable;.<clinit> insns=3 RSS=165.453 MB\n[DalvikEngine] \u2705 execute_method_internal() completed successfully\n[DalvikEngine] Execution completed in 223.648777ms\n[DalvikEngine] Instructions executed: 3\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+  },
+  "phase18_runs": [
+    {
+      "run_id": 1,
+      "exit_code": 1,
+      "counts": {
+        "LaunchActivity": 0,
+        "LoginActivity": 0,
+        "PhoneView": 0,
+        "onNextPressed": 0,
+        "sendRequest": 2,
+        "TL_auth_sentCode": 0,
+        "Lambda2": 164,
+        "setPage": 10,
+        "VIEW_CODE_SMS": 0
+      },
+      "artifacts": {
+        "report_md_exists": true,
+        "view_tree_exists": false,
+        "screenshot_exists": false,
+        "screenshot_size": 0,
+        "ppm_exists": true,
+        "ppm_size": 6220817
+      },
+      "screenshot_sha256": "",
+      "status": "BLOCKED_NO_STARTUP",
+      "stdout_tail": "UT TO CALL execute_method_internal() for fallback!\n[METHOD-IN] Landroid/media/MediaDrmThrowable;.<clinit> (bytecode_size=6)\n[DalvikEngine] Executing: Landroid/media/MediaDrmThrowable;.<clinit>()V\n[DalvikEngine] Bytecode size: 6 instructions\n[DalvikEngine]   ALLOCATED: Ljava/lang/NoClassDefFoundError; -> obj#1\n[DalvikEngine]   [0]  0x0:  [obj:1]\n[DalvikEngine]   INVOKE-DIRECT: Ljava/lang/NoClassDefFoundError;.<init>() on obj#1\n[TRY-ENTRY] Ljava/lang/NoClassDefFoundError;.<init> dex_report=YES\n[DalvikEngine]   API BRIDGE: Ljava/lang/NoClassDefFoundError;.<init>\n[EXCEPTION] method=Landroid/media/MediaDrmThrowable;.<clinit> pc=5 exception=Ljava/lang/NoClassDefFoundError; try_range=(none) handler=NOT_FOUND\n[MEM] method_exit: Landroid/media/MediaDrmThrowable;.<clinit> insns=3 RSS=165.449 MB\n[DalvikEngine] \u2705 execute_method_internal() completed successfully\n[DalvikEngine] Execution completed in 236.885840ms\n[DalvikEngine] Instructions executed: 3\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+    },
+    {
+      "run_id": 2,
+      "exit_code": 1,
+      "counts": {
+        "LaunchActivity": 0,
+        "LoginActivity": 0,
+        "PhoneView": 0,
+        "onNextPressed": 0,
+        "sendRequest": 2,
+        "TL_auth_sentCode": 0,
+        "Lambda2": 164,
+        "setPage": 10,
+        "VIEW_CODE_SMS": 0
+      },
+      "artifacts": {
+        "report_md_exists": true,
+        "view_tree_exists": false,
+        "screenshot_exists": false,
+        "screenshot_size": 0,
+        "ppm_exists": true,
+        "ppm_size": 6220817
+      },
+      "screenshot_sha256": "",
+      "status": "BLOCKED_NO_STARTUP",
+      "stdout_tail": "UT TO CALL execute_method_internal() for fallback!\n[METHOD-IN] Landroid/media/MediaDrmThrowable;.<clinit> (bytecode_size=6)\n[DalvikEngine] Executing: Landroid/media/MediaDrmThrowable;.<clinit>()V\n[DalvikEngine] Bytecode size: 6 instructions\n[DalvikEngine]   ALLOCATED: Ljava/lang/NoClassDefFoundError; -> obj#1\n[DalvikEngine]   [0]  0x0:  [obj:1]\n[DalvikEngine]   INVOKE-DIRECT: Ljava/lang/NoClassDefFoundError;.<init>() on obj#1\n[TRY-ENTRY] Ljava/lang/NoClassDefFoundError;.<init> dex_report=YES\n[DalvikEngine]   API BRIDGE: Ljava/lang/NoClassDefFoundError;.<init>\n[EXCEPTION] method=Landroid/media/MediaDrmThrowable;.<clinit> pc=5 exception=Ljava/lang/NoClassDefFoundError; try_range=(none) handler=NOT_FOUND\n[MEM] method_exit: Landroid/media/MediaDrmThrowable;.<clinit> insns=3 RSS=165.449 MB\n[DalvikEngine] \u2705 execute_method_internal() completed successfully\n[DalvikEngine] Execution completed in 213.987475ms\n[DalvikEngine] Instructions executed: 3\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+    },
+    {
+      "run_id": 3,
+      "exit_code": 1,
+      "counts": {
+        "LaunchActivity": 0,
+        "LoginActivity": 0,
+        "PhoneView": 0,
+        "onNextPressed": 0,
+        "sendRequest": 2,
+        "TL_auth_sentCode": 0,
+        "Lambda2": 164,
+        "setPage": 10,
+        "VIEW_CODE_SMS": 0
+      },
+      "artifacts": {
+        "report_md_exists": true,
+        "view_tree_exists": false,
+        "screenshot_exists": false,
+        "screenshot_size": 0,
+        "ppm_exists": true,
+        "ppm_size": 6220817
+      },
+      "screenshot_sha256": "",
+      "status": "BLOCKED_NO_STARTUP",
+      "stdout_tail": "UT TO CALL execute_method_internal() for fallback!\n[METHOD-IN] Landroid/media/MediaDrmThrowable;.<clinit> (bytecode_size=6)\n[DalvikEngine] Executing: Landroid/media/MediaDrmThrowable;.<clinit>()V\n[DalvikEngine] Bytecode size: 6 instructions\n[DalvikEngine]   ALLOCATED: Ljava/lang/NoClassDefFoundError; -> obj#1\n[DalvikEngine]   [0]  0x0:  [obj:1]\n[DalvikEngine]   INVOKE-DIRECT: Ljava/lang/NoClassDefFoundError;.<init>() on obj#1\n[TRY-ENTRY] Ljava/lang/NoClassDefFoundError;.<init> dex_report=YES\n[DalvikEngine]   API BRIDGE: Ljava/lang/NoClassDefFoundError;.<init>\n[EXCEPTION] method=Landroid/media/MediaDrmThrowable;.<clinit> pc=5 exception=Ljava/lang/NoClassDefFoundError; try_range=(none) handler=NOT_FOUND\n[MEM] method_exit: Landroid/media/MediaDrmThrowable;.<clinit> insns=3 RSS=165.879 MB\n[DalvikEngine] \u2705 execute_method_internal() completed successfully\n[DalvikEngine] Execution completed in 205.127113ms\n[DalvikEngine] Instructions executed: 3\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+    }
+  ],
+  "checkpoint_m_pass": false,
+  "screenshots_match": false
+}

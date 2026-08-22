@@ -1,0 +1,58 @@
+{
+  "test": "EXP085 Phase 2 \u2014 Multi-DEX method dispatch verification",
+  "generated_at": "2026-08-22T20:27:14.585851+00:00",
+  "results": [
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
+      "apk_name": "Telegram",
+      "apk_sha256": "193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e",
+      "dex_count": 5,
+      "cross_dex_method_count": 63166,
+      "polymorphic_override_count": 21450,
+      "cpp_dex_class_maps": [],
+      "verification_samples": 0,
+      "verification_pass_count": 0,
+      "status": "PASS",
+      "checked_at": "2026-08-22T20:27:13.356998+00:00"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/tictactoe.apk",
+      "apk_name": "tictactoe",
+      "apk_sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+      "dex_count": 1,
+      "cross_dex_method_count": 0,
+      "polymorphic_override_count": 3289,
+      "cpp_dex_class_maps": [],
+      "verification_samples": 0,
+      "verification_pass_count": 0,
+      "status": "PASS",
+      "checked_at": "2026-08-22T20:27:14.532882+00:00"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp076_corpus/rkr.simplekeyboard.inputmethod_145.apk",
+      "apk_name": "rkr.simplekeyboard.inputmethod_145",
+      "apk_sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
+      "dex_count": 1,
+      "cross_dex_method_count": 0,
+      "polymorphic_override_count": 133,
+      "cpp_dex_class_maps": [],
+      "verification_samples": 0,
+      "verification_pass_count": 0,
+      "status": "PASS",
+      "checked_at": "2026-08-22T20:27:14.576653+00:00"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+      "apk_name": "de.duenndns.gmdice_8",
+      "apk_sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+      "dex_count": 1,
+      "cross_dex_method_count": 0,
+      "polymorphic_override_count": 35,
+      "cpp_dex_class_maps": [],
+      "verification_samples": 0,
+      "verification_pass_count": 0,
+      "status": "PASS",
+      "checked_at": "2026-08-22T20:27:14.585688+00:00"
+    }
+  ]
+}

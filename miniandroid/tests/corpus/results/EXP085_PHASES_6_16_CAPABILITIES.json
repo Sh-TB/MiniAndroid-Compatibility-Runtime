@@ -1,0 +1,540 @@
+{
+  "test": "EXP085 Phases 6-16 \u2014 Combined generic capability tests",
+  "generated_at": "2026-08-22T20:36:32.059518+00:00",
+  "pass_count": 1,
+  "partial_count": 4,
+  "blocked_count": 5,
+  "skip_count": 0,
+  "results": [
+    {
+      "name": "gmdice",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+      "sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+      "apk_info": {
+        "has_android_manifest": true,
+        "has_resources_arsc": true,
+        "has_classes_dex": false,
+        "dex_count": 1,
+        "manifest_size": 1816,
+        "arsc_size": 8704,
+        "png_count": 24,
+        "png_total_bytes": 27518,
+        "layout_count": 5,
+        "has_native_lib": false,
+        "native_libs": [],
+        "has_database_template": false
+      },
+      "runtime_result": {
+        "exit_code": 1,
+        "bytecode_executed": true,
+        "oncreate_called": true,
+        "setcontentview_called": false,
+        "has_uncaught_exception": false,
+        "segfault": false,
+        "view_tree": null,
+        "screenshot_size_bytes": 0,
+        "artifacts": {
+          "report.md": {
+            "exists": true,
+            "size_bytes": 1817
+          },
+          "view_tree.json": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.png": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.ppm": {
+            "exists": true,
+            "size_bytes": 6220817
+          },
+          "api_trace.json": {
+            "exists": true,
+            "size_bytes": 14439
+          },
+          "crash.log": {
+            "exists": true,
+            "size_bytes": 169
+          },
+          "render_request.txt": {
+            "exists": false,
+            "size_bytes": 0
+          }
+        },
+        "stdout_tail": "ods\n[DalvikEngine]   \ud83d\udccb Checking fallback class: [Lde/duenndns/gmdice/DiceSet;] with 8 methods\n[DalvikEngine]   \ud83d\udccb all_methods() returned 8 entries\n[DalvikEngine] \ud83c\udfaf Using fallback entry: Lde/duenndns/gmdice/DiceSet;.<init>\n[DalvikEngine] \ud83c\udfaf Bytecode size: 4\n[DalvikEngine] \ud83d\ude80 ABOUT TO CALL execute_method_internal() for fallback!\n[METHOD-IN] Lde/duenndns/gmdice/DiceSet;.<init> (bytecode_size=4)\n[DalvikEngine] Executing: Lde/duenndns/gmdice/DiceSet;.<init>()V\n[DalvikEngine] Bytecode size: 4 instructions\n[TRY-ENTRY] Ljava/lang/Object;.<init> dex_report=YES\n[DalvikEngine]   API BRIDGE: Ljava/lang/Object;.<init>\n[DalvikEngine]   [0]  0x0:  \u2192 \n[DalvikEngine]   RETURN_VOID at 0x3\n[DalvikEngine] Method returned successfully\n[MEM] method_exit: Lde/duenndns/gmdice/DiceSet;.<init> insns=2 RSS=12.625 MB\n[DalvikEngine] \u2705 execute_method_internal() completed successfully\n[DalvikEngine] Execution completed in 0.561370ms\n[DalvikEngine] Instructions executed: 2\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+        "report_md_excerpt": "# MiniAndroid Execution Report\n\n## Application\n\n- **APK:** `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk`\n- **Package:** `de.duenndns.gmdice`\n- **Status:** **FAILURE** \u274c\n\n## Metrics\n\n| Metric | Value |\n|--------|-------|\n| APIs Called | 0 |\n| Frames Rendered | 1 |\n| Execution Time | 0ms |\n| Memory Peak | 0.00 B |\n| Errors | 0 |\n| Warnings | 1 |\n\n## API Trace Summary\n\n| Class | Calls |\n|-------|-------|\n| `DalvikEngine` | 3 |\n"
+      },
+      "capabilities": {
+        "AXML": "PARTIAL_NO_INFLATE",
+        "TEXT": "BLOCKED_NO_INFLATE",
+        "BUTTON_CLICK": "PARTIAL_NO_INTERACTION",
+        "IMAGE": "BLOCKED_NO_INFLATE"
+      },
+      "declared_capabilities": [
+        "AXML",
+        "TEXT",
+        "BUTTON_CLICK",
+        "IMAGE"
+      ]
+    },
+    {
+      "name": "tictactoe",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/tictactoe.apk",
+      "sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+      "apk_info": {
+        "has_android_manifest": true,
+        "has_resources_arsc": true,
+        "has_classes_dex": false,
+        "dex_count": 1,
+        "manifest_size": 2192,
+        "arsc_size": 2788,
+        "png_count": 17,
+        "png_total_bytes": 71907,
+        "layout_count": 0,
+        "has_native_lib": true,
+        "native_libs": [
+          "lib/arm64-v8a/libgdx-box2d.so",
+          "lib/arm64-v8a/libgdx-freetype.so",
+          "lib/arm64-v8a/libgdx.so",
+          "lib/armeabi-v7a/libgdx-box2d.so",
+          "lib/armeabi-v7a/libgdx-freetype.so",
+          "lib/armeabi-v7a/libgdx.so",
+          "lib/armeabi/libgdx-box2d.so",
+          "lib/armeabi/libgdx-freetype.so",
+          "lib/armeabi/libgdx.so",
+          "lib/x86/libgdx-box2d.so",
+          "lib/x86/libgdx-freetype.so",
+          "lib/x86/libgdx.so",
+          "lib/x86_64/libgdx-box2d.so",
+          "lib/x86_64/libgdx-freetype.so",
+          "lib/x86_64/libgdx.so"
+        ],
+        "has_database_template": false
+      },
+      "runtime_result": {
+        "exit_code": 1,
+        "bytecode_executed": true,
+        "oncreate_called": true,
+        "setcontentview_called": false,
+        "has_uncaught_exception": false,
+        "segfault": false,
+        "view_tree": null,
+        "screenshot_size_bytes": 0,
+        "artifacts": {
+          "report.md": {
+            "exists": true,
+            "size_bytes": 1807
+          },
+          "view_tree.json": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.png": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.ppm": {
+            "exists": true,
+            "size_bytes": 6220817
+          },
+          "api_trace.json": {
+            "exists": true,
+            "size_bytes": 649461
+          },
+          "crash.log": {
+            "exists": true,
+            "size_bytes": 169
+          },
+          "render_request.txt": {
+            "exists": false,
+            "size_bytes": 0
+          }
+        },
+        "stdout_tail": "ionType; offset=0\n[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=<clinit> pc=75 field=Lcom/badlogic/gdx/Application$ApplicationType;.Applet obj_id=4\n[DalvikEngine] \u2705 FIELD RESOLVED: Lcom/badlogic/gdx/Application$ApplicationType;.WebGL type=Lcom/badlogic/gdx/Application$ApplicationType; offset=0\n[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=<clinit> pc=79 field=Lcom/badlogic/gdx/Application$ApplicationType;.WebGL obj_id=5\n[DalvikEngine] \u2705 FIELD RESOLVED: Lcom/badlogic/gdx/Application$ApplicationType;.$VALUES type=[Lcom/badlogic/gdx/Application$ApplicationType; offset=0\n[DalvikEngine]   RETURN_VOID at 0x57\n[DalvikEngine] Method returned successfully\n[MEM] method_exit: Lcom/badlogic/gdx/Application$ApplicationType;.<clinit> insns=45 RSS=39.9805 MB\n[DalvikEngine] \u2705 execute_method_internal() completed successfully\n[DalvikEngine] Execution completed in 75.192282ms\n[DalvikEngine] Instructions executed: 45\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+        "report_md_excerpt": "# MiniAndroid Execution Report\n\n## Application\n\n- **APK:** `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/tictactoe.apk`\n- **Package:** `com.emmanuelmess.tictactoe`\n- **Status:** **FAILURE** \u274c\n\n## Metrics\n\n| Metric | Value |\n|--------|-------|\n| APIs Called | 0 |\n| Frames Rendered | 1 |\n| Execution Time | 0ms |\n| Memory Peak | 0.00 B |\n| Errors | 0 |\n| Warnings | 1 |\n\n## API Trace Summary\n\n| Class | Calls |\n|-------|-------|\n| `DalvikEngine` | 3 |\n| `ExecutionEngine` "
+      },
+      "capabilities": {
+        "AXML": "PARTIAL_NO_INFLATE",
+        "BUTTON_CLICK": "PARTIAL_NO_INTERACTION",
+        "GAME_LOGIC": "PARTIAL_NO_INTERACTION"
+      },
+      "declared_capabilities": [
+        "AXML",
+        "BUTTON_CLICK",
+        "GAME_LOGIC"
+      ]
+    },
+    {
+      "name": "headingcalculator",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
+      "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+      "apk_info": {
+        "has_android_manifest": true,
+        "has_resources_arsc": true,
+        "has_classes_dex": false,
+        "dex_count": 1,
+        "manifest_size": 2252,
+        "arsc_size": 9216,
+        "png_count": 4,
+        "png_total_bytes": 35997,
+        "layout_count": 4,
+        "has_native_lib": false,
+        "native_libs": [],
+        "has_database_template": false
+      },
+      "runtime_result": {
+        "exit_code": 1,
+        "bytecode_executed": true,
+        "oncreate_called": true,
+        "setcontentview_called": false,
+        "has_uncaught_exception": false,
+        "segfault": false,
+        "view_tree": null,
+        "screenshot_size_bytes": 0,
+        "artifacts": {
+          "report.md": {
+            "exists": true,
+            "size_bytes": 1871
+          },
+          "view_tree.json": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.png": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.ppm": {
+            "exists": true,
+            "size_bytes": 6220817
+          },
+          "api_trace.json": {
+            "exists": true,
+            "size_bytes": 15321
+          },
+          "crash.log": {
+            "exists": true,
+            "size_bytes": 169
+          },
+          "render_request.txt": {
+            "exists": false,
+            "size_bytes": 0
+          }
+        },
+        "stdout_tail": "th 1 methods\n[DalvikEngine]   \ud83d\udccb all_methods() returned 1 entries\n[DalvikEngine] \ud83c\udfaf Using fallback entry: Lorg/debian/eugen/headingcalculator/BuildConfig;.<init>\n[DalvikEngine] \ud83c\udfaf Bytecode size: 4\n[DalvikEngine] \ud83d\ude80 ABOUT TO CALL execute_method_internal() for fallback!\n[METHOD-IN] Lorg/debian/eugen/headingcalculator/BuildConfig;.<init> (bytecode_size=4)\n[DalvikEngine] Executing: Lorg/debian/eugen/headingcalculator/BuildConfig;.<init>()V\n[DalvikEngine] Bytecode size: 4 instructions\n[TRY-ENTRY] Ljava/lang/Object;.<init> dex_report=YES\n[DalvikEngine]   API BRIDGE: Ljava/lang/Object;.<init>\n[DalvikEngine]   [0]  0x0:  \u2192 \n[DalvikEngine]   RETURN_VOID at 0x3\n[DalvikEngine] Method returned successfully\n[MEM] method_exit: Lorg/debian/eugen/headingcalculator/BuildConfig;.<init> insns=2 RSS=12.7422 MB\n[DalvikEngine] \u2705 execute_method_internal() completed successfully\n[DalvikEngine] Execution completed in 0.605080ms\n[DalvikEngine] Instructions executed: 2\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+        "report_md_excerpt": "# MiniAndroid Execution Report\n\n## Application\n\n- **APK:** `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk`\n- **Package:** `org.debian.eugen.headingcalculator`\n- **Status:** **FAILURE** \u274c\n\n## Metrics\n\n| Metric | Value |\n|--------|-------|\n| APIs Called | 0 |\n| Frames Rendered | 1 |\n| Execution Time | 0ms |\n| Memory Peak | 0.00 B |\n| Errors | 0 |\n| Warnings | 1 |\n\n## API Trace Summary\n\n| Class | Calls |\n|-------|"
+      },
+      "capabilities": {
+        "CALCULATOR": "PARTIAL_NO_INTERACTION",
+        "AXML": "PARTIAL_NO_INFLATE"
+      },
+      "declared_capabilities": [
+        "CALCULATOR",
+        "AXML"
+      ]
+    },
+    {
+      "name": "simplestopwatch",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+      "sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+      "apk_info": {
+        "has_android_manifest": true,
+        "has_resources_arsc": true,
+        "has_classes_dex": false,
+        "dex_count": 1,
+        "manifest_size": 4340,
+        "arsc_size": 9836,
+        "png_count": 32,
+        "png_total_bytes": 77642,
+        "layout_count": 4,
+        "has_native_lib": false,
+        "native_libs": [],
+        "has_database_template": false
+      },
+      "runtime_result": {
+        "exit_code": 1,
+        "bytecode_executed": false,
+        "oncreate_called": true,
+        "setcontentview_called": false,
+        "has_uncaught_exception": false,
+        "segfault": false,
+        "view_tree": null,
+        "screenshot_size_bytes": 0,
+        "artifacts": {
+          "report.md": {
+            "exists": true,
+            "size_bytes": 1675
+          },
+          "view_tree.json": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.png": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.ppm": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "api_trace.json": {
+            "exists": true,
+            "size_bytes": 42943
+          },
+          "crash.log": {
+            "exists": true,
+            "size_bytes": 665
+          },
+          "render_request.txt": {
+            "exists": false,
+            "size_bytes": 0
+          }
+        },
+        "stdout_tail": "ity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/StopWatch;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/ClockWithSeconds;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/MyClockWithSeconds;] for Activity/Main/activity\n[DalvikEngine] \ud83d\udd0d main_method is EMPTY, trying fallback...\n[DalvikEngine] \ud83d\udccb Entering fallback mode - looking for any class with methods\n[DalvikEngine]   \ud83d\udccb Checking fallback class: [Lomegacentauri/mobi/simplestopwatch/BigTextView$GetCenter;] with 1 methods\n[DalvikEngine]   \ud83d\udccb all_methods() returned 1 entries\n[DalvikEngine] \ud83c\udfaf Using fallback entry: Lomegacentauri/mobi/simplestopwatch/BigTextView$GetCenter;.getCenter\n[DalvikEngine] \ud83c\udfaf Bytecode size: 0\n[DalvikEngine] \u26a0\ufe0f Fallback method has empty bytecode!\n[DalvikEngine] Execution completed in 2.216706ms\n[DalvikEngine] Instructions executed: 0\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+        "report_md_excerpt": "# MiniAndroid Execution Report\n\n## Application\n\n- **APK:** `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk`\n- **Package:** `omegacentauri.mobi.simplestopwatch`\n- **Status:** **FAILURE** \u274c\n\n## Metrics\n\n| Metric | Value |\n|--------|-------|\n| APIs Called | 0 |\n| Frames Rendered | 0 |\n| Execution Time | 0ms |\n| Memory Peak | 0.00 B |\n| Errors | 1 |\n| Warnings | 0 |\n\n## API Trace Summary\n\n| Class | Calls |\n|-------"
+      },
+      "capabilities": {
+        "AXML": "BLOCKED_NO_STARTUP",
+        "TIMER": "BLOCKED_NO_STARTUP",
+        "HANDLER": "BLOCKED_NO_STARTUP"
+      },
+      "declared_capabilities": [
+        "AXML",
+        "TIMER",
+        "HANDLER"
+      ]
+    },
+    {
+      "name": "chessclock",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk",
+      "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+      "apk_info": {
+        "has_android_manifest": true,
+        "has_resources_arsc": true,
+        "has_classes_dex": false,
+        "dex_count": 1,
+        "manifest_size": 2200,
+        "arsc_size": 24012,
+        "png_count": 4,
+        "png_total_bytes": 71055,
+        "layout_count": 2,
+        "has_native_lib": false,
+        "native_libs": [],
+        "has_database_template": false
+      },
+      "runtime_result": {
+        "exit_code": 1,
+        "bytecode_executed": false,
+        "oncreate_called": false,
+        "setcontentview_called": false,
+        "has_uncaught_exception": false,
+        "segfault": false,
+        "view_tree": null,
+        "screenshot_size_bytes": 0,
+        "artifacts": {
+          "report.md": {
+            "exists": true,
+            "size_bytes": 1034
+          },
+          "view_tree.json": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.png": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.ppm": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "api_trace.json": {
+            "exists": true,
+            "size_bytes": 1514
+          },
+          "crash.log": {
+            "exists": true,
+            "size_bytes": 288
+          },
+          "render_request.txt": {
+            "exists": false,
+            "size_bytes": 0
+          }
+        },
+        "stdout_tail": "ndroid_29.apk\n[*] Output directory: /tmp/exp085_phase6_16_chessclock\n\n=== Execution Result ===\n\nStatus: FAILURE \u274c\n\nMessage: Execution failed\n\n--- Metrics ---\nAPI Calls: 0\nFrames Rendered: 0\nExecution Time: 0ms\nErrors: 1\nWarnings: 0\n\nReport: /tmp/exp085_phase6_16_chessclock/report.md\n[ApkParser] APK validation passed: /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk\n[ApkParser] Found EOCD at offset 124200\n[ApkParser] Central Directory: 19 entries at offset 122880\n[ApkParser] Cached 19 ZIP entries for fast lookup\n[ApkParser] Found 1 DEX files: \n[ApkParser]   - classes.dex\n[ApkParser] Extracting AndroidManifest.xml...\n[ApkParser] Found EOCD at offset 124200\n[ApkParser] Central Directory: 19 entries at offset 122880\n[ApkParser] Warning: Could not extract AndroidManifest.xml\n[ApkParser] APK parsing complete:  (19 entries)\n[ApkParser] Found EOCD at offset 124200\n[ApkParser] Central Directory: 19 entries at offset 122880\n",
+        "report_md_excerpt": "# MiniAndroid Execution Report\n\n## Application\n\n- **APK:** `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk`\n- **Package:** `UnknownApp`\n- **Status:** **FAILURE** \u274c\n\n## Metrics\n\n| Metric | Value |\n|--------|-------|\n| APIs Called | 0 |\n| Frames Rendered | 0 |\n| Execution Time | 0ms |\n| Memory Peak | 0.00 B |\n| Errors | 1 |\n| Warnings | 0 |\n\n## API Trace Summary\n\n| Class | Calls |\n|-------|-------|\n| `DexParser` | 1 |\n| `Exe"
+      },
+      "capabilities": {
+        "AXML": "BLOCKED_NO_STARTUP",
+        "TIMER": "BLOCKED_NO_STARTUP",
+        "HANDLER": "BLOCKED_NO_STARTUP"
+      },
+      "declared_capabilities": [
+        "AXML",
+        "TIMER",
+        "HANDLER"
+      ]
+    },
+    {
+      "name": "notes",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.billthefarmer.notes_139.apk",
+      "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+      "apk_info": {
+        "has_android_manifest": true,
+        "has_resources_arsc": true,
+        "has_classes_dex": false,
+        "dex_count": 1,
+        "manifest_size": 7680,
+        "arsc_size": 22832,
+        "png_count": 5,
+        "png_total_bytes": 15351,
+        "layout_count": 0,
+        "has_native_lib": false,
+        "native_libs": [],
+        "has_database_template": false
+      },
+      "runtime_result": {
+        "exit_code": 1,
+        "bytecode_executed": false,
+        "oncreate_called": true,
+        "setcontentview_called": false,
+        "has_uncaught_exception": false,
+        "segfault": false,
+        "view_tree": null,
+        "screenshot_size_bytes": 0,
+        "artifacts": {
+          "report.md": {
+            "exists": true,
+            "size_bytes": 1654
+          },
+          "view_tree.json": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.png": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.ppm": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "api_trace.json": {
+            "exists": true,
+            "size_bytes": 115340
+          },
+          "crash.log": {
+            "exists": true,
+            "size_bytes": 665
+          },
+          "render_request.txt": {
+            "exists": false,
+            "size_bytes": 0
+          }
+        },
+        "stdout_tail": "/ext/front/matter/YamlFrontMatterBlock;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lorg/commonmark/ext/gfm/tables/TableBlock;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lorg/commonmark/node/BulletList;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lorg/commonmark/node/OrderedList;] for Activity/Main/activity\n[DalvikEngine] \ud83d\udd0d main_method is EMPTY, trying fallback...\n[DalvikEngine] \ud83d\udccb Entering fallback mode - looking for any class with methods\n[DalvikEngine]   \ud83d\udccb Checking fallback class: [Landroid/support/v4/content/FileProvider$PathStrategy;] with 2 methods\n[DalvikEngine]   \ud83d\udccb all_methods() returned 2 entries\n[DalvikEngine] \ud83c\udfaf Using fallback entry: Landroid/support/v4/content/FileProvider$PathStrategy;.getFileForUri\n[DalvikEngine] \ud83c\udfaf Bytecode size: 0\n[DalvikEngine] \u26a0\ufe0f Fallback method has empty bytecode!\n[DalvikEngine] Execution completed in 13.167138ms\n[DalvikEngine] Instructions executed: 0\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+        "report_md_excerpt": "# MiniAndroid Execution Report\n\n## Application\n\n- **APK:** `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.billthefarmer.notes_139.apk`\n- **Package:** `org.billthefarmer.notes`\n- **Status:** **FAILURE** \u274c\n\n## Metrics\n\n| Metric | Value |\n|--------|-------|\n| APIs Called | 0 |\n| Frames Rendered | 0 |\n| Execution Time | 0ms |\n| Memory Peak | 0.00 B |\n| Errors | 1 |\n| Warnings | 0 |\n\n## API Trace Summary\n\n| Class | Calls |\n|-------|-------|\n| `DalvikEn"
+      },
+      "capabilities": {
+        "AXML": "BLOCKED_NO_STARTUP",
+        "SQLITE": "NOT_TESTED",
+        "RECYCLERVIEW": "BLOCKED_NO_INFLATE"
+      },
+      "declared_capabilities": [
+        "AXML",
+        "SQLITE",
+        "RECYCLERVIEW"
+      ]
+    },
+    {
+      "name": "telegram",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
+      "sha256": "193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e",
+      "apk_info": {
+        "has_android_manifest": true,
+        "has_resources_arsc": true,
+        "has_classes_dex": false,
+        "dex_count": 5,
+        "manifest_size": 70008,
+        "arsc_size": 7036608,
+        "png_count": 6115,
+        "png_total_bytes": 7425176,
+        "layout_count": 0,
+        "has_native_lib": true,
+        "native_libs": [
+          "lib/arm64-v8a/liblanguage_id_l2c_jni.so",
+          "lib/arm64-v8a/libtmessages.49.so",
+          "lib/armeabi-v7a/liblanguage_id_l2c_jni.so",
+          "lib/armeabi-v7a/libtmessages.49.so",
+          "lib/x86/liblanguage_id_l2c_jni.so",
+          "lib/x86/libtmessages.49.so",
+          "lib/x86_64/liblanguage_id_l2c_jni.so",
+          "lib/x86_64/libtmessages.49.so"
+        ],
+        "has_database_template": false
+      },
+      "runtime_result": {
+        "exit_code": 1,
+        "bytecode_executed": true,
+        "oncreate_called": true,
+        "setcontentview_called": true,
+        "has_uncaught_exception": false,
+        "segfault": false,
+        "view_tree": null,
+        "screenshot_size_bytes": 0,
+        "artifacts": {
+          "report.md": {
+            "exists": true,
+            "size_bytes": 1822
+          },
+          "view_tree.json": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.png": {
+            "exists": false,
+            "size_bytes": 0
+          },
+          "screenshot.ppm": {
+            "exists": true,
+            "size_bytes": 6220817
+          },
+          "api_trace.json": {
+            "exists": true,
+            "size_bytes": 3859108
+          },
+          "crash.log": {
+            "exists": true,
+            "size_bytes": 169
+          },
+          "render_request.txt": {
+            "exists": false,
+            "size_bytes": 0
+          }
+        },
+        "stdout_tail": "UT TO CALL execute_method_internal() for fallback!\n[METHOD-IN] Landroid/media/MediaDrmThrowable;.<clinit> (bytecode_size=6)\n[DalvikEngine] Executing: Landroid/media/MediaDrmThrowable;.<clinit>()V\n[DalvikEngine] Bytecode size: 6 instructions\n[DalvikEngine]   ALLOCATED: Ljava/lang/NoClassDefFoundError; -> obj#1\n[DalvikEngine]   [0]  0x0:  [obj:1]\n[DalvikEngine]   INVOKE-DIRECT: Ljava/lang/NoClassDefFoundError;.<init>() on obj#1\n[TRY-ENTRY] Ljava/lang/NoClassDefFoundError;.<init> dex_report=YES\n[DalvikEngine]   API BRIDGE: Ljava/lang/NoClassDefFoundError;.<init>\n[EXCEPTION] method=Landroid/media/MediaDrmThrowable;.<clinit> pc=5 exception=Ljava/lang/NoClassDefFoundError; try_range=(none) handler=NOT_FOUND\n[MEM] method_exit: Landroid/media/MediaDrmThrowable;.<clinit> insns=3 RSS=165.762 MB\n[DalvikEngine] \u2705 execute_method_internal() completed successfully\n[DalvikEngine] Execution completed in 214.517108ms\n[DalvikEngine] Instructions executed: 3\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+        "report_md_excerpt": "# MiniAndroid Execution Report\n\n## Application\n\n- **APK:** `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk`\n- **Package:** `org.telegram.messenger.web`\n- **Status:** **FAILURE** \u274c\n\n## Metrics\n\n| Metric | Value |\n|--------|-------|\n| APIs Called | 0 |\n| Frames Rendered | 1 |\n| Execution Time | 0ms |\n| Memory Peak | 0.00 B |\n| Errors | 0 |\n| Warnings | 1 |\n\n## API Trace Summary\n\n| Class | Calls |\n|-------|-------|\n| `DalvikEngine` | 3 |\n| `Ex"
+      },
+      "capabilities": {
+        "MULTI_DEX": "PROVEN",
+        "R8_LAMBDA": "PARTIAL",
+        "POLYMORPHIC": "PROVEN",
+        "AXML": "PARTIAL",
+        "JNI": "BLOCKED_NO_NATIVE_LOAD",
+        "PERMISSIONS": "PARTIAL_BOOTSTRAP_ONLY",
+        "NETWORK": "PARTIAL_MOCKED"
+      },
+      "declared_capabilities": [
+        "MULTI_DEX",
+        "R8_LAMBDA",
+        "POLYMORPHIC",
+        "AXML",
+        "JNI",
+        "PERMISSIONS",
+        "NETWORK"
+      ]
+    }
+  ]
+}

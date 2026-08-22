@@ -1,0 +1,779 @@
+{
+  "test": "EXP085 Phase 3 \u2014 Return value regression",
+  "generated_at": "2026-08-22T20:31:13.605758+00:00",
+  "pass_count": 11,
+  "fail_count": 0,
+  "skip_count": 0,
+  "results": [
+    {
+      "fixture": "invoke_static_return_int",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/reg_invoke_static_return.apk",
+      "exit_code": 1,
+      "status": "PARTIAL_SUCCESS",
+      "api_call_count": 34,
+      "last_method_calls": [
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_execute_application_real_dalvik",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "TraceEngine",
+          "method": "log_screenshot",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_generate_reports",
+          "level": "INFO"
+        }
+      ],
+      "view_tree": {
+        "view_count": 0,
+        "has_nodes": false
+      },
+      "screenshot": {
+        "exists": false
+      },
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "verifies": "invoke-static \u2192 move-result",
+      "expected_class": "Ltest/exp052/TestActivity;"
+    },
+    {
+      "fixture": "invoke_virtual_return",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/reg_invoke_virtual_return.apk",
+      "exit_code": 1,
+      "status": "PARTIAL_SUCCESS",
+      "api_call_count": 34,
+      "last_method_calls": [
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_execute_application_real_dalvik",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "TraceEngine",
+          "method": "log_screenshot",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_generate_reports",
+          "level": "INFO"
+        }
+      ],
+      "view_tree": {
+        "view_count": 0,
+        "has_nodes": false
+      },
+      "screenshot": {
+        "exists": false
+      },
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "verifies": "invoke-virtual \u2192 move-result-object",
+      "expected_class": "Ltest/exp052/TestActivity;"
+    },
+    {
+      "fixture": "if_eqz_zero_taken",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/if_eqz_zero_taken.apk",
+      "exit_code": 1,
+      "status": "ONCREATE_ONLY",
+      "api_call_count": 34,
+      "last_method_calls": [
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_execute_application_real_dalvik",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "TraceEngine",
+          "method": "log_screenshot",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_generate_reports",
+          "level": "INFO"
+        }
+      ],
+      "view_tree": {
+        "view_count": 0,
+        "has_nodes": false
+      },
+      "screenshot": {
+        "exists": false
+      },
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "verifies": "if-eqz branch taken when reg==0",
+      "expected_class": "Ltest/exp052/TestActivity;"
+    },
+    {
+      "fixture": "if_eqz_nonzero_nottaken",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/if_eqz_nonzero_nottaken.apk",
+      "exit_code": 1,
+      "status": "ONCREATE_ONLY",
+      "api_call_count": 34,
+      "last_method_calls": [
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_execute_application_real_dalvik",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "TraceEngine",
+          "method": "log_screenshot",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_generate_reports",
+          "level": "INFO"
+        }
+      ],
+      "view_tree": {
+        "view_count": 0,
+        "has_nodes": false
+      },
+      "screenshot": {
+        "exists": false
+      },
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "verifies": "if-eqz branch not taken when reg!=0",
+      "expected_class": "Ltest/exp052/TestActivity;"
+    },
+    {
+      "fixture": "if_nez_nonzero_taken",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/if_nez_nonzero_taken.apk",
+      "exit_code": 1,
+      "status": "ONCREATE_ONLY",
+      "api_call_count": 34,
+      "last_method_calls": [
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_execute_application_real_dalvik",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "TraceEngine",
+          "method": "log_screenshot",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_generate_reports",
+          "level": "INFO"
+        }
+      ],
+      "view_tree": {
+        "view_count": 0,
+        "has_nodes": false
+      },
+      "screenshot": {
+        "exists": false
+      },
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "verifies": "if-nez branch taken when reg!=0",
+      "expected_class": "Ltest/exp052/TestActivity;"
+    },
+    {
+      "fixture": "if_nez_zero_nottaken",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/if_nez_zero_nottaken.apk",
+      "exit_code": 1,
+      "status": "ONCREATE_ONLY",
+      "api_call_count": 34,
+      "last_method_calls": [
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_execute_application_real_dalvik",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "TraceEngine",
+          "method": "log_screenshot",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_generate_reports",
+          "level": "INFO"
+        }
+      ],
+      "view_tree": {
+        "view_count": 0,
+        "has_nodes": false
+      },
+      "screenshot": {
+        "exists": false
+      },
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "verifies": "if-nez branch not taken when reg==0",
+      "expected_class": "Ltest/exp052/TestActivity;"
+    },
+    {
+      "fixture": "reg_goto_simple",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/reg_goto_simple.apk",
+      "exit_code": 1,
+      "status": "ONCREATE_ONLY",
+      "api_call_count": 34,
+      "last_method_calls": [
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_execute_application_real_dalvik",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "TraceEngine",
+          "method": "log_screenshot",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_generate_reports",
+          "level": "INFO"
+        }
+      ],
+      "view_tree": {
+        "view_count": 0,
+        "has_nodes": false
+      },
+      "screenshot": {
+        "exists": false
+      },
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "verifies": "goto unconditional jump",
+      "expected_class": "Ltest/exp052/TestActivity;"
+    },
+    {
+      "fixture": "case1_no_catch",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/case1_no_catch.apk",
+      "exit_code": 1,
+      "status": "ONCREATE_ONLY",
+      "api_call_count": 34,
+      "last_method_calls": [
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_execute_application_real_dalvik",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "TraceEngine",
+          "method": "log_screenshot",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_generate_reports",
+          "level": "INFO"
+        }
+      ],
+      "view_tree": {
+        "view_count": 0,
+        "has_nodes": false
+      },
+      "screenshot": {
+        "exists": false
+      },
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "verifies": "throw with no catch \u2192 uncaught exception path",
+      "expected_class": "Ltest/exp052/TestActivity;"
+    },
+    {
+      "fixture": "case2_local_catch",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/case2_local_catch.apk",
+      "exit_code": 1,
+      "status": "PARTIAL_SUCCESS",
+      "api_call_count": 34,
+      "last_method_calls": [
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_execute_application_real_dalvik",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "TraceEngine",
+          "method": "log_screenshot",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_generate_reports",
+          "level": "INFO"
+        }
+      ],
+      "view_tree": {
+        "view_count": 0,
+        "has_nodes": false
+      },
+      "screenshot": {
+        "exists": false
+      },
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "verifies": "try { throw } catch { continue }",
+      "expected_class": "Ltest/exp052/TestActivity;"
+    },
+    {
+      "fixture": "case3_nested_catch",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/case3_nested_catch.apk",
+      "exit_code": 1,
+      "status": "PARTIAL_SUCCESS",
+      "api_call_count": 34,
+      "last_method_calls": [
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_execute_application_real_dalvik",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "TraceEngine",
+          "method": "log_screenshot",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_generate_reports",
+          "level": "INFO"
+        }
+      ],
+      "view_tree": {
+        "view_count": 0,
+        "has_nodes": false
+      },
+      "screenshot": {
+        "exists": false
+      },
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "verifies": "nested try/catch with inner handler",
+      "expected_class": "Ltest/exp052/TestActivity;"
+    },
+    {
+      "fixture": "case4_catch_all",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/case4_catch_all.apk",
+      "exit_code": 1,
+      "status": "PARTIAL_SUCCESS",
+      "api_call_count": 34,
+      "last_method_calls": [
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "trace_files",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_execute_application_real_dalvik",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_render_frame",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "TraceEngine",
+          "method": "log_screenshot",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_capture_output",
+          "level": "INFO"
+        },
+        {
+          "class": "ExecutionEngine",
+          "method": "stage_generate_reports",
+          "level": "INFO"
+        }
+      ],
+      "view_tree": {
+        "view_count": 0,
+        "has_nodes": false
+      },
+      "screenshot": {
+        "exists": false
+      },
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "verifies": "catch-all handler",
+      "expected_class": "Ltest/exp052/TestActivity;"
+    }
+  ]
+}

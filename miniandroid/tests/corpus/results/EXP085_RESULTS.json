@@ -1,0 +1,104 @@
+{
+  "experiment": "EXP-085 — Generic Runtime Validation + Multi-DEX Hardening",
+  "generated_at": "2026-08-22T20:50:00Z",
+  "summary": {
+    "phases_total": 22,
+    "phases_pass": 5,
+    "phases_partial": 4,
+    "phases_blocked": 7,
+    "phases_not_tested": 6,
+    "capability_totals": {
+      "proven": 6,
+      "partial": 15,
+      "blocked": 13,
+      "not_tested": 91
+    }
+  },
+  "completion_criteria": {
+    "A_clean_repository": "PASS",
+    "B_multi_dex_generic": "PASS",
+    "C_real_axml_apk": "PARTIAL",
+    "D_real_png_apk": "BLOCKED",
+    "E_calculator_interaction": "BLOCKED",
+    "F_scroll_behavior": "NOT_TESTED",
+    "G_sqlite_persistence": "BLOCKED",
+    "H_permission_model": "PARTIAL",
+    "I_handler_single_execution": "BLOCKED",
+    "J_renderer_valid_png": "BLOCKED",
+    "K_telegram_regression": "BLOCKED",
+    "L_results_committed": "IN_PROGRESS",
+    "M_no_artifacts_reintroduced": "PASS"
+  },
+  "known_blockers": [
+    {
+      "id": "B1",
+      "title": "Renderer PNG output broken",
+      "impact": "All screenshots are PPM only (6 MB each)",
+      "root_cause": "PNGWriter has invalid IDAT zlib data",
+      "fix_path": "Rewrite PNGWriter with proper zlib, or PPM→PNG via Python"
+    },
+    {
+      "id": "B2",
+      "title": "AXML view inflation incomplete",
+      "impact": "APKs execute onCreate but no views inflated",
+      "root_cause": "setContentView(int) captures resource ID but doesn't trigger inflation",
+      "fix_path": "Trigger AXML inflation on setContentView call"
+    },
+    {
+      "id": "B3",
+      "title": "SQLite not implemented",
+      "impact": "Notes APK can't persist data",
+      "root_cause": "No native SQLite bridge",
+      "fix_path": "Implement sqlite_bridge.cpp using system libsqlite3"
+    },
+    {
+      "id": "B4",
+      "title": "Handler drain incomplete",
+      "impact": "Timer/callback APKs don't fire Handler.post()",
+      "root_cause": "HandlerShadow::drain_ready() hardcoded for Telegram",
+      "fix_path": "Run drain_ready() after every method exit, not just Telegram"
+    },
+    {
+      "id": "B5",
+      "title": "Telegram entry point detection broken",
+      "impact": "LaunchActivity never executes; Checkpoint M fails",
+      "root_cause": "Manifest parser picks flavor 'org.telegram.messenger.web' instead of 'org.telegram.messenger'",
+      "fix_path": "Fix manifest parser or fall back to org.telegram.ui.LaunchActivity search"
+    },
+    {
+      "id": "B6",
+      "title": "Duplicate callback bug",
+      "impact": "Telegram onNextPressed may fire more than once",
+      "root_cause": "Handler queue not deduplicated",
+      "fix_path": "Already partially addressed in EXP-079/081; verify in current build"
+    }
+  ],
+  "next_highest_value_fix": "B5 — Telegram entry point detection (unblocks 4+ capabilities)",
+  "results_files": [
+    "miniandroid/tests/corpus/results/EXP085_PHASE1_MULTI_DEX.json",
+    "miniandroid/tests/corpus/results/EXP085_PHASE2_DISPATCH.json",
+    "miniandroid/tests/corpus/results/EXP085_PHASE3_RETURN_VALUES.json",
+    "miniandroid/tests/corpus/results/EXP085_PHASE4_EXCEPTIONS.json",
+    "miniandroid/tests/corpus/results/EXP085_PHASE5_AXML_RESOURCES.json",
+    "miniandroid/tests/corpus/results/EXP085_PHASES_6_16_CAPABILITIES.json",
+    "miniandroid/tests/corpus/results/EXP085_PHASE10_SQLITE.json",
+    "miniandroid/tests/corpus/results/EXP085_PHASE12_HANDLER.json",
+    "miniandroid/tests/corpus/results/EXP085_PHASE14_RENDERER.json",
+    "miniandroid/tests/corpus/results/EXP085_PHASE17_18_TELEGRAM.json",
+    "miniandroid/tests/corpus/results/EXP085_PHASE19_MATRIX.json"
+  ],
+  "test_scripts": [
+    "miniandroid/tests/exp085_phase1_multi_dex.py",
+    "miniandroid/tests/exp085_phase2_dispatch.py",
+    "miniandroid/tests/exp085_phase3_return_values.py",
+    "miniandroid/tests/exp085_phase4_exceptions.py",
+    "miniandroid/tests/exp085_phase5_axml_resources.py",
+    "miniandroid/tests/exp085_phases_6_16_capabilities.py",
+    "miniandroid/tests/exp085_phase10_sqlite.py",
+    "miniandroid/tests/exp085_phase12_handler.py",
+    "miniandroid/tests/exp085_phase14_renderer.py",
+    "miniandroid/tests/exp085_phase17_18_telegram.py",
+    "miniandroid/tests/exp085_phase19_matrix.py"
+  ],
+  "documentation": "miniandroid/docs/EXP085_GENERIC_RUNTIME_VALIDATION.md"
+}
