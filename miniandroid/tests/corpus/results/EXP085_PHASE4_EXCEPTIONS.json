@@ -1,0 +1,76 @@
+{
+  "test": "EXP085 Phase 4 \u2014 Exception / try-catch smoke test",
+  "generated_at": "2026-08-22T20:32:23.840950+00:00",
+  "pass_count": 4,
+  "mismatch_count": 0,
+  "skip_count": 0,
+  "results": [
+    {
+      "fixture": "case1_no_catch_UNHANDLED",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/case1_no_catch.apk",
+      "exit_code": 1,
+      "expected_flow": "UNHANDLED",
+      "observed_flow": "UNHANDLED",
+      "status": "PASS",
+      "oncreate_executed": true,
+      "flow_evidence": [
+        "THROW marker found",
+        "Catch reference found but no handler execution",
+        "Throw with no catch \u2014 UNHANDLED",
+        "DEX exception table present"
+      ],
+      "stdout_excerpt": "DalvikEngine] === END EXP-031.6 TRACE ===\n[DalvikEngine] \ud83d\udd0d Searching 1 classes for entry point...\n[DalvikEngine]   Checking class: [Ltest/exp052/TestActivity;] for Activity/Main/activity\n[DalvikEngine] Found main class candidate: Ltest/exp052/TestActivity;\n[DalvikEngine] Found entry point: onCreate()V\n[DalvikEngine] \ud83c\udfaf CALLING execute_method_internal() for onCreate with 6 instructions\n[METHOD-IN] Ltest/exp052/TestActivity;.onCreate (bytecode_size=6)\n[DalvikEngine] Executing: Ltest/exp052/TestActivity;.onCreate()V\n[DalvikEngine] Bytecode size: 6 instructions\n[DalvikEngine]   [0]  0x0: \n[EXP071-FILL] fill-array-data: v0 is NOT OBJECT_REF (type=0) \u2014 THROWING exception\n[MEM] method_exit: Ltest/exp052/TestActivity;.onCreate insns=5 RSS=12.3711 MB\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 0.199828ms\n[DalvikEngine] Instructions executed: 5\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "verifies": "throw with no catch \u2192 exception propagates out"
+    },
+    {
+      "fixture": "case2_local_catch_HANDLED_LOCALLY",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/case2_local_catch.apk",
+      "exit_code": 1,
+      "expected_flow": "HANDLED_LOCALLY",
+      "observed_flow": "HANDLED_LOCALLY",
+      "status": "PASS",
+      "oncreate_executed": true,
+      "flow_evidence": [
+        "TRY-ENTRY marker found",
+        "THROW marker found",
+        "Catch handler executed (method returned)",
+        "DEX exception table present"
+      ],
+      "stdout_excerpt": "lass: [Ltest/exp052/TestActivity;] for Activity/Main/activity\n[DalvikEngine] Found main class candidate: Ltest/exp052/TestActivity;\n[DalvikEngine] Found entry point: onCreate()V\n[DalvikEngine] \ud83c\udfaf CALLING execute_method_internal() for onCreate with 7 instructions\n[METHOD-IN] Ltest/exp052/TestActivity;.onCreate (bytecode_size=7)\n[DalvikEngine] Executing: Ltest/exp052/TestActivity;.onCreate()V\n[DalvikEngine] Bytecode size: 7 instructions\n[DalvikEngine]   [0]  0x0: \n[TRY-ENTRY] Ljava/lang/RuntimeException;.<init> dex_report=YES\n[DalvikEngine]   API BRIDGE: Ljava/lang/RuntimeException;.<init>\n[EXP071-FILL] fill-array-data: v2 is NOT OBJECT_REF (type=0) \u2014 THROWING exception\n[MEM] method_exit: Ltest/exp052/TestActivity;.onCreate insns=3 RSS=12.5 MB\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 0.223733ms\n[DalvikEngine] Instructions executed: 3\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "verifies": "try { throw } catch { continue }"
+    },
+    {
+      "fixture": "case3_nested_catch_HANDLED_LOCALLY",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/case3_nested_catch.apk",
+      "exit_code": 1,
+      "expected_flow": "HANDLED_LOCALLY",
+      "observed_flow": "HANDLED_LOCALLY",
+      "status": "PASS",
+      "oncreate_executed": true,
+      "flow_evidence": [
+        "TRY-ENTRY marker found",
+        "Catch handler executed (method returned)",
+        "DEX exception table present"
+      ],
+      "stdout_excerpt": "lass: [Ltest/exp052/TestActivity;] for Activity/Main/activity\n[DalvikEngine] Found main class candidate: Ltest/exp052/TestActivity;\n[DalvikEngine] Found entry point: onCreate()V\n[DalvikEngine] \ud83c\udfaf CALLING execute_method_internal() for onCreate with 5 instructions\n[METHOD-IN] Ltest/exp052/TestActivity;.onCreate (bytecode_size=5)\n[DalvikEngine] Executing: Ltest/exp052/TestActivity;.onCreate()V\n[DalvikEngine] Bytecode size: 5 instructions\n[TRY-ENTRY] Ltest/exp052/TestActivity;.helper dex_report=YES\n[DalvikEngine]   API BRIDGE: Ltest/exp052/TestActivity;.helper\n[DalvikEngine]   [0]  0x0:  \u2192 \n[DalvikEngine]   RETURN_VOID at 0x3\n[DalvikEngine] Method returned successfully\n[MEM] method_exit: Ltest/exp052/TestActivity;.onCreate insns=2 RSS=12.4219 MB\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 0.214876ms\n[DalvikEngine] Instructions executed: 2\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "verifies": "nested try/catch with inner handler"
+    },
+    {
+      "fixture": "case4_catch_all_HANDLED_LOCALLY",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/test_apks/exp052/case4_catch_all.apk",
+      "exit_code": 1,
+      "expected_flow": "HANDLED_LOCALLY",
+      "observed_flow": "HANDLED_LOCALLY",
+      "status": "PASS",
+      "oncreate_executed": true,
+      "flow_evidence": [
+        "TRY-ENTRY marker found",
+        "THROW marker found",
+        "Catch handler executed (method returned)",
+        "DEX exception table present"
+      ],
+      "stdout_excerpt": "s: [Ltest/exp052/TestActivity;] for Activity/Main/activity\n[DalvikEngine] Found main class candidate: Ltest/exp052/TestActivity;\n[DalvikEngine] Found entry point: onCreate()V\n[DalvikEngine] \ud83c\udfaf CALLING execute_method_internal() for onCreate with 7 instructions\n[METHOD-IN] Ltest/exp052/TestActivity;.onCreate (bytecode_size=7)\n[DalvikEngine] Executing: Ltest/exp052/TestActivity;.onCreate()V\n[DalvikEngine] Bytecode size: 7 instructions\n[DalvikEngine]   [0]  0x0: \n[TRY-ENTRY] Ljava/lang/RuntimeException;.<init> dex_report=YES\n[DalvikEngine]   API BRIDGE: Ljava/lang/RuntimeException;.<init>\n[EXP071-FILL] fill-array-data: v2 is NOT OBJECT_REF (type=0) \u2014 THROWING exception\n[MEM] method_exit: Ltest/exp052/TestActivity;.onCreate insns=3 RSS=12.3281 MB\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 0.200396ms\n[DalvikEngine] Instructions executed: 3\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "verifies": "catch-all handler"
+    }
+  ]
+}

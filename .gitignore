@@ -103,3 +103,6 @@ tool-results/
 # Environment
 .env
 .env.local
+
+# Root-level download/ (legacy stub)
+download/
