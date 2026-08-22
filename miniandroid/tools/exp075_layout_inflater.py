@@ -185,7 +185,15 @@ class AXMLDecoder:
         # Actually: the XML start element chunk body after the chunk header (8 bytes) is:
         #   line_number(4) + comment(4) + ns(4) + name(4) = 16 bytes
         #   Then attr_start is relative to the start of these 16 bytes
-        attr_base = offset + 8 + 16 + attr_start  # 8 = chunk header
+        # EXP-080: Fixed attr_base calculation.
+        # attr_start is relative to the start of the chunk header (offset).
+        # The correct formula is: attr_base = offset + header_size + attr_start
+        # where header_size is the chunk's header_size field (typically 16 for XML elements).
+        # Previous versions used offset + 8 + attr_start (wrong) or offset + 8 + 16 + attr_start (doubly wrong).
+        # Verified by comparing raw bytes: pos+hs+attr_start gives correct type/data values.
+        # Read header_size from the chunk header
+        hs = struct.unpack_from('<H', self.data, offset + 2)[0]
+        attr_base = offset + hs + attr_start
         # Wait — let me re-examine. The chunk header is type(2)+header_size(2)+chunk_size(4) = 8 bytes.
         # Then the XML-specific header is: line_number(4) + comment(4) + ns(4) + name(4) = 16 bytes.
         # Then attr_start(2) + attr_size(2) + attr_count(2) + id_idx(2) + class_idx(2) + style_idx(2) = 12 bytes.
@@ -211,7 +219,7 @@ class AXMLDecoder:
         # But attr_start = 0x14 = 20, so attr data is at offset + 28.
         # And the element header before attrs is: line(4) + comment(4) + ns(4) + name(4) = 16, then attr_start(2)+attr_size(2)+attr_count(2)+id_idx(2)+class_idx(2)+style_idx(2) = 12. Total = 28. Yes!
         # So attr_base = offset + 8 + attr_start = offset + 8 + 20 = offset + 28.
-        attr_base = offset + 8 + attr_start
+        # attr_base already set above using header_size — removed duplicate
 
         for i in range(attr_count):
             ap = attr_base + i * attr_size
