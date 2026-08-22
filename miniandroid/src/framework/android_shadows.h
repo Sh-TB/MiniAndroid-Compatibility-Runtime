@@ -408,6 +408,8 @@ private:
     uint32_t current_activity_id_ = 0;
     std::string current_activity_class_;
     uint32_t content_view_id_ = 0;
+    // EXP-074: Layout resource ID from setContentView(int layoutResId).
+    int32_t layout_resource_id_ = 0;
     LifecycleState state_ = LifecycleState::NONE;
 };
 
@@ -448,6 +450,20 @@ public:
         int x = 0, y = 0;
         // Common properties used by Android code paths.
         std::string text;     // TextView.getText()
+        std::string hint;     // TextView.getHint() / EditText hint (EXP-065)
+        // EXP-071: Context — set during View creation (constructor receives Context).
+        // When getContext() is called on this View, return this object_id.
+        // In real Android, Views store the Context passed to their constructor.
+        // We store it so getParentActivity() can find the Activity via
+        // getView().getContext() instanceof Activity.
+        uint32_t context_object_id = 0;  // The Context (Activity) that created this View
+        // EXP-067: Image resource ID — set by ImageView.setImageResource(int)
+        // The renderer can look up the drawable path via resource_drawable_paths_.
+        int32_t image_resource_id = 0;
+        std::string image_drawable_path;  // resolved APK asset path (e.g. "res/abc.webp")
+        // EXP-074: Text resource ID — set by TextView.setText(int resid).
+        // When non-zero, the renderer resolves it via the ARSC string table.
+        int32_t text_resource_id = 0;
         bool clickable = false;
         bool enabled = true;
         int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8
@@ -466,6 +482,11 @@ public:
     void init(HeapAllocator* heap) override { heap_ = heap; }
 
     bool handles_class(const std::string& class_name) const override {
+        // EXP-075: Do NOT handle Activity subclasses — let ActivityShadow handle them.
+        // This prevents ViewShadow from intercepting setContentView calls on Activities.
+        if (class_name.find("Activity;") != std::string::npos) {
+            return false;
+        }
         // Match any class ending in "View;" or "ViewGroup;" or containing
         // well-known View subclasses. Specific dispatch is done by
         // method name.
@@ -603,6 +624,11 @@ public:
     struct CollectionState {
         std::vector<uint32_t> elements;  // object_ids of elements
         std::map<std::string, uint32_t> map_entries;  // key → value object_id
+        // EXP-071 Phase 7: Store string values for HashMap.put(key, String).
+        // The original map_entries only stores object_ids, but many HashMap
+        // usages store String values (e.g., shortname → country name).
+        // Without this, HashMap.get returns null for string values.
+        std::map<std::string, std::string> map_string_entries;  // key → string value
         size_t iterator_position = 0;
         bool is_map = false;
     };

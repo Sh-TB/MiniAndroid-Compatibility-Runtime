@@ -1,0 +1,5 @@
+view_tree=run/exp078/telegram_gnp/view_tree.json
+screenshot=run/exp078/telegram_gnp/login_screen.png
+debug_screenshot=run/exp078/telegram_gnp/login_screen_debug.png
+width=1080
+height=1920

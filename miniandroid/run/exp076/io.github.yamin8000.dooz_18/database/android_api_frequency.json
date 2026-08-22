@@ -1,0 +1,1118 @@
+{
+  "apis": [
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setValue",
+      "priority": 3
+    },
+    {
+      "call_count": 6,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "a",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "add",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "addOnDrawListener",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "b",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "beginTransaction",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "c",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "commit",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "compareTo",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "d",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "e",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "executePendingTransactions",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "findFragmentByTag",
+      "priority": 3
+    },
+    {
+      "call_count": 7,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "get",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getCanonicalName",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getChildAt",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getClass",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getDeclaredMethods",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getInterfaces",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getSuperclass",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "isAtLeast",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "iterator",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "put",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "toString",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "attach",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onCreate(executed)",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onResume",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onStart",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "(I)V",
+      "first_seen_exp": 7,
+      "implementation_status": "PARTIAL",
+      "method": "setContentView",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "LF/W0;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "a",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "LF/w;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "e",
+      "priority": 3
+    },
+    {
+      "call_count": 6,
+      "category": "ACTIVITY",
+      "class": "LM1/i;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "e",
+      "priority": 3
+    },
+    {
+      "call_count": 9,
+      "category": "ACTIVITY",
+      "class": "LM1/i;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "f",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "LM1/j;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "LP/l;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "i",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "LP/l;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "j",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "LP/l;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "m",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "LP/l;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "n",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "LP/l;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "q",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "LP/l;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "r",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "LR0/D;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "a",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "LT1/c$a;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "LT1/c$a;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "b",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "LT1/c$a;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "hasNext",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "LT1/e;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "iterator",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "LT1/h;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "E",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "LT1/j;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "F",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "LT1/j;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "G",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "LX0/a;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "a",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "LX0/b;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/app/Activity;<super>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "onCreate",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/app/Activity;<super>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setContentView",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Landroid/app/Fragment;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/View;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "findViewById",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/View;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getViewTreeObserver",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/View;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setTag",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/ViewGroup;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 8,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/Window;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getDecorView",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/activity/ComponentActivity;<super>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "onCreate",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/AbstractComposeView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/AbstractComposeView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setParentContext",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/ComposeView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/ComposeView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "addOnAttachStateChangeListener",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/ComposeView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getTag",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/ComposeView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "isAttachedToWindow",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/ComposeView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setClipChildren",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/ComposeView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setClipToPadding",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/ComposeView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setContent",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/ComposeView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setParentCompositionContext",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/ComposeView;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setTag",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/H0;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/compose/ui/platform/I0;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/core/app/ComponentActivity;<super>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "onCreate",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/lifecycle/J;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "a",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Landroidx/lifecycle/J;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "b",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/lifecycle/K;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "a",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/lifecycle/ReflectiveGenericLifecycleObserver;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/lifecycle/c$a;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Landroidx/lifecycle/o;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "f",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/lifecycle/r;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "b",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Landroidx/lifecycle/w$b;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "b",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Landroidx/lifecycle/w;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/savedstate/Recreator;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Landroidx/savedstate/Recreator;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getClass",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lg/b$c;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lio/github/yamin8000/dooz/content/MainActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getFragmentManager",
+      "priority": 3
+    },
+    {
+      "call_count": 9,
+      "category": "ACTIVITY",
+      "class": "Lio/github/yamin8000/dooz/content/MainActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getWindow",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lio/github/yamin8000/dooz/content/MainActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "i",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lio/github/yamin8000/dooz/content/MainActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setContentView",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lj1/c;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "a",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lj1/c;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "b",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/Boolean;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "valueOf",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/IllegalStateException;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/Integer;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "valueOf",
+      "priority": 3
+    },
+    {
+      "call_count": 12,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/Object;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/StringBuilder;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/StringBuilder;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "append",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/StringBuilder;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "toString",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/Thread;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "currentThread",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/Thread;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getId",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/ArrayList;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/ArrayList;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "add",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/HashMap;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/HashMap;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "entrySet",
+      "priority": 3
+    },
+    {
+      "call_count": 5,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/Iterator;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "hasNext",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/Set;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "iterator",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "RESOURCE",
+      "class": "ResourceManager",
+      "descriptor": "(Landroid/content/res/Resources;)V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "initialize",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "RENDERER",
+      "class": "View",
+      "descriptor": "(Landroid/graphics/Canvas;)V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "draw",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "LAYOUT",
+      "class": "View",
+      "descriptor": "(IIII)V",
+      "first_seen_exp": 7,
+      "implementation_status": "PARTIAL",
+      "method": "layout",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "LAYOUT",
+      "class": "View",
+      "descriptor": "(II)V",
+      "first_seen_exp": 7,
+      "implementation_status": "PARTIAL",
+      "method": "measure",
+      "priority": 3
+    }
+  ],
+  "based_on_apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp076_corpus/io.github.yamin8000.dooz_18.apk",
+  "generated": "2026-08-11",
+  "source": "EXP-007->EXP-012 MEGA BATCH execution",
+  "total_unique_apis": 111
+}

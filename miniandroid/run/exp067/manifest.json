@@ -1,0 +1,3923 @@
+{
+  "type": "element",
+  "name": "manifest",
+  "ns": "",
+  "attributes": {
+    "http://schemas.android.com/apk/res/android:versionCode": 69919,
+    "http://schemas.android.com/apk/res/android:versionName": "12.9.2",
+    "http://schemas.android.com/apk/res/android:installLocation": 0,
+    "http://schemas.android.com/apk/res/android:compileSdkVersion": 35,
+    "http://schemas.android.com/apk/res/android:compileSdkVersionCodename": "15",
+    "package": "org.telegram.messenger.web",
+    "platformBuildVersionCode": 35,
+    "platformBuildVersionName": 15
+  },
+  "children": [
+    {
+      "type": "element",
+      "name": "uses-sdk",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:minSdkVersion": 21,
+        "http://schemas.android.com/apk/res/android:targetSdkVersion": 35
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-feature",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.hardware.location.gps",
+        "http://schemas.android.com/apk/res/android:required": false
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-feature",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.hardware.location.network",
+        "http://schemas.android.com/apk/res/android:required": false
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-feature",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.hardware.location",
+        "http://schemas.android.com/apk/res/android:required": false
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-feature",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.hardware.LOCATION",
+        "http://schemas.android.com/apk/res/android:required": false
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.google.android.c2dm.permission.RECEIVE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.web.permission.MAPS_RECEIVE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.google.android.providers.gsf.permission.READ_GSERVICES"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.ACCESS_COARSE_LOCATION"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.ACCESS_FINE_LOCATION"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.ACCESS_MEDIA_LOCATION"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.CALL_PHONE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.FOREGROUND_SERVICE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.FOREGROUND_SERVICE_DATA_SYNC"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.FOREGROUND_SERVICE_CAMERA"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.FOREGROUND_SERVICE_LOCATION"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.FOREGROUND_SERVICE_MICROPHONE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.FOREGROUND_SERVICE_PHONE_CALL"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.READ_CALL_LOG"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.USE_FULL_SCREEN_INTENT"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.web.permission.MAPS_RECEIVE",
+        "http://schemas.android.com/apk/res/android:protectionLevel": 2
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.READ_PHONE_STATE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.READ_PHONE_NUMBERS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.SEND_SMS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "supports-screens",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:anyDensity": true,
+        "http://schemas.android.com/apk/res/android:smallScreens": true,
+        "http://schemas.android.com/apk/res/android:normalScreens": true,
+        "http://schemas.android.com/apk/res/android:largeScreens": true,
+        "http://schemas.android.com/apk/res/android:resizeable": true,
+        "http://schemas.android.com/apk/res/android:xlargeScreens": true
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-feature",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:glEsVersion": 131072,
+        "http://schemas.android.com/apk/res/android:required": true
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-feature",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.hardware.telephony",
+        "http://schemas.android.com/apk/res/android:required": false
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-feature",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.hardware.wifi",
+        "http://schemas.android.com/apk/res/android:required": false
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-feature",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.hardware.screen.PORTRAIT",
+        "http://schemas.android.com/apk/res/android:required": false
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-feature",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.hardware.microphone",
+        "http://schemas.android.com/apk/res/android:required": false
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-feature",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.hardware.camera",
+        "http://schemas.android.com/apk/res/android:required": false
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-feature",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.hardware.camera2",
+        "http://schemas.android.com/apk/res/android:required": false
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-feature",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.hardware.sensor.proximity",
+        "http://schemas.android.com/apk/res/android:required": false
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.READ_CLIPBOARD"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.BLUETOOTH_CONNECT"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.INTERNET"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.RECORD_AUDIO"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.MODIFY_AUDIO_SETTINGS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.ACCESS_NETWORK_STATE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.ACCESS_WIFI_STATE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.WAKE_LOCK"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.READ_EXTERNAL_STORAGE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.READ_MEDIA_IMAGES"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.READ_MEDIA_VIDEO"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.READ_MEDIA_AUDIO"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.GET_ACCOUNTS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.READ_CONTACTS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.WRITE_CONTACTS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.MANAGE_ACCOUNTS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.READ_PROFILE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.WRITE_SYNC_SETTINGS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.READ_SYNC_SETTINGS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.AUTHENTICATE_ACCOUNTS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.VIBRATE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.SYSTEM_ALERT_WINDOW"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.RECEIVE_BOOT_COMPLETED"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.USE_FINGERPRINT"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.USE_BIOMETRIC"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.INSTALL_SHORTCUT"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.android.launcher.permission.INSTALL_SHORTCUT"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.android.launcher.permission.UNINSTALL_SHORTCUT"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.CAMERA"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.BLUETOOTH"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.MANAGE_OWN_CALLS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.REQUEST_INSTALL_PACKAGES"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.POST_NOTIFICATIONS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.sec.android.provider.badge.permission.READ"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.sec.android.provider.badge.permission.WRITE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.htc.launcher.permission.READ_SETTINGS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.htc.launcher.permission.UPDATE_SHORTCUT"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.sonyericsson.home.permission.BROADCAST_BADGE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.sonymobile.home.permission.PROVIDER_INSERT_BADGE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.anddoes.launcher.permission.UPDATE_COUNT"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.majeur.launcher.permission.UPDATE_BADGE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.huawei.android.launcher.permission.CHANGE_BADGE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.huawei.android.launcher.permission.READ_SETTINGS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.huawei.android.launcher.permission.WRITE_SETTINGS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.READ_APP_BADGE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.oppo.launcher.permission.READ_SETTINGS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.oppo.launcher.permission.WRITE_SETTINGS"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "me.everything.badger.permission.BADGE_COUNT_READ"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "me.everything.badger.permission.BADGE_COUNT_WRITE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "com.android.vending.BILLING"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.WRITE_EXTERNAL_STORAGE"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "android.permission.ACCESS_BACKGROUND_LOCATION"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "queries",
+      "ns": "",
+      "attributes": {},
+      "children": [
+        {
+          "type": "element",
+          "name": "package",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.apps.maps"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "intent",
+          "ns": "",
+          "attributes": {},
+          "children": [
+            {
+              "type": "element",
+              "name": "action",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "android.intent.action.VIEW"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:scheme": "ton"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "package",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.policy_cast_dynamite"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "intent",
+          "ns": "",
+          "attributes": {},
+          "children": [
+            {
+              "type": "element",
+              "name": "action",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.android.vending.billing.InAppBillingService.BIND"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "intent",
+          "ns": "",
+          "attributes": {},
+          "children": [
+            {
+              "type": "element",
+              "name": "action",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.android.apps.play.billingtestcompanion.BillingOverrideService.BIND"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "provider",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "androidx.car.app.connection.provider",
+            "http://schemas.android.com/apk/res/android:authorities": "androidx.car.app.connection"
+          },
+          "children": []
+        }
+      ]
+    },
+    {
+      "type": "element",
+      "name": "permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.web.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        "http://schemas.android.com/apk/res/android:protectionLevel": 2
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "uses-permission",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.web.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      },
+      "children": []
+    },
+    {
+      "type": "element",
+      "name": "application",
+      "ns": "",
+      "attributes": {
+        "http://schemas.android.com/apk/res/android:theme": "@0x7f100148",
+        "http://schemas.android.com/apk/res/android:label": "@0x7f0f02d8",
+        "http://schemas.android.com/apk/res/android:icon": "@0x7f0d0002",
+        "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.ApplicationLoaderImpl",
+        "http://schemas.android.com/apk/res/android:manageSpaceActivity": "org.telegram.ui.ExternalActionActivity",
+        "http://schemas.android.com/apk/res/android:backupAgent": "org.telegram.messenger.BackupAgent",
+        "http://schemas.android.com/apk/res/android:allowBackup": true,
+        "http://schemas.android.com/apk/res/android:restoreAnyVersion": true,
+        "http://schemas.android.com/apk/res/android:hardwareAccelerated": true,
+        "http://schemas.android.com/apk/res/android:largeHeap": true,
+        "http://schemas.android.com/apk/res/android:supportsRtl": false,
+        "http://schemas.android.com/apk/res/android:extractNativeLibs": true,
+        "http://schemas.android.com/apk/res/android:usesCleartextTraffic": true,
+        "http://schemas.android.com/apk/res/android:roundIcon": "@0x7f0d0002",
+        "http://schemas.android.com/apk/res/android:appComponentFactory": "androidx.core.app.CoreComponentFactory",
+        "http://schemas.android.com/apk/res/android:allowAudioPlaybackCapture": true,
+        "http://schemas.android.com/apk/res/android:requestLegacyExternalStorage": true,
+        "http://schemas.android.com/apk/res/android:preserveLegacyExternalStorage": true,
+        "http://schemas.android.com/apk/res/android:enableOnBackInvokedCallback": true
+      },
+      "children": [
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.maps.v2.API_KEY",
+            "http://schemas.android.com/apk/res/android:value": "AIzaSyA-t0jLPjUt2FxrA8VPK2EiYHcYcboIR6k"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.GcmPushListenerService",
+            "http://schemas.android.com/apk/res/android:exported": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "com.google.firebase.MESSAGING_EVENT"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "uses-library",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.maps",
+            "http://schemas.android.com/apk/res/android:required": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "firebase_analytics_collection_deactivated",
+            "http://schemas.android.com/apk/res/android:value": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "google_analytics_adid_collection_enabled",
+            "http://schemas.android.com/apk/res/android:value": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.measurement.AppMeasurementReceiver",
+            "http://schemas.android.com/apk/res/android:enabled": false,
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.measurement.UPLOAD"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.SMSResultService",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.measurement.AppMeasurementService",
+            "http://schemas.android.com/apk/res/android:enabled": false,
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.GoogleVoiceClientService",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.GoogleVoiceClientActivity",
+            "http://schemas.android.com/apk/res/android:exported": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "com.google.android.voicesearch.SEND_MESSAGE_TO_CONTACTS"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:mimeType": "text/plain"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.SMSJobsNotification",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 513
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x7f100148",
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.ui.LaunchActivity",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:launchMode": 2,
+            "http://schemas.android.com/apk/res/android:configChanges": 4016,
+            "http://schemas.android.com/apk/res/android:windowSoftInputMode": 16,
+            "http://schemas.android.com/apk/res/android:hardwareAccelerated": true,
+            "http://schemas.android.com/apk/res/android:supportsPictureInPicture": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.MAIN"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.SEND"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:mimeType": "image/*"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.SEND"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:mimeType": "video/*"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.SEND_MULTIPLE"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:mimeType": "image/*"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.SEND"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:mimeType": "text/plain"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.SEND"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:mimeType": "*/*"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.SEND_MULTIPLE"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:mimeType": "*/*"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.VIEW"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:mimeType": "vnd.android.cursor.item/vnd.org.telegram.messenger.android.profile"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.VIEW"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.BROWSABLE"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:scheme": "http",
+                    "http://schemas.android.com/apk/res/android:host": "telegram.me"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:scheme": "https",
+                    "http://schemas.android.com/apk/res/android:host": "telegram.me"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:scheme": "http",
+                    "http://schemas.android.com/apk/res/android:host": "telegram.dog"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:scheme": "https",
+                    "http://schemas.android.com/apk/res/android:host": "telegram.dog"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:scheme": "http",
+                    "http://schemas.android.com/apk/res/android:host": "t.me"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:scheme": "https",
+                    "http://schemas.android.com/apk/res/android:host": "t.me"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:icon": "@0x7f0d0000",
+                "http://schemas.android.com/apk/res/android:priority": 1,
+                "http://schemas.android.com/apk/res/android:roundIcon": "@0x7f0d0001"
+              },
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.VIEW"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.BROWSABLE"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:scheme": "tonsite"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:icon": "@0x7f0d0000",
+                "http://schemas.android.com/apk/res/android:priority": 1,
+                "http://schemas.android.com/apk/res/android:roundIcon": "@0x7f0d0001"
+              },
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.VIEW"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.BROWSABLE"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:scheme": "tg"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.CREATE_STICKER_PACK"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:mimeType": "*/*"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "android.service.chooser.chooser_target_service",
+                "http://schemas.android.com/apk/res/android:value": "androidx.sharetarget.ChooserTargetServiceCompat"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "android.app.shortcuts",
+                "http://schemas.android.com/apk/res/android:resource": "@0x7f120008"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.mlkit.vision.DEPENDENCIES",
+                "http://schemas.android.com/apk/res/android:value": "subject_segment"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity-alias",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.DefaultIcon",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:targetActivity": "org.telegram.ui.LaunchActivity"
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.MAIN"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.LAUNCHER"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.MULTIWINDOW_LAUNCHER"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "android.app.shortcuts",
+                "http://schemas.android.com/apk/res/android:resource": "@0x7f120008"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity-alias",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.ui.CallsActivity",
+            "http://schemas.android.com/apk/res/android:permission": "android.permission.CALL_PHONE",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:targetActivity": "org.telegram.ui.LaunchActivity"
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.VIEW"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:mimeType": "vnd.android.cursor.item/vnd.org.telegram.messenger.android.call"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:mimeType": "vnd.android.cursor.item/vnd.org.telegram.messenger.android.call.video"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity-alias",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:icon": "@0x7f0d0006",
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.NoxIcon",
+            "http://schemas.android.com/apk/res/android:enabled": false,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:targetActivity": "org.telegram.ui.LaunchActivity",
+            "http://schemas.android.com/apk/res/android:roundIcon": "@0x7f0d0006"
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.MAIN"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.LAUNCHER"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.MULTIWINDOW_LAUNCHER"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity-alias",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:icon": "@0x7f0d0015",
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.TurboIcon",
+            "http://schemas.android.com/apk/res/android:enabled": false,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:targetActivity": "org.telegram.ui.LaunchActivity",
+            "http://schemas.android.com/apk/res/android:roundIcon": "@0x7f0d0015"
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.MAIN"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.LAUNCHER"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.MULTIWINDOW_LAUNCHER"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity-alias",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:icon": "@0x7f0d000c",
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.PremiumIcon",
+            "http://schemas.android.com/apk/res/android:enabled": false,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:targetActivity": "org.telegram.ui.LaunchActivity",
+            "http://schemas.android.com/apk/res/android:roundIcon": "@0x7f0d000c"
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.MAIN"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.LAUNCHER"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.MULTIWINDOW_LAUNCHER"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity-alias",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:icon": "@0x7f0d000f",
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.AquaIcon",
+            "http://schemas.android.com/apk/res/android:enabled": false,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:targetActivity": "org.telegram.ui.LaunchActivity",
+            "http://schemas.android.com/apk/res/android:roundIcon": "@0x7f0d000f"
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.MAIN"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.LAUNCHER"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.MULTIWINDOW_LAUNCHER"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity-alias",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:icon": "@0x7f0d001b",
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.VintageIcon",
+            "http://schemas.android.com/apk/res/android:enabled": false,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:targetActivity": "org.telegram.ui.LaunchActivity",
+            "http://schemas.android.com/apk/res/android:roundIcon": "@0x7f0d001b"
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.MAIN"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.LAUNCHER"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.MULTIWINDOW_LAUNCHER"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.ui.BubbleActivity",
+            "http://schemas.android.com/apk/res/android:configChanges": 1712,
+            "http://schemas.android.com/apk/res/android:windowSoftInputMode": 16,
+            "http://schemas.android.com/apk/res/android:hardwareAccelerated": true,
+            "http://schemas.android.com/apk/res/android:allowEmbedded": true,
+            "http://schemas.android.com/apk/res/android:documentLaunchMode": 2,
+            "http://schemas.android.com/apk/res/android:resizeableActivity": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x7f10014a",
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.ui.ShareActivity",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:stateNotNeeded": true,
+            "http://schemas.android.com/apk/res/android:excludeFromRecents": true,
+            "http://schemas.android.com/apk/res/android:configChanges": 1712,
+            "http://schemas.android.com/apk/res/android:windowSoftInputMode": 32,
+            "http://schemas.android.com/apk/res/android:hardwareAccelerated": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:icon": "@0x7f0d0000",
+                "http://schemas.android.com/apk/res/android:priority": 1,
+                "http://schemas.android.com/apk/res/android:roundIcon": "@0x7f0d0001"
+              },
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.VIEW"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.BROWSABLE"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:scheme": "tgb"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.ui.ExternalActionActivity",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:configChanges": 1712,
+            "http://schemas.android.com/apk/res/android:windowSoftInputMode": 32,
+            "http://schemas.android.com/apk/res/android:hardwareAccelerated": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:icon": "@0x7f0d0000",
+                "http://schemas.android.com/apk/res/android:roundIcon": "@0x7f0d0001"
+              },
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "org.telegram.passport.AUTHORIZE"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "category",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.category.DEFAULT"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.ui.ChatsWidgetConfigActivity",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:configChanges": 1712,
+            "http://schemas.android.com/apk/res/android:windowSoftInputMode": 32,
+            "http://schemas.android.com/apk/res/android:hardwareAccelerated": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:icon": "@0x7f0d0000",
+                "http://schemas.android.com/apk/res/android:roundIcon": "@0x7f0d0001"
+              },
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.appwidget.action.APPWIDGET_CONFIGURE"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.ui.ContactsWidgetConfigActivity",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:configChanges": 1712,
+            "http://schemas.android.com/apk/res/android:windowSoftInputMode": 32,
+            "http://schemas.android.com/apk/res/android:hardwareAccelerated": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:icon": "@0x7f0d0000",
+                "http://schemas.android.com/apk/res/android:roundIcon": "@0x7f0d0001"
+              },
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.appwidget.action.APPWIDGET_CONFIGURE"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.OpenChatReceiver",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:configChanges": 1712
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.OpenAttachedMenuBotReceiver",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:configChanges": 1712
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x7f100147",
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.ui.PopupNotificationActivity",
+            "http://schemas.android.com/apk/res/android:taskAffinity": "",
+            "http://schemas.android.com/apk/res/android:excludeFromRecents": true,
+            "http://schemas.android.com/apk/res/android:launchMode": 2,
+            "http://schemas.android.com/apk/res/android:configChanges": 4080,
+            "http://schemas.android.com/apk/res/android:windowSoftInputMode": 18,
+            "http://schemas.android.com/apk/res/android:resizeableActivity": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x7f10014a",
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.ui.VoIPPermissionActivity",
+            "http://schemas.android.com/apk/res/android:taskAffinity": "org.telegram.messenger.web.voip",
+            "http://schemas.android.com/apk/res/android:excludeFromRecents": true,
+            "http://schemas.android.com/apk/res/android:configChanges": 1712
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x7f10014b",
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.ui.VoIPFeedbackActivity",
+            "http://schemas.android.com/apk/res/android:taskAffinity": "org.telegram.messenger.web.voip_feedback",
+            "http://schemas.android.com/apk/res/android:excludeFromRecents": true,
+            "http://schemas.android.com/apk/res/android:configChanges": 1712
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.AutoMessageHeardReceiver",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.ACTION_MESSAGE_HEARD"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.CopyCodeReceiver",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.ACTION_COPY_CODE"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.NotificationsDisabledReceiver",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.app.action.NOTIFICATION_CHANNEL_BLOCK_STATE_CHANGED"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.SmsReceiver",
+            "http://schemas.android.com/apk/res/android:exported": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.auth.api.phone.SMS_RETRIEVED"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.CallReceiver",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.PHONE_STATE"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.AuthenticatorService",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.accounts.AccountAuthenticator"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "android.accounts.AccountAuthenticator",
+                "http://schemas.android.com/apk/res/android:resource": "@0x7f120000"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.ContactsSyncAdapterService",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.content.SyncAdapter"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "android.content.SyncAdapter",
+                "http://schemas.android.com/apk/res/android:resource": "@0x7f120009"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "android.provider.CONTACTS_STRUCTURE",
+                "http://schemas.android.com/apk/res/android:resource": "@0x7f120005"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.KeepAliveJob",
+            "http://schemas.android.com/apk/res/android:permission": "android.permission.BIND_JOB_SERVICE",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.BringAppForegroundService",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 2
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.NotificationsService",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.NotificationRepeat",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.VideoEncodingService",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.ui.Stories.recorder.StoryUploadingService",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.ImportingService",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.LocationSharingService",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 9
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.voip.VoIPService",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 226
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.MusicPlayerService",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 2
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.MusicBrowserService",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 2
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.media.browse.MediaBrowserService"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.voip.TelegramConnectionService",
+            "http://schemas.android.com/apk/res/android:permission": "android.permission.BIND_TELECOM_CONNECTION_SERVICE",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.telecom.ConnectionService"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.MusicPlayerReceiver",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "org.telegram.android.musicplayer.close"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "org.telegram.android.musicplayer.pause"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "org.telegram.android.musicplayer.next"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "org.telegram.android.musicplayer.play"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "org.telegram.android.musicplayer.previous"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.MEDIA_BUTTON"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.media.AUDIO_BECOMING_NOISY"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.voip.VoIPMediaButtonReceiver",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.MEDIA_BUTTON"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.AppStartReceiver",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "org.telegram.start"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.intent.action.BOOT_COMPLETED"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.RefererReceiver",
+            "http://schemas.android.com/apk/res/android:permission": "android.permission.INSTALL_PACKAGES",
+            "http://schemas.android.com/apk/res/android:exported": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "com.android.vending.INSTALL_REFERRER"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.WearReplyReceiver",
+            "http://schemas.android.com/apk/res/android:enabled": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.WearAuthListenerService",
+            "http://schemas.android.com/apk/res/android:exported": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.wearable.MESSAGE_RECEIVED"
+                  },
+                  "children": []
+                },
+                {
+                  "type": "element",
+                  "name": "data",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:scheme": "wear",
+                    "http://schemas.android.com/apk/res/android:host": "*",
+                    "http://schemas.android.com/apk/res/android:pathPrefix": "/tg-wear-auth/"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.StopLiveLocationReceiver",
+            "http://schemas.android.com/apk/res/android:enabled": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.PopupReplyReceiver",
+            "http://schemas.android.com/apk/res/android:enabled": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.NotificationCallbackReceiver",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.ShareBroadcastReceiver",
+            "http://schemas.android.com/apk/res/android:enabled": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.CustomTabsCopyReceiver",
+            "http://schemas.android.com/apk/res/android:enabled": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.NotificationDismissReceiver",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.voip.VoIPActionsReceiver",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.ShortcutResultReceiver",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "provider",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "androidx.core.content.FileProvider",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:authorities": "org.telegram.messenger.web.provider",
+            "http://schemas.android.com/apk/res/android:grantUriPermissions": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "android.support.FILE_PROVIDER_PATHS",
+                "http://schemas.android.com/apk/res/android:resource": "@0x7f120007"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "provider",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.NotificationImageProvider",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:authorities": "org.telegram.messenger.web.notification_image_provider",
+            "http://schemas.android.com/apk/res/android:grantUriPermissions": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "provider",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.voip.CallNotificationSoundProvider",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:authorities": "org.telegram.messenger.web.call_sound_provider"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.ChatsWidgetProvider",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "android.appwidget.provider",
+                "http://schemas.android.com/apk/res/android:resource": "@0x7f120003"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.appwidget.action.APPWIDGET_UPDATE"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.ChatsWidgetService",
+            "http://schemas.android.com/apk/res/android:permission": "android.permission.BIND_REMOTEVIEWS",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.ContactsWidgetProvider",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "android.appwidget.provider",
+                "http://schemas.android.com/apk/res/android:resource": "@0x7f120006"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.appwidget.action.APPWIDGET_UPDATE"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.ContactsWidgetService",
+            "http://schemas.android.com/apk/res/android:permission": "android.permission.BIND_REMOTEVIEWS",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.telegram.messenger.FilesMigrationService",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:foregroundServiceType": 1
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "uses-library",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.sec.android.app.multiwindow",
+            "http://schemas.android.com/apk/res/android:required": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.sec.android.support.multiwindow",
+            "http://schemas.android.com/apk/res/android:value": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.sec.android.multiwindow.DEFAULT_SIZE_W",
+            "http://schemas.android.com/apk/res/android:value": "632dp"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.sec.android.multiwindow.DEFAULT_SIZE_H",
+            "http://schemas.android.com/apk/res/android:value": "598dp"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.sec.android.multiwindow.MINIMUM_SIZE_W",
+            "http://schemas.android.com/apk/res/android:value": "632dp"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.sec.android.multiwindow.MINIMUM_SIZE_H",
+            "http://schemas.android.com/apk/res/android:value": "598dp"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.wallet.api.enabled",
+            "http://schemas.android.com/apk/res/android:value": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.vision.DEPENDENCIES",
+            "http://schemas.android.com/apk/res/android:value": "face,barcode"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "android.max_aspect",
+            "http://schemas.android.com/apk/res/android:value": 2.5
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME",
+            "http://schemas.android.com/apk/res/android:value": "org.telegram.messenger.chromecast.ChromecastOptionsProvider"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "androidx.credentials.playservices.CredentialProviderMetadataHolder",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "androidx.credentials.CREDENTIAL_PROVIDER_KEY",
+                "http://schemas.android.com/apk/res/android:value": "androidx.credentials.playservices.CredentialProviderPlayServicesImpl"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x7f10012f",
+            "http://schemas.android.com/apk/res/android:name": "androidx.credentials.playservices.controllers.identityauth.HiddenActivity",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:configChanges": 1440,
+            "http://schemas.android.com/apk/res/android:fitsSystemWindows": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x7f10012f",
+            "http://schemas.android.com/apk/res/android:name": "androidx.credentials.playservices.controllers.identitycredentials.IdentityCredentialApiHiddenActivity",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:configChanges": 1440,
+            "http://schemas.android.com/apk/res/android:fitsSystemWindows": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.cast.framework.media.MediaIntentReceiver",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.cast.framework.ReconnectionService",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "uses-library",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "org.apache.http.legacy",
+            "http://schemas.android.com/apk/res/android:required": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.play.billingclient.version",
+            "http://schemas.android.com/apk/res/android:value": "7.1.1"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x01030010",
+            "http://schemas.android.com/apk/res/android:name": "com.android.billingclient.api.ProxyBillingActivity",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:configChanges": 1456
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x01030010",
+            "http://schemas.android.com/apk/res/android:name": "com.android.billingclient.api.ProxyBillingActivityV2",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:configChanges": 1456
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.mlkit.common.internal.MlKitComponentDiscoveryService",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:directBootAware": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.firebase.components:com.google.mlkit.nl.languageid.bundled.internal.ThickLanguageIdRegistrar",
+                "http://schemas.android.com/apk/res/android:value": "com.google.firebase.components.ComponentRegistrar"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.firebase.components:com.google.mlkit.vision.segmentation.subject.internal.SubjectSegmentationRegistrar",
+                "http://schemas.android.com/apk/res/android:value": "com.google.firebase.components.ComponentRegistrar"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.firebase.components:com.google.mlkit.vision.label.defaults.thin.ThinLabelRegistrar",
+                "http://schemas.android.com/apk/res/android:value": "com.google.firebase.components.ComponentRegistrar"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.firebase.components:com.google.mlkit.nl.languageid.internal.LanguageIdRegistrar",
+                "http://schemas.android.com/apk/res/android:value": "com.google.firebase.components.ComponentRegistrar"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar",
+                "http://schemas.android.com/apk/res/android:value": "com.google.firebase.components.ComponentRegistrar"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar",
+                "http://schemas.android.com/apk/res/android:value": "com.google.firebase.components.ComponentRegistrar"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "provider",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.mlkit.common.internal.MlKitInitProvider",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:authorities": "org.telegram.messenger.web.mlkitinitprovider",
+            "http://schemas.android.com/apk/res/android:initOrder": 99
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x01030010",
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.auth.api.signin.internal.SignInHubActivity",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:excludeFromRecents": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.auth.api.signin.RevocationBoundService",
+            "http://schemas.android.com/apk/res/android:permission": "com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION",
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:visibleToInstantApps": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x01030010",
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.common.api.GoogleApiActivity",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.firebase.iid.FirebaseInstanceIdReceiver",
+            "http://schemas.android.com/apk/res/android:permission": "com.google.android.c2dm.permission.SEND",
+            "http://schemas.android.com/apk/res/android:exported": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "com.google.android.c2dm.intent.RECEIVE"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.firebase.messaging.FirebaseMessagingService",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:directBootAware": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:priority": -500
+              },
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "com.google.firebase.MESSAGING_EVENT"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.firebase.components.ComponentDiscoveryService",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:directBootAware": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar",
+                "http://schemas.android.com/apk/res/android:value": "com.google.firebase.components.ComponentRegistrar"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.firebase.components:com.google.firebase.remoteconfig.RemoteConfigRegistrar",
+                "http://schemas.android.com/apk/res/android:value": "com.google.firebase.components.ComponentRegistrar"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.firebase.components:com.google.firebase.datatransport.TransportRegistrar",
+                "http://schemas.android.com/apk/res/android:value": "com.google.firebase.components.ComponentRegistrar"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar",
+                "http://schemas.android.com/apk/res/android:value": "com.google.firebase.components.ComponentRegistrar"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "com.google.firebase.components:com.google.firebase.abt.component.AbtRegistrar",
+                "http://schemas.android.com/apk/res/android:value": "com.google.firebase.components.ComponentRegistrar"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "provider",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.firebase.provider.FirebaseInitProvider",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:authorities": "org.telegram.messenger.web.firebaseinitprovider",
+            "http://schemas.android.com/apk/res/android:initOrder": 100,
+            "http://schemas.android.com/apk/res/android:directBootAware": true
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "androidx.car.app.CarAppMetadataHolderService",
+            "http://schemas.android.com/apk/res/android:enabled": false,
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:process": ""
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "androidx.car.app.CarAppMetadataHolderService.CAR_HARDWARE_MANAGER",
+                "http://schemas.android.com/apk/res/android:value": "androidx.car.app.hardware.ProjectedCarHardwareManager"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x01030010",
+            "http://schemas.android.com/apk/res/android:name": "androidx.car.app.CarAppPermissionActivity",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "androidx.car.app.notification.CarAppNotificationBroadcastReceiver",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "androidx.sharetarget.ChooserTargetServiceCompat",
+            "http://schemas.android.com/apk/res/android:permission": "android.permission.BIND_CHOOSER_TARGET_SERVICE",
+            "http://schemas.android.com/apk/res/android:exported": true
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "android.service.chooser.ChooserTargetService"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "provider",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "androidx.startup.InitializationProvider",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:authorities": "org.telegram.messenger.web.androidx-startup"
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "androidx.emoji2.text.EmojiCompatInitializer",
+                "http://schemas.android.com/apk/res/android:value": "androidx.startup"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "androidx.lifecycle.ProcessLifecycleInitializer",
+                "http://schemas.android.com/apk/res/android:value": "androidx.startup"
+              },
+              "children": []
+            },
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "androidx.profileinstaller.ProfileInstallerInitializer",
+                "http://schemas.android.com/apk/res/android:value": "androidx.startup"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "meta-data",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.gms.version",
+            "http://schemas.android.com/apk/res/android:value": "@0x7f0a000a"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "androidx.profileinstaller.ProfileInstallReceiver",
+            "http://schemas.android.com/apk/res/android:permission": "android.permission.DUMP",
+            "http://schemas.android.com/apk/res/android:enabled": true,
+            "http://schemas.android.com/apk/res/android:exported": true,
+            "http://schemas.android.com/apk/res/android:directBootAware": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "androidx.profileinstaller.action.INSTALL_PROFILE"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "androidx.profileinstaller.action.SKIP_FILE"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "androidx.profileinstaller.action.SAVE_PROFILE"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "element",
+              "name": "intent-filter",
+              "ns": "",
+              "attributes": {},
+              "children": [
+                {
+                  "type": "element",
+                  "name": "action",
+                  "ns": "",
+                  "attributes": {
+                    "http://schemas.android.com/apk/res/android:name": "androidx.profileinstaller.action.BENCHMARK_OPERATION"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.datatransport.runtime.backends.TransportBackendDiscovery",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": [
+            {
+              "type": "element",
+              "name": "meta-data",
+              "ns": "",
+              "attributes": {
+                "http://schemas.android.com/apk/res/android:name": "backend:com.google.android.datatransport.cct.CctBackendFactory",
+                "http://schemas.android.com/apk/res/android:value": "cct"
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "name": "service",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService",
+            "http://schemas.android.com/apk/res/android:permission": "android.permission.BIND_JOB_SERVICE",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "receiver",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver",
+            "http://schemas.android.com/apk/res/android:exported": false
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "provider",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:name": "ru.noties.jlatexmath.JLatexMathInitProvider",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:authorities": "org.telegram.messenger.web.jlatexmathinitprovider"
+          },
+          "children": []
+        },
+        {
+          "type": "element",
+          "name": "activity",
+          "ns": "",
+          "attributes": {
+            "http://schemas.android.com/apk/res/android:theme": "@0x7f100134",
+            "http://schemas.android.com/apk/res/android:name": "com.google.android.play.core.common.PlayCoreDialogWrapperActivity",
+            "http://schemas.android.com/apk/res/android:exported": false,
+            "http://schemas.android.com/apk/res/android:stateNotNeeded": true
+          },
+          "children": []
+        }
+      ]
+    }
+  ]
+}

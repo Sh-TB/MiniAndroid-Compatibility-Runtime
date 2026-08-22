@@ -1,0 +1,2068 @@
+{
+  "apis": [
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "addUpdateListener",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "booleanValue",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "checkSystemBarColors",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "contains",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "createNewFile",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "detachSheets",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "equals",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "flush",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "format",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "get",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getAbsolutePath",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getBoolean",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getContext",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getLastStoryViewer",
+      "priority": 3
+    },
+    {
+      "call_count": 11,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getResourceEntryName",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "init",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "isClientActivated",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "isEmpty",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "isWasInBackground",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "length",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "onPause",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "resetBackgroundVar",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setBaseActivity",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setDuration",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setInterpolator",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setStartDelay",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "size",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "<unknown>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "startAppCenterInternal",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "attach",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onCreate(executed)",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onResume",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "onStart",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Activity",
+      "descriptor": "(I)V",
+      "first_seen_exp": 7,
+      "implementation_status": "PARTIAL",
+      "method": "setContentView",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/animation/AnimatorListenerAdapter;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/animation/AnimatorSet;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/animation/AnimatorSet;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "addListener",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/animation/AnimatorSet;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "playTogether",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "Landroid/animation/ValueAnimator;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "ofInt",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/app/Application;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getExternalFilesDir",
+      "priority": 3
+    },
+    {
+      "call_count": 15,
+      "category": "ACTIVITY",
+      "class": "Landroid/app/Application;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getResources",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/app/Application;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getSharedPreferences",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/app/backup/BackupManager;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/app/backup/BackupManager;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "dataChanged",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "Landroid/content/Intent;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getAction",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Landroid/content/Intent;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getBooleanExtra",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Landroid/content/Intent;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getData",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Landroid/content/Intent;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getFlags",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/content/Intent;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getIntExtra",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/content/Intent;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setAction",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "apply",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "putLong",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/content/SharedPreferences;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "edit",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/content/SharedPreferences;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getAll",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/content/SharedPreferences;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getBoolean",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/content/SharedPreferences;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getInt",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/graphics/Paint;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/graphics/Rect;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/os/Bundle;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/os/Bundle;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getInt",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/os/Environment;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getExternalStorageState",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Landroid/os/SystemClock;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "elapsedRealtime",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/text/TextUtils;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "isEmpty",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Landroid/text/style/CharacterStyle;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/util/Log;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "d",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/View;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getSystemUiVisibility",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/View;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setSystemUiVisibility",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/Window;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getDecorView",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/Window;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setNavigationBarColor",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/view/Window;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setStatusBarColor",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/widget/FrameLayout;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroid/widget/FrameLayout;<super>",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setBackgroundColor",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/core/view/WindowCompat$Api16Impl;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setDecorFitsSystemWindows",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Landroidx/core/view/WindowCompat;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setDecorFitsSystemWindows",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lj$/util/Objects;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "requireNonNull",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lj$/util/concurrent/ConcurrentHashMap;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "f",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lj$/util/concurrent/ConcurrentHashMap;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "i",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Ljava/io/File;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/io/File;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "mkdirs",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Ljava/io/FileOutputStream;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Ljava/io/OutputStreamWriter;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Ljava/io/OutputStreamWriter;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "write",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/Boolean;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "valueOf",
+      "priority": 3
+    },
+    {
+      "call_count": 6,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/IllegalArgumentException;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 22,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/Integer;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "valueOf",
+      "priority": 3
+    },
+    {
+      "call_count": 24,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/Object;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 10,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/StringBuilder;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 24,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/StringBuilder;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "append",
+      "priority": 3
+    },
+    {
+      "call_count": 10,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/StringBuilder;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "toString",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Ljava/lang/System;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "currentTimeMillis",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/ArrayList;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/ArrayList;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "size",
+      "priority": 3
+    },
+    {
+      "call_count": 11,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/HashMap;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "get",
+      "priority": 3
+    },
+    {
+      "call_count": 11,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/HashMap;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "put",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/HashSet;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/Iterator;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "hasNext",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/List;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "add",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/List;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "contains",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/List;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "get",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/List;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "isEmpty",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/List;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "size",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/Locale;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getDefault",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/Map;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "entrySet",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/Set;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "iterator",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Ljava/util/TimeZone;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getDefault",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lme/vkryl/android/animator/BoolAnimator;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lme/vkryl/android/animator/FactorAnimator;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/AndroidUtilities;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "cancelRunOnUIThread",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/AndroidUtilities;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "enableEdgeToEdge",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/AndroidUtilities;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getLogsDir",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/AndroidUtilities;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "handleProxyIntent",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/AndroidUtilities;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "isTablet",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/AndroidUtilities;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "isTabletForce",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/AndroidUtilities;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "isTabletInternal",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/AndroidUtilities;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "needShowPasscode",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/AndroidUtilities;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "runOnUIThread",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/ApplicationLoader;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "startAppCenter",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/BackupAgent;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "requestBackup",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/DispatchQueue;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/FileLog;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "d",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/FileLog;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "ensureInitied",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/FileLog;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getInstance",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/ImageLoader;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getInstance",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/ImageLoader;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "onFragmentStackChanged",
+      "priority": 3
+    },
+    {
+      "call_count": 11,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/LocaleController;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getInstance",
+      "priority": 3
+    },
+    {
+      "call_count": 22,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/LocaleController;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getString",
+      "priority": 3
+    },
+    {
+      "call_count": 11,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/LocaleController;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getStringInternal",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/MediaController;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getInstance",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/MessagesController;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getGlobalMainSettings",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/MessagesController;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getInstance",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/UserConfig;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getInstance",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/Utilities;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "doCallbacks",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/time/FastDateFormat$1;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "createInstance",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/time/FastDateFormat$1;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getInstance",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/time/FastDateFormat;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getInstance",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/time/FormatCache$MultipartKey;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/messenger/time/FormatCache$MultipartKey;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "hashCode",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/tgnet/ConnectionsManager;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "generateClassGuid",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/ActionBar$$ExternalSyntheticLambda3;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/ActionBar;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/ActionBar;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getTitle",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/ActionBar;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setBackgroundColor",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/ActionBar;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setItemsBackgroundColor",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/ActionBar;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setItemsColor",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/ActionBar;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setOnClickListener",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/ActionBarLayout;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "addFragmentToStack",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/ActionBarLayout;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "checkBlackScreen",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/ActionBarLayout;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getFragmentStack",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/ActionBarLayout;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "onFragmentStackChanged",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/ActionBarLayout;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setVisibility",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/BaseFragment$1;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/BaseFragment;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/INavigationLayout$-CC;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "$default$addFragmentToStack",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/INavigationLayout$-CC;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "$default$getParentActivity",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/INavigationLayout$-CC;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "$default$getView",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/INavigationLayout$-CC;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "$default$rebuildFragments",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/INavigationLayout;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "getLastFragment",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/ActionBar/Theme;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getColor",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/Components/Bulletin;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "addDelegate",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/Components/EllipsizeSpanAnimator$$ExternalSyntheticLambda0;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/Components/EllipsizeSpanAnimator$1$1;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/Components/EllipsizeSpanAnimator$1;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/Components/EllipsizeSpanAnimator$TextAlphaSpan;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/Components/EllipsizeSpanAnimator;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 6,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/Components/EllipsizeSpanAnimator;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "createEllipsizeAnimator",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/Components/ForegroundDetector;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getInstance",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/Components/Premium/boosts/GiftInfoBottomSheet;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "handleIntent",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/Components/Premium/boosts/UserSelectorBottomSheet;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "handleIntent",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/IntroActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/IntroActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "checkSystemBarColors",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/IntroActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "createActionBar",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/IntroActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getParentActivity",
+      "priority": 3
+    },
+    {
+      "call_count": 4,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/IntroActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getResourceProvider",
+      "priority": 3
+    },
+    {
+      "call_count": 5,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/IntroActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getThemedColor",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/IntroActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "onBecomeFullyVisible",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/IntroActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "onFragmentCreate",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/IntroActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setParentActivityTitle",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/IntroActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "setParentLayout",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/IntroActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setTag",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/IntroActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "updateSheetsVisibility",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity$$ExternalSyntheticLambda45;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity$7;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity$ActivityContentLayout;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "setTag",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "$r8$lambda$9AkzApKoX_H9580rMgJ6DWboCok",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "checkFrameMetrics",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "checkLayout",
+      "priority": 3
+    },
+    {
+      "call_count": 3,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "STUBBED",
+      "method": "checkSystemBarColors",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getClientNotActivatedFragment",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getIntent",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getLastFragment",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getWindow",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "handleIntent",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "lambda$onCreate$1",
+      "priority": 3
+    },
+    {
+      "call_count": 2,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LaunchActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "switchToAccount",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/LoginActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "loadCurrentState",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/RestrictedLanguagesSelectActivity$$ExternalSyntheticLambda0;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/RestrictedLanguagesSelectActivity$$ExternalSyntheticLambda2;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/RestrictedLanguagesSelectActivity$$ExternalSyntheticLambda3;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/RestrictedLanguagesSelectActivity$$ExternalSyntheticLambda4;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/RestrictedLanguagesSelectActivity$$ExternalSyntheticLambda5;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "<init>",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/RestrictedLanguagesSelectActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "checkRestrictedLanguages",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "ACTIVITY",
+      "class": "Lorg/telegram/ui/RestrictedLanguagesSelectActivity;",
+      "descriptor": "()V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "getExtendedDoNotTranslate",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "RESOURCE",
+      "class": "ResourceManager",
+      "descriptor": "(Landroid/content/res/Resources;)V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "initialize",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "RENDERER",
+      "class": "View",
+      "descriptor": "(Landroid/graphics/Canvas;)V",
+      "first_seen_exp": 7,
+      "implementation_status": "IMPLEMENTED",
+      "method": "draw",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "LAYOUT",
+      "class": "View",
+      "descriptor": "(IIII)V",
+      "first_seen_exp": 7,
+      "implementation_status": "PARTIAL",
+      "method": "layout",
+      "priority": 3
+    },
+    {
+      "call_count": 1,
+      "category": "LAYOUT",
+      "class": "View",
+      "descriptor": "(II)V",
+      "first_seen_exp": 7,
+      "implementation_status": "PARTIAL",
+      "method": "measure",
+      "priority": 3
+    }
+  ],
+  "based_on_apk": "download/exp038_telegram/Telegram.apk",
+  "generated": "2026-08-11",
+  "source": "EXP-007->EXP-012 MEGA BATCH execution",
+  "total_unique_apis": 206
+}
