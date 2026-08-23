@@ -1452,6 +1452,11 @@ public:
     bool execute_return_void(uint32_t pc, InstructionTrace& trace);
     bool execute_return(uint32_t pc, InstructionTrace& trace);
     bool execute_return_object(uint32_t pc, InstructionTrace& trace);
+    // EXP-088+ F5: return-wide (opcode 0x10) — returns a long/double value.
+    // Reads the wide register pair (vAA, vAA+1) and stores the combined
+    // 64-bit value in last_invoke_return_.long_val (INT64) or
+    // last_invoke_return_.double_val (FLOAT64).
+    bool execute_return_wide(uint32_t pc, InstructionTrace& trace);
     
     // Opcode implementations — Control flow
     bool execute_goto(uint32_t pc, InstructionTrace& trace);

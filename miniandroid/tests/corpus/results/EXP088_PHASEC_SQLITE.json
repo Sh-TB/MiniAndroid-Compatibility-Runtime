@@ -1,6 +1,6 @@
 {
   "test": "EXP-088 Phase C \u2014 SQLite micro test",
-  "generated_at": "2026-08-23T20:34:44.091298+00:00",
+  "generated_at": "2026-08-23T21:02:43.217197+00:00",
   "db_path": "/tmp/exp088_sqlite_micro.db",
   "sqlite_version": "3.53.1",
   "steps": [
