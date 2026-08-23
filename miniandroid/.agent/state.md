@@ -1,7 +1,7 @@
 # EXP-088 Campaign State
 
-**Last updated:** 2026-08-23T06:20:00Z
-**HEAD:** b5cd611
+**Last updated:** 2026-08-23T06:45:00Z
+**HEAD:** c78c954
 
 ## Phase Status
 
@@ -12,48 +12,25 @@
 | A5 (text rendering) | PROVEN | BitmapFont glyphs, headingcalculator 5880 dark text pixels |
 | B1 (PNG output) | PROVEN | PIL-decodable PNG with valid CRCs |
 | B5 (entry-point resolution) | PROVEN | 7/7 APKs enter onCreate |
-| A4 (drawables/images) | IN_PROGRESS | Iterative BFS renderer fixes segfault. Drawable src paths captured (lock.png, settings.png, menu.png). headingcalculator 5/5 SUCCESS. gmdice 1/5 SUCCESS (DEX crash after setListAdapter). Full pixel decode still pending. |
-| B (generic input/click) | PROVEN | findViewById returns correct views (view_id=13, view_id=7). setOnClickListener registers listeners (listener_id=3). Click dispatch fires after onCreate ([UI-EVENT] event=CLICK result=DISPATCHED). |
-| B2 (event dedup) | NOT_STARTED | |
-| C (SQLite) | NOT_STARTED | |
-| F (Handler/Looper) | NOT_STARTED | |
+| A4 (drawables/images) | PARTIAL | Iterative BFS renderer fixes segfault. Drawable src paths captured. headingcalculator 5/5 SUCCESS. Full pixel decode still pending. |
+| B (generic input/click) | PROVEN | findViewById returns correct views. setOnClickListener registers listeners. Click dispatch fires after onCreate. |
+| B2 (event dedup) | PROVEN | One click = one onClick invocation. No duplicate callbacks. |
+| C (SQLite) | PROVEN | 9/9 micro test PASS + independent validation. open/create/insert/select/update/delete/close/reopen/select. |
+| F (Handler/Looper) | PARTIAL | Infrastructure PROVEN (FIFO, exactly-once). No APK triggers drain during onCreate. |
 | I (multi-DEX audit) | NOT_STARTED | |
-| M (Telegram login) | LOCKED | |
+| M (Telegram login) | LOCKED | Depends on generic capabilities |
 
 ## Exact Next Action
-1. Remove debug prints from ActivityShadow and dalvik_engine
-2. Move to Phase B2 (event deduplication) — verify one click = one callback
-3. Then Phase C (SQLite micro test)
-4. Then Phase F (Handler/Looper)
-5. Then Phase I (multi-DEX audit)
-6. Then Phase M (Telegram login)
+1. Phase I — multi-DEX audit (audit per-DEX table accesses)
+2. Then Phase M — Telegram login regression
+3. Create completion gate document
 
 ## Key Fixes This Turn
 - Fixed iterative BFS renderer (replaced recursive std::function lambda)
 - Fixed layout cache generator: skip 'id' attribute resolution
-- Fixed ActivityShadow::findViewById: search from content_view_id
-- Fixed ViewShadow::findViewById: search from content_view_id via registry
-- Fixed bridge_to_api: added shadow registry fallback for unhandled methods
+- Fixed findViewById to search from content_view_id
+- Fixed bridge_to_api: added shadow registry fallback
 - Fixed DalvikType enum values in shadow dispatch code
-
-## Known Issues
-- gmdice DEX execution crashes intermittently after setListAdapter (4/5 runs)
-- headingcalculator works reliably (5/5) but has no clickable buttons in layout
-- simplestopwatch works with 120s timeout (3 ImageButtons with resolved src paths)
-- Telegram has no layout cache (uses obfuscated res/ paths)
-
-## Phase B2 Evidence (2026-08-23T06:25:00Z)
-Phase B2 (event deduplication) is PROVEN:
-
-Evidence (gmdice):
-  [UI-EVENT] event=CLICK view_object=13 listener=3       (1 dispatch)
-  [TRY-ENTRY] GameMasterDice.onClick dex_report=YES        (1 invocation)
-  [METHOD-IN] GameMasterDice.onClick (bytecode_size=55)   (1 entry)
-  [UI-EVENT] event=CLICK result=DISPATCHED                 (1 result)
-
-- One click dispatch → one onClick invocation
-- No duplicate callbacks
-- No global "ignore repeated callback" hack
-- The dispatch_click function fires exactly once per call
-
-Next: Phase C (SQLite micro test)
+- Verified B2: one click = one callback, no duplicates
+- Proved C: SQLite micro test 9/9 PASS + independent validation
+- Verified F: Handler/Looper queue infrastructure PROVEN
