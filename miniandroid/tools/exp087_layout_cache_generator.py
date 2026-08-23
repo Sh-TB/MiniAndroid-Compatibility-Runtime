@@ -242,6 +242,11 @@ def generate_layout_cache(apk_path: Path) -> dict:
         """Recursively resolve resource references in attributes."""
         attrs = node.get("attributes", {})
         for k, v in list(attrs.items()):
+            # EXP-088 Phase B FIX: Do NOT resolve 'id' attributes — they contain
+            # view ID references like @0x7f080000 that must be kept as-is for
+            # the C++ inflate_view_tree to parse them as android_view_id.
+            if k == "id":
+                continue
             if isinstance(v, str) and v.startswith("@0x"):
                 try:
                     resolved = resolve_resource_ref(v)

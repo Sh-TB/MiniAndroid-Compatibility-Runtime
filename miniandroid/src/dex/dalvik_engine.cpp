@@ -7849,6 +7849,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           const std::vector<DalvikValue>& args,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status) {
+    // EXP-088 Phase B debug
+    if (method == "findViewById") {
+        std::cerr << "[EXP088-B-ENTER] bridge_to_api: " << class_name << "." << method
+                  << " args=" << args.size()
+                  << " shadow=" << (shadow_registry_ ? "YES" : "NO")
+                  << std::endl;
+    }
     // EXP-071 Phase 7: Diagnostic — log HashMap.put/get entry to bridge_to_api.
     if (class_name.find("HashMap") != std::string::npos &&
         (method == "put" || method == "get")) {
@@ -9951,6 +9958,58 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = get_or_create_singleton("Landroid/content/res/AssetManager;");
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+
+    // EXP-088 Phase B FIX: Fall through to shadow registry for unhandled methods.
+    // This is critical for findViewById, setOnClickListener, and other View/Activity
+    // methods that are handled by the shadow registry but not by bridge_to_api.
+    if (method == "findViewById") {
+        std::cerr << "[EXP088-B-FALLBACK] Reached shadow registry fallback for "
+                  << class_name << "." << method
+                  << " shadow=" << (shadow_registry_ ? "YES" : "NO") << std::endl;
+    }
+    if (shadow_registry_ != nullptr) {
+        framework::CallContext ctx;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            ctx.has_receiver = true;
+            ctx.receiver_id = args[0].object_id;
+            ctx.receiver_class = args[0].class_desc;
+            ctx.class_name = args[0].class_desc;
+        } else {
+            ctx.class_name = class_name;
+        }
+        ctx.method = method;
+        // Convert DalvikValue args to CallContext::Arg (skip arg[0] = receiver)
+        for (size_t i = 1; i < args.size(); i++) {
+            framework::CallContext::Arg arg;
+            if (args[i].type == DalvikType::INT32) {
+                arg.kind = framework::CallContext::Arg::Kind::INT;
+                arg.int_val = args[i].int_val;
+            } else if (args[i].type == DalvikType::OBJECT_REF) {
+                arg.kind = framework::CallContext::Arg::Kind::OBJECT;
+                arg.object_id = args[i].object_id;
+                arg.object_class = args[i].class_desc;
+            } else if (args[i].type == DalvikType::STRING_REF) {
+                arg.kind = framework::CallContext::Arg::Kind::STRING;
+                arg.string_val = args[i].string_val;
+            } else if (args[i].type == DalvikType::INT64) {
+                arg.kind = framework::CallContext::Arg::Kind::LONG;
+                arg.long_val = args[i].long_val;
+            } else if (args[i].type == DalvikType::FLOAT32) {
+                arg.kind = framework::CallContext::Arg::Kind::FLOAT;
+                arg.float_val = args[i].float_val;
+            } else if (args[i].type == DalvikType::FLOAT64) {
+                arg.kind = framework::CallContext::Arg::Kind::DOUBLE;
+                arg.double_val = args[i].double_val;
+            }
+            ctx.args.push_back(arg);
+        }
+        auto cr = shadow_registry_->dispatch(ctx);
+        if (cr.handled) {
+            result = call_result_to_dalvik(cr);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
 
     // Default: stubbed but not crashing
