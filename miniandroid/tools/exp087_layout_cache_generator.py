@@ -226,10 +226,15 @@ def generate_layout_cache(apk_path: Path) -> dict:
             try:
                 res_id = int(val[1:], 16)
                 if arsc_parser:
+                    # Try string resolution first (for @string/ references)
                     resolved = arsc_parser.resolve_string(res_id)
-                    if resolved:
+                    if isinstance(resolved, str) and resolved:
                         return resolved
-            except (ValueError, AttributeError):
+                    # Try layout path resolution (for @layout/ references)
+                    layout_path = arsc_parser.resolve_layout_path(res_id)
+                    if isinstance(layout_path, str) and layout_path:
+                        return layout_path
+            except (ValueError, AttributeError, TypeError):
                 pass
         return val
 
@@ -238,10 +243,13 @@ def generate_layout_cache(apk_path: Path) -> dict:
         attrs = node.get("attributes", {})
         for k, v in list(attrs.items()):
             if isinstance(v, str) and v.startswith("@0x"):
-                resolved = resolve_resource_ref(v)
-                attrs[k] = resolved
-                if k == "text" and resolved != v:
-                    cache["strings"][v] = resolved
+                try:
+                    resolved = resolve_resource_ref(v)
+                    attrs[k] = resolved
+                    if k == "text" and resolved != v:
+                        cache["strings"][v] = resolved
+                except Exception:
+                    pass  # Skip unresolvable references
         for child in node.get("children", []):
             resolve_tree_attrs(child)
 
@@ -268,7 +276,7 @@ def generate_layout_cache(apk_path: Path) -> dict:
                             "view_tree": view_tree,
                         }
                 except Exception as e:
-                    pass
+                    sys.stderr.write(f"PARSE ERROR {layout_path}: {e}\n")
 
     except Exception as e:
         cache["error"] = str(e)
@@ -283,9 +291,13 @@ def generate_layout_cache(apk_path: Path) -> dict:
                     rid = 0x7f000000 | (type_byte << 16) | entry
                     layout_path = arsc_parser.resolve_layout_path(rid)
                     if layout_path:
-                        # Match to our cached layouts by path
+                        # Match to our cached layouts by filename stem (not exact path)
+                        # because config-specific layouts (res/layout-v5/) have different
+                        # directory prefixes but the same filename.
+                        target_stem = Path(layout_path).stem
                         for layout_name, layout_info in cache["layouts"].items():
-                            if layout_info["path"] == layout_path:
+                            cached_stem = Path(layout_info["path"]).stem
+                            if cached_stem == target_stem and "resource_id_int" not in layout_info:
                                 layout_info["resource_id"] = f"0x{rid:08x}"
                                 layout_info["resource_id_int"] = rid
                                 break
