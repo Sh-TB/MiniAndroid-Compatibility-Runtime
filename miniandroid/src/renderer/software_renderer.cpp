@@ -824,18 +824,23 @@ bool PNGWriter::write_png(const std::string& filename, const FrameBuffer& fb) {
     file.write(reinterpret_cast<const char*>(png_signature), 8);
     
     // Helper lambda to write a chunk
+    // EXP-086 Phase 4 (B1 FIX): Use zlib's crc32() for proper PNG chunk CRC.
+    // The previous custom crc32() implementation was missing the standard
+    // 0xFFFFFFFF init XOR, producing wrong CRCs that PIL/libpng reject.
     auto write_chunk = [&](const char* type, const uint8_t* data, size_t length) {
         uint32_t length_be = __builtin_bswap32(static_cast<uint32_t>(length));
         file.write(reinterpret_cast<const char*>(&length_be), 4);
         file.write(type, 4);
         file.write(reinterpret_cast<const char*>(data), length);
-        
-        uint32_t crc_val = crc32(reinterpret_cast<const uint8_t*>(type), 4);
+
+        // PNG CRC = zlib crc32 over (type + data)
+        // zlib's crc32() handles the 0xFFFFFFFF init and final XOR automatically.
+        uLong crc_val = ::crc32(0L, Z_NULL, 0);  // init
+        crc_val = ::crc32(crc_val, reinterpret_cast<const Bytef*>(type), 4);
         if (length > 0) {
-            crc_val = crc32(data, length, crc_val);
+            crc_val = ::crc32(crc_val, reinterpret_cast<const Bytef*>(data), length);
         }
-        crc_val ^= 0xFFFFFFFF;  // Final XOR
-        uint32_t crc_be = __builtin_bswap32(crc_val);
+        uint32_t crc_be = __builtin_bswap32(static_cast<uint32_t>(crc_val));
         file.write(reinterpret_cast<const char*>(&crc_be), 4);
     };
     
