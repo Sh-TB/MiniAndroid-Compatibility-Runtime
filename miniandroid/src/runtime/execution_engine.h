@@ -20,6 +20,8 @@
 #include "dex/dalvik_engine.h"  // EXP-031: Real Dalvik engine
 #include "api/android_stubs.h"
 #include "diagnostics/trace_engine.h"
+// EXP-086 Phase 7 (B4 FIX): ShadowRegistry for Handler/Looper dispatch
+#include "framework/shadow_registry.h"
 
 namespace miniandroid {
 namespace runtime {
@@ -128,6 +130,10 @@ public:
      */
     diagnostics::TraceEngine& get_trace_engine() { return trace_engine_; }
 
+    // EXP-086 Phase 7 (B4 FIX): Allow caller to set ShadowRegistry
+    // so Handler/Looper dispatch is wired up during execute_apk.
+    void set_shadow_registry(framework::ShadowRegistry* reg) { shadow_registry_ = reg; }
+
 private:
     // Pipeline stages
     bool stage_load_apk(const std::string& path, ExecutionResult& result);
@@ -160,6 +166,8 @@ private:
     dex::DexParser dex_parser_;
     dalvik::DalvikExecutionEngine dalvik_engine_;  // EXP-031: Real executor
     diagnostics::TraceEngine trace_engine_;
+    // EXP-086 Phase 7 (B4 FIX): Shadow registry for Handler/Looper dispatch
+    framework::ShadowRegistry* shadow_registry_ = nullptr;
     
     // State
     std::vector<uint8_t> framebuffer_;

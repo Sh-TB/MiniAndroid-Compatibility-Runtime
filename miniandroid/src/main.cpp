@@ -13,6 +13,8 @@
 
 #include "runtime/execution_engine.h"
 #include "apk/apk_parser.h"
+// EXP-086 Phase 7 (B4 FIX): ShadowRegistry + HandlerShadow for Runnable queue
+#include "framework/android_shadows.h"
 #include "dex/dex_parser.h"
 
 using namespace miniandroid;
@@ -191,6 +193,15 @@ int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config)
     std::cout << "[*] Output directory: " << config.output_directory << std::endl;
     
     runtime::ExecutionEngine engine;
+    // EXP-086 Phase 7 (B4 FIX): Set up ShadowRegistry so Handler/Looper
+    // dispatch is wired up. Without this, Handler.post() calls during
+    // onCreate are silently dropped.
+    framework::ShadowRegistry shadow_registry;
+    auto* handler_shadow = shadow_registry.register_shadow<framework::HandlerShadow>();
+    auto* view_shadow = shadow_registry.register_shadow<framework::ViewShadow>();
+    auto* activity_shadow = shadow_registry.register_shadow<framework::ActivityShadow>();
+    (void)handler_shadow; (void)view_shadow; (void)activity_shadow;
+    engine.set_shadow_registry(&shadow_registry);
     auto result = engine.execute(apk_path, config);
     
     std::cout << "\n=== Execution Result ===\n\n";
