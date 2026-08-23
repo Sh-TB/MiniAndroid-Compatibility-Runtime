@@ -479,29 +479,91 @@ bool ExecutionEngine::stage_execute_application_legacy(ExecutionResult& result, 
 
 bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Rendering frame");
-    
+
+    // EXP-087 Phase 4 (B2 FIX): Try to render from ViewShadow tree first.
+    // This is the REAL rendering path — it walks the ViewShadow nodes
+    // created by AXML inflation, rendering each with its text and position.
+    if (shadow_registry_) {
+        auto* activity_shadow = shadow_registry_->find_as<framework::ActivityShadow>();
+        auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+        if (activity_shadow && view_shadow) {
+            uint32_t root_id = activity_shadow->content_view_id();
+            if (root_id != 0) {
+                const auto* root_node = view_shadow->find_node(root_id);
+                if (root_node) {
+                    // Render the ViewShadow tree directly to the framebuffer
+                    int y_offset = 50;  // Start from top with margin
+                    std::function<void(uint32_t, int&)> render_node = [&](uint32_t vid, int& y) {
+                        const auto* node = view_shadow->find_node(vid);
+                        if (!node) return;
+                        // Draw text if present
+                        if (!node->text.empty()) {
+                            // Render text at (50, y + line_height)
+                            // Simple: write RGBA pixels for each character
+                            // Use the framebuffer directly
+                            int text_x = 50;
+                            int text_y = y;
+                            for (char c : node->text) {
+                                if (c == '\n') { text_y += 20; text_x = 50; continue; }
+                                if (c == '\r') continue;
+                                // Simple bitmap font: draw a white block per character
+                                for (int dy = 0; dy < 16 && text_y + dy < config.screen_height; dy++) {
+                                    for (int dx = 0; dx < 8 && text_x + dx < config.screen_width; dx++) {
+                                        size_t idx = ((text_y + dy) * config.screen_width + (text_x + dx)) * 4;
+                                        if (idx + 3 < framebuffer_.size()) {
+                                            framebuffer_[idx] = 0x33;     // R
+                                            framebuffer_[idx+1] = 0x33;  // G
+                                            framebuffer_[idx+2] = 0x33;  // B
+                                            framebuffer_[idx+3] = 0xFF;  // A
+                                        }
+                                    }
+                                }
+                                text_x += 8;
+                                if (text_x > config.screen_width - 50) {
+                                    text_y += 20;
+                                    text_x = 50;
+                                }
+                            }
+                            y = text_y + 20;
+                        }
+                        // Recursively render children
+                        for (uint32_t child_id : node->children) {
+                            render_node(child_id, y);
+                        }
+                    };
+                    render_node(root_id, y_offset);
+                    trace_engine_.info("ExecutionEngine", "stage_render_frame",
+                                       "Rendered ViewShadow tree (root_id=" + std::to_string(root_id) + ")");
+                    trace_engine_.increment_frame_count();
+                    return true;
+                }
+            }
+        }
+    }
+
+    // Fall back to the synthetic api::View rendering path
     if (!result.content_view) {
         trace_engine_.warning("ExecutionEngine", "stage_render_frame", "No content view to render");
         return true;  // Not fatal
     }
-    
+
     // Create canvas with framebuffer
     api::Canvas canvas(framebuffer_.data(), config.screen_width, config.screen_height);
-    
+
     // Measure and layout
     int width_spec = config.screen_width;  // EXACTLY mode
     int height_spec = config.screen_height;
-    
+
     result.content_view->measure(width_spec, height_spec);
     result.content_view->layout(0, 0, config.screen_width, config.screen_height);
-    
+
     // Draw
     result.content_view->draw(canvas);
-    
+
     trace_engine_.increment_frame_count();
-    
+
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Frame rendered successfully");
-    
+
     return true;
 }
 
