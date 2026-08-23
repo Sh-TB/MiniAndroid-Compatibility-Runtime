@@ -574,6 +574,52 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 }
                             }
 
+                            // EXP-088 Phase A4: Draw ImageView bitmap from APK resource
+                            if (node->class_desc.find("ImageView") != std::string::npos &&
+                                node->image_drawable_path.empty() &&
+                                node->image_resource_id != 0) {
+                                // Try to resolve drawable path from resource ID via layout cache
+                                // The layout cache stores drawable paths in the "strings" section
+                                // For now, draw a placeholder colored rect to indicate image position
+                                canvas.draw_rect(left + 5, top + 5, right - 5, bottom - 5,
+                                               renderer::RGBA{0xCC, 0xCC, 0xCC, 0xFF});
+                                // Draw a small "IMG" label
+                                canvas.draw_text("IMG", left + 10, top + font.get_line_height(),
+                                               renderer::Colors::GREY_800, &font);
+                            }
+                            if (!node->image_drawable_path.empty()) {
+                                // EXP-088 A4: Decode PNG from APK and render pixels
+                                // Extract the PNG from the APK ZIP
+                                auto png_data = apk_parser_.extract_entry_cached(node->image_drawable_path);
+                                if (!png_data.empty()) {
+                                    // Decode PNG header to get dimensions
+                                    if (png_data.size() >= 24 && png_data[0] == 0x89 &&
+                                        png_data[1] == 0x50 && png_data[2] == 0x47 && png_data[3] == 0x4E) {
+                                        // PNG signature valid
+                                        uint32_t img_w = (png_data[16] << 24) | (png_data[17] << 16) |
+                                                        (png_data[18] << 8) | png_data[19];
+                                        uint32_t img_h = (png_data[20] << 24) | (png_data[21] << 16) |
+                                                        (png_data[22] << 8) | png_data[23];
+
+                                        // Simple 1:1 pixel copy (no scaling yet)
+                                        // Decode IDAT and copy pixels to framebuffer
+                                        // For now, draw a distinctive pattern to show image area
+                                        int img_left = left + 5;
+                                        int img_top = top + 5;
+                                        int img_right = std::min((int)(img_left + img_w), right - 5);
+                                        int img_bottom = std::min((int)(img_top + img_h), bottom - 5);
+
+                                        // Fill image area with a distinct color (orange-ish)
+                                        canvas.draw_rect(img_left, img_top, img_right, img_bottom,
+                                                       renderer::RGBA{0xFF, 0x99, 0x33, 0xFF});
+                                        // Draw image dimensions as text
+                                        std::string dim = std::to_string(img_w) + "x" + std::to_string(img_h);
+                                        canvas.draw_text(dim, img_left + 2, img_top + font.get_line_height(),
+                                                       renderer::Colors::WHITE, &font);
+                                    }
+                                }
+                            }
+
                             // Layout children (vertical stack)
                             int child_y = top;
                             for (uint32_t child_id : node->children) {
