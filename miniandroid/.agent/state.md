@@ -1,7 +1,7 @@
 # EXP-088 Campaign State
 
-**Last updated:** 2026-08-23T05:45:00Z
-**HEAD:** 6f5e786
+**Last updated:** 2026-08-23T06:20:00Z
+**HEAD:** b5cd611
 
 ## Phase Status
 
@@ -12,8 +12,8 @@
 | A5 (text rendering) | PROVEN | BitmapFont glyphs, headingcalculator 5880 dark text pixels |
 | B1 (PNG output) | PROVEN | PIL-decodable PNG with valid CRCs |
 | B5 (entry-point resolution) | PROVEN | 7/7 APKs enter onCreate |
-| A4 (drawables/images) | IN_PROGRESS | Layout cache resolves drawable src paths (lock.png, settings.png, menu.png). ImageButton tag mapping added. image_drawable_path captured in ViewShadow. Renderer extracts PNG from APK. Full pixel decode NOT yet verified due to intermittent segfault in rendering. |
-| B (generic input/click) | IN_PROGRESS | dispatch_click wired after onCreate |
+| A4 (drawables/images) | IN_PROGRESS | Iterative BFS renderer fixes segfault. Drawable src paths captured (lock.png, settings.png, menu.png). headingcalculator 5/5 SUCCESS. gmdice 1/5 SUCCESS (DEX crash after setListAdapter). Full pixel decode still pending. |
+| B (generic input/click) | PROVEN | findViewById returns correct views (view_id=13, view_id=7). setOnClickListener registers listeners (listener_id=3). Click dispatch fires after onCreate ([UI-EVENT] event=CLICK result=DISPATCHED). |
 | B2 (event dedup) | NOT_STARTED | |
 | C (SQLite) | NOT_STARTED | |
 | F (Handler/Looper) | NOT_STARTED | |
@@ -21,21 +21,23 @@
 | M (Telegram login) | LOCKED | |
 
 ## Exact Next Action
-1. Fix intermittent segfault in rendering lambda (likely stack depth or dangling reference)
-2. Verify simplestopwatch renders with ImageButton placeholders
-3. Move to Phase B (generic click dispatch proof)
-4. Then Phase C (SQLite micro test)
+1. Remove debug prints from ActivityShadow and dalvik_engine
+2. Move to Phase B2 (event deduplication) — verify one click = one callback
+3. Then Phase C (SQLite micro test)
+4. Then Phase F (Handler/Looper)
+5. Then Phase I (multi-DEX audit)
+6. Then Phase M (Telegram login)
 
 ## Key Fixes This Turn
-- Fixed Path scope bug in layout_cache_generator.py (local `from pathlib import Path` shadowed module import)
-- Added ImageButton/TableLayout/TableRow tag mapping
-- Added `src` attribute capture in inflate_view_tree for drawable path resolution
-- Added isinstance() checks in resolve_resource_ref for ARSC boolean returns
-- Added try/except in resolve_tree_attrs to prevent silent crashes
-- Fixed resource ID matching to use filename stem (not exact path) for config-specific layouts
+- Fixed iterative BFS renderer (replaced recursive std::function lambda)
+- Fixed layout cache generator: skip 'id' attribute resolution
+- Fixed ActivityShadow::findViewById: search from content_view_id
+- Fixed ViewShadow::findViewById: search from content_view_id via registry
+- Fixed bridge_to_api: added shadow registry fallback for unhandled methods
+- Fixed DalvikType enum values in shadow dispatch code
 
 ## Known Issues
-- gmdice and simplestopwatch runs sometimes segfault during rendering
-- The segfault is intermittent — sometimes produces valid PNG, sometimes crashes
-- Root cause likely: recursive std::function lambda in stage_render_frame accessing freed ViewShadow nodes
-- simplestopwatch execution takes >60s due to deep DEX class loading
+- gmdice DEX execution crashes intermittently after setListAdapter (4/5 runs)
+- headingcalculator works reliably (5/5) but has no clickable buttons in layout
+- simplestopwatch works with 120s timeout (3 ImageButtons with resolved src paths)
+- Telegram has no layout cache (uses obfuscated res/ paths)
