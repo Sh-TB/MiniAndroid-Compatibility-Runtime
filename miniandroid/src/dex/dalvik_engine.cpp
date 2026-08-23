@@ -623,18 +623,31 @@ std::string DalvikExecutionEngine::resolve_method_proto_for_dex(
         }
 
         // Resolve parameter types via the type_list at parameters_off.
-        // type_list layout: | size (4 bytes) | list[] of type_idx (4 bytes each) |.
+        // EXP-088+ F4 CRITICAL FIX: type_list entries are 2 bytes each (ushort type_idx),
+        // NOT 4 bytes. The DEX format specification says:
+        //   type_list { uint size; type_item list[size]; }
+        //   type_item { ushort type_idx; }  ← 2 bytes, not 4
+        //
+        // Previously this code read 4 bytes per entry, which caused:
+        //   1. Wrong proto resolution (e.g. "(J)Z" instead of
+        //      "(Lorg/telegram/ui/ActionBar/INavigationLayout;Lorg/telegram/ui/ActionBar/BaseFragment;)Z")
+        //   2. Wrong wide-arg merging in invoke-static (fragment arg merged as long)
+        //   3. args_size=1 instead of 2 for $default$addFragmentToStack
+        //   4. Fragment lifecycle never starts → Phase M blocked
+        //
+        // This is a GENERIC fix — affects ALL multi-DEX APKs that use
+        // desugered interface default methods with 2+ object parameters.
         std::string params_str;
         if (pid.parameters_off != 0 && pid.parameters_off + 4 <= raw.size()) {
             uint32_t list_size;
             std::memcpy(&list_size, raw.data() + pid.parameters_off, 4);
-            // Bound check the list entries.
+            // Bound check the list entries. Each entry is 2 bytes (ushort).
             size_t list_start = pid.parameters_off + 4;
-            size_t list_bytes = static_cast<size_t>(list_size) * 4u;
+            size_t list_bytes = static_cast<size_t>(list_size) * 2u;  // FIXED: 2 bytes per entry
             if (list_size <= 1024 && list_start + list_bytes <= raw.size()) {
                 for (uint32_t i = 0; i < list_size; ++i) {
-                    uint32_t type_idx;
-                    std::memcpy(&type_idx, raw.data() + list_start + i * 4, 4);
+                    uint16_t type_idx;  // FIXED: uint16_t, not uint32_t
+                    std::memcpy(&type_idx, raw.data() + list_start + i * 2, 2);  // FIXED: i * 2, reading 2 bytes
                     if (type_idx < hdr.type_ids_size &&
                         hdr.type_ids_off + (type_idx + 1) * 4 <= raw.size()) {
                         uint32_t desc_idx;
@@ -938,26 +951,51 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                             // safe because we own the lifetime of dex_report
                             // (it's passed by the caller who keeps the original
                             // alive). The injected class is read-only data.
-                            auto& mutable_classes = const_cast<std::vector<dex::ClassInfo>&>(dex_report_->classes);
-                            for (auto& single_cls : single_report.classes) {
-                                if (single_cls.name == variant) {
-                                    // Inject into dex_report_->classes and update index
-                                    mutable_classes.push_back(single_cls);
-                                    size_t new_idx = mutable_classes.size() - 1;
-                                    class_info_index_[variant] = new_idx;
-                                    log("  ✅ Injected " + variant + " into dex_report_->classes"
-                                        " (index " + std::to_string(new_idx) + ", "
-                                        + std::to_string(single_cls.direct_methods.size())
-                                        + " direct + "
-                                        + std::to_string(single_cls.virtual_methods.size())
-                                        + " virtual methods)");
-                                    found = true;
-                                    break;
+                            //
+                            // EXP-088+ F1 defense-in-depth: Check class_info_index_
+                            // FIRST. If inject_secondary_dex_classes() already
+                            // injected this class (which it should have, since it
+                            // injects ALL classes from ALL secondary DEX files),
+                            // skip the push_back. This prevents:
+                            //   1. Duplicate entries in dex_report_->classes
+                            //   2. Potential vector reallocation that could
+                            //      invalidate ClassInfo& references held by
+                            //      parent execution frames (the F1 finding)
+                            //
+                            // This on-demand path is now effectively dead code
+                            // for multi-DEX APKs (inject_secondary_dex_classes
+                            // handles everything), but it's kept as a fallback
+                            // for single-DEX APKs that don't call the bulk
+                            // injection.
+                            auto it_existing = class_info_index_.find(variant);
+                            if (it_existing != class_info_index_.end()) {
+                                log("  ✅ " + variant + " already in class_info_index_"
+                                    " (index " + std::to_string(it_existing->second) +
+                                    ") — skipping on-demand injection (inject_secondary_dex_classes"
+                                    " already handled it)");
+                                found = true;
+                            } else {
+                                auto& mutable_classes = const_cast<std::vector<dex::ClassInfo>&>(dex_report_->classes);
+                                for (auto& single_cls : single_report.classes) {
+                                    if (single_cls.name == variant) {
+                                        // Inject into dex_report_->classes and update index
+                                        mutable_classes.push_back(single_cls);
+                                        size_t new_idx = mutable_classes.size() - 1;
+                                        class_info_index_[variant] = new_idx;
+                                        log("  ✅ Injected " + variant + " into dex_report_->classes"
+                                            " (index " + std::to_string(new_idx) + ", "
+                                            + std::to_string(single_cls.direct_methods.size())
+                                            + " direct + "
+                                            + std::to_string(single_cls.virtual_methods.size())
+                                            + " virtual methods)");
+                                        found = true;
+                                        break;
+                                    }
                                 }
-                            }
-                            if (!found) {
-                                log("  ⚠️ Class " + variant + " not found in DEX "
-                                    + std::to_string(dex_idx) + " raw data");
+                                if (!found) {
+                                    log("  ⚠️ Class " + variant + " not found in DEX "
+                                        + std::to_string(dex_idx) + " raw data");
+                                }
                             }
                         }
 
@@ -1881,7 +1919,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         if (declaring_class.find("AndroidUtilities") != std::string::npos &&
             (method_name == "runOnUIThread" ||
              method_name == "executeOnUIThread" ||
-             method_name == "cancelRunOnUIThread")) {
+             method_name == "cancelRunOnUIThread" ||
+             // EXP-088+ F4 followup: readRes loops forever reading a raw
+             // resource into a byte buffer. In headless mode, the InputStream
+             // returns 0/-1, causing the while loop to spin. Bypass to
+             // bridge_to_api which returns null (no resource data).
+             method_name == "readRes")) {
             should_bypass = true;
         }
         // Resources.getAssets — let bridge_to_api return AssetManager singleton.
@@ -6874,6 +6917,32 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         for (int i = 0; i < argc && i < 5; ++i) {
             args.push_back(get_register(regs[i]));
         }
+    }
+
+    // EXP-088+ F4: Trace invoke-static for $default$ methods (desugared interface defaults)
+    // to verify overload resolution and arg count correctness.
+    if (method_name.find("$default$") != std::string::npos) {
+        std::cerr << "[EXP088-F4-STATIC] method=" << method_name
+                  << " class=" << class_name
+                  << " proto=" << method_proto
+                  << " method_idx=" << method_idx
+                  << " current_dex=" << current_dex_index_
+                  << " argc=" << (int)argc
+                  << " args_size=" << args.size()
+                  << " caller=" << current_class_ << "." << current_method_
+                  << " pc=" << pc;
+        for (size_t i = 0; i < args.size() && i < 4; ++i) {
+            std::cerr << " arg[" << i << "]=" << (int)args[i].type;
+            if (args[i].type == DalvikType::OBJECT_REF) std::cerr << "/obj=" << args[i].object_id;
+        }
+        // Also try resolving with ALL DEX files to find the correct proto
+        for (uint32_t di = 0; di < per_dex_raw_data_.size(); di++) {
+            std::string alt_proto = resolve_method_proto_for_dex(method_idx, di);
+            if (alt_proto != "<unknown>" && alt_proto != method_proto) {
+                std::cerr << " alt_proto[DEX" << di << "]=" << alt_proto;
+            }
+        }
+        std::cerr << std::endl;
     }
 
     // EXP-063: Trace invoke-static for getString
