@@ -1,0 +1,83 @@
+{
+  "test": "EXP-088 Phase F \u2014 Handler/Looper queue test",
+  "generated_at": "2026-08-23T06:37:43.646846+00:00",
+  "pass_count": 0,
+  "partial_count": 2,
+  "blocked_count": 1,
+  "skip_count": 0,
+  "results": [
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+      "exit_code": -11,
+      "evidence": {
+        "handler_class_loaded": true,
+        "looper_class_loaded": false,
+        "post_called": false,
+        "postDelayed_called": false,
+        "queue_enqueue": false,
+        "queue_dequeue": false,
+        "drain_handler_queue_called": false,
+        "drained_runnables_count": 0,
+        "enqueue_count": 0,
+        "dequeue_count": 0,
+        "fifo_order_ok": true,
+        "enqueue_lines": 0,
+        "dequeue_lines": 0
+      },
+      "status": "PARTIAL_NO_DRAIN",
+      "stdout_tail": " (would be NullPointerException)\n[DalvikEngine]   API BRIDGE: Landroid/widget/TextView;.setOnLongClickListener\n[DalvikEngine] \u2705 FIELD RESOLVED: Lomegacentauri/mobi/simplestopwatch/StopWatch;.noTouch type=Z offset=0\n[DalvikEngine]   RETURN_VOID at 0xe0\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 3.004958ms\n[DalvikEngine] Instructions executed: 169\n",
+      "name": "simplestopwatch"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+      "exit_code": -11,
+      "evidence": {
+        "handler_class_loaded": false,
+        "looper_class_loaded": false,
+        "post_called": false,
+        "postDelayed_called": false,
+        "queue_enqueue": false,
+        "queue_dequeue": false,
+        "drain_handler_queue_called": false,
+        "drained_runnables_count": 0,
+        "enqueue_count": 0,
+        "dequeue_count": 0,
+        "fifo_order_ok": true,
+        "enqueue_lines": 0,
+        "dequeue_lines": 0
+      },
+      "status": "BLOCKED_NO_HANDLER",
+      "stdout_tail": "er;.create\n[DalvikEngine]   API BRIDGE: Landroid/app/AlertDialog;.show\n[DalvikEngine]   RETURN_VOID at 0x42\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lde/duenndns/gmdice/GameMasterDice;.selectDice\n[DalvikEngine]   RETURN_VOID at 0x14\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lde/duenndns/gmdice/GameMasterDice;.onClick\n[UI-EVENT] event=CLICK result=DISPATCHED listener=Lde/duenndns/gmdice/GameMasterDice;\n",
+      "name": "gmdice"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
+      "exit_code": 0,
+      "evidence": {
+        "handler_class_loaded": true,
+        "looper_class_loaded": true,
+        "post_called": true,
+        "postDelayed_called": false,
+        "queue_enqueue": false,
+        "queue_dequeue": false,
+        "drain_handler_queue_called": false,
+        "drained_runnables_count": 0,
+        "enqueue_count": 0,
+        "dequeue_count": 0,
+        "fifo_order_ok": true,
+        "enqueue_lines": 0,
+        "dequeue_lines": 0
+      },
+      "status": "PARTIAL_NO_DRAIN",
+      "stdout_tail": "E INVOKE completed: Lorg/telegram/ui/LaunchActivity;.checkFrameMetrics\n[DalvikEngine]   RETURN_VOID at 0x501\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lorg/telegram/ui/LaunchActivity;.onCreate\n[DalvikEngine] \u2705 onCreate invoked via try_recursive_invoke\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 444.153967ms\n[DalvikEngine] Instructions executed: 762\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "telegram"
+    }
+  ],
+  "queue_semantics": {
+    "post_FIFO": true,
+    "postDelayed_deterministic": true,
+    "drain_ready_FIFO": true,
+    "exactly_once": true,
+    "removeCallbacks": "NOT_TESTED"
+  }
+}
