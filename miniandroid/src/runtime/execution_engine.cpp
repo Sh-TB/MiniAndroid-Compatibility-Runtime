@@ -508,11 +508,12 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                     try {
                         view_shadow->find_node(root_id);  // verify root still valid
 
-                        // Use std::function for recursive lambda
-                        std::function<void(uint32_t, int, int, int, int)> layout_and_render =
+                        // Use std::function for recursive lambda with depth limit
+                        std::function<void(uint32_t, int, int, int, int, int)> layout_and_render =
                             [&](uint32_t vid, int parent_left, int parent_top,
-                                int parent_width, int parent_height) {
+                                int parent_width, int parent_height, int depth) {
 
+                            if (depth > 20) return;  // Prevent stack overflow
                             const auto* node = view_shadow->find_node(vid);
                             if (!node) return;
 
@@ -576,13 +577,13 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             // Layout children (vertical stack)
                             int child_y = top;
                             for (uint32_t child_id : node->children) {
-                                layout_and_render(child_id, left, child_y, w, h);
+                                layout_and_render(child_id, left, child_y, w, h, depth + 1);
                                 child_y += font.get_line_height() + 20;  // simple vertical step
                             }
                         };
 
                         // Root: fill entire screen
-                        layout_and_render(root_id, 0, 0, config.screen_width, config.screen_height);
+                        layout_and_render(root_id, 0, 0, config.screen_width, config.screen_height, 0);
 
                         // Copy FrameBuffer pixels (RGBA) back to framebuffer_ (uint8_t RGBA)
                         const auto& pixels = fb.get_pixels();
