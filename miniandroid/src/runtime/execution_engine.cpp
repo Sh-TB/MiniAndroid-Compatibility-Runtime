@@ -6,6 +6,8 @@
 
 #include "execution_engine.h"
 #include "../dex/trace_exporter.h"  // EXP-031.5: Mandatory trace generation
+// EXP-086 Phase 3 (B1 FIX): PNGWriter for direct PNG output
+#include "../renderer/software_renderer.h"
 
 #include <filesystem>
 #include <fstream>
@@ -471,45 +473,76 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
     // Generate screenshot filename
     std::string screenshot_path = config.output_directory + "/screenshot.png";
     result.screenshot_path = screenshot_path;
-    
-    // Write raw RGBA data as PPM (simple format, can convert later)
-    // For production, would use libpng or stb_image_write
+
+    // EXP-086 Phase 3 (B1 FIX): Write PNG directly using PNGWriter.
+    // Previously this only wrote PPM (raw bitmap) and a note saying
+    // "convert later" — that left screenshots inaccessible to most tools.
+    // PNGWriter now uses zlib compress2() for proper IDAT compression.
+    bool png_ok = false;
+    try {
+        // Build a FrameBuffer from the raw RGBA framebuffer
+        renderer::FrameBuffer fb(config.screen_width, config.screen_height);
+        for (int y = 0; y < config.screen_height; y++) {
+            for (int x = 0; x < config.screen_width; x++) {
+                size_t i = (y * config.screen_width + x) * 4;
+                if (i + 3 < framebuffer_.size()) {
+                    fb.set_pixel(x, y, renderer::RGBA{
+                        framebuffer_[i], framebuffer_[i+1],
+                        framebuffer_[i+2], framebuffer_[i+3]
+                    });
+                }
+            }
+        }
+        png_ok = renderer::PNGWriter::write_png(screenshot_path, fb);
+        if (png_ok) {
+            trace_engine_.log_screenshot(screenshot_path, config.screen_width, config.screen_height,
+                                         framebuffer_.size());
+            trace_engine_.info("ExecutionEngine", "stage_capture_output",
+                              "PNG screenshot saved to: " + screenshot_path);
+        }
+    } catch (const std::exception& e) {
+        trace_engine_.record_error("PNG_WRITE_ERROR", e.what(),
+                                   "PNGWriter", "write_png");
+    }
+
+    // Also write PPM as fallback (debugging aid)
     std::string ppm_path = config.output_directory + "/screenshot.ppm";
     std::ofstream ppm_file(ppm_path, std::ios::binary);
-    
+
     if (ppm_file.is_open()) {
         ppm_file << "P6\n" << config.screen_width << " " << config.screen_height << "\n255\n";
-        
+
         for (size_t i = 0; i < framebuffer_.size(); i += 4) {
             ppm_file.put(framebuffer_[i]);     // R
             ppm_file.put(framebuffer_[i+1]);   // G
             ppm_file.put(framebuffer_[i+2]);   // B
             // Skip Alpha for PPM
         }
-        
+
         ppm_file.close();
-        
-        // Log screenshot info
-        trace_engine_.log_screenshot(ppm_path, config.screen_width, config.screen_height,
-                                     framebuffer_.size());
-        
-        // Also create a simple PNG placeholder note
-        std::string note_path = config.output_directory + "/screenshot_note.txt";
-        std::ofstream note(note_path);
-        note << "Screenshot saved as PPM: " << ppm_path << "\n";
-        note << "Resolution: " << config.screen_width << "x" << config.screen_height << "\n";
-        note << "Convert to PNG using: convert " << ppm_path << " screenshot.png\n";
-        note.close();
-        
-        trace_engine_.info("ExecutionEngine", "stage_capture_output",
-                          "Screenshot saved to: " + ppm_path);
+
+        if (!png_ok) {
+            // Only log screenshot if PNG failed
+            trace_engine_.log_screenshot(ppm_path, config.screen_width, config.screen_height,
+                                         framebuffer_.size());
+
+            std::string note_path = config.output_directory + "/screenshot_note.txt";
+            std::ofstream note(note_path);
+            note << "PNG write failed — saved as PPM only.\n";
+            note << "PPM: " << ppm_path << "\n";
+            note << "Resolution: " << config.screen_width << "x" << config.screen_height << "\n";
+            note.close();
+
+            trace_engine_.info("ExecutionEngine", "stage_capture_output",
+                              "PPM fallback saved to: " + ppm_path);
+        }
     } else {
         set_error("Failed to write screenshot file");
         trace_engine_.record_error("IO_ERROR", "Cannot write screenshot file",
                                    "ExecutionEngine", "stage_capture_output");
         return false;
     }
-    
+
     return true;
 }
 

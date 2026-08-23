@@ -1,0 +1,141 @@
+{
+  "test": "EXP086 Phase 3 \u2014 B1 PNG Writer Forensics",
+  "generated_at": "2026-08-23T00:17:37.629635+00:00",
+  "pass_count": 3,
+  "partial_count": 0,
+  "fail_count": 0,
+  "results": [
+    {
+      "exit_code": 0,
+      "png_info": {
+        "exists": true,
+        "size_bytes": 10535,
+        "sha256": "4878ed9bde0c597755f7a7a421131d3278939b9d7f65a1de9fabb78b75c5e0df",
+        "valid_signature": true,
+        "width": 1080,
+        "height": 1920,
+        "bit_depth": 8,
+        "color_type": 2,
+        "idat_bytes": 10478,
+        "decompressed_size": 6222720,
+        "decompressed_ok": true,
+        "decompressed_pixels_first_20": "0000000000000000000000000000000000000000",
+        "chunks": [
+          {
+            "type": "IHDR",
+            "length": 13,
+            "offset": 8
+          },
+          {
+            "type": "IDAT",
+            "length": 10478,
+            "offset": 33
+          },
+          {
+            "type": "IEND",
+            "length": 0,
+            "offset": 10523
+          }
+        ],
+        "error": null
+      },
+      "pil_info": {
+        "pil_available": true,
+        "decoded_ok": false,
+        "error": "cannot identify image file '/tmp/exp086_p3_gmdice/screenshot.png'"
+      },
+      "ppm_exists": true,
+      "test": "gmdice_screenshot",
+      "status": "PASS_PNG_VALID",
+      "dimensions_ok": true
+    },
+    {
+      "exit_code": 0,
+      "png_info": {
+        "exists": true,
+        "size_bytes": 10535,
+        "sha256": "4878ed9bde0c597755f7a7a421131d3278939b9d7f65a1de9fabb78b75c5e0df",
+        "valid_signature": true,
+        "width": 1080,
+        "height": 1920,
+        "bit_depth": 8,
+        "color_type": 2,
+        "idat_bytes": 10478,
+        "decompressed_size": 6222720,
+        "decompressed_ok": true,
+        "decompressed_pixels_first_20": "0000000000000000000000000000000000000000",
+        "chunks": [
+          {
+            "type": "IHDR",
+            "length": 13,
+            "offset": 8
+          },
+          {
+            "type": "IDAT",
+            "length": 10478,
+            "offset": 33
+          },
+          {
+            "type": "IEND",
+            "length": 0,
+            "offset": 10523
+          }
+        ],
+        "error": null
+      },
+      "pil_info": {
+        "pil_available": true,
+        "decoded_ok": false,
+        "error": "cannot identify image file '/tmp/exp086_p3_tictactoe/screenshot.png'"
+      },
+      "ppm_exists": true,
+      "test": "tictactoe_screenshot",
+      "status": "PASS_PNG_VALID",
+      "dimensions_ok": true
+    },
+    {
+      "exit_code": 0,
+      "png_info": {
+        "exists": true,
+        "size_bytes": 10535,
+        "sha256": "4878ed9bde0c597755f7a7a421131d3278939b9d7f65a1de9fabb78b75c5e0df",
+        "valid_signature": true,
+        "width": 1080,
+        "height": 1920,
+        "bit_depth": 8,
+        "color_type": 2,
+        "idat_bytes": 10478,
+        "decompressed_size": 6222720,
+        "decompressed_ok": true,
+        "decompressed_pixels_first_20": "0000000000000000000000000000000000000000",
+        "chunks": [
+          {
+            "type": "IHDR",
+            "length": 13,
+            "offset": 8
+          },
+          {
+            "type": "IDAT",
+            "length": 10478,
+            "offset": 33
+          },
+          {
+            "type": "IEND",
+            "length": 0,
+            "offset": 10523
+          }
+        ],
+        "error": null
+      },
+      "pil_info": {
+        "pil_available": true,
+        "decoded_ok": false,
+        "error": "cannot identify image file '/tmp/exp086_p3_telegram/screenshot.png'"
+      },
+      "ppm_exists": true,
+      "test": "telegram_screenshot",
+      "status": "PASS_PNG_VALID",
+      "dimensions_ok": true
+    }
+  ]
+}
