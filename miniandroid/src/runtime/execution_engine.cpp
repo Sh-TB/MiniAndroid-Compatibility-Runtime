@@ -442,21 +442,42 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (view_shadow) {
             auto clickables = view_shadow->find_all_with_click_listener("");
+            std::cerr << "[EXP088-PHASE-B] ViewShadow found: " << (void*)view_shadow
+                      << " clickables: " << clickables.size() << std::endl;
             if (!clickables.empty()) {
+                // Log each clickable view for diagnostics
+                for (uint32_t vid : clickables) {
+                    const auto* node = view_shadow->find_node(vid);
+                    if (node) {
+                        std::cerr << "[EXP088-PHASE-B] clickable view_id=" << vid
+                                  << " class=" << node->class_desc
+                                  << " listener_id=" << node->click_listener_id
+                                  << std::endl;
+                    }
+                }
                 trace_engine_.info("ExecutionEngine", "phase_b_click",
                                    "Found " + std::to_string(clickables.size()) +
                                    " views with click listeners");
                 // Dispatch click to first clickable view (generic)
                 uint32_t first_clickable = clickables[0];
                 bool click_ok = dalvik_engine_.dispatch_click(first_clickable);
+                std::cerr << "[EXP088-PHASE-B] dispatch_click(" << first_clickable
+                          << ") → " << (click_ok ? "OK" : "FAILED") << std::endl;
                 trace_engine_.info("ExecutionEngine", "phase_b_click",
                                    "dispatch_click(" + std::to_string(first_clickable) +
                                    ") → " + (click_ok ? "OK" : "FAILED"));
             } else {
+                std::cerr << "[EXP088-PHASE-B] No views with click listeners found" << std::endl;
                 trace_engine_.info("ExecutionEngine", "phase_b_click",
                                    "No views with click listeners found (setContentView may not have been called)");
             }
+        } else {
+            std::cerr << "[EXP088-PHASE-B] ViewShadow not registered" << std::endl;
         }
+    } else {
+        std::cerr << "[EXP088-PHASE-B] Skipping phase_b_click: shadow_registry_="
+                  << (void*)shadow_registry_
+                  << " status=" << static_cast<int>(result.status) << std::endl;
     }
 
     trace_engine_.info("ExecutionEngine", "stage_execute_application_real_dalvik",
