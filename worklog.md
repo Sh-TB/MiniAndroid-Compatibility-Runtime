@@ -3145,3 +3145,59 @@ Stage Summary:
 - 11 new test scripts + 6 result JSONs + baseline + final report
 - Source-only repository maintained (508 tracked files, 0 APKs, 0 build/run artifacts)
 - No regressions
+
+---
+Task ID: EXP-087
+Agent: main
+Task: Real View Inflation, View-Tree Integration, Rendered APK Proof
+
+Work Log:
+- Phase 0: Captured baseline. ALL 5 APKs produced identical PNGs (10535 bytes, 848 non-black pixels, same SHA256). Confirmed B2 blocker: renderer uses synthetic HelloWorld view for every APK.
+- Phase 1: Traced setContentView chain. Found root cause in android_shadows.cpp line 736: "layout inflation NOT YET SUPPORTED" — runtime captures layout_resource_id_ but doesn't inflate.
+- Phase 2: Proved AXML attribute decoding. Used exp063_arsc_parser.py to resolve gmdice's text resource references:
+  @0x7f040008 → "Push buttons to roll!\n\nLong-press buttons to configure dice."
+  @0x7f04000c → "Roll it!"
+  Also found layout resource IDs: act_gmdice = 0x7f030000
+- Phase 3 (B2 FIX): Built layout cache generator (exp087_layout_cache_generator.py) that:
+  1. Parses binary AXML from APK's res/layout/*.xml
+  2. Resolves @0x7fXXXXXX references via ARSC parser
+  3. Maps resource IDs via ARSC resolve_layout_path
+  4. Outputs layout_cache.json with complete view trees + resolved strings
+  
+  Modified ActivityShadow (android_shadows.cpp) to:
+  1. Load layout_cache.json when setContentView(int) is called
+  2. Find layout matching resource ID
+  3. Recursively create ViewShadow nodes from cached view tree
+  4. Set inflated root as content_view_id_
+  
+  Fixed ActivityShadow::handles_class to match Activity subclasses whose
+  names don't contain "Activity" (GameMasterDice, StopWatch, Notes, etc.)
+  
+  Created DalvikHeapAdapter in ExecutionEngine so shadows can allocate
+  heap objects (fixed "ViewShadow::create_view returns 0" bug).
+  
+  Result: gmdice layout inflated successfully! root_id=4, with text
+  "Push buttons to roll!" and "Roll it!" from ARSC-resolved resources.
+  
+- Phase 4 (B2 FIX): Modified stage_render_frame() in execution_engine.cpp to:
+  1. Check if ViewShadow has content_view root (set by B2 inflation)
+  2. Walk the ViewShadow tree recursively
+  3. Render each node's text as pixel blocks
+  4. Fall back to synthetic api::View if no ViewShadow tree
+  
+  Result: Different APKs now produce DIFFERENT PNGs!
+  gmdice:    858 non-black pixels, SHA eec5c8f3793f62fb...
+  tictactoe: 858 non-black pixels, SHA c035e9ba62a884ec...
+  
+  This is the FIRST TIME in the campaign that APK-specific rendering works.
+  Before this fix, ALL APKs produced identical 848-pixel PNGs.
+
+Stage Summary:
+- B2 (AXML view inflation): PARTIALLY PROVEN — full pipeline works:
+  APK → AXML → layout_cache.json → ViewShadow → renderer → APK-specific PNG
+  The renderer is simple (pixel blocks for text) but the infrastructure is complete.
+- B1, B5: maintained (no regression)
+- B4: maintained (wired, awaiting trigger)
+- B3, B6: not started (need B2 full implementation + click dispatch)
+- 2 commits pushed to main
+- No regressions: 6/6 manifest resolver, 4/4 unit tests, source purity PASS
