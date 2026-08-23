@@ -1,6 +1,6 @@
 {
   "test": "EXP086 Phase 3 \u2014 B1 PNG Writer Forensics",
-  "generated_at": "2026-08-23T00:17:37.629635+00:00",
+  "generated_at": "2026-08-23T00:22:19.544384+00:00",
   "pass_count": 3,
   "partial_count": 0,
   "fail_count": 0,
@@ -10,7 +10,7 @@
       "png_info": {
         "exists": true,
         "size_bytes": 10535,
-        "sha256": "4878ed9bde0c597755f7a7a421131d3278939b9d7f65a1de9fabb78b75c5e0df",
+        "sha256": "c200c521628bb8a81c130d990fec3011fb0dc7ceda7e5fd38ee2a4f63e668400",
         "valid_signature": true,
         "width": 1080,
         "height": 1920,
@@ -41,8 +41,13 @@
       },
       "pil_info": {
         "pil_available": true,
-        "decoded_ok": false,
-        "error": "cannot identify image file '/tmp/exp086_p3_gmdice/screenshot.png'"
+        "format": "PNG",
+        "mode": "RGB",
+        "size": [
+          1080,
+          1920
+        ],
+        "decoded_ok": true
       },
       "ppm_exists": true,
       "test": "gmdice_screenshot",
@@ -54,7 +59,7 @@
       "png_info": {
         "exists": true,
         "size_bytes": 10535,
-        "sha256": "4878ed9bde0c597755f7a7a421131d3278939b9d7f65a1de9fabb78b75c5e0df",
+        "sha256": "c200c521628bb8a81c130d990fec3011fb0dc7ceda7e5fd38ee2a4f63e668400",
         "valid_signature": true,
         "width": 1080,
         "height": 1920,
@@ -85,8 +90,13 @@
       },
       "pil_info": {
         "pil_available": true,
-        "decoded_ok": false,
-        "error": "cannot identify image file '/tmp/exp086_p3_tictactoe/screenshot.png'"
+        "format": "PNG",
+        "mode": "RGB",
+        "size": [
+          1080,
+          1920
+        ],
+        "decoded_ok": true
       },
       "ppm_exists": true,
       "test": "tictactoe_screenshot",
@@ -98,7 +108,7 @@
       "png_info": {
         "exists": true,
         "size_bytes": 10535,
-        "sha256": "4878ed9bde0c597755f7a7a421131d3278939b9d7f65a1de9fabb78b75c5e0df",
+        "sha256": "c200c521628bb8a81c130d990fec3011fb0dc7ceda7e5fd38ee2a4f63e668400",
         "valid_signature": true,
         "width": 1080,
         "height": 1920,
@@ -129,8 +139,13 @@
       },
       "pil_info": {
         "pil_available": true,
-        "decoded_ok": false,
-        "error": "cannot identify image file '/tmp/exp086_p3_telegram/screenshot.png'"
+        "format": "PNG",
+        "mode": "RGB",
+        "size": [
+          1080,
+          1920
+        ],
+        "decoded_ok": true
       },
       "ppm_exists": true,
       "test": "telegram_screenshot",
