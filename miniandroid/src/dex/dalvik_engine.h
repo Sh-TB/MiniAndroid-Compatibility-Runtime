@@ -1141,6 +1141,25 @@ public:
     // EXP-038 (BLOCKER-033): Build class→DEX index map from DexReport.
     // Must be called after dex_report is set and before execution begins.
     void build_class_dex_index(const dex::DexReport& report);
+
+    // EXP-088+ Phase 1.2 (secondary-DEX injection): Inject ALL classes from
+    // ALL secondary DEX files (per_dex_raw_data_[1..N-1]) into the merged
+    // dex_report_->classes vector and update class_info_index_.
+    //
+    // Without this, only classes.dex (DEX 0) classes are available for
+    // runtime dispatch. Any class defined in classes2.dex/classes3.dex/etc.
+    // (e.g. Telegram's UserConfig, LoginActivity) cannot be found by
+    // try_recursive_invoke, returning "class not in index" silently.
+    //
+    // The previous on-demand injection (only for the manifest activity class)
+    // was insufficient: it injected exactly ONE class. Every other multi-DEX
+    // class (called recursively from onCreate) was still missing.
+    //
+    // This method is idempotent: calling it twice does NOT duplicate classes
+    // (we check class_info_index_ before inserting).
+    //
+    // Returns the number of newly-injected classes.
+    size_t inject_secondary_dex_classes();
     
     /**
      * Execute APK through real DEX bytecode interpretation
