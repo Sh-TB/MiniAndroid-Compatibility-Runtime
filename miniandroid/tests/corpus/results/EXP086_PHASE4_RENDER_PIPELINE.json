@@ -1,6 +1,6 @@
 {
   "test": "EXP086 Phase 4 \u2014 View tree \u2192 render pipeline integration",
-  "generated_at": "2026-08-23T00:22:06.747492+00:00",
+  "generated_at": "2026-08-23T00:32:00.313980+00:00",
   "pass_count": 3,
   "partial_count": 0,
   "fail_count": 0,
@@ -36,7 +36,7 @@
         "non_black_pixels_sampled": 848
       },
       "status": "PASS_RENDERED",
-      "stdout_tail": " 0xd4\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 1.022228ms\n[DalvikEngine] Instructions executed: 56\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "stdout_tail": " 0xd4\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 1.076664ms\n[DalvikEngine] Instructions executed: 56\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
       "name": "gmdice"
     },
     {
@@ -69,7 +69,7 @@
         "non_black_pixels_sampled": 848
       },
       "status": "PASS_RENDERED",
-      "stdout_tail": "0x24\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 61.538112ms\n[DalvikEngine] Instructions executed: 56\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "stdout_tail": "0x24\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 58.842001ms\n[DalvikEngine] Instructions executed: 56\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
       "name": "tictactoe"
     },
     {
@@ -102,7 +102,7 @@
         "non_black_pixels_sampled": 848
       },
       "status": "PASS_RENDERED",
-      "stdout_tail": "rg/telegram/ui/LaunchActivity;.onCreate\n[DalvikEngine] \u2705 onCreate invoked via try_recursive_invoke\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 476.182381ms\n[DalvikEngine] Instructions executed: 757\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "stdout_tail": "rg/telegram/ui/LaunchActivity;.onCreate\n[DalvikEngine] \u2705 onCreate invoked via try_recursive_invoke\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 442.959647ms\n[DalvikEngine] Instructions executed: 757\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
       "name": "telegram"
     }
   ]

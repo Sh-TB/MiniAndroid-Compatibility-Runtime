@@ -1,6 +1,6 @@
 {
   "test": "EXP086 Phase 3 \u2014 B1 PNG Writer Forensics",
-  "generated_at": "2026-08-23T00:22:19.544384+00:00",
+  "generated_at": "2026-08-23T18:07:26.809952+00:00",
   "pass_count": 3,
   "partial_count": 0,
   "fail_count": 0,
@@ -9,17 +9,17 @@
       "exit_code": 0,
       "png_info": {
         "exists": true,
-        "size_bytes": 10535,
-        "sha256": "c200c521628bb8a81c130d990fec3011fb0dc7ceda7e5fd38ee2a4f63e668400",
+        "size_bytes": 10356,
+        "sha256": "8699c0fa02e61162eb38566f64f6912002b52fa194a05872645c69e77561ed50",
         "valid_signature": true,
         "width": 1080,
         "height": 1920,
         "bit_depth": 8,
         "color_type": 2,
-        "idat_bytes": 10478,
+        "idat_bytes": 10299,
         "decompressed_size": 6222720,
         "decompressed_ok": true,
-        "decompressed_pixels_first_20": "0000000000000000000000000000000000000000",
+        "decompressed_pixels_first_20": "006fa8dc6fa8dc6fa8dc6fa8dc6fa8dc6fa8dc6f",
         "chunks": [
           {
             "type": "IHDR",
@@ -28,13 +28,13 @@
           },
           {
             "type": "IDAT",
-            "length": 10478,
+            "length": 10299,
             "offset": 33
           },
           {
             "type": "IEND",
             "length": 0,
-            "offset": 10523
+            "offset": 10344
           }
         ],
         "error": null
@@ -58,17 +58,17 @@
       "exit_code": 0,
       "png_info": {
         "exists": true,
-        "size_bytes": 10535,
-        "sha256": "c200c521628bb8a81c130d990fec3011fb0dc7ceda7e5fd38ee2a4f63e668400",
+        "size_bytes": 10338,
+        "sha256": "24956663322f4c73c55f30fc7e46dc63f7578102d1db08e9ae311c19d9e9d495",
         "valid_signature": true,
         "width": 1080,
         "height": 1920,
         "bit_depth": 8,
         "color_type": 2,
-        "idat_bytes": 10478,
+        "idat_bytes": 10281,
         "decompressed_size": 6222720,
         "decompressed_ok": true,
-        "decompressed_pixels_first_20": "0000000000000000000000000000000000000000",
+        "decompressed_pixels_first_20": "00e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
         "chunks": [
           {
             "type": "IHDR",
@@ -77,13 +77,13 @@
           },
           {
             "type": "IDAT",
-            "length": 10478,
+            "length": 10281,
             "offset": 33
           },
           {
             "type": "IEND",
             "length": 0,
-            "offset": 10523
+            "offset": 10326
           }
         ],
         "error": null

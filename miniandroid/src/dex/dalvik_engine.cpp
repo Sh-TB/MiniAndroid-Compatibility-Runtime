@@ -263,6 +263,100 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
     log("Built class→ClassInfo index: " + std::to_string(class_info_index_.size()) + " entries");
 }
 
+// EXP-088+ Phase 1.2: Inject ALL classes from secondary DEX files into
+// the merged dex_report_->classes vector and update class_info_index_.
+//
+// Background:
+//   stage_parse_dex() in execution_engine.cpp only parses classes.dex (DEX 0)
+//   into result.dex_report. The other DEX files (classes2..classesN) are
+//   loaded into per_dex_raw_data_ but their classes are NEVER merged into
+//   dex_report.classes.
+//   This means class_info_index_ only contains DEX 0 classes. Any class
+//   defined in DEX 1+ (e.g. Telegram's UserConfig in classes3.dex) cannot
+//   be found by try_recursive_invoke, which silently returns false and
+//   the call is dropped (treated as "class not in index").
+//
+// This fix parses each secondary DEX file with DexParser, takes its classes,
+// and injects them into dex_report_->classes (via const_cast — same pattern
+// as the existing on-demand injection at line 826-855). We also update
+// class_info_index_ for O(1) lookup.
+//
+// The original DEX 0 classes already in dex_report_->classes are preserved
+// (we only append). Duplicates are detected via class_info_index_.
+//
+// This is the GENERIC fix for multi-DEX class resolution. It is NOT
+// Telegram-specific — any multi-DEX APK benefits.
+size_t DalvikExecutionEngine::inject_secondary_dex_classes() {
+    if (!dex_report_) {
+        log("inject_secondary_dex_classes: dex_report_ is null — skipping");
+        return 0;
+    }
+    if (per_dex_raw_data_.size() <= 1) {
+        // Single-DEX APK — nothing to inject.
+        return 0;
+    }
+
+    // We modify dex_report_->classes via const_cast. The original DexReport
+    // is owned by the caller (ExecutionEngine) which keeps it alive for the
+    // full execution. The injected ClassInfo entries are read-only data
+    // produced by DexParser::parse_data() — they're safe to retain.
+    auto& mutable_classes = const_cast<std::vector<dex::ClassInfo>&>(dex_report_->classes);
+
+    size_t injected_count = 0;
+    size_t skipped_duplicate = 0;
+
+    // Iterate over secondary DEX files (skip index 0 — that's DEX 0 which
+    // is already parsed and present in dex_report_->classes).
+    for (uint32_t di = 1; di < per_dex_raw_data_.size(); di++) {
+        const auto& raw = per_dex_raw_data_[di];
+        if (raw.empty()) continue;
+
+        // Parse this DEX file with DexParser
+        dex::DexParser parser;
+        // Disable verbose logging for the secondary DEX parse to avoid
+        // spamming the log (we may have many secondary DEX files).
+        parser.set_verbose(false);
+        auto single_report = parser.parse_data(raw, "DEX" + std::to_string(di));
+
+        if (!single_report.is_valid) {
+            log("inject_secondary_dex_classes: DEX " + std::to_string(di) +
+                " parse failed — skipping (" + single_report.validation_error + ")");
+            continue;
+        }
+
+        log("inject_secondary_dex_classes: DEX " + std::to_string(di) +
+            " parsed — " + std::to_string(single_report.classes.size()) + " classes");
+
+        // Append each class to dex_report_->classes and update index
+        for (auto& cls : single_report.classes) {
+            // Skip duplicates (a class might be defined in multiple DEX files
+            // — rare, but R8/proguard can produce duplicates)
+            if (class_info_index_.find(cls.name) != class_info_index_.end()) {
+                skipped_duplicate++;
+                continue;
+            }
+            mutable_classes.push_back(std::move(cls));
+            size_t new_idx = mutable_classes.size() - 1;
+            class_info_index_[mutable_classes.back().name] = new_idx;
+            injected_count++;
+        }
+    }
+
+    log("inject_secondary_dex_classes: injected " + std::to_string(injected_count) +
+        " classes from " + std::to_string(per_dex_raw_data_.size() - 1) +
+        " secondary DEX files (" + std::to_string(skipped_duplicate) + " duplicates skipped)");
+    std::cerr << "[EXP088-MD-INJECT] Injected " << injected_count
+              << " classes from secondary DEX files ("
+              << skipped_duplicate << " duplicates skipped)"
+              << " — total classes now: " << mutable_classes.size()
+              << std::endl;
+
+    // Update DEX report aggregate counts so they reflect the merged state
+    const_cast<uint32_t&>(dex_report_->classes_count) = (uint32_t)mutable_classes.size();
+
+    return injected_count;
+}
+
 // ============================================================================
 // EXP-038 (BLOCKER-033): Per-DEX method resolution using raw DEX bytes.
 // ============================================================================
@@ -606,6 +700,18 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
     // as nullptr and falls back to "<method_idx:N>" placeholder strings,
     // which prevents the API bridge from routing framework calls.
     dex_report_ = &dex_report;
+    // EXP-088+ Phase 1.2: Now that dex_report_ is set, inject ALL classes
+    // from secondary DEX files (classes2.dex..classesN.dex) into the merged
+    // dex_report_->classes vector and class_info_index_.
+    //
+    // Without this, only classes.dex (DEX 0) classes are available for
+    // runtime dispatch. Any class defined in DEX 1+ (e.g. Telegram's
+    // UserConfig in classes3.dex) cannot be found by try_recursive_invoke,
+    // returning "class not in index" silently and dropping the call.
+    //
+    // The merged dex_report pointer (dex_report_) was just set above, so
+    // this is the earliest point we can call inject_secondary_dex_classes().
+    inject_secondary_dex_classes();
     DalvikExecutionResult result;
     result.apk_name = apk_path.substr(apk_path.find_last_of("/\\") + 1);
     result.timestamp = get_timestamp();
@@ -1746,13 +1852,28 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // These classes are stubs we DON'T want to execute bytecode for because
     // their DEX bytecode calls native methods or depends on real system state
     // we can't satisfy (e.g., HashMap.hash() loops on the key's hashCode()).
+    //
+    // EXP-088+ Phase 5: Added Lj$/util/concurrent/ConcurrentHashMap; — this is
+    // the desugared Java 8 ConcurrentHashMap used by Telegram's FormatCache.
+    // Its DEX bytecode at method `e` (computeIfAbsent) loops forever calling
+    // hashCode() on the key. Without bypassing, the runtime hangs in <clinit>
+    // of FastDateFormat and never reaches LoginActivity.
+    // This is a GENERIC fix — any APK using desugared Java 8 collections hits
+    // the same hang.
     {
         bool should_bypass = false;
         if (declaring_class == "Ljava/util/HashMap;" ||
             declaring_class == "Ljava/util/ArrayList;" ||
+            declaring_class == "Ljava/util/AbstractList;" ||
+            declaring_class == "Ljava/util/AbstractMap;" ||
             declaring_class == "Ljava/lang/String;" ||
             declaring_class == "Landroid/text/TextUtils;" ||
-            declaring_class == "Ljava/io/File;") {
+            declaring_class == "Ljava/io/File;" ||
+            // EXP-088+ Phase 5: desugared Java 8 ConcurrentHashMap
+            // (Lj$/util/concurrent/ConcurrentHashMap;). Its .e/.f methods
+            // (computeIfAbsent, compute) loop forever on hashCode().
+            declaring_class == "Lj$/util/concurrent/ConcurrentHashMap;" ||
+            declaring_class == "Ljava/util/concurrent/ConcurrentHashMap;") {
             should_bypass = true;
         }
         // AndroidUtilities.{runOnUIThread,executeOnUIThread,cancelRunOnUIThread}
@@ -1855,7 +1976,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         class_descriptor.find("Ljava/util/AbstractMap;") == 0 ||
         class_descriptor.find("Ljava/lang/String;") == 0 ||
         class_descriptor.find("Landroid/text/TextUtils;") == 0 ||
-        class_descriptor.find("Ljava/io/File;") == 0) {
+        class_descriptor.find("Ljava/io/File;") == 0 ||
+        // EXP-088+ Phase 5: desugared Java 8 ConcurrentHashMap.
+        class_descriptor.find("Lj$/util/concurrent/ConcurrentHashMap;") == 0 ||
+        class_descriptor.find("Ljava/util/concurrent/ConcurrentHashMap;") == 0) {
         // Force bridge_to_api for framework classes.
         recursion_depth_--;
         return false;

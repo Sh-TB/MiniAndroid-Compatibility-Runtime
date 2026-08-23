@@ -239,6 +239,9 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         dalvik_engine_.set_per_dex_raw_data(std::move(per_dex_raw));
         dalvik_engine_.set_apk_path(result.apk_info.apk_path);
         dalvik_engine_.build_class_dex_index(result.dex_report);
+        // EXP-088+ Phase 1.2: inject_secondary_dex_classes() is called
+        // from inside execute_apk_with_activity() (after dex_report_ is
+        // set on the engine). See the call in dalvik_engine.cpp.
         // EXP-086 Phase 7 (B4 FIX): Set up ShadowRegistry so Handler/Looper
         // dispatch is wired up. Without this, Handler.post() calls during
         // onCreate are never enqueued and never drained.
