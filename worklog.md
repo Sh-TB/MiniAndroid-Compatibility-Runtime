@@ -3292,3 +3292,71 @@ Artifacts produced:
 - /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/src/runtime/execution_engine.cpp — wired PNGDecoder into stage_render_frame
 - /home/z/my-project/MiniAndroid-Compatibility-Runtime/.agent/state.md — updated
 - /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/docs/EXP088_COMPLETION_GATE.md — to be updated
+
+---
+Task ID: EXP-088+-Phase1.2-MultiDEX
+Agent: Super Z (long-running goal mode, primary coder)
+Task: Verify secondary findings + advance Telegram Phase M boundary.
+
+Work Log:
+- Read persistent state. Verified A4 + F are PROVEN, M is BLOCKED on UserConfig.isClientActivated "class not in index".
+- Phase 1.1 (this receiver propagation): Verified — already fixed in primary branch (EXP-061 FIX at line 6521-6538). Telegram's IntroActivity.<init> correctly propagates `this`. No code changes needed.
+- Phase 1.2 (secondary DEX lazy injection): PRIMARY FIX.
+  - Root cause CONFIRMED: stage_parse_dex() only parses classes.dex (DEX 0). Other DEX files were loaded into per_dex_raw_data_ but classes were NEVER merged into dex_report.classes / class_info_index_.
+  - Verified: UserConfig class descriptor Lorg/telegram/messenger/UserConfig; does NOT appear in classes.dex bytes — only in classes3.dex.
+  - Verified: class_info_index_ size was 12522 (DEX 0 only) before fix.
+  - FIX: Added DalvikExecutionEngine::inject_secondary_dex_classes() — parses each secondary DEX with DexParser::parse_data() and injects ALL classes into dex_report_->classes (via const_cast, same pattern as existing on-demand injection). Updates class_info_index_ for O(1) lookup. Idempotent.
+  - Called from inside execute_apk_with_activity() right after dex_report_ is set.
+  - Telegram: [EXP088-MD-INJECT] Injected 28557 classes from secondary DEX files (0 duplicates skipped) — total classes now: 41078.
+- Phase 1.3 (getInstance dispatch): Same root cause as Phase 1.2. After multi-DEX injection fix, UserConfig.getInstance now executes (was "class not in index"). Multiple getInstance overloads verified working.
+- Additional fix: Bypass Lj$/util/concurrent/ConcurrentHashMap; in try_recursive_invoke.
+  - Without this, runtime hangs in FastDateFormat.<clinit> in ConcurrentHashMap.e/.f (computeIfAbsent loops on hashCode()).
+  - Added Lj$/util/concurrent/ConcurrentHashMap; AND Ljava/util/concurrent/ConcurrentHashMap; to framework-bypass list.
+  - Generic fix — affects any APK using desugared Java 8 collections.
+- Phase 2 (regression after multi-DEX fix):
+  - A4 PNG decoder: 4/4 PASS
+  - A4 single-image render: 4/4 PASS
+  - A4 multi-image render: ALL PASS
+  - A4 simplestopwatch render: 3 ImageButtons PASS
+  - Phase F Handler/Looper: 23/23 PASS
+  - SQLite micro test: 9/9 PASS
+  - multi-DEX audit (Telegram): PASS (dex=5, mismatches=0)
+  - Manifest resolver: 6/6 PASS (no regression)
+- Phase M investigation:
+  - Telegram now reaches MUCH deeper than before.
+  - LaunchActivity.onCreate executes (1330 instructions, no segfault)
+  - handleIntent (15606 instructions) executes
+  - switchToAccount executes
+  - UserConfig.isClientActivated CALLED (not "NOT FOUND")
+  - LoginActivity.loadCurrentState class found! (260 methods, 236 direct + 24 virtual)
+  - IntroActivity.<init> executes
+  - addDelegate (8 calls) dispatched
+  - ActionBarLayout.<init> (187 instructions) executes
+  - Exit code 0
+  - 3/3 reproducible runs (identical screenshot SHA: 24956663322f4c73c55f30fc7e46dc63f7578102d1db08e9ae311c19d9e9d495)
+- Created docs/compatibility/SECONDARY_FORENSICS_INTEGRATION.md documenting all 3 secondary findings + the additional ConcurrentHashMap fix.
+- Created tests/exp088_multidex_inject_test.cpp — standalone C++ regression test for inject_secondary_dex_classes() API contract (2/2 PASS).
+- Updated build script a4_build.sh to build the new test.
+
+Stage Summary:
+- 10 phases PROVEN (A1, A2, A4, A5, B, B1, B2, B5, C, F, I)
+- 1 phase IN PROGRESS (M — boundary moved significantly, no longer BLOCKED on UserConfig)
+- 0 NOT_STARTED phases
+- 0 regressions introduced (all regression tests still pass)
+- Phase M boundary moved from:
+  BEFORE: LaunchActivity.onCreate → UserConfig.isClientActivated → "class not in index"
+  AFTER:  LaunchActivity.onCreate → handleIntent → switchToAccount →
+          LoginActivity.loadCurrentState (260 methods) →
+          IntroActivity.<init> → addDelegate → ActionBarLayout.<init>
+- Campaign NOT complete — M is IN PROGRESS, next boundary is PhoneView rendering
+- Next round MUST resume from: investigate IntroActivity.onFragmentCreate transition
+
+Artifacts produced:
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/src/dex/dalvik_engine.h — added inject_secondary_dex_classes() declaration
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/src/dex/dalvik_engine.cpp — added inject_secondary_dex_classes() impl + call inside execute_apk_with_activity
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/src/runtime/execution_engine.cpp — updated comment to point to dalvik_engine.cpp for injection
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/tests/exp088_multidex_inject_test.cpp — regression test
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/docs/compatibility/SECONDARY_FORENSICS_INTEGRATION.md — secondary forensics doc
+- /home/z/my-project/scripts/a4_build.sh — added multi-DEX inject test build target
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/.agent/state.md — updated
+- 2 commits pushed to main (Phase 1.2 fix + forensics doc + regression test)
