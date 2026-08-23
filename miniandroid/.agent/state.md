@@ -41,3 +41,19 @@
 - headingcalculator works reliably (5/5) but has no clickable buttons in layout
 - simplestopwatch works with 120s timeout (3 ImageButtons with resolved src paths)
 - Telegram has no layout cache (uses obfuscated res/ paths)
+
+## Phase B2 Evidence (2026-08-23T06:25:00Z)
+Phase B2 (event deduplication) is PROVEN:
+
+Evidence (gmdice):
+  [UI-EVENT] event=CLICK view_object=13 listener=3       (1 dispatch)
+  [TRY-ENTRY] GameMasterDice.onClick dex_report=YES        (1 invocation)
+  [METHOD-IN] GameMasterDice.onClick (bytecode_size=55)   (1 entry)
+  [UI-EVENT] event=CLICK result=DISPATCHED                 (1 result)
+
+- One click dispatch → one onClick invocation
+- No duplicate callbacks
+- No global "ignore repeated callback" hack
+- The dispatch_click function fires exactly once per call
+
+Next: Phase C (SQLite micro test)
