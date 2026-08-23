@@ -3793,6 +3793,26 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 success = execute_move(pc_, trace);
                 trace.opcode_name = "move";
                 break;
+            // EXP-088+ F5: move-wide (12x: B|A|op, 1 code unit)
+            // Copies a wide value (long/double) from vB to vA.
+            // Same as execute_move but explicitly handles wide types.
+            // Previously MISSING from dispatcher — fell through to default
+            // (handle_unimplemented), causing halt at PC where move-wide appears.
+            case Opcode::MOVE_WIDE: {
+                uint16_t instr = bytecode_[pc_];
+                uint8_t dest = (instr >> 8) & 0xF;
+                uint8_t src = instr & 0xF;
+                DalvikValue val = get_register(src);
+                // If src doesn't hold a wide value, coerce to INT64
+                // (matches the F5 return-wide coercion behavior)
+                if (val.type != DalvikType::INT64 && val.type != DalvikType::FLOAT64) {
+                    val = DalvikValue::make_long(static_cast<int64_t>(static_cast<uint32_t>(val.int_val)));
+                }
+                set_register(dest, val);
+                trace.opcode_name = "move-wide";
+                pc_ += 1;
+                break;
+            }
             case Opcode::MOVE_OBJECT:
                 success = execute_move_object(pc_, trace);
                 trace.opcode_name = "move-object";
