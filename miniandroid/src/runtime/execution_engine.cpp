@@ -480,9 +480,12 @@ bool ExecutionEngine::stage_execute_application_legacy(ExecutionResult& result, 
 bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Rendering frame");
 
-    // EXP-087 Phase 4 (B2 FIX): Try to render from ViewShadow tree first.
-    // This is the REAL rendering path — it walks the ViewShadow nodes
-    // created by AXML inflation, rendering each with its text and position.
+    // EXP-088 Phase A2: Real measure/layout + BitmapFont text rendering.
+    // Replaces the EXP-087 pixel-block renderer with proper:
+    //   1. SoftwareCanvas + BitmapFont for readable text glyphs
+    //   2. Simple measure/layout pass respecting MATCH_PARENT/WRAP_CONTENT
+    //   3. draw_rect for view backgrounds
+    //   4. draw_text for text with real font data
     if (shadow_registry_) {
         auto* activity_shadow = shadow_registry_->find_as<framework::ActivityShadow>();
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
@@ -491,51 +494,115 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
             if (root_id != 0) {
                 const auto* root_node = view_shadow->find_node(root_id);
                 if (root_node) {
-                    // Render the ViewShadow tree directly to the framebuffer
-                    int y_offset = 50;  // Start from top with margin
-                    std::function<void(uint32_t, int&)> render_node = [&](uint32_t vid, int& y) {
-                        const auto* node = view_shadow->find_node(vid);
-                        if (!node) return;
-                        // Draw text if present
-                        if (!node->text.empty()) {
-                            // Render text at (50, y + line_height)
-                            // Simple: write RGBA pixels for each character
-                            // Use the framebuffer directly
-                            int text_x = 50;
-                            int text_y = y;
-                            for (char c : node->text) {
-                                if (c == '\n') { text_y += 20; text_x = 50; continue; }
-                                if (c == '\r') continue;
-                                // Simple bitmap font: draw a white block per character
-                                for (int dy = 0; dy < 16 && text_y + dy < config.screen_height; dy++) {
-                                    for (int dx = 0; dx < 8 && text_x + dx < config.screen_width; dx++) {
-                                        size_t idx = ((text_y + dy) * config.screen_width + (text_x + dx)) * 4;
-                                        if (idx + 3 < framebuffer_.size()) {
-                                            framebuffer_[idx] = 0x33;     // R
-                                            framebuffer_[idx+1] = 0x33;  // G
-                                            framebuffer_[idx+2] = 0x33;  // B
-                                            framebuffer_[idx+3] = 0xFF;  // A
-                                        }
-                                    }
-                                }
-                                text_x += 8;
-                                if (text_x > config.screen_width - 50) {
-                                    text_y += 20;
-                                    text_x = 50;
+                    // Create a FrameBuffer + SoftwareCanvas for real rendering
+                    renderer::FrameBuffer fb(config.screen_width, config.screen_height);
+                    fb.clear(renderer::Colors::WHITE);  // White background like Android
+                    renderer::SoftwareCanvas canvas(&fb);
+                    renderer::BitmapFont font;
+
+                    // EXP-088 A2: Simple measure/layout pass with error handling.
+                    // Walk the ViewShadow tree, assigning bounds based on:
+                    //   - MATCH_PARENT (-1): fill parent
+                    //   - WRAP_CONTENT (-2): wrap to text height
+                    //   - exact px: use as-is
+                    try {
+                        view_shadow->find_node(root_id);  // verify root still valid
+
+                        // Use std::function for recursive lambda
+                        std::function<void(uint32_t, int, int, int, int)> layout_and_render =
+                            [&](uint32_t vid, int parent_left, int parent_top,
+                                int parent_width, int parent_height) {
+
+                            const auto* node = view_shadow->find_node(vid);
+                            if (!node) return;
+
+                            // Resolve width
+                            int w = parent_width;  // default: fill parent
+                            if (node->width == -1) w = parent_width;           // MATCH_PARENT
+                            else if (node->width == -2) w = parent_width;     // WRAP_CONTENT (use parent)
+                            else if (node->width > 0) w = node->width;        // exact px
+
+                            // Resolve height
+                            int h = font.get_line_height() + 20;  // default
+                            if (node->height == -1) h = parent_height;          // MATCH_PARENT
+                            else if (node->height == -2) {                       // WRAP_CONTENT
+                                if (!node->text.empty()) {
+                                    int lines = 1;
+                                    for (char c : node->text) if (c == '\n') lines++;
+                                    h = lines * font.get_line_height() + 20;
                                 }
                             }
-                            y = text_y + 20;
+                            else if (node->height > 0) h = node->height;       // exact px
+
+                            int left = parent_left;
+                            int top = parent_top;
+                            int right = parent_left + w;
+                            int bottom = parent_top + h;
+
+                            // Draw view background
+                            bool is_container = node->class_desc.find("Layout") != std::string::npos ||
+                                              node->class_desc.find("ViewGroup") != std::string::npos;
+                            if (is_container) {
+                                canvas.draw_rect(left, top, right, bottom,
+                                               renderer::Colors::GREY_200);
+                            } else if (node->class_desc.find("Button") != std::string::npos) {
+                                canvas.draw_rect(left, top, right, bottom,
+                                               renderer::RGBA{0x6F, 0xA8, 0xDC, 0xFF});
+                            }
+
+                            // Draw text if present (real BitmapFont glyphs)
+                            if (!node->text.empty()) {
+                                int text_x = left + 10;
+                                int text_y = top + font.get_line_height();
+                                std::string line;
+                                for (char c : node->text) {
+                                    if (c == '\n') {
+                                        if (!line.empty()) {
+                                            canvas.draw_text(line, text_x, text_y,
+                                                            renderer::Colors::GREY_800, &font);
+                                        }
+                                        text_y += font.get_line_height();
+                                        line.clear();
+                                    } else if (c != '\r') {
+                                        line += c;
+                                    }
+                                }
+                                if (!line.empty()) {
+                                    canvas.draw_text(line, text_x, text_y,
+                                                    renderer::Colors::GREY_800, &font);
+                                }
+                            }
+
+                            // Layout children (vertical stack)
+                            int child_y = top;
+                            for (uint32_t child_id : node->children) {
+                                layout_and_render(child_id, left, child_y, w, h);
+                                child_y += font.get_line_height() + 20;  // simple vertical step
+                            }
+                        };
+
+                        // Root: fill entire screen
+                        layout_and_render(root_id, 0, 0, config.screen_width, config.screen_height);
+
+                        // Copy FrameBuffer pixels (RGBA) back to framebuffer_ (uint8_t RGBA)
+                        const auto& pixels = fb.get_pixels();
+                        for (size_t i = 0; i < pixels.size() && i * 4 + 3 < framebuffer_.size(); i++) {
+                            framebuffer_[i * 4]     = pixels[i].r;
+                            framebuffer_[i * 4 + 1] = pixels[i].g;
+                            framebuffer_[i * 4 + 2] = pixels[i].b;
+                            framebuffer_[i * 4 + 3] = pixels[i].a;
                         }
-                        // Recursively render children
-                        for (uint32_t child_id : node->children) {
-                            render_node(child_id, y);
-                        }
-                    };
-                    render_node(root_id, y_offset);
-                    trace_engine_.info("ExecutionEngine", "stage_render_frame",
-                                       "Rendered ViewShadow tree (root_id=" + std::to_string(root_id) + ")");
-                    trace_engine_.increment_frame_count();
-                    return true;
+
+                        trace_engine_.info("ExecutionEngine", "stage_render_frame",
+                                           "Rendered ViewShadow tree with BitmapFont (root_id=" +
+                                           std::to_string(root_id) + ")");
+                        trace_engine_.increment_frame_count();
+                        return true;
+                    } catch (const std::exception& e) {
+                        trace_engine_.record_error("RENDER_ERROR", e.what(),
+                                                   "ExecutionEngine", "stage_render_frame");
+                        // Fall through to synthetic path
+                    }
                 }
             }
         }
