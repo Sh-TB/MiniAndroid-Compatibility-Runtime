@@ -215,13 +215,35 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
     result.activity = std::make_shared<api::Activity>();
     result.activity->set_package_name(result.apk_info.package_name);
     
+    // EXP-086 Phase 1: Configure dalvik_engine_ with per-DEX raw data and APK path
+    // before calling execute_apk_with_activity. Without this, multi-DEX method
+    // resolution fails (per_dex_raw_data_ size=0).
+    {
+        std::vector<std::string> sorted_dex_files = result.apk_info.dex_files;
+        std::sort(sorted_dex_files.begin(), sorted_dex_files.end());
+        std::vector<std::vector<uint8_t>> per_dex_raw;
+        for (const auto& dex_name : sorted_dex_files) {
+            auto raw = apk_parser_.extract_entry_cached(dex_name);
+            if (!raw.empty()) {
+                per_dex_raw.push_back(std::move(raw));
+            }
+        }
+        dalvik_engine_.set_per_dex_raw_data(std::move(per_dex_raw));
+        dalvik_engine_.set_apk_path(result.apk_info.apk_path);
+        dalvik_engine_.build_class_dex_index(result.dex_report);
+        std::cerr << "[EXP086-P1] Configured dalvik_engine_ with "
+                  << sorted_dex_files.size() << " DEX files for '"
+                  << result.apk_info.main_activity_full << "'" << std::endl;
+    }
+    
     try {
         // ===================================================================
         // CALL DALVIK ENGINE - This is the REAL execution path
         // ===================================================================
-        auto dalvik_result = dalvik_engine_.execute_apk(
+        auto dalvik_result = dalvik_engine_.execute_apk_with_activity(
             result.apk_info.apk_path,
             result.dex_report,
+            result.apk_info.main_activity_full,  // EXP-086 P1: pass manifest-provided activity class
             config.verbose_logging
         );
         

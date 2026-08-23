@@ -684,23 +684,37 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
         // the caller should convert it.
         if (!activity_class_name.empty()) {
             log("🎯 Manifest-provided activity class: " + activity_class_name);
+
+            // EXP-086 Phase 1: Build the set of descriptor variants to try.
+            // activity_class_name can be: dotted ("org.foo.Launcher") or
+            // descriptor ("Lorg/foo/Launcher;"). We try both forms.
+            std::vector<std::string> descriptor_variants;
+            descriptor_variants.push_back(activity_class_name);  // as-is
+            {
+                std::string descriptor_form = "L" + activity_class_name + ";";
+                descriptor_variants.push_back(descriptor_form);
+            }
+            {
+                std::string converted = activity_class_name;
+                for (auto& c : converted) if (c == '.') c = '/';
+                std::string descriptor_form2 = "L" + converted + ";";
+                descriptor_variants.push_back(descriptor_form2);
+            }
+
+            // First try: search dex_report.classes (single-DEX report from DEX 0).
+            bool found = false;
             for (const auto& cls : dex_report.classes) {
-                bool match = (cls.name == activity_class_name);
-                // Also try with L prefix + ; suffix if caller passed dotted form
-                if (!match) {
-                    std::string descriptor_form = "L" + activity_class_name + ";";
-                    match = (cls.name == descriptor_form);
-                }
-                // Also try replacing '.' with '/' (dotted → descriptor form)
-                if (!match) {
-                    std::string converted = activity_class_name;
-                    for (auto& c : converted) if (c == '.') c = '/';
-                    std::string descriptor_form2 = "L" + converted + ";";
-                    match = (cls.name == descriptor_form2);
+                bool match = false;
+                for (const auto& variant : descriptor_variants) {
+                    if (cls.name == variant) {
+                        match = true;
+                        break;
+                    }
                 }
                 if (match) {
-                    log("  ✅ Found manifest activity class in DEX: " + cls.name);
+                    log("  ✅ Found manifest activity class in DEX 0: " + cls.name);
                     result.main_class = cls.name;
+                    found = true;
 
                     // EXP-043 Phase 4: Pre-populate static fields that Android's
                     // framework would have set before onCreate is called.
@@ -784,7 +798,117 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                     goto entry_point_search_done;
                 }
             }
-            log("⚠️ Manifest activity class '" + activity_class_name + "' not found in DEX — falling back to scan");
+            log("⚠️ Manifest activity class '" + activity_class_name + "' not found in dex_report.classes (DEX 0) — trying multi-DEX index");
+
+            // EXP-086 Phase 1: Multi-DEX fallback.
+            // dex_report.classes only contains classes from DEX 0 (the first
+            // DEX file). The activity class may be in DEX 2/3/4 (e.g. Telegram
+            // LaunchActivity is in classes3.dex). Use class_to_dex_index_
+            // (built by build_class_dex_index) to check ALL DEX files.
+            if (!found && !class_to_dex_index_.empty()) {
+                for (const auto& variant : descriptor_variants) {
+                    auto it = class_to_dex_index_.find(variant);
+                    if (it != class_to_dex_index_.end()) {
+                        uint32_t dex_idx = it->second;
+                        log("  ✅ Found manifest activity class in DEX " + std::to_string(dex_idx) + ": " + variant);
+                        result.main_class = variant;
+
+                        // EXP-086 Phase 1: Load this class's full bytecode from
+                        // per_dex_raw_data_[dex_idx] and inject it into
+                        // dex_report_->classes so try_recursive_invoke can find
+                        // it via class_info_index_. This is the GENERIC fix for
+                        // multi-DEX entry-point resolution.
+                        if (dex_report_ && dex_idx < per_dex_raw_data_.size()) {
+                            log("  → Loading class bytecode from DEX " + std::to_string(dex_idx) + "...");
+                            // Use DexParser to parse JUST this class from the
+                            // per-DEX raw data.
+                            dex::DexParser parser;
+                            auto single_report = parser.parse_data(per_dex_raw_data_[dex_idx],
+                                                                    "DEX" + std::to_string(dex_idx));
+                            // Find the target class in the single-DEX report
+                            // EXP-086 Phase 1: dex_report_ is `const dex::DexReport*`
+                            // because execute_apk_with_activity takes a const&.
+                            // We use const_cast to inject the class — this is
+                            // safe because we own the lifetime of dex_report
+                            // (it's passed by the caller who keeps the original
+                            // alive). The injected class is read-only data.
+                            auto& mutable_classes = const_cast<std::vector<dex::ClassInfo>&>(dex_report_->classes);
+                            for (auto& single_cls : single_report.classes) {
+                                if (single_cls.name == variant) {
+                                    // Inject into dex_report_->classes and update index
+                                    mutable_classes.push_back(single_cls);
+                                    size_t new_idx = mutable_classes.size() - 1;
+                                    class_info_index_[variant] = new_idx;
+                                    log("  ✅ Injected " + variant + " into dex_report_->classes"
+                                        " (index " + std::to_string(new_idx) + ", "
+                                        + std::to_string(single_cls.direct_methods.size())
+                                        + " direct + "
+                                        + std::to_string(single_cls.virtual_methods.size())
+                                        + " virtual methods)");
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                log("  ⚠️ Class " + variant + " not found in DEX "
+                                    + std::to_string(dex_idx) + " raw data");
+                            }
+                        }
+
+                        if (found) {
+                            // EXP-043 Phase 4: Pre-populate static fields
+                            uint32_t app_ctx_id = heap_.allocate(
+                                "Landroid/app/Application;",
+                                0,  // pc=0 (pre-execution)
+                                0   // frame_id=0 (pre-execution)
+                            );
+                            DalvikValue app_ctx_val;
+                            app_ctx_val.type = DalvikType::OBJECT_REF;
+                            app_ctx_val.object_id = app_ctx_id;
+                            app_ctx_val.class_desc = "Landroid/app/Application;";
+                            static_field_storage_["Lorg/telegram/messenger/ApplicationLoader;.applicationContext"]
+                                = app_ctx_val;
+                            // Set current_dex_index_ so per-DEX resolution uses the right DEX
+                            current_dex_index_ = dex_idx;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if (!found) {
+                log("⚠️ Manifest activity class '" + activity_class_name + "' not found in any DEX — falling back to scan");
+            } else {
+                // EXP-086 Phase 1: Skip the legacy Activity/Main scan when we
+                // found the manifest activity class in the multi-DEX index.
+                // try_recursive_invoke will resolve onCreate via per-DEX raw data.
+                log("🎯 Skipping legacy scan — manifest activity class found in multi-DEX index");
+                // Try to invoke onCreate(Bundle) directly via try_recursive_invoke
+                // which will look up the method in the correct DEX.
+                std::vector<DalvikValue> entry_args;
+                entry_args.push_back(DalvikValue::make_null());  // p1 = Bundle (null)
+                DalvikValue return_val;  // onCreate returns void
+                try {
+                    log("🎯 Invoking onCreate via try_recursive_invoke (manifest class)");
+                    bool ok = try_recursive_invoke(
+                        result.main_class,
+                        "onCreate",
+                        entry_args,
+                        return_val,
+                        result,
+                        "(Landroid/os/Bundle;)V"
+                    );
+                    if (ok) {
+                        log("✅ onCreate invoked via try_recursive_invoke");
+                        result.main_method = "onCreate";
+                    } else {
+                        log("⚠️ try_recursive_invoke returned false for onCreate");
+                    }
+                } catch (const std::exception& e) {
+                    log("❌ try_recursive_invoke threw: " + std::string(e.what()));
+                }
+                goto entry_point_search_done;
+            }
         }
 
         // Look for Activity-like classes (legacy heuristic)
@@ -794,19 +918,19 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
             if (cls.name.find("Activity") != std::string::npos ||
                 cls.name.find("Main") != std::string::npos ||
                 cls.name.find("activity") != std::string::npos) {
-                
+
                 result.main_class = cls.name;
                 log("Found main class candidate: " + cls.name);
-                
+
                 // Find onCreate method
                 for (const auto& method : cls.all_methods()) {
                     if (method.name == "onCreate" || method.name == "main") {
                         result.main_method = method.name;
                         log("Found entry point: " + method.name + method.descriptor);
-                        
+
                         // Execute this method
                         if (!method.bytecode.empty()) {
-                            log("🎯 CALLING execute_method_internal() for " + method.name + 
+                            log("🎯 CALLING execute_method_internal() for " + method.name +
                                 " with " + std::to_string(method.bytecode.size()) + " instructions");
                             execute_method_internal(
                                 cls.name,
