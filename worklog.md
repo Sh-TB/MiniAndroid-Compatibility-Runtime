@@ -3360,3 +3360,59 @@ Artifacts produced:
 - /home/z/my-project/scripts/a4_build.sh — added multi-DEX inject test build target
 - /home/z/my-project/MiniAndroid-Compatibility-Runtime/.agent/state.md — updated
 - 2 commits pushed to main (Phase 1.2 fix + forensics doc + regression test)
+
+---
+Task ID: EXP-088+-F4-CRITICAL
+Agent: Super Z (long-running goal mode, primary coder)
+Task: Verify secondary findings F1-F6 + advance Telegram Phase M boundary.
+
+Work Log:
+- F1 audit: Searched for `reserve(43895)` in primary branch — NOT FOUND.
+  Only reserve() calls are: class_info_index_.reserve() (unordered_map, safe),
+  dex_parser report.classes.reserve() (pre-population, safe). Injection happens
+  ONCE at startup before execution. ClassInfo& references at lines 1409 and 2806
+  are only taken DURING execution. No dangling reference issue.
+  Added defense-in-depth: on-demand injection checks class_info_index_ first.
+- F4 investigation: Added diagnostic logging for $default$ methods.
+  Found: $default$addFragmentToStack proto resolved as (J)Z instead of
+  (Lorg/telegram/ui/ActionBar/INavigationLayout;Lorg/telegram/ui/ActionBar/BaseFragment;)Z
+  This caused the wide-arg merger to merge the fragment argument as a long,
+  reducing args from 2 to 1. Fragment never passed → lifecycle never started.
+- F4 ROOT CAUSE: DEX format type_list entries are ushort type_idx (2 bytes each).
+  Runtime was reading 4 bytes per entry (uint32_t). This corrupted ALL proto
+  resolutions for methods with 2+ parameters. Verified with Python: reading
+  2 bytes per entry correctly resolves param[0]=INavigationLayout, param[1]=BaseFragment.
+- F4 FIX: Changed `* 4u` to `* 2u`, `uint32_t` to `uint16_t`, `i * 4` to `i * 2`
+  in resolve_method_proto_for_dex(). GENERIC fix — affects ALL multi-DEX APKs.
+- Additional fix: AndroidUtilities.readRes bypass (loops forever in headless mode
+  reading a resource InputStream that returns 0/-1).
+- VNC capability check: Xvfb available, but no VNC server (x11vnc/tigervncserver
+  can't be installed — no root). MiniAndroid already produces PNG screenshots
+  via its own software renderer, independently verified by PIL (A4.5 PROVEN).
+  No GUI session needed for validation.
+- Phase M boundary MASSIVELY advanced:
+  BEFORE: LaunchActivity.onCreate → UserConfig.isClientActivated → "class not in index"
+  AFTER:  LaunchActivity.onCreate → handleIntent → switchToAccount →
+          UserConfig.isClientActivated (EXECUTES) →
+          LoginActivity.loadCurrentState (EXECUTES, 209 insns) →
+          IntroActivity.<init> → setTag → addFragmentToStack (2 args correct) →
+          IntroActivity.onFragmentCreate (EXECUTES, 118 insns) →
+          getString(R.string.Page2Title..Page6Title) →
+          Status: SUCCESS
+- 3/3 reproducible Telegram runs (identical screenshot SHA)
+- ALL regression tests pass: A1, A4, B, B2, C, F, I — no regressions
+
+Stage Summary:
+- 10 phases PROVEN (A1, A2, A4, A5, B, B1, B2, B5, C, F, I)
+- 1 phase IN PROGRESS (M — fragment lifecycle now WORKS)
+- 0 NOT_STARTED phases
+- 0 regressions introduced
+- F4 fix is a GENERIC VM fix (type_list 2-byte entries) — affects ALL multi-DEX APKs
+- Campaign NOT complete — M is IN PROGRESS, next boundary is createView + click dispatch
+- Next round MUST resume from: investigate IntroActivity.createView + click → LoginActivity transition
+
+Artifacts produced:
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/src/dex/dalvik_engine.cpp:
+  F4 fix (type_list 2-byte entries) + F1 defense-in-depth + readRes bypass
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/.agent/state.md — updated
+- 1 commit pushed to main (F4 CRITICAL FIX)
