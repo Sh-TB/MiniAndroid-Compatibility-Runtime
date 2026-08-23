@@ -421,15 +421,42 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         set_error("Dalvik execution error: " + std::string(e.what()));
         trace_engine_.record_error("DALVIK_ERROR", e.what(),
                                    "DalvikEngine", "execute_apk");
-        
+
         // Don't fallback to fake success - fail honestly
         result.status = ExecutionStatus::FAILURE;
         return false;
     }
-    
+
+    // ===================================================================
+    // EXP-088 Phase B: Generic click dispatch after onCreate
+    // After onCreate completes, find views with click listeners and
+    // dispatch one click to verify the full event chain:
+    //   click → listener → DEX callback → state change
+    // ===================================================================
+    if (shadow_registry_ && result.status != ExecutionStatus::FAILURE) {
+        auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+        if (view_shadow) {
+            auto clickables = view_shadow->find_all_with_click_listener("");
+            if (!clickables.empty()) {
+                trace_engine_.info("ExecutionEngine", "phase_b_click",
+                                   "Found " + std::to_string(clickables.size()) +
+                                   " views with click listeners");
+                // Dispatch click to first clickable view (generic)
+                uint32_t first_clickable = clickables[0];
+                bool click_ok = dalvik_engine_.dispatch_click(first_clickable);
+                trace_engine_.info("ExecutionEngine", "phase_b_click",
+                                   "dispatch_click(" + std::to_string(first_clickable) +
+                                   ") → " + (click_ok ? "OK" : "FAILED"));
+            } else {
+                trace_engine_.info("ExecutionEngine", "phase_b_click",
+                                   "No views with click listeners found (setContentView may not have been called)");
+            }
+        }
+    }
+
     trace_engine_.info("ExecutionEngine", "stage_execute_application_real_dalvik",
                        "Real Dalvik execution complete");
-    
+
     return true;
 }
 
