@@ -6,12 +6,96 @@
 
 #include <algorithm>
 #include <chrono>
+#include <fstream>
 #include <iostream>
 #include <queue>
 #include <sstream>
 #include <utility>
 
+// EXP-087 Phase 3 (B2 FIX): JSON for layout_cache.json parsing
+#include "../../third_party/nlohmann_json/include/nlohmann/json.hpp"
+
 namespace miniandroid { namespace framework {
+
+using json = nlohmann::json;
+
+// ============================================================================
+// EXP-087 Phase 3 (B2 FIX): inflate_view_tree — recursively create ViewShadow
+// nodes from the layout cache JSON. Each node has:
+//   tag       → View class name (e.g. "LinearLayout", "TextView", "Button")
+//   attributes → key-value pairs (e.g. "text" → "Push buttons to roll!")
+//   children  → child nodes
+// ============================================================================
+static uint32_t inflate_view_tree(ViewShadow* vs, const json& node, uint32_t parent_id) {
+    if (!vs || node.is_null()) return 0;
+
+    std::string tag = node.value("tag", "");
+    if (tag.empty()) return 0;
+
+    // Map XML tag → DEX class descriptor
+    std::string class_desc;
+    if (tag == "LinearLayout") class_desc = "Landroid/widget/LinearLayout;";
+    else if (tag == "TextView") class_desc = "Landroid/widget/TextView;";
+    else if (tag == "Button") class_desc = "Landroid/widget/Button;";
+    else if (tag == "ImageView") class_desc = "Landroid/widget/ImageView;";
+    else if (tag == "EditText") class_desc = "Landroid/widget/EditText;";
+    else if (tag == "FrameLayout") class_desc = "Landroid/widget/FrameLayout;";
+    else if (tag == "ScrollView") class_desc = "Landroid/widget/ScrollView;";
+    else if (tag == "ListView") class_desc = "Landroid/widget/ListView;";
+    else if (tag == "RelativeLayout") class_desc = "Landroid/widget/RelativeLayout;";
+    else if (tag == "merge") class_desc = "Landroid/view/ViewGroup;";  // merge → inflate children only
+    else class_desc = "Landroid/view/View;";  // Generic fallback
+
+    // Create the ViewShadow node
+    uint32_t view_id = vs->create_view(class_desc);
+    if (view_id == 0) return 0;
+
+    // Get or create the ViewNode
+    auto* vnode = vs->get_or_create_node(view_id, class_desc);
+    if (!vnode) return 0;
+
+    // Apply attributes
+    if (node.contains("attributes") && node["attributes"].is_object()) {
+        for (auto it = node["attributes"].begin(); it != node["attributes"].end(); ++it) {
+            const std::string& attr_name = it.key();
+            std::string attr_val = it.value().is_string() ?
+                it.value().get<std::string>() :
+                it.value().dump();
+
+            if (attr_name == "text") {
+                vnode->text = attr_val;
+            } else if (attr_name == "id") {
+                if (attr_val.size() > 4 && attr_val.substr(0, 4) == "@0x7") {
+                    try {
+                        vnode->android_view_id = std::stoul(attr_val.substr(1), nullptr, 16);
+                    } catch (...) {}
+                }
+            } else if (attr_name == "layout_width") {
+                if (attr_val == "-1") vnode->width = -1;  // MATCH_PARENT
+                else if (attr_val == "-2") vnode->width = -2;  // WRAP_CONTENT
+                else { try { vnode->width = std::stoi(attr_val); } catch (...) {} }
+            } else if (attr_name == "layout_height") {
+                if (attr_val == "-1") vnode->height = -1;
+                else if (attr_val == "-2") vnode->height = -2;
+                else { try { vnode->height = std::stoi(attr_val); } catch (...) {} }
+            }
+        }
+    }
+
+    // Add to parent if not root
+    if (parent_id != 0) {
+        vs->add_child(parent_id, view_id);
+    }
+
+    // Recursively inflate children
+    if (node.contains("children") && node["children"].is_array()) {
+        for (const auto& child : node["children"]) {
+            inflate_view_tree(vs, child, view_id);
+        }
+    }
+
+    return view_id;
+}
 
 // ─────────────────────────────────────────────────────────────────────────
 // Helpers — convert CallContext args into CallResult values
@@ -730,13 +814,85 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
             if (ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
                 content_view_id_ = ctx.args[0].object_id;
             } else if (ctx.args[0].kind == CallContext::Arg::Kind::INT) {
-                // EXP-074: setContentView(int layoutResId) — capture the layout resource ID.
-                // The runtime doesn't yet support XML layout inflation, but we capture
-                // the resource ID so the renderer can at least know which layout was requested.
+                // EXP-087 Phase 3 (B2 FIX): setContentView(int layoutResId)
+                // now loads the layout_cache.json and creates real ViewShadow
+                // nodes from the AXML view tree, with ARSC-resolved text strings.
                 layout_resource_id_ = ctx.args[0].int_val;
-                std::cerr << "[EXP074-LAYOUT] setContentView(layoutResId=0x" << std::hex
-                          << ctx.args[0].int_val << std::dec << ") — layout inflation NOT YET SUPPORTED"
-                          << std::endl;
+                std::cerr << "[EXP087-B2] setContentView(layoutResId=0x" << std::hex
+                          << ctx.args[0].int_val << std::dec << ")" << std::endl;
+
+                // Try to load layout_cache.json from the APK's directory
+                if (!apk_path_.empty()) {
+                    // Find layout_cache.json or *_layout_cache.json next to APK
+                    std::string apk_dir = apk_path_.substr(0, apk_path_.find_last_of("/"));
+                    // Try several naming patterns
+                    std::vector<std::string> cache_candidates = {
+                        apk_dir + "/layout_cache.json",
+                        apk_dir + "/gmdice_layout_cache.json",
+                    };
+                    // Also try pattern: <apk_stem>_layout_cache.json
+                    std::string apk_stem = apk_path_;
+                    size_t slash = apk_stem.find_last_of('/');
+                    if (slash != std::string::npos) apk_stem = apk_stem.substr(slash+1);
+                    size_t dot = apk_stem.find_last_of('.');
+                    if (dot != std::string::npos) apk_stem = apk_stem.substr(0, dot);
+                    cache_candidates.push_back(apk_dir + "/" + apk_stem + "_layout_cache.json");
+
+                    // Try all layout cache files in the directory
+                    for (const auto& cache_path : cache_candidates) {
+                        std::ifstream cache_file(cache_path);
+                        if (!cache_file.is_open()) continue;
+
+                        std::cerr << "[EXP087-B2] Loading layout cache: " << cache_path << std::endl;
+                        try {
+                            json cache_json;
+                            cache_file >> cache_json;
+                            cache_file.close();
+
+                            const auto& layouts = cache_json["layouts"];
+                            // Find layout matching the resource ID
+                            for (auto it = layouts.begin(); it != layouts.end(); ++it) {
+                                const auto& layout = it.value();
+                                if (layout.contains("resource_id_int") &&
+                                    layout["resource_id_int"].get<int32_t>() == layout_resource_id_) {
+
+                                    std::cerr << "[EXP087-B2] Found layout: " << it.key()
+                                              << " (resource_id=0x" << std::hex
+                                              << layout_resource_id_ << std::dec << ")" << std::endl;
+
+                                    // Create ViewShadow nodes from the cached view tree
+                                    if (registry_ && layout.contains("view_tree")) {
+                                        auto* view_shadow = registry_->find_as<ViewShadow>();
+                                        std::cerr << "[EXP087-B2] registry_=" << registry_
+                                                  << " view_shadow=" << (void*)view_shadow
+                                                  << " has_view_tree=" << layout.contains("view_tree")
+                                                  << std::endl;
+                                        if (view_shadow) {
+                                            uint32_t root_id = inflate_view_tree(
+                                                view_shadow, layout["view_tree"], 0);
+                                            if (root_id != 0) {
+                                                content_view_id_ = root_id;
+                                                std::cerr << "[EXP087-B2] Inflated view tree root_id="
+                                                          << root_id << std::endl;
+                                            } else {
+                                                std::cerr << "[EXP087-B2] inflate_view_tree returned 0"
+                                                          << std::endl;
+                                            }
+                                        }
+                                    } else {
+                                        std::cerr << "[EXP087-B2] registry_=" << registry_
+                                                  << " has_view_tree=" << layout.contains("view_tree")
+                                                  << std::endl;
+                                    }
+                                    break;
+                                }
+                            }
+                            break;  // Found and loaded cache
+                        } catch (const std::exception& e) {
+                            std::cerr << "[EXP087-B2] Error parsing layout cache: " << e.what() << std::endl;
+                        }
+                    }
+                }
             }
         }
         return CallResult::handled_void();

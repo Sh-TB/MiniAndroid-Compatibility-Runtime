@@ -10,6 +10,8 @@
 #include "../renderer/software_renderer.h"
 // EXP-086 Phase 7 (B4 FIX): HandlerShadow for Runnable queue drain
 #include "../framework/android_shadows.h"
+// EXP-087 Phase 3 (B2 FIX): DalvikHeapAdapter for shadow heap access
+#include "../framework/heap_adapter.h"
 
 #include <filesystem>
 #include <fstream>
@@ -240,6 +242,12 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         // onCreate are never enqueued and never drained.
         if (shadow_registry_) {
             dalvik_engine_.set_shadow_registry(shadow_registry_);
+            // EXP-087 Phase 3 (B2 FIX): Create a DalvikHeapAdapter so shadows
+            // can allocate heap objects. Without this, ViewShadow::create_view()
+            // returns 0 because heap_ is null on the shadow.
+            heap_adapter_ = std::make_unique<framework::DalvikHeapAdapter>(
+                &dalvik_engine_.get_heap_public(), &dalvik_engine_);
+            shadow_registry_->set_heap(heap_adapter_.get());
         }
         std::cerr << "[EXP086-P1] Configured dalvik_engine_ with "
                   << sorted_dex_files.size() << " DEX files for '"

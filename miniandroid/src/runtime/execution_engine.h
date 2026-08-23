@@ -22,6 +22,8 @@
 #include "diagnostics/trace_engine.h"
 // EXP-086 Phase 7 (B4 FIX): ShadowRegistry for Handler/Looper dispatch
 #include "framework/shadow_registry.h"
+// EXP-087 Phase 3 (B2 FIX): DalvikHeapAdapter for shadow heap access
+#include "framework/heap_adapter.h"
 
 namespace miniandroid {
 namespace runtime {
@@ -168,6 +170,8 @@ private:
     diagnostics::TraceEngine trace_engine_;
     // EXP-086 Phase 7 (B4 FIX): Shadow registry for Handler/Looper dispatch
     framework::ShadowRegistry* shadow_registry_ = nullptr;
+    // EXP-087 Phase 3 (B2 FIX): Heap adapter for shadow heap access
+    std::unique_ptr<framework::DalvikHeapAdapter> heap_adapter_;
     
     // State
     std::vector<uint8_t> framebuffer_;
