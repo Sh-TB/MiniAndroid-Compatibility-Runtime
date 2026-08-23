@@ -7,6 +7,9 @@
 #include "runtime/object_model.h"
 #include <fstream>
 #include <chrono>
+// EXP-086 Phase 3 (B1 FIX): zlib for proper PNG IDAT compression
+#include <zlib.h>
+#include <algorithm>
 
 namespace miniandroid {
 namespace renderer {
@@ -749,21 +752,61 @@ uint32_t PNGWriter::crc32(const uint8_t* data, size_t length, uint32_t init_crc)
 }
 
 std::vector<uint8_t> PNGWriter::compress_data(const uint8_t* data, size_t length) {
-    // Simple uncompressed deflate block for small images
-    // This is a minimal implementation - not optimal but works
-    
-    std::vector<uint8_t> compressed;
-    
-    // Deflate header: final block, no compression (type 00)
-    compressed.push_back(0x01);  // Final block, no compression
-    compressed.push_back(0x00);  // LEN low byte
-    compressed.push_back(0x00);  // LEN high byte  
-    compressed.push_back(0xFF);  // NLEN (one's complement of LEN)
-    compressed.push_back(0xFF);
-    
-    // Copy raw data
-    compressed.insert(compressed.end(), data, data + length);
-    
+    // EXP-086 Phase 3 (B1 FIX): Use zlib for proper PNG IDAT compression.
+    //
+    // The previous implementation was broken:
+    // 1. It emitted a raw deflate non-compressed block with NO zlib header
+    //    (PNG requires zlib-wrapped deflate: 2-byte CMF/FLG header + deflate
+    //     + 4-byte Adler-32 checksum).
+    // 2. The 2-byte LEN field can only hold values up to 65535, so any image
+    //    larger than 64KB produced a truncated block.
+    //
+    // The new implementation uses zlib's compress2() with the default
+    // compression level. This produces a valid zlib stream that any PNG
+    // decoder (PIL, stb_image, libpng, web browsers) can decode.
+    //
+    // zlib is already linked (for APK deflate extraction), so no new deps.
+    uLong bound = compressBound(length);
+    std::vector<uint8_t> compressed(bound);
+
+    uLongf actual_size = bound;
+    int ret = compress2(compressed.data(), &actual_size,
+                         data, length,
+                         Z_DEFAULT_COMPRESSION);
+    if (ret != Z_OK) {
+        // Fallback: emit uncompressed (still wrapped in zlib format)
+        // CMF: 0x78 (32K window, deflate), FLG: 0x01 (no dict, level 0)
+        compressed.clear();
+        compressed.push_back(0x78);
+        compressed.push_back(0x01);
+        // Single non-compressed deflate block (split if >65535)
+        size_t remaining = length;
+        const uint8_t* p = data;
+        while (remaining > 0) {
+            size_t chunk = std::min(remaining, (size_t)65535);
+            uint8_t is_final = (remaining <= 65535) ? 0x01 : 0x00;
+            compressed.push_back(is_final);  // BFINAL + BTYPE=00 (no compression)
+            // LEN (little-endian)
+            compressed.push_back(chunk & 0xFF);
+            compressed.push_back((chunk >> 8) & 0xFF);
+            // NLEN (one's complement of LEN, little-endian)
+            uint16_t nlen = ~static_cast<uint16_t>(chunk);
+            compressed.push_back(nlen & 0xFF);
+            compressed.push_back((nlen >> 8) & 0xFF);
+            // Data
+            compressed.insert(compressed.end(), p, p + chunk);
+            p += chunk;
+            remaining -= chunk;
+        }
+        // Adler-32 checksum (big-endian)
+        uint32_t adler = adler32(1L, data, length);
+        compressed.push_back((adler >> 24) & 0xFF);
+        compressed.push_back((adler >> 16) & 0xFF);
+        compressed.push_back((adler >> 8) & 0xFF);
+        compressed.push_back(adler & 0xFF);
+        return compressed;
+    }
+    compressed.resize(actual_size);
     return compressed;
 }
 
