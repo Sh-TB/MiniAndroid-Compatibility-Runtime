@@ -585,6 +585,39 @@ size_t HandlerShadow::drain_ready(std::vector<uint32_t>* out_drained) {
     return drained;
 }
 
+// EXP-088 Phase F: Real removeCallbacks implementation.
+// Previously this was a no-op stub — removeCallbacks(R) was acknowledged
+// but did nothing. Now it actually removes matching Runnables from the
+// queue. This is necessary for the user's Phase F acceptance scenario:
+//   post(A), post(B), postDelayed(C), removeCallbacks(B), drain → A, C
+//
+// Returns the number of Runnables removed.
+size_t HandlerShadow::remove_callbacks(uint32_t runnable_id) {
+    if (runnable_id == 0) return 0;
+    size_t removed = 0;
+    auto it = queue_.begin();
+    while (it != queue_.end()) {
+        if (it->runnable_id == runnable_id) {
+            std::cerr << "[QUEUE] Runnable id=" << runnable_id
+                      << " removed (was at depth=" << std::distance(queue_.begin(), it)
+                      << ")" << std::endl;
+            it = queue_.erase(it);
+            removed++;
+        } else {
+            ++it;
+        }
+    }
+    return removed;
+}
+
+// EXP-088 Phase F: removeCallbacksAndMessages(null) — clear entire queue.
+size_t HandlerShadow::remove_all() {
+    size_t n = queue_.size();
+    std::cerr << "[QUEUE] Clearing " << n << " queued Runnables" << std::endl;
+    queue_.clear();
+    return n;
+}
+
 CallResult HandlerShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
 
@@ -610,8 +643,25 @@ CallResult HandlerShadow::dispatch(const CallContext& ctx) {
         if (m == "postDelayed") {
             return CallResult::handled_bool(true);
         }
-        if (m == "removeCallbacks" || m == "removeCallbacksAndMessages" ||
-            m == "removeMessages" || m == "hasMessages" || m == "hasCallbacks") {
+        if (m == "removeCallbacks" || m == "removeMessages" || m == "hasMessages" || m == "hasCallbacks") {
+            // EXP-088 Phase F: removeCallbacks(Runnable) — actually remove
+            // matching Runnables from the queue. Previously this was a no-op.
+            uint32_t r = extract_runnable(ctx, 0);
+            if (r != 0) {
+                size_t removed = remove_callbacks(r);
+                std::cerr << "[QUEUE] removeCallbacks(runnable=" << r
+                          << ") removed " << removed << " entries" << std::endl;
+            }
+            return CallResult::handled_void();
+        }
+        if (m == "removeCallbacksAndMessages") {
+            // removeCallbacksAndMessages(null) clears the entire queue.
+            // The token arg (often null) is currently ignored — we always
+            // clear everything, which is correct for the null-token case
+            // that is by far the most common usage.
+            size_t removed = remove_all();
+            std::cerr << "[QUEUE] removeCallbacksAndMessages cleared "
+                      << removed << " entries" << std::endl;
             return CallResult::handled_void();
         }
         if (m == "getLooper") {

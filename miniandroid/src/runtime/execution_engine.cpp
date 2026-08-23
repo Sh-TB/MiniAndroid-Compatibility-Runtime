@@ -620,27 +620,48 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 }
                             }
 
-                            // EXP-088 A4: Draw ImageView/ImageButton
+                            // EXP-088 A4: Draw ImageView/ImageButton with REAL decoded pixels
+                            // (replaces the prior placeholder rect + dimensions text).
+                            // We use PNGDecoder to inflate + unfilter + expand to RGBA, then
+                            // SoftwareCanvas::draw_image to alpha-blend onto the framebuffer.
+                            // The image is drawn at (left+5, top+5) at its natural size; if it
+                            // would extend past the view's right/bottom bounds, it is clipped
+                            // by the framebuffer's own bounds (draw_image skips out-of-bounds
+                            // pixels). For the simplestopwatch icons (27x40, 40x40) this is
+                            // the correct behaviour.
                             bool is_image_view = node->class_desc.find("ImageView") != std::string::npos ||
                                                  node->class_desc.find("ImageButton") != std::string::npos;
                             if (is_image_view && !node->image_drawable_path.empty()) {
                                 auto png_data = apk_parser_.extract_entry_cached(node->image_drawable_path);
-                                if (!png_data.empty() && png_data.size() >= 24 &&
+                                if (!png_data.empty() && png_data.size() >= 8 &&
                                     png_data[0] == 0x89 && png_data[1] == 0x50 &&
-                                    png_data[2] == 0x47 && png_data[3] == 0x4E) {
-                                    uint32_t img_w = (png_data[16] << 24) | (png_data[17] << 16) |
-                                                    (png_data[18] << 8) | png_data[19];
-                                    uint32_t img_h = (png_data[20] << 24) | (png_data[21] << 16) |
-                                                    (png_data[22] << 8) | png_data[23];
-                                    int img_left = left + 5;
-                                    int img_top = top + 5;
-                                    int img_right = std::min((int)(img_left + img_w), right - 5);
-                                    int img_bottom = std::min((int)(img_top + img_h), bottom - 5);
-                                    canvas.draw_rect(img_left, img_top, img_right, img_bottom,
-                                                   renderer::RGBA{0xFF, 0x99, 0x33, 0xFF});
-                                    std::string dim = std::to_string(img_w) + "x" + std::to_string(img_h);
-                                    canvas.draw_text(dim, img_left + 2, img_top + font.get_line_height(),
-                                                   renderer::Colors::WHITE, &font);
+                                    png_data[2] == 0x4E && png_data[3] == 0x47) {
+                                    auto decoded = renderer::PNGDecoder::decode(png_data);
+                                    if (decoded.ok && !decoded.rgba.empty()) {
+                                        canvas.draw_image(decoded.rgba.data(),
+                                                          decoded.width, decoded.height,
+                                                          left + 5, top + 5);
+                                        trace_engine_.info("ExecutionEngine",
+                                            "stage_render_frame",
+                                            std::string("Drew image '") + node->image_drawable_path +
+                                            "' (" + std::to_string(decoded.width) + "x" +
+                                            std::to_string(decoded.height) + ", " +
+                                            decoded.color_type_name + ") at (" +
+                                            std::to_string(left + 5) + "," +
+                                            std::to_string(top + 5) + ")");
+                                    } else if (!decoded.ok) {
+                                        trace_engine_.warning("ExecutionEngine",
+                                            "stage_render_frame",
+                                            std::string("PNG decode failed for '") +
+                                            node->image_drawable_path + "': " + decoded.error);
+                                        // Fall back to a labelled placeholder so the user can
+                                        // see that an image *should* be there.
+                                        canvas.draw_rect(left + 5, top + 5, right - 5, bottom - 5,
+                                                       renderer::RGBA{0xCC, 0xCC, 0xCC, 0xFF});
+                                        canvas.draw_text("IMG?", left + 10,
+                                                       top + font.get_line_height(),
+                                                       renderer::Colors::GREY_800, &font);
+                                    }
                                 }
                             }
                             if (is_image_view && node->image_drawable_path.empty() &&
