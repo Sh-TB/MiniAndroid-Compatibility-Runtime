@@ -826,17 +826,18 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                     // Find layout_cache.json or *_layout_cache.json next to APK
                     std::string apk_dir = apk_path_.substr(0, apk_path_.find_last_of("/"));
                     // Try several naming patterns
-                    std::vector<std::string> cache_candidates = {
-                        apk_dir + "/layout_cache.json",
-                        apk_dir + "/gmdice_layout_cache.json",
-                    };
-                    // Also try pattern: <apk_stem>_layout_cache.json
+                    // EXP-088: Use APK-stem-specific cache filename first,
+                    // then fall back to generic layout_cache.json.
                     std::string apk_stem = apk_path_;
                     size_t slash = apk_stem.find_last_of('/');
                     if (slash != std::string::npos) apk_stem = apk_stem.substr(slash+1);
                     size_t dot = apk_stem.find_last_of('.');
                     if (dot != std::string::npos) apk_stem = apk_stem.substr(0, dot);
-                    cache_candidates.push_back(apk_dir + "/" + apk_stem + "_layout_cache.json");
+
+                    std::vector<std::string> cache_candidates = {
+                        apk_dir + "/" + apk_stem + "_layout_cache.json",  // per-APK (preferred)
+                        apk_dir + "/layout_cache.json",                   // generic fallback
+                    };
 
                     // Try all layout cache files in the directory
                     for (const auto& cache_path : cache_candidates) {
