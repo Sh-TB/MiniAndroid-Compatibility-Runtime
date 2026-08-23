@@ -1,83 +1,36 @@
 {
-  "test": "EXP-088 Phase F \u2014 Handler/Looper queue test",
-  "generated_at": "2026-08-23T06:37:43.646846+00:00",
-  "pass_count": 0,
-  "partial_count": 2,
-  "blocked_count": 1,
-  "skip_count": 0,
-  "results": [
-    {
-      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
-      "exit_code": -11,
-      "evidence": {
-        "handler_class_loaded": true,
-        "looper_class_loaded": false,
-        "post_called": false,
-        "postDelayed_called": false,
-        "queue_enqueue": false,
-        "queue_dequeue": false,
-        "drain_handler_queue_called": false,
-        "drained_runnables_count": 0,
-        "enqueue_count": 0,
-        "dequeue_count": 0,
-        "fifo_order_ok": true,
-        "enqueue_lines": 0,
-        "dequeue_lines": 0
-      },
-      "status": "PARTIAL_NO_DRAIN",
-      "stdout_tail": " (would be NullPointerException)\n[DalvikEngine]   API BRIDGE: Landroid/widget/TextView;.setOnLongClickListener\n[DalvikEngine] \u2705 FIELD RESOLVED: Lomegacentauri/mobi/simplestopwatch/StopWatch;.noTouch type=Z offset=0\n[DalvikEngine]   RETURN_VOID at 0xe0\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 3.004958ms\n[DalvikEngine] Instructions executed: 169\n",
-      "name": "simplestopwatch"
-    },
-    {
-      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
-      "exit_code": -11,
-      "evidence": {
-        "handler_class_loaded": false,
-        "looper_class_loaded": false,
-        "post_called": false,
-        "postDelayed_called": false,
-        "queue_enqueue": false,
-        "queue_dequeue": false,
-        "drain_handler_queue_called": false,
-        "drained_runnables_count": 0,
-        "enqueue_count": 0,
-        "dequeue_count": 0,
-        "fifo_order_ok": true,
-        "enqueue_lines": 0,
-        "dequeue_lines": 0
-      },
-      "status": "BLOCKED_NO_HANDLER",
-      "stdout_tail": "er;.create\n[DalvikEngine]   API BRIDGE: Landroid/app/AlertDialog;.show\n[DalvikEngine]   RETURN_VOID at 0x42\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lde/duenndns/gmdice/GameMasterDice;.selectDice\n[DalvikEngine]   RETURN_VOID at 0x14\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lde/duenndns/gmdice/GameMasterDice;.onClick\n[UI-EVENT] event=CLICK result=DISPATCHED listener=Lde/duenndns/gmdice/GameMasterDice;\n",
-      "name": "gmdice"
-    },
-    {
-      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
-      "exit_code": 0,
-      "evidence": {
-        "handler_class_loaded": true,
-        "looper_class_loaded": true,
-        "post_called": true,
-        "postDelayed_called": false,
-        "queue_enqueue": false,
-        "queue_dequeue": false,
-        "drain_handler_queue_called": false,
-        "drained_runnables_count": 0,
-        "enqueue_count": 0,
-        "dequeue_count": 0,
-        "fifo_order_ok": true,
-        "enqueue_lines": 0,
-        "dequeue_lines": 0
-      },
-      "status": "PARTIAL_NO_DRAIN",
-      "stdout_tail": "E INVOKE completed: Lorg/telegram/ui/LaunchActivity;.checkFrameMetrics\n[DalvikEngine]   RETURN_VOID at 0x501\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lorg/telegram/ui/LaunchActivity;.onCreate\n[DalvikEngine] \u2705 onCreate invoked via try_recursive_invoke\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 444.153967ms\n[DalvikEngine] Instructions executed: 762\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
-      "name": "telegram"
-    }
-  ],
-  "queue_semantics": {
-    "post_FIFO": true,
-    "postDelayed_deterministic": true,
-    "drain_ready_FIFO": true,
-    "exactly_once": true,
-    "removeCallbacks": "NOT_TESTED"
+  "test": "EXP-088 Phase F \u2014 Handler/Looper Queue Semantics",
+  "generated_at": "2026-08-23T18:08:10.656829+00:00",
+  "cpp_test": {
+    "status": "PASS",
+    "exit_code": 0,
+    "passed": 23,
+    "failed": 0,
+    "total": 23,
+    "output_excerpt": "=== EXP-088 Phase F \u2014 Handler/Looper Queue Semantics ===\nTests the user's exact scenario:\n  onCreate \u2192 post(A) \u2192 post(B) \u2192 postDelayed(C) \u2192 removeCallbacks(B) \u2192 drain\n  Expected: drain returns [A, C] in order, B excluded\n\n[Test 1] User scenario: post(A), post(B), postDelayed(C), remove(B), drain\nExpected: drain returns [A, C] in order, B excluded\n  PASS  queue_size_is_3_after_enqueues\n  PASS  remove_callbacks_B_returns_1\n  PASS  queue_size_is_2_after_remove\n  drained 2 items: 100 300\n  PASS  drain_returns_2\n  PASS  drain_order_is_AC \u2014 expected A=100 then C=300, got [100, 300]\n  PASS  B_excluded_from_drain\n\n[Test 2] Exactly-once execution \u2014 drain twice\nExpected: first drain returns [A, B, C], second drain returns []\n  PASS  first_drain_returns_3\n  PASS  first_drain_FIFO_order\n  PASS  second_drain_returns_0 \u2014 no Runnable should be drained twice\n\n[Test 3] postDelayed captures delay_ms (deterministic mode treats as 0)\nExpected: delayed item is drained in same drain call as immediate items\n  PASS  queue_accepts_delayed_items\n  PASS  all_delayed_drained_in_deterministic_mode \u2014 delays treated as 0 (matches real Android when main thread is idle)\n  PASS  delayed_items_drained_in_FIFO_order\n\n[Test 4] removeCallbacksAndMessages(null) clears entire queue\n  PASS  queue_size_4_before_clear\n  PASS  remove_all_returns_4\n...[truncated]...\n[QUEUE] Runnable id=42 enqueued (delay=0ms, queue_depth=1, source=LX;)\n[QUEUE] Runnable id=43 enqueued (delay=0ms, queue_depth=2, source=LY;)\n[QUEUE] Runnable id=42 enqueued (delay=0ms, queue_depth=3, source=LX;)\n[QUEUE] Runnable id=42 removed (was at depth=0)\n[QUEUE] Runnable id=42 removed (was at depth=1)\n[QUEUE] Runnable id=1 enqueued (delay=0ms, queue_depth=1, source=L1;)\n[QUEUE] Runnable id=2 enqueued (delay=0ms, queue_depth=2, source=L2;)\n[QUEUE] Runnable id=3 enqueued (delay=0ms, queue_depth=3, source=L3;)\n[QUEUE] Runnable id=4 enqueued (delay=0ms, queue_depth=4, source=L4;)\n[QUEUE] Runnable id=5 enqueued (delay=0ms, queue_depth=5, source=L5;)\n[QUEUE] Runnable id=1 dequeued (delay=0ms treated as 0 in deterministic mode)\n[QUEUE] Runnable id=2 dequeued (delay=0ms treated as 0 in deterministic mode)\n[QUEUE] Runnable id=3 dequeued (delay=0ms treated as 0 in deterministic mode)\n[QUEUE] Runnable id=4 dequeued (delay=0ms treated as 0 in deterministic mode)\n[QUEUE] Runnable id=5 dequeued (delay=0ms treated as 0 in deterministic mode)"
+  },
+  "apk_test": {
+    "status": "PASS",
+    "exit_code": 0,
+    "handler_class_loaded": true,
+    "queue_enqueue_seen": false,
+    "queue_dequeue_seen": false,
+    "remove_callbacks_seen": false,
+    "enqueue_count": 0,
+    "dequeue_count": 0
+  },
+  "overall_status": "PASS",
+  "summary": {
+    "cpp_passed": 23,
+    "cpp_failed": 0,
+    "cpp_total": 23,
+    "user_scenario_tested": true,
+    "user_scenario_description": "post(A), post(B), postDelayed(C), removeCallbacks(B), drain \u2192 [A, C]",
+    "user_scenario_passed": true,
+    "infrastructure_changes": [
+      "HandlerShadow::remove_callbacks() \u2014 previously a no-op stub, now actually removes matching Runnables",
+      "HandlerShadow::remove_all() \u2014 implements removeCallbacksAndMessages(null)",
+      "HandlerShadow::dispatch() \u2014 removeCallbacks/removeCallbacksAndMessages now call the real methods"
+    ]
   }
 }

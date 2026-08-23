@@ -7,6 +7,8 @@
 #include "runtime/object_model.h"
 #include <fstream>
 #include <chrono>
+#include <cstring>
+#include <cstdlib>
 // EXP-086 Phase 3 (B1 FIX): zlib for proper PNG IDAT compression
 #include <zlib.h>
 #include <algorithm>
@@ -411,6 +413,331 @@ json SoftwareCanvas::to_trace_json() const {
         trace["commands"].push_back(cmd.to_json());
     }
     return trace;
+}
+
+// ============================================================================
+// EXP-088 Phase A4: SoftwareCanvas::draw_image
+//
+// Draws an RGBA pixel buffer (decoded from a PNG via PNGDecoder) into the
+// framebuffer at (dst_x, dst_y). Optional scaling to dst_w x dst_h.
+//
+// Uses nearest-neighbour sampling for scaling — no fancy interpolation,
+// because the source PNGs we care about (simplestopwatch icons) are tiny
+// and need to render at their natural size anyway.
+//
+// Pixels with alpha < 255 are alpha-blended onto the existing framebuffer
+// pixel using the standard "over" compositing operator. This is essential
+// because:
+//   - simplestopwatch's lock.png is grayscale+alpha with partial transparency
+//   - if we just stomped (R,G,B,0) over the framebuffer we'd lose the icon
+// ============================================================================
+
+void SoftwareCanvas::draw_image(const uint8_t* src_rgba, int src_w, int src_h,
+                                int dst_x, int dst_y,
+                                int dst_w, int dst_h) {
+    if (!src_rgba || src_w <= 0 || src_h <= 0) return;
+    if (dst_w <= 0)  dst_w = src_w;
+    if (dst_h <= 0)  dst_h = src_h;
+
+    int fb_w = framebuffer_->get_width();
+    int fb_h = framebuffer_->get_height();
+
+    for (int dy = 0; dy < dst_h; dy++) {
+        int sy = (dy * src_h) / dst_h;  // nearest-neighbour
+        if (sy < 0 || sy >= src_h) continue;
+        for (int dx = 0; dx < dst_w; dx++) {
+            int sx = (dx * src_w) / dst_w;
+            if (sx < 0 || sx >= src_w) continue;
+
+            const uint8_t* p = src_rgba + (sy * src_w + sx) * 4;
+            RGBA src(p[0], p[1], p[2], p[3]);
+
+            int x = dst_x + dx;
+            int y = dst_y + dy;
+            if (x < 0 || x >= fb_w || y < 0 || y >= fb_h) continue;
+
+            // Alpha-blend with existing pixel
+            RGBA dst = framebuffer_->get_pixel(x, y);
+            RGBA out = blend(src, dst);
+            framebuffer_->set_pixel(x, y, out);
+        }
+    }
+
+    CanvasCommand cmd;
+    cmd.type = "drawImage";
+    cmd.sequence = ++command_sequence_;
+    cmd.params["src_size"] = {{"w", src_w}, {"h", src_h}};
+    cmd.params["dst_pos"]   = {{"x", dst_x}, {"y", dst_y}};
+    cmd.params["dst_size"]  = {{"w", dst_w}, {"h", dst_h}};
+    commands_.push_back(cmd);
+}
+
+// ============================================================================
+// EXP-088 Phase A4: PNGDecoder
+//
+// Minimal PNG decoder for the subset of PNG that appears in real Android APK
+// resources. Implemented from scratch (zlib for IDAT inflate only).
+//
+// Coverage:
+//   - Signature check (\x89PNG\r\n\x1a\n)
+//   - IHDR parse: width, height, bit_depth, color_type, interlace
+//   - IDAT concatenation + zlib inflate
+//   - PNG unfilter (5 filter types: None, Sub, Up, Average, Paeth)
+//   - Color-type expansion to RGBA
+//
+// Unsupported (returns ok=false with descriptive error):
+//   - bit_depth != 8 (1/2/4/16 — could be added later if needed)
+//   - color_type 3 (palette) — would require PLTE chunk parsing
+//   - Adam7 interlacing (interlace_method=1)
+//   - Ancillary chunks ignored (tEXt, gAMA, sRGB, pHYs, bKGD, etc.)
+// ============================================================================
+
+namespace {
+
+// Paeth predictor — see PNG spec section "Step 1: byte reordering"
+inline uint8_t paeth_predictor(uint8_t a, uint8_t b, uint8_t c) {
+    int p = int(a) + int(b) - int(c);
+    int pa = std::abs(p - int(a));
+    int pb = std::abs(p - int(b));
+    int pc = std::abs(p - int(c));
+    if (pa <= pb && pa <= pc) return a;
+    if (pb <= pc) return b;
+    return c;
+}
+
+// Read a big-endian uint32 from a byte pointer
+inline uint32_t rd_be32(const uint8_t* p) {
+    return (uint32_t(p[0]) << 24) | (uint32_t(p[1]) << 16) |
+           (uint32_t(p[2]) << 8)  |  uint32_t(p[3]);
+}
+
+}  // namespace
+
+bool PNGDecoder::unfilter(const std::vector<uint8_t>& raw,
+                          int bpp, int width, int height,
+                          std::vector<uint8_t>& out,
+                          std::string& error) {
+    // Each row in `raw` is: 1 filter byte + width*bpp pixel bytes.
+    size_t row_stride = size_t(width) * bpp + 1;
+    if (raw.size() < row_stride * size_t(height)) {
+        error = "raw IDAT too small for image dimensions";
+        return false;
+    }
+    out.assign(size_t(width) * height * bpp, 0);
+
+    for (int y = 0; y < height; y++) {
+        const uint8_t* row_in = raw.data() + y * row_stride;
+        uint8_t filter = row_in[0];
+        const uint8_t* in_px = row_in + 1;
+        uint8_t* out_px = out.data() + size_t(y) * width * bpp;
+
+        // Previous-row pointer (NULL for first row)
+        const uint8_t* prev_px = (y == 0) ? nullptr : (out.data() + size_t(y - 1) * width * bpp);
+
+        switch (filter) {
+        case 0:  // None
+            std::memcpy(out_px, in_px, size_t(width) * bpp);
+            break;
+        case 1:  // Sub
+            for (int x = 0; x < width * bpp; x++) {
+                uint8_t left = (x >= bpp) ? out_px[x - bpp] : 0;
+                out_px[x] = in_px[x] + left;
+            }
+            break;
+        case 2:  // Up
+            for (int x = 0; x < width * bpp; x++) {
+                uint8_t up = prev_px ? prev_px[x] : 0;
+                out_px[x] = in_px[x] + up;
+            }
+            break;
+        case 3:  // Average
+            for (int x = 0; x < width * bpp; x++) {
+                uint8_t left = (x >= bpp) ? out_px[x - bpp] : 0;
+                uint8_t up   = prev_px ? prev_px[x] : 0;
+                out_px[x] = in_px[x] + uint8_t((int(left) + int(up)) / 2);
+            }
+            break;
+        case 4:  // Paeth
+            for (int x = 0; x < width * bpp; x++) {
+                uint8_t left = (x >= bpp) ? out_px[x - bpp] : 0;
+                uint8_t up   = prev_px ? prev_px[x] : 0;
+                uint8_t ul   = (prev_px && x >= bpp) ? prev_px[x - bpp] : 0;
+                out_px[x] = in_px[x] + paeth_predictor(left, up, ul);
+            }
+            break;
+        default:
+            error = "unknown PNG filter type: " + std::to_string(filter);
+            return false;
+        }
+    }
+    return true;
+}
+
+DecodedImage PNGDecoder::decode(const std::vector<uint8_t>& png_bytes) {
+    DecodedImage result;
+    if (png_bytes.size() < 8) {
+        result.error = "PNG too small";
+        return result;
+    }
+    // Signature
+    static const uint8_t SIG[8] = {137, 80, 78, 71, 13, 10, 26, 10};
+    if (std::memcmp(png_bytes.data(), SIG, 8) != 0) {
+        result.error = "bad PNG signature";
+        return result;
+    }
+
+    // Walk chunks
+    size_t pos = 8;
+    int width = 0, height = 0, bit_depth = 0, color_type = 0;
+    int interlace = 0;
+    std::vector<uint8_t> idat;
+    bool seen_ihdr = false, seen_iend = false;
+
+    while (pos + 8 <= png_bytes.size()) {
+        uint32_t chunk_len = rd_be32(png_bytes.data() + pos);
+        std::string chunk_type(png_bytes.data() + pos + 4,
+                              png_bytes.data() + pos + 8);
+        size_t chunk_data_off = pos + 8;
+        if (chunk_data_off + chunk_len + 4 > png_bytes.size()) {
+            result.error = "chunk extends past end of file";
+            return result;
+        }
+        const uint8_t* chunk_data = png_bytes.data() + chunk_data_off;
+
+        if (chunk_type == "IHDR") {
+            if (chunk_len < 13) {
+                result.error = "IHDR too small";
+                return result;
+            }
+            width       = int(rd_be32(chunk_data + 0));
+            height      = int(rd_be32(chunk_data + 4));
+            bit_depth   = chunk_data[8];
+            color_type  = chunk_data[9];
+            // chunk_data[10] = compression (always 0)
+            // chunk_data[11] = filter (always 0)
+            interlace   = chunk_data[12];
+            seen_ihdr = true;
+        } else if (chunk_type == "IDAT") {
+            idat.insert(idat.end(), chunk_data, chunk_data + chunk_len);
+        } else if (chunk_type == "IEND") {
+            seen_iend = true;
+            break;
+        }
+        // Skip CRC (4 bytes) and advance
+        pos = chunk_data_off + chunk_len + 4;
+    }
+
+    if (!seen_ihdr) {
+        result.error = "missing IHDR";
+        return result;
+    }
+    if (!seen_iend) {
+        result.error = "missing IEND";
+        return result;
+    }
+    if (bit_depth != 8) {
+        result.error = "unsupported bit_depth=" + std::to_string(bit_depth) +
+                       " (only 8 supported)";
+        return result;
+    }
+    if (interlace != 0) {
+        result.error = "Adam7 interlacing not supported";
+        return result;
+    }
+
+    // Resolve sample count from color_type
+    int samples_per_pixel = 0;
+    switch (color_type) {
+        case 0: samples_per_pixel = 1; result.color_type_name = "gray";  break;
+        case 2: samples_per_pixel = 3; result.color_type_name = "rgb";   break;
+        case 4: samples_per_pixel = 2; result.color_type_name = "ga";    break;
+        case 6: samples_per_pixel = 4; result.color_type_name = "rgba";  break;
+        case 3:
+            result.error = "palette PNG (color_type=3) not supported";
+            return result;
+        default:
+            result.error = "unknown color_type=" + std::to_string(color_type);
+            return result;
+    }
+    int bpp = samples_per_pixel;  // bit_depth=8 → 1 byte per sample
+
+    // Inflate IDAT
+    if (idat.empty()) {
+        result.error = "no IDAT data";
+        return result;
+    }
+
+    uLongf out_capacity = uLongf(width) * height * (bpp + 1) + 1024;
+    std::vector<uint8_t> inflated(out_capacity);
+    uLongf inflated_size = out_capacity;
+    int zret = uncompress(inflated.data(), &inflated_size,
+                          idat.data(), uLong(idat.size()));
+    if (zret != Z_OK) {
+        result.error = std::string("zlib uncompress failed: ") + zError(zret);
+        return result;
+    }
+    inflated.resize(inflated_size);
+
+    // Unfilter
+    std::vector<uint8_t> unfiltered;
+    std::string unfilter_err;
+    if (!unfilter(inflated, bpp, width, height, unfiltered, unfilter_err)) {
+        result.error = unfilter_err;
+        return result;
+    }
+
+    // Expand samples → RGBA
+    result.width  = width;
+    result.height = height;
+    result.rgba.assign(size_t(width) * height * 4, 0);
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            const uint8_t* src = unfiltered.data() + (size_t(y) * width + x) * bpp;
+            uint8_t* dst = result.rgba.data() + (size_t(y) * width + x) * 4;
+            switch (color_type) {
+                case 0:  // grayscale
+                    dst[0] = src[0];
+                    dst[1] = src[0];
+                    dst[2] = src[0];
+                    dst[3] = 255;
+                    break;
+                case 2:  // RGB
+                    dst[0] = src[0];
+                    dst[1] = src[1];
+                    dst[2] = src[2];
+                    dst[3] = 255;
+                    break;
+                case 4:  // grayscale + alpha
+                    dst[0] = src[0];
+                    dst[1] = src[0];
+                    dst[2] = src[0];
+                    dst[3] = src[1];
+                    break;
+                case 6:  // RGBA
+                    dst[0] = src[0];
+                    dst[1] = src[1];
+                    dst[2] = src[2];
+                    dst[3] = src[3];
+                    break;
+            }
+        }
+    }
+    result.ok = true;
+    return result;
+}
+
+DecodedImage PNGDecoder::decode_file(const std::string& path) {
+    std::ifstream f(path, std::ios::binary | std::ios::ate);
+    if (!f.is_open()) {
+        DecodedImage r;
+        r.error = "cannot open file: " + path;
+        return r;
+    }
+    auto sz = f.tellg();
+    f.seekg(0, std::ios::beg);
+    std::vector<uint8_t> buf(sz);
+    f.read(reinterpret_cast<char*>(buf.data()), sz);
+    return decode(buf);
 }
 
 // ============================================================================

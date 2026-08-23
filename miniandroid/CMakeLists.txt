@@ -272,6 +272,15 @@ add_executable(miniandroid_exp019
 
 target_link_libraries(miniandroid_exp019 PRIVATE miniandroid_core)
 
+# ============== EXP-088 Phase A4 PNG Decoder Test ==============
+# Standalone test that decodes known-PNG reproducer files with MiniAndroid's
+# own PNGDecoder and compares the result against an independently-PIL-verified
+# expected RGBA buffer. See scripts/a4_01_create_known_png.py.
+add_executable(exp088_a4_png_decoder_test
+    tests/exp088_a4_png_decoder_test.cpp
+)
+target_link_libraries(exp088_a4_png_decoder_test PRIVATE miniandroid_core)
+
 # ============== Summary ==============
 message(STATUS "")
 message(STATUS "========== MiniAndroid Build Configuration ==========")
