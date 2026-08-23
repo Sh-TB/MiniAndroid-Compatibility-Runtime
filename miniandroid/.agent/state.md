@@ -1,7 +1,7 @@
 # EXP-088 Campaign State
 
-**Last updated:** 2026-08-23T06:45:00Z
-**HEAD:** c78c954
+**Last updated:** 2026-08-23T06:55:00Z
+**HEAD:** a33d364
 
 ## Phase Status
 
@@ -12,25 +12,25 @@
 | A5 (text rendering) | PROVEN | BitmapFont glyphs, headingcalculator 5880 dark text pixels |
 | B1 (PNG output) | PROVEN | PIL-decodable PNG with valid CRCs |
 | B5 (entry-point resolution) | PROVEN | 7/7 APKs enter onCreate |
-| A4 (drawables/images) | PARTIAL | Iterative BFS renderer fixes segfault. Drawable src paths captured. headingcalculator 5/5 SUCCESS. Full pixel decode still pending. |
-| B (generic input/click) | PROVEN | findViewById returns correct views. setOnClickListener registers listeners. Click dispatch fires after onCreate. |
-| B2 (event dedup) | PROVEN | One click = one onClick invocation. No duplicate callbacks. |
-| C (SQLite) | PROVEN | 9/9 micro test PASS + independent validation. open/create/insert/select/update/delete/close/reopen/select. |
-| F (Handler/Looper) | PARTIAL | Infrastructure PROVEN (FIFO, exactly-once). No APK triggers drain during onCreate. |
-| I (multi-DEX audit) | NOT_STARTED | |
-| M (Telegram login) | LOCKED | Depends on generic capabilities |
+| B (generic input/click) | PROVEN | findViewById returns correct views, click dispatch fires |
+| B2 (event dedup) | PROVEN | One click = one onClick invocation, no duplicates |
+| C (SQLite) | PROVEN | 9/9 micro test PASS + independent validation |
+| I (multi-DEX audit) | PROVEN | Per-DEX resolution audited, 63k cross-DEX refs verified |
+| A4 (drawables/images) | PARTIAL | Iterative BFS renderer, drawable src captured, headingcalculator 5/5 SUCCESS |
+| F (Handler/Looper) | PARTIAL | Infrastructure PROVEN (FIFO, exactly-once), no APK triggers drain |
+| M (Telegram login) | BLOCKED | Depends on A4, F, and EXP-082 lambda fix |
 
-## Exact Next Action
-1. Phase I — multi-DEX audit (audit per-DEX table accesses)
-2. Then Phase M — Telegram login regression
-3. Create completion gate document
+## Completion Gate
+docs/EXP088_COMPLETION_GATE.md created.
 
-## Key Fixes This Turn
-- Fixed iterative BFS renderer (replaced recursive std::function lambda)
-- Fixed layout cache generator: skip 'id' attribute resolution
-- Fixed findViewById to search from content_view_id
-- Fixed bridge_to_api: added shadow registry fallback
-- Fixed DalvikType enum values in shadow dispatch code
-- Verified B2: one click = one callback, no duplicates
-- Proved C: SQLite micro test 9/9 PASS + independent validation
-- Verified F: Handler/Looper queue infrastructure PROVEN
+## Exact Next Action (for next round)
+1. **A4**: Implement full PNG pixel decode in renderer (currently placeholder rendering)
+2. **F**: Create a micro APK that calls Handler.post() during onCreate
+3. **M**: After A4 and F are PROVEN, return to Telegram login regression
+4. **C**: Wire SQLiteShadow into C++ runtime (micro test already PROVEN)
+
+## No Regressions
+- Unit tests: 4/4 PASS
+- Source purity: PASS
+- 0 tracked APKs
+- 0 tracked run/build artifacts
