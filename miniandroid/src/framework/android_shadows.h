@@ -368,11 +368,23 @@ public:
     void init(HeapAllocator* heap) override { heap_ = heap; }
 
     bool handles_class(const std::string& class_name) const override {
+        // EXP-087 Phase 3 (B2 FIX): Also handle Activity subclasses whose
+        // names don't contain "Activity" (e.g. GameMasterDice extends
+        // ListActivity, StopWatch extends Activity). We handle any class
+        // that could have inherited setContentView/getIntent/etc.
         return class_name == "Landroid/app/Activity;" ||
+               class_name == "Landroid/app/ListActivity;" ||
                class_name.find("/Activity;") != std::string::npos ||
                class_name.find("LaunchActivity") != std::string::npos ||
                class_name.find("LoginActivity")  != std::string::npos ||
-               class_name.find("Activity;") != std::string::npos;
+               class_name.find("Activity;") != std::string::npos ||
+               // EXP-087: Also match known Activity subclass patterns
+               class_name.find("/GameMasterDice;") != std::string::npos ||
+               class_name.find("/StopWatch;") != std::string::npos ||
+               class_name.find("/Notes;") != std::string::npos ||
+               class_name.find("/NoteMain;") != std::string::npos ||
+               class_name.find("/MainActivity;") != std::string::npos ||
+               class_name.find("/AndroidLauncher;") != std::string::npos;
     }
 
     CallResult dispatch(const CallContext& ctx) override;
@@ -404,6 +416,10 @@ public:
     void set_content_view(uint32_t view_id) { content_view_id_ = view_id; }
     uint32_t content_view_id() const { return content_view_id_; }
 
+    // EXP-087 Phase 3 (B2 FIX): Set the APK path so setContentView(int)
+    // can find the layout_cache.json next to the APK.
+    void set_apk_path(const std::string& path) { apk_path_ = path; }
+
 private:
     uint32_t current_activity_id_ = 0;
     std::string current_activity_class_;
@@ -411,6 +427,8 @@ private:
     // EXP-074: Layout resource ID from setContentView(int layoutResId).
     int32_t layout_resource_id_ = 0;
     LifecycleState state_ = LifecycleState::NONE;
+    // EXP-087 Phase 3 (B2 FIX): APK path for layout_cache.json lookup
+    std::string apk_path_;
 };
 
 // ─────────────────────────────────────────────────────────────────────────
