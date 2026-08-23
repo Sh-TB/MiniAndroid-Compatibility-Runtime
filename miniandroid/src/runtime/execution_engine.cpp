@@ -601,8 +601,10 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 }
                             }
 
-                            // EXP-088 Phase A4: Draw ImageView bitmap from APK resource
-                            if (node->class_desc.find("ImageView") != std::string::npos &&
+                            // EXP-088 Phase A4: Draw ImageView/ImageButton bitmap from APK resource
+                            bool is_image_view = node->class_desc.find("ImageView") != std::string::npos ||
+                                                 node->class_desc.find("ImageButton") != std::string::npos;
+                            if (is_image_view &&
                                 node->image_drawable_path.empty() &&
                                 node->image_resource_id != 0) {
                                 // Try to resolve drawable path from resource ID via layout cache
