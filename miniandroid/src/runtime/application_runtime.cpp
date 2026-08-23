@@ -1342,6 +1342,18 @@ bool ApplicationRuntime::execute_on_create() {
         std::string activity_class = manifest_info_ ? manifest_info_->main_activity_full
                                                     : std::string();
 
+        // EXP-086 Phase 1: Trace the manifest-provided activity class
+        std::cerr << "[EXP086-P1] manifest_info_ present: "
+                  << (manifest_info_ ? "YES" : "NO") << std::endl;
+        std::cerr << "[EXP086-P1] manifest_info_->main_activity: '"
+                  << (manifest_info_ ? manifest_info_->main_activity : std::string("<null>"))
+                  << "'" << std::endl;
+        std::cerr << "[EXP086-P1] manifest_info_->main_activity_full: '"
+                  << (manifest_info_ ? manifest_info_->main_activity_full : std::string("<null>"))
+                  << "'" << std::endl;
+        std::cerr << "[EXP086-P1] activity_class passed to execute_apk_with_activity: '"
+                  << activity_class << "'" << std::endl;
+
         // EXP-038 (BLOCKER-033): Pass per-DEX raw data to DalvikExecutionEngine.
         // This enables correct method_idx resolution for multidex APKs.
         // EXP-082: Sort DEX files alphabetically to ensure deterministic
