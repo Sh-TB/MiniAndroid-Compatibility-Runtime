@@ -809,6 +809,9 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
 // ─────────────────────────────────────────────────────────────────────────
 CallResult ActivityShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
+    // EXP-088 Phase B debug
+    std::cerr << "[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=" << m
+              << " class=" << ctx.class_name << std::endl;
     // EXP-075: Debug trace to confirm ActivityShadow is being called
     if (m == "setContentView" || m == "findViewById") {
         std::cerr << "[EXP075-ACTIVITY] ActivityShadow.dispatch: method=" << m
@@ -920,7 +923,28 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_object(content_view_id_, "Landroid/view/View;");
     }
     if (m == "findViewById") {
-        // No real view hierarchy yet — return null.
+        // EXP-088 Phase B FIX: Search the ViewShadow tree from content_view_id_
+        // to find the view with the matching android:id.
+        int32_t target_id = ctx.arg_as_int(0, 0);
+        std::cerr << "[EXP088-B-DBG] findViewById: target=0x" << std::hex << target_id
+                  << " content_view_id=" << content_view_id_
+                  << " registry=" << (registry_ ? "YES" : "NO")
+                  << std::dec << std::endl;
+        if (registry_ && content_view_id_ != 0) {
+            auto* view_shadow = registry_->find_as<ViewShadow>();
+            if (view_shadow) {
+                uint32_t found = view_shadow->find_by_android_id(content_view_id_, target_id);
+                if (found != 0) {
+                    std::cerr << "[EXP088-B] findViewById(0x" << std::hex << target_id
+                              << std::dec << ") → view_id=" << found << std::endl;
+                    return CallResult::handled_object(found, "Landroid/view/View;");
+                } else {
+                    std::cerr << "[EXP088-B-DBG] find_by_android_id returned 0" << std::endl;
+                }
+            } else {
+                std::cerr << "[EXP088-B-DBG] view_shadow is null" << std::endl;
+            }
+        }
         return CallResult::handled_null();
     }
     if (m == "getIntent") {
@@ -1185,9 +1209,23 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "findViewById") {
         int32_t target_id = ctx.arg_as_int(0, 0);
-        uint32_t found = find_by_android_id(ctx.receiver_id, target_id);
-        if (found == 0) return CallResult::handled_null();
-        return CallResult::handled_object(found, "Landroid/view/View;");
+        // EXP-088 Phase B FIX: Search from the Activity's content_view_id
+        uint32_t search_root = ctx.receiver_id;
+        if (registry_) {
+            auto* act_shadow = registry_->find_as<ActivityShadow>();
+            if (act_shadow && act_shadow->content_view_id() != 0) {
+                search_root = act_shadow->content_view_id();
+            }
+        }
+        std::cerr << "[EXP088-B-VS] findViewById: target=0x" << std::hex << target_id
+                  << " search_root=" << search_root << std::dec << std::endl;
+        uint32_t found = find_by_android_id(search_root, target_id);
+        if (found != 0) {
+            std::cerr << "[EXP088-B-VS] FOUND view_id=" << found << std::endl;
+            return CallResult::handled_object(found, "Landroid/view/View;");
+        }
+        std::cerr << "[EXP088-B-VS] NOT FOUND" << std::endl;
+        return CallResult::handled_null();
     }
     if (m == "findViewWithTag") {
         // Tag is an Object — we don't track tags.
