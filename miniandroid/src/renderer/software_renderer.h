@@ -210,7 +210,21 @@ public:
     json to_info_json() const;
 
 private:
-    std::array<Glyph, 95> glyphs_;
+    // EXP-088 A4 FIX: Zero-initialize the glyphs_ array so that
+    // `Glyph::character` is reliably '\0' for unset entries.
+    // Previously this was a default-initialized std::array<Glyph, 95> where
+    // Glyph is a POD struct — the members (including `bitmap` pointer) were
+    // left with indeterminate values, and `fill_remaining_glyphs()`'s check
+    // `if (glyphs_[i].character == '\0')` was undefined behavior. On most
+    // runs the garbage happened to be '\0' so the body executed and the glyph
+    // got initialized. But occasionally the garbage was non-zero, the body
+    // was skipped, and the `bitmap` pointer stayed as garbage — causing the
+    // intermittent segfault in draw_text() for any character not in the
+    // explicitly-initialized set (e.g. 'S', 'a' in "Start").
+    // This is the root cause of the long-standing "intermittent segfault in
+    // recursive rendering lambda" — it was never the lambda's fault; it was
+    // an uninitialized-memory bug in the font system.
+    std::array<Glyph, 95> glyphs_{};
     void initialize_ascii_glyphs();
     void fill_remaining_glyphs();
     
@@ -276,7 +290,15 @@ public:
     void draw_color(RGBA color);
     void draw_rect(float left, float top, float right, float bottom, RGBA color);
     void draw_text(const std::string& text, float x, float y, RGBA color, const BitmapFont* font = nullptr);
-    
+
+    // EXP-088 Phase A4: Draw decoded image pixels at (x, y) with optional
+    // scaling to (dst_w, dst_h). If dst_w/dst_h are 0, use the source size.
+    // The src_rgba buffer must be src_w * src_h * 4 bytes.
+    // Pixels with alpha < 255 are alpha-blended onto the framebuffer.
+    void draw_image(const uint8_t* src_rgba, int src_w, int src_h,
+                    int dst_x, int dst_y,
+                    int dst_w = 0, int dst_h = 0);
+
     const std::vector<CanvasCommand>& get_commands() const { return commands_; }
     uint64_t get_command_count() const { return command_sequence_; }
     json to_trace_json() const;
@@ -371,6 +393,55 @@ public:
 private:
     static uint32_t crc32(const uint8_t* data, size_t length, uint32_t init_crc = 0xFFFFFFFF);
     static std::vector<uint8_t> compress_data(const uint8_t* data, size_t length);
+};
+
+// ============================================================================
+// PNG Decoder (EXP-088 Phase A4)
+//
+// Decodes an in-memory PNG file (any of color types 0/2/4/6, bit depth 8,
+// non-interlaced) into a flat RGBA pixel buffer.
+//
+// This is the C++ counterpart of the Python "expected RGBA" reproducer in
+// scripts/a4_01_create_known_png.py. The C++ decoder MUST produce byte-identical
+// RGBA bytes to PIL.Image.convert("RGBA").tobytes() for every PNG written by
+// that script. The test is exercised by tools/exp088_a4_png_decoder_test.cpp.
+//
+// Supports:
+//   - color_type 0 (grayscale, 1 sample)
+//   - color_type 2 (RGB, 3 samples)
+//   - color_type 4 (grayscale + alpha, 2 samples)  <- simplestopwatch uses this
+//   - color_type 6 (RGBA, 4 samples)
+//   - bit depth 8
+//   - non-interlaced (Adam7 NOT supported; will return false)
+//   - All 5 PNG filter types (None, Sub, Up, Average, Paeth)
+// ============================================================================
+
+struct DecodedImage {
+    int width = 0;
+    int height = 0;
+    std::vector<uint8_t> rgba;  // width * height * 4 bytes
+    std::string color_type_name;  // "gray", "rgb", "ga", "rgba"
+    bool ok = false;
+    std::string error;
+};
+
+class PNGDecoder {
+public:
+    // Decode a PNG file from a raw byte buffer.
+    // Returns DecodedImage with .ok=true on success.
+    static DecodedImage decode(const std::vector<uint8_t>& png_bytes);
+    static DecodedImage decode_file(const std::string& path);
+
+private:
+    // Apply a PNG unfilter pass on a single scanline.
+    //  raw:  input bytes including the leading filter byte per row
+    //  bpp:  bytes per pixel (1..4)
+    //  width, height: image dimensions
+    //  out:  output buffer (width * height * bpp bytes, no filter bytes)
+    static bool unfilter(const std::vector<uint8_t>& raw,
+                         int bpp, int width, int height,
+                         std::vector<uint8_t>& out,
+                         std::string& error);
 };
 
 } // namespace renderer

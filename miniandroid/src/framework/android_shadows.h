@@ -263,6 +263,23 @@ public:
     // Runnable's run() method.
     size_t drain_ready(std::vector<uint32_t>* out_drained);
 
+    // EXP-088 Phase F: Remove all queued Runnables matching the given
+    // runnable_id. Returns the number removed.
+    //
+    // Implements Handler.removeCallbacks(Runnable) — removes any
+    // matching Runnable from the queue, regardless of its delay/priority.
+    // If the Runnable has already been drained, this is a no-op.
+    //
+    // This is necessary for the user's Phase F acceptance scenario:
+    //   post(A), post(B), postDelayed(C), removeCallbacks(B), drain → A, C
+    //
+    // Previously this was a stub (no-op) — the queue was never modified.
+    size_t remove_callbacks(uint32_t runnable_id);
+
+    // EXP-088 Phase F: Remove ALL queued Runnables (Handler.removeCallbacksAndMessages(null)).
+    // Returns the number removed.
+    size_t remove_all();
+
     // Total queue depth (for diagnostics).
     size_t queue_size() const { return queue_.size(); }
 
