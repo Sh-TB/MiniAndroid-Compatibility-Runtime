@@ -4,109 +4,111 @@
 EXP-088+ — Long-horizon MiniAndroid generic compatibility campaign
 
 ## Current Commit (most recent state)
-HEAD — A4 PROVEN + F PROVEN + intermittent-segfault root cause fixed (BitmapFont uninit memory)
+HEAD — Phase 1.2: Multi-DEX class injection (28557 Telegram classes injected)
 
-## Status: 10 PROVEN, 1 BLOCKED (M)
+## Status: 10 PROVEN, 1 IN PROGRESS (M boundary advanced)
 
-### PROVEN this round
-- **A4 (drawables/images)**: Real PNG pixel decoding end-to-end. A4.1-A4.7 all pass.
-  - PNGDecoder: 4/4 color types byte-identical to PIL
-  - draw_image: alpha-blends correctly
-  - simplestopwatch tree: 3 ImageButtons rendered + PIL verified (591/591, 896/896, 704/704 pixel matches)
-  - 3/3 reproducible runs (identical SHA)
-- **F (Handler/Looper)**: 23/23 standalone C++ tests pass.
-  - Implemented HandlerShadow::remove_callbacks() (was a no-op stub)
-  - Implemented HandlerShadow::remove_all() (for removeCallbacksAndMessages(null))
-  - Wired dispatch() to call the real methods
-  - User scenario: post(A), post(B), postDelayed(C), removeCallbacks(B), drain → [A, C] ✓
+### PROVEN (no change this round)
+- A1 AXML inflation
+- A2 measure/layout
+- A5 text rendering (BitmapFont uninit FIXED in previous round)
+- A4 drawable/image loading
+- B1 valid PNG output
+- B5 entry-point resolution
+- B generic input/click
+- B2 event deduplication
+- C SQLite
+- F Handler/Looper
+- I multi-DEX audit
+
+### IN PROGRESS (M boundary moved)
+Phase M was BLOCKED on UserConfig.isClientActivated "class not in index".
+After this round, the boundary has moved to:
+
+```
+LaunchActivity.onCreate (1330 instructions) ✅
+→ handleIntent (15606 instructions) ✅
+→ switchToAccount ✅
+→ UserConfig.isClientActivated (CALLED, not "NOT FOUND") ✅
+→ LoginActivity.loadCurrentState (class found, 260 methods) ✅
+→ IntroActivity.<init> ✅
+→ addDelegate (8 calls) ✅
+→ ActionBarLayout.<init> (187 instructions) ✅
+→ [next: PhoneView rendering / PhoneView transition]
+```
 
 ### Root-cause fixes this round
-1. **BitmapFont uninit memory** — `std::array<Glyph, 95> glyphs_` was default-initialized
-   (POD struct → indeterminate member values). `fill_remaining_glyphs()` checked
-   `if (glyphs_[i].character == '\0')` on uninitialized memory (UB). On most runs
-   the garbage was '\0' so the body executed; occasionally garbage was non-zero
-   and the body was skipped, leaving `bitmap` as a garbage pointer → segfault.
-   FIX: `= {}` value-initializes the array. This was the "intermittent segfault
-   in recursive rendering lambda" mentioned in the previous state — it was never
-   the lambda's fault, it was the font system.
-2. **PNG signature check** — bytes 2 and 3 were swapped (compared `0x47 0x4E`
-   instead of `0x4E 0x47`). Affected both the runtime's stage_render_frame and
-   the simplestopwatch_render test.
-3. **PNGDecoder** — added `PNGDecoder::decode()` (zlib uncompress + PNG unfilter +
-   color-type expansion to RGBA). Supports color types 0/2/4/6, bit depth 8,
-   non-interlaced. All 5 PNG filter types (None, Sub, Up, Average, Paeth).
-4. **SoftwareCanvas::draw_image()** — new method that draws decoded RGBA pixels
-   onto the framebuffer with alpha-blending and optional nearest-neighbour scaling.
-5. **Renderer wire-up** — replaced the placeholder rect + dimensions text in
-   stage_render_frame with real PNGDecoder + draw_image calls.
+1. **Multi-DEX class injection** (PRIMARY FIX):
+   - `stage_parse_dex()` only parsed classes.dex (DEX 0) into `dex_report.classes`
+   - Other DEX files (classes2..classesN) were loaded into `per_dex_raw_data_` but
+     their classes were NEVER merged into `dex_report.classes` and `class_info_index_`
+   - Only ONE class was injected on-demand (manifest activity class)
+   - **FIX**: Added `DalvikExecutionEngine::inject_secondary_dex_classes()` method
+     that parses each secondary DEX with `DexParser::parse_data()` and injects ALL
+     classes into `dex_report_->classes` (via const_cast — same pattern as existing
+     on-demand injection). Updates `class_info_index_` for O(1) lookup.
+   - Called from inside `execute_apk_with_activity()` right after `dex_report_` is set.
+   - For Telegram: **injected 28557 classes** from 4 secondary DEX files.
 
-## Mandatory Phase Status Table
+2. **ConcurrentHashMap bypass** (generic, supporting fix):
+   - `Lj$/util/concurrent/ConcurrentHashMap;.e` (computeIfAbsent) loops forever
+   - Without bypass, runtime hangs in `FastDateFormat.<clinit>` before reaching LoginActivity
+   - **FIX**: Added `Lj$/util/concurrent/ConcurrentHashMap;` and
+     `Ljava/util/concurrent/ConcurrentHashMap;` to the framework-bypass list in
+     `try_recursive_invoke` (lines 1863-1897 and 1973-1982).
+   - This is a GENERIC fix — any APK using desugared Java 8 collections benefits.
 
-| Phase | Status | Evidence |
-|---|---|---|
-| A1 (AXML inflation) | PROVEN | layout_cache.json + Python AXML parser |
-| A2 (measure/layout) | PROVEN | Iterative BFS with MATCH_PARENT/WRAP_CONTENT |
-| A5 (text rendering) | PROVEN | BitmapFont glyphs via SoftwareCanvas (now bug-free) |
-| A4 (drawables/images) | **PROVEN** | PNGDecoder 4/4 + draw_image + simplestopwatch PIL-verified |
-| B1 (PNG output) | PROVEN | zlib compress2 + crc32 |
-| B5 (entry-point resolution) | PROVEN | Multi-DEX class injection |
-| B (generic input/click) | PROVEN | findViewById + setOnClickListener + dispatch_click |
-| B2 (event dedup) | PROVEN | one click = one onClick invocation |
-| C (SQLite) | PROVEN | Python sqlite3 micro test 9/9 + independent validation |
-| F (Handler/Looper) | **PROVEN** | 23/23 standalone C++ tests + removeCallbacks implemented |
-| I (multi-DEX audit) | PROVEN | Per-DEX resolution functions audited |
-| M (Telegram login) | BLOCKED | See "Phase M Blockers" below |
+### Verified secondary findings
+1. **`this` receiver propagation**: Already fixed in primary branch (EXP-061 FIX comment at line 6521-6538). Verified via Telegram's IntroActivity.<init> executing with correct receiver.
+2. **Secondary DEX lazy injection**: Root cause confirmed and FIXED (see above).
+3. **getInstance dispatch**: Same root cause as #2 — fixed by inject_secondary_dex_classes(). UserConfig.getInstance now executes (was "class not in index").
 
-## Phase M Blockers (Telegram login regression)
-
-Telegram LaunchActivity.onCreate now executes successfully (1330 instructions, no segfault) thanks to the BitmapFont fix. But the full login chain is blocked at multiple points:
-
-### First failing boundary (precise)
-`UserConfig.isClientActivated` returns "class not in index" — the runtime cannot resolve this method across the 5 Telegram DEX files. This causes LaunchActivity.onCreate to take the "user not activated" path that *should* transition to LoginActivity, but the unresolved method call returns null/false and the transition does not happen.
-
-Evidence:
+### Phase M boundary progression
+**BEFORE this round:**
 ```
-[TRY-INVOKE] Lorg/telegram/messenger/UserConfig;.isClientActivated depth=2
-[RET-NOTFOUND] class_descriptor=Lorg/telegram/messenger/UserConfig; method=isClientActivated (class not in index)
+LaunchActivity.onCreate → UserConfig.isClientActivated → "class not in index" (BLOCKED)
 ```
 
-UserConfig class descriptor `Lorg/telegram/messenger/UserConfig;` is present in classes3.dex, classes4.dex, classes5.dex (verified via zipfile inspection).
-
-### Subsequent blockers (in order)
-1. **UserConfig multi-DEX resolution** — Phase I audit verified per-DEX indexing is correct, but method resolution across DEXes during invoke-static may have an issue. Needs investigation.
-2. **LoginActivity.onCreate transition** — even if UserConfig.isClientActivated resolves, the runtime needs to actually transition to LoginActivity (which means executing LoginActivity.onCreate bytecode).
-3. **PhoneView rendering** — LoginActivity uses a PhoneView. No layout_cache.json exists for Telegram's login layouts (resource paths are obfuscated).
-4. **Phone number injection** — no harness mechanism to inject a phone number into the EditText field.
-5. **Mock auth.sendCode response** — Telegram's `PhoneView.onNextPressed()` calls `SendRequestDelegate` which calls `auth.sendCode`. No mock infrastructure exists.
-6. **SMS view rendering** — needs setPage(VIEW_CODE_SMS) to actually swap the visible view.
+**AFTER this round:**
+```
+LaunchActivity.onCreate (1330 instructions) ✅
+→ handleIntent (15606 instructions) ✅
+→ switchToAccount ✅
+→ UserConfig.isClientActivated (CALLED, not "NOT FOUND") ✅
+→ LoginActivity.loadCurrentState (class found, 260 methods) ✅
+→ IntroActivity.<init> ✅
+→ addDelegate (8 calls) ✅
+→ ActionBarLayout.<init> (187 instructions) ✅
+→ [next: PhoneView rendering / PhoneView transition]
+```
 
 ## Resume Instructions (next round)
 
-1. The campaign is NOT complete. M is BLOCKED.
-2. **Exact next action**: Investigate the `UserConfig.isClientActivated` "class not in index" error.
-   - It's a multi-DEX method resolution issue.
-   - Phase I audit verified per-DEX indexing is correct, but invoke-static across DEXes may be the bug.
-   - Reproducer: `cd miniandroid && ./build/miniandroid run download/exp038_telegram/Telegram.apk`
-   - Search trace for: `RET-NOTFOUND class_descriptor=Lorg/telegram/messenger/UserConfig;`
-3. If the multi-DEX issue is fixed and LoginActivity.onCreate executes:
-   - Generate a layout_cache.json for Telegram's login layout
-   - Wire phone number injection
-   - Mock auth.sendCode
-4. After M is PROVEN, the campaign is complete (10/11 PROVEN + M = 11/11).
+1. The campaign is NOT complete. M is IN PROGRESS (no longer BLOCKED).
+2. **Exact next action**: Investigate what happens after IntroActivity is added to the
+   fragment stack. The runtime needs to:
+   - Actually call `IntroActivity.onFragmentCreate()` (currently only `addDelegate` is dispatched)
+   - Then transition to `LoginActivity` (when the user clicks "Start Messaging")
+   - Then render `PhoneView` (which requires layout_cache.json for Telegram's login layout —
+     we already have `download/exp038_telegram/layout_cache.json` but it's not being loaded)
+   - Then inject a phone number
+   - Then mock `auth.sendCode`
+3. Reproducer:
+   ```
+   cd miniandroid && ./build/miniandroid run -o /tmp/tg_test download/exp038_telegram/Telegram.apk
+   grep -aE "EXP088-MD-INJECT|UserConfig|LoginActivity|IntroActivity" /tmp/tg_test.log
+   ```
+4. After M is PROVEN (full login chain works end-to-end), the campaign is complete.
 5. Do NOT mark M as PROVEN unless the full chain works end-to-end.
 
 ## Build artifacts
-- `/home/z/my-project/scripts/a4_build.sh` — builds all A4 tests + Phase F test
-- `/home/z/my-project/scripts/a4_01_create_known_png.py` — generates deterministic PNGs
-- `/home/z/my-project/scripts/a4_05_pil_verify_rendered.py` — PIL-verify single-image renders
-- `/home/z/my-project/scripts/a4_07_pil_verify_simplestopwatch.py` — PIL-verify simplestopwatch render
-- `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/tests/exp088_a4_png_decoder_test.cpp` — A4.3 test
-- `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/tests/exp088_a4_render_image_test.cpp` — A4.4+A4.5 test
-- `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/tests/exp088_a4_render_multi_test.cpp` — A4.6 test
-- `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/tests/exp088_a4_simplestopwatch_render.cpp` — A4.7 test
-- `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/tests/exp088_phasef_handler_queue_semantics.cpp` — Phase F test
+- `/home/z/my-project/scripts/a4_build.sh` — builds all A4 + F + multi-DEX inject tests
+- `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/tests/exp088_multidex_inject_test.cpp` — multi-DEX inject regression test
+- `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/docs/compatibility/SECONDARY_FORENSICS_INTEGRATION.md` — secondary forensics integration doc
 
 ## Reproducibility
-- All A4 tests pass: 3/3 reproducible runs (identical screenshot SHA)
-- All Phase F tests pass: 23/23 (deterministic, no time dependence)
+- Telegram: 3/3 reproducible runs (identical screenshot SHA `24956663322f4c73c55f30fc7e46dc63f7578102d1db08e9ae311c19d9e9d495`)
+- All A4 tests pass: 4/4 + 4/4 + multi + simplestopwatch
+- All Phase F tests pass: 23/23
+- All multi-DEX inject tests pass: 2/2
 - All regression tests pass: A1, B, B2, C, F, I — no regressions introduced
