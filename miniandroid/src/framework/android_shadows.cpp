@@ -38,12 +38,15 @@ static uint32_t inflate_view_tree(ViewShadow* vs, const json& node, uint32_t par
     else if (tag == "TextView") class_desc = "Landroid/widget/TextView;";
     else if (tag == "Button") class_desc = "Landroid/widget/Button;";
     else if (tag == "ImageView") class_desc = "Landroid/widget/ImageView;";
+    else if (tag == "ImageButton") class_desc = "Landroid/widget/ImageButton;";
     else if (tag == "EditText") class_desc = "Landroid/widget/EditText;";
     else if (tag == "FrameLayout") class_desc = "Landroid/widget/FrameLayout;";
     else if (tag == "ScrollView") class_desc = "Landroid/widget/ScrollView;";
     else if (tag == "ListView") class_desc = "Landroid/widget/ListView;";
     else if (tag == "RelativeLayout") class_desc = "Landroid/widget/RelativeLayout;";
-    else if (tag == "merge") class_desc = "Landroid/view/ViewGroup;";  // merge → inflate children only
+    else if (tag == "TableLayout") class_desc = "Landroid/widget/TableLayout;";
+    else if (tag == "TableRow") class_desc = "Landroid/widget/TableRow;";
+    else if (tag == "merge") class_desc = "Landroid/view/ViewGroup;";
     else class_desc = "Landroid/view/View;";  // Generic fallback
 
     // Create the ViewShadow node
@@ -78,6 +81,20 @@ static uint32_t inflate_view_tree(ViewShadow* vs, const json& node, uint32_t par
                 if (attr_val == "-1") vnode->height = -1;
                 else if (attr_val == "-2") vnode->height = -2;
                 else { try { vnode->height = std::stoi(attr_val); } catch (...) {} }
+            } else if (attr_name == "src") {
+                // EXP-088 Phase A4: Capture drawable source path for
+                // ImageView/ImageButton. The value is a direct APK path
+                // like "res/drawable-mdpi-v4/lock.png".
+                if (!attr_val.empty() && attr_val.find("res/") == 0) {
+                    vnode->image_drawable_path = attr_val;
+                    std::cerr << "[EXP088-A4] Captured image path: " << attr_val
+                              << " for " << class_desc << std::endl;
+                }
+            } else if (attr_name == "background") {
+                // Capture background drawable reference if it's a direct path
+                if (!attr_val.empty() && attr_val.find("res/") == 0) {
+                    // Store as a custom attribute for renderer
+                }
             }
         }
     }
