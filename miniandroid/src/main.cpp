@@ -196,11 +196,16 @@ int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config)
     // EXP-086 Phase 7 (B4 FIX): Set up ShadowRegistry so Handler/Looper
     // dispatch is wired up. Without this, Handler.post() calls during
     // onCreate are silently dropped.
+    // EXP-087 Phase 3 (B2 FIX): Also set APK path on ActivityShadow so
+    // setContentView(int) can find layout_cache.json.
     framework::ShadowRegistry shadow_registry;
     auto* handler_shadow = shadow_registry.register_shadow<framework::HandlerShadow>();
     auto* view_shadow = shadow_registry.register_shadow<framework::ViewShadow>();
     auto* activity_shadow = shadow_registry.register_shadow<framework::ActivityShadow>();
-    (void)handler_shadow; (void)view_shadow; (void)activity_shadow;
+    if (activity_shadow) {
+        activity_shadow->set_apk_path(apk_path);
+    }
+    (void)handler_shadow; (void)view_shadow;
     engine.set_shadow_registry(&shadow_registry);
     auto result = engine.execute(apk_path, config);
     
