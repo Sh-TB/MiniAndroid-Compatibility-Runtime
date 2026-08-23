@@ -378,3 +378,136 @@ If VNC were available, the workflow would be:
 
 Since MiniAndroid is a headless DEX interpreter (not a real Android emulator),
 VNC would not provide additional validation capability beyond what PIL already does.
+
+---
+
+## Round 3: F5 Verification — return-wide / move-result-wide / move-wide (2026-08-24)
+
+### F5 — return-wide / move-result-wide
+
+#### Secondary claim
+> Wide values (long, double) may be corrupted through the const-wide → invoke → return-wide → move-result-wide path.
+
+#### Primary verification
+
+**A. Audit opcode dispatcher for return-wide:**
+```bash
+grep -n "case Opcode::RETURN" src/dex/dalvik_engine.cpp
+```
+Result:
+```
+case Opcode::RETURN_VOID:
+case Opcode::RETURN:
+case Opcode::RETURN_OBJECT:
+```
+**`case Opcode::RETURN_WIDE:` is MISSING!** Opcode 0x10 (return-wide) falls through to the default case (handle_unimplemented).
+
+**B. Audit move-result-wide implementation:**
+```cpp
+case Opcode::MOVE_RESULT_WIDE: {
+    DalvikValue val = DalvikValue::make_int(0); // simplified
+    set_register(dest, val);
+```
+**Hardcoded to `make_int(0)`!** The wide return value is completely discarded.
+
+**C. Audit move-wide opcode:**
+```bash
+grep -n "case Opcode::MOVE_WIDE\b" src/dex/dalvik_engine.cpp
+```
+Result: **NO MATCH** — `MOVE_WIDE` (opcode 0x04) is also missing from the dispatcher.
+
+**D. Root cause confirmed:**
+Three wide-value opcodes were missing or broken:
+1. `RETURN_WIDE` (0x10) — MISSING from dispatcher
+2. `MOVE_RESULT_WIDE` (0x0B) — hardcoded to `make_int(0)`
+3. `MOVE_WIDE` (0x04) — MISSING from dispatcher
+
+This means ALL wide values (long, double) were silently lost in the VM.
+
+**E. Applied fixes:**
+
+Fix 1 — Added `case Opcode::RETURN_WIDE`:
+```cpp
+case Opcode::RETURN_WIDE:
+    success = execute_return_wide(pc_, trace);
+    trace.opcode_name = "return-wide";
+    break;
+```
+
+Fix 2 — Added `execute_return_wide()` implementation:
+```cpp
+bool DalvikExecutionEngine::execute_return_wide(uint32_t pc, InstructionTrace& trace) {
+    uint8_t ret_reg = (instr >> 8) & 0xFF;
+    DalvikValue val = get_register(ret_reg);
+    if (val.type != DalvikType::INT64 && val.type != DalvikType::FLOAT64) {
+        int64_t coerced = static_cast<int64_t>(static_cast<uint32_t>(val.int_val));
+        val = DalvikValue::make_long(coerced);
+    }
+    last_invoke_return_ = val;
+    halted_ = true;
+    halted_on_return_ = true;
+    return true;
+}
+```
+
+Fix 3 — Fixed `move-result-wide`:
+```cpp
+// BEFORE: DalvikValue val = DalvikValue::make_int(0);
+// AFTER:
+DalvikValue val = last_invoke_return_;
+if (val.type != DalvikType::INT64 && val.type != DalvikType::FLOAT64) {
+    val = DalvikValue::make_long(0);
+}
+```
+
+Fix 4 — Added `case Opcode::MOVE_WIDE`:
+```cpp
+case Opcode::MOVE_WIDE: {
+    uint8_t dest = (instr >> 8) & 0xF;
+    uint8_t src = instr & 0xF;
+    DalvikValue val = get_register(src);
+    if (val.type != DalvikType::INT64 && val.type != DalvikType::FLOAT64) {
+        val = DalvikValue::make_long(static_cast<int64_t>(static_cast<uint32_t>(val.int_val)));
+    }
+    set_register(dest, val);
+    pc_ += 1;
+    break;
+}
+```
+
+**F. Impact verification:**
+- BEFORE: Telegram halted at PC=0x35ce with "Unimplemented opcode: 0x0x0004" (move-wide)
+- AFTER: 46588 instructions executed, 2618 heap objects, Status: SUCCESS
+- Click on IntroActivity Lambda3 listener now dispatches correctly
+- `onClick` executes, `lambda$createView$2` invoked
+
+**G. Regression test:** `tests/exp088_f5_return_wide_test.cpp` (5/5 PASS)
+- RETURN_WIDE opcode constant is 0x10
+- make_long preserves all 64 bits (8 test cases: MAX/MIN/0/-1/etc.)
+- make_double preserves double values (8 test cases)
+- DalvikValue copy preserves wide bits
+- move-result-wide defaults to INT64 zero
+
+#### Conclusion
+- **Independent reproduction:** YES — return-wide was missing, move-result-wide was hardcoded to 0.
+- **Root cause confirmed?** YES — three wide-value opcodes were missing or broken.
+- **Generic?** YES — affects ALL APKs using long/double values.
+- **Minimal fix:** 4 changes (3 new cases + 1 fixed implementation).
+- **Regression:** All tests pass (A4, F, SQLite, manifest, multi-DEX).
+- **Telegram impact:** MASSIVE — unblocked the click → lambda → presentFragment chain.
+
+---
+
+## GitHub Delivery Verification
+
+### Round 3 delivery
+- **last_commit:** 36c61cc9690f899faaf75402413f48323daad965
+- **remote_head:** 36c61cc9690f899faaf75402413f48323daad965
+- **push_verified:** true
+- **verification_status:** HEAD == origin/main ✅
+
+### All commits this round
+1. `a3a557b` — EXP-089 F5 CRITICAL FIX: Add return-wide opcode (was MISSING from dispatcher)
+2. `36c61cc` — EXP-089 F5 followup: Add MOVE_WIDE opcode (was MISSING from dispatcher)
+
+Both pushed and verified on origin/main.
