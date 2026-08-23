@@ -3109,3 +3109,39 @@ Stage Summary:
 - 11 test scripts + 11 result JSONs + 1 final report + 1 consolidated results JSON
 - No fake progress: every metric classified as REAL/PARTIAL/BLOCKED/NOT_TESTED
 - All test results saved as JSON for future regression comparison
+
+---
+Task ID: EXP-086
+Agent: main
+Task: Startup Bootstrap + Renderer Recovery + Generic Compatibility Hardening
+
+Work Log:
+- Phase 0: Captured baseline. Source purity PASS, 0 APKs tracked, 4/4 unit tests pass. Telegram report shows "FAILURE" with package "org.telegram.messenger.web" (B5 bug confirmed).
+- Phase 1 (B5 FIX): Root cause — ExecutionEngine::stage_execute_application_real_dalvik called dalvik_engine_.execute_apk() WITHOUT passing manifest's main_activity_full. Fixed by:
+  1. Calling execute_apk_with_activity(activity_class) instead
+  2. Configuring per-DEX raw data + class_to_dex_index_ before execute
+  3. Adding multi-DEX fallback in execute_apk_with_activity: search dex_report.classes (DEX 0), then class_to_dex_index_ (multi-DEX), then inject loaded ClassInfo via DexParser::parse_data() into dex_report_->classes
+  4. Skip legacy "Activity"/"Main" scan when manifest class found
+  Result: Telegram LaunchActivity.onCreate now executes (757 instructions, SUCCESS). All 6 APKs PASS manifest resolver test.
+- Phase 2: Verified all 7 APKs (Telegram, gmdice, tictactoe, headingcalculator, simplestopwatch, notes, unote) now actually ENTER onCreate of the resolved activity. 7/7 PASS.
+- Phase 3 (B1 FIX): Root cause — PNGWriter::compress_data() emitted raw deflate with NO zlib header, AND custom crc32() was missing 0xFFFFFFFF init XOR. Fixed by:
+  1. Replaced compress_data() with zlib's compress2()
+  2. (Phase 4) Replaced custom crc32() in write_chunk with zlib's crc32()
+  3. Wired stage_capture_output to call PNGWriter::write_png directly
+  Result: All 3 APKs produce PIL-decodable PNG (10535 bytes, 1080×1920, 848 non-black pixels).
+- Phase 4: Verified render pipeline integration. 3/3 PASS with PIL decoding.
+- Phase 5 (B2 DIAGNOSTIC): All 6 APKs call setContentView during onCreate. PNG output works. But renderer uses synthetic HelloWorld view (create_view_from_dalvik_result) instead of walking ViewShadow tree. Documented as PARTIAL — fix requires architectural change to wire RenderPipeline to ViewShadow.
+- Phase 7 (B4 WIRING): Added shadow_registry_ member to ExecutionEngine, set_shadow_registry() method. main.cpp cmd_run() now creates ShadowRegistry with HandlerShadow + ViewShadow + ActivityShadow. stage_execute_application_real_dalvik now calls drain_ready() after execute. Drain is correctly wired but no APK enqueues Runnables during onCreate (they call Handler.post() during user-interaction callbacks). Phase 7 test: 2/4 PARTIAL, 2 BLOCKED.
+- Phase 20 (Regression): All earlier-passing tests still pass (Phase 1: 6/6, Phase 3: 3/3, Phase 4: 3/3, 4/4 unit tests). Source purity PASS. 0 APKs tracked.
+
+Stage Summary:
+- B5 (Telegram entry-point): FULLY FIXED — LaunchActivity.onCreate executes (757 insns, SUCCESS)
+- B1 (PNG output): FULLY FIXED — PIL-decodable PNG with valid CRCs (848 non-black pixels)
+- B4 (Handler drain): WIRED — infrastructure in place, awaits trigger from B2/click dispatch
+- B2 (AXML inflation): DIAGNOSED — setContentView called, renderer uses synthetic view
+- B3 (SQLite): NOT STARTED
+- B6 (Duplicate callback): BLOCKED — needs B2+B4 trigger
+- 6 commits pushed to main
+- 11 new test scripts + 6 result JSONs + baseline + final report
+- Source-only repository maintained (508 tracked files, 0 APKs, 0 build/run artifacts)
+- No regressions
