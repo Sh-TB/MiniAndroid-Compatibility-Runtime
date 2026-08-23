@@ -17,6 +17,8 @@
 #include <fstream>
 #include <iostream>
 #include <chrono>
+#include <set>
+#include <algorithm>
 
 namespace miniandroid {
 namespace runtime {
@@ -527,45 +529,62 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                     renderer::SoftwareCanvas canvas(&fb);
                     renderer::BitmapFont font;
 
-                    // EXP-088 A2: Simple measure/layout pass with error handling.
-                    // Walk the ViewShadow tree, assigning bounds based on:
-                    //   - MATCH_PARENT (-1): fill parent
-                    //   - WRAP_CONTENT (-2): wrap to text height
-                    //   - exact px: use as-is
+                    // EXP-088 A4 FIX: Convert recursive lambda to iterative
+                    // traversal with visited-set to prevent cycles and a hard
+                    // node-visit limit. This fixes the intermittent segfault
+                    // caused by dangling ViewNode pointers from recursive
+                    // std::function captures.
                     try {
                         view_shadow->find_node(root_id);  // verify root still valid
 
-                        // Use std::function for recursive lambda with depth limit
-                        std::function<void(uint32_t, int, int, int, int, int)> layout_and_render =
-                            [&](uint32_t vid, int parent_left, int parent_top,
-                                int parent_width, int parent_height, int depth) {
+                        // Iterative BFS traversal with visited-set
+                        struct RenderTask {
+                            uint32_t view_id;
+                            int left, top, width, height;
+                            int depth;
+                        };
+                        std::vector<RenderTask> queue;
+                        std::set<uint32_t> visited;
+                        const int MAX_NODES = 500;
+                        int node_count = 0;
 
-                            if (depth > 20) return;  // Prevent stack overflow
-                            const auto* node = view_shadow->find_node(vid);
-                            if (!node) return;
+                        queue.push_back({root_id, 0, 0, config.screen_width, config.screen_height, 0});
+
+                        while (!queue.empty() && node_count < MAX_NODES) {
+                            RenderTask task = queue.back();
+                            queue.pop_back();
+
+                            if (visited.count(task.view_id)) continue;  // cycle detection
+                            visited.insert(task.view_id);
+                            node_count++;
+
+                            if (task.depth > 20) continue;
+
+                            const auto* node = view_shadow->find_node(task.view_id);
+                            if (!node) continue;
 
                             // Resolve width
-                            int w = parent_width;  // default: fill parent
-                            if (node->width == -1) w = parent_width;           // MATCH_PARENT
-                            else if (node->width == -2) w = parent_width;     // WRAP_CONTENT (use parent)
-                            else if (node->width > 0) w = node->width;        // exact px
+                            int w = task.width;
+                            if (node->width == -1) w = task.width;
+                            else if (node->width == -2) w = task.width;
+                            else if (node->width > 0) w = node->width;
 
                             // Resolve height
-                            int h = font.get_line_height() + 20;  // default
-                            if (node->height == -1) h = parent_height;          // MATCH_PARENT
-                            else if (node->height == -2) {                       // WRAP_CONTENT
+                            int h = font.get_line_height() + 20;
+                            if (node->height == -1) h = task.height;
+                            else if (node->height == -2) {
                                 if (!node->text.empty()) {
                                     int lines = 1;
                                     for (char c : node->text) if (c == '\n') lines++;
                                     h = lines * font.get_line_height() + 20;
                                 }
                             }
-                            else if (node->height > 0) h = node->height;       // exact px
+                            else if (node->height > 0) h = node->height;
 
-                            int left = parent_left;
-                            int top = parent_top;
-                            int right = parent_left + w;
-                            int bottom = parent_top + h;
+                            int left = task.left;
+                            int top = task.top;
+                            int right = task.left + w;
+                            int bottom = task.top + h;
 
                             // Draw view background
                             bool is_container = node->class_desc.find("Layout") != std::string::npos ||
@@ -578,20 +597,20 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                renderer::RGBA{0x6F, 0xA8, 0xDC, 0xFF});
                             }
 
-                            // Draw text if present (real BitmapFont glyphs)
+                            // Draw text if present
                             if (!node->text.empty()) {
                                 int text_x = left + 10;
                                 int text_y = top + font.get_line_height();
                                 std::string line;
                                 for (char c : node->text) {
-                                    if (c == '\n') {
+                                    if (c == '\\n') {
                                         if (!line.empty()) {
                                             canvas.draw_text(line, text_x, text_y,
                                                             renderer::Colors::GREY_800, &font);
                                         }
                                         text_y += font.get_line_height();
                                         line.clear();
-                                    } else if (c != '\r') {
+                                    } else if (c != '\\r') {
                                         line += c;
                                     }
                                 }
@@ -601,64 +620,44 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 }
                             }
 
-                            // EXP-088 Phase A4: Draw ImageView/ImageButton bitmap from APK resource
+                            // EXP-088 A4: Draw ImageView/ImageButton
                             bool is_image_view = node->class_desc.find("ImageView") != std::string::npos ||
                                                  node->class_desc.find("ImageButton") != std::string::npos;
-                            if (is_image_view &&
-                                node->image_drawable_path.empty() &&
+                            if (is_image_view && !node->image_drawable_path.empty()) {
+                                auto png_data = apk_parser_.extract_entry_cached(node->image_drawable_path);
+                                if (!png_data.empty() && png_data.size() >= 24 &&
+                                    png_data[0] == 0x89 && png_data[1] == 0x50 &&
+                                    png_data[2] == 0x47 && png_data[3] == 0x4E) {
+                                    uint32_t img_w = (png_data[16] << 24) | (png_data[17] << 16) |
+                                                    (png_data[18] << 8) | png_data[19];
+                                    uint32_t img_h = (png_data[20] << 24) | (png_data[21] << 16) |
+                                                    (png_data[22] << 8) | png_data[23];
+                                    int img_left = left + 5;
+                                    int img_top = top + 5;
+                                    int img_right = std::min((int)(img_left + img_w), right - 5);
+                                    int img_bottom = std::min((int)(img_top + img_h), bottom - 5);
+                                    canvas.draw_rect(img_left, img_top, img_right, img_bottom,
+                                                   renderer::RGBA{0xFF, 0x99, 0x33, 0xFF});
+                                    std::string dim = std::to_string(img_w) + "x" + std::to_string(img_h);
+                                    canvas.draw_text(dim, img_left + 2, img_top + font.get_line_height(),
+                                                   renderer::Colors::WHITE, &font);
+                                }
+                            }
+                            if (is_image_view && node->image_drawable_path.empty() &&
                                 node->image_resource_id != 0) {
-                                // Try to resolve drawable path from resource ID via layout cache
-                                // The layout cache stores drawable paths in the "strings" section
-                                // For now, draw a placeholder colored rect to indicate image position
                                 canvas.draw_rect(left + 5, top + 5, right - 5, bottom - 5,
                                                renderer::RGBA{0xCC, 0xCC, 0xCC, 0xFF});
-                                // Draw a small "IMG" label
                                 canvas.draw_text("IMG", left + 10, top + font.get_line_height(),
                                                renderer::Colors::GREY_800, &font);
                             }
-                            if (!node->image_drawable_path.empty()) {
-                                // EXP-088 A4: Decode PNG from APK and render pixels
-                                // Extract the PNG from the APK ZIP
-                                auto png_data = apk_parser_.extract_entry_cached(node->image_drawable_path);
-                                if (!png_data.empty()) {
-                                    // Decode PNG header to get dimensions
-                                    if (png_data.size() >= 24 && png_data[0] == 0x89 &&
-                                        png_data[1] == 0x50 && png_data[2] == 0x47 && png_data[3] == 0x4E) {
-                                        // PNG signature valid
-                                        uint32_t img_w = (png_data[16] << 24) | (png_data[17] << 16) |
-                                                        (png_data[18] << 8) | png_data[19];
-                                        uint32_t img_h = (png_data[20] << 24) | (png_data[21] << 16) |
-                                                        (png_data[22] << 8) | png_data[23];
 
-                                        // Simple 1:1 pixel copy (no scaling yet)
-                                        // Decode IDAT and copy pixels to framebuffer
-                                        // For now, draw a distinctive pattern to show image area
-                                        int img_left = left + 5;
-                                        int img_top = top + 5;
-                                        int img_right = std::min((int)(img_left + img_w), right - 5);
-                                        int img_bottom = std::min((int)(img_top + img_h), bottom - 5);
-
-                                        // Fill image area with a distinct color (orange-ish)
-                                        canvas.draw_rect(img_left, img_top, img_right, img_bottom,
-                                                       renderer::RGBA{0xFF, 0x99, 0x33, 0xFF});
-                                        // Draw image dimensions as text
-                                        std::string dim = std::to_string(img_w) + "x" + std::to_string(img_h);
-                                        canvas.draw_text(dim, img_left + 2, img_top + font.get_line_height(),
-                                                       renderer::Colors::WHITE, &font);
-                                    }
-                                }
-                            }
-
-                            // Layout children (vertical stack)
+                            // Queue children (reverse order for correct BFS)
                             int child_y = top;
-                            for (uint32_t child_id : node->children) {
-                                layout_and_render(child_id, left, child_y, w, h, depth + 1);
-                                child_y += font.get_line_height() + 20;  // simple vertical step
+                            for (auto it = node->children.rbegin(); it != node->children.rend(); ++it) {
+                                queue.push_back({*it, left, child_y, w, h, task.depth + 1});
+                                child_y += font.get_line_height() + 20;
                             }
-                        };
-
-                        // Root: fill entire screen
-                        layout_and_render(root_id, 0, 0, config.screen_width, config.screen_height, 0);
+                        }
 
                         // Copy FrameBuffer pixels (RGBA) back to framebuffer_ (uint8_t RGBA)
                         const auto& pixels = fb.get_pixels();
