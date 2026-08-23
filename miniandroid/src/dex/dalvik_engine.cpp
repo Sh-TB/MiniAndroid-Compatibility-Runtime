@@ -4241,6 +4241,19 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 success = execute_return_object(pc_, trace);
                 trace.opcode_name = "return-object";
                 break;
+            // EXP-088+ F5 CRITICAL FIX: return-wide (opcode 0x10) was MISSING
+            // from the opcode dispatcher. It fell through to the default case
+            // (handle_unimplemented), causing any method that returns a long
+            // or double to:
+            //   1. Not actually return (PC didn't advance past the return)
+            //   2. Leave the caller's move-result-wide reading stale/zero data
+            //
+            // This is a GENERIC VM bug — affects any APK that uses long/double
+            // return values (timestamps, durations, sizes, coordinates, etc.).
+            case Opcode::RETURN_WIDE:
+                success = execute_return_wide(pc_, trace);
+                trace.opcode_name = "return-wide";
+                break;
             
             // Control flow
             case Opcode::GOTO:
@@ -4480,10 +4493,24 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 break;
             }
             // move-result-wide (11x: AA|op, 1 code unit)
+            // EXP-088+ F5 CRITICAL FIX: Previously this was hardcoded to make_int(0),
+            // which discarded the wide return value entirely. Now we correctly
+            // propagate the last_invoke_return_ value (set by execute_return_wide
+            // or by the wide-return path in try_recursive_invoke).
+            //
+            // The wide value is stored in last_invoke_return_.long_val (for INT64)
+            // or last_invoke_return_.double_val (for FLOAT64). We preserve the type
+            // so downstream consumers (iget-wide, return-wide, arithmetic) can
+            // distinguish long vs double.
             case Opcode::MOVE_RESULT_WIDE: {
                 uint16_t instr = bytecode_[pc_];
                 uint8_t dest = (instr >> 8) & 0xFF;
-                DalvikValue val = DalvikValue::make_int(0); // simplified
+                DalvikValue val = last_invoke_return_;
+                // If last_invoke_return_ wasn't set by a wide return, default to 0
+                // but preserve INT64 type (most common case for move-result-wide).
+                if (val.type != DalvikType::INT64 && val.type != DalvikType::FLOAT64) {
+                    val = DalvikValue::make_long(0);
+                }
                 set_register(dest, val);
                 trace.opcode_name = "move-result-wide";
                 pc_ += 1;
@@ -7230,7 +7257,75 @@ bool DalvikExecutionEngine::execute_return_object(uint32_t pc, InstructionTrace&
     halted_on_return_ = true;
     
     log("  RETURN_OBJECT " + val.to_string() + " at " + to_hex(pc));
-    
+
+    pc_ = pc + 1;
+    return true;
+}
+
+// EXP-088+ F5: execute_return_wide — return-wide vAA (opcode 0x10, 11x format)
+//
+// Returns a 64-bit value (long or double) from a method.
+//
+// Per Dalvik spec: vAA holds the low 32 bits, vAA+1 holds the high 32 bits.
+// Our register file already stores wide values as a single INT64 or FLOAT64
+// DalvikValue in vAA (set by const-wide, iget-wide, etc.), so we just read
+// the single register.
+//
+// The returned value is stored in last_invoke_return_ so the caller's
+// move-result-wide can pick it up.
+//
+// Previously this opcode was MISSING from the dispatcher — it fell through
+// to handle_unimplemented, causing methods that return long/double to:
+//   1. Not actually return (execution continued past the return-wide)
+//   2. Leave move-result-wide reading stale/zero data
+//
+// This is a GENERIC VM fix — affects any APK using long/double returns.
+bool DalvikExecutionEngine::execute_return_wide(uint32_t pc, InstructionTrace& trace) {
+    // Format: 11x [op] vAA (1 code unit)
+    if (pc >= bytecode_.size()) return false;
+
+    uint16_t instr = bytecode_[pc];
+    uint8_t ret_reg = (instr >> 8) & 0xFF;
+
+    DalvikValue val = get_register(ret_reg);
+
+    // If the register doesn't already hold a wide value (INT64 or FLOAT64),
+    // coerce to INT64 with the existing int_val as the low 32 bits.
+    // This handles cases where const-wide wasn't used to set the register
+    // (e.g., the value came from an arithmetic op that stored INT32).
+    if (val.type != DalvikType::INT64 && val.type != DalvikType::FLOAT64) {
+        int64_t coerced = static_cast<int64_t>(static_cast<uint32_t>(val.int_val));
+        val = DalvikValue::make_long(coerced);
+    }
+
+    trace.status = InstructionTrace::Status::HALT_RETURN;
+    trace.return_value = val;
+    trace.operands.push_back({"v" + std::to_string(ret_reg), val.to_string()});
+
+    // Store so try_recursive_invoke / move-result-wide can propagate.
+    last_invoke_return_ = val;
+
+    // EXP-088+ F5 diagnostic: log wide returns for key methods
+    if (current_method_ == "getTime" ||
+        current_method_ == "currentTimeMillis" ||
+        current_method_ == "getDuration" ||
+        current_method_ == "getSize" ||
+        current_method_ == "getLong" ||
+        current_method_ == "nextLong") {
+        std::cerr << "[EXP088-F5-RETWIDE] " << current_class_ << "."
+                  << current_method_ << " PC=" << pc
+                  << " ret_reg=v" << (int)ret_reg
+                  << " type=" << static_cast<int>(val.type)
+                  << " long_val=0x" << std::hex << val.long_val << std::dec
+                  << " (" << val.long_val << ")"
+                  << std::endl;
+    }
+
+    halted_ = true;
+    halted_on_return_ = true;
+
+    log("  RETURN_WIDE " + val.to_string() + " at " + to_hex(pc));
+
     pc_ = pc + 1;
     return true;
 }
