@@ -3416,3 +3416,68 @@ Artifacts produced:
   F4 fix (type_list 2-byte entries) + F1 defense-in-depth + readRes bypass
 - /home/z/my-project/MiniAndroid-Compatibility-Runtime/.agent/state.md — updated
 - 1 commit pushed to main (F4 CRITICAL FIX)
+
+---
+Task ID: EXP-089-F5-WIDE-VALUES
+Agent: Super Z (long-running goal mode, primary coder)
+Task: Verify F5 (return-wide/move-result-wide) + advance Telegram Phase M.
+
+Work Log:
+- Verified HEAD == origin/main (9304036) at start of round. Pushed pending commits.
+- Re-ran Telegram baseline: confirmed F4 fix working (proto correctly resolved,
+  fragment lifecycle executes, IntroActivity.onFragmentCreate + createView run).
+- F5 audit: Found that RETURN_WIDE (opcode 0x10) was MISSING from the opcode
+  dispatcher. It fell through to handle_unimplemented. Combined with
+  move-result-wide being hardcoded to make_int(0), ALL wide values (long/double)
+  were silently lost.
+- F5 FIX 1: Added case Opcode::RETURN_WIDE → execute_return_wide(). The new
+  function reads the wide register, stores in last_invoke_return_, and halts.
+- F5 FIX 2: Fixed move-result-wide to propagate last_invoke_return_ (was
+  hardcoded to make_int(0)). Now correctly reads the wide return value.
+- F5 regression test: tests/exp088_f5_return_wide_test.cpp (5/5 PASS).
+  Tests: RETURN_WIDE opcode constant, make_long preserves 64 bits (8 cases),
+  make_double preserves values (8 cases), DalvikValue copy preserves wide,
+  move-result-wide defaults to INT64 zero.
+- Committed F5 fix (a3a557b), pushed, verified HEAD == origin/main.
+- Phase M1 investigation: Found that execution was halting at PC=0x35ce with
+  "Unimplemented opcode: 0x0x0004" — this is MOVE_WIDE (opcode 0x04)!
+- F5 followup FIX: Added case Opcode::MOVE_WIDE with 12x format handling.
+  Reads wide value from vB, writes to vA, coerces non-wide to INT64.
+- Added EXP088-PHASE-B diagnostics to execution_engine.cpp to confirm
+  phase_b_click IS running:
+  - ViewShadow found, 4-5 clickables found
+  - dispatch_click(2559) → OK (click on TextView with IntroActivity Lambda3)
+  - UI-EVENT: CLICK DISPATCHED, listener=IntroActivity$$ExternalSyntheticLambda3
+  - onClick EXECUTES (bytecode_size=6)
+  - invokes lambda$createView$2 via invoke-direct
+- Committed MOVE_WIDE fix (36c61cc), pushed, verified HEAD == origin/main.
+- ALL regression tests pass after both fixes:
+  - A4: 4/4 + 4/4 + multi + simplestopwatch
+  - Phase F: 23/23
+  - Multi-DEX inject: 2/2
+  - F5 return-wide: 5/5
+  - SQLite: 9/9
+  - Manifest resolver: 6/6
+  - Multi-DEX audit (Telegram): PASS
+
+Stage Summary:
+- 10 phases PROVEN (A1, A2, A4, A5, B, B1, B2, B5, C, F, I)
+- 1 phase IN PROGRESS (M — click dispatched, lambda invoked, next: LoginActivity transition)
+- 0 NOT_STARTED phases
+- 0 regressions introduced
+- F5 fixes are GENERIC VM fixes — affect ALL APKs using long/double values
+- Campaign NOT complete — M is IN PROGRESS
+- Next round: investigate why lambda$createView$2 doesn't transition to LoginActivity
+
+Artifacts produced:
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/src/dex/dalvik_engine.cpp:
+  RETURN_WIDE case + execute_return_wide impl + MOVE_WIDE case + move-result-wide fix
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/src/dex/dalvik_engine.h:
+  execute_return_wide declaration
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/tests/exp088_f5_return_wide_test.cpp:
+  F5 regression test (5/5 PASS)
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/src/runtime/execution_engine.cpp:
+  EXP088-PHASE-B diagnostics
+- /home/z/my-project/MiniAndroid-Compatibility-Runtime/.agent/state.md — updated
+- 3 commits pushed to main (F5 fix + MOVE_WIDE fix + state updates)
+- ALL pushed and verified: HEAD == origin/main == 36c61cc

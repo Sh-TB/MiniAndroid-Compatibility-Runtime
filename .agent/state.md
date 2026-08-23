@@ -1,14 +1,15 @@
-# MiniAndroid Agent State — EXP-088+ Campaign
+# MiniAndroid Agent State — EXP-089 Campaign
 
 ## Current Experiment
-EXP-088+ — Long-horizon MiniAndroid generic compatibility campaign
+EXP-089 — Continue Telegram Phase M after F5 wide-value fixes
 
 ## Current Commit (most recent state)
-HEAD — F4 CRITICAL FIX: type_list entries are 2 bytes (ushort), not 4 bytes
+HEAD — 36c61cc — F5 followup: Add MOVE_WIDE opcode (was MISSING from dispatcher)
+**PUSHED and VERIFIED: HEAD == origin/main == 36c61cc9690f899faaf75402413f48323daad965**
 
-## Status: 10 PROVEN, 1 IN PROGRESS (M boundary SIGNIFICANTLY advanced)
+## Status: 10 PROVEN, 1 IN PROGRESS (M boundary advanced — click dispatched)
 
-### PROVEN (no change this round)
+### PROVEN (no change)
 - A1 AXML inflation
 - A2 measure/layout
 - A5 text rendering
@@ -21,82 +22,89 @@ HEAD — F4 CRITICAL FIX: type_list entries are 2 bytes (ushort), not 4 bytes
 - F Handler/Looper
 - I multi-DEX audit
 
-### IN PROGRESS (M boundary MASSIVELY advanced this round)
-Phase M now reaches the FRAGMENT LIFECYCLE:
+### IN PROGRESS (M boundary advanced this round)
+
+Phase M now reaches the CLICK DISPATCH and lambda invocation:
 
 ```
 LaunchActivity.onCreate (1330 instructions) ✅
 → handleIntent (15606 instructions) ✅
-→ switchToAccount ✅
-→ UserConfig.isClientActivated (EXECUTES, reads this.sync + this.currentUser) ✅
+→ UserConfig.isClientActivated (EXECUTES) ✅
 → LoginActivity.loadCurrentState (EXECUTES, 209 instructions) ✅
 → IntroActivity.<init> ✅
-→ setTag (8 calls) ✅
-→ addFragmentToStack (2 args correct: ActionBarLayout + IntroActivity) ✅
+→ addFragmentToStack (2 args correct) ✅
 → IntroActivity.onFragmentCreate (EXECUTES, 118 instructions) ✅
-→ getString(R.string.Page2Title..Page6Title) ✅
-→ [next: PhoneView rendering / click dispatch → LoginActivity transition]
+→ IntroActivity.createView (EXECUTES, 608 instructions) ✅
+  - reads R.drawable.telegram_logo, R.string.Page1Title..Page6Title
+  - creates RLottieImageView, ScrollView, FrameLayout
+  - registers setOnClickListener on 4 views
+→ phase_b_click dispatches click on view_id=2559 (TextView) ✅
+  - listener = IntroActivity$$ExternalSyntheticLambda3
+  - onClick EXECUTES (bytecode_size=6) ✅
+  - invokes lambda$createView$2 via invoke-direct ✅
+  - 46588 instructions executed, 2618 heap objects
+→ [next: lambda$createView$2 should call presentFragment → LoginActivity]
 ```
 
 ### Root-cause fixes this round
 
-1. **F4 CRITICAL FIX: type_list entries are 2 bytes (ushort), not 4 bytes** (PRIMARY FIX):
-   - DEX format `type_item { ushort type_idx; }` — each entry is 2 bytes
-   - Runtime was reading 4 bytes per entry (uint32_t)
-   - This caused WRONG proto resolution for ALL methods with 2+ parameters
-   - Specifically: `$default$addFragmentToStack` proto resolved as `(J)Z` (takes long)
-     instead of `(Lorg/telegram/ui/ActionBar/INavigationLayout;Lorg/telegram/ui/ActionBar/BaseFragment;)Z`
-   - Wide-arg merger incorrectly merged the fragment argument as a long
-   - args_size=1 instead of 2 → fragment never passed → lifecycle never started
-   - FIX: Changed `* 4u` to `* 2u`, `uint32_t` to `uint16_t`, `i * 4` to `i * 2`
-   - GENERIC fix — affects ALL multi-DEX APKs with desugared interface default methods
+1. **F5 CRITICAL FIX: return-wide opcode (0x10) was MISSING from dispatcher**:
+   - Opcode 0x10 (return-wide) was not in the case list
+   - Fell through to handle_unimplemented → methods returning long/double didn't return
+   - Combined with move-result-wide being hardcoded to make_int(0), ALL wide values were lost
+   - FIX: Added `case Opcode::RETURN_WIDE` → `execute_return_wide()`
+   - Fixed `move-result-wide` to propagate `last_invoke_return_` (was make_int(0))
+   - Added `execute_return_wide()` implementation
+   - GENERIC fix — affects ALL APKs using long/double returns
 
-2. **F1 defense-in-depth: on-demand injection checks class_info_index_ first**:
-   - No `reserve(43895)` in primary branch (F1 doesn't directly apply)
-   - Added defense-in-depth: on-demand injection at line 957 checks if class
-     already exists in class_info_index_ before push_back
-   - Prevents duplicate injection and potential vector reallocation
+2. **F5 followup: MOVE_WIDE opcode (0x04) was MISSING from dispatcher**:
+   - Opcode 0x04 (move-wide) was not in the case list
+   - Caused halt at PC=0x35ce in Telegram (blocked lambda$createView$2)
+   - FIX: Added `case Opcode::MOVE_WIDE` with 12x format handling
+   - Coerces non-wide values to INT64 (matches return-wide coercion)
 
-3. **AndroidUtilities.readRes bypass**:
-   - `readRes` loops forever reading a raw resource InputStream
-   - In headless mode, InputStream returns 0/-1 → while loop spins
-   - Added to bypass list (generic fix)
-
-### VNC/X11 capability check
-- **Xvfb**: AVAILABLE (can run headless X server)
-- **VNC server**: NOT AVAILABLE (no root to install x11vnc/tigervncserver)
-- **Screenshot tools** (scrot, import, xwd): NOT AVAILABLE
-- **xdotool**: NOT AVAILABLE
-- **Conclusion**: VNC is impossible in this environment. However, MiniAndroid
-  already produces a PNG screenshot via its own software renderer, independently
-  verified by PIL (A4.5 PROVEN). No GUI session needed for validation.
+3. **EXP088-PHASE-B diagnostics added**:
+   - Logs ViewShadow found + clickable count
+   - Logs each clickable view_id, class, listener_id
+   - Logs dispatch_click result
+   - Confirms phase_b_click IS running and dispatching clicks
 
 ### Verified secondary findings
-1. **F1 (lazy-load reserve / dangling ClassInfo)**: NOT APPLICABLE — no `reserve(43895)` in primary branch. Injection happens ONCE at startup before execution. Added defense-in-depth.
-2. **F4 (invoke overload resolution)**: ROOT CAUSE CONFIRMED — type_list entries are 2 bytes, not 4. FIXED. This was the PRIMARY blocker for Phase M fragment lifecycle.
+1. **F1 (lazy-load reserve)**: NOT APPLICABLE — no reserve(43895) in primary. Defense-in-depth added.
+2. **F4 (type_list 2-byte entries)**: FIXED in previous round. Confirmed working.
+3. **F5 (return-wide/move-result-wide)**: FIXED this round. Two critical bugs:
+   - return-wide opcode missing from dispatcher
+   - move-result-wide hardcoded to 0
+   - move-wide opcode also missing (followup)
+4. **F2 (fallback method dispatch)**: PENDING audit
+5. **F3 (swallowed exceptions)**: PENDING audit
+6. **F6 (uninitialized memory)**: PENDING audit (after F1/F4/F5)
 
 ## Resume Instructions (next round)
 
 1. The campaign is NOT complete. M is IN PROGRESS.
-2. **Exact next action**: Investigate what happens after `IntroActivity.onFragmentCreate` completes.
-   The runtime needs to:
-   - Call `createView()` to create the IntroActivity's view
-   - Render the intro screen
-   - Then dispatch a click on "Start Messaging" button
-   - Then transition to LoginActivity
-   - Then render PhoneView
-   - Then inject phone number
-   - Then mock auth.sendCode
-3. Reproducer:
+2. **Current state**: Click on IntroActivity is dispatched, lambda$createView$2 is invoked,
+   but the presentFragment → LoginActivity transition hasn't completed yet.
+3. **Next boundary**: The halt_reason is "Unimplemented opcode: 0x0x00df at PC=0x5"
+   — this is in a stub method, not the main path. Need to investigate whether
+   lambda$createView$2 actually calls presentFragment and whether LoginActivity
+   gets created.
+4. Reproducer:
    ```
    cd miniandroid && ./build/miniandroid run -o /tmp/tg_test download/exp038_telegram/Telegram.apk
-   grep -aE "onFragmentCreate|createView|PhoneView|onNextPressed|sendCode" /tmp/tg_test.log
+   grep -aE "EXP088-PHASE-B|UI-EVENT|lambda.*createView|presentFragment|LoginActivity.*<init>" /tmp/tg_test.log
    ```
-4. After M is PROVEN (full login chain works end-to-end), the campaign is complete.
+5. After M is PROVEN (full login chain), campaign is complete.
+
+## GitHub delivery status
+- last_commit: 36c61cc9690f899faaf75402413f48323daad965
+- remote_head: 36c61cc9690f899faaf75402413f48323daad965
+- push_verified: true
 
 ## Reproducibility
-- Telegram: 3/3 reproducible runs (identical screenshot SHA `24956663322f4c73c55f30fc7e46dc63f7578102d1db08e9ae311c19d9e9d495`)
+- Telegram: 3/3 reproducible runs (identical screenshot SHA)
 - All A4 tests pass
 - All Phase F tests pass: 23/23
 - All multi-DEX inject tests pass: 2/2
-- All regression tests pass: A1, B, B2, C, F, I — no regressions introduced
+- All F5 return-wide tests pass: 5/5
+- All regression tests pass: A1, B, B2, C, F, I — no regressions
