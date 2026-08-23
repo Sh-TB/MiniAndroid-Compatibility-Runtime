@@ -225,3 +225,156 @@ The campaign is **NOT complete** — Phase M is still IN PROGRESS (no longer BLO
 - 3/3 reproducible Telegram runs (identical screenshot SHA: `24956663322f4c73c55f30fc7e46dc63f7578102d1db08e9ae311c19d9e9d495`)
 - All A4 + F tests still pass
 - All regression tests still pass (manifest resolver, PNG writer for gmdice/tictactoe, SQLite, multi-DEX)
+
+---
+
+## Round 2: F1 + F4 Verification (2026-08-24)
+
+### F1 — LAZY-LOAD reserve / dangling ClassInfo reference
+
+#### Secondary claim
+> A `reserve(43895)` inside the lazy secondary-Dex injection path can invalidate an active `ClassInfo&` reference held by a parent execution frame.
+
+#### Primary verification
+
+**A. Search codebase for `reserve(43895)`:**
+```bash
+rg -rn "reserve\(43895\)" .
+```
+Result: **NO MATCHES**. There is no `reserve(43895)` anywhere in the primary branch.
+
+**B. Identify all reserve() calls in DEX code:**
+- `dex_parser.cpp:212` — `strings_.reserve()` (pre-population, safe)
+- `dex_parser.cpp:250` — `types_.reserve()` (pre-population, safe)
+- `dex_parser.cpp:370` — `report.classes.reserve()` (pre-population, safe)
+- `dalvik_engine.cpp:259` — `class_info_index_.reserve()` (unordered_map, doesn't invalidate element references)
+
+**C. Verify injection timing:**
+- `inject_secondary_dex_classes()` is called ONCE at line 714, inside `execute_apk_with_activity()`, BEFORE `execute_method_internal()` (line 776+).
+- `ClassInfo&` references are only taken at lines 1409 and 2806, DURING execution.
+- Both injection paths (bulk + on-demand) are pre-execution.
+
+**D. Defense-in-depth:** Added a check in the on-demand injection path (line 957) that checks `class_info_index_` first. If the class was already injected by `inject_secondary_dex_classes()`, the push_back is skipped. This prevents:
+1. Duplicate entries in `dex_report_->classes`
+2. Potential vector reallocation
+
+#### Conclusion
+- **Independent reproduction:** N/A — no `reserve(43895)` in primary branch.
+- **Root cause confirmed?** NO — F1 describes a bug in the secondary coder's own implementation.
+- **Generic?** N/A.
+- **Minimal fix:** Defense-in-depth check added (3 lines).
+- **Regression:** All tests pass.
+- **Telegram impact:** None (no bug to fix).
+
+---
+
+### F4 — invoke overload resolution (CRITICAL FIX)
+
+#### Secondary claim
+> `<init>(I)V` being selected for `<init>()V` in some paths.
+
+#### Primary verification
+
+**A. Added diagnostic logging** for `$default$` methods in `execute_invoke_static`:
+```cpp
+if (method_name.find("$default$") != std::string::npos) {
+    std::cerr << "[EXP088-F4-STATIC] method=" << method_name
+              << " proto=" << method_proto
+              << " method_idx=" << method_idx
+              << " current_dex=" << current_dex_index_
+              << " argc=" << (int)argc
+              << " args_size=" << args.size();
+}
+```
+
+**B. Reproduced the failure:**
+```
+[EXP088-F4-STATIC] method=$default$addFragmentToStack
+  class=Lorg/telegram/ui/ActionBar/INavigationLayout$-CC;
+  proto=(J)Z                              ← WRONG! Should be (INavigationLayout;BaseFragment;)Z
+  method_idx=9322 current_dex=3
+  argc=2 args_size=1                       ← WRONG! Should be 2
+```
+
+**C. Root cause analysis:**
+- `resolve_method_proto_for_dex(9322, 3)` returns `(J)Z`
+- Verified with Python: `method_ids[9322]` in classes4.dex has `proto_idx=15409`
+- `proto_ids[15409]` has `shorty_idx=26925` → "ZLL" (correct: 2 objects, return boolean)
+- `proto_ids[15409]` has `parameters_off=8145368`
+- Type_list at 8145368: `list_size=2`, `param[0] type_idx=167512720` (INVALID), `param[1] type_idx=5` (→ J)
+
+**D. Found the bug:**
+- DEX format: `type_item { ushort type_idx; }` — **2 bytes per entry**
+- Runtime code: `uint32_t type_idx; memcpy(&type_idx, ..., 4); i * 4` — **4 bytes per entry**
+- Reading 4 bytes instead of 2 causes:
+  - param[0] = 0x09FC0A90 (garbage, from 2 entries merged into 1 uint32)
+  - param[1] = 0x00000005 (the 2nd entry's low 2 bytes + 2 bytes of the next structure)
+  - Proto resolves as `(J)Z` instead of the correct proto
+
+**E. Verified with Python (reading 2 bytes):**
+```python
+pt_idx = struct.unpack_from('<H', data, pt_off)[0]  # ushort
+# param[0] type_idx=2704 -> Lorg/telegram/ui/ActionBar/INavigationLayout;  ✓
+# param[1] type_idx=2556 -> Lorg/telegram/ui/ActionBar/BaseFragment;        ✓
+```
+
+**F. Applied the fix:**
+```cpp
+// BEFORE (BUG):
+size_t list_bytes = static_cast<size_t>(list_size) * 4u;    // 4 bytes per entry
+uint32_t type_idx;                                             // 4-byte uint
+std::memcpy(&type_idx, raw.data() + list_start + i * 4, 4);   // read 4 bytes
+
+// AFTER (FIXED):
+size_t list_bytes = static_cast<size_t>(list_size) * 2u;     // 2 bytes per entry
+uint16_t type_idx;                                             // 2-byte ushort
+std::memcpy(&type_idx, raw.data() + list_start + i * 2, 2);  // read 2 bytes
+```
+
+**G. Impact verification:**
+- BEFORE: `$default$addFragmentToStack` proto=(J)Z, args_size=1 → fragment never passed → lifecycle never starts
+- AFTER: `$default$addFragmentToStack` proto correctly resolved, args_size=2 → fragment passed → lifecycle starts:
+  ```
+  [FRAGMENT-LIFECYCLE] method=onFragmentCreate declared_in=Lorg/telegram/ui/IntroActivity; runtime_class=Lorg/telegram/ui/IntroActivity;
+  [METHOD-IN] Lorg/telegram/ui/IntroActivity;.onFragmentCreate (bytecode_size=118)
+  [SGET] field=Lorg/telegram/messenger/R$string;.Page2Title
+  ```
+
+#### Conclusion
+- **Independent reproduction:** YES — proto resolved as `(J)Z` before fix, correct after.
+- **Root cause confirmed?** YES — type_list entries are 2 bytes (ushort), not 4 bytes.
+- **Generic?** YES — affects ALL multi-DEX APKs with desugared interface default methods.
+- **Minimal fix:** 3 lines changed (4u→2u, uint32_t→uint16_t, i*4→i*2).
+- **Regression:** All tests pass (A4, F, SQLite, manifest, multi-DEX).
+- **Telegram impact:** MASSIVE — fragment lifecycle now works. IntroActivity.onFragmentCreate executes.
+
+---
+
+## VNC/X11 Capability Check
+
+### Environment analysis
+- **Xvfb**: AVAILABLE (`/usr/bin/Xvfb`, `/usr/bin/xvfb-run`)
+- **VNC server**: NOT AVAILABLE (no x11vnc, tigervncserver, tightvncserver)
+- **Screenshot tools**: NOT AVAILABLE (no scrot, import, xwd)
+- **xdotool**: NOT AVAILABLE
+- **Root access**: NO (cannot `apt-get install`)
+
+### Attempted installation
+```bash
+$ sudo apt-get install -y x11vnc xdotool scrot
+sudo: a password is required
+```
+
+### Conclusion
+VNC is impossible in this environment (no root to install VNC server or screenshot tools).
+However, MiniAndroid already produces a PNG screenshot via its own software renderer,
+independently verified by PIL (A4.5 PROVEN). No GUI session needed for validation.
+
+If VNC were available, the workflow would be:
+1. Launch MiniAndroid → produces screenshot.png
+2. Load screenshot.png in an image viewer
+3. Inspect rendered UI
+4. No interactive keyboard/mouse needed (MiniAndroid is headless)
+
+Since MiniAndroid is a headless DEX interpreter (not a real Android emulator),
+VNC would not provide additional validation capability beyond what PIL already does.
