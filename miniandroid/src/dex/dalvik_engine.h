@@ -1257,7 +1257,7 @@ public:
         bool verbose = false;
         bool debug_output = false;
         uint64_t max_instructions = 100000000;  // EXP-042: 100M (was 10M)
-        bool stop_on_unimplemented = true;
+        bool stop_on_unimplemented = false;  // EXP-089: Don't halt on unimplemented opcodes
         bool generate_trace = true;
         bool enable_api_bridge = true;
         // EXP-042 Phase 1: Per-instruction register snapshots are the #1 memory
