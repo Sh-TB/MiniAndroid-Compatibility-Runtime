@@ -282,18 +282,31 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 if (n > 0) {
                     trace_engine_.info("ExecutionEngine", "drain_handler_queue",
                                        "Drained " + std::to_string(n) + " Runnables after onCreate");
-                    // Invoke each drained Runnable via try_recursive_invoke
+                    // EXP-090: Actually INVOKE each drained Runnable's run() method.
+                    // Previously this only logged "invocation deferred to future work"
+                    // which meant callbacks never executed.
                     for (uint32_t rid : drained) {
                         try {
-                            // The runnable_id is a heap object reference.
-                            // We invoke its run() method.
-                            // dalvik_engine_ will resolve via try_recursive_invoke.
-                            // For now, just log — actual invocation requires
-                            // heap access to find the class of rid.
-                            std::cerr << "[EXP086-P7] Drained Runnable id=" << rid
-                                      << " (invocation deferred to future work)" << std::endl;
+                            // Look up the Runnable's class from the heap
+                            auto& heap = dalvik_engine_.get_heap_public();
+                            if (heap.has_object(rid)) {
+                                const auto* obj = heap.get(rid);
+                                std::string cls = obj ? obj->class_descriptor : "";
+                                if (!cls.empty()) {
+                                    std::cerr << "[EXP090-DRAIN] Invoking Runnable id=" << rid
+                                              << " class=" << cls << std::endl;
+                                    miniandroid::dalvik::DalvikValue ret;
+                                    miniandroid::dalvik::DalvikExecutionResult drain_result;
+                                    std::vector<miniandroid::dalvik::DalvikValue> args;
+                                    args.push_back(miniandroid::dalvik::DalvikValue::make_object(rid, cls));
+                                    dalvik_engine_.try_recursive_invoke(
+                                        cls, "run", args, ret, drain_result);
+                                    std::cerr << "[EXP090-DRAIN] Runnable id=" << rid
+                                              << " invoked" << std::endl;
+                                }
+                            }
                         } catch (const std::exception& e) {
-                            std::cerr << "[EXP086-P7] Runnable drain failed: " << e.what() << std::endl;
+                            std::cerr << "[EXP090-DRAIN] Runnable drain failed: " << e.what() << std::endl;
                         }
                     }
                 }
@@ -578,6 +591,47 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         std::cerr << "[EXP088-PHASE-B] Skipping phase_b_click: shadow_registry_="
                   << (void*)shadow_registry_
                   << " status=" << static_cast<int>(result.status) << std::endl;
+    }
+
+    // EXP-090: Drain Handler queue AGAIN after phase_b_click.
+    // The phone input and confirm click may have queued auth response
+    // callbacks (RequestDelegate.run) that need to execute before rendering.
+    // Without this second drain, the callback never fires and setPage
+    // is never called.
+    if (auto* registry = dalvik_engine_.get_shadow_registry()) {
+        if (auto* hs = registry->find_as<framework::HandlerShadow>()) {
+            // Drain iteratively — callbacks may queue MORE runnables
+            for (int drain_iter = 0; drain_iter < 10; drain_iter++) {
+                std::vector<uint32_t> drained;
+                size_t n = hs->drain_ready(&drained);
+                if (n == 0) break;
+                std::cerr << "[EXP090-DRAIN2] Iteration " << drain_iter
+                          << " drained " << n << " runnables" << std::endl;
+                for (uint32_t rid : drained) {
+                    try {
+                        auto& heap = dalvik_engine_.get_heap_public();
+                        if (heap.has_object(rid)) {
+                            const auto* obj = heap.get(rid);
+                            std::string cls = obj ? obj->class_descriptor : "";
+                            if (!cls.empty()) {
+                                std::cerr << "[EXP090-DRAIN2] Invoking Runnable id=" << rid
+                                          << " class=" << cls << std::endl;
+                                miniandroid::dalvik::DalvikValue ret;
+                                miniandroid::dalvik::DalvikExecutionResult drain_result;
+                                std::vector<miniandroid::dalvik::DalvikValue> args;
+                                args.push_back(miniandroid::dalvik::DalvikValue::make_object(rid, cls));
+                                dalvik_engine_.try_recursive_invoke(
+                                    cls, "run", args, ret, drain_result);
+                                std::cerr << "[EXP090-DRAIN2] Runnable id=" << rid
+                                          << " invoked" << std::endl;
+                            }
+                        }
+                    } catch (const std::exception& e) {
+                        std::cerr << "[EXP090-DRAIN2] Runnable failed: " << e.what() << std::endl;
+                    }
+                }
+            }
+        }
     }
 
     trace_engine_.info("ExecutionEngine", "stage_execute_application_real_dalvik",
