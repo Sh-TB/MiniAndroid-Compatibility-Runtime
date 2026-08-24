@@ -527,6 +527,44 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         "FragmentFloatingButton");
                     std::cerr << "[EXP089-M6] FragmentFloatingButton click result: "
                               << (next_click_ok ? "OK" : "FAILED") << std::endl;
+
+                    // EXP-089 M8: After onNextPressed creates PhoneNumberConfirmView,
+                    // we need to click the confirm button. The PhoneNumberConfirmView
+                    // creates a SECOND FragmentFloatingButton (the confirm button).
+                    // We dispatch_click_by_class again — it should find the
+                    // FragmentFloatingButton with the HIGHEST view_id (the confirm one).
+                    if (next_click_ok) {
+                        std::cerr << "[EXP089-M8] Clicking confirm FragmentFloatingButton..." << std::endl;
+                        // dispatch_click_by_class finds ALL views with the class
+                        // and clicks the LAST one (most recently created).
+                        // The confirm FragmentFloatingButton was created AFTER
+                        // the initial Next button, so it has a higher view_id.
+                        bool confirm_ok = dalvik_engine_.dispatch_click_by_class(
+                            "FragmentFloatingButton");
+                        std::cerr << "[EXP089-M8] Confirm click result: "
+                                  << (confirm_ok ? "OK" : "FAILED") << std::endl;
+
+                        // Also try clicking any View with a listener that was
+                        // created inside PhoneNumberConfirmView
+                        if (!confirm_ok) {
+                            std::cerr << "[EXP089-M8] Trying all views with listeners..." << std::endl;
+                            auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+                            if (vs) {
+                                auto all_clickables = vs->find_all_with_click_listener("");
+                                for (uint32_t cv : all_clickables) {
+                                    const auto* node = vs->find_node(cv);
+                                    if (node && node->click_listener_id != 0) {
+                                        std::cerr << "[EXP089-M8] Trying view_id=" << cv
+                                                  << " class=" << node->class_desc << std::endl;
+                                        if (dalvik_engine_.dispatch_click(cv)) {
+                                            std::cerr << "[EXP089-M8] Click succeeded on view_id=" << cv << std::endl;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             } else {
                 std::cerr << "[EXP088-PHASE-B] No views with click listeners found" << std::endl;
