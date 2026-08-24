@@ -3481,3 +3481,55 @@ Artifacts produced:
 - /home/z/my-project/MiniAndroid-Compatibility-Runtime/.agent/state.md — updated
 - 3 commits pushed to main (F5 fix + MOVE_WIDE fix + state updates)
 - ALL pushed and verified: HEAD == origin/main == 36c61cc
+
+---
+Task ID: EXP-089-OverloadResolution
+Agent: Super Z (long-running goal mode, primary coder)
+Task: Continue Phase M from IntroActivity click to LoginActivity transition.
+
+Work Log:
+- Verified HEAD == origin/main (6d68125) at start.
+- Rebuilt all binaries, regenerated known PNGs (scripts lost during git sync).
+- Re-ran Telegram baseline: confirmed fragment lifecycle + createView + click working.
+- Analyzed lambda$createView$2 bytecode (bytecode_size=57): it's the LANGUAGE SWITCHER
+  (creates AlertDialog, applies language). NOT the "Start Messaging" button.
+- Analyzed Lambda2.onClick bytecode: it calls $r8$lambda$wAg5 (method_idx=41198)
+  which calls lambda$createView$1 (bytecode_size=27).
+- Analyzed lambda$createView$1 bytecode: THIS is the "Start Messaging" handler!
+  PC=10: new-instance LoginActivity
+  PC=17: invoke-virtual LoginActivity.setIntroView
+  PC=21: invoke-virtual BaseFragment.presentFragment
+- FOUND ROOT CAUSE: invoke-static overload resolution bug!
+  - When method_name is "$r8$lambda$wAg5...", old code matched ANY $r8$lambda method
+  - Both _-ElmO (idx=41197, calls createView$2) and wAg5 (idx=41198, calls createView$1)
+    matched because both contain "lambda" and "$r8$lambda"
+  - The FIRST match (_-ElmO) was picked, calling the WRONG lambda
+- FIX: When method_name starts with "$r8$lambda", require EXACT name match.
+  Only fall back to substring matching for ORIGINAL names (lambda$...).
+- After fix: lambda$createView$1 SUCCEEDED (try_recursive_invoke SUCCEEDED)!
+  The correct "Start Messaging" path is now being taken.
+- lambda$createView$1 creates LoginActivity and calls presentFragment (per DEX analysis).
+  The LoginActivity object may not be appearing on the heap because:
+  - new-instance may be stubbed (not creating real heap objects)
+  - presentFragment may return false (fragment not added to stack)
+  - Need to investigate in next round.
+
+Stage Summary:
+- 10 phases PROVEN (A1, A2, A4, A5, B, B1, B2, B5, C, F, I)
+- 1 phase IN PROGRESS (M — lambda$createView$1 SUCCEEDED, next: verify LoginActivity on heap)
+- 0 NOT_STARTED phases
+- 0 regressions introduced
+- Overload resolution fix is GENERIC — affects ALL multi-DEX APKs with D8 lambdas
+- Campaign NOT complete — M is IN PROGRESS
+- Next round: verify LoginActivity object creation, then PhoneView, then input/click/sendCode/SMS
+
+GitHub delivery:
+- last_commit: 7842e1e2bc77fd6b08b35d253e16141cd718a2b5
+- remote_head: 7842e1e2bc77fd6b08b35d253e16141cd718a2b5
+- push_verified: true
+- HEAD == origin/main ✅
+
+Artifacts produced:
+- src/dex/dalvik_engine.cpp: overload resolution fix + enhanced diagnostics
+- src/runtime/execution_engine.cpp: click-all-views + LoginActivity check
+- 2 commits pushed: 54aac15 (click-all-views) + 7842e1e (overload resolution fix)
