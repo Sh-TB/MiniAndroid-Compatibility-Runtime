@@ -644,6 +644,43 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (activity_shadow && view_shadow) {
             uint32_t root_id = activity_shadow->content_view_id();
+
+            // EXP-090: Search for the "current visible" fragment view by class name.
+            // Fragment views (PhoneView, SmsView) are created by DEX bytecode and
+            // may not be connected to the root in the ViewShadow tree (orphan nodes).
+            // Priority: SmsView > PhoneView > root
+            // Always search — the root may have old IntroActivity children
+            // while the actual current view is an orphan SmsView/PhoneView.
+            {
+                uint32_t found_sms = 0, found_phone = 0;
+                for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
+                    if (!node_ptr) continue;
+                    if (node_ptr->class_desc.find("SmsView") != std::string::npos && found_sms == 0) {
+                        found_sms = id;
+                    }
+                    if (node_ptr->class_desc.find("PhoneView") != std::string::npos &&
+                        node_ptr->class_desc.find("$") == std::string::npos &&
+                        found_phone == 0) {
+                        found_phone = id;
+                    }
+                }
+                if (found_sms != 0) {
+                    const auto* sms_node = view_shadow->find_node(found_sms);
+                    std::cerr << "[EXP090-RENDER] Using SmsView as render root: view_id=" << found_sms
+                              << " class=" << (sms_node ? sms_node->class_desc : "?")
+                              << " children=" << (sms_node ? sms_node->children.size() : 0)
+                              << std::endl;
+                    root_id = found_sms;
+                } else if (found_phone != 0) {
+                    const auto* phone_node = view_shadow->find_node(found_phone);
+                    std::cerr << "[EXP090-RENDER] Using PhoneView as render root: view_id=" << found_phone
+                              << " class=" << (phone_node ? phone_node->class_desc : "?")
+                              << " children=" << (phone_node ? phone_node->children.size() : 0)
+                              << std::endl;
+                    root_id = found_phone;
+                }
+            }
+
             if (root_id != 0) {
                 const auto* root_node = view_shadow->find_node(root_id);
                 if (root_node) {

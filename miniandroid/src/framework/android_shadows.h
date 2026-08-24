@@ -602,6 +602,9 @@ public:
     const ViewNode* find_node(uint32_t view_id) const;
     ViewNode* find_node(uint32_t view_id);
 
+    // EXP-090: Get all nodes for searching by class name
+    const std::map<uint32_t, std::unique_ptr<ViewNode>>& all_nodes() const { return nodes_; }
+
     // Add child to parent (updates both parent's children and child's parent_id).
     bool add_child(uint32_t parent_id, uint32_t child_id);
     bool remove_child(uint32_t parent_id, uint32_t child_id);
