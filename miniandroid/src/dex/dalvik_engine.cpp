@@ -2977,25 +2977,30 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // substring, or if the searched name contains the method name.
         bool name_matches = (method.name == method_name);
         if (!name_matches) {
-            // EXP-082: D8 renames lambda methods during compilation.
-            // method_ids[] may resolve to EITHER:
-            //   - the original name 'lambda$createView$1' (pre-D8)
-            //   - the D8-renamed name '$r8$lambda$8Miu...' (post-D8)
-            // The ClassInfo method name is always the D8-renamed version.
-            // So method_name == method.name when both come from the same
-            // DEX file with D8 renaming applied.
+            // EXP-089 CRITICAL FIX: When method_name is ALREADY a $r8$lambda
+            // name (e.g. "$r8$lambda$wAg5VLWJ..."), we MUST require an EXACT
+            // name match. The previous code matched ANY $r8$lambda method
+            // whose name contained "lambda" and "$r8$lambda" — which matches
+            // ALL D8-renamed lambdas in the class! This caused the WRONG
+            // lambda to be selected when multiple lambdas with the same
+            // proto existed in the same class.
             //
-            // The D8 matching is needed when:
-            //   - method_name contains 'lambda' (either 'lambda$' or '$r8$lambda')
-            //   - method.name contains '$r8$lambda'
-            //   - The descriptors are compatible (exact match or suffix match)
+            // Example: IntroActivity has:
+            //   $r8$lambda$_-ElmO9SCTF2Y... (calls lambda$createView$2)
+            //   $r8$lambda$wAg5VLWJcoV2...   (calls lambda$createView$1)
+            // Both have proto (IntroActivity;View;)V
+            // The old code matched BOTH because both contain "lambda"
+            // and "$r8$lambda". The first one (_-ElmO) was picked,
+            // which calls the WRONG lambda (createView$2 instead of createView$1).
             //
-            // EXP-082 FIX: The previous check used 'lambda$' which fails
-            // when method_name is ALREADY the D8-renamed '$r8$lambda$...'
-            // because '$r8$lambda$8Miu' does NOT contain the substring 'lambda$'
-            // (it contains '$r8$lambda$' which has 'lambda' but not 'lambda$').
-            // Changed to check for 'lambda' (without the trailing $).
-            if (method_name.find("lambda") != std::string::npos &&
+            // Fix: If method_name starts with "$r8$lambda", require EXACT match.
+            // Only fall back to substring matching for ORIGINAL names (lambda$...).
+            if (method_name.rfind("$r8$lambda", 0) == 0) {
+                // method_name is already a D8-renamed name.
+                // Require EXACT match — don't accept other $r8$lambda methods.
+                // (This case is already handled by name_matches = (method.name == method_name)
+                //  at the top of this block, so we just skip here.)
+            } else if (method_name.find("lambda") != std::string::npos &&
                 method.name.find("$r8$lambda") != std::string::npos) {
                 // EXP-081: D8 converts instance lambda methods to static
                 // by adding the captured receiver as the first parameter.
