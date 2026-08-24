@@ -8061,6 +8061,14 @@ static framework::CallContext::Arg dalvik_value_to_arg(const DalvikValue& v) {
             a.kind = CallContext::Arg::Kind::OBJECT;
             a.object_id = v.object_id;
             a.object_class = v.class_desc;
+            // EXP-091: Also copy string_val — when a String object is passed
+            // as an argument (e.g., setText(stringFromLocaleController)),
+            // the DalvikValue may have BOTH object_id AND string_val set.
+            // The string_val comes from const-string/move-result-object paths
+            // where the engine stores the resolved string alongside the ref.
+            // Without this, arg_as_string() returns empty for OBJECT args,
+            // causing setText(CharSequence) to set empty text on ViewShadow nodes.
+            a.string_val = v.string_val;
             break;
         case DalvikType::NULL_REF:
             a.kind = CallContext::Arg::Kind::NULL_REF;

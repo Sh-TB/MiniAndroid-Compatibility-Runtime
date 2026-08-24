@@ -1360,6 +1360,13 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "setText") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        // EXP-091: Log ALL setText calls for diagnostics
+        std::string text_val = ctx.arg_as_string(0);
+        std::cerr << "[EXP091-SETTEXT] view_id=" << ctx.receiver_id
+                  << " class=" << (ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class)
+                  << " arg_kind=" << static_cast<int>(ctx.args.empty() ? CallContext::Arg::Kind::NULL_REF : ctx.args[0].kind)
+                  << " text=\"" << text_val << "\""
+                  << std::endl;
         // EXP-074: When setText(int resourceId) is called, capture the resource ID.
         // The Python renderer will resolve it via the ARSC string table.
         if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::INT) {
@@ -1367,6 +1374,17 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
             // Don't overwrite text if it was already set by a string setText
             if (n->text.empty()) {
                 n->text = "[resid:0x" + std::to_string(ctx.args[0].int_val) + "]";
+            }
+        } else if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+            // EXP-091: For OBJECT_REF args, try string_val first (may be populated
+            // by dalvik_value_to_arg), then try resolving from the heap.
+            if (!ctx.args[0].string_val.empty()) {
+                n->text = ctx.args[0].string_val;
+            } else {
+                // Try to resolve the string from the heap
+                // The object_id may point to a String created by LocaleController.getString()
+                // For now, set a placeholder so the renderer knows there's text
+                n->text = "[obj:" + std::to_string(ctx.args[0].object_id) + "]";
             }
         } else {
             n->text = ctx.arg_as_string(0);
