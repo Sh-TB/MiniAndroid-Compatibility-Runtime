@@ -2629,8 +2629,11 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
     // EXP-062: AndroidUtilities.replaceTags loops at PC=9 due to
     // string processing. Stub to prevent 50K iterations.
+    // EXP-089: Also bypass replaceMultipleCharSequence (same string processing loop).
     if (class_descriptor.find("AndroidUtilities") != std::string::npos &&
-        method_name == "replaceTags") {
+        (method_name == "replaceTags" ||
+         method_name == "replaceMultipleCharSequence" ||
+         method_name == "replaceChars")) {
         log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
             " — skipping (string processing loop)");
         recursion_depth_--;
