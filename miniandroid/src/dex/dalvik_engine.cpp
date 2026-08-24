@@ -3000,6 +3000,27 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 // Require EXACT match — don't accept other $r8$lambda methods.
                 // (This case is already handled by name_matches = (method.name == method_name)
                 //  at the top of this block, so we just skip here.)
+            } else if (method_name.rfind("lambda$", 0) == 0) {
+                // EXP-089 CRITICAL FIX: method_name is an ORIGINAL lambda name
+                // (e.g. "lambda$createView$1"). Do NOT match against $r8$lambda
+                // methods — they are DIFFERENT lambdas that happen to share the
+                // "lambda" substring. The $r8$lambda methods are D8-renamed
+                // versions of the ORIGINAL lambda methods, but they have DIFFERENT
+                // names and should only match when the EXACT original name is
+                // present in the class's method list.
+                //
+                // Previously, this code matched ANY $r8$lambda method when
+                // method_name contained "lambda" — which matched ALL D8 lambdas
+                // in the class, causing the WRONG lambda to be selected.
+                //
+                // The correct behavior is:
+                //   1. First try exact name match (lambda$createView$1 == lambda$createView$1)
+                //   2. If no exact match, the method is NOT in this class
+                //   3. Do NOT fall back to $r8$lambda substring matching
+                //
+                // (The exact match was already checked at the top of this block
+                //  via name_matches = (method.name == method_name). If we reach
+                //  here, the exact match failed. So we just skip — don't match.)
             } else if (method_name.find("lambda") != std::string::npos &&
                 method.name.find("$r8$lambda") != std::string::npos) {
                 // EXP-081: D8 converts instance lambda methods to static
@@ -5665,11 +5686,13 @@ bool DalvikExecutionEngine::execute_new_instance(uint32_t pc, InstructionTrace& 
     
     // EXP-061: Debug — trace new-instance for View/EditText/Button classes
     // to investigate why some views end up with object_id=0 in shadow dispatch.
+    // EXP-089: Also trace LoginActivity creation (for Phase M1 verification).
     if (class_desc.find("EditText") != std::string::npos ||
         class_desc.find("TextView") != std::string::npos ||
         class_desc.find("Button") != std::string::npos ||
         class_desc.find("PhoneView") != std::string::npos ||
-        class_desc.find("Keyboard") != std::string::npos) {
+        class_desc.find("Keyboard") != std::string::npos ||
+        class_desc.find("LoginActivity") != std::string::npos) {
         std::cerr << "[EXP061-NEW] new-instance " << class_desc
                   << " → v" << (int)dest_reg
                   << " obj_id=" << obj_id

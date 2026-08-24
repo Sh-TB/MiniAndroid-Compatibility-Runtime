@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8' standalone='yes' ?>
 <map>
-    <long name="intro_crashed_time" value="1787544639585" />
+    <long name="intro_crashed_time" value="1787546494723" />
     <string name="lastDarkTheme">Dark Blue</string>
-    <long name="lastReloadStatusTime" value="1787544632052" />
+    <long name="lastReloadStatusTime" value="1787546487648" />
     <int name="needGetStatuses" value="1" />
     <int name="newConfig" value="1" />
     <int name="remote_version" value="1" />
