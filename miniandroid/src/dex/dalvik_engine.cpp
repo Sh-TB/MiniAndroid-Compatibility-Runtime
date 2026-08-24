@@ -6759,9 +6759,15 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     bool recursively_invoked = false;
     if (config_.enable_api_bridge) {
         // EXP-079: Debug trace for lambda$createView$1 dispatch
+        // EXP-089: Also trace lambda$new$0 (ActionBar back button handler)
+        // and any method containing "presentFragment" or "swapToFragment"
         if (method_name.find("createView") != std::string::npos ||
             method_name.find("onDoneButton") != std::string::npos ||
-            method_name.find("onNextPressed") != std::string::npos) {
+            method_name.find("onNextPressed") != std::string::npos ||
+            method_name.find("lambda$new") != std::string::npos ||
+            method_name.find("presentFragment") != std::string::npos ||
+            method_name.find("swapToFragment") != std::string::npos ||
+            method_name.find("onBackPressed") != std::string::npos) {
             std::cerr << "[EXP079-DIRECT] invoke-direct: class=" << class_name
                       << " method=" << method_name
                       << " method_idx=" << method_idx
@@ -6773,12 +6779,16 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
             recursively_invoked = true;
             status = ApiCallTrace::Status::IMPLEMENTED;
             // EXP-079: Debug trace
-            if (method_name.find("createView") != std::string::npos) {
+            if (method_name.find("createView") != std::string::npos ||
+                method_name.find("lambda$new") != std::string::npos ||
+                method_name.find("presentFragment") != std::string::npos) {
                 std::cerr << "[EXP079-DIRECT] try_recursive_invoke SUCCEEDED for " << method_name << std::endl;
             }
         } else {
             // EXP-079: Debug trace
-            if (method_name.find("createView") != std::string::npos) {
+            if (method_name.find("createView") != std::string::npos ||
+                method_name.find("lambda$new") != std::string::npos ||
+                method_name.find("presentFragment") != std::string::npos) {
                 std::cerr << "[EXP079-DIRECT] try_recursive_invoke FAILED for " << method_name << std::endl;
             }
         }
