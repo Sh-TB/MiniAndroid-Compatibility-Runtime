@@ -503,6 +503,30 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 }
                 if (!login_created) {
                     std::cerr << "[EXP088-PHASE-B] No LoginActivity created after clicking all views" << std::endl;
+                } else {
+                    // EXP-089 M5: Generic phone input into phoneField (PhoneView$3)
+                    // After LoginActivity is created, dispatch a phone number into the
+                    // phone EditText field. This is GENERIC — uses dispatch_text_input_by_class
+                    // which searches for any view whose class contains "PhoneView$3"
+                    // (the phone number EditText in Telegram's PhoneView).
+                    std::cerr << "[EXP089-M5] Dispatching phone input into PhoneView$3..." << std::endl;
+                    bool input_ok = dalvik_engine_.dispatch_text_input_by_class(
+                        "PhoneView$3", "+15551234567");
+                    std::cerr << "[EXP089-M5] Text input result: "
+                              << (input_ok ? "DISPATCHED" : "FAILED") << std::endl;
+
+                    // Also inject country code into codeField (PhoneView$1)
+                    std::cerr << "[EXP089-M5] Dispatching country code into PhoneView$1..." << std::endl;
+                    dalvik_engine_.dispatch_text_input_by_class("PhoneView$1", "1");
+
+                    // EXP-089 M6: Click on FragmentFloatingButton (Next button)
+                    // After phone input, dispatch a click on the FragmentFloatingButton
+                    // which is the real "Next" button in Telegram's login screen.
+                    std::cerr << "[EXP089-M6] Clicking FragmentFloatingButton..." << std::endl;
+                    bool next_click_ok = dalvik_engine_.dispatch_click_by_class(
+                        "FragmentFloatingButton");
+                    std::cerr << "[EXP089-M6] FragmentFloatingButton click result: "
+                              << (next_click_ok ? "OK" : "FAILED") << std::endl;
                 }
             } else {
                 std::cerr << "[EXP088-PHASE-B] No views with click listeners found" << std::endl;
