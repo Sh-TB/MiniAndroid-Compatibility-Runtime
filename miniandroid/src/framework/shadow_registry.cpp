@@ -41,6 +41,13 @@ std::string CallContext::arg_as_string(size_t i, const std::string& default_val)
     if (i >= args.size()) return default_val;
     const auto& a = args[i];
     if (a.kind == CallContext::Arg::Kind::STRING) return a.string_val;
+    // EXP-091: Support OBJECT_REF strings — when setText(CharSequence) is called
+    // with a String object from move-result-object (e.g., from LocaleController.getString()),
+    // the arg is OBJECT kind with object_id pointing to a heap String.
+    // We need to resolve the actual string value from the object's string_val field.
+    if (a.kind == CallContext::Arg::Kind::OBJECT && a.string_val.empty() == false) {
+        return a.string_val;
+    }
     return default_val;
 }
 
