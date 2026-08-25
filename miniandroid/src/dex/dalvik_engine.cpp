@@ -1563,6 +1563,56 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                   << " caller=" << current_class_ << "." << current_method_
                   << std::endl;
     }
+    // EXP-092 DIRECT TRACE: setPage, fillNextCodeParams, RequestDelegate.run
+    // The user demands direct proof of:
+    //   RequestDelegate → callback → fillNextCodeParams → setPage(VIEW_CODE_SMS)
+    // Do not infer this from screenshot — record page value, receiver,
+    // PC, caller, arguments.
+    //
+    // Each trace is guarded by exact method_name AND a class-name
+    // substring check so it only fires on the relevant invocation.
+    // Args are accessed only after explicit bounds checks.
+    if (method_name == "setPage" && declaring_class.find("LoginActivity") != std::string::npos) {
+        std::cerr << "[EXP092-SETPAGE] class=" << declaring_class
+                  << " args_count=" << args.size()
+                  << " pc=0x" << std::hex << pc_ << std::dec
+                  << " caller=" << current_class_ << "." << current_method_
+                  << " depth=" << recursion_depth_;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            std::cerr << " receiver_id=" << args[0].object_id
+                      << " receiver_runtime_class=" << args[0].class_desc;
+        }
+        if (args.size() >= 2 && args[1].type == DalvikType::INT32) {
+            std::cerr << " page_value=" << args[1].int_val;
+        }
+        std::cerr << std::endl;
+    }
+    if (method_name == "fillNextCodeParams") {
+        std::cerr << "[EXP092-FILLNEXTCODE] class=" << declaring_class
+                  << " args_count=" << args.size()
+                  << " pc=0x" << std::hex << pc_ << std::dec
+                  << " caller=" << current_class_ << "." << current_method_
+                  << " depth=" << recursion_depth_;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            std::cerr << " receiver_id=" << args[0].object_id;
+        }
+        std::cerr << std::endl;
+    }
+    if (method_name == "run" && declaring_class.find("ExternalSyntheticLambda") != std::string::npos) {
+        std::cerr << "[EXP092-REQDELEGATE] class=" << declaring_class
+                  << " args_count=" << args.size()
+                  << " pc=0x" << std::hex << pc_ << std::dec
+                  << " caller=" << current_class_ << "." << current_method_
+                  << " depth=" << recursion_depth_;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            std::cerr << " receiver_id=" << args[0].object_id;
+        }
+        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+            std::cerr << " response_id=" << args[1].object_id
+                      << " response_class=" << args[1].class_desc;
+        }
+        std::cerr << std::endl;
+    }
     if (!dex_report_) return false;
 
     // EXP-040: Recursion depth protection
