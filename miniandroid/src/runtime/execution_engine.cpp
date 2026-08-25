@@ -257,8 +257,153 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         std::cerr << "[EXP086-P1] Configured dalvik_engine_ with "
                   << sorted_dex_files.size() << " DEX files for '"
                   << result.apk_info.main_activity_full << "'" << std::endl;
+
+        // EXP-092 FIX: Load resource_values.json into the engine's
+        // resource_string_values_ / resource_color_values_ / etc. maps.
+        //
+        // WITHOUT this load, the LocaleController.getString(int) intercept
+        // (which calls field_name_by_resid_ -> resource_string_values_) returns
+        // the FIELD NAME (e.g. "SentSmsCodeTitle") instead of the actual value
+        // (e.g. "Enter code"). This path was previously only wired up in
+        // ApplicationRuntime::execute_on_create(), which is never invoked by
+        // cmd_run / stage_execute_application_real_dalvik.
+        //
+        // We attempt to load from TWO candidate paths (absolute first, then
+        // relative to cwd), based on the APK's package name.
+        {
+            std::vector<std::string> candidate_paths;
+            // Path 1: download/exp038_telegram/resource_values.json (legacy fixed)
+            candidate_paths.push_back("download/exp038_telegram/resource_values.json");
+            // Path 2: <apk_dir>/resource_values.json (next to the APK)
+            std::string apk_dir;
+            {
+                auto slash = result.apk_info.apk_path.find_last_of('/');
+                if (slash != std::string::npos) {
+                    apk_dir = result.apk_info.apk_path.substr(0, slash);
+                    candidate_paths.push_back(apk_dir + "/resource_values.json");
+                }
+            }
+            // Path 3: derived from package name
+            if (!result.apk_info.package_name.empty()) {
+                std::string pkg_safe = result.apk_info.package_name;
+                std::replace(pkg_safe.begin(), pkg_safe.end(), '.', '/');
+                candidate_paths.push_back("download/" + pkg_safe + "/resource_values.json");
+            }
+
+            int loaded_strings = 0, loaded_colors = 0, loaded_dimens = 0,
+                loaded_drawables = 0, loaded_integers = 0, loaded_bools = 0;
+            bool loaded_any = false;
+            std::string loaded_path;
+            for (const auto& path : candidate_paths) {
+                std::ifstream res_file(path);
+                if (!res_file.is_open()) continue;
+                loaded_path = path;
+                json res_json;
+                res_file >> res_json;
+
+                // Strings
+                if (res_json.contains("string")) {
+                    for (auto& [name, value] : res_json["string"].items()) {
+                        if (value.is_string()) {
+                            dalvik_engine_.resource_string_values_[name] = value.get<std::string>();
+                            loaded_strings++;
+                        }
+                    }
+                }
+                // Colors
+                if (res_json.contains("color")) {
+                    for (auto& [name, value] : res_json["color"].items()) {
+                        if (value.is_string()) {
+                            std::string v = value.get<std::string>();
+                            if (v.rfind("type28:", 0) == 0 || v.rfind("type29:", 0) == 0 ||
+                                v.rfind("type30:", 0) == 0 || v.rfind("type31:", 0) == 0) {
+                                size_t colon = v.find(':');
+                                if (colon != std::string::npos) {
+                                    std::string hex = v.substr(colon + 1);
+                                    if (hex.rfind("0x", 0) == 0 || hex.rfind("0X", 0) == 0) {
+                                        hex = hex.substr(2);
+                                    }
+                                    try {
+                                        uint32_t argb = std::stoul(hex, nullptr, 16);
+                                        if (v.rfind("type29:", 0) == 0) argb |= 0xFF000000;
+                                        dalvik_engine_.resource_color_values_[name] = static_cast<int32_t>(argb);
+                                        loaded_colors++;
+                                    } catch (...) {}
+                                }
+                            }
+                        }
+                    }
+                }
+                // Dimens
+                if (res_json.contains("dimen")) {
+                    for (auto& [name, value] : res_json["dimen"].items()) {
+                        if (value.is_string()) {
+                            std::string v = value.get<std::string>();
+                            try {
+                                // Strip "type1:" or "type2:" prefix if present
+                                if (v.rfind("type", 0) == 0) {
+                                    size_t colon = v.find(':');
+                                    if (colon != std::string::npos) v = v.substr(colon + 1);
+                                }
+                                if (!v.empty() && (v.back() == 'd' || v.back() == 'p')) {
+                                    // e.g. "16dp" — parse integer
+                                    int32_t dv = static_cast<int32_t>(std::stoi(v));
+                                    dalvik_engine_.resource_dimen_values_[name] = dv;
+                                    loaded_dimens++;
+                                } else if (!v.empty() && v[0] >= '0' && v[0] <= '9') {
+                                    int32_t dv = static_cast<int32_t>(std::stoi(v));
+                                    dalvik_engine_.resource_dimen_values_[name] = dv;
+                                    loaded_dimens++;
+                                }
+                            } catch (...) {}
+                        }
+                    }
+                }
+                // Drawables
+                if (res_json.contains("drawable")) {
+                    for (auto& [name, value] : res_json["drawable"].items()) {
+                        if (value.is_string()) {
+                            dalvik_engine_.resource_drawable_paths_[name] = value.get<std::string>();
+                            loaded_drawables++;
+                        }
+                    }
+                }
+                // Integers
+                if (res_json.contains("integer")) {
+                    for (auto& [name, value] : res_json["integer"].items()) {
+                        if (value.is_number_integer()) {
+                            dalvik_engine_.resource_integer_values_[name] = value.get<int32_t>();
+                            loaded_integers++;
+                        }
+                    }
+                }
+                // Bools
+                if (res_json.contains("bool")) {
+                    for (auto& [name, value] : res_json["bool"].items()) {
+                        if (value.is_boolean()) {
+                            dalvik_engine_.resource_bool_values_[name] = value.get<bool>();
+                            loaded_bools++;
+                        }
+                    }
+                }
+                loaded_any = true;
+                break;
+            }
+            std::cerr << "[EXP092-RES] resource_values.json loaded=" << (loaded_any ? "true" : "false")
+                      << " path=\"" << (loaded_any ? loaded_path : "(not found)") << "\""
+                      << " strings=" << loaded_strings
+                      << " colors=" << loaded_colors
+                      << " dimens=" << loaded_dimens
+                      << " drawables=" << loaded_drawables
+                      << " integers=" << loaded_integers
+                      << " bools=" << loaded_bools
+                      << std::endl;
+            if (!loaded_any) {
+                std::cerr << "[EXP092-RES] WARNING: no resource_values.json found — getString will return field names, not values" << std::endl;
+            }
+        }
     }
-    
+
     try {
         // ===================================================================
         // CALL DALVIK ENGINE - This is the REAL execution path
