@@ -5922,13 +5922,22 @@ bool DalvikExecutionEngine::execute_check_cast(uint32_t pc, InstructionTrace& tr
 }
 
 bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& trace) {
-    // Format: 22 [op] vA, vB, type@CCCC
-    if (pc + 2 >= bytecode_.size()) return false;
+    // Format: 22c [op vA vB] type@CCCC  — 2 code units
+    // Encoding: cu[0] = BBBBAAAA_op (low byte = op, high nibble = vB, low nibble of high byte = vA)
+    //           cu[1] = CCCC (type_idx)
+    // EXP-092+ CRITICAL FIX: Previous code read dest/src from the wrong bit positions.
+    //   dest = (instr >> 8) & 0xFF  → 0xc0 (full high byte) — WRONG, should be & 0x0F
+    //   src  = instr & 0xFF         → 0x20 (the opcode!)   — WRONG, should be >> 12
+    // This caused instance-of to read the wrong register and write to the wrong
+    // register, producing garbage results. fillNextCodeParams' instance-of check
+    // for TL_auth_sentCodeTypeFirebaseSms was returning true for ALL types
+    // (including TL_auth_sentCodeTypeSms), causing the wrong page transition.
+    if (pc + 1 >= bytecode_.size()) return false;
 
     uint16_t instr = bytecode_[pc];
-    uint8_t dest = (instr >> 8) & 0xFF;
-    uint8_t src = instr & 0xFF;
-    uint16_t type_idx = bytecode_[pc + 2];
+    uint8_t dest = (instr >> 8) & 0x0F;        // vA: low nibble of high byte
+    uint8_t src = (instr >> 12) & 0x0F;        // vB: high nibble of high byte
+    uint16_t type_idx = bytecode_[pc + 1];     // type@CCCC at pc+1 (not pc+2)
 
     // EXP-066: Use per-DEX type resolution (multi-DEX bug fix).
     std::string target_type = "<unknown>";
@@ -5954,6 +5963,23 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
     // Also check if null — null instanceof anything is false (already handled by OBJECT_REF check)
 
     set_register(dest, DalvikValue::make_bool(is_instance));
+
+    // EXP-092+ PHASE 1: Trace instance-of in fillNextCodeParams to verify
+    // the type field is correctly read and the FirebaseSms check returns false.
+    if (current_class_.find("LoginActivity;") != std::string::npos &&
+        current_class_.find("PhoneView") == std::string::npos &&
+        current_method_ == "fillNextCodeParams") {
+        std::cerr << "[EXP092-INSTANCEOF] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " dest=v" << (int)dest
+                  << " src=v" << (int)src
+                  << " type_idx=" << type_idx
+                  << " target_type=" << target_type
+                  << " obj_class=" << (src_val.type == DalvikType::OBJECT_REF ? src_val.class_desc : "N/A")
+                  << " obj_id=" << (src_val.type == DalvikType::OBJECT_REF ? src_val.object_id : 0)
+                  << " is_instance=" << (is_instance ? "TRUE" : "FALSE")
+                  << std::endl;
+    }
 
     trace.operands.push_back({"v" + std::to_string(dest), register_name(src)});
     trace.operands.push_back({"type", target_type});
