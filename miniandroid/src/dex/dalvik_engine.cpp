@@ -1729,12 +1729,60 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 std::cerr << "[EXP071-SNDREQ] mocked TL_nearestDc{country=US}"
                           << " resp_id=" << response_id << std::endl;
             } else if (req_cls.find("TL_auth_sendCode") != std::string::npos) {
-                // Mock TL_auth_sentCode (empty — phone code hash not needed
-                // for our headless flow since we short-circuit the next step).
+                // EXP-092+ FIX: Do NOT mock auth.sendCode here. Let it fall
+                // through to the more thorough [EXP070-NET] interceptor below
+                // (line ~2528) which sets the `type` field to
+                // TL_auth_sentCodeTypeSms, `phone_code_hash`, `length`, and
+                // `timeout`. Without the type field, fillNextCodeParams takes
+                // the default path and sets page=13 (LoginActivityEmailCodeView)
+                // instead of the SMS page (LoginActivitySmsView).
+                //
+                // The early mock created an EMPTY TL_auth_sentCode with no
+                // type field, causing the wrong page transition.
+                std::cerr << "[EXP071-SNDREQ] TL_auth_sendCode detected — "
+                          << "deferring to EXP070-NET interceptor for proper "
+                          << "type/length/timeout fields" << std::endl;
+                // Don't set response_id here — let the EXP070-NET path handle it.
+                // But we still need to dispatch the delegate. Set a flag and
+                // fall through... actually, we can't easily fall through from
+                // here because the early interceptor has a different code path.
+                // Instead, create the response WITH the type field here.
                 response_id = heap_.allocate(
                     "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCode;", pc_, 0);
-                std::cerr << "[EXP071-SNDREQ] mocked TL_auth_sentCode"
-                          << " resp_id=" << response_id << std::endl;
+
+                // Set phone_code_hash
+                DalvikValue hash_val;
+                hash_val.type = DalvikType::STRING_REF;
+                hash_val.string_val = "mock_phone_code_hash_exp092";
+                hash_val.ref_id = 0;
+                heap_.set_object_field(response_id, "phone_code_hash", hash_val);
+
+                // Set type = TL_auth_sentCodeTypeSms
+                uint32_t type_id = heap_.allocate(
+                    "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCodeTypeSms;", pc_, 0);
+                DalvikValue type_val;
+                type_val.type = DalvikType::OBJECT_REF;
+                type_val.object_id = type_id;
+                type_val.class_desc = "Lorg/telegram/tgnet/TLRPC$TL_auth_sentCodeTypeSms;";
+                heap_.set_object_field(response_id, "type", type_val);
+
+                // Set length = 5 on both the sentCode and the type
+                DalvikValue length_val = DalvikValue::make_int(5);
+                heap_.set_object_field(response_id, "length", length_val);
+                heap_.set_object_field(type_id, "length", length_val);
+
+                // Set timeout = 30
+                DalvikValue timeout_val = DalvikValue::make_int(30);
+                heap_.set_object_field(response_id, "timeout", timeout_val);
+
+                // Set is_sent_via_flash_call = false
+                DalvikValue false_val = DalvikValue::make_bool(false);
+                heap_.set_object_field(response_id, "is_sent_via_flash_call", false_val);
+
+                std::cerr << "[EXP071-SNDREQ] mocked TL_auth_sentCode WITH type=Sms"
+                          << " resp_id=" << response_id
+                          << " type_id=" << type_id
+                          << " length=5 timeout=30" << std::endl;
             } else {
                 // Unknown request — return a generic TLObject so the
                 // delegate's run(TLObject, TL_error) doesn't NPE.
@@ -3235,6 +3283,28 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             if (param_count == arg_count) {
                 effective_arg_count = arg_count;
             }
+            // EXP-092+ PHASE 1: Debug trace for fillNextCodeParams overload resolution
+            if (method_name == "fillNextCodeParams") {
+                std::cerr << "[EXP092-OVERLOAD] fillNextCodeParams"
+                          << " desc=" << method.descriptor
+                          << " bytecode_size=" << method.bytecode.size()
+                          << " param_count=" << param_count
+                          << " arg_count=" << arg_count
+                          << " effective_arg_count=" << effective_arg_count
+                          << " is_static=" << is_static_method
+                          << " access_flags=0x" << std::hex << method.access_flags << std::dec;
+                if (!args.empty()) {
+                    std::cerr << " arg[0].type=" << (int)args[0].type
+                              << " arg[0].class=" << args[0].class_desc
+                              << " arg[0].obj=" << args[0].object_id;
+                }
+                if (args.size() >= 2) {
+                    std::cerr << " arg[1].type=" << (int)args[1].type
+                              << " arg[1].class=" << args[1].class_desc
+                              << " arg[1].obj=" << args[1].object_id;
+                }
+                std::cerr << std::endl;
+            }
             // EXP-079: Debug trace for $r8$lambda method matching
             if (method.name.find("$r8$lambda") != std::string::npos ||
                 method.name.find("createView") != std::string::npos) {
@@ -3262,9 +3332,28 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // an OBJECT_REF whose class is CLEARLY different (not a substring
             // match). This allows subclass arguments to match (e.g. a
             // ContextWrapper passed to a method expecting Context).
+            //
+            // EXP-092+ FIX: For NON-STATIC methods, args[0] is `this` (the
+            // receiver). The first PARAMETER corresponds to args[1], not
+            // args[0]. Previously, when arg_count == param_count (both include
+            // `this`), arg_idx was set to 0 — which compared `this` against
+            // the first parameter type. This caused incorrect type mismatches
+            // for instance methods where arg_count == param_count.
+            // Example: fillNextCodeParams(Bundle, auth_SentCode, Z) has
+            // param_count=3 and is called with arg_count=3 (this, Bundle,
+            // auth_SentCode). The old code compared args[0](this=LoginActivity)
+            // against param_types[0](Bundle) → mismatch → type_matches=false.
+            // The fix: for non-static methods, arg_idx starts at 1 (skip `this`).
             bool type_matches = true;
             if (effective_arg_count >= 1 && !param_types.empty()) {
-                size_t arg_idx = (arg_count > param_count) ? 1 : 0;
+                size_t arg_idx;
+                if (!is_static_method && arg_count > 0) {
+                    // Non-static: args[0] = this, args[1] = first parameter
+                    arg_idx = 1;
+                } else {
+                    // Static: args[0] = first parameter
+                    arg_idx = 0;
+                }
                 if (arg_idx < args.size()) {
                     const auto& arg = args[arg_idx];
                     const std::string& param_type = param_types[0];
@@ -6167,6 +6256,25 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
                   << std::endl;
     }
 
+    // EXP-092+ PHASE 1: Log every write to LoginActivity.currentViewNum
+    // (field@33189) to trace the page transition. This is the field that
+    // tracks which page (PhoneView, SmsView, etc.) is currently active.
+    if (field_res.resolved &&
+        field_res.field_name == "currentViewNum" &&
+        field_res.class_descriptor.find("LoginActivity;") != std::string::npos &&
+        field_res.class_descriptor.find("PhoneView") == std::string::npos) {
+        int32_t new_val = 0;
+        if (src_val.type == DalvikType::INT32 || src_val.type == DalvikType::BOOLEAN) {
+            new_val = src_val.int_val;
+        }
+        std::cerr << "[EXP092-CURRENTVIEWNUM-WRITE] pc=" << pc
+                  << " caller=" << current_class_ << "." << current_method_
+                  << " obj_id=" << (obj_ref.type == DalvikType::OBJECT_REF ? obj_ref.object_id : 0)
+                  << " new_value=" << new_val
+                  << " src_type=" << static_cast<int>(src_val.type)
+                  << std::endl;
+    }
+
     trace.operands.push_back({"v" + std::to_string(src_reg), "source"});
     trace.operands.push_back({"v" + std::to_string(obj_reg), "object"});
     trace.operands.push_back({"field", field_res.class_descriptor + "." + field_res.field_name});
@@ -7710,6 +7818,23 @@ bool DalvikExecutionEngine::execute_if_eqz(uint32_t pc, InstructionTrace& trace)
                   << std::endl;
     }
 
+    // EXP-092+ PHASE 1: Log if-eqz in LoginActivity.setPage.
+    if (current_class_.find("LoginActivity;") != std::string::npos &&
+        current_class_.find("PhoneView") == std::string::npos &&
+        current_method_ == "setPage") {
+        std::cerr << "[EXP092-SETPAGE-IFZ] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " op=if-eqz"
+                  << " v" << (int)test_reg
+                  << " type=" << static_cast<int>(val.type)
+                  << " int_val=" << val.int_val
+                  << " obj=" << val.object_id
+                  << " is_zero=" << is_zero
+                  << " → target_pc=" << (pc + offset)
+                  << " next_pc=" << (is_zero ? (pc + offset) : (pc + 2))
+                  << std::endl;
+    }
+
     if (is_zero) {
         uint32_t target = pc + offset;
         // EXP-051: target >= bytecode_.size() = D8 unreachable marker (exit method).
@@ -7796,6 +7921,43 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
                   << " int_val=" << val.int_val
                   << " obj=" << val.object_id
                   << " string=\"" << val.string_val << "\""
+                  << " is_nonzero=" << is_nonzero
+                  << " → target_pc=" << (pc + offset)
+                  << " next_pc=" << (is_nonzero ? (pc + offset) : (pc + 2))
+                  << std::endl;
+    }
+
+    // EXP-092+ PHASE 1: Log if-nez/if-eqz in LoginActivity.setPage.
+    // The setPage method has 309 instructions and many branches. We need
+    // to trace ALL of them to understand what page_value=13 does.
+    if (current_class_.find("LoginActivity;") != std::string::npos &&
+        current_class_.find("PhoneView") == std::string::npos &&
+        current_method_ == "setPage") {
+        std::cerr << "[EXP092-SETPAGE-IFZ] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " op=if-nez"
+                  << " v" << (int)test_reg
+                  << " type=" << static_cast<int>(val.type)
+                  << " int_val=" << val.int_val
+                  << " obj=" << val.object_id
+                  << " is_nonzero=" << is_nonzero
+                  << " → target_pc=" << (pc + offset)
+                  << " next_pc=" << (is_nonzero ? (pc + offset) : (pc + 2))
+                  << std::endl;
+    }
+
+    // EXP-092+ PHASE 1: Log if-nez in fillNextCodeParams to trace why
+    // page_value=13 is chosen even with type=TL_auth_sentCodeTypeSms.
+    if (current_class_.find("LoginActivity;") != std::string::npos &&
+        current_class_.find("PhoneView") == std::string::npos &&
+        current_method_ == "fillNextCodeParams") {
+        std::cerr << "[EXP092-FILLNEXT-IFZ] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " op=if-nez"
+                  << " v" << (int)test_reg
+                  << " type=" << static_cast<int>(val.type)
+                  << " int_val=" << val.int_val
+                  << " obj=" << val.object_id
                   << " is_nonzero=" << is_nonzero
                   << " → target_pc=" << (pc + offset)
                   << " next_pc=" << (is_nonzero ? (pc + offset) : (pc + 2))
@@ -8101,6 +8263,43 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
                   << "(type=" << static_cast<int>(b.type) \
                   << " val=" << b_val; \
         if (b.type == DalvikType::OBJECT_REF) { std::cerr << " obj=" << b.object_id; } \
+        std::cerr << ") → taken=" << (taken ? "YES" : "NO") \
+                  << " target_pc=" << (pc + r.offset) \
+                  << " next_pc=" << (taken ? (pc + r.offset) : (pc + 2)) \
+                  << std::endl; \
+    } \
+    /* EXP-092+ PHASE 1: Log every if-* branch in LoginActivity.setPage to
+       determine what page_value=13 means. The setPage switch at PC=0-32
+       checks for pages 0, 5, 6, 9, 10, 12, 16, 17. page_value=13 does NOT
+       match any of these — need to trace the actual branch outcomes. */ \
+    if (current_class_.find("LoginActivity;") != std::string::npos && \
+        current_class_.find("PhoneView") == std::string::npos && \
+        current_method_ == "setPage") { \
+        std::cerr << "[EXP092-SETPAGE-IF] " << op_name << " PC=" << pc \
+                  << " v" << (int)r.vA << "(val=" << a_val \
+                  << ") vs v" << (int)r.vB \
+                  << "(val=" << b_val \
+                  << ") → taken=" << (taken ? "YES" : "NO") \
+                  << " target_pc=" << (pc + r.offset) \
+                  << " next_pc=" << (taken ? (pc + r.offset) : (pc + 2)) \
+                  << std::endl; \
+    } \
+    /* EXP-092+ PHASE 1: Log every if-* branch in fillNextCodeParams to
+       understand why page_value=13 is chosen even when the mock response
+       has type=TL_auth_sentCodeTypeSms. The critical branch is at PC=67:
+       if-eqz v3 (instance-of check for TL_auth_sentCodeTypeFirebaseSms).
+       If the type field IS set to TL_auth_sentCodeTypeSms, the instance-of
+       checks for FirebaseSms/App/Call should all be false, and the code
+       should reach the Sms path. */ \
+    if (current_class_.find("LoginActivity;") != std::string::npos && \
+        current_class_.find("PhoneView") == std::string::npos && \
+        current_method_ == "fillNextCodeParams") { \
+        std::cerr << "[EXP092-FILLNEXT-IF] " << op_name << " PC=" << pc \
+                  << " v" << (int)r.vA << "(val=" << a_val; \
+        if (a.type == DalvikType::OBJECT_REF) { std::cerr << " obj=" << a.object_id << " cls=" << a.class_desc; } \
+        std::cerr << ") vs v" << (int)r.vB \
+                  << "(val=" << b_val; \
+        if (b.type == DalvikType::OBJECT_REF) { std::cerr << " obj=" << b.object_id << " cls=" << b.class_desc; } \
         std::cerr << ") → taken=" << (taken ? "YES" : "NO") \
                   << " target_pc=" << (pc + r.offset) \
                   << " next_pc=" << (taken ? (pc + r.offset) : (pc + 2)) \
