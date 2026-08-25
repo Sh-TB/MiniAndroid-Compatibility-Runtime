@@ -198,14 +198,23 @@ int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config)
     // onCreate are silently dropped.
     // EXP-087 Phase 3 (B2 FIX): Also set APK path on ActivityShadow so
     // setContentView(int) can find layout_cache.json.
+    // EXP-092+ FIX: Register CollectionShadow so HashMap.put/get actually
+    // store and retrieve entries. Without CollectionShadow, HashMap.put is
+    // a silent no-op and HashMap.get always returns null. This breaks
+    // Telegram's PhoneView.setCountry which calls HashMap.get("US") to
+    // look up the country code — without CollectionShadow, the get returns
+    // null, setCountry returns early, countryState stays at 1, and
+    // onNextPressed takes the needShowAlert side path instead of reaching
+    // auth.sendCode.
     framework::ShadowRegistry shadow_registry;
     auto* handler_shadow = shadow_registry.register_shadow<framework::HandlerShadow>();
     auto* view_shadow = shadow_registry.register_shadow<framework::ViewShadow>();
     auto* activity_shadow = shadow_registry.register_shadow<framework::ActivityShadow>();
+    auto* collection_shadow = shadow_registry.register_shadow<framework::CollectionShadow>();
     if (activity_shadow) {
         activity_shadow->set_apk_path(apk_path);
     }
-    (void)handler_shadow; (void)view_shadow;
+    (void)handler_shadow; (void)view_shadow; (void)collection_shadow;
     engine.set_shadow_registry(&shadow_registry);
     auto result = engine.execute(apk_path, config);
     
