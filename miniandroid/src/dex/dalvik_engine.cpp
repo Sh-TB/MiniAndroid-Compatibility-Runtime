@@ -5964,11 +5964,12 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
 
     set_register(dest, DalvikValue::make_bool(is_instance));
 
-    // EXP-092+ PHASE 1: Trace instance-of in fillNextCodeParams to verify
-    // the type field is correctly read and the FirebaseSms check returns false.
-    if (current_class_.find("LoginActivity;") != std::string::npos &&
-        current_class_.find("PhoneView") == std::string::npos &&
-        current_method_ == "fillNextCodeParams") {
+    // EXP-092+ PHASE 1: Trace instance-of in fillNextCodeParams AND lambda$onNextPressed$22
+    // to verify the type field is correctly read and the response type check returns correct results.
+    if (current_class_.find("LoginActivity") != std::string::npos &&
+        (current_method_ == "fillNextCodeParams" ||
+         current_method_.find("lambda$onNextPressed") == 0 ||
+         current_method_.find("lambda$") == 0)) {
         std::cerr << "[EXP092-INSTANCEOF] " << current_class_ << "." << current_method_
                   << " PC=" << pc
                   << " dest=v" << (int)dest
@@ -7824,8 +7825,18 @@ bool DalvikExecutionEngine::execute_if_eqz(uint32_t pc, InstructionTrace& trace)
     DalvikValue val = get_register(test_reg);
     // EXP-055: Treat OBJECT_REF with object_id=0 as null (same as NULL_REF).
     // EXP-058: Also treat VOID_ as zero (same rationale as if-nez).
+    // EXP-092+ CRITICAL FIX: Also treat BOOLEAN with int_val==0 as zero.
+    //   instance-of returns make_bool(false) which sets type=BOOLEAN, int_val=0.
+    //   Without this check, if-eqz on a false BOOLEAN result returns is_zero=false,
+    //   causing the branch to NOT be taken — which is the OPPOSITE of correct
+    //   behavior. This affects ALL instance-of results in conditional branches.
+    //   Same for BYTE, SHORT, CHAR — all integer-like types with int_val.
     bool is_zero = (val.type == DalvikType::NULL_REF) ||
                    (val.type == DalvikType::INT32 && val.int_val == 0) ||
+                   (val.type == DalvikType::BOOLEAN && val.int_val == 0) ||
+                   (val.type == DalvikType::BYTE && val.int_val == 0) ||
+                   (val.type == DalvikType::SHORT && val.int_val == 0) ||
+                   (val.type == DalvikType::CHAR && val.int_val == 0) ||
                    (val.type == DalvikType::OBJECT_REF && val.object_id == 0) ||
                    (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET) ||
                    (val.type == DalvikType::VOID_);
@@ -7849,6 +7860,23 @@ bool DalvikExecutionEngine::execute_if_eqz(uint32_t pc, InstructionTrace& trace)
         current_class_.find("PhoneView") == std::string::npos &&
         current_method_ == "setPage") {
         std::cerr << "[EXP092-SETPAGE-IFZ] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " op=if-eqz"
+                  << " v" << (int)test_reg
+                  << " type=" << static_cast<int>(val.type)
+                  << " int_val=" << val.int_val
+                  << " obj=" << val.object_id
+                  << " is_zero=" << is_zero
+                  << " → target_pc=" << (pc + offset)
+                  << " next_pc=" << (is_zero ? (pc + offset) : (pc + 2))
+                  << std::endl;
+    }
+
+    // EXP-092+ PHASE D: Log if-eqz in lambda$onNextPressed$22 to trace the
+    // critical branch at PC=8: if-eqz v4(instance-of result) → PC=46
+    if (current_class_.find("LoginActivity$PhoneView") != std::string::npos &&
+        current_method_ == "lambda$onNextPressed$22") {
+        std::cerr << "[EXP092-IF-EQZ-22] " << current_class_ << "." << current_method_
                   << " PC=" << pc
                   << " op=if-eqz"
                   << " v" << (int)test_reg
@@ -7902,6 +7930,9 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
     bool is_nonzero = !(val.type == DalvikType::NULL_REF ||
                        (val.type == DalvikType::INT32 && val.int_val == 0) ||
                        (val.type == DalvikType::BOOLEAN && val.int_val == 0) ||
+                       (val.type == DalvikType::BYTE && val.int_val == 0) ||
+                       (val.type == DalvikType::SHORT && val.int_val == 0) ||
+                       (val.type == DalvikType::CHAR && val.int_val == 0) ||
                        (val.type == DalvikType::OBJECT_REF && val.object_id == 0) ||
                        (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET) ||
                        (val.type == DalvikType::VOID_));
