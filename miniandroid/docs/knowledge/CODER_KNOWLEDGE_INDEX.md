@@ -1,7 +1,7 @@
 # Coder Knowledge Index
 
 **Last Updated:** 2026-08-26
-**Primary Branch HEAD:** `bd7ae8d`
+**Primary Branch HEAD:** `063c772`
 
 ## Coder Missions
 
@@ -20,15 +20,20 @@
 | CM-001 | onNextPressed needShowAlert root cause (3 issues: CollectionShadow, codeField injection, pre-click drain) | PROVEN | YES (EXP-092+, commit bd7ae8d) |
 | CM-002 | cmd_run path missing shadows (CollectionShadow etc.) | PROVEN | YES (EXP-092+, commit bd7ae8d) |
 | CM-003 | resource_values.json not loaded in cmd_run path | PROVEN | YES (EXP-092, commit 7a99e9a) |
+| CM-004 | page_value=13 = LoginActivityEmailCodeView (not SmsView); mock needed type field | PROVEN | YES (EXP-092+, commit d72a88b) |
+| CM-005 | instance-of 22c register/type decoding bug (dest/src wrong bit positions) | PROVEN | YES (EXP-092+, commit 82835e1) |
+| CM-006 | non-static overload resolution arg_idx bug (receiver not excluded) | PROVEN | YES (EXP-092+, commit d72a88b) |
+| CM-007 | setPage switch behavior for page=5 (phone input, before auth.sendCode) | PROVEN | N/A (investigation only) |
+| CM-008 | if-eqz BOOLEAN zero-ness bug (BOOLEAN with int_val==0 not treated as zero) | PROVEN | YES (EXP-093, commit 063c772) |
 
-**Key Achievement (CM-001)**: First-ever direct trace of the complete
-`auth.sendCode → sendRequest → RequestDelegate.run → fillNextCodeParams → setPage`
-chain. All 6 stages directly observed in execution trace:
-- `TL_auth_sendCode.<init>()` constructed (obj#5227)
-- `[EXP071-SNDREQ] mocked TL_auth_sentCode` response delivered (resp_id=5236)
-- `[EXP092-REQDELEGATE] PhoneView$Lambda2.run` invoked with response
-- `[EXP092-FILLNEXTCODE] fillNextCodeParams` called
-- `[EXP092-SETPAGE] setPage(page_value=13)` called from fillNextCodeParams
+**Key Achievement (CM-008)**: Correct SMS page transition proven.
+Full chain: auth.sendCode → mock response → Lambda2.run →
+lambda$onNextPressed$22 → fillNextCodeParams → setPage(2) →
+currentViewNum=VIEW_CODE_SMS=2 → SmsView active.
+
+Page constants (from Telegram source):
+  VIEW_PHONE_INPUT = 0, VIEW_CODE_CHECK = 1, VIEW_CODE_SMS = 2,
+  VIEW_PASSWORD = 3, VIEW_PROFILE = 4, VIEW_REGISTER = 5
 
 ### From Coder 2
 | ID | Finding | Status | Integrated? |
