@@ -778,6 +778,14 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             const auto* node = view_shadow->find_node(task.view_id);
                             if (!node) continue;
 
+                            // EXP-092: Debug — log every node visited by the renderer
+                            std::cerr << "[EXP092-RENDER] node=" << task.view_id
+                                      << " class=" << node->class_desc
+                                      << " text=\"" << node->text << "\""
+                                      << " children=" << node->children.size()
+                                      << " depth=" << task.depth
+                                      << std::endl;
+
                             // Resolve width
                             int w = task.width;
                             if (node->width == -1) w = task.width;
@@ -802,9 +810,14 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             int bottom = task.top + h;
 
                             // Draw view background
+                            // EXP-092: Only draw container backgrounds for containers
+                            // that DON'T fill the entire screen (MATCH_PARENT).
+                            // Full-screen containers (width=screen_width, height=screen_height)
+                            // would overwrite text drawn by children.
                             bool is_container = node->class_desc.find("Layout") != std::string::npos ||
                                               node->class_desc.find("ViewGroup") != std::string::npos;
-                            if (is_container) {
+                            bool is_full_screen = (w >= config.screen_width && h >= config.screen_height);
+                            if (is_container && !is_full_screen) {
                                 canvas.draw_rect(left, top, right, bottom,
                                                renderer::Colors::GREY_200);
                             } else if (node->class_desc.find("Button") != std::string::npos) {
@@ -812,7 +825,7 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                renderer::RGBA{0x6F, 0xA8, 0xDC, 0xFF});
                             }
 
-                            // Draw text if present
+                            // Draw text if present (AFTER background so text is on top)
                             if (!node->text.empty()) {
                                 int text_x = left + 10;
                                 int text_y = top + font.get_line_height();
@@ -897,12 +910,29 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
 
                         // Copy FrameBuffer pixels (RGBA) back to framebuffer_ (uint8_t RGBA)
                         const auto& pixels = fb.get_pixels();
+                        // EXP-092: Debug — check if any non-white pixels exist in fb
+                        int non_white = 0;
+                        for (size_t i = 0; i < pixels.size(); i++) {
+                            if (pixels[i].r != 255 || pixels[i].g != 255 || pixels[i].b != 255) {
+                                non_white++;
+                            }
+                        }
+                        std::cerr << "[EXP092-COPY] fb has " << non_white << " non-white pixels out of "
+                                  << pixels.size() << " total" << std::endl;
                         for (size_t i = 0; i < pixels.size() && i * 4 + 3 < framebuffer_.size(); i++) {
                             framebuffer_[i * 4]     = pixels[i].r;
                             framebuffer_[i * 4 + 1] = pixels[i].g;
                             framebuffer_[i * 4 + 2] = pixels[i].b;
                             framebuffer_[i * 4 + 3] = pixels[i].a;
                         }
+                        std::cerr << "[EXP092-COPY] framebuffer_ updated, checking..." << std::endl;
+                        int fb_non_white = 0;
+                        for (size_t i = 0; i < framebuffer_.size(); i += 4) {
+                            if (framebuffer_[i] != 255 || framebuffer_[i+1] != 255 || framebuffer_[i+2] != 255) {
+                                fb_non_white++;
+                            }
+                        }
+                        std::cerr << "[EXP092-COPY] framebuffer_ has " << fb_non_white << " non-white pixels" << std::endl;
 
                         trace_engine_.info("ExecutionEngine", "stage_render_frame",
                                            "Rendered ViewShadow tree with BitmapFont (root_id=" +
