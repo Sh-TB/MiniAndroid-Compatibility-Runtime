@@ -1975,6 +1975,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             recursion_depth_--;
             return true;
         }
+        // EXP-092: For resource IDs NOT in field_name_by_resid_ (e.g., small
+        // int values like 0, 1, 2, 3 that are plural types or unknown),
+        // return an empty string instead of falling through to the DEX
+        // bytecode which produces garbage "View" via StringBuilder.
+        // The "View" string is a literal const-string in the DEX bytecode
+        // that is used as a fallback when the resource system fails.
+        if (resid < 0x10000) {
+            std::cerr << "[RES-INTERCEPT] LocaleController.getString(small_int="
+                      << resid << ") → \"\" (preventing \"View\" garbage)" << std::endl;
+            return_val = DalvikValue::make_string("", 0);
+            recursion_depth_--;
+            return true;
+        }
     }
 
     // EXP-059: [FRAGMENT-LIFECYCLE] — log Fragment lifecycle transitions.
