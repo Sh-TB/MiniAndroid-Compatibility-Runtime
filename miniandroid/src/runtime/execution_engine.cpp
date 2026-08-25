@@ -673,9 +673,91 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     std::cerr << "[EXP089-M5] Text input result: "
                               << (input_ok ? "DISPATCHED" : "FAILED") << std::endl;
 
-                    // Also inject country code into codeField (PhoneView$1)
-                    std::cerr << "[EXP089-M5] Dispatching country code into PhoneView$1..." << std::endl;
-                    dalvik_engine_.dispatch_text_input_by_class("PhoneView$1", "1");
+                    // EXP-092+ ROOT CAUSE FIX: Do NOT inject "1" into codeField (PhoneView$1).
+                    //
+                    // The previous code injected "1" into the codeField to simulate
+                    // the user typing the US country code. But this PREVENTS the real
+                    // auth.sendCode path from being reached:
+                    //
+                    // 1. Injecting "1" into codeField triggers afterTextChanged, which
+                    //    sets countryState = 1 (COUNTRY_NOT_SELECTED).
+                    // 2. When getNearestDc response arrives (with country="US"),
+                    //    lambda$new$12 at PC=11 checks:
+                    //      if-nez v0(codeField.length()=1), +11 → PC=22
+                    //    Since codeField.length() = 1 (non-zero), the branch IS taken
+                    //    → SKIPS the setCountry call → countryState stays at 1.
+                    // 3. onNextPressed at PC=604 checks:
+                    //      if-ne v4(countryState=1), v2(=1), +28 → PC=632
+                    //    Since 1 != 1 = false, the branch is NOT taken → falls through
+                    //    to PC=606 (the needShowAlert path) → shows "ChooseCountry"
+                    //    alert → NEVER reaches auth.sendCode.
+                    //
+                    // FIX: Do NOT inject "1" into codeField. Let it stay empty.
+                    // Then:
+                    // 1. codeField.length() = 0.
+                    // 2. lambda$new$12 at PC=11: if-nez(0) = false → NOT taken → falls
+                    //    through to PC=13 → calls setCountry(PhoneView, HashMap, "US").
+                    // 3. setCountry: HashMap.get("US") → returns country code → sets
+                    //    codeField.text = country code AND countryState = 0.
+                    // 4. onNextPressed at PC=604: if-ne(0, 1) = true → TAKEN → PC=632.
+                    // 5. PC=633: if-ne(0, 2) = true → TAKEN → PC=663 → auth.sendCode path.
+                    //
+                    // This is the LEGITIMATE Telegram behavior: the app auto-detects
+                    // the country from the getNearestDc response and fills in the
+                    // codeField automatically. The user only needs to type the phone
+                    // number, not the country code.
+
+                    // EXP-092+ FIX: Drain Handler queue BEFORE clicking Next.
+                    // The getNearestDc response handler (Lambda14 → Lambda16 →
+                    // lambda$new$12 → setCountry) is queued on the Handler during
+                    // PhoneView.<init>. If we don't drain before clicking Next,
+                    // setCountry hasn't run yet, so:
+                    //   - codeField is empty → onNextPressed returns early at PC=73
+                    //     (if-eqz codeField.length() == 0 → return)
+                    //   - countryState is still 1 → onNextPressed takes the
+                    //     needShowAlert side path
+                    // By draining here, we ensure setCountry runs first:
+                    //   - setCountry sets codeField.text = country code
+                    //   - setCountry sets countryState = 0
+                    // Then onNextPressed will see codeField.length() > 0 and
+                    // countryState == 0, and proceed to the auth.sendCode path.
+                    if (auto* registry = dalvik_engine_.get_shadow_registry()) {
+                        if (auto* hs = registry->find_as<framework::HandlerShadow>()) {
+                            for (int drain_iter = 0; drain_iter < 10; drain_iter++) {
+                                std::vector<uint32_t> drained;
+                                size_t n = hs->drain_ready(&drained);
+                                if (n == 0) break;
+                                std::cerr << "[EXP092-PRE-CLICK-DRAIN] Iteration "
+                                          << drain_iter << " drained " << n
+                                          << " runnables" << std::endl;
+                                for (uint32_t rid : drained) {
+                                    try {
+                                        auto& heap = dalvik_engine_.get_heap_public();
+                                        if (heap.has_object(rid)) {
+                                            const auto* obj = heap.get(rid);
+                                            std::string cls = obj ? obj->class_descriptor : "";
+                                            if (!cls.empty()) {
+                                                std::cerr << "[EXP092-PRE-CLICK-DRAIN] "
+                                                          << "Invoking Runnable id=" << rid
+                                                          << " class=" << cls << std::endl;
+                                                miniandroid::dalvik::DalvikValue ret;
+                                                miniandroid::dalvik::DalvikExecutionResult dr;
+                                                std::vector<miniandroid::dalvik::DalvikValue> args;
+                                                args.push_back(
+                                                    miniandroid::dalvik::DalvikValue::make_object(rid, cls));
+                                                dalvik_engine_.try_recursive_invoke(
+                                                    cls, "run", args, ret, dr);
+                                            }
+                                        }
+                                    } catch (const std::exception& e) {
+                                        std::cerr << "[EXP092-PRE-CLICK-DRAIN] "
+                                                  << "Runnable drain failed: "
+                                                  << e.what() << std::endl;
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     // EXP-089 M6: Click on FragmentFloatingButton (Next button)
                     // After phone input, dispatch a click on the FragmentFloatingButton
