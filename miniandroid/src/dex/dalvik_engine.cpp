@@ -1948,6 +1948,35 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                   << std::endl;
     }
 
+    // EXP-091: Intercept LocaleController.getString(int) BEFORE try_recursive_invoke
+    // finds the method in the DEX. The real DEX bytecode builds a garbage "View"
+    // string via StringBuilder. We resolve the resource ID to the actual string.
+    if (method_name == "getString" &&
+        declaring_class.find("LocaleController") != std::string::npos &&
+        !args.empty() && args[0].type == DalvikType::INT32) {
+        int32_t resid = args[0].int_val;
+        auto fn_it = field_name_by_resid_.find(resid);
+        if (fn_it != field_name_by_resid_.end()) {
+            const std::string& field_name = fn_it->second;
+            auto sv_it = resource_string_values_.find(field_name);
+            if (sv_it != resource_string_values_.end()) {
+                std::cerr << "[RES-INTERCEPT] LocaleController.getString(resid=0x"
+                          << std::hex << resid << std::dec << ", field=" << field_name
+                          << ") → \"" << sv_it->second << "\"" << std::endl;
+                return_val = DalvikValue::make_string(sv_it->second, 0);
+                recursion_depth_--;
+                return true;
+            }
+            // Fallback: return the field name
+            std::cerr << "[RES-INTERCEPT] LocaleController.getString(resid=0x"
+                      << std::hex << resid << std::dec << ") → field name \""
+                      << field_name << "\"" << std::endl;
+            return_val = DalvikValue::make_string(field_name, 0);
+            recursion_depth_--;
+            return true;
+        }
+    }
+
     // EXP-059: [FRAGMENT-LIFECYCLE] — log Fragment lifecycle transitions.
     // Maps to the standard Android Fragment lifecycle:
     //   ATTACHED → CREATED → VIEW_CREATED → STARTED → RESUMED
@@ -8927,6 +8956,45 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                           << "\") → \"" << val << "\"" << std::endl;
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 result = DalvikValue::make_string(val, 0);
+                return true;
+            }
+        }
+    }
+
+    // EXP-091: LocaleController.getString(int) → String
+    // When getString is called with an INT argument (resource ID), resolve
+    // it using field_name_by_resid_ + resource_string_values_.
+    // Previously this fell through to try_recursive_invoke which executed
+    // the real DEX bytecode, producing garbage like "View" instead of the
+    // actual localized string.
+    if (method == "getString" &&
+        class_name.find("LocaleController") != std::string::npos &&
+        args.size() >= 1 && args[0].type == DalvikType::INT32) {
+        int32_t resid = args[0].int_val;
+        std::string resolved;
+        auto fn_it = field_name_by_resid_.find(resid);
+        if (fn_it != field_name_by_resid_.end()) {
+            const std::string& field_name = fn_it->second;
+            auto sv_it = resource_string_values_.find(field_name);
+            if (sv_it != resource_string_values_.end()) {
+                resolved = sv_it->second;
+            }
+        }
+        if (!resolved.empty()) {
+            std::cerr << "[RES] LocaleController.getString(resid=0x" << std::hex << resid
+                      << std::dec << ", field=" << (fn_it != field_name_by_resid_.end() ? fn_it->second : "?")
+                      << ") → \"" << resolved << "\"" << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(resolved, 0);
+            return true;
+        } else {
+            // Fallback: return the resource field name itself if we can find it
+            if (fn_it != field_name_by_resid_.end()) {
+                std::cerr << "[RES] LocaleController.getString(resid=0x" << std::hex << resid
+                          << std::dec << ") → field name \"" << fn_it->second
+                          << "\" (no value in resource_string_values_)" << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_string(fn_it->second, 0);
                 return true;
             }
         }
