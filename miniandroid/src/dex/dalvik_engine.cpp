@@ -6128,27 +6128,50 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
     // Format: 22c iput vA, vB, field@CCCC (2 code units)
     // EXP-042 Phase 2 FIX: never return false — always advance pc_.
     if (pc + 1 >= bytecode_.size()) { pc_ = pc + 1; return true; }
-    
+
     uint16_t instr = bytecode_[pc];
     uint8_t src_reg = (instr >> 8) & 0xF;
     uint8_t obj_reg = (instr >> 12) & 0xF;
     uint16_t field_idx = bytecode_[pc + 1];
-    
+
     FieldResolution field_res = resolve_field(field_idx);
     DalvikValue src_val = get_register(src_reg);
     DalvikValue obj_ref = get_register(obj_reg);
-    
+
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
         heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
     }
     // EXP-042 Phase 2: on any failure path, just advance pc_ — never spin.
-    
+
+    // EXP-092+ INSTRUMENTATION: Log every write to PhoneView.countryState
+    // to trace the root cause of the onNextPressed needShowAlert branch.
+    // The field is field@33152 in classes4.dex, declared on
+    // Lorg/telegram/ui/LoginActivity$PhoneView; as `int countryState`.
+    // Values observed:
+    //   0 = set by setCountry (after auto-detection from getNearestDc response)
+    //   1 = set by <init> and afterTextChanged (default / user-typed-but-no-match)
+    //   2 = set by afterTextChanged when country code matches (COUNTRY_SELECTED)
+    if (field_res.resolved &&
+        field_res.field_name == "countryState" &&
+        field_res.class_descriptor.find("PhoneView") != std::string::npos) {
+        int32_t new_val = 0;
+        if (src_val.type == DalvikType::INT32 || src_val.type == DalvikType::BOOLEAN) {
+            new_val = src_val.int_val;
+        }
+        std::cerr << "[EXP092-COUNTRYSTATE-WRITE] pc=" << pc
+                  << " caller=" << current_class_ << "." << current_method_
+                  << " obj_id=" << (obj_ref.type == DalvikType::OBJECT_REF ? obj_ref.object_id : 0)
+                  << " new_value=" << new_val
+                  << " src_type=" << static_cast<int>(src_val.type)
+                  << std::endl;
+    }
+
     trace.operands.push_back({"v" + std::to_string(src_reg), "source"});
     trace.operands.push_back({"v" + std::to_string(obj_reg), "object"});
     trace.operands.push_back({"field", field_res.class_descriptor + "." + field_res.field_name});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
-    
+
     pc_ = pc + 2;
     return true;
 }
@@ -7755,7 +7778,30 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
                   << " nonzero=" << is_nonzero
                   << " target=" << (pc + offset) << std::endl;
     }
-    
+
+    // EXP-092+ DIRECT TRACE: Log if-nez in onNextPressed and lambda$new$12
+    // to prove the exact condition that determines the needShowAlert side path.
+    // Critical branches:
+    //   lambda$new$12 PC=0:  if-nez v2(response), +3 → PC=3  (null check on response)
+    //   lambda$new$12 PC=11: if-nez v0(codeField.length()), +11 → PC=22 (skip setCountry if codeField non-empty)
+    if ((current_class_.find("LoginActivity$PhoneView") != std::string::npos &&
+         (current_method_ == "onNextPressed" || current_method_ == "lambda$new$12" ||
+          current_method_ == "setCountry" || current_method_ == "afterTextChanged" ||
+          current_method_.find("lambda$") == 0)) ||
+        current_class_.find("PhoneView$2") != std::string::npos) {
+        std::cerr << "[EXP092-IF-NEZ] " << current_class_ << "." << current_method_
+                  << " PC=" << pc
+                  << " v" << (int)test_reg
+                  << " type=" << static_cast<int>(val.type)
+                  << " int_val=" << val.int_val
+                  << " obj=" << val.object_id
+                  << " string=\"" << val.string_val << "\""
+                  << " is_nonzero=" << is_nonzero
+                  << " → target_pc=" << (pc + offset)
+                  << " next_pc=" << (is_nonzero ? (pc + offset) : (pc + 2))
+                  << std::endl;
+    }
+
     if (is_nonzero) {
         uint32_t target = pc + offset;
         // EXP-051: target >= bytecode_.size() = D8 unreachable marker (exit method).
@@ -8040,6 +8086,25 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
                   << "(type=" << static_cast<int>(b.type) \
                   << " val=" << b_val << ") → taken=" << (taken ? "YES" : "NO") \
                   << " target=" << (pc + r.offset) << std::endl; \
+    } \
+    /* EXP-092+ DIRECT TRACE: Log every if-* branch in onNextPressed to
+       prove the exact condition that determines the needShowAlert side path.
+       The critical branch is at PC=604: `if-lt v4, v2, +28 → PC=632`
+       where v4=countryState and v2=1. */ \
+    if (current_class_.find("LoginActivity$PhoneView") != std::string::npos && \
+        current_method_ == "onNextPressed") { \
+        std::cerr << "[EXP092-ONNEXT-IF] " << op_name << " PC=" << pc \
+                  << " v" << (int)r.vA << "(type=" << static_cast<int>(a.type) \
+                  << " val=" << a_val; \
+        if (a.type == DalvikType::OBJECT_REF) { std::cerr << " obj=" << a.object_id; } \
+        std::cerr << ") vs v" << (int)r.vB \
+                  << "(type=" << static_cast<int>(b.type) \
+                  << " val=" << b_val; \
+        if (b.type == DalvikType::OBJECT_REF) { std::cerr << " obj=" << b.object_id; } \
+        std::cerr << ") → taken=" << (taken ? "YES" : "NO") \
+                  << " target_pc=" << (pc + r.offset) \
+                  << " next_pc=" << (taken ? (pc + r.offset) : (pc + 2)) \
+                  << std::endl; \
     } \
     do_22t_branch(pc, r.offset, taken, op_name, r.vA, r.vB, a, b, trace); \
     if (taken) { \
