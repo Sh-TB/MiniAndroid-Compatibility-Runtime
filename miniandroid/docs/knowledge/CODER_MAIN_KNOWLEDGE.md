@@ -2,7 +2,7 @@
 
 **Coder**: Super Z (Primary Coder — owns main branch, has GitHub push access)
 **Last Updated**: 2026-08-26
-**Primary Branch HEAD**: `bd7ae8d`
+**Primary Branch HEAD**: `82835e1`
 
 This file records findings from the Primary Coder's investigations. It is
 the authoritative archive for implementation-level discoveries that affect
@@ -195,3 +195,144 @@ Added equivalent load logic in `stage_execute_application_real_dalvik`
 ### Cross-Reference
 This was the EXP-092 fix from the previous session. Documented here for
 completeness as part of the "cmd_run bypasses ApplicationRuntime" pattern.
+
+---
+
+## CM-004: page_value=13 is LoginActivityEmailCodeView, NOT SmsView
+
+### Summary
+`setPage(page_value=13)` activates `LoginActivityEmailCodeView` (the email code
+verification page), NOT `LoginActivitySmsView`. The page constant 13 was
+produced because the mock `TL_auth_sentCode` response was missing the `type`
+field, causing `fillNextCodeParams` to take the default (email) path.
+
+### Exact PC and Branch Condition
+- **Method**: `Lorg/telegram/ui/LoginActivity;.setPage(IZLandroid/os/Bundle;Z)V`
+- **Bytecode location**: classes4.dex, code_off=0x56052c, 309 code units
+- **Switch at PC=0-32**: checks for pages 0, 5, 6, 9, 10, 12, 16, 17
+- **page_value=13**: does NOT match any switch case → falls through to
+  PC=28 `if-ne v7, v2(16), +3 → PC=31` → TAKEN → PC=31 (main body)
+- **At PC=82-90**: `views[13]` is selected, `currentViewNum` is set to 13
+- **views[13]**: `LoginActivityEmailCodeView` (NOT SmsView)
+
+### Root Cause
+The early `[EXP071-SNDREQ]` interceptor at line 1731 created an EMPTY
+`TL_auth_sentCode` with no `type` field. `fillNextCodeParams` reads the
+`type` field (at PC=62: `iget v0, v12, field@9458 = type`) to determine
+which page to transition to. Without the type field, the instance-of
+checks for FirebaseSms/App/Call all returned false (or garbage due to
+CM-005), and the code fell through to the default path that sets page=13.
+
+### Fix
+Added `type=TL_auth_sentCodeTypeSms`, `phone_code_hash`, `length=5`,
+`timeout=30` to the mock response in the `[EXP071-SNDREQ]` interceptor.
+
+### Status
+PARTIALLY_FIXED — the mock now has the correct type field, but the
+instance-of bug (CM-005) was also preventing correct type checking.
+
+---
+
+## CM-005: instance-of Register Decoding Bug (CRITICAL)
+
+### Summary
+`execute_instance_of` was reading the dest/src registers from the WRONG bit
+positions in the 22c format, causing all instance-of checks to use garbage
+register values.
+
+### Root Cause
+The 22c format encoding is: `[BBBBAAAA op] [CCCC]` where:
+- AAAA (4 bits) = vA (dest register) = bits 8-11 of the first code unit
+- BBBB (4 bits) = vB (src register) = bits 12-15 of the first code unit
+- op (8 bits) = bits 0-7 of the first code unit
+- CCCC (16 bits) = type_idx = second code unit
+
+Previous code:
+```cpp
+dest = (instr >> 8) & 0xFF;  // WRONG: reads 0xc0 (full high byte)
+src  = instr & 0xFF;          // WRONG: reads 0x20 (the opcode!)
+type_idx = bytecode_[pc + 2]; // WRONG: should be pc + 1
+```
+
+Fixed code:
+```cpp
+dest = (instr >> 8) & 0x0F;     // CORRECT: vA = low nibble of high byte
+src  = (instr >> 12) & 0x0F;    // CORRECT: vB = high nibble of high byte
+type_idx = bytecode_[pc + 1];  // CORRECT: type@CCCC at pc+1
+```
+
+### Impact
+- instance-of was reading the WRONG register as the source object
+- The result was written to the WRONG register
+- `fillNextCodeParams`' instance-of check for `TL_auth_sentCodeTypeFirebaseSms`
+  returned garbage (often true for ALL types), causing the wrong page transition
+- This is a GENERIC VM bug — affects ALL APKs using instance-of
+
+### Fix
+Commit `82835e1` — corrected the bit positions and type_idx offset.
+
+### Verification
+After the fix, `currentViewNum` changed from 13 (EmailCodeView) to 5
+(phone input page, set by lambda$onNextPressed$22 before auth.sendCode).
+
+### Negative Finding
+The opcode table values (IF_EQ=0x32, etc.) are CORRECT for the DEX version
+used by Telegram. The bug was ONLY in the instance-of register decoding,
+not in the opcode constants.
+
+---
+
+## CM-006: Overload Resolution arg_idx Bug for Non-Static Methods
+
+### Summary
+The overload resolution code compared `args[0]` (which is `this` for non-static
+methods) against `param_types[0]` (the first parameter type), causing incorrect
+type mismatches for instance methods where `arg_count == param_count`.
+
+### Root Cause
+At line 3315:
+```cpp
+size_t arg_idx = (arg_count > param_count) ? 1 : 0;
+```
+When `arg_count == param_count` (both include `this`), `arg_idx` was set to 0.
+But for non-static methods, `args[0]` is `this` (the receiver), and the first
+PARAMETER corresponds to `args[1]`.
+
+### Example
+`fillNextCodeParams(Bundle, auth_SentCode, Z)` has `param_count=3` and was
+called with `arg_count=3` (this, Bundle, auth_SentCode). The old code compared
+`args[0]`(this=LoginActivity) against `param_types[0]`(Bundle) → mismatch →
+`type_matches=false` → wrong overload selected (the 22-instruction email code
+version instead of the 588-instruction real version).
+
+### Fix
+Commit `d72a88b` — for non-static methods, `arg_idx` starts at 1 (skip `this`).
+
+---
+
+## CM-007: setPage Switch Behavior for page=5
+
+### Summary
+After the instance-of fix, `setPage(page_value=5)` is called by
+`lambda$onNextPressed$22` (the auth.sendCode response handler). Page 5 is
+`VIEW_PHONE_INPUT` — the phone input page. This is NOT the SMS page.
+
+### Evidence
+- `setPage(5)` is called from `lambda$onNextPressed$22` at PC=0x20
+- The switch at PC=5: `if-eq v7(5), v2(5) → PC=33` → TAKEN (matches)
+- `currentViewNum` is set to 5
+- `views[5]` = PhoneView (the phone input page)
+
+### Analysis
+`lambda$onNextPressed$22` is the auth.sendCode response callback. When it
+receives the response, it checks for errors (SESSION_PASSWORD_NEEDED,
+FloodWait, etc.) at PC=55-119. If no errors, it should call
+`fillNextCodeParams` which would then call `setPage` with the SMS page
+constant. But the current execution shows `setPage(5)` being called
+BEFORE the response chain reaches `fillNextCodeParams`.
+
+### Next Blocker
+The `lambda$onNextPressed$22` method at PC=4 checks `if-nez v4(Bundle?)`
+and at PC=55 reads `TL_error.text` from v4. The register assignment may
+be incorrect, or the response/error args are swapped. Need to trace the
+actual register values to determine why `fillNextCodeParams` is not reached.
