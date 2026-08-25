@@ -336,3 +336,110 @@ The `lambda$onNextPressed$22` method at PC=4 checks `if-nez v4(Bundle?)`
 and at PC=55 reads `TL_error.text` from v4. The register assignment may
 be incorrect, or the response/error args are swapped. Need to trace the
 actual register values to determine why `fillNextCodeParams` is not reached.
+
+---
+
+## CM-008: if-eqz BOOLEAN Zero-Ness Bug (CRITICAL)
+
+### Summary
+`if-eqz` did not treat `BOOLEAN` type with `int_val==0` as zero. This caused
+ALL `instance-of` results in conditional branches to be inverted — `if-eqz`
+on a `false` BOOLEAN result returned `is_zero=FALSE`, meaning the branch was
+NOT taken (the OPPOSITE of correct behavior).
+
+### Source-First Analysis
+Used Telegram source (`LoginActivity.java` line 3185-3197) to understand
+the callback semantics:
+
+```java
+ConnectionsManager.getInstance(currentAccount).sendRequest(req, (response, error) -> AndroidUtilities.runOnUIThread(() -> {
+    nextPressed = false;
+    if (error == null) {
+        if (response instanceof TLRPC.TL_auth_sentCodeSuccess) {
+            // success path → setPage(VIEW_REGISTER)
+        } else {
+            fillNextCodeParams(params, (TLRPC.auth_SentCode) response);
+        }
+    } else {
+        // error path
+    }
+}), ...);
+```
+
+### Register Mapping (Source → DEX)
+
+The D8-compiled `lambda$onNextPressed$22` has 7 parameters:
+```
+v3 = PhoneView (this)
+v4 = TL_error (error argument)     ← Source: error
+v5 = TLObject (response)            ← Source: response
+v6 = Bundle (params)                ← Source: params
+v7 = String (phone)
+v8 = PhoneInputData
+v9 = TLObject (request)
+```
+
+### Exact PC and Branch Condition
+- **Method**: `lambda$onNextPressed$22` (335 code units, classes4.dex)
+- **PC=4**: `if-nez v4(error)` → error=null → NOT taken → PC=6 (success path)
+- **PC=6**: `instance-of v4, v5(response), TL_auth_sentCodeSuccess` → FALSE
+- **PC=8**: `if-eqz v4(BOOLEAN false)` → should be TAKEN → PC=46 (else → fillNextCodeParams)
+
+### Root Cause
+The `is_zero` check in `execute_if_eqz` only covered:
+- `NULL_REF`, `INT32(val==0)`, `OBJECT_REF(id==0)`, `UNINITIALIZED`, `REGISTER_UNSET`, `VOID_`
+
+`BOOLEAN` was MISSING. `instance-of` returns `make_bool(false)` which sets
+`type=BOOLEAN, int_val=0`. Without BOOLEAN in the is_zero check,
+`if-eqz(false BOOLEAN)` returned `is_zero=FALSE` → branch NOT taken.
+
+### Fix
+Commit `063c772` — Added `BOOLEAN`, `BYTE`, `SHORT`, `CHAR` to the is_zero
+check in both `if-eqz` and `if-nez` handlers. Same fix applied to both
+for consistency.
+
+### Direct Evidence After Fix
+```
+PC=8: if-eqz v4(BOOLEAN, int_val=0) → is_zero=TRUE → TAKEN → PC=46 ✓
+fillNextCodeParams called ✓
+setPage(page_value=2) called from fillNextCodeParams ✓
+currentViewNum = 2 = VIEW_CODE_SMS (per Telegram source) ✓
+Render root: LoginActivitySmsView (view_id=3536) ✓
+```
+
+### Page Constants (from Telegram source, line 243-246)
+```java
+VIEW_PHONE_INPUT = 0
+VIEW_CODE_CHECK  = 1
+VIEW_CODE_SMS    = 2  ← CORRECT SMS PAGE
+VIEW_PASSWORD    = 3
+VIEW_PROFILE     = 4
+VIEW_REGISTER    = 5  ← Was previously selected due to the BOOLEAN bug
+```
+
+### Impact
+This is a GENERIC VM fix — affects ALL APKs using `instance-of` results
+in `if-eqz`/`if-nez` branches. Every `instance-of` check followed by a
+conditional branch was potentially affected.
+
+### Negative Finding
+The earlier `page_value=13` (EmailCodeView) was caused by a DIFFERENT bug
+(the missing `type` field in the mock response, CM-004). The `page_value=5`
+(RegisterView) was caused by THIS bug (BOOLEAN if-eqz). Both are now fixed.
+
+### Full Chain Now Proven
+```
+PhoneView.onNextPressed
+→ TL_auth_sendCode constructor
+→ sendRequest
+→ mock TL_auth_sentCode (type=Sms, length=5, timeout=30)
+→ PhoneView$Lambda2.run (response)
+→ lambda$onNextPressed$22
+→ PC=4: if-nez v4(error=null) → NOT taken → PC=6
+→ PC=6: instance-of(response, sentCodeSuccess) → FALSE
+→ PC=8: if-eqz v4(BOOLEAN false) → TAKEN → PC=46
+→ fillNextCodeParams(params, auth_SentCode)
+→ setPage(page_value=2)
+→ currentViewNum = 2 = VIEW_CODE_SMS
+→ SmsView active (render root view_id=3536)
+```
