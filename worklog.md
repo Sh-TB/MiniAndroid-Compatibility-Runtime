@@ -3675,3 +3675,101 @@ Artifacts produced:
 - /home/z/my-project/download/login_sms_exp092plus.png — final screenshot
 - 2 commits pushed to main (7a99e9a + cb6cd54)
 - HEAD == origin/main == cb6cd54a676a11063e6868b7d07a13760ca4c7c9
+
+---
+Task ID: EXP-092+ (continued)
+Agent: Super Z (long-running goal mode, primary coder)
+Task: Evidence-first investigation of onNextPressed needShowAlert branch.
+
+Work Log:
+- Verified HEAD == origin/main (475923a) at start. Local was 17 commits
+  behind origin/main — fast-forwarded to recover previous work.
+- Baseline: 0 setPage, 0 fillNextCodeParams, 0 auth.sendCode Lambda2.
+- PhoneView.onNextPressed was taking the needShowAlert side path at PC=604.
+
+PHASE 1 — DISASSEMBLY:
+- Wrote pure-Python DEX disassembler (scripts/disasm_onnextpressed_v2.py,
+  scripts/disasm_method.py, scripts/list_class_methods.py) — no androguard
+  dependency. Handles all Dalvik opcodes with correct format decoding.
+- Disassembled onNextPressed (classes4.dex, code_off=0x55a914, 1468 cu).
+- Identified the critical branch at PC=604:
+    if-ne v4(countryState), v2(=1), +28 → PC=632
+  (if countryState != 1, skip the "ChooseCountry" alert)
+- And the next branch at PC=633:
+    if-ne v4(countryState), v2(=2), +30 → PC=663
+  (if countryState != 2, skip the second alert, continue to auth.sendCode)
+
+PHASE 2 — ROOT CAUSE ANALYSIS:
+- Traced countryState writes using scripts/find_countrystate_writes.py:
+  - PC=12 of <init>: sets countryState = 0 (initial)
+  - PC=1258 of <init>: sets countryState = 1 (default, v5 = const/4 #1)
+  - PC=68 of setCountry: sets countryState = 0 (after auto-detection)
+  - PC=0 of access$3402: synthetic accessor (caller-dependent)
+  - PC=66, 521, 542 of afterTextChanged: sets countryState to 1 or 2
+- Traced the getNearestDc response handler chain:
+  Lambda14.run → $r8$lambda$SqBjge... → lambda$new$13 → Lambda16 →
+  $r8$lambda$Md1RDA8A... → lambda$new$12 → setCountry
+- lambda$new$12 at PC=11 checks: if-nez v0(codeField.length()), +11 → PC=22
+  (skip setCountry if codeField is non-empty)
+
+PHASE 3 — ROOT CAUSE IDENTIFICATION (3 issues):
+
+ISSUE 1: CollectionShadow not registered in cmd_run path (main.cpp)
+- cmd_run only registered HandlerShadow, ViewShadow, ActivityShadow.
+- Without CollectionShadow, HashMap.put was a silent no-op (bridge_to_api
+  has shadow_registry_==nullptr guard that prevented fallback).
+- HashMap.get("US") returned null → setCountry returned early at PC=6.
+
+ISSUE 2: codeField injection prevented setCountry from running
+- Test harness injected "1" into codeField (PhoneView$1) at line 678.
+- lambda$new$12 at PC=11: if-nez(1) = true → skip setCountry.
+
+ISSUE 3: Missing pre-click Handler drain
+- getNearestDc response handler is queued on Handler during <init>.
+- onNextPressed was called BEFORE the drain → setCountry hadn't run yet.
+
+PHASE 4 — FIXES APPLIED:
+- main.cpp: Added CollectionShadow registration in cmd_run.
+- execution_engine.cpp: Removed codeField "1" injection.
+- execution_engine.cpp: Added pre-click Handler drain (10 iterations).
+
+PHASE 5 — DIRECT EVIDENCE (after fix, commit bd7ae8d):
+- [EXP092-COUNTRYSTATE-WRITE] setCountry PC=68 new_value=0 ← FIRST TIME!
+- [EXP092-ONNEXT-IF] PC=604 if-ne v4(0) vs v2(1) → TAKEN → PC=632 (skip alert!)
+- [EXP092-ONNEXT-IF] PC=633 if-ne v4(0) vs v2(2) → TAKEN → PC=663 (continue!)
+- TL_auth_sendCode.<init>() constructed (obj#5227)
+- [EXP071-SNDREQ] mocked TL_auth_sentCode resp_id=5236
+- [EXP092-REQDELEGATE] PhoneView$Lambda2.run invoked (response_id=5236)
+- [EXP092-FILLNEXTCODE] fillNextCodeParams called
+- [EXP092-SETPAGE] setPage(page_value=13) called from fillNextCodeParams
+
+PHASE 6 — KNOWLEDGE ARCHIVES:
+- Created docs/knowledge/CODER_MAIN_KNOWLEDGE.md (CM-001, CM-002, CM-003).
+- Updated docs/knowledge/CODER_KNOWLEDGE_INDEX.md to include Primary Coder.
+
+PHASE 7 — GITHUB:
+- Commit bd7ae8d pushed. HEAD == origin/main verified.
+
+Stage Summary:
+- IMMEDIATE SUCCESS CRITERION MET:
+  REAL onNextPressed → correct validation path → REAL auth.sendCode
+  construction → REAL sendRequest → RequestDelegate.run →
+  fillNextCodeParams → setPage
+- All 6 stages DIRECTLY observed in execution trace (not inferred from
+  screenshot).
+- page_value=13 was passed to setPage — this needs investigation (may be
+  VIEW_CODE_SMS in this Telegram version, or a different page).
+- The next concrete blocker is: what does page_value=13 mean, and does
+  it result in the SmsView becoming the visible/active page?
+
+Artifacts produced:
+- miniandroid/src/main.cpp — added CollectionShadow registration
+- miniandroid/src/runtime/execution_engine.cpp — removed codeField injection + added pre-click drain
+- miniandroid/src/dex/dalvik_engine.cpp — added COUNTRYSTATE-WRITE, ONNEXT-IF, IF-NEZ instrumentation
+- miniandroid/docs/knowledge/CODER_MAIN_KNOWLEDGE.md — primary coder knowledge archive
+- miniandroid/docs/knowledge/CODER_KNOWLEDGE_INDEX.md — updated with Primary Coder section
+- scripts/disasm_onnextpressed_v2.py, scripts/disasm_method.py, scripts/list_class_methods.py,
+  scripts/find_countrystate_writes.py, scripts/find_access3402_callers.py,
+  scripts/find_phoneview_classes.py, scripts/trace_v5_at_pc.py — investigation tools
+- 1 commit pushed (bd7ae8d)
+- HEAD == origin/main == bd7ae8dd4c4a25532fd1b6bbd992d453915d924e
