@@ -3533,3 +3533,145 @@ Artifacts produced:
 - src/dex/dalvik_engine.cpp: overload resolution fix + enhanced diagnostics
 - src/runtime/execution_engine.cpp: click-all-views + LoginActivity check
 - 2 commits pushed: 54aac15 (click-all-views) + 7842e1e (overload resolution fix)
+
+---
+Task ID: EXP-092+
+Agent: Super Z (long-running goal mode, primary coder)
+Task: Verify friend findings + finish real Telegram SMS rendering.
+
+Work Log:
+- Verified HEAD == origin/main (dd25e18) at start.
+- Baseline: 208 dark pixels (sparse "dot in the middle" fallback).
+- Read friend findings: 3 hypotheses (full-screen background, small
+  resource IDs, BitmapFont limit) + direct SMS state proof requirement
+  + historical multi-DEX string bug revalidation + 3-run current-HEAD proof.
+
+PHASE 1 — ROOT CAUSE ANALYSIS (finding the missing link):
+- Searched the existing run.log for [EXP067] Loaded resources and
+  [EXP-051] Shadow registry wired. NEITHER fired.
+- Discovered: the cmd_run code path in main.cpp uses ExecutionEngine
+  directly with its own ShadowRegistry. It BYPASSES the
+  ApplicationRuntime::execute_on_create() function in
+  application_runtime.cpp — which is the ONLY place where
+  resource_values.json was being loaded into dalvik_engine.resource_string_values_.
+- Result: getString(int) interceptor found the field NAME (e.g.,
+  "SentSmsCodeTitle") but failed to find it in resource_string_values_
+  (which was empty), so it returned the field name as a fallback
+  instead of the actual value ("Enter code").
+
+PHASE 2 — FIX #1: RESOURCE LOADING IN cmd_run PATH:
+- Added equivalent load logic to stage_execute_application_real_dalvik
+  in execution_engine.cpp. Tries multiple candidate paths (legacy
+  fixed 'download/exp038_telegram/', next-to-APK, by-package-name).
+- Loads: strings (11263), colors (74), dimens (176), drawables (1965),
+  integers (18), bools (0).
+- Verified: getString(int) now returns actual values:
+  "Enter code" (was "SentSmsCodeTitle")
+  "Phone verification" (was "YourCode")
+  "Check your Telegram messages" (was "SentAppCodeTitle")
+  etc.
+
+PHASE 3 — FIX #2: BITMAP FONT EXPANSION (Friend Finding 3):
+- Wrote scripts/gen_bitmap_font.py: uses PIL + DejaVuSansMono at 12pt
+  to render each ASCII char (32..126) to an 8x16 bitmap. Outputs a
+  C++ header file bitmap_font_data.h with 95 const uint8_t[16] arrays
+  + a lookup table.
+- Replaced the broken hand-coded glyph table in software_renderer.cpp:
+  - Old: 13 glyphs (H/e/l/o/M/i/n/d/r/A/t/space) AND mis-indexed
+    (e.g., 'H' written to slot 33 then overwritten by 'A').
+  - New: 95 glyphs (full ASCII printable range), each with real bitmap.
+- Wrote tests/exp092_bitmap_font_test.cpp with 28 test cases.
+  - All 95 chars have non-space bitmaps.
+  - Glyph indices correct (get_glyph('H') returns H, not A).
+  - Friend's micro-regression strings render visibly:
+    HELLO (195 px), 0123456789 (476 px), +/-.:- (206 px),
+    Hello MiniAndroid (461 px).
+  - Runtime SMS strings render visibly:
+    "Enter code" (391 px), "Phone verification" (433 px),
+    "Check your Telegram messages" (391 px), "Resend code" (426 px),
+    "Enter phrase from SMS" (472 px), "Enter word from SMS" (444 px),
+    "Phone number" (437 px),
+    "Please confirm your country code and enter your phone number." (433 px).
+- All 28 tests PASS.
+
+PHASE 4 — FIX #3: DIRECT SMS STATE TRACING:
+- Added [EXP092-SETPAGE], [EXP092-FILLNEXTCODE], [EXP092-REQDELEGATE]
+  trace hooks in try_recursive_invoke (dalvik_engine.cpp).
+- setPage: fires when method_name=="setPage" && declaring_class contains
+  "LoginActivity". Logs page_value, receiver_id, caller, PC, args_count.
+- fillNextCodeParams: fires on every call. Logs class, receiver_id, caller, PC.
+- RequestDelegate.run: fires when method_name=="run" && declaring_class
+  contains "ExternalSyntheticLambda". Logs class, receiver_id, response_id
+  (for 3-arg form), caller, PC.
+
+PHASE 5 — DIRECT EVIDENCE (NOT inferred from screenshot):
+- 3-run proof on current HEAD (commit cb6cd54):
+  - Run 1, 2, 3 ALL identical: SHA256=60df0c2ba1680ae58e2612bfd82660a3436df963569a3191dcfdc841810d4b5b
+  - 974 dark pixels per run (up from 208 — 4.7x improvement)
+  - 0 [EXP092-SETPAGE] traces per run (NONE)
+  - 0 [EXP092-FILLNEXTCODE] traces per run (NONE)
+  - 72 [EXP092-REQDELEGATE] traces per run, but NONE of them are
+    PhoneView\$\$ExternalSyntheticLambda2 (the auth.sendCode delegate)
+- DIRECT PROOF: The SmsView at view_id=3990 (the rendered root with 6
+  children) exists ONLY because ViewPager pre-loads all page views
+  during LoginActivity.createView. The real chain
+  (onNextPressed -> sendRequest(TL_auth_sendCode) -> Lambda2.run ->
+  lambda\$onNextPressed\$23 -> fillNextCodeParams -> setPage(VIEW_CODE_SMS))
+  DID NOT FIRE.
+
+PHASE 6 — FRIEND FINDING VERIFICATION:
+- Finding 1 (full-screen background): ALREADY addressed at
+  execution_engine.cpp:813-826 (commit b6ef143). Verified.
+- Finding 2 (small resource IDs): root cause identified — resid=3 IS
+  a real D8-shrunk R.string.ChooseCountry resource. The blanket
+  "<0x10000 => empty string" rule is too aggressive. A first
+  attempt to fix it (storing ALL small-int values from R\$string in
+  field_name_by_resid_) caused a crash in ensure_class_initialized.
+  Reverted; targeted fix needs SPUT-capture approach.
+- Finding 3 (BitmapFont): FIXED. 95 ASCII glyphs (was 13).
+- Direct SMS state proof: obtained — setPage(VIEW_CODE_SMS) NEVER fires.
+- Historical multi-DEX string bug: preserved (no regression).
+- 3-run validation on current HEAD: PASS (identical SHAs).
+
+PHASE 7 — ARCHIVES:
+- Created docs/knowledge/FRIEND_TELEGRAM_KNOWLEDGE.md — SEPARATE
+  from CODER2_KNOWLEDGE.md and CODER3_KNOWLEDGE.md. Every friend
+  finding carries source=FRIEND + reproduced_on_current_head=true +
+  evidence + status.
+
+PHASE 8 — GITHUB:
+- Commits pushed:
+  1. 7a99e9a "EXP-092: BitmapFont expansion + resource_values.json loading"
+  2. cb6cd54 "EXP-092: Add DIRECT tracing for setPage/fillNextCodeParams/RequestDelegate.run"
+- HEAD == origin/main verified after each push.
+- push_verified=true
+
+Stage Summary:
+- 3 of 4 friend findings independently verified + addressed:
+  * Finding 1: PROVEN correct (already implemented)
+  * Finding 2: PARTIALLY FIXED (root cause found; full fix is future work)
+  * Finding 3: FULLY FIXED (95 ASCII glyphs, 28/28 regression PASS)
+- Direct SMS state proof: OBTAINED — confirms SmsView is pre-loaded,
+  NOT reached by real chain. setPage(VIEW_CODE_SMS) does NOT fire on
+  current HEAD.
+- 3-run proof: PASS (974 dark pixels, identical SHA across 3 runs).
+- Historical multi-DEX string bug regression: PRESERVED.
+- HEAD == origin/main == cb6cd54.
+- Campaign NOT complete — to reach real SMS state transition, future work
+  must get onNextPressed past the needShowAlert side path and ensure
+  Lambda2.run is invoked with the auth.sentCode response.
+
+Artifacts produced:
+- miniandroid/scripts/gen_bitmap_font.py — font generator
+- miniandroid/src/renderer/bitmap_font_data.h — 95 auto-generated glyphs
+- miniandroid/src/renderer/software_renderer.cpp — rewrote BitmapFont init
+- miniandroid/src/renderer/software_renderer.h — removed broken glyph decls
+- miniandroid/src/runtime/execution_engine.cpp — added resource_values.json load
+- miniandroid/src/dex/dalvik_engine.cpp — added EXP092-SETPAGE/FILLNEXTCODE/REQDELEGATE traces
+- miniandroid/tests/exp092_bitmap_font_test.cpp — 28/28 regression tests
+- miniandroid/docs/knowledge/FRIEND_TELEGRAM_KNOWLEDGE.md — friend archive
+- miniandroid/run_exp092_3run.sh — 3-run validation script
+- miniandroid/run/exp092/3run_proof/run{1,2,3}/run.log — 3-run evidence
+- /home/z/my-project/download/login_sms_exp092plus.png — final screenshot
+- 2 commits pushed to main (7a99e9a + cb6cd54)
+- HEAD == origin/main == cb6cd54a676a11063e6868b7d07a13760ca4c7c9
