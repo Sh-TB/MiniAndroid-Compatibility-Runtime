@@ -1192,19 +1192,53 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             int bottom = top + h;
 
                             // Draw view background
-                            // EXP-092: Only draw container backgrounds for containers
-                            // that DON'T fill the entire screen (MATCH_PARENT).
-                            // Full-screen containers (width=screen_width, height=screen_height)
-                            // would overwrite text drawn by children.
-                            bool is_container = node->class_desc.find("Layout") != std::string::npos ||
-                                              node->class_desc.find("ViewGroup") != std::string::npos;
+                            // EXP-095 (CM-020): REAL background colors captured
+                            // from setBackgroundColor(int) take priority. Per §17:
+                            // do not accept default white unless the source
+                            // actually requires it.
                             bool is_full_screen = (w >= config.screen_width && h >= config.screen_height);
-                            if (is_container && !is_full_screen) {
-                                canvas.draw_rect(left, top, right, bottom,
-                                               renderer::Colors::GREY_200);
-                            } else if (node->class_desc.find("Button") != std::string::npos) {
-                                canvas.draw_rect(left, top, right, bottom,
-                                               renderer::RGBA{0x6F, 0xA8, 0xDC, 0xFF});
+                            bool drew_bg = false;
+                            if (node->bg_color != 0) {
+                                // ARGB int → RGBA
+                                uint32_t c = node->bg_color;
+                                renderer::RGBA rgba{
+                                    static_cast<uint8_t>((c >> 16) & 0xFF),
+                                    static_cast<uint8_t>((c >> 8) & 0xFF),
+                                    static_cast<uint8_t>(c & 0xFF),
+                                    static_cast<uint8_t>((c >> 24) & 0xFF)};
+                                canvas.draw_rect(left, top, right, bottom, rgba);
+                                drew_bg = true;
+                            } else {
+                                // EXP-092: Only draw container backgrounds for
+                                // containers that DON'T fill the entire screen.
+                                bool is_container = node->class_desc.find("Layout") != std::string::npos ||
+                                                  node->class_desc.find("ViewGroup") != std::string::npos;
+                                if (is_container && !is_full_screen) {
+                                    canvas.draw_rect(left, top, right, bottom,
+                                                   renderer::Colors::GREY_200);
+                                    drew_bg = true;
+                                } else if (node->class_desc.find("Button") != std::string::npos) {
+                                    canvas.draw_rect(left, top, right, bottom,
+                                                   renderer::RGBA{0x6F, 0xA8, 0xDC, 0xFF});
+                                    drew_bg = true;
+                                }
+                            }
+                            // EXP-095 (CM-020): EditText subclasses render the
+                            // AOSP default editText background — a stroked box —
+                            // so input fields are VISIBLE (per §15: a component
+                            // is loaded only when pixels appear). CodeNumberField
+                            // extends EditTextBoldCursor → AppCompatEditText →
+                            // EditText; setBackground(null) removes it, but the
+                            // container draws its own stroke — a bordered box is
+                            // the closest generic representation.
+                            bool is_edit_text = dalvik_engine_.is_subclass_of(node->class_desc, "Landroid/widget/EditText;");
+                            if (is_edit_text && w > 4 && h > 4) {
+                                renderer::RGBA border{0x99, 0x99, 0x99, 0xFF};
+                                // 1px border via 4 rects (thin box)
+                                canvas.draw_rect(left, top, right, top + 1, border);
+                                canvas.draw_rect(left, bottom - 1, right, bottom, border);
+                                canvas.draw_rect(left, top, left + 1, bottom, border);
+                                canvas.draw_rect(right - 1, top, right, bottom, border);
                             }
 
                             // Draw text if present (AFTER background so text is on top)

@@ -914,3 +914,25 @@ PROVEN — all fixes are GENERIC (LayoutParams capture, hierarchy queries,
 signature-aware args, LinearLayout/FrameLayout semantics). Remaining for
 full fidelity: view backgrounds/borders for code fields, colors, image
 decoding for the icon, density scaling (currently 1.0).
+
+---
+
+## CM-020: View Background Colors + EditText Borders
+
+### Summary
+1. View.setBackgroundColor(int) captured into ViewNode.bg_color (ARGB) and
+   rendered as a REAL fill rect — per §17 trace: source color → runtime
+   color → framebuffer. 8 background color calls captured in the Telegram
+   flow (black status-bar views etc.).
+2. EditText subclasses render the AOSP default editText background — a
+   1px stroked box — so input fields are VISIBLE per §15 ("loaded" only
+   when pixels appear). CodeNumberField (extends EditTextBoldCursor →
+   AppCompatEditText → EditText) now shows 5 bordered boxes.
+
+### Visual Evidence
+- Code field region: 740 gray (153,153,153) border pixels; 170 border
+  pixels along y=221 (the field row top edge).
+- Total: 43379 non-bg pixels (from 42639).
+
+### Status
+PROVEN — generic (AOSP default editText background semantics).
