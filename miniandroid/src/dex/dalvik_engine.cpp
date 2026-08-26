@@ -9370,6 +9370,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
 
+    // EXP-095 (CM-020): View.setBackgroundColor(int) — capture the color so
+    // the renderer can draw REAL view backgrounds (per §17: trace source
+    // color → resource → runtime color → framebuffer).
+    if (method == "setBackgroundColor" && args.size() >= 2 &&
+        args[0].type == DalvikType::OBJECT_REF &&
+        args[1].type == DalvikType::INT32 && shadow_registry_ != nullptr) {
+        auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+        if (vs != nullptr) {
+            vs->set_bg_color(args[0].object_id,
+                             static_cast<uint32_t>(args[1].int_val));
+            std::cerr << "[EXP095-BG] view=" << args[0].object_id
+                      << " color=0x" << std::hex
+                      << static_cast<uint32_t>(args[1].int_val) << std::dec
+                      << std::endl;
+        }
+    }
+
     // EXP-057: Debug — log ALL bridge_to_api calls for isEmpty from onCreate.
     if (method == "isEmpty" && current_method_ == "onCreate") {
         int arg0_type = args.empty() ? -1 : static_cast<int>(args[0].type);
