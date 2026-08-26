@@ -590,3 +590,44 @@ Commit `d00aabf`:
 
 ### Status
 PROVEN — F011 is FIXED on main. All APKs now get correct package identity.
+
+---
+
+## CM-013: F007 getSystemService — Real Service Objects for Known Services
+
+### Summary
+`getSystemService` now returns real singleton service objects for 17 known
+services instead of always returning null. Unknown services still return null
+(honest, not fake success).
+
+### Source Reference
+AOSP `ContextImpl.getSystemService(String name)`:
+- Looks up `SystemServiceRegistry.SYSTEM_SERVICE_FETCHERS.get(name)`
+- Returns the cached service instance or creates a new one
+- Returns null for unknown services
+
+### Implementation
+Added a `service_map` that maps service names to their AOSP-defined class
+descriptors. `get_or_create_singleton()` returns a cached singleton for
+each service. Methods called on these objects are handled by `bridge_to_api`
+or return defaults.
+
+### Services Implemented (17)
+window, layout_inflater, activity, input_method, notification, alarm, audio,
+clipboard, connectivity, uimode, search, keyguard, location, account, power,
+vibrator, sensor, display
+
+### Direct Evidence
+- Telegram: `getSystemService("window")` → WindowManager
+- Telegram: `getSystemService("input_method")` → InputMethodManager
+- Telegram: `getSystemService("accessibility")` → null (unknown service)
+- Telegram SMS gate: currentViewNum=2 (no regression)
+- uNote: exit=0, 23K dark pixels (no regression)
+
+### Fix
+Commit `edd2338`.
+
+### Status
+PARTIAL — service objects are returned but their methods are minimal.
+Individual service method implementations (e.g. AudioManager.getStreamVolume,
+UiModeManager.getNightMode) are still needed for full compatibility.
