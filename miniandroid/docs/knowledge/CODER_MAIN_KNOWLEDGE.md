@@ -709,3 +709,39 @@ Commit `7491cbf`:
 
 ### Status
 PROVEN — Bundle operations work correctly. This is a GENERIC fix.
+
+---
+
+## CM-016: R$string Small Resid + Application.getString + String.format + Throttle Fix
+
+### Summary
+Four bugs fixed that prevented SMS screen text from being rendered:
+1. R$string small ordinals not stored in field_name_by_resid_
+2. Application.getString(int) not implemented
+3. String.format(String, Object[]) not implemented
+4. View/String method call throttle too low (10 calls)
+
+### Root Causes
+1. **R$string small resid**: D8 shrinker remaps R$string field values to small
+   ordinals (e.g., SentSmsCode=3). The `>= 0x10000` filter excluded them.
+2. **Application.getString**: No handler existed — fell through to STUBBED.
+3. **String.format**: No handler existed — fell through to STUBBED.
+4. **Method throttle**: After 10 calls to setText/toString/append, all
+   subsequent calls were silently dropped (STUB-ONLY).
+
+### Fix
+Commit `b2c55e1`:
+- Store ALL R$string values in field_name_by_resid_ (including small ordinals)
+- Implement Application.getString(int) with resid→field_name→value resolution
+- Implement String.format(String, Object[]) with %s/%d replacement
+- Raise throttle to 1000 for 20+ critical View/String methods
+
+### Visual Evidence
+- Before: 974 dark pixels, 16 rows, SHA 60df0c2b
+- After: 1136 dark pixels, 30 rows, SHA c93ff22e036767ac
+- New text: "999+" on view 3595 (previously empty)
+- SMS gate: currentViewNum=2 (no regression)
+
+### Status
+PROVEN — screen now has more visible text. Generic fix (String.format,
+Application.getString, method throttle) benefits ALL APKs.
