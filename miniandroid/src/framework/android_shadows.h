@@ -531,6 +531,9 @@ public:
         // EXP-095: LinearLayout orientation (0=HORIZONTAL, 1=VERTICAL).
         // -1 = unset (default VERTICAL per LinearLayout docs).
         int orientation = -1;
+        // EXP-095 (CM-020): Background color from setBackgroundColor(int).
+        // 0xFFFFFFFF white is the View default; 0 = unset.
+        uint32_t bg_color = 0;
         // EXP-095: ScrollView scrolling container marker (content laid out
         // inside, potentially taller than screen).
         bool is_scroll_container = false;
@@ -669,6 +672,12 @@ public:
     void set_orientation(uint32_t view_id, int orientation) {
         auto* n = get_or_create_node(view_id, "");
         if (n != nullptr) n->orientation = orientation;
+    }
+
+    // EXP-095 (CM-020): Store View.setBackgroundColor(int).
+    void set_bg_color(uint32_t view_id, uint32_t argb) {
+        auto* n = get_or_create_node(view_id, "");
+        if (n != nullptr) n->bg_color = argb;
     }
 
     // EXP-060: Return ALL view_ids whose class descriptor contains
