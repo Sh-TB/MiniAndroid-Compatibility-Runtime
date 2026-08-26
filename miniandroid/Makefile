@@ -2,7 +2,7 @@
 # For systems without CMake
 
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -g -O2
+CXXFLAGS = -std=c++17 -Wall -Wextra -g -O2 -MMD -MP
 INCLUDES = -Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Ithird_party/nlohmann_json/include
 LIBS = -lz
 
@@ -135,3 +135,12 @@ $(CORE_OBJECTS): $(JSON_DIR)/include/nlohmann/json.hpp
 $(MAIN_OBJECT): $(JSON_DIR)/include/nlohmann/json.hpp
 $(TEST_OBJECT): $(JSON_DIR)/include/nlohmann/json.hpp
 $(MEGABATCH_OBJECT): $(JSON_DIR)/include/nlohmann/json.hpp
+
+# EXP-093/F017: Header dependency tracking.
+# -MMD -MP in CXXFLAGS generates .d files alongside each .o file.
+# This line includes them so that header changes trigger correct recompilation.
+# Without this, stale .o files can cause ABI/layout corruption and false crashes.
+-include $(CORE_OBJECTS:.o=.d)
+-include $(MAIN_OBJECT:.o=.d)
+-include $(TEST_OBJECT:.o=.d)
+-include $(MEGABATCH_OBJECT:.o=.d)
