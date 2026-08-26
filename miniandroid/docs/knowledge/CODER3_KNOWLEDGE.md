@@ -182,3 +182,42 @@ Source grep = discovery only. Important findings require:
 - No regression (exit=0, 23K dark pixels).
 
 **Status:** FIXED on main. Original Coder 3 evidence preserved.
+
+---
+
+## F012/F015 Reconciliation (2026-08-26, Primary Coder)
+
+### Current State on Main
+- The catch-all false-success pattern EXISTS at the end of `bridge_to_api`:
+  ```cpp
+  status = ApiCallTrace::Status::STUBBED;
+  result = DalvikValue::make_void();
+  return true;
+  ```
+  Unknown methods return `void` with `STUBBED` status — this is a silent
+  false-success for non-void methods.
+
+- F012-AMPLIFIER (commit ab48fbc) is NOT in current main history.
+- F015 (runtime-type-only routing) is the current behavior — methods are
+  routed based on runtime type and method name only.
+
+### Classification
+- **F012 (catch-all false-success):** OPEN — the pattern exists.
+  However, it's not causing immediate problems because most unknown
+  methods are void or their return values are not checked.
+  The real fix: for unknown methods, check return type from proto
+  descriptor and return appropriate default (0 for int, null for objects,
+  false for boolean) instead of always returning void.
+
+- **F015 (runtime-type-only routing):** OPEN — the current routing
+  uses `class_name` (which comes from the declared class) for matching,
+  not just runtime type. However, there's no retry mechanism that tries
+  superclass routing when the declared class doesn't match.
+  F012-AMPLIFIER would add this retry, but it's not integrated.
+
+### Decision
+- Do NOT integrate F012-AMPLIFIER blindly — it's from a Coder 3 branch
+  that was never merged and may have side effects.
+- The current STUBBED pattern is logged and visible in traces.
+- Future fix: improve the default return value based on proto descriptor.
+- Status: OPEN (documented, low priority — not causing immediate regressions).

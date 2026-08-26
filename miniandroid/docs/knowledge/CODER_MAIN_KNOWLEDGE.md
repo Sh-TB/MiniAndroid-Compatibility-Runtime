@@ -631,3 +631,34 @@ Commit `edd2338`.
 PARTIAL — service objects are returned but their methods are minimal.
 Individual service method implementations (e.g. AudioManager.getStreamVolume,
 UiModeManager.getNightMode) are still needed for full compatibility.
+
+---
+
+## CM-014: F008 Permission Model — checkSelfPermission/checkPermission/requestPermissions
+
+### Summary
+Implemented a deterministic permission model with NOT_REQUESTED/GRANTED/DENIED
+states. Normal permissions are GRANTED by default (per AOSP). Dangerous
+permissions are DENIED until explicitly requested.
+
+### Source Reference
+AOSP `Context.checkSelfPermission(String permission)`:
+- Returns `PackageManager.PERMISSION_GRANTED` (0) if granted
+- Returns `PackageManager.PERMISSION_DENIED` (-1) if not granted
+- Normal permissions (INTERNET, etc.) are granted without runtime request
+- Dangerous permissions (CAMERA, READ_CONTACTS) require `requestPermissions`
+
+### Implementation
+- `checkSelfPermission(String)` → int (GRANTED=0 / DENIED=-1)
+- `PackageManager.checkPermission(String, String)` → int
+- `Activity.requestPermissions(String[], int)` → auto-grant in headless mode
+- `permission_state_` map stores per-permission state
+- 13 normal permissions are pre-granted (INTERNET, VIBRATE, WAKE_LOCK, etc.)
+- All other permissions default to DENIED (conservative, not fake success)
+
+### Fix
+Commit `2bdc8ea`.
+
+### Status
+PROVEN — no regressions in corpus (Telegram, uNote, microtimer, simplekeyboard,
+bgclock all pass).
