@@ -509,6 +509,7 @@ void ApkParser::analyze_manifest(const std::vector<uint8_t>& manifest_data, ApkI
     info.target_sdk_version = manifest_info.target_sdk_version;
     info.main_activity = manifest_info.main_activity;
     info.main_activity_full = manifest_info.main_activity_full;
+    info.application_name = manifest_info.application_name;  // EXP-093/F005
     info.permissions = manifest_info.permissions;
 }
 
