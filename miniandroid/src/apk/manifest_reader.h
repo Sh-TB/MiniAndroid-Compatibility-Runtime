@@ -94,6 +94,7 @@ struct ManifestInfo {
     
     // Application info
     std::string application_label;
+    std::string application_name;  // EXP-093/F005: android:name attribute
     bool has_application = false;
     
     // Raw data access

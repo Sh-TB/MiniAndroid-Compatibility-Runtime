@@ -575,7 +575,10 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
     // Handle application element
     if (name == "application") {
         result_.application_label = get_attribute_value(attrs, "label");
-        log("Application label: " + result_.application_label);
+        // EXP-093/F005: Extract custom Application class name.
+        result_.application_name = get_attribute_value(attrs, "name");
+        log("Application label: " + result_.application_label +
+            " name: " + result_.application_name);
     }
     
     // Handle activity element
@@ -846,7 +849,13 @@ ManifestInfo ManifestReader::parse_plain_xml(const std::vector<uint8_t>& data) {
         } else if (tag_name == "application") {
             state_stack.push_back(XmlState::APPLICATION);
             result_.application_label = extract_attr("android:label");
-            log("Found application");
+            // EXP-093/F005: Extract the custom Application class name.
+            // Per AOSP: <application android:name="..."> specifies the
+            // Application subclass to instantiate. If absent, the default
+            // android.app.Application is used.
+            result_.application_name = extract_attr("android:name");
+            log("Found application: label=" + result_.application_label +
+                " name=" + result_.application_name);
             
         } else if (tag_name == "activity") {
             state_stack.push_back(XmlState::ACTIVITY);
