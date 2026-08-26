@@ -824,3 +824,93 @@ PROVEN — StringBuilder is a GENERIC fix benefiting ALL APKs. The
 ViewShadow.toString scoping removed a first-class silent false success.
 Remaining for full screen: real layout/geometry (§18) — views still
 cascade top-left; needs LinearLayout stacking + margins + gravity.
+
+---
+
+## CM-019: Real Layout Engine — LayoutParams Capture + LinearLayout/FrameLayout Semantics + Float Signature Fix
+
+### Summary
+The renderer previously cascaded ALL views at the top-left with fixed spacing.
+Five fixes landed together to produce a REAL layout:
+
+1. **LayoutParams capture pipeline**:
+   - LayoutHelper.createLinear/createFrame/createScroll/createRelative
+     implemented in bridge_to_api — constructs a heap LayoutParams object
+     with width/height/gravity/margins fields (per Telegram LayoutHelper
+     source semantics: negative w/h = MATCH_PARENT/WP, margins dp-scaled).
+   - addView(View, params) — the engine reads the params object's fields
+     into the child's ViewShadow ViewNode (lp_width/lp_height/lp_gravity/
+     lp_margin_*).
+   - View.setGravity/setOrientation captured into ViewNode
+     (text_gravity, orientation).
+   - LayoutHelper force-bridged (added to the framework-class bypass list)
+     so the DEX path never produces incomplete params.
+
+2. **Renderer layout pass (two-phase measure + position)**:
+   - Phase 1: measure each child from its LayoutParams (WRAP_CONTENT →
+     measured text size; MATCH_PARENT → parent width; exact px).
+   - Phase 2: position — vertical LinearLayout stacks children top→bottom
+     with margins and CENTER_HORIZONTAL gravity; horizontal LinearLayout
+     (setOrientation(0)) lays children left→right as a centered row;
+     FrameLayout overlaps children at the origin with gravity centering.
+   - Text drawing honors text_gravity and word-wraps at view width.
+   - Parent-type detection via real class hierarchy (is_subclass_of).
+
+3. **CRITICAL: superclass map was built BEFORE multi-DEX injection** —
+   28557 secondary-DEX classes (SlideView, all Telegram UI classes) were
+   missing from class_to_superclass_, so is_subclass_of returned false for
+   every secondary-DEX class. Fixed: inject_secondary_dex_classes now
+   re-registers all classes in the map (28557 added).
+
+4. **CRITICAL: FLOAT args delivered as raw bits** — invoke-static and
+   invoke-*/range built args from registers without signature awareness.
+   For F params the register holds raw float BITS as INT32 (const/high16
+   is not float-typed): createFrame(IF) delivered height=0x42400000
+   (=1111490560) instead of 48. Fixed: signature-aware arg building in
+   BOTH invoke-static (35c) and invoke-*/range (3rc) — F params get
+   INT32→FLOAT32 reinterpretation; J/D params get wide-pair merging.
+
+5. **Pre-existing double-escaped '\n' literal** in the renderer text
+   splitting (compared against a 2-char sequence, never a real newline) —
+   line splitting never worked. Fixed with the rewrite.
+
+### Root Causes (proven by trace)
+```
+superclass map built at 978975; injection at 979036 → SmsView not in map
+  → is_subclass_of(SmsView, LinearLayout)=false → FrameLayout branch
+  → children overlapped at parent origin instead of stacking
+createFrame(IF) via 35c: height = 1111490560 (raw bits of 48.0f)
+createLinear(F,F,I,F,F,F,F) via 3rc: h = 0xC0000000, margins = 0x42000000
+```
+
+### Direct Evidence (after fix)
+```
+[EXP095-HIER] superclass map extended by 28557 secondary-DEX classes
+[EXP095-ADDVIEW-LP] child=3645 w=-2 h=-2 gravity=0x31 margins=(0,18,0,0)  ← title
+[EXP095-ADDVIEW-LP] child=3644 w=-2 h=-2 gravity=0x31 margins=(0,17,0,0)  ← description
+[EXP095-ADDVIEW-LP] child=3661 w=-2 h=42 gravity=0x1 margins=(0,32,0,0)   ← code fields
+(EXACTLY matching the Telegram source: createLinear(WRAP,WRAP,CENTER|TOP,0,18,0,0))
+```
+
+### Render Tree (final)
+```
+SmsView (0,0 1080x1920)
+├── icon FrameLayout (540,46) — RLottieImageView 64px
+├── "Enter code" (506,100) centered
+├── "We've sent an SMS...+1 5551234567." (311,153) centered 458px
+├── code container (540,221) → 5 fields at x=540,581,622,663,704 (ROW)
+├── LoadingTextView (540,281)
+└── bottom FrameLayout (0,317) → "Didn't get the code?" / "999+"
+```
+
+### Visual Evidence
+- Before: 3812 pixels, everything cascaded top-left, garbage y values
+- After: 42639 pixels (11x from phase start), correct vertical structure,
+  horizontal code-field row, centered text
+- uNote regression: 23472 unchanged; OX: 0 (pre-existing on main)
+
+### Status
+PROVEN — all fixes are GENERIC (LayoutParams capture, hierarchy queries,
+signature-aware args, LinearLayout/FrameLayout semantics). Remaining for
+full fidelity: view backgrounds/borders for code fields, colors, image
+decoding for the icon, density scaling (currently 1.0).

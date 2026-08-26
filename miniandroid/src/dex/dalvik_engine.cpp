@@ -354,6 +354,26 @@ size_t DalvikExecutionEngine::inject_secondary_dex_classes() {
     // Update DEX report aggregate counts so they reflect the merged state
     const_cast<uint32_t&>(dex_report_->classes_count) = (uint32_t)mutable_classes.size();
 
+    // EXP-095 (CM-019): Re-register ALL classes (original + injected) in the
+    // superclass map. The map is built BEFORE multi-DEX injection runs, so
+    // classes from secondary DEX files (e.g. SlideView → LinearLayout in
+    // classes3.dex) were missing — breaking is_subclass_of for every
+    // secondary-DEX class (layout detection, instanceof checks).
+    {
+        size_t added = 0;
+        for (const auto& cls : mutable_classes) {
+            if (!cls.superclass_name.empty()) {
+                if (class_to_superclass_.find(cls.name) == class_to_superclass_.end()) {
+                    added++;
+                }
+                class_to_superclass_[cls.name] = cls.superclass_name;
+            }
+        }
+        std::cerr << "[EXP095-HIER] superclass map extended by " << added
+                  << " secondary-DEX classes (total "
+                  << class_to_superclass_.size() << ")" << std::endl;
+    }
+
     return injected_count;
 }
 
@@ -2275,6 +2295,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         class_descriptor.find("Ljava/lang/String;") == 0 ||
         class_descriptor.find("Landroid/text/TextUtils;") == 0 ||
         class_descriptor.find("Ljava/io/File;") == 0 ||
+        // EXP-095 (CM-019): LayoutHelper.createLinear/createFrame must go to
+        // the bridge so the returned LayoutParams object carries ALL fields
+        // (width/height/gravity/margins). The DEX path executes for the
+        // first 10 calls before the method throttle kicks in and produces
+        // params with missing margins (setMargins is not fully bridged).
+        class_descriptor.find("Lorg/telegram/ui/Components/LayoutHelper;") == 0 ||
         // EXP-088+ Phase 5: desugared Java 8 ConcurrentHashMap.
         class_descriptor.find("Lj$/util/concurrent/ConcurrentHashMap;") == 0 ||
         class_descriptor.find("Ljava/util/concurrent/ConcurrentHashMap;") == 0) {
@@ -4590,9 +4616,97 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 uint16_t first_reg = bytecode_[pc_ + 2];   // CCCC = first register
 
                 // Build args from consecutive registers
+                // EXP-095 (CM-019): SIGNATURE-AWARE arg building (same as
+                // invoke-static 35c). Per the method proto, wide params (J/D)
+                // consume two registers and FLOAT (F) params carry raw float
+                // BITS in an INT32 register (const/high16 is not float-typed).
+                // Without this, LayoutHelper.createLinear(F,F,I,F,F,F,F) via
+                // /range delivered heights like 0xC0000000 and margins like
+                // 0x42000000 (raw float bits) into the layout engine.
                 std::vector<DalvikValue> args;
-                for (uint8_t i = 0; i < argc; ++i) {
-                    args.push_back(get_register(first_reg + i));
+                {
+                    std::string range_proto = "<unknown>";
+                    if (dex_report_) {
+                        range_proto = resolve_method_proto_for_dex(method_idx, current_dex_index_);
+                    }
+                    std::vector<std::string> param_types;
+                    if (range_proto != "<unknown>") {
+                        size_t lp = range_proto.find('(');
+                        size_t rp = range_proto.find(')');
+                        if (lp != std::string::npos && rp != std::string::npos && rp > lp) {
+                            std::string params = range_proto.substr(lp + 1, rp - lp - 1);
+                            size_t i = 0;
+                            while (i < params.size()) {
+                                char c = params[i];
+                                if (c == 'L') {
+                                    size_t semi = params.find(';', i);
+                                    if (semi == std::string::npos) break;
+                                    param_types.push_back(params.substr(i, semi - i + 1));
+                                    i = semi + 1;
+                                } else if (c == '[') {
+                                    size_t start = i;
+                                    while (i < params.size() && params[i] == '[') i++;
+                                    if (i < params.size() && params[i] == 'L') {
+                                        size_t semi = params.find(';', i);
+                                        if (semi == std::string::npos) break;
+                                        param_types.push_back(params.substr(start, semi - start + 1));
+                                        i = semi + 1;
+                                    } else {
+                                        param_types.push_back(params.substr(start, i - start + 1));
+                                        i += 1;
+                                    }
+                                } else {
+                                    param_types.push_back(std::string(1, c));
+                                    i += 1;
+                                }
+                            }
+                        }
+                    }
+                    if (param_types.empty()) {
+                        for (uint8_t i = 0; i < argc; ++i) {
+                            args.push_back(get_register(first_reg + i));
+                        }
+                    } else {
+                        uint32_t reg_idx = 0;
+                        for (size_t p = 0; p < param_types.size() && reg_idx < 256 && (uint8_t)reg_idx < argc; ++p) {
+                            const std::string& pt = param_types[p];
+                            if (pt == "J" || pt == "D") {
+                                DalvikValue lo = get_register(first_reg + reg_idx);
+                                if (lo.type == DalvikType::INT64) {
+                                    if (pt == "D") {
+                                        double dv; int64_t bits = lo.long_val;
+                                        std::memcpy(&dv, &bits, sizeof(dv));
+                                        args.push_back(DalvikValue::make_double(dv));
+                                    } else {
+                                        args.push_back(lo);
+                                    }
+                                } else {
+                                    DalvikValue hi = get_register(first_reg + reg_idx + 1);
+                                    int64_t combined = (static_cast<int64_t>(hi.int_val) << 32) |
+                                                       (static_cast<uint32_t>(lo.int_val));
+                                    if (pt == "D") {
+                                        double dv; int64_t bits = combined;
+                                        std::memcpy(&dv, &bits, sizeof(dv));
+                                        args.push_back(DalvikValue::make_double(dv));
+                                    } else {
+                                        args.push_back(DalvikValue::make_long(combined));
+                                    }
+                                }
+                                reg_idx += 2;
+                            } else {
+                                DalvikValue v = get_register(first_reg + reg_idx);
+                                if (pt == "F" && v.type == DalvikType::INT32) {
+                                    float f;
+                                    int32_t bits = v.int_val;
+                                    std::memcpy(&f, &bits, sizeof(f));
+                                    args.push_back(DalvikValue::make_float(f));
+                                } else {
+                                    args.push_back(v);
+                                }
+                                reg_idx += 1;
+                            }
+                        }
+                    }
                 }
 
                 // Resolve method name
@@ -7532,7 +7646,21 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
             }
             reg_idx += 2;
         } else {
-            args.push_back(get_register(regs[reg_idx]));
+            DalvikValue v = get_register(regs[reg_idx]);
+            // EXP-095 (CM-019): signature-aware FLOAT conversion.
+            // For 'F' params the register holds raw float BITS as INT32
+            // (e.g. const/high16 v1, 0x42400000 loads 48.0f as raw bits —
+            // const opcodes are not float-typed). Per the method signature
+            // we reinterpret: LayoutHelper.createFrame(IF) previously
+            // delivered height=0x42400000=1111490560 instead of 48.
+            if (pt == "F" && v.type == DalvikType::INT32) {
+                float f;
+                int32_t bits = v.int_val;
+                std::memcpy(&f, &bits, sizeof(f));
+                args.push_back(DalvikValue::make_float(f));
+            } else {
+                args.push_back(v);
+            }
             reg_idx += 1;
         }
     }
@@ -9103,6 +9231,143 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         // insert(int, X), reverse(), deleteCharAt, setLength etc. can be
         // added when evidence shows they're on a hot path.
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-095 (CM-019): LayoutHelper.createLinear/createFrame/... — construct a
+    // REAL LayoutParams heap object.
+    //
+    // Per Telegram LayoutHelper source:
+    //   createLinear(w, h, gravity, l, t, r, b):
+    //     layoutParams = new LinearLayout.LayoutParams(getSize(w), getSize(h));
+    //     layoutParams.setMargins(dp(l), dp(t), dp(r), dp(b));
+    //     layoutParams.gravity = gravity;
+    // Negative w/h are MATCH_PARENT(-1)/WRAP_CONTENT(-2); positive values are
+    // dp-scaled (density=1 on this runtime → dp(x)==x). Margins always dp.
+    // Gravity bits (AOSP Gravity): LEFT=3, CENTER_HORIZONTAL=1, RIGHT=5,
+    // TOP=0x30, CENTER_VERTICAL=0x10, BOTTOM=0x50, CENTER=0x11.
+    //
+    // The result flows into ViewGroup.addView(view, params); the engine-side
+    // addView capture below reads these fields into the ViewShadow ViewNode,
+    // which the renderer's layout pass consumes.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("LayoutHelper") != std::string::npos &&
+        (method == "createLinear" || method == "createFrame" ||
+         method == "createScroll" || method == "createRelative" ||
+         method == "createView")) {
+        auto arg_int = [&](size_t i, int def) -> int {
+            if (i >= args.size()) return def;
+            const auto& a = args[i];
+            if (a.type == DalvikType::INT32) return a.int_val;
+            if (a.type == DalvikType::FLOAT32) return static_cast<int>(a.float_val);
+            if (a.type == DalvikType::FLOAT64) return static_cast<int>(a.double_val);
+            if (a.type == DalvikType::INT64) return static_cast<int>(a.long_val);
+            return def;
+        };
+        int w = arg_int(0, -2);
+        int h = arg_int(1, -2);
+        int gravity = 0, ml = 0, mt = 0, mr = 0, mb = 0;
+        // Overloads: (w,h) | (w,h,gravity) | (w,h,gravity,l,t,r,b) |
+        // (w,h,weight) 4-arg | (w,h,gravity,l,t,r,b,weight)
+        if (args.size() >= 8) {
+            gravity = arg_int(2, 0);
+            ml = arg_int(3, 0); mt = arg_int(4, 0);
+            mr = arg_int(5, 0); mb = arg_int(6, 0);
+        } else if (args.size() >= 7) {
+            // createScroll(w, h, gravity) + others; or (w,h,gravity,l,t,r)
+            // Telegram uses 7-arg mostly as (w,h,gravity,l,t,r,b) — all int.
+            gravity = arg_int(2, 0);
+            ml = arg_int(3, 0); mt = arg_int(4, 0);
+            mr = arg_int(5, 0); mb = arg_int(6, 0);
+        } else if (args.size() >= 3) {
+            gravity = arg_int(2, 0);
+        }
+        uint32_t lp_id = heap_.allocate(
+            method == "createLinear" ? "Landroid/widget/LinearLayout$LayoutParams;"
+            : method == "createRelative" ? "Landroid/widget/RelativeLayout$LayoutParams;"
+            : method == "createScroll" ? "Landroid/widget/FrameLayout$LayoutParams;"
+            : "Landroid/view/ViewGroup$LayoutParams;", pc_, 0);
+        auto set_f = [&](const char* name, int v) {
+            DalvikValue val;
+            val.type = DalvikType::INT32;
+            val.int_val = v;
+            heap_.set_object_field(lp_id, name, val);
+        };
+        set_f("width", w);
+        set_f("height", h);
+        set_f("gravity", gravity);
+        set_f("leftMargin", ml);
+        set_f("topMargin", mt);
+        set_f("rightMargin", mr);
+        set_f("bottomMargin", mb);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        DalvikValue r;
+        r.type = DalvikType::OBJECT_REF;
+        r.object_id = lp_id;
+        r.class_desc = "Landroid/view/ViewGroup$LayoutParams;";
+        result = r;
+        return true;
+    }
+
+    // EXP-095 (CM-019): addView(View child, ViewGroup.LayoutParams params) —
+    // capture the params into the child's ViewNode so the renderer can lay
+    // out with real geometry. The ViewShadow's addView handler (which links
+    // the tree) runs via the normal dispatch path; here we only enrich.
+    // args: [parent, child, params?]
+    if ((method == "addView" || method == "addViewInLayout") &&
+        args.size() >= 3 &&
+        args[1].type == DalvikType::OBJECT_REF && args[1].object_id != 0 &&
+        args[2].type == DalvikType::OBJECT_REF && args[2].object_id != 0 &&
+        heap_.has_object(args[2].object_id)) {
+        uint32_t child_id = args[1].object_id;
+        uint32_t lp_id = args[2].object_id;
+        auto read_int = [&](const char* fname, int def) -> int {
+            auto fv = heap_.get_object_field(lp_id, fname);
+            if (fv.has_value() && fv->type == DalvikType::INT32) return fv->int_val;
+            return def;
+        };
+        int w = read_int("width", INT_MIN);
+        int h = read_int("height", INT_MIN);
+        int gravity = read_int("gravity", 0);
+        int ml = read_int("leftMargin", 0);
+        int mt = read_int("topMargin", 0);
+        int mr = read_int("rightMargin", 0);
+        int mb = read_int("bottomMargin", 0);
+        if (shadow_registry_ != nullptr) {
+            auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+            if (vs != nullptr) {
+                vs->set_layout_params(child_id, w, h, gravity, ml, mt, mr, mb);
+                std::cerr << "[EXP095-ADDVIEW-LP] child=" << child_id
+                          << " w=" << w << " h=" << h
+                          << " gravity=0x" << std::hex << gravity << std::dec
+                          << " margins=(" << ml << "," << mt << "," << mr << "," << mb << ")"
+                          << " parent_class=" << class_name
+                          << std::endl;
+            }
+        }
+    }
+
+    // EXP-095 (CM-019): TextView/LinearLayout.setGravity — text alignment
+    // inside the view. Per AOSP Gravity constants.
+    if (method == "setGravity" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF &&
+        args[1].type == DalvikType::INT32 && shadow_registry_ != nullptr) {
+        auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+        if (vs != nullptr) {
+            vs->set_text_gravity(args[0].object_id, args[1].int_val);
+        }
+    }
+
+    // EXP-095 (CM-019): LinearLayout.setOrientation(int) — 0=HORIZONTAL,
+    // 1=VERTICAL. Captured so the renderer lays out children correctly
+    // (e.g. CodeFieldContainer's 5 digit fields are a HORIZONTAL row).
+    if (method == "setOrientation" && args.size() >= 2 &&
+        args[0].type == DalvikType::OBJECT_REF &&
+        args[1].type == DalvikType::INT32 && shadow_registry_ != nullptr) {
+        auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+        if (vs != nullptr) {
+            vs->set_orientation(args[0].object_id, args[1].int_val);
+        }
     }
 
     // EXP-057: Debug — log ALL bridge_to_api calls for isEmpty from onCreate.
