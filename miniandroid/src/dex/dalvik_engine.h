@@ -1657,6 +1657,8 @@ public:
     std::string package_name_;
     int version_code_ = 0;
     std::string version_name_;
+    // EXP-093/F008: Permission state map (permission_name → 0=GRANTED, -1=DENIED)
+    std::map<std::string, int> permission_state_;
     // Map: heap object_id (InputStream) → (asset_name, line_index)
     std::map<uint32_t, std::pair<std::string, size_t>> open_assets_;
 private:
