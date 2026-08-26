@@ -756,9 +756,18 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     // phone EditText field. This is GENERIC — uses dispatch_text_input_by_class
                     // which searches for any view whose class contains "PhoneView$3"
                     // (the phone number EditText in Telegram's PhoneView).
+                    // EXP-094 (CM-018 follow-up): Input the NATIONAL number only
+                    // ("5551234567"), WITHOUT "+" and WITHOUT the country code.
+                    // Per LoginActivity.PhoneView.onNextPressed source:
+                    //   phoneNumber = "+" + codeField.getText() + " " + phoneField.getText()
+                    // codeField receives the country code ("1") from setCountry
+                    // (triggered by the getNearestDc response), so the phone field
+                    // must contain only the national part. Typing "+15551234567"
+                    // here previously produced the doubled prefix "+1 +15551234567"
+                    // in the Bundle "phone" value and the SMS screen text.
                     std::cerr << "[EXP089-M5] Dispatching phone input into PhoneView$3..." << std::endl;
                     bool input_ok = dalvik_engine_.dispatch_text_input_by_class(
-                        "PhoneView$3", "+15551234567");
+                        "PhoneView$3", "5551234567");
                     std::cerr << "[EXP089-M5] Text input result: "
                               << (input_ok ? "DISPATCHED" : "FAILED") << std::endl;
 
@@ -1018,36 +1027,68 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
             // EXP-090: Search for the "current visible" fragment view by class name.
             // Fragment views (PhoneView, SmsView) are created by DEX bytecode and
             // may not be connected to the root in the ViewShadow tree (orphan nodes).
-            // Priority: SmsView > PhoneView > root
-            // Always search — the root may have old IntroActivity children
-            // while the actual current view is an orphan SmsView/PhoneView.
+            // EXP-094 (CM-018): Priority is now:
+            //   1. The view that last received setParams (the app's OWN signal
+            //      for "this is the active page" — the app configures exactly
+            //      the page it is showing).
+            //   2. Newest SmsView (suffix match)  3. Newest PhoneView  4. root.
             {
-                uint32_t found_sms = 0, found_phone = 0;
-                for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
-                    if (!node_ptr) continue;
-                    if (node_ptr->class_desc.find("SmsView") != std::string::npos && found_sms == 0) {
-                        found_sms = id;
-                    }
-                    if (node_ptr->class_desc.find("PhoneView") != std::string::npos &&
-                        node_ptr->class_desc.find("$") == std::string::npos &&
-                        found_phone == 0) {
-                        found_phone = id;
+                uint32_t chosen_root = 0;
+                // 1. The app's own navigation signal: last setParams receiver.
+                uint32_t params_view = dalvik_engine_.last_set_params_view();
+                if (params_view != 0) {
+                    const auto* pv = view_shadow->find_node(params_view);
+                    if (pv && !pv->children.empty()) {
+                        std::cerr << "[EXP094-RENDER] Using last-setParams view as render root: view_id="
+                                  << params_view << " class=" << pv->class_desc
+                                  << " children=" << pv->children.size() << std::endl;
+                        chosen_root = params_view;
                     }
                 }
-                if (found_sms != 0) {
-                    const auto* sms_node = view_shadow->find_node(found_sms);
-                    std::cerr << "[EXP090-RENDER] Using SmsView as render root: view_id=" << found_sms
-                              << " class=" << (sms_node ? sms_node->class_desc : "?")
-                              << " children=" << (sms_node ? sms_node->children.size() : 0)
-                              << std::endl;
-                    root_id = found_sms;
-                } else if (found_phone != 0) {
-                    const auto* phone_node = view_shadow->find_node(found_phone);
-                    std::cerr << "[EXP090-RENDER] Using PhoneView as render root: view_id=" << found_phone
-                              << " class=" << (phone_node ? phone_node->class_desc : "?")
-                              << " children=" << (phone_node ? phone_node->children.size() : 0)
-                              << std::endl;
-                    root_id = found_phone;
+                if (chosen_root == 0) {
+                    uint32_t found_sms = 0, found_phone = 0;
+                    // EXP-094: SUFFIX match on the simple class name — the real
+                    // SmsView/PhoneView classes END with "SmsView;"/"PhoneView;"
+                    // (e.g. "Lorg/telegram/ui/LoginActivity$LoginActivitySmsView;")
+                    // while their inner/lambda classes end with "$2;",
+                    // "$$ExternalSyntheticLambda4;", etc. A plain find("SmsView")
+                    // matches lambdas; a find("$")-exclusion matches nothing
+                    // because the OUTER separator is also "$".
+                    auto ends_with = [](const std::string& s, const std::string& suffix) {
+                        return s.size() >= suffix.size() &&
+                               s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0;
+                    };
+                    for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
+                        if (!node_ptr) continue;
+                        if (ends_with(node_ptr->class_desc, "SmsView;")) {
+                            if (found_sms == 0 || id > found_sms) {
+                                found_sms = id;
+                            }
+                        }
+                        if (ends_with(node_ptr->class_desc, "PhoneView;")) {
+                            if (found_phone == 0 || id > found_phone) {
+                                found_phone = id;
+                            }
+                        }
+                    }
+                    if (found_sms != 0) {
+                        const auto* sms_node = view_shadow->find_node(found_sms);
+                        std::cerr << "[EXP090-RENDER] Using SmsView as render root: view_id=" << found_sms
+                                  << " class=" << (sms_node ? sms_node->class_desc : "?")
+                                  << " children=" << (sms_node ? sms_node->children.size() : 0)
+                                  << std::endl;
+                        chosen_root = found_sms;
+                    } else if (found_phone != 0) {
+                        const auto* phone_node = view_shadow->find_node(found_phone);
+                        std::cerr << "[EXP090-RENDER] Using PhoneView as render root: view_id=" << found_phone
+                                  << " class=" << (phone_node ? phone_node->class_desc : "?")
+                                  << " children=" << (phone_node ? phone_node->children.size() : 0)
+                                  << std::endl;
+                        chosen_root = found_phone;
+                    }
+                }
+                if (chosen_root != 0) {
+                    root_id = chosen_root;
                 }
             }
 
