@@ -27,6 +27,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <climits>
 #include <vector>
 
 namespace miniandroid { namespace framework {
@@ -511,6 +512,28 @@ public:
         std::string long_click_listener_class;
         uint32_t touch_listener_id = 0;
         std::string touch_listener_class;
+        // EXP-095 (CM-019): Layout params captured from
+        // addView(view, LayoutHelper.createLinear/createFrame(params)).
+        // Per AOSP ViewGroup.LayoutParams / MarginLayoutParams:
+        //   lp_width/lp_height: -1 = MATCH_PARENT, -2 = WRAP_CONTENT,
+        //                        positive = exact px (density=1 on this runtime).
+        //   lp_gravity: AOSP Gravity bits (CENTER_VERTICAL=0x10, CENTER_HORIZONTAL=1,
+        //               CENTER=0x11, TOP=0x30, LEFT=3, RIGHT=5, BOTTOM=0x50).
+        //   margins in px.
+        // Sentinel INT_MIN = "no LayoutParams seen" (fall back to defaults).
+        int lp_width = INT_MIN;
+        int lp_height = INT_MIN;
+        int lp_gravity = 0;
+        int lp_margin_left = 0, lp_margin_top = 0;
+        int lp_margin_right = 0, lp_margin_bottom = 0;
+        // EXP-095: View.setGravity text alignment (TextView).
+        int text_gravity = 0;
+        // EXP-095: LinearLayout orientation (0=HORIZONTAL, 1=VERTICAL).
+        // -1 = unset (default VERTICAL per LinearLayout docs).
+        int orientation = -1;
+        // EXP-095: ScrollView scrolling container marker (content laid out
+        // inside, potentially taller than screen).
+        bool is_scroll_container = false;
     };
 
     std::string name() const override { return "View"; }
@@ -617,6 +640,36 @@ public:
     // Used to find the startMessagingButton (a TextView) without knowing
     // its Android view_id. Returns the most-recently-created match.
     uint32_t find_by_class_substring(const std::string& substring) const;
+
+    // EXP-095 (CM-019): Store captured layout params on a ViewNode.
+    // Called by the engine when addView(view, params) / setLayoutParams
+    // is observed with a LayoutParams heap object carrying the fields
+    // (width, height, gravity, leftMargin, topMargin, rightMargin,
+    // bottomMargin) — produced by LayoutHelper.createLinear/createFrame.
+    void set_layout_params(uint32_t view_id, int w, int h, int gravity,
+                           int ml, int mt, int mr, int mb) {
+        auto* n = get_or_create_node(view_id, "");
+        if (n == nullptr) return;
+        n->lp_width = w;
+        n->lp_height = h;
+        n->lp_gravity = gravity;
+        n->lp_margin_left = ml;
+        n->lp_margin_top = mt;
+        n->lp_margin_right = mr;
+        n->lp_margin_bottom = mb;
+    }
+
+    // EXP-095: Store TextView.setGravity (text alignment inside the view).
+    void set_text_gravity(uint32_t view_id, int gravity) {
+        auto* n = get_or_create_node(view_id, "");
+        if (n != nullptr) n->text_gravity = gravity;
+    }
+
+    // EXP-095: Store LinearLayout.setOrientation (0=HORIZONTAL, 1=VERTICAL).
+    void set_orientation(uint32_t view_id, int orientation) {
+        auto* n = get_or_create_node(view_id, "");
+        if (n != nullptr) n->orientation = orientation;
+    }
 
     // EXP-060: Return ALL view_ids whose class descriptor contains
     // `substring` AND that have a click listener registered.
