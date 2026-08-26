@@ -7831,12 +7831,20 @@ bool DalvikExecutionEngine::execute_if_eqz(uint32_t pc, InstructionTrace& trace)
     //   causing the branch to NOT be taken — which is the OPPOSITE of correct
     //   behavior. This affects ALL instance-of results in conditional branches.
     //   Same for BYTE, SHORT, CHAR — all integer-like types with int_val.
+    // EXP-093/F014: Added INT64, FLOAT32, FLOAT64 to zero-ness check.
+    // Per AOSP: if-eqz/if-nez treat ALL primitive types' zero as false.
+    // Previously INT64 (long 0L), FLOAT32 (0.0f), FLOAT64 (0.0d) were
+    // NOT treated as zero, causing if-eqz to return is_zero=FALSE for
+    // a zero long/double/float — the OPPOSITE of correct behavior.
     bool is_zero = (val.type == DalvikType::NULL_REF) ||
                    (val.type == DalvikType::INT32 && val.int_val == 0) ||
                    (val.type == DalvikType::BOOLEAN && val.int_val == 0) ||
                    (val.type == DalvikType::BYTE && val.int_val == 0) ||
                    (val.type == DalvikType::SHORT && val.int_val == 0) ||
                    (val.type == DalvikType::CHAR && val.int_val == 0) ||
+                   (val.type == DalvikType::INT64 && val.long_val == 0) ||
+                   (val.type == DalvikType::FLOAT32 && val.float_val == 0.0f) ||
+                   (val.type == DalvikType::FLOAT64 && val.double_val == 0.0) ||
                    (val.type == DalvikType::OBJECT_REF && val.object_id == 0) ||
                    (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET) ||
                    (val.type == DalvikType::VOID_);
@@ -7927,12 +7935,17 @@ bool DalvikExecutionEngine::execute_if_nez(uint32_t pc, InstructionTrace& trace)
     // was treated as non-zero, causing branches that skipped important
     // method calls (e.g., onFragmentCreate was never called because
     // needAddFragmentToStack returned VOID_ on a null delegate).
+    // EXP-093/F014: Added INT64, FLOAT32, FLOAT64 to zero-ness check
+    // (same as if-eqz handler above).
     bool is_nonzero = !(val.type == DalvikType::NULL_REF ||
                        (val.type == DalvikType::INT32 && val.int_val == 0) ||
                        (val.type == DalvikType::BOOLEAN && val.int_val == 0) ||
                        (val.type == DalvikType::BYTE && val.int_val == 0) ||
                        (val.type == DalvikType::SHORT && val.int_val == 0) ||
                        (val.type == DalvikType::CHAR && val.int_val == 0) ||
+                       (val.type == DalvikType::INT64 && val.long_val == 0) ||
+                       (val.type == DalvikType::FLOAT32 && val.float_val == 0.0f) ||
+                       (val.type == DalvikType::FLOAT64 && val.double_val == 0.0) ||
                        (val.type == DalvikType::OBJECT_REF && val.object_id == 0) ||
                        (val.type == DalvikType::UNINITIALIZED || val.type == DalvikType::REGISTER_UNSET) ||
                        (val.type == DalvikType::VOID_));
