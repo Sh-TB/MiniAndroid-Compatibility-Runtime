@@ -238,6 +238,11 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         }
         dalvik_engine_.set_per_dex_raw_data(std::move(per_dex_raw));
         dalvik_engine_.set_apk_path(result.apk_info.apk_path);
+        // EXP-093/F011: Set manifest-derived package identity
+        dalvik_engine_.set_package_info(
+            result.apk_info.package_name,
+            result.apk_info.version_code,
+            result.apk_info.version_name);
         dalvik_engine_.build_class_dex_index(result.dex_report);
         // EXP-088+ Phase 1.2: inject_secondary_dex_classes() is called
         // from inside execute_apk_with_activity() (after dex_report_ is
