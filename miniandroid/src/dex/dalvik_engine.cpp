@@ -8910,29 +8910,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // P0.10 — PackageManager.getPackageInfo → PackageInfo (with defaults)
+    // P0.10 — PackageManager.getPackageInfo → PackageInfo
+    // EXP-093/F011: Use manifest-derived package identity instead of hardcoded
+    // Telegram values. This is a GENERIC fix — affects ALL APKs.
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getPackageInfo" &&
         class_name.find("PackageManager") != std::string::npos) {
-        // Allocate a fresh PackageInfo object on the heap. We populate it
-        // with sensible defaults in the iget handler when fields are read.
         uint32_t obj_id = heap_.allocate("Landroid/content/pm/PackageInfo;",
                                          pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
         result = DalvikValue::make_object(obj_id,
                                           "Landroid/content/pm/PackageInfo;");
-        // Pre-populate known fields with defaults
+        // EXP-093/F011: Use manifest-derived values, not hardcoded Telegram values
         DalvikValue version_code;
         version_code.type = DalvikType::INT32;
-        version_code.int_val = 9999;
+        version_code.int_val = version_code_;  // from manifest
         heap_.set_object_field(obj_id, "versionCode", version_code);
         DalvikValue version_name;
         version_name.type = DalvikType::STRING_REF;
-        version_name.string_val = "9.9.9";
+        version_name.string_val = version_name_.empty() ? "1.0" : version_name_;
         version_name.ref_id = 0;
         heap_.set_object_field(obj_id, "versionName", version_name);
         DalvikValue package_name;
         package_name.type = DalvikType::STRING_REF;
-        package_name.string_val = "org.telegram.messenger.web";
+        package_name.string_val = package_name_.empty() ? "unknown.package" : package_name_;
         package_name.ref_id = 0;
         heap_.set_object_field(obj_id, "packageName", package_name);
         status = ApiCallTrace::Status::IMPLEMENTED;
@@ -8941,11 +8941,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
     // ────────────────────────────────────────────────────────────────────────
     // P0.8 — Context.getPackageName → String
+    // EXP-093/F011: Use manifest-derived package name
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getPackageName" &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
-        result = DalvikValue::make_string("org.telegram.messenger.web", 1);
+        result = DalvikValue::make_string(
+            package_name_.empty() ? "unknown.package" : package_name_, 1);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
