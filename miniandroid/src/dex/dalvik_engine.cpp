@@ -1989,6 +1989,26 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
     }
 
+    // EXP-093: TextView.getText() intercept — return ViewNode.text
+    // Per AOSP: TextView.getText() returns the CharSequence that was set
+    // via setText(). The DEX bytecode for getText() builds a garbage "View"
+    // string via StringBuilder. We intercept and return ViewNode.text.
+    if (method_name == "getText" &&
+        (declaring_class.find("TextView") != std::string::npos ||
+         declaring_class.find("EditText") != std::string::npos) &&
+        shadow_registry_ != nullptr) {
+        auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+        if (view_shadow != nullptr && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            const auto* node = view_shadow->find_node(args[0].object_id);
+            if (node != nullptr) {
+                return_val = DalvikValue::make_string(node->text, args[0].object_id);
+                recursion_depth_--;
+                return true;
+            }
+        }
+    }
+
     // EXP-071: Framework bypass — return false (let the caller bridge_to_api
     // handle these). Returning false here causes the recursive path to abort
     // and the caller's bridge_to_api() runs, where we have specific handlers.
@@ -4357,6 +4377,15 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue idx_val = get_register(vCC); \
                     DalvikValue src_val = get_register(vAA); \
                     int32_t idx = (idx_val.type == DalvikType::INT32) ? idx_val.int_val : 0; \
+                    if (strcmp(op_name, "aput-object") == 0) { \
+                        std::cerr << "[EXP093-APUT] " << op_name \
+                                  << " v" << (int)vAA << "→arr[v" << (int)vBB \
+                                  << "] idx_v" << (int)vCC \
+                                  << " arr_type=" << (int)arr_val.type \
+                                  << " arr_obj=" << arr_val.object_id \
+                                  << " src_type=" << (int)src_val.type \
+                                  << " idx=" << idx << std::endl; \
+                    } \
                     if (arr_val.type == DalvikType::OBJECT_REF && \
                         heap_.has_object(arr_val.object_id)) { \
                         std::string field = "array[" + std::to_string(idx) + "]"; \
@@ -5046,24 +5075,120 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             //
             // For now we only support catch-all handlers. Typed catches
             // require class hierarchy resolution which is a future task.
-            // EXP-071: filled-new-array (0x24) and filled-new-array/range (0x25)
-            // These create an array and fill it with register values.
-            // Format 35c/3rc: 3 code units.
-            // For now, just create the array and advance PC — the values
-            // are in registers and not commonly read back.
+            // EXP-093: filled-new-array (0x24) and filled-new-array/range (0x25)
+            // Per AOSP: Creates a new array of the specified type and fills it
+            // with the contents of the specified source registers.
+            //
+            // Format 35c: [B|A|op] [type@CCCC] [D|E|F|G]
+            //   A = array size (number of registers, 0-5)
+            //   B = bit string indicating which registers (D=bit0, E=bit1, F=bit2, G=bit3, bit4)
+            //   type@CCCC = type descriptor
+            //   D,E,F,G = source registers
+            //
+            // Format 3rc: [op] [type@CCCC] [BBBB] [registers CCCC..CCCC+AA-1]
+            //   AA = array size (count of registers)
+            //   CCCC = first register
+            //
+            // The array elements come from the source registers IN ORDER.
+            // This is critical for Java varargs: Object... args compiles as
+            // filled-new-array {v_arg1, v_arg2, ...}, type@Object
             case Opcode::FILLED_NEW_ARRAY:
             case Opcode::FILLED_NEW_ARRAY_RANGE: {
                 trace.opcode_name = (opcode == Opcode::FILLED_NEW_ARRAY) ?
                     "filled-new-array" : "filled-new-array/range";
-                // Format 35c/3rc: [B|A|op] [type@CCCC] [regs] or [op] [type@CCCC] [regs...]
-                // The result goes into the result register (move-result-object follows).
-                // For now, create a generic array object.
-                uint32_t arr_id = heap_.allocate("Larray;", pc_, 0);
+
+                uint16_t type_idx;
+                std::vector<uint8_t> src_regs;
+
+                if (opcode == Opcode::FILLED_NEW_ARRAY) {
+                    // Format 35c: [B|A|op] [type@CCCC] [D|E|F|G]
+                    uint8_t arg_count = (bytecode_[pc_] >> 4) & 0x0F;
+                    uint8_t reg_bits = (bytecode_[pc_] >> 8) & 0xFF;
+                    type_idx = bytecode_[pc_ + 1];
+
+                    // Decode register list from the bit string
+                    // Bits 0-3 → D, E, F, G; bit 4 → 5th register
+                    for (int i = 0; i < arg_count && i < 5; i++) {
+                        if (reg_bits & (1 << i)) {
+                            // Each register is 4 bits from the next code unit
+                            uint8_t reg = (bytecode_[pc_ + 2] >> (i * 4)) & 0x0F;
+                            src_regs.push_back(reg);
+                        }
+                    }
+                    // Special case: 5th register is in the high nibble of the 3rd code unit
+                    if (arg_count == 5) {
+                        uint8_t reg = (bytecode_[pc_ + 2] >> 16) & 0x0F;
+                        // Actually for 35c format: the registers are encoded as
+                        // 4-bit fields in the third code unit: [D|C|B|A] (low to high)
+                        // Let me re-parse: for arg_count=N, registers are in the
+                        // nibbles of code_unit[pc+2]: D=bits 0-3, E=bits 4-7, etc.
+                    }
+                    // Re-parse: for 35c, all registers are in code_unit[pc+2]
+                    // as 4-bit nibbles: D=(cu2>>0)&0xF, E=(cu2>>4)&0xF, etc.
+                    src_regs.clear();
+                    uint16_t cu2 = bytecode_[pc_ + 2];
+                    for (int i = 0; i < arg_count && i < 5; i++) {
+                        src_regs.push_back((cu2 >> (i * 4)) & 0x0F);
+                    }
+                } else {
+                    // Format 3rc: [op|AA] [type@CCCC] [CCCC]
+                    uint8_t arg_count = (bytecode_[pc_] >> 8) & 0xFF;
+                    type_idx = bytecode_[pc_ + 1];
+                    uint16_t first_reg = bytecode_[pc_ + 2];
+                    for (int i = 0; i < arg_count; i++) {
+                        src_regs.push_back((first_reg + i) & 0xFF);
+                    }
+                }
+
+                // Resolve type descriptor
+                std::string type_desc = "<unknown>";
+                if (dex_report_) {
+                    auto class_it = class_info_index_.find("Larray;");
+                    (void)class_it;
+                }
+                // Use per-DEX type resolution
+                if (is_multidex_ && current_dex_index_ < per_dex_raw_data_.size()) {
+                    const auto& raw = per_dex_raw_data_[current_dex_index_];
+                    if (raw.size() >= sizeof(dex::DexHeader)) {
+                        dex::DexHeader hdr;
+                        std::memcpy(&hdr, raw.data(), sizeof(dex::DexHeader));
+                        if (type_idx < hdr.type_ids_size) {
+                            uint32_t desc_str_idx;
+                            std::memcpy(&desc_str_idx, raw.data() + hdr.type_ids_off + type_idx * 4, 4);
+                            uint32_t sdo;
+                            std::memcpy(&sdo, raw.data() + hdr.string_ids_off + desc_str_idx * 4, 4);
+                            size_t pos = sdo;
+                            while (pos < raw.size() && raw[pos] & 0x80) pos++;
+                            pos++;
+                            size_t end = pos;
+                            while (end < raw.size() && raw[end] != 0) end++;
+                            type_desc = std::string(reinterpret_cast<const char*>(raw.data() + pos), end - pos);
+                        }
+                    }
+                }
+
+                // Allocate the array
+                uint32_t arr_id = heap_.allocate(type_desc.empty() ? "Larray;" : type_desc, pc_, 0);
+                // Set array length
+                heap_.set_object_field(arr_id, "__array_length__",
+                    DalvikValue::make_int(static_cast<int32_t>(src_regs.size())));
+
+                // Fill array elements from source registers
+                for (size_t i = 0; i < src_regs.size(); i++) {
+                    DalvikValue src_val = get_register(src_regs[i]);
+                    std::string field_name = "array[" + std::to_string(i) + "]";
+                    heap_.set_object_field(arr_id, field_name, src_val);
+                }
+
+                std::cerr << "[EXP093-FNA] filled-new-array type=" << type_desc
+                          << " count=" << src_regs.size()
+                          << " arr_id=" << arr_id << std::endl;
+
                 DalvikValue result_val;
                 result_val.type = DalvikType::OBJECT_REF;
                 result_val.object_id = arr_id;
-                result_val.class_desc = "Larray;";
-                // Store as last_invoke_return_ so move-result-object can read it
+                result_val.class_desc = type_desc.empty() ? "Larray;" : type_desc.c_str();
+                result_val.int_val = static_cast<int32_t>(src_regs.size());
                 last_invoke_return_ = result_val;
                 pc_ = pc_ + 3;
                 success = true;
@@ -10550,6 +10675,42 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // EXP-093: String.replace(CharSequence target, CharSequence replacement) → String
+    // Per OpenJDK: replaces each substring matching target with replacement.
+    // Critical for LocaleController.addNbsp which calls String.replace(" ", "\u00A0")
+    if (class_name == "Ljava/lang/String;" && method == "replace" && args.size() >= 3) {
+        std::string str = args[0].type == DalvikType::STRING_REF ? args[0].string_val : "";
+        std::string target, replacement;
+        // args[1] and args[2] are CharSequence (could be String or other)
+        if (args[1].type == DalvikType::STRING_REF) {
+            target = args[1].string_val;
+        } else if (args[1].type == DalvikType::OBJECT_REF && heap_.has_object(args[1].object_id)) {
+            auto sv = heap_.get_object_field(args[1].object_id, "value");
+            if (sv.has_value() && sv->type == DalvikType::STRING_REF) target = sv->string_val;
+        }
+        if (args[2].type == DalvikType::STRING_REF) {
+            replacement = args[2].string_val;
+        } else if (args[2].type == DalvikType::OBJECT_REF && heap_.has_object(args[2].object_id)) {
+            auto sv = heap_.get_object_field(args[2].object_id, "value");
+            if (sv.has_value() && sv->type == DalvikType::STRING_REF) replacement = sv->string_val;
+        }
+        // Simple string replace
+        if (!target.empty()) {
+            std::string result_str;
+            size_t pos = 0, prev = 0;
+            while ((pos = str.find(target, prev)) != std::string::npos) {
+                result_str += str.substr(prev, pos - prev);
+                result_str += replacement;
+                prev = pos + target.size();
+            }
+            result_str += str.substr(prev);
+            str = result_str;
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_string(str, 0);
+        return true;
+    }
+
     // EXP-093: Application.getString(int resid) → String
     // Per AOSP: Application delegates to Context.getString which delegates
     // to Resources.getString. We handle it the same way as Resources.getString.
@@ -11063,6 +11224,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_bool(eq);
             return true;
+        }
+    }
+
+    // EXP-093: TextView.getText() → String
+    // Per AOSP: returns the text that was set via setText().
+    // The DEX bytecode builds garbage "View" via StringBuilder.
+    // We dispatch to ViewShadow which has the real text.
+    if (method == "getText" &&
+        (class_name.find("TextView") != std::string::npos ||
+         class_name.find("EditText") != std::string::npos) &&
+        shadow_registry_ != nullptr) {
+        auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+        if (view_shadow != nullptr && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            const auto* node = view_shadow->find_node(args[0].object_id);
+            if (node != nullptr) {
+                result = DalvikValue::make_string(node->text, args[0].object_id);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
         }
     }
 
