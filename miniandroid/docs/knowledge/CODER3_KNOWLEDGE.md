@@ -158,3 +158,27 @@ Source grep = discovery only. Important findings require:
 - `inject_secondary_dex_classes()` injects all classes.
 - Verified: 28557 secondary DEX classes injected (Telegram).
 - Status: WORKING on main.
+
+---
+
+## F005 Status Update (2026-08-26, Primary Coder)
+
+### F005: Application Lifecycle — NOW FIXED on main
+
+**Commit:** `b7dc97b`
+
+**Implementation:**
+- Manifest reader extracts `android:name` from `<application>` tag.
+- Execution engine instantiates the declared Application class.
+- Calls `<init>` → `attachBaseContext` → `onCreate` BEFORE Activity.onCreate.
+
+**Evidence (Telegram):**
+- `ApplicationLoaderImpl` correctly extracted from manifest.
+- Object allocated, constructor called, attachBaseContext called, onCreate called.
+- SMS gate still passes (no regression).
+
+**Evidence (uNote):**
+- No custom Application class declared — correctly detected.
+- No regression (exit=0, 23K dark pixels).
+
+**Status:** FIXED on main. Original Coder 3 evidence preserved.

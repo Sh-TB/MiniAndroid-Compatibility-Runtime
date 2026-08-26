@@ -493,3 +493,51 @@ Root: LoginActivitySmsView (view_id=3536, children=6, depth=0)
 
 ### Status
 PROVEN — the SMS page transition is real and reproducible.
+
+---
+
+## CM-010: F005 Application Lifecycle — Manifest Extraction + Instantiate + onCreate
+
+### Summary
+Implemented F005 on current main: manifest `android:name` extraction and
+Application class instantiation with `attachBaseContext` + `onCreate` called
+BEFORE `Activity.onCreate`, per AOSP contract.
+
+### Source Reference
+AOSP `ActivityThread.handleBindApplication`:
+1. `instrumentation.newApplication(Class)` — instantiate Application
+2. `app.attachBaseContext(context)` — attach context
+3. `app.onCreate()` — Application initialization
+
+### Implementation
+1. **Manifest reader** (`manifest_reader.cpp/h`): Extract `android:name` from
+   `<application>` tag in both AXML and text parse paths.
+2. **APK parser** (`apk_parser.cpp/h`): Propagate `application_name` from
+   `ManifestInfo` to `ApkInfo`.
+3. **Execution engine** (`execution_engine.cpp`): Before calling
+   `execute_apk_with_activity`, instantiate the declared Application class,
+   call `<init>`, `attachBaseContext`, `onCreate`.
+
+### Direct Evidence (Telegram)
+```
+[EXP093-APP] Manifest declares Application class: Lorg/telegram/messenger/ApplicationLoaderImpl;
+[EXP093-APP] Allocated Application object: obj_id=2
+[EXP093-APP] <init> invoked
+[EXP093-APP] attachBaseContext invoked
+[EXP093-APP] onCreate invoked
+→ THEN Activity.onCreate executes
+→ SMS gate still passes: currentViewNum=2, fillNextCodeParams, setPage(2)
+```
+
+### Non-Telegram Validation (uNote)
+```
+[EXP093-APP] No custom Application class declared in manifest
+→ exit=0, 23472 dark pixels (no regression)
+```
+
+### Fix
+Commit `b7dc97b` — manifest extraction + Application instantiation + lifecycle calls.
+
+### Status
+PROVEN — Application lifecycle is now real, not pre-populated.
+- F005: FIXED on main.
