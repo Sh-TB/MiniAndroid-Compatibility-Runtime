@@ -9251,8 +9251,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
-        // Editor methods
-        if (method == "putString" || method == "putBoolean" || method == "putInt" || method == "putLong" || method == "putFloat") {
+        // Editor methods — only handle if class_name is Editor/SharedPreferences
+        // EXP-093: Previously this caught ALL putString/putInt/putBoolean/putLong
+        // calls — including Bundle.putString! This caused Bundle data to be
+        // silently stored on SharedPreferences instead of the Bundle.
+        if ((method == "putString" || method == "putBoolean" || method == "putInt" || method == "putLong" || method == "putFloat") &&
+            (class_name.find("Editor") != std::string::npos ||
+             class_name.find("SharedPreferences") != std::string::npos)) {
             std::string key = (args.size() > 1 && args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
             if (prefs_obj_id && heap_.has_object(prefs_obj_id) && !key.empty()) {
                 if (args.size() > 2) {
@@ -11019,6 +11024,96 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         auto cr = shadow_registry_->dispatch(ctx);
         if (cr.handled) {
             result = call_result_to_dalvik(cr);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-093: Bundle / BaseBundle operations — CRITICAL for data passing
+    // Bundle stores key-value pairs on the heap object using "bundle:" prefix.
+    // Without this, params.getString("phone") returns null → setParams returns
+    // early → confirmTextView is empty → screen is visually sparse.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("BaseBundle") != std::string::npos ||
+        class_name.find("Bundle") != std::string::npos) {
+        uint32_t bundle_id = args.empty() ? 0 : args[0].object_id;
+        // putString / putInt / putBoolean / putLong
+        if ((method == "putString" || method == "putInt" || method == "putBoolean" || method == "putLong") && args.size() >= 3) {
+            std::string key = args[1].type == DalvikType::STRING_REF ? args[1].string_val : "";
+            std::cerr << "[EXP093-BUNDLE] putString/putInt/putBoolean/putLong"
+                      << " class=" << class_name
+                      << " bundle_id=" << bundle_id
+                      << " key=\"" << key << "\""
+                      << " has_obj=" << (bundle_id ? heap_.has_object(bundle_id) : false)
+                      << std::endl;
+            if (bundle_id && heap_.has_object(bundle_id) && !key.empty()) {
+                heap_.set_object_field(bundle_id, "bundle:" + key, args[2]);
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // getString(String key) or getString(String key, String def)
+        if (method == "getString" && args.size() >= 2) {
+            std::string key;
+            if (args[1].type == DalvikType::STRING_REF) {
+                key = args[1].string_val;
+            } else if (args[1].type == DalvikType::OBJECT_REF && heap_.has_object(args[1].object_id)) {
+                auto sv = heap_.get_object_field(args[1].object_id, "value");
+                if (sv.has_value() && sv->type == DalvikType::STRING_REF) key = sv->string_val;
+            }
+            std::cerr << "[EXP093-BUNDLE] getString class=" << class_name
+                      << " key=\"" << key << "\" bundle_id=" << bundle_id
+                      << " has_obj=" << (bundle_id ? heap_.has_object(bundle_id) : false)
+                      << std::endl;
+            if (bundle_id && heap_.has_object(bundle_id) && !key.empty()) {
+                auto val = heap_.get_object_field(bundle_id, "bundle:" + key);
+                if (val.has_value()) { result = *val; status = ApiCallTrace::Status::IMPLEMENTED; return true; }
+            }
+            // With default? (2-arg getString(key, def))
+            if (args.size() >= 3 && args[2].type == DalvikType::STRING_REF) {
+                result = DalvikValue::make_string(args[2].string_val, 1);
+            } else {
+                result = DalvikValue::make_null();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // getInt(String key) or getInt(String key, int def)
+        if (method == "getInt" && args.size() >= 2) {
+            std::string key = args[1].type == DalvikType::STRING_REF ? args[1].string_val : "";
+            if (bundle_id && heap_.has_object(bundle_id) && !key.empty()) {
+                auto val = heap_.get_object_field(bundle_id, "bundle:" + key);
+                if (val.has_value() && (val->type == DalvikType::INT32 || val->type == DalvikType::BOOLEAN)) {
+                    result = *val; status = ApiCallTrace::Status::IMPLEMENTED; return true;
+                }
+            }
+            int def = (args.size() >= 3 && args[2].type == DalvikType::INT32) ? args[2].int_val : 0;
+            result = DalvikValue::make_int(def);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // getBoolean(String key) or getBoolean(String key, boolean def)
+        if (method == "getBoolean" && args.size() >= 2) {
+            std::string key = args[1].type == DalvikType::STRING_REF ? args[1].string_val : "";
+            if (bundle_id && heap_.has_object(bundle_id) && !key.empty()) {
+                auto val = heap_.get_object_field(bundle_id, "bundle:" + key);
+                if (val.has_value() && val->type == DalvikType::BOOLEAN) { result = *val; status = ApiCallTrace::Status::IMPLEMENTED; return true; }
+            }
+            bool def = (args.size() >= 3 && args[2].type == DalvikType::BOOLEAN) ? args[2].int_val != 0 : false;
+            result = DalvikValue::make_bool(def);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // containsKey(String key)
+        if (method == "containsKey" && args.size() >= 2) {
+            std::string key = args[1].type == DalvikType::STRING_REF ? args[1].string_val : "";
+            bool found = false;
+            if (bundle_id && heap_.has_object(bundle_id) && !key.empty()) {
+                found = heap_.get_object_field(bundle_id, "bundle:" + key).has_value();
+            }
+            result = DalvikValue::make_bool(found);
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
