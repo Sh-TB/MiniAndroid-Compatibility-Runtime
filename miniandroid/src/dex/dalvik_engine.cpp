@@ -9494,13 +9494,85 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // P1.6 — Context.getSystemService → null (Telegram handles null gracefully)
+    // P1.6 — Context.getSystemService → service object or null
+    // EXP-093/F007: Per AOSP ContextImpl.getSystemService, each service name
+    // maps to a specific service object. We return a real (but minimal) service
+    // object for known services, and null for unknown/unimplemented ones.
+    //
+    // AOSP source: ContextImpl.getSystemService(String name) looks up
+    // SystemServiceRegistry.SYSTEM_SERVICE_FETCHERS.get(name).
+    //
+    // Known service names (from AOSP Context.java constants):
+    //   WINDOW_SERVICE = "window" → WindowManager
+    //   LAYOUT_INFLATER_SERVICE = "layout_inflater" → LayoutInflater
+    //   ACTIVITY_SERVICE = "activity" → ActivityManager
+    //   INPUT_METHOD_SERVICE = "input_method" → InputMethodManager
+    //   NOTIFICATION_SERVICE = "notification" → NotificationManager
+    //   KEYGUARD_SERVICE = "keyguard" → KeyguardManager
+    //   ALARM_SERVICE = "alarm" → AlarmManager
+    //   AUDIO_SERVICE = "audio" → AudioManager
+    //   CLIPBOARD_SERVICE = "clipboard" → ClipboardManager
+    //   CONNECTIVITY_SERVICE = "connectivity" → ConnectivityManager
+    //   UI_MODE_SERVICE = "uimode" → UiModeManager
+    //   SEARCH_SERVICE = "search" → SearchManager
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getSystemService" &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_null();
+        // Extract the service name from args
+        std::string service_name;
+        if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
+            service_name = args[1].string_val;
+        } else if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+            // Try to get string from heap
+            if (heap_.has_object(args[1].object_id)) {
+                auto sv = heap_.get_object_field(args[1].object_id, "value");
+                if (sv.has_value() && sv->type == DalvikType::STRING_REF) {
+                    service_name = sv->string_val;
+                }
+            }
+        }
+
+        // Service name → service class descriptor mapping
+        static const std::map<std::string, std::string> service_map = {
+            {"window",         "Landroid/view/WindowManager;"},
+            {"layout_inflater", "Landroid/view/LayoutInflater;"},
+            {"activity",       "Landroid/app/ActivityManager;"},
+            {"input_method",   "Landroid/view/inputmethod/InputMethodManager;"},
+            {"notification",   "Landroid/app/NotificationManager;"},
+            {"alarm",          "Landroid/app/AlarmManager;"},
+            {"audio",          "Landroid/media/AudioManager;"},
+            {"clipboard",      "Landroid/content/ClipboardManager;"},
+            {"connectivity",   "Landroid/net/ConnectivityManager;"},
+            {"uimode",         "Landroid/app/UiModeManager;"},
+            {"search",         "Landroid/app/SearchManager;"},
+            {"keyguard",       "Landroid/app/KeyguardManager;"},
+            {"location",       "Landroid/location/LocationManager;"},
+            {"account",        "Landroid/accounts/AccountManager;"},
+            {"power",          "Landroid/os/PowerManager;"},
+            {"vibrator",       "Landroid/os/Vibrator;"},
+            {"sensor",         "Landroid/hardware/SensorManager;"},
+            {"display",        "Landroid/hardware/display/DisplayManager;"},
+        };
+
+        auto it = service_map.find(service_name);
+        if (it != service_map.end()) {
+            // Return a singleton service object for known services.
+            // The object is minimal — methods called on it will be
+            // handled by bridge_to_api or return defaults.
+            result = get_or_create_singleton(it->second);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            std::cerr << "[EXP093-SVC] getSystemService(\"" << service_name
+                      << "\") → " << it->second << std::endl;
+        } else {
+            // Unknown service — return null (honest, not fake success)
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (!service_name.empty()) {
+                std::cerr << "[EXP093-SVC] getSystemService(\"" << service_name
+                          << "\") → null (unknown service)" << std::endl;
+            }
+        }
         return true;
     }
 
