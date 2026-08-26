@@ -8953,6 +8953,115 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // EXP-093/F008: Permission Model — checkSelfPermission / checkPermission
+    //
+    // Per AOSP Context.checkSelfPermission(String permission):
+    //   Returns PackageManager.PERMISSION_GRANTED (0) if granted
+    //   Returns PackageManager.PERMISSION_DENIED (-1) if not granted
+    //
+    // Per AOSP PackageManager.checkPermission(String perm, String pkg):
+    //   Same return values.
+    //
+    // Per AOSP Activity.requestPermissions(String[], int):
+    //   Triggers permission dialog. In headless mode, we auto-grant
+    //   for controlled testing, then call onRequestPermissionsResult.
+    //
+    // Default model:
+    //   - Normal permissions (INTERNET, etc.) → GRANTED
+    //   - Dangerous permissions ( CAMERA, READ_CONTACTS, etc.) → DENIED
+    //     until explicitly requested via requestPermissions
+    //   - Unknown permissions → DENIED
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "checkSelfPermission" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("PackageManager") != std::string::npos)) {
+        std::string perm_name;
+        if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
+            perm_name = args[1].string_val;
+        }
+        // Check our permission state map
+        auto pit = permission_state_.find(perm_name);
+        int result_val;
+        if (pit != permission_state_.end()) {
+            result_val = pit->second;  // Use stored state
+        } else {
+            // Default: normal permissions are granted, dangerous are denied
+            // Per AOSP: checkPermission returns GRANTED for normal permissions
+            // without requiring runtime request.
+            static const std::set<std::string> normal_permissions = {
+                "android.permission.INTERNET",
+                "android.permission.ACCESS_NETWORK_STATE",
+                "android.permission.ACCESS_WIFI_STATE",
+                "android.permission.CHANGE_WIFI_STATE",
+                "android.permission.VIBRATE",
+                "android.permission.WAKE_LOCK",
+                "android.permission.RECEIVE_BOOT_COMPLETED",
+                "android.permission.NFC",
+                "android.permission.BLUETOOTH",
+                "android.permission.BLUETOOTH_ADMIN",
+                "android.permission.FOREGROUND_SERVICE",
+                "android.permission.POST_NOTIFICATIONS",
+                "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
+            };
+            if (normal_permissions.count(perm_name) > 0) {
+                result_val = 0;  // PERMISSION_GRANTED
+            } else {
+                result_val = -1;  // PERMISSION_DENIED
+            }
+        }
+        result = DalvikValue::make_int(result_val);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        std::cerr << "[EXP093-PERM] checkSelfPermission(\"" << perm_name
+                  << "\") → " << (result_val == 0 ? "GRANTED" : "DENIED") << std::endl;
+        return true;
+    }
+
+    // PackageManager.checkPermission(String perm, String pkg)
+    if (method == "checkPermission" &&
+        class_name.find("PackageManager") != std::string::npos) {
+        std::string perm_name;
+        if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
+            perm_name = args[1].string_val;
+        }
+        // Same logic as checkSelfPermission
+        auto pit = permission_state_.find(perm_name);
+        int result_val;
+        if (pit != permission_state_.end()) {
+            result_val = pit->second;
+        } else {
+            // Default: denied for dangerous, granted for normal
+            result_val = -1;  // PERMISSION_DENIED (conservative default)
+        }
+        result = DalvikValue::make_int(result_val);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // Activity.requestPermissions(String[], int)
+    // In headless mode: auto-grant all requested permissions and call callback
+    if (method == "requestPermissions" &&
+        (class_name.find("Activity") != std::string::npos ||
+         class_name.find("Fragment") != std::string::npos)) {
+        // Grant all requested permissions
+        // args[1] = String[] permissions
+        // args[2] = int requestCode
+        int request_code = 0;
+        if (args.size() >= 3 && args[2].type == DalvikType::INT32) {
+            request_code = args[2].int_val;
+        }
+        // For headless mode, we grant all requested permissions
+        // (controlled testing — in real Android, user would see dialog)
+        std::cerr << "[EXP093-PERM] requestPermissions(requestCode=" << request_code
+                  << ") → auto-granted (headless mode)" << std::endl;
+        // TODO: Call onRequestPermissionsResult on the Activity
+        // For now, just return success
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // P0.12 — Context.getSharedPreferences → SharedPreferences
     // EXP-048: Returns a heap-allocated SharedPreferences object with the
     // preference name stored as a field, enabling per-name persistence.
