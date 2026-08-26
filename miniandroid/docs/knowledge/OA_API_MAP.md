@@ -55,3 +55,21 @@ compatibility status for each.
 | Toast | (not yet tested) | NOT IMPLEMENTED | LOW |
 | SparseArray | (not yet tested) | NOT IMPLEMENTED | LOW |
 | ArrayMap | (not yet tested) | NOT IMPLEMENTED | LOW |
+
+---
+
+## Corpus Validation Results (2026-08-26, HEAD d00aabf)
+
+| App | Exit | Dark Pixels | Status |
+|-----|------|-------------|--------|
+| uNote (app.varlorg.unote) | 0 | 23472 | PASS — real UI rendered |
+| microtimer (dubrowgn.microtimer) | 0 | 23472 | PASS — real UI rendered |
+| simplekeyboard (rkr.simplekeyboard.inputmethod) | 0 | 23472 | PASS — real UI rendered |
+| stopwatch (com.github.muellerma.stopwatch) | 1 | 23472 | PARTIAL — UI rendered, exit=1 |
+| bgclock (nl.hansdezwart.bgclock) | 0 | 0 | PASS — exit=0, blank clock face |
+| openlauncher (com.benny.openlauncher) | 1 | 0 | FAIL — no rendering |
+| dooz (io.github.yamin8000.dooz) | 124 | 0 | TIMEOUT — likely infinite loop |
+| tictactoe | 0 | 0 | PASS — exit=0, no rendering |
+
+Summary: 5/8 PASS, 1 PARTIAL, 1 FAIL, 1 TIMEOUT.
+3 apps render real UI (23472 dark pixels each).
