@@ -1585,6 +1585,18 @@ public:
     // after a getter, and every object creation after new-instance.
     DalvikValue last_invoke_return_ = DalvikValue::make_void();
 
+    // EXP-094 (CM-018): The receiver of the LAST successful "setParams"
+    // invoke. Apps with multi-page login flows (Telegram LoginActivity)
+    // instantiate SEVERAL views of the same class (one per auth type:
+    // MESSAGE/SMS/FLASH_CALL/CALL) — only the one the app configures via
+    // setParams is the ACTIVE page. The renderer must use THAT instance,
+    // not the first/newest one. This is the app's own navigation signal.
+    uint32_t last_set_params_view_ = 0;
+
+public:
+    uint32_t last_set_params_view() const { return last_set_params_view_; }
+private:
+
     // EXP-051: Shadow registry pointer. Non-owning. Set by ApplicationRuntime
     // before execution begins. When non-null, bridge_to_api consults the
     // registry BEFORE falling through to the legacy if/else chain.

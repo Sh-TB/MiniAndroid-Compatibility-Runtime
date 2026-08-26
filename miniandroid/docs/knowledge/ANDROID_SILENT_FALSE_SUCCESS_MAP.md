@@ -83,3 +83,35 @@ a value that appears successful but is actually wrong/empty/default.
 - `String.equals()` never matches → infinite loop
 - **Status:** INVESTIGATED — root cause documented. Fix requires real
   stack trace capture infrastructure. Assigned to general Android backlog.
+
+---
+
+## SFS-008: ViewShadow.toString returns literal "View" for ANY object (FIXED in CM-018)
+
+**Class**: Object→toString silent false success
+**Severity**: CRITICAL — poisoned every string concatenation in the app
+**Status**: FIXED (EXP-094 / CM-018)
+
+### Behavior
+ViewShadow::dispatch handled `toString` by returning the literal string
+"View" — for ANY receiver, including non-View objects that reached it via
+bridge_to_api's view_parents fallback (which tries "Landroid/view/View;"
+for EVERY method not handled by another shadow). StringBuilder had no
+implementation, so `StringBuilder.toString()` returned "View".
+
+### Blast radius (proven by trace)
+- LocaleInfo.getKey() → "View" (should be "unofficial_XX")
+- "+" + bundle.getString("phone") → "View" (should be "+15551234567")
+- PhoneFormat.format(input) → returned "View" unchanged
+- formatString("SentSmsCode") → "...your phone **View*." (garbage in user-visible text)
+- ANY Object.toString() routed through the fallback → "View"
+
+### Fix
+1. ViewShadow::toString now only handles REGISTERED ViewNodes and returns
+   an AOSP-style debug string "class_desc{id}".
+2. StringBuilder implemented for real (see CM-018) so it never reaches the
+   View fallback.
+
+### Regression guard
+The SMS screen text MUST contain the real phone number ("+1 5551234567")
+and MUST NOT contain "View" as a substring — verified in the 3-run proof.

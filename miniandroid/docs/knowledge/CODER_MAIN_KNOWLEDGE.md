@@ -745,3 +745,82 @@ Commit `b2c55e1`:
 ### Status
 PROVEN — screen now has more visible text. Generic fix (String.format,
 Application.getString, method throttle) benefits ALL APKs.
+
+---
+
+## CM-018: StringBuilder Implementation + ViewShadow.toString Poisoning + replaceTags + Active-View Render Root
+
+### Summary
+THE root cause of the sparse SMS screen: java.lang.StringBuilder had NO
+implementation at all. Every `append`/`toString` call fell through
+bridge_to_api's view_parents fallback, where ViewShadow.toString()
+returned the literal "View" for ANY object. This poisoned EVERY string
+concatenation in the app. Five fixes landed together:
+
+1. **StringBuilder/StringBuffer real implementation** (bridge_to_api):
+   `<init>()`, `<init>(String)`, `append(X)` (all primitive types +
+   String + Object via String.valueOf semantics, returns `this`),
+   `toString()`, `length()`, `charAt(int)`, `isEmpty()`. Buffer stored
+   on the receiver heap object under field "sb_value".
+2. **ViewShadow::toString scoping** — previously returned "View" for ANY
+   dispatch reaching it (via the view_parents fallback). Now only claims
+   toString for registered ViewNodes, returning the AOSP-style debug
+   string "class{id}". This was a SILENT FALSE SUCCESS poisoning
+   non-View objects (StringBuilder.toString → "View").
+3. **AndroidUtilities.replaceTags** — implements its SOURCE semantics:
+   strips "**" bold markers and returns the text. Previously returned
+   VOID, so `setText(replaceTags(x))` received "" (the whole formatted
+   SMS string was lost).
+4. **String.replace(char, char)** — the CHAR overload (addNbsp calls
+   `replace(' ', '\u00A0')`). Args arrive as INT32; replaces every
+   occurrence with proper UTF-8 encoding of the new char.
+5. **formatString star-eating bug** — the format loop's `i++` after the
+   spec char PLUS the for-loop's `i++` skipped one character after
+   `%1$s` (ate one of the "**" markers). Removed the extra increment.
+6. **Phone input value** — automation typed "+15551234567" into the
+   phone field; per onNextPressed source the field holds ONLY the
+   national part ("5551234567"); codeField gets "1" via setCountry.
+   Fixed the input (was producing doubled prefix "+1 +15551234567").
+7. **Active-view render root** — LoginActivity instantiates SIX
+   LoginActivitySmsView instances (one per auth type: MESSAGE/SMS/
+   FLASH_CALL/CALL/MISSED_CALL/FRAGMENT_SMS). Only the one that
+   receives setParams is the ACTIVE page. The engine now records
+   `last_set_params_view_` (the app's OWN navigation signal) and the
+   renderer uses it as root. Fallback: newest SmsView/PhoneView via
+   SUFFIX match ("SmsView;") — a plain find("SmsView") matches lambdas
+   ($$ExternalSyntheticLambda4), a find("$")-exclusion matches nothing
+   (the outer separator is also "$").
+
+### Root Cause Chain (proven by trace)
+```
+StringBuilder.toString → ViewShadow.toString (via view_parents fallback) → "View"
+  → LocaleInfo.getKey() → "View"
+  → "+" + bundle.getString("phone") → "View"
+  → PhoneFormat.format("View") → "View" (uninitialized passthrough)
+  → addNbsp("View") → replace → "View"
+  → formatString("SentSmsCode", 3, ["View"]) → "...your phone **View*."
+  → replaceTags(...) → previously VOID → setText("")
+```
+
+### Direct Evidence (after fix)
+```
+[EXP093-FMTSTR] formatString(key="SentSmsCode") → "We've sent an SMS with an activation code to your phone **+1 5551234567**."
+[EXP094-REPLACETAGS] out="We've sent an SMS with an activation code to your phone +1 5551234567."
+[EXP091-SETTEXT] view_id=3628 class=Landroid/widget/TextView; text="We've sent an SMS with an activation code to your phone +1 5551234567."
+[EXP094-SETPARAMS] active page view = obj#3625 class=Lorg/telegram/ui/LoginActivity$LoginActivitySmsView;
+[EXP094-RENDER] Using last-setParams view as render root: view_id=3625 children=6
+Render tree now contains: "Enter code" (title), full SMS description,
+"Didn't get the code?", 5x CodeFieldContainer$1 (code input fields), "999+"
+```
+
+### Visual Evidence
+- Before: 1136 dark pixels (stale wrong SmsView instance, empty confirmTextView)
+- After: 3812 dark pixels (3.4x) — active view with correct text
+- Text bands: title, description, code fields, bottom link
+- uNote regression: 23472 pixels — UNCHANGED (no regression)
+
+### Status
+PROVEN — StringBuilder is a GENERIC fix benefiting ALL APKs. The
+ViewShadow.toString scoping removed a first-class silent false success.
+Remaining for full screen: real layout/geometry (§18) — views still
+cascade top-left; needs LinearLayout stacking + margins + gravity.
