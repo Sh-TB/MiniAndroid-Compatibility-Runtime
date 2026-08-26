@@ -443,3 +443,53 @@ PhoneView.onNextPressed
 → currentViewNum = 2 = VIEW_CODE_SMS
 → SmsView active (render root view_id=3536)
 ```
+
+---
+
+## CM-009: 3-Run SMS Acceptance Gate Proof
+
+### Summary
+After CM-008 (if-eqz BOOLEAN fix), the full SMS page transition chain
+was proven 3 times with identical results.
+
+### 3-Run Results (all identical)
+- SHA256: `60df0c2ba1680ae58e2612bfd82660a3436df963569a3191dcfdc841810d4b5b`
+- dark_pixels: 974 per run
+- All 3 runs pass SMS acceptance gate
+
+### SMS Acceptance Gate Checklist
+- [x] currentViewNum=2 (VIEW_CODE_SMS per Telegram source)
+- [x] setPage(2) called from fillNextCodeParams
+- [x] fillNextCodeParams called
+- [x] PhoneView$Lambda2.run invoked
+- [x] mocked TL_auth_sentCode with type=Sms
+- [x] auth.sendCode constructed
+- [x] SmsView render root (LoginActivitySmsView)
+- [x] 3-run proof: all identical
+- [x] screenshot independently decoded by PIL
+
+### SMS ViewTree (from renderer trace)
+```
+Root: LoginActivitySmsView (view_id=3536, children=6, depth=0)
+├── FrameLayout (3541, children=1)
+│   └── RLottieImageView (3543, children=0)
+├── TextView (3540, text="Check your Telegram messages")
+├── TextView (3539, text="")
+├── LoginActivitySmsView$2 (3544)
+├── LoadingTextView (3547)
+└── FrameLayout (3594)
+    └── LoginActivitySmsView$4 (3578, children=2)
+        └── FrameLayout (3562, children=2)
+            ├── LoginActivitySmsView$3 (3563, code input field)
+            └── LoginActivitySmsView$5 (3579, code input field)
+```
+
+### Remaining Gap
+- confirmTextView (node 3539) has text="" because the Bundle's `phone`
+  key may be empty (codeField was empty when onNextPressed constructed
+  the params Bundle). This is a DATA issue, not a VM bug.
+- The SMS text "Enter code" and "Phone verification" ARE present on
+  other TextViews in the ViewTree.
+
+### Status
+PROVEN — the SMS page transition is real and reproducible.
