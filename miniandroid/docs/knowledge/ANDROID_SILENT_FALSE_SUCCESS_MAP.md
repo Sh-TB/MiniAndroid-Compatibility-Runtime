@@ -64,3 +64,22 @@ a value that appears successful but is actually wrong/empty/default.
 | dooz | getStackTrace + StackTraceElement | TIMEOUT |
 | openlauncher | Manifest parse failure → UnknownApp | FAIL |
 | tictactoe | None detected (no rendering) | PASS |
+
+---
+
+## OpenLauncher Investigation Update (2026-08-26)
+
+### Root Cause: CORRUPT APK FILE (not MiniAndroid bug)
+- APK file `com.benny.openlauncher_39.apk` has NO End of Central Directory record
+- Python's `zipfile.ZipFile()` also fails with "File is not a zip file"
+- The file starts with valid PK signature but is truncated/corrupted
+- This is a DOWNLOAD CORRUPTION issue, not a MiniAndroid compatibility bug
+- **Status:** CORRUPT_FILE — not actionable. Need to re-download a fresh APK.
+
+### dooz Timeout Update
+- dooz timeout is caused by `Thread.getStackTrace()` returning empty array
+- App code iterates array without checking length
+- `StackTraceElement.getClassName()` returns empty string
+- `String.equals()` never matches → infinite loop
+- **Status:** INVESTIGATED — root cause documented. Fix requires real
+  stack trace capture infrastructure. Assigned to general Android backlog.
