@@ -10323,17 +10323,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // Returns an empty array so loops iterating stack frames terminate immediately.
     // This unblocks Kotlin Intrinsics.createParameterIsNullExceptionMessage which
     // loops through stack trace elements looking for non-Intrinsics frames.
+    //
+    // EXP-093: Set __array_length__ on the heap object so that array-length
+    // opcode correctly returns 0. Previously, the int_val was set to 0 but
+    // __array_length__ was not set on the heap — causing array-length to
+    // potentially return garbage, and loops to iterate past the end.
     // ────────────────────────────────────────────────────────────────────────
     if (class_name.find("Thread") != std::string::npos &&
         method == "getStackTrace") {
-        // Return a heap object representing an empty array
         uint32_t obj_id = heap_.allocate("Larray;", pc_,
                                         call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        // EXP-093: Set __array_length__ = 0 on the heap so array-length works
+        heap_.set_object_field(obj_id, "__array_length__",
+                               DalvikValue::make_int(0));
         DalvikValue arr;
         arr.type = DalvikType::OBJECT_REF;
         arr.object_id = obj_id;
         arr.class_desc = "Larray;";
-        arr.int_val = 0;  // array length = 0
+        arr.int_val = 0;
         result = arr;
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
