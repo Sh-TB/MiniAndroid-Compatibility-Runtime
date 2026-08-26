@@ -541,3 +541,52 @@ Commit `b7dc97b` — manifest extraction + Application instantiation + lifecycle
 ### Status
 PROVEN — Application lifecycle is now real, not pre-populated.
 - F005: FIXED on main.
+
+---
+
+## CM-011: F014 INT64/FLOAT32/FLOAT64 Zero-Ness in if-eqz/if-nez
+
+### Summary
+`if-eqz` and `if-nez` were missing INT64, FLOAT32, and FLOAT64 types from
+their zero-ness checks. A zero `long` (0L), `float` (0.0f), or `double`
+(0.0d) was treated as non-zero (truthy), causing incorrect branch behavior.
+
+### Source Reference
+Per AOSP Dalvik spec: if-eqz branches if the value == 0, where 0 is
+type-agnostic for ALL primitive types (int, long, float, double, boolean,
+byte, short, char).
+
+### Fix
+Commit `58a0534` — Added INT64 (`long_val == 0`), FLOAT32 (`float_val == 0.0f`),
+FLOAT64 (`double_val == 0.0`) to both if-eqz `is_zero` and if-nez `is_nonzero`.
+
+### Status
+PROVEN — Telegram SMS gate passes (no regression), uNote passes (exit=0).
+
+---
+
+## CM-012: F011 PackageManager Identity — Manifest-Derived Values
+
+### Summary
+Replaced hardcoded Telegram package identity (`org.telegram.messenger.web`,
+`9999`, `"9.9.9"`) with manifest-derived values from ApkInfo.
+
+### Root Cause
+`getPackageInfo` and `getPackageName` in `bridge_to_api` returned hardcoded
+Telegram values for ALL APKs. This caused non-Telegram apps to report
+incorrect package identity.
+
+### Fix
+Commit `d00aabf`:
+- Added `package_name_`, `version_code_`, `version_name_` to DalvikExecutionEngine
+- Added `set_package_info()` setter
+- `execution_engine.cpp` calls `set_package_info()` with `result.apk_info` values
+- `getPackageInfo` returns manifest-derived values
+- `getPackageName` returns manifest-derived package name
+
+### Validation
+- Telegram: exit=0, SMS gate passes (currentViewNum=2)
+- uNote: exit=0, package correctly shows `app.varlorg.unote`
+
+### Status
+PROVEN — F011 is FIXED on main. All APKs now get correct package identity.
