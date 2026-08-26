@@ -1137,6 +1137,10 @@ public:
     }
     // EXP-071 Phase 6: Set the APK path so AssetManager.open can read assets.
     void set_apk_path(const std::string& path) { apk_path_ = path; }
+    // EXP-093/F011: Manifest-derived package identity
+    void set_package_info(const std::string& pkg, int vcode, const std::string& vname) {
+        package_name_ = pkg; version_code_ = vcode; version_name_ = vname;
+    }
 
     // EXP-038 (BLOCKER-033): Build class→DEX index map from DexReport.
     // Must be called after dex_report is set and before execution begins.
@@ -1649,6 +1653,10 @@ public:
     // (NO_SIM), causing onNextPressed to take the wrong "ChooseCountry"
     // branch instead of reaching auth.sendCode construction.
     std::string apk_path_;  // path to the APK file
+    // EXP-093/F011: Manifest-derived package identity (replaces hardcoded Telegram values)
+    std::string package_name_;
+    int version_code_ = 0;
+    std::string version_name_;
     // Map: heap object_id (InputStream) → (asset_name, line_index)
     std::map<uint32_t, std::pair<std::string, size_t>> open_assets_;
 private:
