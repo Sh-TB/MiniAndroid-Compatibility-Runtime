@@ -47,6 +47,9 @@ struct ApkInfo {
     // Main activity
     std::string main_activity;
     std::string main_activity_full;
+
+    // EXP-093/F005: Custom Application class from manifest
+    std::string application_name;
     
     // Permissions
     std::vector<std::string> permissions;
