@@ -2130,7 +2130,11 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                                             }
                                         }
                                         arg_idx++;
-                                        i++; // skip the spec char
+                                        // NOTE: do NOT i++ here — the for-loop's
+                                        // i++ already advances past the spec char.
+                                        // (EXP-094: a previous i++ here ate the
+                                        // character right after the spec — e.g.
+                                        // one of the "**" bold markers.)
                                     } else if (i < format_str.size() && format_str[i] == '%') {
                                         output += '%';
                                         i++;
@@ -2881,9 +2885,40 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // EXP-062: AndroidUtilities.replaceTags loops at PC=9 due to
     // string processing. Stub to prevent 50K iterations.
     // EXP-089: Also bypass replaceMultipleCharSequence (same string processing loop).
+    // EXP-094 (CM-018): replaceTags now implements its SOURCE semantics —
+    // per AndroidUtilities.java it strips the "**" bold markers and returns
+    // the text (with bold spans we don't render). Previously it returned
+    // VOID, so confirmTextView.setText(replaceTags(...)) received "" and the
+    // whole formatted SMS string was lost (silent false success).
     if (class_descriptor.find("AndroidUtilities") != std::string::npos &&
-        (method_name == "replaceTags" ||
-         method_name == "replaceMultipleCharSequence" ||
+        method_name == "replaceTags" &&
+        !args.empty()) {
+        std::string s;
+        if (args[0].type == DalvikType::STRING_REF) {
+            s = args[0].string_val;
+        } else if (args[0].type == DalvikType::OBJECT_REF && heap_.has_object(args[0].object_id)) {
+            auto sv = heap_.get_object_field(args[0].object_id, "value");
+            if (!sv.has_value()) sv = heap_.get_object_field(args[0].object_id, "sb_value");
+            if (sv.has_value() && sv->type == DalvikType::STRING_REF) s = sv->string_val;
+        }
+        // Strip "**" marker pairs (they wrap bold ranges in Telegram strings).
+        std::string out;
+        for (size_t i = 0; i < s.size(); i++) {
+            if (s[i] == '*' && i + 1 < s.size() && s[i + 1] == '*') {
+                i++;  // skip both asterisks
+                continue;
+            }
+            out += s[i];
+        }
+        std::cerr << "[EXP094-REPLACETAGS] in=\"" << s.substr(0, 80)
+                  << "\" out=\"" << out.substr(0, 80) << "\"" << std::endl;
+        recursion_depth_--;
+        return_val = DalvikValue::make_string(out, 0);
+        last_invoke_return_ = return_val;
+        return true;
+    }
+    if (class_descriptor.find("AndroidUtilities") != std::string::npos &&
+        (method_name == "replaceMultipleCharSequence" ||
          method_name == "replaceChars")) {
         log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
             " — skipping (string processing loop)");
@@ -6997,6 +7032,17 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         std::string api_class = (runtime_type != "<unknown>") ? runtime_type : declaring_class;
         bridge_to_api(api_class, method_name_from_dex, args, return_val, api_status); last_invoke_return_ = return_val;
     }
+
+    // EXP-094 (CM-018): Record the receiver of a successful "setParams" call.
+    // Multi-page apps instantiate several same-class page views; the one the
+    // app actively configures via setParams IS the current page. The render
+    // stage uses this to pick the correct render root (see stage_render_frame).
+    if (method_name_from_dex == "setParams" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        last_set_params_view_ = args[0].object_id;
+        std::cerr << "[EXP094-SETPARAMS] active page view = obj#" << last_set_params_view_
+                  << " class=" << args[0].class_desc << std::endl;
+    }
     
     // Create API call trace with VTable information
     ApiCallTrace api_trace;
@@ -8932,6 +8978,133 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
     log("  API BRIDGE: " + class_name + "." + method);
 
+    // ────────────────────────────────────────────────────────────────────────
+    // EXP-094 (CM-018): java.lang.StringBuilder / StringBuffer — REAL implementation.
+    //
+    // ROOT CAUSE this fixes: NO StringBuilder implementation existed. Every
+    // append/toString call fell through bridge_to_api's view_parents fallback,
+    // where ViewShadow.toString() returned the literal "View" for ANY object.
+    // That poisoned EVERY string concatenation in the app:
+    //   LocaleInfo.getKey() → "View" instead of "unofficial_XX"
+    //   "+" + bundle.getString("phone") → "View" instead of "+15551234567"
+    //   PhoneFormat.format(input) → returned the "View" garbage unchanged
+    //   → formatString("SentSmsCode") → "…to your phone **View*."
+    //
+    // Per OpenJDK (java.lang.StringBuilder / AbstractStringBuilder):
+    //   * <init>() / <init>(String) / <init>(CharSequence) — initial contents
+    //   * append(X) — appends String.valueOf(X) and returns `this`
+    //   * toString() — returns a snapshot of the accumulated chars
+    //   * length() — number of accumulated chars
+    // The buffer is stored on the receiver heap object under "sb_value".
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/StringBuilder;" ||
+        class_name == "Ljava/lang/StringBuffer;") {
+        uint32_t sb_id = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                             ? args[0].object_id : 0;
+        std::string cur;
+        if (sb_id != 0 && heap_.has_object(sb_id)) {
+            auto fv = heap_.get_object_field(sb_id, "sb_value");
+            if (fv.has_value() && fv->type == DalvikType::STRING_REF) {
+                cur = fv->string_val;
+            }
+        }
+        // Helper: stringify an argument per String.valueOf semantics.
+        auto stringify_arg = [&](const DalvikValue& a) -> std::string {
+            switch (a.type) {
+                case DalvikType::STRING_REF: return a.string_val;
+                case DalvikType::INT32: return std::to_string(a.int_val);
+                case DalvikType::INT64: return std::to_string(a.long_val);
+                case DalvikType::BOOLEAN: return a.bool_val ? "true" : "false";
+                case DalvikType::CHAR: return std::string(1, static_cast<char>(a.int_val));
+                case DalvikType::BYTE: return std::to_string(static_cast<int8_t>(a.int_val));
+                case DalvikType::SHORT: return std::to_string(static_cast<int16_t>(a.int_val));
+                case DalvikType::FLOAT32: return std::to_string(a.float_val);
+                case DalvikType::FLOAT64: return std::to_string(a.double_val);
+                case DalvikType::NULL_REF: return "null";
+                case DalvikType::OBJECT_REF: {
+                    if (heap_.has_object(a.object_id)) {
+                        // A String or another StringBuilder — read its value.
+                        auto sv = heap_.get_object_field(a.object_id, "sb_value");
+                        if (!sv.has_value()) {
+                            sv = heap_.get_object_field(a.object_id, "value");
+                        }
+                        if (sv.has_value() && sv->type == DalvikType::STRING_REF) {
+                            return sv->string_val;
+                        }
+                    }
+                    // Per OpenJDK Object.toString: ClassName@hexIdentityHash
+                    std::string cn = a.class_desc;
+                    return cn + "@" + std::to_string(a.object_id);
+                }
+                default: return "";
+            }
+        };
+        if (method == "<init>") {
+            // StringBuilder(), StringBuilder(String), StringBuilder(CharSequence),
+            // StringBuilder(int capacity) — capacity is ignored.
+            if (args.size() >= 2) {
+                cur = stringify_arg(args[1]);
+            } else {
+                cur.clear();
+            }
+            if (sb_id != 0 && heap_.has_object(sb_id)) {
+                heap_.set_object_field(sb_id, "sb_value", DalvikValue::make_string(cur, 0));
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "append") {
+            if (args.size() >= 2) {
+                cur += stringify_arg(args[1]);
+            }
+            if (sb_id != 0 && heap_.has_object(sb_id)) {
+                heap_.set_object_field(sb_id, "sb_value", DalvikValue::make_string(cur, 0));
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            // Per OpenJDK: append returns `this` (enables chaining).
+            DalvikValue r;
+            r.type = DalvikType::OBJECT_REF;
+            r.object_id = sb_id;
+            r.class_desc = class_name.c_str();
+            result = r;
+            return true;
+        }
+        if (method == "toString") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(cur, 0);
+            return true;
+        }
+        if (method == "length") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(static_cast<int32_t>(cur.size()));
+            return true;
+        }
+        if (method == "charAt" && args.size() >= 2 &&
+            (args[1].type == DalvikType::INT32)) {
+            int32_t idx = args[1].int_val;
+            std::string ch;
+            if (idx >= 0 && static_cast<size_t>(idx) < cur.size()) {
+                ch = std::string(1, cur[idx]);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            DalvikValue r;
+            r.type = DalvikType::CHAR;
+            r.int_val = (idx >= 0 && static_cast<size_t>(idx) < cur.size())
+                            ? static_cast<int32_t>(static_cast<uint8_t>(cur[idx])) : 0;
+            result = r;
+            (void)ch;
+            return true;
+        }
+        if (method == "isEmpty") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(cur.empty());
+            return true;
+        }
+        // insert(int, X), reverse(), deleteCharAt, setLength etc. can be
+        // added when evidence shows they're on a hot path.
+    }
+
     // EXP-057: Debug — log ALL bridge_to_api calls for isEmpty from onCreate.
     if (method == "isEmpty" && current_method_ == "onCreate") {
         int arg0_type = args.empty() ? -1 : static_cast<int>(args[0].type);
@@ -10675,11 +10848,57 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
-    // EXP-093: String.replace(CharSequence target, CharSequence replacement) → String
-    // Per OpenJDK: replaces each substring matching target with replacement.
-    // Critical for LocaleController.addNbsp which calls String.replace(" ", "\u00A0")
+    // EXP-093: String.replace(CharSequence, CharSequence) → String
+    // AND String.replace(char oldChar, char newChar) → String (EXP-094/CM-018).
+    // Per OpenJDK: the char version replaces EVERY occurrence of oldChar
+    // with newChar. The args arrive as INT32 (char is a 16-bit int in DEX).
+    // Critical for LocaleController.addNbsp which calls String.replace(' ', '\u00A0').
     if (class_name == "Ljava/lang/String;" && method == "replace" && args.size() >= 3) {
         std::string str = args[0].type == DalvikType::STRING_REF ? args[0].string_val : "";
+        if (str.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            heap_.has_object(args[0].object_id)) {
+            // Receiver may be a heap String object — resolve its value.
+            auto sv = heap_.get_object_field(args[0].object_id, "value");
+            if (sv.has_value() && sv->type == DalvikType::STRING_REF) str = sv->string_val;
+        }
+        if (args[1].type == DalvikType::INT32 && args[2].type == DalvikType::INT32) {
+            // replace(char, char): substitute every occurrence of the single
+            // 16-bit char arg1 with the 16-bit char arg2. For BMP chars below
+            // U+0800 this is a byte-wise substitution on our UTF-8 strings;
+            // for the nbsp (U+00A0) we substitute the UTF-8 encoding.
+            int32_t old_ch = args[1].int_val & 0xFFFF;
+            int32_t new_ch = args[2].int_val & 0xFFFF;
+            auto utf8_of = [](int32_t cp) {
+                std::string s;
+                if (cp < 0x80) {
+                    s += static_cast<char>(cp);
+                } else if (cp < 0x800) {
+                    s += static_cast<char>(0xC0 | (cp >> 6));
+                    s += static_cast<char>(0x80 | (cp & 0x3F));
+                } else {
+                    s += static_cast<char>(0xE0 | (cp >> 12));
+                    s += static_cast<char>(0x80 | ((cp >> 6) & 0x3F));
+                    s += static_cast<char>(0x80 | (cp & 0x3F));
+                }
+                return s;
+            };
+            std::string old_s = utf8_of(old_ch);
+            std::string new_s = utf8_of(new_ch);
+            if (!old_s.empty()) {
+                std::string out;
+                size_t prev = 0, pos;
+                while ((pos = str.find(old_s, prev)) != std::string::npos) {
+                    out += str.substr(prev, pos - prev);
+                    out += new_s;
+                    prev = pos + old_s.size();
+                }
+                out += str.substr(prev);
+                str = out;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(str, 0);
+            return true;
+        }
         std::string target, replacement;
         // args[1] and args[2] are CharSequence (could be String or other)
         if (args[1].type == DalvikType::STRING_REF) {
