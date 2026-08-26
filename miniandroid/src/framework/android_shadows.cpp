@@ -1472,7 +1472,22 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "toString") {
-        return CallResult::handled_string("View");
+        // EXP-094 (CM-018): Only claim toString for objects that are actually
+        // registered View nodes. Previously this returned the literal "View"
+        // for ANY dispatch that reached ViewShadow — including the
+        // view_parents fallback in bridge_to_api, which tries
+        // "Landroid/view/View;" for EVERY unhandled method. That made
+        // StringBuilder.toString() return "View", poisoning every string
+        // concatenation in the app (Object→toString silent false success).
+        const ViewNode* n = (ctx.receiver_id != 0) ? find_node(ctx.receiver_id) : nullptr;
+        if (n != nullptr) {
+            // Per AOSP View.toString(): "android.view.View{<hex> ...}" debug
+            // string. We return the class-desc debug form for registered nodes.
+            return CallResult::handled_string(
+                (n->class_desc.empty() ? std::string("View") : n->class_desc) +
+                "{" + std::to_string(ctx.receiver_id) + "}");
+        }
+        return CallResult::not_handled();
     }
     if (m == "equals") {
         uint32_t other = ctx.arg_as_object(0, 0);
