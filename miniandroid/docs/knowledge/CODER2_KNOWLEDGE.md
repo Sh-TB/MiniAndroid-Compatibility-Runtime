@@ -119,3 +119,47 @@
 ## Historical OX Evidence
 
 Historical archive contains evidence of an earlier real OX board/frame reaching framebuffer pixels, with real 3x3 geometry and pixel comparisons, and a center-cell click reaching a visible view. This is historical evidence only, not proof of current HEAD.
+
+---
+
+## C2-F22: BOOLEAN zero-ness in if-eqz/if-nez (independently confirmed)
+
+### Status: PROVEN, INTEGRATED (Primary commit 063c772)
+
+Coder 2 independently hypothesized that BOOLEAN type values with int_val==0
+were not being treated as zero by if-eqz. This was independently confirmed
+by Primary Coder's Telegram source-first investigation:
+
+- **Source-first**: Used Telegram source (LoginActivity.java line 3185-3197)
+  to understand the callback semantics.
+- **DEX verification**: Traced `lambda$onNextPressed$22` PC=8 where
+  `if-eqz v4(BOOLEAN false)` was NOT taken (should have been).
+- **Root cause**: `is_zero` check in `execute_if_eqz` was missing BOOLEAN type.
+- **Fix**: Added BOOLEAN, BYTE, SHORT, CHAR to is_zero/is_nonzero checks.
+- **Generic impact**: Affects ALL APKs using instance-of results in branches.
+
+This finding is promoted to high-confidence generic VM knowledge and
+cross-referenced in CODER_MAIN_KNOWLEDGE.md as CM-008.
+
+### C2-F31: OX/TicTacToe real board rendering
+
+Three bugs were fixed by Coder 2:
+1. BitmapFontData.missingGlyph was null.
+2. fetch_vertex byte-VBO path did not assign output data.
+3. Pools.get / Pool.obtain / Pool.free lacked compatibility handling.
+
+Results: ASAN EXIT=0, regular EXIT=0, real board pixels reach framebuffer.
+Status: PROVEN on Coder 2's branch. Not yet integrated into main.
+
+### General Reconciliation Status
+
+| Finding | Status on Current HEAD |
+|---------|----------------------|
+| C2-F01 (receiver/this) | INTEGRATED (EXP-061) |
+| C2-F06 (D8/R8 lambda) | INTEGRATED (EXP-089) |
+| C2-F07 (array-length) | INTEGRATED |
+| C2-F12 (wide values) | INTEGRATED (EXP-089) |
+| C2-F22 (BOOLEAN if-eqz) | INTEGRATED (EXP-093, CM-008) |
+| C2-F31 (OX board rendering) | NOT YET INTEGRATED (on Coder 2 branch) |
+| C2-F13 (lazy-load) | HYPOTHESIS (defense-in-depth added) |
+| C2-F14 (swallowed exceptions) | HYPOTHESIS |
