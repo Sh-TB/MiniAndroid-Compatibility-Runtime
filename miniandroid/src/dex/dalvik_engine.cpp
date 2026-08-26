@@ -1465,16 +1465,24 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     // EXP-063: Build field_name_by_resid mapping for R classes.
     // This maps resource ID → field name, so we can resolve resources
     // by name when DEX IDs don't match ARSC entry indices.
-    // EXP-063 FIX: Only store INT values (actual resource IDs like 0x000f0000).
-    // BOOLEAN values (true=1, false=0) from resource shrinking must be
-    // excluded because they collide with real resource IDs.
+    // EXP-093: Store ALL R$string values (including small D8-shrunk ordinals).
+    // The D8 shrinker remaps resource IDs to small ordinals per R$subclass.
+    // R$string.SentSmsCode=3 is different from R$anim.text_out_down=3.
+    // By storing R$string values, we can resolve them via field_name_by_resid_.
+    // R$bool / R$integer / R$color values >= 0x10000 are still stored (they
+    // don't collide with R$string ordinals because they use the >= 0x10000 range).
     if (class_descriptor.find("R$") != std::string::npos) {
+        bool is_r_string = (class_descriptor.find("R$string") != std::string::npos);
         for (const auto& field : cls_ref.static_fields) {
             if (!field.has_default_value || field.default_value_is_string) continue;
-            // Only store values that look like resource IDs (>= 0x10000)
-            // This excludes BOOLEAN values (0, 1) and small integers.
-            if (field.default_int_value >= 0x10000) {
+            if (is_r_string) {
+                // Store ALL R$string values (including small ordinals like 0, 1, 2, 3)
                 field_name_by_resid_[static_cast<int32_t>(field.default_int_value)] = field.name;
+            } else {
+                // For non-R$string: only store values >= 0x10000
+                if (field.default_int_value >= 0x10000) {
+                    field_name_by_resid_[static_cast<int32_t>(field.default_int_value)] = field.name;
+                }
             }
         }
     }
@@ -2862,8 +2870,32 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             method_name == "onBecomeFullyVisible" ||
             method_name == "onPause" ||
             method_name == "onStop" ||
-            method_name == "onDestroy") {
-            threshold = 50;
+            method_name == "onDestroy" ||
+            // EXP-093: Critical View/String methods must NOT be throttled at 10.
+            // setText is called once per TextView — with 6+ views per screen,
+            // 10 is way too low. These are NOT infinite-loop risks.
+            method_name == "setText" ||
+            method_name == "getText" ||
+            method_name == "toString" ||
+            method_name == "append" ||
+            method_name == "setVisibility" ||
+            method_name == "setOrientation" ||
+            method_name == "setGravity" ||
+            method_name == "setTypeface" ||
+            method_name == "setTextSize" ||
+            method_name == "setPadding" ||
+            method_name == "setLayoutParams" ||
+            method_name == "addView" ||
+            method_name == "setHint" ||
+            method_name == "setEnabled" ||
+            method_name == "setClickable" ||
+            method_name == "setFocusable" ||
+            method_name == "requestFocus" ||
+            method_name == "setBackgroundColor" ||
+            method_name == "setBackground" ||
+            method_name == "setImageResource" ||
+            method_name == "setOnFocusChangeListener") {
+            threshold = 1000;
         }
         // EXP-063: getString is called many times (100+) for each UI string.
         // The default 10-call threshold stubs it after 10 calls, preventing
@@ -10432,6 +10464,148 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_string(lower, 0);
+        return true;
+    }
+
+    // EXP-093: Application.getString(int resid) → String
+    // Per AOSP: Application delegates to Context.getString which delegates
+    // to Resources.getString. We handle it the same way as Resources.getString.
+    if (method == "getString" &&
+        (class_name.find("Application") != std::string::npos ||
+         class_name.find("Context") != std::string::npos ||
+         class_name.find("ContextWrapper") != std::string::npos)) {
+        std::cerr << "[EXP093-APPSTR] HIT! class=" << class_name
+                  << " args=" << args.size();
+        for (size_t i = 0; i < args.size() && i < 3; i++) {
+            std::cerr << " arg" << i << "_type=" << (int)args[i].type;
+            if (args[i].type == DalvikType::INT32) std::cerr << "_int=" << args[i].int_val;
+            if (args[i].type == DalvikType::OBJECT_REF) std::cerr << "_obj=" << args[i].object_id;
+        }
+        std::cerr << std::endl;
+        // For instance methods: args[0]=this(OBJECT_REF), args[1]=resid(INT32)
+        // For static: args[0]=resid(INT32)
+        int32_t resid = -1;
+        if (args.size() >= 2 && args[1].type == DalvikType::INT32) {
+            resid = args[1].int_val;
+        } else if (args.size() >= 1 && args[0].type == DalvikType::INT32) {
+            resid = args[0].int_val;
+        }
+        if (resid >= 0) {
+            // First try the normal field_name_by_resid_ lookup
+            auto fn_it = field_name_by_resid_.find(resid);
+            // EXP-093: If not found and resid is small (D8 shrinker remap),
+            // try resolving by looking up the R$string static field with
+            // value == resid. The D8 shrinker remaps resource IDs to small
+            // ordinals (e.g., R.string.SentSmsCode → 3).
+            if (fn_it == field_name_by_resid_.end()) {
+                // Try to find the field name by scanning R$string static fields
+                // stored in static_field_storage_.
+                // The D8 shrinker remaps resource IDs to small ordinals.
+                std::string r_string_prefix = "Lorg/telegram/messenger/R$string;.";
+                for (const auto& [skey, sval] : static_field_storage_) {
+                    if (skey.find(r_string_prefix) == 0 &&
+                        sval.type == DalvikType::INT32 && sval.int_val == resid) {
+                        // Found! Extract field name from key
+                        std::string fname = skey.substr(r_string_prefix.length());
+                        auto sv_it = resource_string_values_.find(fname);
+                        if (sv_it != resource_string_values_.end()) {
+                            result = DalvikValue::make_string(sv_it->second, 0);
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            std::cerr << "[EXP093-APPGETSTR] getString(resid=" << resid
+                                      << ") → field=\"" << fname
+                                      << "\" → \"" << sv_it->second << "\""
+                                      << std::endl;
+                            return true;
+                        }
+                    }
+                }
+            }
+            if (fn_it != field_name_by_resid_.end()) {
+                auto sv_it = resource_string_values_.find(fn_it->second);
+                if (sv_it != resource_string_values_.end()) {
+                    result = DalvikValue::make_string(sv_it->second, 0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+        }
+        result = DalvikValue::make_string("", 0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // EXP-093: String.format(String format, Object... args) → String
+    // Per OpenJDK: replaces %s, %d, %f etc. with argument values.
+    // This is CRITICAL for LocaleController.formatString which builds
+    // messages like "We've sent a code to %s" by calling String.format.
+    if (class_name == "Ljava/lang/String;" && method == "format" && !args.empty()) {
+        // String.format is static: args[0] = format string, args[1+] = format args
+        // In DEX, the varargs array is passed as a single Object[] argument
+        std::string fmt = (args[0].type == DalvikType::STRING_REF) ? args[0].string_val : "";
+        std::string output;
+
+        // If args[1] is an OBJECT_REF (Object[]), try to extract elements
+        // For now, implement a simple %s/%d replacement using the varargs array
+        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+            // Try to get array elements from the Object[] on the heap
+            uint32_t arr_id = args[1].object_id;
+            int arr_len = 0;
+            if (heap_.has_object(arr_id)) {
+                auto len_field = heap_.get_object_field(arr_id, "__array_length__");
+                if (len_field.has_value() && len_field->type == DalvikType::INT32) {
+                    arr_len = len_field->int_val;
+                }
+            }
+
+            // Simple %s/%d replacement
+            size_t arg_idx = 0;
+            for (size_t i = 0; i < fmt.size(); i++) {
+                if (fmt[i] == '%' && i + 1 < fmt.size()) {
+                    char spec = fmt[i + 1];
+                    if (spec == 's' && arg_idx < (size_t)arr_len) {
+                        // Get string arg from array
+                        std::string field_name = "array[" + std::to_string(arg_idx) + "]";
+                        auto elem = heap_.get_object_field(arr_id, field_name);
+                        if (elem.has_value()) {
+                            if (elem->type == DalvikType::STRING_REF) {
+                                output += elem->string_val;
+                            } else if (elem->type == DalvikType::OBJECT_REF && heap_.has_object(elem->object_id)) {
+                                auto sv = heap_.get_object_field(elem->object_id, "value");
+                                if (sv.has_value() && sv->type == DalvikType::STRING_REF) {
+                                    output += sv->string_val;
+                                }
+                            } else if (elem->type == DalvikType::INT32) {
+                                output += std::to_string(elem->int_val);
+                            }
+                        }
+                        arg_idx++;
+                        i++; // skip the 's'
+                    } else if (spec == 'd' && arg_idx < (size_t)arr_len) {
+                        std::string field_name = "array[" + std::to_string(arg_idx) + "]";
+                        auto elem = heap_.get_object_field(arr_id, field_name);
+                        if (elem.has_value() && elem->type == DalvikType::INT32) {
+                            output += std::to_string(elem->int_val);
+                        }
+                        arg_idx++;
+                        i++;
+                    } else if (spec == '%') {
+                        output += '%';
+                        i++;
+                    } else {
+                        output += fmt[i];
+                    }
+                } else {
+                    output += fmt[i];
+                }
+            }
+        } else {
+            // No varargs — just return the format string as-is
+            output = fmt;
+        }
+
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_string(output, 0);
+        std::cerr << "[EXP093-STRFMT] String.format(\"" << fmt << "\", ...) → \"" << output << "\"" << std::endl;
         return true;
     }
 
