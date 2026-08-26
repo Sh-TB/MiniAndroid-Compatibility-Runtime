@@ -2054,6 +2054,89 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                   << std::endl;
     }
 
+    // EXP-093: Intercept LocaleController.formatString BEFORE it calls Application.getString.
+    // The formatString method receives the resource KEY NAME as args[0] (STRING).
+    // We use this key to resolve the format string directly from resource_string_values_,
+    // bypassing the broken resid resolution (D8 shrinker remaps multiple fields to same ordinal).
+    if (method_name == "formatString" &&
+        declaring_class.find("LocaleController") != std::string::npos &&
+        !args.empty() && args[0].type == DalvikType::STRING_REF) {
+        std::string key = args[0].string_val;
+        auto sv_it = resource_string_values_.find(key);
+        if (sv_it != resource_string_values_.end()) {
+            // We have the format string. Now format it with args.
+            // The 5-arg formatString has: key, fallback, res, fallbackRes, Object[] args
+            // The 3-arg formatString has: key, res, Object[] args
+            // Find the Object[] args (last argument)
+            std::string format_str = sv_it->second;
+            std::string result_str = format_str;
+
+            // Try to find the varargs Object[] in args
+            for (int ai = args.size() - 1; ai >= 1; ai--) {
+                if (args[ai].type == DalvikType::OBJECT_REF && args[ai].object_id != 0) {
+                    uint32_t arr_id = args[ai].object_id;
+                    if (heap_.has_object(arr_id)) {
+                        auto len_field = heap_.get_object_field(arr_id, "__array_length__");
+                        if (len_field.has_value() && len_field->type == DalvikType::INT32) {
+                            int arr_len = len_field->int_val;
+                            // Simple %s/%d replacement
+                            size_t arg_idx = 0;
+                            std::string output;
+                            for (size_t i = 0; i < format_str.size(); i++) {
+                                if (format_str[i] == '%' && i + 1 < format_str.size()) {
+                                    // Handle %1$s, %s, %d, etc.
+                                    size_t spec_start = i;
+                                    i++; // skip %
+                                    // Skip positional argument (e.g., "1$" in "%1$s")
+                                    while (i < format_str.size() && format_str[i] >= '0' && format_str[i] <= '9') i++;
+                                    if (i < format_str.size() && format_str[i] == '$') i++;
+
+                                    if (i < format_str.size() && (format_str[i] == 's' || format_str[i] == 'd')) {
+                                        char spec = format_str[i];
+                                        if (arg_idx < (size_t)arr_len) {
+                                            std::string field_name = "array[" + std::to_string(arg_idx) + "]";
+                                            auto elem = heap_.get_object_field(arr_id, field_name);
+                                            if (elem.has_value()) {
+                                                if (elem->type == DalvikType::STRING_REF) {
+                                                    output += elem->string_val;
+                                                } else if (elem->type == DalvikType::OBJECT_REF && heap_.has_object(elem->object_id)) {
+                                                    auto sv = heap_.get_object_field(elem->object_id, "value");
+                                                    if (sv.has_value() && sv->type == DalvikType::STRING_REF) {
+                                                        output += sv->string_val;
+                                                    }
+                                                } else if (elem->type == DalvikType::INT32) {
+                                                    output += std::to_string(elem->int_val);
+                                                }
+                                            }
+                                        }
+                                        arg_idx++;
+                                        i++; // skip the spec char
+                                    } else if (i < format_str.size() && format_str[i] == '%') {
+                                        output += '%';
+                                        i++;
+                                    } else {
+                                        // Unknown spec — output as-is
+                                        output += format_str.substr(spec_start, i - spec_start + 1);
+                                    }
+                                } else {
+                                    output += format_str[i];
+                                }
+                            }
+                            result_str = output;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            std::cerr << "[EXP093-FMTSTR] formatString(key=\"" << key
+                      << "\") → \"" << result_str << "\"" << std::endl;
+            return_val = DalvikValue::make_string(result_str, 0);
+            recursion_depth_--;
+            return true;
+        }
+    }
+
     // EXP-091: Intercept LocaleController.getString(int) BEFORE try_recursive_invoke
     // finds the method in the DEX. The real DEX bytecode builds a garbage "View"
     // string via StringBuilder. We resolve the resource ID to the actual string.
