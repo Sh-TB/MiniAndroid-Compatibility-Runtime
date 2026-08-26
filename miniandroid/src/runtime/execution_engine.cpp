@@ -1109,7 +1109,20 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                     try {
                         view_shadow->find_node(root_id);  // verify root still valid
 
-                        // Iterative BFS traversal with visited-set
+                        // Iterative traversal with visited-set.
+                        // EXP-095 (CM-019): REAL layout pass — the parent computes
+                        // each child's position/size using the captured
+                        // LayoutParams (lp_width/lp_height/lp_gravity/margins
+                        // from LayoutHelper.createLinear/createFrame).
+                        //   * Vertical LinearLayout parent (the SmsView case):
+                        //     children stack top→bottom honoring margins;
+                        //     CENTER_HORIZONTAL gravity centers each child.
+                        //   * FrameLayout/other parents: children overlap at
+                        //     the parent's top-left, gravity centers them.
+                        // AOSP Gravity bits: horizontal mask 0x7
+                        //   (CENTER_HORIZONTAL=1, LEFT=3, RIGHT=5),
+                        //   vertical mask 0x70 (CENTER_VERTICAL=0x10,
+                        //   TOP=0x30, BOTTOM=0x50).
                         struct RenderTask {
                             uint32_t view_id;
                             int left, top, width, height;
@@ -1119,6 +1132,30 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                         std::set<uint32_t> visited;
                         const int MAX_NODES = 500;
                         int node_count = 0;
+
+                        // Helper: measured text size for a node (used for
+                        // WRAP_CONTENT resolution and text drawing).
+                        auto measure_node = [&](const framework::ViewShadow::ViewNode* n,
+                                                 int parent_avail_w) -> std::pair<int,int> {
+                            (void)parent_avail_w;
+                            int lines = 1;
+                            for (char c : n->text) if (c == '\n') lines++;
+                            int tw = 0;
+                            {
+                                std::string line;
+                                for (char c : n->text) {
+                                    if (c == '\n') {
+                                        auto m = font.measure_text(line);
+                                        tw = std::max(tw, m.width);
+                                        line.clear();
+                                    } else line += c;
+                                }
+                                auto m = font.measure_text(line);
+                                tw = std::max(tw, m.width);
+                            }
+                            int th = lines * font.get_line_height() + 20;
+                            return {tw, th};
+                        };
 
                         queue.push_back({root_id, 0, 0, config.screen_width, config.screen_height, 0});
 
@@ -1141,30 +1178,18 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                       << " text=\"" << node->text << "\""
                                       << " children=" << node->children.size()
                                       << " depth=" << task.depth
+                                      << " pos=(" << task.left << "," << task.top << ")"
+                                      << " size=(" << task.width << "x" << task.height << ")"
                                       << std::endl;
 
-                            // Resolve width
+                            // The parent already computed this node's geometry
+                            // (task.left/top/width/height) — use it directly.
                             int w = task.width;
-                            if (node->width == -1) w = task.width;
-                            else if (node->width == -2) w = task.width;
-                            else if (node->width > 0) w = node->width;
-
-                            // Resolve height
-                            int h = font.get_line_height() + 20;
-                            if (node->height == -1) h = task.height;
-                            else if (node->height == -2) {
-                                if (!node->text.empty()) {
-                                    int lines = 1;
-                                    for (char c : node->text) if (c == '\n') lines++;
-                                    h = lines * font.get_line_height() + 20;
-                                }
-                            }
-                            else if (node->height > 0) h = node->height;
-
+                            int h = task.height;
                             int left = task.left;
                             int top = task.top;
-                            int right = task.left + w;
-                            int bottom = task.top + h;
+                            int right = left + w;
+                            int bottom = top + h;
 
                             // Draw view background
                             // EXP-092: Only draw container backgrounds for containers
@@ -1183,25 +1208,59 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             }
 
                             // Draw text if present (AFTER background so text is on top)
+                            // EXP-095: honor text gravity (CENTER_HORIZONTAL etc.)
+                            // and word-wrap at the view width. (Also fixes the
+                            // pre-existing double-escaped '\n' literal which
+                            // never matched a real newline.)
                             if (!node->text.empty()) {
-                                int text_x = left + 10;
-                                int text_y = top + font.get_line_height();
-                                std::string line;
-                                for (char c : node->text) {
-                                    if (c == '\\n') {
-                                        if (!line.empty()) {
-                                            canvas.draw_text(line, text_x, text_y,
-                                                            renderer::Colors::GREY_800, &font);
+                                int hg = node->text_gravity & 0x7;
+                                std::vector<std::string> out_lines;
+                                {
+                                    int avail = w - 20;
+                                    std::string line, word;
+                                    for (size_t i = 0; i <= node->text.size(); i++) {
+                                        char c = (i < node->text.size()) ? node->text[i] : '\n';
+                                        if (c == '\n') {
+                                            if (!word.empty()) {
+                                                if (!line.empty()) line += ' ';
+                                                line += word; word.clear();
+                                            }
+                                            out_lines.push_back(line); line.clear();
+                                            continue;
                                         }
-                                        text_y += font.get_line_height();
-                                        line.clear();
-                                    } else if (c != '\\r') {
-                                        line += c;
+                                        if (c == ' ') {
+                                            if (!word.empty()) {
+                                                if (!line.empty()) line += ' ';
+                                                line += word; word.clear();
+                                            }
+                                            continue;
+                                        }
+                                        word += c;
+                                        if (avail > 20) {
+                                            std::string probe = line.empty() ? word : (line + " " + word);
+                                            if (font.measure_text(probe).width > avail) {
+                                                if (!line.empty()) out_lines.push_back(line);
+                                                line = word; word.clear();
+                                            }
+                                        }
                                     }
+                                    if (out_lines.empty()) out_lines.push_back("");
                                 }
-                                if (!line.empty()) {
-                                    canvas.draw_text(line, text_x, text_y,
-                                                    renderer::Colors::GREY_800, &font);
+                                int text_y = top + font.get_line_height();
+                                for (const auto& ln : out_lines) {
+                                    if (!ln.empty()) {
+                                        int lx = left + 10;
+                                        if (hg == 1) {
+                                            auto lm = font.measure_text(ln);
+                                            lx = left + (w - lm.width) / 2;
+                                        } else if (hg == 5) {
+                                            auto lm = font.measure_text(ln);
+                                            lx = right - 10 - lm.width;
+                                        }
+                                        canvas.draw_text(ln, lx, text_y,
+                                                        renderer::Colors::GREY_800, &font);
+                                    }
+                                    text_y += font.get_line_height();
                                 }
                             }
 
@@ -1257,11 +1316,121 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                renderer::Colors::GREY_800, &font);
                             }
 
-                            // Queue children (reverse order for correct BFS)
-                            int child_y = top;
-                            for (auto it = node->children.rbegin(); it != node->children.rend(); ++it) {
-                                queue.push_back({*it, left, child_y, w, h, task.depth + 1});
-                                child_y += font.get_line_height() + 20;
+                            // EXP-095 (CM-019): Queue children with REAL layout.
+                            // The parent computes each child's position/size from
+                            // its captured LayoutParams (lp_*), then children are
+                            // pushed so they pop in FORWARD order (stack LIFO).
+                            // Parent type via real class hierarchy:
+                            //   * LinearLayout (vertical default): stack top-to-bottom
+                            //   * LinearLayout horizontal: lay left-to-right
+                            //   * FrameLayout/other: overlap, gravity centers
+                            bool is_linear_layout = dalvik_engine_.is_subclass_of(node->class_desc, "Landroid/widget/LinearLayout;");
+                            bool is_frame_layout = dalvik_engine_.is_subclass_of(node->class_desc, "Landroid/widget/FrameLayout;");
+                            std::cerr << "[EXP095-LAYOUT] parent=" << task.view_id
+                                      << " class=" << node->class_desc
+                                      << " linear=" << (is_linear_layout ? "Y" : "N")
+                                      << " frame=" << (is_frame_layout ? "Y" : "N")
+                                      << " orient=" << node->orientation
+                                      << " children=" << node->children.size()
+                                      << std::endl;
+                            // Orientation: captured setOrientation(0=H, 1=V).
+                            // Default VERTICAL per LinearLayout docs.
+                            bool horizontal = is_linear_layout && (node->orientation == 0);
+                            (void)is_frame_layout;
+
+                            // ── Two-phase child layout ──────────────────────
+                            // Phase 1: measure each child (size from LayoutParams).
+                            struct ChildBox {
+                                uint32_t id;
+                                int cw, ch;
+                                const framework::ViewShadow::ViewNode* n;
+                            };
+                            std::vector<ChildBox> boxes;
+                            boxes.reserve(node->children.size());
+                            for (uint32_t child_id : node->children) {
+                                const auto* cnode = view_shadow->find_node(child_id);
+                                if (!cnode) continue;
+                                auto measured = measure_node(cnode, w);
+                                int tw = measured.first, th = measured.second;
+                                int cw, ch;
+                                if (cnode->lp_width == INT_MIN) {
+                                    cw = cnode->text.empty() ? w : std::min(w, tw);
+                                } else if (cnode->lp_width == -1) {
+                                    cw = w;
+                                } else if (cnode->lp_width == -2) {
+                                    cw = std::min(w, tw);
+                                } else {
+                                    cw = cnode->lp_width;
+                                }
+                                if (cnode->lp_height == INT_MIN || cnode->lp_height == -2) {
+                                    ch = std::max(th, 20);
+                                } else if (cnode->lp_height == -1) {
+                                    ch = std::max(h / 2, th);
+                                } else {
+                                    ch = cnode->lp_height;
+                                    if (ch <= 0) ch = std::max(th, 20);
+                                }
+                                boxes.push_back({child_id, cw, ch, cnode});
+                            }
+                            // Phase 2: position.
+                            std::vector<RenderTask> child_tasks;
+                            child_tasks.reserve(boxes.size());
+                            int cursor_x = left;
+                            int cursor_y = top;
+                            if (task.depth == 0) cursor_y += 30;  // status-bar area
+                            if (horizontal) {
+                                // Horizontal row: children advance left→right.
+                                // The row is centered in the parent when the
+                                // parent has width and children don't fill it.
+                                int total_w = 0;
+                                for (const auto& b : boxes) {
+                                    total_w += b.n->lp_margin_left + b.cw + b.n->lp_margin_right;
+                                }
+                                int row_x = left;
+                                if (w > total_w && total_w > 0) {
+                                    row_x = left + (w - total_w) / 2;
+                                }
+                                for (const auto& b : boxes) {
+                                    int cx = row_x + b.n->lp_margin_left;
+                                    int cy = top + b.n->lp_margin_top;
+                                    child_tasks.push_back({b.id, cx, cy, b.cw, b.ch, task.depth + 1});
+                                    row_x = cx + b.cw + b.n->lp_margin_right;
+                                }
+                                (void)cursor_x; (void)cursor_y;
+                            } else {
+                                for (const auto& b : boxes) {
+                                    const auto* cnode = b.n;
+                                    int hg = cnode->lp_gravity & 0x7;
+                                    int cx;
+                                    if (hg == 1 || cnode->lp_gravity == 0x11) {
+                                        cx = left + (w - b.cw) / 2;
+                                    } else if (hg == 5) {
+                                        cx = left + w - b.cw - cnode->lp_margin_right;
+                                    } else {
+                                        cx = left + cnode->lp_margin_left;
+                                    }
+                                    int cy;
+                                    int vg = cnode->lp_gravity & 0x70;
+                                    if (is_linear_layout) {
+                                        cy = cursor_y + cnode->lp_margin_top;
+                                        cursor_y = cy + b.ch + cnode->lp_margin_bottom;
+                                    } else {
+                                        // FrameLayout semantics: overlap at parent
+                                        // origin; gravity may center vertically.
+                                        if (vg == 0x10 || cnode->lp_gravity == 0x11) {
+                                            cy = top + (h - b.ch) / 2;
+                                        } else if (vg == 0x50) {
+                                            cy = top + h - b.ch - cnode->lp_margin_bottom;
+                                        } else {
+                                            cy = top + cnode->lp_margin_top;
+                                        }
+                                    }
+                                    child_tasks.push_back({b.id, cx, cy, b.cw, b.ch, task.depth + 1});
+                                }
+                            }
+                            // LIFO stack: push in reverse so children pop in order.
+                            for (auto it = child_tasks.rbegin(); it != child_tasks.rend(); ++it) {
+                                queue.push_back(*it);
                             }
                         }
 
