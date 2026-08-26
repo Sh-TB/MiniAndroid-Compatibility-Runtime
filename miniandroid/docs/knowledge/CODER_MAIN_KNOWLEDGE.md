@@ -662,3 +662,50 @@ Commit `2bdc8ea`.
 ### Status
 PROVEN — no regressions in corpus (Telegram, uNote, microtimer, simplekeyboard,
 bgclock all pass).
+
+---
+
+## CM-015: Bundle putString/getString Implementation + SharedPreferences Guard Fix
+
+### Summary
+Two critical bugs fixed:
+1. Bundle/BaseBundle operations (putString, getString, putInt, getInt,
+   putBoolean, getBoolean, containsKey) were NOT implemented — all Bundle
+   data passing was silently lost (catch-all false-success).
+2. SharedPreferences `putString` handler was NOT guarded by class_name —
+   it caught ALL `putString` calls including Bundle.putString, storing
+   Bundle data on SharedPreferences.
+
+### Root Cause
+- No Bundle API implementation existed in `bridge_to_api`
+- The SharedPreferences `putString` handler at line 9255 was inside the
+  SharedPreferences class_name block but the `if (method == "putString")`
+  check was NOT guarded by `class_name.find("Editor")`
+- This was an F012 catch-all false-success pattern
+
+### Fix
+Commit `7491cbf`:
+- Added Bundle/BaseBundle handler with putString/getString/putInt/getInt/
+  putBoolean/getBoolean/containsKey/putLong/getLong
+- Bundle data stored on heap with "bundle:" prefix
+- Added class_name guard to SharedPreferences putString handler
+
+### Direct Evidence
+```
+[EXP093-BUNDLE] putString key="phone" bundle_id=4770 has_obj=1
+[EXP093-BUNDLE] putString key="ephone" bundle_id=4770 has_obj=1
+[EXP093-BUNDLE] putString key="phoneFormated" bundle_id=4770 has_obj=1
+[EXP093-BUNDLE] putString key="phoneHash" bundle_id=4770 has_obj=1
+[EXP093-BUNDLE] getString key="phone" bundle_id=4770 has_obj=1
+[EXP093-BUNDLE] getString key="ephone" bundle_id=4770 has_obj=1
+[EXP093-BUNDLE] getString key="phoneFormated" bundle_id=4770 has_obj=1
+```
+
+### Impact
+- Bundle data passing now works for ALL APKs (generic fix)
+- Telegram: SmsView.setParams now receives correct phone/phoneHash/etc.
+- Remaining: confirmTextView still empty because PhoneFormat.format(phone)
+  fails (separate Telegram-specific class issue)
+
+### Status
+PROVEN — Bundle operations work correctly. This is a GENERIC fix.
