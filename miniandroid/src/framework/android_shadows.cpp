@@ -1177,6 +1177,22 @@ uint32_t ViewShadow::find_by_class_substring(const std::string& substring) const
     return best;
 }
 
+// EXP-100 (UNIFIED_002): all class-substring matches, ascending view_id.
+// DIAGNOSTIC-only accessor so dispatch_click_by_class can record the full
+// candidate set + the selection rule in the click audit (§9 of the
+// master request). No behavior change for existing callers.
+std::vector<uint32_t> ViewShadow::find_all_by_class_substring(
+    const std::string& substring) const {
+    std::vector<uint32_t> out;
+    for (const auto& [id, node] : nodes_) {
+        if (node->class_desc.find(substring) != std::string::npos) {
+            out.push_back(id);
+        }
+    }
+    std::sort(out.begin(), out.end());
+    return out;
+}
+
 // EXP-060: Return all views with a click listener whose class matches
 // the substring. Used to dispatch synthetic clicks on multiple candidate
 // Views (e.g. startMessagingButton + switchLanguageTextView) when we
