@@ -1081,3 +1081,45 @@ without modification.
   uses Telegram-blue placeholder (CM-022); when RLottie is integrated
   the image_drawable_path infrastructure will accept the decoded frames
 - VectorDrawable (XML-based path rendering) — not yet implemented
+
+---
+
+## CM-025: Truncated APK Hang Fix + Expanded ZIP Regression (§11)
+
+### Summary
+The `find_end_of_central_dir` loop used `size_t i >= search_start` — when
+search_start is 0 (file smaller than 65557 bytes), `i >= 0` is ALWAYS
+true for unsigned size_t (it underflows to SIZE_MAX on the last
+iteration). A truncated APK with no EOCD signature caused an INFINITE
+LOOP (the runtime would hang, eventually OOM-kill).
+
+### Fix
+Replaced the underflow-prone `i >= search_start` with an explicit
+`if (i == search_start) break;` check inside the loop, plus a `if (i == 0)
+break` for the additional edge case where search_start==0.
+
+### Expanded ZIP Regression (§11)
+`scripts/exp097_streaming_zip_test.cpp` + Python fixture generator
+`scripts/exp097_streaming_zip_fixture.py`:
+
+| Test case | Result |
+|-----------|--------|
+| Large entry (70KB) with data descriptor | PASS |
+| Large STORED entry (70KB) | PASS |
+| Multiple mixed-method streaming entries | PASS |
+| Byte-pattern preservation (70KB random) | PASS |
+| Seekable (normal) APK control | PASS |
+| Empty entry | PASS |
+| Truncated APK (no EOCD) — no hang, returns error | PASS |
+| CRC mismatch (flipped byte in STORED data) — rejected | PASS |
+
+**14/14 PASS** against the synthetic fixture suite.
+
+### Real APK Coverage
+Chessclock (11/19 streaming entries): PROVEN in CM-021.
+Full 12/12 corpus: PROVEN post-CM-021.
+
+### Status
+PROVEN — generic robustness fix, no APK-specific branches. The
+truncated-APK hang was a SILENT FALSE SUCCESS vector (the runtime would
+appear to "still be running" on corrupt inputs).

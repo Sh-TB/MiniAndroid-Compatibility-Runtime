@@ -296,18 +296,27 @@ bool ApkParser::find_end_of_central_dir(const std::vector<uint8_t>& data, size_t
     
     // Search from end, but not more than 65535 bytes back (max comment length)
     size_t search_start = (data.size() > 65557) ? data.size() - 65557 : 0;
-    
-    for (size_t i = data.size() - min_eocd_size; i >= search_start; i--) {
-        if (i + 4 > data.size()) continue;
-        
+
+    // EXP-097 §11: Truncated APKs may have no EOCD signature at all.
+    // The previous loop used `size_t i >= search_start` which never terminates
+    // (size_t underflow → wraps to SIZE_MAX). Use signed boundary.
+    if (data.size() < min_eocd_size) {
+        last_error_ = "File too small for EOCD";
+        return false;
+    }
+    for (size_t i = data.size() - min_eocd_size; ; i--) {
+        if (i + 4 > data.size()) {
+            if (i == 0) break;
+            continue;
+        }
         uint32_t sig;
         std::memcpy(&sig, &data[i], 4);
-        
         if (sig == ZIP_END_OF_CENTRAL_DIR_SIG) {
             eocd_offset = i;
             log("Found EOCD at offset " + std::to_string(i));
             return true;
         }
+        if (i == search_start) break;
     }
     
     last_error_ = "End of central directory signature not found";
