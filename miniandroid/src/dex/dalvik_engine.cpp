@@ -1493,13 +1493,24 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     // don't collide with R$string ordinals because they use the >= 0x10000 range).
     if (class_descriptor.find("R$") != std::string::npos) {
         bool is_r_string = (class_descriptor.find("R$string") != std::string::npos);
+        bool is_r_raw = (class_descriptor.find("R$raw") != std::string::npos);
+        // EXP-098 (CM-027): R$raw also uses small D8-shrunk ordinals
+        // (e.g. R.raw.default_pattern=3, R.raw.bot_webview_sheet_to_cross=3)
+        // intermixed with large values (R.raw.chats_archiveavatar=917525).
+        // Store ALL values so RLottieImageView.setAnimation(R.raw.X, w, h)
+        // can resolve to the field name → resource_raw_paths_ lookup.
+        bool store_all = is_r_string || is_r_raw;
         for (const auto& field : cls_ref.static_fields) {
             if (!field.has_default_value || field.default_value_is_string) continue;
-            if (is_r_string) {
-                // Store ALL R$string values (including small ordinals like 0, 1, 2, 3)
+            if (store_all) {
+                // Store ALL values (including small ordinals like 0, 1, 2, 3).
+                // Multiple R$subclasses can have value=3 — distinguished by
+                // the calling class context (R$string.SentSmsCode vs
+                // R$raw.bot_webview_sheet_to_cross). The caller resolves
+                // via the right resource_raw_paths_/resource_string_values_.
                 field_name_by_resid_[static_cast<int32_t>(field.default_int_value)] = field.name;
             } else {
-                // For non-R$string: only store values >= 0x10000
+                // For non-R$string/R$raw: only store values >= 0x10000
                 if (field.default_int_value >= 0x10000) {
                     field_name_by_resid_[static_cast<int32_t>(field.default_int_value)] = field.name;
                 }
@@ -1986,6 +1997,65 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             // Don't return true here — let the DEX bytecode execute if it
             // has a real <init> method (we just propagated the mapping).
         }
+
+        // EXP-098 (CM-027): RLottieDrawable.<init>(R.raw.X, name, w, h, ...)
+        // — capture (raw_resid, w, h) BEFORE the constructor bytecode runs.
+        // Per Telegram source (RLottieDrawable.java:589):
+        //   public RLottieDrawable(@RawRes int rawRes, String name, int w, int h, ...) {
+        //     String jsonString = readRes(rawRes);  // reads R.raw.X as UTF-8
+        //     nativePtr = RLottieNative.createFromRawJson(jsonString, ...);
+        //   }
+        // We record the pending animation keyed by the drawable's object_id;
+        // a later setAnimation(RLottieDrawable) transfers it to the ImageView.
+        // args: [this, rawRes, name, w, h, startDecode, colorReplacement]
+        if (declaring_class.find("RLottieDrawable") != std::string::npos &&
+            args.size() >= 5 &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[1].type == DalvikType::INT32 &&
+            args[3].type == DalvikType::INT32 &&
+            args[4].type == DalvikType::INT32) {
+            uint32_t drawable_id = args[0].object_id;
+            int32_t raw_resid = args[1].int_val;
+            int target_w = args[3].int_val;
+            int target_h = args[4].int_val;
+            pending_anim_by_drawable_[drawable_id] = {raw_resid, target_w, target_h};
+            std::cerr << "[EXP098-RLDRAWABLE-INIT] obj=" << drawable_id
+                      << " raw_resid=" << raw_resid
+                      << " target=" << target_w << "x" << target_h
+                      << std::endl;
+        }
+    }
+
+    // EXP-098 (CM-027): RLottieImageView.setAnimation(RLottieDrawable) —
+    // transfer the pending animation from the drawable to the ImageView.
+    // This runs in try_recursive_invoke BEFORE the DEX bytecode executes.
+    // Per Telegram source (RLottieImageView.java:84):
+    //   public void setAnimation(RLottieDrawable lottieDrawable) {
+    //     drawable = lottieDrawable;
+    //     ...
+    //   }
+    if (method_name == "setAnimation" &&
+        declaring_class.find("RLottieImageView") != std::string::npos &&
+        args.size() >= 2 &&
+        args[0].type == DalvikType::OBJECT_REF &&
+        args[1].type == DalvikType::OBJECT_REF &&
+        shadow_registry_ != nullptr) {
+        uint32_t view_id = args[0].object_id;
+        uint32_t drawable_id = args[1].object_id;
+        auto it = pending_anim_by_drawable_.find(drawable_id);
+        if (it != pending_anim_by_drawable_.end()) {
+            const auto& pa = it->second;
+            auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+            if (vs != nullptr) {
+                vs->set_anim_pending(view_id, pa.raw_resid,
+                                     pa.target_w, pa.target_h);
+                std::cerr << "[EXP098-RLOTTIE-PENDING] view=" << view_id
+                          << " via drawable=" << drawable_id
+                          << " resid=" << pa.raw_resid
+                          << " target=" << pa.target_w << "x" << pa.target_h
+                          << std::endl;
+            }
+        }
     }
 
     // EXP-071: TextView.length intercept — dispatch to ViewShadow.getText().length().
@@ -2301,6 +2371,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // first 10 calls before the method throttle kicks in and produces
         // params with missing margins (setMargins is not fully bridged).
         class_descriptor.find("Lorg/telegram/ui/Components/LayoutHelper;") == 0 ||
+        // EXP-098 (CM-027): AndroidUtilities.dp() must go to the bridge
+        // so we return density=1.0 * value. The DEX bytecode calls
+        // getResources().getDisplayMetrics().density which returns 0
+        // in our headless runtime, making dp() return 0 — breaking
+        // RLottieDrawable construction (w/h args become 0).
+        class_descriptor.find("Lorg/telegram/messenger/AndroidUtilities;") == 0 ||
         // EXP-088+ Phase 5: desugared Java 8 ConcurrentHashMap.
         class_descriptor.find("Lj$/util/concurrent/ConcurrentHashMap;") == 0 ||
         class_descriptor.find("Ljava/util/concurrent/ConcurrentHashMap;") == 0) {
@@ -2532,6 +2608,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         last_invoke_return_ = return_val;
         return true;
     }
+
+    // EXP-098 (CM-027): RLottieDrawable.<init> intercept is in the early
+    // path (above) — see the method_name == "<init>" block.
 
     // EXP-071: getParentActivity compatibility — return the Activity directly.
     // The real method does getView().getContext() instanceof Activity, but
@@ -3058,7 +3137,11 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             method_name == "setBackgroundColor" ||
             method_name == "setBackground" ||
             method_name == "setImageResource" ||
-            method_name == "setOnFocusChangeListener") {
+            method_name == "setOnFocusChangeListener" ||
+            // EXP-098: dp() is called frequently for view sizing; must
+            // not be throttled (RLottieDrawable construction depends on it).
+            method_name == "dp" ||
+            method_name == "setAnimation") {
             threshold = 1000;
         }
         // EXP-063: getString is called many times (100+) for each UI string.
@@ -9383,6 +9466,96 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             std::cerr << "[EXP095-BG] view=" << args[0].object_id
                       << " color=0x" << std::hex
                       << static_cast<uint32_t>(args[1].int_val) << std::dec
+                      << std::endl;
+        }
+    }
+
+    // EXP-098 (CM-027): AndroidUtilities.dp(float) → int.
+    // Per AOSP source: dp(value) = (int)(value * density + 0.5).
+    // Our runtime has density=1.0 (mdpi), so dp(x) = (int)(x + 0.5) = round(x).
+    // The DEX signature is dp(F)I — float arg, int return.
+    // invoke-direct doesn't do signature-aware float conversion, so the
+    // FLOAT arg may arrive as INT32 (raw float bits, e.g. 0x42800000 for
+    // 64.0f). We reinterpret INT32 as FLOAT32 to recover the original value.
+    if (method == "dp" &&
+        class_name.find("AndroidUtilities") != std::string::npos &&
+        !args.empty()) {
+        float dp_val = 0.0f;
+        if (args[0].type == DalvikType::FLOAT32) {
+            dp_val = args[0].float_val;
+        } else if (args[0].type == DalvikType::INT32) {
+            // Reinterpret INT32 raw bits as FLOAT32 (invoke-direct doesn't
+            // do signature-aware conversion — const/high16 loads raw bits).
+            uint32_t bits = static_cast<uint32_t>(args[0].int_val);
+            std::memcpy(&dp_val, &bits, sizeof(float));
+        } else if (args[0].type == DalvikType::FLOAT64) {
+            dp_val = static_cast<float>(args[0].double_val);
+        } else if (args[0].type == DalvikType::INT64) {
+            uint64_t bits = static_cast<uint64_t>(args[0].long_val);
+            double d;
+            std::memcpy(&d, &bits, sizeof(double));
+            dp_val = static_cast<float>(d);
+        }
+        int val = static_cast<int>(dp_val + 0.5f);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(val);
+        return true;
+    }
+
+    // EXP-098 (CM-027): RLottieImageView.setAnimation(RLottieDrawable) —
+    // transfer the pending animation from the drawable to the ImageView.
+    // Per Telegram source (RLottieImageView.java:84):
+    //   public void setAnimation(RLottieDrawable lottieDrawable) {
+    //     drawable = lottieDrawable;
+    //     drawable.setMasterParent(this);
+    //     ...
+    //   }
+    if (method == "setAnimation" &&
+        class_name.find("RLottieImageView") != std::string::npos &&
+        args.size() >= 2 &&
+        args[0].type == DalvikType::OBJECT_REF &&
+        args[1].type == DalvikType::OBJECT_REF &&
+        shadow_registry_ != nullptr) {
+        uint32_t view_id = args[0].object_id;
+        uint32_t drawable_id = args[1].object_id;
+        auto it = pending_anim_by_drawable_.find(drawable_id);
+        if (it != pending_anim_by_drawable_.end()) {
+            const auto& pa = it->second;
+            auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+            if (vs != nullptr) {
+                vs->set_anim_pending(view_id, pa.raw_resid,
+                                     pa.target_w, pa.target_h);
+                std::cerr << "[EXP098-RLOTTIE-PENDING] view=" << view_id
+                          << " via drawable=" << drawable_id
+                          << " resid=" << pa.raw_resid
+                          << " target=" << pa.target_w << "x" << pa.target_h
+                          << std::endl;
+            }
+        }
+    }
+
+    // EXP-098 (CM-027): RLottieImageView.setAnimation(int resId, int w, int h) —
+    // direct form (bypasses RLottieDrawable). Records pending animation on
+    // the ImageView's ViewNode directly.
+    if (method == "setAnimation" &&
+        (class_name.find("RLottieImageView") != std::string::npos ||
+         class_name.find("RLottieDrawable") != std::string::npos) &&
+        args.size() >= 4 &&
+        args[0].type == DalvikType::OBJECT_REF &&
+        args[1].type == DalvikType::INT32 &&
+        args[2].type == DalvikType::INT32 &&
+        args[3].type == DalvikType::INT32 &&
+        shadow_registry_ != nullptr) {
+        uint32_t view_id = args[0].object_id;
+        int32_t raw_resid = args[1].int_val;
+        int target_w = args[2].int_val;
+        int target_h = args[3].int_val;
+        auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+        if (vs != nullptr) {
+            vs->set_anim_pending(view_id, raw_resid, target_w, target_h);
+            std::cerr << "[EXP098-RLOTTIE-PENDING] view=" << view_id
+                      << " resid=" << raw_resid
+                      << " target=" << target_w << "x" << target_h
                       << std::endl;
         }
     }
