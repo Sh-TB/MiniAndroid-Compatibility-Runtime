@@ -202,6 +202,15 @@ private:
                                          uint32_t uncompressed_size,
                                          uint16_t method);
     
+    // EXP-094 (CM-021): central-directory-driven extraction — used by both
+    // extract_entry_from_memory and extract_entry_cached. Reads the local
+    // file header ONLY for the data offset (file_name_length + extra_field_length
+    // may differ between LFH and CDE per APPNOTE.TXT §4.4.10/§4.4.11). The
+    // sizes/method/crc come from the ZipEntry (already populated from the
+    // central directory, which is the authoritative source).
+    std::vector<uint8_t> extract_entry_using_central_dir_(
+        const std::vector<uint8_t>& apk_data, const ZipEntry& entry);
+    
     // Manifest analysis (delegates to manifest_reader)
     void analyze_manifest(const std::vector<uint8_t>& manifest_data, ApkInfo& info);
     
