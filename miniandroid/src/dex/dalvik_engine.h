@@ -1492,9 +1492,14 @@ public:
     std::string register_name(uint8_t reg) const;
     
     // API bridge
+    // UC-CM-001 (F012): method_idx_hint lets the catch-all STUBBED path
+    // resolve the callee proto and return a TYPE-AWARE default (0 / false /
+    // null / 0.0f / 0L) instead of always returning VOID. When the hint is
+    // absent (legacy callers) behavior is unchanged (void + STUBBED).
     bool bridge_to_api(const std::string& class_name, const std::string& method,
                        const std::vector<DalvikValue>& args, DalvikValue& result,
-                       ApiCallTrace::Status& status);
+                       ApiCallTrace::Status& status,
+                       uint32_t method_idx_hint = 0xFFFFFFFFu);
     // EXP-042 Phase 4: Singleton cache helper for Android framework objects.
     DalvikValue get_or_create_singleton(const std::string& class_desc);
     
