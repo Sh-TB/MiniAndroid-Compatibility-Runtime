@@ -981,3 +981,44 @@ COMPLETE SECOND. OPTIMIZE LATER." and the source-first rule:
 PROVEN — placeholder is generic for ALL ImageView slots. Real RLottie
 integration deferred per campaign order (§12 — separate milestone,
 not a blocker for the SMS screen's user-visible meaning).
+
+---
+
+## CM-023: PNG PLTE/tRNS Palette Support (color_type=3)
+
+### Summary
+The PNGDecoder did NOT support color_type=3 (palette-indexed PNG) — the
+MOST COMMON Android image format (smaller files via shared palette).
+ALL 50 sampled Telegram PNGs failed with "palette PNG not supported".
+0% pass rate.
+
+### Root Cause
+PNG spec §11.2.2 / §11.2.3: color_type=3 means IDAT contains one palette
+INDEX per pixel (not RGB values directly). The PLTE chunk (1..256 RGB
+triples) is the lookup table; tRNS (optional) gives per-entry alpha.
+The previous decoder only handled direct-color types (0/2/4/6) and
+explicitly rejected color_type=3.
+
+### Fix
+Extended `PNGDecoder::decode()`:
+1. Walk chunks collecting PLTE (RGB entries) and tRNS (alpha values)
+2. For color_type=3 + bit_depth=8: inflate IDAT → unfilter (1 bpp)
+   → look up each pixel index in PLTE → emit RGBA
+3. Generous inflate buffer (max(idat.size*5, expected_raw+1024)) —
+   the previous `idat.size*4` was too small for any reasonable PNG
+4. Out-of-range palette indices are clamped (tolerate, not silent
+   black)
+
+### Test Coverage
+`scripts/exp096_image_pipeline_test.cpp` — runs PNGDecoder against
+real Telegram PNGs from the APK:
+- BEFORE: 0/50 OK (0% pass rate)
+- AFTER: 47/50 OK (94% pass rate)
+- 3 failures: bit_depth=4 sub-byte palette PNGs (future work)
+
+### Status
+PROVEN — generic PNG format support, no APK-specific branches. Real
+Telegram emoji PNGs now decode to correct RGBA pixel data. Future work:
+- bit_depth=1/2/4 sub-byte palette unpacking (per PNG §4.3.1.1)
+- WebP decoder (libwebp) — Telegram has 3860 WebPs
+- JPEG decoder (libjpeg-turbo) — Telegram has 4 JPEGs
