@@ -14,6 +14,7 @@
 #include "dex_parser.h"
 #include "../api/android_stubs.h"
 #include "../diagnostics/mem_probe.h"
+#include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
 #include "../jni/jni_bridge.h"
 // EXP-051: Shadow registry integration.
 #include "../framework/shadow_registry.h"
@@ -3881,6 +3882,49 @@ bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id) {
               << " listener_class=" << listener_class
               << std::endl;
 
+    // EXP-100 (UNIFIED_002): structured per-click audit BEFORE dispatch
+    // (DIAGNOSTIC, env-gated via MINIANDROID_CLICK_AUDIT). Records the
+    // full per-click target evidence demanded by the master request §7:
+    // click number, timestamp, view id/class, hierarchy path, bounds,
+    // visible/enabled/clickable, parent, listener — dispatch result is
+    // recorded after the invoke below.
+    uint64_t click_no = miniandroid::diagnostics::click_counter().fetch_add(1) + 1;
+    {
+        // Walk the parent chain to build the hierarchy path (bounded loop).
+        std::vector<std::string> path_names{node->class_desc};
+        uint32_t pid = node->parent_id;
+        int guard = 0;
+        while (pid != 0 && guard++ < 64) {
+            const auto* p = view_shadow->find_node(pid);
+            if (p == nullptr) break;
+            path_names.push_back(p->class_desc);
+            pid = p->parent_id;
+        }
+        std::string path;
+        for (auto it = path_names.rbegin(); it != path_names.rend(); ++it) {
+            if (!path.empty()) path += "/";
+            path += *it;
+        }
+        std::string rec = "{\"schema\":\"click_audit_v1\",\"record\":\"dispatch\",\"click_no\":" +
+            std::to_string(click_no) +
+            ",\"t\":\"" + miniandroid::diagnostics::iso_now() + "\"" +
+            ",\"view_id\":" + std::to_string(view_object_id) +
+            ",\"view_class\":\"" + miniandroid::diagnostics::jesc(node->class_desc) + "\"" +
+            ",\"parent_id\":" + std::to_string(node->parent_id) +
+            ",\"android_view_id\":" + std::to_string(node->android_view_id) +
+            ",\"hierarchy_path\":\"" + miniandroid::diagnostics::jesc(path) + "\"" +
+            ",\"bounds\":[" + std::to_string(node->x) + "," + std::to_string(node->y) + "," +
+            std::to_string(node->width) + "," + std::to_string(node->height) + "]" +
+            ",\"clickable\":" + (node->clickable ? "true" : "false") +
+            ",\"enabled\":" + (node->enabled ? "true" : "false") +
+            ",\"visibility\":" + std::to_string(node->visibility) +
+            ",\"text\":\"" + miniandroid::diagnostics::jesc(node->text) + "\"" +
+            ",\"listener_id\":" + std::to_string(listener_id) +
+            ",\"listener_class\":\"" + miniandroid::diagnostics::jesc(listener_class) + "\"" +
+            ",\"target_method\":\"onClick(View)\"}";
+        miniandroid::diagnostics::audit_append(rec);
+    }
+
     // Build args for onClick(View v):
     //   args[0] = this (listener)
     //   args[1] = view (the View that was clicked)
@@ -3898,6 +3942,14 @@ bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id) {
               << (ok ? "DISPATCHED" : "FAILED")
               << " listener=" << listener_class
               << std::endl;
+
+    // EXP-100: record the dispatch RESULT for the click above (DIAGNOSTIC).
+    miniandroid::diagnostics::audit_append(
+        std::string("{\"schema\":\"click_audit_v1\",\"record\":\"dispatch_result\",\"click_no\":") +
+        std::to_string(click_no) +
+        ",\"view_id\":" + std::to_string(view_object_id) +
+        ",\"dispatch_ok\":" + (ok ? "true" : "false") +
+        ",\"total_instructions_executed\":" + std::to_string(result.total_instructions_executed) + "}");
     return ok;
 }
 
@@ -3989,6 +4041,26 @@ bool DalvikExecutionEngine::dispatch_click_by_class(const std::string& class_sub
     auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
     if (view_shadow == nullptr) return false;
     uint32_t view_id = view_shadow->find_by_class_substring(class_substring);
+    // EXP-100 (UNIFIED_002 §9): record the class-based SELECTION — which
+    // candidates matched, which one was chosen, and why (find_by_class_substring
+    // returns the LAST/highest-id match — record that fact explicitly).
+    {
+        auto matches = view_shadow->find_all_by_class_substring(class_substring);
+        std::string cand;
+        for (size_t i = 0; i < matches.size(); ++i) {
+            const auto* n = view_shadow->find_node(matches[i]);
+            if (i) cand += ",";
+            cand += "\"" + miniandroid::diagnostics::jesc(
+                n ? n->class_desc : std::string("?")) + ":" + std::to_string(matches[i]) + "\"";
+        }
+        miniandroid::diagnostics::audit_append(
+            std::string("{\"schema\":\"click_audit_v1\",\"record\":\"select_by_class\",\"t\":\"") +
+            miniandroid::diagnostics::iso_now() + "\"" +
+            ",\"class_substring\":\"" + miniandroid::diagnostics::jesc(class_substring) + "\"" +
+            ",\"candidates\": [" + cand + "]" +
+            ",\"chosen_view_id\":" + std::to_string(view_id) +
+            ",\"rule\":\"last/highest view_id match\"}");
+    }
     if (view_id == 0) {
         std::cerr << "[EXP060-CLICK] no View found matching '"
                   << class_substring << "'" << std::endl;

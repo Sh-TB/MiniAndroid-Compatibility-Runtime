@@ -664,6 +664,11 @@ public:
     // its Android view_id. Returns the most-recently-created match.
     uint32_t find_by_class_substring(const std::string& substring) const;
 
+    // EXP-100 (UNIFIED_002): ALL matches for a class substring, ascending
+    // view_id order. DIAGNOSTIC — used by dispatch_click_by_class to audit
+    // candidate enumeration and selection (master request §9).
+    std::vector<uint32_t> find_all_by_class_substring(const std::string& substring) const;
+
     // EXP-095 (CM-019): Store captured layout params on a ViewNode.
     // Called by the engine when addView(view, params) / setLayoutParams
     // is observed with a LayoutParams heap object carrying the fields
