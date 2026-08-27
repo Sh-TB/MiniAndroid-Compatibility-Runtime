@@ -1651,6 +1651,24 @@ public:
     // EXP-067: resource_drawable_paths_ maps field name → APK asset path (e.g. "res/abc.webp").
     // Loaded from resource_values.json["drawable"] and ["mipmap"].
     std::map<std::string, std::string> resource_drawable_paths_;
+    // EXP-098 (CM-027): resource_raw_paths_ maps R.raw.X name → APK asset
+    // path (e.g. "res/-si.json" for R.raw.sms_incoming_info). Used by
+    // RLottieImageView.setAnimation(R.raw.X, w, h) → RLottieDrawable →
+    // AndroidUtilities.readRes(R.raw.X) → openRawResource. Loaded from
+    // resource_values.json["raw"].
+    std::map<std::string, std::string> resource_raw_paths_;
+    // EXP-098 (CM-027): pending_anim_by_drawable_ maps RLottieDrawable
+    // object_id → (raw_resid, w, h). When `new RLottieDrawable(R.raw.X,
+    // name, w, h, ...)` is constructed, we record (resid, w, h) here.
+    // When the drawable is later attached to an RLottieImageView via
+    // setAnimation(RLottieDrawable), the ImageView inherits the pending
+    // animation and the render stage decodes the Lottie frame.
+    struct PendingAnim {
+        int32_t raw_resid = 0;
+        int target_w = 0;
+        int target_h = 0;
+    };
+    std::map<uint32_t, PendingAnim> pending_anim_by_drawable_;
     // EXP-067: resource_integer_values_ maps field name → int value.
     std::map<std::string, int32_t> resource_integer_values_;
     // EXP-067: resource_bool_values_ maps field name → bool value.

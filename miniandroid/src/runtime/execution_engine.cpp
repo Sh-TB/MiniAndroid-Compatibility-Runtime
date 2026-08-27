@@ -296,7 +296,8 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             }
 
             int loaded_strings = 0, loaded_colors = 0, loaded_dimens = 0,
-                loaded_drawables = 0, loaded_integers = 0, loaded_bools = 0;
+                loaded_drawables = 0, loaded_integers = 0, loaded_bools = 0,
+                loaded_raws = 0;
             bool loaded_any = false;
             std::string loaded_path;
             for (const auto& path : candidate_paths) {
@@ -388,6 +389,20 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         if (value.is_boolean()) {
                             dalvik_engine_.resource_bool_values_[name] = value.get<bool>();
                             loaded_bools++;
+                        }
+                    }
+                }
+                // EXP-098 (CM-027): Raw resources — R.raw.X maps to an APK
+                // asset path (e.g. "res/-si.json" for R.raw.sms_incoming_info).
+                // Used by RLottieImageView.setAnimation(R.raw.X, w, h) →
+                // RLottieDrawable(R.raw.X, ...) → AndroidUtilities.readRes(R.raw.X)
+                // → openRawResource(R.raw.X) → load the asset as a UTF-8 string
+                // → RLottieNative.createFromRawJson(json).
+                if (res_json.contains("raw")) {
+                    for (auto& [name, value] : res_json["raw"].items()) {
+                        if (value.is_string()) {
+                            dalvik_engine_.resource_raw_paths_[name] = value.get<std::string>();
+                            loaded_raws++;
                         }
                     }
                 }
@@ -1298,6 +1313,15 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 }
                             }
 
+                            // EXP-098 (CM-027): Decode pending RLottie
+                            // animations BEFORE drawing. The engine captured
+                            // (raw_resid, w, h) on the ViewNode when
+                            // RLottieImageView.setAnimation(R.raw.X, w, h)
+                            // was called; here we resolve the resid → field
+                            // name → APK path → JSON → rlottie frame RGBA.
+                            // (Declared here; decode happens below after
+                            // is_image_view is computed.)
+
                             // EXP-088 A4: Draw ImageView/ImageButton with REAL decoded pixels
                             // (replaces the prior placeholder rect + dimensions text).
                             // We use PNGDecoder to inflate + unfilter + expand to RGBA, then
@@ -1348,6 +1372,86 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                renderer::RGBA{0xCC, 0xCC, 0xCC, 0xFF});
                                 canvas.draw_text("IMG", left + 10, top + font.get_line_height(),
                                                renderer::Colors::GREY_800, &font);
+                            }
+
+                            // EXP-098 (CM-027): RLottie animation decode + draw.
+                            if (is_image_view) {
+                                auto* mut_node = const_cast<framework::ViewShadow::ViewNode*>(node);
+                                if (mut_node->anim_raw_resid != 0 &&
+                                    !mut_node->anim_decode_attempted &&
+                                    mut_node->anim_frame_rgba.empty()) {
+                                    mut_node->anim_decode_attempted = true;
+                                    // EXP-098: If target_w/h are 0 (dp result
+                                    // was lost in move-result pipeline),
+                                    // use the view's render geometry as the
+                                    // render target size. Per source, the
+                                    // SmsView icon is createFrame(64, 64) —
+                                    // so the view bounds ARE the animation size.
+                                    int rw = mut_node->anim_target_w > 0 ? mut_node->anim_target_w : w;
+                                    int rh = mut_node->anim_target_h > 0 ? mut_node->anim_target_h : h;
+                                    if (rw <= 0) rw = 64;  // ultimate fallback
+                                    if (rh <= 0) rh = 64;
+                                    auto& fn_map = dalvik_engine_.field_name_by_resid_;
+                                    auto fn_it = fn_map.find(mut_node->anim_raw_resid);
+                                    if (fn_it != fn_map.end()) {
+                                        const std::string& field_name = fn_it->second;
+                                        auto& raw_map = dalvik_engine_.resource_raw_paths_;
+                                        auto raw_it = raw_map.find(field_name);
+                                        if (raw_it != raw_map.end()) {
+                                            const std::string& apk_path = raw_it->second;
+                                            auto json_bytes = apk_parser_.extract_entry_cached(apk_path);
+                                            if (!json_bytes.empty()) {
+                                                std::string json_str(json_bytes.begin(),
+                                                                      json_bytes.end());
+                                                auto anim = renderer::RLottieDecoder::decode(
+                                                    json_str, rw, rh, /*max_frames=*/1);
+                                                if (anim.ok && !anim.frames_rgba.empty()) {
+                                                    const uint32_t* src = reinterpret_cast<const uint32_t*>(
+                                                        anim.frames_rgba.data());
+                                                    size_t n = static_cast<size_t>(anim.width) *
+                                                               anim.height;
+                                                    std::vector<uint8_t> rgba(n * 4);
+                                                    for (size_t i = 0; i < n; i++) {
+                                                        rgba[i*4+0] = static_cast<uint8_t>(src[i] & 0xFF);
+                                                        rgba[i*4+1] = static_cast<uint8_t>((src[i]>>8) & 0xFF);
+                                                        rgba[i*4+2] = static_cast<uint8_t>((src[i]>>16) & 0xFF);
+                                                        rgba[i*4+3] = static_cast<uint8_t>((src[i]>>24) & 0xFF);
+                                                    }
+                                                    mut_node->anim_frame_rgba = std::move(rgba);
+                                                    mut_node->anim_w = anim.width;
+                                                    mut_node->anim_h = anim.height;
+                                                    mut_node->anim_total_frames = anim.total_frames;
+                                                    mut_node->anim_current_frame = 0;
+                                                    std::cerr << "[EXP098-RLOTTIE] view=" << task.view_id
+                                                              << " R.raw." << field_name
+                                                              << " → " << apk_path
+                                                              << " (" << anim.width << "x" << anim.height
+                                                              << ", " << anim.total_frames << " frames, "
+                                                              << anim.frame_rate << " fps)"
+                                                              << std::endl;
+                                                } else if (!anim.ok) {
+                                                    std::cerr << "[EXP098-RLOTTIE] decode FAILED for R.raw."
+                                                              << field_name << ": " << anim.error
+                                                              << std::endl;
+                                                }
+                                            }
+                                        } else {
+                                            std::cerr << "[EXP098-RLOTTIE] R.raw." << field_name
+                                                      << " not in resource_raw_paths_" << std::endl;
+                                        }
+                                    }
+                                }
+                                // Draw the decoded frame.
+                                if (!node->anim_frame_rgba.empty() &&
+                                    node->anim_w > 0 && node->anim_h > 0) {
+                                    int draw_w = std::min(node->anim_w, w);
+                                    int draw_h = std::min(node->anim_h, h);
+                                    int draw_x = left + (w - draw_w) / 2;
+                                    int draw_y = top + (h - draw_h) / 2;
+                                    canvas.draw_image(const_cast<uint8_t*>(node->anim_frame_rgba.data()),
+                                                      node->anim_w, node->anim_h,
+                                                      draw_x, draw_y);
+                                }
                             }
 
                             // EXP-095 (CM-019): Queue children with REAL layout.
