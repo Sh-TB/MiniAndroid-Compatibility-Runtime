@@ -1354,5 +1354,106 @@ DecodedImage JPEGDecoder::decode_file(const std::string& path) {
                                        std::istreambuf_iterator<char>()));
 }
 
+// ============================================================================
+// EXP-097 §7: RLottieDecoder — rlottie-backed Lottie JSON → RGBA renderer.
+// ============================================================================
+extern "C" {
+#include <rlottie_capi.h>
+}
+
+RLottieDecoder::DecodedAnim RLottieDecoder::decode(const std::string& json_str,
+                                                    int target_w, int target_h,
+                                                    int max_frames) {
+    DecodedAnim result;
+    if (json_str.empty()) {
+        result.error = "empty Lottie JSON";
+        return result;
+    }
+    if (target_w <= 0 || target_h <= 0) {
+        result.error = "invalid render dimensions: " +
+                       std::to_string(target_w) + "x" + std::to_string(target_h);
+        return result;
+    }
+
+    // rlottie requires the JSON be null-terminated. We append a NUL — the
+    // input string_view's data() may already be NUL-terminated if it came
+    // from a std::string with capacity, but we ensure it explicitly.
+    std::string json_nul = json_str;
+    if (json_nul.back() != '\0') json_nul.push_back('\0');
+
+    // key is an opaque cache identifier — rlottie uses it for caching
+    // parsed animations. We pass a synthetic key derived from the JSON size.
+    std::string key = "exp097_" + std::to_string(json_str.size());
+
+    Lottie_Animation* anim = lottie_animation_from_data(json_nul.data(),
+                                                        key.c_str(), "");
+    if (anim == nullptr) {
+        result.error = "lottie_animation_from_data failed (invalid JSON or unsupported)";
+        return result;
+    }
+
+    // Query the animation's intrinsic size and frame count.
+    size_t anim_w = 0, anim_h = 0;
+    lottie_animation_get_size(anim, &anim_w, &anim_h);
+    size_t total = lottie_animation_get_totalframe(anim);
+    double fps = lottie_animation_get_framerate(anim);
+    result.width = target_w;
+    result.height = target_h;
+    result.total_frames = static_cast<int>(total);
+    result.frame_rate = fps;
+
+    int frames_to_render = (max_frames < 0)
+                              ? static_cast<int>(total)
+                              : std::min(static_cast<int>(total), max_frames);
+    if (frames_to_render <= 0) frames_to_render = 1;
+
+    size_t pixels_per_frame = static_cast<size_t>(target_w) * target_h;
+    size_t bytes_per_frame = pixels_per_frame * 4;
+    result.frames_rgba.resize(pixels_per_frame * frames_to_render);
+
+    bool any_nonzero = false;
+    for (int i = 0; i < frames_to_render; i++) {
+        uint32_t* buf = reinterpret_cast<uint32_t*>(
+            result.frames_rgba.data() + i * pixels_per_frame);
+        // Zero the buffer first (rlottie writes pixels with alpha — transparent
+        // areas should be 0 not garbage).
+        std::memset(buf, 0, bytes_per_frame);
+        lottie_animation_render(anim, static_cast<size_t>(i), buf,
+                                static_cast<size_t>(target_w),
+                                static_cast<size_t>(target_h),
+                                static_cast<size_t>(target_w) * 4);
+        // Sample a few pixels to detect non-empty render
+        for (size_t p = 0; p < std::min<size_t>(pixels_per_frame, 1024); p++) {
+            if (buf[p] != 0) { any_nonzero = true; break; }
+        }
+    }
+
+    lottie_animation_destroy(anim);
+
+    if (!any_nonzero) {
+        result.error = "rlottie rendered 0 non-zero pixels across " +
+                       std::to_string(frames_to_render) + " frames";
+        // Still return ok=true — the animation may legitimately render to
+        // transparent pixels in its first frames (e.g. fade-in animations).
+        // Callers can inspect frames_rgba for verification.
+    }
+    result.ok = true;
+    return result;
+}
+
+RLottieDecoder::DecodedAnim RLottieDecoder::decode_file(const std::string& path,
+                                                        int target_w, int target_h,
+                                                        int max_frames) {
+    std::ifstream f(path);
+    if (!f) {
+        DecodedAnim r;
+        r.error = "cannot open file: " + path;
+        return r;
+    }
+    std::string json((std::istreambuf_iterator<char>(f)),
+                      std::istreambuf_iterator<char>());
+    return decode(json, target_w, target_h, max_frames);
+}
+
 } // namespace renderer
 } // namespace miniandroid

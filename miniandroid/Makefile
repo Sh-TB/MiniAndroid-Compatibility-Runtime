@@ -3,11 +3,14 @@
 
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -g -O2 -MMD -MP
-INCLUDES = -Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Ithird_party/nlohmann_json/include
+# EXP-097 §7: rlottie headers + rlottie static lib for Lottie rendering.
+RLOTTIE_DIR ?= /home/z/my-project/tools/rlottie
+INCLUDES = -Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Ithird_party/nlohmann_json/include -I$(RLOTTIE_DIR)/inc
 # EXP-097 §5/§6: image codec libraries.
 # libwebp — Google reference WebP decoder (used by AOSP Skia / BitmapFactory)
 # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
-LIBS = -lz -lwebp -lwebpdemux -ljpeg
+# rlottie  — Samsung reference Lottie renderer (Telegram uses it directly)
+LIBS = -lz -lwebp -lwebpdemux -ljpeg $(RLOTTIE_DIR)/build/src/librlottie.a -lstdc++ -lm -lpthread
 
 # Directories
 SRCDIR = src
