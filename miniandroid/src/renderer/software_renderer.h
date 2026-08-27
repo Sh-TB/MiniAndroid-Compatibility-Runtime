@@ -427,6 +427,51 @@ private:
                          std::string& error);
 };
 
+// EXP-097 §5: WebPDecoder — wraps libwebp (Google's reference decoder).
+//
+// Per AOSP `BitmapFactory` source: a Bitmap can be created from a WebP
+// encoded byte array; the framework delegates to its native WebP code
+// (which is libwebp-derived — Google maintains both). We mirror that
+// architecture: this class accepts the raw WebP bytes and returns a
+// DecodedImage with .rgba populated in RGBA scan order.
+//
+// Supports (per libwebp capabilities):
+//   * Lossy (VP8) WebP
+//   * Lossless (VP8L) WebP
+//   * Extended (VP8X) WebP — alpha, animation, ICC, etc. For animated
+//     WebPs we decode the FIRST frame only (frame animation is the
+//     RLottie/AnimatedDrawable domain — see §7).
+//   * Alpha transparency
+//   * Truncated input → ok=false with descriptive error
+//
+// libwebp is a mature, BSD-licensed reference implementation (per §13
+// "do not re-research already-proven POCs"); we use it as-is.
+class WebPDecoder {
+public:
+    static DecodedImage decode(const std::vector<uint8_t>& webp_bytes);
+    static DecodedImage decode_file(const std::string& path);
+};
+
+// EXP-097 §6: JPEGDecoder — wraps libjpeg (the IJG reference decoder).
+//
+// Per AOSP `BitmapFactory`: JPEG decoding is delegated to libjpeg
+// (Android's libjpeg-turbo fork). We use the system libjpeg (standard
+// IJG reference); the API surface is identical for decode.
+//
+// Supports:
+//   * Baseline JPEG (sequential, JFIF 1.01)
+//   * Progressive JPEG (multiple scans — auto-handled by libjpeg)
+//   * Grayscale and color (YCbCr) JPEG
+//   * CMYK/Adobe APP14 (auto-converted to RGB by libjpeg)
+//   * Truncated input → ok=false with descriptive error (libjpeg's
+//     error manager longjmps out on fatal errors; we set up the
+//     jmp_buf so a fatal error returns control rather than crashing)
+class JPEGDecoder {
+public:
+    static DecodedImage decode(const std::vector<uint8_t>& jpeg_bytes);
+    static DecodedImage decode_file(const std::string& path);
+};
+
 } // namespace renderer
 } // namespace miniandroid
 
