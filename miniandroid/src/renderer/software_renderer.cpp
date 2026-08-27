@@ -382,6 +382,13 @@ DecodedImage PNGDecoder::decode(const std::vector<uint8_t>& png_bytes) {
     int interlace = 0;
     std::vector<uint8_t> idat;
     bool seen_ihdr = false, seen_iend = false;
+    // EXP-096 (CM-023): palette + tRNS chunk storage for color_type=3 PNGs.
+    // Per PNG spec §11.2.2: PLTE is mandatory for color_type=3 and contains
+    // 1..256 entries of (R, G, B) bytes. tRNS (optional) gives the alpha
+    // value for each palette entry (0..255); absent → fully opaque.
+    struct PaletteEntry { uint8_t r, g, b; };
+    std::vector<PaletteEntry> palette;
+    std::vector<uint8_t> trns_alpha;  // alpha for each palette entry
 
     while (pos + 8 <= png_bytes.size()) {
         uint32_t chunk_len = rd_be32(png_bytes.data() + pos);
@@ -409,6 +416,24 @@ DecodedImage PNGDecoder::decode(const std::vector<uint8_t>& png_bytes) {
             seen_ihdr = true;
         } else if (chunk_type == "IDAT") {
             idat.insert(idat.end(), chunk_data, chunk_data + chunk_len);
+        } else if (chunk_type == "PLTE") {
+            // §11.2.2 — palette chunk (3 bytes per entry)
+            if (chunk_len % 3 != 0) {
+                result.error = "PLTE chunk length not divisible by 3";
+                return result;
+            }
+            size_t n_entries = chunk_len / 3;
+            palette.resize(n_entries);
+            for (size_t i = 0; i < n_entries; i++) {
+                palette[i].r = chunk_data[i * 3 + 0];
+                palette[i].g = chunk_data[i * 3 + 1];
+                palette[i].b = chunk_data[i * 3 + 2];
+            }
+        } else if (chunk_type == "tRNS") {
+            // For color_type=3: alpha values for each palette entry.
+            // For color_type=0/2: single short value (ignored — we'd need
+            // to apply it per-pixel later if encountered).
+            trns_alpha.assign(chunk_data, chunk_data + chunk_len);
         } else if (chunk_type == "IEND") {
             seen_iend = true;
             break;
@@ -425,13 +450,99 @@ DecodedImage PNGDecoder::decode(const std::vector<uint8_t>& png_bytes) {
         result.error = "missing IEND";
         return result;
     }
+    if (interlace != 0) {
+        result.error = "Adam7 interlacing not supported";
+        return result;
+    }
+
+    // EXP-096 (CM-023): color_type=3 (palette-indexed) PNGs are the most
+    // common Android image format (smaller files via shared palette). Per
+    // PNG spec §11.2.3 / §4.3.1.1, the IDAT contains one palette index per
+    // pixel — for bit_depth=8 one byte per pixel. We expand to RGBA after
+    // unfiltering, looking up the palette and tRNS alpha. PLTE is REQUIRED
+    // for color_type=3.
+    if (color_type == 3) {
+        if (palette.empty()) {
+            result.error = "color_type=3 PNG missing PLTE chunk";
+            return result;
+        }
+        if (bit_depth != 8) {
+            // For sub-byte bit depths we'd need bit unpacking. Real Android
+            // images overwhelmingly use bit_depth=8 for paletted PNGs.
+            result.error = "palette PNG bit_depth=" + std::to_string(bit_depth) +
+                           " not supported (only 8)";
+            return result;
+        }
+        // bit_depth=8, color_type=3 → 1 byte per pixel (palette index)
+        // bpp = bytes-per-pixel for the unfilter step (samples_per_pixel=1).
+        int samples_per_pixel = 1;
+        int bpp = samples_per_pixel;
+
+        // Inflate IDAT.
+        // The unfiltered output is (1 filter + width px) * height rows.
+        // Inflate to a generous buffer (idat.size * 5 leaves headroom for
+        // any reasonable compression ratio — PNG worst-case 1:1).
+        if (idat.empty()) {
+            result.error = "no IDAT data";
+            return result;
+        }
+        uLong expected_raw = static_cast<uLong>(width + 1) * height;
+        uLong out_sz = std::max<uLong>(idat.size() * 5, expected_raw + 1024);
+        std::vector<uint8_t> inflated(out_sz);
+        z_stream zs;
+        std::memset(&zs, 0, sizeof(zs));
+        zs.next_in = const_cast<Bytef*>(idat.data());
+        zs.avail_in = static_cast<uInt>(idat.size());
+        if (inflateInit(&zs) != Z_OK) {
+            result.error = "inflateInit failed for palette PNG";
+            return result;
+        }
+        zs.next_out = inflated.data();
+        zs.avail_out = static_cast<uInt>(out_sz);
+        int rc = inflate(&zs, Z_FINISH);
+        inflateEnd(&zs);
+        if (rc != Z_STREAM_END && rc != Z_OK) {
+            result.error = std::string("inflate failed for palette PNG: ") + zs.msg;
+            return result;
+        }
+        inflated.resize(zs.total_out);
+
+        // Unfilter (1 byte per pixel)
+        std::vector<uint8_t> unfiltered;
+        if (!unfilter(inflated, bpp, width, height, unfiltered, result.error)) {
+            return result;
+        }
+        // Expand palette → RGBA
+        result.ok = true;
+        result.width = width;
+        result.height = height;
+        result.color_type_name = "palette→rgba";
+        result.rgba.assign(static_cast<size_t>(width) * height * 4, 0);
+        for (size_t i = 0; i < static_cast<size_t>(width) * height; i++) {
+            uint8_t idx = unfiltered[i];
+            if (idx >= palette.size()) {
+                // Out-of-range palette index — per spec this is an error,
+                // but tolerate by clamping (avoids silent black pixels).
+                idx = static_cast<uint8_t>(palette.size() - 1);
+            }
+            uint8_t r = palette[idx].r;
+            uint8_t g = palette[idx].g;
+            uint8_t b = palette[idx].b;
+            uint8_t a = 0xFF;
+            if (idx < trns_alpha.size()) {
+                a = trns_alpha[idx];
+            }
+            result.rgba[i * 4 + 0] = r;
+            result.rgba[i * 4 + 1] = g;
+            result.rgba[i * 4 + 2] = b;
+            result.rgba[i * 4 + 3] = a;
+        }
+        return result;
+    }
+
     if (bit_depth != 8) {
         result.error = "unsupported bit_depth=" + std::to_string(bit_depth) +
                        " (only 8 supported)";
-        return result;
-    }
-    if (interlace != 0) {
-        result.error = "Adam7 interlacing not supported";
         return result;
     }
 
@@ -443,7 +554,8 @@ DecodedImage PNGDecoder::decode(const std::vector<uint8_t>& png_bytes) {
         case 4: samples_per_pixel = 2; result.color_type_name = "ga";    break;
         case 6: samples_per_pixel = 4; result.color_type_name = "rgba";  break;
         case 3:
-            result.error = "palette PNG (color_type=3) not supported";
+            // Should not reach here — handled above.
+            result.error = "palette PNG (color_type=3) not handled";
             return result;
         default:
             result.error = "unknown color_type=" + std::to_string(color_type);
