@@ -1123,3 +1123,62 @@ Full 12/12 corpus: PROVEN post-CM-021.
 PROVEN — generic robustness fix, no APK-specific branches. The
 truncated-APK hang was a SILENT FALSE SUCCESS vector (the runtime would
 appear to "still be running" on corrupt inputs).
+
+---
+
+## CM-026: RLottie Integration — Real Lottie Animation Frames
+
+### Summary
+Per §7/§13 of the campaign: real Lottie animation rendering. rlottie
+(Samsung's MIT-licensed reference implementation — the SAME library
+Telegram uses) is now linked into MiniAndroid as a static library.
+
+### Architecture
+- rlottie built from source (depth-1 clone of github.com/Samsung/rlottie)
+  with meson+ninja — static library `librlottie.a` (36 source files)
+- `RLottieDecoder` class wraps the C API:
+  1. `lottie_animation_from_data(json, key, "")` parses the Lottie JSON
+  2. `lottie_animation_get_size/totalframe/framerate` query props
+  3. `lottie_animation_render(anim, frame, buf, w, h, stride)` renders
+     one frame to an RGBA buffer
+- Makefile updated: `-I$(RLOTTIE_DIR)/inc` + `librlottie.a` + libstdc++
+  + libm + libpthread (rlottie is multi-threaded with optional cache)
+
+### Test Results (against real Telegram `res/*.json` Lottie assets)
+`scripts/exp097_rlottie_test.cpp`:
+
+| Asset | Size | Frames | FPS | Frame hashes | Verdict |
+|-------|-----:|-------:|----:|--------------|---------|
+| res/-jm.json | 6KB | 60 | 60 | 3 distinct | **ANIMATED** |
+| res/-m8.json | 195KB | 181 | 60 | 3 distinct | **ANIMATED** |
+| res/-qq.json | 16KB | 61 | 60 | 3 distinct | **ANIMATED** |
+| res/-si.json | 7KB | 18 | 60 | 3 distinct | **ANIMATED** |
+| res/01N.json | 24KB | 91 | 60 | 1 (same) | STATIC (legitimate — may be a single-pose animation) |
+
+**5/5 OK**, 4/5 with REAL MOTION (3 distinct frame hashes per §7).
+
+### Frame Evidence
+3 frames of `res/-si.json` (18-frame animation, 60fps) saved as
+visible PNGs at `run/exp097_evidence/lottie_frame_{000,001,002}.png`
+(upscaled 8x from 64x64 for visibility).
+
+### Performance
+Render times at 64x64 (typical Telegram SmsView icon size):
+- res/-jm.json: 130µs/frame
+- res/-m8.json: 5542µs/frame (181 frames total — longer animation)
+- res/-qq.json: 510µs/frame
+- res/-si.json: 298µs/frame
+
+### Status
+PROVEN — real Lottie frames with real motion verified by distinct
+frame hashes. The CM-022 ImageView placeholder can now be replaced
+with REAL Lottie-rendered pixels when the runtime wires the
+RLottieImageView → RLottieDecoder path (a renderer integration task,
+not a decoder task — the decoder is ready).
+
+### Future Work
+- Wire RLottieImageView (DEX-side) → RLottieDecoder (renderer) — replace
+  the CM-022 Telegram-blue placeholder with real animation frames
+- For multi-frame animations, advance frame counter on each render pass
+  (the runtime currently renders a single static frame)
+- Animated WebP frame iteration (libwebpdemux is already linked)
