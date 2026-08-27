@@ -1,0 +1,20 @@
+{
+  "before_pixels": 1136,
+  "after_pixels": 45683,
+  "diff_changed_pixels": 46819,
+  "growth_factor": 40.213908450704224,
+  "before_sha256": "c93ff22e036767ac",
+  "after_sha256": "3f151e146f4368f0",
+  "head": "eb55fa2 (CM-021 + CM-022 icon placeholder)",
+  "before_state": "f503e96 (pre-CM-018, sparse 1136 px)",
+  "after_state": "current HEAD with CM-018/019/020/021/022",
+  "checks": [
+    "title 'Enter code' visible at y=100",
+    "description with phone visible at y=153",
+    "5 code input fields in a horizontal row at y=221",
+    "Telegram-blue icon placeholder at y=46",
+    "'Didn't get the code?' and '999+' at bottom y=285",
+    "EditText borders visible (gray)",
+    "no 'View' garbage in any setText text"
+  ]
+}
