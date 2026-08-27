@@ -115,3 +115,29 @@ implementation, so `StringBuilder.toString()` returned "View".
 ### Regression guard
 The SMS screen text MUST contain the real phone number ("+1 5551234567")
 and MUST NOT contain "View" as a substring — verified in the 3-run proof.
+
+---
+
+## SFS-009: PNGDecoder rejects palette PNGs (color_type=3) — FIXED in CM-023
+
+**Class**: Asset loading silent-false-success (asset silently missing)
+**Severity**: HIGH — 100% of palette PNGs returned empty (the most
+common Android image format)
+**Status**: FIXED (EXP-096 / CM-023)
+
+### Behavior
+PNGDecoder::decode() explicitly rejected color_type=3 PNGs with the
+error "palette PNG (color_type=3) not supported". This means EVERY
+palette PNG in an APK (emoji, app icons, drawables) silently produced
+no pixels. Real Android always handles color_type=3.
+
+### Fix
+See CM-023 — added PLTE/tRNS chunk parsing and palette-index expansion
+to RGBA. 94% of Telegram PNGs now decode correctly (3% remain —
+bit_depth=4 sub-byte palettes, tracked as future work).
+
+### Regression guard
+`scripts/exp096_image_pipeline_test.cpp` runs PNGDecoder against all
+PNGs in an APK and reports the pass rate. Pass rate must stay above 90%
+for the Telegram APK (the corpus has no bit_depth=4 sub-byte PNGs at
+the time of writing).
