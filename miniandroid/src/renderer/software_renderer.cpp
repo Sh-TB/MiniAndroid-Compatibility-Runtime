@@ -13,6 +13,20 @@
 #include <zlib.h>
 #include <algorithm>
 
+// EXP-097 §5/§6: Image codec libraries.
+// libwebp is Google's reference WebP decoder (BSD) — AOSP's Bitmap region
+// decoder and Skia both delegate to it for WebP.
+// libjpeg (IJG) is the JPEG reference decoder — Android ships libjpeg-turbo
+// (a drop-in replacement using the same API).
+#include <webp/decode.h>
+#include <webp/demux.h>
+
+extern "C" {
+#include <stdio.h>
+#include <jpeglib.h>
+#include <setjmp.h>
+}
+
 namespace miniandroid {
 namespace renderer {
 
@@ -1136,6 +1150,208 @@ json PNGWriter::generate_screenshot_info(const FrameBuffer& fb,
     ).count();
     
     return info;
+}
+
+} // namespace renderer
+} // namespace miniandroid
+
+// ============================================================================
+// EXP-097 §5: WebPDecoder — libwebp-backed WebP → RGBA decoder.
+//
+// Per AOSP `BitmapFactory.nativeDecodeByteArray`:
+//   1. Validate WebP RIFF header (libwebp's WebPGetInfo does this).
+//   2. Allocate output buffer of width * height * 4 bytes (RGBA).
+//   3. Call WebPDecodeRGBA which delegates to the right internal decoder
+//      (VP8 lossy, VP8L lossless, or VP8X extended). For animated WebPs
+//      the FIRST frame is returned (animation is a separate concern).
+//   4. Free libwebp's allocated buffer via WebPFree after copying.
+//
+// We mirror that flow exactly. The runtime's PNGDecoder returns RGBA in
+// the same DecodedImage shape — so the renderer's draw_image() works with
+// either decoder without specialization.
+// ============================================================================
+namespace miniandroid {
+namespace renderer {
+
+DecodedImage WebPDecoder::decode(const std::vector<uint8_t>& webp_bytes) {
+    DecodedImage result;
+    if (webp_bytes.size() < 12) {
+        result.error = "WebP too small (need at least 12 bytes for RIFF header)";
+        return result;
+    }
+    // Per WebP Container Spec §2: signature is 'RIFF' + 4-byte size + 'WEBP'
+    if (webp_bytes[0] != 'R' || webp_bytes[1] != 'I' ||
+        webp_bytes[2] != 'F' || webp_bytes[3] != 'F' ||
+        webp_bytes[8] != 'W' || webp_bytes[9] != 'E' ||
+        webp_bytes[10] != 'B' || webp_bytes[11] != 'P') {
+        result.error = "bad WebP signature (expected RIFF...WEBP)";
+        return result;
+    }
+
+    int w = 0, h = 0;
+    // WebPGetInfo validates the bitstream and returns width/height.
+    if (!WebPGetInfo(webp_bytes.data(), webp_bytes.size(), &w, &h)) {
+        result.error = "WebPGetInfo failed (corrupt or unsupported WebP)";
+        return result;
+    }
+    if (w <= 0 || h <= 0 || w > 65536 || h > 65536) {
+        result.error = "WebP invalid dimensions: " + std::to_string(w) + "x" + std::to_string(h);
+        return result;
+    }
+
+    // Decode to RGBA. The returned pointer is libwebp-owned; we copy.
+    uint8_t* rgba = WebPDecodeRGBA(webp_bytes.data(), webp_bytes.size(), &w, &h);
+    if (rgba == nullptr) {
+        result.error = "WebPDecodeRGBA failed (decoder rejected bitstream)";
+        return result;
+    }
+
+    // Verify width/height didn't change during decode (shouldn't happen).
+    size_t pixel_count = static_cast<size_t>(w) * h * 4;
+    result.rgba.assign(rgba, rgba + pixel_count);
+    WebPFree(rgba);
+
+    result.ok = true;
+    result.width = w;
+    result.height = h;
+    // Determine format from VP8 chunk type for diagnostics.
+    char fmt[5] = {0, 0, 0, 0, 0};
+    if (webp_bytes.size() >= 16) {
+        std::memcpy(fmt, webp_bytes.data() + 12, 4);
+    }
+    result.color_type_name = std::string("webp-") + fmt;
+    return result;
+}
+
+DecodedImage WebPDecoder::decode_file(const std::string& path) {
+    std::ifstream f(path, std::ios::binary);
+    if (!f) {
+        DecodedImage r;
+        r.error = "cannot open file: " + path;
+        return r;
+    }
+    return decode(std::vector<uint8_t>((std::istreambuf_iterator<char>(f)),
+                                       std::istreambuf_iterator<char>()));
+}
+
+// ============================================================================
+// EXP-097 §6: JPEGDecoder — libjpeg-backed JPEG → RGBA decoder.
+//
+// Per AOSP `BitmapFactory.nativeDecodeByteArray`: libjpeg's standard
+// jpeg_decompress_struct flow:
+//   1. jpeg_create_decompress
+//   2. jpeg_mem_src (read from memory)
+//   3. jpeg_read_header
+//   4. Set output color space to JCS_EXT_RGBA (libjpeg-turbo) — but base
+//      libjpeg only supports JCS_RGB. We request RGB and expand to RGBA
+//      ourselves so both libjpeg and libjpeg-turbo work.
+//   5. jpeg_start_decompress
+//   6. Read scanlines into a row buffer
+//   7. jpeg_finish_decompress + jpeg_destroy_decompress
+//
+// libjpeg uses setjmp/longjmp for fatal error recovery; we install a
+// jmp_buf and a custom error_exit handler so a corrupt JPEG returns
+// ok=false instead of aborting the whole process.
+// ============================================================================
+
+namespace {
+struct JpegErrorCtx {
+    jpeg_error_mgr pub;  // libjpeg's standard error manager
+    jmp_buf setjmp_buf;  // fatal-error escape hatch
+    std::string error_msg;
+};
+
+void jpeg_error_exit(j_common_ptr cinfo) {
+    auto* ctx = reinterpret_cast<JpegErrorCtx*>(cinfo->err);
+    // Format the libjpeg error message for diagnostics.
+    char buf[JMSG_LENGTH_MAX];
+    (*ctx->pub.format_message)(cinfo, buf);
+    ctx->error_msg = std::string("libjpeg error: ") + buf;
+    longjmp(ctx->setjmp_buf, 1);
+}
+}  // namespace
+
+DecodedImage JPEGDecoder::decode(const std::vector<uint8_t>& jpeg_bytes) {
+    DecodedImage result;
+    if (jpeg_bytes.size() < 2 ||
+        jpeg_bytes[0] != 0xFF || jpeg_bytes[1] != 0xD8) {
+        result.error = "bad JPEG signature (expected FF D8)";
+        return result;
+    }
+
+    struct jpeg_decompress_struct cinfo;
+    JpegErrorCtx jerr;
+    cinfo.err = jpeg_std_error(&jerr.pub);
+    jerr.pub.error_exit = jpeg_error_exit;
+
+    if (setjmp(jerr.setjmp_buf)) {
+        // Fatal libjpeg error: cleanup and return.
+        jpeg_destroy_decompress(&cinfo);
+        result.error = jerr.error_msg;
+        return result;
+    }
+
+    jpeg_create_decompress(&cinfo);
+    jpeg_mem_src(&cinfo, jpeg_bytes.data(), jpeg_bytes.size());
+
+    if (jpeg_read_header(&cinfo, TRUE) != JPEG_HEADER_OK) {
+        jpeg_destroy_decompress(&cinfo);
+        result.error = "jpeg_read_header failed (not a valid JPEG)";
+        return result;
+    }
+
+    // Force RGB output (works with both libjpeg and libjpeg-turbo).
+    cinfo.out_color_space = JCS_RGB;
+
+    if (!jpeg_start_decompress(&cinfo)) {
+        jpeg_destroy_decompress(&cinfo);
+        result.error = "jpeg_start_decompress failed";
+        return result;
+    }
+
+    int w = static_cast<int>(cinfo.output_width);
+    int h = static_cast<int>(cinfo.output_height);
+    if (w <= 0 || h <= 0) {
+        jpeg_destroy_decompress(&cinfo);
+        result.error = "JPEG invalid dimensions";
+        return result;
+    }
+
+    // Read scanlines into a temporary RGB buffer, then expand to RGBA.
+    result.rgba.assign(static_cast<size_t>(w) * h * 4, 0xFF);  // default alpha=255
+    std::vector<uint8_t> row_buf(static_cast<size_t>(w) * 3);
+    while (cinfo.output_scanline < static_cast<JDIMENSION>(h)) {
+        JSAMPROW row = row_buf.data();
+        JSAMPARRAY rows = &row;
+        jpeg_read_scanlines(&cinfo, rows, 1);
+        size_t y = cinfo.output_scanline - 1;
+        for (int x = 0; x < w; x++) {
+            result.rgba[(y * w + x) * 4 + 0] = row_buf[x * 3 + 0];
+            result.rgba[(y * w + x) * 4 + 1] = row_buf[x * 3 + 1];
+            result.rgba[(y * w + x) * 4 + 2] = row_buf[x * 3 + 2];
+            // alpha left at 0xFF (set above)
+        }
+    }
+
+    jpeg_finish_decompress(&cinfo);
+    jpeg_destroy_decompress(&cinfo);
+
+    result.ok = true;
+    result.width = w;
+    result.height = h;
+    result.color_type_name = (cinfo.num_components == 1) ? "jpeg-gray→rgba" : "jpeg-rgb→rgba";
+    return result;
+}
+
+DecodedImage JPEGDecoder::decode_file(const std::string& path) {
+    std::ifstream f(path, std::ios::binary);
+    if (!f) {
+        DecodedImage r;
+        r.error = "cannot open file: " + path;
+        return r;
+    }
+    return decode(std::vector<uint8_t>((std::istreambuf_iterator<char>(f)),
+                                       std::istreambuf_iterator<char>()));
 }
 
 } // namespace renderer
