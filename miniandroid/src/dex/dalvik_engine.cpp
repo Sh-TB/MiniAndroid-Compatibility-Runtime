@@ -4814,7 +4814,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     }
                 }
                 if (!recursively_invoked && config_.enable_api_bridge) {
-                    bridge_to_api(class_name, method_name, args, return_val, status); last_invoke_return_ = return_val;
+                    bridge_to_api(class_name, method_name, args, return_val, status, method_idx); last_invoke_return_ = return_val;
                 }
 
                 // Record API trace
@@ -7227,7 +7227,7 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         // runtime_type is unknown — this lets us route framework calls like
         // android.app.Activity.onCreate to the API stub layer.
         std::string api_class = (runtime_type != "<unknown>") ? runtime_type : declaring_class;
-        bridge_to_api(api_class, method_name_from_dex, args, return_val, api_status); last_invoke_return_ = return_val;
+        bridge_to_api(api_class, method_name_from_dex, args, return_val, api_status, method_idx); last_invoke_return_ = return_val;
     }
 
     // EXP-094 (CM-018): Record the receiver of a successful "setParams" call.
@@ -7395,7 +7395,7 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
         bridge_to_api(declaring_class + "<super>", method_name,
-                      args, return_val, api_status);
+                      args, return_val, api_status, method_idx);
         last_invoke_return_ = return_val;
     }
 
@@ -7558,7 +7558,7 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
         }
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
-        bridge_to_api(class_name, method_name, args, return_val, status); last_invoke_return_ = return_val;
+        bridge_to_api(class_name, method_name, args, return_val, status, method_idx); last_invoke_return_ = return_val;
     }
     
     // Trace
@@ -7872,7 +7872,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         // current_invoke_is_static_ is still true (set at top of execute_invoke_static).
         // try_shadow_dispatch inside bridge_to_api will see it and correctly
         // treat args[0] as the first parameter (not `this`).
-        bridge_to_api(class_name, method_name, args, return_val, status); last_invoke_return_ = return_val;
+        bridge_to_api(class_name, method_name, args, return_val, status, method_idx); last_invoke_return_ = return_val;
     }
 
     ApiCallTrace api_trace;
@@ -7966,7 +7966,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // EXP-048: Fall through to bridge_to_api for interface methods
     ApiCallTrace::Status status = ApiCallTrace::Status::STUBBED;
     if (config_.enable_api_bridge) {
-        bridge_to_api(class_name, method_name, args, return_val, status); last_invoke_return_ = return_val;
+        bridge_to_api(class_name, method_name, args, return_val, status, method_idx); last_invoke_return_ = return_val;
     }
 
     ApiCallTrace api_trace;
@@ -9128,7 +9128,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           const std::string& method,
                                           const std::vector<DalvikValue>& args,
                                           DalvikValue& result,
-                                          ApiCallTrace::Status& status) {
+                                          ApiCallTrace::Status& status,
+                                          uint32_t method_idx_hint) {
     // EXP-088 Phase B debug
     if (method == "findViewById") {
         std::cerr << "[EXP088-B-ENTER] bridge_to_api: " << class_name << "." << method
@@ -12231,8 +12232,53 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
 
-    // Default: stubbed but not crashing
+    // Default: stubbed but not crashing.
+    //
+    // UC-CM-001 (closes F012, Coder 3 systemic finding):
+    //   "unknown method -> STUBBED + VOID -> later move-result /
+    //    move-result-wide -> silent zero" false-success pattern.
+    //
+    // When the invoke site gave us a method_idx hint, resolve the callee's
+    // real proto descriptor and return the type-appropriate default value:
+    //   V -> void (legacy behavior)     Z -> false
+    //   B/S/C/I -> 0                    J -> 0L
+    //   F -> 0.0f                       D -> 0.0
+    //   L.../or [ (any reference) -> null
+    // Status stays STUBBED either way — this is honest bookkeeping (the
+    // value is still a default, never a fabricated success), but the
+    // downstream move-result* now sees a correctly-typed zero/null instead
+    // of a VOID value leaking into registers.
     status = ApiCallTrace::Status::STUBBED;
+    if (method_idx_hint != 0xFFFFFFFFu) {
+        const std::string proto = resolve_method_proto_for_dex(method_idx_hint, current_dex_index_);
+        const size_t rparen = proto.rfind(')');
+        if (rparen != std::string::npos && rparen + 1 < proto.size()) {
+            const std::string ret = proto.substr(rparen + 1);
+            if (ret.empty() || ret[0] == 'V') {
+                result = DalvikValue::make_void();
+            } else if (ret[0] == 'Z') {
+                result = DalvikValue::make_bool(false);
+            } else if (ret[0] == 'B') {
+                result = DalvikValue::make_byte(0);
+            } else if (ret[0] == 'S') {
+                result = DalvikValue::make_short(0);
+            } else if (ret[0] == 'C') {
+                result = DalvikValue::make_char('\0');
+            } else if (ret[0] == 'I') {
+                result = DalvikValue::make_int(0);
+            } else if (ret[0] == 'J') {
+                result = DalvikValue::make_long(0);
+            } else if (ret[0] == 'F') {
+                result = DalvikValue::make_float(0.0f);
+            } else if (ret[0] == 'D') {
+                result = DalvikValue::make_double(0.0);
+            } else {
+                // L<class>; or [ (array) — reference types return null.
+                result = DalvikValue::make_null();
+            }
+            return true;
+        }
+    }
     result = DalvikValue::make_void();
     return true;
 }
