@@ -6,6 +6,7 @@
 
 #include "execution_engine.h"
 #include "../dex/trace_exporter.h"  // EXP-031.5: Mandatory trace generation
+#include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
 // EXP-086 Phase 3 (B1 FIX): PNGWriter for direct PNG output
 #include "../renderer/software_renderer.h"
 // EXP-086 Phase 7 (B4 FIX): HandlerShadow for Runnable queue drain
@@ -717,6 +718,28 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                                   << std::endl;
                     }
                 }
+                // EXP-100 (UNIFIED_002 §9): audit the CANDIDATE ENUMERATION —
+                // record ALL clickable candidates + the iteration order so the
+                // click→target→screen mapping is provable from artifacts.
+                {
+                    std::string cand;
+                    for (size_t ci = 0; ci < clickables.size(); ++ci) {
+                        const auto* cn = view_shadow->find_node(clickables[ci]);
+                        if (ci) cand += ",";
+                        cand += "{\"order\":" + std::to_string(ci) +
+                            ",\"id\":" + std::to_string(clickables[ci]) +
+                            ",\"class\":\"" + miniandroid::diagnostics::jesc(
+                                cn ? cn->class_desc : std::string("?")) + "\"" +
+                            ",\"listener_id\":" + std::to_string(
+                                cn ? cn->click_listener_id : 0) + "}";
+                    }
+                    miniandroid::diagnostics::audit_append(
+                        std::string("{\"schema\":\"click_audit_v1\",\"record\":\"enumerate_candidates\",\"t\":\"") +
+                        miniandroid::diagnostics::iso_now() + "\"" +
+                        ",\"count\":" + std::to_string(clickables.size()) +
+                        ",\"candidates\":[" + cand + "]" +
+                        ",\"order_rule\":\"find_all_with_click_listener ordering\"}");
+                }
                 trace_engine_.info("ExecutionEngine", "phase_b_click",
                                    "Found " + std::to_string(clickables.size()) +
                                    " views with click listeners");
@@ -761,6 +784,20 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                             }
                         }
                     }
+                    // EXP-100 (UNIFIED_002 §7/§9): per-click STAGE record —
+                    // which click, on which view, dispatch result, whether a
+                    // LoginActivity appeared on the heap AFTER this click, and
+                    // whether this click is the stop point. This is the record
+                    // that answers "click ID → exact target View → handler".
+                    miniandroid::diagnostics::audit_append(
+                        std::string("{\"schema\":\"click_audit_v1\","
+                                    "\"record\":\"phase_b_stage\",\"t\":\"") +
+                        miniandroid::diagnostics::iso_now() + "\"" +
+                        ",\"view_id\":" + std::to_string(vid) +
+                        ",\"dispatch_ok\":" + (click_ok ? "true" : "false") +
+                        ",\"login_created_after\":" + (login_created ? "true" : "false") +
+                        ",\"stop\":" + (login_created ? "true" : "false") +
+                        ",\"stop_rule\":\"stop when LoginActivity on heap\"}");
                     if (login_created) break;
                 }
                 if (!login_created) {
