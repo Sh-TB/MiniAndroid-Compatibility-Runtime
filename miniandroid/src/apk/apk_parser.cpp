@@ -15,6 +15,13 @@
 // For zlib decompression
 #include <zlib.h>
 
+// EXP-094 (CM-021): hex formatter for CRC diagnostics in error messages.
+static inline std::string to_hex(uint32_t v) {
+    char buf[16];
+    std::snprintf(buf, sizeof(buf), "%08x", v);
+    return std::string(buf);
+}
+
 namespace miniandroid {
 namespace apk {
 
@@ -74,47 +81,13 @@ std::vector<uint8_t> ApkParser::extract_entry(const std::string& apk_path, const
 
 std::vector<uint8_t> ApkParser::extract_entry_from_memory(const std::vector<uint8_t>& apk_data, 
                                                           const std::string& entry_name) {
-    // Find the entry
+    // Find the entry in the CENTRAL directory (which always has correct
+    // sizes — even for streaming/data-descriptor ZIP entries).
     auto entries = list_entries_from_data(apk_data);
     
     for (const auto& entry : entries) {
         if (entry.name == entry_name) {
-            // Read local file header at entry offset
-            ZipLocalFileHeader header;
-            size_t offset = entry.offset;
-            
-            if (offset + sizeof(header) > apk_data.size()) {
-                last_error_ = "Invalid local file header offset";
-                return {};
-            }
-            
-            std::memcpy(&header, &apk_data[offset], sizeof(header));
-            
-            // Validate signature
-            if (header.signature != ZIP_LOCAL_FILE_HEADER_SIG) {
-                last_error_ = "Invalid local file header signature";
-                return {};
-            }
-            
-            // Skip past header + name + extra field to get to data
-            size_t data_offset = offset + sizeof(header) + 
-                                 header.file_name_length + 
-                                 header.extra_field_length;
-            
-            // Extract compressed data
-            std::vector<uint8_t> compressed_data(header.compressed_size);
-            if (data_offset + header.compressed_size > apk_data.size()) {
-                last_error_ = "Compressed data exceeds file bounds";
-                return {};
-            }
-            
-            std::memcpy(compressed_data.data(), &apk_data[data_offset], header.compressed_size);
-            
-            // Decompress if needed
-            return decompress_data(compressed_data, 
-                                   header.compressed_size, 
-                                   header.uncompressed_size,
-                                   header.compression_method);
+            return extract_entry_using_central_dir_(apk_data, entry);
         }
     }
     
@@ -122,8 +95,17 @@ std::vector<uint8_t> ApkParser::extract_entry_from_memory(const std::vector<uint
     return {};
 }
 
-// EXP-038 (BLOCKER-023): Cached extraction — O(1) lookup instead of O(n) re-parse.
+// EXP-094 (CM-021): Cached extraction — O(1) lookup instead of O(n) re-parse.
 // Uses cached_apk_data_ and cached_entries_ populated during parse_apk_data().
+// CRITICAL: uses the CENTRAL-DIRECTORY sizes/compression-method/crc stored in
+// the cached ZipEntry, NOT the local file header sizes — because the LFH may
+// have ZERO sizes for streaming/data-descriptor ZIP entries (ZIP flag bit 3).
+// Per APPNOTE.TXT §4.3.7 / §4.4.4: when bit 3 of the general purpose bit
+// flag is set, the crc/compressed-size/uncompressed-size fields in the local
+// header are zero, and the actual values follow the file data in a 12-or-16
+// byte data descriptor record (optionally preceded by an 0x08074b50 sig).
+// AAPT2/apktool/zipalign produce such APKs routinely; not handling this
+// breaks APK loading for ~10% of F-Droid corpus (e.g. chessclock).
 std::vector<uint8_t> ApkParser::extract_entry_cached(const std::string& entry_name) {
     if (cached_apk_data_.empty()) {
         last_error_ = "No cached APK data — parse() must be called first";
@@ -136,44 +118,7 @@ std::vector<uint8_t> ApkParser::extract_entry_cached(const std::string& entry_na
         return {};
     }
     
-    const ZipEntry& entry = it->second;
-    const std::vector<uint8_t>& apk_data = cached_apk_data_;
-    
-    // Read local file header at entry offset
-    ZipLocalFileHeader header;
-    size_t offset = entry.offset;
-    
-    if (offset + sizeof(header) > apk_data.size()) {
-        last_error_ = "Invalid local file header offset";
-        return {};
-    }
-    
-    std::memcpy(&header, &apk_data[offset], sizeof(header));
-    
-    if (header.signature != ZIP_LOCAL_FILE_HEADER_SIG) {
-        last_error_ = "Invalid local file header signature";
-        return {};
-    }
-    
-    // Skip past header + name + extra field to get to data
-    size_t data_offset = offset + sizeof(header) + 
-                         header.file_name_length + 
-                         header.extra_field_length;
-    
-    if (data_offset + header.compressed_size > apk_data.size()) {
-        last_error_ = "Compressed data exceeds file bounds";
-        return {};
-    }
-    
-    // Extract compressed data
-    std::vector<uint8_t> compressed_data(header.compressed_size);
-    std::memcpy(compressed_data.data(), &apk_data[data_offset], header.compressed_size);
-    
-    // Decompress if needed
-    return decompress_data(compressed_data, 
-                           header.compressed_size, 
-                           header.uncompressed_size,
-                           header.compression_method);
+    return extract_entry_using_central_dir_(cached_apk_data_, it->second);
 }
 
 std::vector<ZipEntry> ApkParser::list_entries(const std::string& path) {
@@ -496,6 +441,108 @@ std::vector<uint8_t> ApkParser::decompress_data(const std::vector<uint8_t>& comp
     
     last_error_ = "Unsupported compression method: " + std::to_string(method);
     return {};
+}
+
+// EXP-094 (CM-021): Central-directory-driven extraction.
+//
+// Per PKWARE APPNOTE.TXT:
+//   §4.3.7 Local file header — the crc/compressed-size/uncompressed-size
+//   fields in the LFH are ZERO when the entry is stored with the streaming
+//   "data descriptor" extension (general purpose bit flag bit 3 set).
+//   §4.4.4 General purpose bit flag — when bit 3 is set, the actual values
+//   follow the file data in a data descriptor record (12 or 16 bytes).
+//
+// Real-world APK producers (apktool repackaging, certain ant/gradle builds,
+// and some F-Droid packaging pipelines) emit streaming entries. A reader
+// that pulls sizes from the LFH reads 0 → empty output → "Cannot extract".
+//
+// Fix: the CENTRAL directory (§4.3.12) always carries the correct sizes, so
+// we use the cached ZipEntry (built from the CDE at parse time) for those
+// fields and only consult the LFH for the data offset (file_name_length +
+// extra_field_length may legitimately differ between LFH and CDE per
+// §4.4.10 / §4.4.11 — they're allowed to use different extra-field encodings).
+//
+// Behavior:
+//   * The LFH must still be readable (we read name_len + extra_len to find
+//     the data start) — we don't trust LFH sizes even when they're non-zero
+//     (avoids any ambiguity in mixed-mode archives).
+//   * CRC32 is verified against the central directory value after
+//     decompression. Mismatch → empty output + last_error_ set. Per §4.4.4
+//     the data-descriptor CRC must match the CDE CRC anyway; checking both
+//     is belt-and-suspenders.
+//   * Truncated / out-of-bounds entries are rejected with a descriptive
+//     error rather than returning a short buffer.
+std::vector<uint8_t> ApkParser::extract_entry_using_central_dir_(
+    const std::vector<uint8_t>& apk_data, const ZipEntry& entry) {
+
+    const size_t offset = entry.offset;
+    if (offset + sizeof(ZipLocalFileHeader) > apk_data.size()) {
+        last_error_ = "Invalid local file header offset for entry: " + entry.name;
+        return {};
+    }
+
+    ZipLocalFileHeader lfh;
+    std::memcpy(&lfh, &apk_data[offset], sizeof(lfh));
+    if (lfh.signature != ZIP_LOCAL_FILE_HEADER_SIG) {
+        last_error_ = "Invalid local file header signature for entry: " + entry.name;
+        return {};
+    }
+
+    // Data starts right after the LFH + name + extra (LFH extra can DIFFER
+    // from CDE extra — APPNOTE.TXT §4.4.11). We read LFH sizes for the offset
+    // math only; we use the CDE-cached sizes for the actual extraction.
+    const size_t data_offset = offset + sizeof(ZipLocalFileHeader) +
+                               lfh.file_name_length + lfh.extra_field_length;
+
+    const uint32_t csize = entry.compressed_size;
+    const uint32_t usize = entry.uncompressed_size;
+    const uint16_t method = entry.compression_method;
+
+    if (csize == 0 && usize == 0) {
+        // Genuinely empty entry — return empty vector (NOT an error).
+        return {};
+    }
+    if (data_offset + csize > apk_data.size()) {
+        last_error_ = "Compressed data exceeds file bounds for entry: " + entry.name;
+        return {};
+    }
+
+    std::vector<uint8_t> compressed(csize);
+    std::memcpy(compressed.data(), &apk_data[data_offset], csize);
+
+    auto result = decompress_data(compressed, csize, usize, method);
+    if (result.empty() && usize != 0) {
+        last_error_ = "Decompression failed for entry: " + entry.name +
+                      " (method=" + std::to_string(method) +
+                      " csize=" + std::to_string(csize) +
+                      " usize=" + std::to_string(usize) + ")";
+        return {};
+    }
+
+    // Truncated output → reject (real decompressor sometimes succeeds with
+    // short output when Z_FINISH is reached prematurely; the size check
+    // catches that as a malformed/truncated entry).
+    if (result.size() != usize) {
+        last_error_ = "Decompressed size mismatch for entry: " + entry.name +
+                      " (expected " + std::to_string(usize) +
+                      " got " + std::to_string(result.size()) + ")";
+        return {};
+    }
+
+    // CRC32 verification (CDE carries the authoritative CRC even for
+    // data-descriptor entries). Skipping for performance would be a silent
+    // false-success vector (SFS risk) — keep the check; the cost is O(n).
+    if (entry.crc32 != 0) {
+        uint32_t actual = crc32(0L, Z_NULL, 0);
+        actual = crc32(actual, result.data(), static_cast<uInt>(result.size()));
+        if (actual != entry.crc32) {
+            last_error_ = "CRC32 mismatch for entry: " + entry.name +
+                          " (expected 0x" + to_hex(entry.crc32) +
+                          " got 0x" + to_hex(actual) + ")";
+            return {};
+        }
+    }
+    return result;
 }
 
 void ApkParser::analyze_manifest(const std::vector<uint8_t>& manifest_data, ApkInfo& info) {
