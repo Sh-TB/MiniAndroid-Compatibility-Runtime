@@ -537,6 +537,26 @@ public:
         // EXP-095: ScrollView scrolling container marker (content laid out
         // inside, potentially taller than screen).
         bool is_scroll_container = false;
+        // EXP-098 (CM-027): RLottie animation frame RGBA buffer (rendered
+        // by RLottieDecoder when setAnimation(R.raw.X, w, h) is called on
+        // an RLottieImageView subclass). Stored as anim_w*anim_h*4 bytes
+        // in scan order (R,G,B,A per pixel). When non-empty the renderer
+        // draws these pixels at the view's bounds INSTEAD of the CM-022
+        // placeholder.
+        std::vector<uint8_t> anim_frame_rgba;
+        int anim_w = 0;
+        int anim_h = 0;
+        int anim_total_frames = 0;  // total frames in the source animation
+        int anim_current_frame = 0;  // current frame index for time-based playback
+        // EXP-098 (CM-027): When setAnimation(R.raw.X, w, h) is observed
+        // on an RLottieImageView, the engine stores the (raw_resid,
+        // target_w, target_h) here. The render stage (which has access
+        // to ApkParser) then resolves resid → APK path → JSON → rlottie
+        // frame → RGBA buffer.
+        int32_t anim_raw_resid = 0;
+        int anim_target_w = 0;
+        int anim_target_h = 0;
+        bool anim_decode_attempted = false;  // avoid re-decoding on each frame
     };
 
     std::string name() const override { return "View"; }
@@ -678,6 +698,37 @@ public:
     void set_bg_color(uint32_t view_id, uint32_t argb) {
         auto* n = get_or_create_node(view_id, "");
         if (n != nullptr) n->bg_color = argb;
+    }
+
+    // EXP-098 (CM-027): Store RLottie animation frame RGBA buffer on the
+    // ViewNode. Called by the engine-side setAnimation intercept after
+    // rlottie renders the requested frame(s). When the renderer visits
+    // this view, it draws anim_frame_rgba at the view's bounds instead of
+    // the CM-022 placeholder.
+    void set_anim_frame(uint32_t view_id,
+                        std::vector<uint8_t> rgba,
+                        int w, int h, int total_frames) {
+        auto* n = get_or_create_node(view_id, "");
+        if (n == nullptr) return;
+        n->anim_frame_rgba = std::move(rgba);
+        n->anim_w = w;
+        n->anim_h = h;
+        n->anim_total_frames = total_frames;
+        n->anim_current_frame = 0;
+    }
+
+    // EXP-098 (CM-027): Mark this view as a pending RLottie animation
+    // target. The engine captures (raw_resid, w, h) when
+    // RLottieImageView.setAnimation(R.raw.X, w, h) is called; the render
+    // stage (with ApkParser access) performs the actual decode.
+    void set_anim_pending(uint32_t view_id, int32_t raw_resid,
+                          int w, int h) {
+        auto* n = get_or_create_node(view_id, "");
+        if (n == nullptr) return;
+        n->anim_raw_resid = raw_resid;
+        n->anim_target_w = w;
+        n->anim_target_h = h;
+        n->anim_decode_attempted = false;
     }
 
     // EXP-060: Return ALL view_ids whose class descriptor contains
