@@ -472,6 +472,47 @@ public:
     static DecodedImage decode_file(const std::string& path);
 };
 
+// EXP-097 §7: RLottieDecoder — rlottie-backed Lottie JSON → RGBA decoder.
+//
+// Per AOSP `BitmapFactory` and Telegram's RLottieDrawable: animated vector
+// graphics (Lottie) are rendered to a Bitmap on each frame. rlottie is
+// Samsung's reference C++ implementation (MIT-licensed) — Telegram and
+// many other Android apps use it directly.
+//
+// This class wraps rlottie's C API:
+//   1. lottie_animation_from_data(json_str, key, "") — parse the Lottie JSON
+//   2. lottie_animation_get_size/totalframe/framerate — query animation props
+//   3. lottie_animation_render(anim, frame, buffer, w, h, stride) — render
+//      ONE frame to an RGBA buffer
+//
+// For a static render pass (the runtime's current model), we render frame 0
+// of the FIRST animation encountered. For animated WebPs/GIFs the future
+// AnimatedDrawable infrastructure will request successive frames.
+class RLottieDecoder {
+public:
+    struct DecodedAnim {
+        int width = 0;
+        int height = 0;
+        int total_frames = 0;
+        double frame_rate = 0.0;
+        std::vector<uint32_t> frames_rgba;  // width*height*4 per frame, concatenated
+        bool ok = false;
+        std::string error;
+        std::string name;  // animation name (Lottie "nm" field, for diagnostics)
+    };
+
+    // Decode the first N frames of a Lottie animation.
+    //   json_str:   raw Lottie JSON (Telegram stores it as `res/*.json`)
+    //   max_frames: cap (e.g. 3 for frame_000/001/002 evidence; -1 for all)
+    //   target_w/h: render size in pixels (Telegram uses dp(64), etc.)
+    static DecodedAnim decode(const std::string& json_str,
+                              int target_w, int target_h,
+                              int max_frames = 3);
+    static DecodedAnim decode_file(const std::string& path,
+                                   int target_w, int target_h,
+                                   int max_frames = 3);
+};
+
 } // namespace renderer
 } // namespace miniandroid
 
