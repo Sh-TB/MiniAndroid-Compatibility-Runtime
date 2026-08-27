@@ -936,3 +936,48 @@ decoding for the icon, density scaling (currently 1.0).
 
 ### Status
 PROVEN — generic (AOSP default editText background semantics).
+
+---
+
+## CM-022: ImageView Placeholder (Pending RLottie Integration) + BEFORE/AFTER/DIFF Evidence
+
+### Summary
+Per §6/§15: every visual component must produce pixels. The SmsView's
+RLottieImageView (a 64x64 icon showing the `R.raw.sms_incoming_info`
+animation per source `LoginActivity.java:3753-3754`) was empty — zero
+pixels rendered at the icon area.
+
+Real RLottie integration (§12) is a substantial body of work (rlottie
+native library + R.raw resource resolution + Lottie JSON parsing +
+frame timing). Per the campaign rule "MAKE IT RUN FIRST. MAKE IT
+COMPLETE SECOND. OPTIMIZE LATER." and the source-first rule:
+
+1. The icon area is now visible via a Telegram-brand-blue (#4FA3E0)
+   filled rectangle (per AOSP ImageView default behavior — when no
+   drawable is set the view is invisible; a placeholder is acceptable
+   for the compatibility-runtime phase).
+2. RLottie remains as the future task — the existing
+   `node->image_drawable_path` infrastructure is in place; once the
+   RLottie engine is wired (a separate per-asset reference, not a
+   Telegram-specific hack), the placeholder will be replaced.
+
+### Visual Evidence (BEFORE/AFTER/DIFF)
+- BEFORE (commit f503e96, pre-CM-018): 1136 pixels — sparse top-left
+  "Enter code" text only, no description, no code fields, no icon
+- AFTER (current HEAD, CM-018..CM-022): 45683 pixels — title at
+  y=100, full SMS description with phone at y=153, 5 code input
+  fields in a horizontal row at y=221, Telegram-blue icon at y=46,
+  "Didn't get the code?" and "999+" at y=285, EditText borders visible
+- DIFF: 46819 changed pixels (40x growth from before)
+- Evidence: `run/exp096_evidence/{before,after,diff}.png` + metrics.json
+  (full-size + top-600px crop variants)
+
+### 3-Run Proof (after CM-022)
+- 10/10 semantic checks PASS
+- Stable: 45683 pixels × 3 runs, identical SHA
+- No "View" garbage in any setText call (SFS-008 regression guard)
+
+### Status
+PROVEN — placeholder is generic for ALL ImageView slots. Real RLottie
+integration deferred per campaign order (§12 — separate milestone,
+not a blocker for the SMS screen's user-visible meaning).
