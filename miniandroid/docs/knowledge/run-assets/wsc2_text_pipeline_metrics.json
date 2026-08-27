@@ -1,0 +1,6 @@
+[
+  {"sample": "fa_code_msg", "base_dir": "RTL", "codepoints": 43, "glyphs": 43, "advance_px": 876, "bbox": [163, 1040], "dark_px": 8903, "ok": true},
+  {"sample": "fa_sms_body", "base_dir": "RTL", "codepoints": 47, "glyphs": 47, "advance_px": 976, "bbox": [63, 1039], "dark_px": 9209, "ok": true},
+  {"sample": "en_enter_code", "base_dir": "LTR", "codepoints": 10, "glyphs": 10, "advance_px": 222, "bbox": [44, 261], "dark_px": 2357, "ok": true},
+  {"sample": "mixed_didnt", "base_dir": "RTL", "codepoints": 41, "glyphs": 41, "advance_px": 793, "bbox": [250, 1040], "dark_px": 7534, "ok": true}
+]
