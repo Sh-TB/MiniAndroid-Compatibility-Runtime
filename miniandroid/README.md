@@ -12,13 +12,14 @@ pixel-evidence output.
 
 ## Current state (UNIFIED_011 canonical, 2026-08-30)
 
-- **HEAD:** `288ff6f` (local, 6 commits ahead of `origin/main` — push pending)
+- **HEAD:** tag `v0.11-unified-011` (local, 10 commits ahead of `origin/main` — push pending)
 - **Latest remote (`origin/main`):** `bbe0ce3`
 - **Canonical baseline proof:** Telegram v12.10.1 full journey renders **3/3
   runs byte-identical** (`06fb40da…`), exactly matching the UNIFIED_002 record.
 - **New in this release:** the UNIFIED_007 *real resource pipeline* was
   recovered from the interrupted session, re-verified end-to-end, guarded
-  against regressions, and committed (`23900f8`).
+  against regressions, and committed (`23900f8`); docs/START_HERE/hygiene
+  finalized and tagged `v0.11-unified-011`.
 
 ## Proven capabilities (evidence-backed)
 
