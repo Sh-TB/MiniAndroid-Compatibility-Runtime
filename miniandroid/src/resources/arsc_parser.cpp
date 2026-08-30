@@ -226,6 +226,15 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
     tc.entry_count = entry_count;
     tc.config_desc = config_to_string(p + 20, config_size);
     const uint8_t* cfg = p + 20;
+    // CAMPAIGN 009 §6: parse the full AOSP ResTable_config for this bucket
+    {
+        size_t cfg_off = chunk_offset + 20;
+        if (config_size >= 4 && cfg_off < avail) {
+            size_t cfg_avail = std::min((size_t)config_size, avail - cfg_off);
+            tc.config = ResTableConfig::from_bytes(cfg, cfg_avail);
+            tc.has_config = tc.config.size != 0;
+        }
+    }
 
     if (flags & TYPE_FLAG_SPARSE) {
         // Sparse entries: header extended by 4 bytes; offsets are
@@ -272,6 +281,8 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
         entry.entry_index = i;
         entry.is_complex = (eflags & ENTRY_FLAG_COMPLEX) != 0;
         entry.config_desc = tc.config_desc;
+        entry.config = tc.config;          // CAMPAIGN 009 §6
+        entry.has_config = tc.has_config;
         const std::string* key = pkg.key_strings.get(key_idx);
         if (key) entry.name = *key;
         // value
@@ -464,22 +475,37 @@ void ArscParser::finish_index() {
 }
 
 // ---------------------------------------------------------------------------
-// Resolution
+// Resolution — CAMPAIGN 009 §6: AOSP configuration matching.
+// Oracle: aosp-mirror/platform_frameworks_base ResourceTypes.cpp — a config is
+// chosen among candidates that match() the device settings via isBetterThan();
+// if nothing matches, the default (qualifier-less) entry is used, mirroring
+// AssetsProvider behavior for unqualified tables.
 // ---------------------------------------------------------------------------
 const ArscEntry* ResolvedResource::best() const {
+    if (configs.empty()) return nullptr;
+    const ResTableConfig& device = device_config();
     const ArscEntry* best = nullptr;
-    int best_score = 1 << 30;
     for (const auto& c : configs) {
-        // Prefer: no locale, no density, no other qualifiers → shorter config_desc
-        int score = 0;
-        if (!c.config_desc.empty()) {
-            score = 100;
-            if (c.config_desc.find("dpi") != std::string::npos) score += 10;
-            if (c.config_desc.find("-r") != std::string::npos) score += 5;
+        if (c.has_config && !c.config.match(device)) continue;
+        if (!best) { best = &c; continue; }
+        const bool c_has = c.has_config;
+        const bool b_has = best->has_config;
+        if (c_has && b_has) {
+            if (c.config.isBetterThan(best->config, device)) best = &c;
+        } else if (c_has && !b_has) {
+            // qualified config beats default when the qualifier matches the device
+            if (c.config.locale || c.config.density || c.config.smallestScreenWidthDp ||
+                c.config.screenSizeDpMask || c.config.screenConfig || c.config.imsi ||
+                c.config.version || c.config.screenConfig2 || c.config.screenType) {
+                best = &c;
+            }
         }
-        if (score < best_score) { best_score = score; best = &c; }
+        // !c_has && b_has → keep existing best (default never beats a matching qualifier)
     }
-    return best ? best : (configs.empty() ? nullptr : &configs.front());
+    if (best) return best;
+    // No bucket matched the device: fall back to the default config if present.
+    for (const auto& c : configs) if (!c.has_config) return &c;
+    return &configs.front();
 }
 
 std::optional<ResolvedResource> ArscParser::resolve(uint32_t resource_id) const {

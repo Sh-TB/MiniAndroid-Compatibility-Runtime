@@ -1,0 +1,214 @@
+# P1-GITHUB-MINING master repo list (Campaign 009)
+# Format: <owner/repo> [inspect]   — "inspect" = also fetch README head for source-inspection note
+# --- resource-parsing (ARSC/AXML/APK/DEX) ---
+REAndroid/ARSCLib inspect
+REAndroid/APKEditor inspect
+androguard/androguard inspect
+iBotPeaches/Apktool inspect
+JesusFreke/smali inspect
+pxb1988/dex2jar inspect
+CalebFenton/simplify
+skylot/jadx inspect
+google/apk-patcher
+kin9-0rz/apkutils
+kikfox/ARSCTool
+ibilux/ArscResourcesParser
+Aliucord/binary-resources inspect
+APKLab/APKLab
+ReVanced/revanced-patcher inspect
+droidefense/engine
+amimo/dcc
+akavel/dali inspect
+tboox/dexbox
+GraxCode/dalvikgate
+plum-umd/redexer
+MatrixEditor/dexrs
+Sable/soot
+# --- compose-ecosystem ---
+JetBrains/compose-multiplatform inspect
+JetBrains/skiko inspect
+androidx/androidx inspect
+android/compose-samples inspect
+android/nowinandroid inspect
+android/architecture-samples
+google/accompanist inspect
+coil-kt/coil inspect
+bumptech/glide
+GetStream/stream-chat-android
+JetBrains/skija inspect
+MohamedRejeb/compose-rich-editor inspect
+MohamedRejeb/Calf
+aclassen/ComposeReorderable
+cheonjaeung/gridlayout-compose
+amir1376/ab-download-manager
+Tlaster/PreCompose
+MohamedRejeb/Pokedex
+theapache64/stackzy
+joreilly/PeopleInSpace
+Gurupreet/ComposeCookBook
+skydoves/Balloon
+rikkahub/rikkahub
+vfsfitvnm/ViMusic
+gkd-kit/gkd
+# --- graphics / rendering ---
+google/skia inspect
+google/angle
+google/swiftshader
+google/filament
+bgfx/bgfx
+floooh/sokol inspect
+facebook/yoga inspect
+Mesa3D/mesa inspect
+KhronosGroup/Vulkan-Samples
+KhronosGroup/Vulkan-Docs
+KhronosGroup/glslang
+g-truc/glew
+glfw/glfw
+LWJGL/lwjgl3
+ssloy/tinyrenderer
+rswinkle/PortableGL inspect
+jserv/tinygl inspect
+zauonlok/renderer
+skywind3000/mini3d
+DiligentGraphics/DiligentEngine
+apitrace/apitrace
+google/gapid
+google/agi
+winebox64/winlator
+OGRECave/ogre
+# --- text / font / bidi ---
+fribidi/fribidi inspect
+harfbuzz/harfbuzz inspect
+freetype/freetype inspect
+Tehreer/SheenBidi inspect
+Tehreer/Tehreer
+notofonts/noto-fonts
+googlefonts/noto-fonts
+rougier/freetype-gl
+harfbuzz/harfbuzzjs
+go-text/typesetting
+unicode-org/text-rendering-tests inspect
+unicode-org/icu inspect
+Tehreer/Tehreer-Android
+# --- image codecs ---
+pnggroup/libpng inspect
+glennrp/libpng
+libjpeg-turbo/libjpeg-turbo inspect
+webmproject/libwebp inspect
+nothings/stb inspect
+AOMediaCodec/libavif
+memononen/nanosvg inspect
+RazrFalcon/resvg
+linebender/resvg
+aseprite/aseprite
+google/wuffs inspect
+randy408/libspng inspect
+kikuchan/pngle inspect
+strukturag/libheif
+sammycage/plutosvg
+sammycage/plutovg
+HappySeaFox/sail
+# --- animation ---
+Samsung/rlottie inspect
+airbnb/lottie-android inspect
+rive-app/rive-runtime
+rive-app/rive-cpp
+thorvg/thorvg inspect
+ed-asriyan/lottie-converter
+alexzhirkevich/compottie
+LottieFiles/dotlottie-web
+# --- audio / media ---
+lieff/minimp3 inspect
+mackron/dr_libs inspect
+mackron/miniaudio inspect
+libsndfile/libsndfile
+FFmpeg/FFmpeg
+libsdl-org/SDL
+libsdl-org/SDL_mixer
+kcat/openal-soft
+google/oboe inspect
+androidx/media inspect
+google/ExoPlayer
+mpg123/mpg123
+lieff/minimp4 inspect
+xiph/ogg
+xiph/vorbis
+xiph/flac
+mpv-player/mpv
+gstreamer/gstreamer
+webmproject/libvpx
+FongMi/TV
+google/horologist
+# --- persistence / db ---
+sqlite/sqlite inspect
+requery/sqlite-android inspect
+SQLCipher/sqlcipher inspect
+Tencent/wcdb inspect
+tursodatabase/libsql
+sqlitebrowser/sqlitebrowser
+# --- test oracles ---
+robolectric/robolectric inspect
+robolectric/android-all
+cashapp/paparazzi inspect
+junit-team/junit5
+junit-team/junit4
+google/truth
+takahirom/roborazzi inspect
+kotlin/kotlin
+# --- runtime libs that real APKs depend on ---
+square/okhttp inspect
+square/retrofit
+square/moshi
+google/gson
+ReactiveX/RxJava
+kotlin/kotlinx.coroutines
+# --- real apps corpus ---
+WebView-CG/CanIAndroidWebView inspect
+PixelPlayerHQ/PixelPlayerOSS inspect
+ashrafimostafa/Brick-Blast inspect
+yamin8000/Dooz inspect
+retrowars/retrowars inspect
+pserwylo/retrowars
+libgdx/libgdx inspect
+Anuke/Mindustry inspect
+00-Evan/shattered-pixel-dungeon inspect
+FossifyOrg/Gallery inspect
+FossifyOrg/Calendar
+FossifyOrg/Contacts
+TeamNewPipe/NewPipe inspect
+OxygenCobalt/Auxio inspect
+maxrave-dev/SimpMusic
+FoedusProgramme/Gramophone inspect
+chrisbanes/tivi inspect
+anilbeesetti/nextplayer inspect
+T8RIN/ImageToolbox
+JunkFood02/Seal
+MetrolistGroup/Metrolist
+OuterTune/OuterTune
+Droid-ify/client
+d4rken-org/sdmaid-se
+duckduckgo/Android
+nextcloud/android
+lichess-org/mobile
+shlusiak/Freebloks-Android
+plateaukao/einkbro
+hushenghao/AndroidEasterEggs
+sweakpl/qralarm-android
+LinkoraApp/Linkora
+dorumrr/de1984
+gergelyvagujhelyi/CalculatorM3
+KashCal/KashCal
+clavierhaus/gnubg-android
+SEAbdulbasit/asteroids-compose-multiplatform
+TranslucentFoxHuman/DroidStress
+signalapp/Signal-Android
+accrescent/accrescent
+# --- android framework oracles ---
+aosp-mirror/platform_frameworks_base inspect
+aosp-mirror/platform_frameworks_support
+LineageOS/android_frameworks_base
+google/conscrypt
+aosp-mirror/platform_art
+aosp-mirror/platform_dalvik
+google/desugar_jdk_libs
+aosp-mirror/platform_libcore

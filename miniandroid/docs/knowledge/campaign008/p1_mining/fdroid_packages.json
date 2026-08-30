@@ -1,0 +1,1568 @@
+{
+ "com.mobilefork.hermesagent": {
+  "categories": [],
+  "source_url": "https://github.com/adybag14-cyber/hermes-agent",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.codeberg.scovillo.bubble": {
+  "categories": [],
+  "source_url": "https://codeberg.org/scovillo/bubble-penetration",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.astroloop.game": {
+  "categories": [],
+  "source_url": "https://github.com/PubDeer/astro-loop",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.sweak.qralarm": {
+  "categories": [],
+  "source_url": "https://github.com/sweakpl/qralarm-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.xolatgames.burgers": {
+  "categories": [],
+  "source_url": "https://codeberg.org/xolatgames/Battle-for-Burgers",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.dsalmun.luxalarm": {
+  "categories": [],
+  "source_url": "https://github.com/salmundani/LuxAlarm",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.pennywiseai.tracker": {
+  "categories": [],
+  "source_url": "https://github.com/sarim2000/pennywiseai-tracker",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.duckduckgo.mobile.android": {
+  "categories": [],
+  "source_url": "https://github.com/duckduckgo/Android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.smartpack.packagemanager": {
+  "categories": [],
+  "source_url": "https://github.com/SmartPack/PackageManager",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.malarm": {
+  "categories": [],
+  "source_url": "https://github.com/adriablo/malarm",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.looker.droidify": {
+  "categories": [],
+  "source_url": "https://github.com/Droid-ify/client",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "eu.darken.sdmse": {
+  "categories": [],
+  "source_url": "https://github.com/d4rken-org/sdmaid-se",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.bikram.obtainx": {
+  "categories": [],
+  "source_url": "https://github.com/bikram-agarwal/ObtainX",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.dorumrr.de1984": {
+  "categories": [],
+  "source_url": "https://github.com/dorumrr/de1984",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.fdroid.basic": {
+  "categories": [],
+  "source_url": "https://gitlab.com/fdroid/fdroidclient",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "codes.swistak.batterymonitor": {
+  "categories": [],
+  "source_url": "https://github.com/tswistak/Battery-Monitor",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "montafra.beam": {
+  "categories": [],
+  "source_url": "https://github.com/montafra/beam",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.clavierhaus.gnubg": {
+  "categories": [],
+  "source_url": "https://github.com/clavierhaus/gnubg-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "net.tlfoxhuman.droidstress": {
+  "categories": [],
+  "source_url": "https://github.com/TranslucentFoxHuman/DroidStress",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.lichess.mobileV2": {
+  "categories": [],
+  "source_url": "https://github.com/lichess-org/mobile",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.saschahlusiak.freebloks": {
+  "categories": [],
+  "source_url": "https://github.com/shlusiak/Freebloks-Android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "jp.nonbili.nori": {
+  "categories": [],
+  "source_url": "https://github.com/nonbili/Nori",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.sbv.linkdroid": {
+  "categories": [],
+  "source_url": "https://github.com/Dacid99/LinkDroid-for-Linkwarden",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.sakethh.linkora": {
+  "categories": [],
+  "source_url": "https://github.com/LinkoraApp/Linkora",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.vishaltelangre.nerdcalci": {
+  "categories": [],
+  "source_url": "https://github.com/vishaltelangre/NerdCalci",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "info.plateaukao.einkbro": {
+  "categories": [],
+  "source_url": "https://github.com/plateaukao/einkbro",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "space.karrarnazim.ConsoleFlow": {
+  "categories": [],
+  "source_url": "https://github.com/SANDRO00O/ConsoleFlow-mobile",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "net.tigr.soulcalc": {
+  "categories": [],
+  "source_url": "https://github.com/tigrino/soulcalc",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.vagujhelyigergely.calculatorm3": {
+  "categories": [],
+  "source_url": "https://github.com/gergelyvagujhelyi/CalculatorM3",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.nextcloud.client": {
+  "categories": [],
+  "source_url": "https://github.com/nextcloud/android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.onekash.kashcal": {
+  "categories": [],
+  "source_url": "https://github.com/KashCal/KashCal",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.github.digitallyrefined.androidipcamera": {
+  "categories": [],
+  "source_url": "https://github.com/DigitallyRefined/android-ip-camera",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.app.geotagvideocamera": {
+  "categories": [],
+  "source_url": "https://github.com/mlm-games/geotag-video-camera",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.rotundtapir.fivehundred": {
+  "categories": [],
+  "source_url": "https://github.com/rotundtapir/500",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "page.codeberg.lanticy.guandan": {
+  "categories": [],
+  "source_url": "https://codeberg.org/lanticy/guandan",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.jarsilio.android.magnifica": {
+  "categories": [],
+  "source_url": "https://gitlab.com/juanitobananas/magnifica",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.mimoguz.tripeaksneue": {
+  "categories": [],
+  "source_url": "https://github.com/mimoguz/tripeaks_neue",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.scovillo.playondlna": {
+  "categories": [],
+  "source_url": "https://github.com/scovillo/playondlna",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "sh.haven.app": {
+  "categories": [],
+  "source_url": "https://github.com/GlassOnTin/Haven",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.nkls.nekovideo": {
+  "categories": [],
+  "source_url": "https://github.com/FellipitoPV/NekoVideo",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.dede.android_eggs": {
+  "categories": [],
+  "source_url": "https://github.com/hushenghao/AndroidEasterEggs",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.mostafa.brickblast": {
+  "categories": [],
+  "source_url": "https://github.com/ashrafimostafa/Brick-Blast",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.reteclock": {
+  "categories": [],
+  "source_url": "https://github.com/rubidus-api/reteclock_apk",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "fr.shiningcat.binclockwidget": {
+  "categories": [],
+  "source_url": "https://github.com/shining-cat/binary-clock-widget",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "net.diffengine.romandigitalclock": {
+  "categories": [],
+  "source_url": "https://github.com/dfyockey/RomanDigital",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.roozbehzarei.filester": {
+  "categories": [],
+  "source_url": "https://github.com/roozbehzarei/filester",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.maneeshacooray.gitling": {
+  "categories": [],
+  "source_url": "https://github.com/maneeshacooray/Gitling",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "lu.knaff.alain.saf_sftp": {
+  "categories": [],
+  "source_url": "https://github.com/AlainKnaff/Android-SFTP-Documents-Provider",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.mian.gitnex": {
+  "categories": [],
+  "source_url": "https://codeberg.org/gitnex/GitNex",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.labnex.app": {
+  "categories": [],
+  "source_url": "https://codeberg.org/labnex/LabNex",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "ch.protonvpn.android": {
+  "categories": [],
+  "source_url": "https://github.com/ProtonVPN/android-app",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "app.getknit.knit": {
+  "categories": [],
+  "source_url": "https://github.com/getknit/knit",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.ashkanrafiee.librecontactsbackup": {
+  "categories": [],
+  "source_url": "https://github.com/AshkanRafiee/Libre-Contacts-Backup",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "me.river.nightbell": {
+  "categories": [],
+  "source_url": "https://github.com/riveerxd/nightbell",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.erfangholami.solidshare": {
+  "categories": [],
+  "source_url": "https://github.com/erfangholami/SolidShare",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.unprompted.tildefriends.fdroid": {
+  "categories": [],
+  "source_url": "https://dev.tildefriends.net/cory/tildefriends",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.github.jameshnsears.chance": {
+  "categories": [],
+  "source_url": "https://github.com/jameshnsears/Chance",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.sanrou.noppadiceroller": {
+  "categories": [],
+  "source_url": "https://framagit.org/sanrou/noppadiceroller",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "ca.vaults.randomlydie": {
+  "categories": [],
+  "source_url": "https://github.com/timtoo/randomlydie",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.k2040.escaagnellis": {
+  "categories": [],
+  "source_url": "https://github.com/Kamui2040/Esca-Agnellis-Android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.quad9.aegis": {
+  "categories": [],
+  "source_url": "https://github.com/Quad9DNS/quad9-connect",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.presley.fit_book": {
+  "categories": [],
+  "source_url": "https://github.com/brandonp2412/FitBook",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "fr.guillaumevillena.opendnsupdater": {
+  "categories": [],
+  "source_url": "https://github.com/Willena/OpenDNSUpdater",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.github.xfalcon.vhosts": {
+  "categories": [],
+  "source_url": "https://github.com/x-falcon/Virtual-Hosts",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.acamol.qbit": {
+  "categories": [],
+  "source_url": "https://github.com/Acamol/Captain-qBit",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.github.livingwithhippos.unchained": {
+  "categories": [],
+  "source_url": "https://github.com/LivingWithHippos/unchained-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.linwood.butterfly.nightly": {
+  "categories": [],
+  "source_url": "https://github.com/LinwoodDev/Butterfly",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.linwood.flow.nightly": {
+  "categories": [],
+  "source_url": "https://github.com/LinwoodDev/Flow",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.starry.myne": {
+  "categories": [],
+  "source_url": "https://github.com/Pool-Of-Tears/Myne",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.linwood.butterfly": {
+  "categories": [],
+  "source_url": "https://github.com/LinwoodDev/Butterfly",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.mlm.mages": {
+  "categories": [],
+  "source_url": "https://github.com/mlm-games/mages",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.chmouel.liseur": {
+  "categories": [],
+  "source_url": "https://github.com/chmouel/liseur",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "net.timelegend.chaka.viewer.app": {
+  "categories": [],
+  "source_url": "https://github.com/elementdavv/chaka",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.inspiredandroid.braincup": {
+  "categories": [],
+  "source_url": "https://github.com/SimonSchubert/Braincup",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.hazelhope.dubster.hamtest": {
+  "categories": [],
+  "source_url": "https://github.com/DubsterDev/HamTestAndroid",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.anant.fitbuddy": {
+  "categories": [],
+  "source_url": "https://github.com/anantdark/FitBuddy",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.tutao.tutanota": {
+  "categories": [],
+  "source_url": "https://github.com/tutao/tutanota",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "app.usp": {
+  "categories": [],
+  "source_url": "https://bitbucket.org/djdron/unrealspeccyp/src",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "eu.faircode.email": {
+  "categories": [],
+  "source_url": "https://github.com/M66B/FairEmail",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.limelight": {
+  "categories": [],
+  "source_url": "https://github.com/moonlight-stream/moonlight-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.rainerhock.eightbitwonders": {
+  "categories": [],
+  "source_url": "https://gitlab.com/eightbitwonders/app",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.agepony.app": {
+  "categories": [],
+  "source_url": "https://github.com/norsehorse-dev/AgePonyAndroid",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.mage.age": {
+  "categories": [],
+  "source_url": "https://github.com/ElCruncharino/mage",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.hzontal.tellaFOSS": {
+  "categories": [],
+  "source_url": "https://github.com/Horizontal-org/Tella-Android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.helddertierwelt.mentalmath": {
+  "categories": [],
+  "source_url": "https://codeberg.org/Mental-Math/MentalMath",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.voyagerfiles": {
+  "categories": [],
+  "source_url": "https://github.com/AlanHuang99/Voyager",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.bikram.filepipe.gh": {
+  "categories": [],
+  "source_url": "https://github.com/bikram-agarwal/FilePipe",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.zorinos.zorin_connect": {
+  "categories": [],
+  "source_url": "https://github.com/ZorinOS/zorin-connect-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.dking.crocapp": {
+  "categories": [],
+  "source_url": "https://github.com/Dking08/croc-app",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.nyx.custom_uploader": {
+  "categories": [],
+  "source_url": "https://github.com/SrS2225a/custom_uploader",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "it.rfmariano.denaro": {
+  "categories": [],
+  "source_url": "https://github.com/Biri0/denaro",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.money.manager.ex": {
+  "categories": [],
+  "source_url": "https://github.com/moneymanagerex/android-money-manager-ex",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.herrerad85.tallybook": {
+  "categories": [],
+  "source_url": "https://github.com/herrerad85/moneywallet",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.arthur.arcade": {
+  "categories": [],
+  "source_url": "https://github.com/fattdonki/Arcade",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "net.kollnig.missioncontrol.fdroid": {
+  "categories": [],
+  "source_url": "https://github.com/TrackerControl/tracker-control-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "rocks.poopjournal.flashy": {
+  "categories": [],
+  "source_url": "https://github.com/Crazy-Marvin/Flashy",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.wbftw.weil.sos_flashlight": {
+  "categories": [],
+  "source_url": "https://github.com/WeilJimmer/SOSFlashlightApp",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.elasticrock.candle": {
+  "categories": [],
+  "source_url": "https://github.com/elastic-rock/Candle",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "app.fluffy": {
+  "categories": [],
+  "source_url": "https://github.com/mlm-games/fluffy",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "app.vger.voyager": {
+  "categories": [],
+  "source_url": "https://github.com/aeharding/voyager",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "jp.nonbili.nora": {
+  "categories": [],
+  "source_url": "https://github.com/nonbili/Nora",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "ua.com.radiokot.photoprism": {
+  "categories": [],
+  "source_url": "https://github.com/Radiokot/photoprism-android-client",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.freetime.ssmpc": {
+  "categories": [],
+  "source_url": "https://github.com/FreetimeMaker/SuperSMP-Companion-App",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.encgallery": {
+  "categories": [],
+  "source_url": "https://github.com/Wolf-Project777/wolf-gallery",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.srkovnar.legacyphotoframe": {
+  "categories": [],
+  "source_url": "https://gitlab.com/srkovnar/legacyphotoframe",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.shapeshed.kiosk": {
+  "categories": [],
+  "source_url": "https://github.com/shapeshed/kiosk",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.DartChecker": {
+  "categories": [],
+  "source_url": "https://gitlab.com/onestepb/dart-checker",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.toolicious.labler": {
+  "categories": [],
+  "source_url": "https://github.com/toolicious/labler",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.david.waterreminder": {
+  "categories": [],
+  "source_url": "https://codeberg.org/DavidCRicardo/FillMeUp",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.github.trivialloop.scorehub": {
+  "categories": [],
+  "source_url": "https://github.com/trivialloop/scorehub",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.quantumphysique.trale": {
+  "categories": [],
+  "source_url": "https://github.com/QuantumPhysique/trale",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "fr.luteal.app": {
+  "categories": [],
+  "source_url": "https://github.com/JoeriKaiser/luteal",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.renkinProject.renkin": {
+  "categories": [],
+  "source_url": "https://github.com/renkindevbugs/Renkin",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.github.heartratemonitor_compose": {
+  "categories": [],
+  "source_url": "https://github.com/XiaochangXu/HeartRateMonitor-composeui",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.streak.app": {
+  "categories": [],
+  "source_url": "https://github.com/InlitX/streak",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "tech.mmarca.openvitals": {
+  "categories": [],
+  "source_url": "https://codeberg.org/OpenVitals/mobile-app",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.donnnno.arcticons.light": {
+  "categories": [],
+  "source_url": "https://github.com/Arcticons-Team/Arcticons",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.donnnno.arcticons.you": {
+  "categories": [],
+  "source_url": "https://github.com/Arcticons-Team/Arcticons",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.ahad.macat": {
+  "categories": [],
+  "source_url": "https://github.com/ItsAhadun/maCat",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.eden.livewidget": {
+  "categories": [],
+  "source_url": "https://github.com/someone-s/transport-widget",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "m.co.rh.id.a_personal_stuff": {
+  "categories": [],
+  "source_url": "https://github.com/rh-id/a-personal-stuff",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.retekey": {
+  "categories": [],
+  "source_url": "https://github.com/rubidus-api/retekey_apk",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.kinetica.keyboard": {
+  "categories": [],
+  "source_url": "https://github.com/EZ-eta/kinetica",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.leanbitlab.leantype": {
+  "categories": [],
+  "source_url": "https://github.com/LeanBitLab/LeanType",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.katoaapps.openminilaunch": {
+  "categories": [],
+  "source_url": "https://github.com/katoaapps/openminilaunch",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.tk.quicksearch": {
+  "categories": [],
+  "source_url": "https://github.com/teja2495/quick-search",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.fiedri.vibe": {
+  "categories": [],
+  "source_url": "https://github.com/fiedri/vibe-player",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.Colota": {
+  "categories": [],
+  "source_url": "https://github.com/dietrichmax/colota",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.msbs.cyclauncher": {
+  "categories": [],
+  "source_url": "https://github.com/msbluesnow/Cyclauncher",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "chromahub.rhythm.app": {
+  "categories": [],
+  "source_url": "https://github.com/cromaguy/Rhythm",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.singular.looper": {
+  "categories": [],
+  "source_url": "https://github.com/mkay/RubberRing",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.mendhak.gpslogger": {
+  "categories": [],
+  "source_url": "https://github.com/mendhak/gpslogger",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.nulide.findmydevice.edge": {
+  "categories": [],
+  "source_url": "https://gitlab.com/fmd-foss/fmd-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.hollowbamboo.chordreader2": {
+  "categories": [],
+  "source_url": "https://github.com/AndInTheClouds/chordreader2",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.cg.lrceditor": {
+  "categories": [],
+  "source_url": "https://github.com/Spikatrix/LRC-Editor",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.offlinecurrencyconverter.app": {
+  "categories": [],
+  "source_url": "https://github.com/DavidNeurieder/offline-currency-converter",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.mymiggi.tankblick": {
+  "categories": [],
+  "source_url": "https://code.mymiggi.de/Miggi/tankblick",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "net.vonforst.evmap": {
+  "categories": [],
+  "source_url": "https://github.com/ev-map/EVMap",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "xyz.waozi.inbe": {
+  "categories": [],
+  "source_url": "https://github.com/waozixyz/inbe",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.rouf.saht": {
+  "categories": [],
+  "source_url": "https://github.com/roufsyed/Sehat",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.mushotoku.app": {
+  "categories": [],
+  "source_url": "https://github.com/tomfrischmuth/mushotoku",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.singular.crystalball": {
+  "categories": [],
+  "source_url": "https://github.com/mkay/CrystalBall",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "it.fast4x.riplay": {
+  "categories": [],
+  "source_url": "https://github.com/fast4x/RiPlay",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.wire": {
+  "categories": [],
+  "source_url": "https://github.com/wireapp/wire-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.jayc180.rhythmengine": {
+  "categories": [],
+  "source_url": "https://github.com/jayc180/prog-metronome",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.andsi.airlyrics": {
+  "categories": [],
+  "source_url": "https://github.com/AirLyrics/AirLyrics",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.mgdx.rouelibre": {
+  "categories": [],
+  "source_url": "https://github.com/mgdx/RoueLibre",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "page.ooooo.geoshare": {
+  "categories": [],
+  "source_url": "https://github.com/jakubvalenta/geoshare",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "whl.trending.ai": {
+  "categories": [],
+  "source_url": "https://github.com/HarlonWang/TrendingAI",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.openobservatory.ooniprobe": {
+  "categories": [],
+  "source_url": "https://github.com/ooni/probe-multiplatform",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "page.tine.app": {
+  "categories": [],
+  "source_url": "https://github.com/martinkoutecky/tine",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "m.co.rh.id.a_news_provider": {
+  "categories": [],
+  "source_url": "https://github.com/rh-id/a-news-provider",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.xmrchat.xmrpod": {
+  "categories": [],
+  "source_url": "https://github.com/XMRChat/XMRPod",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.megamaced.nccollectives": {
+  "categories": [],
+  "source_url": "https://github.com/megamaced/nc_collectives_android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.jd1378.otphelper": {
+  "categories": [],
+  "source_url": "https://github.com/jd1378/otphelper",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.graphhopper.maps": {
+  "categories": [],
+  "source_url": "https://github.com/boldtrn/graphhopper-maps-capacitor",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.github.soundpod": {
+  "categories": [],
+  "source_url": "https://github.com/arunnechully/SoundPod",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.jens.automation2": {
+  "categories": [],
+  "source_url": "https://git.server47.de/jens/Automation",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.davidv.translator": {
+  "categories": [],
+  "source_url": "https://github.com/DavidVentura/offline-translator",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.luc4n3x.levyra": {
+  "categories": [],
+  "source_url": "https://github.com/LUC4N3X/Levyra-deepsound",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.fairscan.app": {
+  "categories": [],
+  "source_url": "https://github.com/pynicolas/FairScan",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.github.iamrezamousavi.mafia": {
+  "categories": [],
+  "source_url": "https://github.com/IamRezaMousavi/Mafia",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "app.subster": {
+  "categories": [],
+  "source_url": "https://github.com/pLum0/subster",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.subhamtyagi.ocr": {
+  "categories": [],
+  "source_url": "https://github.com/SubhamTyagi/android-ocr",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "eu.webdragon.storygame": {
+  "categories": [],
+  "source_url": "https://github.com/PrivacyDragon/StoryGame_Android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "s1m.hwfido2provider": {
+  "categories": [],
+  "source_url": "https://codeberg.org/s1m/hw-fido2-provider",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "nz.eloque.foss_wallet": {
+  "categories": [],
+  "source_url": "https://github.com/SeineEloquenz/fosswallet",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "me.hackerchick.catima": {
+  "categories": [],
+  "source_url": "https://github.com/CatimaLoyalty/Android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "pl.lebihan.authnkey": {
+  "categories": [],
+  "source_url": "https://github.com/mimi89999/Authnkey",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.ivanovsky.passnotes": {
+  "categories": [],
+  "source_url": "https://github.com/aivanovski/kpassnotes",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.tutpro.baresip.plus": {
+  "categories": [],
+  "source_url": "https://github.com/juha-h/baresip-studio",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.yepgoryo.EggReturnsHome": {
+  "categories": [],
+  "source_url": "https://github.com/yepgoryo/EggReturnsHome",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.informationsanarchistik.teapot.megamichi.duckrun": {
+  "categories": [],
+  "source_url": "https://teapot.informationsanarchistik.de/Megamichi/DuckRun",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.eddyizm.degoogled.tempus": {
+  "categories": [],
+  "source_url": "https://github.com/eddyizm/tempus",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.derweh.bayesianbahn": {
+  "categories": [],
+  "source_url": "https://github.com/DerWeh/BayesianBahn",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.lojcs.tsacdop": {
+  "categories": [],
+  "source_url": "https://github.com/lojcs/tsacdop",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.unifiedpush.example": {
+  "categories": [],
+  "source_url": "https://codeberg.org/UnifiedPush/android-example",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.sudoq": {
+  "categories": [],
+  "source_url": "https://github.com/timo-a/SudoQ",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.galaxyrio.sudokusolver": {
+  "categories": [],
+  "source_url": "https://github.com/Galaxy-rio/SudokuYou",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.quietgrid.app": {
+  "categories": [],
+  "source_url": "https://github.com/lendl/quiet-grid",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "net.yumicoradio.android": {
+  "categories": [],
+  "source_url": "https://github.com/Pixwell85/YumiCoRadio-Android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.cheogram.android": {
+  "categories": [],
+  "source_url": "https://git.singpolyma.net/cheogram-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.tutpro.baresip": {
+  "categories": [],
+  "source_url": "https://github.com/juha-h/baresip-studio",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.shapeshed.aerial": {
+  "categories": [],
+  "source_url": "https://github.com/shapeshed/aerial",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.heckel.ntfy": {
+  "categories": [],
+  "source_url": "https://github.com/binwiederhier/ntfy-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "xyz.linerly.nontrinsic": {
+  "categories": [],
+  "source_url": "https://codeberg.org/nontrinsic/android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.kitshn.android": {
+  "categories": [],
+  "source_url": "https://github.com/aimok04/kitshn",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.lukasneugebauer.nextcloudcookbook": {
+  "categories": [],
+  "source_url": "https://github.com/lneugebauer/nextcloud-cookbook",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.food.opencook": {
+  "categories": [],
+  "source_url": "https://github.com/oliexdev/openCook",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.zygisk_enc.RecorderX": {
+  "categories": [],
+  "source_url": "https://github.com/snap24/RecorderX",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.yepgoryo.CaptureCap": {
+  "categories": [],
+  "source_url": "https://github.com/yepgoryo/CaptureCap",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "app.mcevoy.syncrecordapp": {
+  "categories": [],
+  "source_url": "https://github.com/PadraicMCE/SyncRecord_fdroid",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.prayer_times": {
+  "categories": [],
+  "source_url": "https://github.com/Hassan-PS/Mihrab",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "camp.werewolf.infraarcana": {
+  "categories": [],
+  "source_url": "https://github.com/tyrannotorus/cpp-infra-arcana-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.guiforge.bati": {
+  "categories": [],
+  "source_url": "https://github.com/Guiforge/bati",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "net.yukh.xui": {
+  "categories": [],
+  "source_url": "https://github.com/yukh975/3X-UI-Manager",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.sshborg": {
+  "categories": [],
+  "source_url": "https://github.com/payne1982/sshborg",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.tristinbaker.defide": {
+  "categories": [],
+  "source_url": "https://github.com/tristinbaker/DeFide",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.schwegelbin.openbible": {
+  "categories": [],
+  "source_url": "https://github.com/SchweGELBin/OpenBible2",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "kapoue.hestia": {
+  "categories": [],
+  "source_url": "https://codeberg.org/kapoue/Hestia",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.tristinbaker.idlefantasy": {
+  "categories": [],
+  "source_url": "https://github.com/tristinbaker/IdleFantasy",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.cyberit.wasgeht": {
+  "categories": [],
+  "source_url": "https://github.com/cyberbeat/wasgeht-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.metalshard.hyperion": {
+  "categories": [],
+  "source_url": "https://github.com/themetalshard/PBScheduleViewer",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.kolloware.hypezigapp": {
+  "categories": [],
+  "source_url": "https://gitlab.com/intergalacticsuperhero/hypezig/tree/HEAD",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.crome.forecastpoint": {
+  "categories": [],
+  "source_url": "https://github.com/crome1394/point-forecast",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "eu.domob.heliodos": {
+  "categories": [],
+  "source_url": "https://github.com/domob1812/heliodos",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "eus.ordunte.app": {
+  "categories": [],
+  "source_url": "https://gitlab.com/ordnt/ordunte-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.adilhanney.ricochlime": {
+  "categories": [],
+  "source_url": "https://github.com/adil192/ricochlime",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.serwin.AnarchRE": {
+  "categories": [],
+  "source_url": "https://git.sr.ht/~marcin-serwin/anarch-re-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.unciv.app": {
+  "categories": [],
+  "source_url": "https://github.com/yairm210/Unciv",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.xolatgames.dima.defense": {
+  "categories": [],
+  "source_url": "https://codeberg.org/xolatgames/Dima-Defense",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.chadenas.cpudefense": {
+  "categories": [],
+  "source_url": "https://github.com/ochadenas/cpudefense",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.bikram.remember.gh": {
+  "categories": [],
+  "source_url": "https://github.com/bikram-agarwal/Remember",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.buildsbyben.shoppinglistcalc": {
+  "categories": [],
+  "source_url": "https://github.com/buildsbyben/shopping-list-calc",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "app.pachli": {
+  "categories": [],
+  "source_url": "https://github.com/pachli/pachli-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org99managers.futsal_edition": {
+  "categories": [],
+  "source_url": "https://codeberg.org/dulvui/99managers-futsal-edition",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.best.deskclock": {
+  "categories": [],
+  "source_url": "https://github.com/BlackyHawky/Clock",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.agateau.tinywheels.android": {
+  "categories": [],
+  "source_url": "https://github.com/agateau/pixelwheels",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "ru.application.homemedkit": {
+  "categories": [],
+  "source_url": "https://github.com/pewaru-333/HomeMedkit-App",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.maegley.megrim": {
+  "categories": [],
+  "source_url": "https://github.com/smaegley/megrim",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.asafonov.accelerace": {
+  "categories": [],
+  "source_url": "https://github.com/asafonov/accelerace.apk",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.github.muellerma.stopwatch": {
+  "categories": [],
+  "source_url": "https://github.com/mueller-ma/Stopwatch",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "tibarj.tranquilstopwatch": {
+  "categories": [],
+  "source_url": "https://github.com/tibarj/tranquilstopwatch",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.rastislavpapp.justopenlinksinabrowser": {
+  "categories": [],
+  "source_url": "https://github.com/rastislavpapp/just-open-links-in-a-browser",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.brokenpip3.fatto": {
+  "categories": [],
+  "source_url": "https://github.com/brokenpip3/fatto",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.libreaac.app": {
+  "categories": [],
+  "source_url": "https://github.com/libretastic/libreaac-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.appmindlab.nano": {
+  "categories": [],
+  "source_url": "https://github.com/appml/neutrinote",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.wbrawner.simplemarkdown.free": {
+  "categories": [],
+  "source_url": "https://codeberg.org/wbrawner/SimpleMarkdown",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "at.tomtasche.reader": {
+  "categories": [],
+  "source_url": "https://github.com/opendocument-app/OpenDocument.droid",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.woheller69.ttsengine": {
+  "categories": [],
+  "source_url": "https://github.com/woheller69/ttsengine",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.drdisagree.colorblendr": {
+  "categories": [],
+  "source_url": "https://github.com/Mahmud0808/ColorBlendr",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.sebiai.glyphport": {
+  "categories": [],
+  "source_url": "https://github.com/SebiAi/GlyphPort",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "ru.ifproject.android.afr": {
+  "categories": [],
+  "source_url": "https://github.com/hexedit/amazfit-face-replacer",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "it.eldavo.ylih": {
+  "categories": [],
+  "source_url": "https://github.com/ElDavoo/ylih",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.dtsykunov.pause": {
+  "categories": [],
+  "source_url": "https://github.com/dtsykunov/pause-app",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "dev.xitee.sleeptimer": {
+  "categories": [],
+  "source_url": "https://github.com/Xitee1/sleep-timer",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.hackerapps.c2k": {
+  "categories": [],
+  "source_url": "https://github.com/AnalogGhost/c2k",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.example.research": {
+  "categories": [],
+  "source_url": "https://git.oneway.asia/OneWay/ReSearch",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "sh.fhs.ksre": {
+  "categories": [],
+  "source_url": "https://codeberg.org/fhs/katawa-shoujo-re-engineered",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.simonimal.minimalcurconv": {
+  "categories": [],
+  "source_url": "https://github.com/simone-05/currency-converter-app",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.emunix.insteadlauncher": {
+  "categories": [],
+  "source_url": "https://github.com/btimofeev/instead-launcher-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.streetwriters.notesnook": {
+  "categories": [],
+  "source_url": "https://github.com/streetwriters/notesnook",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.hackerapps.jargon": {
+  "categories": [],
+  "source_url": "https://github.com/AnalogGhost/jargon",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.davidar.fabularium": {
+  "categories": [],
+  "source_url": "https://github.com/davidar/fabularium",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "io.github.chayanforyou.quickball": {
+  "categories": [],
+  "source_url": "https://github.com/chayanforyou/QuickBall",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "granularvolume.com": {
+  "categories": [],
+  "source_url": "https://github.com/Rzuss/granular-volume",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.curryplayer.quicksettingssoundprofile": {
+  "categories": [],
+  "source_url": "https://github.com/CurryPlayer/quick-settings-sound-profile",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "co.electriccoin.zcash.foss": {
+  "categories": [],
+  "source_url": "https://github.com/zodl-inc/zodl-android",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "app.michaelwuensch.bitbanana": {
+  "categories": [],
+  "source_url": "https://github.com/michaelWuensch/BitBanana",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.mqvpn.app": {
+  "categories": [],
+  "source_url": "https://github.com/mp0rta/mqvpn",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.ferrarid.converterpro": {
+  "categories": [],
+  "source_url": "https://github.com/ferraridamiano/ConverterNOW",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.concealnetwork.concealmobile": {
+  "categories": [],
+  "source_url": "https://github.com/ConcealNetwork/conceal-wallet-cordova",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "app.simple.peri": {
+  "categories": [],
+  "source_url": "https://github.com/Hamza417/Peristyle",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "orinasa.njarasoa.maripanatokana": {
+  "categories": [],
+  "source_url": "https://github.com/mpilasy/maripanaTokana",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "org.breezyweather": {
+  "categories": [],
+  "source_url": "https://github.com/breezy-weather/breezy-weather",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "com.wordgame.nian": {
+  "categories": [],
+  "source_url": "https://gitlab.com/astrosmurf/nian",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.huepping.wortmuehle": {
+  "categories": [],
+  "source_url": "https://github.com/bhuepping/wortmuehle",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "app.floatdeck": {
+  "categories": [],
+  "source_url": "https://github.com/kxxoling/FloatDeck",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "de.tadris.fitness": {
+  "categories": [],
+  "source_url": "https://codeberg.org/jannis/FitoTrack",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "nabu.iris.keyboard": {
+  "categories": [],
+  "source_url": "https://github.com/MohamadOday/Iris",
+  "repo_hint": "",
+  "status": "ok"
+ },
+ "app.crossword.yourealwaysbe.forkyz": {
+  "categories": [],
+  "source_url": "https://gitlab.com/Hague/forkyz",
+  "repo_hint": "",
+  "status": "ok"
+ }
+}

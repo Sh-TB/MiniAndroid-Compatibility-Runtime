@@ -1,0 +1,7 @@
+uc010 GLES cube (PortableGL backend via GLES20Bridge)
+  resolution 1080x1920, frames 12
+  total draw time: 446.5 ms  (37.20 ms/frame, 26.9 fps)
+  rasterized: 24883200 px  (55.7 Mpx/s)
+  PNG written: docs/knowledge/campaign010/evidence/uc010_gles_cube_1080.png (OK)
+  bridge stats: draws=13 state=105 buffer=42 uniform=0 shader=4 glsl_bytes=476
+  non-background pixels: 533383 / 2073600 (25.7%)
