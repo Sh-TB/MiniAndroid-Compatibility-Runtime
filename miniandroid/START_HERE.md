@@ -6,6 +6,10 @@ every script tells you how to get them).
 
 Read in this order:
 
+0. **UNIFIED_011.1 update (2026-08-30):** start with
+   **`CODER_HANDOFF_011_1.md`** + `status_011_1.json` +
+   `docs/CROSS_CAMPAIGN_RECOVERY_011_1.md` (what was recovered from the
+   previous campaigns and imported), then continue below.
 1. **README.md** — what MiniAndroid is, current state, quick start.
 2. **MASTER_HANDOFF_011.md** — the 3-minute onboarding: what is proven,
    what is blocked, where evidence and code live, how to continue.
