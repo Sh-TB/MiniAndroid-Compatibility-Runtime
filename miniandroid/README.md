@@ -10,16 +10,20 @@ pixel-evidence output.
 
 ---
 
-## Current state (UNIFIED_011 canonical, 2026-08-30)
+## Current state (UNIFIED_011.1 canonical, 2026-08-30)
 
-- **HEAD:** tag `v0.11-unified-011` (local, 10 commits ahead of `origin/main` — push pending)
+- **HEAD:** tag `v0.11.1-unified-011-1` (local, ahead of `origin/main` — push pending)
 - **Latest remote (`origin/main`):** `bbe0ce3`
-- **Canonical baseline proof:** Telegram v12.10.1 full journey renders **3/3
-  runs byte-identical** (`06fb40da…`), exactly matching the UNIFIED_002 record.
-- **New in this release:** the UNIFIED_007 *real resource pipeline* was
-  recovered from the interrupted session, re-verified end-to-end, guarded
-  against regressions, and committed (`23900f8`); docs/START_HERE/hygiene
-  finalized and tagged `v0.11-unified-011`.
+- **Canonical baseline proof:** Telegram v12.10.1 full journey renders
+  deterministically **3/3 runs** (`088ea640…`; pixel-identical to the
+  `06fb40da…` lineage — PNG file hash changed by design: libpng's encoder
+  replaced the custom one, Campaign 010 R1).
+- **New in 011.1:** complete cross-campaign recovery — all nine archives
+  Campaign 011 had graded unavailable were found SHA-valid and processed;
+  Campaign 010's verified source (libpng codec, GLES glue, ARSC config
+  matching, real stack traces) is now the default build; Campaign 005–010
+  knowledge sets and historical modules (audio, fonts, 3D game, codecs,
+  job server) are recovered in-tree. See `MASTER_RECONCILIATION_011_1.md`.
 
 ## Proven capabilities (evidence-backed)
 
@@ -30,7 +34,11 @@ pixel-evidence output.
 | Telegram v12 deterministic journey incl. click chain | 3/3 identical SHA `06fb40da…` |
 | SMS auth chain (controlled boundary: mocked `TL_auth_sentCode`) | EXP-100 trace, UNIFIED_002 |
 | **Real layout inflation** (ARSC → AXML → ViewShadow) — NEW | GMDice real UI `6425c0f6…`, 158,040 px |
-| Real rendered controls — NEW | Simple Stopwatch Start/Reset, 930,980 px |
+| **Real rendered controls — NEW | Simple Stopwatch Start/Reset, 930,980 px |
+| **PNG 100% corpus decode (libpng)** — 011.1 | 7,036/7,036 real APK PNGs; 12/12 PIL-oracle fixtures; tRNS/Adam7/16-bit |
+| **GLES2 pipeline via PortableGL (glue)** — 011.1 | golden cube 1,668 fps @320×240 / 27.5 fps @1080×1920 (dispatch hook open) |
+| **Real stack traces → Kotlin Intrinsics progress** — 011.1 | R14: 9 real NPEs on dooz attach (was livelock) |
+| **Recovered audio / 3D / codecs modules** — 011.1 | audio_engine 33/33 lineage; tictactoe3d 16/16 lineage; stb_vorbis/minimp3 vendored |
 | Persian/RTL text shaping POC (FriBidi→HarfBuzz→FreeType) | EXP-101 §14 proof, 6/6 |
 | Lottie animation (Samsung rlottie) on SMS screen | EXP-098/CM-027 |
 | Zero-regression guard policy | headingcalc falls back byte-identical to baseline |

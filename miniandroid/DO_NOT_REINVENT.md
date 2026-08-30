@@ -11,9 +11,9 @@ replacement". Before adding ANY feature below, come here first.
 
 | Domain | MiniAndroid custom today | Mature open source | Action required | Status |
 |---|---|---|---|---|
-| PNG decode | custom `PNGDecoder` in `renderer/software_renderer.cpp` | **libpng** (linked already) | wire libpng behind the same `DecodedImage` interface; keep custom as fallback; benchmark | **OPEN** (R1; earlier "done" claim REJECTED) |
+| PNG decode+encode | ~~custom `PNGDecoder`~~ **libpng wired** | libpng 1.6.48 | done in Campaign 010 R1; default build since UNIFIED_011.1 (12/12 fixtures, 100% corpus) | **CLOSED** |
 | JPEG/WebP decode | DONE via libjpeg-turbo / libwebp | — | keep | CLOSED |
-| Layout measure/layout | custom `measure_layout` (weight bugs known) | **Yoga** | prototype adapter on TextView/Button/ImageView/LinearLayout/ScrollView; replace if benchmark wins | OPEN (R3, research done) |
+| Layout measure/layout | custom `measure_layout` (weight bugs known) | **Yoga** | adapter built + differential 10/10 nodes <8px, 35–39× faster (`run/uc010_yoga_layout.cpp`); render-stage wiring remains | PARTIAL (R3 adapter ready) |
 | Font bidi/shaping/raster | BitmapFont runtime path; FriBidi+HarfBuzz+FreeType POC proven | FriBidi + HarfBuzz + FreeType (linked) | make the POC the TextView path; retire glyph hacks | OPEN (R4) |
 | SVG / VectorDrawable | none real | resvg / nanosvg | integrate when first SVG APK matters | PLANNED (R5) |
 | ARSC/AXML parsing | custom (working, non-obfuscated trees) | ARSCLib / androguard-as-oracle | keep custom runtime path; diff-test against oracles; add obfuscated-name support | PARTIAL (R6; resource-resolution semantics stay in-house glue) |
@@ -33,8 +33,10 @@ replacement". Before adding ANY feature below, come here first.
    FriBidi→HarfBuzz→FreeType pipeline (`scripts/exp101_persian_rtl_proof.cpp`).
 3. Re-implementing ARSC "from the spec" without diffing against androguard.
 4. Claiming Yoga/PortableGL/libpng are "integrated" without a benchmark +
-   evidence (this happened in CAMPAIGN 010 bookkeeping — see
-   MASTER_CHANGELOG_KNOWLEDGE_011 §8).
+   evidence. History: Campaign 010 *did* integrate them (verified in 011.1);
+   Campaign 011's re-check wrongly reversed that via a scan-path bug; 011.1
+   re-verified from source + build + tests. Lesson: every integration claim
+   needs the evidence chain, and every negative claim needs a positive check.
 5. Committing APKs, or putting them in ZIPs/releases — external cache only.
 6. Building a "new evidence format" — screenshot.png + api_trace.json +
    matrix JSON is the contract; hashes are the language.

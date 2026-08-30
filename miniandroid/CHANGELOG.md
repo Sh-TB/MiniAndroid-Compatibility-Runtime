@@ -834,6 +834,27 @@ Foundation work including:
 | 1.5.0 | 2026-08-11 | EXP-026 | True Execution |
 | 1.0.0 | 2026-08-10 | EXP-014 | Foundation |
 
+| 5.2.0 | 2026-08-30 | UNIFIED_010 import | libpng codec, GLES glue, res_config, R14 stack traces (011.1) |
+| 5.1.0 | 2026-08-30 | UNIFIED_011 | ZERO-APK hygiene, master docs, tag v0.11-unified-011 |
+| 5.0.0 | 2026-08-30 | UNIFIED_007 recovery | Real resource pipeline + zero-regression guard |
+
 ---
 
 *Changelog maintained for GitHub preservation*
+
+## UNIFIED_011.1 — COMPLETE CROSS-CAMPAIGN RECOVERY (2026-08-30)
+
+- All 12 campaigns (UNIFIED_000–011) re-verified; 9 previously-missing archives
+  found SHA-valid in /tmp/my-project and imported (see
+  MASTER_RECONCILIATION_011_1.md).
+- Campaign 010 verified source promoted to default build: libpng PNG
+  decode+encode (R1), PortableGL GLES glue (R9/R10), ARSC config matching
+  (res_config, 009), real stack traces (R14). Zero behavioral delta vs the
+  verified 010 snapshot across the 8-APK matrix; telegram 3/3 = 088ea640…
+  (pixel-identical to the 06fb40da lineage).
+- Campaign 005–010 knowledge sets + historical modules (audio, fonts, games,
+  codecs, job server, view_renderer, real_layout, exp tools) recovered
+  in-tree and documented; campaign008/009/010 knowledge under
+  docs/knowledge/.
+- Corrected Campaign 011 gradings: libpng IS wired; archives WERE available
+  (kept for audit in docs/CROSS_CAMPAIGN_RECOVERY_011_1.md §5).
