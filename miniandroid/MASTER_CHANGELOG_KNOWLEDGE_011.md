@@ -115,6 +115,7 @@ Charter knowledge (conversation-level) said:
 | Tests | 8-APK matrix ×(dev + clean clone): identical results; telegram 3/3 `06fb40da…` BASELINE_MATCH |
 | Hygiene | ZERO-APK enforced (0 tracked APKs; external cache `apk_cache/`); `make clean` no longer deletes tracked `run/` evidence; no tracked images >100 KB; secrets scan clean (worktree; history scan below) |
 | Docs | README rewritten; MASTER_PROJECT_STATE_011 / MASTER_CHANGELOG_KNOWLEDGE_011 / MASTER_HANDOFF_011; OPEN_SOURCE_MASTER; DO_NOT_REINVENT; TEST_MATRIX; APK_REGISTRY.json; status.json; release notes; evidence index with provenance |
+| Consistency | §45 pass: HEAD numbers synced across README/status/MASTER docs (tag-anchored, 60 commits, 10 ahead); tag re-pinned to final commit |
 | Backup | `git bundle` + format-patch exported OUTSIDE the source tree (see §10 of MASTER_PROJECT_STATE) |
 | Tag / push | tag `v0.11-unified-011` local; PUSH_PENDING (no credentials) |
 | Handoff | `UNIFIED_011_CANONICAL_HANDOFF.zip` (source + .git + docs; ZERO APK/AAB/secret) |
