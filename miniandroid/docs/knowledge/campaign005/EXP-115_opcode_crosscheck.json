@@ -1,0 +1,20 @@
+{
+  "tool": "androguard 4.1.4",
+  "dex": "classes.dex (DEX#1)",
+  "methods_with_code": 55121,
+  "elapsed_s": 4.6,
+  "opcodes": {
+    "invoke-virtual": 90289,
+    "invoke-direct": 42120,
+    "invoke-static": 48015,
+    "invoke-super": 1227,
+    "invoke-interface": 19010,
+    "iget-object": 45060,
+    "iput-object": 15921,
+    "sget-object": 12248,
+    "sput-object": 9954,
+    "return-void": 29260,
+    "new-instance": 26470,
+    "const-string": 28023
+  }
+}

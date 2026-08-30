@@ -1,0 +1,153 @@
+{
+ "schema": "library_provenance_v1",
+ "campaign": "009",
+ "generated": "2026-08-30",
+ "libraries": [
+  {
+   "name": "AOSP frameworks/base (oracle)",
+   "repo": "aosp-mirror/platform_frameworks_base",
+   "commit": "1cdfff555f4a",
+   "license": "Apache-2.0",
+   "files_used": [
+    "libs/androidfw/ResourceTypes.cpp (READ-ONLY oracle)",
+    "libs/androidfw/include/androidfw/ResourceTypes.h (READ-ONLY oracle)"
+   ],
+   "modified": false,
+   "vendored": false,
+   "usage": "semantics ported into src/resources/res_config.cpp with attribution comments"
+  },
+  {
+   "name": "ARSCLib",
+   "repo": "REAndroid/ARSCLib",
+   "commit": "f08adf80672c",
+   "license": "Apache-2.0",
+   "files_used": [
+    "README/layout cross-check only"
+   ],
+   "modified": false,
+   "vendored": false,
+   "usage": "config field layout cross-reference"
+  },
+  {
+   "name": "Dooz (source oracle)",
+   "repo": "yamin8000/Dooz",
+   "commit": "0c60e78b861a",
+   "license": "GPL-3.0",
+   "files_used": [
+    "read-only inspection"
+   ],
+   "modified": false,
+   "vendored": false,
+   "usage": "Compose dependency map + module structure; NO code copied (license incompatible)"
+  },
+  {
+   "name": "PortableGL",
+   "repo": "rswinkle/PortableGL",
+   "commit": "live-HEAD-verified",
+   "license": "MIT",
+   "files_used": [
+    "portablegl.h (header-only, test harness build)"
+   ],
+   "modified": false,
+   "vendored": false,
+   "usage": "GLES2 software pipeline proof; adoption decision recorded, vendoring pending next campaign WITH LICENSE NOTICE"
+  },
+  {
+   "name": "androguard",
+   "repo": "androguard/androguard",
+   "commit": "4573c8c111ba",
+   "license": "Apache-2.0",
+   "files_used": [
+    "external tool (pip)"
+   ],
+   "modified": false,
+   "vendored": false,
+   "usage": "DEX demand profiling"
+  },
+  {
+   "name": "rlottie",
+   "repo": "Samsung/rlottie",
+   "commit": "4307553814db",
+   "license": "MIT",
+   "files_used": [
+    "pre-vendored static lib (tools/rlottie)"
+   ],
+   "modified": false,
+   "vendored": true,
+   "usage": "Lottie animation bridge (pre-existing, regression-verified)"
+  },
+  {
+   "name": "libpng",
+   "repo": "pnggroup/libpng",
+   "commit": "d1d0abeffede",
+   "license": "PNG-Reference-2",
+   "files_used": [
+    "system -lpng"
+   ],
+   "modified": false,
+   "vendored": false,
+   "usage": "linked decoder (regression-verified)"
+  },
+  {
+   "name": "libjpeg-turbo",
+   "repo": "libjpeg-turbo/libjpeg-turbo",
+   "commit": "1157d37cfab9",
+   "license": "BSD-3-Clause",
+   "files_used": [
+    "system -ljpeg"
+   ],
+   "modified": false,
+   "vendored": false,
+   "usage": "linked decoder (regression-verified)"
+  },
+  {
+   "name": "libwebp",
+   "repo": "webmproject/libwebp",
+   "commit": "9c4a699e5aac",
+   "license": "BSD-3-Clause",
+   "files_used": [
+    "system -lwebp -lwebpdemux"
+   ],
+   "modified": false,
+   "vendored": false,
+   "usage": "linked decoder (regression-verified)"
+  },
+  {
+   "name": "FreeType",
+   "repo": "freetype/freetype",
+   "commit": "b76738eff2f3",
+   "license": "FTL/MIT-Old",
+   "files_used": [
+    "system -lfreetype"
+   ],
+   "modified": false,
+   "vendored": false,
+   "usage": "font rasterization"
+  },
+  {
+   "name": "HarfBuzz",
+   "repo": "harfbuzz/harfbuzz",
+   "commit": "e8905fb3b3d9",
+   "license": "MIT-Old",
+   "files_used": [
+    "system -lharfbuzz"
+   ],
+   "modified": false,
+   "vendored": false,
+   "usage": "text shaping"
+  },
+  {
+   "name": "FriBidi",
+   "repo": "fribidi/fribidi",
+   "commit": "c928e4c77549",
+   "license": "LGPL-2.1",
+   "files_used": [
+    "system -lfribidi"
+   ],
+   "modified": false,
+   "vendored": false,
+   "usage": "bidi"
+  }
+ ],
+ "policy": "no GPL/AGPL code enters the runtime; oracle-only use for incompatible licenses; every vendored lib must carry its license notice"
+}

@@ -33,6 +33,7 @@
 #include <optional>
 #include <sstream>
 #include <algorithm>
+#include "res_config.h"
 
 namespace miniandroid {
 namespace resources {
@@ -104,6 +105,8 @@ struct ArscEntry {
     std::string type_name;         // e.g. "layout", "string", "drawable"
     std::string name;              // entry key name, e.g. "activity_main"
     std::string config_desc;       // human-readable config qualifiers ("", "en", "hdpi"...)
+    ResTableConfig config;         // CAMPAIGN 009 §6: parsed config bucket (AOSP layout)
+    bool has_config = false;       // true once raw config bytes were present
     ResValue   value;              // best value (for complex: first item)
     bool       is_complex = false;
     std::vector<ResValue> complex_items;  // for arrays/attrs
@@ -178,6 +181,8 @@ private:
         uint8_t  type_id = 0;          // 1-based
         uint32_t entry_count = 0;
         std::string config_desc;
+        ResTableConfig config;         // CAMPAIGN 009 §6: parsed config bucket
+        bool has_config = false;
         std::vector<int32_t> entry_offsets;  // -1 = NO_ENTRY
         std::vector<uint32_t> entry_positions; // byte offsets into chunk data
     };

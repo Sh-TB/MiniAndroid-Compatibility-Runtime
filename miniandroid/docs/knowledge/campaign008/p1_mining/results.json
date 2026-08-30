@@ -1,0 +1,1880 @@
+{
+ "kin9-0rz/apkutils": {
+  "repo": "kin9-0rz/apkutils",
+  "commit": "54b773e21f50",
+  "commit_full": "54b773e21f505eeec440b36dc60473ac0784e0df",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2021 kin9-0rz  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without"
+ },
+ "REAndroid/ARSCLib": {
+  "repo": "REAndroid/ARSCLib",
+  "commit": "f08adf80672c",
+  "commit_full": "f08adf80672cb7e1a4d1a786e861327fcd3934c5",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "# ARSCLib \u00b6 ## Android binary resources read/write java library \u00b6 This library is developed based on AOSP structure of androidfw/ResourceTypes.h , to totally replace aapt/aapt2 \u00b6 #### Read, write, modify and create \u00b6 * Resource table (resources.arsc) \u00b6 * Binary xml files (AndroidManifest.xml & resource xml) \u00b6 #### Convert from/to json string (for obfuscated resources) \u00b6  \u00b6 * Decodes resources to readable json \u00b6 * Encodes/Builds sources in json format to binary resources \u00b6  \u00b6 #### Convert from/to XML string (for un-obfuscated resources) \u00b6  \u00b6 * Decodes resources to source code \u00b6 * Encodes/Builds source XML to binary resources \u00b6  \u00b6 ##### _NOTES:_ \u00b6  \u00b6 _1- Decoding resources to XML requires all source names should be un-obfuscated and valid_ \u00b6  \u00b6 _2- User of this lib is assumed to have good knowledge of android source XML syntax, thus \u00b6 during encoding/building it does not validate or throw XML syntax errors as often as aapt/aapt2. For \u00b6 example, you are allowed to set wrong values on some places and doesn't prevent from \u00b6 successful building. On AndroidManifest.xml you can set  ``` package=\"Wrong \ud83d\ude02 (package) name!\" ``` \u00b6 then you have to know such values are acceptable by android devices._ \u00b6  \u00b6  \u00b6 #### Example application \u00b6 _Check this too"
+ },
+ "REAndroid/APKEditor": {
+  "repo": "REAndroid/APKEditor",
+  "commit": "70d2c4ba7d84",
+  "commit_full": "70d2c4ba7d84c712c34796077fb9c652ee808e04",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "<details><summary> \ud83d\udc48 <code><i> Click arrows to expand/collapse details on this page </i></code></summary></details> \u00b6  \u00b6 # APKEditor \u00b6 ### Powerful android apk resources editor \u00b6 This tool uses [ARSCLib](https://github.com/REAndroid/ARSCLib) to edit any apk resources and has six main features \u00b6  \u00b6 <details><summary><code>java -jar APKEditor.jar <b>-h</b></code></summary> \u00b6  \u00b6 ```ShellSession \u00b6 $ java -jar APKEditor.jar -h \u00b6 APKEditor - x.x.x \u00b6 https://github.com/REAndroid/APKEditor \u00b6 Android binary resource files editor \u00b6 Commands: \u00b6   d | decode      Decodes android resources binary to readable json/xml/raw. \u00b6   b | build       Builds android binary from json/xml/raw. \u00b6   m | merge       Merges split apk files from directory or compressed apk files \u00b6                   like XAPK, APKM, APKS ... \u00b6   x | refactor    Refactors obfuscated resource names \u00b6   p | protect     Protects/Obfuscates apk resource files. Using unique \u00b6                   obfuscation techniques. \u00b6   info            Prints information of apk. \u00b6 Other options: \u00b6   -h | -help      Displays this help and exit \u00b6   -v | -version   Displays version information and exit \u00b6  \u00b6 To get help about each command run with: \u00b6 <command> -h \u00b6  \u00b6 ``` \u00b6 </details> \u00b6  \u00b6 #### 1- Decompile \u00b6 * Decompi"
+ },
+ "skylot/jadx": {
+  "repo": "skylot/jadx",
+  "commit": "5e781bf5660b",
+  "commit_full": "5e781bf5660b6e5a0469626b8b64f3ddcd64af6f",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "<img src=\"https://raw.githubusercontent.com/skylot/jadx/master/jadx-gui/src/main/resources/logos/jadx-logo.png\" width=\"64\" align=\"left\" /> \u00b6  \u00b6 ## JADX \u00b6  \u00b6 ![Build status](https://img.shields.io/github/actions/workflow/status/skylot/jadx/build-artifacts.yml) \u00b6 ![GitHub contributors](https://img.shields.io/github/contributors/skylot/jadx) \u00b6 ![GitHub all releases](https://img.shields.io/github/downloads/skylot/jadx/total) \u00b6 ![GitHub release (latest by SemVer)](https://img.shields.io/github/downloads/skylot/jadx/latest/total) \u00b6 ![Latest release](https://img.shields.io/github/release/skylot/jadx.svg) \u00b6 [![Maven Central](https://img.shields.io/maven-central/v/io.github.skylot/jadx-core)](https://search.maven.org/search?q=g:io.github.skylot%20AND%20jadx) \u00b6 ![Java 11+](https://img.shields.io/badge/Java-11%2B-blue) \u00b6 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html) \u00b6  \u00b6 **jadx** - Dex to Java decompiler \u00b6  \u00b6 Command line and GUI tools for producing Java source code from Android Dex and Apk files \u00b6  \u00b6 > [!WARNING] \u00b6 > Please note that in most cases **jadx** can't decompile all 100% of the code, so errors will occur.<br /> \u00b6 > Check [Troubleshooting guide](https://git"
+ },
+ "iBotPeaches/Apktool": {
+  "repo": "iBotPeaches/Apktool",
+  "commit": "6234db24def5",
+  "commit_full": "6234db24def55e718e29599adbe2afd479197a71",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         https://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI",
+  "readme_head": "### Apktool \u00b6 _This is the repository for Apktool. The website is at the [apktool.org](https://github.com/iBotPeaches/apktool.org) repository._ \u00b6  \u00b6 [![CI](https://github.com/iBotPeaches/Apktool/actions/workflows/build.yml/badge.svg)](https://github.com/iBotPeaches/Apktool/actions/workflows/test.yml) \u00b6 [![Software License](https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg)](https://github.com/iBotPeaches/Apktool/blob/master/LICENSE.md) \u00b6  \u00b6 Apktool is a tool for reverse engineering third-party, closed, binary, Android apps. It can decode resources to nearly original form and rebuild them after making some modifications; it makes it possible to debug smali code step-by-step. It also makes working with apps easier thanks to project-like file structure and automation of some repetitive tasks such as building apk, etc. \u00b6  \u00b6 Apktool is **NOT** intended for piracy and other non-legal uses. It could be used for localizing and adding features, adding support for custom platforms, and other GOOD purposes. Just try to be fair with the authors of an app, that you use and probably like. \u00b6  \u00b6 ### Branches \u00b6 - `main` - Apktool 3.x branch \u00b6 - `2.x` - Maintenance branch for Apktool 2.x releases \u00b6  \u00b6 #### Supp"
+ },
+ "pxb1988/dex2jar": {
+  "repo": "pxb1988/dex2jar",
+  "commit": "b5bda4fb4935",
+  "commit_full": "b5bda4fb4935ae8b3869b422454ae3b3896c7bc1",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "\r                                  Apache License\r                            Version 2.0, January 2004\r                         http://www.apache.org/licenses/\r \r    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTR",
+  "readme_head": "# dex2jar \u00b6  \u00b6 **Project move to [GitHub](https://github.com/pxb1988/dex2jar)** \u00b6  \u00b6 | _ | Mirror | Wiki | Downloads | Issues | \u00b6 |--:|:-----|:----:|:---------:|:------:| \u00b6 | gh | https://github.com/pxb1988/dex2jar | [Wiki](https://github.com/pxb1988/dex2jar/wiki) | [Releases](https://github.com/pxb1988/dex2jar/releases) | [Issues](https://github.com/pxb1988/dex2jar/issues) | \u00b6 | sf | https://sourceforge.net/p/dex2jar | [old](https://sourceforge.net/p/dex2jar/wiki) | [old](https://sourceforge.net/projects/dex2jar/files/) | [old](https://sourceforge.net/p/dex2jar/tickets/) | \u00b6 | bb | https://bitbucket.org/pxb1988/dex2jar | [old](https://bitbucket.org/pxb1988/dex2jar/wiki) | [old](https://bitbucket.org/pxb1988/dex2jar/downloads) | [old](https://bitbucket.org/pxb1988/dex2jar/issues) | \u00b6 | gc | https://code.google.com/p/dex2jar | [old](http://code.google.com/p/dex2jar/w/list) | [old](http://code.google.com/p/dex2jar/downloads/list) | [old](http://code.google.com/p/dex2jar/issues/list)| \u00b6  \u00b6 Tools to work with android .dex and java .class files \u00b6  \u00b6 1. dex-reader/writer: \u00b6     Read/write the Dalvik Executable (.dex) file. It has a [light weight API similar with ASM](https://sourceforge.net/p/dex2jar/wiki/Faq#markd"
+ },
+ "APKLab/APKLab": {
+  "repo": "APKLab/APKLab",
+  "commit": "6ae69b1ba03d",
+  "commit_full": "6ae69b1ba03d65cb78388f7e2fa6a3b8f0081c74",
+  "commit_error": null,
+  "license": "AGPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU AFFERO GENERAL PUBLIC LICENSE                        Version 3, 19 November 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribut"
+ },
+ "Aliucord/binary-resources": {
+  "repo": "Aliucord/binary-resources",
+  "commit": "4580f4b3d49e",
+  "commit_full": "4580f4b3d49edc842aa6bb8d00b056c53fbce5fd",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI",
+  "readme_head": "# binary-resources ![Maven version](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fmaven.aliucord.com%2Fsnapshots%2Fcom%2Faliucord%2Fbinary-resources%2Fmaven-metadata.xml) \u00b6  \u00b6 This is a fork of Android's tools/base/apkparser/binary-resources (as part of ArscBlamer) \u00b6 made to be usable on Android devices directly as a lightweight library. \u00b6  \u00b6 ## Usage \u00b6 `build.gradle.kts`: \u00b6 ```kt \u00b6 respositories { \u00b6     maven(\"https://maven.aliucord.com/releases\") \u00b6 } \u00b6 dependencies { \u00b6     implementation(\"com.aliucord:binary-resources:2.0.1\") \u00b6 } \u00b6 ``` \u00b6 "
+ },
+ "droidefense/engine": {
+  "repo": "droidefense/engine",
+  "commit": "067e43ee7a3a",
+  "commit_full": "067e43ee7a3a097cf965677a02702f6ae6f333a0",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>  Everyone is permitted to copy and distribute verbatim c"
+ },
+ "google/apk-patcher": {
+  "repo": "google/apk-patcher",
+  "commit": "NOT-FOUND",
+  "commit_full": null,
+  "commit_error": "NOT-FOUND: repo does not exist (task asked to verify; confirmed 404 via git+API+HTML)",
+  "license": "N/A",
+  "license_source": "none",
+  "license_snippet": ""
+ },
+ "amimo/dcc": {
+  "repo": "amimo/dcc",
+  "commit": "17de4fd3202b",
+  "commit_full": "17de4fd3202bd0e46735974211a43cda39fca5f3",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "ReVanced/revanced-patcher": {
+  "repo": "ReVanced/revanced-patcher",
+  "commit": "c6cc64dd3bdf",
+  "commit_full": "c6cc64dd3bdfdc001d903f7b6cbd4537782a7082",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim ",
+  "readme_head": "<p align=\"center\"> \u00b6   <picture> \u00b6     <source \u00b6       width=\"256px\" \u00b6       media=\"(prefers-color-scheme: dark)\" \u00b6       srcset=\"assets/revanced-headline/revanced-headline-vertical-dark.svg\" \u00b6     > \u00b6     <img  \u00b6       width=\"256px\" \u00b6       src=\"assets/revanced-headline/revanced-headline-vertical-light.svg\" \u00b6     > \u00b6   </picture> \u00b6   <br> \u00b6   <a href=\"https://revanced.app/\"> \u00b6      <picture> \u00b6          <source height=\"24px\" media=\"(prefers-color-scheme: dark)\" srcset=\"assets/revanced-logo/revanced-logo.svg\" /> \u00b6          <img height=\"24px\" src=\"assets/revanced-logo/revanced-logo.svg\" /> \u00b6      </picture> \u00b6    </a>&nbsp;&nbsp;&nbsp; \u00b6    <a href=\"https://github.com/ReVanced\"> \u00b6        <picture> \u00b6            <source height=\"24px\" media=\"(prefers-color-scheme: dark)\" srcset=\"https://i.ibb.co/dMMmCrW/Git-Hub-Mark.png\" /> \u00b6            <img height=\"24px\" src=\"https://i.ibb.co/9wV3HGF/Git-Hub-Mark-Light.png\" /> \u00b6        </picture> \u00b6    </a>&nbsp;&nbsp;&nbsp; \u00b6    <a href=\"http://revanced.app/discord\"> \u00b6        <picture> \u00b6            <source height=\"24px\" media=\"(prefers-color-scheme: dark)\" srcset=\"https://user-images.githubusercontent.com/13122796/178032563-d4e084b7-244e-4358-af50-26bde6dd4996.png\" /> \u00b6            <img height=\"24px\" src=\"htt"
+ },
+ "JesusFreke/smali": {
+  "repo": "JesusFreke/smali",
+  "commit": "2771eae0a11f",
+  "commit_full": "2771eae0a11f07bd892732232e6ee4e32437230d",
+  "commit_error": null,
+  "license": "BSD-2/3-Clause",
+  "license_source": "raw:NOTICE",
+  "license_snippet": "The majority of smali/baksmali is written and copyrighted by me (Ben Gruver) and released under the following license:  ******************************************************************************* Copyright (c) 2010 B",
+  "readme_head": "### About \u00b6  \u00b6 smali/baksmali is an assembler/disassembler for the dex format used by dalvik, Android's Java VM implementation. The syntax is loosely based on Jasmin's/dedexer's syntax, and supports the full functionality of the dex format (annotations, debug info, line info, etc.) \u00b6  \u00b6 Downloads are at  https://bitbucket.org/JesusFreke/smali/downloads/. If you are interested in submitting a patch, feel free to send me a pull request here. \u00b6  \u00b6 See [the wiki](https://github.com/JesusFreke/smali/wiki) for more info/news/release notes/etc. \u00b6  \u00b6 #### Support \u00b6 - [github Issue tracker](https://github.com/JesusFreke/smali/issues) - For any bugs/issues/feature requests \u00b6 - [#smali on freenode](http://webchat.freenode.net/?channels=smali) - Free free to drop by and ask a question. Don't expect an instant response, but if you hang around someone will respond. \u00b6  \u00b6  \u00b6 #### Some useful links for getting started with smali \u00b6  \u00b6 - [Official dex bytecode reference](https://source.android.com/devices/tech/dalvik/dalvik-bytecode.html) \u00b6 - [Registers wiki page](https://github.com/JesusFreke/smali/wiki/Registers) \u00b6 - [Types, Methods and Fields wiki page](https://github.com/JesusFreke/smali/wiki/TypesMethodsAndFields) \u00b6 - [Official de"
+ },
+ "plum-umd/redexer": {
+  "repo": "plum-umd/redexer",
+  "commit": "f80520d5310b",
+  "commit_full": "f80520d5310bf80fdd204c1c03b30278982a4431",
+  "commit_error": null,
+  "license": "BSD-2/3-Clause",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "Copyright (c) 2010-2013,  Jinseong Jeon <jsjeon@cs.umd.edu>  Kris Micinski <micinski@cs.umd.edu>  Jeff Foster   <jfoster@cs.umd.edu> All rights reserved.  Redistribution and use in source and binary forms, with or withou"
+ },
+ "kikfox/ARSCTool": {
+  "repo": "kikfox/ARSCTool",
+  "commit": "ed68a4b91ecd",
+  "commit_full": "ed68a4b91ecd714aae9d7e8ff6d8d4ae105253f9",
+  "commit_error": null,
+  "license": "UNKNOWN-verify-manually",
+  "license_source": "none",
+  "license_snippet": ""
+ },
+ "GraxCode/dalvikgate": {
+  "repo": "GraxCode/dalvikgate",
+  "commit": "d2f2f6812339",
+  "commit_full": "d2f2f681233985229f9126a9e4592e4820904176",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE\r                        Version 3, 29 June 2007\r \r  Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>\r  Everyone is permitted to copy and distribute verba"
+ },
+ "akavel/dali": {
+  "repo": "akavel/dali",
+  "commit": "911fea3b41ca",
+  "commit_full": "911fea3b41ca4f9bc8eb2013f7456dff38a65af0",
+  "commit_error": null,
+  "license": "AGPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU AFFERO GENERAL PUBLIC LICENSE                        Version 3, 19 November 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribut",
+  "readme_head": "**dali &mdash; an indie assembler/linker for Dalvik VM .dex &amp; .apk files** (Work In Progress) \u00b6  \u00b6 This project has no proper usage guide yet. \u00b6 Please see [hellomello](https://github.com/akavel/hellomello) for a **sample project** using it, \u00b6 with step-by-step build instructions. \u00b6 For **hacking** on the project, \u00b6 see: [src/dali.nim](https://github.com/akavel/dali/blob/master/src/dali.nim), \u00b6 esp. the [render function](https://github.com/akavel/dali/blob/adc2d2d6c1fb33aaac89d49e80a4f0ff4378fd10/src/dali.nim#L163), \u00b6 and the **test suite** in: [tests/tdex.nim](https://github.com/akavel/dali/blob/master/tests/tdex.nim). \u00b6 "
+ },
+ "MatrixEditor/dexrs": {
+  "repo": "MatrixEditor/dexrs",
+  "commit": "598f2bb36539",
+  "commit_full": "598f2bb365395a6606edfafacb5c31720c09df47",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2024-2026, MatrixEditor  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Softwa"
+ },
+ "tboox/dexbox": {
+  "repo": "tboox/dexbox",
+  "commit": "720f4625d152",
+  "commit_full": "720f4625d152731b24912531207748857bbe32cc",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "CalebFenton/simplify": {
+  "repo": "CalebFenton/simplify",
+  "commit": "29fb25d624ae",
+  "commit_full": "29fb25d624aecf0b075dea5c6029b2541474ddfe",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE.GPL",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>  Everyone is permitted to copy and distribute verbatim c"
+ },
+ "ibilux/ArscResourcesParser": {
+  "repo": "ibilux/ArscResourcesParser",
+  "commit": "258c075cbfef",
+  "commit_full": "258c075cbfef2ef3f47d510e30cc5dbc4abe28c5",
+  "commit_error": null,
+  "license": "UNKNOWN-verify-manually",
+  "license_source": "none",
+  "license_snippet": ""
+ },
+ "androguard/androguard": {
+  "repo": "androguard/androguard",
+  "commit": "4573c8c111ba",
+  "commit_full": "4573c8c111ba01ec5063925506f5bf5f9f4b536b",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "html:spdxId",
+  "license_snippet": "",
+  "readme_head": "![banner](https://raw.githubusercontent.com/androguard/androguard/master/assets/web/androguardwithname.jpg) \u00b6  \u00b6 # Androguard \u00b6  \u00b6 [![PyPI Upload](https://github.com/androguard/androguard/actions/workflows/pythonpublish.yml/badge.svg)](https://github.com/androguard/androguard/actions/workflows/pythonpublish.yml) \u00b6 ![PyPI - Version](https://img.shields.io/pypi/v/androguard) \u00b6 ![Static Badge](https://img.shields.io/badge/Documentation-InProgress-red) \u00b6  \u00b6 Live version: [Andorguard Live](https://ismyphonepwned.com/droid2web/). \u2764\ufe0f It is a full local WASM version (no cloud baby), with disassembler, decompiler, CFG, security checks and much more !! Put your APK ! \u2764\ufe0f \u00b6  \u00b6 Do you think your phone has been pwned ? please check [IsMyPhonePwned](https://github.com/IsMyPhonePwned) \u00b6  \u00b6 New tool: Goauld [Dynamic injection tool for Linux/Android ](https://github.com/androguard/goauld) \u00b6  \u00b6 See the new version of Androguard: https://github.com/androguard/androguard/tree/ng \u00b6  \u00b6 ## Installation \u00b6 Quick installation: \u00b6 ~~~~ \u00b6 pip install androguard \u00b6 ~~~~ \u00b6  \u00b6 > [!IMPORTANT] \u00b6 > Versions >= 4.0.0 are new releases after a long time, where the project has substantial differences from the previous stable version 3.3.5 from 2019. This means that c"
+ },
+ "Sable/soot": {
+  "repo": "Sable/soot",
+  "commit": "12aefc8fd740",
+  "commit_full": "12aefc8fd740369ebdc7f2c92ce7ab27319a2949",
+  "commit_error": null,
+  "license": "LGPL-2.1",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                  GNU LESSER GENERAL PUBLIC LICENSE                        Version 2.1, February 1999   Copyright (C) 1991, 1999 Free Software Foundation, Inc.  51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  US"
+ },
+ "JetBrains/skiko": {
+  "repo": "JetBrains/skiko",
+  "commit": "29b514873c76",
+  "commit_full": "29b514873c769a2b61dce64541232ecb03c28f4e",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "[![official project](http://jb.gg/badges/official.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub) \u00b6 [![version](https://img.shields.io/badge/dynamic/json.svg?color=orange&label=latest%20version&query=%24.tag_name&url=https%3A%2F%2Fgithub.com%2FJetBrains%2Fskiko%2Freleases%2Flatest)](https://github.com/JetBrains/skiko/releases/latest) \u00b6 # Kotlin Multiplatform library for Skia and window management # \u00b6  \u00b6 Skiko (short for Skia for Kotlin) is the graphical library exposing significant part \u00b6 of [Skia library](https://skia.org) APIs to Kotlin, along with the gluing code for rendering context. \u00b6  \u00b6 Supported platforms: \u00b6    * Kotlin/JVM on Linux(x86_64 and arm64) \u00b6    * Kotlin/JVM on Windows(x86_64) \u00b6    * Kotlin/JVM on macOS(x86_64 and arm64) \u00b6    * Kotlin/JVM on Android(x86_64 and arm64), starting with API version 24 \u00b6    * Kotlin/JS + WebAssembly in browsers \u00b6    * Kotlin/Native on iOS(arm64 and x64) \u00b6    * Kotlin/Native on macOS (arm64 and x64) \u00b6  \u00b6 ## API documentation \u00b6  \u00b6  See autogenerated API docs at [https://jetbrains.github.io/skiko/](https://jetbrains.github.io/skiko/) \u00b6  \u00b6 ## Using as dependency \u00b6  \u00b6 To use in build scripts one has to compute appropriate target platform and version, \u00b6 i.e. somet"
+ },
+ "android/architecture-samples": {
+  "repo": "android/architecture-samples",
+  "commit": "ee66e1526b84",
+  "commit_full": "ee66e1526b84c026615df032c705842b7d2a521f",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "bumptech/glide": {
+  "repo": "bumptech/glide",
+  "commit": "c3df4d264f47",
+  "commit_full": "c3df4d264f470e6546c50862c1b72a7ebd64a282",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "License for everything not in third_party and not otherwise marked:  Copyright 2014 Google, Inc. All rights reserved.  Redistribution and use in source and binary forms, with or without modification, are permitted provid"
+ },
+ "android/compose-samples": {
+  "repo": "android/compose-samples",
+  "commit": "018c5207fb63",
+  "commit_full": "018c5207fb63c4f78e5841bd8ddd4faabdf19d3a",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                           Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION     1. Definitions.        \"License\" shall mea",
+  "readme_head": "# Jetpack Compose Samples \u00b6 <img src=\"readme/samples_montage.gif\" alt=\"Jetpack Compose Samples\" width=\"824\" /> \u00b6  \u00b6 This repository contains a set of individual Android Studio projects to help you learn about \u00b6 Compose in Android. Each sample demonstrates different use cases, complexity levels and APIs. \u00b6  \u00b6 For more information, please [read the documentation](https://developer.android.com/jetpack/compose). \u00b6  \u00b6 \ud83d\udcbb Requirements \u00b6 ------------ \u00b6 To try out these sample apps, you need to use [Android Studio](https://developer.android.com/studio). \u00b6 You can clone this repository or import the \u00b6 project from Android Studio following the steps \u00b6 [here](https://developer.android.com/jetpack/compose/setup#sample). \u00b6  \u00b6 \ud83e\uddec Samples \u00b6 ------------ \u00b6  \u00b6 | Project | | \u00b6 |:-----|---------| \u00b6 |  <br><img src=\"readme/jetnews.png\" alt=\"JetNews\" width=\"240\"></img> <br><br> A sample blog post viewer that demonstrates the use of Compose with a typical Material app and real-world architecture. <br><br> \u2022 Medium complexity<br>\u2022 Varied UI<br>\u2022 Light & dark themes<br>\u2022 Resource loading<br>\u2022 UI Testing <br><br> **[> Browse](JetNews/)**<br><br> | <img src=\"readme/screenshots/JetNews.png\" width=\"320\" alt=\"Jetnews sample demo\"> | \u00b6 |  |  | \u00b6 |  <br><im"
+ },
+ "GetStream/stream-chat-android": {
+  "repo": "GetStream/stream-chat-android",
+  "commit": "0a3a5c28f9ea",
+  "commit_full": "0a3a5c28f9ea37e38fb2f9de5a6f86e25196cbd8",
+  "commit_error": null,
+  "license": "PROPRIETARY-source-available",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "SOURCE CODE LICENSE AGREEMENT  IMPORTANT - READ THIS CAREFULLY BEFORE DOWNLOADING, INSTALLING, USING OR ELECTRONICALLY ACCESSING THIS PROPRIETARY PRODUCT.  THIS IS A LEGAL AGREEMENT BETWEEN STREAM.IO, INC. (\u201cSTREAM.IO\u201d) "
+ },
+ "android/nowinandroid": {
+  "repo": "android/nowinandroid",
+  "commit": "7d45eae4f872",
+  "commit_full": "7d45eae4f8720a0c77f507712ba2437ff974b6ed",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI",
+  "readme_head": "![Now in Android](docs/images/nia-splash.jpg \"Now in Android\") \u00b6  \u00b6 <a href=\"https://play.google.com/store/apps/details?id=com.google.samples.apps.nowinandroid\"><img src=\"https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png\" height=\"70\"></a> \u00b6  \u00b6 Now in Android App \u00b6 ================== \u00b6  \u00b6 **Learn how this app was designed and built in the [design case study](https://goo.gle/nia-figma), [architecture learning journey](docs/ArchitectureLearningJourney.md) and [modularization learning journey](docs/ModularizationLearningJourney.md).** \u00b6  \u00b6 This is the repository for the [Now in Android](https://developer.android.com/series/now-in-android) \u00b6 app. It is a **work in progress** \ud83d\udea7. \u00b6  \u00b6 **Now in Android** is a fully functional Android app built entirely with Kotlin and Jetpack Compose. It \u00b6 follows Android design and development best practices and is intended to be a useful reference \u00b6 for developers. As a running app, it's intended to help developers keep up-to-date with the world \u00b6 of Android development by providing regular news updates. \u00b6  \u00b6 The app is currently in development. The `prodRelease` variant is [available on the Play Store](https://play.google.com/store/apps/details?id=c"
+ },
+ "JetBrains/compose-multiplatform": {
+  "repo": "JetBrains/compose-multiplatform",
+  "commit": "da9b1e1a29b1",
+  "commit_full": "da9b1e1a29b10e44ac84b081c32b8803e20719e7",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "[![official project](http://jb.gg/badges/official.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub) \u00b6 [![stable](https://img.shields.io/github/v/release/JetBrains/compose-multiplatform?sort=semver&display_name=release&label=stable&color=brightgreen)](https://github.com/JetBrains/compose-multiplatform/releases/latest) \u00b6 [![prerelease](https://img.shields.io/github/v/release/JetBrains/compose-multiplatform?include_prereleases&sort=semver&filter=*-*&display_name=release&label=prerelease&color=blue)](https://github.com/JetBrains/compose-multiplatform/releases) \u00b6 [![dev](https://img.shields.io/github/v/tag/JetBrains/compose-multiplatform?include_prereleases&sort=semver&filter=v*%2Bdev*&label=dev&color=orange)](https://github.com/JetBrains/compose-multiplatform/tags) \u00b6  \u00b6 <a href=\"https://jb.gg/cmp\"> \u00b6     <picture> \u00b6         <source srcset=\"artwork/compose-logo-name-white.svg\"  width=\"400\" media=\"(prefers-color-scheme: dark)\"> \u00b6         <img src=\"artwork/compose-logo-name-black.svg\" alt=\"Compose Multiplatform logo and name\" width=\"400\"> \u00b6     </picture> \u00b6 </a> \u00b6  \u00b6 [Compose Multiplatform](https://jb.gg/cmp) is a declarative framework for sharing UI code across multiple platforms with Kotl"
+ },
+ "google/accompanist": {
+  "repo": "google/accompanist",
+  "commit": "12ec3408fc10",
+  "commit_full": "12ec3408fc101e0006e38dc62f7acff7a822e20b",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "![Accompanist logo](docs/header.png) \u00b6  \u00b6 Accompanist is a group of libraries that aim to supplement [Jetpack Compose][compose] with features that are commonly required by developers but not yet available. \u00b6  \u00b6 Accompanist is a labs like environment for new Compose APIs. We use it to help fill known gaps in the Compose toolkit, experiment with new APIs and to gather insight into the development experience of developing a Compose library. The goal of these libraries is to upstream them into the official toolkit, at which point they will be deprecated and removed from Accompanist. \u00b6  \u00b6 For more details like, why does this library exist? Why is it not part of AndroidX? Will you be releasing more libraries? Check out our [Accompanist FAQ](https://medium.com/p/b55117b02712). \u00b6  \u00b6 ## Compose versions \u00b6  \u00b6 Each [release](https://github.com/google/accompanist/releases) outlines what version of the Compose UI libraries it depends on. We are currently releasing multiple versions of Accompanist for the different versions of Compose: \u00b6  \u00b6 <table> \u00b6  <tr> \u00b6   <td>Compose 1.0 (1.0.x)</td><td><img alt=\"Maven Central\" src=\"https://img.shields.io/maven-central/v/com.google.accompanist/accompanist-permissions?versionPrefix=0.2"
+ },
+ "JetBrains/skija": {
+  "repo": "JetBrains/skija",
+  "commit": "8581a6c04808",
+  "commit_full": "8581a6c04808c0ada7863aabed9f2a9d77353b39",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "[![obsolete JetBrains project](https://jb.gg/badges/obsolete.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub) \u00b6  \u00b6 \u26a0\ufe0f **This repository is no longer actively maintained.** \u26a0\ufe0f  \u00b6  \u00b6 Active Skija project is located at [HumbleUI/Skija](https://github.com/HumbleUI/Skija/) \u00b6  \u00b6 # Skija: Java bindings for Skia \u00b6  \u00b6 **Skia** is an open source 2D graphics library which provides common APIs that work across a variety of hardware and software platforms. \u00b6  \u00b6 **Skija** is a high-quality Java bindings for Skia. \u00b6  \u00b6 ![](extras/logo.png) \u00b6  \u00b6  \u00b6 ## Motivation: Why Skija? \u00b6  \u00b6 Because Java doesn\u2019t have a powerful and modern 2D graphics \u2014 still! \u00b6  \u00b6 There are many occasions when you might need graphics: \u00b6  \u00b6 - custom UI widget libraries and whole toolkits, \u00b6 - graphs, diagrams, \u00b6 - visualizations, \u00b6 - games. \u00b6  \u00b6 Existing offerings are: Graphics2D from AWT, GraphicsContext from JavaFX. They are good, but underwhelming. \u00b6  \u00b6 Enter Skia. Skia has a proven track record of industrial-scale project relying on it for all things graphics: Google Chrome, Android, Flutter, Firefox Canvas, Xamarin, LibreOffice. Skia outperforms all existing Java2D toolkits in almost every benchmark, and also provides: \u00b6  \u00b6 - extensive color spaces support, \u00b6 -"
+ },
+ "androidx/androidx": {
+  "repo": "androidx/androidx",
+  "commit": "ddc86c625e55",
+  "commit_full": "ddc86c625e55b8ecc8814ee1a50eb9ec4cb2099e",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI",
+  "readme_head": "# Android Jetpack \u00b6  \u00b6 [![Revved up by Develocity](https://img.shields.io/badge/Revved%20up%20by-Develocity-06A0CE?logo=Gradle&labelColor=02303A)](https://androidx.develocity.cloud) \u00b6  \u00b6 Jetpack is a suite of libraries, tools, and guidance to help developers write high-quality apps easier. These components help you follow best practices, free you from writing boilerplate code, and simplify complex tasks, so you can focus on the code you care about. \u00b6  \u00b6 Jetpack comprises the `androidx.*` package libraries, unbundled from the platform APIs. This means that it offers backward compatibility and is updated more frequently than the Android platform, making sure you always have access to the latest and greatest versions of the Jetpack components. \u00b6  \u00b6 Our official AARs and JARs binaries are distributed through [Google Maven](https://maven.google.com). \u00b6  \u00b6 You can learn more about using it from [Android Jetpack landing page](https://developer.android.com/jetpack). \u00b6  \u00b6 # Contribution Guide \u00b6  \u00b6 For contributions via GitHub, see the [GitHub Contribution Guide](CONTRIBUTING.md). \u00b6  \u00b6 Note: The contributions workflow via GitHub is currently experimental - only contributions to the following projects are being accepted at "
+ },
+ "MohamedRejeb/Calf": {
+  "repo": "MohamedRejeb/Calf",
+  "commit": "866204721d14",
+  "commit_full": "866204721d146e992ea4d804b2a12d67a889605a",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "aclassen/ComposeReorderable": {
+  "repo": "aclassen/ComposeReorderable",
+  "commit": "e1c7af43c881",
+  "commit_full": "e1c7af43c881ba70f247a53ee384a5c8a7ab563c",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "coil-kt/coil": {
+  "repo": "coil-kt/coil",
+  "commit": "d26d7c8de521",
+  "commit_full": "d26d7c8de521e75a9928afe7241091e0c808488a",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "\ufeff![Coil](logo.svg) \u00b6  \u00b6 An image loading library for [Android](https://www.android.com/) and [Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/). Coil is: \u00b6  \u00b6 - **Fast**: Coil performs a number of optimizations including memory and disk caching, downsampling the image, automatically pausing/cancelling requests, and more. \u00b6 - **Lightweight**: Coil only depends on Kotlin, Coroutines, and Okio and works seamlessly with Google's R8 code shrinker. \u00b6 - **Easy to use**: Coil's API leverages Kotlin's language features for simplicity and minimal boilerplate. \u00b6 - **Modern**: Coil is Kotlin-first and interoperates with modern libraries including Compose, Coroutines, Okio, OkHttp, and Ktor. \u00b6  \u00b6 Coil is an acronym for: **Co**routine **I**mage **L**oader. \u00b6  \u00b6 Translations: [\u65e5\u672c\u8a9e](README-ja.md), [\ud55c\uad6d\uc5b4](README-ko.md), [\u0420\u0443\u0441\u0441\u043a\u0438\u0439](README-ru.md), [Svenska](README-sv.md), [T\u00fcrk\u00e7e](README-tr.md), [\u4e2d\u6587](README-zh.md), [\u067e\u0627\u0631\u0633\u06cc](README-fa.md), [O'zbekcha](README-uz.md) \u00b6  \u00b6 ## Quick Start \u00b6  \u00b6 Import the Compose library and a [networking library](https://coil-kt.github.io/coil/network/): \u00b6  \u00b6 ```kotlin \u00b6 implementation(\"io.coil-kt.coil3:coil-compose:3.6.0\") \u00b6 implementation(\"io.coil-kt.coil3:coil-network-okhttp:3.6.0\") \u00b6 "
+ },
+ "MohamedRejeb/compose-rich-editor": {
+  "repo": "MohamedRejeb/compose-rich-editor",
+  "commit": "0041c9ea60cb",
+  "commit_full": "0041c9ea60cb4caa1917a21fec1d45bf47362960",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "<h1 align=\"center\">Compose Rich Editor</h1><br> \u00b6  \u00b6 [![Kotlin](https://img.shields.io/badge/kotlin-2.4.0-blue.svg?logo=kotlin)](http://kotlinlang.org) \u00b6 [![Compose](https://img.shields.io/badge/compose-1.11.1-blue.svg?logo=jetpackcompose)](https://www.jetbrains.com/lp/compose-multiplatform) \u00b6 [![MohamedRejeb](https://raw.githubusercontent.com/MohamedRejeb/MohamedRejeb/main/badges/mohamedrejeb.svg)](https://github.com/MohamedRejeb) \u00b6 [![Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0) \u00b6 [![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=23) \u00b6 [![Maven Central](https://img.shields.io/badge/Maven%20Central-1.0.0-blue)](https://search.maven.org/search?q=g:%22com.mohamedrejeb.richeditor%22%20AND%20a:%22richeditor-compose%22) \u00b6  \u00b6 ![Compose Rich Editor](docs/images/logo-large-light.svg#gh-light-mode-only) \u00b6 ![Compose Rich Editor](docs/images/logo-large-dark.svg#gh-dark-mode-only) \u00b6  \u00b6 A rich text editor library for both Jetpack Compose and Compose Multiplatform, fully customizable and supports the common rich text editor features \u00b6  \u00b6 - **Multiplatform**: Compose Rich Editor supports "
+ },
+ "amir1376/ab-download-manager": {
+  "repo": "amir1376/ab-download-manager",
+  "commit": "211f49f9003d",
+  "commit_full": "211f49f9003db8ef6997846d114a4aab62d9dfa2",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "Tlaster/PreCompose": {
+  "repo": "Tlaster/PreCompose",
+  "commit": "0f79c88a4f76",
+  "commit_full": "0f79c88a4f768cf851cdaa1da36759ee2d489de1",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2021 Tlaster  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without "
+ },
+ "MohamedRejeb/Pokedex": {
+  "repo": "MohamedRejeb/Pokedex",
+  "commit": "765bbbc61dfe",
+  "commit_full": "765bbbc61dfec9818f46fafefa025a5ce8de5ecd",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "theapache64/stackzy": {
+  "repo": "theapache64/stackzy",
+  "commit": "a7a0e5d67fd5",
+  "commit_full": "a7a0e5d67fd5e441408bf92ac7f488799e86111e",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "joreilly/PeopleInSpace": {
+  "repo": "joreilly/PeopleInSpace",
+  "commit": "da25d4bc05c0",
+  "commit_full": "da25d4bc05c0dd8fe63e83e2f0cdc58a45e4be9d",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "Gurupreet/ComposeCookBook": {
+  "repo": "Gurupreet/ComposeCookBook",
+  "commit": "43571015bc01",
+  "commit_full": "43571015bc01d043797a48362bcf67298ccca4c1",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2020 Gurupreet Singh  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software "
+ },
+ "skydoves/Balloon": {
+  "repo": "skydoves/Balloon",
+  "commit": "4c0ac9521838",
+  "commit_full": "4c0ac952183879239b8da55ff6e9a285803c25ac",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "cheonjaeung/gridlayout-compose": {
+  "repo": "cheonjaeung/gridlayout-compose",
+  "commit": "0acf7e5fc355",
+  "commit_full": "0acf7e5fc355088af9e4ae2fd1226d860556aa15",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "rikkahub/rikkahub": {
+  "repo": "rikkahub/rikkahub",
+  "commit": "0651cad9bd98",
+  "commit_full": "0651cad9bd98a9243703f59f1fc14c1fb3661f36",
+  "commit_error": null,
+  "license": "AGPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU AFFERO GENERAL PUBLIC LICENSE                        Version 3, 19 November 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribut"
+ },
+ "vfsfitvnm/ViMusic": {
+  "repo": "vfsfitvnm/ViMusic",
+  "commit": "6e83b8b83da1",
+  "commit_full": "6e83b8b83da13b0c275702a0d6d5bff78e24c07a",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>  Everyone is permitted to copy and distribute verbatim c"
+ },
+ "gkd-kit/gkd": {
+  "repo": "gkd-kit/gkd",
+  "commit": "1517080e46f9",
+  "commit_full": "1517080e46f9f72d3bf53f81fc0348e117a47902",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "google/angle": {
+  "repo": "google/angle",
+  "commit": "107da744f62a",
+  "commit_full": "107da744f62a319b3c6851694740d9ebf247d048",
+  "commit_error": null,
+  "license": "BSD-3-Clause",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "// Copyright 2018 The ANGLE Project Authors. // All rights reserved. // // Redistribution and use in source and binary forms, with or without // modification, are permitted provided that the following conditions // are m"
+ },
+ "google/filament": {
+  "repo": "google/filament",
+  "commit": "2a8018f54d51",
+  "commit_full": "2a8018f54d5154ceb1bf7005c6c01b13aa70e7ad",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "floooh/sokol": {
+  "repo": "floooh/sokol",
+  "commit": "6b70854a8030",
+  "commit_full": "6b70854a8030f48105d410652127d359da8e0f5f",
+  "commit_error": null,
+  "license": "Zlib",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "zlib/libpng license  Copyright (c) 2018 Andre Weissflog  This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of thi",
+  "readme_head": "<p align=\"center\"> \u00b6     <img src=\"assets/logo_full_large.png\" style=\"width: 60%\" /><br/><br/>Simple \u00b6     <a href=\"https://github.com/nothings/stb/blob/master/docs/stb_howto.txt\">STB-style</a> \u00b6     cross-platform libraries for C and C++, written in C.<br/><br/> \u00b6 </p> \u00b6  \u00b6 # Sokol \u00b6  \u00b6 [**See what's new**](https://github.com/floooh/sokol/blob/master/CHANGELOG.md) (**17-Aug-2026**: sokol_gfx.h: important validation layer fix for storage images - regressed in the write-unsealed update of 09-Aug-2026) \u00b6  \u00b6 [![Build](/../../actions/workflows/main.yml/badge.svg)](/../../actions/workflows/main.yml) [![Bindings](/../../actions/workflows/gen_bindings.yml/badge.svg)](/../../actions/workflows/gen_bindings.yml) [![build](https://github.com/floooh/sokol-zig/actions/workflows/main.yml/badge.svg)](https://github.com/floooh/sokol-zig/actions/workflows/main.yml) [![build](https://github.com/floooh/sokol-nim/actions/workflows/main.yml/badge.svg)](https://github.com/floooh/sokol-nim/actions/workflows/main.yml) [![Odin](https://github.com/floooh/sokol-odin/actions/workflows/main.yml/badge.svg)](https://github.com/floooh/sokol-odin/actions/workflows/main.yml)[![Rust](https://github.com/floooh/sokol-rust/actions/workflo"
+ },
+ "KhronosGroup/Vulkan-Samples": {
+  "repo": "KhronosGroup/Vulkan-Samples",
+  "commit": "293e8286bcc3",
+  "commit_full": "293e8286bcc3b3fd484c4f5fc98c192eb69509a0",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "facebook/yoga": {
+  "repo": "facebook/yoga",
+  "commit": "bd8fe0d6d243",
+  "commit_full": "bd8fe0d6d243cc7e0334d4cc68864a994f63beae",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) Facebook, Inc. and its affiliates.  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in",
+  "readme_head": "# Yoga [![npm](https://img.shields.io/npm/v/yoga-layout.svg)](https://www.npmjs.com/package/yoga-layout) [![Maven Central](https://img.shields.io/maven-central/v/com.facebook.yoga/yoga)](https://search.maven.org/artifact/com.facebook.yoga/yoga) ![SPM](https://img.shields.io/badge/SPM-Supported-blue.svg) \u00b6  \u00b6 Yoga is an embeddable and performant flexbox layout engine with bindings for multiple languages. \u00b6  \u00b6 ## Building \u00b6  \u00b6 Yoga's main implementation targets C++ 20 with accompanying build logic in CMake. A wrapper is provided to build the main library and run unit tests. \u00b6  \u00b6 ```sh \u00b6 ./unit_tests <Debug|Release> \u00b6 ``` \u00b6  \u00b6 While not required, this script will use [ninja](https://ninja-build.org/) if it is installed for faster builds. \u00b6  \u00b6 Yoga is additionally part of the [vcpkg](https://github.com/Microsoft/vcpkg/) collection of ports maintained by Microsoft and community contributors. If the version is out of date, please [create an issue or pull request](https://github.com/Microsoft/vcpkg) on the vcpkg repository. \u00b6  \u00b6 ## Adding Tests \u00b6  \u00b6 Many of Yoga's tests are automatically generated, using HTML fixtures describing node structure. These are rendered in Chrome to generate an expected layout result for the tree."
+ },
+ "google/swiftshader": {
+  "repo": "google/swiftshader",
+  "commit": "694585a05946",
+  "commit_full": "694585a05946e1ed49b6bd577ca6537cbb57f025",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "\r                                  Apache License\r                            Version 2.0, January 2004\r                         http://www.apache.org/licenses/\r \r    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTR"
+ },
+ "google/skia": {
+  "repo": "google/skia",
+  "commit": "3ae8e3d1e335",
+  "commit_full": "3ae8e3d1e3358c2c805f17b1092d4d3ee5d4bb7b",
+  "commit_error": null,
+  "license": "BSD-3-Clause",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "Copyright (c) 2011 Google Inc. All rights reserved.  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:    * Redistributions of ",
+  "readme_head": "Skia is a complete 2D graphic library for drawing Text, Geometries, and Images. \u00b6  \u00b6 See full details, and build instructions, at https://skia.org. \u00b6 "
+ },
+ "glfw/glfw": {
+  "repo": "glfw/glfw",
+  "commit": "92dcf4ce74f2",
+  "commit_full": "92dcf4ce74f2e2554a98fea09be7c705c17daa5a",
+  "commit_error": null,
+  "license": "UNCLEAR-verify-manually",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "Copyright (c) 2002-2006 Marcus Geelnard  Copyright (c) 2006-2019 Camilla L\u00f6wy  This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arisi"
+ },
+ "KhronosGroup/glslang": {
+  "repo": "KhronosGroup/glslang",
+  "commit": "23076b376e06",
+  "commit_full": "23076b376e06a99b4c765df5c9836d127c8bbbfc",
+  "commit_error": null,
+  "license": "BSD-3-Clause",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "Here, glslang proper means core GLSL parsing, HLSL parsing, and SPIR-V code generation. Glslang proper requires use of a number of licenses, one that covers preprocessing and others that covers non-preprocessing.  Bison "
+ },
+ "LWJGL/lwjgl3": {
+  "repo": "LWJGL/lwjgl3",
+  "commit": "30fac9b95f99",
+  "commit_full": "30fac9b95f99cda97312232be25ba55297bf9951",
+  "commit_error": null,
+  "license": "BSD-3-Clause",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "Copyright (c) 2012-present Lightweight Java Game Library All rights reserved.  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met"
+ },
+ "zauonlok/renderer": {
+  "repo": "zauonlok/renderer",
+  "commit": "9ed5082f0eda",
+  "commit_full": "9ed5082f0eda453f0b2a0d5ec37cf5a60f0207f6",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2020 Zhou Le  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without "
+ },
+ "jserv/tinygl": {
+  "repo": "jserv/tinygl",
+  "commit": "c2e48591a6bf",
+  "commit_full": "c2e48591a6bfba1a85f1b87a78dcf1abf7dff57a",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "TinyGL  Copyright (c) 1997-2022 Fabrice Bellard  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software ",
+  "readme_head": "# TinyGL Evolved \u00b6  \u00b6 ![tgl logo](assets/tgl_minimal.png) \u00b6  \u00b6 A portable, software-only OpenGL 1.1 rasterizer written in pure C99. \u00b6  \u00b6 Originally developed by [Fabrice Bellard](https://bellard.org/), this version has been extensively enhanced for performance and portability. \u00b6 It is a small, partial OpenGL 1.1 implementation with optional multithreading support. \u00b6  \u00b6 ## Architecture \u00b6 TinyGL consists of three major modules: \u00b6 - Mathematical routines (zmath) \u00b6 - OpenGL-like emulation (zgl) \u00b6 - Z-buffer and rasterization (zbuffer) \u00b6  \u00b6 ## Safety Features \u00b6  \u00b6 TinyGL includes the following safety features: \u00b6 1. Compile-time options for `glGetError()` functionality (useful for debugging) \u00b6 2. OpenGL 2.0 style buffers for simplified memory management (data passed via `glBufferData` is freed upon `glClose()`) \u00b6 3. Fully leak-checked using Valgrind (the raw demos have zero leaks) \u00b6  \u00b6 ## Portability \u00b6  \u00b6 TinyGL is written in pure C99 with minimal standard library dependencies. \u00b6 It does not require `malloc` or `free` directly; allocation calls are aliased to `gl_malloc()` and `gl_free()`, \u00b6 so you can drop in a custom allocator. \u00b6  \u00b6 Sanity-check portability from the repo root with `make raw_examples`, which builds the raw demos using only t"
+ },
+ "skywind3000/mini3d": {
+  "repo": "skywind3000/mini3d",
+  "commit": "4b3e3af22669",
+  "commit_full": "4b3e3af226691db920ece1dc58425c4a85c68997",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "The MIT License (MIT)  Copyright (c) 2015 Linwei  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software"
+ },
+ "rswinkle/PortableGL": {
+  "repo": "rswinkle/PortableGL",
+  "commit": "7cf39dc1741e",
+  "commit_full": "7cf39dc1741ea2be60ce3bd327f6e5337f60207f",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "The MIT License (MIT)  Copyright (c) 2011-2026 Robert Winkler Copyright (c) 1997-2022 Fabrice Bellard (clipping code from TinyGL)  Permission is hereby granted, free of charge, to any person obtaining a copy of this soft",
+  "readme_head": "PortableGL \u00b6 ========== \u00b6  \u00b6 Shader Workshop Announcement \u00b6 ============================ \u00b6 ![PGL Shadertoy](media/screenshots/shader_workshop_minkowski_madness.png) \u00b6 ![PGL Shadertoy](media/screenshots/shader_workshop_video_greenscreen.png) \u00b6  \u00b6 If you'd like to support PortableGL development or are interested in shader art \u00b6 (or ideally both) check it out \u00b6 [here](https://rswinkle.itch.io/shader-workshop) \u00b6  \u00b6 --- \u00b6  \u00b6 ***\"Because of the nature of Moore's law, anything that an extremely clever graphics programmer can do at one point can be replicated by a merely competent programmer some number of years later.\"*** -John Carmack \u00b6  \u00b6  \u00b6 In a nutshell, PortableGL is an implementation of OpenGL 3.x core (mostly; see [GL Version](#gl-version)) \u00b6 in clean C99 as a single header library (in the style of the [stb libraries](https://github.com/nothings/stb)).  This means it compiles cleanly as C++ \u00b6 and can be easily added to almost any codebase. \u00b6  \u00b6 It can theoretically be used with anything that takes a 32 or 16 bit framebuffer/texture as input in any format. \u00b6 (including just writing images to disk manually or using something like stb_image_write). That should mean it supports almost everything, barring \u00b6 performance issues. \u00b6  \u00b6 Alm"
+ },
+ "ssloy/tinyrenderer": {
+  "repo": "ssloy/tinyrenderer",
+  "commit": "97eb7a480e76",
+  "commit_full": "97eb7a480e762285899a93c5d21e70a79e60782e",
+  "commit_error": null,
+  "license": "custom-permissive (Zlib/MIT-style)",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "Tiny Renderer, https://github.com/ssloy/tinyrenderer Copyright Dmitry V. Sokolov  This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages ar"
+ },
+ "apitrace/apitrace": {
+  "repo": "apitrace/apitrace",
+  "commit": "2975f0c443ff",
+  "commit_full": "2975f0c443ff2b982d026bb6df496bc3e0dc1f3b",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "Copyright 2007-2012 VMware, Inc. Copyright 2011 Intel Corporation Copyright 2011 LunarG, Inc. Copyright 2011 Zack Rusin Copyright 2011-2012 Jose Fonseca  All Rights Reserved.  Permission is hereby granted, free of charge"
+ },
+ "google/gapid": {
+  "repo": "google/gapid",
+  "commit": "15b44454df3a",
+  "commit_full": "15b44454df3a2469ee9ba42cb116d9b50786c7a4",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "google/agi": {
+  "repo": "google/agi",
+  "commit": "d08ae4f58566",
+  "commit_full": "d08ae4f58566327881a8faf51758b8a2cc9ebfbe",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "winebox64/winlator": {
+  "repo": "winebox64/winlator",
+  "commit": "c7021b03d837",
+  "commit_full": "c7021b03d837a9ecfb6e85850b257dc2d7abf33d",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "KhronosGroup/Vulkan-Docs": {
+  "repo": "KhronosGroup/Vulkan-Docs",
+  "commit": "20a9e5892e2a",
+  "commit_full": "20a9e5892e2aab7b9776b16a238b10fc8133090a",
+  "commit_error": null,
+  "license": "custom/other (html:NOASSERTION)",
+  "license_source": "html:spdxId",
+  "license_snippet": ""
+ },
+ "notofonts/noto-fonts": {
+  "repo": "notofonts/noto-fonts",
+  "commit": "ffebf8c1ee44",
+  "commit_full": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+  "commit_error": null,
+  "license": "OFL-1.1",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "Copyright 2018 The Noto Project Authors (github.com/googlei18n/noto-fonts)  This Font Software is licensed under the SIL Open Font License, Version 1.1.  This license is copied below, and is also available with a FAQ at:"
+ },
+ "Tehreer/SheenBidi": {
+  "repo": "Tehreer/SheenBidi",
+  "commit": "9c048a32d213",
+  "commit_full": "9c048a32d2131f67608e85ccccf9079cc46d6e42",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI",
+  "readme_head": "# SheenBidi \u00b6  \u00b6 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) \u00b6 [![Linux CI](https://github.com/Tehreer/SheenBidi/actions/workflows/linux.yml/badge.svg)](https://github.com/Tehreer/SheenBidi/actions/workflows/linux.yml) \u00b6 [![macOS CI](https://github.com/Tehreer/SheenBidi/actions/workflows/macos.yml/badge.svg)](https://github.com/Tehreer/SheenBidi/actions/workflows/macos.yml) \u00b6 [![Windows CI](https://github.com/Tehreer/SheenBidi/actions/workflows/windows.yml/badge.svg)](https://github.com/Tehreer/SheenBidi/actions/workflows/windows.yml) \u00b6 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/k2vvegcdqsb9ld5a?svg=true)](https://ci.appveyor.com/project/mta452/sheenbidi) \u00b6 [![Coverage Status](https://coveralls.io/repos/github/Tehreer/SheenBidi/badge.svg?branch=master)](https://coveralls.io/github/Tehreer/SheenBidi) \u00b6  \u00b6 SheenBidi is a lightweight, fast and stable implementation of the [Unicode Bidirectional Algorithm (UBA)](https://unicode.org/reports/tr9/). \u00b6  \u00b6 It is being used by multiple open source and commercial projects in different domains such as: \u00b6 - **Game Engine:** \u00b6   [Defold](https://github.com/defold/defold) \u00b6 -"
+ },
+ "googlefonts/noto-fonts": {
+  "repo": "googlefonts/noto-fonts",
+  "commit": "ffebf8c1ee44",
+  "commit_full": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+  "commit_error": null,
+  "license": "OFL-1.1",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "Copyright 2018 The Noto Project Authors (github.com/googlei18n/noto-fonts)  This Font Software is licensed under the SIL Open Font License, Version 1.1.  This license is copied below, and is also available with a FAQ at:"
+ },
+ "rougier/freetype-gl": {
+  "repo": "rougier/freetype-gl",
+  "commit": "a3f0547ec90b",
+  "commit_full": "a3f0547ec90b1424ee692f753509120f0569f9dc",
+  "commit_error": null,
+  "license": "BSD-2/3-Clause",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "Copyright 2011-2016 Nicolas P. Rougier Copyright 2013-2016 Marcel Metz All rights reserved.  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following cond"
+ },
+ "OGRECave/ogre": {
+  "repo": "OGRECave/ogre",
+  "commit": "69a1d7e00a6d",
+  "commit_full": "69a1d7e00a6d5e2030127b0546e461f846a78da8",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2000-2013 Torus Knot Software Ltd  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in "
+ },
+ "harfbuzz/harfbuzzjs": {
+  "repo": "harfbuzz/harfbuzzjs",
+  "commit": "91f412432158",
+  "commit_full": "91f412432158a74611b28f7d6c86a071d5e60545",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "Copyright (c) 2019-2026 The harfbuzzjs project authors  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the So"
+ },
+ "go-text/typesetting": {
+  "repo": "go-text/typesetting",
+  "commit": "ddb7ff96ad4d",
+  "commit_full": "ddb7ff96ad4d2dc730cbcae9dd5140023f319c3e",
+  "commit_error": null,
+  "license": "BSD-3-Clause",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "This project is provided under the terms of the UNLICENSE or the BSD license denoted by the following SPDX identifier:  SPDX-License-Identifier: Unlicense OR BSD-3-Clause  You may use the project under the terms of eithe"
+ },
+ "fribidi/fribidi": {
+  "repo": "fribidi/fribidi",
+  "commit": "c928e4c77549",
+  "commit_full": "c928e4c77549de59e057f72bbbec1e38ce8b43bd",
+  "commit_error": null,
+  "license": "LGPL-2.1",
+  "license_source": "raw:COPYING",
+  "license_snippet": "                  GNU LESSER GENERAL PUBLIC LICENSE                        Version 2.1, February 1999   Copyright (C) 1991, 1999 Free Software Foundation, Inc.  <https://fsf.org/>  Everyone is permitted to copy and distr",
+  "readme_head": "# GNU FriBidi \u00b6  \u00b6 The Free Implementation of the [Unicode Bidirectional Algorithm]. \u00b6  \u00b6 ## Background \u00b6  \u00b6 One of the missing links stopping the penetration of free software in Middle \u00b6 East is the lack of support for the Arabic and Hebrew alphabets. In order to \u00b6 have proper Arabic and Hebrew support, the bidi algorithm needs to be implemented. It is our hope that this library will stimulate more free software in the Middle Eastern countries. \u00b6  \u00b6 See [`HISTORY`](./HISTORY) on how the project started and evolved. \u00b6  \u00b6  \u00b6 ## Audience \u00b6  \u00b6 It is our hope that this library will stimulate the implementation of Hebrew and \u00b6 Arabic support in lots of Free Software.  \u00b6  \u00b6 GNU FriBidi is already being used in projects like Pango (resulting in [GTK+] and [GNOME] using GNU FriBidi), AbiWord, MLTerm, MPlayer, BiCon, and vlc. \u00b6  \u00b6 See [`USERS`](./USERS) for a list of projects using GNU FriBidi. \u00b6  \u00b6  \u00b6 ## Dependencies \u00b6  \u00b6 GNU FriBidi does not depend on any other library. It uses either the GNU Build System or meson for build and installation. \u00b6  \u00b6  \u00b6 ## Downloading \u00b6  \u00b6 The latest version of GNU FriBidi may be found at: \u00b6 <https://github.com/fribidi/fribidi> \u00b6  \u00b6  \u00b6 ## Building \u00b6  \u00b6 Start with running the [`autogen.sh`](./autogen.sh) script and follow the \u00b6 inst"
+ },
+ "Tehreer/Tehreer-Android": {
+  "repo": "Tehreer/Tehreer-Android",
+  "commit": "74aa7286b37e",
+  "commit_full": "74aa7286b37efe058971e3bee427214bffbc5ad5",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "harfbuzz/harfbuzz": {
+  "repo": "harfbuzz/harfbuzz",
+  "commit": "e8905fb3b3d9",
+  "commit_full": "e8905fb3b3d9e9a06f3a9aab0459e67c1e08cdac",
+  "commit_error": null,
+  "license": "MIT-Old",
+  "license_source": "raw:COPYING",
+  "license_snippet": "HarfBuzz is licensed under the so-called \"Old MIT\" license.  Details follow. For parts of HarfBuzz that are licensed under different licenses see individual files names COPYING in subdirectories where applicable.  Copyri",
+  "readme_head": "# HarfBuzz \u00b6  \u00b6 <div align=\"center\"> \u00b6  \u00b6 <p><img src=\"HarfBuzz.png\" alt=\"HarfBuzz Logo\" width=\"256\"/></p> \u00b6  \u00b6 [![Linux CI Status](https://github.com/harfbuzz/harfbuzz/actions/workflows/linux.yml/badge.svg)](https://github.com/harfbuzz/harfbuzz/actions/workflows/linux.yml) \u00b6 [![macoOS CI Status](https://github.com/harfbuzz/harfbuzz/actions/workflows/macos.yml/badge.svg)](https://github.com/harfbuzz/harfbuzz/actions/workflows/macos.yml) \u00b6 [![Windows CI Status](https://github.com/harfbuzz/harfbuzz/actions/workflows/msvc.yml/badge.svg)](https://github.com/harfbuzz/harfbuzz/actions/workflows/msvc.yml) \u00b6 [![OSS-Fuzz Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/harfbuzz.svg)](https://oss-fuzz-build-logs.storage.googleapis.com/index.html#harfbuzz) \u00b6 [![Coverity Scan Build Status](https://scan.coverity.com/projects/15166/badge.svg)](https://scan.coverity.com/projects/harfbuzz) \u00b6 [![Packaging status](https://repology.org/badge/tiny-repos/harfbuzz.svg)](https://repology.org/project/harfbuzz/versions) \u00b6 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/harfbuzz/harfbuzz/badge)](https://securityscorecards.dev/viewer/?uri=github.com/harfbuzz/harfbuzz) \u00b6  \u00b6 </div> \u00b6  \u00b6 HarfBuzz "
+ },
+ "unicode-org/text-rendering-tests": {
+  "repo": "unicode-org/text-rendering-tests",
+  "commit": "26cfb96d094b",
+  "commit_full": "26cfb96d094befc3c8b08228577bf400b04b83a1",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "UNICODE LICENSE V3  COPYRIGHT AND PERMISSION NOTICE  Copyright \u00a9 2016-2024 Unicode, Inc.  NOTICE TO USER: Carefully read the following legal agreement. BY DOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING DATA FILES, A",
+  "readme_head": "# Text rendering tests \u00b6  \u00b6 This is a test suite for text rendering engines. It is not easy to correctly \u00b6 display text, so we founded this project to help implementations to \u00b6 get this right. \u00b6  \u00b6 ```bash \u00b6 $ brew install cmake ninja npm rust \u00b6 $ git clone --recursive https://github.com/unicode-org/text-rendering-tests.git \u00b6 $ cd text-rendering-tests \u00b6 $ for engine in CoreText FreeStack TehreerStack fontkit OpenType.js Allsorts ; do python3 check.py --engine=$engine --output=reports/$engine.html ; done \u00b6 ``` \u00b6  \u00b6  \u00b6 ## Supported Platforms \u00b6  \u00b6 Currently, the test suite supports seven OpenType implementations: \u00b6  \u00b6 * With `--engine=FreeStack`, the tests are run on the free/libre \u00b6 open-source text rendering stack with [FreeType](https://www.freetype.org/), \u00b6 [HarfBuzz](https://www.freedesktop.org/wiki/Software/HarfBuzz/), \u00b6 [FriBidi](https://www.fribidi.org/), \u00b6 and [Raqm](https://github.com/HOST-Oman/libraqm). These libraries \u00b6 are used by Linux, Android, ChromeOS, and many other systems. \u00b6 \u2014 [Test report for FreeStack](https://raw.githack.com/unicode-org/text-rendering-tests/main/reports/FreeStack.html). \u00b6  \u00b6 * With `--engine=CoreText`, the tests are run on Apple\u2019s CoreText. \u00b6 This option will work only if you run the test suite on "
+ },
+ "Tehreer/Tehreer": {
+  "repo": "Tehreer/Tehreer",
+  "commit": "NOT-FOUND",
+  "commit_full": null,
+  "commit_error": "NOT-FOUND: repo not found under this owner (active repo is Tehreer/Tehreer-Android)",
+  "license": "N/A",
+  "license_source": "none",
+  "license_snippet": ""
+ },
+ "DiligentGraphics/DiligentEngine": {
+  "repo": "DiligentGraphics/DiligentEngine",
+  "commit": "aca22851ae2b",
+  "commit_full": "aca22851ae2b369b770d112bc27c63cb60ce963f",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "html:spdxId",
+  "license_snippet": ""
+ },
+ "unicode-org/icu": {
+  "repo": "unicode-org/icu",
+  "commit": "abe71235506e",
+  "commit_full": "abe71235506e6bbe17af4f692d738704777e2beb",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "UNICODE LICENSE V3  COPYRIGHT AND PERMISSION NOTICE  Copyright \u00a9 1991-2026 Unicode, Inc.  NOTICE TO USER: Carefully read the following legal agreement. BY DOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING DATA FILES, A",
+  "readme_head": "#  International Components for Unicode \u00b6  \u00b6 This is the repository for the [International Components for Unicode](https://icu.unicode.org/). \u00b6 The ICU project is under the stewardship of [The Unicode Consortium](https://www.unicode.org). \u00b6  \u00b6 - Source: https://github.com/unicode-org/icu \u00b6 - Bugs: https://unicode-org.atlassian.net/projects/ICU \u00b6 - API Docs: https://unicode-org.github.io/icu-docs/ \u00b6 - User Guide: https://unicode-org.github.io/icu/ \u00b6  \u00b6 ![ICU Logo](./tools/images/iculogo_64.png) \u00b6  \u00b6 ### Build Status (`main` branch) \u00b6  \u00b6 Build | Status \u00b6 ------|------- \u00b6 GitHub Actions (ICU4C) | [![GHA ICU4C](https://github.com/unicode-org/icu/workflows/GHA%20ICU4C/badge.svg)](https://github.com/unicode-org/icu/actions?query=workflow%3A%22GHA+ICU4C%22+branch%3Amain) \u00b6 GitHub Actions (ICU4J) | [![GHA ICU4J](https://github.com/unicode-org/icu/workflows/GHA%20ICU4J/badge.svg)](https://github.com/unicode-org/icu/actions?query=workflow%3A%22GHA+ICU4J%22+branch%3Amain) \u00b6 GitHub Actions (Valgrind) | [![GHA CI Valgrind](https://github.com/unicode-org/icu/workflows/GHA%20CI%20Valgrind/badge.svg)](https://github.com/unicode-org/icu/actions/workflows/icu_valgrind.yml?query=workflow%3A%22GHA+CI%22+branch%3Amain) \u00b6 Exhaustive Tests |"
+ },
+ "glennrp/libpng": {
+  "repo": "glennrp/libpng",
+  "commit": "d1d0abeffede",
+  "commit_full": "d1d0abeffede1cc898ddc3d0e600839cf026d749",
+  "commit_error": null,
+  "license": "PNG-Reference-2",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "COPYRIGHT NOTICE, DISCLAIMER, and LICENSE =========================================  PNG Reference Library License version 2 ---------------------------------------   * Copyright (c) 1995-2026 The PNG Reference Library A"
+ },
+ "pnggroup/libpng": {
+  "repo": "pnggroup/libpng",
+  "commit": "d1d0abeffede",
+  "commit_full": "d1d0abeffede1cc898ddc3d0e600839cf026d749",
+  "commit_error": null,
+  "license": "PNG-Reference-2",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "COPYRIGHT NOTICE, DISCLAIMER, and LICENSE =========================================  PNG Reference Library License version 2 ---------------------------------------   * Copyright (c) 1995-2026 The PNG Reference Library A",
+  "readme_head": "README for libpng version 1.8.0.git \u00b6 =================================== \u00b6  \u00b6 See the note about version numbers near the top of `png.h`. \u00b6 See `INSTALL` for instructions on how to install libpng. \u00b6  \u00b6 Libpng comes in several distribution formats.  Get `libpng-*.tar.gz` \u00b6 or `libpng-*.tar.xz` if you want UNIX-style line endings in the text \u00b6 files, or `lpng*.7z` or `lpng*.zip` if you want DOS-style line endings. \u00b6  \u00b6 For a detailed description on using libpng, read `libpng-manual.txt`. \u00b6 For examples of libpng in a program, see `example.c` and `pngtest.c`. \u00b6 For usage information and restrictions (what little they are) on libpng, \u00b6 see `png.h`.  For a description on using zlib (the compression library \u00b6 used by libpng) and zlib's restrictions, see `zlib.h`. \u00b6  \u00b6 You should use zlib 1.0.4 or later to run this, but it _may_ work with \u00b6 versions as old as zlib 0.95.  Even so, there are bugs in older zlib \u00b6 versions which can cause the output of invalid compression streams for \u00b6 some images. \u00b6  \u00b6 You should also note that zlib is a compression library that is useful \u00b6 for more things than just PNG files.  You can use zlib as a drop-in \u00b6 replacement for `fread()` and `fwrite()`, if you are so inclined. \u00b6  \u00b6 zlib should be available at"
+ },
+ "libjpeg-turbo/libjpeg-turbo": {
+  "repo": "libjpeg-turbo/libjpeg-turbo",
+  "commit": "1157d37cfab9",
+  "commit_full": "1157d37cfab977f8f7f8344aededdfd951222c89",
+  "commit_error": null,
+  "license": "BSD-3-Clause",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "libjpeg-turbo Licenses ======================  libjpeg-turbo is covered by two compatible BSD-style open source licenses:  - The IJG (Independent JPEG Group) License, which is listed in   [README.ijg](README.ijg)    This",
+  "readme_head": "Background \u00b6 ========== \u00b6  \u00b6 libjpeg-turbo is a JPEG image codec that uses SIMD instructions to accelerate \u00b6 baseline and progressive JPEG compression and decompression on systems with \u00b6 common CPU architectures.  On such systems, libjpeg-turbo is generally 2-6x as \u00b6 fast as libjpeg, all else being equal.  On other types of systems, \u00b6 libjpeg-turbo can still outperform libjpeg by a significant amount, by virtue \u00b6 of its highly-optimized Huffman coding routines.  In many cases, the \u00b6 performance of libjpeg-turbo rivals that of proprietary high-speed JPEG codecs. \u00b6  \u00b6 libjpeg-turbo implements both the traditional libjpeg API as well as the less \u00b6 powerful but more straightforward TurboJPEG API.  libjpeg-turbo also features \u00b6 colorspace extensions that allow it to compress from/decompress to 32-bit and \u00b6 big-endian pixel buffers (RGBX, XBGR, etc.) \u00b6  \u00b6 libjpeg-turbo was originally based on libjpeg/SIMD, an MMX-accelerated \u00b6 derivative of libjpeg v6b developed by Miyasaka Masaru.  The TigerVNC and \u00b6 VirtualGL projects made numerous enhancements to the codec in 2009, and in \u00b6 early 2010, libjpeg-turbo spun off into an independent project, with the goal \u00b6 of making high-speed JPEG compression/decompression technology available"
+ },
+ "AOMediaCodec/libavif": {
+  "repo": "AOMediaCodec/libavif",
+  "commit": "eb673097950e",
+  "commit_full": "eb673097950e0b0ec77f696958091ef0244a45a9",
+  "commit_error": null,
+  "license": "BSD-2/3-Clause",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "Copyright 2019 Joe Drago. All rights reserved.  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:  1. Redistributions of source"
+ },
+ "nothings/stb": {
+  "repo": "nothings/stb",
+  "commit": "2c980bb59875",
+  "commit_full": "2c980bb59875b0d32144a71867fbdebb2f77cd20",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "This software is available under 2 licenses -- choose whichever you prefer. ------------------------------------------------------------------------------ ALTERNATIVE A - MIT License Copyright (c) 2017 Sean Barrett Permi",
+  "readme_head": "<!---   THIS FILE IS AUTOMATICALLY GENERATED, DO NOT CHANGE IT BY HAND   ---> \u00b6  \u00b6 stb \u00b6 === \u00b6  \u00b6 single-file public domain (or MIT licensed) libraries for C/C++ \u00b6  \u00b6 # This project discusses security-relevant bugs in public in Github Issues and Pull Requests, and it may take significant time for security fixes to be implemented or merged. If this poses an unreasonable risk to your project, do not use stb libraries. \u00b6  \u00b6 Noteworthy: \u00b6  \u00b6 * image loader: [stb_image.h](stb_image.h) \u00b6 * image writer: [stb_image_write.h](stb_image_write.h) \u00b6 * image resizer: [stb_image_resize2.h](stb_image_resize2.h) \u00b6 * font text rasterizer: [stb_truetype.h](stb_truetype.h) \u00b6 * typesafe containers: [stb_ds.h](stb_ds.h) \u00b6  \u00b6 Most libraries by stb, except: stb_dxt by Fabian \"ryg\" Giesen, original stb_image_resize \u00b6 by Jorge L. \"VinoBS\" Rodriguez, and stb_image_resize2 and stb_sprintf by Jeff Roberts. \u00b6  \u00b6 <a name=\"stb_libs\"></a> \u00b6  \u00b6 library    | latest version | category | LoC | description \u00b6 --------------------- | ---- | -------- | --- | -------------------------------- \u00b6 **[stb_vorbis.c](stb_vorbis.c)** | 1.22 | audio | 5584 | decode ogg vorbis files from file/memory to float/16-bit signed output \u00b6 **[stb_hexwave.h](stb_hexwave.h)** | 0.5 | audio |"
+ },
+ "randy408/libspng": {
+  "repo": "randy408/libspng",
+  "commit": "adc94393dbed",
+  "commit_full": "adc94393dbeddf9e027d1b2dfff7c1bab975224e",
+  "commit_error": null,
+  "license": "BSD-2/3-Clause",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "BSD 2-Clause License  Copyright (c) 2018-2023, Randy <randy408@protonmail.com> All rights reserved.  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the follow",
+  "readme_head": "[![Gitter](https://badges.gitter.im/libspng/community.svg)](https://gitter.im/libspng/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) \u00b6 [![Financial Contributors on Open Collective](https://opencollective.com/libspng/all/badge.svg?label=financial+contributors)](https://opencollective.com/libspng) \u00b6 [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/libspng.svg)](https://oss-fuzz-build-logs.storage.googleapis.com/index.html#libspng) \u00b6 [![Coverity](https://scan.coverity.com/projects/15336/badge.svg)](https://scan.coverity.com/projects/randy408-libspng) \u00b6 [![tag](https://img.shields.io/github/tag-date/randy408/libspng.svg)](https://libspng.org/download) \u00b6  \u00b6 # libspng \u00b6  \u00b6 lib**spng** (**s**imple **png**) is a C library for reading and writing Portable Network Graphics (PNG) \u00b6 format files with a focus on security and ease of use. \u00b6  \u00b6 libspng is an alternative to libpng, the projects are separate and the APIs are \u00b6 not compatible. \u00b6  \u00b6 ## Motivation \u00b6  \u00b6 The goal is to provide a fast PNG library with a simpler API than [libpng](https://github.com/glennrp/libpng/blob/libpng16/png.h), \u00b6 it outperforms the reference implementation in common use cases. \u00b6  \u00b6 ## Performance \u00b6  \u00b6 ![](htt"
+ },
+ "google/wuffs": {
+  "repo": "google/wuffs",
+  "commit": "c4df79d82ea6",
+  "commit_full": "c4df79d82ea6de3a3380fae7ba5bc9c9abf2324a",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "This software is distributed under the terms of both the MIT license and the Apache License (Version 2.0).   MIT license  Copyright 2023 The Wuffs Authors  Permission is hereby granted, free of charge, to any person obta",
+  "readme_head": "Wuffs is a **memory-safe programming language** (and a **standard library** \u00b6 written in that language) for **Wrangling Untrusted File Formats Safely**. \u00b6 Wrangling includes parsing, decoding and encoding. Example file formats include \u00b6 images, audio, video, fonts and compressed archives. \u00b6  \u00b6 It is [**\"ridiculously \u00b6 fast\"**](https://twitter.com/richgel999/status/1481027198530248714). \u00b6  \u00b6 ![Screenshot of a tweet saying \"ridiculously \u00b6 fast\"](./test/data/ridiculously-fast.png) \u00b6  \u00b6 Per its [benchmarks](/doc/benchmarks.md) and other linked-to blog posts: \u00b6  \u00b6 - It can decode bzip2 **[1.3x faster than `/usr/bin/bzcat` \u00b6   (C)](https://nigeltao.github.io/blog/2022/wuffs-bzip2-decoder.html)**. \u00b6 - It can decode deflate up to **1.4x faster than zlib-the-library (C)**. \u00b6 - It can decode GIF **2x-6x faster than \"giflib\" (C), \"image/gif\" (Go) and \u00b6   \"gif\" (Rust)**. \u00b6 - It can decode PNG **[1.2x-2.7x faster than \"libpng\" (C), \"image/png\" (Go) and \u00b6   \"png\" \u00b6   (Rust)](https://nigeltao.github.io/blog/2021/fastest-safest-png-decoder.html)**. \u00b6  \u00b6  \u00b6 ## Goals and Non-Goals \u00b6  \u00b6 Wuffs' goal is to produce software libraries that are as safe as Go or Rust, \u00b6 roughly speaking, but as fast as C, and that can be used anywhere C libraries \u00b6 are used. "
+ },
+ "memononen/nanosvg": {
+  "repo": "memononen/nanosvg",
+  "commit": "239e102ec2c6",
+  "commit_full": "239e102ec2c691f2902e20ace2ed36ee4a35cfe6",
+  "commit_error": null,
+  "license": "UNCLEAR-verify-manually",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "Copyright (c) 2013-14 Mikko Mononen memon@inside.org\r \r This software is provided 'as-is', without any express or implied\r warranty.  In no event will the authors be held liable for any damages\r arising from the use of t",
+  "readme_head": "*This project is not actively maintained.* \u00b6  \u00b6 Nano SVG \u00b6 ========== \u00b6  \u00b6 ## Parser \u00b6  \u00b6 ![screenshot of some splines rendered with the sample program](/example/screenshot-1.png?raw=true) \u00b6  \u00b6 NanoSVG is a simple stupid single-header-file SVG parse. The output of the parser is a list of cubic bezier shapes. \u00b6  \u00b6 The library suits well for anything from rendering scalable icons in your editor application to prototyping a game. \u00b6  \u00b6 NanoSVG supports a wide range of SVG features, but something may be missing, feel free to create a pull request! \u00b6  \u00b6 The shapes in the SVG images are transformed by the viewBox and converted to specified units. \u00b6 That is, you should get the same looking data as your designed in your favorite app. \u00b6  \u00b6 NanoSVG can return the paths in few different units. For example if you want to render an image, you may choose \u00b6 to get the paths in pixels, or if you are feeding the data into a CNC-cutter, you may want to use millimeters.  \u00b6  \u00b6 The units passed to NanoSVG should be one of: 'px', 'pt', 'pc' 'mm', 'cm', or 'in'. \u00b6 DPI (dots-per-inch) controls how the unit conversion is done. \u00b6  \u00b6 If you don't know or care about the units stuff, \"px\" and 96 should get you going. \u00b6  \u00b6 ## Rasterizer \u00b6  \u00b6 ![screenshot of tiger.svg"
+ },
+ "sammycage/plutosvg": {
+  "repo": "sammycage/plutosvg",
+  "commit": "fd8a080b3d0b",
+  "commit_full": "fd8a080b3d0bccc41f1ae708d3785e7f08398a58",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2020-2026 Samuel Ugochukwu <sammycageagle@gmail.com>  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Soft"
+ },
+ "webmproject/libwebp": {
+  "repo": "webmproject/libwebp",
+  "commit": "9c4a699e5aac",
+  "commit_full": "9c4a699e5aacc1995a27ca3bf1643c8b2378616c",
+  "commit_error": null,
+  "license": "BSD-3-Clause",
+  "license_source": "raw:COPYING",
+  "license_snippet": "Copyright (c) 2010, Google Inc. All rights reserved.  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:    * Redistributions of",
+  "readme_head": "# WebP Codec \u00b6  \u00b6 ``` \u00b6       __   __  ____  ____  ____ \u00b6      /  \\\\/  \\/  _ \\/  _ )/  _ \\ \u00b6      \\       /   __/  _  \\   __/ \u00b6       \\__\\__/\\____/\\_____/__/ ____  ___ \u00b6             / _/ /    \\    \\ /  _ \\/ _/ \u00b6            /  \\_/   / /   \\ \\   __/  \\__ \u00b6            \\____/____/\\_____/_____/____/v1.6.0 \u00b6 ``` \u00b6  \u00b6 WebP codec is a library to encode and decode images in WebP format. This package \u00b6 contains the library that can be used in other programs to add WebP support, as \u00b6 well as the command line tools 'cwebp' and 'dwebp' to compress and decompress \u00b6 images respectively. \u00b6  \u00b6 See https://developers.google.com/speed/webp for details on the image format. \u00b6  \u00b6 The latest source tree is available at \u00b6 https://chromium.googlesource.com/webm/libwebp \u00b6  \u00b6 It is released under the same license as the WebM project. See \u00b6 https://www.webmproject.org/license/software/ or the \"COPYING\" file for details. \u00b6 An additional intellectual property rights grant can be found in the file \u00b6 PATENTS. \u00b6  \u00b6 ## Building \u00b6  \u00b6 See the [building documentation](doc/building.md). \u00b6  \u00b6 ## Encoding and Decoding Tools \u00b6  \u00b6 The examples/ directory contains tools to encode and decode images and \u00b6 animations, view information about WebP images, and more. See the \u00b6 [tools documentation]("
+ },
+ "sammycage/plutovg": {
+  "repo": "sammycage/plutovg",
+  "commit": "f63f9b59dda9",
+  "commit_full": "f63f9b59dda96c7d1ca3c76e9b33e5ae4b91fab1",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2020-2026 Samuel Ugochukwu <sammycageagle@gmail.com>  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Soft"
+ },
+ "kikuchan/pngle": {
+  "repo": "kikuchan/pngle",
+  "commit": "b1c68193f1d3",
+  "commit_full": "b1c68193f1d3f8642b3e0e095d457a828038e6fb",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2019 kikuchan  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without",
+  "readme_head": "Pngle \u00b6 ===== \u00b6  \u00b6 This is a stream based portable **PNG** **L**oader for **E**mbedding, **Pngle**. \u00b6  \u00b6 ## Background \u00b6  \u00b6 Basically PNG is a memory consuming format from an embedded system perspective, especially on decoding, it mandatory require 32KiB working memory for a sliding window of Deflate, and a scanline buffer (its size depend on image width & format) to reconstruct the image, at least. \u00b6 Unfortunately, due to the memory requirements, we could say traditional Arduino boards, that uses ATmega328 or ATmega32U4 for example, lack of ability to decode standard PNG images. \u00b6  \u00b6 Today, we have variety of SoC boards for embedded systems or Arduino that have enough memory to decode PNG images, but we need to be concerned about memory consumption sometimes. \u00b6 While there are many other PNG decoders, some of them always require the full size of frame-buffer, some of them don't but do require using complicated APIs instead, and some of them are hard to use in Arduino because of deep dependency. \u00b6 This is why I reinvent the wheel for my own. \u00b6  \u00b6 ## Features & Restrictions \u00b6  \u00b6 - **All standard types of PNG files are supported** \u00b6 \t- Interlaced files are also supported \u00b6 \t- Tested with PngSuite \u00b6 - Easy to use \u00b6 \t- **Sim"
+ },
+ "freetype/freetype": {
+  "repo": "freetype/freetype",
+  "commit": "b76738eff2f3",
+  "commit_full": "b76738eff2f3846721f76f023cbb471396932669",
+  "commit_error": null,
+  "license": "MIT-Old",
+  "license_source": "raw:LICENSE.TXT",
+  "license_snippet": "FREETYPE LICENSES -----------------  The FreeType  2 font  engine is  copyrighted work  and cannot  be used legally without  a software  license.  In order  to make  this project usable to  a vast majority of  developers",
+  "readme_head": "FreeType 2.14.3 \u00b6 =============== \u00b6  \u00b6 Homepage: https://freetype.org \u00b6  \u00b6 FreeType is a freely available software library to render fonts. \u00b6  \u00b6 It  is  written  in  C,   designed  to  be  small,  efficient,  highly \u00b6 customizable,  and portable  while capable  of producing  high-quality \u00b6 output (glyph images) of most vector and bitmap font formats. \u00b6  \u00b6 Please   read  the   `docs/CHANGES`   file,   it  contains   IMPORTANT \u00b6 INFORMATION. \u00b6  \u00b6 Read the files `docs/INSTALL*`  for installation instructions; see the \u00b6 file `LICENSE.TXT` for the available licenses. \u00b6  \u00b6 For using FreeType's git repository  instead of a distribution bundle, \u00b6 please read file  `README.git`.  Note that you have  to actually clone \u00b6 the repository; using a snapshot will  not work (in other words, don't \u00b6 use gitlab's 'Download' button). \u00b6  \u00b6 The FreeType 2 API reference is located in directory `docs/reference`; \u00b6 use the file  `index.html` as the top entry point.   [Please note that \u00b6 currently  the search  function  for  locally installed  documentation \u00b6 doesn't work due to cross-site scripting issues.] \u00b6  \u00b6 Additional documentation is  available as a separate  package from our \u00b6 sites.  Go to \u00b6  \u00b6   https://download.savannah.gnu.org/releases/freetype/ \u00b6  \u00b6 and dow"
+ },
+ "strukturag/libheif": {
+  "repo": "strukturag/libheif",
+  "commit": "2bc82b493dd8",
+  "commit_full": "2bc82b493dd8896fab3226f01977c7ac9d2ea3b8",
+  "commit_error": null,
+  "license": "LGPL-3.0",
+  "license_source": "raw:COPYING",
+  "license_snippet": "* The library `libheif` is distributed under the terms of the GNU Lesser General Public License. * The sample applications and the Go and C++ wrappers are distributed under the terms of the MIT License.  License texts be"
+ },
+ "rive-app/rive-runtime": {
+  "repo": "rive-app/rive-runtime",
+  "commit": "9d2e7d04d1bd",
+  "commit_full": "9d2e7d04d1bd5ee5863c7155d059b1e7b5810148",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2020 Rive  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without res"
+ },
+ "rive-app/rive-cpp": {
+  "repo": "rive-app/rive-cpp",
+  "commit": "9d2e7d04d1bd",
+  "commit_full": "9d2e7d04d1bd5ee5863c7155d059b1e7b5810148",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2020 Rive  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without res"
+ },
+ "airbnb/lottie-android": {
+  "repo": "airbnb/lottie-android",
+  "commit": "05ea92e90381",
+  "commit_full": "05ea92e90381eb8a8ae06855ea2b74f322bebbec",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "# Lottie for Android, [iOS](https://github.com/airbnb/lottie-ios), [React Native](https://github.com/airbnb/lottie-react-native), [Web](https://github.com/airbnb/lottie-web), and [Windows](https://aka.ms/lottie) \u00b6  \u00b6 ![Build Status](https://github.com/airbnb/lottie-android/workflows/Validate/badge.svg) \u00b6  \u00b6 <a href='https://play.google.com/store/apps/details?id=com.airbnb.lottie'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height=\"50px\"/></a> \u00b6  \u00b6 Lottie is a mobile library for Android and iOS that parses [Adobe After Effects](http://www.adobe.com/products/aftereffects.html) animations exported as json with [Bodymovin](https://github.com/airbnb/lottie-web) and renders them natively on mobile! \u00b6  \u00b6 For the first time, designers can create **and ship** beautiful animations without an engineer painstakingly recreating it by hand. They say a picture is worth 1,000 words so here are 13,000: \u00b6  \u00b6 # Sponsors \u00b6  \u00b6 Lottie is maintained and improved on nights and weekends. If you use Lottie in your app, please consider sponsoring it to help ensure that we can continue to improve the project we love. \u00b6 Click the sponsor button above to learn "
+ },
+ "ed-asriyan/lottie-converter": {
+  "repo": "ed-asriyan/lottie-converter",
+  "commit": "52585fcbba90",
+  "commit_full": "52585fcbba90426f203bae8f3b1acffa41d8d80e",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2022 Ed Asriyan  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software witho"
+ },
+ "HappySeaFox/sail": {
+  "repo": "HappySeaFox/sail",
+  "commit": "4fa179fff8bb",
+  "commit_full": "4fa179fff8bbefb0bc626f61298385d5bad0e049",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "The MIT License  Copyright (c) 2020 Dmitry Baryshev  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Softw"
+ },
+ "alexzhirkevich/compottie": {
+  "repo": "alexzhirkevich/compottie",
+  "commit": "bc23021c2193",
+  "commit_full": "bc23021c2193de9a4a51bf8a73c3416f98845836",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2023 Alexander Zhirkevich  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Soft"
+ },
+ "thorvg/thorvg": {
+  "repo": "thorvg/thorvg",
+  "commit": "e43bc8ba922f",
+  "commit_full": "e43bc8ba922f48f660caedb051346ad7de629bd4",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2020 - 2026 ThorVG Project  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Sof",
+  "readme_head": "[![LFX Health Score](https://insights.linuxfoundation.org/api/badge/health-score?project=thorvg)](https://insights.linuxfoundation.org/project/thorvg) \u00b6 [![CodeFactor](https://www.codefactor.io/repository/github/thorvg/thorvg/badge)](https://www.codefactor.io/repository/github/thorvg/thorvg) \u00b6 ![BinarySize](https://img.shields.io/badge/Size->170kb-black) \u00b6 [![License](https://img.shields.io/badge/licence-MIT-green.svg?style=flat)](LICENSE) \u00b6 [![Wikipedia](https://img.shields.io/badge/Wikipedia-000000?style=flat&logo=wikipedia&logoColor=white)](https://en.wikipedia.org/wiki/Thor_Vector_Graphics) \u00b6 [![DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/thorvg/thorvg) \u00b6 [![Discord](https://img.shields.io/badge/Community-5865f2?style=flat&logo=discord&logoColor=white)](https://discord.gg/n25xj6J6HM) \u00b6 [![OpenCollective](https://img.shields.io/badge/OpenCollective-84B5FC?style=flat&logo=opencollective&logoColor=white)](https://opencollective.com/thorvg) \u00b6 <br> \u00b6 [![Build Ubuntu](https://github.com/thorvg/thorvg/actions/workflows/build_ubuntu.yml/badge.svg?branch=main&event=push)](https://github.com/thorvg/thorvg/actions/workflows/build_ubuntu.yml) \u00b6 [![Build Windows](https://github.com/thorvg/t"
+ },
+ "RazrFalcon/resvg": {
+  "repo": "RazrFalcon/resvg",
+  "commit": "021d44b75af1",
+  "commit_full": "021d44b75af1455cb557aa6217da66f22c5c3dc0",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "html:spdxId",
+  "license_snippet": ""
+ },
+ "linebender/resvg": {
+  "repo": "linebender/resvg",
+  "commit": "021d44b75af1",
+  "commit_full": "021d44b75af1455cb557aa6217da66f22c5c3dc0",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "html:spdxId",
+  "license_snippet": ""
+ },
+ "aseprite/aseprite": {
+  "repo": "aseprite/aseprite",
+  "commit": "e537f0b043b3",
+  "commit_full": "e537f0b043b3246ffa0f784d46494322f5b63a9b",
+  "commit_error": null,
+  "license": "UNKNOWN-verify-manually",
+  "license_source": "none",
+  "license_snippet": ""
+ },
+ "Samsung/rlottie": {
+  "repo": "Samsung/rlottie",
+  "commit": "4307553814db",
+  "commit_full": "4307553814dbc03f54b99b0d49651c1e4429bf2d",
+  "commit_error": null,
+  "license": "UNCLEAR-verify-manually",
+  "license_source": "raw:COPYING",
+  "license_snippet": "Licensing  rlottie basically comes with MIT license(licenses/COPYING.MIT) but some parts of shared code are covered by different licenses. Listed below are the folder names and the license file covering it. Note that thi",
+  "readme_head": " \u00b6 > [!WARNING] \u00b6 > ## This project is deprecated and will be archived \u00b6 >  \u00b6  \u00b6 \u26a0\ufe0fThis project has been archived and is no longer maintained. \u00b6 We does not provide security support, vulnerability review, patches, releases, or CVE assignment/coordination for this project. Vulnerability reports related to this project may be declined on the grounds that the project is unsupported. \u00b6 Users should carefully evaluate the security implications before using this project. \u00b6 However, a third-party CNA or the CVE Program may still assign a CVE ID under its own policies. \u00b6 For questions regarding such assignments, please contact the CVE Program directly. \u00b6  \u00b6  \u00b6  \u00b6 # rlottie \u00b6  \u00b6 [![Build Status](https://travis-ci.org/Samsung/rlottie.svg?branch=master)](https://travis-ci.org/Samsung/rlottie) \u00b6 [![Build status](https://ci.appveyor.com/api/projects/status/n3xonxk1ooo6s7nr?svg=true&passingText=windows%20-%20passing)](https://ci.appveyor.com/project/smohantty/rlottie-mliua) \u00b6 [![Gitter](https://badges.gitter.im/rLottie-dev/community.svg)](https://gitter.im/rLottie-dev/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) \u00b6  \u00b6 <p align=\"center\"> \u00b6   <img width=\"240\" height=\"240\" src=\"https://github.com/Samsung/rlottie/blob"
+ },
+ "LottieFiles/dotlottie-web": {
+  "repo": "LottieFiles/dotlottie-web",
+  "commit": "bb5abcf9ac43",
+  "commit_full": "bb5abcf9ac43ef32e5a69d508b5a1b3660f61d9e",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2023 LottieFiles.com  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software "
+ },
+ "lieff/minimp3": {
+  "repo": "lieff/minimp3",
+  "commit": "ea99364f61c1",
+  "commit_full": "ea99364f61c14656440e8d77e9c233ccf3124633",
+  "commit_error": null,
+  "license": "CC0-1.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "CC0 1.0 Universal  Statement of Purpose  The laws of most jurisdictions throughout the world automatically confer exclusive Copyright and Related Rights (defined below) upon the creator and subsequent owner(s) (each and ",
+  "readme_head": "minimp3 \u00b6 ========== \u00b6  \u00b6 [![Build Status](https://travis-ci.org/lieff/minimp3.svg)](https://travis-ci.org/lieff/minimp3) \u00b6 <a href=\"https://scan.coverity.com/projects/lieff-minimp3\"> \u00b6   <img alt=\"Coverity Scan Build Status\" \u00b6        src=\"https://scan.coverity.com/projects/14844/badge.svg\"/> \u00b6 </a> \u00b6 [![codecov](https://codecov.io/gh/lieff/minimp3/branch/master/graph/badge.svg)](https://codecov.io/gh/lieff/minimp3) \u00b6  \u00b6 Minimalistic, single-header library for decoding MP3. minimp3 is designed to be \u00b6 small, fast (with SSE and NEON support), and accurate (ISO conformant). You can \u00b6 find a rough benchmark below, measured using ``perf`` on an i7-6700K, IO \u00b6 included, no CPU heat to address speedstep: \u00b6  \u00b6 | Vector      | Hz    | Samples| Sec    | Clockticks | Clockticks per second | PSNR | Max diff | \u00b6 | ----------- | ----- | ------ | ------ | --------- | ------ | ------ | - | \u00b6 |compl.bit    | 48000 | 248832 | 5.184  | 14306684  | 2.759M | 124.22 | 1 | \u00b6 |he_32khz.bit | 32000 | 172800 | 5.4    | 8426158   | 1.560M | 139.67 | 1 | \u00b6 |he_44khz.bit | 44100 | 472320 | 10.710 | 21296300  | 1.988M | 144.04 | 1 | \u00b6 |he_48khz.bit | 48000 | 172800 | 3.6    | 8453846   | 2.348M | 139.67 | 1 | \u00b6 |hecommon.bit | 44100 | 69120  | 1.567  "
+ },
+ "mackron/miniaudio": {
+  "repo": "mackron/miniaudio",
+  "commit": "9634bedb5b5a",
+  "commit_full": "9634bedb5b5a2ca38c1ee7108a9358a4e233f14d",
+  "commit_error": null,
+  "license": "Unlicense",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "This software is available as a choice of the following licenses. Choose whichever you prefer.  =============================================================================== ALTERNATIVE 1 - Public Domain (www.unlicense",
+  "readme_head": "<h1 align=\"center\"> \u00b6     <a href=\"https://miniaud.io\"><img src=\"https://miniaud.io/img/miniaudio_wide.png\" alt=\"miniaudio\" width=\"1280\"></a> \u00b6     <br> \u00b6 </h1> \u00b6  \u00b6 <h4 align=\"center\">An audio playback and capture library in a single source file.</h4> \u00b6  \u00b6 <p align=\"center\"> \u00b6     <a href=\"https://discord.gg/9vpqbjU\"><img src=\"https://img.shields.io/discord/712952679415939085?label=discord&logo=discord&style=flat-square\" alt=\"discord\"></a> \u00b6     <a href=\"https://x.com/mackron\"><img alt=\"x\" src=\"https://img.shields.io/twitter/url?url=https%3A%2F%2Fx.com%2Fmackron&style=flat-square&logo=x&label=%40mackron\"></a> \u00b6 </p> \u00b6  \u00b6 <p align=\"center\"> \u00b6     <a href=\"#features\">Features</a> - \u00b6     <a href=\"#examples\">Examples</a> - \u00b6     <a href=\"#building\">Building</a> - \u00b6     <a href=\"#documentation\">Documentation</a> - \u00b6     <a href=\"#supported-platforms\">Supported Platforms</a> - \u00b6     <a href=\"#security\">Security</a> - \u00b6     <a href=\"#license\">License</a> \u00b6 </p> \u00b6  \u00b6 miniaudio is written in C with no dependencies except the standard library and should compile clean on all major \u00b6 compilers without the need to install any additional development packages. All major desktop and mobile platforms \u00b6 are supported. \u00b6  \u00b6  \u00b6 Features \u00b6 ======== \u00b6 - Simp"
+ },
+ "mackron/dr_libs": {
+  "repo": "mackron/dr_libs",
+  "commit": "b55a0d9a30b9",
+  "commit_full": "b55a0d9a30b91ad8901f89ecf05f76a33186c185",
+  "commit_error": null,
+  "license": "Unlicense",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "This software is available as a choice of the following licenses. Choose whichever you prefer.  =============================================================================== ALTERNATIVE 1 - Public Domain (www.unlicense",
+  "readme_head": "<h4 align=\"center\">Public domain, single file audio decoding libraries for C and C++.</h4> \u00b6  \u00b6 <p align=\"center\"> \u00b6     <a href=\"https://discord.gg/9vpqbjU\"><img src=\"https://img.shields.io/discord/712952679415939085?label=discord&logo=discord&style=flat-square\" alt=\"discord\"></a> \u00b6 </p> \u00b6  \u00b6 All development of released libraries happens on the master branch. There may exist some decoder-specific branches for work in progress. Check tags for the latest version of a particular library. \u00b6  \u00b6  \u00b6 Library                                         | Description \u00b6 ----------------------------------------------- | ----------- \u00b6 [dr_flac](dr_flac.h)                            | FLAC audio decoder. \u00b6 [dr_mp3](dr_mp3.h)                              | MP3 audio decoder. Based off [minimp3](https://github.com/lieff/minimp3). \u00b6 [dr_wav](dr_wav.h)                              | WAV audio loader and writer. \u00b6  \u00b6  \u00b6 # Other Libraries \u00b6 Below are some of my other libraries you may be interested in. \u00b6  \u00b6 Library                                           | Description \u00b6 ------------------------------------------------- | ----------- \u00b6 [miniaudio](https://github.com/mackron/miniaudio) | A public domain, single file library for audio playback an"
+ },
+ "FFmpeg/FFmpeg": {
+  "repo": "FFmpeg/FFmpeg",
+  "commit": "b32f8d1c2377",
+  "commit_full": "b32f8d1c2377079302d23f82d555d13deda68c57",
+  "commit_error": null,
+  "license": "LGPL-3.0",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "# License  Most files in FFmpeg are under the GNU Lesser General Public License version 2.1 or later (LGPL v2.1+). Read the file `COPYING.LGPLv2.1` for details. Some other files have MIT/X11/BSD-style licenses. In combin"
+ },
+ "google/oboe": {
+  "repo": "google/oboe",
+  "commit": "2a45aa2d9e94",
+  "commit_full": "2a45aa2d9e94d209c4636eec4014dd83cda110f4",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI",
+  "readme_head": "# Oboe [![Build CI](https://github.com/google/oboe/workflows/Build%20CI/badge.svg)](https://github.com/google/oboe/actions) \u00b6  \u00b6 [![Introduction to Oboe video](docs/images/getting-started-video.jpg)](https://www.youtube.com/watch?v=csfHAbr5ilI&list=PLWz5rJ2EKKc_duWv9IPNvx9YBudNMmLSa) \u00b6  \u00b6 Oboe is a C++ library which makes it easy to build high-performance audio apps on Android. It was created primarily to allow developers to target a simplified API that works across multiple API levels back to API level 16 (Jelly Bean). \u00b6  \u00b6 ## Features \u00b6 - Compatible with API 16 onwards - runs on 99% of Android devices \u00b6 - Chooses the audio API (OpenSL ES on API 16+ or AAudio on API 27+) which will give the best audio performance on the target Android device \u00b6 - Automatic latency tuning \u00b6 - Modern C++ allowing you to write clean, elegant code \u00b6 - Workarounds for some known issues \u00b6 - [Used by popular apps and frameworks](https://github.com/google/oboe/wiki/AppsUsingOboe) \u00b6  \u00b6 ## Documentation \u00b6 - [Getting Started Guide](docs/GettingStarted.md) \u00b6 - [Full Guide to Oboe](docs/FullGuide.md) \u00b6 - [API reference](https://google.github.io/oboe) \u00b6 - [History of Audio features/bugs by Android version](docs/AndroidAudioHistory.md) \u00b6 - [Migration"
+ },
+ "google/ExoPlayer": {
+  "repo": "google/ExoPlayer",
+  "commit": "dd430f7053a1",
+  "commit_full": "dd430f7053a1a3958deea3ead6a0565150c06bfc",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "libsdl-org/SDL_mixer": {
+  "repo": "libsdl-org/SDL_mixer",
+  "commit": "2b1d74def1d7",
+  "commit_full": "2b1d74def1d72839ef3792a5c20873e24c3611c4",
+  "commit_error": null,
+  "license": "BSD",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "Copyright (C) 1997-2026 Sam Lantinga <slouken@libsdl.org>  This software is provided 'as-is', without any express or implied warranty.  In no event will the authors be held liable for any damages arising from the use of "
+ },
+ "libsndfile/libsndfile": {
+  "repo": "libsndfile/libsndfile",
+  "commit": "7ff854d1e0bd",
+  "commit_full": "7ff854d1e0bd9a751a9ff52ed980c62afced91fe",
+  "commit_error": null,
+  "license": "LGPL-2.1",
+  "license_source": "raw:COPYING",
+  "license_snippet": "                  GNU LESSER GENERAL PUBLIC LICENSE                        Version 2.1, February 1999   Copyright (C) 1991, 1999 Free Software Foundation, Inc.      59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
+ },
+ "libsdl-org/SDL": {
+  "repo": "libsdl-org/SDL",
+  "commit": "46498bc24781",
+  "commit_full": "46498bc247819a2da7c1ccc7d4c4f6231076666c",
+  "commit_error": null,
+  "license": "BSD",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "Copyright (C) 1997-2026 Sam Lantinga <slouken@libsdl.org>    This software is provided 'as-is', without any express or implied warranty.  In no event will the authors be held liable for any damages arising from the use o"
+ },
+ "androidx/media": {
+  "repo": "androidx/media",
+  "commit": "2bc207851df3",
+  "commit_full": "2bc207851df311340767e913931ca7b28cab1794",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI",
+  "readme_head": "# AndroidX Media \u00b6  \u00b6 AndroidX Media is a collection of libraries for implementing media use cases on \u00b6 Android, including local playback (via ExoPlayer), video editing (via \u00b6 Transformer) and media sessions. \u00b6  \u00b6 ## Documentation \u00b6  \u00b6 *   The [developer guide] provides a wealth of information. \u00b6 *   The [class reference] documents the classes and methods. \u00b6 *   The [release notes] document the major changes in each release. \u00b6 *   The [media dev center] provides samples and guidelines. \u00b6 *   Follow our [developer blog] to keep up to date with the latest developments! \u00b6  \u00b6 [developer guide]: https://developer.android.com/guide/topics/media/media3 \u00b6 [class reference]: https://developer.android.com/reference/androidx/media3/common/package-summary \u00b6 [release notes]: RELEASENOTES.md \u00b6 [media dev center]: https://developer.android.com/media \u00b6 [developer blog]: https://medium.com/google-exoplayer \u00b6  \u00b6 ## Migration for existing ExoPlayer and MediaSession projects \u00b6  \u00b6 You'll find a [migration guide for existing ExoPlayer and MediaSession users] on \u00b6 developer.android.com. \u00b6  \u00b6 [migration guide for existing ExoPlayer and MediaSession users]: https://developer.android.com/guide/topics/media/media3/getting-started/migration-guide \u00b6  \u00b6 ## API sta"
+ },
+ "kcat/openal-soft": {
+  "repo": "kcat/openal-soft",
+  "commit": "99f3f1c86a95",
+  "commit_full": "99f3f1c86a953b506b32ccf86914dfa29c4df0f0",
+  "commit_error": null,
+  "license": "LGPL-2.0",
+  "license_source": "raw:COPYING",
+  "license_snippet": "                  GNU LIBRARY GENERAL PUBLIC LICENSE                        Version 2, June 1991   Copyright (C) 1991 Free Software Foundation, Inc.  51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA  Everyone"
+ },
+ "lieff/minimp4": {
+  "repo": "lieff/minimp4",
+  "commit": "5a212a18dba7",
+  "commit_full": "5a212a18dba7dca09543bbc7d65619274fd2931a",
+  "commit_error": null,
+  "license": "CC0-1.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "CC0 1.0 Universal  Statement of Purpose  The laws of most jurisdictions throughout the world automatically confer exclusive Copyright and Related Rights (defined below) upon the creator and subsequent owner(s) (each and ",
+  "readme_head": "Mini MP4 \u00b6 ========== \u00b6  \u00b6 [![Build Status](https://travis-ci.org/lieff/minimp4.svg)](https://travis-ci.org/lieff/minimp4) \u00b6  \u00b6 Easy embeddable MP4 mux/demux library. \u00b6  \u00b6 ## Usage \u00b6 #### Muxing \u00b6  \u00b6 Muxing can be done using 3 modes. \u00b6 Default mode uses one big mdat chunk: \u00b6  \u00b6 ![default](images/mux_mode_default.png?raw=true) \u00b6  \u00b6 This is most efficient mode, but disadvantage is that we need go back and patch mdat chunk size. \u00b6 This can be a problem in some cases, for example if stream transfered over network. \u00b6 To workaround this sequential mode is used: \u00b6  \u00b6 ![default](images/mux_mode_sequential.png?raw=true) \u00b6  \u00b6 This mode do not make any backwards seek. \u00b6 And last mode is fragmented aka fMP4. \u00b6  \u00b6 ![default](images/mux_mode_fragmented.png?raw=true) \u00b6  \u00b6 This mode stores track information first and spreads indexes across all stream, so decoding can start before whole stream available. \u00b6 This mode is sequential too and usually used by browsers and HLS streaming. \u00b6  \u00b6 ## Bindings \u00b6  \u00b6  * https://github.com/darkskygit/minimp4.rs - rust bindings \u00b6  \u00b6 ## Interesting links \u00b6  \u00b6  * https://github.com/aspt/mp4 \u00b6  * https://github.com/l30nnguyen/minimum_mp4_muxer \u00b6  * https://github.com/DolbyLaboratories/dlb_mp4demux \u00b6  * https://github.com/DolbyLaboratories/dlb"
+ },
+ "webmproject/libvpx": {
+  "repo": "webmproject/libvpx",
+  "commit": "5c880e08d213",
+  "commit_full": "5c880e08d21386049adec8e5537c4e726458b563",
+  "commit_error": null,
+  "license": "BSD-3-Clause",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "Copyright (c) 2010, The WebM Project authors. All rights reserved.  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:    * Redi"
+ },
+ "gstreamer/gstreamer": {
+  "repo": "gstreamer/gstreamer",
+  "commit": "cac26f2338c5",
+  "commit_full": "cac26f2338c534e1b6e854bd2f6aa353bf5ad9e8",
+  "commit_error": null,
+  "license": "LGPL-2.1",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "\t\t  GNU LESSER GENERAL PUBLIC LICENSE \t\t       Version 2.1, February 1999   Copyright (C) 1991, 1999 Free Software Foundation, Inc.      51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA  Everyone is permitted to "
+ },
+ "google/horologist": {
+  "repo": "google/horologist",
+  "commit": "ea9c068a6fdc",
+  "commit_full": "ea9c068a6fdc6a031e346f135263df30293ad5bf",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "xiph/vorbis": {
+  "repo": "xiph/vorbis",
+  "commit": "1b75110b5a27",
+  "commit_full": "1b75110b5a2754ba1931d82dd83cb822b266a21d",
+  "commit_error": null,
+  "license": "UNCLEAR-verify-manually",
+  "license_source": "raw:COPYING",
+  "license_snippet": "Copyright (c) 2002-2020 Xiph.org Foundation  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:  - Redistributions of source cod"
+ },
+ "xiph/ogg": {
+  "repo": "xiph/ogg",
+  "commit": "06a5e0262cdc",
+  "commit_full": "06a5e0262cdc28aa4ae6797627a783b5010440f0",
+  "commit_error": null,
+  "license": "UNCLEAR-verify-manually",
+  "license_source": "raw:COPYING",
+  "license_snippet": "Copyright (c) 2002, Xiph.org Foundation  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:  - Redistributions of source code mu"
+ },
+ "FongMi/TV": {
+  "repo": "FongMi/TV",
+  "commit": "2f88a0b878c1",
+  "commit_full": "2f88a0b878c116479851b7e0a0fe499b1e24b34d",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "mpg123/mpg123": {
+  "repo": "mpg123/mpg123",
+  "commit": "NOT-FOUND",
+  "commit_full": null,
+  "commit_error": "NOT-FOUND: no credible official GitHub mirror; upstream is mpg123.de/SourceForge (task-predicted)",
+  "license": "N/A",
+  "license_source": "none",
+  "license_snippet": ""
+ },
+ "requery/sqlite-android": {
+  "repo": "requery/sqlite-android",
+  "commit": "0bbaa7a8b4c4",
+  "commit_full": "0bbaa7a8b4c485c0d4b385425113fe33ead6c3c0",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI",
+  "readme_head": "# Android SQLite support library \u00b6  \u00b6 ![Build Status](https://github.com/requery/sqlite-android/actions/workflows/ci.yml/badge.svg) \u00b6 [![Download](https://jitpack.io/v/requery/sqlite-android.svg)](https://jitpack.io/#requery/sqlite-android) \u00b6  \u00b6 This is an Android specific distribution of the latest versions of SQLite. \u00b6 It contains the latest SQLite version and the Android specific database APIs \u00b6 derived from AOSP packaged as an AAR library distributed on jitpack. \u00b6  \u00b6 Why? \u00b6 ---- \u00b6  \u00b6 - **Consistent** \u00b6 - **Faster** \u00b6 - **Up-to-date** \u00b6  \u00b6 Even the latest version of Android is several versions behind the latest version of SQLite. \u00b6 These versions do not have bug fixes, performance improvements, or new features present in \u00b6 current versions of SQLite. This problem is worse the older the version of the OS the device has. \u00b6 Using this library, you can keep up to date with the latest versions of SQLite and provide a \u00b6 consistent version across OS versions and devices. \u00b6  \u00b6 Use new SQLite features: \u00b6  \u00b6 - **[JSON1 extension](https://www.sqlite.org/json1.html)** \u00b6 - **[Common Table expressions](https://www.sqlite.org/lang_with.html)** \u00b6 - **[Indexes on expressions](https://www.sqlite.org/expridx.html)** \u00b6 - **[Full-Text Search 5](https:/"
+ },
+ "sqlite/sqlite": {
+  "repo": "sqlite/sqlite",
+  "commit": "d92acf1afe6d",
+  "commit_full": "d92acf1afe6dbd4c8aec9aa9513a518f690c2acf",
+  "commit_error": null,
+  "license": "PublicDomain",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "License Information ===================  SQLite Is Public Domain -----------------------  The SQLite source code, including all of the files in the directories listed in the bullets below are  [Public Domain](https://sql",
+  "readme_head": "<h1 align=\"center\">SQLite Source Repository</h1> \u00b6  \u00b6 This repository contains the complete source code for the \u00b6 [SQLite database engine](https://sqlite.org/) going back \u00b6 to 2000-05-29.  The tree includes many tests and some \u00b6 documentation, though additional tests and most documentation \u00b6 are managed separately. \u00b6  \u00b6 See the [on-line documentation](https://sqlite.org/) for more information \u00b6 about what SQLite is and how it works from a user's perspective.  This \u00b6 README file is about the source code that goes into building SQLite, \u00b6 not about how SQLite is used. \u00b6  \u00b6 ## Version Control \u00b6  \u00b6 SQLite sources are managed using \u00b6 [Fossil](https://fossil-scm.org/), a distributed version control system \u00b6 that was specifically designed and written to support SQLite development. \u00b6 The [Fossil repository](https://sqlite.org/src/timeline) contains the urtext. \u00b6  \u00b6 If you are reading this on GitHub or some other Git repository or service, \u00b6 then you are looking at a mirror.  The names of check-ins and \u00b6 other artifacts in a Git mirror are different from the official \u00b6 names for those objects.  The official names for check-ins are \u00b6 found in a footer on the check-in comment for authorized mirrors. \u00b6 The official check-in name can also be se"
+ },
+ "sqlitebrowser/sqlitebrowser": {
+  "repo": "sqlitebrowser/sqlitebrowser",
+  "commit": "da45c7d528c3",
+  "commit_full": "da45c7d528c38986a271fa7be887f95f5b68facb",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "DB Browser for SQLite is bi-licensed under the Mozilla Public License Version 2, as well as the GNU General Public License Version 3 or later.  Modification or redistribution is permitted under the conditions of these li"
+ },
+ "SQLCipher/sqlcipher": {
+  "repo": "SQLCipher/sqlcipher",
+  "commit": "63697beb0faf",
+  "commit_full": "63697beb0fafcb61faa7a3e6fd267036548ab11b",
+  "commit_error": null,
+  "license": "BSD-3-Clause",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "Copyright (c) 2025, ZETETIC LLC All rights reserved.  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:     * Redistributions o",
+  "readme_head": "## SQLCipher \u00b6  \u00b6 SQLCipher is a standalone fork of the [SQLite](https://www.sqlite.org/) database library that adds 256 bit AES encryption of database files and other security features like: \u00b6  \u00b6 - on-the-fly encryption \u00b6 - tamper detection \u00b6 - memory sanitization \u00b6 - strong key derivation \u00b6  \u00b6 SQLCipher is based on SQLite and stable upstream release features are periodically integrated. While SQLCipher is maintained as a separate version of the source tree, the project minimizes alterations to core SQLite code whenever possible. \u00b6  \u00b6 SQLCipher is maintained by Zetetic, LLC, and additional information and documentation is available on the official [SQLCipher site](https://www.zetetic.net/sqlcipher/). \u00b6  \u00b6 ## Features \u00b6  \u00b6 - Fast performance with as little as 5-15% overhead for encryption on many operations \u00b6 - 100% of data in the database file is encrypted \u00b6 - Good security practices (CBC mode, HMAC, key derivation) \u00b6 - Zero-configuration and application level cryptography \u00b6 - Support for multiple cryptographic providers \u00b6  \u00b6 ## Compatibility \u00b6  \u00b6 SQLCipher maintains database format compatibility within the same major version number so an application on any platform can open databases created by any other application provided"
+ },
+ "Tencent/wcdb": {
+  "repo": "Tencent/wcdb",
+  "commit": "39dd797099d4",
+  "commit_full": "39dd797099d41cf1953d5668acd8cb608016c599",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "Tencent is pleased to support the open source community by making WCDB available.\u00a0   Copyright (C) 2017 THL A29 Limited, a Tencent company.\u00a0 All rights reserved. If you have downloaded a copy of the WCDB binary from Tenc",
+  "readme_head": "# WCDB \u00b6  \u00b6 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/Tencent/wcdb/pulls) \u00b6 [![Release Version](https://img.shields.io/badge/Release-2.1.15-brightgreen.svg)](https://github.com/Tencent/wcdb/releases) \u00b6 [![Language](https://img.shields.io/badge/Language-%20C++%20%7C%20Java%20%7C%20Kotlin%20%7C%20Swift%20%7C%20Objc-brightgreen.svg)](https://github.com/Tencent/wcdb/wiki)[![Platform](https://img.shields.io/badge/Platform-%20iOS%20%7C%20macOS%20%7C%20Android%20%7C%20Windows%20%7C%20Linux%20%7C%20OpenHarmony-brightgreen.svg)](https://github.com/Tencent/wcdb/wiki) \u00b6  \u00b6 \u4e2d\u6587\u7248\u672c\u8bf7\u53c2\u770b[\u8fd9\u91cc][wcdb-wiki] \u00b6  \u00b6 WCDB is an **efficient**, **complete**, **easy-to-use** mobile database framework used in the WeChat application. It's based on SQLite and SQLCipher, and supports five languages: C++, Java, Kotlin, Swift and Objective-C. \u00b6  \u00b6 # Feature \u00b6  \u00b6 ## **Easy-to-use** \u00b6  \u00b6 * **ORM** (Object Relational Mapping): WCDB provides a flexible, easy-to-use ORM for creating tables, indices and constraints, as well as CRUD through C++/Java/Kotlin/Swift/Objc objects. \u00b6 * **WINQ** (WCDB language integrated query): WINQ is a native data querying capability which frees developers from writing glue"
+ },
+ "tursodatabase/libsql": {
+  "repo": "tursodatabase/libsql",
+  "commit": "d6c75af6353b",
+  "commit_full": "d6c75af6353bb1c34985399608e37cd272a35aa1",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "MIT License  Copyright 2023 the sqld authors  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software wit"
+ },
+ "robolectric/robolectric": {
+  "repo": "robolectric/robolectric",
+  "commit": "05e0d7bde9f7",
+  "commit_full": "05e0d7bde9f74aef41d5ab05561e9466c155163c",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "The MIT License  Copyright (c) 2010 Xtreme Labs, Pivotal Labs and Google Inc.  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Softwa",
+  "readme_head": "<a name=\"README\"></a> \u00b6 [![robolectric logo](https://raw.githubusercontent.com/robolectric/robolectric/master/images/robolectric-horizontal.png)](https://robolectric.org) \u00b6  \u00b6 [![Build Status](https://github.com/robolectric/robolectric/actions/workflows/tests.yml/badge.svg)](https://github.com/robolectric/robolectric/actions?query=workflow%3Atests) \u00b6 [![GitHub release](https://img.shields.io/github/release/robolectric/robolectric.svg?maxAge=60)](https://github.com/robolectric/robolectric/releases) \u00b6  \u00b6 Robolectric is the industry-standard unit testing framework for Android. With Robolectric, your tests run in a simulated Android environment inside a JVM, without the overhead and flakiness of an emulator. Robolectric tests routinely run 10x faster than those on cold-started emulators. \u00b6  \u00b6 Robolectric supports running unit tests for *14* different versions of Android, ranging from M (API level 23) to Baklava (API level 36). \u00b6  \u00b6 ## Usage \u00b6  \u00b6 To use Robolectric in your project, simply add the necessary dependencies to your module's `build.gradle`/`build.gradle.kts` file: \u00b6  \u00b6 ```groovy \u00b6 testImplementation(\"junit:junit:4.13.2\") \u00b6 testImplementation(\"org.robolectric:robolectric:4.16.1\") \u00b6 testImplementation(\"androidx"
+ },
+ "junit-team/junit5": {
+  "repo": "junit-team/junit5",
+  "commit": "9cd9a3cfb6cd",
+  "commit_full": "9cd9a3cfb6cd98aec355bd49fc8d801058762441",
+  "commit_error": null,
+  "license": "EPL-2.0",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "Eclipse Public License - v 2.0 ==============================  THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS ECLIPSE PUBLIC LICENSE (\u201cAGREEMENT\u201d). ANY USE, REPRODUCTION OR DISTRIBUTION OF THE PROGRAM CONST"
+ },
+ "xiph/flac": {
+  "repo": "xiph/flac",
+  "commit": "e94ff9f68b8e",
+  "commit_full": "e94ff9f68b8e7dbd3e9f8b1ac18a8eca1914f181",
+  "commit_error": null,
+  "license": "GFDL-1.3",
+  "license_source": "html:spdxId",
+  "license_snippet": ""
+ },
+ "google/truth": {
+  "repo": "google/truth",
+  "commit": "2b95613636f4",
+  "commit_full": "2b95613636f4d612006f4b5811f7971d5c13b489",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "cashapp/paparazzi": {
+  "repo": "cashapp/paparazzi",
+  "commit": "9929379c6092",
+  "commit_full": "9929379c6092ddb565825d7e9aa0526f24b2ab47",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI",
+  "readme_head": "Paparazzi \u00b6 ======== \u00b6  \u00b6 An Android library to render your application screens without a physical device or emulator. \u00b6  \u00b6 ```kotlin \u00b6 class LaunchViewTest { \u00b6   @get:Rule \u00b6   val paparazzi = Paparazzi( \u00b6     deviceConfig = PIXEL_5, \u00b6     theme = \"android:Theme.Material.Light.NoActionBar\" \u00b6     // ...see docs for more options \u00b6   ) \u00b6  \u00b6   @Test \u00b6   fun launchView() { \u00b6     val view = paparazzi.inflate<LaunchView>(R.layout.launch) \u00b6     // or... \u00b6     // val view = LaunchView(paparazzi.context) \u00b6  \u00b6     view.setModel(LaunchModel(title = \"paparazzi\")) \u00b6     paparazzi.snapshot(view) \u00b6   } \u00b6  \u00b6   @Test \u00b6   fun launchComposable() { \u00b6     paparazzi.snapshot { \u00b6       MyComposable() \u00b6     } \u00b6   } \u00b6 } \u00b6 ``` \u00b6  \u00b6 See the [project website][paparazzi] for documentation and APIs. \u00b6  \u00b6 Using JUnit 5 \u00b6 ------- \u00b6  \u00b6 ```kotlin \u00b6 lateinit var paparazzi: Paparazzi \u00b6  \u00b6 @BeforeEach \u00b6 fun setup(testInfo: TestInfo) { \u00b6   paparazzi = Paparazzi().apply { \u00b6     setup( \u00b6       testName = TestName( \u00b6         packageName = testInfo.testClass.get().`package`?.name.orEmpty(), \u00b6         className = testInfo.testClass.get().simpleName, \u00b6         methodName = testInfo.testMethod.get().name \u00b6       ) \u00b6     ) \u00b6   } \u00b6 } \u00b6  \u00b6 @AfterEach \u00b6 fun tearDown() { \u00b6   paparazzi.teardown() \u00b6 } \u00b6  \u00b6 @Test \u00b6 fun snapshot_example() { \u00b6   val view ="
+ },
+ "mpv-player/mpv": {
+  "repo": "mpv-player/mpv",
+  "commit": "e8673660ab7e",
+  "commit_full": "e8673660ab7ee5d4ea8f93e4bf3a6e170ab2a19a",
+  "commit_error": null,
+  "license": "LGPL-2.1",
+  "license_source": "raw:LICENSE.GPL",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 2, June 1991   Copyright (C) 1989, 1991 Free Software Foundation, Inc.,  <https://fsf.org/>  Everyone is permitted to copy and distribute verb"
+ },
+ "takahirom/roborazzi": {
+  "repo": "takahirom/roborazzi",
+  "commit": "6abd5fc0a780",
+  "commit_full": "6abd5fc0a780e2ee8c4509917c33f62682df8ccc",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "<!-- Generated by ./gradlew generateReadme. Do not edit this file. --> \u00b6 <!-- topic_top --> \u00b6  \u00b6 <!-- Generated by docs/topics/top.md. Do not edit this file. --> \u00b6 # Roborazzi \u00b6  \u00b6 **Make JVM Android Integration Test Visible** \u00b6  \u00b6 ## Roborazzi now supports [Robolectric Native Graphics (RNG)](https://github.com/robolectric/robolectric/releases/tag/robolectric-4.10) and enables screenshot testing.\ud83d\udce3 \u00b6  \u00b6 ## Why Choose Roborazzi? \u00b6  \u00b6 ### Why is screenshot testing important? \u00b6  \u00b6 Screenshot testing is key to validate your app's appearance and functionality. It efficiently \u00b6 detects visual issues and tests the app as users would use it, making it easier to spot problems. \u00b6 It's quicker than writing many assert statements, ensuring your app looks right and behaves \u00b6 correctly. \u00b6  \u00b6 ### What are JVM tests and why test with JVM instead of on Android? \u00b6  \u00b6 JVM tests, also known as local tests, are placed in the test/ directory and are run on a developer's \u00b6 PC or CI environment. On the other hand, device tests, also known as Instrumentation tests, are \u00b6 written in the androidTest/ directory and are run on real devices or emulators. Device testing can \u00b6 result in frequent failures due to the device environment, leading to false negatives"
+ },
+ "robolectric/android-all": {
+  "repo": "robolectric/android-all",
+  "commit": "NOT-FOUND",
+  "commit_full": null,
+  "commit_error": "NOT-FOUND: repo not found under this owner (android-all artifacts are published to Maven Central; not verified here)",
+  "license": "N/A",
+  "license_source": "none",
+  "license_snippet": ""
+ },
+ "google/gson": {
+  "repo": "google/gson",
+  "commit": "b3f4ca20087f",
+  "commit_full": "b3f4ca20087f9066de4c340522ff84e0558e1ad1",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "square/retrofit": {
+  "repo": "square/retrofit",
+  "commit": "3ca1229c3361",
+  "commit_full": "3ca1229c3361ec6753608c91d20fe6d04566a241",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "ReactiveX/RxJava": {
+  "repo": "ReactiveX/RxJava",
+  "commit": "bc5d8b854d7b",
+  "commit_full": "bc5d8b854d7bf09995335e571e2bad186ac4908d",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "square/moshi": {
+  "repo": "square/moshi",
+  "commit": "889013ec2edb",
+  "commit_full": "889013ec2edb8d8034902662a1dc8c4f3b3f8111",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "square/okhttp": {
+  "repo": "square/okhttp",
+  "commit": "1c6129e44e10",
+  "commit_full": "1c6129e44e1016a5dc1ccf423d91526d9ab391c7",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI",
+  "readme_head": "OkHttp \u00b6 ====== \u00b6  \u00b6 See the [project website][okhttp] for documentation and APIs. \u00b6  \u00b6 HTTP is the way modern applications network. It\u2019s how we exchange data & media. Doing HTTP \u00b6 efficiently makes your stuff load faster and saves bandwidth. \u00b6  \u00b6 OkHttp is an HTTP client that\u2019s efficient by default: \u00b6  \u00b6  * HTTP/2 support allows all requests to the same host to share a socket. \u00b6  * Connection pooling reduces request latency (if HTTP/2 isn\u2019t available). \u00b6  * Transparent GZIP shrinks download sizes. \u00b6  * Response caching avoids the network completely for repeat requests. \u00b6  \u00b6 OkHttp perseveres when the network is troublesome: it will silently recover from common connection \u00b6 problems. If your service has multiple IP addresses, OkHttp will attempt alternate addresses if the \u00b6 first connect fails. This is necessary for IPv4+IPv6 and services hosted in redundant data \u00b6 centers. OkHttp supports modern TLS features (TLS 1.3, ALPN, certificate pinning). It can be \u00b6 configured to fall back for broad connectivity. \u00b6  \u00b6 Using OkHttp is easy. Its request/response API is designed with fluent builders and immutability. It \u00b6 supports both synchronous blocking calls and async calls with callbacks. \u00b6  \u00b6 A well behaved user agent \u00b6 ---------------"
+ },
+ "kotlin/kotlinx.coroutines": {
+  "repo": "kotlin/kotlinx.coroutines",
+  "commit": "f63a04bacb8b",
+  "commit_full": "f63a04bacb8beeafcc9d49199b1e4bb08931b7eb",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "WebView-CG/CanIAndroidWebView": {
+  "repo": "WebView-CG/CanIAndroidWebView",
+  "commit": "303945893c73",
+  "commit_full": "303945893c7350985a4a2d6cf0ffadd39a6d7c24",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "# CanIAndroidWebView \u00b6  \u00b6 This is an open source test app to test everything in Android WebView. You can load your content inside the WebView and use the config tab to try different settings on the WebView. \u00b6  \u00b6 ## Contributing \u00b6  \u00b6 This app tries to be as simple as possible, but if anything is missing or broken please open a PR. \u00b6  \u00b6 ## Install the App \u00b6  \u00b6 [<img src=\"https://fdroid.gitlab.io/artwork/badge/get-it-on.png\" \u00b6      alt=\"Get it on F-Droid\" \u00b6      height=\"80\">](https://f-droid.org/packages/com.caniwebview.android/) \u00b6 [<img src=\"https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png\" \u00b6      alt=\"Get it on Google Play\" \u00b6      height=\"80\">](https://play.google.com/store/apps/details?id=com.caniwebview.android) \u00b6  \u00b6 Or download the latest APK from the [Releases Section](https://github.com/WebView-CG/CanIAndroidWebView/releases/latest). \u00b6 "
+ },
+ "PixelPlayerHQ/PixelPlayerOSS": {
+  "repo": "PixelPlayerHQ/PixelPlayerOSS",
+  "commit": "27f8de63ab55",
+  "commit_full": "27f8de63ab55c33f3c68c6aa0de0077655dd7afd",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim ",
+  "readme_head": " \u00b6 <p align=\"center\"> \u00b6   <img src=\"assets/pixelplayeross_header.png\" alt=\"PixelPlayerOSS \u2014 open-source music player for Android\"/> \u00b6 </p> \u00b6  \u00b6 <p align=\"center\"> \u00b6   <a href=\"https://github.com/PixelPlayerHQ/PixelPlayerOSS/releases/latest\"> \u00b6     <img src=\"https://img.shields.io/github/v/release/PixelPlayerHQ/PixelPlayerOSS?include_prereleases&logo=github&style=for-the-badge&label=Latest%20Release\" alt=\"Latest release\"> \u00b6   </a> \u00b6   <a href=\"https://f-droid.org/packages/com.lostf1sh.pixelplayeross/\"> \u00b6     <img src=\"https://img.shields.io/f-droid/v/com.lostf1sh.pixelplayeross?logo=fdroid&style=for-the-badge&label=F-Droid\" alt=\"F-Droid version\"> \u00b6   </a> \u00b6   <a href=\"https://github.com/PixelPlayerHQ/PixelPlayerOSS/releases\"> \u00b6     <img src=\"https://img.shields.io/github/downloads/PixelPlayerHQ/PixelPlayerOSS/total?logo=github&style=for-the-badge\" alt=\"Total downloads\"> \u00b6   </a> \u00b6   <a href=\"https://github.com/sponsors/lostf1sh\"> \u00b6     <img src=\"https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white\" alt=\"Sponsor on GitHub Sponsors\"> \u00b6   </a> \u00b6   <img src=\"https://img.shields.io/badge/Android-11%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white\" a"
+ },
+ "ashrafimostafa/Brick-Blast": {
+  "repo": "ashrafimostafa/Brick-Blast",
+  "commit": "9799cafe06f7",
+  "commit_full": "9799cafe06f7b4a359b8eee91d07b58d133c8b93",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2026 Mostafa  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without ",
+  "readme_head": "# Brick Blast \u00b6  \u00b6 A fast, offline brick-breaker for Android built with **Kotlin** and **Jetpack Compose**. \u00b6  \u00b6 Drag to aim, release to launch a stream of balls, and bounce them off the walls to smash descending bricks before they reach the bottom. Each round the bricks move down and a new row appears \u2014 plan your angles carefully. \u00b6  \u00b6 **Package:** `com.mostafa.brickblast` \u00b6  \u00b6 ## Screenshots \u00b6  \u00b6 | Gameplay | Main menu | \u00b6 |:---:|:---:| \u00b6 | <img src=\"docs/screenshots/01-gameplay.png\" width=\"240\" /> | <img src=\"docs/screenshots/02-main-menu.png\" width=\"240\" /> | \u00b6  \u00b6 | Settings | Game over | \u00b6 |:---:|:---:| \u00b6 | <img src=\"docs/screenshots/03-settings.png\" width=\"240\" /> | <img src=\"docs/screenshots/04-game-over.png\" width=\"240\" /> | \u00b6  \u00b6 ## Features \u00b6  \u00b6 - Turn-based aim-and-shoot gameplay with a dotted trajectory preview \u00b6 - Custom physics engine (60 FPS, spatial-hash collisions, swept ball movement) \u00b6 - Collectable extra balls \u2014 your arsenal grows every round \u00b6 - Power-ups: bomb, laser, multi-ball, and double damage \u00b6 - Game modes: **Classic**, **Challenge**, **Time Attack**, **Hardcore** \u00b6 - Brick destruction animations and particle effects \u00b6 - Light and dark themes \u00b6 - High-score tracking, statistics, and auto-save \u00b6 - Share your sc"
+ },
+ "junit-team/junit4": {
+  "repo": "junit-team/junit4",
+  "commit": "890f3c972647",
+  "commit_full": "890f3c972647de378f25e7271d8fbbd9d3456b79",
+  "commit_error": null,
+  "license": "EPL-1.0",
+  "license_source": "html:spdxId",
+  "license_snippet": ""
+ },
+ "yamin8000/Dooz": {
+  "repo": "yamin8000/Dooz",
+  "commit": "0c60e78b861a",
+  "commit_full": "0c60e78b861a29fab26cc11e7e7a30a419527064",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim ",
+  "readme_head": "<div align=\"center\"> \u00b6 <img src=\"app/src/main/ic_launcher-playstore.png\" \u00b6     alt=\"Get it on F-Droid\" \u00b6     height=\"80\"> \u00b6 <h1>Dooz/Tic-Tac-Tao</h1> \u00b6 </div> \u00b6  \u00b6 [![Android CI](https://github.com/yamin8000/Dooz/actions/workflows/android.yml/badge.svg)](https://github.com/yamin8000/Dooz/actions/workflows/android.yml) \u00b6  \u00b6 Dooz or Tic-tac-toe is a simple pen-and-paper game. I created this implementation using Kotlin and \u00b6 Jetpack Compose for Android Devices. \u00b6  \u00b6 [<img src=\"https://fdroid.gitlab.io/artwork/badge/get-it-on.png\" \u00b6 alt=\"Get it on F-Droid\" \u00b6 height=\"80\">](https://f-droid.org/packages/io.github.yamin8000.dooz) \u00b6  \u00b6 ## Preview \u00b6  \u00b6 ### [Featured on AndroidDevNotes](https://twitter.com/androiddevnotes/status/1604571703350161409) \u00b6  \u00b6 <img src=\"./fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg\" alt=\"preview\" width=\"300\"/> \u00b6  \u00b6 https://github.com/yamin8000/Dooz/assets/5001708/bd9f0905-2677-45d5-b5f3-c1ed8ef894d5 \u00b6  \u00b6 ## Compatibility \u00b6  \u00b6 **SDK21+** or **Android 5.0+** \u00b6  \u00b6 ## Usage \u00b6  \u00b6 Just play it! \u00b6  \u00b6 ## Download \u00b6  \u00b6 - GitHub releases: [here](https://github.com/yamin8000/Dooz/releases) \u00b6 - F-Droid: [here](https://f-droid.org/packages/io.github.yamin8000.dooz) \u00b6 - ~~Bazaar: [here](https://cafebazaar.ir/app/io.github.yamin8000"
+ },
+ "retrowars/retrowars": {
+  "repo": "retrowars/retrowars",
+  "commit": "1081c8b8017b",
+  "commit_full": "1081c8b8017b1bf3e280913f76a0d9d4096dcc8d",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim ",
+  "readme_head": "<div align=\"center\"> \u00b6  \u00b6 <img src=\"./assets/github-banner.png\" width=\"805\" /> \u00b6  \u00b6 [ \u00b6 ![License GPL v3.0 badge](https://img.shields.io/badge/license-GPL%20v3.0-green?style=flat-square)](https://github.com/retrowars/retrowars/blob/master/LICENSE) [ \u00b6 ![Liberapay receiving badge](https://img.shields.io/liberapay/receives/retrowars?style=flat-square)](https://liberapay.com/retrowars/donate) [ \u00b6 ![F-Droid version badge](https://img.shields.io/f-droid/v/com.serwylo.retrowars?style=flat-square)](https://f-droid.org/packages/com.serwylo.retrowars/) [ \u00b6 ![Weblate project translated](https://img.shields.io/weblate/progress/retrowars?style=flat-square)](https://hosted.weblate.org/projects/retrowars/) [ \u00b6 ![GitHub Repo stars](https://img.shields.io/github/stars/retrowars/retrowars?style=social)](https://github.com/retrowars/retrowars) \u00b6  \u00b6 [<img src=\"https://fdroid.gitlab.io/artwork/badge/get-it-on.png\" \u00b6      alt=\"Get it on F-Droid\" \u00b6      height=\"80\">](https://f-droid.org/packages/com.serwylo.retrowars/) [ \u00b6 <img src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' \u00b6      alt='Get it on Google Play'  \u00b6      height='80'/>](https://play.google.com/store/apps/details?id=com.serwylo.retrow"
+ },
+ "libgdx/libgdx": {
+  "repo": "libgdx/libgdx",
+  "commit": "c3bdf2f726bb",
+  "commit_full": "c3bdf2f726bb9437d79e63d03972fd4a40cc9caa",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI",
+  "readme_head": "![libGDX Logo](libgdx_logo.svg#gh-light-mode-only)\r \u00b6 ![libGDX Logo](libgdx_logo_dark.svg#gh-dark-mode-only)\r \u00b6 \r \u00b6 [![GitHub Actions Build Status](https://img.shields.io/github/actions/workflow/status/libgdx/libgdx/build-publish.yml?branch=master&label=GitHub%20Actions)](https://github.com/libgdx/libgdx/actions?query=workflow%3A%22Build+and+Publish%22)\r \u00b6 \r \u00b6 [![Latest Version](https://img.shields.io/maven-central/v/com.badlogicgames.gdx/gdx?label=Version)](https://search.maven.org/artifact/com.badlogicgames.gdx/gdx)\r \u00b6 [![Snapshots](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fcom%2Fbadlogicgames%2Fgdx%2Fgdx%2Fmaven-metadata.xml&label=Snapshots)](https://central.sonatype.com/repository/maven-snapshots/com/badlogicgames/gdx/gdx/maven-metadata.xml)\r \u00b6 \r \u00b6 [![Discord Chat](https://img.shields.io/discord/348229412858101762?logo=discord)](https://libgdx.com/community/discord/)\r \u00b6 \r \u00b6 ## Cross-platform Game Development Framework\r \u00b6 **[libGDX](https://libgdx.com) is a cross-platform Java game development framework based on OpenGL (ES), designed for Windows, Linux, macOS, Android, web browsers, and iOS.** It provides a robust and well-"
+ },
+ "FossifyOrg/Calendar": {
+  "repo": "FossifyOrg/Calendar",
+  "commit": "015f9572440b",
+  "commit_full": "015f9572440b464bcf9e78f925e6bcf86b2c7bb0",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "FossifyOrg/Contacts": {
+  "repo": "FossifyOrg/Contacts",
+  "commit": "adf503815294",
+  "commit_full": "adf503815294b854f54a5eaf032b981f0ac0aa33",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "maxrave-dev/SimpMusic": {
+  "repo": "maxrave-dev/SimpMusic",
+  "commit": "62472bfaf4d2",
+  "commit_full": "62472bfaf4d2aaa65efa0c90db95e9b349586e04",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "FossifyOrg/Gallery": {
+  "repo": "FossifyOrg/Gallery",
+  "commit": "1933e40ac697",
+  "commit_full": "1933e40ac69787104b3b91343b643666a49fd601",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim ",
+  "readme_head": "# Fossify Gallery \u00b6  \u00b6 <img alt=\"Logo\" src=\"graphics/icon.webp\" width=\"120\" /> \u00b6  \u00b6 <a href='https://play.google.com/store/apps/details?id=org.fossify.gallery'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height=80/></a> <a href=\"https://f-droid.org/en/packages/org.fossify.gallery/\"><img src=\"https://fdroid.gitlab.io/artwork/badge/get-it-on-en.svg\" alt=\"Get it on F-Droid\" height=80/></a> <a href=\"https://apt.izzysoft.de/fdroid/index/apk/org.fossify.gallery\"><img src=\"https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png\" alt=\"Get it on IzzyOnDroid\" height=80/></a> \u00b6  \u00b6 Unleash memories, not personal data. Fossify Gallery is the ultimate photo and video app that's as powerful as it is private. No ads, no unnecessary permissions \u2013 just a seamless experience tailored for you. \u00b6  \u00b6 **\ud83d\uddbc\ufe0f PHOTO EDITING AT YOUR FINGERTIPS:**   \u00b6 Enhance your photos with our basic yet powerful photo editor. Crop, resize, rotate, flip, draw, and apply stunning filters, all without compromising your privacy. Take control of your memories like never before. \u00b6  \u00b6 **\ud83c\udf10 PRIVACY FIRST, ALWAYS:**   \u00b6 Your privacy matters. Ditch the data-hun"
+ },
+ "TeamNewPipe/NewPipe": {
+  "repo": "TeamNewPipe/NewPipe",
+  "commit": "5779af87f89f",
+  "commit_full": "5779af87f89f759cfa1a442b3d679b29bb619abc",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim ",
+  "readme_head": "<p align=\"center\"><a href=\"https://newpipe.net\"><img src=\"assets/new_pipe_icon_5.png\" width=\"150\"></a></p>  \u00b6 <h2 align=\"center\"><b>NewPipe</b></h2> \u00b6 <h4 align=\"center\">A libre lightweight streaming front-end for Android.</h4> \u00b6  \u00b6 <p align=\"center\"><a href=\"https://f-droid.org/packages/org.schabi.newpipe/\"><img src=\"https://fdroid.gitlab.io/artwork/badge/get-it-on-en.svg\" alt=\"Get it on F-Droid\" width=206/></a></p> \u00b6  \u00b6 <p align=\"center\"> \u00b6 <a href=\"https://github.com/TeamNewPipe/NewPipe/releases\" alt=\"GitHub NewPipe releases\"><img src=\"https://img.shields.io/github/release/TeamNewPipe/NewPipe.svg\" ></a> \u00b6 <a href=\"https://github.com/TeamNewPipe/NewPipe-nightly/releases\" alt=\"GitHub NewPipe nightly releases\"><img src=\"https://img.shields.io/github/release/TeamNewPipe/NewPipe-nightly.svg?labelColor=purple&label=dev%20nightly\"></a> \u00b6 <a href=\"https://www.gnu.org/licenses/gpl-3.0\" alt=\"License: GPLv3\"><img src=\"https://img.shields.io/badge/License-GPL%20v3-blue.svg\"></a> \u00b6 <a href=\"https://github.com/TeamNewPipe/NewPipe/actions\" alt=\"Build Status\"><img src=\"https://github.com/TeamNewPipe/NewPipe/actions/workflows/ci.yml/badge.svg?branch=dev&event=push\"></a> \u00b6 <a href=\"https://hosted.weblate.org/engage/ne"
+ },
+ "OxygenCobalt/Auxio": {
+  "repo": "OxygenCobalt/Auxio",
+  "commit": "0de0ce4c5553",
+  "commit_full": "0de0ce4c5553a104ba982f64339ac357994b08c3",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim ",
+  "readme_head": "<p align=\"center\"><img src=\"fastlane/metadata/android/en-US/images/icon.png\" width=\"150\"></p> \u00b6 <h1 align=\"center\"><b>Auxio</b></h1> \u00b6 <h4 align=\"center\">A simple, rational music player for Android.</h4> \u00b6 <p align=\"center\"> \u00b6     <a href=\"https://github.com/oxygencobalt/Auxio/releases/tag/v4.1.5\"> \u00b6         <img alt=\"Latest Version\" src=\"https://img.shields.io/static/v1?label=tag&message=v4.1.5&color=64B5F6&style=flat\"> \u00b6     </a> \u00b6     <a href=\"https://github.com/oxygencobalt/Auxio/releases/\"> \u00b6         <img alt=\"Releases\" src=\"https://img.shields.io/github/downloads/OxygenCobalt/Auxio/total.svg?color=4B95DE&style=flat\"> \u00b6     </a> \u00b6     <a href=\"https://www.gnu.org/licenses/gpl-3.0\"> \u00b6         <img src=\"https://img.shields.io/badge/license-GPL%20v3-2B6DBE.svg?style=flat\"> \u00b6     </a> \u00b6     <img alt=\"Minimum SDK Version\" src=\"https://img.shields.io/badge/API-24%2B-1450A8?style=flat\"> \u00b6 </p> \u00b6 <h4 align=\"center\"><a href=\"/CHANGELOG.md\">Changelog</a> | <a href=\"https://github.com/OxygenCobalt/Auxio/wiki\">Wiki</a> | <a href=\"https://github.com/OxygenCobalt/Auxio#Donate\">Donate</a></h4> \u00b6 <p align=\"center\"> \u00b6     <a href=\"https://f-droid.org/app/org.oxycblt.auxio\"><img src=\"https://fdroid.gitlab.io/artwork/badge/get-i"
+ },
+ "00-Evan/shattered-pixel-dungeon": {
+  "repo": "00-Evan/shattered-pixel-dungeon",
+  "commit": "7b8b845a76fe",
+  "commit_full": "7b8b845a76fe76c6b7c031ae9e570852411f56db",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>  Everyone is permitted to copy and distribute verbatim c",
+  "readme_head": "# Shattered Pixel Dungeon \u00b6  \u00b6 [Shattered Pixel Dungeon](https://shatteredpixel.com/shatteredpd/) is an open-source traditional roguelike dungeon crawler with randomized levels and enemies, and hundreds of items to collect and use. It's based on the [source code of Pixel Dungeon](https://github.com/00-Evan/pixel-dungeon-gradle), by [Watabou](https://watabou.itch.io/). \u00b6  \u00b6 Shattered Pixel Dungeon currently compiles for Android, iOS, and Desktop platforms. You can find official releases of the game on: \u00b6  \u00b6 [![Get it on Google Play](https://shatteredpixel.com/assets/images/badges/gplay.png)](https://play.google.com/store/apps/details?id=com.shatteredpixel.shatteredpixeldungeon) \u00b6 [![Download on the App Store](https://shatteredpixel.com/assets/images/badges/appstore.png)](https://apps.apple.com/app/shattered-pixel-dungeon/id1563121109) \u00b6 [![Steam](https://shatteredpixel.com/assets/images/badges/steam.png)](https://store.steampowered.com/app/1769170/Shattered_Pixel_Dungeon/)<br> \u00b6 [![GOG.com](https://shatteredpixel.com/assets/images/badges/gog.png)](https://www.gog.com/game/shattered_pixel_dungeon) \u00b6 [![Itch.io](https://shatteredpixel.com/assets/images/badges/itch.png)](https://shattered-pixel.itch.io/sh"
+ },
+ "T8RIN/ImageToolbox": {
+  "repo": "T8RIN/ImageToolbox",
+  "commit": "076143e5d3f6",
+  "commit_full": "076143e5d3f6041ff6d0929516798d6aa4b101cd",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "JunkFood02/Seal": {
+  "repo": "JunkFood02/Seal",
+  "commit": "63bd8a4d31df",
+  "commit_full": "63bd8a4d31df9571c3d2d460079acccb76c35412",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "FoedusProgramme/Gramophone": {
+  "repo": "FoedusProgramme/Gramophone",
+  "commit": "a4d5e96c939f",
+  "commit_full": "a4d5e96c939fe08354d7ce2a89c697356edb8d07",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim ",
+  "readme_head": "# Gramophone \u00b6 ![GitHub](https://img.shields.io/github/license/FoedusProgramme/Gramophone?style=flat-square&logoColor=white&labelColor=black&color=white) \u00b6 ![GitHub tag (with filter)](https://img.shields.io/github/v/tag/FoedusProgramme/Gramophone?style=flat-square&logoColor=white&labelColor=black&color=white) \u00b6 [![Static Badge](https://img.shields.io/badge/Telegram-Content?style=flat-square&logo=telegram&logoColor=black&color=white)](https://t.me/FoedusProgramme) \u00b6  \u00b6 [\u65e5\u672c\u8a9e](./readme_ja.md) \u00b6  \u00b6 A sane music player built with media3 and the Material Design library that is following Android's standard strictly. \u00b6  \u00b6 [<img src=\"https://fdroid.gitlab.io/artwork/badge/get-it-on.png\" \u00b6      alt=\"Get it on F-Droid\" \u00b6      height=\"80\">](https://f-droid.org/packages/org.akanework.gramophone/) \u00b6 [<img src=\"https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png\" alt=\"Get it on IzzyOnDroid\" height=\"80\">](https://apt.izzysoft.de/fdroid/index/apk/org.akanework.gramophone) \u00b6 [<img src=\"https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png\" alt=\"Get it on Google Play\" height=\"80\">](https://play.google.com/store/apps/details?id=org.akanework.gramophone&utm_source=github.com&utm_campaign"
+ },
+ "chrisbanes/tivi": {
+  "repo": "chrisbanes/tivi",
+  "commit": "a0c62c2c763c",
+  "commit_full": "a0c62c2c763c83e3a0ecf79b283224374bb06c4a",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO",
+  "readme_head": "# Tivi has now deprecated \u00b6  \u00b6 After roughly 9 years of development, I've decided that now (12th November 2024) is the time for Tivi to be 'complete'. After releasing 1.0.0 recently, I unfortunately just don't have the time or inclination to keep developing the app. \u00b6  \u00b6 Another reason which has prompted this change is that I have no intention of allowing Google Play to publish my home address (through it's '[verification](https://support.google.com/googleplay/android-developer/answer/14177239?hl=en)' process), therefore my developer account has been restricted and locked. C'est la vie.  \u00b6  \u00b6 I've also delisted the app on the iOS App Store. \u00b6  \u00b6 Thanks to everyone who has used and tested the app. I hope that it's been useful to learn from. \u00b6  \u00b6 \ud83e\udee1 \u00b6  \u00b6 --- \u00b6  \u00b6 ![Tivi](art/banner.png) \u00b6  \u00b6  \u00b6 Tivi is a TV show tracking application which connects to [Trakt.tv](https://www.trakt.tv). It has been updated over the years to target a number of platforms, built upon Kotlin Multiplatform and Compose Multiplatform. \u00b6  \u00b6 ## Download \u00b6  \u00b6 <a href=\"https://play.google.com/store/apps/details?id=app.tivi\" target=\"_blank\"> \u00b6 <img src=\"https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png\" width=240 /> \u00b6 </a> \u00b6 "
+ },
+ "anilbeesetti/nextplayer": {
+  "repo": "anilbeesetti/nextplayer",
+  "commit": "5824581a828e",
+  "commit_full": "5824581a828e9eb311ac1f8a2141f7825850ef74",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim ",
+  "readme_head": "![Next player banner](fastlane/metadata/android/en-US/images/featureGraphic.png) \u00b6  \u00b6 # Next Player \u00b6  \u00b6 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/anilbeesetti/nextplayer.svg?logo=github&label=GitHub&cacheSeconds=3600)](https://github.com/anilbeesetti/nextplayer/releases/latest) \u00b6 [![Google Play](https://img.shields.io/endpoint?color=green&logo=google-play&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Ddev.anilbeesetti.nextplayer%26l%3DGoogle%2520Play%26m%3Dv%24version)](https://play.google.com/store/apps/details?id=dev.anilbeesetti.nextplayer) \u00b6 [![IzzyOnDroid](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/dev.anilbeesetti.nextplayer)](https://apt.izzysoft.de/fdroid/index/apk/dev.anilbeesetti.nextplayer) \u00b6 [![F-Droid](https://img.shields.io/f-droid/v/dev.anilbeesetti.nextplayer?logo=f-droid&label=F-Droid&cacheSeconds=3600)](https://f-droid.org/packages/dev.anilbeesetti.nextplayer) \u00b6 [![GitHub all releases](https://img.shields.io/github/downloads/anilbeesetti/nextplayer/total?logo=github&cacheSeconds=3600)](https://github.com/anilbeesetti/nextplayer/releases/latest) \u00b6 [![Google Play](https://img.shields.io/endpoint?color=green"
+ },
+ "OuterTune/OuterTune": {
+  "repo": "OuterTune/OuterTune",
+  "commit": "e82794f3a059",
+  "commit_full": "e82794f3a059ad30f7c1bfda52051b03e718d614",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "MetrolistGroup/Metrolist": {
+  "repo": "MetrolistGroup/Metrolist",
+  "commit": "773a9f9a212b",
+  "commit_full": "773a9f9a212b65c6721696314195f066f5e42b38",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                     GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim"
+ },
+ "Droid-ify/client": {
+  "repo": "Droid-ify/client",
+  "commit": "3b853c0a9bad",
+  "commit_full": "3b853c0a9bad010fe021996e1d7a0c7b93ec76df",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "d4rken-org/sdmaid-se": {
+  "repo": "d4rken-org/sdmaid-se",
+  "commit": "1e61bea6c4d5",
+  "commit_full": "1e61bea6c4d57e7b6a3a0c987219cfb158a22a56",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "pserwylo/retrowars": {
+  "repo": "pserwylo/retrowars",
+  "commit": "7c80876f86a2",
+  "commit_full": "7c80876f86a27fd6b2863b0ac3937d81e2351b99",
+  "commit_error": null,
+  "license": "UNKNOWN-verify-manually",
+  "license_source": "none",
+  "license_snippet": ""
+ },
+ "duckduckgo/Android": {
+  "repo": "duckduckgo/Android",
+  "commit": "85df593e2286",
+  "commit_full": "85df593e228606710d54e153aeb2031047542905",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "Copyright (c) 2021 Duck Duck Go, Inc.  ## Apache License ### Version 2.0, January 2004 ###### http://www.apache.org/licenses/  TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION  **1. Definitions.**  \"**License"
+ },
+ "hushenghao/AndroidEasterEggs": {
+  "repo": "hushenghao/AndroidEasterEggs",
+  "commit": "91f016c2c1eb",
+  "commit_full": "91f016c2c1ebb0828c6b2dad2eb97836cc753f72",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "lichess-org/mobile": {
+  "repo": "lichess-org/mobile",
+  "commit": "a98315df95ca",
+  "commit_full": "a98315df95ca7dade9afe3bc826072ee159a60a0",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "dorumrr/de1984": {
+  "repo": "dorumrr/de1984",
+  "commit": "3327a8d86b90",
+  "commit_full": "3327a8d86b9049ae774ac2a19e67a2a313ee07d3",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2025 Doru Moraru  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software with"
+ },
+ "LinkoraApp/Linkora": {
+  "repo": "LinkoraApp/Linkora",
+  "commit": "206dfd46a5bc",
+  "commit_full": "206dfd46a5bcbb2bf15a2af9f7b55e1989baac57",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "MIT License  Copyright (c) 2023 Saketh Pathike  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software w"
+ },
+ "gergelyvagujhelyi/CalculatorM3": {
+  "repo": "gergelyvagujhelyi/CalculatorM3",
+  "commit": "a7f37b9cac79",
+  "commit_full": "a7f37b9cac79b2cc7717ac3d8df27a2f13c3a96a",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "plateaukao/einkbro": {
+  "repo": "plateaukao/einkbro",
+  "commit": "49c249b9173b",
+  "commit_full": "49c249b9173b6ec83fa573a25900684423fe0926",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option)"
+ },
+ "KashCal/KashCal": {
+  "repo": "KashCal/KashCal",
+  "commit": "d67bbb1c88c0",
+  "commit_full": "d67bbb1c88c0776da644ea7d927a6ec1769b4696",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "sweakpl/qralarm-android": {
+  "repo": "sweakpl/qralarm-android",
+  "commit": "5dc595ec2803",
+  "commit_full": "5dc595ec2803fa0176f5f7ce1bba8374df38a971",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE.md",
+  "license_snippet": " GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim copies  of this lic"
+ },
+ "nextcloud/android": {
+  "repo": "nextcloud/android",
+  "commit": "4ccb511527f0",
+  "commit_full": "4ccb511527f0caf8f6fc30daaad35a8d3ce1896f",
+  "commit_error": null,
+  "license": "LGPL-2.1",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 2, June 1991   Copyright (C) 1989, 1991 Free Software Foundation, Inc.,  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  Everyone "
+ },
+ "shlusiak/Freebloks-Android": {
+  "repo": "shlusiak/Freebloks-Android",
+  "commit": "bf36e4474799",
+  "commit_full": "bf36e4474799437391c1b5c3dba8477aa8633a5c",
+  "commit_error": null,
+  "license": "GPL-2.0",
+  "license_source": "raw:COPYING",
+  "license_snippet": "\t\t    GNU GENERAL PUBLIC LICENSE \t\t       Version 2, June 1991   Copyright (C) 1989, 1991 Free Software Foundation, Inc.      51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA  Everyone is permitted to copy an"
+ },
+ "accrescent/accrescent": {
+  "repo": "accrescent/accrescent",
+  "commit": "f065daf3bf43",
+  "commit_full": "f065daf3bf435f29022ebdbafab250a060a0405d",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                 Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTIO"
+ },
+ "signalapp/Signal-Android": {
+  "repo": "signalapp/Signal-Android",
+  "commit": "879651dc47a7",
+  "commit_full": "879651dc47a7b18b67e7aea52a25197875024680",
+  "commit_error": null,
+  "license": "AGPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                    GNU AFFERO GENERAL PUBLIC LICENSE                        Version 3, 19 November 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribut"
+ },
+ "google/conscrypt": {
+  "repo": "google/conscrypt",
+  "commit": "5c02b8d15e9b",
+  "commit_full": "5c02b8d15e9b83ed0ce5b80763e7c43a656a3d14",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "clavierhaus/gnubg-android": {
+  "repo": "clavierhaus/gnubg-android",
+  "commit": "05292e3783c8",
+  "commit_full": "05292e3783c8bb6d0e725d7795d9feeb5f033637",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:COPYING",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "google/desugar_jdk_libs": {
+  "repo": "google/desugar_jdk_libs",
+  "commit": "092407c51c3e",
+  "commit_full": "092407c51c3eaaaa9e46f7b7e436dc642f614064",
+  "commit_error": null,
+  "license": "GPL-2.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": "The GNU General Public License (GPL)  Version 2, June 1991  Copyright (C) 1989, 1991 Free Software Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  Everyone is permitted to copy and distribute"
+ },
+ "TranslucentFoxHuman/DroidStress": {
+  "repo": "TranslucentFoxHuman/DroidStress",
+  "commit": "63c514173d7d",
+  "commit_full": "63c514173d7d7674a35e6a9cde1c51d2a44d8af9",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:COPYING",
+  "license_snippet": "                    GNU GENERAL PUBLIC LICENSE                        Version 3, 29 June 2007   Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  Everyone is permitted to copy and distribute verbatim "
+ },
+ "aosp-mirror/platform_frameworks_support": {
+  "repo": "aosp-mirror/platform_frameworks_support",
+  "commit": "a9ac247af2af",
+  "commit_full": "a9ac247af2afd4115c3eb6d16c05bc92737d6305",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": "                                  Apache License                            Version 2.0, January 2004                         http://www.apache.org/licenses/     TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTI"
+ },
+ "SEAbdulbasit/asteroids-compose-multiplatform": {
+  "repo": "SEAbdulbasit/asteroids-compose-multiplatform",
+  "commit": "4dfc2c07e81c",
+  "commit_full": "4dfc2c07e81cff23b5488491938703048af5dffd",
+  "commit_error": null,
+  "license": "UNKNOWN-verify-manually",
+  "license_source": "none",
+  "license_snippet": ""
+ },
+ "aosp-mirror/platform_dalvik": {
+  "repo": "aosp-mirror/platform_dalvik",
+  "commit": "838bd34deecb",
+  "commit_full": "838bd34deecb3715b2b4006edede2ab79e42e336",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:NOTICE",
+  "license_snippet": "   =========================================================================    ==  NOTICE file corresponding to the section 4 d of                    ==    ==  the Apache License, Version 2.0,                           "
+ },
+ "LineageOS/android_frameworks_base": {
+  "repo": "LineageOS/android_frameworks_base",
+  "commit": "68ee585f54bc",
+  "commit_full": "68ee585f54bc11b13a250f0365d12c0b9c2e5cf2",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:NOTICE",
+  "license_snippet": "   =========================================================================    ==  NOTICE file corresponding to the section 4 d of                    ==    ==  the Apache License, Version 2.0,                           "
+ },
+ "aosp-mirror/platform_frameworks_base": {
+  "repo": "aosp-mirror/platform_frameworks_base",
+  "commit": "1cdfff555f4a",
+  "commit_full": "1cdfff555f4a21f71ccc978290e2e212e2f8b168",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:NOTICE",
+  "license_snippet": "   =========================================================================    ==  NOTICE file corresponding to the section 4 d of                    ==    ==  the Apache License, Version 2.0,                           ",
+  "readme_head": ""
+ },
+ "bkaradzic/bgfx": {
+  "repo": "bkaradzic/bgfx",
+  "commit": "a9dd2e20fee0",
+  "commit_full": "a9dd2e20fee00d5b0f261e9a298749f0baec9801",
+  "commit_error": null,
+  "license": "BSD-2-Clause",
+  "license_source": "raw:LICENSE (BSD-2 wording verified by eye)",
+  "license_snippet": ""
+ },
+ "nigels-com/glew": {
+  "repo": "nigels-com/glew",
+  "commit": "77cc072d8a13",
+  "commit_full": "77cc072d8a1389a5e20922da7f3b499967eef4d8",
+  "commit_error": null,
+  "license": "MIT",
+  "license_source": "raw:LICENSE.txt",
+  "license_snippet": ""
+ },
+ "JetBrains/kotlin": {
+  "repo": "JetBrains/kotlin",
+  "commit": "0f8300495b13",
+  "commit_full": "0f8300495b13d67c2aa55578f8a4334c8ba81e3c",
+  "commit_error": null,
+  "license": "Apache-2.0",
+  "license_source": "raw:license/LICENSE.txt",
+  "license_snippet": ""
+ },
+ "Anuken/Mindustry": {
+  "repo": "Anuken/Mindustry",
+  "commit": "eb4d7f1de67f",
+  "commit_full": "eb4d7f1de67ffa943741caf2e96f0ba4c18bcde1",
+  "commit_error": null,
+  "license": "GPL-3.0",
+  "license_source": "raw:LICENSE",
+  "license_snippet": ""
+ },
+ "Mesa3D/mesa (canonical: gitlab.freedesktop.org/mesa/mesa)": {
+  "repo": "Mesa3D/mesa (canonical: gitlab.freedesktop.org/mesa/mesa)",
+  "commit": "06ec2d8e5f67",
+  "commit_full": "06ec2d8e5f676b5071c204c58c9a524713d923da",
+  "commit_error": null,
+  "license": "UNKNOWN-verify-manually",
+  "license_source": "recovered-verify-note",
+  "license_snippet": ""
+ },
+ "android.googlesource.com/platform/art": {
+  "repo": "android.googlesource.com/platform/art",
+  "commit": "6484611fd45e",
+  "commit_full": "6484611fd45e69db9f33f98bfd6864014b030ecf",
+  "commit_error": null,
+  "license": "UNKNOWN-verify-manually",
+  "license_source": "recovered-verify-note",
+  "license_snippet": ""
+ },
+ "android.googlesource.com/platform/libcore": {
+  "repo": "android.googlesource.com/platform/libcore",
+  "commit": "de876a01b292",
+  "commit_full": "de876a01b29230b877c9f408348c38a90ee724a5",
+  "commit_error": null,
+  "license": "UNKNOWN-verify-manually",
+  "license_source": "recovered-verify-note",
+  "license_snippet": ""
+ },
+ "g-truc/glm": {
+  "repo": "g-truc/glm",
+  "commit": "6f14f4792a0c",
+  "commit_full": "6f14f4792a0cde5d0cf2c910506724d61cb95834",
+  "commit_error": null,
+  "license": "MIT (GLM license)",
+  "license_source": "raw:copying.txt",
+  "license_snippet": "OpenGL Mathematics (GLM) MIT license"
+ }
+}

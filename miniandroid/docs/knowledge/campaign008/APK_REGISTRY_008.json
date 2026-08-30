@@ -1,0 +1,156 @@
+{
+ "schema": "apk_registry_v2",
+ "policy": "APK binaries NEVER inside the archive; cache at ~/.cache/miniandroid/apks via tools/download_test_apks.sh",
+ "apks": [
+  {
+   "name": "gmdice",
+   "package": "de.duenndns.gmdice",
+   "license": "GPL-2.0",
+   "source": "F-Droid",
+   "sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+   "size_bytes": 63998,
+   "download": "tools/download_test_apks.sh \u2192 gmdice.apk",
+   "note": "GOLDEN app \u2014 full user journey PROVEN (UNIFIED_008)"
+  },
+  {
+   "name": "dooz",
+   "package": "io.github.yamin8000.dooz",
+   "license": "GPL-3.0",
+   "source": "F-Droid",
+   "sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
+   "size_bytes": 1749880,
+   "download": "tools/download_test_apks.sh \u2192 dooz.apk",
+   "note": "Compose target \u2014 Compose facts extracted (2,189 compose-touching methods / 446 classes)"
+  },
+  {
+   "name": "Telegram",
+   "package": "org.telegram.messenger",
+   "license": "GPL-3.0 (FOSS builds upstream; APK via prior campaign source)",
+   "source": "upstream CDN",
+   "sha256": "f5e1192725772960cc94b83e54ffd8939f876b2b6e5f21d4a8537eb6fcba50e6",
+   "size_bytes": 73028244,
+   "download": "tools/download_test_apks.sh \u2192 Telegram.apk",
+   "note": "TARGET C \u2014 auth chain + SMS screen, 5/5 stage captures"
+  },
+  {
+   "name": "bgclock",
+   "package": "com.github.andreasbaumann.bgclock",
+   "license": "GPL-3.0",
+   "source": "F-Droid",
+   "sha256": "72c140b0083ef273bc6452a7f1006e1e2dc4c64c61f8bcc90d082c3f6d1f9dee",
+   "size_bytes": 1040099,
+   "download": "tools/download_test_apks.sh \u2192 bgclock.apk",
+   "note": "corpus"
+  },
+  {
+   "name": "chessclock",
+   "package": "ivof.tv.chessclock",
+   "license": "Apache-2.0",
+   "source": "F-Droid",
+   "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+   "size_bytes": 124222,
+   "download": "tools/download_test_apks.sh \u2192 chessclock.apk",
+   "note": "corpus"
+  },
+  {
+   "name": "headingcalc",
+   "package": "com.henleycode.headingcalc",
+   "license": "MIT",
+   "source": "F-Droid",
+   "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+   "size_bytes": 65417,
+   "download": "tools/download_test_apks.sh \u2192 headingcalc.apk",
+   "note": "corpus"
+  },
+  {
+   "name": "microtimer",
+   "package": "dubrowgn.microtimer",
+   "license": "GPL-3.0",
+   "source": "F-Droid",
+   "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+   "size_bytes": 208895,
+   "download": "tools/download_test_apks.sh \u2192 microtimer.apk",
+   "note": "corpus"
+  },
+  {
+   "name": "notes",
+   "package": "com.droid4you.menu.notes",
+   "license": "unknown",
+   "source": "F-Droid",
+   "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+   "size_bytes": 216907,
+   "download": "tools/download_test_apks.sh \u2192 notes.apk",
+   "note": "corpus"
+  },
+  {
+   "name": "openlauncher",
+   "package": "com.farmerbb.taskbar",
+   "license": "Apache-2.0",
+   "source": "F-Droid",
+   "sha256": "b3320463a7a1ed46c52464bae83a97317d062b1e2097bd1885cdf265f2089f89",
+   "size_bytes": 6140320,
+   "download": "tools/download_test_apks.sh \u2192 openlauncher.apk",
+   "note": "corpus"
+  },
+  {
+   "name": "simplekeyboard",
+   "package": "rkr.simplekeyboardinputmethod",
+   "license": "Apache-2.0",
+   "source": "F-Droid",
+   "sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
+   "size_bytes": 662274,
+   "download": "tools/download_test_apks.sh \u2192 simplekeyboard.apk",
+   "note": "corpus"
+  },
+  {
+   "name": "simplestopwatch",
+   "package": "com.simplemobiletools.simplestopwatch",
+   "license": "GPL-3.0",
+   "source": "F-Droid",
+   "sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+   "size_bytes": 172399,
+   "download": "tools/download_test_apks.sh \u2192 simplestopwatch.apk",
+   "note": "corpus"
+  },
+  {
+   "name": "stopwatch",
+   "package": "hdli.udclock.u",
+   "license": "unknown",
+   "source": "F-Droid",
+   "sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
+   "size_bytes": 738101,
+   "download": "tools/download_test_apks.sh \u2192 stopwatch.apk",
+   "note": "corpus (exit-1 at baseline too)"
+  },
+  {
+   "name": "tictactoe",
+   "package": "org.jsconf.tictactoe",
+   "license": "MIT",
+   "source": "F-Droid",
+   "sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+   "size_bytes": 4474946,
+   "download": "tools/download_test_apks.sh \u2192 tictactoe.apk",
+   "note": "corpus"
+  },
+  {
+   "name": "tinymusic",
+   "package": "com.yukuku.tinymusic",
+   "license": "unknown",
+   "source": "F-Droid",
+   "sha256": "55c95ebcfc78c92df66fb3fc980b312aaac607e5f08ee936ef5e3a0dc2176c3e",
+   "size_bytes": 12731,
+   "download": "tools/download_test_apks.sh \u2192 tinymusic.apk",
+   "note": "corpus (corrupt EOCD \u2014 androguard agrees)"
+  },
+  {
+   "name": "unote",
+   "package": "com.leafcastle.android.unote",
+   "license": "GPL-3.0",
+   "source": "F-Droid",
+   "sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+   "size_bytes": 163498,
+   "download": "tools/download_test_apks.sh \u2192 unote.apk",
+   "note": "corpus"
+  }
+ ]
+}

@@ -1,0 +1,192 @@
+[
+ {
+  "apk": "com.looker.droidify_760.apk",
+  "package": "com.looker.droidify",
+  "category": "I-Compose",
+  "note": "Droid-ify",
+  "status": "ran",
+  "criteria": {
+   "exit_code": 0,
+   "nonwhite": 23472,
+   "seconds": 27.1,
+   "stderr_lines": 533679,
+   "PARSED": true,
+   "DEX_EXECUTED": true,
+   "UI_RENDERED": true,
+   "errors_zero": true
+  },
+  "screenshot": "/tmp/p3_runs/com.looker.droidify_760/screenshot.png",
+  "bytes": 6132598
+ },
+ {
+  "apk": "com.serwylo.retrowars_70.apk",
+  "package": "com.serwylo.retrowars",
+  "category": "K-3D",
+  "note": "RetroWars libGDX",
+  "status": "ran",
+  "criteria": {
+   "exit_code": 0,
+   "nonwhite": 23472,
+   "seconds": 2.5,
+   "stderr_lines": 788832,
+   "PARSED": true,
+   "DEX_EXECUTED": true,
+   "UI_RENDERED": true,
+   "errors_zero": true
+  },
+  "screenshot": "/tmp/p3_runs/com.serwylo.retrowars_70/screenshot.png",
+  "bytes": 15364501
+ },
+ {
+  "apk": "io.anuke.mindustry_1107.apk",
+  "package": "io.anuke.mindustry",
+  "category": "K-3D",
+  "note": "Mindustry libGDX",
+  "status": "ran",
+  "criteria": {
+   "exit_code": 0,
+   "nonwhite": 23472,
+   "seconds": 2.2,
+   "stderr_lines": 829248,
+   "PARSED": true,
+   "DEX_EXECUTED": true,
+   "UI_RENDERED": true,
+   "errors_zero": true
+  },
+  "screenshot": "/tmp/p3_runs/io.anuke.mindustry_1107/screenshot.png",
+  "bytes": 78293438
+ },
+ {
+  "apk": "org.oxycblt.auxio_75.apk",
+  "package": "org.oxycblt.auxio",
+  "category": "H-Media",
+  "note": "Auxio",
+  "status": "ran",
+  "criteria": {
+   "exit_code": 0,
+   "nonwhite": 23472,
+   "seconds": 1.2,
+   "stderr_lines": 388437,
+   "PARSED": true,
+   "DEX_EXECUTED": true,
+   "UI_RENDERED": true,
+   "errors_zero": true
+  },
+  "screenshot": "/tmp/p3_runs/org.oxycblt.auxio_75/screenshot.png",
+  "bytes": 11229630
+ },
+ {
+  "apk": "org.secuso.privacyfriendly2048_100.apk",
+  "package": "org.secuso.privacyfriendly2048",
+  "category": "J-Game",
+  "note": "2048",
+  "status": "ran",
+  "criteria": {
+   "exit_code": 0,
+   "nonwhite": 23472,
+   "seconds": 2.6,
+   "stderr_lines": 854414,
+   "PARSED": true,
+   "DEX_EXECUTED": true,
+   "UI_RENDERED": true,
+   "errors_zero": true
+  },
+  "screenshot": "/tmp/p3_runs/org.secuso.privacyfriendly2048_100/screenshot.png",
+  "bytes": 9294779
+ },
+ {
+  "apk": "fr.neamar.kiss_224.apk",
+  "package": "fr.neamar.kiss",
+  "category": "D-Lists",
+  "note": "KISS launcher",
+  "status": "ran",
+  "criteria": {
+   "exit_code": 1,
+   "nonwhite": 23472,
+   "seconds": 14.9,
+   "stderr_lines": 108447,
+   "PARSED": true,
+   "DEX_EXECUTED": true,
+   "UI_RENDERED": true,
+   "errors_zero": true
+  },
+  "screenshot": "/tmp/p3_runs/fr.neamar.kiss_224/screenshot.png",
+  "bytes": 2205788
+ },
+ {
+  "apk": "org.secuso.privacyfriendlynotes_105.apk",
+  "package": "org.secuso.privacyfriendlynotes",
+  "category": "B-Forms",
+  "note": "PF Notes",
+  "status": "ran",
+  "criteria": {
+   "exit_code": 0,
+   "nonwhite": 23472,
+   "seconds": 2.9,
+   "stderr_lines": 877839,
+   "PARSED": true,
+   "DEX_EXECUTED": true,
+   "UI_RENDERED": true,
+   "errors_zero": true
+  },
+  "screenshot": "/tmp/p3_runs/org.secuso.privacyfriendlynotes_105/screenshot.png",
+  "bytes": 8483558
+ },
+ {
+  "apk": "org.billthefarmer.editor_198.apk",
+  "package": "org.billthefarmer.editor",
+  "category": "B-Forms",
+  "note": "Editor",
+  "status": "ran",
+  "criteria": {
+   "exit_code": 0,
+   "nonwhite": 23472,
+   "seconds": 0.2,
+   "stderr_lines": 26101,
+   "PARSED": true,
+   "DEX_EXECUTED": true,
+   "UI_RENDERED": true,
+   "errors_zero": true
+  },
+  "screenshot": "/tmp/p3_runs/org.billthefarmer.editor_198/screenshot.png",
+  "bytes": 269122
+ },
+ {
+  "apk": "com.shatteredpixel.shatteredpixeldungeon_896.apk",
+  "package": "com.shatteredpixel.shatteredpixeldungeon",
+  "category": "K-3D",
+  "note": "Shattered Pixel Dungeon",
+  "status": "ran",
+  "criteria": {
+   "exit_code": 1,
+   "nonwhite": 23472,
+   "seconds": 147.7,
+   "stderr_lines": 275803,
+   "PARSED": true,
+   "DEX_EXECUTED": true,
+   "UI_RENDERED": true,
+   "errors_zero": true
+  },
+  "screenshot": "/tmp/p3_runs/com.shatteredpixel.shatteredpixeldungeon_896/screenshot.png",
+  "bytes": 29918038
+ },
+ {
+  "apk": "org.schabi.newpipe_1015.apk",
+  "package": "org.schabi.newpipe",
+  "category": "H-Media",
+  "note": "NewPipe",
+  "status": "ran",
+  "criteria": {
+   "exit_code": 0,
+   "nonwhite": 23472,
+   "seconds": 2.9,
+   "stderr_lines": 942521,
+   "PARSED": true,
+   "DEX_EXECUTED": true,
+   "UI_RENDERED": true,
+   "errors_zero": true
+  },
+  "screenshot": "/tmp/p3_runs/org.schabi.newpipe_1015/screenshot.png",
+  "bytes": 11507122
+ }
+]
