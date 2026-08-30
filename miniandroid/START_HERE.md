@@ -34,7 +34,7 @@ Read in this order:
 
 ## Git history in this package
 
-This ZIP contains the **full `.git` repository** (all 56+ commits, tag
+This ZIP contains the **full `.git` repository** (all 60 commits, tag
 `v0.11-unified-011`). If it was shipped without `.git`, restore history from
 the separate `miniandroid_unified_011_full.bundle`:
 

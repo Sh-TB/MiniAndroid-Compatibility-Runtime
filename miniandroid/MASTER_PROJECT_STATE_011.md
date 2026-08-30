@@ -23,9 +23,9 @@ always been: **real APKs, full journeys, byte-stable evidence**.
 | upstream | NOT AVAILABLE (no second remote configured) |
 | REMOTE_HEAD (`origin/main`) | `bbe0ce3` (verified via `git ls-remote` this session) |
 | REMOTE_DEFAULT_BRANCH | `main` |
-| LOCAL_HEAD | `288ff6f` |
+| LOCAL_HEAD | tag `v0.11-unified-011` (= HEAD at release) |
 | LATEST_TAG | none yet — `v0.11-unified-011` created locally this session |
-| DIVERGENCE | local ahead by 6 commits, 0 behind (`86bd646 f2e8ad9 7cc4254 8f0a85b 23900f8 288ff6f`) |
+| DIVERGENCE | local ahead by 10 commits, 0 behind (86bd646 f2e8ad9 7cc4254 8f0a85b 23900f8 288ff6f + docs/cleanup/consistency) |
 | PUSH | PUSH_PENDING — no credentials in this environment |
 
 ## 3. Architecture (subsystems, all in `src/`)
@@ -116,7 +116,7 @@ Repository is ZERO-APK (verified this session: 0 tracked .apk/.aab).
 
 ## 10. Current release
 
-`UNIFIED_011_CANONICAL` (local tag `v0.11-unified-011` on `288ff6f`+docs).
+`UNIFIED_011_CANONICAL` (tag `v0.11-unified-011` = release HEAD).
 GitHub Release: NOT AVAILABLE this session (no credentials). Release notes:
 `RELEASE_NOTES_UNIFIED_011.md`. Handoff package:
 `UNIFIED_011_CANONICAL_HANDOFF.zip` (built this session; SHA-256 in

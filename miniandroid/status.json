@@ -7,8 +7,8 @@
     "upstream": "NOT AVAILABLE",
     "remote_head": "bbe0ce3067401211af35402483b96baae69220df",
     "remote_default_branch": "main",
-    "local_head": "288ff6f74d84b8688fb0e97e3bb3e610021c5ee8",
-    "divergence": "local ahead 6, behind 0",
+    "local_head": "tag v0.11-unified-011 (HEAD at release; resolve via git describe)",
+    "divergence": "local ahead 10, behind 0",
     "latest_tag": "v0.11-unified-011",
     "push": "PUSH_PENDING (no credentials)"
   },
