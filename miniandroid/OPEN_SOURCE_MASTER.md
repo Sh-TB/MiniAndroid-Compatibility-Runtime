@@ -16,7 +16,7 @@ on the load-bearing path of a proven journey. Provenance grades per §4.
 | FreeType | freetype/freetype | 2.13.x (system, `26.2.20`) | FTL/GPL-2 | system | YES (EXP-096 §10 + EXP-101 POC) | PARTIAL — linked; text path is BitmapFont today | glyph rasterization | Android uses FreeType |
 | HarfBuzz | harfbuzz/harfbuzz | 10.2.0 (system) | MIT/OLD-MIT | system | YES (EXP-101 RTL POC 6/6) | PARTIAL — POC path | shaping | Android's shaper |
 | FriBidi | fribidi/fribidi | 1.0.16 (system) | LGPL-2.1+ | system | YES (EXP-101 RTL POC) | PARTIAL — POC path | bidi | Android's bidi |
-| libpng | pnggroup/libpng | 1.6.48 (system) | PNG | system | linked only | **NO — decode path still custom PNGDecoder** (R1 open) | PNG decode | CAMPAIGN 010 R1 target; wire it |
+| libpng | pnggroup/libpng | 1.6.48 (system) | PNG | system | **YES — decode+encode wired** | **YES — 011.1 default build; 12/12 fixtures; 7,036/7,036 corpus** | PNG decode+encode | Campaign 010 R1 adoption verified and imported (commit 3b862e5) |
 
 ## 2. Built/tested as external oracles (not runtime deps)
 
@@ -31,8 +31,8 @@ on the load-bearing path of a proven journey. Provenance grades per §4.
 
 | Candidate | Repo | Verdict this session | Why it mattered |
 |---|---|---|---|
-| Yoga | facebook/yoga | NOT in repo — research only (R3 open) | measure/layout semantics vs custom inflater |
-| PortableGL | rswinkle/PortableGL | NOT in repo — research only (R9/R10 open) | GLES2-on-CPU backend candidate |
+| Yoga | facebook/yoga | adapter experiment `run/uc010_yoga_layout.cpp` (bd8fe0d verified) | ADAPTER READY — differential 10/10 nodes <8px, 35–39× faster; render-stage wiring open |
+| PortableGL | rswinkle/PortableGL | glue in `src/gles/` (7cf39dc verified; portablegl.h external) | ADOPTED as glue — golden cube 1,668 fps @320×240; GLSL-not-executable honestly recorded |
 | SwiftShader | google/swiftshader | NOT integrated | heavy; Apache-2.0; candidate GLES backend |
 | ANGLE | google/angle | NOT integrated | EGL/GLES translation layer candidate |
 | Skia / SkiaUI2 / Skiko | google/skia, JetBrains/skiko | research docs only | full UI-stack replacement thesis |
@@ -41,7 +41,9 @@ on the load-bearing path of a proven journey. Provenance grades per §4.
 | resvg / nanosvg | linebender/resvg, tinylibs/nanosvg | NOT integrated | SVG/VectorDrawable candidates (R5) |
 | ARSCLib / Androguard-as-parser | reAndroid/ARSCLib | NOT integrated; androguard used as oracle | ARSC/AXML dedup (R6) |
 | apktool / JADX / smali-baksmali / dexlib2 | iBotPeaches, skylot, JesusFreke | research docs only (R7/R8) | static analysis offload |
-| Wuffs / stb_image | google/wuffs, nothings/stb | NOT integrated | image decode alternatives (R1) |
+| stb_image | nothings/stb (2c980bb verified) | VENDORED `third_party/stb/stb_image.h` | benchmark oracle; libpng==stb three-way identity method |
+| stb_vorbis / minimp3 | nothings/mackron | VENDORED `third_party/audio/` (recovered from UNIFIED_005) | audio codecs for the recovered audio_engine |
+| miniaudio | mackron/miniaudio (9634bed verified) | VERIFIED not integrated | B-class candidate when audio re-enters runtime |
 | libavif | AOMediaCodec/libavif | NOT integrated | AVIF future |
 
 Rule (§16/central law): before writing ANY new decoder/parser/layout/font/GLES
