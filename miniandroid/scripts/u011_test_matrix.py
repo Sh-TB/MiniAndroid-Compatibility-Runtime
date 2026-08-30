@@ -36,9 +36,11 @@ MATRIX = [
     ("dooz",          "corpus/dooz.apk",          None, 200),
 ]
 
-# canonical baselines from the UNIFIED_002 era (see MASTER docs)
+# canonical baselines (see MASTER docs + status_011_1.json).
+# UNIFIED_011.1: 088ea640... = libpng-encoder baseline (pixel-identical to the
+# UNIFIED_002-era 06fb40da... lineage; PNG file hash changed by design, R1).
 BASELINE_SHA = {
-    "telegram_v12": "06fb40da16b1f473980cfea9b0dc83d9d1707c2573cf713d636fd91d196503b3",
+    "telegram_v12": "088ea640587ec0d28fc7cd16b0097f2529ff7da2d594c3c2663c67531d770f6a",
 }
 
 
