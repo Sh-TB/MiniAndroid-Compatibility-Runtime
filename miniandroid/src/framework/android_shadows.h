@@ -438,6 +438,9 @@ public:
     // can find the layout_cache.json next to the APK.
     void set_apk_path(const std::string& path) { apk_path_ = path; }
 
+    // UNIFIED_007: real inflation evidence
+    const std::string& last_inflate_stats() const { return last_inflate_stats_; }
+
 private:
     uint32_t current_activity_id_ = 0;
     std::string current_activity_class_;
@@ -447,6 +450,9 @@ private:
     LifecycleState state_ = LifecycleState::NONE;
     // EXP-087 Phase 3 (B2 FIX): APK path for layout_cache.json lookup
     std::string apk_path_;
+    // UNIFIED_007: JSON stats from last real inflation
+    std::string last_inflate_stats_;
+    std::vector<std::string> warnings_;
 };
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -557,6 +563,32 @@ public:
         int anim_target_w = 0;
         int anim_target_h = 0;
         bool anim_decode_attempted = false;  // avoid re-decoding on each frame
+
+        // ===================================================================
+        // UNIFIED_007: REAL inflation fields (set by resources::LayoutInflater
+        // from AXML attributes; consumed by renderer + touch hit testing).
+        // ===================================================================
+        int padding_left = 0, padding_top = 0, padding_right = 0, padding_bottom = 0;
+        float text_size_px = 0;          // 0 → renderer default
+        uint32_t text_color = 0;         // 0 → renderer default (near-black)
+        bool text_bold = false;
+        bool text_italic = false;
+        std::string bg_drawable_path;    // APK entry path of background drawable
+        std::string src_drawable_path;   // APK entry path of ImageView src
+        std::string onClick_handler;     // android:onClick method name (real DEX callback)
+        int layout_weight = 0;           // LinearLayout weight
+        int container_gravity = -1;      // android:gravity on container (-1 unset)
+        int child_gravity = -1;          // android:layout_gravity on child
+        bool gravity_set = false;
+        bool bg_from_xml = false;        // background came from XML (color or drawable)
+        int measured_left = 0, measured_top = 0;   // final geometry (measure/layout)
+        int measured_width = 0, measured_height = 0;
+        int measured_right = 0, measured_bottom = 0;
+        bool laid_out = false;           // geometry computed
+        int num_lines = -1;
+        float text_size_sp = 0;          // original sp (evidence)
+        std::string android_id_name;     // resolved id name ("btn_roll") for evidence
+        int text_style = 0;              // AOSP Typeface bits (bold=1, italic=2)
     };
 
     std::string name() const override { return "View"; }

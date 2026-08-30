@@ -4,6 +4,9 @@
 
 #include "android_shadows.h"
 
+// UNIFIED_007: real resource pipeline
+#include "../resources/resource_runtime.h"
+
 #include <algorithm>
 #include <chrono>
 #include <fstream>
@@ -884,85 +887,49 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
             if (ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
                 content_view_id_ = ctx.args[0].object_id;
             } else if (ctx.args[0].kind == CallContext::Arg::Kind::INT) {
-                // EXP-087 Phase 3 (B2 FIX): setContentView(int layoutResId)
-                // now loads the layout_cache.json and creates real ViewShadow
-                // nodes from the AXML view tree, with ARSC-resolved text strings.
+                // UNIFIED_007: setContentView(int layoutResId) now inflates the
+                // REAL layout from the APK: resource id → resources.arsc →
+                // res/layout/<name>.xml (AXML) → ViewShadow tree. The old
+                // layout_cache.json sidecar path is GONE.
                 layout_resource_id_ = ctx.args[0].int_val;
-                std::cerr << "[EXP087-B2] setContentView(layoutResId=0x" << std::hex
+                std::cerr << "[U007-INFLATE] setContentView(layoutResId=0x" << std::hex
                           << ctx.args[0].int_val << std::dec << ")" << std::endl;
 
-                // Try to load layout_cache.json from the APK's directory
-                if (!apk_path_.empty()) {
-                    // Find layout_cache.json or *_layout_cache.json next to APK
-                    std::string apk_dir = apk_path_.substr(0, apk_path_.find_last_of("/"));
-                    // Try several naming patterns
-                    // EXP-088: Use APK-stem-specific cache filename first,
-                    // then fall back to generic layout_cache.json.
-                    std::string apk_stem = apk_path_;
-                    size_t slash = apk_stem.find_last_of('/');
-                    if (slash != std::string::npos) apk_stem = apk_stem.substr(slash+1);
-                    size_t dot = apk_stem.find_last_of('.');
-                    if (dot != std::string::npos) apk_stem = apk_stem.substr(0, dot);
-
-                    std::vector<std::string> cache_candidates = {
-                        apk_dir + "/" + apk_stem + "_layout_cache.json",  // per-APK (preferred)
-                        apk_dir + "/layout_cache.json",                   // generic fallback
-                    };
-
-                    // Try all layout cache files in the directory
-                    for (const auto& cache_path : cache_candidates) {
-                        std::ifstream cache_file(cache_path);
-                        if (!cache_file.is_open()) continue;
-
-                        std::cerr << "[EXP087-B2] Loading layout cache: " << cache_path << std::endl;
-                        try {
-                            json cache_json;
-                            cache_file >> cache_json;
-                            cache_file.close();
-
-                            const auto& layouts = cache_json["layouts"];
-                            // Find layout matching the resource ID
-                            for (auto it = layouts.begin(); it != layouts.end(); ++it) {
-                                const auto& layout = it.value();
-                                if (layout.contains("resource_id_int") &&
-                                    layout["resource_id_int"].get<int32_t>() == layout_resource_id_) {
-
-                                    std::cerr << "[EXP087-B2] Found layout: " << it.key()
-                                              << " (resource_id=0x" << std::hex
-                                              << layout_resource_id_ << std::dec << ")" << std::endl;
-
-                                    // Create ViewShadow nodes from the cached view tree
-                                    if (registry_ && layout.contains("view_tree")) {
-                                        auto* view_shadow = registry_->find_as<ViewShadow>();
-                                        std::cerr << "[EXP087-B2] registry_=" << registry_
-                                                  << " view_shadow=" << (void*)view_shadow
-                                                  << " has_view_tree=" << layout.contains("view_tree")
-                                                  << std::endl;
-                                        if (view_shadow) {
-                                            uint32_t root_id = inflate_view_tree(
-                                                view_shadow, layout["view_tree"], 0);
-                                            if (root_id != 0) {
-                                                content_view_id_ = root_id;
-                                                std::cerr << "[EXP087-B2] Inflated view tree root_id="
-                                                          << root_id << std::endl;
-                                            } else {
-                                                std::cerr << "[EXP087-B2] inflate_view_tree returned 0"
-                                                          << std::endl;
-                                            }
-                                        }
-                                    } else {
-                                        std::cerr << "[EXP087-B2] registry_=" << registry_
-                                                  << " has_view_tree=" << layout.contains("view_tree")
-                                                  << std::endl;
-                                    }
-                                    break;
-                                }
+                auto& rt = resources::ResourceRuntime::instance();
+                if (!apk_path_.empty() && rt.ensure_loaded(apk_path_) && registry_) {
+                    auto* view_shadow = registry_->find_as<ViewShadow>();
+                    if (view_shadow) {
+                        resources::InflateStats istats;
+                        uint32_t root_id = rt.inflater().inflate_layout_resid(
+                            view_shadow, (uint32_t)layout_resource_id_, istats);
+                        std::cerr << "[U007-INFLATE] root_id=" << root_id
+                                  << " views=" << istats.views_created
+                                  << " strings=" << istats.strings_resolved
+                                  << " ids=" << istats.ids_resolved
+                                  << " unresolved=" << istats.unresolved_refs << std::endl;
+                        // UNIFIED_011 recovery guard (zero-regression policy):
+                        // accept the inflated tree only when it is substantive —
+                        // i.e. enough views to be a real screen, or at least one
+                        // ARSC-resolved string. Weak inflations (e.g. headingcalc:
+                        // 3 views, 0 resolved @string refs -> blank screen) fall
+                        // back to the legacy default screen, exactly as before.
+                        const bool substantive =
+                            istats.views_created >= 5 || istats.strings_resolved > 0;
+                        if (root_id != 0 && substantive) {
+                            content_view_id_ = root_id;
+                            last_inflate_stats_ = istats.to_json();
+                            for (const auto& w : istats.warnings) {
+                                if (warnings_.size() < 64) warnings_.push_back(w);
                             }
-                            break;  // Found and loaded cache
-                        } catch (const std::exception& e) {
-                            std::cerr << "[EXP087-B2] Error parsing layout cache: " << e.what() << std::endl;
+                        } else if (root_id != 0) {
+                            std::cerr << "[U007-INFLATE] REJECTED non-substantive tree"
+                                      << " (views=" << istats.views_created
+                                      << " strings=" << istats.strings_resolved
+                                      << ") — keeping legacy default screen" << std::endl;
                         }
                     }
+                } else if (apk_path_.empty()) {
+                    std::cerr << "[U007-INFLATE] no apk path set — cannot inflate" << std::endl;
                 }
             }
         }
