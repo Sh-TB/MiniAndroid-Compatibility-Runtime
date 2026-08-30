@@ -1,0 +1,60 @@
+{
+ "campaign": "010",
+ "date": "2026-08-30",
+ "baseline": "UNIFIED_009_FINAL (HEAD 4a2d39b)",
+ "commits": [
+  "8d4e25b R1 libpng PNG adoption",
+  "4e128c0 R9/R10 PortableGL GLES backend",
+  "f131606 R3 Yoga layout adapter",
+  "f9190da R14 real stack traces"
+ ],
+ "success_criteria": {
+  "open_source_components_actually_adopted": {
+   "verdict": "PASS",
+   "evidence": "libpng(decode+encode), PortableGL(GLES backend), Yoga(layout adapter); 3 full \u00a71 evidence chains"
+  },
+  "custom_code_reduced": {
+   "verdict": "PASS",
+   "evidence": "-383 LoC PNG codec deleted; 800-1500 LoC rasterizer never written (~350 glue); EXP-093 stub class retired"
+  },
+  "real_apk_coverage_increased": {
+   "verdict": "PASS",
+   "evidence": "25 -> 31 real APKs downloaded+executed; 7 new this campaign with honest per-criteria"
+  },
+  "dooz_progresses": {
+   "verdict": "PASS",
+   "evidence": "Kotlin Intrinsics null-check path unblocked: real stack traces -> 9 real NPEs thrown (was livelock); remaining blocker located to StringBuilder.append PC-advance"
+  },
+  "telegram_remains_proven": {
+   "verdict": "PASS",
+   "evidence": "pixdata b9b06072ea17d7fd identical after every adoption; 002 chain standing"
+  },
+  "gles_progresses": {
+   "verdict": "PASS",
+   "evidence": "0 -> full GLES2 pipeline via PortableGL: golden cube 1,668fps@320x240, 27.5fps@1080x1920 through GLES20Bridge"
+  },
+  "regression_remains_clean": {
+   "verdict": "PASS",
+   "evidence": "REGRESSION_010.md: zero regressions across all four adoptions"
+  }
+ },
+ "replacements_count": 3,
+ "corpus_size": 31,
+ "png_corpus": {
+  "files": 7036,
+  "before_pct": 97.07,
+  "after_pct": 100.0,
+  "three_way_identity": "libpng==stb all files"
+ },
+ "known_open_blockers": [
+  "LM1/i;.f StringBuilder.append(null) PC-advance livelock (dooz Compose path)",
+  "GLSL strings not executable by PGL (GLSL->C translator or llvmpipe = future)",
+  "SkiaUI2 identity unverified on GitHub (instruction-named candidate)",
+  "SheenBidi differential needs base-direction recalibration",
+  "GLES20 dispatch hook into dalvik_engine framework-static chain (bridge ready)",
+  "Yoga bounds wiring into engine render stage (adapter ready)"
+ ],
+ "not_run_this_campaign": [
+  "browser/API stress (server absent since 009 recovery \u2014 recorded, not simulated)"
+ ]
+}

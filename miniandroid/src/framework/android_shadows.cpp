@@ -442,10 +442,13 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_long(MAIN_THREAD_TID);
     }
     if (m == "getStackTrace") {
-        // Return null for now — array-length handler in the engine returns 0
-        // for null arrays, which lets Intrinsics.createParameterIsNullExceptionMessage
-        // terminate its stack-walk loop. (See EXP-043 Phase 3 fix.)
-        return CallResult::handled_null();
+        // CAMPAIGN 010 R14 (recovered via UNIFIED_011.1): do NOT handle here —
+        // fall through to the engine's real implementation (UC010-STACKTRACE),
+        // which materializes actual interpreter frames as StackTraceElement[]
+        // so Kotlin Intrinsics' null-check walk terminates at the true caller
+        // (fixes the dooz HALT-LOOP livelock in LM1/i;.f). The old null-return
+        // made the walk loop forever on out-of-bounds aget-object reads.
+        return CallResult::not_handled();
     }
     if (m == "isAlive")      return CallResult::handled_bool(true);
     if (m == "isDaemon")     return CallResult::handled_bool(false);

@@ -895,6 +895,19 @@ public:
         return completed_frames_; 
     }
     
+    // CAMPAIGN 010 R14: real stack-trace support for
+    // Thread.getStackTrace()/Kotlin Intrinsics. Returns live frames
+    // TOP (innermost) FIRST — the order Java's getStackTrace() uses.
+    std::vector<std::pair<std::string, std::string>> snapshot_top_first() const {
+        std::vector<std::pair<std::string, std::string>> out;
+        auto temp = stack_;
+        while (!temp.empty()) {
+            out.emplace_back(temp.top().class_name, temp.top().method_name);
+            temp.pop();
+        }
+        return out;
+    }
+
     json dump_current_stack() const {
         json arr = json::array();
         
@@ -1205,6 +1218,18 @@ public:
     // dispatch a click on it. Returns true if a matching View with a
     // registered listener was found.
     bool dispatch_click_by_class(const std::string& class_substring);
+
+    // CAMPAIGN 009 §10: view attach lifecycle dispatch.
+    // AOSP View.java: when the view tree attaches to the window,
+    // View.dispatchAttachedToWindow invokes onAttachedToWindow() on every
+    // node. AbstractComposeView.onAttachedToWindow ->
+    // ensureCompositionCreated() is what turns an empty ComposeView into a
+    // real composition (AndroidComposeView child + render content). The
+    // runtime previously swallowed this callback (ViewShadow handled_void),
+    // so every Compose APK rendered a white frame with children=0.
+    // Env-gated: MINIANDROID_DISPATCH_ATTACH=1 (default off for golden
+    // regression safety). Bounded multi-pass: attach may create new views.
+    bool dispatch_view_attached();
 
     // EXP-071 Phase 8: Generic Runnable dispatch.
     // Invokes run()V (or run(TLObject, TL_error)V for RequestDelegate) on the

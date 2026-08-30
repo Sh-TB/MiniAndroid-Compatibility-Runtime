@@ -1,0 +1,465 @@
+{
+ "campaign": "010",
+ "total_src_loc": 67608,
+ "per_dir": {
+  "api": {
+   "loc": 3749,
+   "files": [
+    {
+     "file": "android_context.h",
+     "loc": 598
+    },
+    {
+     "file": "android_stubs.h",
+     "loc": 667
+    },
+    {
+     "file": "application_context.cpp",
+     "loc": 625
+    },
+    {
+     "file": "shared_prefs.cpp",
+     "loc": 1078
+    },
+    {
+     "file": "shared_prefs.h",
+     "loc": 781
+    }
+   ],
+   "nfiles": 5,
+   "role": "API dispatcher bridge / context / prefs"
+  },
+  "apk": {
+   "loc": 2083,
+   "files": [
+    {
+     "file": "apk_parser.cpp",
+     "loc": 601
+    },
+    {
+     "file": "apk_parser.h",
+     "loc": 239
+    },
+    {
+     "file": "manifest_reader.cpp",
+     "loc": 932
+    },
+    {
+     "file": "manifest_reader.h",
+     "loc": 311
+    }
+   ],
+   "nfiles": 4,
+   "role": "APK parser (zip/manifest)"
+  },
+  "dex": {
+   "loc": 27913,
+   "files": [
+    {
+     "file": "api_dispatcher.cpp",
+     "loc": 613
+    },
+    {
+     "file": "api_dispatcher.h",
+     "loc": 463
+    },
+    {
+     "file": "class_resolver.cpp",
+     "loc": 517
+    },
+    {
+     "file": "class_resolver.h",
+     "loc": 185
+    },
+    {
+     "file": "dalvik_engine.cpp",
+     "loc": 12607
+    },
+    {
+     "file": "dalvik_engine.h",
+     "loc": 1741
+    },
+    {
+     "file": "dex_interpreter.cpp",
+     "loc": 560
+    },
+    {
+     "file": "dex_interpreter.h",
+     "loc": 291
+    },
+    {
+     "file": "dex_interpreter_batch.cpp",
+     "loc": 906
+    },
+    {
+     "file": "dex_interpreter_batch.h",
+     "loc": 640
+    },
+    {
+     "file": "dex_interpreter_exp018.cpp",
+     "loc": 2268
+    },
+    {
+     "file": "dex_interpreter_exp018.h",
+     "loc": 465
+    },
+    {
+     "file": "dex_interpreter_v2.cpp",
+     "loc": 1439
+    },
+    {
+     "file": "dex_interpreter_v2.h",
+     "loc": 575
+    },
+    {
+     "file": "dex_parser.cpp",
+     "loc": 972
+    },
+    {
+     "file": "dex_parser.h",
+     "loc": 411
+    },
+    {
+     "file": "exception_system.cpp",
+     "loc": 247
+    },
+    {
+     "file": "exception_system.h",
+     "loc": 449
+    },
+    {
+     "file": "execution_guard.cpp",
+     "loc": 321
+    },
+    {
+     "file": "execution_guard.h",
+     "loc": 351
+    },
+    {
+     "file": "execution_observatory.cpp",
+     "loc": 620
+    },
+    {
+     "file": "execution_observatory.h",
+     "loc": 637
+    },
+    {
+     "file": "trace_exporter.cpp",
+     "loc": 521
+    },
+    {
+     "file": "trace_exporter.h",
+     "loc": 114
+    }
+   ],
+   "nfiles": 24,
+   "role": "DEX parser + interpreter + engine"
+  },
+  "diagnostics": {
+   "loc": 807,
+   "files": [
+    {
+     "file": "click_audit.h",
+     "loc": 85
+    },
+    {
+     "file": "mem_probe.h",
+     "loc": 27
+    },
+    {
+     "file": "trace_engine.cpp",
+     "loc": 394
+    },
+    {
+     "file": "trace_engine.h",
+     "loc": 301
+    }
+   ],
+   "nfiles": 4,
+   "role": "trace / click audit"
+  },
+  "framework": {
+   "loc": 2862,
+   "files": [
+    {
+     "file": "android_shadows.cpp",
+     "loc": 1472
+    },
+    {
+     "file": "android_shadows.h",
+     "loc": 869
+    },
+    {
+     "file": "heap_adapter.h",
+     "loc": 62
+    },
+    {
+     "file": "shadow_registry.cpp",
+     "loc": 164
+    },
+    {
+     "file": "shadow_registry.h",
+     "loc": 295
+    }
+   ],
+   "nfiles": 5,
+   "role": "Android view shadows / registry"
+  },
+  "jni": {
+   "loc": 219,
+   "files": [
+    {
+     "file": "jni_bridge.h",
+     "loc": 219
+    }
+   ],
+   "nfiles": 1,
+   "role": "JNI bridge"
+  },
+  "renderer": {
+   "loc": 4006,
+   "files": [
+    {
+     "file": "bitmap_font_data.h",
+     "loc": 2028
+    },
+    {
+     "file": "software_renderer.cpp",
+     "loc": 1459
+    },
+    {
+     "file": "software_renderer.h",
+     "loc": 519
+    }
+   ],
+   "nfiles": 3,
+   "role": "software renderer + fonts"
+  },
+  "resources": {
+   "loc": 4830,
+   "files": [
+    {
+     "file": "arsc_parser.cpp",
+     "loc": 671
+    },
+    {
+     "file": "arsc_parser.h",
+     "loc": 226
+    },
+    {
+     "file": "axml_parser.cpp",
+     "loc": 263
+    },
+    {
+     "file": "axml_parser.h",
+     "loc": 80
+    },
+    {
+     "file": "layout_inflater.cpp",
+     "loc": 1002
+    },
+    {
+     "file": "layout_inflater.h",
+     "loc": 159
+    },
+    {
+     "file": "res_config.cpp",
+     "loc": 425
+    },
+    {
+     "file": "res_config.h",
+     "loc": 145
+    },
+    {
+     "file": "resource_parser.cpp",
+     "loc": 1182
+    },
+    {
+     "file": "resource_parser.h",
+     "loc": 573
+    },
+    {
+     "file": "resource_runtime.cpp",
+     "loc": 51
+    },
+    {
+     "file": "resource_runtime.h",
+     "loc": 53
+    }
+   ],
+   "nfiles": 12,
+   "role": "ARSC/AXML/layout inflater/res-config"
+  },
+  "runtime": {
+   "loc": 10929,
+   "files": [
+    {
+     "file": "application_runtime.cpp",
+     "loc": 2649
+    },
+    {
+     "file": "application_runtime.h",
+     "loc": 754
+    },
+    {
+     "file": "execution_engine.cpp",
+     "loc": 1926
+    },
+    {
+     "file": "execution_engine.h",
+     "loc": 184
+    },
+    {
+     "file": "object_model.h",
+     "loc": 1107
+    },
+    {
+     "file": "runtime_integration_exp019.cpp",
+     "loc": 1410
+    },
+    {
+     "file": "runtime_integration_exp019.h",
+     "loc": 748
+    },
+    {
+     "file": "runtime_metadata.h",
+     "loc": 1374
+    },
+    {
+     "file": "vtable_dispatch.h",
+     "loc": 777
+    }
+   ],
+   "nfiles": 9,
+   "role": "execution engine / application runtime"
+  },
+  "storage": {
+   "loc": 1545,
+   "files": [
+    {
+     "file": "file_sandbox.cpp",
+     "loc": 938
+    },
+    {
+     "file": "file_sandbox.h",
+     "loc": 607
+    }
+   ],
+   "nfiles": 2,
+   "role": "file sandbox / sqlite / prefs store"
+  }
+ },
+ "root_files_loc": 8665,
+ "root_files": [
+  {
+   "file": "exp002_main.cpp",
+   "loc": 419
+  },
+  {
+   "file": "exp003a1_validate.cpp",
+   "loc": 689
+  },
+  {
+   "file": "exp003a_main.cpp",
+   "loc": 476
+  },
+  {
+   "file": "exp003batch_main.cpp",
+   "loc": 662
+  },
+  {
+   "file": "exp004_main.cpp",
+   "loc": 1288
+  },
+  {
+   "file": "exp005_main.cpp",
+   "loc": 950
+  },
+  {
+   "file": "exp006_main.cpp",
+   "loc": 1206
+  },
+  {
+   "file": "exp007_012_megabatch_main.cpp",
+   "loc": 631
+  },
+  {
+   "file": "exp007_012_megatch_main_temp.cpp",
+   "loc": 9
+  },
+  {
+   "file": "exp018_main.cpp",
+   "loc": 1268
+  },
+  {
+   "file": "exp019_main.cpp",
+   "loc": 728
+  },
+  {
+   "file": "main.cpp",
+   "loc": 339
+  }
+ ],
+ "markers_per_dir": {
+  "exp004_main.cpp": 1,
+  "exp005_main.cpp": 1,
+  "exp003a_main.cpp": 1,
+  "exp007_012_megabatch_main.cpp": 2,
+  "main.cpp": 1,
+  "exp006_main.cpp": 1,
+  "framework": 22,
+  "apk": 2,
+  "dex": 123,
+  "runtime": 21,
+  "api": 13,
+  "resources": 4,
+  "jni": 3,
+  "renderer": 3
+ },
+ "markers_total": 198,
+ "markers_top_files": {
+  "dex/dalvik_engine.cpp": 67,
+  "dex/api_dispatcher.cpp": 17,
+  "dex/dex_interpreter_batch.cpp": 10,
+  "framework/android_shadows.cpp": 9,
+  "framework/android_shadows.h": 8,
+  "dex/dalvik_engine.h": 8,
+  "dex/dex_interpreter_v2.cpp": 7,
+  "api/android_context.h": 7,
+  "runtime/application_runtime.cpp": 6,
+  "runtime/execution_engine.cpp": 6,
+  "framework/shadow_registry.h": 5,
+  "api/application_context.cpp": 4,
+  "dex/dex_interpreter_batch.h": 3,
+  "dex/api_dispatcher.h": 3,
+  "runtime/application_runtime.h": 3,
+  "runtime/execution_engine.h": 3,
+  "jni/jni_bridge.h": 3,
+  "exp007_012_megabatch_main.cpp": 2,
+  "dex/dex_interpreter_exp018.cpp": 2,
+  "dex/dex_interpreter_exp018.h": 2,
+  "runtime/runtime_integration_exp019.h": 2,
+  "api/android_stubs.h": 2,
+  "renderer/software_renderer.cpp": 2,
+  "exp004_main.cpp": 1,
+  "exp005_main.cpp": 1,
+  "exp003a_main.cpp": 1,
+  "main.cpp": 1,
+  "exp006_main.cpp": 1,
+  "apk/manifest_reader.h": 1,
+  "apk/apk_parser.cpp": 1
+ },
+ "linked_libs": [
+  "z",
+  "webp",
+  "webpdemux",
+  "jpeg",
+  "stdc",
+  "m",
+  "pthread",
+  "freetype",
+  "harfbuzz",
+  "fribidi",
+  "png"
+ ]
+}
