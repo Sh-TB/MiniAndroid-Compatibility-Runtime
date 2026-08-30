@@ -18,7 +18,7 @@ miniandroid/download/
 apk_cache/
 
 # external tool build artifacts
-tools/robolectric-oracle/target/
+**/robolectric-oracle/target/
 
 # large local run artifacts (keep curated evidence under docs/evidence instead)
 miniandroid/run/u011/
