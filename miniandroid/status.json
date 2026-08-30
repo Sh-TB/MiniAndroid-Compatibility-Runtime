@@ -1,15 +1,16 @@
 {
   "generated": "2026-08-30",
-  "campaign": "UNIFIED_011",
+  "campaign": "UNIFIED_011.1",
+  "supersedes": "UNIFIED_011",
   "project": "MiniAndroid — Real Android APK compatibility runtime",
   "git": {
     "origin": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime.git",
     "upstream": "NOT AVAILABLE",
     "remote_head": "bbe0ce3067401211af35402483b96baae69220df",
     "remote_default_branch": "main",
-    "local_head": "tag v0.11-unified-011 (HEAD at release; resolve via git describe)",
+    "local_head": "tag v0.11.1-unified-011-1 (HEAD at release; resolve via git describe)",
     "divergence": "local ahead 10, behind 0",
-    "latest_tag": "v0.11-unified-011",
+    "latest_tag": "v0.11.1-unified-011-1",
     "push": "PUSH_PENDING (no credentials)"
   },
   "build": {
@@ -22,9 +23,9 @@
   },
   "tests": {
     "runner": "scripts/u011_test_matrix.py",
-    "telegram_v12": {"exit": 0, "runs": 3, "screenshot_sha256": "06fb40da16b1f473980cfea9b0dc83d9d1707c2573cf713d636fd91d196503b3", "baseline_match": true, "nonwhite_px": 41233},
-    "gmdice": {"exit": 0, "screenshot_sha256": "6425c0f639acaf03", "nonwhite_px": 158040, "verdict": "REAL UI via UNIFIED_007 inflation"},
-    "simplestopwatch": {"exit": 0, "screenshot_sha256": "ef334f7ceaab204b", "nonwhite_px": 930980, "verdict": "real controls; geometry bug open"},
+    "telegram_v12": {"exit": 0, "runs": 3, "screenshot_sha256": "088ea640587ec0d28fc7cd16b0097f2529ff7da2d594c3c2663c67531d770f6a", "baseline_match": true, "nonwhite_px": 41233, "note": "pixel-identical to 06fb40da lineage; PNG file hash changed by design (libpng encoder, Campaign 010 R1)"},
+    "gmdice": {"exit": 0, "screenshot_sha256": "472c1d3c0ee12330", "nonwhite_px": 158040, "verdict": "REAL UI via UNIFIED_007 inflation (011.1 baseline; pixel metrics unchanged)"},
+    "simplestopwatch": {"exit": 0, "screenshot_sha256": "d495e3cb2ccf6c11", "nonwhite_px": 930980, "verdict": "real controls; geometry bug open (011.1 baseline)"},
     "fallback_screen_sha256_16": "c200c521628bb8a8",
     "blank_screen_sha256_16": "c035e9ba62a884ec",
     "matrix_detail": "TEST_MATRIX.md"

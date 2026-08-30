@@ -1,5 +1,7 @@
 # MASTER_HANDOFF_011 — 3-minute onboarding for the next coder/agent
 
+> **UNIFIED_011.1 addendum (2026-08-30):** this document is the Campaign 011 snapshot, kept verbatim. The current truth after the cross-campaign recovery import lives in `MASTER_RECONCILIATION_011_1.md`, `CODER_HANDOFF_011_1.md`, `docs/CURRENT_TRUTH_011_1.md` and `status_011_1.json` (tag `v0.11.1-unified-011-1`).
+
 Generated 2026-08-30 (CAMPAIGN 011). If you read only one file: read this one.
 
 ---
