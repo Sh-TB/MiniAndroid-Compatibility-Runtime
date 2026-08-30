@@ -4,6 +4,25 @@
   "manifest_version": "1.0.0",
   "apks": [
     {
+      "name": "Telegram v12",
+      "version": "12.10.1 (vc70389, universal)",
+      "sha256": "f5e1192725772960cc94b83e54ffd8939f876b2b6e5f21d4a8537eb6fcba50e6",
+      "expected_size_bytes": 73028244,
+      "expected_size_human": "69.66 MB",
+      "source": "https://telegram.org/android",
+      "download_url": "https://telegram.org/dl/android",
+      "obtained": "UNIFIED_002 campaign (2026-08-28); forward-version compat target",
+      "required_for": [
+        "exp100_click_chain_audit",
+        "u011_test_matrix telegram_v12"
+      ],
+      "capabilities": [
+        "multi-dex (5 DEX)",
+        "SMS auth chain (controlled boundary)",
+        "real Lottie (RLottie)"
+      ]
+    },
+    {
       "name": "Telegram",
       "version": "10.14.5 (arm64-v8a)",
       "sha256": "193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e",
