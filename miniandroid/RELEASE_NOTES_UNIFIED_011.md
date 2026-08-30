@@ -1,6 +1,6 @@
 # RELEASE NOTES — UNIFIED_011_CANONICAL (tag `v0.11-unified-011`)
 
-Date: 2026-08-30 · Base commit: `288ff6f` (+ docs) · Scope: canonical recovery
+Date: 2026-08-30 · Release: tag `v0.11-unified-011` (60 commits total) · Scope: canonical recovery
 release — no feature development (CAMPAIGN 011 charter).
 
 ## Highlights
