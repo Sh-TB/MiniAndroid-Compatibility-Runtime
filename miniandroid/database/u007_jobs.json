@@ -1,0 +1,32 @@
+{
+  "jobs": [
+    {
+      "apk_path": "/home/z/my-project/repo/miniandroid/download/corpus/gmdice.apk",
+      "created_at": "2026-08-29T17:36:11Z",
+      "fail_reason": "",
+      "id": "job_5306423_1",
+      "status": "COMPLETED",
+      "type": "apk_run",
+      "updated_at": "2026-08-29T17:36:11Z"
+    },
+    {
+      "apk_path": "/home/z/my-project/repo/miniandroid/download/corpus/gmdice.apk",
+      "created_at": "2026-08-29T17:36:12Z",
+      "fail_reason": "",
+      "id": "job_5307426_2",
+      "status": "CAPTCHA_REQUIRED",
+      "type": "captcha",
+      "updated_at": "2026-08-29T17:36:12Z"
+    },
+    {
+      "apk_path": "/home/z/my-project/repo/miniandroid/download/corpus/gmdice.apk",
+      "created_at": "2026-08-29T17:36:12Z",
+      "fail_reason": "",
+      "id": "job_5307678_3",
+      "status": "CANCELLED",
+      "type": "apk_run",
+      "updated_at": "2026-08-29T17:36:12Z"
+    }
+  ],
+  "schema": "u007_jobs_v1"
+}

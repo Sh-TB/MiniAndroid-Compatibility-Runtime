@@ -21,6 +21,7 @@
 #include "../framework/android_shadows.h"
 #include "../framework/heap_adapter.h"
 #include <chrono>
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -4034,6 +4035,100 @@ bool DalvikExecutionEngine::dispatch_runnable(uint32_t runnable_object_id,
               << " class=" << runnable_class
               << std::endl;
     return ok;
+}
+
+// ---------------------------------------------------------------------------
+// CAMPAIGN 009 §10 — view attach lifecycle dispatch.
+// Oracle: aosp-mirror/platform_frameworks_base View.java
+// dispatchAttachedToWindow(): the framework invokes onAttachedToWindow() on
+// every node of the attaching tree. AbstractComposeView.onAttachedToWindow()
+// -> ensureCompositionCreated() builds the composition and attaches
+// AndroidComposeView as ComposeView's child. Evidence: dooz run trace showed
+// ComposeView children=0 + onAttachedToWindow present ONLY in CODE_ITEM parse
+// logs, never dispatched ([EXP095-LAYOUT] parent=27 children=0, white frame).
+// Env-gated via MINIANDROID_DISPATCH_ATTACH=1 (caller checks) — default off
+// keeps the golden Telegram/GMDice screenshots byte-stable.
+// ---------------------------------------------------------------------------
+bool DalvikExecutionEngine::dispatch_view_attached() {
+    if (shadow_registry_ == nullptr) return false;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) return false;
+
+    // CAMPAIGN 009 diagnostics: why would dispatch fail? Log the first few
+    // attempts with their class + engine preconditions.
+    static int diag_logged = 0;
+    std::cerr << "[UC009-ATTACH-DIAG] dex_report=" << (dex_report_ ? "SET" : "NULL")
+              << " classes_indexed=" << class_info_index_.size()
+              << " nodes=" << view_shadow->all_nodes().size()
+              << " depth=" << recursion_depth_ << std::endl;
+    if (class_info_index_.find("Landroidx/compose/ui/platform/ComposeView;") != class_info_index_.end()) {
+        std::cerr << "[UC009-ATTACH-DIAG] ComposeView IS in class index" << std::endl;
+    } else {
+        std::cerr << "[UC009-ATTACH-DIAG] ComposeView NOT in class index" << std::endl;
+        // find any androidx class in the index to show key format
+        int shown = 0;
+        for (const auto& [k, v] : class_info_index_) {
+            if (k.find("compose") != std::string::npos && shown++ < 3) {
+                std::cerr << "[UC009-ATTACH-DIAG] sample key: " << k << std::endl;
+            }
+        }
+    }
+
+    bool any_ok = false;
+    // Bounded multi-pass: a dispatched attach may create NEW views
+    // (Compose ensureCompositionCreated -> AndroidComposeView via addView).
+    // Guard set prevents double dispatch; passes bounded to avoid runaway.
+    std::unordered_set<uint32_t> attempted;
+    for (int pass = 0; pass < 16; pass++) {
+        bool dispatched_this_pass = false;
+        // Snapshot node ids: dispatch may mutate the node map (addView of
+        // new children), so iterate over a stable copy of current ids.
+        std::vector<uint32_t> ids;
+        for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
+            if (node_ptr) ids.push_back(id);
+        }
+        std::sort(ids.begin(), ids.end());   // creation order: parents before children
+        for (uint32_t id : ids) {
+            if (attempted.count(id)) continue;
+            const auto* node = view_shadow->find_node(id);
+            if (node == nullptr || node->class_desc.empty()) { attempted.insert(id); continue; }
+            attempted.insert(id);
+            const std::string cls = node->class_desc;
+            // Only DEX-side classes (bundled androidx / app code) can be
+            // interpreted; try_recursive_invoke returns false otherwise.
+            std::vector<DalvikValue> args{DalvikValue::make_object(id, cls)};
+            DalvikValue return_val = DalvikValue::make_void();
+            DalvikExecutionResult result;
+            // Walk the superclass chain: ComposeView inherits
+            // onAttachedToWindow from AbstractComposeView (verified in dooz
+            // DEX). AOSP semantics: virtual dispatch finds the override
+            // nearest to the receiver class; walking UP from the runtime
+            // class reproduces that for the no-override case.
+            bool ok = false;
+            std::string walk = cls;
+            for (int hop = 0; hop < 8 && !ok && !walk.empty(); hop++) {
+                ok = try_recursive_invoke(walk, "onAttachedToWindow", args, return_val, result);
+                if (ok) break;
+                auto cit = class_info_index_.find(walk);
+                if (cit == class_info_index_.end()) break;
+                const dex::ClassInfo& ci = dex_report_->classes[cit->second];
+                walk = ci.superclass_name;
+                // Stop at framework superclasses (shadowed, not in DEX)
+                if (walk.empty() || walk.rfind("Landroid/", 0) == 0 ||
+                    walk.rfind("Ljava/", 0) == 0) break;
+            }
+            if (ok) {
+                any_ok = true;
+                dispatched_this_pass = true;
+                std::cerr << "[UC009-ATTACH] onAttachedToWindow dispatched view=" << id
+                          << " class=" << cls << std::endl;
+            }
+        }
+        if (!dispatched_this_pass) break;
+    }
+    std::cerr << "[UC009-ATTACH] attach dispatch complete ok=" << (any_ok ? "true" : "false")
+              << std::endl;
+    return any_ok;
 }
 
 bool DalvikExecutionEngine::dispatch_click_by_class(const std::string& class_substring) {
@@ -11641,6 +11736,35 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // CAMPAIGN 010 R14: java.lang.StackTraceElement.getClassName/getMethodName
+    // Real frames are materialized by Thread.getStackTrace (UC010-STACKTRACE);
+    // these accessors read the fields back so Kotlin Intrinsics' null-check
+    // stack walk terminates with the true caller frame.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("StackTraceElement") != std::string::npos &&
+        (method == "getClassName" || method == "getMethodName" ||
+         method == "getFileName" || method == "getLineNumber")) {
+        uint32_t oid = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                           ? args[0].object_id : 0;
+        if (method == "getLineNumber") {
+            result = DalvikValue::make_int(0);  // interpreter has no line tables
+        } else if (method == "getFileName") {
+            result = DalvikValue::make_null();
+        } else {
+            const char* field = (method == "getClassName") ? "__class_name__"
+                                                           : "__method_name__";
+            std::string val;
+            if (oid && heap_.has_object(oid)) {
+                auto f = heap_.get_object_field(oid, field);
+                if (f.has_value() && f->type == DalvikType::STRING_REF) val = f->string_val;
+            }
+            result = DalvikValue::make_string(val, 0);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // EXP-043 Phase 3: Thread.currentThread → Thread singleton
     // ────────────────────────────────────────────────────────────────────────
     if (class_name.find("Thread") != std::string::npos &&
@@ -11682,18 +11806,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────────
     if (class_name.find("Thread") != std::string::npos &&
         method == "getStackTrace") {
-        uint32_t obj_id = heap_.allocate("Larray;", pc_,
+        // CAMPAIGN 010 R14: REAL stack trace from the interpreter call stack
+        // (replaces the EXP-093 empty-array stub). Kotlin Intrinsics
+        // checkNotNullParameter walks trace[i].className while it equals the
+        // Intrinsics class — with real frames the walk terminates at the true
+        // caller and the NullPointerException carries the real
+        // "Parameter specified as non-null is null: method Class.m, parameter X"
+        // message instead of livelocking in the stack-walk loop (the dooz
+        // HALT-LOOP in LM1/i;.f).
+        auto frames = call_stack_.snapshot_top_first();
+        const size_t N = std::min<size_t>(frames.size(), 64);
+        uint32_t arr_id = heap_.allocate("Larray;", pc_,
                                         call_stack_.empty() ? 0 : call_stack_.top().frame_id);
-        // EXP-093: Set __array_length__ = 0 on the heap so array-length works
-        heap_.set_object_field(obj_id, "__array_length__",
-                               DalvikValue::make_int(0));
+        heap_.set_object_field(arr_id, "__array_length__", DalvikValue::make_int((int)N));
+        for (size_t i = 0; i < N; i++) {
+            uint32_t ste = heap_.allocate("Ljava/lang/StackTraceElement;", pc_,
+                                          call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            // "Lcom/foo/Bar;" / "Landroidx/compose/ui/node/e;" → dotted name
+            std::string raw = frames[i].first;
+            std::string dotted = raw;
+            if (!dotted.empty() && dotted.front() == 'L') dotted.erase(0, 1);
+            if (!dotted.empty() && dotted.back() == ';') dotted.pop_back();
+            std::replace(dotted.begin(), dotted.end(), '/', '.');
+            heap_.set_object_field(ste, "__class_name__",
+                                   DalvikValue::make_string(dotted, 0));
+            heap_.set_object_field(ste, "__method_name__",
+                                   DalvikValue::make_string(frames[i].second, 0));
+            heap_.set_object_field(arr_id, "array[" + std::to_string(i) + "]",
+                                   [&]{ DalvikValue v; v.type = DalvikType::OBJECT_REF;
+                                        v.object_id = ste;
+                                        v.class_desc = "Ljava/lang/StackTraceElement;";
+                                        return v; }());
+        }
         DalvikValue arr;
         arr.type = DalvikType::OBJECT_REF;
-        arr.object_id = obj_id;
+        arr.object_id = arr_id;
         arr.class_desc = "Larray;";
-        arr.int_val = 0;
+        arr.int_val = (int)N;
         result = arr;
         status = ApiCallTrace::Status::IMPLEMENTED;
+        std::cerr << "[UC010-STACKTRACE] Thread.getStackTrace -> " << N
+                  << " real frames (top=" << (N ? frames[0].first : "-") << ")"
+                  << std::endl;
         return true;
     }
 

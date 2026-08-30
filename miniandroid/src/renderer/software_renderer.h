@@ -366,37 +366,29 @@ private:
 // PNG Writer (Task #7)
 // ============================================================================
 
+// ============================================================================
+// PNG Writer — CAMPAIGN 010 R1: libpng-backed encoder.
+// ============================================================================
+
 class PNGWriter {
 public:
     static bool write_png(const std::string& filename, const FrameBuffer& fb);
-    static json generate_screenshot_info(const FrameBuffer& fb, 
+    static json generate_screenshot_info(const FrameBuffer& fb,
                                         const RenderPipeline& pipeline,
                                         const std::string& text_content);
-
-private:
-    static uint32_t crc32(const uint8_t* data, size_t length, uint32_t init_crc = 0xFFFFFFFF);
-    static std::vector<uint8_t> compress_data(const uint8_t* data, size_t length);
 };
 
 // ============================================================================
-// PNG Decoder (EXP-088 Phase A4)
+// PNG Decoder — CAMPAIGN 010 R1: libpng-backed.
 //
-// Decodes an in-memory PNG file (any of color types 0/2/4/6, bit depth 8,
-// non-interlaced) into a flat RGBA pixel buffer.
-//
-// This is the C++ counterpart of the Python "expected RGBA" reproducer in
-// scripts/a4_01_create_known_png.py. The C++ decoder MUST produce byte-identical
-// RGBA bytes to PIL.Image.convert("RGBA").tobytes() for every PNG written by
-// that script. The test is exercised by tools/exp088_a4_png_decoder_test.cpp.
-//
-// Supports:
-//   - color_type 0 (grayscale, 1 sample)
-//   - color_type 2 (RGB, 3 samples)
-//   - color_type 4 (grayscale + alpha, 2 samples)  <- simplestopwatch uses this
-//   - color_type 6 (RGBA, 4 samples)
-//   - bit depth 8
-//   - non-interlaced (Adam7 NOT supported; will return false)
-//   - All 5 PNG filter types (None, Sub, Up, Average, Paeth)
+// Decodes an in-memory PNG file of ANY color type (0/2/3/4/6), bit depth
+// (1/2/4/8/16, 16 stripped to 8) and interlace method (including Adam7)
+// into a flat RGBA pixel buffer, per the Android Bitmap ARGB_8888 contract.
+// tRNS transparency is applied. This replaced the EXP-088 Phase A4
+// hand-written decoder after a 7,036-image real-APK differential benchmark
+// (custom: 97.07% success, 3 tRNS misdecodes; libpng: 100%, byte-identical
+// to stb_image v2.30, 1.65x faster). The PIL byte-identity test fixture
+// (tools/exp088_a4_png_decoder_test.cpp) still guards the interface.
 // ============================================================================
 
 struct DecodedImage {
@@ -414,17 +406,6 @@ public:
     // Returns DecodedImage with .ok=true on success.
     static DecodedImage decode(const std::vector<uint8_t>& png_bytes);
     static DecodedImage decode_file(const std::string& path);
-
-private:
-    // Apply a PNG unfilter pass on a single scanline.
-    //  raw:  input bytes including the leading filter byte per row
-    //  bpp:  bytes per pixel (1..4)
-    //  width, height: image dimensions
-    //  out:  output buffer (width * height * bpp bytes, no filter bytes)
-    static bool unfilter(const std::vector<uint8_t>& raw,
-                         int bpp, int width, int height,
-                         std::vector<uint8_t>& out,
-                         std::string& error);
 };
 
 // EXP-097 §5: WebPDecoder — wraps libwebp (Google's reference decoder).

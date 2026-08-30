@@ -25,7 +25,7 @@
 #include <string>
 #include <vector>
 
-#include "../../third_party/nlohmann_json/include/nlohmann/json.hpp"
+#include "../third_party/nlohmann_json/include/nlohmann/json.hpp"
 
 using miniandroid::renderer::PNGDecoder;
 using miniandroid::renderer::DecodedImage;
