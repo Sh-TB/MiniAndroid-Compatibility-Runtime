@@ -11,6 +11,8 @@ INCLUDES = -Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isr
 # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
 # rlottie  — Samsung reference Lottie renderer (Telegram uses it directly)
 LIBS = -lz -lwebp -lwebpdemux -ljpeg $(RLOTTIE_DIR)/build/src/librlottie.a -lstdc++ -lm -lpthread
+# UNIFIED_007: font pipeline + PNG drawable decode
+FONTS_LIBS = -lfreetype -lharfbuzz -lfribidi -lpng
 
 # Directories
 SRCDIR = src
@@ -23,7 +25,7 @@ APK_SOURCES = $(SRCDIR)/apk/apk_parser.cpp $(SRCDIR)/apk/manifest_reader.cpp
 DEX_SOURCES = $(SRCDIR)/dex/dex_parser.cpp $(SRCDIR)/dex/class_resolver.cpp $(SRCDIR)/dex/dex_interpreter_batch.cpp $(SRCDIR)/dex/dalvik_engine.cpp $(SRCDIR)/dex/trace_exporter.cpp  # EXP-031.5: Trace exporter
 RUNTIME_SOURCES = $(SRCDIR)/runtime/execution_engine.cpp $(SRCDIR)/runtime/application_runtime.cpp
 DIAGNOSTICS_SOURCES = $(SRCDIR)/diagnostics/trace_engine.cpp
-RESOURCES_SOURCES = $(SRCDIR)/resources/resource_parser.cpp
+RESOURCES_SOURCES = $(SRCDIR)/resources/resource_parser.cpp $(SRCDIR)/resources/arsc_parser.cpp $(SRCDIR)/resources/axml_parser.cpp $(SRCDIR)/resources/layout_inflater.cpp $(SRCDIR)/resources/resource_runtime.cpp
 RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp
 # EXP-084: framework and storage sources are required for linkage
 FRAMEWORK_SOURCES = $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp
@@ -54,7 +56,7 @@ all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(CORE_OBJECTS) $(MAIN_OBJECT)
 	@mkdir -p $(BUILDDIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)
 	@echo "Build complete: $(EXECUTABLE)"
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
@@ -71,7 +73,7 @@ test: $(TEST_EXECUTABLE)
 
 $(TEST_EXECUTABLE): $(CORE_OBJECTS) $(TEST_OBJECT)
 	@mkdir -p $(BUILDDIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)
 	@echo "Test build complete: $(TEST_EXECUTABLE)"
 
 $(BUILDDIR)/test.o: $(TEST_SOURCE)
@@ -99,7 +101,7 @@ megabatch: $(MEGABATCH_EXECUTABLE)
 
 $(MEGABATCH_EXECUTABLE): $(CORE_OBJECTS) $(MEGABATCH_OBJECT)
 	@mkdir -p $(BUILDDIR)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)
 
 $(BUILDDIR)/exp007_012_megabatch_main.o: $(MEGABATCH_SOURCE)
 	@mkdir -p $(dir $@)
@@ -112,9 +114,9 @@ help:
 	@echo "MiniAndroid Runtime v0.1 Build System"
 	@echo ""
 	@echo "Targets:"
-	@echo "  all	 - Build the main executable"
-	@echo "  test	- Build and run unit tests"
-	@echo "  run	 - Execute sample APK"
+	@echo "  all     - Build the main executable"
+	@echo "  test   - Build and run unit tests"
+	@echo "  run     - Execute sample APK"
 	@echo "  analyze     - Analyze sample APK"
 	@echo "  version     - Show version info"
 	@echo "  megabatch   - Build MEGA BATCH (EXP-007→EXP-012)"
@@ -125,7 +127,8 @@ help:
 
 clean:
 	rm -rf $(BUILDDIR)
-	rm -rf run/
+	# UNIFIED_011 (28): never delete run/ - it contains TRACKED evidence
+	# (exp096/exp097 BEFORE/AFTER proof). Only build/ is a build artifact.
 	@echo "Cleaned build artifacts"
 
 # Download nlohmann/json if not present
