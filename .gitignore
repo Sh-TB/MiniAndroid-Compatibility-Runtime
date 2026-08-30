@@ -1,108 +1,39 @@
-# Dependencies
-node_modules/
-skills/
+# CAMPAIGN 011 (§28) — build/cache/artifact hygiene
+# APK policy (§20): ZERO APK/AAB inside the repository, releases, or source ZIPs.
+# Test APKs are fetched by scripts/download_test_apks.py into an EXTERNAL cache.
 
-# === EXP-084 STRICT SOURCE-ONLY POLICY ===
-# Per RULES 0–19, no APKs, build artifacts, or run output may be tracked.
+# build outputs
+miniandroid/build/
+build/
+*.o
+*.d
 
-# APK / AAB / archive (RULE 0) — NEVER tracked
+# APK / Android app bundles — never commit
 *.apk
 *.aab
-*.apks
-*.xapk
-
-# Build output (RULE 3, 4) — regenerate from CMakeLists.txt + Makefile
-miniandroid/build/
-miniandroid/build_asan/
-miniandroid/build_exp*/
-build/
-build_asan/
-build_exp*/
-
-# Run output (RULE 2) — regenerate on every test run
-miniandroid/run/
-run/
-
-# Download directory (RULE 1) — external inputs only, never tracked
-miniandroid/download/
-
-# Reports (RULE 6) — generated, never tracked
-miniandroid/reports/
-
-# Experiments — only README.md / REPORT.md tracked (RULE 5)
-miniandroid/experiments/*/
-!miniandroid/experiments/*/
-miniandroid/experiments/**/*
-!miniandroid/experiments/**/README.md
-!miniandroid/experiments/**/REPORT.md
-
-# Logs and temporary files
-*.log
-*.stderr
-*.stdout
-*.tmp
-*.dmp
-*.core
-*.swp
-*.swo
-*~
-
-# Raw screenshots (RULE 8) — never tracked
-*.ppm
-
-# Object files and binaries (RULE 9)
-*.o
-*.obj
-*.bin
-*.exe
-*.out
 *.so
-*.dylib
-*.dll
-*.a
 
-# Specifically forbidden binaries
-miniandroid/tools/miniandroid_exp042
-miniandroid/tools/miniandroid_exp042.exe
+# local APK caches (legacy in-repo path + external)
+miniandroid/download/
+apk_cache/
 
-# IDE and editor files
-.idea/
-.vscode/
-*.xcodeproj/
-*.xcworkspace
-*.iml
-.DS_Store
-Thumbs.db
+# external tool build artifacts
+tools/robolectric-oracle/target/
 
-# Environment files
+# large local run artifacts (keep curated evidence under docs/evidence instead)
+miniandroid/run/u011/
+miniandroid/run/**/*.log
+miniandroid/run/**/*.ppm
+miniandroid/run/**/*.json
+
+# local logs / temporary artifacts
+*.log
+*.tmp
+.cache/
+
+# secrets / credentials — should never exist here
+*.keystore
+*.jks
+credentials.json
+secrets*
 .env
-.env.local
-.env.*.local
-
-# Upload directory (transient)
-upload/
-
-# Tool results (transient)
-tool-results/
-
-# CMake / build cache
-CMakeCache.txt
-CMakeFiles/
-compile_commands.json
-cmake_install.cmake
-Makefile.in
-
-# Python bytecode
-__pycache__/
-*.pyc
-*.pyo
-
-# Tool results (transient)
-tool-results/
-
-# Environment
-.env
-.env.local
-
-# Root-level download/ (legacy stub)
-download/

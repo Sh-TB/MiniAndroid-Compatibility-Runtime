@@ -1240,6 +1240,15 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             int h = task.height;
                             int left = task.left;
                             int top = task.top;
+                            // UNIFIED_007: when the real inflater measured this
+                            // tree (ARSC→AXML inflation), use its exact geometry.
+                            bool use_measured = node->laid_out;
+                            if (use_measured) {
+                                left = node->measured_left;
+                                top = node->measured_top;
+                                w = node->measured_width;
+                                h = node->measured_height;
+                            }
                             int right = left + w;
                             int bottom = top + h;
 
@@ -1499,6 +1508,23 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             //   * LinearLayout (vertical default): stack top-to-bottom
                             //   * LinearLayout horizontal: lay left-to-right
                             //   * FrameLayout/other: overlap, gravity centers
+                            bool children_pushed = false;
+                            if (use_measured) {
+                                // UNIFIED_007: geometry from real measure/layout —
+                                // children pop in forward order.
+                                std::vector<RenderTask> m_tasks;
+                                for (uint32_t cid : node->children) {
+                                    const auto* cn = view_shadow->find_node(cid);
+                                    if (!cn || cn->visibility == 8) continue;
+                                    m_tasks.push_back({cid, cn->measured_left, cn->measured_top,
+                                                       cn->measured_width, cn->measured_height,
+                                                       task.depth + 1});
+                                }
+                                for (auto it = m_tasks.rbegin(); it != m_tasks.rend(); ++it)
+                                    queue.push_back(*it);
+                                children_pushed = true;
+                            }
+                            if (!children_pushed) {
                             bool is_linear_layout = dalvik_engine_.is_subclass_of(node->class_desc, "Landroid/widget/LinearLayout;");
                             bool is_frame_layout = dalvik_engine_.is_subclass_of(node->class_desc, "Landroid/widget/FrameLayout;");
                             std::cerr << "[EXP095-LAYOUT] parent=" << task.view_id
@@ -1607,6 +1633,7 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             for (auto it = child_tasks.rbegin(); it != child_tasks.rend(); ++it) {
                                 queue.push_back(*it);
                             }
+                            }  // !children_pushed
                         }
 
                         // Copy FrameBuffer pixels (RGBA) back to framebuffer_ (uint8_t RGBA)
