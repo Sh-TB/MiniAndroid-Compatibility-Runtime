@@ -4614,6 +4614,26 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     if (arr_len == 0 || idx < 0 || idx >= arr_len) { \
                         log("⚠️ AGET out of bounds: arr_len=" + std::to_string(arr_len) + \
                             " idx=" + std::to_string(idx)); \
+                        /* UNIFIED_011.2 SYNTH-EXC (§21 dooz livelock fix): a CONFIRMED \
+                         * out-of-bounds access must throw ArrayIndexOutOfBoundsException \
+                         * (real Dalvik semantics) instead of warn-and-continue. The old \
+                         * behavior produced an infinite loop in dooz LM1/i;.f (the loop \
+                         * index ran past the array end 50000+ times because no exception \
+                         * ever fired). Only a CONFIRMED OOB (known arr_len > 0) throws — \
+                         * arr_len == 0 may mean "length unknown" in this engine, so that \
+                         * path keeps the legacy warn-and-continue to avoid regressing \
+                         * APKs whose array length was never recorded. \
+                         */ \
+                        if (arr_len > 0) { \
+                            std::string oob_msg = "length " + std::to_string(arr_len) + \
+                                                  "; index " + std::to_string(idx); \
+                            raise_synthetic_exception( \
+                                "Ljava/lang/ArrayIndexOutOfBoundsException;", \
+                                oob_msg, "aget-oob"); \
+                            /* handled: pc_ now at catch handler; unhandled: frame unwinds \
+                             * via halted_on_return_ (post-switch check exits the loop). */ \
+                            break; \
+                        } \
                         DalvikValue result_val; \
                         result_val.type = result_type; \
                         if (result_type == DalvikType::OBJECT_REF) { \
@@ -5500,34 +5520,34 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 std::vector<uint8_t> src_regs;
 
                 if (opcode == Opcode::FILLED_NEW_ARRAY) {
-                    // Format 35c: [B|A|op] [type@CCCC] [D|E|F|G]
-                    uint8_t arg_count = (bytecode_[pc_] >> 4) & 0x0F;
-                    uint8_t reg_bits = (bytecode_[pc_] >> 8) & 0xFF;
-                    type_idx = bytecode_[pc_ + 1];
-
-                    // Decode register list from the bit string
-                    // Bits 0-3 → D, E, F, G; bit 4 → 5th register
-                    for (int i = 0; i < arg_count && i < 5; i++) {
-                        if (reg_bits & (1 << i)) {
-                            // Each register is 4 bits from the next code unit
-                            uint8_t reg = (bytecode_[pc_ + 2] >> (i * 4)) & 0x0F;
-                            src_regs.push_back(reg);
-                        }
-                    }
-                    // Special case: 5th register is in the high nibble of the 3rd code unit
-                    if (arg_count == 5) {
-                        uint8_t reg = (bytecode_[pc_ + 2] >> 16) & 0x0F;
-                        // Actually for 35c format: the registers are encoded as
-                        // 4-bit fields in the third code unit: [D|C|B|A] (low to high)
-                        // Let me re-parse: for arg_count=N, registers are in the
-                        // nibbles of code_unit[pc+2]: D=bits 0-3, E=bits 4-7, etc.
-                    }
-                    // Re-parse: for 35c, all registers are in code_unit[pc+2]
-                    // as 4-bit nibbles: D=(cu2>>0)&0xF, E=(cu2>>4)&0xF, etc.
-                    src_regs.clear();
+                    // Format 35c: A|G|op BBBB FEDC
+                    //   code[pc+0] = A|G|op (A = arg count = bits 12-15,
+                    //                        G = 5th register = bits 8-11, op = bits 0-7)
+                    //   code[pc+1] = BBBB (type_idx)
+                    //   code[pc+2] = FEDC (register list, 4 nibbles)
+                    //
+                    // UNIFIED_011.2 FNA-FIX (§24 audit): previous code read
+                    // arg_count from bits 4-7 ((instr >> 4) & 0xF — the high
+                    // nibble of the OPCODE byte itself), which yields the
+                    // constant 2 for opcode 0x24 regardless of the actual A
+                    // field, and the 5th register (G, bits 8-11) was never
+                    // read. This is the same bug class fixed for the invoke
+                    // family in EXP-037 (BLOCKER-016): see execute_invoke_*
+                    // which now use (instr >> 12) & 0xF / (instr >> 8) & 0xF.
+                    // Aligned here with the canonical extraction.
+                    uint16_t instr0 = bytecode_[pc_];
                     uint16_t cu2 = bytecode_[pc_ + 2];
+                    uint8_t arg_count = (instr0 >> 12) & 0x0F;
+                    uint8_t fna_regs[5] = {
+                        static_cast<uint8_t>(cu2 & 0xF),          // C
+                        static_cast<uint8_t>((cu2 >> 4) & 0xF),   // D
+                        static_cast<uint8_t>((cu2 >> 8) & 0xF),   // E
+                        static_cast<uint8_t>((cu2 >> 12) & 0xF),  // F
+                        static_cast<uint8_t>((instr0 >> 8) & 0xF) // G — 5th register
+                    };
+                    type_idx = bytecode_[pc_ + 1];
                     for (int i = 0; i < arg_count && i < 5; i++) {
-                        src_regs.push_back((cu2 >> (i * 4)) & 0x0F);
+                        src_regs.push_back(fna_regs[i]);
                     }
                 } else {
                     // Format 3rc: [op|AA] [type@CCCC] [CCCC]
@@ -6208,6 +6228,138 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
     }
     
     return !halted_ || halted_on_return_;
+}
+
+// ============================================================================
+// UNIFIED_011.2 SYNTH-EXC: Runtime exception machinery (§21/§24 campaign)
+// ============================================================================
+
+// Find the catch handler covering `pc` in the current frame's try table.
+// Extracted verbatim from the THROW opcode handler (EXP-052/053) so that
+// synthetic runtime exceptions share identical machinery and THROW keeps
+// its exact prior behavior.
+bool DalvikExecutionEngine::find_catch_handler_for_pc(
+        uint32_t pc, uint32_t& handler_addr, bool& is_catch_all,
+        std::string& catch_type) {
+    if (current_tries_size_ == 0 || current_tries_data_ == nullptr) return false;
+
+    for (uint16_t i = 0; i < current_tries_size_; i++) {
+        size_t off = i * 8;
+        if (off + 8 > current_tries_data_size_) break;
+        uint32_t start = 0;
+        uint16_t count = 0;
+        uint16_t handler_off = 0;
+        std::memcpy(&start, current_tries_data_ + off, 4);
+        std::memcpy(&count, current_tries_data_ + off + 4, 2);
+        std::memcpy(&handler_off, current_tries_data_ + off + 6, 2);
+        if (pc < start || pc >= start + count) continue;
+
+        // handler_off is byte offset FROM THE START of the
+        // encoded_catch_handler_list (which begins with the list_size uleb128).
+        size_t handler_list_start = static_cast<size_t>(current_tries_size_) * 8;
+        size_t handler_list_end = current_tries_data_size_;
+        if (handler_list_start >= handler_list_end) return false;
+
+        size_t handler_abs = handler_list_start + handler_off;
+        if (handler_abs >= handler_list_end) return false;
+
+        // Decode the handler at handler_abs.
+        // sleb128 size, then |size| pairs of (uleb128 type_idx, uleb128 addr),
+        // then catch-all addr if size <= 0.
+        auto read_sleb = [&](size_t& p) -> int32_t {
+            int32_t result = 0;
+            int shift = 0;
+            uint8_t b;
+            do {
+                if (p >= handler_list_end) return 0;
+                b = current_tries_data_[p++];
+                result |= (b & 0x7F) << shift;
+                shift += 7;
+            } while (b & 0x80);
+            if (shift < 32 && (b & 0x40)) {
+                result |= -(1 << shift);
+            }
+            return result;
+        };
+        auto read_uleb = [&](size_t& p) -> uint32_t {
+            uint32_t result = 0;
+            int shift = 0;
+            uint8_t b;
+            do {
+                if (p >= handler_list_end) return 0;
+                b = current_tries_data_[p++];
+                result |= (b & 0x7F) << shift;
+                shift += 7;
+            } while (b & 0x80);
+            return result;
+        };
+
+        size_t p = handler_abs;
+        int32_t size = read_sleb(p);
+        int32_t n_pairs = (size >= 0) ? size : -(size + 1);
+        // Read typed handlers (pre-existing limitation: decoded but not
+        // type-matched — same as the THROW handler before this refactor).
+        for (int h = 0; h < n_pairs; h++) {
+            uint32_t type_idx = read_uleb(p);
+            uint32_t addr = read_uleb(p);
+            (void)type_idx;
+            (void)addr;
+        }
+        if (size <= 0) {
+            uint32_t addr = read_uleb(p);
+            handler_addr = addr;
+            is_catch_all = true;
+            catch_type = "<catch-all>";
+            return true;
+        }
+        // First covering try_item processed — same as the THROW handler's
+        // single-try `break` semantics.
+        return false;
+    }
+    return false;
+}
+
+// Raise a synthetic runtime exception following real Dalvik semantics as
+// far as the engine supports them. See header for the full contract.
+bool DalvikExecutionEngine::raise_synthetic_exception(
+        const std::string& exc_class_desc, const std::string& message,
+        const char* origin_tag) {
+    // Build the exception object on the heap (same model as new-instance).
+    DalvikValue exc;
+    exc.type = DalvikType::OBJECT_REF;
+    exc.object_id = heap_.allocate(exc_class_desc, pc_, 0);
+    exc.class_desc = exc_class_desc;
+    exc.string_val = message;
+    heap_.set_object_field(exc.object_id, "message",
+                           DalvikValue::make_string(message, exc.object_id));
+    heap_.mark_initialized(exc.object_id);
+
+    uint32_t handler_addr = 0;
+    bool is_catch_all = false;
+    std::string catch_type = "<none>";
+    bool found = find_catch_handler_for_pc(pc_, handler_addr, is_catch_all, catch_type);
+    (void)is_catch_all;
+
+    std::cerr << "[SYNTH-EXC] " << (origin_tag ? origin_tag : "runtime")
+              << ": " << exc_class_desc << " (" << message << ")"
+              << " method=" << current_class_ << "." << current_method_
+              << " pc=" << pc_
+              << " → " << (found ? "catch handler @0x" + to_hex(handler_addr)
+                                 : "uncaught (frame unwind)")
+              << std::endl;
+
+    if (found) {
+        pending_exception_ = exc;
+        pc_ = handler_addr;
+        return true;
+    }
+    // Unwind the current frame like a return with a null result.
+    // The recursive-invoke machinery restores all caller state
+    // (EXP-052/054/055 saves), so this is frame-safe.
+    last_invoke_return_ = DalvikValue::make_null();
+    halted_on_return_ = true;
+    pc_ += 1;
+    return false;
 }
 
 uint16_t DalvikExecutionEngine::fetch_opcode(uint32_t pc) const {
