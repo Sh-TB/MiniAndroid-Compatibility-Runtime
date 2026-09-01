@@ -137,8 +137,14 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
             class_to_dex_index_[cls.name] = 0;
         }
         log("Single DEX — mapped " + std::to_string(class_to_dex_index_.size()) + " classes to DEX 0");
-        return;
-    }
+        // UNIFIED_011.3 TYPED-CATCH: do NOT return early. Direct
+        // execute_method callers (unit fixtures, tools) have empty
+        // per_dex_raw_data_ and previously never reached the class→
+        // superclass map (EXP-068) and class→ClassInfo index (EXP-045)
+        // below — so try_recursive_invoke could never dispatch any DEX
+        // method ("class not in index") and typed-catch hierarchy walks
+        // had no superclass data. Fall through to the shared build.
+    } else {
 
     // For each DEX file, parse its class_defs[] and build a set of class descriptors
     for (uint32_t di = 0; di < per_dex_raw_data_.size(); di++) {
@@ -180,6 +186,7 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
             }
         }
     }
+    }  // else (per-DEX raw data present)
 
     // Assign DEX 0 to any remaining unmapped classes (safety fallback)
     uint32_t unmapped = 0;
@@ -471,6 +478,102 @@ bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
 
 bool DalvikExecutionEngine::is_view_class(const std::string& class_desc) const {
     return is_subclass_of(class_desc, "Landroid/view/View;");
+}
+
+// ============================================================================
+// UNIFIED_011.3 TYPED-CATCH (§18): exception-type compatibility.
+//
+// Matching sources, in order:
+//   1. exact descriptor equality
+//   2. DEX superclass chain (class_to_superclass_, includes APK-defined
+//      exception classes AND the seeded Android framework hierarchy)
+//   3. built-in java.lang / java.io / java.util / org.json exception
+//      hierarchy (framework exception classes whose class_defs are NOT in
+//      the APK's DEX files — exactly like the View hierarchy seed above).
+// `catch_desc` of Object/Throwable catches everything (Dalvik semantics).
+// ============================================================================
+bool DalvikExecutionEngine::is_exception_subtype(const std::string& exc_desc,
+                                                 const std::string& catch_desc) const {
+    if (exc_desc.empty() || catch_desc.empty()) return false;
+    if (exc_desc == catch_desc) return true;
+    if (catch_desc == "Ljava/lang/Object;" || catch_desc == "Ljava/lang/Throwable;") {
+        return true;
+    }
+
+    // Built-in framework exception hierarchy (child → parent).
+    static const std::unordered_map<std::string, std::string> builtin_exc_parent = {
+        // java.lang core
+        {"Ljava/lang/Exception;", "Ljava/lang/Throwable;"},
+        {"Ljava/lang/RuntimeException;", "Ljava/lang/Exception;"},
+        {"Ljava/lang/NullPointerException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/IndexOutOfBoundsException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/ArrayIndexOutOfBoundsException;", "Ljava/lang/IndexOutOfBoundsException;"},
+        {"Ljava/lang/StringIndexOutOfBoundsException;", "Ljava/lang/IndexOutOfBoundsException;"},
+        {"Ljava/lang/ArithmeticException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/IllegalArgumentException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/NumberFormatException;", "Ljava/lang/IllegalArgumentException;"},
+        {"Ljava/lang/IllegalStateException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/ClassCastException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/UnsupportedOperationException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/NegativeArraySizeException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/ArrayStoreException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/util/ConcurrentModificationException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/SecurityException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/lang/InterruptedException;", "Ljava/lang/Exception;"},
+        {"Ljava/lang/ClassNotFoundException;", "Ljava/lang/Exception;"},
+        {"Ljava/lang/ReflectiveOperationException;", "Ljava/lang/Exception;"},
+        // java.io
+        {"Ljava/io/IOException;", "Ljava/lang/Exception;"},
+        {"Ljava/io/FileNotFoundException;", "Ljava/io/IOException;"},
+        {"Ljava/io/EOFException;", "Ljava/io/IOException;"},
+        // java.util
+        {"Ljava/util/NoSuchElementException;", "Ljava/lang/RuntimeException;"},
+        {"Ljava/util/InputMismatchException;", "Ljava/util/NoSuchElementException;"},
+        // org.json (Android framework JSON)
+        {"Lorg/json/JSONException;", "Ljava/lang/Exception;"},
+        // Errors (rare, but typed catches for Error exist in real apps)
+        {"Ljava/lang/Error;", "Ljava/lang/Throwable;"},
+        {"Ljava/lang/OutOfMemoryError;", "Ljava/lang/VirtualMachineError;"},
+        {"Ljava/lang/StackOverflowError;", "Ljava/lang/VirtualMachineError;"},
+        {"Ljava/lang/VirtualMachineError;", "Ljava/lang/Error;"},
+        {"Ljava/lang/AssertionError;", "Ljava/lang/Error;"},
+        {"Ljava/lang/NoClassDefFoundError;", "Ljava/lang/LinkageError;"},
+        {"Ljava/lang/LinkageError;", "Ljava/lang/Error;"},
+    };
+
+    // Walk both chains simultaneously (merged walk, cycle-safe).
+    std::string via_dex = exc_desc;
+    std::string via_builtin = exc_desc;
+    std::unordered_set<std::string> visited;
+    for (int depth = 0; depth < 50; ++depth) {
+        if (via_dex == catch_desc || via_builtin == catch_desc) return true;
+        if (via_dex == "Ljava/lang/Object;" && via_builtin == "Ljava/lang/Object;") break;
+        size_t before = visited.size();
+        visited.insert(via_dex);
+        visited.insert(via_builtin);
+        if (visited.size() == before) break;  // no progress → cycle
+
+        // advance DEX chain
+        auto dex_it = class_to_superclass_.find(via_dex);
+        if (dex_it != class_to_superclass_.end()) {
+            via_dex = dex_it->second;
+        } else {
+            // not DEX-defined: fall through to built-in chain for next step
+            auto b_it = builtin_exc_parent.find(via_dex);
+            via_dex = (b_it != builtin_exc_parent.end())
+                    ? b_it->second : "Ljava/lang/Object;";
+        }
+        // advance built-in chain
+        auto b_it2 = builtin_exc_parent.find(via_builtin);
+        if (b_it2 != builtin_exc_parent.end()) {
+            via_builtin = b_it2->second;
+        } else {
+            auto d_it = class_to_superclass_.find(via_builtin);
+            via_builtin = (d_it != class_to_superclass_.end())
+                    ? d_it->second : "Ljava/lang/Object;";
+        }
+    }
+    return false;
 }
 
 bool DalvikExecutionEngine::is_text_view_class(const std::string& class_desc) const {
@@ -897,6 +1000,24 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                     activity_val.object_id = activity_obj_id;
                     activity_val.class_desc = cls.name;
 
+                    // UNIFIED_011.3 FRAME-2 (§23): record the activity's heap
+                    // object id so post-launch probes (click-test XML
+                    // android:onClick dispatch) can pass the REAL activity
+                    // instance as `this`. Without it, handlers executed with
+                    // `this` = the clicked View object — every instance-field
+                    // access (this.big, this.chrono, ...) hit the wrong heap
+                    // object and the post-interaction re-render was unchanged.
+                    if (shadow_registry_ != nullptr) {
+                        auto* activity_shadow =
+                            shadow_registry_->find_as<framework::ActivityShadow>();
+                        if (activity_shadow != nullptr) {
+                            activity_shadow->set_activity_heap_id(activity_obj_id);
+                            std::cerr << "[U0113-ACTIVITY] activity heap object #"
+                                      << activity_obj_id << " (" << cls.name
+                                      << ") recorded for handler dispatch" << std::endl;
+                        }
+                    }
+
                     // Find onCreate method
                     for (const auto& method : cls.all_methods()) {
                         if (method.name == "onCreate" || method.name == "main") {
@@ -1186,7 +1307,19 @@ DalvikExecutionResult DalvikExecutionEngine::execute_method(
     result.dex_report = &dex_report;
     result.main_class = method.defining_class;
     result.main_method = method.name;
-    
+
+    // UNIFIED_011.3 TYPED-CATCH: set dex_report_ on the unit entry point too.
+    // Previously only execute_apk_with_activity set it (EXP-037 BLOCKER-002),
+    // so direct execute_method callers had every resolve_*_for_dex fallback
+    // return "<unknown>" — including the UNIFIED_011.3 typed-catch handler
+    // type resolution (catch type descriptors are resolved per-DEX and fall
+    // back to dex_report_->types).
+    dex_report_ = &dex_report;
+    // EXP-068 hierarchy map + EXP-045 class_info_index_ + EXP-088 dex index
+    // are all built by build_class_dex_index(report) on the APK path; the
+    // unit entry point needs them for invoke dispatch and type resolution.
+    build_class_dex_index(dex_report);
+
     if (!method.bytecode.empty()) {
         execute_method_internal(
             method.defining_class,
@@ -3717,6 +3850,13 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // EXP-055: Save last_invoke_return_ so the callee's return value
         // doesn't corrupt the caller's pending return from a different call.
         auto saved_last_invoke_return = last_invoke_return_;
+        // UNIFIED_011.3 EXC-PROPAGATE: save + isolate any in-flight unwind
+        // exception so a stale sibling-call exception is never misattributed
+        // to this callee.
+        bool saved_unwind_valid = frame_unwind_exception_valid_;
+        DalvikValue saved_unwind_exc = frame_unwind_exception_;
+        frame_unwind_exception_valid_ = false;
+        frame_unwind_exception_ = DalvikValue::make_null();
 
         halted_on_return_ = false;
         halted_ = false;
@@ -3805,6 +3945,69 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         current_result_ = saved_current_result;
         pending_exception_ = saved_pending_exception;
         last_invoke_return_ = saved_last_invoke_return;
+
+        // UNIFIED_011.3 EXC-PROPAGATE (§18): did the callee end with an
+        // uncaught exception? If so, search THIS frame's try table at the
+        // invoke site (typed matching included). Handler found → jump there
+        // with pending_exception_ set (move-exception works). No handler →
+        // keep the exception in flight; the next outer invoke site repeats
+        // this — real call-stack propagation.
+        if (frame_unwind_exception_valid_) {
+            DalvikValue unwind_exc = frame_unwind_exception_;
+            std::string unwind_desc = unwind_exc.class_desc.empty()
+                    ? "Ljava/lang/RuntimeException;" : unwind_exc.class_desc;
+            frame_unwind_exception_valid_ = false;
+            frame_unwind_exception_ = DalvikValue::make_null();
+
+            uint32_t prop_handler = 0;
+            bool prop_catch_all = false;
+            std::string prop_catch_type;
+            if (find_catch_handler_for_pc(pc_, prop_handler, prop_catch_all,
+                                          prop_catch_type, unwind_desc)) {
+                std::cerr << "[EXC-PROPAGATE] " << unwind_desc
+                          << " caught at caller " << current_class_ << "."
+                          << current_method_
+                          << " invoke_pc=" << pc_
+                          << " handler=0x" << to_hex(prop_handler)
+                          << " type=" << prop_catch_type << std::endl;
+                pending_exception_ = unwind_exc;
+                pc_ = prop_handler;
+                // Defer the jump until after the invoke handler's own
+                // `pc_ += instr_len` — see exc_redirect_pending_ in header.
+                exc_redirect_pending_ = true;
+                exc_redirect_addr_ = prop_handler;
+                // restore pre-call in-flight state (normally empty)
+                frame_unwind_exception_valid_ = saved_unwind_valid;
+                frame_unwind_exception_ = saved_unwind_exc;
+            } else {
+                std::cerr << "[EXC-PROPAGATE] " << unwind_desc
+                          << " uncaught at caller " << current_class_ << "."
+                          << current_method_
+                          << " invoke_pc=" << pc_
+                          << " → caller continues after invoke (compatibility)"
+                          << std::endl;
+                // UNIFIED_011.3 FRAME-2 (§18): if NO frame catches the
+                // exception, the caller CONTINUES with a null return instead
+                // of halting the whole call chain.
+                //
+                // Policy (regression-proven): full unwind-to-top is real
+                // Dalvik behavior, but this engine raises ARTIFACT
+                // exceptions (e.g. Telegram LruCache "maxSize <= 0" IAE —
+                // real Android never throws there; the size computes to 0
+                // from engine-local display metrics). Full propagation let
+                // that artifact escape through LaunchActivity.onCreate and
+                // killed the deterministic Telegram golden (eb16ab5c
+                // regression). Caught-type semantics stay REAL (typed +
+                // catch-all matching across frames — see the
+                // unified0113_typed_catch fixture); only the uncaught tail
+                // degrades to the EXP-071-style compatibility continue.
+                frame_unwind_exception_valid_ = false;
+                frame_unwind_exception_ = DalvikValue::make_null();
+                return_val = DalvikValue::make_null();
+                recursion_depth_--;
+                return true;
+            }
+        }
 
         log("✅ RECURSIVE INVOKE completed: " + cls_ref.name + "." + method.name);
         // EXP-056: Log return values for key login-path methods.
@@ -5827,15 +6030,24 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                             size_t p = handler_abs;
                             int32_t size = read_sleb(p);
                             int32_t n_pairs = (size >= 0) ? size : -(size + 1);
-                            // Read typed handlers first
+                            // UNIFIED_011.3 TYPED-CATCH (§18): type-match each
+                            // typed handler against the thrown exception class
+                            // (shared semantics with find_catch_handler_for_pc).
                             for (int h = 0; h < n_pairs; h++) {
                                 uint32_t type_idx = read_uleb(p);
                                 uint32_t addr = read_uleb(p);
-                                (void)type_idx;  // TODO: match exception type
-                                (void)addr;
+                                std::string handler_exc_desc =
+                                    resolve_type_for_dex(type_idx, current_dex_index_);
+                                if (is_exception_subtype(exc_class, handler_exc_desc)) {
+                                    handler_found = true;
+                                    handler_addr = addr;
+                                    is_catch_all = false;
+                                    catch_type = handler_exc_desc;
+                                    break;
+                                }
                             }
                             // If size <= 0, there's a catch-all handler at the end
-                            if (size <= 0) {
+                            if (size <= 0 && !handler_found) {
                                 uint32_t addr = read_uleb(p);
                                 handler_found = true;
                                 handler_addr = addr;
@@ -5867,15 +6079,20 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 }
                 std::cerr << std::endl;
 
-                // EXP-053: If catch-all handler found, jump to it instead of halting.
-                if (handler_found && is_catch_all) {
+                // EXP-053 + UNIFIED_011.3: if any handler (typed or catch-all)
+                // matched, jump to it instead of halting/skipping.
+                if (handler_found) {
                     if (handler_addr < bytecode_.size()) {
-                        std::cerr << "[EXCEPTION] → jumping to catch-all handler at PC="
-                                  << handler_addr << std::endl;
+                        std::cerr << "[EXCEPTION] → jumping to "
+                                  << (is_catch_all ? "catch-all" : "typed")
+                                  << " handler at PC=" << handler_addr
+                                  << " catch_type=" << catch_type << std::endl;
                         // Save the exception for move-exception to read.
                         pending_exception_ = exc;
                         trace.status = InstructionTrace::Status::BRANCH_TAKEN;
-                        trace.operands.push_back({"reason", "throw (catch-all handler)"});
+                        trace.operands.push_back({"reason", is_catch_all
+                                ? "throw (catch-all handler)"
+                                : "throw (typed handler: " + catch_type + ")"});
                         trace.operands.push_back({"exception_class", exc_class});
                         trace.operands.push_back({"handler_addr", std::to_string(handler_addr)});
                         pc_ = handler_addr;
@@ -5888,29 +6105,23 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     }
                 }
 
-                // No catch-all handler — halt the method (propagate to caller).
-                // EXP-071: If no catch handler was found, DON'T halt the method.
-                // Previously, THROW would halt the entire method, causing any code
-                // after the throw to be skipped. This was acceptable when THROW
-                // was at the wrong opcode (0x26) and rarely fired. But now that
-                // THROW is at the correct opcode (0x27), it fires correctly and
-                // needs to be handled gracefully.
-                //
-                // For now: if no handler, log the exception and CONTINUE execution
-                // (advance PC past the throw instruction). This is NOT semantically
-                // correct (a real throw without catch would propagate up the call
-                // stack), but it allows the method to continue executing rather
-                // than aborting entirely. This is a compatibility approximation.
+                // UNIFIED_011.3 EXC-PROPAGATE (§18): no handler in this frame.
+                // Replaces the EXP-071 skip-and-continue approximation (which
+                // silently executed code after the throw — NOT Dalvik
+                // semantics). Real Dalvik: unwind this frame; the invoking
+                // frame (try_recursive_invoke call site) then searches ITS
+                // try table via frame_unwind_exception_.
                 if (!handler_found) {
-                    // EXP-071: No catch handler found. Instead of halting the method
-                    // (which skips all code after the throw), skip the throw instruction
-                    // and continue. D8/R8 replaces most throws with goto +0, but some
-                    // real throws remain. Halting them causes too many methods to abort.
-                    // Skipping is a compatibility approximation — it's not semantically
-                    // correct (a real throw would propagate to the caller), but it
-                    // allows the method to continue executing.
+                    std::cerr << "[EXCEPTION] no handler for " << exc_class
+                              << " in " << current_class_ << "."
+                              << current_method_
+                              << " — unwinding frame (propagate to caller)"
+                              << std::endl;
+                    frame_unwind_exception_valid_ = true;
+                    frame_unwind_exception_ = exc;
+                    last_invoke_return_ = DalvikValue::make_null();
+                    halted_on_return_ = true;
                     pc_ += 1;
-                    success = true;
                     break;
                 }
                 // If handler was found, the code above already jumped to it.
@@ -6131,6 +6342,15 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 success = !config_.stop_on_unimplemented;
                 break;
         }
+
+        // UNIFIED_011.3 EXC-PROPAGATE: apply a deferred catch-handler jump.
+        // The invoke handlers advance pc_ (pc_ = pc_ + instr_len) after
+        // try_recursive_invoke returns; when caller-side catch matching
+        // redirected execution to a handler, that handler address wins.
+        if (exc_redirect_pending_) {
+            exc_redirect_pending_ = false;
+            pc_ = exc_redirect_addr_;
+        }
         
         // EXP-042 Phase 1: register state AFTER capture (gated).
         if (config_.trace_register_snapshots && current_registers_) {
@@ -6238,9 +6458,15 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
 // Extracted verbatim from the THROW opcode handler (EXP-052/053) so that
 // synthetic runtime exceptions share identical machinery and THROW keeps
 // its exact prior behavior.
+// UNIFIED_011.3 TYPED-CATCH (§18): typed handlers are now type-matched
+// against `exc_desc`. Semantics (Dalvik spec):
+//   1. first try_item covering pc (tries are non-overlapping),
+//   2. typed handler pairs in order — first subtype match wins,
+//   3. catch-all (present iff encoded size <= 0) is the fallback,
+//   4. no match → false (caller unwinds / propagates).
 bool DalvikExecutionEngine::find_catch_handler_for_pc(
         uint32_t pc, uint32_t& handler_addr, bool& is_catch_all,
-        std::string& catch_type) {
+        std::string& catch_type, const std::string& exc_desc) {
     if (current_tries_size_ == 0 || current_tries_data_ == nullptr) return false;
 
     for (uint16_t i = 0; i < current_tries_size_; i++) {
@@ -6297,13 +6523,20 @@ bool DalvikExecutionEngine::find_catch_handler_for_pc(
         size_t p = handler_abs;
         int32_t size = read_sleb(p);
         int32_t n_pairs = (size >= 0) ? size : -(size + 1);
-        // Read typed handlers (pre-existing limitation: decoded but not
-        // type-matched — same as the THROW handler before this refactor).
+        // UNIFIED_011.3 TYPED-CATCH: resolve each handler's type descriptor
+        // via the CURRENT method's DEX (type_ids are per-DEX, EXP-058) and
+        // type-match against the thrown exception.
         for (int h = 0; h < n_pairs; h++) {
             uint32_t type_idx = read_uleb(p);
             uint32_t addr = read_uleb(p);
-            (void)type_idx;
-            (void)addr;
+            std::string handler_exc_desc =
+                resolve_type_for_dex(type_idx, current_dex_index_);
+            if (is_exception_subtype(exc_desc, handler_exc_desc)) {
+                handler_addr = addr;
+                is_catch_all = false;
+                catch_type = handler_exc_desc;
+                return true;
+            }
         }
         if (size <= 0) {
             uint32_t addr = read_uleb(p);
@@ -6312,8 +6545,8 @@ bool DalvikExecutionEngine::find_catch_handler_for_pc(
             catch_type = "<catch-all>";
             return true;
         }
-        // First covering try_item processed — same as the THROW handler's
-        // single-try `break` semantics.
+        // First covering try_item processed — tries do not overlap, and a
+        // non-matching typed list does NOT fall through to other tries.
         return false;
     }
     return false;
@@ -6337,15 +6570,16 @@ bool DalvikExecutionEngine::raise_synthetic_exception(
     uint32_t handler_addr = 0;
     bool is_catch_all = false;
     std::string catch_type = "<none>";
-    bool found = find_catch_handler_for_pc(pc_, handler_addr, is_catch_all, catch_type);
-    (void)is_catch_all;
+    bool found = find_catch_handler_for_pc(pc_, handler_addr, is_catch_all,
+                                           catch_type, exc_class_desc);
 
     std::cerr << "[SYNTH-EXC] " << (origin_tag ? origin_tag : "runtime")
               << ": " << exc_class_desc << " (" << message << ")"
               << " method=" << current_class_ << "." << current_method_
               << " pc=" << pc_
               << " → " << (found ? "catch handler @0x" + to_hex(handler_addr)
-                                 : "uncaught (frame unwind)")
+                                 + " type=" + catch_type
+                                 : "uncaught (frame unwind + propagate)")
               << std::endl;
 
     if (found) {
@@ -6354,8 +6588,11 @@ bool DalvikExecutionEngine::raise_synthetic_exception(
         return true;
     }
     // Unwind the current frame like a return with a null result.
-    // The recursive-invoke machinery restores all caller state
-    // (EXP-052/054/055 saves), so this is frame-safe.
+    // UNIFIED_011.3 EXC-PROPAGATE (§18): record the exception in flight so
+    // the invoking frame (try_recursive_invoke call site) searches ITS try
+    // table next — real Dalvik propagation, not just a silent null return.
+    frame_unwind_exception_valid_ = true;
+    frame_unwind_exception_ = exc;
     last_invoke_return_ = DalvikValue::make_null();
     halted_on_return_ = true;
     pc_ += 1;

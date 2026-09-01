@@ -1328,7 +1328,7 @@ public:
         return get_or_create_singleton(class_desc);
     }
 
-    // EXP-068: Generic View inheritance queries.
+    // EXP-068 + UNIFIED_011.3: Generic class inheritance queries.
     // These walk the DEX superclass chain (class_to_superclass_) to determine
     // if a class inherits from a known Android View type.
     bool is_subclass_of(const std::string& class_desc, const std::string& ancestor_desc) const;
@@ -1426,23 +1426,52 @@ public:
     // find_catch_handler_for_pc: search the current frame's try table for a
     // handler covering `pc`. Extracted verbatim from the THROW opcode handler
     // (EXP-052/053) so synthetic runtime exceptions share the same machinery.
-    // NOTE (pre-existing limitation, preserved): typed handlers are decoded
-    // but not type-matched — only catch-all handlers are honored.
+    // UNIFIED_011.3 TYPED-CATCH (§18): typed handlers are now TYPE-MATCHED
+    // against `exc_desc` (DEX superclass chain via class_to_superclass_ +
+    // built-in java.lang/java.io/java.util exception hierarchy). First
+    // matching typed handler wins; catch-all is the fallback; no match →
+    // returns false (caller unwinds/propagates).
     bool find_catch_handler_for_pc(uint32_t pc, uint32_t& handler_addr,
-                                   bool& is_catch_all, std::string& catch_type);
+                                   bool& is_catch_all, std::string& catch_type,
+                                   const std::string& exc_desc);
+
+    // UNIFIED_011.3 TYPED-CATCH: exception-type compatibility check.
+    // Exact match, DEX superclass-chain walk, and built-in framework
+    // exception hierarchy (see exception_hierarchy_table in dalvik_engine.cpp).
+    bool is_exception_subtype(const std::string& exc_desc,
+                              const std::string& catch_desc) const;
 
     // raise_synthetic_exception: raise a runtime exception
     // (ArrayIndexOutOfBoundsException, NullPointerException, ...).
     //   1. Handler covering pc_ → pending_exception_ = exc, pc_ = handler,
     //      returns true (execution continues at the handler).
     //   2. No handler → unwind the current frame (halted_on_return_ like a
-    //      return with null result), returns false. Real Dalvik would search
-    //      the caller's try tables next; frame-return is the closest
-    //      supported approximation and eliminates the livelock that
-    //      warn-and-continue produced (dooz LM1/i;.f aget OOB loop).
+    //      return with null result) AND record the exception in
+    //      frame_unwind_exception_ so the invoking frame can search ITS try
+    //      table (full Dalvik propagation, UNIFIED_011.3 §18). This
+    //      eliminates the livelock that warn-and-continue produced
+    //      (dooz LM1/i;.f aget OOB loop).
     bool raise_synthetic_exception(const std::string& exc_class_desc,
                                    const std::string& message,
                                    const char* origin_tag);
+
+    // UNIFIED_011.3 EXC-PROPAGATE: exception in flight while unwinding.
+    // Set by raise_synthetic_exception / THROW-no-handler in the frame that
+    // could not catch it. Consumed by try_recursive_invoke at the caller's
+    // invoke site: caller's try table is searched; if a handler covers the
+    // invoke pc, the caller jumps to it with pending_exception_ set
+    // (move-exception works); otherwise the exception continues up.
+    bool frame_unwind_exception_valid_ = false;
+    DalvikValue frame_unwind_exception_ = DalvikValue::make_null();
+    // Post-switch pc redirect: the invoke handlers do `pc_ = pc_ + len`
+    // AFTER try_recursive_invoke returns, which would clobber a
+    // handler-jump made during caller-side catch search. When this flag is
+    // set, fetch_decode_execute re-applies exc_redirect_addr_ right after
+    // the switch — the last word on pc_ belongs to the redirect.
+    bool exc_redirect_pending_ = false;
+    uint32_t exc_redirect_addr_ = 0;
+    void clear_frame_unwind_exception() { frame_unwind_exception_valid_ = false;
+                                          frame_unwind_exception_ = DalvikValue::make_null(); }
 
     
     // Opcode implementations — Constants
@@ -1688,6 +1717,7 @@ private:
     // stored here. The next move-exception instruction reads from
     // this slot and clears it.
     DalvikValue pending_exception_ = DalvikValue::make_null();
+    // (frame_unwind_exception_ members declared near raise_synthetic_exception)
 
     // EXP-063: Resource lookup maps.
     // field_name_by_resid: maps resource ID → field name (built during R class init)
