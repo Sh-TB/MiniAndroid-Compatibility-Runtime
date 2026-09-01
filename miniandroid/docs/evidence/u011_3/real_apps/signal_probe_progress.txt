@@ -1,0 +1,2 @@
+972138:[PROGRESS] 2900000 total instructions executed (currently in Landroidx/camera/view/PreviewView$1$$ExternalSyntheticBackportWithForwarding0;.m PC=8/16) RSS=606 MB
+971508:[EXC-PROPAGATE] Ljava/lang/IllegalStateException; uncaught at caller Landroidx/lifecycle/LiveData;.assertMainThread invoke_pc=15 → caller continues after invoke (compatibility)
