@@ -1934,11 +1934,16 @@ bool ExecutionEngine::stage_click_test( ExecutionResult& result, const Execution
     auto probe = [&](bool disp) -> size_t {
         framebuffer_ = frame1;
         if (disp) {
-            framebuffer_.assign(framebuffer_.size(), 0xFF);
-            api::Canvas canvas(framebuffer_.data(), config.screen_width, config.screen_height);
-            result.content_view->measure(config.screen_width, config.screen_height);
-            result.content_view->layout(0, 0, config.screen_width, config.screen_height);
-            result.content_view->draw(canvas);
+            // UNIFIED_011.3 VISUAL-ORACLE (§22/§23): re-render through the
+            // SAME pipeline as frame 1. The previous ad-hoc path
+            // (content_view->measure/layout/draw) bypassed the real renderer
+            // (root selection + SoftwareCanvas/BitmapFont + resource image
+            // decode) and produced a near-blank second frame — the recorded
+            // "state_changed" pixel counts were dominated by redraw weakness
+            // instead of app-driven change. stage_render_frame re-renders
+            // the CURRENT shadow tree (post-handler mutation) into
+            // framebuffer_ with identical logic and writes no files.
+            stage_render_frame(result, config);
             size_t diff = 0;
             if (framebuffer_.size() == frame1.size()) {
                 for (size_t i = 0; i < framebuffer_.size(); i += 4) {
@@ -2023,13 +2028,37 @@ bool ExecutionEngine::stage_click_test( ExecutionResult& result, const Execution
             miniandroid::dalvik::DalvikValue::make_object(xc.view_id, xc.cls);
         miniandroid::dalvik::DalvikValue ret = miniandroid::dalvik::DalvikValue::make_void();
         miniandroid::dalvik::DalvikExecutionResult sub;
-        std::vector<miniandroid::dalvik::DalvikValue> handler_args{view_arg};
         // Real Android dispatches on the Activity that inflated the layout:
         //   activity.<android:onClick>(View v) — resolved via the DEX.
         // The manifest activity descriptor is the authoritative host class;
         // try_recursive_invoke resolves the method through the DEX.
         std::string host_class = result.apk_info.main_activity_full;
         if (host_class.empty()) host_class = "";  // engine falls back to its own index
+        // UNIFIED_011.3 FRAME-2 (§23): instance methods need the REAL activity
+        // instance as p0 (`this`). Previously only the View was passed, so
+        // `this` was the clicked View object — the handler read/wrote the
+        // WRONG heap object's fields (this.big → default 0) and the
+        // post-interaction re-render never changed (view_id=0, text="" in
+        // [EXP091-SETTEXT]). Real Android dispatches activity.<handler>(View).
+        std::vector<miniandroid::dalvik::DalvikValue> handler_args;
+        uint32_t activity_this_id = 0;
+        std::string activity_this_class;
+        if (auto* activity_shadow =
+                shadow_registry_->find_as<framework::ActivityShadow>()) {
+            activity_this_id = activity_shadow->current_activity_id();
+            if (activity_this_id != 0) {
+                const auto* aobj = dalvik_engine_.get_heap().get(activity_this_id);
+                activity_this_class = aobj ? aobj->class_descriptor : host_class;
+            }
+        }
+        if (activity_this_id != 0) {
+            handler_args.push_back(miniandroid::dalvik::DalvikValue::make_object(
+                activity_this_id, activity_this_class));  // p0 = this (Activity)
+            std::cerr << "[U0113-XMLCLICK] " << xc.handler
+                      << " dispatched on activity obj#" << activity_this_id
+                      << " (" << activity_this_class << ")" << std::endl;
+        }
+        handler_args.push_back(view_arg);  // p1 = View v
         bool dispatched_xml = dalvik_engine_.try_recursive_invoke(
             host_class, xc.handler, handler_args, ret, sub);
         entry["click_dispatched"] = dispatched_xml;

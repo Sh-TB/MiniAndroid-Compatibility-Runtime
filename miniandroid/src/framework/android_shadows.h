@@ -426,6 +426,11 @@ public:
         current_activity_class_ = cls;
         state_ = LifecycleState::CREATED;
     }
+    // UNIFIED_011.3 FRAME-2 (§23): record ONLY the activity's heap object id
+    // (no lifecycle-state side effects). Used by execute_apk_with_activity so
+    // post-launch probes (click-test android:onClick dispatch) can invoke
+    // handlers with the REAL activity instance as `this`.
+    void set_activity_heap_id(uint32_t id) { current_activity_id_ = id; }
     uint32_t current_activity_id() const { return current_activity_id_; }
     const std::string& current_activity_class() const { return current_activity_class_; }
     LifecycleState state() const { return state_; }
