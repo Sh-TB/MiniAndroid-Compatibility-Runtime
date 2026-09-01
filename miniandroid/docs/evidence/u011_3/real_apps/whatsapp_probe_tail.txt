@@ -1,0 +1,20 @@
+[METHOD-IN] LX/0JC;.A0I (bytecode_size=11)
+[RET-BEFORE] LX/0JC;.A0r bytecode_size=94
+[METHOD-IN] LX/0JC;.A0r (bytecode_size=94)
+[EXCEPTION] method=LX/0JC;.A0r pc=25 exception=Ljava/lang/IllegalStateException; try_range=(no try covering pc) handler=NOT_FOUND
+[EXCEPTION] no handler for Ljava/lang/IllegalStateException; in LX/0JC;.A0r — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/IllegalStateException; uncaught at caller LX/0wg;.A00 invoke_pc=73 → caller continues after invoke (compatibility)
+[RET-BEFORE] LX/0F7;.A0A bytecode_size=60
+[METHOD-IN] LX/0F7;.A0A (bytecode_size=60)
+[RET-BEFORE] LX/0F7;.A07 bytecode_size=8
+[METHOD-IN] LX/0F7;.A07 (bytecode_size=8)
+[EXP088-PHASE-B] ViewShadow found: 0x5638d1a86af0 clickables: 0
+[EXP088-PHASE-B] No views with click listeners found
+[ApkParser] Found EOCD at offset 143571548
+[ApkParser] Central Directory: 14700 entries at offset 142716928
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully

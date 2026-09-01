@@ -1,0 +1,37 @@
+{
+  "before": {
+    "path": "run/clicktest_gmdice/screenshot.png",
+    "size": [
+      1080,
+      1920
+    ]
+  },
+  "after": {
+    "path": "run/clicktest_gmdice/click_frame_0.png",
+    "size": [
+      1080,
+      1920
+    ]
+  },
+  "diff": {
+    "changed_px": 181512,
+    "total_px": 2073600,
+    "changed_pct": 8.753,
+    "bbox": {
+      "x0": 0,
+      "y0": 0,
+      "x1": 1079,
+      "y1": 1919,
+      "w": 1080,
+      "h": 1920
+    },
+    "max_channel_delta": 255,
+    "mean_channel_delta": 7.3713,
+    "row_distribution": {
+      "top": 23472,
+      "middle": 2225,
+      "bottom": 155815
+    }
+  },
+  "diff_png": "run/u0113_oracle/gmdice_roll_diff.png"
+}
