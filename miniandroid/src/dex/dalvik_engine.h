@@ -1705,6 +1705,15 @@ public:
     // EXP-067: resource_drawable_paths_ maps field name → APK asset path (e.g. "res/abc.webp").
     // Loaded from resource_values.json["drawable"] and ["mipmap"].
     std::map<std::string, std::string> resource_drawable_paths_;
+    // UNIFIED_011.2 IMAGE-RES-RENDER (§13/§14 campaign): populate
+    // resource_drawable_paths_ from the APK's actual res/ entry list by
+    // matching R-field names to drawable file basenames. Prior to this the
+    // map was read but NEVER populated (dead resolution chain): the render
+    // stage could only draw an "IMG" placeholder for runtime
+    // setImageResource() calls. Resolution order per §14 density rule:
+    // xxxhdpi > xxhdpi > xhdpi > hdpi > mdpi > plain drawable/.
+    void populate_resource_drawable_paths(const std::vector<std::string>& entry_names);
+    bool drawable_paths_populated_ = false;
     // EXP-098 (CM-027): resource_raw_paths_ maps R.raw.X name → APK asset
     // path (e.g. "res/-si.json" for R.raw.sms_incoming_info). Used by
     // RLottieImageView.setAnimation(R.raw.X, w, h) → RLottieDrawable →
