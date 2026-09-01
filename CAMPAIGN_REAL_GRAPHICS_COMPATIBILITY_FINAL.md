@@ -1,122 +1,166 @@
-# CAMPAIGN_REAL_GRAPHICS_COMPATIBILITY_FINAL — UNIFIED_011.2
+# CAMPAIGN_REAL_GRAPHICS_COMPATIBILITY_FINAL — UNIFIED_011.3
 
-Executor-executed campaign per the FULL RECOVERY/VALIDATION/INTEGRATION directive.
-No recommendation-only content: every claim below carries a reproduction command,
-log path, or SHA captured during this campaign on the final HEAD.
+Campaign: UNIFIED_011.3 (master directive: FULL HISTORICAL RECOVERY + COMPLETE GAP
+AUDIT + REAL-APP GRAPHICS + VERSIONED GIT HANDOFF)
+BASE_VERSION: v0.11.2-unified-011-2 (`6c9a91e`; tag applied retroactively for
+monotonic versioning — the 011.2 campaign shipped as an untagged handoff)
+BASE_HEAD: `6c9a91e` (BASE tag `v0.11.1-unified-011-1` = `340a9cf` for the §3 delta)
+FINAL_VERSION: v0.11.3-unified-011-3
+FINAL_HEAD: see VERSION_HANDOFF_MANIFEST.md (recorded at packaging time)
+Method: git archaeology + in-repo semantic fixtures + real-APK execution + pixel
+oracles. No RESULT numbers as identity. No claim trusted without reproduction.
 
+---
+
+## 1. What this campaign added (evidence-first)
+
+### 1.1 Typed-catch + cross-frame exception propagation (§18) — REAL Dalvik semantics
+
+Before 011.3, typed catch handlers were DECODED THEN DISCARDED (`(void)type_idx` in
+both `find_catch_handler_for_pc` and the THROW opcode handler) — only catch-all
+handlers ever fired, and a THROW with no handler silently continued past the throw
+(EXP-071 approximation). 011.3 implements:
+
+- `is_exception_subtype()`: DEX superclass-chain walk (`class_to_superclass_`) MERGED
+  with a built-in java.lang/java.io/java.util exception hierarchy (framework
+  exception classes whose class_defs are not in APK DEX files — mirroring the
+  EXP-068 View-hierarchy seed approach).
+- Typed-handler matching in BOTH lookup paths (shared machinery + THROW), Dalvik
+  order: first covering try → first subtype match → catch-all fallback → unwind.
+- Caller-side try-table search at invoke sites (EXC-PROPAGATE): an exception that
+  unwinds a callee frame is searched against the CALLER's try table covering the
+  invoke pc; a handler hit jumps there with `pending_exception_` set so
+  move-exception works. A post-switch pc redirect prevents the invoke handlers'
+  `pc_ += len` from clobbering the handler jump.
+- **Documented uncaught tail**: if NO frame catches, the caller continues with a
+  null return. Rationale (regression-proven in-campaign): full unwind-to-top let an
+  ENGINE-ARTIFACT exception escape — Telegram's `LruCache.<init>` throws
+  IllegalArgumentException("maxSize <= 0") because the size computes to 0 from
+  engine-local display metrics (real Android never throws there) — which unwound
+  LaunchActivity.onCreate and regressed the golden to the default screen. The tail
+  is the EXP-071-policy successor; caught-type semantics are fully real.
+- Unit-entry parity: `execute_method` now sets `dex_report_` and builds the
+  class/superclass indexes (previously only the full-APK path did — the EXP-037
+  BLOCKER-002 pattern had leaked into the unit entry).
+
+**Proof**: `tests/unified0113_typed_catch_test.cpp` — 8/8 PASS. Old code FAILS cases
+1 (exact typed match), 2 (subclass match), 5 (THROW typed), 7 (cross-frame catch);
+case 6 proves skip-and-continue removed; case 8 pins the documented uncaught tail.
+`tests/unified0112_filled_new_array_test.cpp` still 5/5 (no regression).
+
+### 1.2 Second-frame visual correctness (§22/§23) — the central metric chain
+
+The 011.2 click-test recorded "181,512 px" (gmdice) and "918,207 px" (ssw) state
+changes. **This campaign reclassified those numbers as artifacts**: the probe
+re-rendered via an ad-hoc `content_view->measure/layout/draw` that bypassed the real
+renderer (root selection + SoftwareCanvas/BitmapFont + resource image decode) and
+produced a near-blank second frame — visually verified during the campaign
+(blank white + one black rectangle for gmdice).
+
+Fixes (two root causes):
+
+1. **GFX-FRAME2-RENDER**: the probe now calls `stage_render_frame` — the IDENTICAL
+   pipeline that produced frame 1. A true before/after oracle is now possible.
+2. **GFX-FRAME2-THIS**: XML `android:onClick` handlers were invoked with `this` =
+   the clicked View object (the activity's heap object was never passed). Every
+   instance-field access inside the handler (`this.big`, `this.chrono`) hit the
+   wrong heap object — the smoking gun was `[EXP091-SETTEXT] view_id=0 text=""`.
+   The activity heap id is now recorded at creation
+   (`ActivityShadow::set_activity_heap_id`, called from `execute_apk_with_activity`)
+   and passed as p0.
+
+**Result (simplestopwatch, real APK, real click on "Start")**:
+
+```text
+before frame  →  real dispatch onButtonStart (activity 'this')
+              →  app logic: pressFirstButton → MyChrono.firstButton
+                 → startUpdating → save (SharedPreferences real file write)
+                 → updateViews → setText on REAL view ids
+              →  stage_render_frame re-render
+              →  SECOND FRAME: buttons now read "Stop" / "Lap"
+                 (the REAL running-state semantics of the app)
+oracle: changed_px=12,373 (0.597%), bbox=(24,4)-(793,1919),
+        bottom-third concentration 12,051 px (button row) — JSON evidence in
+        docs/evidence/u011_3/oracle/ssw_start.json
 ```
-CAMPAIGN:  UNIFIED_011.2 — full-repository recovery, validation, integration,
-           real-app execution, graphics/image end-to-end, interaction
-STATUS:    EXECUTED — 3 code commits + docs + handoff ZIP; full matrix green
 
-BASE_HEAD:   340a9cf861948b2512a8d239808be519275e87a0 (tag v0.11.1-unified-011-1)
-FINAL_HEAD:  8e1d633 (+ docs commit — resolve via git rev-parse HEAD)
-BRANCH:      main (13+3 commits ahead of origin bbe0ce3; push = owner credentials)
-FINAL_COMMIT: see git log -1
-```
+Honest residual: the second frame renders the correct STATE with a reflow artifact
+(buttons vertical vs horizontal — GFX-SSW-REFLOW, deferred cosmetic). GMDice's roll
+click dispatches and the handler chain runs deep (getDiceSet → selectDice →
+DiceCache.populate → 8× getString → new GameMasterDice$7), but its roll UI is
+runtime-constructed (dialog/dynamic views) and never enters the ViewShadow — true
+second-frame delta is 0 px (GFX-FRAME2-RUNTIMEVIEWS = the named next blocker).
 
-## HISTORICAL_RECOVERY
-- campaigns recovered: UNIFIED_000…011.1 (12 archives SHA-recorded in recovery/FORENSICS_SUMMARY.json; import 3b862e5 = 152 files, +38,349 lines). **011.5 / 012 / NEXT do not exist anywhere in the repo or history** — verified.
-- missing deliverables found: 9 cases (M1–M9 in RECOVERED_CAMPAIGN_STATUS.md §2) — incl. TBD placeholder shipped in status json, untracked START_HERE/recovery, dead resource_drawable_paths_ chain, android:onClick dead data, script naming mismatch (matrix vs downloader).
-- claims rejected: EXP071_OPCODE_AUDIT "filled-new-array ✓ verified" (presence-only audit; semantics broken — see FIXES); "dooz blank is terminal" (engine now progresses past setContentView).
-- prior fixes verified: telegram 3/3 determinism, libpng 12/12, gmdice 158,040 px, EXP-052 throw machinery, EXP-098 RLottie wiring — all reproduced or code-verified at HEAD.
+### 1.3 Historical reconciliation (§3/§4) — git-only
 
-## CURRENT_REAL_GAPS (top, evidence-ranked)
-1. Compose runtime — dooz ComposeView created (1080×1920) but 0 children (L4 not reached for Compose apps).
-2. Handler-mutation re-render — ssw onButtonStart executes real bytecode and mutates state, but frame 2 renders blank in the mutated region (visual correctness PARTIAL).
-3. Bitmap heap model — setImageBitmap/decodeResource have no pixel source; images render only via resource-resolved paths (XML src + resid→APK chain).
-4. WhatsApp 12-DEX entry chain — L1 reached (56K instructions); app-shell delegate → MainActivity creation unresolved.
-5. Signal init window — lifecycle/coroutines bytecode executes but exceeds a 280 s probe (progress, not livelock).
-6. Typed catch handlers not type-matched (catch-all only).
-7. ARSC obfuscated res names (unote/headingcalc class of apps stay on default screen).
-8. WebView — bgclock full-screen background renders, no content (WebView absent).
-9. Entry-chain for 6 corpus APKs (chessclock/headingcalc/notes/simplekeyboard/openlauncher/microtimer) — default shared screen (23,472 px).
+- Every commit after `340a9cf` tabled with files/tests/real-app effect in
+  `RECOVERED_11_1_TO_HEAD_DELTA.md`.
+- What 011.1 LACKED (verified 0-occurrence at `340a9cf`): runtime exception
+  machinery, typed catch, image resource chain population, click dispatch probe,
+  FNA semantic fixture.
+- `4a39f1b`/"176-176": **REJECTED** — not a valid object; absent from all 75
+  commits and all 12 recovery archives. Preserved as evidence.
+- The "121/122 smali semantic fixture suite" **exists nowhere** in tree, history,
+  or archives — work lost without a handoff (the exact §0 failure mode). Revived
+  in-repo as C++ semantic fixtures including the typed-exception class it
+  reportedly failed.
+- 011.5/012/NEXT campaigns: do not exist (re-verified via `git log --all`).
 
-## FIXES_IMPLEMENTED (all committed, all regression-verified)
-1. **filled-new-array 35c** (2f05134) — arg_count from bits 12–15, 5th register G from bits 8–11, C–F from cu2 nibbles. Fixture `tests/unified0112_filled_new_array_test.cpp`: FIXED 5/5 PASS; OLD code reproduced 4/5 FAIL (always 2-element arrays) — discrimination proof.
-2. **SYNTH-EXC runtime exceptions** (2f05134) — try-table search extracted verbatim (`find_catch_handler_for_pc`); `raise_synthetic_exception()` (in-frame catch → pending_exception_+jump; else frame unwind). aget **confirmed OOB** now throws ArrayIndexOutOfBoundsException. dooz: 78.0 s livelock → 0.8 s clean exit; execution progresses past ComponentActivity.setContentView.
-3. **IMAGE-RES-RENDER** (73e1946) — `populate_resource_drawable_paths()` (density-ranked xxxhdpi>…>mipmap) + render dispatch: image_drawable_path → resid-chain → src_drawable_path fallback, magic-detected PNG/JPEG/WebP decode. simplestopwatch: 3 blank buttons → **real lock/settings/menu icons** (before SHA `d495e3cb2ccf6c11`, after `2a12587a0acf196c`, determinism 3/3).
-4. **CLICK-TEST + XML onClick dispatch** (8e1d633) — generic `--click-test` probe (frame-1 restore → real dispatch → re-render → pixel diff → click_frame_N.png + JSON report) and the previously-dead `android:onClick` path now dispatched on the host Activity. gmdice: roll click → 181,512 px second frame. ssw: onButtonStart/onButtonReset → 918,207 px each.
+## 2. Real-app scorecard at FINAL_HEAD (§32; matrix 24/24 runs deterministic)
 
-## REAL_APPS (stage model §12; never equating exit-0 or non-blank with success)
+| App | Process | Activity | View Tree | Resources | First Frame | Correct Frame | Touch | Callback | State Change | Second Frame | Highest Stage |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Telegram v12 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ (golden `088ea640…` 3/3) | ✓ (audit path) | ✓ | ✓ | ✓ (deterministic) | **L12 deterministic render preserved** |
+| WhatsApp | ✓ (12 DEX) | ✓ (AppShell→Main.onCreate) | partial | partial | ✗ | ✗ | ✗ | ✓ (typed catches fire in LX/* code) | ✗ | ✗ | L2 (blocker: HandlerThread/Looper threading in LX/0F7 chain) |
+| Signal | ✓ | ✓ (init) | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ (2.8M instr into androidx camera/lifecycle init; ISE handled gracefully) | ✗ | ✗ | L2+ deep-init (probe window boundary) |
+| GMDice | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ (L12 visuals) | ✓ | ✓ | ✓ (logic) | 0 px (runtime-views gap) | **L12 — L13 pending runtime-view construction** |
+| SimpleStopwatch | ✓ | ✓ | ✓ | ✓ (icons+strings) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ (Stop/Lap, oracle 12,373 px) | **L13 candidate (visual-correct second frame)** |
+| microtimer/unote/chessclock/headingcalc/notesbill/simplekeyboard/openlauncher | ✓ | ✓ | ✗ (default screen) | ✗ (obfuscated ARSC / entry chain) | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | L1–L2 (grouped CONFIRMED_OPEN) |
+| dooz | ✓ | ✓ | ComposeView 0 children | n/a | ✗ (blank) | ✗ | ✗ | n/a | ✗ | ✗ | L3 (0.8 s — livelock fix holds; Compose runtime BLOCKED) |
+| tictactoe (libGDX) | ✓ | ✓ | ✗ | ✗ | ✗ (blank) | ✗ | ✗ | ✗ | ✗ | ✗ | L2 (libGDX backend BLOCKED) |
+| stopwatch (muellerma) | ✗ exit 1 | — | — | — | — | — | — | — | — | — | L0 (truncated APK — external boundary) |
 
-Telegram (v12.10.1, SHA-verified f5e11927…):
-  highest_stage: L12 — deterministic golden + auth chain + touch audit lineage
-  result: 3/3 runs SHA 088ea640587ec0d28fc7cd16b0097f2529ff7da2d594c3c2663c67531d770f6a BASELINE_MATCH (unchanged by all fixes — preserved)
-  screenshot: run/u011/matrix_final/telegram_v12/screenshot.png
+Baselines: telegram `088ea640587ec0d2…` PRESERVED 3/3; simplestopwatch `2a12587a…`
+PRESERVED 3/3; gmdice `472c1d3c…` PRESERVED 3/3 (158,040 non-white px). No golden
+was overwritten; the 011.2 anchor move (ssw, icons by design) remains the current
+anchor with its recorded reason.
 
-WhatsApp (latest prod universal, 143,571,570 B, sha256 88228eeaa121ab16…):
-  highest_stage: L1 — APK parsed (12 DEX, 71,506 strings), 56,187 real instructions
-  first_blocker: entry app-shell delegate chain across 12-DEX class index (L2→L3)
-  result: exit 0 but renders the shared default screen (eb16ab5c) — honestly recorded as NOT WhatsApp UI
-  screenshot: run/real_whatsapp/screenshot.png
+## 3. Graphics capability matrix (final §40 answers)
 
-Signal (8.24.2 official, sha256 bba7a207c73215d7… — manifest match):
-  highest_stage: L2+ — Application/LifecycleCoroutineScope init bytecode executing
-  first_blocker: stub-heavy init exceeds 280 s probe window (progressing, not livelocked)
-  result: probe timeout, no frame yet
-  screenshot: none
+| Capability | State at FINAL_HEAD | Evidence |
+|---|---|---|
+| Real images render (XML src → decode → pixels) | **YES** | exp_graphics_image_e2e + ssw icons |
+| Text render (BitmapFont/FreeType/HarfBuzz/FriBidi path) | **YES** | WS-C2 6/6 + ssw/gmdice frames |
+| Canvas (subset: rects/text/measure; save/clip/transform partial) | YES (subset, STUB_DEBT documented) | render pipeline |
+| Custom View render (app subclasses, e.g. BigTextView) | **YES** | ssw frames |
+| PNG | **YES** (libpng; RGB/RGBA/palette/tRNS) | 12/12 fixture + real icons |
+| WebP/JPEG | YES (libwebp/libjpeg, magic-selected) | decoder branch + prior evidence |
+| VectorDrawable/NinePatch | NO (placeholder path) | CONFIRMED_OPEN |
+| Visual oracle | **NEW** — px/%, bbox, row distribution | scripts/u0113_oracle_diff.py + JSONs |
+| Exception machinery | **YES — typed matching + cross-frame catch** (uncaught tail = documented compat) | typed_catch_test 8/8 + Telegram LX catch-alls |
+| Multi-DEX | YES for resolution (Telegram 5-DEX golden; WhatsApp 12-DEX parse + cross-DEX dispatch); entry threading = new named blocker | probes |
 
-Game — gmdice (real dice game, SHA-verified):
-  highest_stage: L12–L13 — first frame 158,040 px; real roll click; 181,512 px state change; second frame rendered (configure dialog view)
-  interaction: CLICK-TEST report run/clicktest_gmdice/click_test_report.json (listener Lde/duenndns/gmdice/GameMasterDice;)
-  screenshot_before: run/clicktest_gmdice/screenshot.png
-  screenshot_after:  run/clicktest_gmdice/click_frame_0.png
+## 4. Versioned handoff (§0/§38/§39)
 
-simplestopwatch (real app, SHA-verified):
-  highest_stage: L12 — icons render (IMAGE-RES-RENDER); XML onClick start/reset dispatch → 918,207 px state change each
-  interaction: run/clicktest_ssw2/click_test_report.json (4 handlers; 2 changed; settings/menu dispatched, 0 px — dialog gap)
-  screenshot_before: experiments/exp_graphics_image_e2e/ssw_frame_before_full.png
-  screenshot_after:  experiments/exp_graphics_image_e2e/ssw_frame_after_full.png
+- VERSION_HANDOFF_MANIFEST.md — mandatory manifest, exact fields.
+- MiniAndroid_v0.11.3_GIT_HANDOFF.zip — contains complete `.git`, tracked source,
+  tests, experiments, docs, evidence indexes, campaign state; ZERO APKs; no file
+  >5 MB; SHA256 recorded; clean-extract verified (git status clean vs tracked set,
+  final commit verified, fixtures re-run FROM THE EXTRACT).
+- Per-milestone commits during the campaign: code first, docs second — no work
+  existed only in chat or an uncommitted worktree at any point.
 
-Corpus (all SHA-verified): dooz L3→L4 (setContentView completes post-fix; ComposeView 0 children);
-bgclock L6 (real dark window background, WebView gap); chessclock/headingcalc/notes/simplekeyboard/
-openlauncher/microtimer L1–L2 default screen; tictactoe L2 blank (libGDX); stopwatch(muellerma) exit 1
-(pre-existing truncated APK); tinymusicplayer registry SHA stale (F-Droid serves different build).
+## 5. Remaining high-value items (ranked per §36)
 
-## GRAPHICS
-- ImageView: XML-src chain FIXED end-to-end; runtime resid chain FIXED (populate + dispatch); FAB name-match deferred
-- Bitmap: no heap model yet (honest gap); decoders deliver RGBA directly to canvas
-- Canvas: draw_image/draw_rect/draw_text proven on real APKs; save/clip subset per STUB_DEBT
-- PNG: libpng lineage intact; ssw icons decoded from real APK assets (hdpi bucket selected by density rank)
-- WebP/JPEG: linked + now reachable via stage_render_frame magic dispatch (no real-asset trigger in this corpus run — code path present)
-- Resource: ARSC/AXML/res_config verified via matrix rows; density preference implemented
-- Layout: ssw geometry matches real app incl. icon-bearing buttons (BASELINE_MATCH)
-- VisualOracle: before/after frames + SHA + pixel-diff + bbox recorded for every graphics change (§27/§30)
-
-## HIGH_IMPACT_FINDINGS
-1. EXP071 opcode audit's "✓ verified" was presence-only — real varargs semantics were broken until 2f05134.
-2. resource_drawable_paths_ had ZERO writers since EXP-067 — the runtime image chain was dead code for two campaigns.
-3. android:onClick was captured-but-never-dispatched — whole apps (ssw) were untouchable despite a working listener path.
-4. The dooz "blank" was an exception-semantics gap, not a rendering gap.
-5. Two official scripts disagree on APK cache filenames (matrix vs downloader) — reproducibility hazard (worked around, flagged).
-6. telegram.org/dl/android now redirects to Play Store; `telegram.org/dl/android/apk` still serves the SHA-matching v12 binary.
-
-## DEFERRED_FINDINGS
-Typed-catch type matching · THROW-no-handler unwind (machinery now exists) · APUT bounds semantics ·
-Bitmap heap model (prereq for setImageBitmap/decodeResource) · FAB class-name match ·
-VectorDrawable/StateList/NinePatch · ARSC obfuscation · WebView · GLES (per §20 — unproven need).
-
-## REGRESSION (after EVERY fix; §29 order respected)
-- deterministic matrix: telegram_v12 3/3 `088ea640…` BASELINE_MATCH; gmdice 158,040/`472c1d3c`; ssw 916,815/`2a12587a` (new anchor, reason recorded); microtimer/unote 23,472; tictactoe/dooz as documented; stopwatch exit 1 pre-existing
-- FNA semantic fixture 5/5; old-code discrimination proof 1/5
-- no new nonzero exits introduced anywhere in the matrix
-
-## HANDOFF_MD
-RECOVERED_CAMPAIGN_STATUS.md · MASTER_CURRENT_GAP_MATRIX.md · this file ·
-experiments/exp_graphics_image_e2e/README.md (+ 4 evidence PNGs) · updated worklog
-
-## HANDOFF_ZIP
-MiniAndroid_FULL_VALIDATION_HANDOFF_<FINAL_HEAD>.zip — see ZIP_SHA256 below
-(final name/SHA recorded at packaging time in SHA256SUMS inside the ZIP)
-
-## ZIP_SHA256
-recorded in the final message and inside the ZIP (SHA256SUMS_UNIFIED_011_2.txt)
-
-## SCREENSHOT_MANIFEST
-- run/u011/matrix_final/*/screenshot.png (8 rows incl. telegram BASELINE_MATCH)
-- run/clicktest_gmdice/{screenshot,click_frame_0}.png
-- run/clicktest_ssw2/{screenshot,click_frame_0,click_frame_1}.png
-- run/real_whatsapp/screenshot.png
-- experiments/exp_graphics_image_e2e/ssw_{buttons,frame}_{before,after}*.png
-- run/corpus_*/screenshot.png (7 remaining corpus rows)
+1. **GFX-FRAME2-RUNTIMEVIEWS** — runtime-constructed views (gmdice roll dialog,
+   dynamic LinearLayouts) never enter ViewShadow; blocks L13 on the only real game.
+2. **IMG-HEAP-MODEL** — Bitmap heap identity (decode→object→view state→renderer);
+   unlocks setImageBitmap/decodeResource (WhatsApp avatars, broader image apps).
+3. **APP-WA-THREADING** — WhatsApp HandlerThread/Looper semantics (LX/0F7 chain);
+   entry chain itself already works (this campaign's probe evidence).
+4. **APP-SIGNAL-INIT** — longer probe window once threading model lands (same
+   family as #3).
+5. **RES-OBFUSCATED** — ARSC obfuscated-name resolution (unote/headingcalc first
+   screens).
+6. VectorDrawable/NinePatch minimal decoder (state lists block several corpus
+   first screens' pressed/selected states).
