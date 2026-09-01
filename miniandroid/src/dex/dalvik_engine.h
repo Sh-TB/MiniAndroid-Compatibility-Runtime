@@ -1420,6 +1420,30 @@ public:
     
     bool fetch_decode_execute(DalvikExecutionResult& result);
     uint16_t fetch_opcode(uint32_t pc) const;
+
+    // UNIFIED_011.2 SYNTH-EXC (§21/§24 campaign): runtime exception machinery.
+    //
+    // find_catch_handler_for_pc: search the current frame's try table for a
+    // handler covering `pc`. Extracted verbatim from the THROW opcode handler
+    // (EXP-052/053) so synthetic runtime exceptions share the same machinery.
+    // NOTE (pre-existing limitation, preserved): typed handlers are decoded
+    // but not type-matched — only catch-all handlers are honored.
+    bool find_catch_handler_for_pc(uint32_t pc, uint32_t& handler_addr,
+                                   bool& is_catch_all, std::string& catch_type);
+
+    // raise_synthetic_exception: raise a runtime exception
+    // (ArrayIndexOutOfBoundsException, NullPointerException, ...).
+    //   1. Handler covering pc_ → pending_exception_ = exc, pc_ = handler,
+    //      returns true (execution continues at the handler).
+    //   2. No handler → unwind the current frame (halted_on_return_ like a
+    //      return with null result), returns false. Real Dalvik would search
+    //      the caller's try tables next; frame-return is the closest
+    //      supported approximation and eliminates the livelock that
+    //      warn-and-continue produced (dooz LM1/i;.f aget OOB loop).
+    bool raise_synthetic_exception(const std::string& exc_class_desc,
+                                   const std::string& message,
+                                   const char* origin_tag);
+
     
     // Opcode implementations — Constants
     bool execute_const_4(uint32_t pc, InstructionTrace& trace);
