@@ -91,6 +91,12 @@ struct RuntimeConfig {
     uint32_t max_instructions = 5000000;
     bool stop_on_unimplemented = false;
     bool generate_evidence = true;
+    // UNIFIED_011.2 CLICK-TEST (§10/§11): generic touch-interaction probe.
+    // After the first frame, dispatch a real click on EVERY view that has a
+    // registered listener, re-render, and save click_frame_<n>.png. A pixel
+    // diff between consecutive frames is the L9→L12 evidence chain:
+    // touch accepted → callback executed → state changed → second frame.
+    bool click_test = false;
     
     nlohmann::json to_json() const {
         return {
@@ -102,7 +108,8 @@ struct RuntimeConfig {
             {"framebuffer_height", framebuffer_height},
             {"max_instructions", max_instructions},
             {"stop_on_unimplemented", stop_on_unimplemented},
-            {"generate_evidence", generate_evidence}
+            {"generate_evidence", generate_evidence},
+            {"click_test", click_test}
         };
     }
 };
