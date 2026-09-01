@@ -55,6 +55,9 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     if (success) success &= stage_execute_application(result, config);
     if (success) success &= stage_render_frame(result, config);
     if (success) success &= stage_capture_output(result, config);
+    // UNIFIED_011.2 CLICK-TEST: runs AFTER the first frame is captured so the
+    // baseline PNG on disk is the untouched frame 1. Never fails the run.
+    if (success && config.click_test) stage_click_test(result, config);
     
     // Always try to generate reports
     stage_generate_reports(result, config);
@@ -1881,6 +1884,201 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
         return false;
     }
 
+    return true;
+}
+
+// UNIFIED_011.2 CLICK-TEST (§10/§11): generic touch-interaction probe.
+//
+// For every view with a registered click listener:
+//   1. restore framebuffer_ to the untouched frame-1 state (identical start),
+//   2. dispatch_click(view_id) — executes the REAL listener.onClick bytecode,
+//   3. re-render (measure → layout → draw) into framebuffer_,
+//   4. pixel-diff vs frame 1; save click_frame_<k>.png on change.
+//
+// A changed second frame is the full L9→L12 evidence chain:
+//   touch accepted → callback executed → state changed → second frame rendered.
+// Never alters run success/failure — this is a probe, not a gate.
+bool ExecutionEngine::stage_click_test( ExecutionResult& result, const ExecutionConfig& config) {
+    trace_engine_.info("ExecutionEngine", "stage_click_test", "CLICK-TEST probe");
+    if (!shadow_registry_ || !result.content_view) return true;
+
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!view_shadow) return true;
+
+    auto candidates = view_shadow->find_all_with_click_listener("");
+    std::cerr << "[CLICK-TEST] " << candidates.size()
+              << " view(s) with click listeners" << std::endl;
+
+    // UNIFIED_011.2: XML android:onClick handlers are a SECOND touch path.
+    // Previously captured (layout_inflater → onClick_handler) but never
+    // dispatched — simplestopwatch's three buttons were untouchable.
+    // Real Android resolves the method on the hosting Activity:
+    //   public void <android:onClick>(View v)
+    struct XmlClick { uint32_t view_id; std::string handler; std::string cls; };
+    std::vector<XmlClick> xml_candidates;
+    for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
+        if (node_ptr && !node_ptr->onClick_handler.empty()) {
+            xml_candidates.push_back({id, node_ptr->onClick_handler, node_ptr->class_desc});
+        }
+    }
+    std::cerr << "[CLICK-TEST] " << xml_candidates.size()
+              << " view(s) with XML android:onClick handlers" << std::endl;
+
+    if (candidates.empty() && xml_candidates.empty()) return true;
+
+    const std::vector<uint8_t> frame1 = framebuffer_;  // untouched baseline
+
+    // Shared probe: mutate state via `dispatch_fn`, re-render, diff vs frame1.
+    size_t diff_px = 0;
+    bool dispatched = false;
+    auto probe = [&](bool disp) -> size_t {
+        framebuffer_ = frame1;
+        if (disp) {
+            framebuffer_.assign(framebuffer_.size(), 0xFF);
+            api::Canvas canvas(framebuffer_.data(), config.screen_width, config.screen_height);
+            result.content_view->measure(config.screen_width, config.screen_height);
+            result.content_view->layout(0, 0, config.screen_width, config.screen_height);
+            result.content_view->draw(canvas);
+            size_t diff = 0;
+            if (framebuffer_.size() == frame1.size()) {
+                for (size_t i = 0; i < framebuffer_.size(); i += 4) {
+                    if (framebuffer_[i] != frame1[i] || framebuffer_[i+1] != frame1[i+1] ||
+                        framebuffer_[i+2] != frame1[i+2]) {
+                        diff++;
+                    }
+                }
+            }
+            return diff;
+        }
+        return 0;
+    };
+
+    nlohmann::json report;
+    report["clickable_views"] = candidates.size();
+    report["xml_onclick_views"] = xml_candidates.size();
+    report["frame1_sha_note"] = "screenshot.png (already written by stage_capture_output)";
+    nlohmann::json per_view = nlohmann::json::array();
+    int saved_frames = 0;
+    int changed_views = 0;
+    const size_t cap = 12;  // bound probe cost on listener-heavy UIs
+
+    for (size_t ci = 0; ci < candidates.size() && ci < cap; ci++) {
+        uint32_t view_id = candidates[ci];
+        nlohmann::json entry;
+        entry["view_id"] = view_id;
+        const auto* node = view_shadow->find_node(view_id);
+        entry["class"] = node ? node->class_desc : "?";
+        std::string listener_class;
+        if (node && node->click_listener_id != 0 &&
+            dalvik_engine_.get_heap().has_object(node->click_listener_id)) {
+            listener_class = dalvik_engine_.get_heap()
+                .get(node->click_listener_id)->class_descriptor;
+        }
+        entry["listener_class"] = listener_class;
+        entry["kind"] = "listener";
+
+        dispatched = dalvik_engine_.dispatch_click(view_id);
+        entry["click_dispatched"] = dispatched;
+        diff_px = probe(dispatched);
+        entry["changed_px"] = diff_px;
+        entry["state_changed"] = (diff_px > 0);
+        if (dispatched) changed_views += (diff_px > 0) ? 1 : 0;
+
+        if (dispatched && diff_px > 0 && saved_frames < 5) {
+            char name[64];
+            snprintf(name, sizeof name, "/click_frame_%zu.png", ci);
+            try {
+                renderer::FrameBuffer fb(config.screen_width, config.screen_height);
+                for (int y = 0; y < config.screen_height; y++) {
+                    for (int x = 0; x < config.screen_width; x++) {
+                        size_t i = (static_cast<size_t>(y) * config.screen_width + x) * 4;
+                        if (i + 3 < framebuffer_.size()) {
+                            fb.set_pixel(x, y, renderer::RGBA{
+                                framebuffer_[i], framebuffer_[i+1],
+                                framebuffer_[i+2], framebuffer_[i+3]});
+                        }
+                    }
+                }
+                renderer::PNGWriter::write_png(
+                    config.output_directory + std::string(name), fb);
+                entry["screenshot"] = std::string("click_frame_") + std::to_string(ci) + ".png";
+                saved_frames++;
+            } catch (const std::exception& e) {
+                entry["screenshot_error"] = e.what();
+            }
+        }
+        per_view.push_back(entry);
+    }
+
+    // XML android:onClick probes — dispatch the REAL Activity method by name.
+    for (size_t ci = 0; ci < xml_candidates.size() && ci < cap; ci++) {
+        const auto& xc = xml_candidates[ci];
+        nlohmann::json entry;
+        entry["view_id"] = xc.view_id;
+        entry["class"] = xc.cls;
+        entry["kind"] = "xml_onClick";
+        entry["handler"] = xc.handler;
+
+        miniandroid::dalvik::DalvikValue view_arg =
+            miniandroid::dalvik::DalvikValue::make_object(xc.view_id, xc.cls);
+        miniandroid::dalvik::DalvikValue ret = miniandroid::dalvik::DalvikValue::make_void();
+        miniandroid::dalvik::DalvikExecutionResult sub;
+        std::vector<miniandroid::dalvik::DalvikValue> handler_args{view_arg};
+        // Real Android dispatches on the Activity that inflated the layout:
+        //   activity.<android:onClick>(View v) — resolved via the DEX.
+        // The manifest activity descriptor is the authoritative host class;
+        // try_recursive_invoke resolves the method through the DEX.
+        std::string host_class = result.apk_info.main_activity_full;
+        if (host_class.empty()) host_class = "";  // engine falls back to its own index
+        bool dispatched_xml = dalvik_engine_.try_recursive_invoke(
+            host_class, xc.handler, handler_args, ret, sub);
+        entry["click_dispatched"] = dispatched_xml;
+        diff_px = probe(dispatched_xml);
+        entry["changed_px"] = diff_px;
+        entry["state_changed"] = (diff_px > 0);
+        if (dispatched_xml) changed_views += (diff_px > 0) ? 1 : 0;
+
+        if (dispatched_xml && diff_px > 0 && saved_frames < 5) {
+            char name[64];
+            snprintf(name, sizeof name, "/click_frame_%zu.png", candidates.size() + ci);
+            try {
+                renderer::FrameBuffer fb(config.screen_width, config.screen_height);
+                for (int y = 0; y < config.screen_height; y++) {
+                    for (int x = 0; x < config.screen_width; x++) {
+                        size_t i = (static_cast<size_t>(y) * config.screen_width + x) * 4;
+                        if (i + 3 < framebuffer_.size()) {
+                            fb.set_pixel(x, y, renderer::RGBA{
+                                framebuffer_[i], framebuffer_[i+1],
+                                framebuffer_[i+2], framebuffer_[i+3]});
+                        }
+                    }
+                }
+                renderer::PNGWriter::write_png(
+                    config.output_directory + std::string(name), fb);
+                entry["screenshot"] = std::string("click_frame_") + std::to_string(candidates.size() + ci) + ".png";
+                saved_frames++;
+            } catch (const std::exception& e) {
+                entry["screenshot_error"] = e.what();
+            }
+        }
+        per_view.push_back(entry);
+    }
+
+    report["views_probed"] = per_view.size();
+    report["views_changed_second_frame"] = changed_views;
+    report["per_view"] = per_view;
+    try {
+        std::ofstream rf(config.output_directory + "/click_test_report.json");
+        rf << report.dump(2);
+    } catch (...) {}
+
+    std::cerr << "[CLICK-TEST] done: probed=" << per_view.size()
+              << " state_changed=" << changed_views
+              << " frames_saved=" << saved_frames << std::endl;
+
+    // Leave the framebuffer in the LAST probed state is misleading; restore
+    // frame 1 so later evidence (report.md) reflects the launch UI.
+    framebuffer_ = frame1;
     return true;
 }
 
