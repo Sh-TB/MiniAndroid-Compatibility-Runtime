@@ -1,78 +1,141 @@
-# MASTER_CURRENT_GAP_MATRIX — UNIFIED_011.2
+# MASTER_CURRENT_GAP_MATRIX — UNIFIED_011.3
 
-Identity rule (§7): findings are identified by **subject + source location**, NOT by RESULT numbers.
-Every row: verified at FINAL HEAD `8e1d633` by fresh execution or fresh source inspection.
-Repro command unless stated: `python3 scripts/u011_test_matrix.py --binary build/miniandroid --apk-dir <cache>`.
+Identity rule (§5/§7): findings are identified by **finding subject + target subsystem +
+source + provenance**. RESULT numbers are NOT global IDs and are never used as keys
+(different Agents reused overlapping RESULT numbers; e.g. two distinct "RESULT_012"
+findings exist in historical reports — both are separately identified below by subject).
 
-## A. DEX interpreter
+Every row: verified at the 011.3 head by fresh execution or fresh source inspection
+during this campaign. Repro unless stated:
+`python3 scripts/u011_test_matrix.py --binary build/miniandroid --apk-dir <cache>`
+(fixture builds: `tests/unified0112_filled_new_array_test.cpp`,
+`tests/unified0113_typed_catch_test.cpp`).
 
-| Finding | Source/Provenance | HEAD state | Reproduced | Real APK impact | Already fixed | Needs fix | Test | Status |
-|---|---|---|---|---|---|---|---|---|
-| filled-new-array 35c arg_count read from opcode nibble `(pc>>4)&0xF` (const 2); G register never read | EXP-093 handler, dalvik_engine.cpp:5504 (pre-fix) | **FIXED** (2f05134): A=(>>12), G=(>>8), C..F=cu2 | YES — fixture: old 4/5 FAIL | Telegram varargs (Object… args), any D8 varargs APK | — | — | unified0112_filled_new_array_test 5/5 PASS | FIXED+REGRESSION_TESTED |
-| aget confirmed-OOB warn-and-continue (no AIOOBE) → dooz LM1/i;.f livelock (78 s, 1.2 M instr) | run/u011/matrix_postfix/dooz | **FIXED** (2f05134): confirmed OOB (arr_len>0) throws ArrayIndexOutOfBoundsException via SYNTH-EXC; arr_len==0 (unknown) keeps legacy path | YES — dooz 78 s → 0.8 s | dooz/Compose progression; any loop over arrays | — | — | matrix dooz row + [SYNTH-EXC] log | FIXED+REGRESSION_TESTED |
-| Typed catch handlers decoded but not type-matched (catch-all only) | dalvik_engine.cpp THROW + find_catch_handler_for_pc (pre-existing) | present | by source inspection | apps relying on typed catch at throw site | no | yes (low risk, medium value) | — | BLOCKED (deferred: needs class-hierarchy instanceof; behavior-preserving refactor landed first) |
-| THROW with no handler = skip-and-continue (not frame unwind) | EXP-071 compatibility approximation, dalvik_engine.cpp:5885 | present | by source inspection | error paths continue past throw | no | yes (now cheap: raise_synthetic_exception already unwinds) | — | DEFERRED (documented; next candidate) |
-| APUT auto-grows `__array_length__` past end (no OOB) | ARRAY_PUT_CASE dalvik_engine.cpp | present | by source inspection | array semantics drift | no | yes, but regression risk | — | DEFERRED (documented with risk note) |
-| long arithmetic / wide / cmp-long / rsub / shifts / neg-not / switch / lit8 | EXP-052/054/055/058/060 reports + code at HEAD | present | partially (fixtures from prior campaigns) | Telegram timestamps (long) run 3/3 deterministic | — | — | prior campaign fixtures | INTEGRATED |
-| repeat-call state leakage | EXP-088 multidex_inject / EXP-043 | addressed via EXP-088 injection idempotence | no | — | yes | — | — | INTEGRATED |
+## Counts (calculated from the matrix below — not copied from any report)
 
-## B. Resources / layout
+```text
+RAW_FINDINGS:        41   (agent-discovery sets + campaign audits + this campaign's new findings)
+DISTINCT_FINDINGS:   38   (after merging 3 duplicates)
+DUPLICATES:           3
+ALREADY_FIXED:       17   (fixed in earlier campaigns, verified working at this HEAD)
+NOT_REPRODUCED:       2
+NOT_REACHABLE:        2
+CONFIRMED_OPEN:       9
+FIXED:                7   (fixed BY this campaign)
+DEFERRED:             9
+BLOCKED:              4
+```
 
-| Finding | Source/Provenance | HEAD state | Reproduced | Real APK impact | Already fixed | Needs fix | Test | Status |
-|---|---|---|---|---|---|---|---|---|
-| `src_drawable_path` (AXML) vs `image_drawable_path` (runtime) render mismatch | layout_inflater.cpp:661 vs execution_engine.cpp:1382 (pre-fix) | **FIXED** (73e1946): render consumes src_drawable_path fallback | YES — ssw icons | simplestopwatch (3 icons), any XML-src ImageView | — | — | experiments/exp_graphics_image_e2e | FIXED+REGRESSION_TESTED |
-| `resource_drawable_paths_` never populated (dead resolution chain) | dalvik_engine.cpp:4303/10770 readers; zero writers (pre-fix) | **FIXED** (73e1946): populate_resource_drawable_paths, density-ranked | YES | runtime setImageResource chain | — | — | [IMG-RES-RENDER] log + ssw run | FIXED |
-| @string resolution / ARSC / res_config | 009 pipeline, UNIFIED_007 | present | YES (gmdice strings, ssw layout) | corpus-wide | — | — | matrix rows | INTEGRATED |
-| density-qualified resources (drawable-*dpi) | populate rank order xxxhdpi>…>mipmap | **NEW** (73e1946) | YES (ssw picked hdpi icons) | all APKs | — | — | ssw after-frame | INTEGRATED |
-| obfuscated res names (unote/headingcalc) | status_011_1.json blockers | present | not reproduced this run | those APKs fall to default screen | no | yes | — | DEFERRED (ARSC obfuscation — next campaign) |
-| weight/measure WRAP/MATCH_PARENT | measure_layout in layout_inflater + view_renderer | present | ssw frame matches real app incl. icons | ssw | — | — | ssw BASELINE_MATCH 2a12587a | INTEGRATED |
-| XML `android:onClick` captured but never dispatched | layout_inflater.cpp:658; zero consumers (pre-fix) | **FIXED** (8e1d633): dispatched on Activity via try_recursive_invoke | YES — ssw 4 handlers, 2 state changes | ssw, many F-Droid apps | — | — | click_test_report.json | FIXED |
-| ComposeView inflates 0 children (Compose runtime) | dooz run log (post-2f05134): node=47 ComposeView 1080x1920, children=0 | present | YES | dooz, any Compose app | no | yes | — | BLOCKED (Compose architecture gap — known) |
+## A. DEX interpreter semantics (§7 inventory)
 
-## C. Image pipeline (§13/§14)
+| Canonical ID | Finding | Provenance | Source | Current HEAD | Reproduced | Real APK | Duplicate | Already Fixed | Needs Fix | Test | Final Status |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| DEX-FNA-35C | filled-new-array 35c arg_count read from opcode nibble `(pc>>4)&0xF` (const 2); G never read | Agent EXP-093 finding + UNIFIED_011.2 audit M3; EXP071 "✓ verified" claim REJECTED (presence-only) | dalvik_engine.cpp:5504 (pre-fix) | fixed @2f05134: A=(>>12), G=(>>8), C..F=cu2 | YES — fixture old-code 4/5 FAIL | Telegram varargs (Object…), any D8 varargs APK | no | yes (2f05134) | no | unified0112_filled_new_array_test 5/5 | FIXED+REGRESSION_TESTED |
+| DEX-AGET-OOB-LIVELOCK | aget confirmed-OOB warn-and-continue → dooz LM1/i;.f livelock (78 s, 1.2 M instr) | UNIFIED_011.2 run logs | ARRAY_GET_CASE (pre-fix) | fixed @2f05134: confirmed OOB throws AIOOBE (SYNTH-EXC); arr_len==0 keeps legacy path | YES — dooz 78 s→0.8 s | dooz; any loop over arrays | no | yes (2f05134) | no | matrix dooz row + [SYNTH-EXC] log | FIXED+REGRESSION_TESTED |
+| DEX-CATCH-TYPED | Typed catch handlers decoded but discarded (`(void)type_idx` in find_catch_handler_for_pc AND THROW handler); only catch-all ever fired | 011.2 audit; §18 | dalvik_engine.cpp:6301/5926 (pre-fix) | **FIXED (011.3)**: is_exception_subtype (DEX chain + built-in java.lang/io/util hierarchy); first subtype match wins, catch-all fallback, in BOTH lookup paths | YES — typed_catch_test cases 1/2/5 (old code FAILs them) | any app with typed catch (Signal init paths, Telegram catch-alls proven firing) | no | no | no | unified0113_typed_catch_test 8/8 | FIXED+REGRESSION_TESTED |
+| DEX-THROW-NO-HANDLER | THROW with no handler = skip-and-continue (silently executed code after throw) | EXP-071 approximation | dalvik_engine.cpp:5885 (pre-fix) | **FIXED (011.3)**: frame unwind + caller-side try search; if uncaught anywhere → caller continues (documented compatibility tail — see DEX-EXC-TAIL) | YES — typed_catch_test case 6 | any real throw site | no | no | no | typed_catch_test 8/8 | FIXED+REGRESSION_TESTED |
+| DEX-EXC-PROPAGATE | Exception unwinding a callee frame was silently dropped at the invoke site (no caller try-table search) | 011.2 audit note | try_recursive_invoke restore block | **FIXED (011.3)**: EXC-PROPAGATE searches caller try table at invoke pc; handler → jump with pending_exception_ (move-exception works); post-switch pc redirect defeats invoke `pc_+=len` clobber | YES — typed_catch_test case 7 | Telegram ConnectionsManager/LocaleController catch-alls PROVEN firing in run logs | no | no | no | typed_catch_test case 7 | FIXED+REGRESSION_TESTED |
+| DEX-EXC-TAIL | Uncaught-anywhere exception previously killed the whole run when propagated (011.3 intermediate state: Telegram golden regressed to eb16ab5c) | **NEW 011.3** (found by telegram A/B during campaign) | try_recursive_invoke uncaught branch | **FIXED (011.3)**: uncaught tail = caller continues with null return (compatibility). Rationale: engine raises ARTIFACT exceptions (LruCache maxSize=0 IAE — real Android never throws there); full unwind killed onCreate | YES — telegram run: 088ea640 regression then restore | Telegram (golden preserved), all matrix apps | no | no | no | typed_catch_test case 8 + telegram golden 3/3 | FIXED (policy documented) |
+| DEX-APUT-BOUNDS | APUT auto-grows `__array_length__` past end (no OOB) | 011.2 audit | ARRAY_PUT_CASE | present | by source inspection | array-semantics drift | no | no | yes (regression risk noted) | — | DEFERRED |
+| DEX-WIDE-ARITH | long/double arithmetic, cmp-long/-double, cmpl/cmpg, rsub, shifts, neg/not, lit8/LIT16, const-wide/32, packed/sparse-switch, fill-array-data, array-length, register nibbles | EXP-052/054/055/058/060 campaigns | dalvik_engine.cpp | present at HEAD | prior fixtures | Telegram timestamps (long) run 3/3 deterministic | no | yes | no | prior campaign fixtures | INTEGRATED |
+| DEX-INVOKE-WIDE | invoke-{static,virtual,direct,super,interface} wide-arg merging; proto resolution per-DEX | EXP-058/079/082, EXP-095 CM-019 | execute_invoke_* | present | prior (runOnUIThread, LayoutHelper) | Telegram/AndroidX | no | yes | no | prior fixtures + matrix | INTEGRATED |
+| DEX-IGET-IPUT-WIDTH | iget/iput variant width semantics (boolean/byte/char/short/wide/object) | EXP-062 | execute_iget/execute_iput | present | prior | corpus-wide | no | yes | no | matrix | INTEGRATED |
+| DEX-REPEAT-CALL | repeat-call state leakage | EXP-088 multidex_inject | execute_method_internal reset | addressed (injection idempotence) | no | — | no | yes | no | prior | INTEGRATED |
+| DEX-MULTIDEX-MAP | multi-DEX class/method ownership + cross-DEX resolution | EXP-088 Phase 1.2 inject_secondary_dex_classes; EXP-066 | dex engine | present (Telegram 5-DEX works; WhatsApp 12-DEX parses) | partial | Telegram (5 DEX) 3/3 golden | no | yes | no | telegram golden + whatsapp run | INTEGRATED (WhatsApp entry chain = separate row APP-WA-ENTRY) |
+| DEX-EXC-TYPEDFRAME | synthetic exception/unwind correct continuation (method-frame return restoration) | 011.2 SYNTH-EXC + 011.3 | raise_synthetic_exception | present; fixture-proven | YES | dooz progress | no | yes (011.3 extends) | no | typed_catch_test | INTEGRATED |
+| DEX-MONITOR-VOLATILE | monitor-enter/exit + volatile treatment | §7 inventory | interpreter | monitor = compatibility no-op (no threads), volatile n/a single-thread | by source inspection | none demonstrated | no | partial | no | — | LOW_IMPACT/DEFERRED |
 
-| Finding | Source/Provenance | HEAD state | Reproduced | Real APK impact | Already fixed | Needs fix | Test | Status |
-|---|---|---|---|---|---|---|---|---|
-| Full chain: XML src → ARSC → path → libpng decode → draw_image → framebuffer → PNG | E2E experiment | **PASS end-to-end** (73e1946) | YES — ssw | ssw + all XML-src apps | — | — | experiments/exp_graphics_image_e2e | INTEGRATED |
-| `Resources.getDrawable` returns stub string | dalvik_engine.cpp:10760 (EXP-067) | present | source inspection | minor (code path rarely hit) | no | optional | — | LOW_IMPACT |
-| `BitmapFactory.decodeResource` not an API entry | source scan | absent as API; decoders exist | source inspection | runtime-bitmap apps | no | yes (needs Bitmap heap model) | — | DEFERRED (with Bitmap model) |
-| `setImageBitmap/setImageDrawable/setImageURI` discard state ("we don't decode drawables yet") | android_shadows.cpp:1331 | present | source inspection | runtime-bitmap apps | no | yes (same Bitmap model prerequisite) | — | DEFERRED (honest: no pixel source to copy) |
-| ImageView render check misses FAB (class-name string match) | execution_engine.cpp is_image_view | present | source inspection | FloatingActionButton apps | no | yes (trivial + risk-free later) | — | DEFERRED |
-| VectorDrawable/StateList/NinePatch decode | ssw "IMG?" path when XML drawable | partial (placeholder) | by design of fix | some apps | no | yes | — | DEFERRED |
-| PNG palette/transparency/16-bit/interlace | CAMPAIGN-010 libpng lineage | libpng-backed | prior 7,036-image differential | corpus | yes | — | exp088_a4_png_decoder_test 12/12 | INTEGRATED |
-| WebP/JPEG decode | EXP-097 §5/§6 linked | linked (libwebp/libjpeg) + now reachable from stage_render_frame (73e1946) | code path exercised when real assets are WebP/JPEG | Telegram (WebP avatars) | — | — | ssw run (PNG branch); WebP/JPEG branch by magic detect | INTEGRATED |
+## B. Resources / ARSC / AXML (§9)
 
-## D. Graphics / input
+| Canonical ID | Finding | Provenance | Source | Current HEAD | Reproduced | Real APK | Duplicate | Already Fixed | Needs Fix | Test | Final Status |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| RES-SRC-IMG-MISMATCH | LayoutInflater wrote `src_drawable_path`; renderer read only `image_drawable_path` → dead state | 011.2 audit M5; §13 | layout_inflater.cpp:661 vs execution_engine.cpp:1382 | fixed @73e1946 (render fallback) | YES — ssw icons | simplestopwatch, any XML-src ImageView | no | yes | no | exp_graphics_image_e2e | FIXED (011.2)+REGRESSION_TESTED |
+| RES-DRAWABLE-PATHS-DEAD | `resource_drawable_paths_` read in 2 places, populated nowhere (EXP-067 delivery incomplete) | 011.2 audit M4 | dalvik_engine.cpp:4303/10770 | fixed @73e1946 (populate, density-ranked) | YES | runtime setImageResource chain | no | yes | no | [IMG-RES-RENDER] log | FIXED (011.2) |
+| RES-STRING-ARSC | @string/ARSC/res_config/string-pool/type-matched find_id | UNIFIED_007/009 | resource runtime | present | YES (gmdice/ssw strings) | corpus-wide | no | yes | no | matrix | INTEGRATED |
+| RES-DENSITY | density-qualified drawable lookup (drawable-*dpi) | 011.2 fix | populate_resource_drawable_paths rank | present (NEW 011.2) | YES (ssw picked hdpi) | all APKs | no | yes | no | ssw after-frame | INTEGRATED |
+| RES-OBFUSCATED | obfuscated res names (unote/headingcalc fall to default screen) | status_011_1 blockers | ARSC parser | present limitation | not reproduced this run (those APKs unchanged) | unote, headingcalculator | no | no | yes | — | CONFIRMED_OPEN (next-candidate campaign item §35.7) |
+| RES-CONFLATION | resource/background/image ID conflation | §9 directive item | axml/layout_inflater | background→src distinct paths verified for ssw (background vs android:src) | YES (ssw renders both) | ssw | no | yes | no | ssw frames | INTEGRATED |
+| RES-TYPEDARRAY-THEME | TypedArray / Theme.style inheritance | §9 directive item | resource runtime | partial (styles flat-resolved) | not reproduced | none blocking corpus | no | no | optional | — | DEFERRED |
+| RES-RAWS | raw resources / res/0s.xml-style files / obfuscated file names | §9 | arsc/axml | res/0s-style names parsed via entry list | partial | none blocking | no | no | optional | — | DEFERRED |
 
-| Finding | Source/Provenance | HEAD state | Reproduced | Real APK impact | Already fixed | Needs fix | Test | Status |
-|---|---|---|---|---|---|---|---|---|
-| Canvas save/restore/translate/clipRect/drawBitmap/drawText | software_renderer + api Canvas | present (subset) | ssw/ssw-icons, gmdice frames | corpus | — | — | matrix frames | INTEGRATED (subset documented in STUB_DEBT.md) |
-| Touch → listener bytecode → state → SECOND frame | CLICK-TEST (8e1d633) | **NEW capability** | YES — gmdice 181,512 px, ssw 918,207 px ×2 | real games | — | — | run/clicktest_gmdice/click_test_report.json | INTEGRATED |
-| Frame-2 visual correctness after handler mutation | ssw onButtonStart → UI blanks (mutated tree renders empty region) | partial | YES (recorded honestly) | interaction UX | no | yes | click_frame_0.png ssw2 | HIGH_IMPACT finding, DEFERRED (needs re-render bridge for handler-mutated views) |
-| GLES backend | status_011_1.json | not built (bridge glue present) | not triggered by any corpus APK (§20 rule respected — no real-APK GLES requirement demonstrated) | — | — | — | — | BLOCKED per §20 (no proven need yet) |
+## C. Image pipeline (§10/§12/§13/§14)
 
-## E. Real apps (§11/§12) — compatibility stages
+| Canonical ID | Finding | Provenance | Source | Current HEAD | Reproduced | Real APK | Duplicate | Already Fixed | Needs Fix | Test | Final Status |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| IMG-E2E-CHAIN | RESOURCE→ARSC→path→decoder→Bitmap→ViewShadow→ImageView→Canvas→framebuffer→PNG full chain | §11 E2E | exp_graphics_image_e2e | **PASS end-to-end** (011.2) + re-verified with pipeline renderer (011.3) | YES — ssw | ssw + XML-src apps | no | yes | no | exp_graphics_image_e2e + u0113 evidence | INTEGRATED |
+| IMG-GETDRAWABLE-STUB | `Resources.getDrawable` returns stub string | EXP-067 | dalvik_engine.cpp:10760 | present | source inspection | rarely-hit path | no | no | optional | — | LOW_IMPACT |
+| IMG-BITMAPFACTORY | `BitmapFactory.decodeResource` not an API entry (decoders exist) | 011.2 audit | source scan | absent as API | source inspection | runtime-bitmap apps | no | no | yes (needs IMG-HEAP-MODEL) | — | DEFERRED (with IMG-HEAP-MODEL) |
+| IMG-SETIMAGE-DISCARD | setImageBitmap/setImageDrawable/setImageURI discard state ("no decode yet" comment) | 011.2 audit | android_shadows.cpp:1331 | present (marks-only) | source inspection | runtime-bitmap apps | no | no | yes (same prereq) | — | DEFERRED |
+| IMG-HEAP-MODEL | Bitmap heap model: decode→bitmap object→heap identity→View state→renderer access (§14) | 011.2 final report open gap | heap/renderer | absent | by design audit | runtime-bitmap apps (WhatsApp avatars) | no | no | yes | — | CONFIRMED_OPEN (high-value §35.3) |
+| IMG-FAB | ImageView render check misses FloatingActionButton (string class-name match) | 011.2 audit | execution_engine is_image_view | present | source inspection | FAB apps | no | no | yes (trivial) | — | DEFERRED (trivial, no real target yet) |
+| IMG-PNG | PNG RGB/RGBA/palette/tRNS/bit-depths/Adam7 | CAMPAIGN-010 libpng lineage | PNGDecoder (libpng-backed) | present | prior 7,036-image differential + 12/12 fixture | corpus | no | yes | no | exp088_a4_png_decoder_test 12/12 | INTEGRATED |
+| IMG-WEBP-JPEG | WebP + JPEG decode | EXP-097 | libwebp/libjpeg | linked + reachable from render dispatch | magic-branch exercised when assets present | Telegram avatars | no | yes | no | ssw PNG branch + magic detect | INTEGRATED |
+| IMG-VECTOR-NINE | VectorDrawable / StateList / NinePatch decode | 011.2 audit | decoder set | placeholder path ("IMG?" + grey box) | by design | some apps | no | no | yes | — | CONFIRMED_OPEN (§35.13/14) |
+| IMG-LOTTIE | Lottie (RLottie) animation | EXP-097/098 | rlottie linked | present (SMS screen) | prior | Telegram | no | yes | no | exp097 evidence | INTEGRATED |
 
-| App | SHA (verified) | Highest stage | First blocker | Exit | Screenshot |
-|---|---|---|---|---|---|
-| Telegram v12 12.10.1 | f5e1192725772960… (registry match) | **L12** (auth chain + deterministic render + click audit; 3/3 `088ea640…`) | — (next: onNextPressed override dispatch per docs) | 0 | run/u011/matrix_final/telegram_v12/screenshot.png |
-| WhatsApp (latest, 143,571,570 B) | 88228eeaa121ab16… | L1 (56,187 instr; 12 DEX parsed) | entry app-shell delegate creation in 12-DEX index (L2→L3) | 0 (default screen eb16ab5c — NOT WhatsApp UI) | run/real_whatsapp/screenshot.png |
-| Signal 8.24.2 | bba7a207c73215d7… (official manifest match) | L2+ (androidx.lifecycle/coroutines init bytecode executing) | stub-heavy init path exceeds probe window (280 s, no livelock — progress ongoing) | timeout (probe) | — (no frame yet) |
-| gmdice (real game) | 1621eda11b5dbc0c… | **L13 candidate**: L12 + click state change + second frame (181,512 px) | second-frame content = configure dialog (partial visuals) | 0 | run/clicktest_gmdice/click_frame_0.png |
-| simplestopwatch | b3ec1a5ec24ce53b… | L12 (XML onClick dispatched; start/reset state change 918,207 px) | frame-2 visual correctness | 0 | run/clicktest_ssw2/click_frame_0.png |
-| bgclock | 72c140b0083ef273… | L6 (real window background full-screen) | WebView (not implemented) | 0 | run/corpus_bgclockhansdezwart/screenshot.png |
-| microtimer / unote / chessclock / headingcalc / notes / simplekeyboard / openlauncher | see APK_REGISTRY | L1–L2 (default shared screen eb16ab5c — entry view tree not built) | entry-chain/multi-dex or ARSC obfuscation | 0 | run/corpus_*/screenshot.png |
-| dooz (Compose game) | d81292cd346dcb23… | L3→L4 (setContentView completes post-2f05134; ComposeView created 0 children) | Compose runtime | 0 | run/u011/matrix_final/dooz/screenshot.png |
-| tictactoe (libGDX) | 760fe5acf7b39435… | L2 (blank pre-existing) | libGDX game framework | 0 | run/u011/matrix_final/tictactoe/screenshot.png |
-| stopwatch (muellerma) | 3b6a10c8dc8ddc72… | L0/L1 (pre-existing truncated APK — exit 1) | truncated APK itself | 1 | — |
-| tinymusicplayer | registry SHA stale (F-Droid serves b636acad…, registry wants d7bcb24d…) | L0 (registry staleness) | n/a (registry fix needed) | 1 | — |
+## D. Graphics / render / interaction (§15/§22/§23/§27)
 
-## F. Classification roll-up
+| Canonical ID | Finding | Provenance | Source | Current HEAD | Reproduced | Real APK | Duplicate | Already Fixed | Needs Fix | Test | Final Status |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| GFX-CANVAS | Canvas save/restore/translate/clipRect/drawRect/drawBitmap/drawText/alpha/scale | §15 | software_renderer + api Canvas | subset present (STUB_DEBT documented) | ssw/gmdice frames | corpus | no | partial | yes (grow as real targets need) | matrix frames | INTEGRATED (subset) — remaining DEFERRED |
+| GFX-GLES | GLES static GLES20 wiring; game reachability unknown | status_011_1 | gles bridge glue | not built; §16 rule: no real-APK GLES requirement demonstrated (corpus runs software) | no | none demonstrated | no | no | only on proven need | — | BLOCKED (per §16 — evidence-gated) |
+| GFX-CLICK-DISPATCH | Touch → listener bytecode → state (dispatch) | 011.2 CLICK-TEST | dispatch_click + XML path | present | YES | gmdice, ssw | no | yes | no | click reports | INTEGRATED |
+| GFX-FRAME2-RENDER | Click-test second frame re-rendered via ad-hoc content_view->draw() — bypassed the real pipeline; produced near-blank frames; pixel counts were redraw artifacts (gmdice "181,512 px", ssw "918,207 px" RECLASSIFIED) | **NEW 011.3** (visual oracle §23 exposed it) | stage_click_test probe | **FIXED (011.3)**: probe now calls stage_render_frame (identical pipeline/root selection as frame 1) | YES — before/after A/B in-campaign | gmdice, ssw, any click-probed app | no | no | no | u0113 click reports + oracle JSON | FIXED+REGRESSION_TESTED |
+| GFX-FRAME2-THIS | XML android:onClick handlers executed with `this` = clicked View (activity heap object never passed) → instance fields hit wrong heap object → setText receiver_id=0, text="" → second frame unchanged | **NEW 011.3** ([EXP091-SETTEXT] view_id=0 evidence) | stage_click_test xml dispatch + ActivityShadow | **FIXED (011.3)**: activity heap id recorded (set_activity_heap_id) and passed as p0; handler chain reads REAL fields; re-render changes | YES — ssw Start→Stop/Lap 12,439 px oracle-verified | ssw + all XML-onClick apps | no | no | no | u0113_ssw_click3 + oracle JSON/PNG | FIXED+REGRESSION_TESTED |
+| GFX-FRAME2-RUNTIMEVIEWS | gmdice roll flow mutates state but its UI (dialog/runtime-constructed views) never enters ViewShadow → true second-frame delta = 0 | **NEW 011.3** (honest re-measure after GFX-FRAME2-RENDER fix) | DiceCache.populate / dialog path | present limitation | YES (gmdice click report 0 px + dispatch chain logs) | gmdice (real game) | no | no | yes (runtime view construction model) | click_test_report.json | CONFIRMED_OPEN (§35.2 next blocker) |
+| GFX-VISUAL-ORACLE | No quantitative before/after oracle (px/%, bbox) existed | §22/§23 directive | scripts/u0113_oracle_diff.py (NEW 011.3) | present | YES — gmdice + ssw JSONs | evidence tooling | no | no | no | run/u0113_oracle/*.json | INTEGRATED |
+| GFX-SSW-REFLOW | ssw second frame renders correct Stop/Lap STATE but reflowed geometry (vertical vs horizontal buttons) vs frame-1 layout | **NEW 011.3** (honest observation) | render measure pass | present | YES (click_frame_0.png) | ssw | no | no | yes (measure re-run nuance) | oracle PNG | DEFERRED (cosmetic; state correctness proven) |
 
-- FIXED (this campaign, evidence above): filled-new-array 35c, aget-OOB livelock (SYNTH-EXC), src/image drawable render mismatch, dead resource_drawable_paths_ chain, XML android:onClick dead data, status_011_1 TBD placeholder, untracked handoff files.
-- INTEGRATED (verified working at HEAD): telegram deterministic render, libpng/WebP/JPEG codecs, RLottie wiring, ARSC/AXML/res_config, weight/measure for ssw/gmdice, click dispatch (both paths), corpus baseline rows.
-- REGRESSION_TESTED: every fix re-ran the full matrix; telegram golden 3/3 unchanged; ssw anchor moved WITH reason + determinism 3/3.
-- BLOCKED: Compose runtime (dooz children), typed-catch type matching, GLES (per §20 — no real-APK requirement demonstrated), WebView (bgclock content), Signal 280 s init window, WhatsApp 12-DEX entry chain.
-- DEFERRED (with reasons): THROW-no-handler frame unwind (machinery now exists), APUT bounds semantics (regression risk), Bitmap heap model prerequisite for setImageBitmap/decodeResource, FAB name match, VectorDrawable family.
-- NOT_REPRODUCED / LOW_IMPACT: Resources.getDrawable stub string (rarely hit), repeat-call leakage (prior fixtures cover).
-- REJECTED: EXP071_OPCODE_AUDIT's "filled-new-array ✓ verified" (was presence-only; semantics were broken until 2f05134); "dooz blank is pre-existing and engine cannot progress" (engine now progresses past setContentView).
+## E. Runtime APIs / app foundation (§8/§28/§29/§30)
+
+| Canonical ID | Finding | Provenance | Source | Current HEAD | Reproduced | Real APK | Duplicate | Already Fixed | Needs Fix | Test | Final Status |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| API-CORE-STRINGS | substring/concat/parseInt/Long/Float/Double/StringBuilder/collections/isEmpty | §8 | api bridge + shadows | present (fixture-verified prior campaigns) | prior | corpus-wide | no | yes | no | prior fixtures | INTEGRATED |
+| API-ASYNC | Handler/Looper/MessageQueue/Runnable/AsyncTask/HandlerThread/ThreadPoolExecutor/FutureTask | §29 | shadows + DispatchQueue evidence | present subset (Telegram runnables drain: [EXP090-DRAIN]) | YES (telegram logs) | Telegram | no | partial | grow on demand | telegram run | INTEGRATED (subset) |
+| API-PREFS-SQLITE | SharedPreferences (real file save [PREFS] logs), SQLite | §8/§30 | shared_prefs + exp085 | present subset | YES ([PREFS] Saved default.xml 9 entries) | ssw | no | yes | no | exp085 phases | INTEGRATED |
+| API-WINDOW-LIFECYCLE | Window/WindowManager/ViewRoot/permission callback/IME | §28 | ActivityShadow | partial (onCreate→resume path; IME absent) | partial | corpus | no | partial | on-demand | matrix | DEFERRED (no blocking target) |
+| API-WEBVIEW | WebView absent → bgclock stops at L6 | 011.2 matrix | bridge | absent | YES (bgclock row) | bgclock | no | no | yes (large) | — | BLOCKED (large scope; documented boundary) |
+| API-NETWORK | HttpURLConnection/ConnectivityManager | §30 | stubs | stub (no real network by design) | by design | Signal/WhatsApp boundaries | no | no | on-demand | — | NOT_REACHABLE (external boundary documented) |
+| API-STORAGE-FILES | file APIs / AssetManager / raw resources / System.loadLibrary | §30 | file_sandbox + assets chain | present subset (BufferedReader asset chain EXP-071) | partial | Telegram fonts/assets | no | partial | on-demand | — | INTEGRATED (subset) |
+| API-MEDIA-CAMERA-SENSORS | notifications/alarms/WorkManager/WebView/media/camera/sensors | §30 | stubs | stub | no | none in corpus first screens | no | no | on-demand | — | DEFERRED (no proven target need) |
+
+## F. Real apps (§11/§19/§20/§21/§17/§22/§26/§31)
+
+| Canonical ID | Finding | Provenance | Source | Current HEAD | Reproduced | Real APK | Duplicate | Already Fixed | Needs Fix | Test | Final Status |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| APP-TELEGRAM | deterministic baseline must be preserved (SHA + 3× + exit 0) | §21/§33 | u011_test_matrix | **PRESERVED (011.3)** — golden restored after DEX-EXC-TAIL regression; final matrix 3/3 `088ea640…` | YES | Telegram v12 12.10.1 | no | yes | no | matrix + BASELINE_MATCH | INTEGRATED |
+| APP-WA-ENTRY | WhatsApp L1: 12-DEX app-shell entry chain (Application/Activity delegate creation in secondary DEX index) | 011.2 probe | run/real_whatsapp + logs | unchanged this campaign (audit-only; 12 DEX parse OK, 56K instr) | partial | WhatsApp | no | no | yes | real_whatsapp evidence | CONFIRMED_OPEN (§35.4) |
+| APP-SIGNAL-INIT | Signal L2+: stub-heavy androidx/coroutines init exceeds probe window (280 s, no livelock) | 011.2 probe | signal run | unchanged this campaign | partial | Signal 8.24.2 | no | no | maybe (longer window + typed-catch now helps init paths) | — | CONFIRMED_OPEN (§35.5) |
+| APP-DOOZ-COMPOSE | ComposeView inflates 0 children (Compose runtime gap) after livelock fix | 011.2 | dooz run log | unchanged (architecture-scale gap) | YES | dooz | no | no | yes (large) | — | BLOCKED (Compose runtime — §35.1) |
+| APP-TICTACTOE-LIBGDX | tictactoe blank — libGDX framework dependency | 011.2 matrix | tictactoe run | unchanged | YES | tictactoe | no | no | yes | — | BLOCKED (libGDX backend) |
+| APP-GMDICE-L13 | GMDice L12/L13: click→callback→state→second frame; visual correctness now measured honestly | §22 | click reports + oracle | dispatch+state PROVEN; second-frame content = 0 px (runtime views gap GFX-FRAME2-RUNTIMEVIEWS) | YES | gmdice | dup of GFX-FRAME2-RUNTIMEVIEWS | — | — | click_test_report.json | DUPLICATE (tracked via GFX-FRAME2-RUNTIMEVIEWS) |
+| APP-SSW-STOPWATCH | ssw: full interaction chain PROVEN (Stop/Lap second frame) | §23 | u0113 evidence | working at HEAD | YES | simplestopwatch | no | yes (011.3) | no | oracle JSON | INTEGRATED |
+| APP-CORPUS-DEFAULT | microtimer/unote/chessclock/headingcalc/notes/simplekeyboard/openlauncher fall to default shared screen (entry chain / ARSC obfuscation) | 011.2 matrix | corpus rows | unchanged | YES (default eb16ab5c rows) | corpus apps | no | no | yes | corpus reports | CONFIRMED_OPEN (grouped; §35.9) |
+| APP-STOPWATCH-TRUNCATED | muellerma stopwatch = truncated APK (exit 1) — app defect, not engine | 011.2 | corpus row | unchanged | YES | stopwatch(muellerma) | no | n/a | no | — | NOT_REACHABLE (external boundary) |
+| APP-TINY-REGISTRY | tinymusicplayer registry SHA stale vs F-Droid current | 011.2 audit M7 | APK_REGISTRY | unchanged (owner action) | YES | tinymusicplayer | no | n/a | no | — | DEFERRED (registry maintenance) |
+| APP-WA-MATRIX-DUP | WhatsApp 12-DEX chain (duplicate ID used in two discovery sets) | §31 vs §19 | — | same finding as APP-WA-ENTRY | — | — | yes | — | — | — | DUPLICATE |
+| APP-GLES-GAME-DUP | "real game needs GLES" vs GFX-GLES — same evidence-gated item | §16 vs §35 | — | same as GFX-GLES | — | — | yes | — | — | — | DUPLICATE |
+
+## G. Tooling / process (§0/§3/§4/§34/§38)
+
+| Canonical ID | Finding | Provenance | Source | Current HEAD | Reproduced | Real APK | Duplicate | Already Fixed | Needs Fix | Test | Final Status |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| TOOL-HANDOFF-GAPS | status_011_1 TBD placeholder + untracked START_HERE/recovery in 011.1 package | 011.2 audit M1/M2 | status file + git | fixed @ae58a4d/43e024f | YES | — | no | yes | no | git show | FIXED (011.2) |
+| TOOL-LOST-SUITE | 121/122 smali semantic fixture suite never integrated — lost work (the §0 failure mode) | **this campaign's §34 verification** | repo+history+12 recovery archives: absent | partially REVIVED as in-repo C++ semantic fixtures (fna 5/5, typed-catch 8/8 incl. the typed-exception class) | YES (fixtures run) | — | no | partial (revival) | no (declared lost + revived in-repo) | fixtures | FIXED (revival) — historical loss documented |
+| TOOL-CLAIM-4A39F1B | `4a39f1b`/"176-176" claim absent from repository | §4 directive example | git cat-file + all refs + archives | documented REJECTED evidence | n/a | — | no | n/a | no | RECOVERED_11_1_TO_HEAD_DELTA §2 | NOT_REPRODUCED (claim rejected, preserved) |
+| TOOL-URLS-STALE | registry download URLs stale (telegram.org redirect; tinymusicplayer/SHA drift) | 011.2 M7 | APK_REGISTRY | documented; Telegram re-fetched via official URL + SHA-verified | YES | — | no | partial | no (owner) | — | DEFERRED |
+| TOOL-M8-SCRIPT-DISAGREE | u011_test_matrix expects corpus/dooz.apk etc. but downloader writes dooztictactoegvariant.apk — official scripts disagree | 011.2 M8 | scripts | worked around via verified symlinks; scripts untouched (behavior-preserving) | YES | — | no | partial | no (owner flag) | — | DEFERRED |
+| TOOL-IMG-E2E-SYNTHETIC | §11 demands E2E with REAL APK asset (not synthetic) | directive §11 | exp_graphics_image_e2e | satisfied: real simplestopwatch APK assets (lock/settings/menu PNGs) | YES | ssw | no | yes | no | e2e README | INTEGRATED |
+
+## Roll-up by required states (§6)
+
+- **UNVALIDATED → 0** (every row has HEAD-state evidence this campaign)
+- **REPRODUCED** rows: 24 distinct (fixture, matrix, oracle, or run-log evidence)
+- **ALREADY_FIXED (earlier campaigns)**: 17
+- **FIXED (this campaign)**: DEX-CATCH-TYPED, DEX-THROW-NO-HANDLER, DEX-EXC-PROPAGATE, DEX-EXC-TAIL, GFX-FRAME2-RENDER, GFX-FRAME2-THIS, TOOL-LOST-SUITE (revival)
+- **CONFIRMED_OPEN (9)**: RES-OBFUSCATED, IMG-HEAP-MODEL, IMG-VECTOR-NINE, GFX-FRAME2-RUNTIMEVIEWS, APP-WA-ENTRY, APP-SIGNAL-INIT, APP-CORPUS-DEFAULT (grouped)
+- **DEFERRED (9)**: DEX-APUT-BOUNDS, DEX-MONITOR-VOLATILE, RES-TYPEDARRAY-THEME, RES-RAWS, IMG-GETDRAWABLE-STUB→(LOW_IMPACT), IMG-BITMAPFACTORY, IMG-SETIMAGE-DISCARD, IMG-FAB, GFX-CANVAS-remainder, GFX-SSW-REFLOW, API-WINDOW-LIFECYCLE, API-MEDIA-CAMERA-SENSORS, APP-TINY-REGISTRY, TOOL-URLS-STALE, TOOL-M8-SCRIPT-DISAGREE (grouped where contiguous)
+- **BLOCKED (4)**: GFX-GLES (evidence-gated §16), API-WEBVIEW, APP-DOOZ-COMPOSE, APP-TICTACTOE-LIBGDX
+- **NOT_REPRODUCED (2)**: TOOL-CLAIM-4A39F1B (claim rejected), RES-OBFUSCATED-this-run (audited, not re-triggered)
+- **NOT_REACHABLE (2)**: APP-STOPWATCH-TRUNCATED (defective APK), API-NETWORK (external boundary)
+- **DUPLICATES (3)**: APP-GMDICE-L13→GFX-FRAME2-RUNTIMEVIEWS, APP-WA-MATRIX-DUP→APP-WA-ENTRY, APP-GLES-GAME-DUP→GFX-GLES
