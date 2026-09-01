@@ -41,6 +41,7 @@ void print_usage(const char* program_name) {
     std::cout << "  --width <pixels>       Screen width (default: 1080)\n";
     std::cout << "  --height <pixels>      Screen height (default: 1920)\n";
     std::cout << "  --text <text>          Override displayed text\n";
+    std::cout << "  --click-test           Dispatch real clicks on clickable views after the first frame\n";
     std::cout << "  --execution-mode <mode> Execution mode: legacy | real-dalvik (default: real-dalvik)\n\n";
     std::cout << "Examples:\n";
     std::cout << "  " << program_name << " analyze HelloWorld.apk\n";
@@ -291,6 +292,11 @@ int main(int argc, char* argv[]) {
             config.screen_height = std::stoi(argv[++i]);
         } else if (arg == "--text" && i + 1 < argc) {
             config.simulated_text = argv[++i];
+        } else if (arg == "--click-test") {
+            // UNIFIED_011.2 CLICK-TEST: probe every clickable view, verify
+            // touch → callback → state change → second frame (§10).
+            config.click_test = true;
+            std::cout << "[*] CLICK-TEST enabled (dispatch real clicks after first frame)\n";
         } else if (arg.find("--execution-mode") == 0) {
             // EXP-031: Parse execution mode
             std::string mode_str;

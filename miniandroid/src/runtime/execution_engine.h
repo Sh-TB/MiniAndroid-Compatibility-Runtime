@@ -62,6 +62,11 @@ struct ExecutionConfig {
     // Tracing settings
     bool verbose_logging = false;
     bool generate_screenshot = true;
+    // UNIFIED_011.2 CLICK-TEST (§10/§11): generic touch probe. After the first
+    // frame is captured, dispatch a real click on every view with a registered
+    // listener, re-render, and record which clicks change pixels (L9→L12:
+    // touch accepted → callback executed → state changed → second frame).
+    bool click_test = false;
     bool generate_reports = true;
     
     // EXP-031: Execution mode (CRITICAL - determines real vs fake path)
@@ -145,6 +150,8 @@ private:
     bool stage_execute_application(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_render_frame(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_capture_output(ExecutionResult& result, const ExecutionConfig& config);
+    // UNIFIED_011.2 CLICK-TEST: generic post-first-frame interaction probe.
+    bool stage_click_test(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_generate_reports(ExecutionResult& result, const ExecutionConfig& config);
     
     // Helper methods
