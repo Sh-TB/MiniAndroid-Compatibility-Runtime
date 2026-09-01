@@ -6362,6 +6362,76 @@ bool DalvikExecutionEngine::raise_synthetic_exception(
     return false;
 }
 
+// UNIFIED_011.2 IMAGE-RES-RENDER: populate resource_drawable_paths_ from the
+// APK's res/ entry list. For every R-field name (field_name_by_resid_), find
+// the best-density drawable asset whose basename matches. Density preference
+// (AOSP closest-density approximation for a 1080x1920 software target):
+//   xxxhdpi > xxhdpi > xhdpi > hdpi > mdpi > drawable (plain) > mipmap.
+// Nine-patch ".9.png" entries match by basename minus ".9" too.
+// Idempotent (first call wins; later calls no-op).
+void DalvikExecutionEngine::populate_resource_drawable_paths(
+        const std::vector<std::string>& entry_names) {
+    if (drawable_paths_populated_) return;
+    drawable_paths_populated_ = true;
+    if (field_name_by_resid_.empty() || entry_names.empty()) return;
+
+    auto basename_no_ext = [](const std::string& path) -> std::string {
+        size_t slash = path.find_last_of('/');
+        std::string name = (slash == std::string::npos) ? path : path.substr(slash + 1);
+        // strip chained extensions: ".9.png" → "", ".png" → "", ".webp" → ""
+        size_t dot = name.find('.');
+        std::string base = (dot == std::string::npos) ? name : name.substr(0, dot);
+        return base;
+    };
+    auto is_drawable_asset = [](const std::string& path) -> bool {
+        if (path.find("res/") != 0) return false;
+        if (path.find("drawable") == std::string::npos &&
+            path.find("mipmap") == std::string::npos) return false;
+        static const char* exts[] = {".png", ".webp", ".jpg", ".jpeg", ".xml", ".gif"};
+        for (const char* e : exts) {
+            if (path.size() >= strlen(e) &&
+                path.compare(path.size() - strlen(e), strlen(e), e) == 0) return true;
+        }
+        return false;
+    };
+    auto density_rank = [](const std::string& path) -> int {
+        // higher rank = higher density = preferred
+        if (path.find("-xxxhdpi") != std::string::npos) return 60;
+        if (path.find("-xxhdpi") != std::string::npos) return 50;
+        if (path.find("-xhdpi") != std::string::npos) return 40;
+        if (path.find("-hdpi") != std::string::npos) return 30;
+        if (path.find("-mdpi") != std::string::npos) return 20;
+        if (path.find("-ldpi") != std::string::npos) return 10;
+        return 5;  // plain drawable/ or mipmap/
+    };
+
+    // basename → best entry (highest density rank)
+    std::map<std::string, std::pair<std::string, int>> best_by_basename;
+    for (const auto& entry : entry_names) {
+        if (!is_drawable_asset(entry)) continue;
+        std::string base = basename_no_ext(entry);
+        int rank = density_rank(entry);
+        auto it = best_by_basename.find(base);
+        if (it == best_by_basename.end() || rank > it->second.second) {
+            best_by_basename[base] = {entry, rank};
+        }
+    }
+    if (best_by_basename.empty()) return;
+
+    size_t resolved = 0;
+    for (const auto& [resid, field_name] : field_name_by_resid_) {
+        if (resource_drawable_paths_.count(field_name)) continue;
+        auto it = best_by_basename.find(field_name);
+        if (it != best_by_basename.end()) {
+            resource_drawable_paths_[field_name] = it->second.first;
+            resolved++;
+        }
+    }
+    std::cerr << "[IMG-RES-RENDER] populated resource_drawable_paths_: "
+              << resolved << "/" << field_name_by_resid_.size()
+              << " R-names matched to APK drawable assets" << std::endl;
+}
+
 uint16_t DalvikExecutionEngine::fetch_opcode(uint32_t pc) const {
     if (pc < bytecode_.size()) {
         return bytecode_[pc];

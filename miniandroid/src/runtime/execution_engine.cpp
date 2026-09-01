@@ -1064,6 +1064,17 @@ bool ExecutionEngine::stage_execute_application_legacy(ExecutionResult& result, 
 bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Rendering frame");
 
+    // UNIFIED_011.2 IMAGE-RES-RENDER (§13/§14): populate the R-name → drawable
+    // path map once per run from the APK's res/ entry list. Without this the
+    // runtime setImageResource chain could never resolve to real pixels.
+    if (!result.apk_info.apk_path.empty()) {
+        auto entries = apk_parser_.list_entries(result.apk_info.apk_path);
+        std::vector<std::string> entry_names;
+        entry_names.reserve(entries.size());
+        for (const auto& e : entries) entry_names.push_back(e.name);
+        dalvik_engine_.populate_resource_drawable_paths(entry_names);
+    }
+
     // EXP-088 Phase A2: Real measure/layout + BitmapFont text rendering.
     // Replaces the EXP-087 pixel-block renderer with proper:
     //   1. SoftwareCanvas + BitmapFont for readable text glyphs
@@ -1413,11 +1424,94 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 }
                             }
                             if (is_image_view && node->image_drawable_path.empty() &&
-                                node->image_resource_id != 0) {
-                                canvas.draw_rect(left + 5, top + 5, right - 5, bottom - 5,
-                                               renderer::RGBA{0xCC, 0xCC, 0xCC, 0xFF});
-                                canvas.draw_text("IMG", left + 10, top + font.get_line_height(),
-                                               renderer::Colors::GREY_800, &font);
+                                (node->image_resource_id != 0 ||
+                                 !node->src_drawable_path.empty())) {
+                                // UNIFIED_011.2 IMAGE-RES-RENDER (§13/§14): replace the
+                                // "IMG" placeholder with REAL decoded pixels when the
+                                // resource chain can be completed:
+                                //   image_resource_id → field_name_by_resid_ →
+                                //   resource_drawable_paths_ → APK entry → decoder →
+                                //   draw_image. Falls back to src_drawable_path
+                                //   (AXML android:src inflation path) when no runtime
+                                //   resid was set. The renderer never touches APK ZIP
+                                //   structure itself (§16 boundary preserved) — it only
+                                //   consumes paths resolved by the resource layer.
+                                std::string resolved_img_path;
+                                if (node->image_resource_id != 0) {
+                                    auto& fn_map = dalvik_engine_.field_name_by_resid_;
+                                    auto fn_it = fn_map.find(node->image_resource_id);
+                                    if (fn_it != fn_map.end()) {
+                                        auto& dp_map = dalvik_engine_.resource_drawable_paths_;
+                                        auto dp_it = dp_map.find(fn_it->second);
+                                        if (dp_it != dp_map.end())
+                                            resolved_img_path = dp_it->second;
+                                    }
+                                }
+                                if (resolved_img_path.empty())
+                                    resolved_img_path = node->src_drawable_path;
+
+                                if (!resolved_img_path.empty()) {
+                                    auto img_data = apk_parser_.extract_entry_cached(resolved_img_path);
+                                    renderer::DecodedImage decoded;
+                                    bool attempted = false;
+                                    if (img_data.size() >= 4) {
+                                        // PNG: 89 50 4E 47
+                                        if (img_data[0] == 0x89 && img_data[1] == 0x50 &&
+                                            img_data[2] == 0x4E && img_data[3] == 0x47) {
+                                            attempted = true;
+                                            decoded = renderer::PNGDecoder::decode(img_data);
+                                        }
+                                        // JPEG: FF D8 FF
+                                        else if (img_data[0] == 0xFF && img_data[1] == 0xD8 &&
+                                                 img_data[2] == 0xFF) {
+                                            attempted = true;
+                                            decoded = renderer::JPEGDecoder::decode(img_data);
+                                        }
+                                        // WebP: "RIFF" .... "WEBP"
+                                        else if (img_data[0] == 'R' && img_data[1] == 'I' &&
+                                                 img_data[2] == 'F' && img_data[3] == 'F' &&
+                                                 img_data.size() >= 12 &&
+                                                 img_data[8] == 'W' && img_data[9] == 'E' &&
+                                                 img_data[10] == 'B' && img_data[11] == 'P') {
+                                            attempted = true;
+                                            decoded = renderer::WebPDecoder::decode(img_data);
+                                        }
+                                    }
+                                    if (attempted && decoded.ok && !decoded.rgba.empty()) {
+                                        canvas.draw_image(decoded.rgba.data(),
+                                                          decoded.width, decoded.height,
+                                                          left + 5, top + 5);
+                                        trace_engine_.info("ExecutionEngine",
+                                            "stage_render_frame",
+                                            std::string("IMG-RES-RENDER drew '") +
+                                            resolved_img_path + "' (" +
+                                            std::to_string(decoded.width) + "x" +
+                                            std::to_string(decoded.height) + ", " +
+                                            decoded.color_type_name + ") at (" +
+                                            std::to_string(left + 5) + "," +
+                                            std::to_string(top + 5) + ")");
+                                    } else {
+                                        // Resolution succeeded but decode failed (or
+                                        // unsupported format, e.g. XML drawable) — keep
+                                        // the visible placeholder with the path evidence.
+                                        canvas.draw_rect(left + 5, top + 5, right - 5, bottom - 5,
+                                                       renderer::RGBA{0xCC, 0xCC, 0xCC, 0xFF});
+                                        canvas.draw_text("IMG?", left + 10,
+                                                       top + font.get_line_height(),
+                                                       renderer::Colors::GREY_800, &font);
+                                        trace_engine_.warning("ExecutionEngine",
+                                            "stage_render_frame",
+                                            std::string("IMG-RES-RENDER decode failed for '") +
+                                            resolved_img_path + "'");
+                                    }
+                                } else {
+                                    // No APK entry matched the R-field name — placeholder
+                                    // with the resid as evidence (legacy behavior).
+                                    canvas.draw_rect(left + 5, top + 5, right - 5, bottom - 5,
+                                                   renderer::RGBA{0xCC, 0xCC, 0xCC, 0xFF});
+                                    canvas.draw_text("IMG", left + 10, top + font.get_line_height(),
+                                                   renderer::Colors::GREY_800, &font);
+                                }
                             }
 
                             // EXP-098 (CM-027): RLottie animation decode + draw.
