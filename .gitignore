@@ -37,3 +37,9 @@ miniandroid/run/**/*.json
 credentials.json
 secrets*
 .env
+
+# UNIFIED_011.3: run/ evidence dirs are external artifacts; curated evidence lives in docs/evidence/
+miniandroid/run/clicktest_*/
+miniandroid/run/corpus_*/
+miniandroid/run/real_whatsapp/
+miniandroid/run/u0113_*/
