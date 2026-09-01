@@ -2,7 +2,7 @@
   "campaign": "UNIFIED_011.1",
   "date": "2026-08-30",
   "canonical_repo": "MiniAndroid-Compatibility-Runtime",
-  "local_head_after_docs": "TBD_FINAL_COMMIT",
+  "local_head_after_docs": "tag v0.11.1-unified-011-1 (resolve via git describe)",
   "tag": "v0.11.1-unified-011-1",
   "remote_head": "bbe0ce3",
   "push_status": "PUSH_PENDING",
