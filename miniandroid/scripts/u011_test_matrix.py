@@ -39,8 +39,12 @@ MATRIX = [
 # canonical baselines (see MASTER docs + status_011_1.json).
 # UNIFIED_011.1: 088ea640... = libpng-encoder baseline (pixel-identical to the
 # UNIFIED_002-era 06fb40da... lineage; PNG file hash changed by design, R1).
+# UNIFIED_011.2 IMAGE-RES-RENDER: simplestopwatch anchors move from
+# d495e3cb2ccf6c11 (blank ImageButtons) to 2a12587a0acf196c — the
+# android:src icons (lock/settings/menu) now decode and render for real.
 BASELINE_SHA = {
     "telegram_v12": "088ea640587ec0d28fc7cd16b0097f2529ff7da2d594c3c2663c67531d770f6a",
+    "simplestopwatch": "2a12587a0acf196cb9a52a521d6a7bc7d72e2d21dfa71eba41a694dbaa3d8c1b",
 }
 
 
