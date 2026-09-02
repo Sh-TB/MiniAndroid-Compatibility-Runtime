@@ -275,12 +275,32 @@ namespace Opcode {
     constexpr uint16_t REM_DOUBLE_2ADDR = 0xD0; // rem-double/2addr
 
     // Arithmetic lit8 (22b format: AA|op BB|CC)
-    constexpr uint16_t ADD_INT_LIT8 = 0xD8;     // add-int/lit8 vAA, vBB, #+CC
-    constexpr uint16_t RSUB_INT_LIT8 = 0xD9;     // sub-int/lit8 vAA, vBB, #+CC
-    constexpr uint16_t MUL_INT_LIT8 = 0xDA;     // mul-int/lit8 vAA, vBB, #+CC
-    constexpr uint16_t AND_INT_LIT8 = 0xDB;     // and-int/lit8 vAA, vBB, #+CC
-    constexpr uint16_t OR_INT_LIT8  = 0xDC;     // or-int/lit8 vAA, vBB, #+CC
-    constexpr uint16_t XOR_INT_LIT8 = 0xDD;     // xor-int/lit8 vAA, vBB, #+CC
+    // MASTER RECONCILIATION (2026-09-03): AOSP-corrected — the previous
+    // table (ADD=0xD8..XOR=0xDD) was SHIFTED against the Dalvik spec (same
+    // bug class as the pre-011.2 23x off-by-one, K-06 — that fix covered
+    // 0x90..0x9A but missed this range). Real AOSP layout:
+    //   0xD8..0xDA shl/shr/ushr-int/lit16, 0xDB add-int/lit8,
+    //   0xDC rsub-int/lit8, 0xDD mul-int/lit8, 0xDE div-int/lit8,
+    //   0xDF rem-int/lit8, 0xE0..0xE2 and/or/xor-int/lit8,
+    //   0xE3..0xE5 shl/shr/ushr-int/lit8
+    // Under the old table real add-int/lit8 (0xDB) dispatched as AND, real
+    // mul-int/lit8 (0xDD) as XOR, and 0xDE..0xE5 hit handle_unimplemented.
+    // Corpus evidence (scan_lit8_opcodes.py, 6 APKs): 0xDB ×2361, 0xE0 ×3399,
+    // 0xDD ×3532, 0xE4 ×5789, 0xE5 ×3043 — all mis-mapped or unimplemented.
+    constexpr uint16_t SHL_INT_LIT16 = 0xD8;    // shl-int/lit16 (was missing)
+    constexpr uint16_t SHR_INT_LIT16 = 0xD9;    // shr-int/lit16 (was missing)
+    constexpr uint16_t USHR_INT_LIT16 = 0xDA;   // ushr-int/lit16 (was missing)
+    constexpr uint16_t ADD_INT_LIT8 = 0xDB;     // add-int/lit8 vAA, vBB, #+CC
+    constexpr uint16_t RSUB_INT_LIT8 = 0xDC;    // rsub-int/lit8 (lit − vB)
+    constexpr uint16_t MUL_INT_LIT8 = 0xDD;     // mul-int/lit8
+    constexpr uint16_t DIV_INT_LIT8 = 0xDE;     // div-int/lit8
+    constexpr uint16_t REM_INT_LIT8 = 0xDF;     // rem-int/lit8
+    constexpr uint16_t AND_INT_LIT8 = 0xE0;     // and-int/lit8
+    constexpr uint16_t OR_INT_LIT8  = 0xE1;     // or-int/lit8
+    constexpr uint16_t XOR_INT_LIT8 = 0xE2;     // xor-int/lit8
+    constexpr uint16_t SHL_INT_LIT8 = 0xE3;     // shl-int/lit8
+    constexpr uint16_t SHR_INT_LIT8 = 0xE4;     // shr-int/lit8
+    constexpr uint16_t USHR_INT_LIT8 = 0xE5;    // ushr-int/lit8
 
     // Arithmetic lit16 (22s format: AA|op BBBB)
     constexpr uint16_t ADD_INT_LIT16 = 0xD0;    // add-int/lit16 vA, vB, #+BBBB
@@ -312,6 +332,20 @@ namespace Opcode {
     constexpr uint16_t USHR_INT = 0x9A;        // ushr-int vAA, vBB, vCC
 
     // EXP-040: Missing opcodes discovered from Telegram execution
+    // MASTER RECONCILIATION (2026-09-03, NOT_DONE #4 audit): the unary
+    // neg/not family (12x format: B|A|op) was MISSING ENTIRELY — neither
+    // constants nor dispatch cases existed, so any real APK executing
+    // neg-* / not-* (hashing, Math.abs inlining, crypto) halted at
+    // handle_unimplemented. AOSP layout:
+    //   0x7B neg-int, 0x7C not-int, 0x7D neg-long, 0x7E not-long,
+    //   0x7F neg-float, 0x80 neg-double
+    constexpr uint16_t NEG_INT = 0x7B;         // neg-int vA, vB
+    constexpr uint16_t NOT_INT = 0x7C;         // not-int vA, vB
+    constexpr uint16_t NEG_LONG = 0x7D;        // neg-long vA, vB
+    constexpr uint16_t NOT_LONG = 0x7E;        // not-long vA, vB
+    constexpr uint16_t NEG_FLOAT = 0x7F;       // neg-float vA, vB
+    constexpr uint16_t NEG_DOUBLE = 0x80;      // neg-double vA, vB
+
     // Conversion opcodes (12x format: B|A|op, 1 code unit)
     // EXP-059: Fixed off-by-one for conversion range. Per AOSP:
     //   0x81 int-to-long, 0x82 int-to-float, 0x83 int-to-double,
@@ -1457,6 +1491,21 @@ public:
                                    const std::string& message,
                                    const char* origin_tag);
 
+    // MASTER RECONCILIATION (2026-09-03): deferred exception raise for use
+    // INSIDE opcode handlers and bridge_to_api callbacks. Unlike
+    // raise_synthetic_exception it never writes pc_ directly — the caller
+    // (ARITH_*_CASE macros, invoke wrappers `pc_ = pc + len`) would clobber
+    // that jump. Instead it records a post-switch redirect
+    // (exc_redirect_pending_ / exc_redirect_addr_) when a handler covers
+    // pc_, or arms the frame-unwind machinery when uncaught.
+    // Used by: div/rem by zero → ArithmeticException (K-29),
+    // parse* malformed input → NumberFormatException (K-19).
+    // Returns true if a handler covers pc_ (execution continues at the
+    // handler via the post-switch redirect), false if the frame unwinds.
+    bool throw_deferred(const std::string& exc_class_desc,
+                        const std::string& message,
+                        const char* origin_tag);
+
     // UNIFIED_011.3 EXC-PROPAGATE: exception in flight while unwinding.
     // Set by raise_synthetic_exception / THROW-no-handler in the frame that
     // could not catch it. Consumed by try_recursive_invoke at the caller's
@@ -1472,6 +1521,9 @@ public:
     // the switch — the last word on pc_ belongs to the redirect.
     bool exc_redirect_pending_ = false;
     uint32_t exc_redirect_addr_ = 0;
+    // Exception object in flight for the deferred redirect (move-exception
+    // reads it after the handler jump).
+    DalvikValue deferred_exception_ = DalvikValue::make_null();
     void clear_frame_unwind_exception() { frame_unwind_exception_valid_ = false;
                                           frame_unwind_exception_ = DalvikValue::make_null(); }
 
