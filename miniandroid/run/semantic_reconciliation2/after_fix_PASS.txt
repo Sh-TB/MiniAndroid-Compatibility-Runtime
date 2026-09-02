@@ -1,0 +1,28 @@
+== semantic_switch_parse_neg_test — switch / neg-not / div-zero / parse bridge ==
+  PASS  packed_switch_key0_hits_case — expected 1003.000000, got 1003.000000
+  PASS  packed_switch_neg_key — expected 1001.000000, got 1001.000000
+  PASS  packed_switch_default_falls — expected 1009.000000, got 1009.000000
+  PASS  sparse_switch_key42 — expected 2042.000000, got 2042.000000
+  PASS  sparse_switch_key_900000 — expected 2013.000000, got 2013.000000
+  PASS  sparse_switch_default_miss — expected 2009.000000, got 2009.000000
+  PASS  sparse_switch_default_negative — expected 2009.000000, got 2009.000000
+  PASS  neg_int_minus7 — expected 7.000000, got 7.000000
+  PASS  not_int_zero — expected -1.000000, got -1.000000
+  PASS  neg_int_min_wraps — expected -2147483648.000000, got -2147483648.000000
+  PASS  neg_long_minus5 — expected 5.000000, got 5.000000
+  PASS  not_long_2p32 — expected -4294967297.000000, got -4294967297.000000
+  PASS  neg_double_three — expected -3.000000, got -3.000000
+  PASS  div_long_zero_throws_typed — expected handler value 555, got 555.000000
+  PASS  rem_long_zero_throws_typed — expected handler value 556, got 556.000000
+  PASS  div_int_zero_throws_typed — expected handler value 557, got 557.000000
+  PASS  rem_int_lit8_zero_throws_typed — expected handler value 558, got 558.000000
+  PASS  div_long_zero_uncaught_unwinds — no normal return — frame unwound via ArithmeticException
+  PASS  integer_parseInt_123 — expected 123.000000, got 123.000000
+  PASS  integer_parseInt_negative — expected -45.000000, got -45.000000
+  PASS  long_parseLong_2p32 — expected 4294967296.000000, got 4294967296.000000
+  PASS  float_parseFloat_2p5 — expected 2.500000, got 2.500000
+  PASS  double_parseDouble_1p5 — expected 1.500000, got 1.500000
+  PASS  string_substring_1_3 — expected "el", got "el"
+  PASS  string_concat_hello_world — expected "helloworld", got "helloworld"
+
+RESULT: 25 passed, 0 failed
