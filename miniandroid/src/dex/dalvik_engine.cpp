@@ -4662,6 +4662,15 @@ inline double bits_l2d(int64_t l) {
     std::memcpy(&d, &l, sizeof(d));
     return d;
 }
+// MASTER RECONCILIATION (2026-09-03): int-bits → float reinterpret, the
+// 32-bit companion of bits_l2d. const/const/16 opcodes store raw bit patterns
+// tagged INT32; the unary neg-float handler needs the NUMERIC value.
+inline float bits_i2f(int32_t i) {
+    float f;
+    static_assert(sizeof(float) == sizeof(int32_t), "32-bit float required");
+    std::memcpy(&f, &i, sizeof(f));
+    return f;
+}
 }  // namespace
 
 bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) {
@@ -5441,6 +5450,90 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 trace.opcode_name = "if-lez";
                 break;
             
+            // MASTER RECONCILIATION (K-18, 2026-09-03): packed-switch/sparse-switch.
+            // IMPORTANT (why this exists): both opcodes were defined in the
+            // opcode table but had NO dispatch case — every switch statement
+            // produced by D8 (string/table switches, state machines, enum
+            // maps) fell through to handle_unimplemented and halted the
+            // method. Fixture: tests/semantic_switch_parse_neg_test.cpp
+            // (group S — 7/7 FAIL pre-fix).
+            // Semantics per AOSP/dalvik bytecodes:
+            //   31t format: AA|op BBBB|BBBB — 32-bit signed payload offset in
+            //   code units, relative to the SWITCH opcode pc.
+            //   packed-switch-payload (ident 0x0100): u16 size, i32 first_key,
+            //     i32 targets[size] — targets also relative to the SWITCH pc.
+            //   sparse-switch-payload (ident 0x0200): u16 size, i32 keys[size]
+            //     (sorted), i32 targets[size].
+            //   No match → default = pc + 3 (fall past the 3-unit instruction).
+            case Opcode::PACKED_SWITCH:
+            case Opcode::SPARSE_SWITCH: {
+                const bool is_packed = (opcode == Opcode::PACKED_SWITCH);
+                uint16_t instr_sw = bytecode_[pc_];
+                uint8_t vAA_sw = (instr_sw >> 8) & 0xFF;
+                if (pc_ + 2 >= bytecode_.size()) return false;
+                int32_t off_sw = static_cast<int32_t>(
+                    static_cast<uint32_t>(bytecode_[pc_ + 1]) |
+                    (static_cast<uint32_t>(bytecode_[pc_ + 2]) << 16));
+                const int64_t payload_addr = static_cast<int64_t>(pc_) + off_sw;
+                DalvikValue vv_sw = get_register(vAA_sw);
+                int32_t key_sw = (vv_sw.type == DalvikType::INT64)
+                                     ? static_cast<int32_t>(vv_sw.long_val)
+                                 : (vv_sw.type == DalvikType::INT32 ? vv_sw.int_val : 0);
+                int32_t target_sw = 3;  // default: fall through the 3-unit instr
+                auto in_range_sw = [&](int64_t addr, int64_t units) {
+                    return addr >= 0 && addr + units <= static_cast<int64_t>(bytecode_.size());
+                };
+                auto read_i32_sw = [&](int64_t addr) -> int32_t {
+                    return static_cast<int32_t>(
+                        static_cast<uint32_t>(bytecode_[static_cast<size_t>(addr)]) |
+                        (static_cast<uint32_t>(bytecode_[static_cast<size_t>(addr) + 1]) << 16));
+                };
+                if (in_range_sw(payload_addr, 2)) {
+                    const uint16_t ident_sw = bytecode_[static_cast<size_t>(payload_addr)];
+                    if ((is_packed && ident_sw == 0x0100) || (!is_packed && ident_sw == 0x0200)) {
+                        const uint16_t size_sw = bytecode_[static_cast<size_t>(payload_addr) + 1];
+                        if (is_packed) {
+                            if (in_range_sw(payload_addr, 4)) {
+                                const int32_t first_key_sw = read_i32_sw(payload_addr + 2);
+                                const int64_t idx_sw =
+                                    static_cast<int64_t>(key_sw) - first_key_sw;
+                                if (idx_sw >= 0 && idx_sw < static_cast<int64_t>(size_sw) &&
+                                    in_range_sw(payload_addr + 4 + idx_sw * 2, 2)) {
+                                    target_sw = read_i32_sw(payload_addr + 4 + idx_sw * 2);
+                                }
+                            }
+                        } else {
+                            // keys: payload+2 .. +2+2*size; targets: payload+2+2*size ..
+                            if (in_range_sw(payload_addr, 2 + 4 * static_cast<int64_t>(size_sw))) {
+                                int64_t lo_sw = 0, hi_sw = size_sw - 1;
+                                int64_t found_sw = -1;
+                                while (lo_sw <= hi_sw) {
+                                    int64_t mid_sw = (lo_sw + hi_sw) / 2;
+                                    int32_t k_sw = read_i32_sw(payload_addr + 2 + mid_sw * 2);
+                                    if (k_sw == key_sw) { found_sw = mid_sw; break; }
+                                    if (k_sw < key_sw) lo_sw = mid_sw + 1; else hi_sw = mid_sw - 1;
+                                }
+                                if (found_sw >= 0 &&
+                                    in_range_sw(payload_addr + 2 + 2 * static_cast<int64_t>(size_sw) + found_sw * 2, 2)) {
+                                    target_sw = read_i32_sw(
+                                        payload_addr + 2 + 2 * static_cast<int64_t>(size_sw) + found_sw * 2);
+                                }
+                            }
+                        }
+                    } else {
+                        std::cerr << "[SWITCH] payload ident mismatch (expected 0x"
+                                  << (is_packed ? "0100" : "0200") << ", got 0x"
+                                  << to_hex16(ident_sw) << ") → default" << std::endl;
+                    }
+                } else {
+                    std::cerr << "[SWITCH] payload address out of range (pc=" << pc_
+                              << " off=" << off_sw << ") → default" << std::endl;
+                }
+                trace.opcode_name = is_packed ? "packed-switch" : "sparse-switch";
+                pc_ = pc_ + target_sw;  // targets are relative to the SWITCH pc
+                break;
+            }
+
             case Opcode::NOP:
                 trace.opcode_name = "nop";
                 pc_ += 1;
@@ -5459,8 +5552,14 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     result_val.type = DalvikType::INT32; \
                     int32_t a_val = (a.type == DalvikType::INT32) ? a.int_val : 0; \
                     int32_t b_val = (b.type == DalvikType::INT32) ? b.int_val : 0; \
-                    if (op == "div" && b_val == 0) { result_val.int_val = 0; } \
-                    else if (op == "rem" && b_val == 0) { result_val.int_val = 0; } \
+                    /* MASTER RECONCILIATION (K-29, 2026-09-03): was guard-yield-0 — */ \
+                    /* AND the unguarded a_val / b_val below was C++ UB on zero.   */ \
+                    /* Now throws ArithmeticException (deferred mechanism).        */ \
+                    if ((op == "div" || op == "rem") && b_val == 0) { \
+                        throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-2ADDR"); \
+                        pc_ = pc_ + 1; \
+                        break; \
+                    } \
                     else if (op == "add") result_val.int_val = a_val + b_val; \
                     else if (op == "sub") result_val.int_val = a_val - b_val; \
                     else if (op == "mul") result_val.int_val = a_val * b_val; \
@@ -5505,6 +5604,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     result_val.type = DalvikType::INT32; \
                     int32_t b_val = (b.type == DalvikType::INT32) ? b.int_val : 0; \
                     int32_t c_val = (c.type == DalvikType::INT32) ? c.int_val : 0; \
+                    if ((op == "div" || op == "rem") && c_val == 0) { \
+                        throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-23X"); \
+                        pc_ = pc_ + 2; \
+                        break; \
+                    } \
                     if (op == "add") result_val.int_val = b_val + c_val; \
                     else if (op == "sub") result_val.int_val = b_val - c_val; \
                     else if (op == "mul") result_val.int_val = b_val * c_val; \
@@ -5541,12 +5645,24 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT32; \
                     int32_t b_val = (b.type == DalvikType::INT32) ? b.int_val : 0; \
+                    /* K-29: lit8 div/rem by zero throws (deferred mechanism).  */ \
+                    if ((op == "div" || op == "rem") && lit == 0) { \
+                        throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LIT8"); \
+                        pc_ = pc_ + 2; \
+                        break; \
+                    } \
                     if (op == "add") result_val.int_val = b_val + lit; \
+                    else if (op == "rsub") result_val.int_val = lit - b_val; \
                     else if (op == "sub") result_val.int_val = b_val - lit; \
                     else if (op == "mul") result_val.int_val = b_val * lit; \
+                    else if (op == "div") result_val.int_val = b_val / lit; \
+                    else if (op == "rem") result_val.int_val = b_val % lit; \
                     else if (op == "and") result_val.int_val = b_val & lit; \
                     else if (op == "or")  result_val.int_val = b_val | lit; \
                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+                    else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+                    else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
                     set_register(vAA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ = pc_ + 2; \
@@ -5554,11 +5670,16 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 }
 
             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
-            ARITH_LIT8_CASE(RSUB_INT_LIT8, "sub-int/lit8", "sub")
+            ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+            ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+            ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+            ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+            ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+            ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
             #undef ARITH_LIT8_CASE
 
             // EXP-038 (BLOCKER-028): Arithmetic lit16 (22s format: AA|op BBBB)
@@ -5573,14 +5694,23 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT32; \
                     int32_t b_val = (b.type == DalvikType::INT32) ? b.int_val : 0; \
+                    if ((op == "div" || op == "rem") && lit == 0) { \
+                        throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LIT16"); \
+                        pc_ = pc_ + 2; \
+                        break; \
+                    } \
                     if (op == "add") result_val.int_val = b_val + lit; \
+                    else if (op == "rsub") result_val.int_val = lit - b_val; \
                     else if (op == "sub") result_val.int_val = b_val - lit; \
                     else if (op == "mul") result_val.int_val = b_val * lit; \
-                    else if (op == "div") result_val.int_val = (lit != 0) ? b_val / lit : 0; \
-                    else if (op == "rem") result_val.int_val = (lit != 0) ? b_val % lit : 0; \
+                    else if (op == "div") result_val.int_val = b_val / lit; \
+                    else if (op == "rem") result_val.int_val = b_val % lit; \
                     else if (op == "and") result_val.int_val = b_val & lit; \
                     else if (op == "or")  result_val.int_val = b_val | lit; \
                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+                    else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+                    else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
                     set_register(vA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ = pc_ + 2; \
@@ -5588,13 +5718,18 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 }
 
             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
-            ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "sub")
+            ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+            // MASTER RECONCILIATION (2026-09-03): lit16 shift variants were
+            // missing (0xD8..0xDA previously unlabeled/unimplemented).
+            ARITH_LIT16_CASE(SHL_INT_LIT16, "shl-int/lit16", "shl")
+            ARITH_LIT16_CASE(SHR_INT_LIT16, "shr-int/lit16", "shr")
+            ARITH_LIT16_CASE(USHR_INT_LIT16, "ushr-int/lit16", "ushr")
             #undef ARITH_LIT16_CASE
 
             // EXP-040: Missing opcodes from Telegram execution
@@ -5749,6 +5884,91 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             #undef CONV_SRC_F32
             #undef CONV_SRC_F64
 
+            // MASTER RECONCILIATION (2026-09-03, NOT_DONE #4 audit): unary
+            // neg/not family (12x format: B|A|op). The entire block was
+            // ABSENT from the dispatch — neg-int/not-int/neg-long/not-long/
+            // neg-float/neg-double all hit handle_unimplemented. The audit
+            // predicted an int32-alias bug (K-01 class); the truth was worse:
+            // no implementation existed at all. Nibble convention follows the
+            // (already fixed) CONV block: dest = HIGH nibble (instr>>12),
+            // source = low nibble (instr>>8). Wrap-around negation is done in
+            // the UNSIGNED domain to avoid signed-overflow UB — INT32_MIN and
+            // INT64_MIN negate to themselves per the JLS.
+            // Fixture: tests/semantic_switch_parse_neg_test.cpp (group N —
+            // 7/7 FAIL pre-fix, all returned 0 via the unimplemented path).
+            #define UNARY_I32_CASE(opcode, op_name, EXPR) \
+                case Opcode::opcode: { \
+                    uint16_t instr_u = bytecode_[pc_]; \
+                    uint8_t vA_u = (instr_u >> 12) & 0xF; \
+                    uint8_t vB_u = (instr_u >> 8) & 0xF; \
+                    DalvikValue src_u = get_register(vB_u); \
+                    DalvikValue out_u; out_u.type = DalvikType::INT32; \
+                    int32_t s_u = (src_u.type == DalvikType::INT32) ? src_u.int_val \
+                                : (src_u.type == DalvikType::INT64 ? static_cast<int32_t>(src_u.long_val) : 0); \
+                    EXPR; \
+                    set_register(vA_u, out_u); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 1; \
+                    break; \
+                }
+            #define UNARY_I64_CASE(opcode, op_name, EXPR) \
+                case Opcode::opcode: { \
+                    uint16_t instr_u = bytecode_[pc_]; \
+                    uint8_t vA_u = (instr_u >> 12) & 0xF; \
+                    uint8_t vB_u = (instr_u >> 8) & 0xF; \
+                    DalvikValue src_u = get_register(vB_u); \
+                    DalvikValue out_u; out_u.type = DalvikType::INT64; \
+                    int64_t s_u = (src_u.type == DalvikType::INT64) ? src_u.long_val \
+                                : (src_u.type == DalvikType::INT32 ? static_cast<int64_t>(src_u.int_val) : 0); \
+                    EXPR; \
+                    set_register(vA_u, out_u); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 1; \
+                    break; \
+                }
+            #define UNARY_F32_CASE(opcode, op_name, EXPR) \
+                case Opcode::opcode: { \
+                    uint16_t instr_u = bytecode_[pc_]; \
+                    uint8_t vA_u = (instr_u >> 12) & 0xF; \
+                    uint8_t vB_u = (instr_u >> 8) & 0xF; \
+                    DalvikValue src_u = get_register(vB_u); \
+                    DalvikValue out_u; out_u.type = DalvikType::FLOAT32; \
+                    float s_u = (src_u.type == DalvikType::FLOAT32) ? src_u.float_val \
+                              : (src_u.type == DalvikType::INT32 ? bits_i2f(src_u.int_val) : 0.0f); \
+                    EXPR; \
+                    set_register(vA_u, out_u); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 1; \
+                    break; \
+                }
+            #define UNARY_F64_CASE(opcode, op_name, EXPR) \
+                case Opcode::opcode: { \
+                    uint16_t instr_u = bytecode_[pc_]; \
+                    uint8_t vA_u = (instr_u >> 12) & 0xF; \
+                    uint8_t vB_u = (instr_u >> 8) & 0xF; \
+                    DalvikValue src_u = get_register(vB_u); \
+                    DalvikValue out_u; out_u.type = DalvikType::FLOAT64; \
+                    double s_u = (src_u.type == DalvikType::FLOAT64) ? src_u.double_val \
+                               : (src_u.type == DalvikType::INT64 ? bits_l2d(src_u.long_val) \
+                               : (src_u.type == DalvikType::FLOAT32 ? static_cast<double>(src_u.float_val) \
+                               : (src_u.type == DalvikType::INT32 ? static_cast<double>(bits_i2f(src_u.int_val)) : 0.0))); \
+                    EXPR; \
+                    set_register(vA_u, out_u); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 1; \
+                    break; \
+                }
+            UNARY_I32_CASE(NEG_INT,   "neg-int",    out_u.int_val   = static_cast<int32_t>(0u - static_cast<uint32_t>(s_u)))
+            UNARY_I32_CASE(NOT_INT,   "not-int",    out_u.int_val   = ~s_u)
+            UNARY_I64_CASE(NEG_LONG,  "neg-long",   out_u.long_val  = static_cast<int64_t>(0ULL - static_cast<uint64_t>(s_u)))
+            UNARY_I64_CASE(NOT_LONG,  "not-long",   out_u.long_val  = ~s_u)
+            UNARY_F32_CASE(NEG_FLOAT, "neg-float",  out_u.float_val = -s_u)
+            UNARY_F64_CASE(NEG_DOUBLE,"neg-double", out_u.double_val = -s_u)
+            #undef UNARY_I32_CASE
+            #undef UNARY_I64_CASE
+            #undef UNARY_F32_CASE
+            #undef UNARY_F64_CASE
+
             // Float/Double/Long arithmetic (23x: AA|op BB|CC, 2 code units)
             #define ARITH_23X_FLOAT_CASE(opcode, op_name, op) \
                 case Opcode::opcode: { \
@@ -5865,9 +6085,13 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             // this path. Regression fixture:
             // tests/semantic_long_cmp_conv_test.cpp (>2^32 operands).
             //
-            // Known simplification (kept to avoid behavior change beyond bit
-            // width): div/rem by zero yields 0 here; real Android throws
-            // java/lang/ArithmeticException (see TOP_BLOCKERS_013.md).
+            // MASTER RECONCILIATION (K-29, 2026-09-03): div/rem by zero
+            // now throws java/lang/ArithmeticException via the deferred
+            // mechanism (post-switch redirect cannot be clobbered by the
+            // macro's pc_ += 2). The old "yield 0" simplification is
+            // gone — it silently diverged from Android whenever real apps
+            // relied on the exception for control flow.
+            // Fixture: tests/semantic_switch_parse_neg_test.cpp (group D).
             #define ARITH_LONG_CASE(opcode, op_name, op) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
@@ -5882,6 +6106,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                : (b.type == DalvikType::INT32 ? static_cast<int64_t>(b.int_val) : 0); \
                     int64_t cv = (c.type == DalvikType::INT64) ? c.long_val \
                                : (c.type == DalvikType::INT32 ? static_cast<int64_t>(c.int_val) : 0); \
+                    if ((op == "div" || op == "rem") && cv == 0) { \
+                        throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LONG"); \
+                        pc_ += 2; \
+                        break; \
+                    } \
                     if (op == "add") result_val.long_val = bv + cv; \
                     else if (op == "sub") result_val.long_val = bv - cv; \
                     else if (op == "mul") result_val.long_val = bv * cv; \
@@ -6507,6 +6736,12 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                    : (a.type == DalvikType::INT32 ? static_cast<int64_t>(a.int_val) : 0); \
                         int64_t bv = (b.type == DalvikType::INT64) ? b.long_val \
                                    : (b.type == DalvikType::INT32 ? static_cast<int64_t>(b.int_val) : 0); \
+                        if ((std::string(op) == "div" || std::string(op) == "rem") && bv == 0) { \
+                            /* MASTER RECONCILIATION (K-29): throws instead of yield-0. */ \
+                            throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-W2A"); \
+                            pc_ += 1; \
+                            break; \
+                        } \
                         if (std::string(op) == "add") result_val.long_val = av + bv; \
                         else if (std::string(op) == "sub") result_val.long_val = av - bv; \
                         else if (std::string(op) == "mul") result_val.long_val = av * bv; \
@@ -6826,6 +7061,58 @@ bool DalvikExecutionEngine::find_catch_handler_for_pc(
 
 // Raise a synthetic runtime exception following real Dalvik semantics as
 // far as the engine supports them. See header for the full contract.
+// MASTER RECONCILIATION (2026-09-03): deferred exception raise.
+// Same semantics as raise_synthetic_exception, but pc_ is NEVER written here:
+// opcode-handler macros and the invoke wrappers advance pc_ AFTER the handler
+// body runs, which would clobber a direct handler jump. Two mechanisms:
+//   1. Handler covers pc_ → pending_exception_ + deferred_exception_ set and
+//      exc_redirect_pending_ armed; fetch_decode_execute re-applies
+//      exc_redirect_addr_ right after the switch (post-switch redirect —
+//      same last-word-wins model as UNIFIED_011.3 EXC-PROPAGATE).
+//   2. No handler → frame unwind exactly like raise_synthetic_exception
+//      (halted_on_return_ + frame_unwind_exception_ for caller-side search).
+bool DalvikExecutionEngine::throw_deferred(
+        const std::string& exc_class_desc, const std::string& message,
+        const char* origin_tag) {
+    DalvikValue exc;
+    exc.type = DalvikType::OBJECT_REF;
+    exc.object_id = heap_.allocate(exc_class_desc, pc_, 0);
+    exc.class_desc = exc_class_desc;
+    exc.string_val = message;
+    heap_.set_object_field(exc.object_id, "message",
+                           DalvikValue::make_string(message, exc.object_id));
+    heap_.mark_initialized(exc.object_id);
+
+    uint32_t handler_addr = 0;
+    bool is_catch_all = false;
+    std::string catch_type = "<none>";
+    bool found = find_catch_handler_for_pc(pc_, handler_addr, is_catch_all,
+                                           catch_type, exc_class_desc);
+
+    std::cerr << "[SYNTH-EXC] " << (origin_tag ? origin_tag : "runtime")
+              << " (deferred): " << exc_class_desc << " (" << message << ")"
+              << " method=" << current_class_ << "." << current_method_
+              << " pc=" << pc_
+              << " → " << (found ? "deferred handler @0x" + to_hex(handler_addr)
+                                   + " type=" + catch_type
+                                 : "uncaught (deferred frame unwind + propagate)")
+              << std::endl;
+
+    pending_exception_ = exc;
+    deferred_exception_ = exc;
+    if (found) {
+        exc_redirect_pending_ = true;
+        exc_redirect_addr_ = handler_addr;
+        return true;
+    }
+    frame_unwind_exception_valid_ = true;
+    frame_unwind_exception_ = exc;
+    last_invoke_return_ = DalvikValue::make_null();
+    halted_on_return_ = true;
+    pc_ += 1;
+    return false;
+}
+
 bool DalvikExecutionEngine::raise_synthetic_exception(
         const std::string& exc_class_desc, const std::string& message,
         const char* origin_tag) {
@@ -12242,6 +12529,169 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_string(lower, 0);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // MASTER RECONCILIATION (K-19/K-20, 2026-09-03): boxed-number parsing +
+    // String.substring/concat — REAL implementations in the production
+    // dispatch (bridge_to_api).
+    //
+    // ROOT CAUSE (why this exists): exp018 documented an "NATIVE_CPP parse*"
+    // plan that was NEVER wired into this dispatch (K-19 — the agent claim
+    // was a plan, not code). Every real DEX app calling Integer.parseInt /
+    // Long.parseLong / Float.parseFloat / Double.parseDouble (EXP-018
+    // corpus: ~20% of apps touch parseInt alone) silently received VOID
+    // from this bridge. String.substring / String.concat had the same gap
+    // (K-20).
+    //
+    // Semantics per OpenJDK:
+    //   * Strict numeric parse: NO whitespace trimming, optional +/- sign,
+    //     digits within the radix, range-checked (int: 32-bit, long: 64-bit).
+    //     Malformed input → java/lang/NumberFormatException via the DEFERRED
+    //     throw mechanism (post-switch redirect — the invoke wrapper's
+    //     `pc_ = pc + 3` cannot clobber the handler jump).
+    //   * substring(begin[, end]) → bounds-checked; violations throw
+    //     java/lang/StringIndexOutOfBoundsException.
+    //   * concat(other) → this + other; null receiver/arg → NullPointerException.
+    //   * parseFloat/parseDouble accept plain decimal/exponent literals with
+    //     full-consumption checking; residual exotic-form gaps (hex floats,
+    //     Infinity/NaN words, float 'f' suffix) remain documented TODOs.
+    // Fixture: tests/semantic_switch_parse_neg_test.cpp (group P).
+    // ────────────────────────────────────────────────────────────────────────
+    if ((class_name == "Ljava/lang/Integer;" && method == "parseInt") ||
+        (class_name == "Ljava/lang/Long;" && method == "parseLong") ||
+        (class_name == "Ljava/lang/Float;" && method == "parseFloat") ||
+        (class_name == "Ljava/lang/Double;" && method == "parseDouble")) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        std::string s_parse;
+        if (!args.empty() && args[0].type == DalvikType::STRING_REF)
+            s_parse = args[0].string_val;
+        int radix_parse = 10;
+        if ((class_name == "Ljava/lang/Integer;" || class_name == "Ljava/lang/Long;") &&
+            args.size() >= 2 && args[1].type == DalvikType::INT32)
+            radix_parse = args[1].int_val;  // parseInt(s, radix) overload
+        if (radix_parse < 2 || radix_parse > 36) radix_parse = 10;
+
+        auto digit_val_parse = [](char ch) -> int {
+            if (ch >= '0' && ch <= '9') return ch - '0';
+            if (ch >= 'a' && ch <= 'z') return ch - 'a' + 10;
+            if (ch >= 'A' && ch <= 'Z') return ch - 'A' + 10;
+            return -1;
+        };
+        auto java_parse_fail = [&](const std::string& what) {
+            throw_deferred("Ljava/lang/NumberFormatException;",
+                           "For input string: \"" + s_parse + "\"" +
+                               (what.empty() ? "" : " (" + what + ")"),
+                           "PARSE-BRIDGE");
+        };
+
+        if (class_name == "Ljava/lang/Integer;" || class_name == "Ljava/lang/Long;") {
+            const bool is_long = (class_name == "Ljava/lang/Long;");
+            // Java range limits: negative side holds one more magnitude.
+            const uint64_t cut_parse = is_long
+                ? 9223372036854775808ULL   // 2^63
+                : 2147483648ULL;           // 2^31
+            bool ok_parse = !s_parse.empty();
+            bool neg_parse = false;
+            size_t i_parse = 0;
+            if (ok_parse && (s_parse[0] == '+' || s_parse[0] == '-')) {
+                neg_parse = (s_parse[0] == '-');
+                i_parse = 1;
+                if (i_parse == s_parse.size()) ok_parse = false;  // bare sign
+            }
+            uint64_t acc_parse = 0;
+            for (; ok_parse && i_parse < s_parse.size(); ++i_parse) {
+                int d_parse = digit_val_parse(s_parse[i_parse]);
+                if (d_parse < 0 || d_parse >= radix_parse) { ok_parse = false; break; }
+                // acc * radix + d <= cut  ⟺  acc <= (cut - d) / radix
+                if (acc_parse > (cut_parse - static_cast<uint64_t>(d_parse)) /
+                                    static_cast<uint64_t>(radix_parse)) {
+                    ok_parse = false; break;  // range overflow → NumberFormatException
+                }
+                acc_parse = acc_parse * static_cast<uint64_t>(radix_parse) +
+                            static_cast<uint64_t>(d_parse);
+            }
+            if (!ok_parse) { java_parse_fail(""); return true; }
+            const int64_t signed_val = neg_parse
+                ? static_cast<int64_t>(0ULL - acc_parse)
+                : static_cast<int64_t>(acc_parse);
+            if (is_long) result = DalvikValue::make_long(signed_val);
+            else result = DalvikValue::make_int(static_cast<int32_t>(signed_val));
+            std::cerr << "[PARSE] " << class_name << "." << method << "(\"" << s_parse
+                      << "\", radix " << radix_parse << ") → " << signed_val << std::endl;
+            return true;
+        }
+
+        // Floating variants: full-consumption check; reject leading/trailing
+        // whitespace and empty strings like Java (no trimming).
+        if (s_parse.empty() ||
+            std::isspace(static_cast<unsigned char>(s_parse.front())) ||
+            std::isspace(static_cast<unsigned char>(s_parse.back()))) {
+            java_parse_fail(""); return true;
+        }
+        {
+            const char* begin_parse = s_parse.c_str();
+            char* end_parse = nullptr;
+            errno = 0;
+            if (class_name == "Ljava/lang/Float;") {
+                float f_parse = std::strtof(begin_parse, &end_parse);
+                if (end_parse != begin_parse + s_parse.size()) { java_parse_fail(""); return true; }
+                result = DalvikValue::make_float(f_parse);
+                std::cerr << "[PARSE] Float.parseFloat(\"" << s_parse << "\") → " << f_parse << std::endl;
+            } else {
+                double d_parse = std::strtod(begin_parse, &end_parse);
+                if (end_parse != begin_parse + s_parse.size()) { java_parse_fail(""); return true; }
+                result = DalvikValue::make_double(d_parse);
+                std::cerr << "[PARSE] Double.parseDouble(\"" << s_parse << "\") → " << d_parse << std::endl;
+            }
+        }
+        return true;
+    }
+
+    // MASTER RECONCILIATION (K-20, 2026-09-03): String.substring / concat.
+    if (class_name == "Ljava/lang/String;" && method == "substring" && args.size() >= 2) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        std::string s_sub;
+        if (args[0].type == DalvikType::STRING_REF) s_sub = args[0].string_val;
+        else if (args[0].type == DalvikType::NULL_REF) {
+            throw_deferred("Ljava/lang/NullPointerException;", "substring on null", "STR-BRIDGE");
+            return true;
+        }
+        int32_t begin_sub = (args[1].type == DalvikType::INT32) ? args[1].int_val : 0;
+        int32_t end_sub = static_cast<int32_t>(s_sub.size());
+        if (args.size() >= 3 && args[2].type == DalvikType::INT32) end_sub = args[2].int_val;
+        // OpenJDK bounds: begin<0 || end>len || begin>end → SIOOBE.
+        if (begin_sub < 0 || end_sub < 0 ||
+            end_sub > static_cast<int32_t>(s_sub.size()) || begin_sub > end_sub) {
+            throw_deferred("Ljava/lang/StringIndexOutOfBoundsException;",
+                           "length=" + std::to_string(s_sub.size()) +
+                           "; begin=" + std::to_string(begin_sub) +
+                           "; end=" + std::to_string(end_sub),
+                           "STR-BRIDGE");
+            return true;
+        }
+        result = DalvikValue::make_string(s_sub.substr(begin_sub, end_sub - begin_sub), 0);
+        std::cerr << "[STR] substring(" << begin_sub << "," << end_sub << ") of \""
+                  << s_sub.substr(0, 40) << "\" → \"" << result.string_val.substr(0, 40) << "\"" << std::endl;
+        return true;
+    }
+    if (class_name == "Ljava/lang/String;" && method == "concat" && args.size() >= 2) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        std::string s_concat;
+        if (args[0].type == DalvikType::STRING_REF) s_concat = args[0].string_val;
+        else if (args[0].type == DalvikType::NULL_REF) {
+            throw_deferred("Ljava/lang/NullPointerException;", "concat on null", "STR-BRIDGE");
+            return true;
+        }
+        if (args[1].type == DalvikType::NULL_REF) {
+            throw_deferred("Ljava/lang/NullPointerException;", "concat(null)", "STR-BRIDGE");
+            return true;
+        }
+        std::string other_concat = (args[1].type == DalvikType::STRING_REF) ? args[1].string_val : "";
+        result = DalvikValue::make_string(s_concat + other_concat, 0);
+        std::cerr << "[STR] concat(\"" << s_concat.substr(0, 32) << "\", \""
+                  << other_concat.substr(0, 32) << "\")" << std::endl;
         return true;
     }
 
