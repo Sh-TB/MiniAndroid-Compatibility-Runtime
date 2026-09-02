@@ -106,9 +106,11 @@ microtimer app-side validation exception, WebView UIs, canvas state ops.
 
 ## Handoff artifact
 
-- `MiniAndroid_v0.13.0_GIT_HANDOFF.zip` — SHA256
-  `0289f395eed50181aeb49ed0b5a846ce647de446e808f236aafb965b5d614bdc`
-  (7,907,810 bytes), mirrored in MINIANDROID_HANDOFF_ZIP_SHA256_013.txt.
+- `MiniAndroid_v0.13.0_GIT_HANDOFF.zip` — the AUTHORITATIVE SHA256 lives in
+  `MINIANDROID_HANDOFF_ZIP_SHA256_013.txt` next to the ZIP (the doc cannot
+  embed its own container's hash; final packaged value at time of writing:
+  0fb86ec45500bb54d4255205c13107d31382afcd55215e85d853b622dbd330eb,
+  7,904,441 bytes).
 - Contains: tracked tree @ v0.13.0 + shallow clone `repo/` (depth 120 =
   complete UNIFIED_011..013 lineage, branch campaign-013).
 - **Shallow-boundary accuracy note:** the 011.3 handoff shipped a shallow
