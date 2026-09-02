@@ -1,21 +1,19 @@
-# NOT_DONE — what remains broken, missing, or unproven (2026-09-02)
+# NOT_DONE — what remains broken, missing, or unproven (updated 2026-09-03)
 
 Ordered by leverage. Companion: MASTER_PROJECT_KNOWLEDGE.md (K-numbers), TOP_BLOCKERS_013.md.
 
-## Runtime gaps (verified missing in the production dispatch)
+## RESOLVED 2026-09-03 (master reconciliation PHASE 4 — commit 9d095f9)
 
-1. **String/parse bridge** (K-19, K-20): `Integer.parseInt`, `Long.parseLong`,
-   `Float.parseFloat`, `Double.parseDouble`, `String.substring`, `String.concat`
-   are not dispatched. EXP-018 corpus data says ~20% of apps touch parseInt alone.
-   Effort: small — the String method dispatch point already exists
-   (dalvik_engine.cpp ~10220); each is a few lines + a fixture.
-2. **packed-switch / sparse-switch** (K-18): opcodes 0x2B/0x2C defined in
-   dalvik_engine.h but no dispatch case → handle_unimplemented. Needs payload
-   parsing (31t) + target resolution + a fixture with both payload shapes.
-3. **div/rem-long by zero** (K-29): returns 0; Android throws
-   ArithmeticException. Cheap now that typed-catch is proven (8/8 fixture).
-4. **neg-long / not-long audit**: NOT re-validated in this pass — check the 12x
-   neg/not handlers for the same int32-alias class of bug as K-01 before trusting them.
+The four runtime gaps below were implemented, fixture-proven (0/25 → 25/25),
+and regression-gated (goldens byte-identical; see VERIFIED_TESTS.md):
+1. ~~String/parse bridge (K-19, K-20)~~ → FIXED (parseInt/parseLong/parseFloat/
+   parseDouble/substring/concat now dispatch; strict Java semantics).
+2. ~~packed-switch / sparse-switch (K-18)~~ → FIXED (both payload shapes).
+3. ~~div/rem-long by zero (K-29)~~ → FIXED (all integer forms throw
+   ArithmeticException; the int/2addr form was also unguarded C++ UB).
+4. ~~neg-long / not-long audit~~ → audit found WORSE: the whole 0x7B..0x80
+   family was never implemented (K-32) AND the lit8 opcode table was shifted
+   against AOSP (K-31, real add-int/lit8 dispatched as AND). Both fixed.
 
 ## Architecture boundaries (unmoved this campaign)
 
