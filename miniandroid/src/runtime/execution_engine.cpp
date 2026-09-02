@@ -11,6 +11,7 @@
 #include "../renderer/software_renderer.h"
 // EXP-086 Phase 7 (B4 FIX): HandlerShadow for Runnable queue drain
 #include "../framework/android_shadows.h"
+#include "../framework/dialog_shadow.h"
 // EXP-087 Phase 3 (B2 FIX): DalvikHeapAdapter for shadow heap access
 #include "../framework/heap_adapter.h"
 
@@ -1731,6 +1732,25 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 queue.push_back(*it);
                             }
                             }  // !children_pushed
+                        }
+
+                        // CAMPAIGN 013 B1: dialog windows render ON TOP of the
+                        // activity tree, into the SAME framebuffer, before the
+                        // fb→framebuffer_ copy. Every showing DialogShadow
+                        // window paints dim + chrome + its recorded content;
+                        // its decor ViewNodes carry the clickable rows.
+                        if (auto* dialog_shadow =
+                                shadow_registry_->find_as<framework::DialogShadow>()) {
+                            dialog_shadow->render_dialogs(
+                                canvas, fb, config.screen_width, config.screen_height,
+                                [this](int32_t resid) -> std::string {
+                                    auto& fn = dalvik_engine_.field_name_by_resid_;
+                                    auto it = fn.find(resid);
+                                    if (it == fn.end()) return "";
+                                    auto& sv = dalvik_engine_.resource_string_values_;
+                                    auto sv_it = sv.find(it->second);
+                                    return sv_it != sv.end() ? sv_it->second : std::string();
+                                });
                         }
 
                         // Copy FrameBuffer pixels (RGBA) back to framebuffer_ (uint8_t RGBA)
