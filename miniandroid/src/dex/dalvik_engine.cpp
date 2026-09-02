@@ -20,6 +20,7 @@
 #include "../framework/shadow_registry.h"
 #include "../framework/android_shadows.h"
 #include "../framework/dialog_shadow.h"
+#include "../framework/canvas_shadow.h"
 #include "../framework/heap_adapter.h"
 #include <chrono>
 #include <algorithm>
@@ -4033,6 +4034,51 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
     recursion_depth_--;
     return false;  // method not found in DEX, bridge to API
+}
+
+// CAMPAIGN 013 (§10/§15/§19): execute a custom view's REAL onDraw(Canvas)
+// bytecode and capture the draw primitives via CanvasShadow. Returns the
+// number of captured ops (0 = nothing drawn / no onDraw / no heap object).
+int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
+    if (shadow_registry_ == nullptr) return 0;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    auto* canvas_shadow = shadow_registry_->find_as<framework::CanvasShadow>();
+    if (!view_shadow || !canvas_shadow) return 0;
+    const auto* node = view_shadow->find_node(view_object_id);
+    if (!node) { std::cerr << "[C013-ONDRAW-TRY] id=" << view_object_id << " no node\n"; return 0; }
+    if (!heap_.has_object(view_object_id)) {
+        std::cerr << "[C013-ONDRAW-TRY] id=" << view_object_id << " class=" << node->class_desc
+                  << " NOT a heap object (inflated)\n";
+        return 0;  // inflated views have no heap obj yet
+    }
+    std::string cls = node->class_desc;
+    if (heap_.has_object(view_object_id)) {
+        const auto* obj = heap_.get(view_object_id);
+        if (obj && !obj->class_descriptor.empty()) cls = obj->class_descriptor;
+    }
+    // Normalize dotted descriptors (Lcom.example.Foo; -> Lcom/example/Foo;)
+    // AFTER the heap lookup — heap class_descriptors may be dotted, and the
+    // DEX class index uses slashed descriptors.
+    if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < cls.size(); ++i) {
+            char c = cls[i];
+            norm += (c == '.') ? '/' : c;
+        }
+        cls = norm;
+    }
+    uint32_t canvas_obj = heap_.allocate("Landroid/graphics/Canvas;", pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+    canvas_shadow->begin_frame();
+    std::vector<DalvikValue> args;
+    args.push_back(DalvikValue::make_object(view_object_id, cls));
+    args.push_back(DalvikValue::make_object(canvas_obj, "Landroid/graphics/Canvas;"));
+    DalvikValue ret = DalvikValue::make_void();
+    DalvikExecutionResult res;
+    bool ok = try_recursive_invoke(cls, "onDraw", args, ret, res);
+    int ops = ok ? (int)canvas_shadow->ops().size() : 0;
+    std::cerr << "[C013-ONDRAW] view=" << view_object_id << " class=" << cls
+              << " dispatched=" << (ok ? "YES" : "NO") << " ops=" << ops << std::endl;
+    return ops;
 }
 
 // EXP-060: Dispatch a synthetic CLICK event on a View.
