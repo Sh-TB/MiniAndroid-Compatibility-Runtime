@@ -1,0 +1,463 @@
+{
+  "calls": [
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Session started: EXP-001-20260902-050345-4774",
+      "method": "start_session",
+      "timestamp": 1788325425736
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading APK: /home/z/my-project/apk_cache/corpus/chessclock.apk",
+      "method": "stage_load_apk",
+      "timestamp": 1788325425736
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Package: com.chessclock.android, Main Activity: .ChessClock",
+      "method": "stage_load_apk",
+      "timestamp": 1788325425736
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsing DEX files",
+      "method": "stage_parse_dex",
+      "timestamp": 1788325425736
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsed 22 classes, 169 methods",
+      "method": "stage_parse_dex",
+      "timestamp": 1788325425739
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Initializing runtime",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1788325425739
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Framebuffer allocated: 1080x1920",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading class definitions",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/BuildConfig; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/ChessClock$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/ChessClock$2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/ChessClock$3; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/ChessClock$4; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/ChessClock$5; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/ChessClock$6; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/ChessClock$7; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/ChessClock$8; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/ChessClock; extends Landroid/app/Activity; (59 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/DialogFactory; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/Prefs$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/Prefs; extends Landroid/preference/PreferenceActivity; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/R$array; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/R$attr; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/R$color; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/R$drawable; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/R$id; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/R$layout; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/R$string; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/R$xml; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lcom/chessclock/android/R; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Executing application lifecycle",
+      "method": "stage_execute_application",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Starting real bytecode execution",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1788325425760
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Instructions executed: 511",
+      "method": "execute_apk",
+      "timestamp": 1788325425769
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "API calls traced: 109",
+      "method": "execute_apk",
+      "timestamp": 1788325425769
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Heap objects: 23",
+      "method": "execute_apk",
+      "timestamp": 1788325425769
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ REAL EXECUTION CONFIRMED - 511 opcodes executed",
+      "method": "validation",
+      "timestamp": 1788325425769
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "ExecutionSource = REAL_DALVIK_INTERPRETER (verified)",
+      "method": "execution_source",
+      "timestamp": 1788325425769
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Creating view from execution evidence",
+      "method": "create_view_from_dalvik_result",
+      "timestamp": 1788325425769
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Using text from API call: p1",
+      "method": "create_view_from_dalvik_result",
+      "timestamp": 1788325425769
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Creating HelloWorld view",
+      "method": "create_hello_world_view",
+      "timestamp": 1788325425769
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Lifecycle method 'Landroid/app/Activity;<super>.onCreate' from REAL_DALVIK_INTERPRETER",
+      "method": "lifecycle_source",
+      "timestamp": 1788325425769
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ All lifecycle events sourced from REAL_DALVIK_INTERPRETER",
+      "method": "lifecycle_verified",
+      "timestamp": 1788325425769
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating mandatory trace files: /home/z/my-project/miniandroid_ws/triage014/after/chessclock/click/exp031_5/traces/com.chessclock.android",
+      "method": "trace_export",
+      "timestamp": 1788325425769
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Trace files generated successfully",
+      "method": "trace_export",
+      "timestamp": 1788325425773
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - opcode_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325425773
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - method_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325425773
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - register_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325425773
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - heap_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325425773
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - execution_summary.json (contains verdict)",
+      "method": "trace_files",
+      "timestamp": 1788325425773
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Real Dalvik execution complete",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1788325425773
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325425773
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325425814
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Capturing output",
+      "method": "stage_capture_output",
+      "timestamp": 1788325425814
+    },
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Screenshot captured: /home/z/my-project/miniandroid_ws/triage014/after/chessclock/click/screenshot.png (1080x1920, 8294400 bytes)",
+      "method": "log_screenshot",
+      "timestamp": 1788325425889
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "PNG screenshot saved to: /home/z/my-project/miniandroid_ws/triage014/after/chessclock/click/screenshot.png",
+      "method": "stage_capture_output",
+      "timestamp": 1788325425889
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "CLICK-TEST probe",
+      "method": "stage_click_test",
+      "timestamp": 1788325425931
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating reports",
+      "method": "stage_generate_reports",
+      "timestamp": 1788325425937
+    }
+  ],
+  "generated_at": "2026-09-02 05:03:45 UTC",
+  "session_id": "EXP-001-20260902-050345-4774",
+  "total_calls": 57
+}
