@@ -597,6 +597,24 @@ std::optional<std::string> ArscParser::apk_path_for(uint32_t resource_id,
                                                     const std::vector<std::string>& apk_paths) const {
     auto r = resolve(resource_id);
     if (!r) return std::nullopt;
+
+    // CAMPAIGN 013 (§18): REAL Android resolution for file-backed resources.
+    // In resources.arsc a file-backed entry's VALUE IS THE PATH (STRING type,
+    // e.g. "res/w6.xml"). AGP resource obfuscation renames the FILES and
+    // rewrites these values — the entry NAME no longer appears anywhere in
+    // res/. The old name-matching heuristic returned NONE for every layout of
+    // obfuscated APKs (notesbillthefarmer: name=main, value=res/w6.xml).
+    // Value-first also removes the O(type*files) name scan for normal APKs.
+    for (const auto& cfg : r->configs) {
+        const std::string& v = cfg.value.string_value;
+        if (cfg.value.type == DataType::STRING && v.size() > 4 &&
+            v.compare(0, 4, "res/") == 0) {
+            for (const auto& path : apk_paths)
+                if (path == v) return path;
+        }
+    }
+
+    // Fallback: legacy name matching (entry name = file stem).
     // candidates: res/<type>-<config>/<name>.<ext> — we match by suffix
     for (const auto& path : apk_paths) {
         // path like res/layout/act_gmdice.xml or res/drawable-hdpi/icon.png
