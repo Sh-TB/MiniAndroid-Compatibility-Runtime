@@ -1,0 +1,655 @@
+{
+  "calls": [
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Session started: EXP-001-20260902-050339-2953",
+      "method": "start_session",
+      "timestamp": 1788325419501
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading APK: /home/z/my-project/apk_cache/corpus/gmdice.apk",
+      "method": "stage_load_apk",
+      "timestamp": 1788325419501
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Package: de.duenndns.gmdice, Main Activity: de.duenndns.gmdice.GameMasterDice",
+      "method": "stage_load_apk",
+      "timestamp": 1788325419501
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsing DEX files",
+      "method": "stage_parse_dex",
+      "timestamp": 1788325419501
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Parsed 23 classes, 250 methods",
+      "method": "stage_parse_dex",
+      "timestamp": 1788325419504
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Initializing runtime",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1788325419504
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Framebuffer allocated: 1080x1920",
+      "method": "stage_initialize_runtime",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Loading class definitions",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/DiceSet; extends Ljava/lang/Object; (8 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/Coin; extends Lde/duenndns/gmdice/DiceSet; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/DSADiceSet; extends Lde/duenndns/gmdice/DiceSet; (4 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/DiceCache; extends Ljava/lang/Object; (6 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/FUDGEDiceSet; extends Lde/duenndns/gmdice/DiceSet; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/GameMasterDice$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/OnDiceChange; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/GameMasterDice$2; extends Lde/duenndns/gmdice/OnDiceChange; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/GameMasterDice$3; extends Lde/duenndns/gmdice/OnDiceChange; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/GameMasterDice$4; extends Lde/duenndns/gmdice/OnDiceChange; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/GameMasterDice$5; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/GameMasterDice$6; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/GameMasterDice$7; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/GameMasterDice; extends Landroid/app/ListActivity; (23 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/RollResult; extends Ljava/lang/Object; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/RollResultAdapter; extends Landroid/widget/ArrayAdapter; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/SignedNumberPicker$1; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/SignedNumberPicker$2; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/SignedNumberPicker$3; extends Ljava/lang/Object; (2 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter; extends Landroid/text/method/NumberKeyListener; (5 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/SignedNumberPicker$OnTextFocusChangedListener; extends Ljava/lang/Object; (1 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/SignedNumberPicker; extends Landroid/widget/NumberPicker; (19 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "DEBUG",
+      "class": "ExecutionEngine",
+      "level": "DEBUG",
+      "message": "Found class: Lde/duenndns/gmdice/StandardDiceSet; extends Lde/duenndns/gmdice/DiceSet; (3 methods)",
+      "method": "stage_load_classes",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Executing application lifecycle",
+      "method": "stage_execute_application",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Starting real bytecode execution",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1788325419525
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Instructions executed: 107",
+      "method": "execute_apk",
+      "timestamp": 1788325419528
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "API calls traced: 27",
+      "method": "execute_apk",
+      "timestamp": 1788325419528
+    },
+    {
+      "category": "SYSTEM",
+      "class": "DalvikEngine",
+      "level": "INFO",
+      "message": "Heap objects: 17",
+      "method": "execute_apk",
+      "timestamp": 1788325419528
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ REAL EXECUTION CONFIRMED - 107 opcodes executed",
+      "method": "validation",
+      "timestamp": 1788325419528
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "ExecutionSource = REAL_DALVIK_INTERPRETER (verified)",
+      "method": "execution_source",
+      "timestamp": 1788325419528
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "[REAL_DALVIK_INTERPRETER] Creating view from execution evidence",
+      "method": "create_view_from_dalvik_result",
+      "timestamp": 1788325419528
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Creating HelloWorld view",
+      "method": "create_hello_world_view",
+      "timestamp": 1788325419528
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Lifecycle method 'Landroid/app/ListActivity;<super>.onCreate' from REAL_DALVIK_INTERPRETER",
+      "method": "lifecycle_source",
+      "timestamp": 1788325419528
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ All lifecycle events sourced from REAL_DALVIK_INTERPRETER",
+      "method": "lifecycle_verified",
+      "timestamp": 1788325419528
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating mandatory trace files: /home/z/my-project/miniandroid_ws/triage014/after/gmdice/click/exp031_5/traces/de.duenndns.gmdice",
+      "method": "trace_export",
+      "timestamp": 1788325419528
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "✅ Trace files generated successfully",
+      "method": "trace_export",
+      "timestamp": 1788325419529
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - opcode_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325419529
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - method_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325419529
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - register_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325419529
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - heap_trace.json",
+      "method": "trace_files",
+      "timestamp": 1788325419529
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "  - execution_summary.json (contains verdict)",
+      "method": "trace_files",
+      "timestamp": 1788325419529
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Real Dalvik execution complete",
+      "method": "stage_execute_application_real_dalvik",
+      "timestamp": 1788325419529
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325419529
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325419560
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Capturing output",
+      "method": "stage_capture_output",
+      "timestamp": 1788325419560
+    },
+    {
+      "category": "SYSTEM",
+      "class": "TraceEngine",
+      "level": "INFO",
+      "message": "Screenshot captured: /home/z/my-project/miniandroid_ws/triage014/after/gmdice/click/screenshot.png (1080x1920, 8294400 bytes)",
+      "method": "log_screenshot",
+      "timestamp": 1788325419630
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "PNG screenshot saved to: /home/z/my-project/miniandroid_ws/triage014/after/gmdice/click/screenshot.png",
+      "method": "stage_capture_output",
+      "timestamp": 1788325419630
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "CLICK-TEST probe",
+      "method": "stage_click_test",
+      "timestamp": 1788325419672
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325419676
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325419710
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325419783
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325419823
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325419902
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325419942
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420014
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420054
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420126
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420159
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420231
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420271
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420277
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420323
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420328
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420375
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420379
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420425
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420429
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420469
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420472
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420519
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendering frame",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420525
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Rendered ViewShadow tree with BitmapFont (root_id=4)",
+      "method": "stage_render_frame",
+      "timestamp": 1788325420580
+    },
+    {
+      "category": "SYSTEM",
+      "class": "ExecutionEngine",
+      "level": "INFO",
+      "message": "Generating reports",
+      "method": "stage_generate_reports",
+      "timestamp": 1788325420582
+    }
+  ],
+  "generated_at": "2026-09-02 05:03:40 UTC",
+  "session_id": "EXP-001-20260902-050339-2953",
+  "total_calls": 81
+}
