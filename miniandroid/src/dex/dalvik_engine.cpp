@@ -4634,6 +4634,36 @@ bool DalvikExecutionEngine::dump_view_tree(const std::string& path) {
     return true;
 }
 
+// ── Dalvik numeric-conversion helpers (RESULT_010 reconciliation) ─────────
+// JLS 5.1.3 / AOSP float→integral narrowing: NaN → 0, otherwise round toward
+// zero with SATURATION to the destination range (undefined behavior would be
+// triggered by a bare static_cast for out-of-range values).
+namespace {
+inline int32_t conv_f2i(double d) {
+    if (std::isnan(d)) return 0;
+    if (d >= 2147483647.0)  return INT32_MAX;
+    if (d <= -2147483648.0) return INT32_MIN;
+    return static_cast<int32_t>(d);
+}
+inline int64_t conv_f2l(double d) {
+    if (std::isnan(d)) return 0;
+    if (d >= 9223372036854775807.0)  return INT64_MAX;
+    if (d <= -9223372036854775808.0) return INT64_MIN;
+    return static_cast<int64_t>(d);
+}
+// Dalvik registers are raw bit storage: const-wide/const-wide/high16 load a
+// DOUBLE's bit pattern tagged INT64 (the engine's type tags are an internal
+// approximation). Floating handlers must therefore reinterpret INT64-tagged
+// registers as their bit pattern when a double is expected — otherwise every
+// double constant routed through const-wide would read as garbage.
+inline double bits_l2d(int64_t l) {
+    double d;
+    static_assert(sizeof(double) == sizeof(int64_t), "64-bit double required");
+    std::memcpy(&d, &l, sizeof(d));
+    return d;
+}
+}  // namespace
+
 bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) {
     // EXP-071 Phase 6 debug: Log entry to fetch_decode_execute for setCountry.
     if (current_method_ == "setCountry" && current_class_.find("PhoneView") != std::string::npos) {
@@ -5620,35 +5650,104 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 break;
             }
 
-            // Conversion opcodes (12x: B|A|op, 1 code unit) — simplified: just copy
-            #define CONV_CASE(opcode, op_name) \
+            // Conversion opcodes (12x: B|A|op, 1 code unit).
+            //
+            // IMPORTANT (RESULT_010 reconciliation, master request §7/§9):
+            // a conversion must perform the REAL numeric conversion and retag
+            // the result type. The previous implementation ONLY changed the
+            // type tag to INT32 and left the union bits untouched, so
+            // int-to-long(-5) read back as garbage, float-to-int returned the
+            // raw float BITS as an integer, and int-to-byte/char/short never
+            // masked. Dalvik/AOSP numeric-conversion semantics implemented:
+            //   int→long sign-extend · long→int truncate low 32
+            //   float/double→int/long: NaN→0, round-toward-zero + saturate
+            //   int→byte sign-extend low 8 · int→char zero-extend low 16 ·
+            //   int→short sign-extend low 16
+            // Regression fixture: tests/semantic_long_cmp_conv_test.cpp
+            #define CONV_SRC_I32(opcode, op_name, DST_KIND, STORE_EXPR) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
-                    uint8_t vA = (instr >> 8) & 0xF; \
-                    uint8_t vB = (instr >> 12) & 0xF; \
+                    /* 12x = B|A|op: A (dest) is the HIGH nibble, B (src) the LOW */ \
+                    /* nibble of byte 1. The pre-reconciliation code had these */ \
+                    /* swapped — conversions wrote the source register and read */ \
+                    /* the destination, so results landed in the wrong slot */ \
+                    /* (visible only when dest != src). */ \
+                    uint8_t vA = (instr >> 12) & 0xF; \
+                    uint8_t vB = (instr >> 8) & 0xF; \
                     DalvikValue val = get_register(vB); \
-                    val.type = DalvikType::INT32; /* simplified: treat as int */ \
-                    set_register(vA, val); \
+                    DalvikValue out; out.type = DST_KIND; \
+                    int32_t s = (val.type == DalvikType::INT32) ? val.int_val \
+                              : (val.type == DalvikType::INT64 ? static_cast<int32_t>(val.long_val) : 0); \
+                    STORE_EXPR; \
+                    set_register(vA, out); \
                     trace.opcode_name = op_name; \
                     pc_ += 1; \
                     break; \
                 }
-            CONV_CASE(INT_TO_LONG, "int-to-long")
-            CONV_CASE(INT_TO_FLOAT, "int-to-float")
-            CONV_CASE(INT_TO_DOUBLE, "int-to-double")
-            CONV_CASE(LONG_TO_INT, "long-to-int")
-            CONV_CASE(LONG_TO_FLOAT, "long-to-float")
-            CONV_CASE(LONG_TO_DOUBLE, "long-to-double")
-            CONV_CASE(FLOAT_TO_INT, "float-to-int")
-            CONV_CASE(FLOAT_TO_LONG, "float-to-long")
-            CONV_CASE(FLOAT_TO_DOUBLE, "float-to-double")
-            CONV_CASE(DOUBLE_TO_INT, "double-to-int")
-            CONV_CASE(DOUBLE_TO_LONG, "double-to-long")
-            CONV_CASE(DOUBLE_TO_FLOAT, "double-to-float")
-            CONV_CASE(INT_TO_BYTE, "int-to-byte")
-            CONV_CASE(INT_TO_CHAR, "int-to-char")
-            CONV_CASE(INT_TO_SHORT, "int-to-short")
-            #undef CONV_CASE
+            #define CONV_SRC_I64(opcode, op_name, DST_KIND, STORE_EXPR) \
+                case Opcode::opcode: { \
+                    uint16_t instr = bytecode_[pc_]; \
+                    uint8_t vA = (instr >> 12) & 0xF; /* dest = HIGH nibble (12x) */ \
+                    uint8_t vB = (instr >> 8) & 0xF;  /* src  = LOW nibble  (12x) */ \
+                    DalvikValue val = get_register(vB); \
+                    DalvikValue out; out.type = DST_KIND; \
+                    int64_t s = (val.type == DalvikType::INT64) ? val.long_val \
+                              : (val.type == DalvikType::INT32 ? static_cast<int64_t>(val.int_val) : 0); \
+                    STORE_EXPR; \
+                    set_register(vA, out); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 1; \
+                    break; \
+                }
+            #define CONV_SRC_F32(opcode, op_name, DST_KIND, STORE_EXPR) \
+                case Opcode::opcode: { \
+                    uint16_t instr = bytecode_[pc_]; \
+                    uint8_t vA = (instr >> 12) & 0xF; /* dest = HIGH nibble (12x) */ \
+                    uint8_t vB = (instr >> 8) & 0xF;  /* src  = LOW nibble  (12x) */ \
+                    DalvikValue val = get_register(vB); \
+                    DalvikValue out; out.type = DST_KIND; \
+                    float s = (val.type == DalvikType::FLOAT32) ? val.float_val \
+                            : (val.type == DalvikType::INT32 ? static_cast<float>(val.int_val) : 0.0f); \
+                    STORE_EXPR; \
+                    set_register(vA, out); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 1; \
+                    break; \
+                }
+            #define CONV_SRC_F64(opcode, op_name, DST_KIND, STORE_EXPR) \
+                case Opcode::opcode: { \
+                    uint16_t instr = bytecode_[pc_]; \
+                    uint8_t vA = (instr >> 12) & 0xF; /* dest = HIGH nibble (12x) */ \
+                    uint8_t vB = (instr >> 8) & 0xF;  /* src  = LOW nibble  (12x) */ \
+                    DalvikValue val = get_register(vB); \
+                    DalvikValue out; out.type = DST_KIND; \
+                    double s = (val.type == DalvikType::FLOAT64) ? val.double_val \
+                             : (val.type == DalvikType::INT64 ? bits_l2d(val.long_val) : 0.0); \
+                    STORE_EXPR; \
+                    set_register(vA, out); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 1; \
+                    break; \
+                }
+            CONV_SRC_I32(INT_TO_LONG,   "int-to-long",    DalvikType::INT64,   out.long_val  = static_cast<int64_t>(s))
+            CONV_SRC_I32(INT_TO_FLOAT,  "int-to-float",   DalvikType::FLOAT32, out.float_val = static_cast<float>(s))
+            CONV_SRC_I32(INT_TO_DOUBLE, "int-to-double",  DalvikType::FLOAT64, out.double_val = static_cast<double>(s))
+            CONV_SRC_I64(LONG_TO_INT,   "long-to-int",    DalvikType::INT32,   out.int_val   = static_cast<int32_t>(s))
+            CONV_SRC_I64(LONG_TO_FLOAT, "long-to-float",  DalvikType::FLOAT32, out.float_val = static_cast<float>(s))
+            CONV_SRC_I64(LONG_TO_DOUBLE,"long-to-double", DalvikType::FLOAT64, out.double_val = static_cast<double>(s))
+            CONV_SRC_F32(FLOAT_TO_INT,  "float-to-int",   DalvikType::INT32,   out.int_val   = conv_f2i(static_cast<double>(s)))
+            CONV_SRC_F32(FLOAT_TO_LONG, "float-to-long",  DalvikType::INT64,   out.long_val  = conv_f2l(static_cast<double>(s)))
+            CONV_SRC_F32(FLOAT_TO_DOUBLE,"float-to-double",DalvikType::FLOAT64,out.double_val = static_cast<double>(s))
+            CONV_SRC_F64(DOUBLE_TO_INT, "double-to-int",  DalvikType::INT32,   out.int_val   = conv_f2i(s))
+            CONV_SRC_F64(DOUBLE_TO_LONG,"double-to-long", DalvikType::INT64,   out.long_val  = conv_f2l(s))
+            CONV_SRC_F64(DOUBLE_TO_FLOAT,"double-to-float",DalvikType::FLOAT32,out.float_val = static_cast<float>(s))
+            CONV_SRC_I32(INT_TO_BYTE,   "int-to-byte",    DalvikType::INT32,   out.int_val   = static_cast<int8_t>(s & 0xFF))
+            CONV_SRC_I32(INT_TO_CHAR,   "int-to-char",    DalvikType::INT32,   out.int_val   = static_cast<uint16_t>(s & 0xFFFF))
+            CONV_SRC_I32(INT_TO_SHORT,  "int-to-short",   DalvikType::INT32,   out.int_val   = static_cast<int16_t>(s & 0xFFFF))
+            #undef CONV_SRC_I32
+            #undef CONV_SRC_I64
+            #undef CONV_SRC_F32
+            #undef CONV_SRC_F64
 
             // Float/Double/Long arithmetic (23x: AA|op BB|CC, 2 code units)
             #define ARITH_23X_FLOAT_CASE(opcode, op_name, op) \
@@ -5680,8 +5779,15 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             ARITH_23X_FLOAT_CASE(REM_FLOAT, "rem-float", "rem")
             #undef ARITH_23X_FLOAT_CASE
 
-            // cmp opcodes (23x) — simplified: compare as ints
-            #define CMP_CASE(opcode, op_name) \
+            // cmp opcodes (23x) — Dalvik comparison semantics.
+            //
+            // IMPORTANT (RESULT_009 reconciliation, master request §7/§9):
+            // cmp-long MUST read the full 64-bit register value. A previous
+            // implementation read int_val (the low 32 bits of the DalvikValue
+            // union) and returned 0 for every INT64 operand, silently
+            // collapsing all 64-bit comparisons. Regression fixture:
+            // tests/semantic_long_cmp_conv_test.cpp (>2^32 operands).
+            #define CMP_LONG_CASE(opcode, op_name) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
                     uint8_t vAA = (instr >> 8) & 0xFF; \
@@ -5691,22 +5797,77 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue c = get_register(vCC); \
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT32; \
-                    int32_t bv = (b.type == DalvikType::INT32) ? b.int_val : 0; \
-                    int32_t cv = (c.type == DalvikType::INT32) ? c.int_val : 0; \
+                    int64_t bv = (b.type == DalvikType::INT64) ? b.long_val \
+                               : (b.type == DalvikType::INT32 ? static_cast<int64_t>(b.int_val) : 0); \
+                    int64_t cv = (c.type == DalvikType::INT64) ? c.long_val \
+                               : (c.type == DalvikType::INT32 ? static_cast<int64_t>(c.int_val) : 0); \
                     result_val.int_val = (bv < cv) ? -1 : (bv > cv) ? 1 : 0; \
                     set_register(vAA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ += 2; \
                     break; \
                 }
-            CMP_CASE(CMPL_FLOAT, "cmpl-float")
-            CMP_CASE(CMPG_FLOAT, "cmpg-float")
-            CMP_CASE(CMPL_DOUBLE, "cmpl-double")
-            CMP_CASE(CMPG_DOUBLE, "cmpg-double")
-            CMP_CASE(CMP_LONG, "cmp-long")
-            #undef CMP_CASE
+            // cmpl/cmpg floating comparisons — NaN ordering per the Dalvik spec:
+            //   cmpl → -1 when either operand is NaN (NaN sorts "less than all")
+            //   cmpg → +1 when either operand is NaN (NaN sorts "greater than all")
+            // ±0.0 compare equal (the <,> comparison below yields 0 naturally).
+            // Read operands at the CORRECT width: a FLOAT64 register read through
+            // float_val would reinterpret half the double bits as garbage.
+            #define CMP_FLOATING_CASE(opcode, op_name, IS_DOUBLE, NAN_RESULT) \
+                case Opcode::opcode: { \
+                    uint16_t instr = bytecode_[pc_]; \
+                    uint8_t vAA = (instr >> 8) & 0xFF; \
+                    uint8_t vBB = bytecode_[pc_ + 1] & 0xFF; \
+                    uint8_t vCC = (bytecode_[pc_ + 1] >> 8) & 0xFF; \
+                    DalvikValue b = get_register(vBB); \
+                    DalvikValue c = get_register(vCC); \
+                    DalvikValue result_val; \
+                    result_val.type = DalvikType::INT32; \
+                    long double bv, cv; \
+                    if (IS_DOUBLE) { \
+                        bv = (b.type == DalvikType::FLOAT64) ? (long double)b.double_val \
+                           : (b.type == DalvikType::INT64 ? (long double)bits_l2d(b.long_val) \
+                           : (b.type == DalvikType::FLOAT32 ? (long double)b.float_val \
+                           : (b.type == DalvikType::INT32 ? (long double)b.int_val : 0.0L))); \
+                        cv = (c.type == DalvikType::FLOAT64) ? (long double)c.double_val \
+                           : (c.type == DalvikType::INT64 ? (long double)bits_l2d(c.long_val) \
+                           : (c.type == DalvikType::FLOAT32 ? (long double)c.float_val \
+                           : (c.type == DalvikType::INT32 ? (long double)c.int_val : 0.0L))); \
+                    } else { \
+                        bv = (b.type == DalvikType::FLOAT32) ? (long double)b.float_val \
+                           : (b.type == DalvikType::INT32 ? (long double)b.int_val : 0.0L); \
+                        cv = (c.type == DalvikType::FLOAT32) ? (long double)c.float_val \
+                           : (c.type == DalvikType::INT32 ? (long double)c.int_val : 0.0L); \
+                    } \
+                    bool cmp_nan = (bv != bv) || (cv != cv); \
+                    result_val.int_val = cmp_nan ? (NAN_RESULT) : ((bv < cv) ? -1 : (bv > cv) ? 1 : 0); \
+                    set_register(vAA, result_val); \
+                    trace.opcode_name = op_name; \
+                    pc_ += 2; \
+                    break; \
+                }
+            CMP_FLOATING_CASE(CMPL_FLOAT, "cmpl-float", false, -1)
+            CMP_FLOATING_CASE(CMPG_FLOAT, "cmpg-float", false, 1)
+            CMP_FLOATING_CASE(CMPL_DOUBLE, "cmpl-double", true, -1)
+            CMP_FLOATING_CASE(CMPG_DOUBLE, "cmpg-double", true, 1)
+            CMP_LONG_CASE(CMP_LONG, "cmp-long")
+            #undef CMP_LONG_CASE
+            #undef CMP_FLOATING_CASE
 
-            // Long arithmetic (23x) — simplified: use int values
+            // Long arithmetic (23x).
+            //
+            // IMPORTANT (RESULT_001 reconciliation, master request §7/§9):
+            // long arithmetic MUST compute in 64-bit. The DalvikValue union
+            // aliases int_val over the LOW 32 bits of long_val — the previous
+            // int32_t computation silently truncated every operand above 2^32
+            // (2^32 + 1 == 1!) while still tagging the result INT64.
+            // System.currentTimeMillis() values (13 digits) were destroyed by
+            // this path. Regression fixture:
+            // tests/semantic_long_cmp_conv_test.cpp (>2^32 operands).
+            //
+            // Known simplification (kept to avoid behavior change beyond bit
+            // width): div/rem by zero yields 0 here; real Android throws
+            // java/lang/ArithmeticException (see TOP_BLOCKERS_013.md).
             #define ARITH_LONG_CASE(opcode, op_name, op) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
@@ -5717,19 +5878,21 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue c = get_register(vCC); \
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT64; \
-                    int32_t bv = (b.type == DalvikType::INT32 || b.type == DalvikType::INT64) ? b.int_val : 0; \
-                    int32_t cv = (c.type == DalvikType::INT32 || c.type == DalvikType::INT64) ? c.int_val : 0; \
-                    if (op == "add") result_val.int_val = bv + cv; \
-                    else if (op == "sub") result_val.int_val = bv - cv; \
-                    else if (op == "mul") result_val.int_val = bv * cv; \
-                    else if (op == "div") result_val.int_val = (cv != 0) ? bv / cv : 0; \
-                    else if (op == "rem") result_val.int_val = (cv != 0) ? bv % cv : 0; \
-                    else if (op == "and") result_val.int_val = bv & cv; \
-                    else if (op == "or")  result_val.int_val = bv | cv; \
-                    else if (op == "xor") result_val.int_val = bv ^ cv; \
-                    else if (op == "shl") result_val.int_val = bv << (cv & 0x3f); \
-                    else if (op == "shr") result_val.int_val = bv >> (cv & 0x3f); \
-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(bv) >> (cv & 0x3f)); \
+                    int64_t bv = (b.type == DalvikType::INT64) ? b.long_val \
+                               : (b.type == DalvikType::INT32 ? static_cast<int64_t>(b.int_val) : 0); \
+                    int64_t cv = (c.type == DalvikType::INT64) ? c.long_val \
+                               : (c.type == DalvikType::INT32 ? static_cast<int64_t>(c.int_val) : 0); \
+                    if (op == "add") result_val.long_val = bv + cv; \
+                    else if (op == "sub") result_val.long_val = bv - cv; \
+                    else if (op == "mul") result_val.long_val = bv * cv; \
+                    else if (op == "div") result_val.long_val = (cv != 0) ? bv / cv : 0; \
+                    else if (op == "rem") result_val.long_val = (cv != 0) ? bv % cv : 0; \
+                    else if (op == "and") result_val.long_val = bv & cv; \
+                    else if (op == "or")  result_val.long_val = bv | cv; \
+                    else if (op == "xor") result_val.long_val = bv ^ cv; \
+                    else if (op == "shl") result_val.long_val = bv << static_cast<int>(cv & 0x3f); \
+                    else if (op == "shr") result_val.long_val = bv >> static_cast<int>(cv & 0x3f); \
+                    else if (op == "ushr") result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) >> static_cast<int>(cv & 0x3f)); \
                     set_register(vAA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ += 2; \
@@ -6300,8 +6463,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue c = get_register(vCC); \
                     DalvikValue result_val; \
                     result_val.type = DalvikType::FLOAT64; \
-                    double bd = (b.type == DalvikType::FLOAT64) ? b.double_val : (double)b.int_val; \
-                    double cd = (c.type == DalvikType::FLOAT64) ? c.double_val : (double)c.int_val; \
+                    double bd = (b.type == DalvikType::FLOAT64) ? b.double_val \
+                              : (b.type == DalvikType::INT64 ? bits_l2d(b.long_val) : (double)b.int_val); \
+                    double cd = (c.type == DalvikType::FLOAT64) ? c.double_val \
+                              : (c.type == DalvikType::INT64 ? bits_l2d(c.long_val) : (double)c.int_val); \
                     if (op == "add") result_val.double_val = bd + cd; \
                     else if (op == "sub") result_val.double_val = bd - cd; \
                     else if (op == "mul") result_val.double_val = bd * cd; \
@@ -6322,25 +6487,37 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             #define ARITH_WIDE_2ADDR_CASE(opcode, op_name, op_type, op) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
-                    uint8_t vA = (instr >> 8) & 0xF; \
-                    uint8_t vB = (instr >> 4) & 0xF; \
+                    /* 12x format is B|A|op: A is the HIGH nibble of byte 1. */ \
+                    /* IMPORTANT (RESULT_007 reconciliation): the previous code */ \
+                    /* read vA=(instr>>8) and vB=(instr>>4) — i.e. it swapped the */ \
+                    /* two registers AND read vB from the opcode byte's high */ \
+                    /* nibble (a constant 0xB for add-long/2addr). Every /2addr */ \
+                    /* long op therefore computed regA op reg11. Regression */ \
+                    /* fixture: tests/semantic_long_cmp_conv_test.cpp. */ \
+                    uint8_t vA = (instr >> 12) & 0xF; \
+                    uint8_t vB = (instr >> 8) & 0xF; \
                     DalvikValue a = get_register(vA); \
                     DalvikValue b = get_register(vB); \
                     DalvikValue result_val; \
                     result_val.type = op_type; \
                     if (op_type == DalvikType::INT64) { \
-                        int32_t av = a.int_val; int32_t bv = b.int_val; \
-                        if (std::string(op) == "add") result_val.int_val = av + bv; \
-                        else if (std::string(op) == "sub") result_val.int_val = av - bv; \
-                        else if (std::string(op) == "mul") result_val.int_val = av * bv; \
-                        else if (std::string(op) == "div") result_val.int_val = (bv != 0) ? av / bv : 0; \
-                        else if (std::string(op) == "rem") result_val.int_val = (bv != 0) ? av % bv : 0; \
-                        else if (std::string(op) == "and") result_val.int_val = av & bv; \
-                        else if (std::string(op) == "or")  result_val.int_val = av | bv; \
-                        else if (std::string(op) == "xor") result_val.int_val = av ^ bv; \
-                        else if (std::string(op) == "shl") result_val.int_val = av << (bv & 0x3f); \
-                        else if (std::string(op) == "shr") result_val.int_val = av >> (bv & 0x3f); \
-                        else if (std::string(op) == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(av) >> (bv & 0x3f)); \
+                        /* IMPORTANT (RESULT_001): full 64-bit computation via */ \
+                        /* long_val — int_val only aliases the low 32 union bits. */ \
+                        int64_t av = (a.type == DalvikType::INT64) ? a.long_val \
+                                   : (a.type == DalvikType::INT32 ? static_cast<int64_t>(a.int_val) : 0); \
+                        int64_t bv = (b.type == DalvikType::INT64) ? b.long_val \
+                                   : (b.type == DalvikType::INT32 ? static_cast<int64_t>(b.int_val) : 0); \
+                        if (std::string(op) == "add") result_val.long_val = av + bv; \
+                        else if (std::string(op) == "sub") result_val.long_val = av - bv; \
+                        else if (std::string(op) == "mul") result_val.long_val = av * bv; \
+                        else if (std::string(op) == "div") result_val.long_val = (bv != 0) ? av / bv : 0; \
+                        else if (std::string(op) == "rem") result_val.long_val = (bv != 0) ? av % bv : 0; \
+                        else if (std::string(op) == "and") result_val.long_val = av & bv; \
+                        else if (std::string(op) == "or")  result_val.long_val = av | bv; \
+                        else if (std::string(op) == "xor") result_val.long_val = av ^ bv; \
+                        else if (std::string(op) == "shl") result_val.long_val = av << static_cast<int>(bv & 0x3f); \
+                        else if (std::string(op) == "shr") result_val.long_val = av >> static_cast<int>(bv & 0x3f); \
+                        else if (std::string(op) == "ushr") result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) >> static_cast<int>(bv & 0x3f)); \
                     } else if (op_type == DalvikType::FLOAT32) { \
                         float af = (a.type == DalvikType::FLOAT32) ? a.float_val : (float)a.int_val; \
                         float bf = (b.type == DalvikType::FLOAT32) ? b.float_val : (float)b.int_val; \
@@ -6350,8 +6527,12 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         else if (std::string(op) == "div") result_val.float_val = (bf != 0) ? af / bf : 0; \
                         else if (std::string(op) == "rem") result_val.float_val = fmodf(af, bf); \
                     } else { \
-                        double ad = (a.type == DalvikType::FLOAT64) ? a.double_val : (double)a.int_val; \
-                        double bd = (b.type == DalvikType::FLOAT64) ? b.double_val : (double)b.int_val; \
+                        double ad = (a.type == DalvikType::FLOAT64) ? a.double_val \
+                                  : (a.type == DalvikType::INT64 ? bits_l2d(a.long_val) \
+                                  : (a.type == DalvikType::FLOAT32 ? (double)a.float_val : (double)a.int_val)); \
+                        double bd = (b.type == DalvikType::FLOAT64) ? b.double_val \
+                                  : (b.type == DalvikType::INT64 ? bits_l2d(b.long_val) \
+                                  : (b.type == DalvikType::FLOAT32 ? (double)b.float_val : (double)b.int_val)); \
                         if (std::string(op) == "add") result_val.double_val = ad + bd; \
                         else if (std::string(op) == "sub") result_val.double_val = ad - bd; \
                         else if (std::string(op) == "mul") result_val.double_val = ad * bd; \
