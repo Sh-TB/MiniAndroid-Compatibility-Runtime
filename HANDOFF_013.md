@@ -23,7 +23,7 @@ rebases/merges cleanly (linear fixes on top of ea81e00).
 ## Final state
 
 ```text
-final commit:  (see git log -1 on campaign-013 — handoff tag v0.13.0)
+final commit:  a6958b4 (hygiene redaction) — tag v0.13.0
 fix commits:   a5f7995 FIX-013-01 (dialogs)
                cb621fc FIX-013-02/03 (hierarchy dispatch + inflation policy)
                b9d93cc FIX-013-04 (ARSC value paths; tag v0.11.4-fix-01)
@@ -106,6 +106,18 @@ microtimer app-side validation exception, WebView UIs, canvas state ops.
 
 ## Handoff artifact
 
-- `MiniAndroid_v0.13.0_GIT_HANDOFF.zip` (SHA256 recorded in
-  MINIANDROID_HANDOFF_ZIP_SHA256_013.txt; zero APKs/secrets/>5MB artifacts;
-  clean-extraction test performed — see worklog).
+- `MiniAndroid_v0.13.0_GIT_HANDOFF.zip` — SHA256
+  `0289f395eed50181aeb49ed0b5a846ce647de446e808f236aafb965b5d614bdc`
+  (7,907,810 bytes), mirrored in MINIANDROID_HANDOFF_ZIP_SHA256_013.txt.
+- Contains: tracked tree @ v0.13.0 + shallow clone `repo/` (depth 120 =
+  complete UNIFIED_011..013 lineage, branch campaign-013).
+- **Shallow-boundary accuracy note:** the 011.3 handoff shipped a shallow
+  .git while its manifest claimed "complete .git (75+3 commits)" — this
+  campaign unshallowed from origin (350 commits, fsck clean) and packages an
+  HONEST shallow clone with the boundary documented here.
+- Safety scan: zero .apk/.jks/keystore, zero non-git >5MB files, zero
+  credential patterns (truncated token fragment in GITHUB_UPLOAD_PLAN.md
+  redacted at a6958b4).
+- Clean-extraction test (§28): unzip → git log/status OK → make -j2 build OK
+  → fixtures 8/8 + 5/5 → simplestopwatch golden `2a12587a` EXACT → Telegram
+  golden `088ea640` EXACT. ALL GREEN from the pristine ZIP.
