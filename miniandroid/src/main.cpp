@@ -15,6 +15,7 @@
 #include "apk/apk_parser.h"
 // EXP-086 Phase 7 (B4 FIX): ShadowRegistry + HandlerShadow for Runnable queue
 #include "framework/android_shadows.h"
+#include "framework/dialog_shadow.h"
 #include "dex/dex_parser.h"
 
 using namespace miniandroid;
@@ -210,12 +211,14 @@ int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config)
     framework::ShadowRegistry shadow_registry;
     auto* handler_shadow = shadow_registry.register_shadow<framework::HandlerShadow>();
     auto* view_shadow = shadow_registry.register_shadow<framework::ViewShadow>();
+    auto* dialog_shadow = shadow_registry.register_shadow<framework::DialogShadow>();
+    auto* array_adapter_shadow = shadow_registry.register_shadow<framework::ArrayAdapterShadow>();
     auto* activity_shadow = shadow_registry.register_shadow<framework::ActivityShadow>();
     auto* collection_shadow = shadow_registry.register_shadow<framework::CollectionShadow>();
     if (activity_shadow) {
         activity_shadow->set_apk_path(apk_path);
     }
-    (void)handler_shadow; (void)view_shadow; (void)collection_shadow;
+    (void)handler_shadow; (void)view_shadow; (void)collection_shadow; (void)dialog_shadow; (void)array_adapter_shadow;
     engine.set_shadow_registry(&shadow_registry);
     auto result = engine.execute(apk_path, config);
     

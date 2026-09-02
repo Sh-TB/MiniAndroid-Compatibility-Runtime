@@ -17,6 +17,7 @@
 #define MINIANDROID_APPLICATION_RUNTIME_H
 
 #include <string>
+#include "framework/dialog_shadow.h"
 #include <vector>
 #include <map>
 #include <memory>
@@ -738,7 +739,10 @@ private:
     framework::HandlerShadow*   shadow_handler_  = nullptr;
     framework::ActivityShadow*  shadow_activity_ = nullptr;
     framework::IntentShadow*    shadow_intent_   = nullptr;
-    framework::ViewShadow*      shadow_view_     = nullptr;
+framework::ViewShadow*      shadow_view_     = nullptr;
+    // CAMPAIGN 013 B1: dialog/toast + array adapter windows.
+    framework::DialogShadow*    shadow_dialog_   = nullptr;
+    framework::ArrayAdapterShadow* shadow_array_adapter_ = nullptr;
     framework::ArchTaskExecutorShadow* shadow_arch_task_ = nullptr;  // EXP-052
     framework::CollectionShadow* shadow_collection_ = nullptr;  // EXP-054
 

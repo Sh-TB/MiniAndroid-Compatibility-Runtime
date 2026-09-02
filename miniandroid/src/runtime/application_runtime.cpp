@@ -25,6 +25,7 @@
 // EXP-051: Android framework shadow registry.
 #include "framework/shadow_registry.h"
 #include "framework/android_shadows.h"
+#include "framework/dialog_shadow.h"
 #include "framework/heap_adapter.h"
 // Note: Do NOT include dex/dex_interpreter.h - it has Opcodes that conflict with dex_interpreter_batch.h
 #include "object_model.h"
@@ -260,6 +261,10 @@ void ApplicationRuntime::initialize_shadow_registry() {
     shadow_activity_ = shadow_registry_->register_shadow<ActivityShadow>();
     shadow_intent_   = shadow_registry_->register_shadow<IntentShadow>();
     shadow_view_     = shadow_registry_->register_shadow<ViewShadow>();
+    // CAMPAIGN 013 B1: dialog/toast/adapter windows (after ViewShadow so
+    // decor trees can be built on demand).
+    shadow_dialog_   = shadow_registry_->register_shadow<DialogShadow>();
+    shadow_array_adapter_ = shadow_registry_->register_shadow<ArrayAdapterShadow>();
 
     // The heap_adapter_ is created later in execute_on_create() once we
     // have a DalvikExecutionEngine to wrap. But we set it on the
