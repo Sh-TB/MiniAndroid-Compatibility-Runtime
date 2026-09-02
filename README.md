@@ -1,201 +1,183 @@
-# MiniAndroid — Headless Android APK Execution Runtime
+# MiniAndroid — Headless Android APK Compatibility Runtime
 
-**Version:** 0.3.0-exp080
-**Date:** 2026-08-22
-**Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime
+**Version:** 0.13.0 + master reconciliation (integration branch `integration/master-reconciliation`)
+**Date:** 2026-09-02
+**Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (MASTER — this is the project's own source of truth, not a fork)
 **License:** MIT
 
-## What is MiniAndroid?
+---
 
-MiniAndroid is a **headless Android APK execution runtime** built from scratch in C++. It parses real APK files, executes real Dalvik (DEX) bytecode, and produces view trees + screenshots — **without an Android emulator, without a JVM, without GPU/OpenGL, and without BIOS virtualization**.
+## PROJECT — What is MiniAndroid?
 
-## Why is it different from a traditional Android emulator?
+MiniAndroid is a **research-grade Android APK compatibility runtime written from
+scratch in C++17**. It parses real APK files (ZIP + DEX + `resources.arsc` + binary
+XML), executes real Dalvik bytecode with a register VM, bridges Android framework
+APIs through a shadow layer, inflates real layouts into a view tree, and renders
+frames to a software framebuffer with deterministic, hash-pinned pixel evidence.
+
+**Acceptance criterion since day one: real APKs, real bytecode, byte-stable evidence.**
+A capability is PROVEN only when a re-runnable artifact reproduces it.
 
 | Feature | Android Emulator | MiniAndroid |
 |---------|-----------------|-------------|
-| Runs real Android OS | ✅ Yes | ❌ No |
-| Runs real DEX bytecode | ✅ Yes | ✅ Yes |
-| Requires JVM/ART | ✅ Yes | ❌ No (C++ DEX interpreter) |
-| Requires GPU | ✅ Yes | ❌ No (CPU software rendering) |
-| Requires KVM/HAXM | ✅ Yes | ❌ No |
-| Produces screenshots | ✅ GPU framebuffer | ⚠️ Python view-tree renderer (C++ framebuffer broken) |
-| Multi-DEX APK support | ✅ Yes | ✅ Yes |
-| Deterministic | ❌ No | ✅ Yes |
-| Direct object visibility | ❌ No | ✅ Yes (heap inspection) |
-| AI-agent interaction | ❌ No | ✅ Yes (click/text dispatch) |
-| Speed | Slow (boot) | Fast (<1s per APK) |
+| Runs real DEX bytecode | ✅ | ✅ (C++ register VM — no JVM/ART) |
+| Requires GPU / KVM / HAXM | ✅ | ❌ (CPU software rendering) |
+| Deterministic re-runs | ❌ | ✅ (hash-pinned goldens) |
+| Direct heap / view-tree visibility | ❌ | ✅ |
+| AI-agent click/text dispatch | ❌ | ✅ (click-test probe, second-frame diffs) |
+| Startup | tens of seconds | < 1 s per APK |
 
-**A capability is not considered proven from a screenshot alone.**
+---
 
-## Current Proven Capabilities
+## ARCHITECTURE (all subsystems under `miniandroid/src/`)
 
-| Capability | Status | Evidence |
-|-----------|--------|----------|
-| APK parsing | PROVEN | Real Telegram APK (83MB, 5 DEX) |
-| DEX bytecode execution | PROVEN | 7.2M instructions in Telegram run |
-| Multi-DEX support | PROVEN | Per-DEX const-string/type/method resolution |
-| Activity lifecycle | PROVEN | Real onCreate bytecode executes |
-| View hierarchy | PROVEN | 3077 view nodes from Telegram |
-| Click dispatch | PROVEN | App-agnostic find_all_with_click_listener |
-| State mutation | PROVEN | CounterV2: "Count: 0" → "Clicked!" |
-| Controlled network | PROVEN | sendRequest intercepted, mock response |
-| Async Runnable scheduling | PROVEN | Lambda0/1/2 chain executes |
-| SharedPreferences | PARTIAL | Saves to disk, isolation untested |
-| Synthetic corpus | PROVEN | 11/11 OCR-verified |
-| D8 lambda dispatch | PROVEN | $r8$lambda methods match and execute |
-
-## Partial Capabilities
-
-| Capability | Status | Details |
-|-----------|--------|---------|
-| Telegram SMS page | PARTIAL | LoginActivity created, SmsView exists but no text |
-| Real APK rendering | PARTIAL | headingcalculator: AXML inflated, but child views have no text |
-| Windows runner | PARTIAL | Python diagnostic tool works, no native .exe |
-| Sandbox persistence | PARTIAL | SharedPreferences persists, isolation untested |
-
-## Blocked Capabilities
-
-| Capability | Blocker |
-|-----------|---------|
-| Valid PNG from C++ renderer | Broken IDAT zlib encoding |
-| Real APK text rendering | setContentView(int) → AXML inflation not integrated in C++ runtime |
-| onNextPressed override dispatch | BaseFragment stub shadows LoginActivity override |
-| SQLite | Not implemented |
-| WebView | Not implemented |
-| JNI/native methods | All stubbed |
-| Jetpack Compose | Different architecture (no View hierarchy) |
-| Native Windows .exe | No cross-compiler available |
-
-## Synthetic Corpus (11/11 PROVEN)
-
-All synthetic APKs pass the full EXECUTE → RENDER → OCR gate:
-HelloWorld, Calculator, Counter, CounterV2 (state mutation), Notes, UnitConverter, TicTacToe, MemoryGame, Timer, SimpleList, Settings.
-
-## Real APK Results
-
-| App | Source | Depth | Nodes | Text | OCR | Status |
-|-----|--------|-------|-------|------|-----|--------|
-| headingcalculator | F-Droid | 5% | 4 | 0 | FAIL | AXML inflated, no child text |
-| gmdice | F-Droid | 5% | 1 | 0 | FAIL | ListActivity path |
-| simplestopwatch | F-Droid | 20% | 5 | 0 | FAIL | No setContentView(int) |
-| notes | F-Droid | 95% | 123 | 0 | FAIL | Loop: commonmark |
-| chessclock | F-Droid | 0% | 0 | 0 | FAIL | onCreate not reached |
-| tictactoe | F-Droid | 5% | 3 | 0 | FAIL | Uses libGDX framework |
-| unote | F-Droid | 20% | 9 | 0 | FAIL | Obfuscated classes |
-| dooz | F-Droid | 20% | 20 | 0 | FAIL | Jetpack Compose |
-| bgclock | F-Droid | 95% | 50K | 0 | FAIL | Loop: WebViewAssetLoader |
-
-## Tic-Tac-Toe / Game Testing
-
-**Status:** BLOCKED
-
-- `com.emmanuelmess.tictactoe` uses libGDX (game framework, not standard Android Views)
-- frame_000.png saved (blank — no board rendered)
-- No clickable views, no text content
-
-## Images
-
-**Status:** NOT PROVEN
-
-- BitmapFactory.decodeResource: STUBBED (returns placeholder)
-- No PNG/JPEG/GIF decoding implemented
-
-## Network/Web
-
-**Status:** NOT PROVEN
-
-- Controlled network boundary exists (sendRequest intercepted)
-- No WebView support
-- No HTTP/socket implementation
-
-## SQLite
-
-**Status:** NOT IMPLEMENTED
-
-- No SQLite/OpenDatabase/CREATE TABLE support in the runtime
-
-## Sandbox
-
-**Status:** PARTIAL
-
-- SharedPreferences: PROVEN (saves to `runtime/data/<package>/shared_prefs/`)
-- File I/O: NOT TESTED
-- App isolation: NOT TESTED (hardcoded package name)
-- Path traversal: NOT TESTED
-
-## Windows
-
-**Status:** PARTIAL
-
-- `tools/miniandroid_windows_runner.py`: Python-based diagnostic tool
-- Produces `miniandroid_diagnostic.zip` with all evidence
-- Tested on Linux (works)
-- **No native .exe** — requires Python runtime
-- Cross-compilation not available (no mingw)
-
-## How to Run
-
-### Prerequisites
-- Linux x86_64
-- g++ with C++17
-- Python 3 with PIL/Pillow (for rendering)
-- Tesseract OCR (for text verification)
-
-### Build
-```bash
-cd miniandroid
-bash build_exp042.sh
+```
+APK file (external cache, never committed)
+  └─ apk/apk_parser.cpp, manifest_reader.cpp      ZIP (streaming, data descriptors, CRC)
+       └─ resources/arsc_parser.cpp               resources.arsc: string/type/key tables,
+       └─ resources/axml_parser.cpp               binary XML → real layout inflation
+       └─ resources/layout_inflater.cpp           (non-obfuscated trees; guarded fallback
+       └─ resources/resource_runtime.cpp           for obfuscated res/0s.xml)
+            └─ dex/dex_parser.cpp                 multi-DEX (Telegram = 5 DEX, 12,544 classes)
+            └─ dex/class_resolver.cpp             class/superclass graph, per-DEX string resolution
+            └─ dex/dalvik_engine.cpp              ★ register VM: fetch-decode-execute, opcode
+            └─ dex/dex_interpreter_batch.cpp        table, exception system, invoke bridges
+                 └─ framework/android_shadows.cpp 95+ bridged framework classes (shadow layer)
+                 └─ framework/shadow_registry.cpp  type-aware stub defaults
+                 └─ framework/dialog_shadow.cpp    dialog/window object model
+                 └─ framework/canvas_shadow.cpp    Canvas ops incl. save/restore/translate/
+                 │                                  scale/rotate/skew/concat/clipRect
+                 └─ runtime/execution_engine.cpp   journey stages, click dispatch, probes
+                 └─ renderer/software_renderer.cpp framebuffer → PNG; text via BitmapFont,
+                 │                                  images via libpng/libjpeg/libwebp, Lottie via rlottie
+                 └─ api/, storage/                 context, SharedPreferences (persisted), file sandbox
+                 └─ diagnostics/                   api_trace.json, click frames, traces
 ```
 
-### Run an APK
+Async/Handler: FIFO handler-queue semantics are fixture-proven (23/23);
+timers exist but corpus triggers remain thin.
+
+---
+
+## VERIFIED CAPABILITIES (evidence-backed, re-runnable)
+
+| Capability | Evidence |
+|---|---|
+| Deterministic Telegram v12 journey (41,233 non-white px) | golden `088ea640…` (3/3 in 011.x campaigns). ⚠️ golden APK SHA `f5e11927…` lost from external cache 2026-09-02; current telegram.org serves newer bytes → re-assertion pending APK re-acquisition |
+| SimpleStopwatch pixel-exact golden | `2a12587a…` BASELINE_MATCH — preserved across campaigns 011.2→013 **and** through the 2026-09 semantic fix |
+| Real layout inflation + ARSC resolution | ARSC probe: 58 entries, 3/3 layouts (simplestopwatch); gmdice 73 named ids |
+| Click → listener → state → second frame | gmdice 4/4 clicks, simplestopwatch 2/2, bouncy 10/12 (click_test_report.json) |
+| Multi-DEX execution | Telegram 5 DEX; WhatsApp/Signal probes executed |
+| Semantic core (64-bit long, cmp, conversions) | `tests/semantic_long_cmp_conv_test.cpp` **14/14** (fixed 2026-09-02, see MASTER_PROJECT_KNOWLEDGE) |
+| Typed exception catch + propagation | `tests/unified0113_typed_catch_test.cpp` **8/8** |
+| filled-new-array 35c nibbles | `tests/unified0112_filled_new_array_test.cpp` **5/5** |
+| Handler/Looper FIFO ordering | `tests/exp088_phasef_handler_queue_semantics.cpp` **23/23** |
+| PNG/JPEG/WebP decode, Lottie render | EXP-096/097/098 evidence + rlottie wired on SMS screen |
+| View hierarchy / prefs / file sandbox | `tests/simple_test.cpp` 4/4, storage tests |
+
+---
+
+## PARTIAL CAPABILITIES (implemented, incomplete or not fully proven)
+
+- **Opcode/API long tail** — interpreter covers the corpus-proven set; see
+  `miniandroid/TEST_MATRIX.md` and EXP-032 coverage docs.
+- **Layout geometry** — weight distribution bugs (simplestopwatch full-height buttons).
+- **Fonts** — BitmapFont renders; overlap on long strings (SFS-010); FreeType+HarfBuzz+FriBidi
+  RTL pipeline is POC (6/6 Persian samples), not yet the TextView path.
+- **GLES/EGL** — PortableGL glue adopted (golden cube 1,668 fps @320×240) but GLSL
+  execution + dispatch hook NOT wired: GLES apps still render through the Canvas path.
+- **Canvas matrix** — ops accepted and recorded (RESULT_014); full matrix-composition
+  semantics not exhaustively proven.
+- **Audio** — engine + stb_vorbis/minimp3 recovered from UNIFIED_005/008; not in default build.
+
+---
+
+## KNOWN BLOCKERS (real, current)
+
+1. **Compose apps (Dooz)** — blank frame `31ddd4d5…`: ComponentActivity.setContentView
+   reached, ComposeView created with 0 children; composition boundary not crossed.
+2. **GLES dispatch hook** — GLSurfaceView/EGL render loop not connected (see GLES_REPORT_013.md).
+3. **Obfuscated resources** — `res/0s.xml`-style trees abort safely (guarded).
+4. **packed-switch/sparse-switch (0x2B/0x2C)** — opcodes defined, NOT dispatched
+   (verified 2026-09-02; falls to handle_unimplemented).
+5. **String bridge gaps** — `Integer.parseInt`, `Long.parseLong`, `Float.parseFloat`,
+   `Double.parseDouble`, `String.substring`, `String.concat` are NOT implemented in
+   the production dispatch (verified 2026-09-02; exp018's "NATIVE_CPP" list was a plan).
+6. **div-long/rem-long by zero** — returns 0; real Android throws ArithmeticException.
+
+---
+
+## HISTORICAL ACHIEVEMENTS (knowledge preserved — code may be superseded)
+
+- **EXP-001 → EXP-101 era** (commits `1c5255a`…`bbe0ce3`): corpus mining, DEX pipeline,
+  Telegram journey, ZIP/AXML/ARSC, PNG pipeline, click dispatch, WebP/JPEG/Lottie.
+- **UNIFIED_011 → 011.3**: repository recovery, typed catch, FNA fix, IMAGE-RES-RENDER,
+  click-test probe, goldens pinned.
+- **CAMPAIGN 013** (`v0.11.4-fix-01`…`v0.13.0`): dialog/window model, hierarchy shadow
+  dispatch, ARSC file-backed value path, real onDraw(Canvas) for custom views.
+- **CAMPAIGN 014** — PARTIAL: triage evidence for 16 apps archived in
+  `docs/campaign014_evidence/`; code commits lost (see CAMPAIGN_014_STATUS_PARTIAL.md).
+- **2026-09 master reconciliation** (this branch): 353-commit history unified,
+  semantic core verified+fixed (RESULT_001/007/009/010), zero regression.
+
+Full history: `MASTER_CHANGELOG_AND_KNOWLEDGE.md`, `MASTER_PROJECT_STATE*.md`,
+`miniandroid/docs/` (129 documents), `miniandroid/docs/knowledge/` (workstream transfers),
+campaign indexes `campaign005/006/008/009/010/011`.
+
+---
+
+## CURRENT ROADMAP (attack order)
+
+1. String bridge: `parse*`, `substring`, `concat` (unlocks ~20% corpus paths — EXP-018 data).
+2. packed-switch/sparse-switch dispatch.
+3. Compose composition hook (cross the Dooz blank-frame boundary).
+4. GLES dispatch hook (SurfaceView/EGL render loop).
+5. Layout weight/measure correctness.
+6. div-long zero → ArithmeticException (with typed-catch infra this is now cheap).
+7. Re-acquire Telegram v12 golden APK; re-assert `088ea640` baseline.
+
+---
+
+## VALIDATION RULES — how this project defines PROVEN
+
+1. **Real APKs** from the external cache (`MINIANDROID_APK_CACHE`, never committed).
+2. **Pixel evidence**: screenshots hashed (SHA-256), compared against pinned goldens.
+3. **Determinism**: identical re-runs (×3 for goldens).
+4. **Discrimination**: a regression fixture must FAIL on the old code, PASS on the new.
+5. **Zero regression**: every fix re-runs the matrix + goldens; changes are documented, never hidden.
+6. History shallow-note: lineage below `a9434de` was cut by a 2026-09 cache event and
+   re-unified from the GitHub master; `f5da664/v0.12.0` never existed (see GIT_PROVENANCE_RESOLUTION.md).
+
+## AGENT RULE
+
+Agent/analysis reports are **DISCOVERY / LEAD**, never PROOF. Pipeline:
+AGENT CLAIM → source inspection → runtime-path analysis → reproduction where
+possible → independent validation → classification (VERIFIED / VERIFIED+FIXED /
+PARTIALLY VERIFIED / ALREADY FIXED / NOT REPRODUCED / FALSE / UNKNOWN /
+ANALYSIS ONLY) → implement only if justified.
+Concrete example: exp018 listed `Integer.parseInt` as "NATIVE_CPP" — 2026-09
+source inspection proved it was never implemented (see AGENT_DISCOVERIES.md).
+
+## REPRODUCIBILITY
+
 ```bash
-./build_exp042/miniandroid_exp042 <apk_path> <output_dir>
+# external APK cache (NO APKs inside the repo, ever)
+export MINIANDROID_APK_CACHE=/path/to/apk_cache
+python3 miniandroid/scripts/download_test_apks.py        # SHA-verified fetch
+
+# rlottie (only external lib not in system packages)
+git clone https://github.com/Samsung/rlottie /home/z/my-project/tools/rlottie
+cmake -S /home/z/my-project/tools/rlottie -B /home/z/my-project/tools/rlottie/build \
+      -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DBUILD_SHARED_LIBS=OFF
+cmake --build /home/z/my-project/tools/rlottie/build -j
+# Makefile expects librlottie.a at .../build/src/ — copy if cmake emits .../build/
+
+cd miniandroid && make -j          # → build/miniandroid
+
+# canonical matrix + goldens
+python3 miniandroid/scripts/u011_test_matrix.py
+# expected: simplestopwatch 2a12587a… BASELINE_MATCH
+
+# semantic fixtures (link pattern: fixture.cpp + all build/**/*.o minus main.o)
+# see VERIFIED_TESTS.md for exact commands and expected results
 ```
-
-### Windows Diagnostic Tool
-```bash
-python tools/miniandroid_windows_runner.py <apk_path> <output_dir>
-```
-
-## How to Report a Failure
-
-1. Run: `python tools/miniandroid_windows_runner.py <apk> output`
-2. Check `output/miniandroid_diagnostic.zip`
-3. Upload the ZIP to the issue tracker
-
-## Releases
-
-**No GitHub Release published yet.**
-
-The source tree is the current release. A native Windows .exe is not yet available.
-
-## Validation Methodology
-
-Every capability claim is supported by evidence:
-- EXECUTION PROOF: bytecode actually entered and progressed
-- CALLBACK PROOF: actual callback method executed with expected arguments
-- VIEW PROOF: actual application View hierarchy created
-- RENDER PROOF: valid image containing pixels from runtime state
-- OCR PROOF: OCR independently detects expected text from the PNG
-- INTERACTION PROOF: input changes application state through real bytecode
-- REPRODUCIBILITY PROOF: same outcome across clean independent runs
-
-**Never trust a summary. Always verify artifacts.**
-
-## Known Limitations
-
-- C++ framebuffer renderer produces broken PNGs (invalid IDAT)
-- Multi-DEX method resolution has edge cases with D8-renamed lambdas
-- No JNI/native method support
-- No SQLite, WebView, or Compose support
-- Real APKs that use `setContentView(R.layout.*)` need AXML inflation (implemented in Python, not yet integrated into C++ runtime)
-
-## Roadmap
-
-1. Fix C++ framebuffer renderer
-2. Integrate AXML inflation into C++ runtime
-3. Fix polymorphic dispatch for method overrides across class boundaries
-4. Implement SQLite support
-5. Build native Windows .exe
-6. Publish GitHub Release
-7. Test more real APKs
