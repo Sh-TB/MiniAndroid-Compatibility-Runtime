@@ -248,7 +248,7 @@ git remote -v
 
 ### Credential Handling
 
-The user provided a GitHub token: `github_pat_11CHBU2HY...`
+The user provided a GitHub token: `github_pat_<redacted-before-handoff>`
 
 **IMPORTANT**: This token should:
 1. NOT be committed to the repository
