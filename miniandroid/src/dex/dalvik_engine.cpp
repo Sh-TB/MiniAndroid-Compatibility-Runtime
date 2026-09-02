@@ -19,6 +19,7 @@
 // EXP-051: Shadow registry integration.
 #include "../framework/shadow_registry.h"
 #include "../framework/android_shadows.h"
+#include "../framework/dialog_shadow.h"
 #include "../framework/heap_adapter.h"
 #include <chrono>
 #include <algorithm>
@@ -4061,6 +4062,50 @@ bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id) {
         std::cerr << "[EXP060-CLICK] view_id=" << view_object_id
                   << " not found in ViewShadow" << std::endl;
         return false;
+    }
+    // CAMPAIGN 013 B1: dialog window rows/buttons route as
+    // DialogInterface$OnClickListener.onClick(DialogInterface dialog, int which).
+    // Real Android passes the DIALOG (not the view) + the button code / item
+    // index. Buttons with no listener still dismiss the dialog.
+    if (node->dialog_owner_obj != 0) {
+        auto* dialog_shadow = shadow_registry_->find_as<framework::DialogShadow>();
+        if (dialog_shadow == nullptr) return false;
+        int which = node->dialog_which;
+        uint32_t dlg_listener =
+            dialog_shadow->listener_for_click(node->dialog_owner_obj, which, &which);
+        std::cerr << "[UI-EVENT] event=DIALOG_CLICK"
+                  << " dialog_obj=" << node->dialog_owner_obj
+                  << " which=" << which
+                  << " listener=" << dlg_listener
+                  << std::endl;
+        if (dlg_listener == 0) {
+            if (which < 0) {
+                dialog_shadow->dismiss_dialog(node->dialog_owner_obj);
+            }
+            return true;  // consumed: no-listener button click still dismisses
+        }
+        std::string lc;
+        if (heap_.has_object(dlg_listener)) {
+            lc = heap_.get(dlg_listener)->class_descriptor;
+        }
+        if (lc.empty()) lc = "Landroid/content/DialogInterface$OnClickListener;";
+        std::vector<DalvikValue> dargs;
+        dargs.push_back(DalvikValue::make_object(dlg_listener, lc));
+        dargs.push_back(DalvikValue::make_object(
+            node->dialog_owner_obj, "Landroid/app/AlertDialog;"));
+        dargs.push_back(DalvikValue::make_int(which));
+        DalvikValue dret = DalvikValue::make_void();
+        DalvikExecutionResult dres;
+        bool dok = try_recursive_invoke(lc, "onClick", dargs, dret, dres);
+        std::cerr << "[UI-EVENT] event=DIALOG_CLICK result="
+                  << (dok ? "DISPATCHED" : "FAILED") << std::endl;
+        // If the handler did not dismiss the dialog itself and this was a
+        // button click, real Android dismisses after onClick returns.
+        if (which < 0) {
+            auto* win = dialog_shadow->window_by_obj(node->dialog_owner_obj);
+            if (win && win->showing) dialog_shadow->dismiss_dialog(node->dialog_owner_obj);
+        }
+        return dok;
     }
     if (node->click_listener_id == 0) {
         std::cerr << "[EXP060-CLICK] view_id=" << view_object_id

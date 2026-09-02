@@ -514,6 +514,15 @@ public:
         bool clickable = false;
         bool enabled = true;
         int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8
+        // CAMPAIGN 013 B1: dialog window item/button routing. When
+        // dialog_owner_obj != 0 this ViewNode belongs to a DialogShadow
+        // window's decor tree and clicks route to the window's
+        // DialogInterface$OnClickListener as onClick(dialog, which) —
+        // NOT the standard View$OnClickListener.onClick(view) path.
+        // dialog_which: item index (>=0) for list rows, or the AOSP button
+        // code BUTTON_POSITIVE(-1)/NEGATIVE(-2)/NEUTRAL(-3) for buttons.
+        uint32_t dialog_owner_obj = 0;
+        int dialog_which = -100;
         // EXP-060: Listener storage — the heap object_id of the
         // OnClickListener (or 0 if none). When dispatchClick is called
         // the runtime invokes listener.onClick(this_view) via try_recursive_invoke.

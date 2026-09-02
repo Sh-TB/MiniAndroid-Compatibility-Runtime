@@ -28,7 +28,7 @@ DIAGNOSTICS_SOURCES = $(SRCDIR)/diagnostics/trace_engine.cpp
 RESOURCES_SOURCES = $(SRCDIR)/resources/res_config.cpp $(SRCDIR)/resources/resource_parser.cpp $(SRCDIR)/resources/arsc_parser.cpp $(SRCDIR)/resources/axml_parser.cpp $(SRCDIR)/resources/layout_inflater.cpp $(SRCDIR)/resources/resource_runtime.cpp
 RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp
 # EXP-084: framework and storage sources are required for linkage
-FRAMEWORK_SOURCES = $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp
+FRAMEWORK_SOURCES = $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp $(SRCDIR)/framework/dialog_shadow.cpp
 API_SOURCES = $(SRCDIR)/api/application_context.cpp $(SRCDIR)/api/shared_prefs.cpp
 STORAGE_SOURCES = $(wildcard $(SRCDIR)/storage/*.cpp)
 
