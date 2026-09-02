@@ -12,6 +12,7 @@
 // EXP-086 Phase 7 (B4 FIX): HandlerShadow for Runnable queue drain
 #include "../framework/android_shadows.h"
 #include "../framework/dialog_shadow.h"
+#include "../framework/canvas_shadow.h"
 // EXP-087 Phase 3 (B2 FIX): DalvikHeapAdapter for shadow heap access
 #include "../framework/heap_adapter.h"
 
@@ -1200,7 +1201,7 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                         const int MAX_NODES = 500;
                         int node_count = 0;
                         // CAMPAIGN 013: deferred custom-view placeholders.
-                        struct CVP { int l, t, w, h; std::string cls; };
+                        struct CVP { int l, t, w, h; std::string cls; uint32_t view_id = 0; };
                         std::vector<CVP> custom_view_placeholders;
 
                         // Helper: measured text size for a node (used for
@@ -1398,15 +1399,46 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                     !node->text.empty() ||
                                     !node->image_drawable_path.empty() ||
                                     node->image_resource_id != 0 ||
-                                    node->bg_color != 0 ||
                                     !node->anim_frame_rgba.empty();
+                                // CAMPAIGN 013: custom leaf views (runtime-created
+                                // OR background-colored) run their REAL onDraw
+                                // bytecode; a background color does NOT preclude
+                                // onDraw content (Android draws bg then content).
+                                if (!framework_class) {
+                                    std::cerr << "[C013-LEAFCHK] " << node->class_desc
+                                              << " children=" << node->children.size()
+                                              << " own_content=" << has_own_content
+                                              << " img_resid=" << node->image_resource_id
+                                              << " bg=0x" << std::hex << node->bg_color << std::dec
+                                              << " vis=" << node->visibility
+                                              << " w=" << w << " h=" << h << std::endl;
+                                }
                                 if (!framework_class && node->children.empty() &&
                                     !has_own_content && w > 40 && h > 40 &&
-                                    !drew_bg && node->visibility == 0) {
-                                    // Deferred: painted only when the screen
-                                    // would otherwise be blank (below).
-                                    custom_view_placeholders.push_back(
-                                        {left, top, w, h, node->class_desc});
+                                    node->visibility == 0) {
+                                    bool drew_real = false;
+                                    if (task.view_id != 0 && shadow_registry_) {
+                                        if (auto* canvas_shadow =
+                                                shadow_registry_->find_as<framework::CanvasShadow>()) {
+                                            int ondraw_ops =
+                                                dalvik_engine_.dispatch_custom_view_draw(task.view_id);
+                                            if (ondraw_ops > 0) {
+                                                canvas_shadow->replay(canvas, font,
+                                                                      (float)left, (float)top,
+                                                                      (float)w, (float)h);
+                                                drew_real = true;
+                                                std::cerr << "[C013-CUSTOMVIEW] onDraw replayed "
+                                                          << ondraw_ops << " ops for "
+                                                          << node->class_desc << std::endl;
+                                            }
+                                        }
+                                    }
+                                    if (!drew_real && !drew_bg && node->bg_color == 0) {
+                                        // Nothing drawn anywhere: defer to the
+                                        // screen-blank grey placeholder (below).
+                                        custom_view_placeholders.push_back(
+                                            {left, top, w, h, node->class_desc, task.view_id});
+                                    }
                                 }
                             }
 
@@ -1784,6 +1816,30 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             }
                             if (nw < 5000 && !custom_view_placeholders.empty()) {
                                 for (const auto& cv : custom_view_placeholders) {
+                                    // CAMPAIGN 013 (§15 LIBGDX-canvas / §19): run the
+                                    // app's REAL onDraw(Canvas) bytecode first. When
+                                    // it produces draw primitives, replay them into
+                                    // the view bounds — a real app-driven frame, not
+                                    // a placeholder.
+                                    int ondraw_ops = 0;
+                                    if (cv.view_id != 0 && shadow_registry_) {
+                                        if (auto* canvas_shadow =
+                                                shadow_registry_->find_as<framework::CanvasShadow>()) {
+                                            ondraw_ops = dalvik_engine_.dispatch_custom_view_draw(cv.view_id);
+                                            if (ondraw_ops > 0) {
+                                                canvas_shadow->replay(canvas, font,
+                                                                      (float)cv.l, (float)cv.t,
+                                                                      (float)cv.w, (float)cv.h);
+                                            }
+                                        }
+                                    }
+                                    if (ondraw_ops > 0) {
+                                        std::cerr << "[C013-CUSTOMVIEW] onDraw replayed "
+                                                  << ondraw_ops << " ops for " << cv.cls
+                                                  << " at (" << cv.l << "," << cv.t << " "
+                                                  << cv.w << "x" << cv.h << ")" << std::endl;
+                                        continue;
+                                    }
                                     canvas.draw_rect(cv.l, cv.t, cv.l + cv.w, cv.t + cv.h,
                                                    renderer::RGBA{0xF0, 0xF0, 0xF0, 0xFF});
                                     canvas.draw_rect(cv.l, cv.t, cv.l + cv.w, cv.t + 1,

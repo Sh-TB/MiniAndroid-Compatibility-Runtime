@@ -1212,6 +1212,8 @@ public:
     // `view_object_id` is the heap object_id of the target View.
     // Returns true if a listener was found and dispatched.
     bool dispatch_click(uint32_t view_object_id);
+    // CAMPAIGN 013: run a custom view's REAL onDraw(Canvas) bytecode.
+    int dispatch_custom_view_draw(uint32_t view_object_id);
 
     // EXP-060: Convenience wrapper — find a View by class descriptor
     // substring (e.g. "IntroActivity$4" or "startMessagingButton") and
