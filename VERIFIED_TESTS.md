@@ -42,6 +42,7 @@ g++ -std=c++17 -O2 -Isrc -Ithird_party/nlohmann_json/include tests/<FIXTURE>.cpp
 | fixture | result | protects |
 |---|---|---|
 | tests/semantic_long_cmp_conv_test.cpp | **14/14** (12/14 FAIL pre-fix — run/semantic_reconciliation/before_fix_FAIL.txt) | K-01..K-05: 64-bit long arith, cmp-long, NaN ordering, conversions, 12x nibbles |
+| tests/semantic_switch_parse_neg_test.cpp | **25/25** (0/25 pre-fix — run/semantic_reconciliation2/before_fix_FAIL.txt) | K-18/K-19/K-20/K-29/K-31/K-32: switch dispatch, parse/substring/concat bridge, div-zero exceptions, neg/not family, lit8 table |
 | tests/unified0112_filled_new_array_test.cpp | 5/5 | K-07 FNA 35c nibbles |
 | tests/unified0113_typed_catch_test.cpp | 8/8 | K-09 typed catch + propagation |
 | tests/exp088_f5_return_wide_test.cpp | 5/5 | K-08 return-wide |
