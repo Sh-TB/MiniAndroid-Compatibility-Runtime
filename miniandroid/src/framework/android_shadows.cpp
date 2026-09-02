@@ -910,25 +910,27 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                                   << " strings=" << istats.strings_resolved
                                   << " ids=" << istats.ids_resolved
                                   << " unresolved=" << istats.unresolved_refs << std::endl;
-                        // UNIFIED_011 recovery guard (zero-regression policy):
-                        // accept the inflated tree only when it is substantive —
-                        // i.e. enough views to be a real screen, or at least one
-                        // ARSC-resolved string. Weak inflations (e.g. headingcalc:
-                        // 3 views, 0 resolved @string refs -> blank screen) fall
-                        // back to the legacy default screen, exactly as before.
-                        const bool substantive =
-                            istats.views_created >= 5 || istats.strings_resolved > 0;
+                        // CAMPAIGN 013 (B5-class, inverted policy): accept ANY
+                        // real inflated tree. The UNIFIED_011 guard rejected
+                        // "weak" trees (views<5 && strings==0) in favor of the
+                        // synthetic default screen — but per the campaign
+                        // evidence standard a real app-inflated 3-view layout
+                        // (headingcalc, chessclock, stopwatchmuellerma) is a
+                        // more truthful render than a hard-coded fallback, and
+                        // the renderer has gained real image/text/click
+                        // machinery since the guard was written. Rejection now
+                        // happens ONLY when inflation produced no root at all.
+                        // Goldens unaffected: their trees were always accepted.
+                        const bool substantive = root_id != 0;
                         if (root_id != 0 && substantive) {
                             content_view_id_ = root_id;
                             last_inflate_stats_ = istats.to_json();
                             for (const auto& w : istats.warnings) {
                                 if (warnings_.size() < 64) warnings_.push_back(w);
                             }
-                        } else if (root_id != 0) {
-                            std::cerr << "[U007-INFLATE] REJECTED non-substantive tree"
-                                      << " (views=" << istats.views_created
-                                      << " strings=" << istats.strings_resolved
-                                      << ") — keeping legacy default screen" << std::endl;
+                        }
+                        if (root_id == 0) {
+                            std::cerr << "[U007-INFLATE] no root produced — keeping legacy default screen" << std::endl;
                         }
                     }
                 } else if (apk_path_.empty()) {

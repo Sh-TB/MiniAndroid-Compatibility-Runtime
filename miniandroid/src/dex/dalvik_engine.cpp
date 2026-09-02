@@ -9792,6 +9792,49 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
             return true;
         }
     }
+
+    // CAMPAIGN 013 (B4, §8): hierarchy-aware shadow dispatch.
+    // Root cause: shadows claim framework classes by NAME. App classes whose
+    // names match no claim (ChessClock, muellerma StopWatch, ...) never
+    // reached ActivityShadow — setContentView/findViewById/getWindow became
+    // SILENT no-ops and the app kept the synthetic default screen. The old
+    // workarounds grew a hand-maintained list of app class names inside
+    // ActivityShadow::handles_class — the per-app special-casing this
+    // campaign forbids.
+    // General fix (mirrors real Android virtual dispatch): walk the DEX
+    // superclass chain of the receiver and retry the shadow registry with
+    // each ancestor. ChessClock → android/app/Activity → ActivityShadow
+    // handles setContentView exactly as for any other Activity subclass.
+    {
+        std::string cur;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            !args[0].class_desc.empty()) {
+            cur = args[0].class_desc;
+        } else {
+            cur = class_name;
+        }
+        int guard = 0;
+        while (!cur.empty() && guard++ < 10) {
+            auto sup_it = class_to_superclass_.find(cur);
+            if (sup_it == class_to_superclass_.end()) break;
+            const std::string sup = sup_it->second;
+            if (sup.empty() || sup == cur) break;
+            auto cr3 = shadow_registry_->dispatch(build_ctx(sup));
+            if (cr3.handled) {
+                std::cerr << "[C013-HIER] " << method << " dispatched via superclass chain: "
+                          << cur << " -> " << sup << std::endl;
+                switch (cr3.status) {
+                    case framework::ApiCallStatus::IMPLEMENTED:
+                        status = ApiCallTrace::Status::IMPLEMENTED; break;
+                    default:
+                        status = ApiCallTrace::Status::STUBBED; break;
+                }
+                result = call_result_to_dalvik(cr3);
+                return true;
+            }
+            cur = sup;
+        }
+    }
     return false;
 }
 
