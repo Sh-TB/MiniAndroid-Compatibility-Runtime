@@ -1199,6 +1199,9 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                         std::set<uint32_t> visited;
                         const int MAX_NODES = 500;
                         int node_count = 0;
+                        // CAMPAIGN 013: deferred custom-view placeholders.
+                        struct CVP { int l, t, w, h; std::string cls; };
+                        std::vector<CVP> custom_view_placeholders;
 
                         // Helper: measured text size for a node (used for
                         // WRAP_CONTENT resolution and text drawing).
@@ -1371,6 +1374,39 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                         renderer::Colors::GREY_800, &font);
                                     }
                                     text_y += font.get_line_height();
+                                }
+                            }
+
+                            // CAMPAIGN 013 (custom-view visibility): unknown
+                            // app-defined leaf views (e.g. headingcalc's
+                            // CalculatorDisplay/CalculatorKeypad) cannot run
+                            // their own onDraw, so they painted nothing — an
+                            // all-white "real tree" screen. Per the evidence
+                            // standard an invisible custom view is WORSE than
+                            // an honest placeholder: draw a light-grey surface
+                            // + the simple class name, exactly like the IMG?
+                            // fallback. Only for LEAF nodes of non-framework
+                            // classes with no text/image/background of their
+                            // own, and never for subtree roots (PhoneView et
+                            // al. carry children and render via the walk).
+                            {
+                                bool framework_class =
+                                    node->class_desc.rfind("Landroid/", 0) == 0 ||
+                                    node->class_desc.rfind("Landroidx/", 0) == 0 ||
+                                    node->class_desc.rfind("Lcom/google/android/", 0) == 0;
+                                bool has_own_content =
+                                    !node->text.empty() ||
+                                    !node->image_drawable_path.empty() ||
+                                    node->image_resource_id != 0 ||
+                                    node->bg_color != 0 ||
+                                    !node->anim_frame_rgba.empty();
+                                if (!framework_class && node->children.empty() &&
+                                    !has_own_content && w > 40 && h > 40 &&
+                                    !drew_bg && node->visibility == 0) {
+                                    // Deferred: painted only when the screen
+                                    // would otherwise be blank (below).
+                                    custom_view_placeholders.push_back(
+                                        {left, top, w, h, node->class_desc});
                                 }
                             }
 
@@ -1732,6 +1768,43 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 queue.push_back(*it);
                             }
                             }  // !children_pushed
+                        }
+
+                        // CAMPAIGN 013 (screen-level placeholder gate): if the
+                        // real tree rendered a ~blank screen, draw the deferred
+                        // custom-view placeholders so app-defined surfaces are
+                        // at least visible+labeled. Working apps with ANY real
+                        // content (e.g. simplestopwatch's BigTextView screen)
+                        // keep their exact pixels — the golden is untouched.
+                        {
+                            const auto& px_c = fb.get_pixels();
+                            size_t nw = 0;
+                            for (const auto& c : px_c) {
+                                if (c.r < 250 || c.g < 250 || c.b < 250) nw++;
+                            }
+                            if (nw < 5000 && !custom_view_placeholders.empty()) {
+                                for (const auto& cv : custom_view_placeholders) {
+                                    canvas.draw_rect(cv.l, cv.t, cv.l + cv.w, cv.t + cv.h,
+                                                   renderer::RGBA{0xF0, 0xF0, 0xF0, 0xFF});
+                                    canvas.draw_rect(cv.l, cv.t, cv.l + cv.w, cv.t + 1,
+                                                   renderer::RGBA{0xD8, 0xD8, 0xD8, 0xFF});
+                                    canvas.draw_rect(cv.l, cv.t, cv.l + 1, cv.t + cv.h,
+                                                   renderer::RGBA{0xD8, 0xD8, 0xD8, 0xFF});
+                                    std::string simple = cv.cls;
+                                    size_t slash = simple.rfind('/');
+                                    if (slash != std::string::npos)
+                                        simple = simple.substr(slash + 1);
+                                    if (!simple.empty() && simple.back() == ';')
+                                        simple.pop_back();
+                                    canvas.draw_text(simple, cv.l + 12,
+                                                   cv.t + font.get_line_height() + 12,
+                                                   renderer::RGBA{0x99, 0x99, 0x99, 0xFF},
+                                                   &font);
+                                    std::cerr << "[C013-CUSTOMVIEW] placeholder drawn: "
+                                              << cv.cls << " at (" << cv.l << "," << cv.t
+                                              << " " << cv.w << "x" << cv.h << ")" << std::endl;
+                                }
+                            }
                         }
 
                         // CAMPAIGN 013 B1: dialog windows render ON TOP of the
