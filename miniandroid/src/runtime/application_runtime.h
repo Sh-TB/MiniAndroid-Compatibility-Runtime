@@ -18,6 +18,7 @@
 
 #include <string>
 #include "framework/dialog_shadow.h"
+#include "framework/canvas_shadow.h"
 #include <vector>
 #include <map>
 #include <memory>
@@ -743,6 +744,7 @@ framework::ViewShadow*      shadow_view_     = nullptr;
     // CAMPAIGN 013 B1: dialog/toast + array adapter windows.
     framework::DialogShadow*    shadow_dialog_   = nullptr;
     framework::ArrayAdapterShadow* shadow_array_adapter_ = nullptr;
+    framework::CanvasShadow*    shadow_canvas_   = nullptr;
     framework::ArchTaskExecutorShadow* shadow_arch_task_ = nullptr;  // EXP-052
     framework::CollectionShadow* shadow_collection_ = nullptr;  // EXP-054
 
