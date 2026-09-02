@@ -1,5 +1,25 @@
 # MAIN_CODER_INTEGRATION — master-request execution record (2026-09-02)
 
+## PASS 2 ADDENDUM — reconciliation completion (2026-09-03)
+
+Second master-request pass, executed on top of Pass 1 (HEAD was 0fd1ad6).
+Still **PUSH_BLOCKED_PENDING_USER_REVIEW** — remote main untouched at bbe0ce3
+(re-verified via git ls-remote at pass start; bbe0ce3 remains an ancestor).
+
+| item | value |
+|---|---|
+| Pass-2 base | 0fd1ad6 (Pass-1 integration HEAD) |
+| Remaining valid missing fixes found | K-18 switch dispatch, K-19/K-20 parse+substring/concat bridge, K-29 div/rem÷0, K-32 neg/not family (audit escalated: never implemented), K-31 lit8 opcode table shifted vs AOSP (NEW discovery, K-06 bug class) |
+| Implementing commit | 9d095f9 (code + discriminating fixture + before/after evidence) |
+| Evidence | tests/semantic_switch_parse_neg_test.cpp **0/25 → 25/25** (run/semantic_reconciliation2/before_fix_FAIL.txt / after_fix_PASS.txt) |
+| Regression gate | **ZERO** — simplestopwatch 2a12587a BASELINE_MATCH (×3 determinism), gmdice/microtimer/unote/dooz byte-identical, old fixtures 59/59; dooz runtime 0.9 s → 69.9 s with identical final SHA (K-33 — more Compose bytecode now executes) |
+| Real-APK impact | chessclock + headingcalculator left the shared default screen (eb16ab5c) and now render app-specific UI (SeekBar / resource-backed ListView); bgclock renders its themed window; simplekeyboard/openlauncher unchanged (still default); droidify.apk = truncated download (data-loss family, not code); run/master_reconciliation_apks/ |
+| Docs commit | cc5ca8e (K-18/19/20/29 → VERIFIED+FIXED; K-31/K-32/K-33 added; NOT_DONE resolved items struck; VERIFIED_TESTS 25/25 row) |
+| Handoff | MiniAndroid_CANONICAL_MASTER_RECONCILED_<HEAD>.zip (full non-shallow .git, clean tree, extraction-verified: fsck + build + fixtures rerun) |
+| Push status | **NO PUSH performed** — fast-forward path documented and still valid |
+
+## Original Pass-1 record (2026-09-02)
+
 Final state: **PUSH_BLOCKED_PENDING_USER_REVIEW**
 Repository: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (MASTER — user's own project; NOT a fork; no upstream exists)
 
