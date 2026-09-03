@@ -1,0 +1,12 @@
+=== ENGINE vs AOSP opcode table ===
+
+=== NAME-BASED CHECK (engine constant vs AOSP value) ===
+  shifted names: 0
+
+=== VALUE-BASED CHECK (what actually dispatches at each byte) ===
+  0x06: AOSP=MOVE_WIDE_16             ENGINE=-
+  0xA5: AOSP=USHRT_LONG               ENGINE=USHR_LONG
+  0xC5: AOSP=USHRT_LONG_2ADDR         ENGINE=USHR_LONG_2ADDR
+  0xD1: AOSP=RSUB_INT                 ENGINE=RSUB_INT_LIT16
+  0xE2: AOSP=USHRT_INT_LIT8           ENGINE=USHR_INT_LIT8
+  mismatched bytes: 5
