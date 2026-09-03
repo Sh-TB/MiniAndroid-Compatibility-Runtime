@@ -1,0 +1,8 @@
+=== UNIFIED_014b fill-array-data semantic test (AOSP FillArrayData) ===
+  PASS  exact_fill_len_immutable — e0=11 e1=22 e2=33 len=3
+  PASS  overflow_aioobe_no_fallthrough — handler=1 fell=0 len=2 e0=-999
+  PASS  underfill_keeps_length — e0=7 e1=8 e2=-999 len=4 (old shrank to 2)
+  PASS  width1_bool_unpack — b0=1 b1=0 b2=1 len=3
+  PASS  null_fill_npe — NPE handler ran (null fill), no fallthrough
+
+RESULT: 5 passed, 0 failed
