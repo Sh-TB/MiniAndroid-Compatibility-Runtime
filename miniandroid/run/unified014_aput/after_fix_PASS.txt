@@ -1,0 +1,9 @@
+=== UNIFIED_014 aput-bounds semantic test (AOSP HandleAPut) ===
+  PASS  inbounds_store_len_immutable — stored=1 len=2
+  PASS  oob_throws_no_store_no_grow — handler=1 fell_through=0 stored=0 len=2
+  PASS  oob_subclass_handler — Exception handler caught aput AIOOBE (no fallthrough)
+  PASS  negative_idx_throws — handler=1 fell_through=0 len=2
+  PASS  unknown_len_legacy_preserved — stored=1 grown=1 (legacy unknown-length path preserved)
+  PASS  null_array_npe — NPE handler ran for aput into null array (no fallthrough)
+
+RESULT: 6 passed, 0 failed
