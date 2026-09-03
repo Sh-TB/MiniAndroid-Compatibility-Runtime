@@ -5241,8 +5241,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                          * APKs whose array length was never recorded. \
                          */ \
                         if (arr_len > 0) { \
-                            std::string oob_msg = "length " + std::to_string(arr_len) + \
-                                                  "; index " + std::to_string(idx); \
+                            /* UNIFIED_014: message aligned to ART canonical \
+                             * "length=<len>; index=<idx>" (mirror/array.cc \
+                             * ThrowArrayIndexOutOfBoundsException chain). */ \
+                            std::string oob_msg = "length=" + std::to_string(arr_len) + \
+                                                  "; index=" + std::to_string(idx); \
                             raise_synthetic_exception( \
                                 "Ljava/lang/ArrayIndexOutOfBoundsException;", \
                                 oob_msg, "aget-oob"); \
@@ -5341,6 +5344,24 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             // Previously ARRAY_PUT_CASE was a NO-OP — aput-object did nothing.
             // Now we store elements in the HeapObject's fields using a
             // synthetic field name "array[idx]".
+            //
+            // UNIFIED_014 (DEX-APUT-BOUNDS): AOSP aput semantics for CONFIRMED
+            // arrays. Reference: AOSP art
+            // runtime/interpreter/interpreter_switch_impl-inl.h HandleAPut /
+            // APUT_OBJECT (main, fetched 2026-09-03; see
+            // docs/upstream_reference_aput_aosp.md): null array → NPE;
+            // CheckIsValidIndex → AIOOBE; store only after checks; array
+            // length is NEVER mutated by aput. The old code wrote ANY index
+            // and auto-grew "__array_length__" to idx+1 — the DEX-APUT-BOUNDS
+            // drift (phantom array tail for array-length/loops).
+            // Conservative tiers mirror the UNIFIED_011.2 aget fix:
+            //   - CONFIRMED length (effective len > 0): full AOSP enforcement
+            //     (null/bounds checked, length immutable).
+            //   - length 0/unknown: legacy store+grow path preserved (arrays
+            //     filled aput-by-aput by bridges with no recorded length keep
+            //     working; mirrors aget's arr_len==0 legacy gate).
+            //   - NULL_REF: AOSP NPE (null is unambiguous in this engine).
+            //   - non-OBJECT_REF / heap-missing: legacy silent skip (unchanged).
             #define ARRAY_PUT_CASE(opcode, op_name) \
                 case Opcode::opcode: { \
                     trace.opcode_name = op_name; \
@@ -5360,17 +5381,63 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                   << " src_type=" << (int)src_val.type \
                                   << " idx=" << idx << std::endl; \
                     } \
-                    if (arr_val.type == DalvikType::OBJECT_REF && \
-                        heap_.has_object(arr_val.object_id)) { \
-                        std::string field = "array[" + std::to_string(idx) + "]"; \
+                    /* AOSP HandleAPut: null array → NPE, no store. */ \
+                    if (arr_val.type == DalvikType::NULL_REF || arr_val.is_null) { \
+                        log("⚠️ APUT into null array (" + std::string(op_name) + \
+                            ") idx=" + std::to_string(idx)); \
+                        raise_synthetic_exception( \
+                            "Ljava/lang/NullPointerException;", \
+                            "Attempt to write into null array", "aput-null"); \
+                        /* handled: pc_ at catch handler; unhandled: frame \
+                         * unwinds via halted_on_return_ (same as aget). */ \
+                        break; \
+                    } \
+                    /* Effective length chain — identical to ARRAY_GET_CASE. */ \
+                    bool arr_on_heap = (arr_val.type == DalvikType::OBJECT_REF && \
+                                        heap_.has_object(arr_val.object_id)); \
+                    int32_t arr_len = 0; \
+                    if (arr_on_heap) { \
+                        auto len_field = heap_.get_object_field(arr_val.object_id, "__array_length__"); \
+                        if (len_field.has_value() && len_field->type == DalvikType::INT32) { \
+                            arr_len = len_field->int_val; \
+                        } \
+                        if (arr_len == 0) { \
+                            auto nm_field = heap_.get_object_field(arr_val.object_id, "__new_array_length__"); \
+                            if (nm_field.has_value() && nm_field->type == DalvikType::INT32) { \
+                                arr_len = nm_field->int_val; \
+                            } \
+                        } \
+                        if (arr_len == 0) { \
+                            arr_len = arr_val.int_val; \
+                        } \
+                    } \
+                    std::string field = "array[" + std::to_string(idx) + "]"; \
+                    if (arr_on_heap && arr_len > 0) { \
+                        /* CONFIRMED array: full AOSP semantics. */ \
+                        if (idx < 0 || idx >= arr_len) { \
+                            log("⚠️ APUT out of bounds: arr_len=" + std::to_string(arr_len) + \
+                                " idx=" + std::to_string(idx)); \
+                            std::string oob_msg = "length=" + std::to_string(arr_len) + \
+                                                  "; index=" + std::to_string(idx); \
+                            raise_synthetic_exception( \
+                                "Ljava/lang/ArrayIndexOutOfBoundsException;", \
+                                oob_msg, "aput-oob"); \
+                            break; \
+                        } \
                         heap_.set_object_field(arr_val.object_id, field, src_val); \
-                        /* Also store the array length if not set */ \
+                        /* Length immutable — NO auto-grow (AOSP). */ \
+                    } else if (arr_on_heap) { \
+                        /* Length unknown (0): legacy path — store + record/grow. \
+                         * Preserves arrays filled aput-by-aput with no recorded \
+                         * length (mirrors aget's arr_len==0 legacy gate). */ \
+                        heap_.set_object_field(arr_val.object_id, field, src_val); \
                         auto len_field = heap_.get_object_field(arr_val.object_id, "__array_length__"); \
                         if (!len_field.has_value() || len_field->int_val <= idx) { \
                             heap_.set_object_field(arr_val.object_id, "__array_length__", \
                                 DalvikValue::make_int(idx + 1)); \
                         } \
                     } \
+                    /* non-OBJECT_REF or heap-missing: legacy silent skip. */ \
                     pc_ = pc_ + 2; \
                     break; \
                 }
