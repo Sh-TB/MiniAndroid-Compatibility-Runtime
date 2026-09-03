@@ -52,6 +52,23 @@ FIXED / NOT REPRODUCED / FALSE / UNKNOWN / ANALYSIS ONLY / NOT IMPLEMENTED.
 | K-40 | aget-byte/char/short zeroed typed heap elements; typed registers (BYTE/CHAR/SHORT union members) invisible to int_val arithmetic | dalvik_engine.cpp ARRAY_GET_CASE | aget-byte[0] = 0 on array holding 'C' | **VERIFIED+FIXED** 2026-09-03 | st_bulk_read 16067 (16×1000+67) after typed-element normalization | pass3 |
 | K-41 | parseInt("2147483648") wrapped to INT_MIN (acc == 2^31 accepted on positive side) | parse bridge | FIX-05 boundary bug | **VERIFIED+FIXED** 2026-09-03 | ps_parseInt_overflow_throws_nfe | pass3 |
 | K-42 | parseDouble/parseFloat rejected Java words NaN/±Infinity; strtof would accept non-Java "nan"/"inf" | parse bridge | FIX-05 documented residual TODO | **VERIFIED+FIXED** 2026-09-03 | ps_parseDouble_nan_word / infinity | pass3 |
+| K-43 | Open-source source & tool intelligence catalog: 66 curated entries across all 60 mission categories, priority-ranked, with TYPE/USE discipline and PHASE-9 self-review record | project knowledge | **HELPER_SOURCE_LIST.md** (repo root) | **REGISTERED** 2026-09-03 | n/a (knowledge artifact; oracle tooling listed is external) | game-changer |
+
+## HELPER SOURCE INTELLIGENCE (K-43) — GAME CHANGER pass, 2026-09-03
+
+`HELPER_SOURCE_LIST.md` (repo root) is the official permanent catalog of open-source
+projects/libraries/tools/corpora that can make MiniAndroid better: AOSP art + frameworks/base
++ libcore/Harmony law sources, smali/dexlib2, Apktool, Androguard, aapt2, Skia, Robolectric
+(architecturally our closest sibling), CTS fixture-mining, F-Droid version-pinned corpus,
+libFuzzer/AFL++/ASan robustness lane, differential-oracle machines (Waydroid + Frida),
+and the full 60-category coverage map with priorities (P0×13 / P1×23 / P2×26 / P3×4).
+Every entry carries: license, language, why-it-matters to MiniAndroid, reuse/adaptation
+verdict (USE DIRECTLY / PORT / BORROW DESIGN / USE AS ORACLE / USE FOR TESTING /
+USE FOR RESEARCH), expected gain, difficulty, relevant modules, and known limitations.
+Already-integrated dependencies are recorded in its §0 so nobody re-proposes them.
+Provenance: created by the FINAL GAME CHANGER mission (PHASE 8), critically self-reviewed
+in PHASE 9 (duplicates merged, low-value demoted, missing sources added), registered here,
+in KNOWLEDGE_LEDGER.csv (LED-051) and KNOWLEDGE_RECONCILIATION.md (§11) per mission rule 19.
 
 ## Historical campaign knowledge (§10) — where to look
 

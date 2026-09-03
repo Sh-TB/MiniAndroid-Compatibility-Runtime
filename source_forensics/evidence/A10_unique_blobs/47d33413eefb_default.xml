@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <long name="intro_crashed_time" value="1787872470488" />
+    <string name="lastDarkTheme">Dark Blue</string>
+    <string name="locales"></string>
+    <string name="mobilePreset">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>
+    <int name="newConfig" value="1" />
+    <string name="preset0">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>
+    <string name="preset1">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>
+    <string name="preset2">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>
+    <string name="remote">English|English|en|@0|0||en|0|0|0</string>
+    <int name="remote_version" value="1" />
+    <string name="roamingPreset">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>
+    <string name="unofficial">English|English|en|@0|0||en|0|0|0</string>
+    <string name="wifiPreset">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>
+</map>
