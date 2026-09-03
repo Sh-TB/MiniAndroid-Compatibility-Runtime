@@ -6696,6 +6696,17 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 uint32_t payload_pc = pc_ + offset;
 
                 DalvikValue array_val = get_register(vAA);
+                // UNIFIED_014b: AOSP FillArrayData null check FIRST (before
+                // the legacy non-OBJECT_REF skip) — null is unambiguous in
+                // this engine and must throw NPE, not be silently skipped.
+                if (array_val.type == DalvikType::NULL_REF || array_val.is_null) {
+                    log("⚠️ FILL_ARRAY_DATA into null array");
+                    raise_synthetic_exception(
+                        "Ljava/lang/NullPointerException;",
+                        "null array in FILL_ARRAY_DATA", "fill-null");
+                    /* handled/unhandled: same pc semantics as aget/aput. */
+                    break;
+                }
                 // EXP-071: Diagnostic — check if the array register has a valid OBJECT_REF
                 if (array_val.type != DalvikType::OBJECT_REF) {
                     std::cerr << "[EXP071-FILL] fill-array-data: v" << (int)vAA
@@ -6735,11 +6746,75 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     uint16_t elem_width = bytecode_[payload_pc + 1];
                     uint32_t count = static_cast<uint32_t>(bytecode_[payload_pc + 2]) |
                         (static_cast<uint32_t>(bytecode_[payload_pc + 3]) << 16);
-                    // EXP-071: Actually fill the array elements with the payload data.
-                    // Previously we just stored metadata. Now we read the payload
-                    // bytes and store each element as "array[idx]" on the HeapObject.
+                    // UNIFIED_014b (fill-array-data AOSP semantics). Reference:
+                    // AOSP art entrypoints/entrypoint_utils.cc FillArrayData
+                    // (refs/tags/android-14.0.0_r1, lines 176–195, fetched
+                    // 2026-09-03):
+                    //   1. null array → NPE "null array in FILL_ARRAY_DATA"
+                    //   2. element_count > array length → AIOOBE
+                    //      "failed FILL_ARRAY_DATA; length=%d, index=%d"
+                    //      (index slot carries the payload COUNT)
+                    //   3. fill exactly element_count elements;
+                    //      the array length is NEVER modified.
+                    // The old code silently overwrote __array_length__ AND
+                    // __new_array_length__ with the payload count (shrink/
+                    // grow drift real Dalvik never produces), had no
+                    // overflow check, and silently truncated fills past 100
+                    // elements. (The null check was hoisted above the legacy
+                    // non-OBJECT_REF skip — see case head.) Element byte
+                    // decoding (little-endian word order per width 1/2/4/8)
+                    // was verified correct against the DEX spec and kept
+                    // unchanged.
                     if (array_val.type == DalvikType::OBJECT_REF &&
                         heap_.has_object(array_val.object_id)) {
+                        // Effective length chain — identical to aget/aput.
+                        int32_t arr_len = 0;
+                        auto len_field = heap_.get_object_field(array_val.object_id, "__array_length__");
+                        if (len_field.has_value() && len_field->type == DalvikType::INT32) {
+                            arr_len = len_field->int_val;
+                        }
+                        if (arr_len == 0) {
+                            auto nm_field = heap_.get_object_field(array_val.object_id, "__new_array_length__");
+                            if (nm_field.has_value() && nm_field->type == DalvikType::INT32) {
+                                arr_len = nm_field->int_val;
+                            }
+                        }
+                        if (arr_len == 0) {
+                            arr_len = array_val.int_val;
+                        }
+                        // AOSP: overflow check BEFORE any store (confirmed
+                        // arrays only; unknown length keeps the legacy gate).
+                        if (arr_len > 0 && static_cast<uint32_t>(arr_len) < count) {
+                            log("⚠️ FILL_ARRAY_DATA overflow: arr_len=" + std::to_string(arr_len) +
+                                " count=" + std::to_string(count));
+                            raise_synthetic_exception(
+                                "Ljava/lang/ArrayIndexOutOfBoundsException;",
+                                "failed FILL_ARRAY_DATA; length=" + std::to_string(arr_len) +
+                                    ", index=" + std::to_string(count),
+                                "fill-oob");
+                            break;
+                        }
+                        // Payload data bounds: the payload bytes must actually
+                        // exist in the bytecode stream (corrupt/truncated
+                        // payload = cannot fill → same AIOOBE contract).
+                        uint32_t data_start = payload_pc + 4;
+                        uint64_t bytes_needed = static_cast<uint64_t>(count) * elem_width;
+                        uint64_t bytes_avail =
+                            (elem_width > 0 && data_start < bytecode_.size())
+                                ? static_cast<uint64_t>(bytecode_.size() - data_start) * 2u
+                                : 0u;
+                        if (count > 0 && elem_width > 0 && bytes_needed > bytes_avail) {
+                            log("⚠️ FILL_ARRAY_DATA truncated payload: need " +
+                                std::to_string(bytes_needed) + "B, have " +
+                                std::to_string(bytes_avail) + "B");
+                            raise_synthetic_exception(
+                                "Ljava/lang/ArrayIndexOutOfBoundsException;",
+                                "failed FILL_ARRAY_DATA; length=" + std::to_string(
+                                    arr_len > 0 ? arr_len : static_cast<int32_t>(count)) +
+                                    ", index=" + std::to_string(count),
+                                "fill-oob");
+                            break;
+                        }
                         heap_.set_object_field(array_val.object_id,
                             "__fill_array_data_pc__",
                             DalvikValue::make_int(static_cast<int32_t>(payload_pc)));
@@ -6749,17 +6824,18 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         heap_.set_object_field(array_val.object_id,
                             "__fill_array_count__",
                             DalvikValue::make_int(static_cast<int32_t>(count)));
-                        // Also update __array_length__ and __new_array_length__
-                        heap_.set_object_field(array_val.object_id, "__array_length__",
-                            DalvikValue::make_int(static_cast<int32_t>(count)));
-                        heap_.set_object_field(array_val.object_id, "__new_array_length__",
-                            DalvikValue::make_int(static_cast<int32_t>(count)));
+                        // UNIFIED_014b: length is NOT touched (AOSP). The old
+                        // __array_length__/__new_array_length__ = count writes
+                        // are removed — that was the shrink/grow drift.
                         // Read and store each element
                         // Payload starts at payload_pc + 4 (after magic, elem_width, count)
                         // Each element is elem_width bytes, starting at byte offset
                         // (payload_pc + 4) * 2 in the raw bytecode.
-                        uint32_t data_start = payload_pc + 4;
-                        for (uint32_t i = 0; i < count && i < 100; ++i) {
+                        // UNIFIED_014b: the old `i < 100` silent truncation cap
+                        // is removed — overflow is now handled by the explicit
+                        // AIOOBE checks above and each store is per-element
+                        // bounds-checked below.
+                        for (uint32_t i = 0; i < count; ++i) {
                             // Read elem_width bytes from the payload
                             if (elem_width == 4) {
                                 // int or float (4 bytes = 2 code units)
