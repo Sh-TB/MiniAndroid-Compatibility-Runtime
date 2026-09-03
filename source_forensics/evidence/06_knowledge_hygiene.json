@@ -1,0 +1,190 @@
+{
+ "ledger_rows": 50,
+ "ledger_decisions": {
+  "VERIFIED_IMPLEMENTED": 22,
+  "PARTIALLY VERIFIED (composition semantics open \u2014 NOT_DONE #15)": 1,
+  "VERIFIED_MISSING": 11,
+  "REJECTED_WITH_EVIDENCE": 2,
+  "SUPERSEDED_BY_LATER_FIX": 1,
+  "BLOCKED_BY_MISSING_ARTIFACT": 4,
+  " BLOCKED_BY_MISSING_ARTIFACT": 1,
+  "DUPLICATE": 4,
+  " SHA stable)": 1,
+  "NEEDS_RUNTIME_PROOF": 3
+ },
+ "ledger_referenced_paths_missing_at_HEAD": [],
+ "pass3_markers_present": {
+  "K-34 InputStream.read real bytes": true,
+  "K-35 XmlPullParser": true,
+  "K-36 AtomicReference": true,
+  "K-37/K-38 opcode table": true,
+  "K-39/K-40 array elements": true,
+  "K-41/K-42 parse boundaries": true,
+  "fixtures_docs_present": {
+   "miniandroid/tests/semantic_pass3_bridge_test.cpp": true,
+   "miniandroid/tests/semantic_long_cmp_conv_test.cpp": true,
+   "miniandroid/tests/semantic_switch_parse_neg_test.cpp": true,
+   "PASS3_OPCODE_AUDIT.md": true,
+   "PASS3_STUB_AUDIT.md": true,
+   "KNOWLEDGE_LEDGER.csv": true,
+   "KNOWLEDGE_RECONCILIATION.md": true,
+   "PASS3_FINAL_REPORT.md": true,
+   "MASTER_PROJECT_KNOWLEDGE.md": true,
+   "NOT_DONE.md": true,
+   "VERIFIED_TESTS.md": true
+  }
+ },
+ "semantic_anchors": {
+  "InputStream real bytes": 7,
+  "XmlPullParserException": 5,
+  "AtomicReference CAS": 3,
+  "lit8 div-int 0xDB": 3,
+  "NumberFormatException": 7,
+  "Infinity": 4
+ },
+ "filebin_docs": {
+  "MASTER_RECONCILIATION_FINAL_REPORT.md": {
+   "bytes": 17375
+  },
+  "repo_PASS3_FINAL_REPORT_bytes": 11191,
+  "MASTER_RECONCILIATION_PASS3_REPORT.md": {
+   "bytes": 11317,
+   "repo_bytes": 11317,
+   "identical_to_repo_doc": true
+  },
+  "PHASE9_GIT_RECORD.txt": {
+   "bytes": 3673
+  },
+  "DELIVERY_STATUS_2026-09-02.md": {
+   "bytes": 4456
+  }
+ },
+ "zip_hygiene": {
+  "zip": "/tmp/my-project/download/MiniAndroid_CANONICAL_MASTER_RECONCILED_f714420.zip",
+  "entries": 1234,
+  "total_uncompressed": 178162160,
+  "top25_largest": [
+   {
+    "name": "repo/.git/objects/pack/pack-acf2b457bc7f547d512530563094b0564f6e2b5e.pack",
+    "size": 153567168
+   },
+   {
+    "name": "repo/docs/campaign014_evidence/droidify/api_trace.json",
+    "size": 1944660
+   },
+   {
+    "name": "repo/docs/campaign014_evidence/droidify/click/api_trace.json",
+    "size": 1944620
+   },
+   {
+    "name": "repo/docs/campaign014_evidence/dooz/click/api_trace.json",
+    "size": 1159277
+   },
+   {
+    "name": "repo/docs/campaign014_evidence/openlauncher/click/api_trace.json",
+    "size": 1128599
+   },
+   {
+    "name": "repo/miniandroid/third_party/nlohmann_json/include/nlohmann/json.hpp",
+    "size": 919975
+   },
+   {
+    "name": "repo/miniandroid/src/dex/dalvik_engine.cpp",
+    "size": 745882
+   },
+   {
+    "name": "repo/miniandroid/docs/EXP083_run_inventory.csv",
+    "size": 721579
+   },
+   {
+    "name": "repo/docs/campaign014_evidence/bgclockhansdezwart/click/api_trace.json",
+    "size": 583342
+   },
+   {
+    "name": "repo/miniandroid/docs/research/raw/dalivm_github.json",
+    "size": 467068
+   },
+   {
+    "name": "repo/miniandroid/docs/research/raw/android_bytecode_doc.json",
+    "size": 428895
+   },
+   {
+    "name": "repo/miniandroid/docs/research/raw/androguard_github.json",
+    "size": 376158
+   },
+   {
+    "name": "repo/docs/campaign014_evidence/stopwatchmuellerma/api_trace.json",
+    "size": 326551
+   },
+   {
+    "name": "repo/miniandroid/docs/EXP046_NATIVE_MAP.json",
+    "size": 308178
+   },
+   {
+    "name": "repo/miniandroid/third_party/stb/stb_image.h",
+    "size": 283010
+   },
+   {
+    "name": "repo/worklog.md",
+    "size": 250746
+   },
+   {
+    "name": "repo/.git/objects/pack/pack-acf2b457bc7f547d512530563094b0564f6e2b5e.idx",
+    "size": 249068
+   },
+   {
+    "name": "repo/miniandroid/docs/EXP043_JNI_DISTANCE.json",
+    "size": 230973
+   },
+   {
+    "name": "repo/miniandroid/database/opcode_coverage.json",
+    "size": 215308
+   },
+   {
+    "name": "repo/miniandroid/third_party/audio/stb_vorbis.c",
+    "size": 192790
+   },
+   {
+    "name": "repo/miniandroid/docs/knowledge/campaign008/p1_mining/results.json",
+    "size": 183359
+   },
+   {
+    "name": "repo/miniandroid/tests/fixtures/audio/sine_2s.wav",
+    "size": 176478
+   },
+   {
+    "name": "repo/miniandroid/docs/exp042/NATIVE_LIBRARIES.json",
+    "size": 155853
+   },
+   {
+    "name": "repo/miniandroid/docs/exp042/JNI_INVENTORY.json",
+    "size": 154567
+   },
+   {
+    "name": "repo/miniandroid/docs/EXP083_duplicate_groups.json",
+    "size": 142996
+   }
+  ],
+  "ext_top": {
+   "md": 343,
+   "json": 181,
+   "(none)": 170,
+   "py": 148,
+   "png": 107,
+   "cpp": 98,
+   "h": 51,
+   "dex": 29,
+   "txt": 26,
+   "sample": 14,
+   "sh": 11,
+   "csv": 3,
+   "xml": 3,
+   "kts": 3,
+   "java": 2,
+   "c": 2,
+   "agent/": 2,
+   "gitignore": 1
+  },
+  "forbidden_hits": {}
+ }
+}

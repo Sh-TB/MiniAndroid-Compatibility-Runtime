@@ -1,0 +1,38 @@
+commit d87261685b5d5b009597b0975ac834d650f5e64f
+Merge: 8f0a85b d2b6089
+Author: Z User <z@container>
+Date:   Thu Aug 27 23:36:25 2026 +0000
+
+    WIP on main: 8f0a85b EXP-101/102 (UNIFIED_002) TOOLING: robolectric-oracle pom system-jar->aar fix (fresh-clone reproducible); Persian/RTL §14 proof tool + §13 font matrix
+
+diff --cc miniandroid/runtime/data/org.telegram.messenger/shared_prefs/default.xml
+index 1d04037,1d04037..47d3341
+--- a/miniandroid/runtime/data/org.telegram.messenger/shared_prefs/default.xml
++++ b/miniandroid/runtime/data/org.telegram.messenger/shared_prefs/default.xml
+@@@ -1,16 -1,16 +1,16 @@@
+  <?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+  <map>
+--    <long name="View" value="0" />
+--    <long name="intro_crashed_time" value="1787669299769" />
+++    <long name="intro_crashed_time" value="1787872470488" />
+      <string name="lastDarkTheme">Dark Blue</string>
+--    <long name="lastReloadStatusTime" value="1787669293427" />
+--    <string name="mobilePreset">View</string>
+--    <int name="needGetStatuses" value="1" />
+++    <string name="locales"></string>
+++    <string name="mobilePreset">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>
+      <int name="newConfig" value="1" />
+--    <string name="preset0">View</string>
+--    <string name="preset1">View</string>
+--    <string name="preset2">View</string>
+++    <string name="preset0">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>
+++    <string name="preset1">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>
+++    <string name="preset2">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>
+++    <string name="remote">English|English|en|@0|0||en|0|0|0</string>
+      <int name="remote_version" value="1" />
+--    <string name="roamingPreset">View</string>
+--    <string name="wifiPreset">View</string>
+++    <string name="roamingPreset">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>
+++    <string name="unofficial">English|English|en|@0|0||en|0|0|0</string>
+++    <string name="wifiPreset">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>
+  </map>

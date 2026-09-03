@@ -149,3 +149,26 @@ cosmetic USHR/USHRT + RSUB_INT_LIT16 naming deltas.
 lineage is closed into the canonical history, every claim in the ledger carries
 one of the eight required decisions with provenance, and every fix newly
 integrated this pass has discriminating runtime evidence at the final HEAD.
+
+## 11. HELPER SOURCE INTELLIGENCE (GAME CHANGER pass, 2026-09-03)
+
+The FINAL GAME CHANGER mission required the `لیست کمکی` (helper list) to become a
+permanent, registered project artifact. It now lives at repo root as
+**HELPER_SOURCE_LIST.md**: 66 curated entries (H-001..H-066) covering all 60 mission
+categories — Android runtime/DEX/ART oracles (AOSP art/libcore-Harmony), bytecode tooling
+(smali/dexlib2, Apktool, Androguard, aapt2), UI/framework behavior law (frameworks/base,
+Robolectric, CTS), rendering law (Skia) and the rlottie/FreeType/HarfBuzz/FriBidi chain
+(recorded as already integrated in §0), testing program (libFuzzer/AFL++, rapidcheck,
+Hypothesis, pixelmatch/SSIM, F-Droid version-pinned corpus, AndroZoo), differential-oracle
+machines (Waydroid, Frida on real ART), debugging/profiling lane (ASan/UBSan, Valgrind,
+perf, heaptrack, Ghidra), and CI/reproducibility discipline (GitHub Actions encoding the
+golden-law validation, ccache, SOURCE_DATE_EPOCH).
+
+Cross-check status (KNOWLEDGE → SOURCE / COMMIT / FIX / TEST / EVIDENCE):
+- KNOWLEDGE_ONLY risk: none — every entry names concrete MiniAndroid modules or the
+  integrated-dependency record that consumes it (§0 / category map).
+- Registration chain (mission rule 19): HELPER_SOURCE_LIST.md (standalone MD) +
+  MASTER_PROJECT_KNOWLEDGE.md (K-43 + section) + KNOWLEDGE_LEDGER.csv (LED-051) +
+  this file (§11) + START_HERE.md pointer — five registration points, all at this commit.
+- Provenance: authored by the GAME CHANGER pass; PHASE 9 self-review decisions
+  (merges, demotions, rejections-with-evidence) are recorded inside the list itself.

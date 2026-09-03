@@ -1,0 +1,122 @@
+commit aae02cdc2fa0048a03af8e23d4ace54ac7b7bcc6
+Author: Z User <z@container>
+Date:   Sun Aug 30 11:39:39 2026 +0000
+
+    untracked files on main: 8f0a85b EXP-101/102 (UNIFIED_002) TOOLING: robolectric-oracle pom system-jar->aar fix (fresh-clone reproducible); Persian/RTL §14 proof tool + §13 font matrix
+
+diff --git a/miniandroid/src/resources/arsc_parser.cpp b/miniandroid/src/resources/arsc_parser.cpp
+new file mode 100644
+index 0000000..7b7f8e9
+--- /dev/null
++++ b/miniandroid/src/resources/arsc_parser.cpp
+@@ -0,0 +1,645 @@
++/*
++ * UNIFIED_007 — ARSC Parser implementation (P0)
++ * See arsc_parser.h for design. Zero-dependency binary reader.
++ */
++#include "arsc_parser.h"
++
++namespace miniandroid {
++namespace resources {
++
++// ---------------------------------------------------------------------------
++// Little-endian readers
++// ---------------------------------------------------------------------------
++static inline uint16_t rd16(const uint8_t* p) { return (uint16_t)(p[0] | (p[1] << 8)); }
++static inline uint32_t rd32(const uint8_t* p) {
++    return (uint32_t)p[0] | ((uint32_t)p[1] << 8) | ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24);
++}
++
++// Decode a COMPLEX_MANTISSA — AOSP TypedValue.complexToFloat (authoritative,
++// verified against platform_frameworks_base TypedValue.java):
++//   value = (data & (MANTISSA_MASK << MANTISSA_SHIFT)) * RADIX_MULTS[(data>>4)&3]
++//   MANTISSA_MASK=0xFFFFFF, MANTISSA_SHIFT=8 → MANTISSA_MULT = 2^-8
++//   UNIT = data & 0xF (COMPLEX_UNIT_SHIFT = 0)
++float complex_to_float(uint32_t data) {
++    static const float MANTISSA_MULT = 1.0f / (1 << 8);
++    static const float RADIX_MULTS[] = {
++        1.0f * MANTISSA_MULT,
++        1.0f / (1 << 7)  * MANTISSA_MULT,
++        1.0f / (1 << 15) * MANTISSA_MULT,
++        1.0f / (1 << 23) * MANTISSA_MULT,
++    };
++    uint32_t mantissa = data & 0xFFFFFF00u;
++    // sign-extend: mantissa is a signed 24-bit value in bits 8..31
++    int32_t signed_m = (int32_t)mantissa;
++    return signed_m * RADIX_MULTS[(data >> 4) & 3];
++}
++
++// ---------------------------------------------------------------------------
++// String pool
++// ---------------------------------------------------------------------------
++bool ArscParser::parse_string_pool(const uint8_t* base, size_t avail, size_t chunk_offset, Pool& out) {
++    if (chunk_offset + 20 > avail) { last_error_ = "string pool: truncated header"; return false; }
++    const uint8_t* p = base + chunk_offset;
++    uint16_t type = rd16(p);
++    uint16_t header_size = rd16(p + 2);
++    uint32_t chunk_size = rd32(p + 4);
++    if (type != RES_STRING_POOL_TYPE) { last_error_ = "string pool: bad chunk type"; return false; }
++    if (chunk_offset + chunk_size > avail) { last_error_ = "string pool: chunk overruns data"; return false; }
++    uint32_t string_count = rd32(p + 8);
++    uint32_t style_count  = rd32(p + 12);
++    uint32_t flags        = rd32(p + 16);
++    uint32_t strings_start= rd32(p + 20);
++    (void)style_count;
++    out.utf8 = (flags & RES_STRING_POOL_UTF8_FLAG) != 0;
++    out.strings.resize(string_count);
++    const uint32_t* offsets = (const uint32_t*)(p + header_size);
++    const uint8_t* sdata = p + strings_start;
++    for (uint32_t i = 0; i < string_count; i++) {
++        uint32_t off = offsets[i];
++        if (strings_start + off >= chunk_size) { out.strings[i].clear(); continue; }
++        const uint8_t* s = sdata + off;
++        if (out.utf8) {
++            // u16len then u8len (each uleb128), then bytes
++            size_t o = 0;
++            // skip u16 length (may be 2 bytes)
++            while (o < chunk_size - strings_start - off && (s[o] & 0x80)) o++;
++            o++;
++            size_t u8len = 0;
++            if (o < chunk_size - strings_start - off) {
++                if (s[o] & 0x80) { u8len = ((s[o] & 0x7F) << 8) | s[o + 1]; o += 2; }
++                else { u8len = s[o]; o++; }
++            }
++            size_t cap = std::min(u8len, chunk_size - strings_start - off - o);
++            out.strings[i].assign((const char*)(s + o), cap);
++        } else {
++            // UTF-16 pool: length is read char16-wise (AOSP decodingString16):
++            // first char16 = len, high bit set → 2-char16 (high:low) length.
++            size_t o = 0;
++            uint32_t u16len = 0;
++            uint16_t c0 = rd16(s);
++            if (c0 & 0x8000) { u16len = ((c0 & 0x7FFF) << 16) | rd16(s + 2); o = 4; }
++            else { u16len = c0; o = 2; }
++            size_t bytes_avail = chunk_size - strings_start - off - o;
++            size_t bytes = std::min<size_t>(u16len * 2, bytes_avail & ~1u);
++            out.strings[i].assign((const char*)(s + o), bytes);  // UTF-16LE raw
++            // convert UTF-16LE → UTF-8
++            const char* rp = out.strings[i].data();
++            std::string utf8;
++            utf8.reserve(bytes);
++            for (size_t ci = 0; ci + 1 < out.strings[i].size(); ci += 2) {
++                uint32_t ch = (uint8_t)rp[ci] | ((uint32_t)(uint8_t)rp[ci + 1] << 8);
++                // surrogate pair
++                if (ch >= 0xD800 && ch <= 0xDBFF && ci + 3 < out.strings[i].size()) {
++                    uint32_t lo = (uint8_t)rp[ci + 2] | ((uint32_t)(uint8_t)rp[ci + 3] << 8);
++                    if (lo >= 0xDC00 && lo <= 0xDFFF) {
++                        ch = 0x10000 + ((ch - 0xD800) << 10) + (lo - 0xDC00);
++                        ci += 2;
++                    }
++                }
++                if (ch < 0x80) utf8 += (char)ch;
++                else if (ch < 0x800) {
++                    utf8 += (char)(0xC0 | (ch >> 6));
++                    utf8 += (char)(0x80 | (ch & 0x3F));
++                } else if (ch < 0x10000) {
++                    utf8 += (char)(0xE0 | (ch >> 12));
++                    utf8 += (char)(0x80 | ((ch >> 6) & 0x3F));
++                    utf8 += (char)(0x80 | (ch & 0x3F));
++                } else {
++                    utf8 += (char)(0xF0 | (ch >> 18));
++                    utf8 += (char)(0x80 | ((ch >> 12) & 0x3F));
++
