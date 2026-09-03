@@ -47,6 +47,7 @@ g++ -std=c++17 -O2 -Isrc -Ithird_party/nlohmann_json/include tests/<FIXTURE>.cpp
 | tests/unified0112_filled_new_array_test.cpp | 5/5 | K-07 FNA 35c nibbles |
 | tests/unified0113_typed_catch_test.cpp | 8/8 | K-09 typed catch + propagation |
 | tests/unified014_aput_bounds_test.cpp | **6/6** (4/6 FAIL pre-fix — run/unified014_aput/before_fix_FAIL.txt) | DEX-APUT-BOUNDS: aput AOSP null/bounds semantics (NPE on null, AIOOBE len/index, length immutable, unknown-length legacy gate preserved); AOSP oracle docs/upstream_reference_aput_aosp.md |
+| tests/unified014_fill_array_test.cpp | **5/5** (3/5 FAIL pre-fix — run/unified014_fill/before_fix_FAIL.txt) | DEX-FILL-LEN-DRIFT: fill-array-data AOSP semantics (overflow AIOOBE "failed FILL_ARRAY_DATA; length=…, index=…", NPE on null, length NEVER mutated — no shrink/grow, no silent 100-element cap); oracle: entrypoints/entrypoint_utils.cc FillArrayData @android-14.0.0_r1 |
 | tests/exp088_f5_return_wide_test.cpp | 5/5 | K-08 return-wide |
 | tests/exp088_phasef_handler_queue_semantics.cpp | 23/23 | K-10 FIFO ordering |
 | tests/simple_test.cpp | 4/4 | view hierarchy basics |
