@@ -1,0 +1,774 @@
+{
+ "generated": "2026-09-03 02:17:50",
+ "canonical_reference": {
+  "recon3_repo_HEAD_tree": "faea179ceeb93415f1db65365ebe69f7218893fa",
+  "pass3_stage_repo_HEAD_tree": "faea179ceeb93415f1db65365ebe69f7218893fa",
+  "identical": true,
+  "HEAD": "f7144209aecc4a4adf991c86e0d16dadea62a68e"
+ },
+ "remote_state": {
+  "ls-remote": "bbe0ce3067401211af35402483b96baae69220df\tHEAD\nbbe0ce3067401211af35402483b96baae69220df\trefs/heads/main",
+  "read_only_check": true,
+  "push_performed": false
+ },
+ "repos": [
+  {
+   "id": "A-01",
+   "git_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-01/repo/.git",
+   "is_shallow": true,
+   "HEAD": "ea81e00f2a9d784d5c4dd840a96d93f6dde49863",
+   "HEAD_subject": "ea81e00 UNIFIED_011.3: campaign final report + screenshot index (\u00a739/\u00a742)",
+   "branches": [
+    "* (HEAD detached at ea81e00)",
+    "campaign-013",
+    "campaign-014",
+    "remotes/origin/HEAD -> origin/campaign-013",
+    "remotes/origin/campaign-013"
+   ],
+   "tags": [
+    "campaign-012-baseline",
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3",
+    "v0.11.4-fix-01",
+    "v0.13.0",
+    "v0.13.0-baseline",
+    "v0.14.0-partial"
+   ],
+   "commits_all": "121",
+   "earliest": "a9434de303b8f1a22636900568dd6d6138a0768c",
+   "latest": "894eae2db618c4d1c924f32245ea3519f8ee50a2 2026-09-02 12:08:55 +0000 CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance ",
+   "fsck_full": "CLEAN",
+   "fsck_unreachable_dangling": [],
+   "fsck_unreachable_count": 0,
+   "reflog_entries": 9,
+   "reflog_head20": [
+    "ea81e00 HEAD@{0}: checkout: moving from b9d93cc98b751149e7203fe62bd9bc45c51b43e4 to campaign-012-baseline^{com",
+    "b9d93cc HEAD@{1}: checkout: moving from 6c9a91ec092002dbdd1b251f5e1ecc731a4f541e to v0.11.4-fix-01^{commit}",
+    "6c9a91e HEAD@{2}: checkout: moving from 340a9cf861948b2512a8d239808be519275e87a0 to v0.11.2-unified-011-2^{com",
+    "340a9cf HEAD@{3}: checkout: moving from 388fb453e7073d1249fb0c83202f01ae8f9becb7 to v0.11.1-unified-011-1^{com",
+    "894eae2 refs/heads/campaign-014@{0}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + pro",
+    "2ede367 refs/heads/campaign-014@{1}: branch: Created from 2ede367cc499b7c17e536062df200d347e6cbfbc",
+    "388fb45 HEAD@{4}: checkout: moving from campaign-014 to v0.11-unified-011^{commit}",
+    "894eae2 HEAD@{5}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance resolution ",
+    "2ede367 HEAD@{6}: checkout: moving from campaign-013 to campaign-014"
+   ],
+   "stashes": 0,
+   "object_counts": {
+    "blob": 1145,
+    "commit": 121,
+    "tag": 6,
+    "tree": 785
+   },
+   "head_tree_files": 823,
+   "reachable_blobs_all_refs": 1145,
+   "archive": "MiniAndroid_CAMPAIGN-012-baseline_GIT_HANDOFF.zip"
+  },
+  {
+   "id": "A-03",
+   "git_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-03/repo/.git",
+   "is_shallow": false,
+   "HEAD": "272f216c5de6d65cb1337716b23bcceb01c15e49",
+   "HEAD_subject": "272f216 evidence: real-APK validation of FIX-01..05 \u2014 chessclock/headingcalculator/bgclock leave the default screen; gol",
+   "branches": [
+    "campaign-013",
+    "campaign-014",
+    "* integration/master-reconciliation",
+    "remotes/master/main",
+    "remotes/origin/HEAD -> origin/campaign-013",
+    "remotes/origin/campaign-013"
+   ],
+   "tags": [
+    "campaign-012-baseline",
+    "pre-integration-local-rescue",
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3",
+    "v0.11.4-fix-01",
+    "v0.13.0",
+    "v0.13.0-baseline",
+    "v0.14.0-partial"
+   ],
+   "commits_all": "360",
+   "earliest": "1c5255a99de2eec55b72364234567ea0397472be",
+   "latest": "272f216c5de6d65cb1337716b23bcceb01c15e49 2026-09-02 21:58:37 +0000 evidence: real-APK validation of FIX-01..05 \u2014 chessclock/headingcalculato",
+   "fsck_full": "CLEAN",
+   "fsck_unreachable_dangling": [],
+   "fsck_unreachable_count": 0,
+   "reflog_entries": 30,
+   "reflog_head20": [
+    "272f216 refs/heads/integration/master-reconciliation@{0}: commit: evidence: real-APK validation of FIX-01..05 ",
+    "272f216 HEAD@{0}: commit: evidence: real-APK validation of FIX-01..05 \u2014 chessclock/headingcalculator/bgclock l",
+    "df52c72 refs/heads/integration/master-reconciliation@{1}: commit: docs: pass-2 integration record addendum \u2014 r",
+    "df52c72 HEAD@{1}: commit: docs: pass-2 integration record addendum \u2014 reconciliation completion, push still blo",
+    "cc5ca8e refs/heads/integration/master-reconciliation@{2}: commit: docs: master knowledge index updated \u2014 K-18/",
+    "cc5ca8e HEAD@{2}: commit: docs: master knowledge index updated \u2014 K-18/K-19/K-20/K-29 VERIFIED+FIXED, K-31 lit8",
+    "9d095f9 refs/heads/integration/master-reconciliation@{3}: commit: fix: implement missing Dalvik semantics \u2014 sw",
+    "9d095f9 HEAD@{3}: commit: fix: implement missing Dalvik semantics \u2014 switch dispatch, neg/not family, div-zero ",
+    "0fd1ad6 HEAD@{4}: reset: moving to HEAD",
+    "0fd1ad6 refs/heads/integration/master-reconciliation@{4}: commit (amend): docs: integration execution record \u2014",
+    "0fd1ad6 HEAD@{5}: commit (amend): docs: integration execution record \u2014 identity block, restore procedures, pus",
+    "b5d2140 refs/heads/integration/master-reconciliation@{5}: commit: docs: integration execution record \u2014 identit",
+    "b5d2140 HEAD@{6}: commit: docs: integration execution record \u2014 identity block, restore procedures, push-gated ",
+    "0212a5d refs/heads/integration/master-reconciliation@{6}: commit: docs: master knowledge index + rewritten REA",
+    "0212a5d HEAD@{7}: commit: docs: master knowledge index + rewritten README + state docs (master request \u00a711/\u00a713",
+    "6fda28d refs/heads/integration/master-reconciliation@{7}: commit: fix: Dalvik 64-bit long semantics, cmp NaN o",
+    "894eae2 refs/heads/integration/master-reconciliation@{8}: branch: Created from HEAD",
+    "6fda28d HEAD@{8}: commit: fix: Dalvik 64-bit long semantics, cmp NaN ordering, real numeric conversions, 12x r",
+    "894eae2 HEAD@{9}: checkout: moving from 894eae2db618c4d1c924f32245ea3519f8ee50a2 to integration/master-reconci",
+    "bbe0ce3 refs/remotes/master/main@{0}: fetch --unshallow master main: storing head"
+   ],
+   "stashes": 0,
+   "object_counts": {
+    "blob": 5208,
+    "commit": 361,
+    "tag": 7,
+    "tree": 3241
+   },
+   "head_tree_files": 1000,
+   "reachable_blobs_all_refs": 5207,
+   "archive": "MiniAndroid_CANONICAL_MASTER_RECONCILED_272f216c.zip"
+  },
+  {
+   "id": "A-04",
+   "git_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-04/repo/.git",
+   "is_shallow": false,
+   "HEAD": "f7144209aecc4a4adf991c86e0d16dadea62a68e",
+   "HEAD_subject": "f714420 docs: pass-3 final report (9-section format + omission audit PASS verdict)",
+   "branches": [
+    "* integration/master-reconciliation",
+    "remotes/origin/HEAD -> origin/integration/master-reconciliation",
+    "remotes/origin/campaign-013",
+    "remotes/origin/campaign-014",
+    "remotes/origin/integration/master-reconciliation"
+   ],
+   "tags": [
+    "campaign-012-baseline",
+    "pre-integration-local-rescue",
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3",
+    "v0.11.4-fix-01",
+    "v0.13.0",
+    "v0.13.0-baseline",
+    "v0.14.0-partial"
+   ],
+   "commits_all": "362",
+   "earliest": "1c5255a99de2eec55b72364234567ea0397472be",
+   "latest": "f7144209aecc4a4adf991c86e0d16dadea62a68e 2026-09-03 01:12:07 +0000 docs: pass-3 final report (9-section format + omission audit PASS verdict",
+   "fsck_full": "CLEAN",
+   "fsck_unreachable_dangling": [],
+   "fsck_unreachable_count": 0,
+   "reflog_entries": 5,
+   "reflog_head20": [
+    "f714420 refs/heads/integration/master-reconciliation@{0}: clone: from /home/z/my-project/miniandroid_ws/recon3",
+    "f714420 refs/remotes/origin/HEAD@{0}: clone: from /home/z/my-project/miniandroid_ws/recon3/repo",
+    "f714420 HEAD@{0}: checkout: moving from f7144209aecc4a4adf991c86e0d16dadea62a68e to integration/master-reconci",
+    "f714420 HEAD@{1}: checkout: moving from integration/master-reconciliation to f714420",
+    "f714420 HEAD@{2}: clone: from /home/z/my-project/miniandroid_ws/recon3/repo"
+   ],
+   "stashes": 0,
+   "object_counts": {
+    "blob": 5230,
+    "commit": 362,
+    "tag": 7,
+    "tree": 3258
+   },
+   "head_tree_files": 1014,
+   "reachable_blobs_all_refs": 5230,
+   "archive": "MiniAndroid_CANONICAL_MASTER_RECONCILED_f714420.zip"
+  },
+  {
+   "id": "A-06",
+   "git_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-06/repo/.git",
+   "is_shallow": false,
+   "HEAD": "0fd1ad667e99a59a9840dde625ed4ab1f6efec37",
+   "HEAD_subject": "0fd1ad6 docs: integration execution record \u2014 identity block, restore procedures, push-gated procedure (PUSH_BLOCKED_PEND",
+   "branches": [
+    "campaign-013",
+    "campaign-014",
+    "* integration/master-reconciliation",
+    "remotes/master/main",
+    "remotes/origin/HEAD -> origin/campaign-013",
+    "remotes/origin/campaign-013"
+   ],
+   "tags": [
+    "campaign-012-baseline",
+    "pre-integration-local-rescue",
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3",
+    "v0.11.4-fix-01",
+    "v0.13.0",
+    "v0.13.0-baseline",
+    "v0.14.0-partial"
+   ],
+   "commits_all": "356",
+   "earliest": "1c5255a99de2eec55b72364234567ea0397472be",
+   "latest": "0fd1ad667e99a59a9840dde625ed4ab1f6efec37 2026-09-02 13:24:30 +0000 docs: integration execution record \u2014 identity block, restore procedures, ",
+   "fsck_full": "CLEAN",
+   "fsck_unreachable_dangling": [],
+   "fsck_unreachable_count": 0,
+   "reflog_entries": 21,
+   "reflog_head20": [
+    "0fd1ad6 refs/heads/integration/master-reconciliation@{0}: commit (amend): docs: integration execution record \u2014",
+    "0fd1ad6 HEAD@{0}: commit (amend): docs: integration execution record \u2014 identity block, restore procedures, pus",
+    "b5d2140 refs/heads/integration/master-reconciliation@{1}: commit: docs: integration execution record \u2014 identit",
+    "b5d2140 HEAD@{1}: commit: docs: integration execution record \u2014 identity block, restore procedures, push-gated ",
+    "0212a5d refs/heads/integration/master-reconciliation@{2}: commit: docs: master knowledge index + rewritten REA",
+    "0212a5d HEAD@{2}: commit: docs: master knowledge index + rewritten README + state docs (master request \u00a711/\u00a713",
+    "6fda28d refs/heads/integration/master-reconciliation@{3}: commit: fix: Dalvik 64-bit long semantics, cmp NaN o",
+    "894eae2 refs/heads/integration/master-reconciliation@{4}: branch: Created from HEAD",
+    "6fda28d HEAD@{3}: commit: fix: Dalvik 64-bit long semantics, cmp NaN ordering, real numeric conversions, 12x r",
+    "894eae2 HEAD@{4}: checkout: moving from 894eae2db618c4d1c924f32245ea3519f8ee50a2 to integration/master-reconci",
+    "bbe0ce3 refs/remotes/master/main@{0}: fetch --unshallow master main: storing head",
+    "894eae2 HEAD@{5}: checkout: moving from ea81e00f2a9d784d5c4dd840a96d93f6dde49863 to v0.14.0-partial^{commit}",
+    "ea81e00 HEAD@{6}: checkout: moving from b9d93cc98b751149e7203fe62bd9bc45c51b43e4 to campaign-012-baseline^{com",
+    "b9d93cc HEAD@{7}: checkout: moving from 6c9a91ec092002dbdd1b251f5e1ecc731a4f541e to v0.11.4-fix-01^{commit}",
+    "6c9a91e HEAD@{8}: checkout: moving from 340a9cf861948b2512a8d239808be519275e87a0 to v0.11.2-unified-011-2^{com",
+    "340a9cf HEAD@{9}: checkout: moving from 388fb453e7073d1249fb0c83202f01ae8f9becb7 to v0.11.1-unified-011-1^{com",
+    "894eae2 refs/heads/campaign-014@{0}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + pro",
+    "2ede367 refs/heads/campaign-014@{1}: branch: Created from 2ede367cc499b7c17e536062df200d347e6cbfbc",
+    "388fb45 HEAD@{10}: checkout: moving from campaign-014 to v0.11-unified-011^{commit}",
+    "894eae2 HEAD@{11}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance resolution"
+   ],
+   "stashes": 0,
+   "object_counts": {
+    "blob": 5190,
+    "commit": 357,
+    "tag": 7,
+    "tree": 3219
+   },
+   "head_tree_files": 981,
+   "reachable_blobs_all_refs": 5189,
+   "archive": "MiniAndroid_MASTER_INTEGRATION_REVIEW_0fd1ad6.zip"
+  },
+  {
+   "id": "A-07",
+   "git_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-07/repo/.git",
+   "is_shallow": true,
+   "HEAD": "388fb453e7073d1249fb0c83202f01ae8f9becb7",
+   "HEAD_subject": "388fb45 UNIFIED_011 (\u00a745): anchor release identity to tag v0.11-unified-011 (self-referential sha removed); 60 commits, ",
+   "branches": [
+    "* (HEAD detached at 388fb45)",
+    "campaign-013",
+    "campaign-014",
+    "remotes/origin/HEAD -> origin/campaign-013",
+    "remotes/origin/campaign-013"
+   ],
+   "tags": [
+    "campaign-012-baseline",
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3",
+    "v0.11.4-fix-01",
+    "v0.13.0",
+    "v0.13.0-baseline",
+    "v0.14.0-partial"
+   ],
+   "commits_all": "121",
+   "earliest": "a9434de303b8f1a22636900568dd6d6138a0768c",
+   "latest": "894eae2db618c4d1c924f32245ea3519f8ee50a2 2026-09-02 12:08:55 +0000 CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance ",
+   "fsck_full": "CLEAN",
+   "fsck_unreachable_dangling": [],
+   "fsck_unreachable_count": 0,
+   "reflog_entries": 5,
+   "reflog_head20": [
+    "894eae2 refs/heads/campaign-014@{0}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + pro",
+    "2ede367 refs/heads/campaign-014@{1}: branch: Created from 2ede367cc499b7c17e536062df200d347e6cbfbc",
+    "388fb45 HEAD@{0}: checkout: moving from campaign-014 to v0.11-unified-011^{commit}",
+    "894eae2 HEAD@{1}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance resolution ",
+    "2ede367 HEAD@{2}: checkout: moving from campaign-013 to campaign-014"
+   ],
+   "stashes": 0,
+   "object_counts": {
+    "blob": 1145,
+    "commit": 121,
+    "tag": 6,
+    "tree": 785
+   },
+   "head_tree_files": 635,
+   "reachable_blobs_all_refs": 1145,
+   "archive": "MiniAndroid_v0.11-unified-011_GIT_HANDOFF.zip"
+  },
+  {
+   "id": "A-08",
+   "git_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-08/repo/.git",
+   "is_shallow": true,
+   "HEAD": "340a9cf861948b2512a8d239808be519275e87a0",
+   "HEAD_subject": "340a9cf UNIFIED_011.1: matrix baseline anchored to libpng-encoder telegram SHA 088ea640 (pixel-identical to 06fb40da lin",
+   "branches": [
+    "* (HEAD detached at 340a9cf)",
+    "campaign-013",
+    "campaign-014",
+    "remotes/origin/HEAD -> origin/campaign-013",
+    "remotes/origin/campaign-013"
+   ],
+   "tags": [
+    "campaign-012-baseline",
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3",
+    "v0.11.4-fix-01",
+    "v0.13.0",
+    "v0.13.0-baseline",
+    "v0.14.0-partial"
+   ],
+   "commits_all": "121",
+   "earliest": "a9434de303b8f1a22636900568dd6d6138a0768c",
+   "latest": "894eae2db618c4d1c924f32245ea3519f8ee50a2 2026-09-02 12:08:55 +0000 CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance ",
+   "fsck_full": "CLEAN",
+   "fsck_unreachable_dangling": [],
+   "fsck_unreachable_count": 0,
+   "reflog_entries": 6,
+   "reflog_head20": [
+    "340a9cf HEAD@{0}: checkout: moving from 388fb453e7073d1249fb0c83202f01ae8f9becb7 to v0.11.1-unified-011-1^{com",
+    "894eae2 refs/heads/campaign-014@{0}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + pro",
+    "2ede367 refs/heads/campaign-014@{1}: branch: Created from 2ede367cc499b7c17e536062df200d347e6cbfbc",
+    "388fb45 HEAD@{1}: checkout: moving from campaign-014 to v0.11-unified-011^{commit}",
+    "894eae2 HEAD@{2}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance resolution ",
+    "2ede367 HEAD@{3}: checkout: moving from campaign-013 to campaign-014"
+   ],
+   "stashes": 0,
+   "object_counts": {
+    "blob": 1145,
+    "commit": 121,
+    "tag": 6,
+    "tree": 785
+   },
+   "head_tree_files": 785,
+   "reachable_blobs_all_refs": 1145,
+   "archive": "MiniAndroid_v0.11.1-unified-011-1_GIT_HANDOFF.zip"
+  },
+  {
+   "id": "A-09",
+   "git_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-09/repo/.git",
+   "is_shallow": true,
+   "HEAD": "6c9a91ec092002dbdd1b251f5e1ecc731a4f541e",
+   "HEAD_subject": "6c9a91e UNIFIED_011.2: curated evidence \u2014 click-test reports/frames, matrix summary + goldens, WhatsApp/Signal probe evi",
+   "branches": [
+    "* (HEAD detached at 6c9a91e)",
+    "campaign-013",
+    "campaign-014",
+    "remotes/origin/HEAD -> origin/campaign-013",
+    "remotes/origin/campaign-013"
+   ],
+   "tags": [
+    "campaign-012-baseline",
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3",
+    "v0.11.4-fix-01",
+    "v0.13.0",
+    "v0.13.0-baseline",
+    "v0.14.0-partial"
+   ],
+   "commits_all": "121",
+   "earliest": "a9434de303b8f1a22636900568dd6d6138a0768c",
+   "latest": "894eae2db618c4d1c924f32245ea3519f8ee50a2 2026-09-02 12:08:55 +0000 CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance ",
+   "fsck_full": "CLEAN",
+   "fsck_unreachable_dangling": [],
+   "fsck_unreachable_count": 0,
+   "reflog_entries": 7,
+   "reflog_head20": [
+    "6c9a91e HEAD@{0}: checkout: moving from 340a9cf861948b2512a8d239808be519275e87a0 to v0.11.2-unified-011-2^{com",
+    "340a9cf HEAD@{1}: checkout: moving from 388fb453e7073d1249fb0c83202f01ae8f9becb7 to v0.11.1-unified-011-1^{com",
+    "894eae2 refs/heads/campaign-014@{0}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + pro",
+    "2ede367 refs/heads/campaign-014@{1}: branch: Created from 2ede367cc499b7c17e536062df200d347e6cbfbc",
+    "388fb45 HEAD@{2}: checkout: moving from campaign-014 to v0.11-unified-011^{commit}",
+    "894eae2 HEAD@{3}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance resolution ",
+    "2ede367 HEAD@{4}: checkout: moving from campaign-013 to campaign-014"
+   ],
+   "stashes": 0,
+   "object_counts": {
+    "blob": 1145,
+    "commit": 121,
+    "tag": 6,
+    "tree": 785
+   },
+   "head_tree_files": 808,
+   "reachable_blobs_all_refs": 1145,
+   "archive": "MiniAndroid_v0.11.2-unified-011-2_GIT_HANDOFF.zip"
+  },
+  {
+   "id": "A-10",
+   "git_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-10/MiniAndroid_v0.11.3-unified-011-3/.git",
+   "is_shallow": true,
+   "HEAD": "ea81e00f2a9d784d5c4dd840a96d93f6dde49863",
+   "HEAD_subject": "ea81e00 UNIFIED_011.3: campaign final report + screenshot index (\u00a739/\u00a742)",
+   "branches": [
+    "* (HEAD detached at v0.11.3-unified-011-3)",
+    "archive/011-stash-runtime-noise",
+    "archive/011-stash-unified007",
+    "archive/011-superseded-consistency",
+    "main",
+    "remotes/origin/HEAD -> origin/main",
+    "remotes/origin/main"
+   ],
+   "tags": [
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3"
+   ],
+   "commits_all": "78",
+   "earliest": "b6ef1439b29e66f2f3d47ff910f6a85b7a37bf89",
+   "latest": "ea81e00f2a9d784d5c4dd840a96d93f6dde49863 2026-09-01 16:58:14 +0000 UNIFIED_011.3: campaign final report + screenshot index (\u00a739/\u00a742)",
+   "fsck_full": "CLEAN",
+   "fsck_unreachable_dangling": [
+    "unreachable tree d370a563a7c18693fcf82cef08ce77fd05f0fc04",
+    "unreachable tree 1811caa667d8ca173a9ca28463bfb7465315de9c",
+    "unreachable blob 6ba1c1b002772f5bba20977a1e8134e0ce57f13f",
+    "unreachable tag bb82fb6b0415d9847f7bcc0d0dc64281c39b7b7f",
+    "unreachable commit 321794dc23d2643916dcb0143f790efdb10087f4",
+    "unreachable tag 9c69f9e88b0f9a0bf7f639a91b62257eea6b853b",
+    "unreachable commit 0aab25aab090f7f3823797aa55c1508c90184ef1",
+    "unreachable tag 301bab7932679ec2759d88cc1514599eb6a57bda",
+    "unreachable tree ebac1ffa655130e470235c21e8c6db9fc9c1de50",
+    "unreachable tree 8cbd1c7022b362aa18707e81b73c11444ebe322e",
+    "unreachable blob 195e88c810b662be67bb7bc94a87aeb886acdecd",
+    "unreachable tag 9d3e269ff424e0ce2d471b4d8efc9eec0c916ecc"
+   ],
+   "fsck_unreachable_count": 12,
+   "reflog_entries": 56,
+   "reflog_head20": [
+    "ea81e00 HEAD@{0}: checkout: moving from main to v0.11.3-unified-011-3",
+    "ea81e00 refs/heads/main@{0}: commit: UNIFIED_011.3: campaign final report + screenshot index (\u00a739/\u00a742)",
+    "ea81e00 HEAD@{1}: commit: UNIFIED_011.3: campaign final report + screenshot index (\u00a739/\u00a742)",
+    "ef5f732 refs/heads/main@{1}: commit: UNIFIED_011.3: campaign docs + curated evidence",
+    "ef5f732 HEAD@{2}: commit: UNIFIED_011.3: campaign docs + curated evidence",
+    "0da839a refs/heads/main@{2}: commit: UNIFIED_011.3: TYPED-CATCH + EXC-PROPAGATE + FRAME-2 visual correctness",
+    "0da839a HEAD@{3}: commit: UNIFIED_011.3: TYPED-CATCH + EXC-PROPAGATE + FRAME-2 visual correctness",
+    "6c9a91e refs/heads/main@{3}: commit: UNIFIED_011.2: curated evidence \u2014 click-test reports/frames, matrix summa",
+    "6c9a91e HEAD@{4}: commit: UNIFIED_011.2: curated evidence \u2014 click-test reports/frames, matrix summary + golden",
+    "43e024f refs/heads/main@{4}: commit: UNIFIED_011.2: track root START_HERE.md (package entry point) \u2014 closes M2",
+    "43e024f HEAD@{5}: commit: UNIFIED_011.2: track root START_HERE.md (package entry point) \u2014 closes M2",
+    "ae58a4d refs/heads/main@{5}: commit: UNIFIED_011.2: campaign docs \u2014 RECOVERED_CAMPAIGN_STATUS + MASTER_CURRENT",
+    "ae58a4d HEAD@{6}: commit: UNIFIED_011.2: campaign docs \u2014 RECOVERED_CAMPAIGN_STATUS + MASTER_CURRENT_GAP_MATRIX",
+    "8e1d633 refs/heads/main@{6}: commit: UNIFIED_011.2: CLICK-TEST \u2014 generic touch probe + XML android:onClick dis",
+    "8e1d633 HEAD@{7}: commit: UNIFIED_011.2: CLICK-TEST \u2014 generic touch probe + XML android:onClick dispatch (\u00a710/",
+    "73e1946 refs/heads/main@{7}: commit: UNIFIED_011.2: IMAGE-RES-RENDER \u2014 real image pixels end-to-end (\u00a713/\u00a714/\u00a7",
+    "73e1946 HEAD@{8}: commit: UNIFIED_011.2: IMAGE-RES-RENDER \u2014 real image pixels end-to-end (\u00a713/\u00a714/\u00a715/\u00a716)",
+    "2f05134 refs/heads/main@{8}: commit: UNIFIED_011.2: filled-new-array 35c fix + runtime exception machinery (SY",
+    "2f05134 HEAD@{9}: commit: UNIFIED_011.2: filled-new-array 35c fix + runtime exception machinery (SYNTH-EXC)",
+    "340a9cf refs/heads/main@{9}: commit: UNIFIED_011.1: matrix baseline anchored to libpng-encoder telegram SHA 08"
+   ],
+   "stashes": 0,
+   "object_counts": {
+    "blob": 966,
+    "commit": 80,
+    "tag": 8,
+    "tree": 492
+   },
+   "head_tree_files": 823,
+   "reachable_blobs_all_refs": 964,
+   "archive": "MiniAndroid_v0.11.3-unified-011-3_GIT_HANDOFF.zip"
+  },
+  {
+   "id": "A-11",
+   "git_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-11/repo/.git",
+   "is_shallow": true,
+   "HEAD": "b9d93cc98b751149e7203fe62bd9bc45c51b43e4",
+   "HEAD_subject": "b9d93cc CAMPAIGN 013 FIX-013-04: ARSC file-backed value-path resolution (\u00a718)",
+   "branches": [
+    "* (HEAD detached at b9d93cc)",
+    "campaign-013",
+    "campaign-014",
+    "remotes/origin/HEAD -> origin/campaign-013",
+    "remotes/origin/campaign-013"
+   ],
+   "tags": [
+    "campaign-012-baseline",
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3",
+    "v0.11.4-fix-01",
+    "v0.13.0",
+    "v0.13.0-baseline",
+    "v0.14.0-partial"
+   ],
+   "commits_all": "121",
+   "earliest": "a9434de303b8f1a22636900568dd6d6138a0768c",
+   "latest": "894eae2db618c4d1c924f32245ea3519f8ee50a2 2026-09-02 12:08:55 +0000 CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance ",
+   "fsck_full": "CLEAN",
+   "fsck_unreachable_dangling": [],
+   "fsck_unreachable_count": 0,
+   "reflog_entries": 8,
+   "reflog_head20": [
+    "b9d93cc HEAD@{0}: checkout: moving from 6c9a91ec092002dbdd1b251f5e1ecc731a4f541e to v0.11.4-fix-01^{commit}",
+    "6c9a91e HEAD@{1}: checkout: moving from 340a9cf861948b2512a8d239808be519275e87a0 to v0.11.2-unified-011-2^{com",
+    "340a9cf HEAD@{2}: checkout: moving from 388fb453e7073d1249fb0c83202f01ae8f9becb7 to v0.11.1-unified-011-1^{com",
+    "894eae2 refs/heads/campaign-014@{0}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + pro",
+    "2ede367 refs/heads/campaign-014@{1}: branch: Created from 2ede367cc499b7c17e536062df200d347e6cbfbc",
+    "388fb45 HEAD@{3}: checkout: moving from campaign-014 to v0.11-unified-011^{commit}",
+    "894eae2 HEAD@{4}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance resolution ",
+    "2ede367 HEAD@{5}: checkout: moving from campaign-013 to campaign-014"
+   ],
+   "stashes": 0,
+   "object_counts": {
+    "blob": 1145,
+    "commit": 121,
+    "tag": 6,
+    "tree": 785
+   },
+   "head_tree_files": 827,
+   "reachable_blobs_all_refs": 1145,
+   "archive": "MiniAndroid_v0.11.4-fix-01_GAP-RECONCILIATION_GIT_HANDOFF.zip"
+  },
+  {
+   "id": "A-12",
+   "git_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-12/repo/.git",
+   "is_shallow": true,
+   "HEAD": "2ede367cc499b7c17e536062df200d347e6cbfbc",
+   "HEAD_subject": "2ede367 CAMPAIGN 013: handoff SHA reference finalization",
+   "branches": [
+    "* campaign-013",
+    "remotes/origin/HEAD -> origin/campaign-013",
+    "remotes/origin/campaign-013"
+   ],
+   "tags": [
+    "campaign-012-baseline",
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3",
+    "v0.11.4-fix-01",
+    "v0.13.0",
+    "v0.13.0-baseline"
+   ],
+   "commits_all": "120",
+   "earliest": "a9434de303b8f1a22636900568dd6d6138a0768c",
+   "latest": "2ede367cc499b7c17e536062df200d347e6cbfbc 2026-09-02 01:46:13 +0000 CAMPAIGN 013: handoff SHA reference finalization",
+   "fsck_full": "CLEAN",
+   "fsck_unreachable_dangling": [],
+   "fsck_unreachable_count": 0,
+   "reflog_entries": 0,
+   "reflog_head20": [],
+   "stashes": 0,
+   "object_counts": {
+    "blob": 1096,
+    "commit": 120,
+    "tag": 5,
+    "tree": 752
+   },
+   "head_tree_files": 850,
+   "reachable_blobs_all_refs": 1096,
+   "archive": "MiniAndroid_v0.13.0_GIT_HANDOFF.zip"
+  },
+  {
+   "id": "A-14",
+   "git_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-14/repo/.git",
+   "is_shallow": true,
+   "HEAD": "894eae2db618c4d1c924f32245ea3519f8ee50a2",
+   "HEAD_subject": "894eae2 CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance resolution + honest PARTIAL status; run",
+   "branches": [
+    "* (HEAD detached at 894eae2)",
+    "campaign-013",
+    "campaign-014",
+    "remotes/origin/HEAD -> origin/campaign-013",
+    "remotes/origin/campaign-013"
+   ],
+   "tags": [
+    "campaign-012-baseline",
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3",
+    "v0.11.4-fix-01",
+    "v0.13.0",
+    "v0.13.0-baseline",
+    "v0.14.0-partial"
+   ],
+   "commits_all": "121",
+   "earliest": "a9434de303b8f1a22636900568dd6d6138a0768c",
+   "latest": "894eae2db618c4d1c924f32245ea3519f8ee50a2 2026-09-02 12:08:55 +0000 CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance ",
+   "fsck_full": "CLEAN",
+   "fsck_unreachable_dangling": [],
+   "fsck_unreachable_count": 0,
+   "reflog_entries": 10,
+   "reflog_head20": [
+    "894eae2 HEAD@{0}: checkout: moving from ea81e00f2a9d784d5c4dd840a96d93f6dde49863 to v0.14.0-partial^{commit}",
+    "ea81e00 HEAD@{1}: checkout: moving from b9d93cc98b751149e7203fe62bd9bc45c51b43e4 to campaign-012-baseline^{com",
+    "b9d93cc HEAD@{2}: checkout: moving from 6c9a91ec092002dbdd1b251f5e1ecc731a4f541e to v0.11.4-fix-01^{commit}",
+    "6c9a91e HEAD@{3}: checkout: moving from 340a9cf861948b2512a8d239808be519275e87a0 to v0.11.2-unified-011-2^{com",
+    "340a9cf HEAD@{4}: checkout: moving from 388fb453e7073d1249fb0c83202f01ae8f9becb7 to v0.11.1-unified-011-1^{com",
+    "894eae2 refs/heads/campaign-014@{0}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + pro",
+    "2ede367 refs/heads/campaign-014@{1}: branch: Created from 2ede367cc499b7c17e536062df200d347e6cbfbc",
+    "388fb45 HEAD@{5}: checkout: moving from campaign-014 to v0.11-unified-011^{commit}",
+    "894eae2 HEAD@{6}: commit: CAMPAIGN 014 (partial): surviving triage evidence (16 apps) + provenance resolution ",
+    "2ede367 HEAD@{7}: checkout: moving from campaign-013 to campaign-014"
+   ],
+   "stashes": 0,
+   "object_counts": {
+    "blob": 1145,
+    "commit": 121,
+    "tag": 6,
+    "tree": 785
+   },
+   "head_tree_files": 973,
+   "reachable_blobs_all_refs": 1145,
+   "archive": "MiniAndroid_v0.14.0_PARTIAL_GIT_HANDOFF.zip"
+  },
+  {
+   "id": "A-02",
+   "archive": "MiniAndroid_CAMPAIGN013_REPORTS_bundle.zip",
+   "has_git": false,
+   "files": [
+    "COMPOSE_REPORT_013.md",
+    "BUG_RECONCILIATION_013.md",
+    "SCREENSHOT_INDEX_013.md",
+    "DIALOG_SURFACE_REPORT_013.md",
+    "HANDOFF_013.md",
+    "TOP_BLOCKERS_013.md",
+    "CAMPAIGN_013_WORKLOG.md",
+    "VERSION_HANDOFF_MANIFEST_v0.11.3.md",
+    "RUNTIME_VIEW_REPORT_013.md",
+    "GLES_REPORT_013.md",
+    "FIXES_013.md",
+    "COMPATIBILITY_SCOREBOARD_013.md",
+    "REAL_APP_MATRIX_013.md"
+   ]
+  }
+ ],
+ "bundles": [
+  {
+   "id": "A-17",
+   "bundle": "BACKUP_CANONICAL_PASS3_f714420.bundle",
+   "sha256": "6263610fffcd90199166a0fea24ddbd0187dcd832b8c9f2f7bde36a420cf2af8",
+   "verify": "The bundle contains these 17 refs:\n2ede367cc499b7c17e536062df200d347e6cbfbc refs/heads/campaign-013\n894eae2db618c4d1c924f32245ea3519f8ee50a2 refs/heads/campaign-014\nf7144209aecc4a4adf991c86e0d16dadea62a68e refs/heads/integration/master-reconciliation\nbbe0ce3067401211af35402483b96baae69220df refs/remotes/master/main\n2ede367cc499b7c17e536062df200d347e6cbfbc refs/remotes/origin/HEAD\n2ede367cc499b7c17",
+   "heads": "2ede367cc499b7c17e536062df200d347e6cbfbc refs/heads/campaign-013\n894eae2db618c4d1c924f32245ea3519f8ee50a2 refs/heads/campaign-014\nf7144209aecc4a4adf991c86e0d16dadea62a68e refs/heads/integration/master-reconciliation\nbbe0ce3067401211af35402483b96baae69220df refs/remotes/master/main\n2ede367cc499b7c17e536062df200d347e6cbfbc refs/remotes/origin/HEAD\n2ede367cc499b7c17e536062df200d347e6cbfbc refs/remotes/origin/campaign-013\nea81e00f2a9d784d5c4dd840a96d93f6dde49863 refs/tags/campaign-012-baseline\n8b57d053d0844103c411c9b86147db218c63e65c refs/tags/pre-integration-local-rescue\na9ad7109e97b45f041d14cda2d8d5f874250a781 refs/tags/v0.11-unified-011\n7a814d8a0c33c82e53b20660fdb5517f173ea632 refs/tags/v0.11.1-unified-011-1\nea5d455476a45f8f0a54ee4803a34223be5350f3 refs/tags/v0.11.2-unified-011-2\n4b8a80e3f8d109c5360c493088b7ccd66c68eea8 refs/tags/v0.11.3-unified-011-3\n687e34b6bc0d8846a905aec5fda14f93a77db115 refs/tags/v0.11.4-fix-01\n2ede367cc499b7c17e536062df200d347e6cbfbc refs/tags/v0.13.0\nea81e00f2a9d784d5c4dd840a96d93f6dde49863 refs/tags/v0.13.0-baseline\nad3460783ea43b7dba1f936d31ac2ed9240c7938 refs/tags/v0.14.0-partial\nf7144209aecc4a4adf991c86e0d16dadea62a68e HEAD",
+   "HEAD": "f7144209aecc4a4adf991c86e0d16dadea62a68e",
+   "commits_all": "362",
+   "is_shallow": false,
+   "fsck_full": "CLEAN",
+   "head_tree_files": 1014,
+   "object_counts": {
+    "blob": 5230,
+    "commit": 362,
+    "tag": 7,
+    "tree": 3258
+   },
+   "fsck_unreachable_count": 0,
+   "branches": [
+    "campaign-013",
+    "campaign-014",
+    "* integration/master-reconciliation"
+   ],
+   "tags": [
+    "campaign-012-baseline",
+    "pre-integration-local-rescue",
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3",
+    "v0.11.4-fix-01",
+    "v0.13.0",
+    "v0.13.0-baseline",
+    "v0.14.0-partial"
+   ],
+   "reflog_entries": 0,
+   "reachable_blobs_all_refs": 5230,
+   "status": "VERIFIED_COMPLETE_CLONE_OK"
+  },
+  {
+   "id": "A-18",
+   "bundle": "BACKUP_GITHUB_MASTER_FULL.bundle",
+   "sha256": "b0578280b39f3ff5704fe15aaa03ead62511dc84d61918ccae0ab04da4452e97",
+   "verify": "The bundle contains these 5 refs:\nbbe0ce3067401211af35402483b96baae69220df refs/heads/main\nbbe0ce3067401211af35402483b96baae69220df refs/remotes/origin/HEAD\nbbe0ce3067401211af35402483b96baae69220df refs/remotes/origin/main\n100e36ee43c9372f45402a6eeaaaccbcd4088d2d refs/tags/pre-integration-github-baseline\nbbe0ce3067401211af35402483b96baae69220df HEAD\nThe bundle records a complete history.\nThe bundl",
+   "heads": "bbe0ce3067401211af35402483b96baae69220df refs/heads/main\nbbe0ce3067401211af35402483b96baae69220df refs/remotes/origin/HEAD\nbbe0ce3067401211af35402483b96baae69220df refs/remotes/origin/main\n100e36ee43c9372f45402a6eeaaaccbcd4088d2d refs/tags/pre-integration-github-baseline\nbbe0ce3067401211af35402483b96baae69220df HEAD",
+   "HEAD": "bbe0ce3067401211af35402483b96baae69220df",
+   "commits_all": "322",
+   "is_shallow": false,
+   "fsck_full": "CLEAN",
+   "head_tree_files": 581,
+   "object_counts": {
+    "blob": 4791,
+    "commit": 322,
+    "tag": 1,
+    "tree": 3001
+   },
+   "fsck_unreachable_count": 0,
+   "branches": [
+    "* main"
+   ],
+   "tags": [
+    "pre-integration-github-baseline"
+   ],
+   "reflog_entries": 0,
+   "reachable_blobs_all_refs": 4791,
+   "status": "VERIFIED_COMPLETE_CLONE_OK"
+  },
+  {
+   "id": "A-19",
+   "bundle": "BACKUP_GITHUB_MASTER_bbe0ce3.bundle",
+   "sha256": "b532dea8139b2d5c3edd0bf0b1ed4fd74750df36fbab656f131a1bf36a1c1924",
+   "verify": "The bundle contains these 4 refs:\nbbe0ce3067401211af35402483b96baae69220df refs/heads/main\nbbe0ce3067401211af35402483b96baae69220df refs/remotes/origin/HEAD\nbbe0ce3067401211af35402483b96baae69220df refs/remotes/origin/main\nbbe0ce3067401211af35402483b96baae69220df HEAD\nThe bundle records a complete history.\nThe bundle uses this hash algorithm: sha1\n/tmp/my-project/download/BACKUP_GITHUB_MASTER_bbe0",
+   "heads": "bbe0ce3067401211af35402483b96baae69220df refs/heads/main\nbbe0ce3067401211af35402483b96baae69220df refs/remotes/origin/HEAD\nbbe0ce3067401211af35402483b96baae69220df refs/remotes/origin/main\nbbe0ce3067401211af35402483b96baae69220df HEAD",
+   "HEAD": "bbe0ce3067401211af35402483b96baae69220df",
+   "commits_all": "322",
+   "is_shallow": false,
+   "fsck_full": "CLEAN",
+   "head_tree_files": 581,
+   "object_counts": {
+    "blob": 4791,
+    "commit": 322,
+    "tree": 3001
+   },
+   "fsck_unreachable_count": 0,
+   "branches": [
+    "* main"
+   ],
+   "tags": [],
+   "reflog_entries": 0,
+   "reachable_blobs_all_refs": 4791,
+   "status": "VERIFIED_COMPLETE_CLONE_OK"
+  },
+  {
+   "id": "A-20",
+   "bundle": "BACKUP_LOCAL_INTEGRATION_0fd1ad6.bundle",
+   "sha256": "81edb258ca11d002ed1de6b51950be4466f7f17cf635f5f96f269bd02f33ef28",
+   "verify": "The bundle contains these 17 refs:\n2ede367cc499b7c17e536062df200d347e6cbfbc refs/heads/campaign-013\n894eae2db618c4d1c924f32245ea3519f8ee50a2 refs/heads/campaign-014\n0fd1ad667e99a59a9840dde625ed4ab1f6efec37 refs/heads/integration/master-reconciliation\nbbe0ce3067401211af35402483b96baae69220df refs/remotes/master/main\n2ede367cc499b7c17e536062df200d347e6cbfbc refs/remotes/origin/HEAD\n2ede367cc499b7c17",
+   "heads": "2ede367cc499b7c17e536062df200d347e6cbfbc refs/heads/campaign-013\n894eae2db618c4d1c924f32245ea3519f8ee50a2 refs/heads/campaign-014\n0fd1ad667e99a59a9840dde625ed4ab1f6efec37 refs/heads/integration/master-reconciliation\nbbe0ce3067401211af35402483b96baae69220df refs/remotes/master/main\n2ede367cc499b7c17e536062df200d347e6cbfbc refs/remotes/origin/HEAD\n2ede367cc499b7c17e536062df200d347e6cbfbc refs/remotes/origin/campaign-013\nea81e00f2a9d784d5c4dd840a96d93f6dde49863 refs/tags/campaign-012-baseline\n8b57d053d0844103c411c9b86147db218c63e65c refs/tags/pre-integration-local-rescue\na9ad7109e97b45f041d14cda2d8d5f874250a781 refs/tags/v0.11-unified-011\n7a814d8a0c33c82e53b20660fdb5517f173ea632 refs/tags/v0.11.1-unified-011-1\nea5d455476a45f8f0a54ee4803a34223be5350f3 refs/tags/v0.11.2-unified-011-2\n4b8a80e3f8d109c5360c493088b7ccd66c68eea8 refs/tags/v0.11.3-unified-011-3\n687e34b6bc0d8846a905aec5fda14f93a77db115 refs/tags/v0.11.4-fix-01\n2ede367cc499b7c17e536062df200d347e6cbfbc refs/tags/v0.13.0\nea81e00f2a9d784d5c4dd840a96d93f6dde49863 refs/tags/v0.13.0-baseline\nad3460783ea43b7dba1f936d31ac2ed9240c7938 refs/tags/v0.14.0-partial\n0fd1ad667e99a59a9840dde625ed4ab1f6efec37 HEAD",
+   "HEAD": "0fd1ad667e99a59a9840dde625ed4ab1f6efec37",
+   "commits_all": "356",
+   "is_shallow": false,
+   "fsck_full": "CLEAN",
+   "head_tree_files": 981,
+   "object_counts": {
+    "blob": 5189,
+    "commit": 356,
+    "tag": 7,
+    "tree": 3218
+   },
+   "fsck_unreachable_count": 0,
+   "branches": [
+    "campaign-013",
+    "campaign-014",
+    "* integration/master-reconciliation"
+   ],
+   "tags": [
+    "campaign-012-baseline",
+    "pre-integration-local-rescue",
+    "v0.11-unified-011",
+    "v0.11.1-unified-011-1",
+    "v0.11.2-unified-011-2",
+    "v0.11.3-unified-011-3",
+    "v0.11.4-fix-01",
+    "v0.13.0",
+    "v0.13.0-baseline",
+    "v0.14.0-partial"
+   ],
+   "reflog_entries": 0,
+   "reachable_blobs_all_refs": 5189,
+   "status": "VERIFIED_COMPLETE_CLONE_OK"
+  }
+ ]
+}

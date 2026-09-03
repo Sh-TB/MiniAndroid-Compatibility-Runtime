@@ -1,0 +1,5 @@
+commit 0aab25aab090f7f3823797aa55c1508c90184ef1
+Author: Z User <z@container>
+Date:   Tue Sep 1 13:59:02 2026 +0000
+
+    index on main: 340a9cf UNIFIED_011.1: matrix baseline anchored to libpng-encoder telegram SHA 088ea640 (pixel-identical to 06fb40da lineage; R1 encoder change by design); PNG fixture suite 12/12 PASS verified on clean clone
