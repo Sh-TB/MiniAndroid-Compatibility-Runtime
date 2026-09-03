@@ -533,6 +533,8 @@ bool DalvikExecutionEngine::is_exception_subtype(const std::string& exc_desc,
         {"Ljava/util/InputMismatchException;", "Ljava/util/NoSuchElementException;"},
         // org.json (Android framework JSON)
         {"Lorg/json/JSONException;", "Ljava/lang/Exception;"},
+        // org.xmlpull (Android framework XML pull parser — Pass-3 K-35)
+        {"Lorg/xmlpull/v1/XmlPullParserException;", "Ljava/lang/Exception;"},
         // Errors (rare, but typed catches for Error exist in real apps)
         {"Ljava/lang/Error;", "Ljava/lang/Throwable;"},
         {"Ljava/lang/OutOfMemoryError;", "Ljava/lang/VirtualMachineError;"},
@@ -1711,6 +1713,219 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     return true;
 }
 
+// ─── FINAL CANONICAL MASTER RECONCILIATION Pass-3 helpers (K-34/K-35) ──────
+namespace {
+// Basic XML entity unescape for the pull parser's TEXT/attribute values
+// (the five predefined entities + small numeric character references).
+std::string xml_unescape_pass3(const std::string& in) {
+    std::string out;
+    out.reserve(in.size());
+    for (size_t i = 0; i < in.size(); ++i) {
+        if (in[i] == '&') {
+            size_t semi = in.find(';', i + 1);
+            if (semi != std::string::npos && semi - i <= 10) {
+                std::string ent = in.substr(i + 1, semi - i - 1);
+                if (ent == "lt")  { out += '<';  i = semi; continue; }
+                if (ent == "gt")  { out += '>';  i = semi; continue; }
+                if (ent == "amp") { out += '&';  i = semi; continue; }
+                if (ent == "quot"){ out += '"';  i = semi; continue; }
+                if (ent == "apos"){ out += '\''; i = semi; continue; }
+                if (!ent.empty() && ent[0] == '#' && ent.size() >= 2) {
+                    bool hex = (ent[1] == 'x' || ent[1] == 'X');
+                    long cp = strtol(ent.c_str() + (hex ? 2 : 1), nullptr, hex ? 16 : 10);
+                    if (cp > 0 && cp < 128) { out += static_cast<char>(cp); i = semi; continue; }
+                }
+            }
+        }
+        out += in[i];
+    }
+    return out;
+}
+}  // namespace
+
+// Pass-3 (K-34): resolve an open asset stream chain to path + position.
+// Same wrapper hops the readLine block always used (BufferedReader.in →
+// InputStreamReader.source → InputStream), factored out so InputStream
+// read()/available()/close() share ONE real implementation.
+bool DalvikExecutionEngine::resolve_asset_stream(uint32_t start_id,
+                                                 std::string& path,
+                                                 size_t*& pos) {
+    uint32_t lookup_id = start_id;
+    for (int hop = 0; hop < 4 && lookup_id != 0; ++hop) {
+        auto it = open_assets_.find(lookup_id);
+        if (it != open_assets_.end()) {
+            path = it->second.first;
+            pos = &it->second.second;
+            return true;
+        }
+        if (heap_.has_object(lookup_id)) {
+            const auto* ho = heap_.get(lookup_id);
+            if (!ho) return false;
+            uint32_t next_id = 0;
+            for (const char* fn : {"in", "source", "inputStream", "reader", "is"}) {
+                auto fv = ho->get_field(fn);
+                if (fv.type == DalvikType::OBJECT_REF) { next_id = fv.object_id; break; }
+            }
+            if (next_id == 0 || next_id == lookup_id) return false;
+            lookup_id = next_id;
+        } else {
+            return false;
+        }
+    }
+    return false;
+}
+
+// Pass-3 (K-34): asset bytes extracted once per path, then cached.
+const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& path) {
+    auto it = asset_bytes_cache_.find(path);
+    if (it != asset_bytes_cache_.end()) return it->second;
+    std::string content;
+    if (!apk_path_.empty()) {
+        std::string cmd = "unzip -p '" + apk_path_ + "' 'assets/" + path + "' 2>/dev/null";
+        FILE* pipe = popen(cmd.c_str(), "r");
+        if (pipe) {
+            char buf[4096];
+            size_t n;
+            while ((n = fread(buf, 1, sizeof(buf), pipe)) > 0) content.append(buf, n);
+            pclose(pipe);
+        }
+    }
+    return asset_bytes_cache_.emplace(path, std::move(content)).first->second;
+}
+
+// Pass-3 (K-35): REAL XmlPullParser event machine — one event per call.
+// Progression: START_DOCUMENT → (misc-skip: whitespace/comments/PI/DOCTYPE)
+// → START_TAG / TEXT / END_TAG … → END_DOCUMENT (terminal; next() after it
+// throws XmlPullParserException at the call site). Self-closing tags queue
+// exactly one END_TAG, mirroring KXml.
+void DalvikExecutionEngine::xml_pull_advance(XmlPullState& st) {
+    if (st.ended) return;
+    const std::string& s = st.content;
+    size_t i = st.pos;
+    auto skip_misc = [&]() {
+        for (;;) {
+            while (i < s.size() && std::isspace(static_cast<unsigned char>(s[i]))) ++i;
+            if (i + 3 < s.size() && s.compare(i, 4, "<!--") == 0) {
+                size_t e = s.find("-->", i + 4);
+                i = (e == std::string::npos) ? s.size() : e + 3;
+                continue;
+            }
+            if (i + 1 < s.size() && s[i] == '<' && s[i + 1] == '?') {
+                size_t e = s.find("?>", i + 2);
+                i = (e == std::string::npos) ? s.size() : e + 2;
+                continue;
+            }
+            if (i + 8 < s.size() && s.compare(i, 9, "<![CDATA[") == 0) {
+                size_t e = s.find("]]>", i + 9);
+                i = (e == std::string::npos) ? s.size() : e + 3;
+                continue;  // CDATA content is surfaced via nextToken(), skipped by next()
+            }
+            if (i + 1 < s.size() && s[i] == '<' && s[i + 1] == '!') {
+                size_t e = s.find('>', i + 2);
+                i = (e == std::string::npos) ? s.size() : e + 1;
+                continue;
+            }
+            break;
+        }
+    };
+    if (st.pending_end) {
+        st.pending_end = false;
+        st.event = 3;  // END_TAG
+        st.cur_name = st.pending_end_name;
+        st.cur_text.clear();
+        st.attrs.clear();
+        st.pos = i;
+        return;
+    }
+    skip_misc();
+    if (i >= s.size()) {
+        st.event = 1;  // END_DOCUMENT
+        st.ended = true;
+        st.cur_name.clear();
+        st.cur_text.clear();
+        st.attrs.clear();
+        st.pos = i;
+        return;
+    }
+    if (s[i] == '<') {
+        if (i + 1 < s.size() && s[i + 1] == '/') {
+            size_t e = s.find('>', i);
+            st.cur_name = (e == std::string::npos) ? s.substr(i + 2)
+                                                    : s.substr(i + 2, e - i - 2);
+            while (!st.cur_name.empty() &&
+                   std::isspace(static_cast<unsigned char>(st.cur_name.back())))
+                st.cur_name.pop_back();
+            st.event = 3;  // END_TAG
+            st.cur_text.clear();
+            st.attrs.clear();
+            i = (e == std::string::npos) ? s.size() : e + 1;
+        } else {
+            size_t e = s.find('>', i);
+            if (e == std::string::npos) {
+                st.event = 1;  // malformed document → terminate
+                st.ended = true;
+                st.pos = s.size();
+                return;
+            }
+            std::string inner = s.substr(i + 1, e - i - 1);
+            bool self_close = false;
+            while (!inner.empty() && std::isspace(static_cast<unsigned char>(inner.back())))
+                inner.pop_back();
+            if (!inner.empty() && inner.back() == '/') { self_close = true; inner.pop_back(); }
+            size_t k = 0;
+            while (k < inner.size() && !std::isspace(static_cast<unsigned char>(inner[k])) &&
+                   inner[k] != '=')
+                ++k;
+            st.cur_name = inner.substr(0, k);
+            st.attrs.clear();
+            while (k < inner.size()) {
+                while (k < inner.size() && std::isspace(static_cast<unsigned char>(inner[k]))) ++k;
+                size_t n0 = k;
+                while (k < inner.size() && inner[k] != '=' &&
+                       !std::isspace(static_cast<unsigned char>(inner[k])))
+                    ++k;
+                if (k == n0) break;
+                std::string aname = inner.substr(n0, k - n0);
+                while (k < inner.size() && std::isspace(static_cast<unsigned char>(inner[k]))) ++k;
+                std::string aval;
+                if (k < inner.size() && inner[k] == '=') {
+                    ++k;
+                    while (k < inner.size() && std::isspace(static_cast<unsigned char>(inner[k]))) ++k;
+                    if (k < inner.size() && (inner[k] == '"' || inner[k] == '\'')) {
+                        char q = inner[k++];
+                        size_t v0 = k;
+                        while (k < inner.size() && inner[k] != q) ++k;
+                        aval = inner.substr(v0, k - v0);
+                        if (k < inner.size()) ++k;
+                    } else {
+                        size_t v0 = k;
+                        while (k < inner.size() && !std::isspace(static_cast<unsigned char>(inner[k]))) ++k;
+                        aval = inner.substr(v0, k - v0);
+                    }
+                }
+                st.attrs.emplace_back(aname, xml_unescape_pass3(aval));
+            }
+            st.event = 2;  // START_TAG
+            st.cur_text.clear();
+            if (self_close) {
+                st.pending_end = true;
+                st.pending_end_name = st.cur_name;
+            }
+            i = e + 1;
+        }
+        st.pos = i;
+        return;
+    }
+    // TEXT: characters up to the next '<' (or EOF).
+    size_t e2 = s.find('<', i);
+    std::string raw = (e2 == std::string::npos) ? s.substr(i) : s.substr(i, e2 - i);
+    st.cur_text = xml_unescape_pass3(raw);
+    st.cur_name.clear();
+    st.attrs.clear();
+    st.event = 4;  // TEXT
+    st.pos = (e2 == std::string::npos) ? s.size() : e2;
+}
+
 // EXP-038 (BLOCKER-034): Recursive DEX method invocation.
 // Search the DEX for a method matching declaring_class + method_name.
 // If found with bytecode, recursively execute it.
@@ -1981,94 +2196,156 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     }
 
     // EXP-071: BufferedReader.readLine → read next line from open_assets_.
-    // The DEX bytecode for readLine loops on read() which returns -1 EOF,
-    // but our shadow InputStream.read returns 0 (no real impl).
+    // Pass-3 (K-34): the old "read() returns 0, no real impl" shadow is GONE —
+    // InputStream.read()/available()/close() now read REAL asset bytes (see
+    // the bridge right below). readLine keeps its line-splitting semantics.
     if (method_name == "readLine" &&
         declaring_class.find("BufferedReader") != std::string::npos) {
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
             uint32_t br_id = args[0].object_id;
-            // Resolve the underlying asset path via open_assets_ chain.
-            // The chain: BufferedReader → InputStreamReader → InputStream.
-            uint32_t lookup_id = br_id;
             std::string asset_path;
             size_t* pos_ptr = nullptr;
-            for (int hop = 0; hop < 4 && lookup_id != 0; ++hop) {
-                auto it = open_assets_.find(lookup_id);
-                if (it != open_assets_.end()) {
-                    asset_path = it->second.first;
-                    pos_ptr = &it->second.second;
-                    break;
-                }
-                // Look at the wrapped source field (InputStreamReader.source,
-                // BufferedReader.in). Try common field names.
-                if (heap_.has_object(lookup_id)) {
-                    const auto* ho = heap_.get(lookup_id);
-                    if (!ho) break;
-                    uint32_t next_id = 0;
-                    for (const char* fn : {"in", "source", "inputStream",
-                                            "reader", "is"}) {
-                        auto fv = ho->get_field(fn);
-                        if (fv.type == DalvikType::OBJECT_REF) {
-                            next_id = fv.object_id;
-                            break;
-                        }
-                    }
-                    if (next_id == 0 || next_id == lookup_id) break;
-                    lookup_id = next_id;
-                } else {
-                    break;
-                }
-            }
-
-            if (!asset_path.empty() && pos_ptr != nullptr && !apk_path_.empty()) {
-                // Extract the asset from the APK via `unzip -p`.
-                // Android assets are stored under the "assets/" prefix in the APK.
-                std::string cmd = "unzip -p '" + apk_path_ + "' 'assets/" +
-                                  asset_path + "' 2>/dev/null";
-                FILE* pipe = popen(cmd.c_str(), "r");
-                if (pipe) {
-                    // Read full asset, skip to current position, find next line.
-                    std::string content;
-                    char buf[4096];
-                    size_t n;
-                    while ((n = fread(buf, 1, sizeof(buf), pipe)) > 0) {
-                        content.append(buf, n);
-                    }
-                    pclose(pipe);
-                    if (*pos_ptr < content.size()) {
-                        size_t start = *pos_ptr;
-                        size_t nl = content.find('\n', start);
-                        std::string line;
-                        if (nl == std::string::npos) {
-                            line = content.substr(start);
-                            *pos_ptr = content.size();
-                        } else {
-                            line = content.substr(start, nl - start);
-                            *pos_ptr = nl + 1;
-                        }
-                        // Trim trailing CR (Windows line endings).
-                        if (!line.empty() && line.back() == '\r') {
-                            line.pop_back();
-                        }
-                        return_val = DalvikValue::make_string(line, 0);
-                        std::cerr << "[EXP071-READLINE] line=\""
-                                  << line << "\" asset=" << asset_path
-                                  << std::endl;
-                        recursion_depth_--;
-                        return true;
+            // Pass-3 (K-34): chain resolution factored into resolve_asset_stream()
+            // (same wrapper hops: BufferedReader.in → InputStreamReader.source →
+            // InputStream), shared with the InputStream read()/available() bridge.
+            if (resolve_asset_stream(br_id, asset_path, pos_ptr) &&
+                !asset_path.empty() && pos_ptr != nullptr && !apk_path_.empty()) {
+                // Pass-3 (K-34): asset bytes are extracted once and cached.
+                const std::string& content = cached_asset_bytes(asset_path);
+                if (*pos_ptr < content.size()) {
+                    size_t start = *pos_ptr;
+                    size_t nl = content.find('\n', start);
+                    std::string line;
+                    if (nl == std::string::npos) {
+                        line = content.substr(start);
+                        *pos_ptr = content.size();
                     } else {
-                        // EOF.
-                        return_val = DalvikValue::make_null();
-                        std::cerr << "[EXP071-READLINE] EOF asset="
-                                  << asset_path << std::endl;
-                        recursion_depth_--;
-                        return true;
+                        line = content.substr(start, nl - start);
+                        *pos_ptr = nl + 1;
                     }
+                    // Trim trailing CR (Windows line endings).
+                    if (!line.empty() && line.back() == '\r') {
+                        line.pop_back();
+                    }
+                    return_val = DalvikValue::make_string(line, 0);
+                    std::cerr << "[EXP071-READLINE] line=\""
+                              << line << "\" asset=" << asset_path
+                              << std::endl;
+                    recursion_depth_--;
+                    return true;
+                } else {
+                    // EOF.
+                    return_val = DalvikValue::make_null();
+                    std::cerr << "[EXP071-READLINE] EOF asset="
+                              << asset_path << std::endl;
+                    recursion_depth_--;
+                    return true;
                 }
             }
         }
         // Fallback: return null (EOF) — don't recurse into DEX.
         return_val = DalvikValue::make_null();
+        recursion_depth_--;
+        return true;
+    }
+
+    // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-34): InputStream.read()
+    // reads REAL asset bytes. Before this pass the shadow returned 0 (the old
+    // comment said: "our shadow InputStream.read returns 0 (no real impl)")
+    // and only BufferedReader.readLine bypassed it.
+    // Real Android semantics: read() → next byte 0..255, -1 at EOF;
+    // read(byte[] b, int off, int len) → count filled, -1 at EOF;
+    // available() → bytes remaining; close() → later reads see EOF.
+    if (declaring_class.find("InputStream") != std::string::npos &&
+        (method_name == "read" || method_name == "available" ||
+         method_name == "close")) {
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t is_id = args[0].object_id;
+            std::string asset_path;
+            size_t* pos_ptr = nullptr;
+            resolve_asset_stream(is_id, asset_path, pos_ptr);
+            if (method_name == "close") {
+                if (pos_ptr != nullptr) *pos_ptr = static_cast<size_t>(-1);
+                return_val = DalvikValue::make_void();
+                recursion_depth_--;
+                return true;
+            }
+            if (!asset_path.empty() && pos_ptr != nullptr) {
+                const std::string& content = cached_asset_bytes(asset_path);
+                size_t p = *pos_ptr;
+                if (p == static_cast<size_t>(-1) || p >= content.size()) {
+                    return_val = DalvikValue::make_int(
+                        (method_name == "available") ? 0 : -1);
+                    recursion_depth_--;
+                    return true;
+                }
+                if (method_name == "available") {
+                    return_val = DalvikValue::make_int(
+                        static_cast<int32_t>(content.size() - p));
+                    recursion_depth_--;
+                    return true;
+                }
+                // method_name == "read"
+                if (args.size() >= 4 && args[1].type == DalvikType::OBJECT_REF) {
+                    // read(byte[] b, int off, int len) → count filled, -1 at EOF.
+                    uint32_t arr_id = args[1].object_id;
+                    int32_t off = (args[2].type == DalvikType::INT32) ? args[2].int_val : 0;
+                    int32_t len = (args[3].type == DalvikType::INT32) ? args[3].int_val : 0;
+                    int64_t arr_len = 0;
+                    auto len_field = heap_.get_object_field(arr_id, "__array_length__");
+                    if (len_field.has_value() && len_field->type == DalvikType::INT32)
+                        arr_len = len_field->int_val;
+                    if (arr_len == 0) {
+                        // Compatibility fallback: NEW_ARRAY used a different name.
+                        auto len2 = heap_.get_object_field(arr_id, "__new_array_length__");
+                        if (len2.has_value() && len2->type == DalvikType::INT32)
+                            arr_len = len2->int_val;
+                    }
+                    if (arr_len == 0) {
+                        // Final fallback: the array register carries the size in int_val.
+                        if (args[1].type == DalvikType::OBJECT_REF && args[1].int_val > 0)
+                            arr_len = args[1].int_val;
+                    }
+                    if (off < 0 || len < 0 ||
+                        static_cast<int64_t>(off) + static_cast<int64_t>(len) > arr_len) {
+                        throw_deferred("Ljava/lang/IndexOutOfBoundsException;",
+                                       "read: off=" + std::to_string(off) +
+                                           " len=" + std::to_string(len) +
+                                           " arr_len=" + std::to_string(arr_len),
+                                       "STREAM-READ");
+                        return true;
+                    }
+                    size_t remaining = content.size() - p;
+                    size_t count = std::min(static_cast<size_t>(len), remaining);
+                    for (size_t k = 0; k < count; ++k) {
+                        heap_.set_object_field(
+                            arr_id, "array[" + std::to_string(off + static_cast<int32_t>(k)) + "]",
+                            DalvikValue::make_byte(static_cast<int8_t>(content[p + k])));
+                    }
+                    *pos_ptr = p + count;
+                    return_val = DalvikValue::make_int(count > 0 ? static_cast<int32_t>(count) : -1);
+                    std::cerr << "[STREAM-READ] asset=" << asset_path
+                              << " read[off=" << off << " len=" << len
+                              << "] → " << (count > 0 ? std::to_string(count) : std::string("-1 EOF"))
+                              << std::endl;
+                    recursion_depth_--;
+                    return true;
+                }
+                // Single-byte read() → 0..255, or -1 at EOF.
+                return_val = DalvikValue::make_int(
+                    static_cast<unsigned char>(content[p]));
+                *pos_ptr = p + 1;
+                recursion_depth_--;
+                return true;
+            }
+        }
+        // No resolvable asset stream: honest "no data" answer (never a
+        // silent fake 0 that spins read loops forever).
+        return_val = DalvikValue::make_int(
+            (method_name == "available") ? 0 : -1);
+        std::cerr << "[STREAM-READ] " << declaring_class << "." << method_name
+                  << " with no resolvable asset → "
+                  << (method_name == "available" ? 0 : -1) << std::endl;
         recursion_depth_--;
         return true;
     }
@@ -4868,8 +5145,14 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 set_register(vA, result_val);
 
                 // EXP-062: Store array length on heap so aget/aput can find it.
+                // PASS-3 (K-33 audit): also store the CANONICAL name
+                // "__array_length__" that aget/aput/read actually read —
+                // previously NEW_ARRAY only stored "__new_array_length__",
+                // an inconsistency that made bulk reads/aget see length 0.
                 if (heap_.has_object(obj_id)) {
                     heap_.set_object_field(obj_id, "__new_array_length__",
+                        DalvikValue::make_int(array_size));
+                    heap_.set_object_field(obj_id, "__array_length__",
                         DalvikValue::make_int(array_size));
                 }
 
@@ -4993,6 +5276,18 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         auto elem = heap_.get_object_field(arr_val.object_id, field); \
                         if (elem.has_value()) { \
                             result_val = elem.value(); \
+                            /* PASS-3 (K-41): normalize typed scalar elements to INT. \
+                             * Real Dalvik: aget-byte/char/short yield an INT register; \
+                             * the engine stores typed scalars with SEPARATE byte_val/ \
+                             * char_val/short_val members, so leaving the typed value in \
+                             * the register made every later int_val arithmetic read 0. */ \
+                            if (result_val.type == DalvikType::BYTE) \
+                                result_val = DalvikValue::make_int(result_val.byte_val); \
+                            else if (result_val.type == DalvikType::SHORT) \
+                                result_val = DalvikValue::make_int(result_val.short_val); \
+                            else if (result_val.type == DalvikType::CHAR) \
+                                result_val = DalvikValue::make_int( \
+                                    static_cast<unsigned char>(result_val.char_val)); \
                             /* Ensure type matches expected result_type */ \
                             if (result_type == DalvikType::BOOLEAN) { \
                                 /* Normalize to 0 or 1 */ \
@@ -5001,7 +5296,22 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                 result_val = DalvikValue::make_bool(b); \
                             } else if (result_type == DalvikType::INT32 && \
                                        elem->type != DalvikType::INT32) { \
-                                result_val = DalvikValue::make_int(0); \
+                                /* PASS-3 FORENSIC FIX (K-41): typed elements \
+                                 * (BYTE/CHAR/SHORT — stored via aput-* or the new \
+                                 * InputStream.read(byte[])) carry their value in \
+                                 * byte_val/char_val/short_val. The old code zeroed \
+                                 * every non-INT32 element, so aget-byte on ANY heap \
+                                 * array always returned 0. */ \
+                                int32_t conv_val = 0; \
+                                switch (elem->type) { \
+                                    case DalvikType::BYTE:  conv_val = elem->byte_val; break; \
+                                    case DalvikType::CHAR:  conv_val = static_cast<unsigned char>(elem->char_val); break; \
+                                    case DalvikType::SHORT: conv_val = elem->short_val; break; \
+                                    case DalvikType::BOOLEAN: conv_val = elem->bool_val ? 1 : 0; break; \
+                                    case DalvikType::INT64: conv_val = static_cast<int32_t>(elem->long_val); break; \
+                                    default: conv_val = elem->int_val; break; \
+                                } \
+                                result_val = DalvikValue::make_int(conv_val); \
                             } \
                         } else { \
                             if (result_type == DalvikType::OBJECT_REF) { \
@@ -5682,13 +5992,19 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
             #undef ARITH_LIT8_CASE
 
-            // EXP-038 (BLOCKER-028): Arithmetic lit16 (22s format: AA|op BBBB)
+            // EXP-038 (BLOCKER-028): Arithmetic lit16 (22s format: B|A|op BBBB)
             // vA = vB <op> #BBBB (signed 16-bit)
+            // PASS-3 FORENSIC CORRECTION (K-38): the register nibbles were
+            // decoded ONE NIBBLE OFF (vA=(>>8), vB=(>>4) — the K-05 bug class
+            // again): every lit16 op read its SOURCE from the wrong register
+            // field and wrote the result to the wrong destination. Correct
+            // 22s decode: vA = HIGH nibble (>>12), vB = low nibble of the
+            // high byte (>>8).
             #define ARITH_LIT16_CASE(opcode, op_name, op) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
-                    uint8_t vA = (instr >> 8) & 0xF; \
-                    uint8_t vB = (instr >> 4) & 0xF; \
+                    uint8_t vA = (instr >> 12) & 0xF; \
+                    uint8_t vB = (instr >> 8) & 0xF; \
                     int16_t lit = static_cast<int16_t>(bytecode_[pc_ + 1]); \
                     DalvikValue b = get_register(vB); \
                     DalvikValue result_val; \
@@ -5725,11 +6041,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
-            // MASTER RECONCILIATION (2026-09-03): lit16 shift variants were
-            // missing (0xD8..0xDA previously unlabeled/unimplemented).
-            ARITH_LIT16_CASE(SHL_INT_LIT16, "shl-int/lit16", "shl")
-            ARITH_LIT16_CASE(SHR_INT_LIT16, "shr-int/lit16", "shr")
-            ARITH_LIT16_CASE(USHR_INT_LIT16, "ushr-int/lit16", "ushr")
+            // PASS-3 (K-37): the former SHL/SHR/USHR_INT_LIT16 cases here were
+            // REMOVED — those opcodes do not exist in Dalvik; 0xD8..0xDA are
+            // add/rsub/mul-int/lit8 and now dispatch via the corrected lit8
+            // table above.
             #undef ARITH_LIT16_CASE
 
             // EXP-040: Missing opcodes from Telegram execution
@@ -12555,9 +12870,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     //     java/lang/StringIndexOutOfBoundsException.
     //   * concat(other) → this + other; null receiver/arg → NullPointerException.
     //   * parseFloat/parseDouble accept plain decimal/exponent literals with
-    //     full-consumption checking; residual exotic-form gaps (hex floats,
-    //     Infinity/NaN words, float 'f' suffix) remain documented TODOs.
-    // Fixture: tests/semantic_switch_parse_neg_test.cpp (group P).
+    //     full-consumption checking. PASS-3 (K-40): the NaN/Infinity word
+    //     forms were implemented and the 2^31 positive-boundary wrap fixed;
+    //     the only remaining documented gap is Java's hex-float literal form
+    //     (glibc strtof accepts it — semantics match Java where exercised).
+    //   * PASS-3 (K-40): parseInt("2147483648") now throws instead of wrapping
+    //     to INT_MIN (acc == cut is only legal on the negative side).
+    // Fixture: tests/semantic_switch_parse_neg_test.cpp (group P);
+    //          tests/semantic_pass3_bridge_test.cpp (group PS — boundaries).
     // ────────────────────────────────────────────────────────────────────────
     if ((class_name == "Ljava/lang/Integer;" && method == "parseInt") ||
         (class_name == "Ljava/lang/Long;" && method == "parseLong") ||
@@ -12613,6 +12933,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             static_cast<uint64_t>(d_parse);
             }
             if (!ok_parse) { java_parse_fail(""); return true; }
+            // PASS-3 (K-40): Java range rule — acc == cut (2^31 / 2^63) is only
+            // legal for the NEGATIVE side (INT_MIN/LONG_MIN). A positive parse
+            // reaching cut must throw NumberFormatException, not wrap.
+            if (!neg_parse && acc_parse >= cut_parse) { java_parse_fail(""); return true; }
             const int64_t signed_val = neg_parse
                 ? static_cast<int64_t>(0ULL - acc_parse)
                 : static_cast<int64_t>(acc_parse);
@@ -12629,6 +12953,37 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             std::isspace(static_cast<unsigned char>(s_parse.front())) ||
             std::isspace(static_cast<unsigned char>(s_parse.back()))) {
             java_parse_fail(""); return true;
+        }
+        // PASS-3 (K-40): Java word forms. Double/Float.valueOf accept EXACTLY
+        // "NaN" (unsigned) and optionally-signed "Infinity" — and nothing
+        // else alphabetic. This guard stops the C strtof layer from silently
+        // accepting "nan", "inf", "infinity" (not Java) — the documented
+        // FIX-05 residual TODO, now closed.
+        {
+            const bool is_float = (class_name == "Ljava/lang/Float;");
+            size_t sign_pos = (s_parse[0] == '+' || s_parse[0] == '-') ? 1 : 0;
+            std::string body = s_parse.substr(sign_pos);
+            if (!body.empty() && std::isalpha(static_cast<unsigned char>(body[0]))) {
+                const bool neg_word = (sign_pos == 1 && s_parse[0] == '-');
+                if (body == "NaN" && sign_pos == 0) {
+                    result = is_float ? DalvikValue::make_float(std::nanf(""))
+                                      : DalvikValue::make_double(std::nan(""));
+                    std::cerr << "[PARSE] " << class_name << "." << method
+                              << "(\"NaN\") → NaN" << std::endl;
+                    return true;
+                }
+                if (body == "Infinity") {
+                    result = is_float
+                        ? DalvikValue::make_float(neg_word ? -HUGE_VALF : HUGE_VALF)
+                        : DalvikValue::make_double(neg_word ? -HUGE_VAL : HUGE_VAL);
+                    std::cerr << "[PARSE] " << class_name << "." << method
+                              << "(\"" << s_parse << "\") → "
+                              << (neg_word ? "-Infinity" : "Infinity") << std::endl;
+                    return true;
+                }
+                java_parse_fail("illegal word form");
+                return true;
+            }
         }
         {
             const char* begin_parse = s_parse.c_str();
@@ -12693,6 +13048,224 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         std::cerr << "[STR] concat(\"" << s_concat.substr(0, 32) << "\", \""
                   << other_concat.substr(0, 32) << "\")" << std::endl;
         return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-36): AtomicReference.
+    // The single-threaded engine makes CAS = identity compare + swap on the
+    // heap object's "value" field. Reference semantics per
+    // java.util.concurrent.atomic.AtomicReference: compareAndSet(expect,
+    // update) uses == (object identity); null matches only null. Generic
+    // java.util.concurrent API — NO app special-casing.
+    // Fixture: tests/semantic_pass3_bridge_test.cpp (group AR).
+    if (class_name == "Ljava/util/concurrent/atomic/AtomicReference;") {
+        auto atomic_ref_equal = [](const DalvikValue& a, const DalvikValue& b) {
+            if (a.type == DalvikType::NULL_REF && b.type == DalvikType::NULL_REF)
+                return true;
+            if (a.type != b.type) return false;
+            if (a.type == DalvikType::OBJECT_REF) return a.object_id == b.object_id;
+            if (a.type == DalvikType::STRING_REF) return a.string_val == b.string_val;
+            return false;
+        };
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (method == "<init>") {
+            DalvikValue initial = (args.size() >= 2) ? args[1] : DalvikValue::make_null();
+            heap_.set_object_field(args[0].object_id, "value", initial);
+            result = DalvikValue::make_void();
+            std::cerr << "[ATOMIC-REF] <init>"
+                      << (args.size() >= 2 ? "(v)" : "()") << std::endl;
+            return true;
+        }
+        if (method == "get") {
+            auto v = heap_.get_object_field(args[0].object_id, "value");
+            result = v.value_or(DalvikValue::make_null());
+            return true;
+        }
+        if (method == "set") {
+            heap_.set_object_field(args[0].object_id, "value", args[1]);
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "getAndSet") {
+            auto v = heap_.get_object_field(args[0].object_id, "value");
+            result = v.value_or(DalvikValue::make_null());
+            heap_.set_object_field(args[0].object_id, "value", args[1]);
+            return true;
+        }
+        if (method == "compareAndSet") {
+            auto cur = heap_.get_object_field(args[0].object_id, "value");
+            DalvikValue c = cur.value_or(DalvikValue::make_null());
+            bool swapped = atomic_ref_equal(c, args[1]);
+            if (swapped) heap_.set_object_field(args[0].object_id, "value", args[2]);
+            result = DalvikValue::make_bool(swapped);
+            std::cerr << "[ATOMIC-REF] compareAndSet → "
+                      << (swapped ? "true (swapped)" : "false (expect mismatch)")
+                      << std::endl;
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-35): XmlPullParser.
+    // REAL pull-parse event machine (org.xmlpull.v1): START_DOCUMENT →
+    // START_TAG/TEXT/END_TAG … → END_DOCUMENT, next() advances one event and
+    // THROWS XmlPullParserException after END_DOCUMENT (real termination
+    // semantics, not an opcode-shaped no-op). The standard Android entry is
+    // android.util.Xml.newPullParser(); StringReader stores its source text
+    // so setInput(Reader) works without any app special-casing.
+    // Fixture: tests/semantic_pass3_bridge_test.cpp (group X).
+    if (class_name == "Ljava/io/StringReader;" && method == "<init>" &&
+        args.size() >= 2) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (args[1].type == DalvikType::STRING_REF)
+            heap_.set_object_field(args[0].object_id, "s", args[1]);
+        result = DalvikValue::make_void();
+        std::cerr << "[XML-PULL] StringReader.<init>(\"" << args[1].string_val.substr(0, 40)
+                  << "\")" << std::endl;
+        return true;
+    }
+    if ((class_name == "Landroid/util/Xml;" || class_name == "Lorg/xmlpull/v1/Xml;") &&
+        method == "newPullParser") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        uint32_t frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
+        uint32_t obj_id = heap_.allocate("Lorg/xmlpull/v1/XmlPullParser;", pc_, frame_id);
+        xml_parsers_[obj_id] = XmlPullState{};
+        result = DalvikValue::make_object(obj_id, "Lorg/xmlpull/v1/XmlPullParser;");
+        std::cerr << "[XML-PULL] newPullParser → obj#" << obj_id << std::endl;
+        return true;
+    }
+    if (class_name == "Lorg/xmlpull/v1/XmlPullParser;" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF) {
+        uint32_t xp_id = args[0].object_id;
+        auto st_it = xml_parsers_.find(xp_id);
+        if (st_it == xml_parsers_.end()) {
+            // Tolerate parsers allocated by NEW_INSTANCE (no state yet).
+            st_it = xml_parsers_.emplace(xp_id, XmlPullState{}).first;
+        }
+        XmlPullState& st = st_it->second;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+
+        if (method == "setInput") {
+            // setInput(Reader) / setInput(String) / setInput(InputStream, enc)
+            st = XmlPullState{};
+            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
+                st.content = args[1].string_val;
+            } else if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+                // Reader chain: StringReader ("s") / BufferedReader ("in")…
+                std::string text;
+                uint32_t lookup = args[1].object_id;
+                for (int hop = 0; hop < 4 && lookup != 0; ++hop) {
+                    auto sf = heap_.get_object_field(lookup, "s");
+                    if (sf.has_value() && sf->type == DalvikType::STRING_REF) {
+                        text = sf->string_val;
+                        break;
+                    }
+                    bool walked = false;
+                    if (heap_.has_object(lookup)) {
+                        const auto* ho = heap_.get(lookup);
+                        if (ho) {
+                            for (const char* fn : {"in", "source", "reader"}) {
+                                auto fv = ho->get_field(fn);
+                                if (fv.type == DalvikType::OBJECT_REF) {
+                                    lookup = fv.object_id;
+                                    walked = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (!walked) break;
+                }
+                if (text.empty()) {
+                    // InputStream variant: resolve an open asset stream.
+                    std::string asset_path;
+                    size_t* pos_ptr = nullptr;
+                    if (resolve_asset_stream(args[1].object_id, asset_path, pos_ptr) &&
+                        !asset_path.empty()) {
+                        text = cached_asset_bytes(asset_path);
+                    }
+                }
+                st.content = text;
+            }
+            st.event = 0;  // START_DOCUMENT
+            std::cerr << "[XML-PULL] setInput(" << st.content.size() << " bytes)" << std::endl;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "getEventType") {
+            result = DalvikValue::make_int(st.event);
+            return true;
+        }
+        if (method == "next" || method == "nextTag") {
+            if (st.ended) {
+                // Real termination: next() after END_DOCUMENT throws.
+                throw_deferred("Lorg/xmlpull/v1/XmlPullParserException;",
+                               "next() called after END_DOCUMENT", "XML-PULL");
+                return true;
+            }
+            xml_pull_advance(st);
+            if (method == "nextTag") {
+                // Skip whitespace-only TEXT events; a tag is required next.
+                auto all_ws = [](const std::string& t) {
+                    for (char c : t)
+                        if (!std::isspace(static_cast<unsigned char>(c))) return false;
+                    return true;
+                };
+                while (st.event == 4 && all_ws(st.cur_text) && !st.ended)
+                    xml_pull_advance(st);
+                if (st.event != 2 && st.event != 3 && !st.ended) {
+                    throw_deferred("Lorg/xmlpull/v1/XmlPullParserException;",
+                                   "nextTag expected a tag", "XML-PULL");
+                    return true;
+                }
+            }
+            static const char* EV_NAMES[] = {"START_DOCUMENT", "END_DOCUMENT",
+                                             "START_TAG", "END_TAG", "TEXT"};
+            std::cerr << "[XML-PULL] next → "
+                      << (st.event >= 0 && st.event <= 4 ? EV_NAMES[st.event] : "?")
+                      << (st.event == 2 || st.event == 3 ? " <" + st.cur_name + ">" : "")
+                      << (st.event == 4 ? " \"" + st.cur_text.substr(0, 32) + "\"" : "")
+                      << std::endl;
+            result = DalvikValue::make_int(st.event);
+            return true;
+        }
+        if (method == "getName") {
+            if (st.event == 2 || st.event == 3)
+                result = DalvikValue::make_string(st.cur_name, 0);
+            else
+                result = DalvikValue::make_null();
+            return true;
+        }
+        if (method == "getText") {
+            if (st.event == 4)
+                result = DalvikValue::make_string(st.cur_text, 0);
+            else
+                result = DalvikValue::make_null();
+            return true;
+        }
+        if (method == "getAttributeValue") {
+            // (int index) or (String namespace, String name) — namespace is
+            // ignored when null (no-namespace documents).
+            if (args.size() >= 2 && args[1].type == DalvikType::INT32) {
+                int32_t idx = args[1].int_val;
+                if (idx >= 0 && static_cast<size_t>(idx) < st.attrs.size())
+                    result = DalvikValue::make_string(st.attrs[static_cast<size_t>(idx)].second, 0);
+                else
+                    result = DalvikValue::make_null();
+            } else if (args.size() >= 3 && args[2].type == DalvikType::STRING_REF) {
+                const std::string& want = args[2].string_val;
+                for (const auto& [n, v] : st.attrs) {
+                    if (n == want) {
+                        result = DalvikValue::make_string(v, 0);
+                        return true;
+                    }
+                }
+                result = DalvikValue::make_null();
+            } else {
+                result = DalvikValue::make_null();
+            }
+            return true;
+        }
     }
 
     // EXP-093: String.replace(CharSequence, CharSequence) → String

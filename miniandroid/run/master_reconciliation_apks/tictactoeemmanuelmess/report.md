@@ -2,7 +2,7 @@
 
 ## Application
 
-- **APK:** `/tmp/my-project/miniandroid_ws/apk_cache/corpus/tictactoeemmanuelmess.apk`
+- **APK:** `/home/z/my-project/miniandroid_ws/apk_cache/corpus/tictactoeemmanuelmess.apk`
 - **Package:** `com.emmanuelmess.tictactoe`
 - **Status:** **SUCCESS** ✅
 
@@ -54,13 +54,13 @@
 
 ### Output Frame
 
-- **File:** `/home/z/my-project/miniandroid_ws/integration_review/repo/miniandroid/run/master_reconciliation_apks/tictactoeemmanuelmess/screenshot.png`
+- **File:** `/home/z/my-project/miniandroid_ws/recon3/repo/miniandroid/run/master_reconciliation_apks/tictactoeemmanuelmess/screenshot.png`
 - **Resolution:** 1080x1920
 - **Size:** 7.91 MB
 
-![Screenshot](/home/z/my-project/miniandroid_ws/integration_review/repo/miniandroid/run/master_reconciliation_apks/tictactoeemmanuelmess/screenshot.png)
+![Screenshot](/home/z/my-project/miniandroid_ws/recon3/repo/miniandroid/run/master_reconciliation_apks/tictactoeemmanuelmess/screenshot.png)
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20260902-215448-8614`
-- **Generated:** 2026-09-02 21:54:49 UTC
+- **Session ID:** `EXP-001-20260903-005829-0651`
+- **Generated:** 2026-09-03 00:58:30 UTC

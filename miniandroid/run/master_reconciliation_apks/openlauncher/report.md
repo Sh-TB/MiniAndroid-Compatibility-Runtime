@@ -2,7 +2,7 @@
 
 ## Application
 
-- **APK:** `/tmp/my-project/miniandroid_ws/apk_cache/corpus/openlauncher.apk`
+- **APK:** `/home/z/my-project/miniandroid_ws/apk_cache/corpus/openlauncher.apk`
 - **Package:** `com.benny.openlauncher`
 - **Status:** **SUCCESS** ✅
 
@@ -54,13 +54,13 @@
 
 ### Output Frame
 
-- **File:** `/home/z/my-project/miniandroid_ws/integration_review/repo/miniandroid/run/master_reconciliation_apks/openlauncher/screenshot.png`
+- **File:** `/home/z/my-project/miniandroid_ws/recon3/repo/miniandroid/run/master_reconciliation_apks/openlauncher/screenshot.png`
 - **Resolution:** 1080x1920
 - **Size:** 7.91 MB
 
-![Screenshot](/home/z/my-project/miniandroid_ws/integration_review/repo/miniandroid/run/master_reconciliation_apks/openlauncher/screenshot.png)
+![Screenshot](/home/z/my-project/miniandroid_ws/recon3/repo/miniandroid/run/master_reconciliation_apks/openlauncher/screenshot.png)
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20260902-215446-9159`
-- **Generated:** 2026-09-02 21:54:47 UTC
+- **Session ID:** `EXP-001-20260903-005828-3374`
+- **Generated:** 2026-09-03 00:58:29 UTC

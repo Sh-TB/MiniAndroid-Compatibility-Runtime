@@ -270,37 +270,36 @@ namespace Opcode {
     constexpr uint16_t SUB_DOUBLE_2ADDR = 0xCC; // sub-double/2addr
     constexpr uint16_t MUL_DOUBLE_2ADDR = 0xCD; // mul-double/2addr
     constexpr uint16_t DIV_DOUBLE_2ADDR = 0xCE; // div-double/2addr
-    // EXP-059: 0xD0 is now correctly REM_DOUBLE_2ADDR (was disabled due to
-    // a conflict with ADD_INT_LIT16 caused by the off-by-one error).
-    constexpr uint16_t REM_DOUBLE_2ADDR = 0xD0; // rem-double/2addr
+    // PASS-3 FORENSIC CORRECTION (K-37): rem-double/2addr is 0xCF (AOSP).
+    // The old value 0xD0 collided with ADD_INT_LIT16 (also 0xD0 there),
+    // making one of the two unreachable.
+    constexpr uint16_t REM_DOUBLE_2ADDR = 0xCF; // rem-double/2addr
 
     // Arithmetic lit8 (22b format: AA|op BB|CC)
-    // MASTER RECONCILIATION (2026-09-03): AOSP-corrected — the previous
-    // table (ADD=0xD8..XOR=0xDD) was SHIFTED against the Dalvik spec (same
-    // bug class as the pre-011.2 23x off-by-one, K-06 — that fix covered
-    // 0x90..0x9A but missed this range). Real AOSP layout:
-    //   0xD8..0xDA shl/shr/ushr-int/lit16, 0xDB add-int/lit8,
-    //   0xDC rsub-int/lit8, 0xDD mul-int/lit8, 0xDE div-int/lit8,
-    //   0xDF rem-int/lit8, 0xE0..0xE2 and/or/xor-int/lit8,
-    //   0xE3..0xE5 shl/shr/ushr-int/lit8
-    // Under the old table real add-int/lit8 (0xDB) dispatched as AND, real
-    // mul-int/lit8 (0xDD) as XOR, and 0xDE..0xE5 hit handle_unimplemented.
-    // Corpus evidence (scan_lit8_opcodes.py, 6 APKs): 0xDB ×2361, 0xE0 ×3399,
-    // 0xDD ×3532, 0xE4 ×5789, 0xE5 ×3043 — all mis-mapped or unimplemented.
-    constexpr uint16_t SHL_INT_LIT16 = 0xD8;    // shl-int/lit16 (was missing)
-    constexpr uint16_t SHR_INT_LIT16 = 0xD9;    // shr-int/lit16 (was missing)
-    constexpr uint16_t USHR_INT_LIT16 = 0xDA;   // ushr-int/lit16 (was missing)
-    constexpr uint16_t ADD_INT_LIT8 = 0xDB;     // add-int/lit8 vAA, vBB, #+CC
-    constexpr uint16_t RSUB_INT_LIT8 = 0xDC;    // rsub-int/lit8 (lit − vB)
-    constexpr uint16_t MUL_INT_LIT8 = 0xDD;     // mul-int/lit8
-    constexpr uint16_t DIV_INT_LIT8 = 0xDE;     // div-int/lit8
-    constexpr uint16_t REM_INT_LIT8 = 0xDF;     // rem-int/lit8
-    constexpr uint16_t AND_INT_LIT8 = 0xE0;     // and-int/lit8
-    constexpr uint16_t OR_INT_LIT8  = 0xE1;     // or-int/lit8
-    constexpr uint16_t XOR_INT_LIT8 = 0xE2;     // xor-int/lit8
-    constexpr uint16_t SHL_INT_LIT8 = 0xE3;     // shl-int/lit8
-    constexpr uint16_t SHR_INT_LIT8 = 0xE4;     // shr-int/lit8
-    constexpr uint16_t USHR_INT_LIT8 = 0xE5;    // ushr-int/lit8
+    // PASS-3 FORENSIC CORRECTION (K-37): the ENTIRE lit8 table was still
+    // SHIFTED +3 against AOSP after the Pass-2 "K-31 fix" — that fix had
+    // corrected dispatch coverage but re-derived the byte values from the
+    // same shifted table, and its fixture used the same header constants,
+    // so it was self-consistent and could not catch the residual shift.
+    // Corpus evidence (scan_lit8_opcodes.py, 6 APKs): real bytecode uses
+    //   0xD8 add-int/lit8, 0xD9 rsub-int/lit8, 0xDA mul-int/lit8,
+    //   0xDB div-int/lit8 (×2361), 0xDC rem-int/lit8, 0xDD and-int/lit8,
+    //   0xDE or-int/lit8, 0xDF xor-int/lit8, 0xE0 shl-int/lit8 (×3399),
+    //   0xE1 shr-int/lit8, 0xE2 ushr-int/lit8 — per AOSP dex_instruction_list.
+    // NOTE: there are NO shl/shr/ushr-int/lit16 opcodes in Dalvik; the
+    // Pass-2 "SHL/SHR/USHR_INT_LIT16" constants at 0xD8..0xDA were
+    // inventions that collided with real add/rsub/mul-int/lit8.
+    constexpr uint16_t ADD_INT_LIT8 = 0xD8;     // add-int/lit8 vAA, vBB, #+CC
+    constexpr uint16_t RSUB_INT_LIT8 = 0xD9;    // rsub-int/lit8 (lit − vB)
+    constexpr uint16_t MUL_INT_LIT8 = 0xDA;     // mul-int/lit8
+    constexpr uint16_t DIV_INT_LIT8 = 0xDB;     // div-int/lit8
+    constexpr uint16_t REM_INT_LIT8 = 0xDC;     // rem-int/lit8
+    constexpr uint16_t AND_INT_LIT8 = 0xDD;     // and-int/lit8
+    constexpr uint16_t OR_INT_LIT8  = 0xDE;     // or-int/lit8
+    constexpr uint16_t XOR_INT_LIT8 = 0xDF;     // xor-int/lit8
+    constexpr uint16_t SHL_INT_LIT8 = 0xE0;     // shl-int/lit8
+    constexpr uint16_t SHR_INT_LIT8 = 0xE1;     // shr-int/lit8
+    constexpr uint16_t USHR_INT_LIT8 = 0xE2;    // ushr-int/lit8
 
     // Arithmetic lit16 (22s format: AA|op BBBB)
     constexpr uint16_t ADD_INT_LIT16 = 0xD0;    // add-int/lit16 vA, vB, #+BBBB
@@ -1506,6 +1505,31 @@ public:
                         const std::string& message,
                         const char* origin_tag);
 
+    // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-35): REAL XmlPullParser
+    // pull-parse state — event machine advances on next().
+    // NOTE: struct must precede the member-function declarations below.
+    struct XmlPullState {
+        std::string content;   // full XML text
+        size_t pos = 0;        // parse cursor
+        int event = 0;         // current event (XmlPullParser constants)
+        std::string cur_name;  // current tag name (START_TAG/END_TAG)
+        std::string cur_text;  // current text (TEXT)
+        std::vector<std::pair<std::string, std::string>> attrs;  // (name, value)
+        bool ended = false;    // saw END_DOCUMENT
+        bool pending_end = false;          // self-closing tag → END_TAG queued
+        std::string pending_end_name;
+    };
+
+    // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-34): resolve an open
+    // asset stream chain (InputStream / InputStreamReader / BufferedReader
+    // wrappers) to its asset path + live position pointer.
+    bool resolve_asset_stream(uint32_t start_id, std::string& path, size_t*& pos);
+    // Pass-3 (K-34): full asset bytes, extracted once per path and cached.
+    const std::string& cached_asset_bytes(const std::string& path);
+    // Pass-3 (K-35): advance an XmlPullParser state by one event — REAL event
+    // progression (START_DOCUMENT → tags/text → END_DOCUMENT) with termination.
+    void xml_pull_advance(XmlPullState& st);
+
     // UNIFIED_011.3 EXC-PROPAGATE: exception in flight while unwinding.
     // Set by raise_synthetic_exception / THROW-no-handler in the frame that
     // could not catch it. Consumed by try_recursive_invoke at the caller's
@@ -1838,6 +1862,12 @@ public:
     std::map<std::string, int> permission_state_;
     // Map: heap object_id (InputStream) → (asset_name, line_index)
     std::map<uint32_t, std::pair<std::string, size_t>> open_assets_;
+    // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-34): full asset bytes
+    // extracted once per path and cached, so InputStream.read()/available()
+    // (and readLine) read REAL bytes without re-running `unzip -p` per call.
+    std::map<std::string, std::string> asset_bytes_cache_;
+    // Pass-3 (K-35): one parser state per parser object (heap id keyed).
+    std::map<uint32_t, XmlPullState> xml_parsers_;
 private:
 
     // EXP-053: Set of class descriptors whose <clinit> has been executed.

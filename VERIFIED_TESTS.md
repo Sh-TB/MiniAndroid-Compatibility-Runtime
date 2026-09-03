@@ -1,7 +1,7 @@
 # VERIFIED_TESTS — how to rebuild and rerun every protecting test (2026-09-02)
 
-All results below were produced on `integration/master-reconciliation` with the
-fixed engine (commit 6fda28d). Link pattern for fixtures: the fixture .cpp plus
+All results below were produced on `integration/master-reconciliation`
+(Pass-3 re-run 2026-09-03: 7 legacy suites 84/84 + pass3 60/60 = 144 cases; golden ×3 2a12587a BASELINE_MATCH). Link pattern for fixtures: the fixture .cpp plus
 every `build/**/*.o` except `main.o`.
 
 ## 0. Build
@@ -41,6 +41,7 @@ g++ -std=c++17 -O2 -Isrc -Ithird_party/nlohmann_json/include tests/<FIXTURE>.cpp
 
 | fixture | result | protects |
 |---|---|---|
+| tests/semantic_pass3_bridge_test.cpp | **60/60** (20 FAIL pre-fix — run/pass3_evidence/before_fix_FAIL.txt) | K-34..K-42: XmlPullParser events+termination, AtomicReference CAS identity, InputStream real bytes, full conversion matrix, lit16 decode, lit8 table, parseInt boundary, NaN/Infinity words, aget typed elems |
 | tests/semantic_long_cmp_conv_test.cpp | **14/14** (12/14 FAIL pre-fix — run/semantic_reconciliation/before_fix_FAIL.txt) | K-01..K-05: 64-bit long arith, cmp-long, NaN ordering, conversions, 12x nibbles |
 | tests/semantic_switch_parse_neg_test.cpp | **25/25** (0/25 pre-fix — run/semantic_reconciliation2/before_fix_FAIL.txt) | K-18/K-19/K-20/K-29/K-31/K-32: switch dispatch, parse/substring/concat bridge, div-zero exceptions, neg/not family, lit8 table |
 | tests/unified0112_filled_new_array_test.cpp | 5/5 | K-07 FNA 35c nibbles |
