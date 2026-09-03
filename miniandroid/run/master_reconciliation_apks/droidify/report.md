@@ -2,7 +2,7 @@
 
 ## Application
 
-- **APK:** `/tmp/my-project/miniandroid_ws/apk_cache/corpus/droidify.apk`
+- **APK:** `/home/z/my-project/miniandroid_ws/apk_cache/corpus/droidify.apk`
 - **Package:** `UnknownApp`
 - **Status:** **FAILURE** ❌
 
@@ -44,5 +44,5 @@
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20260902-215450-0719`
-- **Generated:** 2026-09-02 21:54:50 UTC
+- **Session ID:** `EXP-001-20260903-005831-5201`
+- **Generated:** 2026-09-03 00:58:31 UTC

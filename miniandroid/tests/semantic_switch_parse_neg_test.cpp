@@ -55,7 +55,7 @@ constexpr uint16_t DIV_INT        = 0x93;  // 23x
 constexpr uint16_t INT_TO_DOUBLE  = 0x83;  // 12x
 constexpr uint16_t DIV_LONG       = 0x9E;  // 23x
 constexpr uint16_t REM_LONG       = 0x9F;  // 23x
-constexpr uint16_t L_REM_INT_LIT8 = 0xDF;  // 22b (AOSP rem-int/lit8)
+constexpr uint16_t L_REM_INT_LIT8 = 0xDC;  // 22b — PASS-3: corrected to AOSP rem-int/lit8 (was 0xDF under the +3-shifted table)
 constexpr uint16_t INVOKE_STATIC  = 0x71;  // 35c
 constexpr uint16_t INVOKE_VIRTUAL = 0x6E;  // 35c
 // Local constants for the neg/not family — deliberately NOT taken from the
