@@ -1016,6 +1016,58 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         }
     }
 
+    // ===== UC009-WIRE: composition trigger for Compose-based apps =====
+    // AOSP ViewRootImpl.performTraversals(): dispatchAttachedToWindow() runs
+    // on the attaching tree BEFORE the first draw. For Compose this is THE
+    // composition trigger:
+    //   AbstractComposeView.onAttachedToWindow -> ensureCompositionCreated()
+    // The hook (dispatch_view_attached, CAMPAIGN 009 §10) existed but was
+    // never invoked from this pipeline — dead code. Env-gated for golden
+    // protection; enable with MINIANDROID_DISPATCH_ATTACH=1.
+    if (std::getenv("MINIANDROID_DISPATCH_ATTACH") != nullptr) {
+        std::cerr << "[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)..." << std::endl;
+        bool attached = dalvik_engine_.dispatch_view_attached();
+        if (attached) {
+            // AOSP: composition start posts work to the UI-thread queue
+            // (Recomposer via AndroidUiDispatcher / Handler). Drain bounded
+            // rounds so posted composition work actually executes; each
+            // round may create new views and enqueue more work.
+            if (auto* registry = dalvik_engine_.get_shadow_registry()) {
+                if (auto* hs = registry->find_as<framework::HandlerShadow>()) {
+                    for (int round = 0; round < 64; ++round) {
+                        std::vector<uint32_t> drained;
+                        size_t n = hs->drain_ready(&drained);
+                        if (n == 0) break;
+                        std::cerr << "[UC009-WIRE] drain round=" << round
+                                  << " runnable(s)=" << n << std::endl;
+                        for (uint32_t rid : drained) {
+                            try {
+                                auto& heap = dalvik_engine_.get_heap_public();
+                                if (heap.has_object(rid)) {
+                                    const auto* obj = heap.get(rid);
+                                    std::string cls = obj ? obj->class_descriptor : "";
+                                    if (!cls.empty()) {
+                                        std::cerr << "[UC009-WIRE] Runnable id=" << rid
+                                                  << " class=" << cls << std::endl;
+                                        miniandroid::dalvik::DalvikValue ret;
+                                        miniandroid::dalvik::DalvikExecutionResult wire_result;
+                                        std::vector<miniandroid::dalvik::DalvikValue> wire_args;
+                                        wire_args.push_back(miniandroid::dalvik::DalvikValue::make_object(rid, cls));
+                                        dalvik_engine_.try_recursive_invoke(
+                                            cls, "run", wire_args, ret, wire_result);
+                                    }
+                                }
+                            } catch (const std::exception& e) {
+                                std::cerr << "[UC009-WIRE] Runnable failed: " << e.what() << std::endl;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // ===== end UC009-WIRE =====
+
     trace_engine_.info("ExecutionEngine", "stage_execute_application_real_dalvik",
                        "Real Dalvik execution complete");
 
@@ -1203,6 +1255,10 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                         // CAMPAIGN 013: deferred custom-view placeholders.
                         struct CVP { int l, t, w, h; std::string cls; uint32_t view_id = 0; };
                         std::vector<CVP> custom_view_placeholders;
+                        // UC009: rects actually used when drawing each visited view —
+                        // Compose children inherit the parent's REAL draw rect because
+                        // our measure pass does not run Compose's own measure machinery.
+                        std::map<uint32_t, std::pair<std::pair<int,int>, std::pair<int,int>>> visited_rects;
 
                         // Helper: measured text size for a node (used for
                         // WRAP_CONTENT resolution and text drawing).
@@ -1270,6 +1326,7 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             }
                             int right = left + w;
                             int bottom = top + h;
+                            visited_rects[task.view_id] = {{left, top}, {w, h}};
 
                             // Draw view background
                             // EXP-095 (CM-020): REAL background colors captured
@@ -1393,8 +1450,14 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             {
                                 bool framework_class =
                                     node->class_desc.rfind("Landroid/", 0) == 0 ||
-                                    node->class_desc.rfind("Landroidx/", 0) == 0 ||
                                     node->class_desc.rfind("Lcom/google/android/", 0) == 0;
+                                // UC009 exception: Compose view classes ARE bundled DEX
+                                // classes with REAL draw bytecode (AndroidComposeView
+                                // draws the whole composed LayoutNode tree through
+                                // dispatchDraw). They must NOT be treated as framework
+                                // shadows — that exclusion kept every Compose app blank.
+                                bool compose_view_class =
+                                    node->class_desc.find("Landroidx/compose/") == 0;
                                 bool has_own_content =
                                     !node->text.empty() ||
                                     !node->image_drawable_path.empty() ||
@@ -1413,7 +1476,24 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                               << " vis=" << node->visibility
                                               << " w=" << w << " h=" << h << std::endl;
                                 }
-                                if (!framework_class && node->children.empty() &&
+                                // UC009: our measure pass does not run the
+                                // Compose measure machinery, so a runtime-created
+                                // AndroidComposeView measures degenerate (e.g.
+                                // 1080x36). AOSP truth: it fills its ComposeView
+                                // parent — expand BEFORE the size gate.
+                                if (compose_view_class) {
+                                    auto rit = visited_rects.find(node->parent_id);
+                                    if (rit != visited_rects.end() &&
+                                        (rit->second.second.first > w || rit->second.second.second > h)) {
+                                        left = rit->second.first.first;
+                                        top = rit->second.first.second;
+                                        w = rit->second.second.first;
+                                        h = rit->second.second.second;
+                                        std::cerr << "[UC009-DRAW] AndroidComposeView expanded to ComposeView rect "
+                                                  << w << "x" << h << std::endl;
+                                    }
+                                }
+                                if ((!framework_class || compose_view_class) && node->children.empty() &&
                                     !has_own_content && w > 40 && h > 40 &&
                                     node->visibility == 0) {
                                     bool drew_real = false;

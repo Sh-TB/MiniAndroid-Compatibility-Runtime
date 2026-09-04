@@ -1945,6 +1945,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                   << " dex_report=" << (dex_report_ ? "YES" : "NULL")
                   << std::endl;
     }
+    // UC009-COMPOSE-TRACE: gated visibility into the Compose composition
+    // chain (AbstractComposeView.ensureCompositionCreated -> Recomposer ->
+    // Composer -> slot-table). Enable with MINIANDROID_TRACE_COMPOSE=1.
+    {
+        static thread_local const bool tc = std::getenv("MINIANDROID_TRACE_COMPOSE") != nullptr;
+        if (tc && (declaring_class.find("ompos") != std::string::npos ||
+                   declaring_class.find("oroutin") != std::string::npos ||
+                   declaring_class.find("Choreographer") != std::string::npos ||
+                   declaring_class.find("MonotonicFrameClock") != std::string::npos)) {
+            std::cerr << "[COMPOSE-TRY] " << declaring_class << "." << method_name
+                      << " depth=" << recursion_depth_ << std::endl;
+        }
+    }
     // EXP-061: Debug — trace SlideView specifically
     if (declaring_class.find("SlideView") != std::string::npos) {
         std::cerr << "[EXP061-TRY] try_recursive_invoke called for "
@@ -4309,6 +4322,27 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return true;
     }
 
+    {
+        static thread_local const bool tc = std::getenv("MINIANDROID_TRACE_COMPOSE") != nullptr;
+        if (tc && (declaring_class.find("ompos") != std::string::npos ||
+                   declaring_class.find("oroutin") != std::string::npos ||
+                   declaring_class.find("Choreographer") != std::string::npos ||
+                   declaring_class.find("MonotonicFrameClock") != std::string::npos)) {
+            std::cerr << "[COMPOSE-MISS] " << declaring_class << "." << method_name
+                      << " (not in DEX — bridges to API/shadow) depth=" << recursion_depth_
+                      << std::endl;
+        }
+    }
+    {
+        static thread_local const bool tm = std::getenv("MINIANDROID_TRACE_MISS") != nullptr;
+        static thread_local uint64_t miss_log_count = 0;
+        if (tm && miss_log_count < 400) {
+            miss_log_count++;
+            std::cerr << "[INVOKE-MISS] " << declaring_class << "." << method_name
+                      << " (not in DEX — bridges to API/shadow) depth=" << recursion_depth_
+                      << std::endl;
+        }
+    }
     recursion_depth_--;
     return false;  // method not found in DEX, bridge to API
 }
@@ -4353,6 +4387,16 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
     DalvikExecutionResult res;
     bool ok = try_recursive_invoke(cls, "onDraw", args, ret, res);
     int ops = ok ? (int)canvas_shadow->ops().size() : 0;
+    // AOSP ViewGroup semantics: ViewGroups draw children/content through
+    // dispatchDraw(Canvas), not onDraw. Compose's AndroidComposeView is a
+    // ViewGroup — its entire composed tree is rendered via dispatchDraw.
+    // A View may also legitimately define an EMPTY onDraw (bytecode_size=1
+    // return-void) — fall back whenever onDraw produced no ops.
+    if (ops == 0) {
+        canvas_shadow->begin_frame();  // reset ops collected by the empty try
+        ok = try_recursive_invoke(cls, "dispatchDraw", args, ret, res);
+        ops = ok ? (int)canvas_shadow->ops().size() : 0;
+    }
     std::cerr << "[C013-ONDRAW] view=" << view_object_id << " class=" << cls
               << " dispatched=" << (ok ? "YES" : "NO") << " ops=" << ops << std::endl;
     return ops;
@@ -4665,6 +4709,13 @@ bool DalvikExecutionEngine::dispatch_view_attached() {
             if (node == nullptr || node->class_desc.empty()) { attempted.insert(id); continue; }
             attempted.insert(id);
             const std::string cls = node->class_desc;
+            // AOSP ordering: View.dispatchAttachedToWindow sets mAttachInfo
+            // BEFORE invoking onAttachedToWindow. Mirror that here so
+            // isAttachedToWindow() queried inside the dispatched chain
+            // (Compose ensureCompositionCreated) returns true.
+            if (auto* mutable_node = view_shadow->find_node(id)) {
+                mutable_node->attached_to_window = true;
+            }
             // Only DEX-side classes (bundled androidx / app code) can be
             // interpreted; try_recursive_invoke returns false otherwise.
             std::vector<DalvikValue> args{DalvikValue::make_object(id, cls)};
