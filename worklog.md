@@ -3856,3 +3856,87 @@ Artifacts produced:
 - miniandroid/docs/knowledge/TELEGRAM_SOURCE_MAPPING.md — APK↔source mapping
 - 5 commits pushed to main
 - HEAD == origin/main == f486e3c97a8b622b6ceb2469f118d31e2ce088f5
+
+---
+Task ID: 3 (release packaging correction)
+Agent: Super Z (main agent)
+Task: Audit and correct release packaging, version naming, and demo visual
+proof per the owner's correction directive. No new feature work until fixed.
+
+Work Log:
+- Verified git state from Git (not from prior reports): local main ==
+  origin/main == 13d7582f; tags v0.0.1/v0.0.2/v0.0.2-alpha intact; rollback
+  anchor recorded (13d7582f, mother mirrors untouched).
+- AUDIT FINDINGS:
+  * miniandroid/build-win/ had 13,638 files TRACKED in git (llvm-mingw
+    toolchain, 80 MB compiler archive blob, dependency source trees under
+    win_src/, 3,018 object/static-lib files). Root cause: .gitignore covered
+    miniandroid/build/ only; build_windows.sh defaults its work/output dirs
+    inside build-win/. .git grew to 450 MB.
+  * The SHIPPED v0.0.2 zip/tar were already clean (win: 4.9 MB / 4 files;
+    linux: 55 MB / 5 files) - the contamination was in the repository tree
+    and in the (still-flawed) packaging process, not in the published bytes.
+  * Windows exe imports only KERNEL32 + UCRT (verified by PE import-table
+    parse): no DLLs needed. Linux links standard distro libs only.
+  * README already had a single v0.0.2 - Australorp presentation, but
+    carried a stale BUILD-WINDOWS.md-in-zip claim and embedded no visuals.
+  * The invented codename release (v0.0.2-alpha "Vyasa") existed on GitHub.
+  * docs/demo/demo_frames.png (9-frame full-screen strip) unreadable;
+    release GIF only 270x480.
+- FIXES (commits 4ed2498c..f0d2555b, all fast-forward):
+  * 4ed2498c fix(packaging): git rm -r --cached miniandroid/build-win
+    (history untouched, no rewrite) + comprehensive .gitignore (build-win/,
+    win_src/, win_deps/, llvm-mingw*, build-*/, work/, compiler byproducts,
+    dependency archives/source trees, release staging, raw demo-run output).
+  * d14a9dc6 feat(release): permanent gate scripts/validate_release_content.py
+    (toolchain dirs, dependency source trees, nested archives, object files,
+    static libs, build files, size heuristic, ELF/PE executable identity;
+    prints RELEASE_CONTENT_CHECK / DEVELOPMENT_ARTIFACTS) +
+    scripts/package_release.sh (fresh staging, explicit file list, stripped
+    binary, archive re-validation, SHA256 manifest) +
+    scripts/release_clean_extract_test.sh (clean-extract demo run +
+    deterministic replay vs committed evidence) + committed package
+    templates. Discrimination proven: gate PASSES clean packages, FAILS the
+    contaminated tree with 13,475 violations.
+  * f90a8615 fix(runtime): frame manifest now records BOTH sha256
+    (framebuffer law) and png_sha256 (PNG file bytes) per frame; all
+    previous framebuffer hashes verified unchanged (e5c8d511... sequence).
+  * d45b76fb feat(demo): provenance-gated scripts/make_demo_proof.py builds
+    docs/demo/demo_frames.png (labeled STATE 0..4 contact sheet, tight
+    crop, runtime-captured captions + per-frame SHA) and
+    docs/demo/demo_proof.gif (9 frames, 540x560, committed for README
+    embedding). Gate refuses to emit assets if any frame hash mismatches.
+  * f0d2555b docs(readme): GIF + contact sheet embedded up front, owner-
+    controlled codename policy stated, stale zip-kit claim removed,
+    packaging guarantee section added; RELEASE_NOTES_v0.0.2.md identities
+    updated.
+- REGRESSION on the new build: golden matrix (simplestopwatch 2a12587a
+  BASELINE_MATCH, gmdice/microtimer/unote goldens intact, documented
+  corpus gaps unchanged), fixture suites 14/14 + 25/25 + 55/55, demo
+  VALIDATION_PASS with deterministic replay. Windows exe rebuilt with the
+  same runtime change (8ff8694b...).
+- RELEASE v0.0.2 assets replaced in place (same names, stable URLs): linux
+  tar.gz now 1.2 MB (stripped 2.6 MB binary), windows zip 1.8 MB, new GIF,
+  new SHA256SUMS; body gained the package-verification section; the
+  superseded binary hash line annotated. Release NOT deleted/retagged.
+- v0.0.2-alpha release title/body edited to "internal development snapshot
+  (no codename)"; invented codename removed; release and tag preserved.
+- FINAL_PUBLIC_VERIFICATION ALL_PASS (anonymous): download all 4 assets,
+  SHA256 match published sums, content gate PASS on both published
+  packages, clean-extract demo run exit 0, 9 frames / 8 clicks,
+  framebuffer+PNG replay matches committed evidence, README embeds both
+  proof assets with one authoritative release statement, no codename
+  residue.
+
+Stage Summary:
+- Repository is source-only again (build-win untracked; 13,638 dev files
+  off the tip). Release pipeline permanently gated; published artifacts
+  are clean, minimal, and independently runnable; visual proof is
+  legible and provenance-verified; codename control rests with the owner.
+- Known limits: git history still carries the leaked toolchain blobs
+  (removal would require history rewrite, which is forbidden); native
+  Windows run still unverified (no Wine on host; static checks only);
+  linux PNG file hashes are pinned to the Linux build lineage (codecs).
+- Next highest-value work (per standing priorities): Handler.postDelayed
+  time-driven animation frames; Telegram golden re-acquisition; Wine-based
+  Windows smoke run when a Wine host is available; DEX semantics backlog.
