@@ -1,0 +1,173 @@
+{
+  "test": "EXP086 Phase 5 \u2014 B2 AXML view inflation diagnostic",
+  "generated_at": "2026-08-23T00:23:44.668190+00:00",
+  "pass_count": 0,
+  "partial_count": 6,
+  "blocked_count": 0,
+  "skip_count": 0,
+  "results": [
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+      "exit_code": 0,
+      "evidence": {
+        "setcontentview_called": true,
+        "setcontentview_layout_resource_captured": false,
+        "layout_resource_id": null,
+        "axml_parsing_evidence": false,
+        "layout_inflater_called": false,
+        "viewshadow_dispatch": false,
+        "createview_dispatch": false,
+        "view_tree_exists": false,
+        "screenshot_png_exists": true,
+        "screenshot_png_size": 10535,
+        "perform_draw_called": false,
+        "text_views_rendered": 0
+      },
+      "view_tree_summary": {
+        "view_count": 0,
+        "node_count": 0
+      },
+      "pil_decoded": true,
+      "non_black_pixels_sampled": 848,
+      "status": "PARTIAL_LAYOUT_CAPTURED_NO_INFLATE",
+      "stdout_tail": "g obj_id=4\n[TRY-ENTRY] Lde/duenndns/gmdice/GameMasterDice;.setListAdapter dex_report=YES\n[DalvikEngine]   API BRIDGE: Lde/duenndns/gmdice/GameMasterDice;.setListAdapter\n[DalvikEngine]   RETURN_VOID at 0xd4\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 1.023863ms\n[DalvikEngine] Instructions executed: 56\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "gmdice"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/tictactoe.apk",
+      "exit_code": 0,
+      "evidence": {
+        "setcontentview_called": true,
+        "setcontentview_layout_resource_captured": false,
+        "layout_resource_id": null,
+        "axml_parsing_evidence": false,
+        "layout_inflater_called": false,
+        "viewshadow_dispatch": false,
+        "createview_dispatch": false,
+        "view_tree_exists": false,
+        "screenshot_png_exists": true,
+        "screenshot_png_size": 10535,
+        "perform_draw_called": false,
+        "text_views_rendered": 0
+      },
+      "view_tree_summary": {
+        "view_count": 0,
+        "node_count": 0
+      },
+      "pil_decoded": true,
+      "non_black_pixels_sampled": 848,
+      "status": "PARTIAL_LAYOUT_CAPTURED_NO_INFLATE",
+      "stdout_tail": "RY] Lcom/emmanuelmess/tictactoe/AndroidLauncher;.setContentView dex_report=YES\n[DalvikEngine]   API BRIDGE: Lcom/emmanuelmess/tictactoe/AndroidLauncher;.setContentView\n[DalvikEngine]   RETURN_VOID at 0x24\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 60.404853ms\n[DalvikEngine] Instructions executed: 56\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "tictactoe"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
+      "exit_code": 0,
+      "evidence": {
+        "setcontentview_called": true,
+        "setcontentview_layout_resource_captured": false,
+        "layout_resource_id": null,
+        "axml_parsing_evidence": false,
+        "layout_inflater_called": false,
+        "viewshadow_dispatch": false,
+        "createview_dispatch": false,
+        "view_tree_exists": false,
+        "screenshot_png_exists": true,
+        "screenshot_png_size": 10535,
+        "perform_draw_called": false,
+        "text_views_rendered": 0
+      },
+      "view_tree_summary": {
+        "view_count": 0,
+        "node_count": 0
+      },
+      "pil_decoded": true,
+      "non_black_pixels_sampled": 848,
+      "status": "PARTIAL_LAYOUT_CAPTURED_NO_INFLATE",
+      "stdout_tail": "OnKeypadClickListener insns=2 RSS=13.2266 MB\n[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lorg/debian/eugen/headingcalculator/CalculatorKeypad;.setOnKeypadClickListener\n[DalvikEngine]   RETURN_VOID at 0x2c\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 0.684999ms\n[DalvikEngine] Instructions executed: 22\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "headingcalculator"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.billthefarmer.notes_139.apk",
+      "exit_code": 0,
+      "evidence": {
+        "setcontentview_called": true,
+        "setcontentview_layout_resource_captured": false,
+        "layout_resource_id": null,
+        "axml_parsing_evidence": false,
+        "layout_inflater_called": false,
+        "viewshadow_dispatch": false,
+        "createview_dispatch": false,
+        "view_tree_exists": false,
+        "screenshot_png_exists": true,
+        "screenshot_png_size": 10535,
+        "perform_draw_called": false,
+        "text_views_rendered": 0
+      },
+      "view_tree_summary": {
+        "view_count": 0,
+        "node_count": 0
+      },
+      "pil_decoded": true,
+      "non_black_pixels_sampled": 848,
+      "status": "PARTIAL_LAYOUT_CAPTURED_NO_INFLATE",
+      "stdout_tail": ": Landroid/view/GestureDetector;.<init>\n[DalvikEngine] \u2705 FIELD RESOLVED: Lorg/billthefarmer/notes/Notes;.gestureDetector type=Landroid/view/GestureDetector; offset=0\n[DalvikEngine]   RETURN_VOID at 0xd4\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 37.362981ms\n[DalvikEngine] Instructions executed: 1384\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "notes"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp076_corpus/app.varlorg.unote_30.apk",
+      "exit_code": 0,
+      "evidence": {
+        "setcontentview_called": true,
+        "setcontentview_layout_resource_captured": false,
+        "layout_resource_id": null,
+        "axml_parsing_evidence": false,
+        "layout_inflater_called": false,
+        "viewshadow_dispatch": false,
+        "createview_dispatch": false,
+        "view_tree_exists": false,
+        "screenshot_png_exists": true,
+        "screenshot_png_size": 10535,
+        "perform_draw_called": false,
+        "text_views_rendered": 0
+      },
+      "view_tree_summary": {
+        "view_count": 0,
+        "node_count": 0
+      },
+      "pil_decoded": true,
+      "non_black_pixels_sampled": 848,
+      "status": "PARTIAL_LAYOUT_CAPTURED_NO_INFLATE",
+      "stdout_tail": " Landroid/content/SharedPreferences;.getBoolean\n[DalvikEngine]   API BRIDGE: Ljava/lang/Boolean;.valueOf\n[DalvikEngine]   API BRIDGE: Ljava/lang/Boolean;.booleanValue\n[DalvikEngine]   RETURN_VOID at 0x29f\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 2.981762ms\n[DalvikEngine] Instructions executed: 344\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "unote"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
+      "exit_code": 0,
+      "evidence": {
+        "setcontentview_called": true,
+        "setcontentview_layout_resource_captured": false,
+        "layout_resource_id": null,
+        "axml_parsing_evidence": false,
+        "layout_inflater_called": true,
+        "viewshadow_dispatch": false,
+        "createview_dispatch": false,
+        "view_tree_exists": false,
+        "screenshot_png_exists": true,
+        "screenshot_png_size": 10535,
+        "perform_draw_called": false,
+        "text_views_rendered": 0
+      },
+      "view_tree_summary": {
+        "view_count": 0,
+        "node_count": 0
+      },
+      "pil_decoded": true,
+      "non_black_pixels_sampled": 848,
+      "status": "PARTIAL_LAYOUT_CAPTURED_NO_INFLATE",
+      "stdout_tail": "E INVOKE completed: Lorg/telegram/ui/LaunchActivity;.checkFrameMetrics\n[DalvikEngine]   RETURN_VOID at 0x501\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lorg/telegram/ui/LaunchActivity;.onCreate\n[DalvikEngine] \u2705 onCreate invoked via try_recursive_invoke\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 460.406581ms\n[DalvikEngine] Instructions executed: 757\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "telegram"
+    }
+  ],
+  "diagnostic_note": "B2 (AXML view inflation) is PARTIALLY WORKING: setContentView(int) is called and the layout resource ID is captured, but the renderer does not yet walk the ViewShadow tree to inflate views. PNG output now works (B1 fixed) and contains non-black pixels (synthetic HelloWorld view). Real AXML inflation requires wiring ExecutionEngine to access dalvik_engine's ShadowRegistry and walking the ViewShadow tree in perform_draw()."
+}

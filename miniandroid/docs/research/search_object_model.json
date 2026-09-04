@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://source.android.com/docs/core/runtime",
+    "name": "Android runtime and Dalvik",
+    "snippet": "Jul 14, 2026 — ART as the runtime executes the Dalvik executable (DEX) format and DEX bytecode specification. ART and Dalvik are compatible runtimes running ...",
+    "host_name": "source.android.com",
+    "rank": 0,
+    "date": "Jul 14, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://groups.google.com/g/android-platform/c/ZG_pjIFiiFM",
+    "name": "The way Dalvik VM native code uses Java objects",
+    "snippet": "Dec 25, 2009 — ClassObject combines the Java object part and the native part into one and stores it in the managed heap.",
+    "host_name": "groups.google.com",
+    "rank": 1,
+    "date": "Dec 25, 2009",
+    "favicon": ""
+  },
+  {
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4082837",
+    "name": "Hybrid PolyLingual Object Model: An Efficient and Seamless",
+    "snippet": "by Y Huang · 2014 · Cited by 4 — In this paper, a hybrid polylingual object (HPO) model is proposed to allow a CAR object being accessed as a Java object and as vice in the Dalvik virtual ... Read more",
+    "host_name": "pmc.ncbi.nlm.nih.gov",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/61882738/class-loader-subsystem-in-dalvik-and-art",
+    "name": "Class loader subsystem in Dalvik and ART",
+    "snippet": "Dalvik and ART I get to know info on how Dalvik is different from JVM in terms of ability to run multiple VMs, makes runtime better, ART ...",
+    "host_name": "stackoverflow.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://learn.microsoft.com/en-us/dotnet/api/java.lang.object?view=net-android-35.0",
+    "name": "Object Class (Java.Lang)",
+    "snippet": "Class Object is the root of the class hierarchy . Every class has Object as a superclass. All objects, including arrays, implement the methods of this class. Read more",
+    "host_name": "learn.microsoft.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://shipilev.net/jvm/objects-inside-out",
+    "name": "Java Objects Inside Out",
+    "snippet": "Aug 24, 2020 — the first 12 bytes are the object header . object header consists of two parts: mark word and class word. Class word carries the information ...",
+    "host_name": "shipilev.net",
+    "rank": 5,
+    "date": "Aug 24, 2020",
+    "favicon": ""
+  },
+  {
+    "url": "https://newandroidbook.com/files/ArtOfDalvik.pdf",
+    "name": "Dalvík and ART",
+    "snippet": "by J Levin · Cited by 6 — The actual runtime is ART , Dalvik (DEX) code. Header 1 (implies Header Size) Used by Class, method and field annotations ・ runs a Dalvik VM ・ ... 78 pages",
+    "host_name": "newandroidbook.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.googlesource.com/platform/dalvik.git/+/android-4.2.2_r1/vm/oo/Object.h",
+    "name": "vm/oo/Object.h - platform/dalvik.git",
+    "snippet": "Definitions for packing refOffsets in ClassObject . All objects have an Object header followed by type-specific data . Data objects have an Object header ...",
+    "host_name": "android.googlesource.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://proandroiddev.com/android-runtime-how-dalvik-and-art-work-6e57cf1c50e5",
+    "name": "Android Runtime — How Dalvik and ART work?",
+    "snippet": "Apr 14, 2021 — In this article, you'll learn how Android Runtime works, what is ART , DALVIK , JIT and AOT and how Android Runtime evolved over the years to ...",
+    "host_name": "proandroiddev.com",
+    "rank": 8,
+    "date": "Apr 14, 2021",
+    "favicon": ""
+  }
+]

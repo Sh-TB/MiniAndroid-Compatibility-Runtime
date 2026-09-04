@@ -1,0 +1,43 @@
+{
+  "experiment_id": "EXP-023",
+  "phase": "PHASE_10_FAILURE_DATABASE",
+  "generated_at": "2026-08-12T14:18:54.179001Z",
+  "failures_by_category": {},
+  "top_blockers": [
+    {
+      "rank": 1,
+      "blocker": "ListView/RecyclerView support",
+      "category": "COMPLEX_WIDGETS",
+      "estimated_affected": "60%+ of non-trivial apps",
+      "fix_complexity": "HIGH (3-5 days)"
+    },
+    {
+      "rank": 2,
+      "blocker": "SharedPreferences persistence",
+      "category": "STORAGE",
+      "estimated_affected": "40%+ of utility apps",
+      "fix_complexity": "MEDIUM (2 days)"
+    },
+    {
+      "rank": 3,
+      "blocker": "colors.xml / theme parsing",
+      "category": "RESOURCES",
+      "estimated_affected": "50%+ of styled apps",
+      "fix_complexity": "LOW-MEDIUM (1 day)"
+    },
+    {
+      "rank": 4,
+      "blocker": "invoke-static (Toast, Log, etc.)",
+      "category": "OPCODE",
+      "estimated_affected": "30%+ of apps",
+      "fix_complexity": "LOW (1 day)"
+    },
+    {
+      "rank": 5,
+      "blocker": "Multi-Activity navigation",
+      "category": "ARCHITECTURE",
+      "estimated_affected": "25%+ of real apps",
+      "fix_complexity": "MEDIUM-HIGH (2-3 days)"
+    }
+  ]
+}

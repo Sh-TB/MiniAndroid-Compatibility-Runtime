@@ -1,0 +1,2034 @@
+{
+ "campaign": "009",
+ "generated": "live git ls-remote + raw LICENSE fetch",
+ "total": 201,
+ "verified_commit": 197,
+ "verified_license": 188,
+ "categories": {
+  "A": 13,
+  "B": 36,
+  "C": 92,
+  "D": 15,
+  "E": 45
+ },
+ "repos": [
+  {
+   "repo": "kin9-0rz/apkutils",
+   "component": "ARSC/AXML",
+   "category": "A",
+   "commit": "54b773e21f50",
+   "commit_full": "54b773e21f505eeec440b36dc60473ac0784e0df",
+   "license": "MIT",
+   "reason": "Pure-python APK/ARSC/AXML parser; vendorable reference for our arsc_tool gap-fills",
+   "commit_error": null
+  },
+  {
+   "repo": "REAndroid/ARSCLib",
+   "component": "ARSC/AXML",
+   "category": "A",
+   "commit": "f08adf80672c",
+   "commit_full": "f08adf80672cb7e1a4d1a786e861327fcd3934c5",
+   "license": "Apache-2.0",
+   "reason": "Most complete standalone ARSC lib; config-matching logic is the \u00a76 oracle",
+   "commit_error": null
+  },
+  {
+   "repo": "REAndroid/APKEditor",
+   "component": "ARSC/AXML",
+   "category": "B",
+   "commit": "70d2c4ba7d84",
+   "commit_full": "70d2c4ba7d84c712c34796077fb9c652ee808e04",
+   "license": "Apache-2.0",
+   "reason": "Resource merging/AXML editing; external CLI tool, not embeddable",
+   "commit_error": null
+  },
+  {
+   "repo": "skylot/jadx",
+   "component": "ARSC/AXML",
+   "category": "C",
+   "commit": "5e781bf5660b",
+   "commit_full": "5e781bf5660b6e5a0469626b8b64f3ddcd64af6f",
+   "license": "Apache-2.0",
+   "reason": "DEX->Java decompiler; use offline to read app logic during debugging",
+   "commit_error": null
+  },
+  {
+   "repo": "iBotPeaches/Apktool",
+   "component": "ARSC/AXML",
+   "category": "B",
+   "commit": "6234db24def5",
+   "commit_full": "6234db24def55e718e29599adbe2afd479197a71",
+   "license": "Apache-2.0",
+   "reason": "Reference implementation for AXML/ARSC decode semantics",
+   "commit_error": null
+  },
+  {
+   "repo": "pxb1988/dex2jar",
+   "component": "ARSC/AXML",
+   "category": "C",
+   "commit": "b5bda4fb4935",
+   "commit_full": "b5bda4fb4935ae8b3869b422454ae3b3896c7bc1",
+   "license": "Apache-2.0",
+   "reason": "DEX->JVM converter; oracle for DEX opcode semantics",
+   "commit_error": null
+  },
+  {
+   "repo": "APKLab/APKLab",
+   "component": "ARSC/AXML",
+   "category": "D",
+   "commit": "6ae69b1ba03d",
+   "commit_full": "6ae69b1ba03d65cb78388f7e2fa6a3b8f0081c74",
+   "license": "AGPL-3.0",
+   "reason": "VSCode UI wrapper around apktool/jadx; no unique engine code",
+   "commit_error": null
+  },
+  {
+   "repo": "Aliucord/binary-resources",
+   "component": "ARSC/AXML",
+   "category": "B",
+   "commit": "4580f4b3d49e",
+   "commit_full": "4580f4b3d49edc842aa6bb8d00b056c53fbce5fd",
+   "license": "Apache-2.0",
+   "reason": "Lightweight binary-resources (ARSC/AXML) lib, Apache-2.0; small enough to port",
+   "commit_error": null
+  },
+  {
+   "repo": "droidefense/engine",
+   "component": "ARSC/AXML",
+   "category": "D",
+   "commit": "067e43ee7a3a",
+   "commit_full": "067e43ee7a3a097cf965677a02702f6ae6f333a0",
+   "license": "GPL-3.0",
+   "reason": "Malware-analysis engine; GPL-3.0 + out of scope",
+   "commit_error": null
+  },
+  {
+   "repo": "google/apk-patcher",
+   "component": "ARSC/AXML",
+   "category": "D",
+   "commit": null,
+   "commit_full": null,
+   "license": "N/A",
+   "reason": "NOT-FOUND (404 on ls-remote)",
+   "commit_error": "NOT-FOUND: repo does not exist (task asked to verify; confirmed 404 via git+API+HTML)"
+  },
+  {
+   "repo": "amimo/dcc",
+   "component": "ARSC/AXML",
+   "category": "C",
+   "commit": "17de4fd3202b",
+   "commit_full": "17de4fd3202bd0e46735974211a43cda39fca5f3",
+   "license": "Apache-2.0",
+   "reason": "DEX compiler (java->dex); useful for synthetic DEX test vectors",
+   "commit_error": null
+  },
+  {
+   "repo": "ReVanced/revanced-patcher",
+   "component": "ARSC/AXML",
+   "category": "D",
+   "commit": "c6cc64dd3bdf",
+   "commit_full": "c6cc64dd3bdfdc001d903f7b6cbd4537782a7082",
+   "license": "GPL-3.0",
+   "reason": "GPL-3.0 patching framework; incompatible + out of scope",
+   "commit_error": null
+  },
+  {
+   "repo": "JesusFreke/smali",
+   "component": "ARSC/AXML",
+   "category": "B",
+   "commit": "2771eae0a11f",
+   "commit_full": "2771eae0a11f07bd892732232e6ee4e32437230d",
+   "license": "BSD-2/3-Clause",
+   "reason": "smali/baksmali: DEX assembler; BSD; build offline test vectors",
+   "commit_error": null
+  },
+  {
+   "repo": "plum-umd/redexer",
+   "component": "ARSC/AXML",
+   "category": "C",
+   "commit": "f80520d5310b",
+   "commit_full": "f80520d5310bf80fdd204c1c03b30278982a4431",
+   "license": "BSD-2/3-Clause",
+   "reason": "OCaml DEX rewriter; academic reference",
+   "commit_error": null
+  },
+  {
+   "repo": "kikfox/ARSCTool",
+   "component": "ARSC/AXML",
+   "category": "E",
+   "commit": "ed68a4b91ecd",
+   "commit_full": "ed68a4b91ecd714aae9d7e8ff6d8d4ae105253f9",
+   "license": "UNKNOWN-verify-manually",
+   "reason": "License UNKNOWN; revisit if ARSCLib proves too heavy",
+   "commit_error": null
+  },
+  {
+   "repo": "GraxCode/dalvikgate",
+   "component": "ARSC/AXML",
+   "category": "D",
+   "commit": "d2f2f6812339",
+   "commit_full": "d2f2f681233985229f9126a9e4592e4820904176",
+   "license": "GPL-3.0",
+   "reason": "GPL-3.0; dex->java bridge tool, out of scope",
+   "commit_error": null
+  },
+  {
+   "repo": "akavel/dali",
+   "component": "ARSC/AXML",
+   "category": "C",
+   "commit": "911fea3b41ca",
+   "commit_full": "911fea3b41ca4f9bc8eb2013f7456dff38a65af0",
+   "license": "AGPL-3.0",
+   "reason": "Go DEX/ADIL writer; reference for DEX binary format tests",
+   "commit_error": null
+  },
+  {
+   "repo": "MatrixEditor/dexrs",
+   "component": "ARSC/AXML",
+   "category": "C",
+   "commit": "598f2bb36539",
+   "commit_full": "598f2bb365395a6606edfafacb5c31720c09df47",
+   "license": "MIT",
+   "reason": "Rust DEX parser; compact reference for opcode tables",
+   "commit_error": null
+  },
+  {
+   "repo": "tboox/dexbox",
+   "component": "ARSC/AXML",
+   "category": "E",
+   "commit": "720f4625d152",
+   "commit_full": "720f4625d152731b24912531207748857bbe32cc",
+   "license": "Apache-2.0",
+   "reason": "Apache-2.0 DEX VM in C; compare interpreter design later",
+   "commit_error": null
+  },
+  {
+   "repo": "CalebFenton/simplify",
+   "component": "ARSC/AXML",
+   "category": "D",
+   "commit": "29fb25d624ae",
+   "commit_full": "29fb25d624aecf0b075dea5c6029b2541474ddfe",
+   "license": "GPL-3.0",
+   "reason": "GPL-3.0; symbolic execution, out of scope",
+   "commit_error": null
+  },
+  {
+   "repo": "ibilux/ArscResourcesParser",
+   "component": "ARSC/AXML",
+   "category": "E",
+   "commit": "258c075cbfef",
+   "commit_full": "258c075cbfef2ef3f47d510e30cc5dbc4abe28c5",
+   "license": "UNKNOWN-verify-manually",
+   "reason": "License UNKNOWN; possible ARSC cross-check source",
+   "commit_error": null
+  },
+  {
+   "repo": "androguard/androguard",
+   "component": "ARSC/AXML",
+   "category": "C",
+   "commit": "4573c8c111ba",
+   "commit_full": "4573c8c111ba01ec5063925506f5bf5f9f4b536b",
+   "license": "Apache-2.0",
+   "reason": "Our primary DEX/AXML/ARSC census oracle (already used in EXP-101/102)",
+   "commit_error": null
+  },
+  {
+   "repo": "Sable/soot",
+   "component": "ARSC/AXML",
+   "category": "E",
+   "commit": "12aefc8fd740",
+   "commit_full": "12aefc8fd740369ebdc7f2c92ce7ab27319a2949",
+   "license": "LGPL-2.1",
+   "reason": "LGPL static analysis; heavyweight, only if call-graph oracle needed",
+   "commit_error": null
+  },
+  {
+   "repo": "JetBrains/skiko",
+   "component": "Compose",
+   "category": "B",
+   "commit": "29b514873c76",
+   "commit_full": "29b514873c769a2b61dce64541232ecb03c28f4e",
+   "license": "Apache-2.0",
+   "reason": "Kotlin/Skia bindings \u2014 the exact layer Compose renders through; port path for our rasterizer bridge",
+   "commit_error": null
+  },
+  {
+   "repo": "android/architecture-samples",
+   "component": "App-XML",
+   "category": "C",
+   "commit": "ee66e1526b84",
+   "commit_full": "ee66e1526b84c026615df032c705842b7d2a521f",
+   "license": "Apache-2.0",
+   "reason": "Classic XML Views+Navigation corpus",
+   "commit_error": null
+  },
+  {
+   "repo": "bumptech/glide",
+   "component": "Image",
+   "category": "E",
+   "commit": "c3df4d264f47",
+   "commit_full": "c3df4d264f470e6546c50862c1b72a7ebd64a282",
+   "license": "Apache-2.0",
+   "reason": "Android image loader; reference for drawable decode caching",
+   "commit_error": null
+  },
+  {
+   "repo": "android/compose-samples",
+   "component": "Compose",
+   "category": "C",
+   "commit": "018c5207fb63",
+   "commit_full": "018c5207fb63c4f78e5841bd8ddd4faabdf19d3a",
+   "license": "Apache-2.0",
+   "reason": "\u00a712 generality corpus (Jetchat/Jetcaster/Jetnews...)",
+   "commit_error": null
+  },
+  {
+   "repo": "GetStream/stream-chat-android",
+   "component": "Compose",
+   "category": "D",
+   "commit": "0a3a5c28f9ea",
+   "commit_full": "0a3a5c28f9ea37e38fb2f9de5a6f86e25196cbd8",
+   "license": "PROPRIETARY-source-available",
+   "reason": "source-available proprietary license; NOT adoptable, sample-only",
+   "commit_error": null
+  },
+  {
+   "repo": "android/nowinandroid",
+   "component": "Compose",
+   "category": "C",
+   "commit": "7d45eae4f872",
+   "commit_full": "7d45eae4f8720a0c77f507712ba2437ff974b6ed",
+   "license": "Apache-2.0",
+   "reason": "Large real Compose app target",
+   "commit_error": null
+  },
+  {
+   "repo": "JetBrains/compose-multiplatform",
+   "component": "Compose",
+   "category": "B",
+   "commit": "da9b1e1a29b1",
+   "commit_full": "da9b1e1a29b10e44ac84b081c32b8803e20719e7",
+   "license": "Apache-2.0",
+   "reason": "Compose runtime outside Android; its non-Android glue is the map for headless Compose",
+   "commit_error": null
+  },
+  {
+   "repo": "google/accompanist",
+   "component": "Compose",
+   "category": "E",
+   "commit": "12ec3408fc10",
+   "commit_full": "12ec3408fc101e0006e38dc62f7acff7a822e20b",
+   "license": "Apache-2.0",
+   "reason": "Compose utility lib; adopt only when specific piece needed",
+   "commit_error": null
+  },
+  {
+   "repo": "JetBrains/skija",
+   "component": "Compose",
+   "category": "B",
+   "commit": "8581a6c04808",
+   "commit_full": "8581a6c04808c0ada7863aabed9f2a9d77353b39",
+   "license": "Apache-2.0",
+   "reason": "Java Skia bindings; shows the exact Skia API surface Compose needs",
+   "commit_error": null
+  },
+  {
+   "repo": "androidx/androidx",
+   "component": "Compose",
+   "category": "C",
+   "commit": "ddc86c625e55",
+   "commit_full": "ddc86c625e55b8ecc8814ee1a50eb9ec4cb2099e",
+   "license": "Apache-2.0",
+   "reason": "Source of truth for compose-runtime/ui/material3 semantics",
+   "commit_error": null
+  },
+  {
+   "repo": "MohamedRejeb/Calf",
+   "component": "Compose",
+   "category": "E",
+   "commit": "866204721d14",
+   "commit_full": "866204721d146e992ea4d804b2a12d67a889605a",
+   "license": "Apache-2.0",
+   "reason": "Compose MPP file picker etc.; later",
+   "commit_error": null
+  },
+  {
+   "repo": "aclassen/ComposeReorderable",
+   "component": "Compose",
+   "category": "E",
+   "commit": "e1c7af43c881",
+   "commit_full": "e1c7af43c881ba70f247a53ee384a5c8a7ab563c",
+   "license": "Apache-2.0",
+   "reason": "drag/reorder; later",
+   "commit_error": null
+  },
+  {
+   "repo": "coil-kt/coil",
+   "component": "Compose",
+   "category": "E",
+   "commit": "d26d7c8de521",
+   "commit_full": "d26d7c8de521e75a9928afe7241091e0c808488a",
+   "license": "Apache-2.0",
+   "reason": "Image loader; only relevant once Compose renders",
+   "commit_error": null
+  },
+  {
+   "repo": "MohamedRejeb/compose-rich-editor",
+   "component": "Compose",
+   "category": "E",
+   "commit": "0041c9ea60cb",
+   "commit_full": "0041c9ea60cb4caa1917a21fec1d45bf47362960",
+   "license": "Apache-2.0",
+   "reason": "rich text editing; later",
+   "commit_error": null
+  },
+  {
+   "repo": "amir1376/ab-download-manager",
+   "component": "Compose",
+   "category": "C",
+   "commit": "211f49f9003d",
+   "commit_full": "211f49f9003db8ef6997846d114a4aab62d9dfa2",
+   "license": "Apache-2.0",
+   "reason": "Real desktop Compose app (KMP); generality target",
+   "commit_error": null
+  },
+  {
+   "repo": "Tlaster/PreCompose",
+   "component": "Compose",
+   "category": "E",
+   "commit": "0f79c88a4f76",
+   "commit_full": "0f79c88a4f768cf851cdaa1da36759ee2d489de1",
+   "license": "MIT",
+   "reason": "MPP navigation/state; later",
+   "commit_error": null
+  },
+  {
+   "repo": "MohamedRejeb/Pokedex",
+   "component": "Compose",
+   "category": "C",
+   "commit": "765bbbc61dfe",
+   "commit_full": "765bbbc61dfec9818f46fafefa025a5ce8de5ecd",
+   "license": "Apache-2.0",
+   "reason": "Compose MPP app with images/scroll \u2014 \u00a712 target",
+   "commit_error": null
+  },
+  {
+   "repo": "theapache64/stackzy",
+   "component": "Compose",
+   "category": "C",
+   "commit": "a7a0e5d67fd5",
+   "commit_full": "a7a0e5d67fd5e441408bf92ac7f488799e86111e",
+   "license": "Apache-2.0",
+   "reason": "Desktop Compose app; generality target",
+   "commit_error": null
+  },
+  {
+   "repo": "joreilly/PeopleInSpace",
+   "component": "Compose",
+   "category": "C",
+   "commit": "da25d4bc05c0",
+   "commit_full": "da25d4bc05c0dd8fe63e83e2f0cdc58a45e4be9d",
+   "license": "Apache-2.0",
+   "reason": "KMP Compose app; small enough to actually run",
+   "commit_error": null
+  },
+  {
+   "repo": "Gurupreet/ComposeCookBook",
+   "component": "Compose",
+   "category": "C",
+   "commit": "43571015bc01",
+   "commit_full": "43571015bc01d043797a48362bcf67298ccca4c1",
+   "license": "MIT",
+   "reason": "Compose recipe collection; per-feature targets",
+   "commit_error": null
+  },
+  {
+   "repo": "skydoves/Balloon",
+   "component": "Compose",
+   "category": "E",
+   "commit": "4c0ac9521838",
+   "commit_full": "4c0ac952183879239b8da55ff6e9a285803c25ac",
+   "license": "Apache-2.0",
+   "reason": "popup lib; later",
+   "commit_error": null
+  },
+  {
+   "repo": "cheonjaeung/gridlayout-compose",
+   "component": "Compose",
+   "category": "E",
+   "commit": "0acf7e5fc355",
+   "commit_full": "0acf7e5fc355088af9e4ae2fd1226d860556aa15",
+   "license": "Apache-2.0",
+   "reason": "grid layout; later",
+   "commit_error": null
+  },
+  {
+   "repo": "rikkahub/rikkahub",
+   "component": "Compose",
+   "category": "C",
+   "commit": "0651cad9bd98",
+   "commit_full": "0651cad9bd98a9243703f59f1fc14c1fb3661f36",
+   "license": "AGPL-3.0",
+   "reason": "Real full Compose AI chat app; stress target",
+   "commit_error": null
+  },
+  {
+   "repo": "vfsfitvnm/ViMusic",
+   "component": "Compose",
+   "category": "C",
+   "commit": "6e83b8b83da1",
+   "commit_full": "6e83b8b83da13b0c275702a0d6d5bff78e24c07a",
+   "license": "GPL-3.0",
+   "reason": "Compose music app; media+compose combo target",
+   "commit_error": null
+  },
+  {
+   "repo": "gkd-kit/gkd",
+   "component": "Compose",
+   "category": "E",
+   "commit": "1517080e46f9",
+   "commit_full": "1517080e46f9f72d3bf53f81fc0348e117a47902",
+   "license": "GPL-3.0",
+   "reason": "accessibility+compose; niche",
+   "commit_error": null
+  },
+  {
+   "repo": "google/angle",
+   "component": "GLES",
+   "category": "B",
+   "commit": "107da744f62a",
+   "commit_full": "107da744f62a319b3c6851694740d9ebf247d048",
+   "license": "BSD-3-Clause",
+   "reason": "GLES-over-Vulkan; the \u00a724 candidate to kill our GLES bridge gap",
+   "commit_error": null
+  },
+  {
+   "repo": "google/filament",
+   "component": "GLES",
+   "category": "E",
+   "commit": "2a8018f54d51",
+   "commit_full": "2a8018f54d5154ceb1bf7005c6c01b13aa70e7ad",
+   "license": "Apache-2.0",
+   "reason": "PBR renderer; only for future real-3D apps",
+   "commit_error": null
+  },
+  {
+   "repo": "floooh/sokol",
+   "component": "GLES",
+   "category": "B",
+   "commit": "6b70854a8030",
+   "commit_full": "6b70854a8030f48105d410652127d359da8e0f5f",
+   "license": "Zlib",
+   "reason": "tiny headers incl. sokol_gfx; plausible minimal GLES-like layer",
+   "commit_error": null
+  },
+  {
+   "repo": "KhronosGroup/Vulkan-Samples",
+   "component": "GLES",
+   "category": "C",
+   "commit": "293e8286bcc3",
+   "commit_full": "293e8286bcc3b3fd484c4f5fc98c192eb69509a0",
+   "license": "Apache-2.0",
+   "reason": "Vulkan test material for SwiftShader route",
+   "commit_error": null
+  },
+  {
+   "repo": "facebook/yoga",
+   "component": "UI",
+   "category": "B",
+   "commit": "bd8fe0d6d243",
+   "commit_full": "bd8fe0d6d243cc7e0334d4cc68864a994f63beae",
+   "license": "MIT",
+   "reason": "Flexbox layout engine; exact Android layout semantics base (used by RN)",
+   "commit_error": null
+  },
+  {
+   "repo": "google/swiftshader",
+   "component": "GLES",
+   "category": "B",
+   "commit": "694585a05946",
+   "commit_full": "694585a05946e1ed49b6bd577ca6537cbb57f025",
+   "license": "Apache-2.0",
+   "reason": "CPU Vulkan/GLES; configure OK but >3GB RAM compile \u2014 prebuilt-binaries route needed",
+   "commit_error": null
+  },
+  {
+   "repo": "google/skia",
+   "component": "Rendering",
+   "category": "B",
+   "commit": "3ae8e3d1e335",
+   "commit_full": "3ae8e3d1e3358c2c805f17b1092d4d3ee5d4bb7b",
+   "license": "BSD-3-Clause",
+   "reason": "Gold-standard rasterizer; adopt subset or wrap \u2014 replaces custom raster pieces",
+   "commit_error": null
+  },
+  {
+   "repo": "glfw/glfw",
+   "component": "Rendering",
+   "category": "C",
+   "commit": "92dcf4ce74f2",
+   "commit_full": "92dcf4ce74f2e2554a98fea09be7c705c17daa5a",
+   "license": "UNCLEAR-verify-manually",
+   "reason": "windowing reference only (license verify: zlib-style)",
+   "commit_error": null
+  },
+  {
+   "repo": "KhronosGroup/glslang",
+   "component": "GLES",
+   "category": "B",
+   "commit": "23076b376e06",
+   "commit_full": "23076b376e06a99b4c765df5c9836d127c8bbbfc",
+   "license": "BSD-3-Clause",
+   "reason": "GLSL->SPIRV; needed by any ANGLE/SwiftShader-lite path",
+   "commit_error": null
+  },
+  {
+   "repo": "LWJGL/lwjgl3",
+   "component": "GLES",
+   "category": "C",
+   "commit": "30fac9b95f99",
+   "commit_full": "30fac9b95f99cda97312232be25ba55297bf9951",
+   "license": "BSD-3-Clause",
+   "reason": "Bindings reference; shows GLES/EGL API surface usage",
+   "commit_error": null
+  },
+  {
+   "repo": "zauonlok/renderer",
+   "component": "GLES",
+   "category": "C",
+   "commit": "9ed5082f0eda",
+   "commit_full": "9ed5082f0eda453f0b2a0d5ec37cf5a60f0207f6",
+   "license": "MIT",
+   "reason": "software rasterizer educational; CPU raster reference",
+   "commit_error": null
+  },
+  {
+   "repo": "jserv/tinygl",
+   "component": "GLES",
+   "category": "A",
+   "commit": "c2e48591a6bf",
+   "commit_full": "c2e48591a6bfba1a85f1b87a78dcf1abf7dff57a",
+   "license": "MIT",
+   "reason": "TinyGL: classic software GL, MIT, tiny \u2014 candidate GLES1.x software fallback",
+   "commit_error": null
+  },
+  {
+   "repo": "skywind3000/mini3d",
+   "component": "GLES",
+   "category": "C",
+   "commit": "4b3e3af22669",
+   "commit_full": "4b3e3af226691db920ece1dc58425c4a85c68997",
+   "license": "MIT",
+   "reason": "educational software 3D",
+   "commit_error": null
+  },
+  {
+   "repo": "rswinkle/PortableGL",
+   "component": "GLES",
+   "category": "A",
+   "commit": "7cf39dc1741e",
+   "commit_full": "7cf39dc1741ea2be60ce3bd327f6e5337f60207f",
+   "license": "MIT",
+   "reason": "Software GLES 2.x/3.x-ish implementation in C, MIT \u2014 strongest candidate to unblock real GLES APKs without SwiftShader RAM cost",
+   "commit_error": null
+  },
+  {
+   "repo": "ssloy/tinyrenderer",
+   "component": "GLES",
+   "category": "C",
+   "commit": "97eb7a480e76",
+   "commit_full": "97eb7a480e762285899a93c5d21e70a79e60782e",
+   "license": "custom-permissive (Zlib/MIT-style)",
+   "reason": "educational oracle only",
+   "commit_error": null
+  },
+  {
+   "repo": "apitrace/apitrace",
+   "component": "GLES",
+   "category": "C",
+   "commit": "2975f0c443ff",
+   "commit_full": "2975f0c443ff2b982d026bb6df496bc3e0dc1f3b",
+   "license": "MIT",
+   "reason": "trace tool; could log our bridge calls vs real EGL traces",
+   "commit_error": null
+  },
+  {
+   "repo": "google/gapid",
+   "component": "GLES",
+   "category": "C",
+   "commit": "15b44454df3a",
+   "commit_full": "15b44454df3a2469ee9ba42cb116d9b50786c7a4",
+   "license": "Apache-2.0",
+   "reason": "GAPID/AGI graphics debugger reference",
+   "commit_error": null
+  },
+  {
+   "repo": "google/agi",
+   "component": "GLES",
+   "category": "C",
+   "commit": "d08ae4f58566",
+   "commit_full": "d08ae4f58566327881a8faf51758b8a2cc9ebfbe",
+   "license": "Apache-2.0",
+   "reason": "Android GPU Inspector; debugging oracle",
+   "commit_error": null
+  },
+  {
+   "repo": "winebox64/winlator",
+   "component": "GLES",
+   "category": "E",
+   "commit": "c7021b03d837",
+   "commit_full": "c7021b03d837a9ecfb6e85850b257dc2d7abf33d",
+   "license": "Apache-2.0",
+   "reason": "shows box64+turnip pattern; niche",
+   "commit_error": null
+  },
+  {
+   "repo": "KhronosGroup/Vulkan-Docs",
+   "component": "GLES",
+   "category": "C",
+   "commit": "20a9e5892e2a",
+   "commit_full": "20a9e5892e2aab7b9776b16a238b10fc8133090a",
+   "license": "custom/other (html:NOASSERTION)",
+   "reason": "spec docs",
+   "commit_error": null
+  },
+  {
+   "repo": "notofonts/noto-fonts",
+   "component": "Text",
+   "category": "C",
+   "commit": "ffebf8c1ee44",
+   "commit_full": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+   "license": "OFL-1.1",
+   "reason": "font assets source",
+   "commit_error": null,
+   "mirror_of": "notofonts/noto-fonts"
+  },
+  {
+   "repo": "Tehreer/SheenBidi",
+   "component": "Text",
+   "category": "B",
+   "commit": "9c048a32d213",
+   "commit_full": "9c048a32d2131f67608e85ccccf9079cc46d6e42",
+   "license": "Apache-2.0",
+   "reason": "Apache-2.0 bidi+shaper \u2014 drop-in alternative to FriBidi+HarfBuzz pairing",
+   "commit_error": null
+  },
+  {
+   "repo": "googlefonts/noto-fonts",
+   "component": "Text",
+   "category": "C",
+   "commit": "ffebf8c1ee44",
+   "commit_full": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+   "license": "OFL-1.1",
+   "reason": "same family (legacy location)",
+   "commit_error": null,
+   "mirror_of": "notofonts/noto-fonts"
+  },
+  {
+   "repo": "rougier/freetype-gl",
+   "component": "Text",
+   "category": "C",
+   "commit": "a3f0547ec90b",
+   "commit_full": "a3f0547ec90b1424ee692f753509120f0569f9dc",
+   "license": "BSD-2/3-Clause",
+   "reason": "glyph atlas reference",
+   "commit_error": null
+  },
+  {
+   "repo": "OGRECave/ogre",
+   "component": "Text",
+   "category": "C",
+   "commit": "69a1d7e00a6d",
+   "commit_full": "69a1d7e00a6d5e2030127b0546e461f846a78da8",
+   "license": "MIT",
+   "reason": "duplicate entry ignored",
+   "commit_error": null
+  },
+  {
+   "repo": "harfbuzz/harfbuzzjs",
+   "component": "Text",
+   "category": "C",
+   "commit": "91f412432158",
+   "commit_full": "91f412432158a74611b28f7d6c86a071d5e60545",
+   "license": "MIT",
+   "reason": "wasm build of harfbuzz; not useful in C++ runtime",
+   "commit_error": null
+  },
+  {
+   "repo": "go-text/typesetting",
+   "component": "Text",
+   "category": "C",
+   "commit": "ddb7ff96ad4d",
+   "commit_full": "ddb7ff96ad4d2dc730cbcae9dd5140023f319c3e",
+   "license": "BSD-3-Clause",
+   "reason": "Go port of HarfBuzz concepts; algorithm reference",
+   "commit_error": null
+  },
+  {
+   "repo": "fribidi/fribidi",
+   "component": "Text",
+   "category": "B",
+   "commit": "c928e4c77549",
+   "commit_full": "c928e4c77549de59e057f72bbbec1e38ce8b43bd",
+   "license": "LGPL-2.1",
+   "reason": "already integrated (1.0.16) \u2014 keep",
+   "commit_error": null
+  },
+  {
+   "repo": "Tehreer/Tehreer-Android",
+   "component": "Text",
+   "category": "C",
+   "commit": "74aa7286b37e",
+   "commit_full": "74aa7286b37efe058971e3bee427214bffbc5ad5",
+   "license": "Apache-2.0",
+   "reason": "Android text-type lib; reference for TextView semantics",
+   "commit_error": null
+  },
+  {
+   "repo": "harfbuzz/harfbuzz",
+   "component": "Text",
+   "category": "B",
+   "commit": "e8905fb3b3d9",
+   "commit_full": "e8905fb3b3d9e9a06f3a9aab0459e67c1e08cdac",
+   "license": "MIT-Old",
+   "reason": "already integrated (10.2.0) \u2014 keep",
+   "commit_error": null
+  },
+  {
+   "repo": "unicode-org/text-rendering-tests",
+   "component": "Text",
+   "category": "A",
+   "commit": "26cfb96d094b",
+   "commit_full": "26cfb96d094befc3c8b08228577bf400b04b83a1",
+   "license": "MIT",
+   "reason": "CONFORMANCE test vectors for bidi/shaping \u2014 free oracle tests",
+   "commit_error": null
+  },
+  {
+   "repo": "Tehreer/Tehreer",
+   "component": "Text",
+   "category": "D",
+   "commit": null,
+   "commit_full": null,
+   "license": "N/A",
+   "reason": "NOT-FOUND (404)",
+   "commit_error": "NOT-FOUND: repo not found under this owner (active repo is Tehreer/Tehreer-Android)"
+  },
+  {
+   "repo": "DiligentGraphics/DiligentEngine",
+   "component": "GLES",
+   "category": "E",
+   "commit": "aca22851ae2b",
+   "commit_full": "aca22851ae2b369b770d112bc27c63cb60ce963f",
+   "license": "Apache-2.0",
+   "reason": "Apache-2.0 engine; too big vs need",
+   "commit_error": null
+  },
+  {
+   "repo": "unicode-org/icu",
+   "component": "Text",
+   "category": "B",
+   "commit": "abe71235506e",
+   "commit_full": "abe71235506e6bbe17af4f692d738704777e2beb",
+   "license": "MIT",
+   "reason": "ICU: locale/config data oracle for \u00a76 configuration matching",
+   "commit_error": null
+  },
+  {
+   "repo": "glennrp/libpng",
+   "component": "Image",
+   "category": "B",
+   "commit": "d1d0abeffede",
+   "commit_full": "d1d0abeffede1cc898ddc3d0e600839cf026d749",
+   "license": "PNG-Reference-2",
+   "reason": "canonical libpng (pnggroup mirror) \u2014 reference",
+   "commit_error": null,
+   "mirror_of": "glennrp/libpng"
+  },
+  {
+   "repo": "pnggroup/libpng",
+   "component": "Image",
+   "category": "B",
+   "commit": "d1d0abeffede",
+   "commit_full": "d1d0abeffede1cc898ddc3d0e600839cf026d749",
+   "license": "PNG-Reference-2",
+   "reason": "canonical org now on GitHub",
+   "commit_error": null,
+   "mirror_of": "glennrp/libpng"
+  },
+  {
+   "repo": "libjpeg-turbo/libjpeg-turbo",
+   "component": "Image",
+   "category": "B",
+   "commit": "1157d37cfab9",
+   "commit_full": "1157d37cfab977f8f7f8344aededdfd951222c89",
+   "license": "BSD-3-Clause",
+   "reason": "JPEG decode; candidate to replace custom decoder",
+   "commit_error": null
+  },
+  {
+   "repo": "AOMediaCodec/libavif",
+   "component": "Image",
+   "category": "E",
+   "commit": "eb673097950e",
+   "commit_full": "eb673097950e0b0ec77f696958091ef0244a45a9",
+   "license": "BSD-2/3-Clause",
+   "reason": "AVIF; only if corpus demands",
+   "commit_error": null
+  },
+  {
+   "repo": "nothings/stb",
+   "component": "Image",
+   "category": "A",
+   "commit": "2c980bb59875",
+   "commit_full": "2c980bb59875b0d32144a71867fbdebb2f77cd20",
+   "license": "MIT",
+   "reason": "stb_image: single-header decode of PNG/JPEG/BMP/GIF \u2014 tiny adopt path",
+   "commit_error": null
+  },
+  {
+   "repo": "randy408/libspng",
+   "component": "Image",
+   "category": "A",
+   "commit": "adc94393dbed",
+   "commit_full": "adc94393dbeddf9e027d1b2dfff7c1bab975224e",
+   "license": "BSD-2/3-Clause",
+   "reason": "simple PNG lib; cleaner than full libpng for vendoring",
+   "commit_error": null
+  },
+  {
+   "repo": "google/wuffs",
+   "component": "Image",
+   "category": "E",
+   "commit": "c4df79d82ea6",
+   "commit_full": "c4df79d82ea6de3a3380fae7ba5bc9c9abf2324a",
+   "license": "Apache-2.0",
+   "reason": "safe codecs; interesting but heavy toolchain",
+   "commit_error": null
+  },
+  {
+   "repo": "memononen/nanosvg",
+   "component": "Image",
+   "category": "B",
+   "commit": "239e102ec2c6",
+   "commit_full": "239e102ec2c691f2902e20ace2ed36ee4a35cfe6",
+   "license": "UNCLEAR-verify-manually",
+   "reason": "SVG rasterize (rast, MIT-ish per repo) \u2014 VectorDrawable path",
+   "commit_error": null
+  },
+  {
+   "repo": "sammycage/plutosvg",
+   "component": "Image",
+   "category": "B",
+   "commit": "fd8a080b3d0b",
+   "commit_full": "fd8a080b3d0bccc41f1ae708d3785e7f08398a58",
+   "license": "MIT",
+   "reason": "MIT SVG parser; pairs with plutovg",
+   "commit_error": null
+  },
+  {
+   "repo": "webmproject/libwebp",
+   "component": "Image",
+   "category": "B",
+   "commit": "9c4a699e5aac",
+   "commit_full": "9c4a699e5aacc1995a27ca3bf1643c8b2378616c",
+   "license": "BSD-3-Clause",
+   "reason": "already integrated \u2014 keep",
+   "commit_error": null
+  },
+  {
+   "repo": "sammycage/plutovg",
+   "component": "Image",
+   "category": "B",
+   "commit": "f63f9b59dda9",
+   "commit_full": "f63f9b59dda96c7d1ca3c76e9b33e5ae4b91fab1",
+   "license": "MIT",
+   "reason": "MIT tiny 2D VG on FreeType; candidate to replace custom raster pieces",
+   "commit_error": null
+  },
+  {
+   "repo": "kikuchan/pngle",
+   "component": "Image",
+   "category": "A",
+   "commit": "b1c68193f1d3",
+   "commit_full": "b1c68193f1d3f8642b3e0e095d457a828038e6fb",
+   "license": "MIT",
+   "reason": "MIT tiny PNG decoder for embedded \u2014 vendoring candidate",
+   "commit_error": null
+  },
+  {
+   "repo": "freetype/freetype",
+   "component": "Text",
+   "category": "B",
+   "commit": "b76738eff2f3",
+   "commit_full": "b76738eff2f3846721f76f023cbb471396932669",
+   "license": "MIT-Old",
+   "reason": "already integrated (2.13.3) \u2014 keep",
+   "commit_error": null
+  },
+  {
+   "repo": "strukturag/libheif",
+   "component": "Image",
+   "category": "E",
+   "commit": "2bc82b493dd8",
+   "commit_full": "2bc82b493dd8896fab3226f01977c7ac9d2ea3b8",
+   "license": "LGPL-3.0",
+   "reason": "HEIF; only if corpus demands",
+   "commit_error": null
+  },
+  {
+   "repo": "rive-app/rive-runtime",
+   "component": "Animation",
+   "category": "E",
+   "commit": "9d2e7d04d1bd",
+   "commit_full": "9d2e7d04d1bd5ee5863c7155d059b1e7b5810148",
+   "license": "MIT",
+   "reason": "MIT; second runtime animation engine after rlottie if needed",
+   "commit_error": null,
+   "mirror_of": "rive-app/rive-runtime"
+  },
+  {
+   "repo": "rive-app/rive-cpp",
+   "component": "Animation",
+   "category": "E",
+   "commit": "9d2e7d04d1bd",
+   "commit_full": "9d2e7d04d1bd5ee5863c7155d059b1e7b5810148",
+   "license": "MIT",
+   "reason": "same content as rive-runtime",
+   "commit_error": null,
+   "mirror_of": "rive-app/rive-runtime"
+  },
+  {
+   "repo": "airbnb/lottie-android",
+   "component": "Animation",
+   "category": "C",
+   "commit": "05ea92e90381",
+   "commit_full": "05ea92e90381eb8a8ae06855ea2b74f322bebbec",
+   "license": "Apache-2.0",
+   "reason": "Android Lottie semantics oracle for our rlottie bridge",
+   "commit_error": null
+  },
+  {
+   "repo": "ed-asriyan/lottie-converter",
+   "component": "Animation",
+   "category": "C",
+   "commit": "52585fcbba90",
+   "commit_full": "52585fcbba90426f203bae8f3b1acffa41d8d80e",
+   "license": "MIT",
+   "reason": "lottie->svg/frames debug tool",
+   "commit_error": null
+  },
+  {
+   "repo": "HappySeaFox/sail",
+   "component": "Image",
+   "category": "E",
+   "commit": "4fa179fff8bb",
+   "commit_full": "4fa179fff8bbefb0bc626f61298385d5bad0e049",
+   "license": "MIT",
+   "reason": "multi-codec lib; alternative bundle",
+   "commit_error": null
+  },
+  {
+   "repo": "alexzhirkevich/compottie",
+   "component": "Compose",
+   "category": "E",
+   "commit": "bc23021c2193",
+   "commit_full": "bc23021c2193de9a4a51bf8a73c3416f98845836",
+   "license": "MIT",
+   "reason": "Lottie for Compose; ties \u00a712 animation into Compose later",
+   "commit_error": null
+  },
+  {
+   "repo": "thorvg/thorvg",
+   "component": "Animation",
+   "category": "B",
+   "commit": "e43bc8ba922f",
+   "commit_full": "e43bc8ba922f48f660caedb051346ad7de629bd4",
+   "license": "MIT",
+   "reason": "MIT vector+Lottie engine; alternative to rlottie with active maintenance",
+   "commit_error": null
+  },
+  {
+   "repo": "RazrFalcon/resvg",
+   "component": "Image",
+   "category": "B",
+   "commit": "021d44b75af1",
+   "commit_full": "021d44b75af1455cb557aa6217da66f22c5c3dc0",
+   "license": "Apache-2.0",
+   "reason": "best SVG static renderer (Apache-2.0); VectorDrawable oracle",
+   "commit_error": null,
+   "mirror_of": "RazrFalcon/resvg"
+  },
+  {
+   "repo": "linebender/resvg",
+   "component": "Image",
+   "category": "B",
+   "commit": "021d44b75af1",
+   "commit_full": "021d44b75af1455cb557aa6217da66f22c5c3dc0",
+   "license": "Apache-2.0",
+   "reason": "moved canonical of RazrFalcon/resvg",
+   "commit_error": null,
+   "mirror_of": "RazrFalcon/resvg"
+  },
+  {
+   "repo": "aseprite/aseprite",
+   "component": "Animation",
+   "category": "E",
+   "commit": "e537f0b043b3",
+   "commit_full": "e537f0b043b3246ffa0f784d46494322f5b63a9b",
+   "license": "UNKNOWN-verify-manually",
+   "reason": "sprite editor; only its skia usage is informative",
+   "commit_error": null
+  },
+  {
+   "repo": "Samsung/rlottie",
+   "component": "Animation",
+   "category": "B",
+   "commit": "4307553814db",
+   "commit_full": "4307553814dbc03f54b99b0d49651c1e4429bf2d",
+   "license": "UNCLEAR-verify-manually",
+   "reason": "already vendored/built \u2014 keep (license verify: MIT per upstream headers)",
+   "commit_error": null
+  },
+  {
+   "repo": "LottieFiles/dotlottie-web",
+   "component": "Animation",
+   "category": "D",
+   "commit": "bb5abcf9ac43",
+   "commit_full": "bb5abcf9ac43ef32e5a69d508b5a1b3660f61d9e",
+   "license": "MIT",
+   "reason": "web player; out of scope",
+   "commit_error": null
+  },
+  {
+   "repo": "lieff/minimp3",
+   "component": "Audio",
+   "category": "A",
+   "commit": "ea99364f61c1",
+   "commit_full": "ea99364f61c14656440e8d77e9c233ccf3124633",
+   "license": "CC0-1.0",
+   "reason": "CC0 single-header MP3 \u2014 replace/augment custom MP3 decode",
+   "commit_error": null
+  },
+  {
+   "repo": "mackron/miniaudio",
+   "component": "Audio",
+   "category": "A",
+   "commit": "9634bedb5b5a",
+   "commit_full": "9634bedb5b5a2ca38c1ee7108a9358a4e233f14d",
+   "license": "Unlicense",
+   "reason": "Unlicense; single-header playback device layer \u2014 candidate backend for AudioTrack",
+   "commit_error": null
+  },
+  {
+   "repo": "mackron/dr_libs",
+   "component": "Audio",
+   "category": "A",
+   "commit": "b55a0d9a30b9",
+   "commit_full": "b55a0d9a30b91ad8901f89ecf05f76a33186c185",
+   "license": "Unlicense",
+   "reason": "Unlicense; dr_wav/dr_mp3/dr_flac headers \u2014 direct \u00a721 adoption",
+   "commit_error": null
+  },
+  {
+   "repo": "FFmpeg/FFmpeg",
+   "component": "Audio",
+   "category": "E",
+   "commit": "b32f8d1c2377",
+   "commit_full": "b32f8d1c2377079302d23f82d555d13deda68c57",
+   "license": "LGPL-3.0",
+   "reason": "LGPL; only if media demands exceed simple codecs",
+   "commit_error": null
+  },
+  {
+   "repo": "google/oboe",
+   "component": "Audio",
+   "category": "E",
+   "commit": "2a45aa2d9e94",
+   "commit_full": "2a45aa2d9e94d209c4636eec4014dd83cda110f4",
+   "license": "Apache-2.0",
+   "reason": "Android audio I/O; needs AAudio \u2014 N/A headless",
+   "commit_error": null
+  },
+  {
+   "repo": "google/ExoPlayer",
+   "component": "Audio",
+   "category": "C",
+   "commit": "dd430f7053a1",
+   "commit_full": "dd430f7053a1a3958deea3ead6a0565150c06bfc",
+   "license": "Apache-2.0",
+   "reason": "Media3 ExoPlayer (archived at google/ExoPlayer -> androidx/media); semantics oracle",
+   "commit_error": null
+  },
+  {
+   "repo": "libsdl-org/SDL_mixer",
+   "component": "Audio",
+   "category": "E",
+   "commit": "2b1d74def1d7",
+   "commit_full": "2b1d74def1d72839ef3792a5c20873e24c3611c4",
+   "license": "BSD",
+   "reason": "mixer on SDL; only if game audio demands",
+   "commit_error": null
+  },
+  {
+   "repo": "libsndfile/libsndfile",
+   "component": "Audio",
+   "category": "B",
+   "commit": "7ff854d1e0bd",
+   "commit_full": "7ff854d1e0bd9a751a9ff52ed980c62afced91fe",
+   "license": "LGPL-2.1",
+   "reason": "LGPL; broad format decode \u2014 candidate external lib",
+   "commit_error": null
+  },
+  {
+   "repo": "libsdl-org/SDL",
+   "component": "Audio",
+   "category": "E",
+   "commit": "46498bc24781",
+   "commit_full": "46498bc247819a2da7c1ccc7d4c4f6231076666c",
+   "license": "BSD",
+   "reason": "device layer; heavier than miniaudio",
+   "commit_error": null
+  },
+  {
+   "repo": "androidx/media",
+   "component": "Audio",
+   "category": "C",
+   "commit": "2bc207851df3",
+   "commit_full": "2bc207851df311340767e913931ca7b28cab1794",
+   "license": "Apache-2.0",
+   "reason": "Media3 source \u2014 MediaPlayer/ExoPlayer semantics oracle",
+   "commit_error": null
+  },
+  {
+   "repo": "kcat/openal-soft",
+   "component": "Audio",
+   "category": "E",
+   "commit": "99f3f1c86a95",
+   "commit_full": "99f3f1c86a953b506b32ccf86914dfa29c4df0f0",
+   "license": "LGPL-2.0",
+   "reason": "LGPL; alternative output layer",
+   "commit_error": null
+  },
+  {
+   "repo": "lieff/minimp4",
+   "component": "Audio",
+   "category": "A",
+   "commit": "5a212a18dba7",
+   "commit_full": "5a212a18dba7dca09543bbc7d65619274fd2931a",
+   "license": "CC0-1.0",
+   "reason": "CC0 MP4 demux \u2014 media container support for MediaPlayer adapter",
+   "commit_error": null
+  },
+  {
+   "repo": "webmproject/libvpx",
+   "component": "Audio",
+   "category": "E",
+   "commit": "5c880e08d213",
+   "commit_full": "5c880e08d21386049adec8e5537c4e726458b563",
+   "license": "BSD-3-Clause",
+   "reason": "VP8/9 video; only if video rendering demanded",
+   "commit_error": null
+  },
+  {
+   "repo": "gstreamer/gstreamer",
+   "component": "Audio",
+   "category": "D",
+   "commit": "cac26f2338c5",
+   "commit_full": "cac26f2338c534e1b6e854bd2f6aa353bf5ad9e8",
+   "license": "LGPL-2.1",
+   "reason": "LGPL pipeline framework; far too heavy for our adapter layer",
+   "commit_error": null
+  },
+  {
+   "repo": "google/horologist",
+   "component": "Audio",
+   "category": "E",
+   "commit": "ea9c068a6fdc",
+   "commit_full": "ea9c068a6fdc6a031e346f135263df30293ad5bf",
+   "license": "Apache-2.0",
+   "reason": "media3 UI compose helpers; later",
+   "commit_error": null
+  },
+  {
+   "repo": "xiph/vorbis",
+   "component": "Audio",
+   "category": "B",
+   "commit": "1b75110b5a27",
+   "commit_full": "1b75110b5a2754ba1931d82dd83cb822b266a21d",
+   "license": "UNCLEAR-verify-manually",
+   "reason": "BSD-style (license file unusual format); ogg/vorbis decode",
+   "commit_error": null
+  },
+  {
+   "repo": "xiph/ogg",
+   "component": "Audio",
+   "category": "B",
+   "commit": "06a5e0262cdc",
+   "commit_full": "06a5e0262cdc28aa4ae6797627a783b5010440f0",
+   "license": "UNCLEAR-verify-manually",
+   "reason": "same family",
+   "commit_error": null
+  },
+  {
+   "repo": "FongMi/TV",
+   "component": "Audio",
+   "category": "D",
+   "commit": "2f88a0b878c1",
+   "commit_full": "2f88a0b878c116479851b7e0a0fe499b1e24b34d",
+   "license": "GPL-3.0",
+   "reason": "GPL-3.0 TV player; out of scope",
+   "commit_error": null
+  },
+  {
+   "repo": "mpg123/mpg123",
+   "component": "Audio",
+   "category": "D",
+   "commit": null,
+   "commit_full": null,
+   "license": "N/A",
+   "reason": "NOT-FOUND on GitHub (official releases live off-GitHub); dr_mp3/minimp3 cover the need",
+   "commit_error": "NOT-FOUND: no credible official GitHub mirror; upstream is mpg123.de/SourceForge (task-predicted)"
+  },
+  {
+   "repo": "requery/sqlite-android",
+   "component": "Persistence",
+   "category": "B",
+   "commit": "0bbaa7a8b4c4",
+   "commit_full": "0bbaa7a8b4c485c0d4b385425113fe33ead6c3c0",
+   "license": "Apache-2.0",
+   "reason": "Apache-2.0 SQLite Android fork; semantics reference for our database/ dir",
+   "commit_error": null
+  },
+  {
+   "repo": "sqlite/sqlite",
+   "component": "Persistence",
+   "category": "A",
+   "commit": "d92acf1afe6d",
+   "commit_full": "d92acf1afe6dbd4c8aec9aa9513a518f690c2acf",
+   "license": "PublicDomain",
+   "reason": "public-domain canonical SQLite; adopt canonical amalgamation",
+   "commit_error": null
+  },
+  {
+   "repo": "sqlitebrowser/sqlitebrowser",
+   "component": "Persistence",
+   "category": "C",
+   "commit": "da45c7d528c3",
+   "commit_full": "da45c7d528c38986a271fa7be887f95f5b68facb",
+   "license": "GPL-3.0",
+   "reason": "GUI inspector for our .db artifacts during testing",
+   "commit_error": null
+  },
+  {
+   "repo": "SQLCipher/sqlcipher",
+   "component": "Persistence",
+   "category": "E",
+   "commit": "63697beb0faf",
+   "commit_full": "63697beb0fafcb61faa7a3e6fd267036548ab11b",
+   "license": "BSD-3-Clause",
+   "reason": "BSD; only if encrypted DB demanded",
+   "commit_error": null
+  },
+  {
+   "repo": "Tencent/wcdb",
+   "component": "Persistence",
+   "category": "E",
+   "commit": "39dd797099d4",
+   "commit_full": "39dd797099d41cf1953d5668acd8cb608016c599",
+   "license": "Apache-2.0",
+   "reason": "Apache-2.0; mobile DB stack; heavy",
+   "commit_error": null
+  },
+  {
+   "repo": "tursodatabase/libsql",
+   "component": "Persistence",
+   "category": "E",
+   "commit": "d6c75af6353b",
+   "commit_full": "d6c75af6353bb1c34985399608e37cd272a35aa1",
+   "license": "MIT",
+   "reason": "SQLite fork; niche",
+   "commit_error": null
+  },
+  {
+   "repo": "robolectric/robolectric",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "05e0d7bde9f7",
+   "commit_full": "05e0d7bde9f74aef41d5ab05561e9466c155163c",
+   "license": "Apache-2.0",
+   "reason": "PRIMARY framework-behavior oracle (already proven in EXP-102)",
+   "commit_error": null
+  },
+  {
+   "repo": "junit-team/junit5",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "9cd9a3cfb6cd",
+   "commit_full": "9cd9a3cfb6cd98aec355bd49fc8d801058762441",
+   "license": "EPL-2.0",
+   "reason": "test harness for Robolectric runs",
+   "commit_error": null
+  },
+  {
+   "repo": "xiph/flac",
+   "component": "Unclassified",
+   "category": "E",
+   "commit": "e94ff9f68b8e",
+   "commit_full": "e94ff9f68b8e7dbd3e9f8b1ac18a8eca1914f181",
+   "license": "GFDL-1.3",
+   "reason": "verified live during mining; classification pending",
+   "commit_error": null
+  },
+  {
+   "repo": "google/truth",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "2b95613636f4",
+   "commit_full": "2b95613636f4d612006f4b5811f7971d5c13b489",
+   "license": "Apache-2.0",
+   "reason": "assertions for oracle tests",
+   "commit_error": null
+  },
+  {
+   "repo": "cashapp/paparazzi",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "9929379c6092",
+   "commit_full": "9929379c6092ddb565825d7e9aa0526f24b2ab47",
+   "license": "Apache-2.0",
+   "reason": "layout-render oracle (deferred in EXP-095 for disk; revisit)",
+   "commit_error": null
+  },
+  {
+   "repo": "mpv-player/mpv",
+   "component": "Unclassified",
+   "category": "E",
+   "commit": "e8673660ab7e",
+   "commit_full": "e8673660ab7ee5d4ea8f93e4bf3a6e170ab2a19a",
+   "license": "LGPL-2.1",
+   "reason": "verified live during mining; classification pending",
+   "commit_error": null
+  },
+  {
+   "repo": "takahirom/roborazzi",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "6abd5fc0a780",
+   "commit_full": "6abd5fc0a780e2ee8c4509917c33f62682df8ccc",
+   "license": "Apache-2.0",
+   "reason": "Compose screenshot testing \u2014 Compose \u00a712 oracle candidate",
+   "commit_error": null
+  },
+  {
+   "repo": "robolectric/android-all",
+   "component": "Oracle",
+   "category": "C",
+   "commit": null,
+   "commit_full": null,
+   "license": "N/A",
+   "reason": "NOT-FOUND via ls-remote (distributed via Maven jars, not a buildable repo) \u2014 jars still usable",
+   "commit_error": "NOT-FOUND: repo not found under this owner (android-all artifacts are published to Maven Central; not verified here)"
+  },
+  {
+   "repo": "google/gson",
+   "component": "Oracle",
+   "category": "E",
+   "commit": "b3f4ca20087f",
+   "commit_full": "b3f4ca20087f9066de4c340522ff84e0558e1ad1",
+   "license": "Apache-2.0",
+   "reason": "JSON semantics used by many apps; only when needed",
+   "commit_error": null
+  },
+  {
+   "repo": "square/retrofit",
+   "component": "Oracle",
+   "category": "E",
+   "commit": "3ca1229c3361",
+   "commit_full": "3ca1229c3361ec6753608c91d20fe6d04566a241",
+   "license": "Apache-2.0",
+   "reason": "HTTP client semantics; only when network bridge lands",
+   "commit_error": null
+  },
+  {
+   "repo": "ReactiveX/RxJava",
+   "component": "Oracle",
+   "category": "E",
+   "commit": "bc5d8b854d7b",
+   "commit_full": "bc5d8b854d7bf09995335e571e2bad186ac4908d",
+   "license": "Apache-2.0",
+   "reason": "many apps use it; scheduler semantics later",
+   "commit_error": null
+  },
+  {
+   "repo": "square/moshi",
+   "component": "Oracle",
+   "category": "E",
+   "commit": "889013ec2edb",
+   "commit_full": "889013ec2edb8d8034902662a1dc8c4f3b3f8111",
+   "license": "Apache-2.0",
+   "reason": "JSON; later",
+   "commit_error": null
+  },
+  {
+   "repo": "square/okhttp",
+   "component": "Oracle",
+   "category": "E",
+   "commit": "1c6129e44e10",
+   "commit_full": "1c6129e44e1016a5dc1ccf423d91526d9ab391c7",
+   "license": "Apache-2.0",
+   "reason": "HTTP; later",
+   "commit_error": null
+  },
+  {
+   "repo": "kotlin/kotlinx.coroutines",
+   "component": "Oracle",
+   "category": "B",
+   "commit": "f63a04bacb8b",
+   "commit_full": "f63a04bacb8beeafcc9d49199b1e4bb08931b7eb",
+   "license": "Apache-2.0",
+   "reason": "coroutine dispatch semantics needed by Compose/Dooz code paths",
+   "commit_error": null
+  },
+  {
+   "repo": "WebView-CG/CanIAndroidWebView",
+   "component": "App-WebView",
+   "category": "C",
+   "commit": "303945893c73",
+   "commit_full": "303945893c7350985a4a2d6cf0ffadd39a6d7c24",
+   "license": "Apache-2.0",
+   "reason": "dedicated WebView test app (\u00a78/\u00a79 target)",
+   "commit_error": null
+  },
+  {
+   "repo": "PixelPlayerHQ/PixelPlayerOSS",
+   "component": "App-Media",
+   "category": "C",
+   "commit": "27f8de63ab55",
+   "commit_full": "27f8de63ab55c33f3c68c6aa0de0077655dd7afd",
+   "license": "GPL-3.0",
+   "reason": "Compose+Media3+Room+DataStore player (\u00a79 target)",
+   "commit_error": null
+  },
+  {
+   "repo": "ashrafimostafa/Brick-Blast",
+   "component": "App-Game",
+   "category": "C",
+   "commit": "9799cafe06f7",
+   "commit_full": "9799cafe06f7b4a359b8eee91d07b58d133c8b93",
+   "license": "MIT",
+   "reason": "Compose Canvas game (\u00a79 target)",
+   "commit_error": null
+  },
+  {
+   "repo": "junit-team/junit4",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "890f3c972647",
+   "commit_full": "890f3c972647de378f25e7271d8fbbd9d3456b79",
+   "license": "EPL-1.0",
+   "reason": "same (Robolectric 4.x uses junit4)",
+   "commit_error": null
+  },
+  {
+   "repo": "yamin8000/Dooz",
+   "component": "App-Compose",
+   "category": "C",
+   "commit": "0c60e78b861a",
+   "commit_full": "0c60e78b861a29fab26cc11e7e7a30a419527064",
+   "license": "GPL-3.0",
+   "reason": "DOOZ SOURCE \u2014 the exact app of our Compose blocker; GPL-3.0",
+   "commit_error": null
+  },
+  {
+   "repo": "retrowars/retrowars",
+   "component": "App-Game",
+   "category": "C",
+   "commit": "1081c8b8017b",
+   "commit_full": "1081c8b8017b1bf3e280913f76a0d9d4096dcc8d",
+   "license": "GPL-3.0",
+   "reason": "libGDX multi-game (\u00a725 GLES target); canonical moved from pserwylo",
+   "commit_error": null
+  },
+  {
+   "repo": "libgdx/libgdx",
+   "component": "App-Game",
+   "category": "B",
+   "commit": "c3bdf2f726bb",
+   "commit_full": "c3bdf2f726bb9437d79e63d03972fd4a40cc9caa",
+   "license": "Apache-2.0",
+   "reason": "Apache-2.0; its GLES backend IS the API surface our GLES layer must satisfy",
+   "commit_error": null
+  },
+  {
+   "repo": "FossifyOrg/Calendar",
+   "component": "App-XML",
+   "category": "C",
+   "commit": "015f9572440b",
+   "commit_full": "015f9572440b464bcf9e78f925e6bcf86b2c7bb0",
+   "license": "GPL-3.0",
+   "reason": "classic-views+Room app",
+   "commit_error": null
+  },
+  {
+   "repo": "FossifyOrg/Contacts",
+   "component": "App-XML",
+   "category": "C",
+   "commit": "adf503815294",
+   "commit_full": "adf503815294b854f54a5eaf032b981f0ac0aa33",
+   "license": "GPL-3.0",
+   "reason": "lists+SQLite app",
+   "commit_error": null
+  },
+  {
+   "repo": "maxrave-dev/SimpMusic",
+   "component": "App-Media",
+   "category": "C",
+   "commit": "62472bfaf4d2",
+   "commit_full": "62472bfaf4d2aaa65efa0c90db95e9b349586e04",
+   "license": "GPL-3.0",
+   "reason": "Compose+Media3 music app",
+   "commit_error": null
+  },
+  {
+   "repo": "FossifyOrg/Gallery",
+   "component": "App-XML",
+   "category": "C",
+   "commit": "1933e40ac697",
+   "commit_full": "1933e40ac69787104b3b91343b643666a49fd601",
+   "license": "GPL-3.0",
+   "reason": "image-heavy app",
+   "commit_error": null
+  },
+  {
+   "repo": "TeamNewPipe/NewPipe",
+   "component": "App-Media",
+   "category": "C",
+   "commit": "5779af87f89f",
+   "commit_full": "5779af87f89f759cfa1a442b3d679b29bb619abc",
+   "license": "GPL-3.0",
+   "reason": "media+lists; GPL-3.0",
+   "commit_error": null
+  },
+  {
+   "repo": "OxygenCobalt/Auxio",
+   "component": "App-Media",
+   "category": "C",
+   "commit": "0de0ce4c5553",
+   "commit_full": "0de0ce4c5553a104ba982f64339ac357994b08c3",
+   "license": "GPL-3.0",
+   "reason": "Compose-era audio player; clean architecture",
+   "commit_error": null
+  },
+  {
+   "repo": "00-Evan/shattered-pixel-dungeon",
+   "component": "App-Game",
+   "category": "C",
+   "commit": "7b8b845a76fe",
+   "commit_full": "7b8b845a76fe76c6b7c031ae9e570852411f56db",
+   "license": "GPL-3.0",
+   "reason": "libGDX game; real GLES consumer",
+   "commit_error": null
+  },
+  {
+   "repo": "T8RIN/ImageToolbox",
+   "component": "App-Image",
+   "category": "C",
+   "commit": "076143e5d3f6",
+   "commit_full": "076143e5d3f6041ff6d0929516798d6aa4b101cd",
+   "license": "Apache-2.0",
+   "reason": "image pipeline stress app",
+   "commit_error": null
+  },
+  {
+   "repo": "JunkFood02/Seal",
+   "component": "App-Media",
+   "category": "C",
+   "commit": "63bd8a4d31df",
+   "commit_full": "63bd8a4d31df9571c3d2d460079acccb76c35412",
+   "license": "GPL-3.0",
+   "reason": "yt-dlp GUI; Compose",
+   "commit_error": null
+  },
+  {
+   "repo": "FoedusProgramme/Gramophone",
+   "component": "App-Media",
+   "category": "C",
+   "commit": "a4d5e96c939f",
+   "commit_full": "a4d5e96c939fe08354d7ce2a89c697356edb8d07",
+   "license": "GPL-3.0",
+   "reason": "Compose+Media3 minimal player",
+   "commit_error": null
+  },
+  {
+   "repo": "chrisbanes/tivi",
+   "component": "Compose",
+   "category": "C",
+   "commit": "a0c62c2c763c",
+   "commit_full": "a0c62c2c763c83e3a0ecf79b283224374bb06c4a",
+   "license": "Apache-2.0",
+   "reason": "large real Compose app",
+   "commit_error": null
+  },
+  {
+   "repo": "anilbeesetti/nextplayer",
+   "component": "App-Media",
+   "category": "C",
+   "commit": "5824581a828e",
+   "commit_full": "5824581a828e9eb311ac1f8a2141f7825850ef74",
+   "license": "GPL-3.0",
+   "reason": "Compose video player",
+   "commit_error": null
+  },
+  {
+   "repo": "OuterTune/OuterTune",
+   "component": "App-Media",
+   "category": "C",
+   "commit": "e82794f3a059",
+   "commit_full": "e82794f3a059ad30f7c1bfda52051b03e718d614",
+   "license": "GPL-3.0",
+   "reason": "Compose+Media3",
+   "commit_error": null
+  },
+  {
+   "repo": "MetrolistGroup/Metrolist",
+   "component": "App-Media",
+   "category": "C",
+   "commit": "773a9f9a212b",
+   "commit_full": "773a9f9a212b65c6721696314195f066f5e42b38",
+   "license": "GPL-3.0",
+   "reason": "Compose music",
+   "commit_error": null
+  },
+  {
+   "repo": "Droid-ify/client",
+   "component": "Compose",
+   "category": "C",
+   "commit": "3b853c0a9bad",
+   "commit_full": "3b853c0a9bad010fe021996e1d7a0c7b93ec76df",
+   "license": "GPL-3.0",
+   "reason": "Compose F-Droid client \u2014 Compose+lists+persistence",
+   "commit_error": null
+  },
+  {
+   "repo": "d4rken-org/sdmaid-se",
+   "component": "Compose",
+   "category": "C",
+   "commit": "1e61bea6c4d5",
+   "commit_full": "1e61bea6c4d57e7b6a3a0c987219cfb158a22a56",
+   "license": "GPL-3.0",
+   "reason": "Compose system cleaner",
+   "commit_error": null
+  },
+  {
+   "repo": "pserwylo/retrowars",
+   "component": "App-Game",
+   "category": "D",
+   "commit": "7c80876f86a2",
+   "commit_full": "7c80876f86a27fd6b2863b0ac3937d81e2351b99",
+   "license": "UNKNOWN-verify-manually",
+   "reason": "superseded by retrowars/retrowars (redirect)",
+   "commit_error": null
+  },
+  {
+   "repo": "duckduckgo/Android",
+   "component": "App-WebView",
+   "category": "C",
+   "commit": "85df593e2286",
+   "commit_full": "85df593e228606710d54e153aeb2031047542905",
+   "license": "Apache-2.0",
+   "reason": "WebView-centric browser app",
+   "commit_error": null
+  },
+  {
+   "repo": "hushenghao/AndroidEasterEggs",
+   "component": "App-Game",
+   "category": "C",
+   "commit": "91f016c2c1eb",
+   "commit_full": "91f016c2c1ebb0828c6b2dad2eb97836cc753f72",
+   "license": "Apache-2.0",
+   "reason": "Easter-egg games incl. GLES demos",
+   "commit_error": null
+  },
+  {
+   "repo": "lichess-org/mobile",
+   "component": "App-Game",
+   "category": "C",
+   "commit": "a98315df95ca",
+   "commit_full": "a98315df95ca7dade9afe3bc826072ee159a60a0",
+   "license": "GPL-3.0",
+   "reason": "Compose board game",
+   "commit_error": null
+  },
+  {
+   "repo": "dorumrr/de1984",
+   "component": "App-XML",
+   "category": "C",
+   "commit": "3327a8d86b90",
+   "commit_full": "3327a8d86b9049ae774ac2a19e67a2a313ee07d3",
+   "license": "MIT",
+   "reason": "privacy camera app",
+   "commit_error": null
+  },
+  {
+   "repo": "LinkoraApp/Linkora",
+   "component": "Compose",
+   "category": "C",
+   "commit": "206dfd46a5bc",
+   "commit_full": "206dfd46a5bcbb2bf15a2af9f7b55e1989baac57",
+   "license": "MIT",
+   "reason": "Compose link manager",
+   "commit_error": null
+  },
+  {
+   "repo": "gergelyvagujhelyi/CalculatorM3",
+   "component": "Compose",
+   "category": "C",
+   "commit": "a7f37b9cac79",
+   "commit_full": "a7f37b9cac79b2cc7717ac3d8df27a2f13c3a96a",
+   "license": "GPL-3.0",
+   "reason": "tiny Material3 calculator \u2014 ideal small Compose target",
+   "commit_error": null
+  },
+  {
+   "repo": "plateaukao/einkbro",
+   "component": "App-WebView",
+   "category": "C",
+   "commit": "49c249b9173b",
+   "commit_full": "49c249b9173b6ec83fa573a25900684423fe0926",
+   "license": "GPL-3.0",
+   "reason": "WebView browser",
+   "commit_error": null
+  },
+  {
+   "repo": "KashCal/KashCal",
+   "component": "App-XML",
+   "category": "C",
+   "commit": "d67bbb1c88c0",
+   "commit_full": "d67bbb1c88c0776da644ea7d927a6ec1769b4696",
+   "license": "Apache-2.0",
+   "reason": "calendar app",
+   "commit_error": null
+  },
+  {
+   "repo": "sweakpl/qralarm-android",
+   "component": "App-XML",
+   "category": "C",
+   "commit": "5dc595ec2803",
+   "commit_full": "5dc595ec2803fa0176f5f7ce1bba8374df38a971",
+   "license": "GPL-3.0",
+   "reason": "utility app",
+   "commit_error": null
+  },
+  {
+   "repo": "nextcloud/android",
+   "component": "App-Media",
+   "category": "D",
+   "commit": "4ccb511527f0",
+   "commit_full": "4ccb511527f0caf8f6fc30daaad35a8d3ce1896f",
+   "license": "LGPL-2.1",
+   "reason": "LGPL; huge; network-bound app \u2014 poor fit for headless corpus",
+   "commit_error": null
+  },
+  {
+   "repo": "shlusiak/Freebloks-Android",
+   "component": "App-Game",
+   "category": "C",
+   "commit": "bf36e4474799",
+   "commit_full": "bf36e4474799437391c1b5c3dba8477aa8633a5c",
+   "license": "GPL-2.0",
+   "reason": "board game with GLES? (verify)",
+   "commit_error": null
+  },
+  {
+   "repo": "accrescent/accrescent",
+   "component": "Compose",
+   "category": "C",
+   "commit": "f065daf3bf43",
+   "commit_full": "f065daf3bf435f29022ebdbafab250a060a0405d",
+   "license": "Apache-2.0",
+   "reason": "Compose app store \u2014 Compose+security UI",
+   "commit_error": null
+  },
+  {
+   "repo": "signalapp/Signal-Android",
+   "component": "App-Media",
+   "category": "D",
+   "commit": "879651dc47a7",
+   "commit_full": "879651dc47a7b18b67e7aea52a25197875024680",
+   "license": "AGPL-3.0",
+   "reason": "AGPL-3.0; enormous; adopt risk; corpus value low vs cost",
+   "commit_error": null
+  },
+  {
+   "repo": "google/conscrypt",
+   "component": "Oracle",
+   "category": "E",
+   "commit": "5c02b8d15e9b",
+   "commit_full": "5c02b8d15e9b83ed0ce5b80763e7c43a656a3d14",
+   "license": "Apache-2.0",
+   "reason": "TLS provider; only if network bridge lands",
+   "commit_error": null
+  },
+  {
+   "repo": "clavierhaus/gnubg-android",
+   "component": "App-Game",
+   "category": "C",
+   "commit": "05292e3783c8",
+   "commit_full": "05292e3783c8bb6d0e725d7795d9feeb5f033637",
+   "license": "GPL-3.0",
+   "reason": "backgammon port",
+   "commit_error": null
+  },
+  {
+   "repo": "google/desugar_jdk_libs",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "092407c51c3e",
+   "commit_full": "092407c51c3eaaaa9e46f7b7e436dc642f614064",
+   "license": "GPL-2.0",
+   "reason": "java.time/streams backport semantics used by apps",
+   "commit_error": null
+  },
+  {
+   "repo": "TranslucentFoxHuman/DroidStress",
+   "component": "App-Game",
+   "category": "C",
+   "commit": "63c514173d7d",
+   "commit_full": "63c514173d7d7674a35e6a9cde1c51d2a44d8af9",
+   "license": "GPL-3.0",
+   "reason": "stress-test app candidate",
+   "commit_error": null
+  },
+  {
+   "repo": "aosp-mirror/platform_frameworks_support",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "a9ac247af2af",
+   "commit_full": "a9ac247af2afd4115c3eb6d16c05bc92737d6305",
+   "license": "Apache-2.0",
+   "reason": "AndroidX source mirror \u2014 View/Compose/Room semantics",
+   "commit_error": null
+  },
+  {
+   "repo": "SEAbdulbasit/asteroids-compose-multiplatform",
+   "component": "Compose",
+   "category": "E",
+   "commit": "4dfc2c07e81c",
+   "commit_full": "4dfc2c07e81cff23b5488491938703048af5dffd",
+   "license": "UNKNOWN-verify-manually",
+   "reason": "KMP game; license verify needed",
+   "commit_error": null
+  },
+  {
+   "repo": "aosp-mirror/platform_dalvik",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "838bd34deecb",
+   "commit_full": "838bd34deecb3715b2b4006edede2ab79e42e336",
+   "license": "Apache-2.0",
+   "reason": "original Dalvik VM source \u2014 our interpreter's semantics oracle",
+   "commit_error": null
+  },
+  {
+   "repo": "LineageOS/android_frameworks_base",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "68ee585f54bc",
+   "commit_full": "68ee585f54bc11b13a250f0365d12c0b9c2e5cf2",
+   "license": "Apache-2.0",
+   "reason": "frameworks/base mirror; easier to browse than aosp-mirror",
+   "commit_error": null
+  },
+  {
+   "repo": "aosp-mirror/platform_frameworks_base",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "1cdfff555f4a",
+   "commit_full": "1cdfff555f4a21f71ccc978290e2e212e2f8b168",
+   "license": "Apache-2.0",
+   "reason": "PRIMARY View/Resources/ARSC semantics oracle (ResTable_config::match lives here)",
+   "commit_error": null
+  },
+  {
+   "repo": "bkaradzic/bgfx",
+   "component": "GLES",
+   "category": "E",
+   "commit": "a9dd2e20fee0",
+   "commit_full": "a9dd2e20fee00d5b0f261e9a298749f0baec9801",
+   "license": "BSD-2-Clause",
+   "reason": "BSD-2; abstraction over backends",
+   "commit_error": null
+  },
+  {
+   "repo": "nigels-com/glew",
+   "component": "GLES",
+   "category": "C",
+   "commit": "77cc072d8a13",
+   "commit_full": "77cc072d8a1389a5e20922da7f3b499967eef4d8",
+   "license": "MIT",
+   "reason": "GL extension loading reference",
+   "commit_error": null
+  },
+  {
+   "repo": "JetBrains/kotlin",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "0f8300495b13",
+   "commit_full": "0f8300495b13d67c2aa55578f8a4334c8ba81e3c",
+   "license": "Apache-2.0",
+   "reason": "stdlib/runtime semantics; reference for Kotlin-generated DEX",
+   "commit_error": null
+  },
+  {
+   "repo": "Anuken/Mindustry",
+   "component": "App-Game",
+   "category": "C",
+   "commit": "eb4d7f1de67f",
+   "commit_full": "eb4d7f1de67ffa943741caf2e96f0ba4c18bcde1",
+   "license": "GPL-3.0",
+   "reason": "major libGDX GLES game \u2014 \u00a725 strong candidate",
+   "commit_error": null
+  },
+  {
+   "repo": "Mesa3D/mesa (canonical: gitlab.freedesktop.org/mesa/mesa)",
+   "component": "GLES",
+   "category": "B",
+   "commit": "06ec2d8e5f67",
+   "commit_full": "06ec2d8e5f676b5071c204c58c9a524713d923da",
+   "license": "UNKNOWN-verify-manually",
+   "reason": "llvmpipe/lavapipe/zink software rasterizers \u2014 \u00a724 alternative route",
+   "commit_error": null
+  },
+  {
+   "repo": "android.googlesource.com/platform/art",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "6484611fd45e",
+   "commit_full": "6484611fd45e69db9f33f98bfd6864014b030ecf",
+   "license": "UNKNOWN-verify-manually",
+   "reason": "ART source (verify note: mirror fetch from googlesource)",
+   "commit_error": null
+  },
+  {
+   "repo": "android.googlesource.com/platform/libcore",
+   "component": "Oracle",
+   "category": "C",
+   "commit": "de876a01b292",
+   "commit_full": "de876a01b29230b877c9f408348c38a90ee724a5",
+   "license": "UNKNOWN-verify-manually",
+   "reason": "core libs semantics",
+   "commit_error": null
+  },
+  {
+   "repo": "g-truc/glm",
+   "component": "GLES",
+   "category": "C",
+   "commit": "6f14f4792a0c",
+   "commit_full": "6f14f4792a0cde5d0cf2c910506724d61cb95834",
+   "license": "MIT (GLM license)",
+   "reason": "math lib reference",
+   "commit_error": null
+  }
+ ]
+}

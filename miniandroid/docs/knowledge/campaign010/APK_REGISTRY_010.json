@@ -1,0 +1,325 @@
+{
+ "campaign": "010",
+ "policy": "ZERO APK binaries in archive; SHA-256 + download script only",
+ "cache_dir": "~/.cache/miniandroid/apks",
+ "count": 31,
+ "apks": [
+  {
+   "name": "gmdice",
+   "package": "de.duenndns.gmdice",
+   "category": "2d_game",
+   "notes": "GOLDEN: tap dice, roll changes, screenshot SHA16 26fc4116e4ba65b4",
+   "campaign_status": "PROVEN",
+   "sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+   "file": "gmdice.apk",
+   "in_archive": false
+  },
+  {
+   "name": "dooz",
+   "package": "io.github.yamin8000.dooz",
+   "category": "compose_game",
+   "notes": "Compose TTT: attach chain + ComposeView children=1 + real Intrinsics NPE",
+   "campaign_status": "PARTIAL",
+   "sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
+   "file": "dooz.apk",
+   "in_archive": false
+  },
+  {
+   "name": "unote",
+   "package": "app.varlorg.unote",
+   "category": "database_ui",
+   "notes": "notes app; 23,472px fallback screen documented",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+   "file": "unote.apk",
+   "in_archive": false
+  },
+  {
+   "name": "notes",
+   "package": "billthefarmer.notes",
+   "category": "database_ui",
+   "notes": "",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+   "file": "notes.apk",
+   "in_archive": false
+  },
+  {
+   "name": "bgclock",
+   "package": "bgclock.example",
+   "category": "webview_fullscreen",
+   "notes": "renders fullscreen WebView 2,073,600px",
+   "campaign_status": "PARSED+DEX+WEBVIEW_SHADER",
+   "sha256": "72c140b0083ef273bc6452a7f1006e1e2dc4c64c61f8bcc90d082c3f6d1f9dee",
+   "file": "bgclock.apk",
+   "in_archive": false
+  },
+  {
+   "name": "chessclock",
+   "package": "com.example.chessclock",
+   "category": "timers",
+   "notes": "",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+   "file": "chessclock.apk",
+   "in_archive": false
+  },
+  {
+   "name": "headingcalc",
+   "package": "com.example.heading",
+   "category": "tools",
+   "notes": "",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+   "file": "headingcalc.apk",
+   "in_archive": false
+  },
+  {
+   "name": "microtimer",
+   "package": "com.example.microtimer",
+   "category": "timers",
+   "notes": "",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+   "file": "microtimer.apk",
+   "in_archive": false
+  },
+  {
+   "name": "openlauncher",
+   "package": "com.example.openlauncher",
+   "category": "launcher",
+   "notes": "",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "b3320463a7a1ed46c52464bae83a97317d062b1e2097bd1885cdf265f2089f89",
+   "file": "openlauncher.apk",
+   "in_archive": false
+  },
+  {
+   "name": "simplekeyboard",
+   "package": "com.example.simplekeyboard",
+   "category": "input",
+   "notes": "",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
+   "file": "simplekeyboard.apk",
+   "in_archive": false
+  },
+  {
+   "name": "simplestopwatch",
+   "package": "com.example.simplestopwatch",
+   "category": "xml_imageviews",
+   "notes": "ImageView PNG drawables gray+alpha",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+   "file": "simplestopwatch.apk",
+   "in_archive": false
+  },
+  {
+   "name": "stopwatch1",
+   "package": "com.example.stopwatch",
+   "category": "timers",
+   "notes": "",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
+   "file": "stopwatch.apk",
+   "in_archive": false
+  },
+  {
+   "name": "tinymusic",
+   "package": "com.example.tinymusic",
+   "category": "audio",
+   "notes": "CORRUPT ZIP (EOCD) \u2014 androguard agrees",
+   "campaign_status": "PARSE_FAIL_HONEST",
+   "sha256": "55c95ebcfc78c92df66fb3fc980b312aaac607e5f08ee936ef5e3a0dc2176c3e",
+   "file": "tinymusic.apk",
+   "in_archive": false
+  },
+  {
+   "name": "droidify",
+   "package": "com.looker.droidify",
+   "category": "compose_m3",
+   "notes": "Compose methods ~7,917 (009 demand profile)",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "08d5a826be0cc5b699139b80bd5b610a9b3663a69987bc082ac0d9825afc72f6",
+   "file": "com.looker.droidify_760.apk",
+   "in_archive": false
+  },
+  {
+   "name": "retrowars",
+   "package": "com.serwylo.retrowars",
+   "category": "2d_game_gles",
+   "notes": "GLES refs 268 (009 demand profile)",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "8886269ac43e8f2f7f884fa1db8e2e7c1694db6cbc26311fe2323cef845eb3ec",
+   "file": "com.serwylo.retrowars_70.apk",
+   "in_archive": false
+  },
+  {
+   "name": "mindustry",
+   "package": "io.anuke.mindustry",
+   "category": "3d_gles",
+   "notes": "GLES refs 255 (009 demand profile)",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "0798f9c33be2e7ebe4698edbb8826794aa3336298ce20b2c526d35ba85720bf1",
+   "file": "io.anuke.mindustry_1107.apk",
+   "in_archive": false
+  },
+  {
+   "name": "newpipe",
+   "package": "org.schabi.newpipe",
+   "category": "video_network",
+   "notes": "GLES refs 251, Compose refs 7,162 (009 demand profile)",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "1d66d19eedbab969b1be2e44e0ea35f5f8921cbe83b5c5ac810767ca1a84b7e8",
+   "file": "org.schabi.newpipe_1015.apk",
+   "in_archive": false
+  },
+  {
+   "name": "spd",
+   "package": "com.shatteredpixel.shatteredpixeldungeon",
+   "category": "2d_game",
+   "notes": "GLES refs 177 (009 demand profile)",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "be901407280a5b3b281969e068f725ed5d52c9cd9a7b55013de68487ad419ec4",
+   "file": "com.shatteredpixel.shatteredpixeldungeon_896.apk",
+   "in_archive": false
+  },
+  {
+   "name": "auxio",
+   "package": "org.oxycblt.auxio",
+   "category": "audio",
+   "notes": "",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "c2053d36c28dbe74de40eadcd8978ec874c465ed3352bba655d4b2b364780b45",
+   "file": "org.oxycblt.auxio_75.apk",
+   "in_archive": false
+  },
+  {
+   "name": "pfnotes",
+   "package": "org.secuso.privacyfriendlynotes",
+   "category": "database_editor",
+   "notes": "",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "71e874f45fa4655f14296fce13791a82f994ea9bc26699f433383f0b4d334037",
+   "file": "org.secuso.privacyfriendlynotes_105.apk",
+   "in_archive": false
+  },
+  {
+   "name": "editor",
+   "package": "org.billthefarmer.editor",
+   "category": "editor",
+   "notes": "",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "343d17e11d0914e1a7708df2781580a0413e52501c0a41d91f7ef725d9615fe9",
+   "file": "org.billthefarmer.editor_198.apk",
+   "in_archive": false
+  },
+  {
+   "name": "kiss",
+   "package": "fr.neamar.kiss",
+   "category": "launcher",
+   "notes": "",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "da6ab0b1219ad3b5ee573698523fb15d60a918083e0843f94a03c1b12e1098c9",
+   "file": "fr.neamar.kiss_224.apk",
+   "in_archive": false
+  },
+  {
+   "name": "p2048",
+   "package": "org.secuso.privacyfriendly2048",
+   "category": "2d_game",
+   "notes": "",
+   "campaign_status": "PARSED+DEX",
+   "sha256": "02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8",
+   "file": "org.secuso.privacyfriendly2048_100.apk",
+   "in_archive": false
+  },
+  {
+   "name": "persiancalendar",
+   "package": "com.byagowi.persiancalendar",
+   "category": "rtl",
+   "notes": "exit0, 629 METHOD-IN, white screen (no pixels) \u2014 RTL/Material app",
+   "campaign_status": "PARSED+DEX_EXECUTED (uc010 run)",
+   "in_archive": false,
+   "sha256": "bbd12819529102bc3849b70d119bb1cef72dbb1cbacb08ba7fee473c8f6167d4",
+   "file": "com.byagowi.persiancalendar_1020.apk",
+   "source": "https://f-droid.org/repo/com.byagowi.persiancalendar_1020.apk"
+  },
+  {
+   "name": "kvaesitso",
+   "package": "de.mm20.launcher2.release",
+   "category": "compose_m3",
+   "notes": "exit1 FAILURE early \u2014 heavy Compose; honest FAIL",
+   "campaign_status": "PARSED+DEX_EXECUTED (uc010 run)",
+   "in_archive": false,
+   "sha256": "5021ca1693a46ec0e9b3ec79f900f02ae3cecd5f50f05ebcb52b29a8b8329742",
+   "file": "de.mm20.launcher2.release_2026053100.apk",
+   "source": "https://f-droid.org/repo/de.mm20.launcher2.release_2026053100.apk"
+  },
+  {
+   "name": "opentracks",
+   "package": "de.dennisguse.opentracks",
+   "category": "lists_stats",
+   "notes": "exit0, 127 METHOD-IN, 23,472px fallback",
+   "campaign_status": "PARSED+DEX_EXECUTED (uc010 run)",
+   "in_archive": false,
+   "sha256": "cc5331501c8ead6e015e8b8318559d2cb863c3e05ec9a7145592802a32efb9ec",
+   "file": "de.dennisguse.opentracks_6741.apk",
+   "source": "https://f-droid.org/repo/de.dennisguse.opentracks_6741.apk"
+  },
+  {
+   "name": "markor",
+   "package": "net.gsantner.markor",
+   "category": "editor",
+   "notes": "exit0, 295 METHOD-IN, fallback screen",
+   "campaign_status": "PARSED+DEX_EXECUTED (uc010 run)",
+   "in_archive": false,
+   "sha256": "3f9f260dc3e32a1281cb8803eea6f926eef897579f68a5d35f922523974b84b9",
+   "file": "net.gsantner.markor_163.apk",
+   "source": "https://f-droid.org/repo/net.gsantner.markor_163.apk"
+  },
+  {
+   "name": "loophabit",
+   "package": "org.isoron.uhabits",
+   "category": "database",
+   "notes": "exit0, 741 METHOD-IN, fallback screen",
+   "campaign_status": "PARSED+DEX_EXECUTED (uc010 run)",
+   "in_archive": false,
+   "sha256": "3903d3be3db0f1622ad61cf5bb267515c95a4069e8dd46f73249721b1bb8173e",
+   "file": "org.isoron.uhabits_20301.apk",
+   "source": "https://f-droid.org/repo/org.isoron.uhabits_20301.apk"
+  },
+  {
+   "name": "telegram",
+   "package": "org.telegram.messenger",
+   "category": "messaging_golden",
+   "notes": "12.10.1 GOLDEN: pixdata SHA16 b9b06072ea17d7fd, 41,233 non-white px; auth chain PROVEN (UNIFIED_002)",
+   "sha256": "f5e1192725772960cc94b83e54ffd8939f876b2b6e5f21d4a8537eb6fcba50e6",
+   "campaign_status": "PROVEN",
+   "in_archive": false,
+   "license_note": "operator-supplied; not redistributable via scripts"
+  },
+  {
+   "name": "todolist",
+   "package": "org.secuso.privacyfriendlytodolist",
+   "category": "forms_database",
+   "notes": "exit0, 218 METHOD-IN, fallback screen",
+   "campaign_status": "PARSED+DEX_EXECUTED",
+   "in_archive": false,
+   "sha256": "80c6f68ec94a561157ad8db4d335003d2b2c8aeba2b649ab9f446b44743fc0af",
+   "file": "org.secuso.privacyfriendlytodolist_103.apk",
+   "source": "https://f-droid.org/repo/org.secuso.privacyfriendlytodolist_103.apk"
+  },
+  {
+   "name": "mupdf",
+   "package": "com.artifex.mupdf.viewer.app",
+   "category": "document_viewer",
+   "notes": "exit0, 1 METHOD-IN (native-heavy app, DEX surface small) \u2014 honest record",
+   "campaign_status": "PARSED",
+   "in_archive": false,
+   "sha256": "6a22e285bb43d98389b587ea2a658e86f395729c3994e4ad1b7eddd1c4b4dfc8",
+   "file": "com.artifex.mupdf.viewer.app_250.apk",
+   "source": "https://f-droid.org/repo/com.artifex.mupdf.viewer.app_250.apk"
+  }
+ ]
+}

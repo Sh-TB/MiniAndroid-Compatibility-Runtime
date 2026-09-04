@@ -1,0 +1,142 @@
+{
+  "test": "EXP086 Phase 2 \u2014 Real APK entry-point regression",
+  "generated_at": "2026-08-23T00:12:20.671551+00:00",
+  "pass_count": 7,
+  "partial_count": 0,
+  "fail_count": 0,
+  "skip_count": 0,
+  "results": [
+    {
+      "name": "telegram",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
+      "expected_activity": "org.telegram.ui.LaunchActivity",
+      "run_result": {
+        "exit_code": 0,
+        "expected_class": "org.telegram.ui.LaunchActivity",
+        "expected_descriptor": "Lorg/telegram/ui/LaunchActivity;",
+        "oncreate_entered": true,
+        "method_invocations": [
+          "[DalvikEngine] \ud83d\udd04 RECURSIVE INVOKE: Lorg/telegram/ui/LaunchActivity;.onCreate(Landroid/os/Bundle;)V (1330 instructions)",
+          "[METHOD-IN] Lorg/telegram/ui/LaunchActivity;.onCreate (bytecode_size=1330)",
+          "[DalvikEngine] \ud83d\udd04 RECURSIVE INVOKE: Lorg/telegram/ui/LaunchActivity;.<clinit>()V (9 instructions)",
+          "[METHOD-IN] Lorg/telegram/ui/LaunchActivity;.<clinit> (bytecode_size=9)",
+          "[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lorg/telegram/ui/LaunchActivity;.<clinit>"
+        ],
+        "injected_into_dex_report": true,
+        "stdout_tail": "E INVOKE completed: Lorg/telegram/ui/LaunchActivity;.checkFrameMetrics\n[DalvikEngine]   RETURN_VOID at 0x501\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lorg/telegram/ui/LaunchActivity;.onCreate\n[DalvikEngine] \u2705 onCreate invoked via try_recursive_invoke\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 423.770108ms\n[DalvikEngine] Instructions executed: 757\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "gmdice",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+      "expected_activity": "de.duenndns.gmdice.GameMasterDice",
+      "run_result": {
+        "exit_code": 0,
+        "expected_class": "de.duenndns.gmdice.GameMasterDice",
+        "expected_descriptor": "Lde/duenndns/gmdice/GameMasterDice;",
+        "oncreate_entered": true,
+        "method_invocations": [
+          "[METHOD-IN] Lde/duenndns/gmdice/GameMasterDice;.onCreate (bytecode_size=213)"
+        ],
+        "injected_into_dex_report": false,
+        "stdout_tail": "g obj_id=4\n[TRY-ENTRY] Lde/duenndns/gmdice/GameMasterDice;.setListAdapter dex_report=YES\n[DalvikEngine]   API BRIDGE: Lde/duenndns/gmdice/GameMasterDice;.setListAdapter\n[DalvikEngine]   RETURN_VOID at 0xd4\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 0.965283ms\n[DalvikEngine] Instructions executed: 56\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "tictactoe",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/tictactoe.apk",
+      "expected_activity": "com.emmanuelmess.tictactoe.AndroidLauncher",
+      "run_result": {
+        "exit_code": 0,
+        "expected_class": "com.emmanuelmess.tictactoe.AndroidLauncher",
+        "expected_descriptor": "Lcom/emmanuelmess/tictactoe/AndroidLauncher;",
+        "oncreate_entered": true,
+        "method_invocations": [
+          "[METHOD-IN] Lcom/emmanuelmess/tictactoe/AndroidLauncher;.onCreate (bytecode_size=37)"
+        ],
+        "injected_into_dex_report": false,
+        "stdout_tail": "RY] Lcom/emmanuelmess/tictactoe/AndroidLauncher;.setContentView dex_report=YES\n[DalvikEngine]   API BRIDGE: Lcom/emmanuelmess/tictactoe/AndroidLauncher;.setContentView\n[DalvikEngine]   RETURN_VOID at 0x24\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 52.430421ms\n[DalvikEngine] Instructions executed: 56\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "headingcalculator",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
+      "expected_activity": "org.debian.eugen.headingcalculator.MainActivity",
+      "run_result": {
+        "exit_code": 0,
+        "expected_class": "org.debian.eugen.headingcalculator.MainActivity",
+        "expected_descriptor": "Lorg/debian/eugen/headingcalculator/MainActivity;",
+        "oncreate_entered": true,
+        "method_invocations": [
+          "[METHOD-IN] Lorg/debian/eugen/headingcalculator/MainActivity;.onCreate (bytecode_size=45)",
+          "[DalvikEngine] \ud83d\udd04 RECURSIVE INVOKE: Lorg/debian/eugen/headingcalculator/MainActivity$1;.<init>(Lorg/debian/eugen/headingcalculator/MainActivity;)V (6 instructions)"
+        ],
+        "injected_into_dex_report": false,
+        "stdout_tail": "OnKeypadClickListener insns=2 RSS=13.3398 MB\n[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lorg/debian/eugen/headingcalculator/CalculatorKeypad;.setOnKeypadClickListener\n[DalvikEngine]   RETURN_VOID at 0x2c\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 0.611850ms\n[DalvikEngine] Instructions executed: 22\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "simplestopwatch",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+      "expected_activity": "omegacentauri.mobi.simplestopwatch.StopWatch",
+      "run_result": {
+        "exit_code": 0,
+        "expected_class": "omegacentauri.mobi.simplestopwatch.StopWatch",
+        "expected_descriptor": "Lomegacentauri/mobi/simplestopwatch/StopWatch;",
+        "oncreate_entered": true,
+        "method_invocations": [
+          "[METHOD-IN] Lomegacentauri/mobi/simplestopwatch/StopWatch;.onCreate (bytecode_size=225)",
+          "[DalvikEngine] \ud83d\udd04 RECURSIVE INVOKE: Lomegacentauri/mobi/simplestopwatch/StopWatch$1;.<init>(Lomegacentauri/mobi/simplestopwatch/StopWatch;)V (6 instructions)"
+        ],
+        "injected_into_dex_report": false,
+        "stdout_tail": "tatic type\n[DalvikEngine]   API BRIDGE: .setOnLongClickListener\n[DalvikEngine] \u2705 FIELD RESOLVED: Lomegacentauri/mobi/simplestopwatch/StopWatch;.noTouch type=Z offset=0\n[DalvikEngine]   RETURN_VOID at 0xe0\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 2.509495ms\n[DalvikEngine] Instructions executed: 173\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "notes",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.billthefarmer.notes_139.apk",
+      "expected_activity": "org.billthefarmer.notes.Notes",
+      "run_result": {
+        "exit_code": 0,
+        "expected_class": "org.billthefarmer.notes.Notes",
+        "expected_descriptor": "Lorg/billthefarmer/notes/Notes;",
+        "oncreate_entered": true,
+        "method_invocations": [
+          "[METHOD-IN] Lorg/billthefarmer/notes/Notes;.onCreate (bytecode_size=213)",
+          "[DalvikEngine] \ud83d\udd04 RECURSIVE INVOKE: Lorg/billthefarmer/notes/Notes;.getPreferences()V (137 instructions)",
+          "[METHOD-IN] Lorg/billthefarmer/notes/Notes;.getPreferences (bytecode_size=137)",
+          "[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lorg/billthefarmer/notes/Notes;.getPreferences",
+          "[DalvikEngine] \ud83d\udd04 RECURSIVE INVOKE: Lorg/billthefarmer/notes/Notes;.checkNew(Landroid/content/Intent;)Z (11 instructions)"
+        ],
+        "injected_into_dex_report": false,
+        "stdout_tail": ": Landroid/view/GestureDetector;.<init>\n[DalvikEngine] \u2705 FIELD RESOLVED: Lorg/billthefarmer/notes/Notes;.gestureDetector type=Landroid/view/GestureDetector; offset=0\n[DalvikEngine]   RETURN_VOID at 0xd4\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 45.634326ms\n[DalvikEngine] Instructions executed: 1384\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "unote",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp076_corpus/app.varlorg.unote_30.apk",
+      "expected_activity": "app.varlorg.unote.NoteMain",
+      "run_result": {
+        "exit_code": 0,
+        "expected_class": "app.varlorg.unote.NoteMain",
+        "expected_descriptor": "Lapp/varlorg/unote/NoteMain;",
+        "oncreate_entered": true,
+        "method_invocations": [
+          "[METHOD-IN] Lapp/varlorg/unote/NoteMain;.onCreate (bytecode_size=672)",
+          "[DalvikEngine] \ud83d\udd04 RECURSIVE INVOKE: Lc/s;.<init>(Lapp/varlorg/unote/NoteMain;Landroid/content/Context;Ljava/util/List;)V (12 instructions)",
+          "[DalvikEngine] \ud83d\udd04 RECURSIVE INVOKE: Lc/t;.<init>(Lapp/varlorg/unote/NoteMain;)V (6 instructions)",
+          "[DalvikEngine] \ud83d\udd04 RECURSIVE INVOKE: Lc/u;.<init>(Lapp/varlorg/unote/NoteMain;Landroid/widget/Button;Landroid/widget/Button;Landroid/widget/Button;Landroid/widget/LinearLayout;)V (14 instructions)"
+        ],
+        "injected_into_dex_report": false,
+        "stdout_tail": " Landroid/content/SharedPreferences;.getBoolean\n[DalvikEngine]   API BRIDGE: Ljava/lang/Boolean;.valueOf\n[DalvikEngine]   API BRIDGE: Ljava/lang/Boolean;.booleanValue\n[DalvikEngine]   RETURN_VOID at 0x29f\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 2.988619ms\n[DalvikEngine] Instructions executed: 344\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+      },
+      "status": "PASS"
+    }
+  ]
+}

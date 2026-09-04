@@ -1,0 +1,28 @@
+== semantic_switch_parse_neg_test — switch / neg-not / div-zero / parse bridge ==
+  FAIL  packed_switch_key0_hits_case — expected 1003.000000, got 0.000000
+  FAIL  packed_switch_neg_key — expected 1001.000000, got -2.000000
+  FAIL  packed_switch_default_falls — expected 1009.000000, got 3.000000
+  FAIL  sparse_switch_key42 — no return trace/value (status=1)
+  FAIL  sparse_switch_key_900000 — no return trace/value (status=1)
+  FAIL  sparse_switch_default_miss — no return trace/value (status=1)
+  FAIL  sparse_switch_default_negative — no return trace/value (status=1)
+  FAIL  neg_int_minus7 — expected 7.000000, got 0.000000
+  FAIL  not_int_zero — expected -1.000000, got 0.000000
+  FAIL  neg_int_min_wraps — expected -2147483648.000000, got 0.000000
+  FAIL  neg_long_minus5 — expected 5.000000, got 0.000000
+  FAIL  not_long_2p32 — expected -4294967297.000000, got 0.000000
+  FAIL  neg_double_three — expected -3.000000, got 0.000000
+  FAIL  div_long_zero_throws_typed — expected handler value 555, got 444.000000
+  FAIL  rem_long_zero_throws_typed — expected handler value 556, got 445.000000
+  FAIL  div_int_zero_throws_typed — expected handler value 557, got 446.000000
+  FAIL  rem_int_lit8_zero_throws_typed — expected handler value 558, got 447.000000
+  FAIL  div_long_zero_uncaught_unwinds — method returned a value (old bug: no exception thrown)
+  FAIL  integer_parseInt_123 — expected 123.000000, got 0.000000
+  FAIL  integer_parseInt_negative — expected -45.000000, got 0.000000
+  FAIL  long_parseLong_2p32 — expected 4294967296.000000, got 0.000000
+  FAIL  float_parseFloat_2p5 — expected 2.500000, got 0.000000
+  FAIL  double_parseDouble_1p5 — expected 1.500000, got 0.000000
+  FAIL  string_substring_1_3 — expected "el", got ""
+  FAIL  string_concat_hello_world — expected "helloworld", got ""
+
+RESULT: 0 passed, 25 failed

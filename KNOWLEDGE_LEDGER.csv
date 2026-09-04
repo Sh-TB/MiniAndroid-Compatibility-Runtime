@@ -1,0 +1,52 @@
+id,source,campaign,claim_or_fix,source_evidence,head_status_272f216c,runtime_evidence,decision
+LED-001,Agent report RESULT_001,c009-011,long arithmetic 64-bit (2^32+1 != 1),agent RESULT ledger + v0.13.0 engine,FALSE at v0.13.0 (int32 union read),semantic_long_cmp_conv_test 3 cases + parseLong 2^32,VERIFIED_IMPLEMENTED
+LED-002,Agent report RESULT_009,c011,cmp-long three-branch semantics,agent RESULT ledger,FALSE at v0.13.0 (returned 0 always),semantic_long_cmp_conv_test 3 cases,VERIFIED_IMPLEMENTED
+LED-003,Agent report RESULT_010,c011,real numeric conversions (not tag swaps),agent RESULT ledger,PARTIAL at v0.13.0 (5 of 12 ops real),semantic_long_cmp_conv 5 cases + pass3 CV matrix 14 cases,VERIFIED_IMPLEMENTED
+LED-004,Master checklist §5,pass3,12x register encoding runtime proof (distinct registers),K-05 + fixture,"fixed Pass-1 (6fda28d)",add-long/2addr + neg/not vA!=vB cases; reversed nibbles would fail,VERIFIED_IMPLEMENTED
+LED-005,Agent report RESULT_012,exp018,parseInt/parseLong/parseFloat/parseDouble implemented ("NATIVE_CPP"),exp018_main.cpp plan JSON,report-only claim (plan never wired),pass3 fixture PS group 8 cases incl. MAX/MIN/NFE boundaries,VERIFIED_IMPLEMENTED
+LED-006,Agent report RESULT_013,exp018,String.substring/concat bridges,exp018 claim,report-only claim,pass3 PS substring/concat 7 cases incl. SIOOBE + unicode,VERIFIED_IMPLEMENTED
+LED-007,Agent report RESULT_014,c013,Canvas matrix ops accepted,canvas_shadow.cpp 237-239,dispatch present,source inspection + golden stability,PARTIALLY VERIFIED (composition semantics open — NOT_DONE #15)
+LED-008,Agent report RESULT_016,c013,ARSC @string/ value-path resolution,FIX-013-04 (b9d93cc),implemented,c013_arsc_probe on real APK: 3/3 layouts (re-run this pass),VERIFIED_IMPLEMENTED
+LED-009,Agent report RESULT_003,exp043,System.currentTimeMillis real clock,dalvik_engine ~11334,implemented (real clock),matrix determinism x3 (hash-pinned evidence),VERIFIED_IMPLEMENTED
+LED-010,K-06,pre-011.2,opcode table off-by-1 (0x90..0x9A),inline comments,fixed historically,23x arithmetic fixture pass + audit clean,VERIFIED_IMPLEMENTED
+LED-011,K-07,011.2,filled-new-array 35c nibbles,audit M3,fixed @2f05134,unified0112_filled_new_array_test 5/5,VERIFIED_IMPLEMENTED
+LED-012,K-08,EXP-088,return-wide dispatch,EXP-088 F5,fixed,exp088_f5_return_wide_test 5/5,VERIFIED_IMPLEMENTED
+LED-013,K-09,011.3,typed catch handlers,011.3 campaign,fixed @011.3,unified0113_typed_catch_test 8/8,VERIFIED_IMPLEMENTED
+LED-014,K-10,EXP-088,Handler/Looper FIFO,phase F,implemented,exp088_phasef_handler_queue 23/23,VERIFIED_IMPLEMENTED
+LED-015,K-11,011.2,ARSC drawable-path dead chain,audit M4,fixed @73e1946,ssw icons golden,VERIFIED_IMPLEMENTED
+LED-016,K-12,c013,Dialog/Toast/ArrayAdapter object model,B1,c013 lineage,DIALOG_SURFACE_REPORT + gmdice chain,VERIFIED_IMPLEMENTED
+LED-017,K-13,c013,hierarchy shadow dispatch + real-tree inflation,B4/B5,fixed,REAL_APP_MATRIX_013,VERIFIED_IMPLEMENTED
+LED-018,K-15,c013,real onDraw(Canvas) custom views,FIX-013-05,fixed,GLES_REPORT bouncy replay + click evidence PNGs,VERIFIED_IMPLEMENTED
+LED-019,Pass-2 FIX-01 (K-18),pass2,packed/sparse-switch dispatch,K-18,missing at 0fd1ad6,switch_parse_neg group S 7/7 + pass3 backward/nonzero-key 3 cases,VERIFIED_IMPLEMENTED
+LED-020,Pass-2 FIX-02 (K-32),pass2,neg/not family 0x7B..0x80,K-32,absent at 0fd1ad6,switch_parse_neg group N 7/7,VERIFIED_IMPLEMENTED
+LED-021,Pass-2 FIX-03 (K-29),pass2,div/rem by zero ArithmeticException,K-29,yield-0 at 0fd1ad6,switch_parse_neg group D 5/5 + pass3 2addr/lit16/23x zero cases,VERIFIED_IMPLEMENTED
+LED-022,Pass-2 FIX-04 (K-31),pass2,lit8 table "AOSP-correct",K-31 claim,CLAIMED fixed at 9d095f9,pass3 audit: STILL SHIFTED +3 — real 0xDB ran as ADD; corrected this pass,VERIFIED_MISSING
+LED-023,Pass-2 FIX-05 (K-19/20),pass2,parse/substring/concat,K-19/20,missing at 0fd1ad6,switch_parse_neg group P 7/7,VERIFIED_IMPLEMENTED
+LED-024,Master checklist §6,pass3,lit16 22s register decode,K-05 bug class,ONE-NIBBLE-OFF at 272f216c (read >>8/>>4),pass3 DR group negative-divisor cases FAIL pre-fix PASS post-fix,VERIFIED_MISSING
+LED-025,Master checklist §6,pass3,invented SHL/SHR/USHR_INT_LIT16 opcodes 0xD8..0xDA,pass2 constants,invalid opcodes (not in Dalvik) colliding with lit8,audit value-check clean after fix; 0xD8..0xDA now lit8 add/rsub/mul,VERIFIED_MISSING
+LED-026,Master checklist §6,pass3,REM_DOUBLE_2ADDR=0xD0 collision with ADD_INT_LIT16,header constants,collision at 272f216c,audit: REM_DOUBLE_2ADDR now 0xCF; 0xD0 unambiguous,VERIFIED_MISSING
+LED-027,Pass-3 fixture,pass3,aget-byte/char/short typed elements zeroed,ARRAY_GET_CASE,make_int(0) for non-INT32 elems at 272f216c,st_bulk_read aget-byte 0 -> 67 ('C') after normalize,VERIFIED_MISSING
+LED-028,Pass-3 fixture,pass3,NEW_ARRAY length field name inconsistency (__new_array_length__),NEW_ARRAY executor,inconsistent at 272f216c,read([B) bulk count 16 + aget OK after canonical __array_length__ added,VERIFIED_MISSING
+LED-029,Master checklist §12,pass3,AtomicReference CAS/get/set/getAndSet,pass3 audit,ABSENT from src at 272f216c (zero hits),pass3 AR group 7/7 (identity discriminator + null),VERIFIED_MISSING
+LED-030,Master checklist §11,pass3,XmlPullParser real event machine + termination,pass3 audit,ABSENT from src at 272f216c,pass3 X group 7/7 (event sequence + typed XmlPullParserException),VERIFIED_MISSING
+LED-031,Master checklist §11,pass3,InputStream.read/available/close real bytes,EXP-071 comment (old read returned 0),read()=0 stub at 272f216c,pass3 ST group 5/5 vs independent unzip oracle,VERIFIED_MISSING
+LED-032,Pass-2 FIX-05 comment,pass2,parseInt 2^31 boundary,parse bridge,2147483648 wrapped to INT_MIN at 272f216c,ps_parseInt_overflow_throws_nfe PASS after fix,VERIFIED_MISSING
+LED-033,FIX-05 documented TODO,pass2,NaN/Infinity word forms in parse*,FIX-05 comment (documented TODO),rejected at 272f216c,ps_parseDouble_nan_word + infinity PASS after fix,VERIFIED_MISSING
+LED-034,TOOL-CLAIM-4A39F1B,011.2,commit 4a39f1b / "176-176" work exists,git cat-file + all refs + archives,absent from every artifact,RECOVERED_11_1_TO_HEAD_DELTA §2,REJECTED_WITH_EVIDENCE
+LED-035,CAMPAIGN-012 tag,v0.12 era,f5da664 / "v0.12.0" release exists,campaign reports,absent from remote+DAG+ZIPs (three-way evidence),GIT_PROVENANCE_RESOLUTION.md (K-27),REJECTED_WITH_EVIDENCE
+LED-036,reflog b5d2140,pass1,amended-away commit holds unique work,git reflog,docs-only (MAIN_CODER_INTEGRATION.md draft),diff vs 0fd1ad6 = 3-line doc edit; content preserved,SUPERSEDED_BY_LATER_FIX
+LED-037,Campaign-014 session,c014,runtime code commits for v0.14.0,campaign logs,lost with workspace; only triage evidence survives,docs/campaign014_evidence (16 apps),BLOCKED_BY_MISSING_ARTIFACT
+LED-038,Telegram golden APK,K-26,SHA f5e11927 baseline re-assertion,downloader logs,APK lost in cache wipe; upstream serves newer bytes,matrix row NOT REPRODUCED (documented),BLOCKED_BY_MISSING_ARTIFACT
+LED-039,droidify.apk,pass2/3,corpus validation row,corpus run,exit=1 (truncated 5MiB download),corpus_screenshots.txt (recorded not counted),BLOCKED_BY_MISSING_ARTIFACT
+LED-040,MiniAndroid_v0.14.0_GIT_HANDOFF.zip,delivery,complete v0.14.0 handoff,delivery manifest,0-byte ZIP (interrupted packaging),archive_scan.json, BLOCKED_BY_MISSING_ARTIFACT
+LED-041,MiniAndroid_FULL_VALIDATION_HANDOFF_6c9a91e.zip,delivery,full-validation handoff,delivery manifest,0-byte ZIP (interrupted packaging),archive_scan.json,BLOCKED_BY_MISSING_ARTIFACT
+LED-042,GAP matrix DEX-WIDE-ARITH,011.3,"long/double arith, shifts, const-wide, switch, fill-array-data integrated",gap matrix,INTEGRATED,pass3 fixture + audit confirm,DUPLICATE
+LED-043,GAP matrix APP-GMDICE-L13,gap matrix,gmdice second-frame delta,gap matrix §F,dup of GFX-FRAME2-RUNTIMEVIEWS,gap matrix,DUPLICATE
+LED-044,GAP matrix APP-WA-MATRIX-DUP,gap matrix,WhatsApp entry chain (dup),gap matrix,same as APP-WA-ENTRY,gap matrix,DUPLICATE
+LED-045,GAP matrix APP-GLES-GAME-DUP,gap matrix,GLES game need (dup),gap matrix,same as GFX-GLES,gap matrix,DUPLICATE
+LED-046,K-24/NOT_DONE #5,c013+,"Compose composition hook (dooz blank frame)",COMPOSE_REPORT_013,deterministic blank 31ddd4d5,matrix (unchanged, SHA stable),NEEDS_RUNTIME_PROOF
+LED-047,K-25/NOT_DONE #6,c008+,"GLES dispatch hook (PortableGL glue present)",GLES_REPORT_013,glue present; render loop not wired,golden cube standalone,NEEDS_RUNTIME_PROOF
+LED-048,NOT_DONE #7-9,c013+,layout geometry/fonts/audio boundaries,NOT_DONE,documented,NOT_DONE,NEEDS_RUNTIME_PROOF
+LED-049,GAP matrix §E APIs,c011+,"SharedPreferences/SQLite/multidex/ListView/Intent/lifecycle subsets",gap matrix,INTEGRATED subsets,matrix + [PREFS] logs + telegram 5-DEX,VERIFIED_IMPLEMENTED
+LED-050,APP-CORPUS-DEFAULT,c011+,entry-chain gap apps (simplekeyboard/openlauncher),gap matrix,unchanged at HEAD,corpus run eb16ab5c rows (documented),NEEDS_RUNTIME_PROOF
+LED-051,GAME CHANGER PHASE8-10,game-changer,"Open-source source & tool intelligence: HELPER_SOURCE_LIST.md 66 entries, 60 categories, P0×13/P1×23/P2×26/P3×4, self-reviewed (PHASE 9)",HELPER_SOURCE_LIST.md + MASTER_PROJECT_KNOWLEDGE K-43 section,PRESENT (registered this pass),n/a (knowledge artifact),VERIFIED_IMPLEMENTED

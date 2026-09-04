@@ -1,0 +1,309 @@
+{
+  "experiment": "EXP-032",
+  "phase": "Phase 4 - Object Model Improvement",
+  "generated_at": "2026-08-14T09:23:40.496344",
+  "aosp_references": {
+    "dalvik_object": "dalvik/vm/reflect/Object.h",
+    "dalvik_class_object": "dalvik/vm/oo/ClassObject.h",
+    "art_object": "runtime/art_object.h",
+    "dalvik_heap": "dalvik/vm/alloc/Alloc.h"
+  },
+  "current_state_summary": {
+    "has_basic_object_model": true,
+    "has_heap_allocation": true,
+    "has_class_metadata": true,
+    "critical_missing_features": 3,
+    "high_priority_gaps": 2
+  },
+  "gap_analysis": {
+    "critical": [
+      {
+        "component": "ClassInfo.field_offsets",
+        "aosp_reference": "ClassObject->fieldOffsets (u4*)",
+        "current_status": "MISSING",
+        "impact": "Blocks ALL field operation opcodes (iget, iput, iget-object, iput-object)",
+        "implementation_complexity": "Medium (~100 LOC)",
+        "priority": "P0 - IMMEDIATE"
+      },
+      {
+        "component": "ClassInfo.vtable",
+        "aosp_reference": "ClassObject->vtable (Method**)",
+        "current_status": "MISSING",
+        "impact": "Blocks proper virtual method dispatch (invoke-virtual speed)",
+        "implementation_complexity": "High (~200 LOC)",
+        "priority": "P0 - IMMEDIATE"
+      },
+      {
+        "component": "ClassInfo.static_fields",
+        "aosp_reference": "ClassObject->sfields (StaticField*)",
+        "current_status": "PARTIAL (in FieldMetadata but no storage)",
+        "impact": "Blocks static field operations (sget, sput, sget-object, sput-object)",
+        "implementation_complexity": "Medium (~80 LOC)",
+        "priority": "P0 - IMMEDIATE"
+      }
+    ],
+    "high": [
+      {
+        "component": "ClassInfo.iface_table",
+        "aosp_reference": "ClassObject->iftable (InterfaceEntry[])",
+        "current_status": "MISSING",
+        "impact": "Slows interface method dispatch, may cause incorrect behavior",
+        "implementation_complexity": "High (~150 LOC)",
+        "priority": "P1 - SHORT_TERM"
+      },
+      {
+        "component": "RuntimeObject.monitor_lock",
+        "aosp_reference": "Object.lock (u4 - thin/fat lock)",
+        "current_status": "MISSING",
+        "impact": "Cannot support synchronized blocks/methods",
+        "implementation_complexity": "Low (~30 LOC stub)",
+        "priority": "P1 - SHORT_TERM"
+      }
+    ],
+    "medium": [
+      {
+        "component": "RuntimeObject.hash_code",
+        "aosp_reference": "Object.hashCode cached value",
+        "current_status": "MISSING",
+        "impact": "Performance: must recalculate hashCode() each call",
+        "implementation_complexity": "Low (~15 LOC)",
+        "priority": "P2 - MEDIUM_TERM"
+      },
+      {
+        "component": "DalvikHeap.memory_limit",
+        "aosp_reference": "gDvm.heapMaximumSize",
+        "current_status": "MISSING",
+        "impact": "No OOM detection, unbounded memory growth",
+        "implementation_complexity": "Low (~20 LOC)",
+        "priority": "P2 - MEDIUM_TERM"
+      }
+    ],
+    "low": [
+      {
+        "component": "DalvikHeap.generations",
+        "aosp_reference": "gcHeap->activeHeaps (MS/CSS)",
+        "current_status": "MISSING",
+        "impact": "No generational collection, full GC only",
+        "implementation_complexity": "Very High (~500+ LOC)",
+        "priority": "P3 - LONG_TERM"
+      }
+    ]
+  },
+  "improved_specifications": {
+    "class_info": {
+      "name": "ClassInfo (AOSP-Aligned)",
+      "aosp_equivalent": "ClassObject (dalvik/vm/oo/ClassObject.h)",
+      "purpose": "Complete class metadata supporting all Dalvik opcodes",
+      "identity_section": {
+        "descriptor": {
+          "type": "std::string",
+          "example": "Landroid/app/Activity;"
+        },
+        "access_flags": {
+          "type": "uint32_t",
+          "example": "0x1 (PUBLIC)"
+        },
+        "dex_class_def_idx": {
+          "type": "uint32_t",
+          "purpose": "Back-reference to DEX"
+        }
+      },
+      "hierarchy_section": {
+        "super_class": {
+          "type": "ClassInfo*",
+          "purpose": "Parent class pointer"
+        },
+        "interface_count": {
+          "type": "size_t",
+          "purpose": "Number of interfaces"
+        },
+        "interfaces": {
+          "type": "ClassInfo**",
+          "purpose": "Implemented interfaces"
+        },
+        "object_instance_size": {
+          "type": "size_t",
+          "purpose": "Bytes per instance"
+        }
+      },
+      "vtable_section": {
+        "description": "Virtual Method Dispatch Table",
+        "vtable": {
+          "type": "MethodInfo*",
+          "purpose": "Sorted virtual methods"
+        },
+        "vtable_count": {
+          "type": "size_t",
+          "purpose": "Number of vtable entries"
+        },
+        "methods": {
+          "type": "std::vector<MethodInfo>",
+          "purpose": "All methods (direct + virtual)"
+        },
+        "build_vtable": {
+          "signature": "void build_vtable()",
+          "algorithm": "Merge this class's virtuals with parent's vtable, overriding matches"
+        }
+      },
+      "instance_fields_section": {
+        "description": "Instance Field Layout Table",
+        "instance_fields": {
+          "type": "std::vector<FieldInfo>",
+          "purpose": "Ordered instance field definitions"
+        },
+        "field_offset_table": {
+          "type": "std::map<std::string, uint32_t>",
+          "purpose": "Fast field offset lookup for iget/iput",
+          "example": {
+            "mText": 8,
+            "mVisibility": 12
+          }
+        },
+        "total_instance_size": {
+          "type": "size_t",
+          "purpose": "Total instance bytes"
+        },
+        "get_field_offset": {
+          "signature": "uint32_t get_field_offset(const std::string& name) const",
+          "returns": "Byte offset from object start, or UINT32_MAX if not found"
+        }
+      },
+      "static_fields_section": {
+        "description": "Static Field Storage",
+        "static_fields": {
+          "type": "std::vector<FieldInfo>",
+          "purpose": "Static field definitions"
+        },
+        "static_field_values": {
+          "type": "std::map<std::string, DalvikValue>",
+          "purpose": "Actual static field values (class-level storage)",
+          "example": {
+            "INSTANCE": "object_ref#5"
+          }
+        },
+        "get_static_field": {
+          "signature": "DalvikValue get_static_field(const std::string& name) const",
+          "set_static_field": {
+            "signature": "void set_static_field(const std::string& name, const DalvikValue& val)"
+          }
+        }
+      },
+      "dex_resolution": {
+        "dex_file_ref": {
+          "type": "DexFile*",
+          "purpose": "Source DEX file"
+        },
+        "class_loader": {
+          "type": "ClassLoader*",
+          "purpose": "Defining loader"
+        },
+        "status": {
+          "type": "enum { UNRESOLVED, RESOLVED, VERIFYING, VERIFIED }"
+        }
+      }
+    },
+    "heap": {
+      "name": "DalvikHeap (AOSP-Aligned)",
+      "aosp_equivalent": "gDvm.heap (dalvik/vm/alloc/Alloc.h)",
+      "purpose": "Memory management with allocation tracking and basic GC",
+      "allocation": {
+        "allocate_object": {
+          "signature": "uint32_t allocate(ClassInfo* cls, uint32_t pc, uint32_t frame_id)",
+          "steps": [
+            "1. Calculate size from cls->object_instance_size",
+            "2. Check memory limit (throw OOM if exceeded)",
+            "3. Allocate HeapObject with zeroed fields",
+            "4. Set object->clazz = cls",
+            "5. Initialize default field values from cls",
+            "6. Log allocation with PC/frame context",
+            "7. Return object_id"
+          ]
+        },
+        "allocate_array": {
+          "signature": "uint32_t allocate_array(ClassInfo* elem_cls, size_t length, ...)",
+          "purpose": "For new-array opcode"
+        }
+      },
+      "object_layout": {
+        "header_size": 8,
+        "field_alignment": 4,
+        "padding_strategy": "Natural alignment with padding bytes"
+      },
+      "garbage_collection": {
+        "current_support": "None (manual destroy only)",
+        "recommended_minimum": "Reference counting for cycle-free subset",
+        "full_gc": "Mark-sweep (deferred to future phase)"
+      },
+      "monitoring": {
+        "track_allocations": true,
+        "track_lifetime_transitions": true,
+        "memory_limit_bytes": 0,
+        "allocation_log": "Full history of all allocations"
+      }
+    },
+    "object_ref": {
+      "name": "ObjectRef (AOSP-Aligned)",
+      "aosp_equivalent": "JValue/u4 in Dalvik registers",
+      "purpose": "Type-safe object reference stored in Dalvik registers",
+      "representation": {
+        "storage": "uint32_t object_id (compressed reference)",
+        "null_value": "0 (special null object ID)",
+        "type_tag": "Separate DalvikType enum in register file"
+      },
+      "operations": {
+        "dereference": {
+          "signature": "HeapObject* dereference(DalvikHeap* heap) const",
+          "behavior": "Returns heap->get(object_id), or nullptr if null/invalid"
+        },
+        "null_check": {
+          "signature": "bool is_null() const",
+          "implementation": "return object_id == 0 || object_id == NULL_OBJECT_ID"
+        },
+        "type_check": {
+          "signature": "bool is_instance_of(ClassInfo* target) const",
+          "implementation": "Walk class hierarchy from object->clazz to find target"
+        }
+      },
+      "field_access_pattern": {
+        "iget_workflow": [
+          "1. ObjectRef obj = registers.read_v(vB);  // Get object ref",
+          "2. obj.null_check();                       // Throw NPE if null",
+          "3. HeapObject* heap_obj = obj.dereference(heap);",
+          "4. ClassInfo* cls = heap_obj->clazz;",
+          "5. uint32_t offset = cls->get_field_offset(field_name);",
+          "6. DalvikValue value = heap_obj->read_field(offset);",
+          "7. registers.write_v(vA, value);           // Store result"
+        ],
+        "iput_workflow": [
+          "1. ObjectRef obj = registers.read_v(vB);  // Get object ref",
+          "2. obj.null_check();                       // Throw NPE if null",
+          "3. DalvikValue value = registers.read_v(vA); // Get value",
+          "4. HeapObject* heap_obj = obj.dereference(heap);",
+          "5. ClassInfo* cls = heap_obj->clazz;",
+          "6. uint32_t offset = cls->get_field_offset(field_name);",
+          "7. heap_obj->write_field(offset, value);    // Store field"
+        ]
+      }
+    }
+  },
+  "implementation_priority": {
+    "phase4_immediate": [
+      "Add field_offset_table to ClassInfo",
+      "Add static_field_values storage to ClassInfo",
+      "Create basic VTable structure",
+      "Implement iget/iput using field offsets"
+    ],
+    "phase4_short_term": [
+      "Add interface table support",
+      "Implement monitor lock stub",
+      "Add heap memory limit checking",
+      "Improve ObjectRef with type checking"
+    ],
+    "future_phases": [
+      "Generational GC support",
+      "Full ART mirror::Object compatibility",
+      "Compacting allocator",
+      "Concurrent mark-sweep"
+    ]
+  }
+}

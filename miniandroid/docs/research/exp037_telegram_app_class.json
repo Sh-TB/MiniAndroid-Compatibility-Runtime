@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://stackoverflow.com/questions/59926208/launch-telegram-app-from-android-application-with-message-and-recipient",
+    "name": "Launch Telegram app from Android application with message and",
+    "snippet": "Jan 27, 2020 · Launch Telegram app from Android application with message and recipient Ask. App prepopulating both the message and recipient … will open  ... Android - Send Telegram message to a specific number Android Telegram App --> java.lang.UnsatisfiedLinkError More results from stackoverflow.com",
+    "host_name": "stackoverflow.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@YodgorbekKomilo/system-design-of-the-telegram-android-app-layers-and-technologies-6bc1965f4287",
+    "name": "System Design of the Telegram Android App: Layers and  - Medium",
+    "snippet": "Oct 27, 2024 · The Telegram Android app's layered architecture integrates client-server interaction, microservices, secure communication, and scalable data ...",
+    "host_name": "medium.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=Wr747SGDTCk",
+    "name": "A Complete Guide to using Telegram Messenger App  - YouTube",
+    "snippet": "May 4, 2021 · In this video we are going to learn how to start a chat, create a group and create a channel in Telegram. Do you know telegram has a secret ...",
+    "host_name": "www.youtube.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/TelegramMessenger/telegram-login-android",
+    "name": "TelegramMessenger/telegram-login-android - GitHub",
+    "snippet": "When the user finishes the flow, Telegram launches your configured Activity via an Intent. Override onNewIntent (or onCreate depending on your launch mode) to ...",
+    "host_name": "github.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://core.telegram.org/api/obtaining_api_id",
+    "name": "Creating your Telegram Application",
+    "snippet": "We welcome all developers to use our API and source code to create Telegram-like messaging applications on our platform free of charge.",
+    "host_name": "core.telegram.org",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dev.to/dev_family/telegram-mini-app-development-and-testing-specifics-from-initialisation-to-launch-1ofh",
+    "name": "Telegram mini-app development and testing specifics",
+    "snippet": "Mar 11, 2025 · Below we'll go through how to create a mini app in Telegram from scratch and set up an initial template to initialise the telegram-apps/sdk- ...",
+    "host_name": "dev.to",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.b4x.com/android/forum/threads/open-telegram-as-intent.66926",
+    "name": "Android Question Open Telegram as intent - B4X",
+    "snippet": "May 16, 2016 · I would like to open Telegram as intent and pass a text to be sent. I have seen some posts but I could not find a solution.",
+    "host_name": "www.b4x.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/tasker/comments/43dyko/open_a_specific_telegram_app_contact_chat_with",
+    "name": "Open a specific Telegram App contact Chat with Tasker. - Reddit",
+    "snippet": "Jan 30, 2016 · I'm trying to make a task to open a specific contact chat in Telegram, but I can't find the correct way to do it.",
+    "host_name": "www.reddit.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://core.telegram.org/bots/webapps",
+    "name": "Telegram Mini Apps",
+    "snippet": "With Mini Apps developers can use JavaScript to create infinitely flexible interfaces that can be launched right inside Telegram — and can completely ...",
+    "host_name": "core.telegram.org",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.facebook.com/moumita.pramanik.16100/posts/mobileappdevelopment-maractivity-mar2k21-creating-your-telegram-applicationwe-we/1277070216151853",
+    "name": "https://my.telegram.org. Go to 'API development tools  - Facebook",
+    "snippet": "Jan 28, 2022 · 🛠️ Steps to Build a Telegram Mini App: 1. Set up your Flutter Project: Start by initializing a Flutter project. Use any state management ...",
+    "host_name": "www.facebook.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

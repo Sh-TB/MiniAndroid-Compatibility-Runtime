@@ -1,0 +1,18 @@
+ORACLE density=1.0 width=320 height=470
+ORACLE root           LinearLayout                 pos=(0,0) size=1080x1920
+ORACLE iconFrame      FrameLayout                  pos=(0,0) size=64x64
+ORACLE title          text="Enter code" pos=(535,82) size=10x41
+ORACLE desc           text="We’ve sent an SMS with an activation code to your phone +1 5551234567." pos=(505,140) size=70x41
+ORACLE codeRow        LinearLayout                 pos=(437,213) size=205x42
+ORACLE   field0       View                         pos=(0,0) size=34x42
+ORACLE   field1       View                         pos=(41,0) size=34x42
+ORACLE   field2       View                         pos=(82,0) size=34x42
+ORACLE   field3       View                         pos=(123,0) size=34x42
+ORACLE   field4       View                         pos=(164,0) size=34x42
+ORACLE link           text="Didn't get the code?" pos=(530,283) size=20x41
+ORACLE Gravity.CENTER_HORIZONTAL=0x1 CENTER=0x11 TOP=0x30 BOTTOM=0x50 LEFT=0x3 RIGHT=0x5 CENTER_VERTICAL=0x10
+ORACLE MATCH_PARENT=-1 WRAP_CONTENT=-2 (expect -1/-2)
+ORACLE getText() == same object: true, equals: true
+ORACLE replace(' ', U+00A0) = "+1~5551234567" codepoints=13
+ORACLE default margins=(0,0,0,0) gravity=-1
+ORACLE default TextView text color set: true

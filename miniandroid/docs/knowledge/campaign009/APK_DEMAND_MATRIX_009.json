@@ -1,0 +1,115 @@
+{
+ "schema": "apk_demand_matrix_v1",
+ "campaign": "009",
+ "note": "automated API demand database (\u00a717): apk \u2192 class/method demand profile vs runtime subsystems",
+ "profiles": [
+  {
+   "apk": "com.looker.droidify_760.apk",
+   "package": "com.looker.droidify",
+   "category": "I-Compose",
+   "dex_classes": 6884,
+   "tracked_class_counts": {
+    "Landroidx/compose/": 1885
+   },
+   "gles_method_refs": 207,
+   "compose_invoked_methods": 7917,
+   "status": "profiled"
+  },
+  {
+   "apk": "com.serwylo.retrowars_70.apk",
+   "package": "com.serwylo.retrowars",
+   "category": "K-3D",
+   "dex_classes": 11355,
+   "tracked_class_counts": {},
+   "gles_method_refs": 268,
+   "compose_invoked_methods": 0,
+   "status": "profiled"
+  },
+  {
+   "apk": "io.anuke.mindustry_1107.apk",
+   "package": "io.anuke.mindustry",
+   "category": "K-3D",
+   "dex_classes": 6119,
+   "tracked_class_counts": {},
+   "gles_method_refs": 255,
+   "compose_invoked_methods": 0,
+   "status": "profiled"
+  },
+  {
+   "apk": "org.oxycblt.auxio_75.apk",
+   "package": "org.oxycblt.auxio",
+   "category": "H-Media",
+   "dex_classes": 4490,
+   "tracked_class_counts": {
+    "Landroid/media/": 4
+   },
+   "gles_method_refs": 0,
+   "compose_invoked_methods": 0,
+   "status": "profiled"
+  },
+  {
+   "apk": "org.secuso.privacyfriendly2048_100.apk",
+   "package": "org.secuso.privacyfriendly2048",
+   "category": "J-Game",
+   "dex_classes": 8737,
+   "tracked_class_counts": {},
+   "gles_method_refs": 0,
+   "compose_invoked_methods": 0,
+   "status": "profiled"
+  },
+  {
+   "apk": "fr.neamar.kiss_224.apk",
+   "package": "fr.neamar.kiss",
+   "category": "D-Lists",
+   "dex_classes": 1620,
+   "tracked_class_counts": {},
+   "gles_method_refs": 0,
+   "compose_invoked_methods": 0,
+   "status": "profiled"
+  },
+  {
+   "apk": "org.secuso.privacyfriendlynotes_105.apk",
+   "package": "org.secuso.privacyfriendlynotes",
+   "category": "B-Forms",
+   "dex_classes": 9666,
+   "tracked_class_counts": {},
+   "gles_method_refs": 0,
+   "compose_invoked_methods": 0,
+   "status": "profiled"
+  },
+  {
+   "apk": "org.billthefarmer.editor_198.apk",
+   "package": "org.billthefarmer.editor",
+   "category": "B-Forms",
+   "dex_classes": 319,
+   "tracked_class_counts": {},
+   "gles_method_refs": 0,
+   "compose_invoked_methods": 0,
+   "status": "profiled"
+  },
+  {
+   "apk": "com.shatteredpixel.shatteredpixeldungeon_896.apk",
+   "package": "com.shatteredpixel.shatteredpixeldungeon",
+   "category": "K-3D",
+   "dex_classes": 3119,
+   "tracked_class_counts": {},
+   "gles_method_refs": 177,
+   "compose_invoked_methods": 0,
+   "status": "profiled"
+  },
+  {
+   "apk": "org.schabi.newpipe_1015.apk",
+   "package": "org.schabi.newpipe",
+   "category": "H-Media",
+   "dex_classes": 10671,
+   "tracked_class_counts": {
+    "Landroid/media/": 6,
+    "Landroidx/compose/": 1820
+   },
+   "gles_method_refs": 251,
+   "compose_invoked_methods": 7162,
+   "status": "profiled"
+  }
+ ],
+ "preexisting_corpus_reference": "tests/corpus/apks.json + EXP-101 demand (Uri 12/14, SystemClock 9/14, Intent 13/14)"
+}

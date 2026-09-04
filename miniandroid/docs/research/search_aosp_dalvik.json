@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://wladimir-tm4pda.github.io/porting/dalvik.html",
+    "name": "Dalvik | Android Open Source",
+    "snippet": "The Dalvik runtime includes two interpreters , labeled \"portable\" and \"fast\". The portable interpreter is largely contained within a single C function, and ... Read more",
+    "host_name": "wladimir-tm4pda.github.io",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/brachior/Android-292",
+    "name": "brachior/Android-292",
+    "snippet": "I use Dalvik , the virtual machine of [Android] 4, to support my research. You can download SDK releases and factory images for Nexus [here] 1. Dependencies. Read more",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/philomates/dalvik-abstract-interpreter",
+    "name": "philomates/dalvik-abstract-interpreter:",
+    "snippet": "This is a work in progress abstract interpreter for the Dalvik Bytecode. This repository is a snapshot from our private codebase, and will probably see minimal ... Read more",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/pxb1988/dalvik",
+    "name": "pxb1988/dalvik: this is a fork of android dalvik",
+    "snippet": "This directory contains the Dalvik virtual machine and core class library, as well as related tools, libraries, and tests.",
+    "host_name": "github.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://source.android.com/docs/core/runtime",
+    "name": "Android runtime and Dalvik",
+    "snippet": "Jul 14, 2026 — ART and Dalvik are compatible runtimes running DEX bytecode, so apps developed for Dalvik should work when running with ART. However, some ... Read more",
+    "host_name": "source.android.com",
+    "rank": 4,
+    "date": "Jul 14, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.googlesource.com/platform/dalvik/+/lollipop-release/docs/porting-guide.html",
+    "name": "docs/porting-guide.html - platform/dalvik - Git at Google",
+    "snippet": "The Dalvik runtime includes two interpreters , labeled \"portable\" and \"fast\". The portable interpreter is largely contained within a single C function,. and ... Read more",
+    "host_name": "android.googlesource.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/LineageOS/android_dalvik",
+    "name": "LineageOS/android_dalvik: Android DalvikVM",
+    "snippet": "Android DalvikVM (cyanogenmod). Contribute to LineageOS/android_dalvik development by creating an account on GitHub. Search code, repositories, users, issues, ...",
+    "host_name": "github.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/fatalSec/DaliVM",
+    "name": "fatalSec/DaliVM: Dalvik bytecode emulator for Android",
+    "snippet": "A Python-based Dalvik VM emulator designed for static analysis and string decryption in Android applications. Dalvik opcodes including arithmetic, control flow ...",
+    "host_name": "github.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/JakeWharton/dalvik-dx",
+    "name": "A standalone packaging of AOSP's platform/dalvik dx library.",
+    "snippet": "Android dalvik Dx Library ... A standalone packaging of AOSP's platform/ dalvik dx library. Download. Gradle: implementation 'com.jakewharton.android. Read more",
+    "host_name": "github.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  }
+]

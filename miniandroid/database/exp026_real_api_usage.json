@@ -1,0 +1,172 @@
+{
+  "TraceEngine.start_session": {
+    "count": 11,
+    "apps": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "success_count": 11,
+    "fail_count": 0
+  },
+  "ExecutionEngine.stage_load_apk": {
+    "count": 22,
+    "apps": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "success_count": 22,
+    "fail_count": 0
+  },
+  "ExecutionEngine.stage_parse_dex": {
+    "count": 12,
+    "apps": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "success_count": 12,
+    "fail_count": 0
+  },
+  "DexParser.parse": {
+    "count": 10,
+    "apps": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "success_count": 10,
+    "fail_count": 0
+  },
+  "ExecutionEngine.stage_generate_reports": {
+    "count": 11,
+    "apps": [
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown",
+      "unknown"
+    ],
+    "success_count": 11,
+    "fail_count": 0
+  },
+  "ExecutionEngine.stage_initialize_runtime": {
+    "count": 2,
+    "apps": [
+      "unknown",
+      "unknown"
+    ],
+    "success_count": 2,
+    "fail_count": 0
+  },
+  "ExecutionEngine.stage_load_classes": {
+    "count": 2,
+    "apps": [
+      "unknown",
+      "unknown"
+    ],
+    "success_count": 2,
+    "fail_count": 0
+  },
+  "ExecutionEngine.stage_execute_application": {
+    "count": 2,
+    "apps": [
+      "unknown",
+      "unknown"
+    ],
+    "success_count": 2,
+    "fail_count": 0
+  },
+  "ExecutionEngine.create_view_from_layout": {
+    "count": 1,
+    "apps": [
+      "unknown"
+    ],
+    "success_count": 1,
+    "fail_count": 0
+  },
+  "ExecutionEngine.create_hello_world_view": {
+    "count": 1,
+    "apps": [
+      "unknown"
+    ],
+    "success_count": 1,
+    "fail_count": 0
+  },
+  "ExecutionEngine.stage_render_frame": {
+    "count": 2,
+    "apps": [
+      "unknown",
+      "unknown"
+    ],
+    "success_count": 2,
+    "fail_count": 0
+  },
+  "ExecutionEngine.stage_capture_output": {
+    "count": 2,
+    "apps": [
+      "unknown",
+      "unknown"
+    ],
+    "success_count": 2,
+    "fail_count": 0
+  },
+  "TraceEngine.log_screenshot": {
+    "count": 1,
+    "apps": [
+      "unknown"
+    ],
+    "success_count": 1,
+    "fail_count": 0
+  }
+}

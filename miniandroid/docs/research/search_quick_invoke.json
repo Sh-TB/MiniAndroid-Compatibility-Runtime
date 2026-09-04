@@ -1,0 +1,65 @@
+[
+  {
+    "url": "https://stackoverflow.com/questions/29126049/modifying-dalvik-virtual-machine-to-intercept-methods-of-application-code",
+    "name": "Modifying Dalvik Virtual Machine to intercept methods",
+    "snippet": "If you're just trying to have something happen every time any method is invoked , you should probably just wire it into the profiling system, as ... Read more",
+    "host_name": "stackoverflow.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ptacts.uspto.gov/ptacts/public-informations/petitions/1557144/download-documents?artifactId=hYIqJXZCr617Ay1ZdpoMpTZ2fy_z28JbU9tU8J2IN-4ybSMFMtHxF3o",
+    "name": "Analysis of Dalvik Virtual Machine and Class Path Library",
+    "snippet": "The first step is to create a dex file. The method is stated for DEX preparation followed by optimization [25]. 1. Create a Dalvik - cache file in the Dalvik ... Read more",
+    "host_name": "ptacts.uspto.gov",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.stackexchange.com/questions/208824/do-calls-to-java-native-interface-in-android-apps-run-within-dalvik-vm",
+    "name": "Do calls to Java native interface in android apps run within",
+    "snippet": "Mar 11, 2019 — I read that apps sometimes access the native libraries for optimization purposes via the Java native interface.  As far as I understand, JNI just provides ...",
+    "host_name": "android.stackexchange.com",
+    "rank": 2,
+    "date": "Mar 11, 2019",
+    "favicon": ""
+  },
+  {
+    "url": "https://dl.acm.org/doi/pdf/10.1145/2388936.2388956",
+    "name": "Evaluation of Android Dalvik virtual machine",
+    "snippet": "by HS Oh · 2012 · Cited by 74 — Special registers are for saving the caller methodГs PC, the pointers to the callerГs register file and the method data, etc, when a method invocation is made, ... Read more",
+    "host_name": "dl.acm.org",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://mirrors.aliyun.com/android.googlesource.com/dalvik/docs/dexopt.html",
+    "name": "Dalvik Optimization and Verification With dexopt",
+    "snippet": "The Dalvik optimizer does the following: For virtual method calls, replace the method index with a vtable index . For instance field get/put, replace the ... Read more",
+    "host_name": "mirrors.aliyun.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/279866741_A_static_region-based_compiler_for_the_Dalvik_virtual_machine",
+    "name": "A static region-based compiler for the Dalvik virtual machine",
+    "snippet": "The Dalvik VM is an interpreter and is equipped with a trace-based just-in-time compiler for enhancing the execution performance of frequently executed paths, ... Read more",
+    "host_name": "www.researchgate.net",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://techvidvan.com/tutorials/android-dalvik-virtual-machine",
+    "name": "Android Dalvik Virtual Machine",
+    "snippet": "Sep 18, 2021 — The Cache is built fast over time and hence reduces boot time, The Cache time is made at the first boot and thus takes time while booting. Read more",
+    "host_name": "techvidvan.com",
+    "rank": 6,
+    "date": "Sep 18, 2021",
+    "favicon": ""
+  }
+]
