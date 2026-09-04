@@ -808,12 +808,23 @@ ManifestInfo ManifestReader::parse_plain_xml(const std::vector<uint8_t>& data) {
         
         // Check for self-closing or start tag
         bool self_closing = (tag.find("/>") != std::string::npos);
-        
+
         // Extract tag name
+        // DEMO-MANIFEST-WS (2026-09-04): treat \r\n as whitespace. The tag
+        // text spans everything between '<' and '>' INCLUDING newlines when
+        // the element is written in the standard AAPT style with one
+        // attribute per line:
+        //     <activity
+        //         android:name="com.foo.MainActivity" ...>
+        // The old delimiters only listed "< \t", so name_start stopped at the
+        // newline and tag_name became the whole multi-line attribute block —
+        // it never matched "activity", every launcher activity was missed and
+        // main_activity_full stayed empty (the runtime then fell back to a
+        // class-name heuristic for entry-point search).
         std::string tag_name;
-        size_t name_start = tag.find_first_not_of("< \t");
+        size_t name_start = tag.find_first_not_of("< \t\r\n");
         if (name_start != std::string::npos) {
-            size_t name_end = tag.find_first_of(" \t/>", name_start);
+            size_t name_end = tag.find_first_of(" \t\r\n/>", name_start);
             if (name_end != std::string::npos) {
                 tag_name = tag.substr(name_start, name_end - name_start);
             } else {
