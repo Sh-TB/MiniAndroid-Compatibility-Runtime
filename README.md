@@ -1,7 +1,7 @@
 # MiniAndroid — a from-scratch Android APK Compatibility Runtime
 
-**Current Release:** `v0.0.1 — Brahma` (first public release, 2026-09-03)
-**Source anchor:** commit `02e72ae` (verified GAME_CHANGER state, 364-commit unified history)
+**Current Release:** `v0.0.2 — Australorp` (real-APK execution proof, 2026-09-04)
+**Previous:** `v0.0.1 — Brahma` (first public release, 2026-09-03)
 **Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (master, not a fork)
 **License:** MIT
 
@@ -9,17 +9,21 @@
 
 ## Current Release
 
-**`v0.0.1 — Brahma`** is the **first public release** of MiniAndroid.
+**`v0.0.2 — Australorp`** is the **proof release**: it ships the first
+end-to-end, visually verifiable demonstration that MiniAndroid executes a
+real APK — install, lifecycle, DEX bytecode, view rendering, user
+interaction, state change, and screenshot capture — with per-frame SHA256
+evidence, a deterministic replay check, and an animated GIF assembled only
+from runtime-produced frames (see [docs/demo/EVIDENCE.md](docs/demo/EVIDENCE.md)
+and the `demo/` directory).
 
-This is the first milestone where the project is presented outside its own
-development history: the full unified source tree (364 commits, 10 tags), the
-verified runtime binary for Linux x64, a Windows build kit, and the complete
-evidence trail are published together. Release naming convention: every major
-or meaningful release carries a chicken-breed name (Brahma is the first);
-small bugfix releases may reuse the previous name.
+Release naming convention: every meaningful release carries a chicken-breed
+name (Brahma, then Australorp); small bugfix releases may reuse the previous
+name.
 
-- **`02e72ae`** = the verified GAME_CHANGER source anchor (rollback refs `backup/github-main-before-sync` → `bbe0ce3`, `backup/game-changer-verified-02e72ae` → `02e72ae` are preserved in-repo).
-- See [RELEASE_NOTES_v0.0.1.md](RELEASE_NOTES_v0.0.1.md) for the full release notes.
+- `v0.0.1 — Brahma` anchored source `02e72ae` (rollback refs preserved in-repo).
+- See [RELEASE_NOTES_v0.0.2.md](RELEASE_NOTES_v0.0.2.md) and
+  [RELEASE_NOTES_v0.0.1.md](RELEASE_NOTES_v0.0.1.md).
 
 ---
 
@@ -164,9 +168,12 @@ APK file (external cache, never committed)
 ### Linux x64 (from the release artifact)
 
 ```bash
-tar xzf MiniAndroid-v0.0.1-Brahma-linux-x64.tar.gz
-cd MiniAndroid-v0.0.1-Brahma-linux-x64
+tar xzf MiniAndroid-v0.0.2-Australorp-linux-x64.tar.gz
+cd MiniAndroid-v0.0.2-Australorp-linux-x64
 ./run-miniandroid.sh run /path/to/your.apk -o ./frames -v
+# real-APK execution proof (demo APK included in the artifact):
+./run-miniandroid.sh run miniandroid-demo.apk -o ./proof --click-count 8
+#   -> proof/frames/frame_000..008.png + proof/frames/manifest.json
 ```
 
 Requirements: x86-64 Linux, **glibc ≥ 2.38** and **libstdc++ (GCC 13.x,
@@ -179,11 +186,12 @@ linked into the binary. No JVM, no GPU, no KVM needed.
 
 ### Windows x64
 
-The Windows release artifact is a **build kit** (source + build scripts +
-instructions), clearly labeled as such — it is **not** a prebuilt native
-`.exe`. See `BUILD-WINDOWS.md` inside
-`MiniAndroid-v0.0.1-Brahma-windows-x64.zip` for exact prerequisites
-(MSYS2/MinGW-w64 toolchain + libraries) and step-by-step commands.
+The Windows release artifact ships the **real native `MiniAndroid.exe`**
+(PE32+ x86-64, UCRT runtime, statically linked codecs) built reproducibly by
+`miniandroid/scripts/build_windows.sh` with the llvm-mingw toolchain and
+pinned upstream dependencies. It carries the same runtime fixes as the Linux
+binary. A source build kit (`BUILD-WINDOWS.md` recipe) remains inside the
+zip for full-source reproducibility.
 
 ### Build from source (Linux)
 
@@ -201,7 +209,9 @@ python3 scripts/u011_test_matrix.py                     # goldens: simplestopwat
 Runtime CLI: `miniandroid <command> [options] <apk_path>` — commands:
 `analyze` / `dex` / `run` / `version` / `help`; key options: `-o <dir>`
 (output), `-v`, `--click-test` (dispatch real clicks after the first frame),
-`--execution-mode real-dalvik|legacy` (default real-dalvik).
+`--click-count N` (N sequential clicks with per-click frame capture +
+manifest — the execution-proof mechanism), `--execution-mode
+real-dalvik|legacy` (default real-dalvik).
 
 ---
 
