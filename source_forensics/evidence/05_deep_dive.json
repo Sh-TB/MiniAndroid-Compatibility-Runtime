@@ -1,0 +1,1511 @@
+{
+ "A10_unique_commits": [
+  {
+   "sha": "0aab25aab090f7f3823797aa55c1508c90184ef1",
+   "parent": "340a9cf861948b2512a8d239808be519275e87a0",
+   "parent_in_canonical": true,
+   "tree_in_canonical": true,
+   "patch_file": "/home/z/my-project/miniandroid_ws/forensics/evidence/patches/A10_0aab25aab0.patch",
+   "patch": "commit 0aab25aab090f7f3823797aa55c1508c90184ef1\nAuthor: Z User <z@container>\nDate:   Tue Sep 1 13:59:02 2026 +0000\n\n    index on main: 340a9cf UNIFIED_011.1: matrix baseline anchored to libpng-encoder telegram SHA 088ea640 (pixel-identical to 06fb40da lineage; R1 encoder change by design); PNG fixture suite 12/12 PASS verified on clean clone\n"
+  },
+  {
+   "sha": "d2b6089d8f73c2d104598fd9872cd7c609cd462f",
+   "parent": "8f0a85bd36fa60edf8de26f6e778b699761f5c26",
+   "parent_in_canonical": true,
+   "tree_in_canonical": true,
+   "patch_file": "/home/z/my-project/miniandroid_ws/forensics/evidence/patches/A10_d2b6089d8f.patch",
+   "patch": "commit d2b6089d8f73c2d104598fd9872cd7c609cd462f\nAuthor: Z User <z@container>\nDate:   Thu Aug 27 23:36:25 2026 +0000\n\n    index on main: 8f0a85b EXP-101/102 (UNIFIED_002) TOOLING: robolectric-oracle pom system-jar->aar fix (fresh-clone reproducible); Persian/RTL \u00a714 proof tool + \u00a713 font matrix\n"
+  },
+  {
+   "sha": "edac6a6da75edea2eda20304e3f7258e79b7e5ad",
+   "parent": "8f0a85bd36fa60edf8de26f6e778b699761f5c26",
+   "parent_in_canonical": true,
+   "tree_in_canonical": false,
+   "patch_file": "/home/z/my-project/miniandroid_ws/forensics/evidence/patches/A10_edac6a6da7.patch",
+   "patch": "commit edac6a6da75edea2eda20304e3f7258e79b7e5ad\nMerge: 8f0a85b 043228a aae02cd\nAuthor: Z User <z@container>\nDate:   Sun Aug 30 11:39:39 2026 +0000\n\n    On main: UNIFIED_007 resource pipeline (recovered work)\n\ndiff --cc miniandroid/Makefile\nindex 8f0b929,8f0b929,0000000..6896b88\nmode 100755,100755,000000..100755\n--- a/miniandroid/Makefile\n+++ b/miniandroid/Makefile\n@@@@ -1,152 -1,152 -1,0 +1,154 @@@@\n  +# MiniAndroid Runtime v0.1 - Simple Makefile\n  +# For systems without CMake\n  +\n  +CXX = g++\n  +CXXFLAGS = -std=c++17 -Wall -Wextra -g -O2 -MMD -MP\n  +# EXP-097 \u00a77: rlottie headers + rlottie static lib for Lottie rendering.\n  +RLOTTIE_DIR ?= /home/z/my-project/tools/rlottie\n  +INCLUDES = -Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Ithird_party/nlohmann_json/include -I$(RLOTTIE_DIR)/inc\n  +# EXP-097 \u00a75/\u00a76: image codec libraries.\n  +# libwebp \u2014 Google reference WebP decoder (used by AOSP Skia / BitmapFactory)\n  +# libjpeg \u2014 IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)\n  +# rlottie  \u2014 Samsung reference Lottie renderer (Telegram uses it directly)\n  +LIBS = -lz -lwebp -lwebpdemux -ljpeg $(RLOTTIE_DIR)/build/src/librlottie.a -lstdc++ -lm -lpthread\n+++# UNIFIED_007: font pipeline + PNG drawable decode\n+++FONTS_LIBS = -lfreetype -lharfbuzz -lfribidi -lpng\n  +\n  +# Directories\n  +SRCDIR = src\n  +BUILDDIR = build\n  +TESTDIR = tests\n  +\n  +# Source files (excluding main.cpp for library)\n  +APK_SOURCES = $(SRCDIR)/apk/apk_parser.cpp $(SRCDIR)/apk/manifest_reader.cpp\n  +# Note: Use EITHER dex_interpreter.cpp OR dex_interpreter_batch.cpp, NOT BOTH\n  +DEX_SOURCES = $(SRCDIR)/dex/dex_parser.cpp $(SRCDIR)/dex/class_resolver.cpp $(SRCDIR)/dex/dex_interpreter_batch.cpp $(SRCDIR)/dex/dalvik_engine.cpp $(SRCDIR)/dex/trace_exporter.cpp  # EXP-031.5: Trace exporter\n  +RUNTIME_SOURCES = $(SRCDIR)/runtime/execution_engine.cpp $(SRCDIR)/runtime/application_runtime.cpp\n  +DIAGNOSTICS_SOURCES = $(SRCDIR)/diagnostics/trace_engine.cpp\n-- RESOURCES_SOURCES = $(SRCDIR)/resources/resource_parser.cpp\n+++RESOURCES_SOURCES = $(SRCDIR)/resources/resource_parser.cpp $(SRCDIR)/resources/arsc_parser.cpp $(SRCDIR)/resources/axml_parser.cpp $(SRCDIR)/resources/layout_inflater.cpp $(SRCDIR)/resources/resource_runtime.cpp\n  +RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp\n  +# EXP-084: framework and storage sources are required for linkage\n  +FRAMEWORK_SOURCES = $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp\n  +API_SOURCES = $(SRCDIR)/api/application_context.cpp $(SRCDIR)/api/shared_prefs.cpp\n  +STORAGE_SOURCES = $(wildcard $(SRCDIR)/storage/*.cpp)\n  +\n  +CORE_SOURCES = $(APK_SOURCES) $(DEX_SOURCES) $(RUNTIME_SOURCES) $(DIAGNOSTICS_SOURCES) $(RESOURCES_SOURCES) $(RENDERER_SOURCES) $(FRAMEWORK_SOURCES) $(API_SOURCES) $(STORAGE_SOURCES)\n  +CORE_OBJECTS = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(CORE_SOURCES))\n  +\n  +# Main executable\n  +MAIN_SOURCE = $(SRCDIR)/main.cpp\n  +MAIN_OBJECT = $(BUILDDIR)/main.o\n  +EXECUTABLE = $(BUILDDIR)/miniandroid\n  +\n  +# Test executable\n  +TEST_SOURCE = $(TESTDIR)/simple_test.cpp\n  +TEST_OBJECT = $(BUILDDIR)/test.o\n  +TEST_EXECUTABLE = $(BUILDDIR)/miniandroid_test\n  +\n  +# nlohmann/json (header-only, download if needed)\n  +JSON_DIR = third_party/nlohmann_json\n  +JSON_INCLUDE = -I$(JSON_DIR)/include\n  +\n  +# Default target\n  +.PHONY: all clean test run help version megabatch run-megabatch\n  +\n  +all: $(EXECUTABLE)\n  +\n  +$(EXECUTABLE): $(CORE_OBJECTS) $(MAIN_OBJECT)\n  +\t@mkdir -p $(BUILDDIR)\n-- \t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS)\n+++\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)\n  +\t@echo \"Build complete: $(EXECUTABLE)\"\n  +\n  +$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp\n  +\t@mkdir -p $(dir $@)\n  +\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<\n  +\n  +$(BUILDDIR)/main.o: $(MAIN_SOURCE)\n  +\t@mkdir -p $(BUILDDIR)\n  +\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<\n  +\n  +# Tests\n  +test: $(TEST_EXECUTABLE)\n  +\t./$(TEST_EXECUTABLE)\n  +\n  +$(TEST_EXECUTABLE): $(CORE_OBJECTS) $(TEST_OBJECT)\n  +\t@mkdir -p $(BUILDDIR)\n-- \t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS)\n+++\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)\n  +\t@echo \"Test build complete: $(TEST_EXECUTABLE)\"\n  +\n  +$(BUILDDIR)/test.o: $(TEST_SOURCE)\n  +\t@mkdir -p $(dir $@)\n  +\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<\n  +\n  +# Run with sample APK (if exists)\n  +run: $(EXECUTABLE)\n  +\t./$(EXECUTABLE) run -v ./test_apks/HelloWorld.apk || echo \"No sample APK available\"\n  +\n  +analyze: $(EXECUTABLE)\n  +\t./$(EXECUTABLE) analyze ./test_apks/HelloWorld.apk || echo \"No sample APK available\"\n  +\n  +version: $(EXECUTABLE)\n  +\t./$(EXECUTABLE) version\n  +\n  +# MEGA BATCH (EXP-007\u2192EXP-012)\n  +MEGABATCH_SOURCE = $(SRCDIR)/exp007_012_megabatch_main.cpp\n  +MEGABATCH_OBJECT = $(BUILDDIR)/exp007_012_megabatch_main.o\n  +MEGABATCH_EXECUTABLE = $(BUILDDIR)/miniandroid_megabatch\n  +\n  +megabatch: $(MEGABATCH_EXECUTABLE)\n  +\t@echo \"MEGA BATCH build complete: $(MEGABATCH_EXECUTABLE)\"\n  +\t@echo \"Usage: ./$(MEGABATCH_EXECUTABLE) <apk_path> [output_dir]\"\n  +\n  +$(MEGABATCH_EXECUTABLE): $(CORE_OBJECTS) $(MEGABATCH_OBJECT)\n  +\t@mkdir -p $(BUILDDIR)\n-- \t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS)\n+++\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)\n  +\n  +$(BUILDDIR)/exp007_012_megabatch_main.o: $(MEGABATCH_SOURCE)\n  +\t@mkdir -p $(dir $@)\n  +\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<\n  +\n  +run-megabatch: $(MEGABATCH_EXECUTABLE)\n  +\t./$(MEGABATCH_EXECUTABLE) test_apks/HelloWorld.apk run\n  +\n  +help:\n  +\t@echo \"MiniAndroid Runtime v0.1 Build System\"\n  +\t@echo \"\"\n  +\t@echo \"Targets:\"\n-- \t@echo \"  all\t - Build the main executable\"\n-- \t@echo \"  test\t- Build and run unit tests\"\n-- \t@echo \"  run\t - Execute sample AP"
+  },
+  {
+   "sha": "aae02cdc2fa0048a03af8e23d4ace54ac7b7bcc6",
+   "parent": null,
+   "parent_in_canonical": null,
+   "tree_in_canonical": false,
+   "patch_file": "/home/z/my-project/miniandroid_ws/forensics/evidence/patches/A10_aae02cdc2f.patch",
+   "patch": "commit aae02cdc2fa0048a03af8e23d4ace54ac7b7bcc6\nAuthor: Z User <z@container>\nDate:   Sun Aug 30 11:39:39 2026 +0000\n\n    untracked files on main: 8f0a85b EXP-101/102 (UNIFIED_002) TOOLING: robolectric-oracle pom system-jar->aar fix (fresh-clone reproducible); Persian/RTL \u00a714 proof tool + \u00a713 font matrix\n\ndiff --git a/miniandroid/src/resources/arsc_parser.cpp b/miniandroid/src/resources/arsc_parser.cpp\nnew file mode 100644\nindex 0000000..7b7f8e9\n--- /dev/null\n+++ b/miniandroid/src/resources/arsc_parser.cpp\n@@ -0,0 +1,645 @@\n+/*\n+ * UNIFIED_007 \u2014 ARSC Parser implementation (P0)\n+ * See arsc_parser.h for design. Zero-dependency binary reader.\n+ */\n+#include \"arsc_parser.h\"\n+\n+namespace miniandroid {\n+namespace resources {\n+\n+// ---------------------------------------------------------------------------\n+// Little-endian readers\n+// ---------------------------------------------------------------------------\n+static inline uint16_t rd16(const uint8_t* p) { return (uint16_t)(p[0] | (p[1] << 8)); }\n+static inline uint32_t rd32(const uint8_t* p) {\n+    return (uint32_t)p[0] | ((uint32_t)p[1] << 8) | ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24);\n+}\n+\n+// Decode a COMPLEX_MANTISSA \u2014 AOSP TypedValue.complexToFloat (authoritative,\n+// verified against platform_frameworks_base TypedValue.java):\n+//   value = (data & (MANTISSA_MASK << MANTISSA_SHIFT)) * RADIX_MULTS[(data>>4)&3]\n+//   MANTISSA_MASK=0xFFFFFF, MANTISSA_SHIFT=8 \u2192 MANTISSA_MULT = 2^-8\n+//   UNIT = data & 0xF (COMPLEX_UNIT_SHIFT = 0)\n+float complex_to_float(uint32_t data) {\n+    static const float MANTISSA_MULT = 1.0f / (1 << 8);\n+    static const float RADIX_MULTS[] = {\n+        1.0f * MANTISSA_MULT,\n+        1.0f / (1 << 7)  * MANTISSA_MULT,\n+        1.0f / (1 << 15) * MANTISSA_MULT,\n+        1.0f / (1 << 23) * MANTISSA_MULT,\n+    };\n+    uint32_t mantissa = data & 0xFFFFFF00u;\n+    // sign-extend: mantissa is a signed 24-bit value in bits 8..31\n+    int32_t signed_m = (int32_t)mantissa;\n+    return signed_m * RADIX_MULTS[(data >> 4) & 3];\n+}\n+\n+// ---------------------------------------------------------------------------\n+// String pool\n+// ---------------------------------------------------------------------------\n+bool ArscParser::parse_string_pool(const uint8_t* base, size_t avail, size_t chunk_offset, Pool& out) {\n+    if (chunk_offset + 20 > avail) { last_error_ = \"string pool: truncated header\"; return false; }\n+    const uint8_t* p = base + chunk_offset;\n+    uint16_t type = rd16(p);\n+    uint16_t header_size = rd16(p + 2);\n+    uint32_t chunk_size = rd32(p + 4);\n+    if (type != RES_STRING_POOL_TYPE) { last_error_ = \"string pool: bad chunk type\"; return false; }\n+    if (chunk_offset + chunk_size > avail) { last_error_ = \"string pool: chunk overruns data\"; return false; }\n+    uint32_t string_count = rd32(p + 8);\n+    uint32_t style_count  = rd32(p + 12);\n+    uint32_t flags        = rd32(p + 16);\n+    uint32_t strings_start= rd32(p + 20);\n+    (void)style_count;\n+    out.utf8 = (flags & RES_STRING_POOL_UTF8_FLAG) != 0;\n+    out.strings.resize(string_count);\n+    const uint32_t* offsets = (const uint32_t*)(p + header_size);\n+    const uint8_t* sdata = p + strings_start;\n+    for (uint32_t i = 0; i < string_count; i++) {\n+        uint32_t off = offsets[i];\n+        if (strings_start + off >= chunk_size) { out.strings[i].clear(); continue; }\n+        const uint8_t* s = sdata + off;\n+        if (out.utf8) {\n+            // u16len then u8len (each uleb128), then bytes\n+            size_t o = 0;\n+            // skip u16 length (may be 2 bytes)\n+            while (o < chunk_size - strings_start - off && (s[o] & 0x80)) o++;\n+            o++;\n+            size_t u8len = 0;\n+            if (o < chunk_size - strings_start - off) {\n+                if (s[o] & 0x80) { u8len = ((s[o] & 0x7F) << 8) | s[o + 1]; o += 2; }\n+                else { u8len = s[o]; o++; }\n+            }\n+            size_t cap = std::min(u8len, chunk_size - strings_start - off - o);\n+            out.strings[i].assign((const char*)(s + o), cap);\n+        } else {\n+            // UTF-16 pool: length is read char16-wise (AOSP decodingString16):\n+            // first char16 = len, high bit set \u2192 2-char16 (high:low) length.\n+            size_t o = 0;\n+            uint32_t u16len = 0;\n+            uint16_t c0 = rd16(s);\n+            if (c0 & 0x8000) { u16len = ((c0 & 0x7FFF) << 16) | rd16(s + 2); o = 4; }\n+            else { u16len = c0; o = 2; }\n+            size_t bytes_avail = chunk_size - strings_start - off - o;\n+            size_t bytes = std::min<size_t>(u16len * 2, bytes_avail & ~1u);\n+            out.strings[i].assign((const char*)(s + o), bytes);  // UTF-16LE raw\n+            // convert UTF-16LE \u2192 UTF-8\n+            const char* rp = out.strings[i].data();\n+            std::string utf8;\n+            utf8.reserve(bytes);\n+            for (size_t ci = 0; ci + 1 < out.strings[i].size(); ci += 2) {\n+                uint32_t ch = (uint8_t)rp[ci] | ((uint32_t)(uint8_t)rp[ci + 1] << 8);\n+                // surrogate pair\n+                if (ch >= 0xD800 && ch <= 0xDBFF && ci + 3 < out.strings[i].size()) {\n+                    uint32_t lo = (uint8_t)rp[ci + 2] | ((uint32_t)(uint8_t)rp[ci + 3] << 8);\n+                    if (lo >= 0xDC00 && lo <= 0xDFFF) {\n+                        ch = 0x10000 + ((ch - 0xD800) << 10) + (lo - 0xDC00);\n+                        ci += 2;\n+                    }\n+                }\n+                if (ch < 0x80) utf8 += (char)ch;\n+                else if (ch < 0x800) {\n+                    utf8 += (char)(0xC0 | (ch >> 6));\n+                    utf8 += (char)(0x80 | (ch & 0x3F));\n+                } else if (ch < 0x10000) {\n+                    utf8 += (char)(0xE0 | (ch >> 12));\n+                    utf8 += (char)(0x80 | ((ch >> 6) & 0x3F));\n+                    utf8 += (char)(0x80 | (ch & 0x3F));\n+                } else {\n+                    utf8 += (char)(0xF0 | (ch >> 18));\n+                    utf8 += (char)(0x80 | ((ch >> 12) & 0x3F));\n+"
+  },
+  {
+   "sha": "d87261685b5d5b009597b0975ac834d650f5e64f",
+   "parent": "8f0a85bd36fa60edf8de26f6e778b699761f5c26",
+   "parent_in_canonical": true,
+   "tree_in_canonical": false,
+   "patch_file": "/home/z/my-project/miniandroid_ws/forensics/evidence/patches/A10_d87261685b.patch",
+   "patch": "commit d87261685b5d5b009597b0975ac834d650f5e64f\nMerge: 8f0a85b d2b6089\nAuthor: Z User <z@container>\nDate:   Thu Aug 27 23:36:25 2026 +0000\n\n    WIP on main: 8f0a85b EXP-101/102 (UNIFIED_002) TOOLING: robolectric-oracle pom system-jar->aar fix (fresh-clone reproducible); Persian/RTL \u00a714 proof tool + \u00a713 font matrix\n\ndiff --cc miniandroid/runtime/data/org.telegram.messenger/shared_prefs/default.xml\nindex 1d04037,1d04037..47d3341\n--- a/miniandroid/runtime/data/org.telegram.messenger/shared_prefs/default.xml\n+++ b/miniandroid/runtime/data/org.telegram.messenger/shared_prefs/default.xml\n@@@ -1,16 -1,16 +1,16 @@@\n  <?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n  <map>\n--    <long name=\"View\" value=\"0\" />\n--    <long name=\"intro_crashed_time\" value=\"1787669299769\" />\n++    <long name=\"intro_crashed_time\" value=\"1787872470488\" />\n      <string name=\"lastDarkTheme\">Dark Blue</string>\n--    <long name=\"lastReloadStatusTime\" value=\"1787669293427\" />\n--    <string name=\"mobilePreset\">View</string>\n--    <int name=\"needGetStatuses\" value=\"1\" />\n++    <string name=\"locales\"></string>\n++    <string name=\"mobilePreset\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n      <int name=\"newConfig\" value=\"1\" />\n--    <string name=\"preset0\">View</string>\n--    <string name=\"preset1\">View</string>\n--    <string name=\"preset2\">View</string>\n++    <string name=\"preset0\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n++    <string name=\"preset1\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n++    <string name=\"preset2\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n++    <string name=\"remote\">English|English|en|@0|0||en|0|0|0</string>\n      <int name=\"remote_version\" value=\"1\" />\n--    <string name=\"roamingPreset\">View</string>\n--    <string name=\"wifiPreset\">View</string>\n++    <string name=\"roamingPreset\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n++    <string name=\"unofficial\">English|English|en|@0|0||en|0|0|0</string>\n++    <string name=\"wifiPreset\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n  </map>\n"
+  },
+  {
+   "sha": "043228a106bd327ce0855f6704fe9b73b17cfab7",
+   "parent": "8f0a85bd36fa60edf8de26f6e778b699761f5c26",
+   "parent_in_canonical": true,
+   "tree_in_canonical": true,
+   "patch_file": "/home/z/my-project/miniandroid_ws/forensics/evidence/patches/A10_043228a106.patch",
+   "patch": "commit 043228a106bd327ce0855f6704fe9b73b17cfab7\nAuthor: Z User <z@container>\nDate:   Sun Aug 30 11:39:39 2026 +0000\n\n    index on main: 8f0a85b EXP-101/102 (UNIFIED_002) TOOLING: robolectric-oracle pom system-jar->aar fix (fresh-clone reproducible); Persian/RTL \u00a714 proof tool + \u00a713 font matrix\n"
+  },
+  {
+   "sha": "321794dc23d2643916dcb0143f790efdb10087f4",
+   "parent": "340a9cf861948b2512a8d239808be519275e87a0",
+   "parent_in_canonical": true,
+   "tree_in_canonical": false,
+   "patch_file": "/home/z/my-project/miniandroid_ws/forensics/evidence/patches/A10_321794dc23.patch",
+   "patch": "commit 321794dc23d2643916dcb0143f790efdb10087f4\nMerge: 340a9cf 0aab25a\nAuthor: Z User <z@container>\nDate:   Tue Sep 1 13:59:02 2026 +0000\n\n    On main: temp-fna-fix\n\ndiff --cc miniandroid/src/dex/dalvik_engine.cpp\nindex 77753ee,77753ee..195e88c\n--- a/miniandroid/src/dex/dalvik_engine.cpp\n+++ b/miniandroid/src/dex/dalvik_engine.cpp\n@@@ -5500,34 -5500,34 +5500,34 @@@ bool DalvikExecutionEngine::fetch_decod\n                  std::vector<uint8_t> src_regs;\n  \n                  if (opcode == Opcode::FILLED_NEW_ARRAY) {\n--                    // Format 35c: [B|A|op] [type@CCCC] [D|E|F|G]\n--                    uint8_t arg_count = (bytecode_[pc_] >> 4) & 0x0F;\n--                    uint8_t reg_bits = (bytecode_[pc_] >> 8) & 0xFF;\n--                    type_idx = bytecode_[pc_ + 1];\n--\n--                    // Decode register list from the bit string\n--                    // Bits 0-3 \u2192 D, E, F, G; bit 4 \u2192 5th register\n--                    for (int i = 0; i < arg_count && i < 5; i++) {\n--                        if (reg_bits & (1 << i)) {\n--                            // Each register is 4 bits from the next code unit\n--                            uint8_t reg = (bytecode_[pc_ + 2] >> (i * 4)) & 0x0F;\n--                            src_regs.push_back(reg);\n--                        }\n--                    }\n--                    // Special case: 5th register is in the high nibble of the 3rd code unit\n--                    if (arg_count == 5) {\n--                        uint8_t reg = (bytecode_[pc_ + 2] >> 16) & 0x0F;\n--                        // Actually for 35c format: the registers are encoded as\n--                        // 4-bit fields in the third code unit: [D|C|B|A] (low to high)\n--                        // Let me re-parse: for arg_count=N, registers are in the\n--                        // nibbles of code_unit[pc+2]: D=bits 0-3, E=bits 4-7, etc.\n--                    }\n--                    // Re-parse: for 35c, all registers are in code_unit[pc+2]\n--                    // as 4-bit nibbles: D=(cu2>>0)&0xF, E=(cu2>>4)&0xF, etc.\n--                    src_regs.clear();\n++                    // Format 35c: A|G|op BBBB FEDC\n++                    //   code[pc+0] = A|G|op (A = arg count = bits 12-15,\n++                    //                        G = 5th register = bits 8-11, op = bits 0-7)\n++                    //   code[pc+1] = BBBB (type_idx)\n++                    //   code[pc+2] = FEDC (register list, 4 nibbles)\n++                    //\n++                    // UNIFIED_011.2 FNA-FIX (\u00a724 audit): previous code read\n++                    // arg_count from bits 4-7 ((instr >> 4) & 0xF \u2014 the high\n++                    // nibble of the OPCODE byte itself), which yields the\n++                    // constant 2 for opcode 0x24 regardless of the actual A\n++                    // field, and the 5th register (G, bits 8-11) was never\n++                    // read. This is the same bug class fixed for the invoke\n++                    // family in EXP-037 (BLOCKER-016): see execute_invoke_*\n++                    // which now use (instr >> 12) & 0xF / (instr >> 8) & 0xF.\n++                    // Aligned here with the canonical extraction.\n++                    uint16_t instr0 = bytecode_[pc_];\n                      uint16_t cu2 = bytecode_[pc_ + 2];\n++                    uint8_t arg_count = (instr0 >> 12) & 0x0F;\n++                    uint8_t fna_regs[5] = {\n++                        static_cast<uint8_t>(cu2 & 0xF),          // C\n++                        static_cast<uint8_t>((cu2 >> 4) & 0xF),   // D\n++                        static_cast<uint8_t>((cu2 >> 8) & 0xF),   // E\n++                        static_cast<uint8_t>((cu2 >> 12) & 0xF),  // F\n++                        static_cast<uint8_t>((instr0 >> 8) & 0xF) // G \u2014 5th register\n++                    };\n++                    type_idx = bytecode_[pc_ + 1];\n                      for (int i = 0; i < arg_count && i < 5; i++) {\n--                        src_regs.push_back((cu2 >> (i * 4)) & 0x0F);\n++                        src_regs.push_back(fna_regs[i]);\n                      }\n                  } else {\n                      // Format 3rc: [op|AA] [type@CCCC] [CCCC]\n"
+  },
+  {
+   "sha": "313ed5ccdb0d0d1c7df3327717c1ac87363c4c1d",
+   "parent": "937f0436c0690befcc7ea977e4f61e5da89b5f6e",
+   "parent_in_canonical": true,
+   "tree_in_canonical": false,
+   "patch_file": "/home/z/my-project/miniandroid_ws/forensics/evidence/patches/A10_313ed5ccdb.patch",
+   "patch": "commit 313ed5ccdb0d0d1c7df3327717c1ac87363c4c1d\nAuthor: Z User <z@container>\nDate:   Sun Aug 30 12:09:56 2026 +0000\n\n    UNIFIED_011 (\u00a745): final consistency pass \u2014 HEAD 937f043, 59 commits, 9 ahead synced across README/status/master docs\n\ndiff --git a/miniandroid/MASTER_CHANGELOG_KNOWLEDGE_011.md b/miniandroid/MASTER_CHANGELOG_KNOWLEDGE_011.md\nindex 685b2cf..f16d3c2 100644\n--- a/miniandroid/MASTER_CHANGELOG_KNOWLEDGE_011.md\n+++ b/miniandroid/MASTER_CHANGELOG_KNOWLEDGE_011.md\n@@ -115,6 +115,7 @@ Charter knowledge (conversation-level) said:\n | Tests | 8-APK matrix \u00d7(dev + clean clone): identical results; telegram 3/3 `06fb40da\u2026` BASELINE_MATCH |\n | Hygiene | ZERO-APK enforced (0 tracked APKs; external cache `apk_cache/`); `make clean` no longer deletes tracked `run/` evidence; no tracked images >100 KB; secrets scan clean (worktree; history scan below) |\n | Docs | README rewritten; MASTER_PROJECT_STATE_011 / MASTER_CHANGELOG_KNOWLEDGE_011 / MASTER_HANDOFF_011; OPEN_SOURCE_MASTER; DO_NOT_REINVENT; TEST_MATRIX; APK_REGISTRY.json; status.json; release notes; evidence index with provenance |\n+| Consistency | \u00a745 pass: HEAD numbers synced across README/status/MASTER docs (937f043, 59 commits, 9 ahead); tag re-pinned to final commit |\n | Backup | `git bundle` + format-patch exported OUTSIDE the source tree (see \u00a710 of MASTER_PROJECT_STATE) |\n | Tag / push | tag `v0.11-unified-011` local; PUSH_PENDING (no credentials) |\n | Handoff | `UNIFIED_011_CANONICAL_HANDOFF.zip` (source + .git + docs; ZERO APK/AAB/secret) |\ndiff --git a/miniandroid/MASTER_PROJECT_STATE_011.md b/miniandroid/MASTER_PROJECT_STATE_011.md\nindex fd13294..3aff1e0 100644\n--- a/miniandroid/MASTER_PROJECT_STATE_011.md\n+++ b/miniandroid/MASTER_PROJECT_STATE_011.md\n@@ -23,9 +23,9 @@ always been: **real APKs, full journeys, byte-stable evidence**.\n | upstream | NOT AVAILABLE (no second remote configured) |\n | REMOTE_HEAD (`origin/main`) | `bbe0ce3` (verified via `git ls-remote` this session) |\n | REMOTE_DEFAULT_BRANCH | `main` |\n-| LOCAL_HEAD | `288ff6f` |\n+| LOCAL_HEAD | `937f043` (final; docs+START_HERE included) |\n | LATEST_TAG | none yet \u2014 `v0.11-unified-011` created locally this session |\n-| DIVERGENCE | local ahead by 6 commits, 0 behind (`86bd646 f2e8ad9 7cc4254 8f0a85b 23900f8 288ff6f`) |\n+| DIVERGENCE | local ahead by 9 commits, 0 behind (86bd646 f2e8ad9 7cc4254 8f0a85b 23900f8 288ff6f +3 docs/cleanup commits) |\n | PUSH | PUSH_PENDING \u2014 no credentials in this environment |\n \n ## 3. Architecture (subsystems, all in `src/`)\n@@ -116,7 +116,7 @@ Repository is ZERO-APK (verified this session: 0 tracked .apk/.aab).\n \n ## 10. Current release\n \n-`UNIFIED_011_CANONICAL` (local tag `v0.11-unified-011` on `288ff6f`+docs).\n+`UNIFIED_011_CANONICAL` (local tag `v0.11-unified-011` on `937f043`).\n GitHub Release: NOT AVAILABLE this session (no credentials). Release notes:\n `RELEASE_NOTES_UNIFIED_011.md`. Handoff package:\n `UNIFIED_011_CANONICAL_HANDOFF.zip` (built this session; SHA-256 in\ndiff --git a/miniandroid/README.md b/miniandroid/README.md\nindex c5d3dd0..4d52189 100755\n--- a/miniandroid/README.md\n+++ b/miniandroid/README.md\n@@ -12,13 +12,14 @@ pixel-evidence output.\n \n ## Current state (UNIFIED_011 canonical, 2026-08-30)\n \n-- **HEAD:** `288ff6f` (local, 6 commits ahead of `origin/main` \u2014 push pending)\n+- **HEAD:** `937f043` (local, 9 commits ahead of `origin/main` \u2014 push pending)\n - **Latest remote (`origin/main`):** `bbe0ce3`\n - **Canonical baseline proof:** Telegram v12.10.1 full journey renders **3/3\n   runs byte-identical** (`06fb40da\u2026`), exactly matching the UNIFIED_002 record.\n - **New in this release:** the UNIFIED_007 *real resource pipeline* was\n   recovered from the interrupted session, re-verified end-to-end, guarded\n-  against regressions, and committed (`23900f8`).\n+  against regressions, and committed (`23900f8`); docs/START_HERE/hygiene\n+  finalized at `937f043` (tag `v0.11-unified-011`).\n \n ## Proven capabilities (evidence-backed)\n \ndiff --git a/miniandroid/RELEASE_NOTES_UNIFIED_011.md b/miniandroid/RELEASE_NOTES_UNIFIED_011.md\nindex 63f26cc..9f25113 100644\n--- a/miniandroid/RELEASE_NOTES_UNIFIED_011.md\n+++ b/miniandroid/RELEASE_NOTES_UNIFIED_011.md\n@@ -1,6 +1,6 @@\n # RELEASE NOTES \u2014 UNIFIED_011_CANONICAL (tag `v0.11-unified-011`)\n \n-Date: 2026-08-30 \u00b7 Base commit: `288ff6f` (+ docs) \u00b7 Scope: canonical recovery\n+Date: 2026-08-30 \u00b7 Final commit: `937f043` (59 commits total) \u00b7 Scope: canonical recovery\n release \u2014 no feature development (CAMPAIGN 011 charter).\n \n ## Highlights\ndiff --git a/miniandroid/START_HERE.md b/miniandroid/START_HERE.md\nindex ba97dc3..9a5d236 100644\n--- a/miniandroid/START_HERE.md\n+++ b/miniandroid/START_HERE.md\n@@ -34,7 +34,7 @@ Read in this order:\n \n ## Git history in this package\n \n-This ZIP contains the **full `.git` repository** (all 56+ commits, tag\n+This ZIP contains the **full `.git` repository** (all 59 commits, tag\n `v0.11-unified-011`). If it was shipped without `.git`, restore history from\n the separate `miniandroid_unified_011_full.bundle`:\n \ndiff --git a/miniandroid/status.json b/miniandroid/status.json\nindex d7ddde4..46d6d38 100644\n--- a/miniandroid/status.json\n+++ b/miniandroid/status.json\n@@ -7,8 +7,8 @@\n     \"upstream\": \"NOT AVAILABLE\",\n     \"remote_head\": \"bbe0ce3067401211af35402483b96baae69220df\",\n     \"remote_default_branch\": \"main\",\n-    \"local_head\": \"288ff6f74d84b8688fb0e97e3bb3e610021c5ee8\",\n-    \"divergence\": \"local ahead 6, behind 0\",\n+    \"local_head\": \"937f043 (final; full sha in git log)\",\n+    \"divergence\": \"local ahead 9, behind 0\",\n     \"latest_tag\": \"v0.11-unified-011\",\n     \"push\": \"PUSH_PENDING (no credentials)\"\n   },\n"
+  }
+ ],
+ "A10_unique_blobs": [
+  {
+   "blob": "46d6d3851b07fc73740461a7990b9ec91889129b",
+   "paths_in_A10": [
+    "miniandroid/status.json"
+   ],
+   "size": 2285,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/46d6d3851b07_status.json",
+   "canonical_history_versions": 3,
+   "nearest_canonical_commit": "c06177013a79734d820049c894959b65de49162e",
+   "diff_vs_nearest_canonical": "--- /tmp/fg/canon_ver\t2026-09-03 02:25:16.795149033 +0000\n+++ /tmp/fg/arch_ver\t2026-09-03 02:25:16.795149033 +0000\n@@ -7,8 +7,8 @@\n     \"upstream\": \"NOT AVAILABLE\",\n     \"remote_head\": \"bbe0ce3067401211af35402483b96baae69220df\",\n     \"remote_default_branch\": \"main\",\n-    \"local_head\": \"288ff6f74d84b8688fb0e97e3bb3e610021c5ee8\",\n-    \"divergence\": \"local ahead 6, behind 0\",\n+    \"local_head\": \"937f043 (final; full sha in git log)\",\n+    \"divergence\": \"local ahead 9, behind 0\",\n     \"latest_tag\": \"v0.11-unified-011\",\n     \"push\": \"PUSH_PENDING (no credentials)\"\n   },\n",
+   "diff_lines": 13
+  },
+  {
+   "blob": "6896b88e3f347c320f49dc0dccc1ac15a15e04eb",
+   "paths_in_A10": [
+    "miniandroid/Makefile"
+   ],
+   "size": 6503,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/6896b88e3f34_Makefile",
+   "canonical_history_versions": 14,
+   "nearest_canonical_commit": "44c1bc263a975c78d6bec257f2ba9e694a0a9f93",
+   "diff_vs_nearest_canonical": "--- /tmp/fg/canon_ver\t2026-09-03 02:25:16.834149276 +0000\n+++ /tmp/fg/arch_ver\t2026-09-03 02:25:16.834149276 +0000\n@@ -11,6 +11,8 @@\n # libjpeg \u2014 IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)\n # rlottie  \u2014 Samsung reference Lottie renderer (Telegram uses it directly)\n LIBS = -lz -lwebp -lwebpdemux -ljpeg $(RLOTTIE_DIR)/build/src/librlottie.a -lstdc++ -lm -lpthread\n+# UNIFIED_007: font pipeline + PNG drawable decode\n+FONTS_LIBS = -lfreetype -lharfbuzz -lfribidi -lpng\n \n # Directories\n SRCDIR = src\n@@ -23,7 +25,7 @@\n DEX_SOURCES = $(SRCDIR)/dex/dex_parser.cpp $(SRCDIR)/dex/class_resolver.cpp $(SRCDIR)/dex/dex_interpreter_batch.cpp $(SRCDIR)/dex/dalvik_engine.cpp $(SRCDIR)/dex/trace_exporter.cpp  # EXP-031.5: Trace exporter\n RUNTIME_SOURCES = $(SRCDIR)/runtime/execution_engine.cpp $(SRCDIR)/runtime/application_runtime.cpp\n DIAGNOSTICS_SOURCES = $(SRCDIR)/diagnostics/trace_engine.cpp\n-RESOURCES_SOURCES = $(SRCDIR)/resources/resource_parser.cpp\n+RESOURCES_SOURCES = $(SRCDIR)/resources/resource_parser.cpp $(SRCDIR)/resources/arsc_parser.cpp $(SRCDIR)/resources/axml_parser.cpp $(SRCDIR)/resources/layout_inflater.cpp $(SRCDIR)/resources/resource_runtime.cpp\n RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp\n # EXP-084: framework and storage sources are required for linkage\n FRAMEWORK_SOURCES = $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp\n@@ -53,40 +55,40 @@\n all: $(EXECUTABLE)\n \n $(EXECUTABLE): $(CORE_OBJECTS) $(MAIN_OBJECT)\n-        @mkdir -p $(BUILDDIR)\n-        $(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS)\n-        @echo \"Build complete: $(EXECUTABLE)\"\n+\t@mkdir -p $(BUILDDIR)\n+\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)\n+\t@echo \"Build complete: $(EXECUTABLE)\"\n \n $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp\n-        @mkdir -p $(dir $@)\n-        $(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<\n+\t@mkdir -p $(dir $@)\n+\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<\n \n $(BUILDDIR)/main.o: $(MAIN_SOURCE)\n-        @mkdir -p $(BUILDDIR)\n-        $(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<\n+\t@mkdir -p $(BUILDDIR)\n+\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<\n \n # Tests\n test: $(TEST_EXECUTABLE)\n-        ./$(TEST_EXECUTABLE)\n+\t./$(TEST_EXECUTABLE)\n \n $(TEST_EXECUTABLE): $(CORE_OBJECTS) $(TEST_OBJECT)\n-        @mkdir -p $(BUILDDIR)\n-        $(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS)\n-        @echo \"Test build complete: $(TEST_EXECUTABLE)\"\n+\t@mkdir -p $(BUILDDIR)\n+\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)\n+\t@echo \"Test build complete: $(TEST_EXECUTABLE)\"\n \n $(BUILDDIR)/test.o: $(TEST_SOURCE)\n-        @mkdir -p $(dir $@)\n-        $(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<\n+\t@mkdir -p $(dir $@)\n+\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<\n \n # Run with sample APK (if exists)\n run: $(EXECUTABLE)\n-        ./$(EXECUTABLE) run -v ./test_apks/HelloWorld.apk || echo \"No sample APK available\"\n+\t./$(EXECUTABLE) run -v ./test_apks/HelloWorld.apk || echo \"No sample APK available\"\n \n analyze: $(EXECUTABLE)\n-        ./$(EXECUTABLE) analyze ./test_apks/HelloWorld.apk || echo \"No sample APK available\"\n+\t./$(EXECUTABLE) analyze ./test_apks/HelloWorld.apk || echo \"No sample APK available\"\n \n version: $(EXECUTABLE)\n-        ./$(EXECUTABLE) version\n+\t./$(EXECUTABLE) version\n \n # MEGA BATCH (EXP-007\u2192EXP-012)\n MEGABATCH_SOURCE = $(SRCDIR)/exp007_012_megabatch_main.cpp\n@@ -94,47 +96,47 @@\n MEGABATCH_EXECUTABLE = $(BUILDDIR)/miniandroid_megabatch\n \n megabatch: $(MEGABATCH_EXECUTABLE)\n-        @echo \"MEGA BATCH build complete: $(MEGABATCH_EXECUTABLE)\"\n-        @echo \"Usage: ./$(MEGABATCH_EXECUTABLE) <apk_path> [output_dir]\"\n+\t@echo \"MEGA BATCH build complete: $(MEGABATCH_EXECUTABLE)\"\n+\t@echo \"Usage: ./$(MEGABATCH_EXECUTABLE) <apk_path> [output_dir]\"\n \n $(MEGABATCH_EXECUTABLE): $(CORE_OBJECTS) $(MEGABATCH_OBJECT)\n-        @mkdir -p $(BUILDDIR)\n-        $(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS)\n+\t@mkdir -p $(BUILDDIR)\n+\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)\n \n $(BUILDDIR)/exp007_012_megabatch_main.o: $(MEGABATCH_SOURCE)\n-        @mkdir -p $(dir $@)\n-        $(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<\n+\t@mkdir -p $(dir $@)\n+\t$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<\n \n run-megabatch: $(MEGABATCH_EXECUTABLE)\n-        ./$(MEGABATCH_EXECUTABLE) test_apks/HelloWorld.apk run\n+\t./$(MEGABATCH_EXECUTABLE) test_apks/HelloWorld.apk run\n \n help:\n-        @echo \"MiniAndroid Runtime v0.1 Build System\"\n-        @echo \"\"\n-        @echo \"Targets:\"\n-        @echo \"  all         - Build the main executable\"\n-        @echo \"  test        - Build and run unit tests\"\n-        @echo \"  run         - Execute sample APK\"\n-        @echo \"  analyze     - Analyze sample APK\"\n-        @echo \"  version     - Show version info\"\n-        @echo \"  megabatch   - Build MEGA BATCH (EXP-007\u2192EXP-012)\"\n-        @echo \"  run-megabatch - Run MEGA BATCH with HelloWorld APK\"\n-        @echo \"  clean       - Remove build artifacts\"\n-        @echo \"\"\n-        @echo \"Output directory: $(BUILDDIR)\"\n+\t@echo \"MiniAndroid Runtime v0.1 Build System\"\n+\t@echo \"\"\n+\t@echo \"Targets:\"\n+\t@echo \"  all     - Build the main executable\"\n",
+   "diff_lines": 120
+  },
+  {
+   "blob": "3645af00230e0f560e8a6f0ac0698bf33ceb0172",
+   "paths_in_A10": [
+    "miniandroid/tools/robolectric-oracle/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst"
+   ],
+   "size": 33,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/3645af00230e_createdFiles.lst",
+   "canonical_history_versions": 0
+  },
+  {
+   "blob": "9a5d236ffa4fa2005ea67bc9553b213f89c2b114",
+   "paths_in_A10": [
+    "miniandroid/START_HERE.md"
+   ],
+   "size": 2228,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/9a5d236ffa4f_START_HERE.md",
+   "canonical_history_versions": 3,
+   "nearest_canonical_commit": "388fb453e7073d1249fb0c83202f01ae8f9becb7",
+   "diff_vs_nearest_canonical": "--- /tmp/fg/canon_ver\t2026-09-03 02:25:16.866149476 +0000\n+++ /tmp/fg/arch_ver\t2026-09-03 02:25:16.866149476 +0000\n@@ -34,7 +34,7 @@\n \n ## Git history in this package\n \n-This ZIP contains the **full `.git` repository** (all 60 commits, tag\n+This ZIP contains the **full `.git` repository** (all 59 commits, tag\n `v0.11-unified-011`). If it was shipped without `.git`, restore history from\n the separate `miniandroid_unified_011_full.bundle`:\n \n",
+   "diff_lines": 11
+  },
+  {
+   "blob": "98a81c3faab6ecacc83f34551b7079079151b6ab",
+   "paths_in_A10": [
+    "miniandroid/tools/robolectric-oracle/target/surefire-reports/oracle.SmsLayoutOracleTest.txt"
+   ],
+   "size": 302,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/98a81c3faab6_oracle.SmsLayoutOracleTest.txt",
+   "canonical_history_versions": 0
+  },
+  {
+   "blob": "76e5975b91fe391ec3d01b8cb23a3137033d45ef",
+   "paths_in_A10": [
+    "miniandroid/runtime/data/org.telegram.messenger/shared_prefs/default.xml"
+   ],
+   "size": 843,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/76e5975b91fe_default.xml",
+   "canonical_history_versions": 25,
+   "nearest_canonical_commit": "dd25e181df94baf9493abe2b09831eac4a837fb9",
+   "diff_vs_nearest_canonical": "--- /tmp/fg/canon_ver\t2026-09-03 02:25:16.938149925 +0000\n+++ /tmp/fg/arch_ver\t2026-09-03 02:25:16.938149925 +0000\n@@ -1,16 +1,16 @@\n <?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n <map>\n-    <long name=\"View\" value=\"0\" />\n-    <long name=\"intro_crashed_time\" value=\"1787669299769\" />\n+    <long name=\"intro_crashed_time\" value=\"1788089829775\" />\n     <string name=\"lastDarkTheme\">Dark Blue</string>\n-    <long name=\"lastReloadStatusTime\" value=\"1787669293427\" />\n-    <string name=\"mobilePreset\">View</string>\n-    <int name=\"needGetStatuses\" value=\"1\" />\n+    <string name=\"locales\"></string>\n+    <string name=\"mobilePreset\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n     <int name=\"newConfig\" value=\"1\" />\n-    <string name=\"preset0\">View</string>\n-    <string name=\"preset1\">View</string>\n-    <string name=\"preset2\">View</string>\n+    <string name=\"preset0\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n+    <string name=\"preset1\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n+    <string name=\"preset2\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n+    <string name=\"remote\">English|English|en|@0|0||en|0|0|0</string>\n     <int name=\"remote_version\" value=\"1\" />\n-    <string name=\"roamingPreset\">View</string>\n-    <string name=\"wifiPreset\">View</string>\n+    <string name=\"roamingPreset\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n+    <string name=\"unofficial\">English|English|en|@0|0||en|0|0|0</string>\n+    <string name=\"wifiPreset\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n </map>\n",
+   "diff_lines": 29
+  },
+  {
+   "blob": "47d33413eefb8870556ee85bf393a5f81ead6db5",
+   "paths_in_A10": [
+    "miniandroid/runtime/data/org.telegram.messenger/shared_prefs/default.xml"
+   ],
+   "size": 843,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/47d33413eefb_default.xml",
+   "canonical_history_versions": 25,
+   "nearest_canonical_commit": "dd25e181df94baf9493abe2b09831eac4a837fb9",
+   "diff_vs_nearest_canonical": "--- /tmp/fg/canon_ver\t2026-09-03 02:25:16.998150300 +0000\n+++ /tmp/fg/arch_ver\t2026-09-03 02:25:16.998150300 +0000\n@@ -1,16 +1,16 @@\n <?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n <map>\n-    <long name=\"View\" value=\"0\" />\n-    <long name=\"intro_crashed_time\" value=\"1787669299769\" />\n+    <long name=\"intro_crashed_time\" value=\"1787872470488\" />\n     <string name=\"lastDarkTheme\">Dark Blue</string>\n-    <long name=\"lastReloadStatusTime\" value=\"1787669293427\" />\n-    <string name=\"mobilePreset\">View</string>\n-    <int name=\"needGetStatuses\" value=\"1\" />\n+    <string name=\"locales\"></string>\n+    <string name=\"mobilePreset\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n     <int name=\"newConfig\" value=\"1\" />\n-    <string name=\"preset0\">View</string>\n-    <string name=\"preset1\">View</string>\n-    <string name=\"preset2\">View</string>\n+    <string name=\"preset0\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n+    <string name=\"preset1\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n+    <string name=\"preset2\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n+    <string name=\"remote\">English|English|en|@0|0||en|0|0|0</string>\n     <int name=\"remote_version\" value=\"1\" />\n-    <string name=\"roamingPreset\">View</string>\n-    <string name=\"wifiPreset\">View</string>\n+    <string name=\"roamingPreset\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n+    <string name=\"unofficial\">English|English|en|@0|0||en|0|0|0</string>\n+    <string name=\"wifiPreset\">0_0_0_0_0_0_0_0_0_0_0_0_0_0</string>\n </map>\n",
+   "diff_lines": 29
+  },
+  {
+   "blob": "f16d3c2c2e09dcf9aa27405c2ae492e98708fa4f",
+   "paths_in_A10": [
+    "miniandroid/MASTER_CHANGELOG_KNOWLEDGE_011.md"
+   ],
+   "size": 10914,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/f16d3c2c2e09_MASTER_CHANGELOG_KNOWLEDGE_011.md",
+   "canonical_history_versions": 2,
+   "nearest_canonical_commit": "388fb453e7073d1249fb0c83202f01ae8f9becb7",
+   "diff_vs_nearest_canonical": "--- /tmp/fg/canon_ver\t2026-09-03 02:25:17.016150412 +0000\n+++ /tmp/fg/arch_ver\t2026-09-03 02:25:17.017150418 +0000\n@@ -115,7 +115,7 @@\n | Tests | 8-APK matrix \u00d7(dev + clean clone): identical results; telegram 3/3 `06fb40da\u2026` BASELINE_MATCH |\n | Hygiene | ZERO-APK enforced (0 tracked APKs; external cache `apk_cache/`); `make clean` no longer deletes tracked `run/` evidence; no tracked images >100 KB; secrets scan clean (worktree; history scan below) |\n | Docs | README rewritten; MASTER_PROJECT_STATE_011 / MASTER_CHANGELOG_KNOWLEDGE_011 / MASTER_HANDOFF_011; OPEN_SOURCE_MASTER; DO_NOT_REINVENT; TEST_MATRIX; APK_REGISTRY.json; status.json; release notes; evidence index with provenance |\n-| Consistency | \u00a745 pass: HEAD numbers synced across README/status/MASTER docs (tag-anchored, 60 commits, 10 ahead); tag re-pinned to final commit |\n+| Consistency | \u00a745 pass: HEAD numbers synced across README/status/MASTER docs (937f043, 59 commits, 9 ahead); tag re-pinned to final commit |\n | Backup | `git bundle` + format-patch exported OUTSIDE the source tree (see \u00a710 of MASTER_PROJECT_STATE) |\n | Tag / push | tag `v0.11-unified-011` local; PUSH_PENDING (no credentials) |\n | Handoff | `UNIFIED_011_CANONICAL_HANDOFF.zip` (source + .git + docs; ZERO APK/AAB/secret) |\n",
+   "diff_lines": 11
+  },
+  {
+   "blob": "6ba1c1b002772f5bba20977a1e8134e0ce57f13f",
+   "paths_in_A10": [],
+   "size": 1006,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/6ba1c1b00277_unknown"
+  },
+  {
+   "blob": "195e88c810b662be67bb7bc94a87aeb886acdecd",
+   "paths_in_A10": [],
+   "size": 646069,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/195e88c810b6_unknown"
+  },
+  {
+   "blob": "4d521892ee4e55d1811727732f54fabcece1f92e",
+   "paths_in_A10": [
+    "miniandroid/README.md"
+   ],
+   "size": 4852,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/4d521892ee4e_README.md",
+   "canonical_history_versions": 11,
+   "nearest_canonical_commit": "388fb453e7073d1249fb0c83202f01ae8f9becb7",
+   "diff_vs_nearest_canonical": "--- /tmp/fg/canon_ver\t2026-09-03 02:25:17.063150706 +0000\n+++ /tmp/fg/arch_ver\t2026-09-03 02:25:17.063150706 +0000\n@@ -12,14 +12,14 @@\n \n ## Current state (UNIFIED_011 canonical, 2026-08-30)\n \n-- **HEAD:** tag `v0.11-unified-011` (local, 10 commits ahead of `origin/main` \u2014 push pending)\n+- **HEAD:** `937f043` (local, 9 commits ahead of `origin/main` \u2014 push pending)\n - **Latest remote (`origin/main`):** `bbe0ce3`\n - **Canonical baseline proof:** Telegram v12.10.1 full journey renders **3/3\n   runs byte-identical** (`06fb40da\u2026`), exactly matching the UNIFIED_002 record.\n - **New in this release:** the UNIFIED_007 *real resource pipeline* was\n   recovered from the interrupted session, re-verified end-to-end, guarded\n   against regressions, and committed (`23900f8`); docs/START_HERE/hygiene\n-  finalized and tagged `v0.11-unified-011`.\n+  finalized at `937f043` (tag `v0.11-unified-011`).\n \n ## Proven capabilities (evidence-backed)\n \n",
+   "diff_lines": 19
+  },
+  {
+   "blob": "dfb6c58198a4d3e6f620914caf8a86e1471e9633",
+   "paths_in_A10": [
+    "miniandroid/src/framework/android_shadows.cpp"
+   ],
+   "size": 69700,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/dfb6c58198a4_android_shadows.cpp",
+   "canonical_history_versions": 28,
+   "nearest_canonical_commit": "c82c18be8afe8ceff73e887e6329706f7983caa8",
+   "diff_vs_nearest_canonical": "--- /tmp/fg/canon_ver\t2026-09-03 02:25:17.130151124 +0000\n+++ /tmp/fg/arch_ver\t2026-09-03 02:25:17.130151124 +0000\n@@ -4,6 +4,9 @@\n \n #include \"android_shadows.h\"\n \n+// UNIFIED_007: real resource pipeline\n+#include \"../resources/resource_runtime.h\"\n+\n #include <algorithm>\n #include <chrono>\n #include <fstream>\n@@ -884,85 +887,36 @@\n             if (ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {\n                 content_view_id_ = ctx.args[0].object_id;\n             } else if (ctx.args[0].kind == CallContext::Arg::Kind::INT) {\n-                // EXP-087 Phase 3 (B2 FIX): setContentView(int layoutResId)\n-                // now loads the layout_cache.json and creates real ViewShadow\n-                // nodes from the AXML view tree, with ARSC-resolved text strings.\n+                // UNIFIED_007: setContentView(int layoutResId) now inflates the\n+                // REAL layout from the APK: resource id \u2192 resources.arsc \u2192\n+                // res/layout/<name>.xml (AXML) \u2192 ViewShadow tree. The old\n+                // layout_cache.json sidecar path is GONE.\n                 layout_resource_id_ = ctx.args[0].int_val;\n-                std::cerr << \"[EXP087-B2] setContentView(layoutResId=0x\" << std::hex\n+                std::cerr << \"[U007-INFLATE] setContentView(layoutResId=0x\" << std::hex\n                           << ctx.args[0].int_val << std::dec << \")\" << std::endl;\n \n-                // Try to load layout_cache.json from the APK's directory\n-                if (!apk_path_.empty()) {\n-                    // Find layout_cache.json or *_layout_cache.json next to APK\n-                    std::string apk_dir = apk_path_.substr(0, apk_path_.find_last_of(\"/\"));\n-                    // Try several naming patterns\n-                    // EXP-088: Use APK-stem-specific cache filename first,\n-                    // then fall back to generic layout_cache.json.\n-                    std::string apk_stem = apk_path_;\n-                    size_t slash = apk_stem.find_last_of('/');\n-                    if (slash != std::string::npos) apk_stem = apk_stem.substr(slash+1);\n-                    size_t dot = apk_stem.find_last_of('.');\n-                    if (dot != std::string::npos) apk_stem = apk_stem.substr(0, dot);\n-\n-                    std::vector<std::string> cache_candidates = {\n-                        apk_dir + \"/\" + apk_stem + \"_layout_cache.json\",  // per-APK (preferred)\n-                        apk_dir + \"/layout_cache.json\",                   // generic fallback\n-                    };\n-\n-                    // Try all layout cache files in the directory\n-                    for (const auto& cache_path : cache_candidates) {\n-                        std::ifstream cache_file(cache_path);\n-                        if (!cache_file.is_open()) continue;\n-\n-                        std::cerr << \"[EXP087-B2] Loading layout cache: \" << cache_path << std::endl;\n-                        try {\n-                            json cache_json;\n-                            cache_file >> cache_json;\n-                            cache_file.close();\n-\n-                            const auto& layouts = cache_json[\"layouts\"];\n-                            // Find layout matching the resource ID\n-                            for (auto it = layouts.begin(); it != layouts.end(); ++it) {\n-                                const auto& layout = it.value();\n-                                if (layout.contains(\"resource_id_int\") &&\n-                                    layout[\"resource_id_int\"].get<int32_t>() == layout_resource_id_) {\n-\n-                                    std::cerr << \"[EXP087-B2] Found layout: \" << it.key()\n-                                              << \" (resource_id=0x\" << std::hex\n-                                              << layout_resource_id_ << std::dec << \")\" << std::endl;\n-\n-                                    // Create ViewShadow nodes from the cached view tree\n-                                    if (registry_ && layout.contains(\"view_tree\")) {\n-                                        auto* view_shadow = registry_->find_as<ViewShadow>();\n-                                        std::cerr << \"[EXP087-B2] registry_=\" << registry_\n-                                                  << \" view_shadow=\" << (void*)view_shadow\n-                                                  << \" has_view_tree=\" << layout.contains(\"view_tree\")\n-                                                  << std::endl;\n-                                        if (view_shadow) {\n-                                            uint32_t root_id = inflate_view_tree(\n-                                                view_shadow, layout[\"view_tree\"], 0);\n-                                            if (root_id != 0) {\n-                                                content_view_id_ = root_id;\n-                                                std::cerr << \"[EXP087-B2] Inflated view tree root_id=\"\n-                                                          << root_id << std::endl;\n-                                            } else {\n-                                                std::cerr << \"[EXP087-B2] inflate_view_tree returned 0\"\n-                                                          << std::endl;\n-                                            }\n-                                        }\n-                                    } else {\n-                                        std::cerr << \"[EXP087-B2] registry_=\" << registry_\n-             ",
+   "diff_lines": 120
+  },
+  {
+   "blob": "9f251137ea29410ce90d1a16c6ed92b4e8e93301",
+   "paths_in_A10": [
+    "miniandroid/RELEASE_NOTES_UNIFIED_011.md"
+   ],
+   "size": 3361,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/9f251137ea29_RELEASE_NOTES_UNIFIED_011.md",
+   "canonical_history_versions": 2,
+   "nearest_canonical_commit": "388fb453e7073d1249fb0c83202f01ae8f9becb7",
+   "diff_vs_nearest_canonical": "--- /tmp/fg/canon_ver\t2026-09-03 02:25:17.149151242 +0000\n+++ /tmp/fg/arch_ver\t2026-09-03 02:25:17.149151242 +0000\n@@ -1,6 +1,6 @@\n # RELEASE NOTES \u2014 UNIFIED_011_CANONICAL (tag `v0.11-unified-011`)\n \n-Date: 2026-08-30 \u00b7 Release: tag `v0.11-unified-011` (60 commits total) \u00b7 Scope: canonical recovery\n+Date: 2026-08-30 \u00b7 Final commit: `937f043` (59 commits total) \u00b7 Scope: canonical recovery\n release \u2014 no feature development (CAMPAIGN 011 charter).\n \n ## Highlights\n",
+   "diff_lines": 10
+  },
+  {
+   "blob": "82250ae3deed5a3ec4167538cdf457b0e54576aa",
+   "paths_in_A10": [
+    "miniandroid/tools/robolectric-oracle/target/test-classes/oracle/SmsLayoutOracleTest.class"
+   ],
+   "size": 7587,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/82250ae3deed_SmsLayoutOracleTest.class",
+   "canonical_history_versions": 0
+  },
+  {
+   "blob": "90f9ca7b0ab59b4de93c1c3f5484953d4c5274c7",
+   "paths_in_A10": [
+    "miniandroid/tools/robolectric-oracle/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst"
+   ],
+   "size": 107,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/90f9ca7b0ab5_inputFiles.lst",
+   "canonical_history_versions": 0
+  },
+  {
+   "blob": "52b1fca233d7c5c2a2124efeccea92e56960a5d5",
+   "paths_in_A10": [
+    "miniandroid/tools/robolectric-oracle/target/surefire-reports/TEST-oracle.SmsLayoutOracleTest.xml"
+   ],
+   "size": 16015,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/52b1fca233d7_TEST-oracle.SmsLayoutOracleTest.xml",
+   "canonical_history_versions": 0
+  },
+  {
+   "blob": "3aff1e07cc56a2729cf8611dc44c020870ec0777",
+   "paths_in_A10": [
+    "miniandroid/MASTER_PROJECT_STATE_011.md"
+   ],
+   "size": 8719,
+   "extracted_to": "/home/z/my-project/miniandroid_ws/forensics/evidence/A10_unique_blobs/3aff1e07cc56_MASTER_PROJECT_STATE_011.md",
+   "canonical_history_versions": 3,
+   "nearest_canonical_commit": "388fb453e7073d1249fb0c83202f01ae8f9becb7",
+   "diff_vs_nearest_canonical": "--- /tmp/fg/canon_ver\t2026-09-03 02:25:17.211151629 +0000\n+++ /tmp/fg/arch_ver\t2026-09-03 02:25:17.211151629 +0000\n@@ -23,9 +23,9 @@\n | upstream | NOT AVAILABLE (no second remote configured) |\n | REMOTE_HEAD (`origin/main`) | `bbe0ce3` (verified via `git ls-remote` this session) |\n | REMOTE_DEFAULT_BRANCH | `main` |\n-| LOCAL_HEAD | tag `v0.11-unified-011` (= HEAD at release) |\n+| LOCAL_HEAD | `937f043` (final; docs+START_HERE included) |\n | LATEST_TAG | none yet \u2014 `v0.11-unified-011` created locally this session |\n-| DIVERGENCE | local ahead by 10 commits, 0 behind (86bd646 f2e8ad9 7cc4254 8f0a85b 23900f8 288ff6f + docs/cleanup/consistency) |\n+| DIVERGENCE | local ahead by 9 commits, 0 behind (86bd646 f2e8ad9 7cc4254 8f0a85b 23900f8 288ff6f +3 docs/cleanup commits) |\n | PUSH | PUSH_PENDING \u2014 no credentials in this environment |\n \n ## 3. Architecture (subsystems, all in `src/`)\n@@ -116,7 +116,7 @@\n \n ## 10. Current release\n \n-`UNIFIED_011_CANONICAL` (tag `v0.11-unified-011` = release HEAD).\n+`UNIFIED_011_CANONICAL` (local tag `v0.11-unified-011` on `937f043`).\n GitHub Release: NOT AVAILABLE this session (no credentials). Release notes:\n `RELEASE_NOTES_UNIFIED_011.md`. Handoff package:\n `UNIFIED_011_CANONICAL_HANDOFF.zip` (built this session; SHA-256 in\n",
+   "diff_lines": 23
+  }
+ ],
+ "untracked_unknown_to_canonical_full": {
+  "A-01": [
+   {
+    "path": "docs/campaign014_evidence/droidify/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/run.log",
+    "size": 619763
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/run.log",
+    "size": 619911
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/run.log",
+    "size": 90535
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/run.log",
+    "size": 90683
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/click/run.log",
+    "size": 337990
+   },
+   {
+    "path": "docs/campaign014_evidence/telegram_v12/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/run.log",
+    "size": 591335
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/click/run.log",
+    "size": 648780
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/run.log",
+    "size": 553678
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/click/run.log",
+    "size": 553835
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/run.log",
+    "size": 148413
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/click/run.log",
+    "size": 149013
+   }
+  ],
+  "A-03": [],
+  "A-04": [],
+  "A-06": [
+   {
+    "path": "docs/campaign014_evidence/droidify/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/run.log",
+    "size": 619763
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/run.log",
+    "size": 619911
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/run.log",
+    "size": 90535
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/run.log",
+    "size": 90683
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/click/run.log",
+    "size": 337990
+   },
+   {
+    "path": "docs/campaign014_evidence/telegram_v12/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/run.log",
+    "size": 591335
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/click/run.log",
+    "size": 648780
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/run.log",
+    "size": 553678
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/click/run.log",
+    "size": 553835
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/run.log",
+    "size": 148413
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/click/run.log",
+    "size": 149013
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/matrix_summary.json",
+    "size": 2492
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/tictactoe/report.md",
+    "size": 936
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/tictactoe/api_trace.json",
+    "size": 1042
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/tictactoe/crash.log",
+    "size": 306
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/tictactoe/run.log",
+    "size": 438
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/microtimer/report.md",
+    "size": 1854
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/microtimer/api_trace.json",
+    "size": 44224
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/microtimer/crash.log",
+    "size": 169
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/microtimer/run.log",
+    "size": 613912
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/microtimer/exp031_5/traces/dubrowgn.microtimer/method_trace.json",
+    "size": 3841
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/microtimer/exp031_5/traces/dubrowgn.microtimer/execution_summary.json",
+    "size": 1312
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/microtimer/exp031_5/traces/dubrowgn.microtimer/heap_trace.json",
+    "size": 2483
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/microtimer/exp031_5/traces/dubrowgn.microtimer/register_trace.json",
+    "size": 152
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/microtimer/exp031_5/traces/dubrowgn.microtimer/opcode_trace.json",
+    "size": 32528
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/unote/report.md",
+    "size": 1835
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/unote/screenshot.ppm",
+    "size": 6220817
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/unote/api_trace.json",
+    "size": 25260
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/unote/crash.log",
+    "size": 169
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/unote/run.log",
+    "size": 266562
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/unote/exp031_5/traces/app.varlorg.unote/method_trace.json",
+    "size": 23941
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/unote/exp031_5/traces/app.varlorg.unote/execution_summary.json",
+    "size": 1304
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/unote/exp031_5/traces/app.varlorg.unote/heap_trace.json",
+    "size": 13417
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/unote/exp031_5/traces/app.varlorg.unote/register_trace.json",
+    "size": 147
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/unote/exp031_5/traces/app.varlorg.unote/opcode_trace.json",
+    "size": 110283
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/stopwatch/report.md",
+    "size": 1864
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/stopwatch/api_trace.json",
+    "size": 326584
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/stopwatch/crash.log",
+    "size": 169
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/stopwatch/run.log",
+    "size": 5129592
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/stopwatch/exp031_5/traces/com.github.muellerma.stopwatch/method_trace.json",
+    "size": 528
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/stopwatch/exp031_5/traces/com.github.muellerma.stopwatch/execution_summary.json",
+    "size": 1296
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/stopwatch/exp031_5/traces/com.github.muellerma.stopwatch/heap_trace.json",
+    "size": 1312
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/stopwatch/exp031_5/traces/com.github.muellerma.stopwatch/register_trace.json",
+    "size": 151
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/stopwatch/exp031_5/traces/com.github.muellerma.stopwatch/opcode_trace.json",
+    "size": 1064
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/dooz/report.md",
+    "size": 1843
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/dooz/screenshot.ppm",
+    "size": 6220817
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/dooz/api_trace.json",
+    "size": 1159386
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/dooz/crash.log",
+    "size": 169
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/dooz/run.log",
+    "size": 16880027
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/dooz/exp031_5/traces/io.github.yamin8000.dooz/method_trace.json",
+    "size": 67189
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/dooz/exp031_5/traces/io.github.yamin8000.dooz/execution_summary.json",
+    "size": 1325
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/dooz/exp031_5/traces/io.github.yamin8000.dooz/heap_trace.json",
+    "size": 31081
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/dooz/exp031_5/traces/io.github.yamin8000.dooz/register_trace.json",
+    "size": 146
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/dooz/exp031_5/traces/io.github.yamin8000.dooz/opcode_trace.json",
+    "size": 421168
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/gmdice/report.md",
+    "size": 1839
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/gmdice/screenshot.ppm",
+    "size": 6220817
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/gmdice/api_trace.json",
+    "size": 14866
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/gmdice/crash.log",
+    "size": 169
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/gmdice/run.log",
+    "size": 133450
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/gmdice/exp031_5/traces/de.duenndns.gmdice/method_trace.json",
+    "size": 3885
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/gmdice/exp031_5/traces/de.duenndns.gmdice/execution_summary.json",
+    "size": 1298
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/gmdice/exp031_5/traces/de.duenndns.gmdice/heap_trace.json",
+    "size": 5082
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/gmdice/exp031_5/traces/de.duenndns.gmdice/register_trace.json",
+    "size": 148
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/gmdice/exp031_5/traces/de.duenndns.gmdice/opcode_trace.json",
+    "size": 16996
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/telegram_v12/report.md",
+    "size": 952
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/telegram_v12/api_trace.json",
+    "size": 1058
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/telegram_v12/crash.log",
+    "size": 314
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/telegram_v12/run.log",
+    "size": 452
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/simplestopwatch/report.md",
+    "size": 1884
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/simplestopwatch/screenshot.ppm",
+    "size": 6220817
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/simplestopwatch/api_trace.json",
+    "size": 48272
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/simplestopwatch/crash.log",
+    "size": 169
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/simplestopwatch/run.log",
+    "size": 484176
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/simplestopwatch/exp031_5/traces/omegacentauri.mobi.simplestopwatch/method_trace.json",
+    "size": 9615
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/simplestopwatch/exp031_5/traces/omegacentauri.mobi.simplestopwatch/execution_summary.json",
+    "size": 1331
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/simplestopwatch/exp031_5/traces/omegacentauri.mobi.simplestopwatch/heap_trace.json",
+    "size": 8269
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/simplestopwatch/exp031_5/traces/omegacentauri.mobi.simplestopwatch/register_trace.json",
+    "size": 157
+   },
+   {
+    "path": "miniandroid/run/u011/matrix/simplestopwatch/exp031_5/traces/omegacentauri.mobi.simplestopwatch/opcode_trace.json",
+    "size": 51123
+   }
+  ],
+  "A-07": [
+   {
+    "path": "docs/campaign014_evidence/droidify/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/run.log",
+    "size": 619763
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/run.log",
+    "size": 619911
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/run.log",
+    "size": 90535
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/run.log",
+    "size": 90683
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/click/run.log",
+    "size": 337990
+   },
+   {
+    "path": "docs/campaign014_evidence/telegram_v12/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/run.log",
+    "size": 591335
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/click/run.log",
+    "size": 648780
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/run.log",
+    "size": 553678
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/click/run.log",
+    "size": 553835
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/run.log",
+    "size": 148413
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/click/run.log",
+    "size": 149013
+   }
+  ],
+  "A-08": [
+   {
+    "path": "docs/campaign014_evidence/droidify/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/run.log",
+    "size": 619763
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/run.log",
+    "size": 619911
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/run.log",
+    "size": 90535
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/run.log",
+    "size": 90683
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/click/run.log",
+    "size": 337990
+   },
+   {
+    "path": "docs/campaign014_evidence/telegram_v12/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/run.log",
+    "size": 591335
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/click/run.log",
+    "size": 648780
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/run.log",
+    "size": 553678
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/click/run.log",
+    "size": 553835
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/run.log",
+    "size": 148413
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/click/run.log",
+    "size": 149013
+   }
+  ],
+  "A-09": [
+   {
+    "path": "docs/campaign014_evidence/droidify/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/run.log",
+    "size": 619763
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/run.log",
+    "size": 619911
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/run.log",
+    "size": 90535
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/run.log",
+    "size": 90683
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/click/run.log",
+    "size": 337990
+   },
+   {
+    "path": "docs/campaign014_evidence/telegram_v12/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/run.log",
+    "size": 591335
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/click/run.log",
+    "size": 648780
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/run.log",
+    "size": 553678
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/click/run.log",
+    "size": 553835
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/run.log",
+    "size": 148413
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/click/run.log",
+    "size": 149013
+   }
+  ],
+  "A-10": [],
+  "A-11": [
+   {
+    "path": "docs/campaign014_evidence/droidify/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/run.log",
+    "size": 619763
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/run.log",
+    "size": 619911
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/run.log",
+    "size": 90535
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/run.log",
+    "size": 90683
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/click/run.log",
+    "size": 337990
+   },
+   {
+    "path": "docs/campaign014_evidence/telegram_v12/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/run.log",
+    "size": 591335
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/click/run.log",
+    "size": 648780
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/run.log",
+    "size": 553678
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/click/run.log",
+    "size": 553835
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/run.log",
+    "size": 148413
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/click/run.log",
+    "size": 149013
+   }
+  ],
+  "A-12": [],
+  "A-14": [
+   {
+    "path": "docs/campaign014_evidence/droidify/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/run.log",
+    "size": 619763
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/microtimer/click/run.log",
+    "size": 619911
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bouncy/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/bgclockhansdezwart/click/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/stopwatchmuellerma/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/openlauncher/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/run.log",
+    "size": 90535
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/headingcalculator/click/run.log",
+    "size": 90683
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/dooz/run.log",
+    "size": 614478
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/notesbillthefarmer/click/run.log",
+    "size": 614477
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/gmdice/click/run.log",
+    "size": 337990
+   },
+   {
+    "path": "docs/campaign014_evidence/telegram_v12/click/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/run.log",
+    "size": 591335
+   },
+   {
+    "path": "docs/campaign014_evidence/simplestopwatch/click/run.log",
+    "size": 648780
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/run.log",
+    "size": 553678
+   },
+   {
+    "path": "docs/campaign014_evidence/simplekeyboard/click/run.log",
+    "size": 553835
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/crash.log",
+    "size": 169
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/run.log",
+    "size": 148413
+   },
+   {
+    "path": "docs/campaign014_evidence/chessclock/click/run.log",
+    "size": 149013
+   }
+  ]
+ },
+ "bundle_object_diff": {
+  "A-17": {
+   "objects": 8857,
+   "unique_vs_canonical": 0,
+   "unique_sample": []
+  },
+  "A-18": {
+   "objects": 8115,
+   "unique_vs_canonical": 1,
+   "unique_sample": [
+    "100e36ee43c9372f45402a6eeaaaccbcd4088d2d"
+   ]
+  },
+  "A-19": {
+   "objects": 8114,
+   "unique_vs_canonical": 0,
+   "unique_sample": []
+  },
+  "A-20": {
+   "objects": 8770,
+   "unique_vs_canonical": 0,
+   "unique_sample": []
+  }
+ }
+}

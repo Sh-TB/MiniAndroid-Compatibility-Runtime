@@ -1,0 +1,94 @@
+{
+  "test": "EXP086 Phase 7 \u2014 B4 Generic Handler/Looper queue",
+  "generated_at": "2026-08-23T00:31:21.437719+00:00",
+  "pass_count": 0,
+  "partial_count": 2,
+  "blocked_count": 2,
+  "skip_count": 0,
+  "results": [
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+      "exit_code": 0,
+      "evidence": {
+        "handler_class_loaded": true,
+        "looper_class_loaded": false,
+        "post_called": false,
+        "postDelayed_called": false,
+        "queue_enqueue": false,
+        "queue_dequeue": false,
+        "drain_handler_queue_called": false,
+        "drained_runnables_count": 0,
+        "duplicate_callback_evidence": false,
+        "enqueue_count": 0,
+        "dequeue_count": 0,
+        "onNextPressed_count": 0
+      },
+      "status": "PARTIAL_NO_DRAIN",
+      "stdout_tail": "   API BRIDGE: Landroid/widget/TextView;.setOnLongClickListener\n[DalvikEngine] \u2705 FIELD RESOLVED: Lomegacentauri/mobi/simplestopwatch/StopWatch;.noTouch type=Z offset=0\n[DalvikEngine]   RETURN_VOID at 0xe0\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 2.610680ms\n[DalvikEngine] Instructions executed: 169\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "simplestopwatch"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk",
+      "exit_code": 1,
+      "evidence": {
+        "handler_class_loaded": false,
+        "looper_class_loaded": false,
+        "post_called": false,
+        "postDelayed_called": false,
+        "queue_enqueue": false,
+        "queue_dequeue": false,
+        "drain_handler_queue_called": false,
+        "drained_runnables_count": 0,
+        "duplicate_callback_evidence": false,
+        "enqueue_count": 0,
+        "dequeue_count": 0,
+        "onNextPressed_count": 0
+      },
+      "status": "BLOCKED_NO_HANDLER",
+      "stdout_tail": "Directory: 19 entries at offset 122880\n[ApkParser] Cached 19 ZIP entries for fast lookup\n[ApkParser] Found 1 DEX files: \n[ApkParser]   - classes.dex\n[ApkParser] Extracting AndroidManifest.xml...\n[ApkParser] Found EOCD at offset 124200\n[ApkParser] Central Directory: 19 entries at offset 122880\n[ApkParser] Warning: Could not extract AndroidManifest.xml\n[ApkParser] APK parsing complete:  (19 entries)\n[ApkParser] Found EOCD at offset 124200\n[ApkParser] Central Directory: 19 entries at offset 122880\n",
+      "name": "chessclock"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
+      "exit_code": 0,
+      "evidence": {
+        "handler_class_loaded": true,
+        "looper_class_loaded": true,
+        "post_called": true,
+        "postDelayed_called": false,
+        "queue_enqueue": false,
+        "queue_dequeue": false,
+        "drain_handler_queue_called": false,
+        "drained_runnables_count": 0,
+        "duplicate_callback_evidence": false,
+        "enqueue_count": 0,
+        "dequeue_count": 0,
+        "onNextPressed_count": 0
+      },
+      "status": "PARTIAL_NO_DRAIN",
+      "stdout_tail": "E INVOKE completed: Lorg/telegram/ui/LaunchActivity;.checkFrameMetrics\n[DalvikEngine]   RETURN_VOID at 0x501\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 RECURSIVE INVOKE completed: Lorg/telegram/ui/LaunchActivity;.onCreate\n[DalvikEngine] \u2705 onCreate invoked via try_recursive_invoke\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 406.281803ms\n[DalvikEngine] Instructions executed: 757\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "telegram"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+      "exit_code": 0,
+      "evidence": {
+        "handler_class_loaded": false,
+        "looper_class_loaded": false,
+        "post_called": false,
+        "postDelayed_called": false,
+        "queue_enqueue": false,
+        "queue_dequeue": false,
+        "drain_handler_queue_called": false,
+        "drained_runnables_count": 0,
+        "duplicate_callback_evidence": false,
+        "enqueue_count": 0,
+        "dequeue_count": 0,
+        "onNextPressed_count": 0
+      },
+      "status": "BLOCKED_NO_HANDLER",
+      "stdout_tail": "g obj_id=4\n[TRY-ENTRY] Lde/duenndns/gmdice/GameMasterDice;.setListAdapter dex_report=YES\n[DalvikEngine]   API BRIDGE: Lde/duenndns/gmdice/GameMasterDice;.setListAdapter\n[DalvikEngine]   RETURN_VOID at 0xd4\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 0.969442ms\n[DalvikEngine] Instructions executed: 56\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "gmdice"
+    }
+  ]
+}

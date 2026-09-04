@@ -1,0 +1,3 @@
+corpus 7036 PNGs
+custom : ok 7036 (100.00%) total 953.7 ms
+libpng : ok 7036 (100.00%) total 906.4 ms

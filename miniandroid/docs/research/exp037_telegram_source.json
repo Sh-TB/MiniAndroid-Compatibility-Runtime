@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://github.com/drklo/telegram",
+    "name": "DrKLO/Telegram: Telegram for Android source",
+    "snippet": "This repo contains the official source code for Telegram App for Android . You will require Android Studio 2025.1.4, Android NDK 27.2.12479018 and Android SDK ...",
+    "host_name": "github.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://news.ycombinator.com/item?id=41148996",
+    "name": "The worst codebase I've ever worked on was the Telegram",
+    "snippet": "Telegram client for Android . it's so huge GitHub gives up rendering it: it implements EVERYTHING for rendering and interacting with a message in a single class ...",
+    "host_name": "news.ycombinator.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/51342397/telegram-source-code-build-failed",
+    "name": "Telegram source code build failed",
+    "snippet": "I Found the solution. at first we must download the Android NDK from SDK Tools, and then run ndk-build command on the root of the project. Read more",
+    "host_name": "stackoverflow.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/DrKLO/Telegram/pull/76/files",
+    "name": "Make Telegram code FOSS friendly by slp · Pull Request #76",
+    "snippet": "* This is the source code of Telegram for Android v. 1.3.2. * It is licensed under GNU GPL v. 2 or later. * You should have received a copy of the license ... Read more",
+    "host_name": "github.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/androiddev/comments/8zjesq/why_telegram_source_code_is_so_hard_to_read",
+    "name": "Why Telegram source code is so hard to read? : r/androiddev",
+    "snippet": "I tried to read it on GitHub , it turned out some activities are thousands lines of code long, without any obvious use of Presenters, Models or ...",
+    "host_name": "www.reddit.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=a6cufSP8ZGY",
+    "name": "GitHub - DrKLO/Telegram: Telegram for Android source",
+    "snippet": "Telegram for Android source . Contribute to DrKLO/Telegram development by creating an account on GitHub.",
+    "host_name": "www.youtube.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://andreytzkt.medium.com/a-couple-of-interesting-things-from-telegram-android-app-source-code-867777899525",
+    "name": "A couple of interesting things from Telegram Android app",
+    "snippet": "Telegram splits all devices into three performance classes LOW, AVERAGE and HIGH, and each performance class is being set based on hardware ...",
+    "host_name": "andreytzkt.medium.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/DrKLO/Telegram/blob/master/TMessagesProj/src/main/java/org/telegram/messenger/AutoMessageHeardReceiver.java",
+    "name": "Telegram - TMessagesProj - src - main - java",
+    "snippet": "Telegram for Android source . Contribute to DrKLO/Telegram development by creating an account on GitHub. This is the source code of Telegram for Android v. 5.x. ...",
+    "host_name": "github.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/33765946/android-telegram-app-java-lang-unsatisfiedlinkerror-no-implementation-found",
+    "name": "Android Telegram App --> java.lang.UnsatisfiedLinkError",
+    "snippet": "Unfortunally a similar question was removed at Stackoverflow some weeks ago, I must make a new question. Im trying to build an own Telegram app for android ...",
+    "host_name": "stackoverflow.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  }
+]

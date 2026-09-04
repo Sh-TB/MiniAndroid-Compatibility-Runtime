@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://www.facebook.com/hexsecteam/posts/-androguard-android-app-analysis-toolkitandroguard-is-an-open-source-python-tool/122135372511235406",
+    "name": "Android App Analysis Toolkit Androguard is an open-",
+    "snippet": "Androguard is an open-source Python toolkit for analyzing Android applications, including APK, DEX/ODEX, binary XML, and Android resources.",
+    "host_name": "www.facebook.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/androguard/androguard",
+    "name": "Androguard",
+    "snippet": "Androguard is a full python tool to play with Android files . DEX/ODEX bytecodes Basic … support for easy dynamic analysis SQLite database",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://engineering.fb.com/2015/10/01/android/optimizing-android-bytecode-with-redex",
+    "name": "Optimizing Android bytecode with ReDex - Engineering at Meta",
+    "snippet": "Oct 1, 2015 — Redex is a pipeline for optimizing Android .dex files . By applying a series of customizable transformations, a source .dex can be optimized ...",
+    "host_name": "engineering.fb.com",
+    "rank": 2,
+    "date": "Oct 1, 2015",
+    "favicon": ""
+  },
+  {
+    "url": "https://androguard.readthedocs.io/en/latest/api/androguard.core.bytecodes.html",
+    "name": "androguard.core.bytecodes package",
+    "snippet": "The bytecodes modules are one very important core feature of Androguard. They contain parsers for APK, AXML, DEX, ODEX and DEY files as well for formats",
+    "host_name": "androguard.readthedocs.io",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://linuxcommandlibrary.com/man/androguard",
+    "name": "androguard man",
+    "snippet": "androguard is a Python tool for reverse engineering, malware analysis , and security assessment of Android applications. It can analyze APK files, decompile DEX ...",
+    "host_name": "linuxcommandlibrary.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.infoworld.com/article/2249824/facebook-open-sources-android-byte-code-optimizer.html",
+    "name": "Facebook open-sources Android byte code optimizer",
+    "snippet": "Apr 13, 2016 — ReDex has been open-sourced . Android developers can use the tool to optimize their own apps at no charge.",
+    "host_name": "www.infoworld.com",
+    "rank": 5,
+    "date": "Apr 13, 2016",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2510.15112v1",
+    "name": "AndroByte: LLM-Driven Privacy Analysis through Bytecode",
+    "snippet": "Oct 16, 2025 — AndroByte - a code-level privacy behavior analyzer for Android applications. The method analysis leverages bytecode summarization using LLMs to ...",
+    "host_name": "arxiv.org",
+    "rank": 6,
+    "date": "Oct 16, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://code.google.com/archive/p/androguard",
+    "name": "androguard",
+    "snippet": "Androguard has the following features : * Map and manipulate DEX /ODEX/APK/AXML/ARSC format into full Python objects, * Diassemble/Decompilation/Modification of ...",
+    "host_name": "code.google.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://tessl.io/registry/tessl/pypi-androguard/4.1.0/files/docs/bytecode-utilities.md",
+    "name": "4.1.0 • pypi-androguard",
+    "snippet": "Jun 4, 2026 — Comprehensive bytecode analysis and formatting utilities for advanced Android reverse engineering. These functions provide visualization, export ...",
+    "host_name": "tessl.io",
+    "rank": 8,
+    "date": "Jun 4, 2026",
+    "favicon": ""
+  }
+]

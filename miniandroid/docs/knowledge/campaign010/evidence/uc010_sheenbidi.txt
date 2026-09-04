@@ -1,0 +1,5 @@
+case0 len=9 par_dir: fribidi=LTR sheenbidi_base_level_first=1 level_diffs=9/9
+case1 len=10 par_dir: fribidi=LTR sheenbidi_base_level_first=0 level_diffs=4/10
+case2 len=12 par_dir: fribidi=LTR sheenbidi_base_level_first=1 level_diffs=12/12
+case3 len=18 par_dir: fribidi=LTR sheenbidi_base_level_first=1 level_diffs=18/18
+RESULT: 43 level diffs (rule-set/priority differences)

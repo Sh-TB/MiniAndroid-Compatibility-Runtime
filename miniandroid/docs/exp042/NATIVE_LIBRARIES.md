@@ -1,0 +1,2673 @@
+# EXP-042 — Telegram Native Libraries (ELF Metadata)
+
+- **APK:** `/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk`
+- **Summary ABI focus:** `arm64-v8a`
+- **Total `.so` entries in APK:** 8
+- **Analyzer:** `miniandroid/tools/exp042_elf_analyzer.py` (self-contained, `struct`-only; no pyelftools)
+
+---
+
+## Table of Contents
+
+1. [All native libraries](#all-native-libraries)
+2. [libtmessages.49.so SUMMARY](#libtmessages49so-summary)
+3. [Per-library detail](#per-library-detail)
+
+---
+
+## All native libraries
+
+| APK entry | ABI | ELF class | Machine | Endian | Size | JNI symbols | JNI_OnLoad | DT_NEEDED |
+|---|---|---|---|---|---:|---:|:---:|---:|
+| `lib/arm64-v8a/liblanguage_id_l2c_jni.so` | arm64-v8a | ELF64 | EM_AARCH64 (183) | little | 1,019,552 | 3 | no | 5 |
+| `lib/arm64-v8a/libtmessages.49.so` | arm64-v8a | ELF64 | EM_AARCH64 (183) | little | 24,595,304 | 376 | yes | 10 |
+| `lib/armeabi-v7a/liblanguage_id_l2c_jni.so` | armeabi-v7a | ELF32 | EM_ARM (40) | little | 609,628 | 3 | no | 5 |
+| `lib/armeabi-v7a/libtmessages.49.so` | armeabi-v7a | ELF32 | EM_ARM (40) | little | 21,584,504 | 376 | yes | 10 |
+| `lib/x86/liblanguage_id_l2c_jni.so` | x86 | ELF32 | EM_386 (3) | little | 1,359,344 | 3 | no | 5 |
+| `lib/x86/libtmessages.49.so` | x86 | ELF32 | EM_386 (3) | little | 27,363,804 | 376 | yes | 10 |
+| `lib/x86_64/liblanguage_id_l2c_jni.so` | x86_64 | ELF64 | EM_X86_64 (62) | little | 1,324,480 | 3 | no | 5 |
+| `lib/x86_64/libtmessages.49.so` | x86_64 | ELF64 | EM_X86_64 (62) | little | 26,694,416 | 376 | yes | 10 |
+
+---
+
+## libtmessages.49.so SUMMARY
+
+- **Library:** `libtmessages.49.so`
+- **ABI used for summary:** `arm64-v8a`
+- **ELF class:** ELF64
+- **Machine:** EM_AARCH64 (e_machine=183)
+- **Endianness:** little
+- **ELF type:** ET_DYN (e_type=3)
+- **File size:** 24,595,304 bytes
+- **`JNI_OnLoad` present:** yes
+- **Total exported JNI symbols (`Java_*`):** 376
+- **Distinct Java classes exposed via JNI:** 78
+- **DT_NEEDED dependencies:** 10
+
+### DT_NEEDED dependencies
+
+- `libjnigraphics.so`
+- `liblog.so`
+- `libz.so`
+- `libGLESv2.so`
+- `libEGL.so`
+- `libandroid.so`
+- `libOpenSLES.so`
+- `libdl.so`
+- `libm.so`
+- `libc.so`
+
+### Top 5 Java classes by JNI method count
+
+| # | Java class (underscore-encoded) | JNI method count | Sample methods |
+|---:|---|---:|---|
+| 1 | `org_webrtc_PeerConnection` | 41 | `nativeAddIceCandidate`, `nativeAddIceCandidateWithObserver`, `nativeAddLocalStream`, `nativeAddTrack`, `nativeAddTransceiverOfType`, … (+36 more) |
+| 2 | `org_telegram_messenger_voip_NativeInstance` | 41 | `activateVideoCapturer`, `addIncomingVideoOutput`, `clearVideoCapturer`, `createVideoCapturer`, `destroyVideoCapturer`, … (+36 more) |
+| 3 | `org_telegram_messenger_Utilities` | 26 | `aesCbcEncryption`, `aesCbcEncryptionByteArray`, `aesCtrDecryption`, `aesCtrDecryptionByteArray`, `aesIgeEncryption`, … (+21 more) |
+| 4 | `org_webrtc_PeerConnectionFactory` | 23 | `nativeCreateAudioSource`, `nativeCreateAudioTrack`, `nativeCreateLocalMediaStream`, `nativeCreatePeerConnection`, `nativeCreatePeerConnectionFactory`, … (+18 more) |
+| 5 | `com_google_android_exoplayer2_ext_flac_FlacDecoderJni` | 14 | `flacDecodeMetadata`, `flacDecodeToArray`, `flacDecodeToBuffer`, `flacFlush`, `flacGetDecodePosition`, … (+9 more) |
+
+### JNI entry points grouped by Java class
+
+<details><summary>Expand full grouped list</summary>
+
+- **`com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder`** (6 methods):
+  - `ffmpegDecode`
+  - `ffmpegGetChannelCount`
+  - `ffmpegGetSampleRate`
+  - `ffmpegInitialize`
+  - `ffmpegRelease`
+  - `ffmpegReset`
+- **`com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary`** (3 methods):
+  - `ffmpegGetInputBufferPaddingSize`
+  - `ffmpegGetVersion`
+  - `ffmpegHasDecoder`
+- **`com_google_android_exoplayer2_ext_flac_FlacDecoderJni`** (14 methods):
+  - `flacDecodeMetadata`
+  - `flacDecodeToArray`
+  - `flacDecodeToBuffer`
+  - `flacFlush`
+  - `flacGetDecodePosition`
+  - `flacGetLastFrameFirstSampleIndex`
+  - `flacGetLastFrameTimestamp`
+  - `flacGetNextFrameFirstSampleIndex`
+  - `flacGetSeekPoints`
+  - `flacGetStateString`
+  - `flacInit`
+  - `flacIsDecoderAtEndOfStream`
+  - `flacRelease`
+  - `flacReset`
+- **`com_google_android_exoplayer2_ext_opus_OpusDecoder`** (8 methods):
+  - `opusClose`
+  - `opusDecode`
+  - `opusGetErrorCode`
+  - `opusGetErrorMessage`
+  - `opusInit`
+  - `opusReset`
+  - `opusSecureDecode`
+  - `opusSetFloatOutput`
+- **`com_google_android_exoplayer2_ext_opus_OpusLibrary`** (2 methods):
+  - `opusGetVersion`
+  - `opusIsSecureDecodeSupported`
+- **`org_telegram_SQLite_SQLiteCursor`** (9 methods):
+  - `columnByteArrayValue`
+  - `columnByteBufferValue`
+  - `columnCount`
+  - `columnDoubleValue`
+  - `columnIntValue`
+  - `columnIsNull`
+  - `columnLongValue`
+  - `columnStringValue`
+  - `columnType`
+- **`org_telegram_SQLite_SQLiteDatabase`** (4 methods):
+  - `beginTransaction`
+  - `closedb`
+  - `commitTransaction`
+  - `opendb`
+- **`org_telegram_SQLite_SQLitePreparedStatement`** (10 methods):
+  - `bindByteBuffer`
+  - `bindDouble`
+  - `bindInt`
+  - `bindLong`
+  - `bindNull`
+  - `bindString`
+  - `finalize`
+  - `prepare`
+  - `reset`
+  - `step`
+- **`org_telegram_messenger_Intro`** (13 methods):
+  - `onDrawFrame`
+  - `onSurfaceChanged`
+  - `onSurfaceCreated`
+  - `setBackgroundColor`
+  - `setDate`
+  - `setFastTextures`
+  - `setFreeTextures`
+  - `setIcTextures`
+  - `setPage`
+  - `setPowerfulTextures`
+  - `setPrivateTextures`
+  - `setScrollOffset`
+  - `setTelegramTextures`
+- **`org_telegram_messenger_MediaController`** (8 methods):
+  - `cropOpusFile`
+  - `getWaveform`
+  - `getWaveform2`
+  - `isOpusFile`
+  - `joinOpusFiles`
+  - `startRecord`
+  - `stopRecord`
+  - `writeFrame`
+- **`org_telegram_messenger_MrzRecognizer`** (4 methods):
+  - `binarizeAndFindCharacters`
+  - `findCornerPoints`
+  - `performRecognition`
+  - `setYuvBitmapPixels`
+- **`org_telegram_messenger_NativeLoader`** (1 methods):
+  - `init`
+- **`org_telegram_messenger_Utilities`** (26 methods):
+  - `aesCbcEncryption`
+  - `aesCbcEncryptionByteArray`
+  - `aesCtrDecryption`
+  - `aesCtrDecryptionByteArray`
+  - `aesIgeEncryption`
+  - `aesIgeEncryptionByteArray`
+  - `applyAlphaInvert`
+  - `applySoftLight`
+  - `averageBitmapColor`
+  - `blurBitmap`
+  - `calcCDT`
+  - `clearDir`
+  - `copyBitmaps`
+  - `drawDitheredGradient`
+  - `expandAlphaToBlack`
+  - `extractAlpha`
+  - `generateGradient`
+  - `getDirSize`
+  - `getLastUsageFileTime`
+  - `nLibyuvARGBSaleBitmap`
+  - `needInvert`
+  - `pbkdf2`
+  - `readlink`
+  - `readlinkFd`
+  - `setupNativeCrashesListener`
+  - `stackBlurBitmap`
+- **`org_telegram_messenger_video_WebmEncoder`** (3 methods):
+  - `createEncoder`
+  - `stop`
+  - `writeFrame`
+- **`org_telegram_messenger_voip_ConferenceCall_call`** (3 methods):
+  - `1create`
+  - `1describe`
+  - `1destroy`
+- **`org_telegram_messenger_voip_ConferenceCall_call_1apply`** (1 methods):
+  - `1block`
+- **`org_telegram_messenger_voip_ConferenceCall_call_1create_1change_1state`** (1 methods):
+  - `1block`
+- **`org_telegram_messenger_voip_ConferenceCall_call_1create_1self_1add`** (1 methods):
+  - `1block`
+- **`org_telegram_messenger_voip_ConferenceCall_call_1create_1zero`** (1 methods):
+  - `1block`
+- **`org_telegram_messenger_voip_ConferenceCall_call_1describe`** (2 methods):
+  - `1block`
+  - `1message`
+- **`org_telegram_messenger_voip_ConferenceCall_call_1destroy`** (1 methods):
+  - `1all`
+- **`org_telegram_messenger_voip_ConferenceCall_call_1get`** (2 methods):
+  - `1height`
+  - `1state`
+- **`org_telegram_messenger_voip_ConferenceCall_call_1get_1verification`** (2 methods):
+  - `1state`
+  - `1words`
+- **`org_telegram_messenger_voip_ConferenceCall_call_1pull_1outbound`** (1 methods):
+  - `1messages`
+- **`org_telegram_messenger_voip_ConferenceCall_call_1receive_1inbound`** (1 methods):
+  - `1message`
+- **`org_telegram_messenger_voip_ConferenceCall_key_1from_1public`** (1 methods):
+  - `1key`
+- **`org_telegram_messenger_voip_ConferenceCall_key_1generate_1temporary_1private`** (1 methods):
+  - `1key`
+- **`org_telegram_messenger_voip_ConferenceCall_key_1to_1public`** (1 methods):
+  - `1key`
+- **`org_telegram_messenger_voip_GroupCallMessagesController`** (2 methods):
+  - `groupCallMessageDecryptImpl`
+  - `groupCallMessageEncryptImpl`
+- **`org_telegram_messenger_voip_NativeInstance`** (41 methods):
+  - `activateVideoCapturer`
+  - `addIncomingVideoOutput`
+  - `clearVideoCapturer`
+  - `createVideoCapturer`
+  - `destroyVideoCapturer`
+  - `getAllVersions`
+  - `getDebugInfo`
+  - `getLastError`
+  - `getPersistentState`
+  - `getPreferredRelayId`
+  - `getTrafficStats`
+  - `getVersion`
+  - `hasVideoCapturer`
+  - `makeGroupNativeInstance`
+  - `makeNativeInstance`
+  - `onMediaDescriptionAvailable`
+  - `onRequestTimeComplete`
+  - `onSignalingDataReceive`
+  - `onStreamPartAvailable`
+  - `prepareForStream`
+  - `removeIncomingVideoOutput`
+  - `resetGroupInstance`
+  - `setAudioOutputGainControlEnabled`
+  - `setBufferSize`
+  - `setConferenceCallId`
+  - `setEchoCancellationStrength`
+  - `setGlobalServerConfig`
+  - `setJoinResponsePayload`
+  - `setMuteMicrophone`
+  - `setNetworkType`
+  - `setNoiseSuppressionEnabled`
+  - `setVideoEndpointQuality`
+  - `setVideoState`
+  - `setVideoStateCapturer`
+  - `setVolume`
+  - `setupOutgoingVideo`
+  - `setupOutgoingVideoCreated`
+  - `stopGroupNative`
+  - `stopNative`
+  - `switchCamera`
+  - `switchCameraCapturer`
+- **`org_telegram_messenger_voip_VideoCapturerDevice`** (1 methods):
+  - `nativeGetJavaVideoCapturerObserver`
+- **`org_telegram_tgnet_ConnectionsManager_native_1test`** (1 methods):
+  - `1AuthAuthorization`
+- **`org_telegram_ui_Components_AnimatedFileNative`** (8 methods):
+  - `nCreateDecoder`
+  - `nDestroyDecoder`
+  - `nGetFrameAtTime`
+  - `nGetVideoFrame`
+  - `nGetVideoInfo`
+  - `nPrepareToSeek`
+  - `nSeekToMs`
+  - `nStopDecoder`
+- **`org_telegram_ui_Components_RLottieNative`** (6 methods):
+  - `nCreate`
+  - `nCreateWithJson`
+  - `nDestroy`
+  - `nGetFrame`
+  - `nReplaceColors`
+  - `nSetLayerColor`
+- **`org_telegram_ui_Stories_recorder_FfmpegAudioWaveformLoader`** (1 methods):
+  - `init`
+- **`org_webrtc_AudioTrack`** (1 methods):
+  - `nativeSetVolume`
+- **`org_webrtc_BuiltinAudioDecoderFactoryFactory`** (1 methods):
+  - `nativeCreateBuiltinAudioDecoderFactory`
+- **`org_webrtc_BuiltinAudioEncoderFactoryFactory`** (1 methods):
+  - `nativeCreateBuiltinAudioEncoderFactory`
+- **`org_webrtc_CallSessionFileRotatingLogSink`** (3 methods):
+  - `nativeAddSink`
+  - `nativeDeleteSink`
+  - `nativeGetLogData`
+- **`org_webrtc_DataChannel`** (8 methods):
+  - `nativeBufferedAmount`
+  - `nativeClose`
+  - `nativeId`
+  - `nativeLabel`
+  - `nativeRegisterObserver`
+  - `nativeSend`
+  - `nativeState`
+  - `nativeUnregisterObserver`
+- **`org_webrtc_DtmfSender`** (5 methods):
+  - `nativeCanInsertDtmf`
+  - `nativeDuration`
+  - `nativeInsertDtmf`
+  - `nativeInterToneGap`
+  - `nativeTones`
+- **`org_webrtc_EglBase10Impl`** (1 methods):
+  - `nativeGetCurrentNativeEGLContext`
+- **`org_webrtc_H264Utils`** (1 methods):
+  - `nativeIsSameH264Profile`
+- **`org_webrtc_Histogram`** (3 methods):
+  - `nativeAddSample`
+  - `nativeCreateCounts`
+  - `nativeCreateEnumeration`
+- **`org_webrtc_JavaI420Buffer`** (1 methods):
+  - `nativeCropAndScaleI420`
+- **`org_webrtc_JniCommon`** (4 methods):
+  - `nativeAddRef`
+  - `nativeAllocateByteBuffer`
+  - `nativeFreeByteBuffer`
+  - `nativeReleaseRef`
+- **`org_webrtc_LibvpxVp8Decoder`** (1 methods):
+  - `nativeCreateDecoder`
+- **`org_webrtc_LibvpxVp8Encoder`** (1 methods):
+  - `nativeCreateEncoder`
+- **`org_webrtc_LibvpxVp9Decoder`** (2 methods):
+  - `nativeCreateDecoder`
+  - `nativeIsSupported`
+- **`org_webrtc_LibvpxVp9Encoder`** (2 methods):
+  - `nativeCreateEncoder`
+  - `nativeIsSupported`
+- **`org_webrtc_Logging`** (4 methods):
+  - `nativeEnableLogThreads`
+  - `nativeEnableLogTimeStamps`
+  - `nativeEnableLogToDebugOutput`
+  - `nativeLog`
+- **`org_webrtc_MediaSource`** (1 methods):
+  - `nativeGetState`
+- **`org_webrtc_MediaStream`** (5 methods):
+  - `nativeAddAudioTrackToNativeStream`
+  - `nativeAddVideoTrackToNativeStream`
+  - `nativeGetId`
+  - `nativeRemoveAudioTrack`
+  - `nativeRemoveVideoTrack`
+- **`org_webrtc_MediaStreamTrack`** (5 methods):
+  - `nativeGetEnabled`
+  - `nativeGetId`
+  - `nativeGetKind`
+  - `nativeGetState`
+  - `nativeSetEnabled`
+- **`org_webrtc_Metrics`** (2 methods):
+  - `nativeEnable`
+  - `nativeGetAndReset`
+- **`org_webrtc_NV12Buffer`** (1 methods):
+  - `nativeCropAndScale`
+- **`org_webrtc_NV21Buffer`** (1 methods):
+  - `nativeCropAndScale`
+- **`org_webrtc_NativeAndroidVideoTrackSource`** (5 methods):
+  - `nativeAdaptFrame`
+  - `nativeAdaptOutputFormat`
+  - `nativeOnFrameCaptured`
+  - `nativeSetIsScreencast`
+  - `nativeSetState`
+- **`org_webrtc_NetworkMonitor`** (5 methods):
+  - `nativeNotifyConnectionTypeChanged`
+  - `nativeNotifyOfActiveNetworkList`
+  - `nativeNotifyOfNetworkConnect`
+  - `nativeNotifyOfNetworkDisconnect`
+  - `nativeNotifyOfNetworkPreference`
+- **`org_webrtc_PeerConnection`** (41 methods):
+  - `nativeAddIceCandidate`
+  - `nativeAddIceCandidateWithObserver`
+  - `nativeAddLocalStream`
+  - `nativeAddTrack`
+  - `nativeAddTransceiverOfType`
+  - `nativeAddTransceiverWithTrack`
+  - `nativeClose`
+  - `nativeConnectionState`
+  - `nativeCreateAnswer`
+  - `nativeCreateDataChannel`
+  - `nativeCreateOffer`
+  - `nativeCreatePeerConnectionObserver`
+  - `nativeCreateSender`
+  - `nativeFreeOwnedPeerConnection`
+  - `nativeGetCertificate`
+  - `nativeGetLocalDescription`
+  - `nativeGetNativePeerConnection`
+  - `nativeGetReceivers`
+  - `nativeGetRemoteDescription`
+  - `nativeGetSenders`
+  - `nativeGetTransceivers`
+  - `nativeIceConnectionState`
+  - `nativeIceGatheringState`
+  - `nativeNewGetStats`
+  - `nativeNewGetStatsReceiver`
+  - `nativeNewGetStatsSender`
+  - `nativeOldGetStats`
+  - `nativeRemoveIceCandidates`
+  - `nativeRemoveLocalStream`
+  - `nativeRemoveTrack`
+  - `nativeRestartIce`
+  - `nativeSetAudioPlayout`
+  - `nativeSetAudioRecording`
+  - `nativeSetBitrate`
+  - `nativeSetConfiguration`
+  - `nativeSetLocalDescription`
+  - `nativeSetLocalDescriptionAutomatically`
+  - `nativeSetRemoteDescription`
+  - `nativeSignalingState`
+  - `nativeStartRtcEventLog`
+  - `nativeStopRtcEventLog`
+- **`org_webrtc_PeerConnectionFactory`** (23 methods):
+  - `nativeCreateAudioSource`
+  - `nativeCreateAudioTrack`
+  - `nativeCreateLocalMediaStream`
+  - `nativeCreatePeerConnection`
+  - `nativeCreatePeerConnectionFactory`
+  - `nativeCreateVideoSource`
+  - `nativeCreateVideoTrack`
+  - `nativeDeleteLoggable`
+  - `nativeFindFieldTrialsFullName`
+  - `nativeFreeFactory`
+  - `nativeGetNativePeerConnectionFactory`
+  - `nativeGetRtpReceiverCapabilities`
+  - `nativeGetRtpSenderCapabilities`
+  - `nativeInitializeAndroidGlobals`
+  - `nativeInitializeFieldTrials`
+  - `nativeInitializeInternalTracer`
+  - `nativeInjectLoggable`
+  - `nativePrintStackTrace`
+  - `nativeShutdownInternalTracer`
+  - `nativeStartAecDump`
+  - `nativeStartInternalTracingCapture`
+  - `nativeStopAecDump`
+  - `nativeStopInternalTracingCapture`
+- **`org_webrtc_RtcCertificatePem`** (1 methods):
+  - `nativeGenerateCertificate`
+- **`org_webrtc_RtpReceiver`** (6 methods):
+  - `nativeGetId`
+  - `nativeGetParameters`
+  - `nativeGetTrack`
+  - `nativeSetFrameDecryptor`
+  - `nativeSetObserver`
+  - `nativeUnsetObserver`
+- **`org_webrtc_RtpSender`** (10 methods):
+  - `nativeGetDtmfSender`
+  - `nativeGetId`
+  - `nativeGetMediaType`
+  - `nativeGetParameters`
+  - `nativeGetStreams`
+  - `nativeGetTrack`
+  - `nativeSetFrameEncryptor`
+  - `nativeSetParameters`
+  - `nativeSetStreams`
+  - `nativeSetTrack`
+- **`org_webrtc_RtpTransceiver`** (11 methods):
+  - `nativeCurrentDirection`
+  - `nativeDirection`
+  - `nativeGetMediaType`
+  - `nativeGetMid`
+  - `nativeGetReceiver`
+  - `nativeGetSender`
+  - `nativeSetCodecPreferences`
+  - `nativeSetDirection`
+  - `nativeStopInternal`
+  - `nativeStopStandard`
+  - `nativeStopped`
+- **`org_webrtc_SoftwareVideoDecoderFactory`** (4 methods):
+  - `nativeCreate`
+  - `nativeCreateFactory`
+  - `nativeGetSupportedCodecs`
+  - `nativeIsSupported`
+- **`org_webrtc_SoftwareVideoEncoderFactory`** (3 methods):
+  - `nativeCreateEncoder`
+  - `nativeCreateFactory`
+  - `nativeGetSupportedCodecs`
+- **`org_webrtc_TimestampAligner`** (4 methods):
+  - `nativeCreateTimestampAligner`
+  - `nativeReleaseTimestampAligner`
+  - `nativeRtcTimeNanos`
+  - `nativeTranslateTimestamp`
+- **`org_webrtc_TurnCustomizer`** (1 methods):
+  - `nativeFreeTurnCustomizer`
+- **`org_webrtc_VideoDecoderFallback`** (1 methods):
+  - `nativeCreate`
+- **`org_webrtc_VideoDecoderWrapper`** (1 methods):
+  - `nativeOnDecodedFrame`
+- **`org_webrtc_VideoEncoderFallback`** (1 methods):
+  - `nativeCreateEncoder`
+- **`org_webrtc_VideoEncoderWrapper`** (1 methods):
+  - `nativeOnEncodedFrame`
+- **`org_webrtc_VideoTrack`** (4 methods):
+  - `nativeAddSink`
+  - `nativeFreeSink`
+  - `nativeRemoveSink`
+  - `nativeWrapSink`
+- **`org_webrtc_YuvHelper`** (5 methods):
+  - `nativeABGRToI420`
+  - `nativeCopyPlane`
+  - `nativeI420Copy`
+  - `nativeI420Rotate`
+  - `nativeI420ToNV12`
+- **`org_webrtc_audio_JavaAudioDeviceModule`** (1 methods):
+  - `nativeCreateAudioDeviceModule`
+- **`org_webrtc_audio_WebRtcAudioRecord`** (2 methods):
+  - `nativeCacheDirectBufferAddress`
+  - `nativeDataIsRecorded`
+- **`org_webrtc_audio_WebRtcAudioTrack`** (2 methods):
+  - `nativeCacheDirectBufferAddress`
+  - `nativeGetPlayoutData`
+
+</details>
+
+---
+
+## Per-library detail
+
+### `lib/arm64-v8a/liblanguage_id_l2c_jni.so`
+
+- **ABI:** `arm64-v8a`
+- **File name:** `liblanguage_id_l2c_jni.so`
+- **Uncompressed size:** 1,019,552 bytes
+- **ELF class:** ELF64
+- **Endianness:** little
+- **e_machine:** EM_AARCH64 (183)
+- **e_type:** ET_DYN (3)
+- **Section count:** 30
+- **Dynamic symbols parsed:** 126
+- **Exported JNI symbols (`Java_*`):** 3
+- **`JNI_OnLoad` present:** no
+
+#### DT_NEEDED dependencies
+
+- `libandroid.so`
+- `libdl.so`
+- `libm.so`
+- `liblog.so`
+- `libc.so`
+
+#### Exported JNI symbols (`Java_*`)
+
+<details><summary>Expand JNI symbols</summary>
+
+- `Java_com_google_mlkit_nl_languageid_bundled_internal_ThickLanguageIdentifier_nativeInitFromBuffer`
+- `Java_com_google_mlkit_nl_languageid_bundled_internal_ThickLanguageIdentifier_nativeIdentifyPossibleLanguages`
+- `Java_com_google_mlkit_nl_languageid_bundled_internal_ThickLanguageIdentifier_nativeDestroy`
+
+</details>
+
+#### Version / library strings from `.rodata`
+
+<details><summary>Expand version strings</summary>
+
+- `build-secure-info:source-uri`
+- `aarch64-linux-android-llvm-libcxx-arm64-v8a`
+- `firebase-ml-android-sdk-releaser@oouc14.prod.google.com:/google/src/cloud/buildrabbit-username/buildrabbit-client/google3`
+- `//java/com/google/android/libraries/mlkit/granules/natural_language/language_id_bundled/native:liblanguage_id_l2c_jni.so`
+- `blaze-out/arm64-v8a-opt-android-ST-66eefe4ed9be/bin/java/com/google/android/libraries/mlkit/granules/natural_language/language_id_bundled/native/liblanguage_id_l2c_jni.so`
+- `/google/src/cloud/buildrabbit-username/buildrabbit-client/google3`
+- `libunwind: %s - %s`
+- `libunwind: malformed DW_CFA_def_cfa DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_val_offset DWARF unwind, reg (%lu) out of range`
+- `CIE version is not 1 or 3`
+- `libunwind: malformed DW_CFA_def_cfa_sf DWARF unwind, reg too big`
+- `Model provided is schema version %d not equal to supported version %d.`
+- `: no conversion`
+- `libc++`
+- `libunwind: malformed DW_CFA_offset_extended DWARF unwind, reg too big`
+- `libunwind: unsupported .eh_frame_hdr version: %u at %lx`
+- `libunwind: malformed DW_CFA_register DWARF unwind, reg2 too big`
+- `libunwind: malformed DW_CFA_expression DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_offset_extended_sf DWARF unwind, reg too big`
+- `out/llvm-project/libcxxabi/src/fallback_malloc.cpp`
+- `libunwind: unsupported .eh_frame_hdr at %lx: need at least 4 bytes of data but only got %zd`
+- `libunwind: malformed DW_CFA_restore_extended DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_val_expression DWARF unwind, reg too big`
+- `Didn't find op for builtin opcode '%s' version '%d'. An older version of this builtin might be supported. Are you using an old TFLite binary with a newer model?`
+- `libunwind: malformed DW_CFA_GNU_negative_offset_extended DWARF unwind, reg too big`
+- `Null output pointer passed to InterpreterBuilder.`
+- `libunwind: malformed DW_CFA_register DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_def_cfa_register DWARF unwind, reg too big`
+- `libandroid.so`
+- `libunwind: malformed DW_CFA_undefined DWARF unwind, reg too big`
+- `libc++abi`
+- `libc++abi: `
+- `libunwind: malformed DW_CFA_val_offset_sf DWARF unwind, reg too big`
+- `libdvm.so`
+- `JNI version error`
+- `libunwind: malformed DW_CFA_same_value DWARF unwind, reg too big`
+- `InterpreterBuilder::operator()`
+- `CONVERSION_METADATA`
+
+</details>
+
+---
+
+### `lib/arm64-v8a/libtmessages.49.so`
+
+- **ABI:** `arm64-v8a`
+- **File name:** `libtmessages.49.so`
+- **Uncompressed size:** 24,595,304 bytes
+- **ELF class:** ELF64
+- **Endianness:** little
+- **e_machine:** EM_AARCH64 (183)
+- **e_type:** ET_DYN (3)
+- **Section count:** 28
+- **Dynamic symbols parsed:** 38939
+- **Exported JNI symbols (`Java_*`):** 376
+- **`JNI_OnLoad` present:** yes
+
+#### DT_NEEDED dependencies
+
+- `libjnigraphics.so`
+- `liblog.so`
+- `libz.so`
+- `libGLESv2.so`
+- `libEGL.so`
+- `libandroid.so`
+- `libOpenSLES.so`
+- `libdl.so`
+- `libm.so`
+- `libc.so`
+
+#### Exported JNI symbols (`Java_*`)
+
+<details><summary>Expand JNI symbols</summary>
+
+- `Java_org_webrtc_Histogram_nativeCreateEnumeration`
+- `Java_org_webrtc_PeerConnection_nativeRestartIce`
+- `Java_org_webrtc_RtpTransceiver_nativeGetReceiver`
+- `Java_org_webrtc_JniCommon_nativeFreeByteBuffer`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacInit`
+- `Java_org_telegram_messenger_Utilities_getDirSize`
+- `Java_org_webrtc_LibvpxVp9Encoder_nativeIsSupported`
+- `Java_org_telegram_messenger_voip_NativeInstance_setEchoCancellationStrength`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nPrepareToSeek`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1describe_1block`
+- `Java_org_telegram_messenger_MediaController_getWaveform`
+- `Java_org_telegram_messenger_voip_NativeInstance_resetGroupInstance`
+- `Java_org_webrtc_Logging_nativeEnableLogThreads`
+- `Java_org_telegram_messenger_Utilities_aesIgeEncryption`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacIsDecoderAtEndOfStream`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnLongValue`
+- `Java_org_webrtc_PeerConnection_nativeAddTransceiverWithTrack`
+- `Java_org_webrtc_MediaStream_nativeRemoveVideoTrack`
+- `Java_org_webrtc_DataChannel_nativeClose`
+- `Java_org_telegram_messenger_voip_NativeInstance_setBufferSize`
+- `Java_org_telegram_messenger_voip_NativeInstance_stopGroupNative`
+- `Java_org_webrtc_RtpSender_nativeSetStreams`
+- `Java_org_telegram_messenger_MrzRecognizer_findCornerPoints`
+- `Java_org_telegram_messenger_Utilities_nLibyuvARGBSaleBitmap`
+- `Java_org_telegram_messenger_voip_NativeInstance_setupOutgoingVideo`
+- `Java_org_webrtc_YuvHelper_nativeI420Copy`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateLocalMediaStream`
+- `Java_org_telegram_messenger_MrzRecognizer_setYuvBitmapPixels`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusLibrary_opusGetVersion`
+- `Java_org_webrtc_DtmfSender_nativeCanInsertDtmf`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStopAecDump`
+- `Java_org_webrtc_PeerConnection_nativeSetBitrate`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindDouble`
+- `Java_org_telegram_messenger_voip_NativeInstance_createVideoCapturer`
+- `Java_org_telegram_messenger_voip_NativeInstance_prepareForStream`
+- `Java_org_webrtc_PeerConnection_nativeAddTransceiverOfType`
+- `Java_org_telegram_messenger_Utilities_expandAlphaToBlack`
+- `Java_org_webrtc_PeerConnectionFactory_nativeFindFieldTrialsFullName`
+- `Java_org_webrtc_RtpTransceiver_nativeStopped`
+- `Java_org_webrtc_BuiltinAudioDecoderFactoryFactory_nativeCreateBuiltinAudioDecoderFactory`
+- `Java_org_webrtc_SoftwareVideoEncoderFactory_nativeGetSupportedCodecs`
+- `Java_org_webrtc_PeerConnection_nativeSignalingState`
+- `Java_org_webrtc_RtpReceiver_nativeGetId`
+- `Java_org_webrtc_DtmfSender_nativeInterToneGap`
+- `Java_org_telegram_messenger_voip_NativeInstance_hasVideoCapturer`
+- `Java_org_telegram_messenger_voip_NativeInstance_getTrafficStats`
+- `Java_org_webrtc_JavaI420Buffer_nativeCropAndScaleI420`
+- `Java_org_webrtc_RtpTransceiver_nativeGetMid`
+- `Java_org_webrtc_LibvpxVp8Encoder_nativeCreateEncoder`
+- `Java_org_telegram_messenger_Utilities_copyBitmaps`
+- `Java_org_webrtc_PeerConnection_nativeClose`
+- `Java_org_webrtc_PeerConnection_nativeGetSenders`
+- `Java_org_webrtc_PeerConnection_nativeFreeOwnedPeerConnection`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_prepare`
+- `Java_org_telegram_messenger_voip_VideoCapturerDevice_nativeGetJavaVideoCapturerObserver`
+- `Java_org_telegram_messenger_Utilities_setupNativeCrashesListener`
+- `Java_org_telegram_messenger_Intro_setPowerfulTextures`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacDecodeToArray`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInitializeInternalTracer`
+- `Java_org_telegram_tgnet_ConnectionsManager_native_1test_1AuthAuthorization`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nGetFrameAtTime`
+- `Java_org_telegram_messenger_Utilities_needInvert`
+- `Java_org_webrtc_VideoDecoderWrapper_nativeOnDecodedFrame`
+- `Java_org_telegram_messenger_voip_NativeInstance_getPersistentState`
+- `Java_org_webrtc_CallSessionFileRotatingLogSink_nativeAddSink`
+- `Java_org_webrtc_JniCommon_nativeReleaseRef`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInitializeFieldTrials`
+- `Java_org_telegram_ui_Components_RLottieNative_nSetLayerColor`
+- `Java_org_telegram_messenger_video_WebmEncoder_createEncoder`
+- `Java_org_webrtc_VideoDecoderFallback_nativeCreate`
+- `Java_org_webrtc_RtpSender_nativeSetTrack`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreatePeerConnection`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetId`
+- `Java_org_telegram_messenger_voip_NativeInstance_getVersion`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetKind`
+- `Java_org_telegram_messenger_Utilities_applySoftLight`
+- `Java_org_webrtc_H264Utils_nativeIsSameH264Profile`
+- `Java_org_webrtc_audio_WebRtcAudioTrack_nativeGetPlayoutData`
+- `Java_org_telegram_messenger_Intro_setBackgroundColor`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnCount`
+- `Java_org_telegram_messenger_voip_NativeInstance_makeNativeInstance`
+- `Java_org_webrtc_NV21Buffer_nativeCropAndScale`
+- `Java_org_telegram_ui_Components_RLottieNative_nReplaceColors`
+- `Java_org_webrtc_DataChannel_nativeId`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetLastFrameTimestamp`
+- `Java_org_telegram_messenger_voip_NativeInstance_getDebugInfo`
+- `Java_org_webrtc_LibvpxVp9Decoder_nativeIsSupported`
+- `Java_org_telegram_messenger_voip_ConferenceCall_key_1generate_1temporary_1private_1key`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusClose`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary_ffmpegGetInputBufferPaddingSize`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetEnabled`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnIntValue`
+- `Java_org_webrtc_TimestampAligner_nativeReleaseTimestampAligner`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeAdaptFrame`
+- `Java_org_webrtc_EglBase10Impl_nativeGetCurrentNativeEGLContext`
+- `Java_org_webrtc_RtpTransceiver_nativeDirection`
+- `Java_org_telegram_messenger_MediaController_startRecord`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyConnectionTypeChanged`
+- `Java_org_telegram_messenger_voip_NativeInstance_getAllVersions`
+- `Java_org_telegram_messenger_voip_NativeInstance_setupOutgoingVideoCreated`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nCreateDecoder`
+- `Java_org_telegram_messenger_Utilities_generateGradient`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateVideoTrack`
+- `Java_org_webrtc_PeerConnection_nativeIceGatheringState`
+- `Java_org_webrtc_DataChannel_nativeBufferedAmount`
+- `Java_org_webrtc_PeerConnectionFactory_nativePrintStackTrace`
+- `Java_org_webrtc_YuvHelper_nativeABGRToI420`
+- `Java_org_webrtc_RtpSender_nativeSetFrameEncryptor`
+- `Java_org_webrtc_DtmfSender_nativeDuration`
+- `Java_org_telegram_messenger_Intro_setFreeTextures`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeAdaptOutputFormat`
+- `Java_org_webrtc_MediaStream_nativeAddVideoTrackToNativeStream`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegReset`
+- `Java_org_webrtc_PeerConnection_nativeSetLocalDescriptionAutomatically`
+- `Java_org_telegram_messenger_Intro_setPage`
+- `Java_org_telegram_messenger_Utilities_extractAlpha`
+- `Java_org_webrtc_SoftwareVideoEncoderFactory_nativeCreateEncoder`
+- `Java_org_telegram_SQLite_SQLiteDatabase_closedb`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_step`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreatePeerConnectionFactory`
+- `Java_org_telegram_messenger_voip_NativeInstance_setJoinResponsePayload`
+- `Java_org_webrtc_RtpSender_nativeGetParameters`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindLong`
+- `Java_org_telegram_messenger_voip_NativeInstance_stopNative`
+- `Java_org_webrtc_PeerConnection_nativeNewGetStatsReceiver`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_finalize`
+- `Java_org_telegram_messenger_Intro_setTelegramTextures`
+- `Java_org_webrtc_DataChannel_nativeRegisterObserver`
+- `Java_org_webrtc_DtmfSender_nativeTones`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nDestroyDecoder`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfActiveNetworkList`
+- `Java_org_telegram_messenger_voip_ConferenceCall_key_1from_1public_1key`
+- `Java_org_webrtc_LibvpxVp9Decoder_nativeCreateDecoder`
+- `Java_org_telegram_messenger_Utilities_aesCtrDecryptionByteArray`
+- `Java_org_webrtc_MediaStreamTrack_nativeSetEnabled`
+- `Java_org_telegram_SQLite_SQLiteDatabase_commitTransaction`
+- `Java_org_webrtc_PeerConnectionFactory_nativeGetRtpSenderCapabilities`
+- `Java_org_webrtc_PeerConnection_nativeGetNativePeerConnection`
+- `Java_org_webrtc_NV12Buffer_nativeCropAndScale`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1describe_1message`
+- `Java_org_webrtc_MediaStream_nativeAddAudioTrackToNativeStream`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetStateString`
+- `Java_org_webrtc_DataChannel_nativeLabel`
+- `Java_org_webrtc_PeerConnection_nativeSetRemoteDescription`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStartAecDump`
+- `Java_org_webrtc_RtpReceiver_nativeSetObserver`
+- `Java_org_telegram_messenger_NativeLoader_init`
+- `Java_org_webrtc_RtpSender_nativeSetParameters`
+- `Java_org_webrtc_PeerConnection_nativeGetTransceivers`
+- `Java_org_webrtc_PeerConnection_nativeRemoveTrack`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusDecode`
+- `Java_org_webrtc_PeerConnection_nativeAddIceCandidateWithObserver`
+- `Java_org_webrtc_PeerConnection_nativeSetLocalDescription`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnType`
+- `Java_org_telegram_messenger_Utilities_aesCbcEncryption`
+- `Java_org_webrtc_audio_JavaAudioDeviceModule_nativeCreateAudioDeviceModule`
+- `Java_org_webrtc_RtcCertificatePem_nativeGenerateCertificate`
+- `Java_org_telegram_messenger_Utilities_aesIgeEncryptionByteArray`
+- `Java_org_telegram_messenger_voip_ConferenceCall_key_1to_1public_1key`
+- `Java_org_telegram_messenger_Utilities_calcCDT`
+- `Java_org_webrtc_RtpSender_nativeGetStreams`
+- `Java_org_telegram_messenger_Utilities_clearDir`
+- `Java_org_webrtc_PeerConnection_nativeGetReceivers`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1verification_1words`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfNetworkDisconnect`
+- `Java_org_webrtc_TimestampAligner_nativeTranslateTimestamp`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnDoubleValue`
+- `Java_org_telegram_messenger_video_WebmEncoder_writeFrame`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindNull`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacDecodeMetadata`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStopInternalTracingCapture`
+- `Java_org_webrtc_audio_WebRtcAudioTrack_nativeCacheDirectBufferAddress`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusSecureDecode`
+- `Java_org_webrtc_LibvpxVp9Encoder_nativeCreateEncoder`
+- `Java_org_webrtc_RtpTransceiver_nativeGetMediaType`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create_1change_1state_1block`
+- `Java_org_telegram_messenger_voip_NativeInstance_onStreamPartAvailable`
+- `Java_org_webrtc_RtpTransceiver_nativeCurrentDirection`
+- `Java_org_telegram_SQLite_SQLiteDatabase_beginTransaction`
+- `Java_org_telegram_messenger_MediaController_writeFrame`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetState`
+- `Java_org_webrtc_RtpTransceiver_nativeSetDirection`
+- `Java_org_webrtc_Logging_nativeEnableLogToDebugOutput`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInitializeAndroidGlobals`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacDecodeToBuffer`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nGetVideoInfo`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetSeekPoints`
+- `Java_org_telegram_messenger_MediaController_stopRecord`
+- `Java_org_webrtc_CallSessionFileRotatingLogSink_nativeDeleteSink`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_reset`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfNetworkPreference`
+- `Java_org_webrtc_PeerConnection_nativeStopRtcEventLog`
+- `Java_org_webrtc_Metrics_nativeGetAndReset`
+- `Java_org_telegram_SQLite_SQLiteDatabase_opendb`
+- `Java_org_webrtc_DataChannel_nativeUnregisterObserver`
+- `Java_org_telegram_messenger_Intro_onSurfaceCreated`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1apply_1block`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeSetIsScreencast`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeSetState`
+- `Java_org_webrtc_VideoTrack_nativeWrapSink`
+- `Java_org_telegram_messenger_voip_NativeInstance_makeGroupNativeInstance`
+- `Java_org_telegram_messenger_MediaController_getWaveform2`
+- `Java_org_webrtc_VideoEncoderWrapper_nativeOnEncodedFrame`
+- `Java_org_telegram_messenger_voip_NativeInstance_getLastError`
+- `Java_org_webrtc_RtpSender_nativeGetDtmfSender`
+- `Java_org_webrtc_audio_WebRtcAudioRecord_nativeCacheDirectBufferAddress`
+- `Java_org_telegram_messenger_voip_NativeInstance_onRequestTimeComplete`
+- `Java_org_telegram_messenger_Utilities_blurBitmap`
+- `Java_org_webrtc_RtpReceiver_nativeUnsetObserver`
+- `Java_org_telegram_messenger_voip_NativeInstance_setConferenceCallId`
+- `Java_org_webrtc_PeerConnection_nativeAddTrack`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1height`
+- `Java_org_webrtc_PeerConnectionFactory_nativeFreeFactory`
+- `Java_org_webrtc_CallSessionFileRotatingLogSink_nativeGetLogData`
+- `Java_org_webrtc_PeerConnection_nativeSetConfiguration`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusGetErrorCode`
+- `Java_org_webrtc_RtpTransceiver_nativeGetSender`
+- `Java_org_webrtc_SoftwareVideoEncoderFactory_nativeCreateFactory`
+- `Java_org_telegram_messenger_Intro_setDate`
+- `Java_org_webrtc_PeerConnectionFactory_nativeShutdownInternalTracer`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateVideoSource`
+- `Java_org_telegram_messenger_Utilities_stackBlurBitmap`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVideoStateCapturer`
+- `Java_org_webrtc_PeerConnection_nativeRemoveLocalStream`
+- `Java_org_webrtc_PeerConnection_nativeRemoveIceCandidates`
+- `Java_org_webrtc_Histogram_nativeAddSample`
+- `Java_org_webrtc_PeerConnection_nativeCreateDataChannel`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindInt`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetDecodePosition`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateAudioSource`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegRelease`
+- `Java_org_telegram_messenger_Utilities_getLastUsageFileTime`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1destroy_1all`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetNextFrameFirstSampleIndex`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVideoState`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegGetChannelCount`
+- `Java_org_telegram_ui_Components_RLottieNative_nDestroy`
+- `Java_org_telegram_messenger_voip_NativeInstance_onSignalingDataReceive`
+- `Java_org_telegram_messenger_Utilities_pbkdf2`
+- `Java_org_telegram_messenger_Utilities_drawDitheredGradient`
+- `Java_org_telegram_messenger_Intro_setScrollOffset`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeCreateFactory`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegGetSampleRate`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeCreate`
+- `Java_org_telegram_messenger_Utilities_aesCbcEncryptionByteArray`
+- `Java_org_webrtc_YuvHelper_nativeCopyPlane`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nGetVideoFrame`
+- `Java_org_webrtc_PeerConnection_nativeCreateOffer`
+- `Java_org_webrtc_Metrics_nativeEnable`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVolume`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacReset`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfNetworkConnect`
+- `Java_org_webrtc_VideoTrack_nativeRemoveSink`
+- `Java_org_telegram_messenger_MrzRecognizer_binarizeAndFindCharacters`
+- `Java_org_webrtc_PeerConnection_nativeGetCertificate`
+- `Java_org_webrtc_PeerConnectionFactory_nativeGetRtpReceiverCapabilities`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnIsNull`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusGetErrorMessage`
+- `Java_org_telegram_messenger_voip_NativeInstance_setNoiseSuppressionEnabled`
+- `Java_org_webrtc_Histogram_nativeCreateCounts`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnByteBufferValue`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusSetFloatOutput`
+- `Java_org_webrtc_MediaStream_nativeRemoveAudioTrack`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nSeekToMs`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetLastFrameFirstSampleIndex`
+- `Java_org_webrtc_BuiltinAudioEncoderFactoryFactory_nativeCreateBuiltinAudioEncoderFactory`
+- `Java_org_telegram_messenger_Intro_onDrawFrame`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary_ffmpegGetVersion`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary_ffmpegHasDecoder`
+- `Java_org_webrtc_PeerConnection_nativeCreateSender`
+- `Java_org_telegram_messenger_Utilities_readlinkFd`
+- `Java_org_webrtc_RtpTransceiver_nativeStopStandard`
+- `Java_org_telegram_messenger_Utilities_averageBitmapColor`
+- `Java_org_webrtc_TimestampAligner_nativeRtcTimeNanos`
+- `Java_org_webrtc_Logging_nativeLog`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1destroy`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegDecode`
+- `Java_org_webrtc_DtmfSender_nativeInsertDtmf`
+- `Java_org_webrtc_JniCommon_nativeAddRef`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeGetSupportedCodecs`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacRelease`
+- `Java_org_webrtc_PeerConnection_nativeNewGetStats`
+- `Java_org_webrtc_PeerConnection_nativeSetAudioRecording`
+- `Java_org_telegram_ui_Components_RLottieNative_nCreate`
+- `Java_org_telegram_ui_Stories_recorder_FfmpegAudioWaveformLoader_init`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeIsSupported`
+- `Java_org_telegram_messenger_voip_NativeInstance_addIncomingVideoOutput`
+- `Java_org_webrtc_Logging_nativeEnableLogTimeStamps`
+- `Java_org_telegram_messenger_voip_NativeInstance_removeIncomingVideoOutput`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusLibrary_opusIsSecureDecodeSupported`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create`
+- `Java_org_telegram_messenger_voip_GroupCallMessagesController_groupCallMessageDecryptImpl`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInjectLoggable`
+- `Java_org_webrtc_YuvHelper_nativeI420Rotate`
+- `Java_org_webrtc_PeerConnection_nativeAddIceCandidate`
+- `Java_org_telegram_messenger_MediaController_cropOpusFile`
+- `Java_org_webrtc_RtpTransceiver_nativeStopInternal`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1state`
+- `Java_org_telegram_messenger_Utilities_applyAlphaInvert`
+- `Java_org_telegram_ui_Components_RLottieNative_nGetFrame`
+- `Java_org_telegram_messenger_voip_NativeInstance_onMediaDescriptionAvailable`
+- `Java_org_webrtc_PeerConnection_nativeStartRtcEventLog`
+- `Java_org_telegram_ui_Components_RLottieNative_nCreateWithJson`
+- `Java_org_webrtc_RtpReceiver_nativeSetFrameDecryptor`
+- `Java_org_telegram_messenger_voip_NativeInstance_setNetworkType`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1verification_1state`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1describe`
+- `Java_org_webrtc_TurnCustomizer_nativeFreeTurnCustomizer`
+- `Java_org_webrtc_PeerConnection_nativeConnectionState`
+- `Java_org_webrtc_RtpTransceiver_nativeSetCodecPreferences`
+- `Java_org_telegram_messenger_voip_NativeInstance_destroyVideoCapturer`
+- `Java_org_webrtc_PeerConnection_nativeIceConnectionState`
+- `Java_org_telegram_messenger_voip_NativeInstance_getPreferredRelayId`
+- `Java_org_webrtc_MediaSource_nativeGetState`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create_1zero_1block`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindByteBuffer`
+- `Java_org_telegram_messenger_Utilities_readlink`
+- `Java_org_webrtc_PeerConnectionFactory_nativeGetNativePeerConnectionFactory`
+- `Java_org_webrtc_DataChannel_nativeState`
+- `Java_org_webrtc_VideoTrack_nativeFreeSink`
+- `Java_org_webrtc_PeerConnection_nativeNewGetStatsSender`
+- `Java_org_webrtc_audio_WebRtcAudioRecord_nativeDataIsRecorded`
+- `Java_org_webrtc_RtpSender_nativeGetId`
+- `Java_org_webrtc_PeerConnection_nativeCreatePeerConnectionObserver`
+- `Java_org_webrtc_PeerConnection_nativeGetRemoteDescription`
+- `Java_org_webrtc_VideoTrack_nativeAddSink`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1receive_1inbound_1message`
+- `Java_org_webrtc_PeerConnection_nativeGetLocalDescription`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacFlush`
+- `Java_org_telegram_messenger_Intro_setIcTextures`
+- `Java_org_webrtc_VideoEncoderFallback_nativeCreateEncoder`
+- `Java_org_telegram_messenger_MrzRecognizer_performRecognition`
+- `Java_org_webrtc_RtpReceiver_nativeGetParameters`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVideoEndpointQuality`
+- `Java_org_webrtc_MediaStream_nativeGetId`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindString`
+- `Java_org_webrtc_PeerConnectionFactory_nativeDeleteLoggable`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateAudioTrack`
+- `Java_org_telegram_messenger_voip_NativeInstance_switchCameraCapturer`
+- `Java_org_webrtc_TimestampAligner_nativeCreateTimestampAligner`
+- `Java_org_webrtc_AudioTrack_nativeSetVolume`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnByteArrayValue`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1pull_1outbound_1messages`
+- `Java_org_telegram_messenger_Intro_setFastTextures`
+- `Java_org_webrtc_RtpReceiver_nativeGetTrack`
+- `Java_org_telegram_messenger_voip_NativeInstance_setMuteMicrophone`
+- `Java_org_telegram_messenger_Intro_setPrivateTextures`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnStringValue`
+- `Java_org_webrtc_PeerConnection_nativeAddLocalStream`
+- `Java_org_webrtc_RtpSender_nativeGetTrack`
+- `Java_org_telegram_messenger_voip_GroupCallMessagesController_groupCallMessageEncryptImpl`
+- `Java_org_telegram_messenger_voip_NativeInstance_setAudioOutputGainControlEnabled`
+- `Java_org_webrtc_PeerConnection_nativeOldGetStats`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create_1self_1add_1block`
+- `Java_org_telegram_messenger_voip_NativeInstance_setGlobalServerConfig`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeOnFrameCaptured`
+- `Java_org_telegram_messenger_Utilities_aesCtrDecryption`
+- `Java_org_telegram_messenger_MediaController_joinOpusFiles`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegInitialize`
+- `Java_org_telegram_messenger_voip_NativeInstance_switchCamera`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nStopDecoder`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStartInternalTracingCapture`
+- `Java_org_webrtc_DataChannel_nativeSend`
+- `Java_org_webrtc_PeerConnection_nativeSetAudioPlayout`
+- `Java_org_telegram_messenger_video_WebmEncoder_stop`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusReset`
+- `Java_org_webrtc_JniCommon_nativeAllocateByteBuffer`
+- `Java_org_telegram_messenger_Intro_onSurfaceChanged`
+- `Java_org_telegram_messenger_MediaController_isOpusFile`
+- `Java_org_webrtc_PeerConnection_nativeCreateAnswer`
+- `Java_org_webrtc_RtpSender_nativeGetMediaType`
+- `Java_org_webrtc_LibvpxVp8Decoder_nativeCreateDecoder`
+- `Java_org_webrtc_YuvHelper_nativeI420ToNV12`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusInit`
+- `Java_org_telegram_messenger_voip_NativeInstance_activateVideoCapturer`
+- `Java_org_telegram_messenger_voip_NativeInstance_clearVideoCapturer`
+
+</details>
+
+#### Version / library strings from `.rodata`
+
+<details><summary>Expand version strings</summary>
+
+- `BIO_LIB`
+- ` is not implemented. Update your FFmpeg version to the newest one from Git. If the problem still occurs, it means that your file has a feature which has not been implemented.`
+- `7.1.4`
+- `ABI version mismatch`
+- `Profile > 1 not supported in this build configuration`
+- `x264_build`
+- `Unsupported SA3D box version %d`
+- `tde2e seed version`
+- `WelsBuildRefList pCtx->uiTemporalId = %d,pRef->iFrameNum = %d,pRef->uiTemporalId = %d`
+- `0 == libyuv::I444Rotate( src.DataY(), src.StrideY(), src.DataU(), src.StrideU(), src.DataV(), src.StrideV(), buffer->MutableDataY(), buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(), buffer->MutableDataV(), buffer->StrideV(), src.width(), src.height(), static_cast<libyuv::RotationMode>(rotation))`
+- `/home/gradle/TMessagesProj/jni/voip/webrtc/rtc_base/task_queue_libevent.cc`
+- `PEM_LIB`
+- `ASN1_LIB`
+- `Character encoding subtitles conversion needs a libavcodec built with iconv support for this codec`
+- `src/libswresample/audioconvert.c`
+- `(EBML version %lu, doctype %s, doc version %lu)`
+- `src/libavutil/lzo.c`
+- `%s configurationVersion %d`
+- `libyuv::I420Rect(buffer->MutableDataY(), buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(), buffer->MutableDataV(), buffer->StrideV(), 0, 0, buffer->width(), buffer->height(), 0, 128, 128) == 0`
+- `.note.gnu.build-id`
+- `libunwind: %s - %s`
+- `src/libavutil/hwcontext.c`
+- `src/libavcodec/parser.c`
+- `--target=arm64-android-gcc --prefix=/home/arsen/Projects/Telegram/Android/Private/TMessagesProj/jni/ffmpeg/build_android/libvpx/arm64-v8a --disable-shared --enable-static --enable-pic --enable-optimizations --enable-multithread --disable-examples --disable-tools --disable-docs --disable-unit-tests --disable-install-bins --disable-install-docs --disable-debug --enable-vp8 --enable-vp9 --enable-vp8-decoder --enable-vp8-encoder --enable-vp9-decoder --enable-vp9-encoder --disable-runtime-cpu-detect --enable-realtime-only --enable-small --enable-better-hw-compatibility --disable-webm-io --disable-neon-asm --disable-neon-dotprod --disable-neon-i8mm --disable-sve --disable-sve2 --size-limit=4096x4096 --extra-cflags=-O3 -fPIC -march=armv8-a -ffile-prefix-map=/home/arsen/Projects/Telegram/Android/Private/TMessagesProj/jni=/src -fdebug-prefix-map=/home/arsen/Projects/Telegram/Android/Private/TMessagesProj/jni=/src -fmacro-prefix-map=/home/arsen/Projects/Telegram/Android/Private/TMessagesProj/jni=/src -ffile-prefix-map=/home/arsen/Projects/Telegram/Android/Private/TMessagesProj/jni/ffmpeg/build_android=/build -fdebug-prefix-map=/home/arsen/Projects/Telegram/Android/Private/TMessagesProj/jni/ffmpeg/build_android=/build -fmacro-prefix-map=/home/arsen/Projects/Telegram/Android/Private/TMessagesProj/jni/ffmpeg/build_android=/build -fdebug-compilation-dir=. -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-unwind-tables -fomit-frame-pointer --log=/home/arsen/Projects/Telegram/Android/Private/TMessagesProj/jni/ffmpeg/build_android/work/libvpx/arm64-v8a/config.log`
+- `src/libavcodec/vlc.c`
+- `src/libavutil/crc.c`
+- `Extradata version %d`
+- `libdav1d %s`
+- `Unsupported tag version. (>=%d)`
+- `version =%d, isom =%d`
+- `Unsupported Mastering Display Metadata box version %d`
+- `WelsEncoderEncodeExt(), WelsBuildRefList failed for P frames, pCtx->iNumRef0= %d. ForceCodingIDR!`
+- `getAndroidBuildId`
+- `src/libavcodec/libdav1d.c`
+- `src/libswscale/graph.c`
+- `, version=`
+- `0 == libyuv::I444Copy(data_y, stride_y, data_u, stride_u, data_v, stride_v, buffer->MutableDataY(), buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(), buffer->MutableDataV(), buffer->StrideV(), width, height)`
+- `/home/gradle/TMessagesProj/jni/voip/webrtc/rtc_base/numerics/safe_conversions.h`
+- `Missing version!`
+- `Libvpx VP9 encoder SVC frame drop config: `
+
+</details>
+
+---
+
+### `lib/armeabi-v7a/liblanguage_id_l2c_jni.so`
+
+- **ABI:** `armeabi-v7a`
+- **File name:** `liblanguage_id_l2c_jni.so`
+- **Uncompressed size:** 609,628 bytes
+- **ELF class:** ELF32
+- **Endianness:** little
+- **e_machine:** EM_ARM (40)
+- **e_type:** ET_DYN (3)
+- **Section count:** 30
+- **Dynamic symbols parsed:** 136
+- **Exported JNI symbols (`Java_*`):** 3
+- **`JNI_OnLoad` present:** no
+
+#### DT_NEEDED dependencies
+
+- `libandroid.so`
+- `libdl.so`
+- `libm.so`
+- `liblog.so`
+- `libc.so`
+
+#### Exported JNI symbols (`Java_*`)
+
+<details><summary>Expand JNI symbols</summary>
+
+- `Java_com_google_mlkit_nl_languageid_bundled_internal_ThickLanguageIdentifier_nativeInitFromBuffer`
+- `Java_com_google_mlkit_nl_languageid_bundled_internal_ThickLanguageIdentifier_nativeIdentifyPossibleLanguages`
+- `Java_com_google_mlkit_nl_languageid_bundled_internal_ThickLanguageIdentifier_nativeDestroy`
+
+</details>
+
+#### Version / library strings from `.rodata`
+
+<details><summary>Expand version strings</summary>
+
+- `build-secure-info:source-uri`
+- `arm-linux-androideabi-llvm-libcxx-armeabi-v7a`
+- `firebase-ml-android-sdk-releaser@oouc14.prod.google.com:/google/src/cloud/buildrabbit-username/buildrabbit-client/google3`
+- `//java/com/google/android/libraries/mlkit/granules/natural_language/language_id_bundled/native:liblanguage_id_l2c_jni.so`
+- `blaze-out/armeabi-v7a-opt-android-ST-9d65607305a3/bin/java/com/google/android/libraries/mlkit/granules/natural_language/language_id_bundled/native/liblanguage_id_l2c_jni.so`
+- `/google/src/cloud/buildrabbit-username/buildrabbit-client/google3`
+- `libunwind: %s - %s`
+- `Model provided is schema version %d not equal to supported version %d.`
+- `: no conversion`
+- `libc++`
+- `out/llvm-project/libcxxabi/src/fallback_malloc.cpp`
+- `Didn't find op for builtin opcode '%s' version '%d'. An older version of this builtin might be supported. Are you using an old TFLite binary with a newer model?`
+- `Null output pointer passed to InterpreterBuilder.`
+- `libandroid.so`
+- `libc++abi`
+- `libc.so`
+- `libc++abi: `
+- `libdvm.so`
+- `JNI version error`
+- `InterpreterBuilder::operator()`
+- `CONVERSION_METADATA`
+
+</details>
+
+---
+
+### `lib/armeabi-v7a/libtmessages.49.so`
+
+- **ABI:** `armeabi-v7a`
+- **File name:** `libtmessages.49.so`
+- **Uncompressed size:** 21,584,504 bytes
+- **ELF class:** ELF32
+- **Endianness:** little
+- **e_machine:** EM_ARM (40)
+- **e_type:** ET_DYN (3)
+- **Section count:** 28
+- **Dynamic symbols parsed:** 38417
+- **Exported JNI symbols (`Java_*`):** 376
+- **`JNI_OnLoad` present:** yes
+
+#### DT_NEEDED dependencies
+
+- `libjnigraphics.so`
+- `liblog.so`
+- `libz.so`
+- `libGLESv2.so`
+- `libEGL.so`
+- `libandroid.so`
+- `libOpenSLES.so`
+- `libdl.so`
+- `libm.so`
+- `libc.so`
+
+#### Exported JNI symbols (`Java_*`)
+
+<details><summary>Expand JNI symbols</summary>
+
+- `Java_org_webrtc_SoftwareVideoEncoderFactory_nativeCreateFactory`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusGetErrorMessage`
+- `Java_org_telegram_messenger_voip_NativeInstance_onMediaDescriptionAvailable`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnByteArrayValue`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegDecode`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeAdaptFrame`
+- `Java_org_telegram_messenger_voip_NativeInstance_stopGroupNative`
+- `Java_org_telegram_messenger_MrzRecognizer_performRecognition`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacDecodeToArray`
+- `Java_org_webrtc_TimestampAligner_nativeTranslateTimestamp`
+- `Java_org_telegram_messenger_MediaController_stopRecord`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnLongValue`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetId`
+- `Java_org_webrtc_PeerConnection_nativeIceConnectionState`
+- `Java_org_telegram_messenger_voip_NativeInstance_stopNative`
+- `Java_org_webrtc_VideoDecoderFallback_nativeCreate`
+- `Java_org_webrtc_MediaStream_nativeAddVideoTrackToNativeStream`
+- `Java_org_telegram_messenger_Intro_setPowerfulTextures`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nPrepareToSeek`
+- `Java_org_telegram_messenger_Utilities_aesCtrDecryptionByteArray`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_reset`
+- `Java_org_webrtc_MediaStream_nativeGetId`
+- `Java_org_webrtc_YuvHelper_nativeABGRToI420`
+- `Java_org_webrtc_PeerConnection_nativeGetTransceivers`
+- `Java_org_webrtc_PeerConnectionFactory_nativeGetNativePeerConnectionFactory`
+- `Java_org_webrtc_DataChannel_nativeClose`
+- `Java_org_webrtc_DataChannel_nativeState`
+- `Java_org_webrtc_DataChannel_nativeBufferedAmount`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1destroy_1all`
+- `Java_org_webrtc_audio_WebRtcAudioTrack_nativeGetPlayoutData`
+- `Java_org_webrtc_PeerConnection_nativeStopRtcEventLog`
+- `Java_org_webrtc_VideoTrack_nativeRemoveSink`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetKind`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnIntValue`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1receive_1inbound_1message`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindDouble`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacReset`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusReset`
+- `Java_org_webrtc_RtpTransceiver_nativeGetMediaType`
+- `Java_org_webrtc_NV21Buffer_nativeCropAndScale`
+- `Java_org_webrtc_PeerConnection_nativeSetAudioPlayout`
+- `Java_org_telegram_messenger_Intro_setFreeTextures`
+- `Java_org_telegram_messenger_MediaController_cropOpusFile`
+- `Java_org_webrtc_audio_WebRtcAudioTrack_nativeCacheDirectBufferAddress`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeGetSupportedCodecs`
+- `Java_org_webrtc_PeerConnection_nativeCreatePeerConnectionObserver`
+- `Java_org_telegram_messenger_Utilities_averageBitmapColor`
+- `Java_org_telegram_messenger_voip_NativeInstance_switchCamera`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfNetworkPreference`
+- `Java_org_telegram_messenger_Utilities_setupNativeCrashesListener`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInitializeFieldTrials`
+- `Java_org_webrtc_RtpTransceiver_nativeStopInternal`
+- `Java_org_telegram_messenger_voip_NativeInstance_switchCameraCapturer`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnDoubleValue`
+- `Java_org_webrtc_VideoTrack_nativeWrapSink`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegRelease`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_finalize`
+- `Java_org_telegram_messenger_voip_NativeInstance_getDebugInfo`
+- `Java_org_webrtc_DataChannel_nativeUnregisterObserver`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create_1zero_1block`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetEnabled`
+- `Java_org_webrtc_RtpTransceiver_nativeGetMid`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreatePeerConnection`
+- `Java_org_telegram_SQLite_SQLiteDatabase_commitTransaction`
+- `Java_org_telegram_messenger_voip_NativeInstance_resetGroupInstance`
+- `Java_org_telegram_SQLite_SQLiteDatabase_beginTransaction`
+- `Java_org_webrtc_CallSessionFileRotatingLogSink_nativeGetLogData`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindByteBuffer`
+- `Java_org_telegram_messenger_video_WebmEncoder_createEncoder`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateAudioSource`
+- `Java_org_webrtc_MediaStreamTrack_nativeSetEnabled`
+- `Java_org_webrtc_RtpSender_nativeSetParameters`
+- `Java_org_webrtc_DataChannel_nativeRegisterObserver`
+- `Java_org_telegram_messenger_voip_NativeInstance_setBufferSize`
+- `Java_org_telegram_tgnet_ConnectionsManager_native_1test_1AuthAuthorization`
+- `Java_org_webrtc_RtpReceiver_nativeSetFrameDecryptor`
+- `Java_org_webrtc_RtpTransceiver_nativeDirection`
+- `Java_org_webrtc_RtpTransceiver_nativeGetSender`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusGetErrorCode`
+- `Java_org_webrtc_PeerConnection_nativeNewGetStatsReceiver`
+- `Java_org_webrtc_BuiltinAudioDecoderFactoryFactory_nativeCreateBuiltinAudioDecoderFactory`
+- `Java_org_telegram_messenger_voip_NativeInstance_setMuteMicrophone`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeAdaptOutputFormat`
+- `Java_org_telegram_ui_Components_RLottieNative_nGetFrame`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1verification_1words`
+- `Java_org_telegram_messenger_voip_NativeInstance_prepareForStream`
+- `Java_org_telegram_messenger_Utilities_needInvert`
+- `Java_org_webrtc_MediaStream_nativeRemoveAudioTrack`
+- `Java_org_telegram_messenger_MediaController_getWaveform2`
+- `Java_org_telegram_messenger_video_WebmEncoder_writeFrame`
+- `Java_org_webrtc_DtmfSender_nativeTones`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusLibrary_opusGetVersion`
+- `Java_org_telegram_messenger_Intro_onSurfaceCreated`
+- `Java_org_webrtc_PeerConnection_nativeNewGetStats`
+- `Java_org_telegram_messenger_MediaController_startRecord`
+- `Java_org_telegram_messenger_voip_NativeInstance_setupOutgoingVideo`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nGetVideoInfo`
+- `Java_org_telegram_messenger_video_WebmEncoder_stop`
+- `Java_org_webrtc_RtpTransceiver_nativeStopped`
+- `Java_org_telegram_messenger_voip_NativeInstance_getTrafficStats`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStopInternalTracingCapture`
+- `Java_org_webrtc_TurnCustomizer_nativeFreeTurnCustomizer`
+- `Java_org_telegram_messenger_Utilities_aesCbcEncryptionByteArray`
+- `Java_org_webrtc_PeerConnectionFactory_nativeGetRtpSenderCapabilities`
+- `Java_org_webrtc_DtmfSender_nativeCanInsertDtmf`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfActiveNetworkList`
+- `Java_org_telegram_messenger_voip_GroupCallMessagesController_groupCallMessageDecryptImpl`
+- `Java_org_webrtc_VideoEncoderFallback_nativeCreateEncoder`
+- `Java_org_webrtc_LibvpxVp9Decoder_nativeIsSupported`
+- `Java_org_webrtc_audio_JavaAudioDeviceModule_nativeCreateAudioDeviceModule`
+- `Java_org_webrtc_PeerConnection_nativeCreateOffer`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacInit`
+- `Java_org_webrtc_PeerConnectionFactory_nativeFindFieldTrialsFullName`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary_ffmpegHasDecoder`
+- `Java_org_webrtc_LibvpxVp8Encoder_nativeCreateEncoder`
+- `Java_org_webrtc_VideoEncoderWrapper_nativeOnEncodedFrame`
+- `Java_org_telegram_ui_Components_RLottieNative_nCreateWithJson`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusSecureDecode`
+- `Java_org_webrtc_EglBase10Impl_nativeGetCurrentNativeEGLContext`
+- `Java_org_telegram_messenger_Utilities_readlink`
+- `Java_org_webrtc_Metrics_nativeGetAndReset`
+- `Java_org_webrtc_Logging_nativeLog`
+- `Java_org_webrtc_PeerConnection_nativeRestartIce`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreatePeerConnectionFactory`
+- `Java_org_telegram_messenger_Intro_setFastTextures`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateLocalMediaStream`
+- `Java_org_telegram_messenger_voip_NativeInstance_setJoinResponsePayload`
+- `Java_org_webrtc_DataChannel_nativeId`
+- `Java_org_telegram_messenger_voip_NativeInstance_clearVideoCapturer`
+- `Java_org_webrtc_RtpSender_nativeGetId`
+- `Java_org_telegram_messenger_Intro_setPage`
+- `Java_org_telegram_ui_Components_RLottieNative_nSetLayerColor`
+- `Java_org_telegram_SQLite_SQLiteDatabase_closedb`
+- `Java_org_webrtc_PeerConnectionFactory_nativeDeleteLoggable`
+- `Java_org_webrtc_RtpReceiver_nativeGetId`
+- `Java_org_telegram_messenger_voip_NativeInstance_setAudioOutputGainControlEnabled`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeCreate`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnIsNull`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1destroy`
+- `Java_org_telegram_messenger_voip_NativeInstance_setConferenceCallId`
+- `Java_org_webrtc_PeerConnection_nativeCreateSender`
+- `Java_org_webrtc_H264Utils_nativeIsSameH264Profile`
+- `Java_org_webrtc_YuvHelper_nativeI420ToNV12`
+- `Java_org_webrtc_PeerConnection_nativeAddIceCandidate`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyConnectionTypeChanged`
+- `Java_org_webrtc_PeerConnection_nativeOldGetStats`
+- `Java_org_webrtc_JniCommon_nativeFreeByteBuffer`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetSeekPoints`
+- `Java_org_webrtc_PeerConnection_nativeRemoveTrack`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStopAecDump`
+- `Java_org_telegram_messenger_voip_NativeInstance_hasVideoCapturer`
+- `Java_org_webrtc_RtpSender_nativeGetMediaType`
+- `Java_org_webrtc_PeerConnection_nativeGetLocalDescription`
+- `Java_org_webrtc_DataChannel_nativeLabel`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInitializeInternalTracer`
+- `Java_org_webrtc_Logging_nativeEnableLogTimeStamps`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeSetState`
+- `Java_org_telegram_messenger_MrzRecognizer_binarizeAndFindCharacters`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfNetworkConnect`
+- `Java_org_telegram_messenger_Intro_onSurfaceChanged`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nStopDecoder`
+- `Java_org_telegram_ui_Components_RLottieNative_nReplaceColors`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetLastFrameFirstSampleIndex`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegInitialize`
+- `Java_org_webrtc_PeerConnectionFactory_nativePrintStackTrace`
+- `Java_org_telegram_messenger_Utilities_expandAlphaToBlack`
+- `Java_org_telegram_messenger_Utilities_applySoftLight`
+- `Java_org_webrtc_PeerConnection_nativeIceGatheringState`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnStringValue`
+- `Java_org_telegram_messenger_voip_NativeInstance_createVideoCapturer`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacIsDecoderAtEndOfStream`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeSetIsScreencast`
+- `Java_org_telegram_messenger_voip_NativeInstance_makeGroupNativeInstance`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateAudioTrack`
+- `Java_org_webrtc_YuvHelper_nativeCopyPlane`
+- `Java_org_webrtc_RtpTransceiver_nativeSetDirection`
+- `Java_org_webrtc_SoftwareVideoEncoderFactory_nativeCreateEncoder`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnType`
+- `Java_org_webrtc_PeerConnection_nativeSetLocalDescription`
+- `Java_org_telegram_messenger_Utilities_nLibyuvARGBSaleBitmap`
+- `Java_org_webrtc_RtpTransceiver_nativeStopStandard`
+- `Java_org_webrtc_RtpReceiver_nativeSetObserver`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVideoStateCapturer`
+- `Java_org_webrtc_PeerConnection_nativeAddTransceiverOfType`
+- `Java_org_webrtc_PeerConnection_nativeRemoveIceCandidates`
+- `Java_org_webrtc_audio_WebRtcAudioRecord_nativeCacheDirectBufferAddress`
+- `Java_org_webrtc_PeerConnection_nativeGetNativePeerConnection`
+- `Java_org_webrtc_PeerConnection_nativeSetConfiguration`
+- `Java_org_telegram_messenger_voip_NativeInstance_getLastError`
+- `Java_org_webrtc_PeerConnection_nativeSetBitrate`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusDecode`
+- `Java_org_telegram_messenger_voip_NativeInstance_getAllVersions`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1describe_1message`
+- `Java_org_webrtc_PeerConnection_nativeCreateAnswer`
+- `Java_org_webrtc_RtcCertificatePem_nativeGenerateCertificate`
+- `Java_org_telegram_messenger_MediaController_joinOpusFiles`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindLong`
+- `Java_org_webrtc_PeerConnectionFactory_nativeGetRtpReceiverCapabilities`
+- `Java_org_webrtc_LibvpxVp8Decoder_nativeCreateDecoder`
+- `Java_org_telegram_messenger_Utilities_aesCbcEncryption`
+- `Java_org_webrtc_DataChannel_nativeSend`
+- `Java_org_webrtc_PeerConnection_nativeGetCertificate`
+- `Java_org_webrtc_Logging_nativeEnableLogToDebugOutput`
+- `Java_org_webrtc_DtmfSender_nativeInsertDtmf`
+- `Java_org_webrtc_PeerConnection_nativeNewGetStatsSender`
+- `Java_org_webrtc_RtpSender_nativeGetParameters`
+- `Java_org_webrtc_PeerConnection_nativeFreeOwnedPeerConnection`
+- `Java_org_telegram_messenger_Intro_setScrollOffset`
+- `Java_org_webrtc_MediaStream_nativeAddAudioTrackToNativeStream`
+- `Java_org_telegram_messenger_Utilities_clearDir`
+- `Java_org_webrtc_Metrics_nativeEnable`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetLastFrameTimestamp`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1describe_1block`
+- `Java_org_webrtc_VideoTrack_nativeFreeSink`
+- `Java_org_telegram_messenger_voip_ConferenceCall_key_1from_1public_1key`
+- `Java_org_webrtc_JniCommon_nativeAllocateByteBuffer`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfNetworkDisconnect`
+- `Java_org_telegram_ui_Components_RLottieNative_nDestroy`
+- `Java_org_webrtc_RtpSender_nativeGetTrack`
+- `Java_org_telegram_ui_Components_RLottieNative_nCreate`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeIsSupported`
+- `Java_org_telegram_messenger_MrzRecognizer_setYuvBitmapPixels`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_prepare`
+- `Java_org_webrtc_LibvpxVp9Encoder_nativeCreateEncoder`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusLibrary_opusIsSecureDecodeSupported`
+- `Java_org_webrtc_PeerConnection_nativeAddTransceiverWithTrack`
+- `Java_org_webrtc_MediaSource_nativeGetState`
+- `Java_org_telegram_messenger_Intro_onDrawFrame`
+- `Java_org_webrtc_YuvHelper_nativeI420Rotate`
+- `Java_org_telegram_messenger_Utilities_blurBitmap`
+- `Java_org_webrtc_AudioTrack_nativeSetVolume`
+- `Java_org_telegram_messenger_voip_NativeInstance_getPreferredRelayId`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateVideoSource`
+- `Java_org_webrtc_PeerConnection_nativeSetAudioRecording`
+- `Java_org_telegram_messenger_Utilities_aesIgeEncryption`
+- `Java_org_webrtc_audio_WebRtcAudioRecord_nativeDataIsRecorded`
+- `Java_org_webrtc_TimestampAligner_nativeReleaseTimestampAligner`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nGetFrameAtTime`
+- `Java_org_webrtc_PeerConnection_nativeGetReceivers`
+- `Java_org_telegram_messenger_voip_NativeInstance_setNoiseSuppressionEnabled`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindString`
+- `Java_org_webrtc_RtpSender_nativeSetFrameEncryptor`
+- `Java_org_telegram_messenger_voip_NativeInstance_setGlobalServerConfig`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindInt`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetState`
+- `Java_org_webrtc_LibvpxVp9Encoder_nativeIsSupported`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacRelease`
+- `Java_org_webrtc_RtpSender_nativeSetTrack`
+- `Java_org_telegram_messenger_Utilities_getDirSize`
+- `Java_org_webrtc_CallSessionFileRotatingLogSink_nativeDeleteSink`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nCreateDecoder`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create_1change_1state_1block`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStartAecDump`
+- `Java_org_telegram_messenger_voip_NativeInstance_getPersistentState`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegGetSampleRate`
+- `Java_org_telegram_messenger_voip_NativeInstance_addIncomingVideoOutput`
+- `Java_org_webrtc_PeerConnection_nativeSetRemoteDescription`
+- `Java_org_telegram_messenger_voip_NativeInstance_destroyVideoCapturer`
+- `Java_org_webrtc_RtpTransceiver_nativeSetCodecPreferences`
+- `Java_org_webrtc_JniCommon_nativeAddRef`
+- `Java_org_webrtc_PeerConnectionFactory_nativeFreeFactory`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInitializeAndroidGlobals`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusClose`
+- `Java_org_webrtc_PeerConnection_nativeConnectionState`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacDecodeMetadata`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInjectLoggable`
+- `Java_org_webrtc_VideoDecoderWrapper_nativeOnDecodedFrame`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVideoState`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegReset`
+- `Java_org_webrtc_MediaStream_nativeRemoveVideoTrack`
+- `Java_org_webrtc_RtpSender_nativeGetDtmfSender`
+- `Java_org_telegram_SQLite_SQLiteDatabase_opendb`
+- `Java_org_telegram_messenger_voip_NativeInstance_onRequestTimeComplete`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetNextFrameFirstSampleIndex`
+- `Java_org_telegram_messenger_voip_NativeInstance_onStreamPartAvailable`
+- `Java_org_telegram_messenger_voip_ConferenceCall_key_1generate_1temporary_1private_1key`
+- `Java_org_telegram_messenger_Intro_setBackgroundColor`
+- `Java_org_telegram_messenger_Utilities_pbkdf2`
+- `Java_org_webrtc_RtpTransceiver_nativeGetReceiver`
+- `Java_org_telegram_messenger_Utilities_copyBitmaps`
+- `Java_org_telegram_messenger_MediaController_getWaveform`
+- `Java_org_telegram_messenger_voip_NativeInstance_setupOutgoingVideoCreated`
+- `Java_org_telegram_messenger_voip_ConferenceCall_key_1to_1public_1key`
+- `Java_org_telegram_messenger_Intro_setIcTextures`
+- `Java_org_telegram_messenger_Utilities_readlinkFd`
+- `Java_org_telegram_messenger_NativeLoader_init`
+- `Java_org_webrtc_JniCommon_nativeReleaseRef`
+- `Java_org_telegram_messenger_voip_GroupCallMessagesController_groupCallMessageEncryptImpl`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStartInternalTracingCapture`
+- `Java_org_webrtc_Histogram_nativeCreateCounts`
+- `Java_org_webrtc_RtpSender_nativeSetStreams`
+- `Java_org_webrtc_PeerConnection_nativeClose`
+- `Java_org_telegram_messenger_voip_NativeInstance_getVersion`
+- `Java_org_telegram_messenger_Utilities_getLastUsageFileTime`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnByteBufferValue`
+- `Java_org_telegram_messenger_Utilities_aesCtrDecryption`
+- `Java_org_webrtc_PeerConnection_nativeCreateDataChannel`
+- `Java_org_webrtc_Histogram_nativeAddSample`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindNull`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nSeekToMs`
+- `Java_org_webrtc_TimestampAligner_nativeCreateTimestampAligner`
+- `Java_org_webrtc_NV12Buffer_nativeCropAndScale`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVideoEndpointQuality`
+- `Java_org_webrtc_RtpTransceiver_nativeCurrentDirection`
+- `Java_org_telegram_messenger_MediaController_isOpusFile`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetDecodePosition`
+- `Java_org_telegram_messenger_Intro_setTelegramTextures`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeCreateFactory`
+- `Java_org_webrtc_Histogram_nativeCreateEnumeration`
+- `Java_org_telegram_messenger_voip_NativeInstance_setNetworkType`
+- `Java_org_webrtc_BuiltinAudioEncoderFactoryFactory_nativeCreateBuiltinAudioEncoderFactory`
+- `Java_org_webrtc_PeerConnection_nativeAddIceCandidateWithObserver`
+- `Java_org_webrtc_YuvHelper_nativeI420Copy`
+- `Java_org_webrtc_PeerConnection_nativeSetLocalDescriptionAutomatically`
+- `Java_org_webrtc_PeerConnection_nativeAddLocalStream`
+- `Java_org_webrtc_LibvpxVp9Decoder_nativeCreateDecoder`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacDecodeToBuffer`
+- `Java_org_webrtc_SoftwareVideoEncoderFactory_nativeGetSupportedCodecs`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_step`
+- `Java_org_webrtc_PeerConnectionFactory_nativeShutdownInternalTracer`
+- `Java_org_telegram_messenger_Utilities_stackBlurBitmap`
+- `Java_org_webrtc_Logging_nativeEnableLogThreads`
+- `Java_org_telegram_messenger_voip_VideoCapturerDevice_nativeGetJavaVideoCapturerObserver`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary_ffmpegGetVersion`
+- `Java_org_webrtc_PeerConnection_nativeStartRtcEventLog`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacFlush`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeOnFrameCaptured`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegGetChannelCount`
+- `Java_org_webrtc_DtmfSender_nativeDuration`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1state`
+- `Java_org_telegram_messenger_voip_NativeInstance_setEchoCancellationStrength`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nDestroyDecoder`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1height`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusSetFloatOutput`
+- `Java_org_webrtc_PeerConnection_nativeGetRemoteDescription`
+- `Java_org_telegram_messenger_voip_NativeInstance_activateVideoCapturer`
+- `Java_org_telegram_messenger_Utilities_extractAlpha`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1describe`
+- `Java_org_webrtc_CallSessionFileRotatingLogSink_nativeAddSink`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusInit`
+- `Java_org_telegram_messenger_Utilities_generateGradient`
+- `Java_org_webrtc_DtmfSender_nativeInterToneGap`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1apply_1block`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1verification_1state`
+- `Java_org_webrtc_RtpSender_nativeGetStreams`
+- `Java_org_webrtc_RtpReceiver_nativeGetTrack`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVolume`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnCount`
+- `Java_org_telegram_messenger_MediaController_writeFrame`
+- `Java_org_telegram_messenger_Intro_setPrivateTextures`
+- `Java_org_telegram_messenger_Utilities_applyAlphaInvert`
+- `Java_org_telegram_messenger_Utilities_drawDitheredGradient`
+- `Java_org_telegram_messenger_Utilities_calcCDT`
+- `Java_org_telegram_messenger_MrzRecognizer_findCornerPoints`
+- `Java_org_webrtc_VideoTrack_nativeAddSink`
+- `Java_org_webrtc_PeerConnection_nativeGetSenders`
+- `Java_org_webrtc_TimestampAligner_nativeRtcTimeNanos`
+- `Java_org_webrtc_RtpReceiver_nativeGetParameters`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create`
+- `Java_org_webrtc_PeerConnection_nativeSignalingState`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nGetVideoFrame`
+- `Java_org_telegram_messenger_voip_NativeInstance_removeIncomingVideoOutput`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateVideoTrack`
+- `Java_org_telegram_messenger_voip_NativeInstance_onSignalingDataReceive`
+- `Java_org_webrtc_JavaI420Buffer_nativeCropAndScaleI420`
+- `Java_org_webrtc_RtpReceiver_nativeUnsetObserver`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary_ffmpegGetInputBufferPaddingSize`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetStateString`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create_1self_1add_1block`
+- `Java_org_webrtc_PeerConnection_nativeAddTrack`
+- `Java_org_webrtc_PeerConnection_nativeRemoveLocalStream`
+- `Java_org_telegram_messenger_Utilities_aesIgeEncryptionByteArray`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1pull_1outbound_1messages`
+- `Java_org_telegram_messenger_voip_NativeInstance_makeNativeInstance`
+- `Java_org_telegram_ui_Stories_recorder_FfmpegAudioWaveformLoader_init`
+- `Java_org_telegram_messenger_Intro_setDate`
+
+</details>
+
+#### Version / library strings from `.rodata`
+
+<details><summary>Expand version strings</summary>
+
+- `BIO_LIB`
+- ` is not implemented. Update your FFmpeg version to the newest one from Git. If the problem still occurs, it means that your file has a feature which has not been implemented.`
+- `7.1.4`
+- `ABI version mismatch`
+- `Profile > 1 not supported in this build configuration`
+- `x264_build`
+- `Unsupported SA3D box version %d`
+- `tde2e seed version`
+- `WelsBuildRefList pCtx->uiTemporalId = %d,pRef->iFrameNum = %d,pRef->uiTemporalId = %d`
+- `0 == libyuv::I444Rotate( src.DataY(), src.StrideY(), src.DataU(), src.StrideU(), src.DataV(), src.StrideV(), buffer->MutableDataY(), buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(), buffer->MutableDataV(), buffer->StrideV(), src.width(), src.height(), static_cast<libyuv::RotationMode>(rotation))`
+- `/home/gradle/TMessagesProj/jni/voip/webrtc/rtc_base/task_queue_libevent.cc`
+- `PEM_LIB`
+- `ASN1_LIB`
+- `Character encoding subtitles conversion needs a libavcodec built with iconv support for this codec`
+- `src/libswresample/audioconvert.c`
+- `src/libavutil/lzo.c`
+- `%s configurationVersion %d`
+- `libyuv::I420Rect(buffer->MutableDataY(), buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(), buffer->MutableDataV(), buffer->StrideV(), 0, 0, buffer->width(), buffer->height(), 0, 128, 128) == 0`
+- `.note.gnu.build-id`
+- `libunwind: %s - %s`
+- `src/libavutil/hwcontext.c`
+- `src/libavcodec/parser.c`
+- `src/libavcodec/vlc.c`
+- `src/libavutil/crc.c`
+- `Extradata version %d`
+- `libdav1d %s`
+- `Unsupported tag version. (>=%d)`
+- `version =%d, isom =%d`
+- `Unsupported Mastering Display Metadata box version %d`
+- `WelsEncoderEncodeExt(), WelsBuildRefList failed for P frames, pCtx->iNumRef0= %d. ForceCodingIDR!`
+- `getAndroidBuildId`
+- `src/libavcodec/libdav1d.c`
+- `src/libswscale/graph.c`
+- `, version=`
+- `0 == libyuv::I444Copy(data_y, stride_y, data_u, stride_u, data_v, stride_v, buffer->MutableDataY(), buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(), buffer->MutableDataV(), buffer->StrideV(), width, height)`
+- `/home/gradle/TMessagesProj/jni/voip/webrtc/rtc_base/numerics/safe_conversions.h`
+- `Missing version!`
+- `Libvpx VP9 encoder SVC frame drop config: `
+- `protocol_version`
+- `src/libavformat/demux.c`
+
+</details>
+
+---
+
+### `lib/x86/liblanguage_id_l2c_jni.so`
+
+- **ABI:** `x86`
+- **File name:** `liblanguage_id_l2c_jni.so`
+- **Uncompressed size:** 1,359,344 bytes
+- **ELF class:** ELF32
+- **Endianness:** little
+- **e_machine:** EM_386 (3)
+- **e_type:** ET_DYN (3)
+- **Section count:** 30
+- **Dynamic symbols parsed:** 129
+- **Exported JNI symbols (`Java_*`):** 3
+- **`JNI_OnLoad` present:** no
+
+#### DT_NEEDED dependencies
+
+- `libandroid.so`
+- `libdl.so`
+- `libm.so`
+- `liblog.so`
+- `libc.so`
+
+#### Exported JNI symbols (`Java_*`)
+
+<details><summary>Expand JNI symbols</summary>
+
+- `Java_com_google_mlkit_nl_languageid_bundled_internal_ThickLanguageIdentifier_nativeInitFromBuffer`
+- `Java_com_google_mlkit_nl_languageid_bundled_internal_ThickLanguageIdentifier_nativeIdentifyPossibleLanguages`
+- `Java_com_google_mlkit_nl_languageid_bundled_internal_ThickLanguageIdentifier_nativeDestroy`
+
+</details>
+
+#### Version / library strings from `.rodata`
+
+<details><summary>Expand version strings</summary>
+
+- `build-secure-info:source-uri`
+- `i686-linux-android-llvm-libcxx-x86`
+- `firebase-ml-android-sdk-releaser@oouc14.prod.google.com:/google/src/cloud/buildrabbit-username/buildrabbit-client/google3`
+- `//java/com/google/android/libraries/mlkit/granules/natural_language/language_id_bundled/native:liblanguage_id_l2c_jni.so`
+- `blaze-out/x86-opt-android-ST-8ec9a9afe0d0/bin/java/com/google/android/libraries/mlkit/granules/natural_language/language_id_bundled/native/liblanguage_id_l2c_jni.so`
+- `/google/src/cloud/buildrabbit-username/buildrabbit-client/google3`
+- `libunwind: %s - %s`
+- `libunwind: malformed DW_CFA_def_cfa DWARF unwind, reg too big`
+- `CIE version is not 1 or 3`
+- `libunwind: malformed DW_CFA_def_cfa_sf DWARF unwind, reg too big`
+- `libunwind: unsupported .eh_frame_hdr at %llx: need at least 4 bytes of data but only got %zd`
+- `Model provided is schema version %d not equal to supported version %d.`
+- `: no conversion`
+- `libc++`
+- `libunwind: malformed DW_CFA_offset_extended DWARF unwind, reg too big`
+- `libunwind: unsupported .eh_frame_hdr version: %u at %llx`
+- `libunwind: malformed DW_CFA_register DWARF unwind, reg2 too big`
+- `libunwind: malformed DW_CFA_expression DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_offset_extended_sf DWARF unwind, reg too big`
+- `out/llvm-project/libcxxabi/src/fallback_malloc.cpp`
+- `libunwind: malformed DW_CFA_restore_extended DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_val_expression DWARF unwind, reg too big`
+- `Didn't find op for builtin opcode '%s' version '%d'. An older version of this builtin might be supported. Are you using an old TFLite binary with a newer model?`
+- `libunwind: malformed DW_CFA_offset DWARF unwind, reg (%llu) out of range`
+- `libunwind: malformed DW_CFA_GNU_negative_offset_extended DWARF unwind, reg too big`
+- `Null output pointer passed to InterpreterBuilder.`
+- `libunwind: malformed DW_CFA_register DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_def_cfa_register DWARF unwind, reg too big`
+- `libandroid.so`
+- `libunwind: malformed DW_CFA_undefined DWARF unwind, reg too big`
+- `libc++abi`
+- `libc++abi: `
+- `libunwind: malformed DW_CFA_val_offset_sf DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_restore DWARF unwind, reg (%llu) out of range`
+- `libdvm.so`
+- `JNI version error`
+- `libunwind: malformed DW_CFA_same_value DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_val_offset DWARF unwind, reg (%llu) out of range`
+- `InterpreterBuilder::operator()`
+- `CONVERSION_METADATA`
+
+</details>
+
+---
+
+### `lib/x86/libtmessages.49.so`
+
+- **ABI:** `x86`
+- **File name:** `libtmessages.49.so`
+- **Uncompressed size:** 27,363,804 bytes
+- **ELF class:** ELF32
+- **Endianness:** little
+- **e_machine:** EM_386 (3)
+- **e_type:** ET_DYN (3)
+- **Section count:** 28
+- **Dynamic symbols parsed:** 38563
+- **Exported JNI symbols (`Java_*`):** 376
+- **`JNI_OnLoad` present:** yes
+
+#### DT_NEEDED dependencies
+
+- `libjnigraphics.so`
+- `liblog.so`
+- `libz.so`
+- `libGLESv2.so`
+- `libEGL.so`
+- `libandroid.so`
+- `libOpenSLES.so`
+- `libdl.so`
+- `libm.so`
+- `libc.so`
+
+#### Exported JNI symbols (`Java_*`)
+
+<details><summary>Expand JNI symbols</summary>
+
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetDecodePosition`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetEnabled`
+- `Java_org_telegram_messenger_voip_NativeInstance_getDebugInfo`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetSeekPoints`
+- `Java_org_telegram_messenger_Intro_onSurfaceChanged`
+- `Java_org_webrtc_PeerConnection_nativeSetLocalDescription`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindLong`
+- `Java_org_webrtc_MediaStreamTrack_nativeSetEnabled`
+- `Java_org_telegram_messenger_Utilities_expandAlphaToBlack`
+- `Java_org_webrtc_PeerConnection_nativeSetLocalDescriptionAutomatically`
+- `Java_org_telegram_messenger_Utilities_getDirSize`
+- `Java_org_telegram_messenger_video_WebmEncoder_createEncoder`
+- `Java_org_webrtc_PeerConnection_nativeCreateOffer`
+- `Java_org_telegram_messenger_voip_ConferenceCall_key_1generate_1temporary_1private_1key`
+- `Java_org_webrtc_LibvpxVp9Decoder_nativeIsSupported`
+- `Java_org_webrtc_RtpTransceiver_nativeGetMid`
+- `Java_org_telegram_messenger_Utilities_readlink`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary_ffmpegGetVersion`
+- `Java_org_webrtc_CallSessionFileRotatingLogSink_nativeAddSink`
+- `Java_org_telegram_SQLite_SQLiteDatabase_commitTransaction`
+- `Java_org_webrtc_MediaStream_nativeRemoveAudioTrack`
+- `Java_org_webrtc_RtcCertificatePem_nativeGenerateCertificate`
+- `Java_org_webrtc_PeerConnectionFactory_nativeFindFieldTrialsFullName`
+- `Java_org_webrtc_PeerConnectionFactory_nativeGetRtpReceiverCapabilities`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindByteBuffer`
+- `Java_org_telegram_ui_Components_RLottieNative_nDestroy`
+- `Java_org_webrtc_RtpReceiver_nativeGetTrack`
+- `Java_org_webrtc_NV21Buffer_nativeCropAndScale`
+- `Java_org_webrtc_BuiltinAudioEncoderFactoryFactory_nativeCreateBuiltinAudioEncoderFactory`
+- `Java_org_telegram_messenger_voip_NativeInstance_setAudioOutputGainControlEnabled`
+- `Java_org_webrtc_Metrics_nativeGetAndReset`
+- `Java_org_telegram_messenger_Intro_setPowerfulTextures`
+- `Java_org_telegram_messenger_Utilities_averageBitmapColor`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacDecodeMetadata`
+- `Java_org_webrtc_RtpTransceiver_nativeSetCodecPreferences`
+- `Java_org_webrtc_PeerConnection_nativeOldGetStats`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeIsSupported`
+- `Java_org_webrtc_LibvpxVp8Decoder_nativeCreateDecoder`
+- `Java_org_webrtc_RtpSender_nativeGetMediaType`
+- `Java_org_webrtc_VideoTrack_nativeAddSink`
+- `Java_org_webrtc_RtpSender_nativeSetTrack`
+- `Java_org_telegram_messenger_voip_NativeInstance_getVersion`
+- `Java_org_webrtc_NV12Buffer_nativeCropAndScale`
+- `Java_org_webrtc_RtpTransceiver_nativeCurrentDirection`
+- `Java_org_webrtc_PeerConnection_nativeGetSenders`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1destroy`
+- `Java_org_webrtc_PeerConnection_nativeSetAudioRecording`
+- `Java_org_webrtc_PeerConnection_nativeConnectionState`
+- `Java_org_telegram_messenger_voip_NativeInstance_setConferenceCallId`
+- `Java_org_telegram_messenger_Intro_setTelegramTextures`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStartAecDump`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nGetVideoFrame`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1describe_1message`
+- `Java_org_webrtc_PeerConnectionFactory_nativeFreeFactory`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacReset`
+- `Java_org_telegram_messenger_MrzRecognizer_performRecognition`
+- `Java_org_telegram_messenger_Utilities_setupNativeCrashesListener`
+- `Java_org_telegram_messenger_voip_NativeInstance_getLastError`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfNetworkPreference`
+- `Java_org_telegram_messenger_voip_GroupCallMessagesController_groupCallMessageDecryptImpl`
+- `Java_org_telegram_messenger_Utilities_generateGradient`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nGetFrameAtTime`
+- `Java_org_webrtc_DtmfSender_nativeInterToneGap`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nDestroyDecoder`
+- `Java_org_webrtc_LibvpxVp8Encoder_nativeCreateEncoder`
+- `Java_org_webrtc_CallSessionFileRotatingLogSink_nativeGetLogData`
+- `Java_org_webrtc_RtpReceiver_nativeGetId`
+- `Java_org_webrtc_PeerConnection_nativeRestartIce`
+- `Java_org_webrtc_RtpTransceiver_nativeGetReceiver`
+- `Java_org_telegram_messenger_Utilities_calcCDT`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeOnFrameCaptured`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateLocalMediaStream`
+- `Java_org_webrtc_YuvHelper_nativeCopyPlane`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1apply_1block`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetState`
+- `Java_org_telegram_messenger_voip_NativeInstance_onRequestTimeComplete`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create_1change_1state_1block`
+- `Java_org_webrtc_SoftwareVideoEncoderFactory_nativeGetSupportedCodecs`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create_1zero_1block`
+- `Java_org_telegram_messenger_Utilities_aesIgeEncryptionByteArray`
+- `Java_org_webrtc_TimestampAligner_nativeTranslateTimestamp`
+- `Java_org_telegram_messenger_MediaController_cropOpusFile`
+- `Java_org_webrtc_PeerConnection_nativeCreateAnswer`
+- `Java_org_telegram_messenger_voip_NativeInstance_switchCamera`
+- `Java_org_webrtc_PeerConnection_nativeAddLocalStream`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetId`
+- `Java_org_telegram_messenger_voip_NativeInstance_setNetworkType`
+- `Java_org_webrtc_PeerConnection_nativeRemoveTrack`
+- `Java_org_webrtc_MediaStream_nativeAddVideoTrackToNativeStream`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnIsNull`
+- `Java_org_telegram_messenger_Intro_setFastTextures`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindDouble`
+- `Java_org_webrtc_PeerConnection_nativeGetReceivers`
+- `Java_org_telegram_ui_Components_RLottieNative_nGetFrame`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindNull`
+- `Java_org_webrtc_VideoEncoderWrapper_nativeOnEncodedFrame`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nStopDecoder`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInitializeInternalTracer`
+- `Java_org_telegram_ui_Components_RLottieNative_nReplaceColors`
+- `Java_org_telegram_messenger_MediaController_getWaveform2`
+- `Java_org_webrtc_Histogram_nativeCreateCounts`
+- `Java_org_webrtc_TurnCustomizer_nativeFreeTurnCustomizer`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_prepare`
+- `Java_org_telegram_messenger_Intro_setPrivateTextures`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1height`
+- `Java_org_webrtc_audio_JavaAudioDeviceModule_nativeCreateAudioDeviceModule`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1receive_1inbound_1message`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nCreateDecoder`
+- `Java_org_telegram_messenger_video_WebmEncoder_stop`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1verification_1words`
+- `Java_org_telegram_messenger_voip_NativeInstance_onStreamPartAvailable`
+- `Java_org_webrtc_TimestampAligner_nativeReleaseTimestampAligner`
+- `Java_org_webrtc_PeerConnection_nativeAddIceCandidateWithObserver`
+- `Java_org_telegram_messenger_Utilities_getLastUsageFileTime`
+- `Java_org_webrtc_PeerConnection_nativeGetLocalDescription`
+- `Java_org_telegram_messenger_voip_NativeInstance_makeNativeInstance`
+- `Java_org_webrtc_RtpTransceiver_nativeStopped`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetLastFrameTimestamp`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1destroy_1all`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegDecode`
+- `Java_org_webrtc_VideoTrack_nativeFreeSink`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegGetChannelCount`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegInitialize`
+- `Java_org_webrtc_TimestampAligner_nativeRtcTimeNanos`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_finalize`
+- `Java_org_telegram_messenger_Utilities_needInvert`
+- `Java_org_telegram_messenger_Intro_setBackgroundColor`
+- `Java_org_webrtc_YuvHelper_nativeI420Copy`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindString`
+- `Java_org_telegram_messenger_voip_NativeInstance_stopGroupNative`
+- `Java_org_webrtc_PeerConnection_nativeSignalingState`
+- `Java_org_webrtc_JniCommon_nativeFreeByteBuffer`
+- `Java_org_webrtc_RtpSender_nativeSetStreams`
+- `Java_org_telegram_messenger_voip_NativeInstance_setNoiseSuppressionEnabled`
+- `Java_org_telegram_messenger_Utilities_aesCbcEncryption`
+- `Java_org_webrtc_YuvHelper_nativeABGRToI420`
+- `Java_org_webrtc_PeerConnectionFactory_nativePrintStackTrace`
+- `Java_org_webrtc_PeerConnection_nativeRemoveIceCandidates`
+- `Java_org_webrtc_VideoTrack_nativeWrapSink`
+- `Java_org_webrtc_MediaSource_nativeGetState`
+- `Java_org_webrtc_TimestampAligner_nativeCreateTimestampAligner`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create_1self_1add_1block`
+- `Java_org_webrtc_DataChannel_nativeId`
+- `Java_org_webrtc_RtpSender_nativeGetTrack`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVideoEndpointQuality`
+- `Java_org_webrtc_VideoDecoderFallback_nativeCreate`
+- `Java_org_telegram_messenger_Intro_onDrawFrame`
+- `Java_org_telegram_ui_Components_RLottieNative_nCreateWithJson`
+- `Java_org_webrtc_audio_WebRtcAudioTrack_nativeCacheDirectBufferAddress`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVideoState`
+- `Java_org_telegram_messenger_voip_ConferenceCall_key_1from_1public_1key`
+- `Java_org_telegram_messenger_voip_GroupCallMessagesController_groupCallMessageEncryptImpl`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVolume`
+- `Java_org_webrtc_AudioTrack_nativeSetVolume`
+- `Java_org_telegram_messenger_voip_NativeInstance_setJoinResponsePayload`
+- `Java_org_webrtc_Logging_nativeEnableLogThreads`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyConnectionTypeChanged`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacRelease`
+- `Java_org_webrtc_PeerConnection_nativeCreateSender`
+- `Java_org_telegram_messenger_voip_NativeInstance_onMediaDescriptionAvailable`
+- `Java_org_webrtc_YuvHelper_nativeI420Rotate`
+- `Java_org_telegram_messenger_Utilities_applySoftLight`
+- `Java_org_webrtc_VideoDecoderWrapper_nativeOnDecodedFrame`
+- `Java_org_webrtc_SoftwareVideoEncoderFactory_nativeCreateEncoder`
+- `Java_org_webrtc_PeerConnection_nativeCreatePeerConnectionObserver`
+- `Java_org_webrtc_PeerConnection_nativeNewGetStatsSender`
+- `Java_org_telegram_messenger_Utilities_blurBitmap`
+- `Java_org_telegram_messenger_voip_VideoCapturerDevice_nativeGetJavaVideoCapturerObserver`
+- `Java_org_telegram_messenger_MediaController_getWaveform`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegRelease`
+- `Java_org_telegram_messenger_Utilities_applyAlphaInvert`
+- `Java_org_telegram_messenger_voip_NativeInstance_prepareForStream`
+- `Java_org_telegram_messenger_Utilities_aesCbcEncryptionByteArray`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreatePeerConnection`
+- `Java_org_telegram_messenger_video_WebmEncoder_writeFrame`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusSecureDecode`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindInt`
+- `Java_org_telegram_messenger_Intro_setIcTextures`
+- `Java_org_webrtc_DtmfSender_nativeInsertDtmf`
+- `Java_org_webrtc_PeerConnectionFactory_nativeGetNativePeerConnectionFactory`
+- `Java_org_telegram_messenger_voip_NativeInstance_getAllVersions`
+- `Java_org_telegram_messenger_voip_NativeInstance_clearVideoCapturer`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacIsDecoderAtEndOfStream`
+- `Java_org_webrtc_JniCommon_nativeReleaseRef`
+- `Java_org_telegram_tgnet_ConnectionsManager_native_1test_1AuthAuthorization`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusClose`
+- `Java_org_webrtc_audio_WebRtcAudioRecord_nativeDataIsRecorded`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnStringValue`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetStateString`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfNetworkConnect`
+- `Java_org_telegram_SQLite_SQLiteDatabase_beginTransaction`
+- `Java_org_telegram_messenger_voip_NativeInstance_resetGroupInstance`
+- `Java_org_telegram_messenger_voip_NativeInstance_removeIncomingVideoOutput`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnType`
+- `Java_org_telegram_messenger_voip_NativeInstance_switchCameraCapturer`
+- `Java_org_webrtc_RtpTransceiver_nativeDirection`
+- `Java_org_telegram_messenger_voip_NativeInstance_onSignalingDataReceive`
+- `Java_org_telegram_messenger_voip_NativeInstance_hasVideoCapturer`
+- `Java_org_webrtc_MediaStream_nativeAddAudioTrackToNativeStream`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnCount`
+- `Java_org_webrtc_PeerConnection_nativeStartRtcEventLog`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacInit`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusInit`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateVideoTrack`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnIntValue`
+- `Java_org_webrtc_PeerConnection_nativeSetConfiguration`
+- `Java_org_webrtc_RtpTransceiver_nativeStopStandard`
+- `Java_org_telegram_ui_Stories_recorder_FfmpegAudioWaveformLoader_init`
+- `Java_org_telegram_messenger_voip_NativeInstance_makeGroupNativeInstance`
+- `Java_org_telegram_SQLite_SQLiteDatabase_opendb`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1pull_1outbound_1messages`
+- `Java_org_telegram_messenger_Utilities_aesCtrDecryption`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfActiveNetworkList`
+- `Java_org_telegram_messenger_voip_NativeInstance_setupOutgoingVideo`
+- `Java_org_webrtc_PeerConnectionFactory_nativeDeleteLoggable`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacDecodeToBuffer`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusGetErrorCode`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusReset`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateAudioSource`
+- `Java_org_telegram_messenger_Intro_setDate`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetNextFrameFirstSampleIndex`
+- `Java_org_webrtc_H264Utils_nativeIsSameH264Profile`
+- `Java_org_webrtc_RtpSender_nativeGetParameters`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacDecodeToArray`
+- `Java_org_webrtc_RtpSender_nativeSetFrameEncryptor`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStopInternalTracingCapture`
+- `Java_org_webrtc_RtpTransceiver_nativeGetMediaType`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nSeekToMs`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_step`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeSetState`
+- `Java_org_webrtc_DataChannel_nativeSend`
+- `Java_org_telegram_messenger_voip_NativeInstance_setGlobalServerConfig`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreatePeerConnectionFactory`
+- `Java_org_webrtc_RtpReceiver_nativeUnsetObserver`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeCreate`
+- `Java_org_webrtc_SoftwareVideoEncoderFactory_nativeCreateFactory`
+- `Java_org_telegram_messenger_voip_NativeInstance_activateVideoCapturer`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary_ffmpegHasDecoder`
+- `Java_org_telegram_messenger_voip_NativeInstance_getPreferredRelayId`
+- `Java_org_webrtc_JavaI420Buffer_nativeCropAndScaleI420`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnLongValue`
+- `Java_org_telegram_messenger_voip_NativeInstance_destroyVideoCapturer`
+- `Java_org_telegram_messenger_Utilities_copyBitmaps`
+- `Java_org_webrtc_RtpSender_nativeSetParameters`
+- `Java_org_webrtc_Logging_nativeEnableLogToDebugOutput`
+- `Java_org_webrtc_RtpReceiver_nativeSetFrameDecryptor`
+- `Java_org_webrtc_PeerConnection_nativeGetTransceivers`
+- `Java_org_telegram_messenger_Intro_setScrollOffset`
+- `Java_org_webrtc_LibvpxVp9Decoder_nativeCreateDecoder`
+- `Java_org_telegram_messenger_voip_NativeInstance_setMuteMicrophone`
+- `Java_org_webrtc_PeerConnection_nativeStopRtcEventLog`
+- `Java_org_webrtc_DtmfSender_nativeDuration`
+- `Java_org_telegram_messenger_voip_NativeInstance_setEchoCancellationStrength`
+- `Java_org_telegram_messenger_MrzRecognizer_findCornerPoints`
+- `Java_org_webrtc_VideoEncoderFallback_nativeCreateEncoder`
+- `Java_org_webrtc_PeerConnection_nativeSetRemoteDescription`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeGetSupportedCodecs`
+- `Java_org_webrtc_DataChannel_nativeUnregisterObserver`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusDecode`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nPrepareToSeek`
+- `Java_org_webrtc_LibvpxVp9Encoder_nativeCreateEncoder`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusGetErrorMessage`
+- `Java_org_telegram_messenger_Utilities_drawDitheredGradient`
+- `Java_org_webrtc_RtpSender_nativeGetStreams`
+- `Java_org_webrtc_Histogram_nativeCreateEnumeration`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStartInternalTracingCapture`
+- `Java_org_webrtc_DtmfSender_nativeTones`
+- `Java_org_webrtc_Histogram_nativeAddSample`
+- `Java_org_webrtc_MediaStream_nativeRemoveVideoTrack`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegReset`
+- `Java_org_webrtc_PeerConnection_nativeNewGetStats`
+- `Java_org_telegram_messenger_MrzRecognizer_setYuvBitmapPixels`
+- `Java_org_webrtc_CallSessionFileRotatingLogSink_nativeDeleteSink`
+- `Java_org_telegram_messenger_Utilities_clearDir`
+- `Java_org_telegram_messenger_Intro_setPage`
+- `Java_org_telegram_messenger_Intro_setFreeTextures`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetKind`
+- `Java_org_webrtc_DtmfSender_nativeCanInsertDtmf`
+- `Java_org_telegram_messenger_Utilities_extractAlpha`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacFlush`
+- `Java_org_webrtc_LibvpxVp9Encoder_nativeIsSupported`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInjectLoggable`
+- `Java_org_webrtc_VideoTrack_nativeRemoveSink`
+- `Java_org_webrtc_PeerConnection_nativeIceGatheringState`
+- `Java_org_telegram_messenger_voip_NativeInstance_setupOutgoingVideoCreated`
+- `Java_org_telegram_messenger_MediaController_startRecord`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnByteBufferValue`
+- `Java_org_webrtc_PeerConnection_nativeGetCertificate`
+- `Java_org_telegram_messenger_Utilities_pbkdf2`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnDoubleValue`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1state`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStopAecDump`
+- `Java_org_webrtc_PeerConnection_nativeRemoveLocalStream`
+- `Java_org_telegram_messenger_MediaController_joinOpusFiles`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1describe`
+- `Java_org_telegram_messenger_Utilities_aesIgeEncryption`
+- `Java_org_webrtc_PeerConnection_nativeAddTransceiverOfType`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInitializeAndroidGlobals`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeAdaptOutputFormat`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetLastFrameFirstSampleIndex`
+- `Java_org_webrtc_Logging_nativeEnableLogTimeStamps`
+- `Java_org_webrtc_RtpSender_nativeGetId`
+- `Java_org_webrtc_RtpTransceiver_nativeGetSender`
+- `Java_org_webrtc_Metrics_nativeEnable`
+- `Java_org_telegram_messenger_voip_NativeInstance_getPersistentState`
+- `Java_org_webrtc_audio_WebRtcAudioRecord_nativeCacheDirectBufferAddress`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInitializeFieldTrials`
+- `Java_org_webrtc_Logging_nativeLog`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeAdaptFrame`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary_ffmpegGetInputBufferPaddingSize`
+- `Java_org_telegram_messenger_Utilities_readlinkFd`
+- `Java_org_webrtc_JniCommon_nativeAddRef`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeCreateFactory`
+- `Java_org_telegram_messenger_voip_ConferenceCall_key_1to_1public_1key`
+- `Java_org_webrtc_DataChannel_nativeBufferedAmount`
+- `Java_org_webrtc_PeerConnection_nativeNewGetStatsReceiver`
+- `Java_org_webrtc_audio_WebRtcAudioTrack_nativeGetPlayoutData`
+- `Java_org_webrtc_PeerConnectionFactory_nativeGetRtpSenderCapabilities`
+- `Java_org_webrtc_PeerConnection_nativeIceConnectionState`
+- `Java_org_webrtc_PeerConnection_nativeAddIceCandidate`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusLibrary_opusIsSecureDecodeSupported`
+- `Java_org_webrtc_PeerConnection_nativeFreeOwnedPeerConnection`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVideoStateCapturer`
+- `Java_org_telegram_messenger_Utilities_nLibyuvARGBSaleBitmap`
+- `Java_org_webrtc_DataChannel_nativeState`
+- `Java_org_webrtc_EglBase10Impl_nativeGetCurrentNativeEGLContext`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateVideoSource`
+- `Java_org_webrtc_DataChannel_nativeRegisterObserver`
+- `Java_org_telegram_messenger_Utilities_aesCtrDecryptionByteArray`
+- `Java_org_webrtc_PeerConnection_nativeCreateDataChannel`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1verification_1state`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateAudioTrack`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegGetSampleRate`
+- `Java_org_webrtc_PeerConnection_nativeClose`
+- `Java_org_webrtc_RtpReceiver_nativeGetParameters`
+- `Java_org_telegram_messenger_Intro_onSurfaceCreated`
+- `Java_org_webrtc_PeerConnectionFactory_nativeShutdownInternalTracer`
+- `Java_org_telegram_messenger_MediaController_writeFrame`
+- `Java_org_telegram_ui_Components_RLottieNative_nCreate`
+- `Java_org_webrtc_PeerConnection_nativeSetAudioPlayout`
+- `Java_org_webrtc_PeerConnection_nativeAddTransceiverWithTrack`
+- `Java_org_telegram_messenger_voip_NativeInstance_setBufferSize`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_reset`
+- `Java_org_webrtc_PeerConnection_nativeAddTrack`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusSetFloatOutput`
+- `Java_org_telegram_messenger_Utilities_stackBlurBitmap`
+- `Java_org_webrtc_PeerConnection_nativeGetNativePeerConnection`
+- `Java_org_telegram_messenger_voip_NativeInstance_stopNative`
+- `Java_org_webrtc_JniCommon_nativeAllocateByteBuffer`
+- `Java_org_telegram_messenger_MediaController_isOpusFile`
+- `Java_org_webrtc_DataChannel_nativeClose`
+- `Java_org_telegram_messenger_MediaController_stopRecord`
+- `Java_org_telegram_messenger_voip_NativeInstance_getTrafficStats`
+- `Java_org_telegram_ui_Components_RLottieNative_nSetLayerColor`
+- `Java_org_webrtc_YuvHelper_nativeI420ToNV12`
+- `Java_org_webrtc_RtpReceiver_nativeSetObserver`
+- `Java_org_telegram_messenger_voip_NativeInstance_createVideoCapturer`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1describe_1block`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nGetVideoInfo`
+- `Java_org_telegram_messenger_voip_NativeInstance_addIncomingVideoOutput`
+- `Java_org_webrtc_RtpSender_nativeGetDtmfSender`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeSetIsScreencast`
+- `Java_org_webrtc_RtpTransceiver_nativeStopInternal`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnByteArrayValue`
+- `Java_org_webrtc_BuiltinAudioDecoderFactoryFactory_nativeCreateBuiltinAudioDecoderFactory`
+- `Java_org_webrtc_RtpTransceiver_nativeSetDirection`
+- `Java_org_webrtc_MediaStream_nativeGetId`
+- `Java_org_webrtc_DataChannel_nativeLabel`
+- `Java_org_telegram_SQLite_SQLiteDatabase_closedb`
+- `Java_org_webrtc_PeerConnection_nativeGetRemoteDescription`
+- `Java_org_telegram_messenger_NativeLoader_init`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusLibrary_opusGetVersion`
+- `Java_org_telegram_messenger_MrzRecognizer_binarizeAndFindCharacters`
+- `Java_org_webrtc_PeerConnection_nativeSetBitrate`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfNetworkDisconnect`
+
+</details>
+
+#### Version / library strings from `.rodata`
+
+<details><summary>Expand version strings</summary>
+
+- `BIO_LIB`
+- ` is not implemented. Update your FFmpeg version to the newest one from Git. If the problem still occurs, it means that your file has a feature which has not been implemented.`
+- `7.1.4`
+- `ABI version mismatch`
+- `Profile > 1 not supported in this build configuration`
+- `x264_build`
+- `Unsupported SA3D box version %d`
+- `tde2e seed version`
+- `WelsBuildRefList pCtx->uiTemporalId = %d,pRef->iFrameNum = %d,pRef->uiTemporalId = %d`
+- `0 == libyuv::I444Rotate( src.DataY(), src.StrideY(), src.DataU(), src.StrideU(), src.DataV(), src.StrideV(), buffer->MutableDataY(), buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(), buffer->MutableDataV(), buffer->StrideV(), src.width(), src.height(), static_cast<libyuv::RotationMode>(rotation))`
+- `/home/gradle/TMessagesProj/jni/voip/webrtc/rtc_base/task_queue_libevent.cc`
+- `PEM_LIB`
+- `ASN1_LIB`
+- `Character encoding subtitles conversion needs a libavcodec built with iconv support for this codec`
+- `src/libswresample/audioconvert.c`
+- `src/libavutil/lzo.c`
+- `%s configurationVersion %d`
+- `libyuv::I420Rect(buffer->MutableDataY(), buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(), buffer->MutableDataV(), buffer->StrideV(), 0, 0, buffer->width(), buffer->height(), 0, 128, 128) == 0`
+- `.note.gnu.build-id`
+- `libunwind: %s - %s`
+- `src/libavutil/hwcontext.c`
+- `src/libavcodec/parser.c`
+- `src/libavcodec/vlc.c`
+- `src/libavutil/crc.c`
+- `Extradata version %d`
+- `libdav1d %s`
+- `Unsupported tag version. (>=%d)`
+- `version =%d, isom =%d`
+- `Unsupported Mastering Display Metadata box version %d`
+- `WelsEncoderEncodeExt(), WelsBuildRefList failed for P frames, pCtx->iNumRef0= %d. ForceCodingIDR!`
+- `getAndroidBuildId`
+- `src/libavcodec/libdav1d.c`
+- `src/libswscale/graph.c`
+- `, version=`
+- `0 == libyuv::I444Copy(data_y, stride_y, data_u, stride_u, data_v, stride_v, buffer->MutableDataY(), buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(), buffer->MutableDataV(), buffer->StrideV(), width, height)`
+- `/home/gradle/TMessagesProj/jni/voip/webrtc/rtc_base/numerics/safe_conversions.h`
+- `Missing version!`
+- `Libvpx VP9 encoder SVC frame drop config: `
+- `protocol_version`
+- `libunwind: malformed DW_CFA_def_cfa DWARF unwind, reg too big`
+
+</details>
+
+---
+
+### `lib/x86_64/liblanguage_id_l2c_jni.so`
+
+- **ABI:** `x86_64`
+- **File name:** `liblanguage_id_l2c_jni.so`
+- **Uncompressed size:** 1,324,480 bytes
+- **ELF class:** ELF64
+- **Endianness:** little
+- **e_machine:** EM_X86_64 (62)
+- **e_type:** ET_DYN (3)
+- **Section count:** 30
+- **Dynamic symbols parsed:** 126
+- **Exported JNI symbols (`Java_*`):** 3
+- **`JNI_OnLoad` present:** no
+
+#### DT_NEEDED dependencies
+
+- `libandroid.so`
+- `libdl.so`
+- `libm.so`
+- `liblog.so`
+- `libc.so`
+
+#### Exported JNI symbols (`Java_*`)
+
+<details><summary>Expand JNI symbols</summary>
+
+- `Java_com_google_mlkit_nl_languageid_bundled_internal_ThickLanguageIdentifier_nativeInitFromBuffer`
+- `Java_com_google_mlkit_nl_languageid_bundled_internal_ThickLanguageIdentifier_nativeIdentifyPossibleLanguages`
+- `Java_com_google_mlkit_nl_languageid_bundled_internal_ThickLanguageIdentifier_nativeDestroy`
+
+</details>
+
+#### Version / library strings from `.rodata`
+
+<details><summary>Expand version strings</summary>
+
+- `build-secure-info:source-uri`
+- `x86_64-linux-android-llvm-libcxx-x86_64`
+- `firebase-ml-android-sdk-releaser@oouc14.prod.google.com:/google/src/cloud/buildrabbit-username/buildrabbit-client/google3`
+- `//java/com/google/android/libraries/mlkit/granules/natural_language/language_id_bundled/native:liblanguage_id_l2c_jni.so`
+- `blaze-out/x86_64-opt-android-ST-fc5b266d4b46/bin/java/com/google/android/libraries/mlkit/granules/natural_language/language_id_bundled/native/liblanguage_id_l2c_jni.so`
+- `/google/src/cloud/buildrabbit-username/buildrabbit-client/google3`
+- `libunwind: %s - %s`
+- `libunwind: malformed DW_CFA_def_cfa DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_val_offset DWARF unwind, reg (%lu) out of range`
+- `CIE version is not 1 or 3`
+- `libunwind: malformed DW_CFA_def_cfa_sf DWARF unwind, reg too big`
+- `Model provided is schema version %d not equal to supported version %d.`
+- `: no conversion`
+- `libc++`
+- `libunwind: malformed DW_CFA_offset_extended DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_restore DWARF unwind, reg (%lu) out of range`
+- `libunwind: unsupported .eh_frame_hdr version: %u at %lx`
+- `libunwind: malformed DW_CFA_register DWARF unwind, reg2 too big`
+- `libunwind: malformed DW_CFA_expression DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_offset_extended_sf DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_offset DWARF unwind, reg (%lu) out of range`
+- `out/llvm-project/libcxxabi/src/fallback_malloc.cpp`
+- `libunwind: unsupported .eh_frame_hdr at %lx: need at least 4 bytes of data but only got %zd`
+- `libunwind: malformed DW_CFA_restore_extended DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_val_expression DWARF unwind, reg too big`
+- `Didn't find op for builtin opcode '%s' version '%d'. An older version of this builtin might be supported. Are you using an old TFLite binary with a newer model?`
+- `libunwind: malformed DW_CFA_GNU_negative_offset_extended DWARF unwind, reg too big`
+- `Null output pointer passed to InterpreterBuilder.`
+- `libunwind: malformed DW_CFA_register DWARF unwind, reg too big`
+- `libunwind: malformed DW_CFA_def_cfa_register DWARF unwind, reg too big`
+- `libandroid.so`
+- `libunwind: malformed DW_CFA_undefined DWARF unwind, reg too big`
+- `libc++abi`
+- `libc++abi: `
+- `libunwind: malformed DW_CFA_val_offset_sf DWARF unwind, reg too big`
+- `libdvm.so`
+- `JNI version error`
+- `libunwind: malformed DW_CFA_same_value DWARF unwind, reg too big`
+- `InterpreterBuilder::operator()`
+- `CONVERSION_METADATA`
+
+</details>
+
+---
+
+### `lib/x86_64/libtmessages.49.so`
+
+- **ABI:** `x86_64`
+- **File name:** `libtmessages.49.so`
+- **Uncompressed size:** 26,694,416 bytes
+- **ELF class:** ELF64
+- **Endianness:** little
+- **e_machine:** EM_X86_64 (62)
+- **e_type:** ET_DYN (3)
+- **Section count:** 28
+- **Dynamic symbols parsed:** 38381
+- **Exported JNI symbols (`Java_*`):** 376
+- **`JNI_OnLoad` present:** yes
+
+#### DT_NEEDED dependencies
+
+- `libjnigraphics.so`
+- `liblog.so`
+- `libz.so`
+- `libGLESv2.so`
+- `libEGL.so`
+- `libandroid.so`
+- `libOpenSLES.so`
+- `libdl.so`
+- `libm.so`
+- `libc.so`
+
+#### Exported JNI symbols (`Java_*`)
+
+<details><summary>Expand JNI symbols</summary>
+
+- `Java_org_telegram_SQLite_SQLiteCursor_columnIsNull`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindNull`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegDecode`
+- `Java_org_webrtc_PeerConnection_nativeAddTrack`
+- `Java_org_telegram_messenger_MrzRecognizer_binarizeAndFindCharacters`
+- `Java_org_webrtc_PeerConnectionFactory_nativeDeleteLoggable`
+- `Java_org_telegram_messenger_Intro_setFreeTextures`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnStringValue`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeIsSupported`
+- `Java_org_telegram_messenger_Utilities_averageBitmapColor`
+- `Java_org_telegram_ui_Components_RLottieNative_nCreate`
+- `Java_org_telegram_messenger_Intro_onSurfaceCreated`
+- `Java_org_telegram_tgnet_ConnectionsManager_native_1test_1AuthAuthorization`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusReset`
+- `Java_org_telegram_messenger_voip_NativeInstance_setEchoCancellationStrength`
+- `Java_org_webrtc_RtpSender_nativeSetTrack`
+- `Java_org_telegram_messenger_Utilities_generateGradient`
+- `Java_org_webrtc_audio_WebRtcAudioRecord_nativeDataIsRecorded`
+- `Java_org_webrtc_DtmfSender_nativeTones`
+- `Java_org_webrtc_RtpTransceiver_nativeSetCodecPreferences`
+- `Java_org_telegram_messenger_voip_NativeInstance_activateVideoCapturer`
+- `Java_org_telegram_messenger_Intro_setPrivateTextures`
+- `Java_org_telegram_messenger_voip_NativeInstance_getLastError`
+- `Java_org_telegram_messenger_NativeLoader_init`
+- `Java_org_webrtc_RtpTransceiver_nativeGetSender`
+- `Java_org_webrtc_PeerConnection_nativeGetRemoteDescription`
+- `Java_org_telegram_messenger_voip_NativeInstance_makeNativeInstance`
+- `Java_org_webrtc_PeerConnection_nativeClose`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInjectLoggable`
+- `Java_org_webrtc_LibvpxVp9Decoder_nativeCreateDecoder`
+- `Java_org_webrtc_LibvpxVp8Decoder_nativeCreateDecoder`
+- `Java_org_webrtc_TimestampAligner_nativeCreateTimestampAligner`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacFlush`
+- `Java_org_webrtc_YuvHelper_nativeI420Rotate`
+- `Java_org_telegram_messenger_voip_ConferenceCall_key_1to_1public_1key`
+- `Java_org_telegram_messenger_Utilities_expandAlphaToBlack`
+- `Java_org_telegram_messenger_voip_NativeInstance_getVersion`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacDecodeToBuffer`
+- `Java_org_webrtc_PeerConnection_nativeAddIceCandidateWithObserver`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusSecureDecode`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVideoStateCapturer`
+- `Java_org_webrtc_PeerConnection_nativeCreateAnswer`
+- `Java_org_webrtc_RtpReceiver_nativeGetTrack`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusSetFloatOutput`
+- `Java_org_webrtc_DataChannel_nativeState`
+- `Java_org_webrtc_RtpSender_nativeGetTrack`
+- `Java_org_webrtc_PeerConnection_nativeAddIceCandidate`
+- `Java_org_webrtc_PeerConnection_nativeIceGatheringState`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfActiveNetworkList`
+- `Java_org_webrtc_PeerConnection_nativeConnectionState`
+- `Java_org_telegram_SQLite_SQLiteDatabase_opendb`
+- `Java_org_webrtc_PeerConnection_nativeRestartIce`
+- `Java_org_webrtc_PeerConnection_nativeStartRtcEventLog`
+- `Java_org_webrtc_AudioTrack_nativeSetVolume`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnByteArrayValue`
+- `Java_org_webrtc_RtpReceiver_nativeUnsetObserver`
+- `Java_org_webrtc_VideoEncoderFallback_nativeCreateEncoder`
+- `Java_org_telegram_messenger_voip_NativeInstance_destroyVideoCapturer`
+- `Java_org_webrtc_DtmfSender_nativeInterToneGap`
+- `Java_org_webrtc_PeerConnection_nativeRemoveIceCandidates`
+- `Java_org_webrtc_VideoTrack_nativeWrapSink`
+- `Java_org_telegram_messenger_voip_NativeInstance_setBufferSize`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegReset`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnType`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeCreate`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyConnectionTypeChanged`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacRelease`
+- `Java_org_webrtc_RtpTransceiver_nativeStopped`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary_ffmpegGetVersion`
+- `Java_org_telegram_messenger_Utilities_aesCtrDecryptionByteArray`
+- `Java_org_telegram_messenger_voip_GroupCallMessagesController_groupCallMessageDecryptImpl`
+- `Java_org_webrtc_audio_WebRtcAudioRecord_nativeCacheDirectBufferAddress`
+- `Java_org_telegram_messenger_Utilities_aesIgeEncryption`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusLibrary_opusIsSecureDecodeSupported`
+- `Java_org_webrtc_RtpSender_nativeSetParameters`
+- `Java_org_webrtc_PeerConnection_nativeFreeOwnedPeerConnection`
+- `Java_org_telegram_messenger_Utilities_getLastUsageFileTime`
+- `Java_org_telegram_messenger_MediaController_getWaveform`
+- `Java_org_webrtc_VideoTrack_nativeAddSink`
+- `Java_org_telegram_messenger_Utilities_nLibyuvARGBSaleBitmap`
+- `Java_org_webrtc_DataChannel_nativeBufferedAmount`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacIsDecoderAtEndOfStream`
+- `Java_org_webrtc_MediaStream_nativeGetId`
+- `Java_org_webrtc_VideoEncoderWrapper_nativeOnEncodedFrame`
+- `Java_org_webrtc_PeerConnection_nativeGetReceivers`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_prepare`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nGetFrameAtTime`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeSetIsScreencast`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusClose`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nGetVideoFrame`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetNextFrameFirstSampleIndex`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1destroy_1all`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetStateString`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfNetworkConnect`
+- `Java_org_webrtc_SoftwareVideoEncoderFactory_nativeCreateEncoder`
+- `Java_org_telegram_messenger_MrzRecognizer_setYuvBitmapPixels`
+- `Java_org_webrtc_PeerConnection_nativeSignalingState`
+- `Java_org_webrtc_MediaStream_nativeAddAudioTrackToNativeStream`
+- `Java_org_webrtc_RtpReceiver_nativeSetObserver`
+- `Java_org_telegram_messenger_voip_NativeInstance_clearVideoCapturer`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVideoState`
+- `Java_org_telegram_ui_Components_RLottieNative_nGetFrame`
+- `Java_org_telegram_ui_Components_RLottieNative_nCreateWithJson`
+- `Java_org_telegram_messenger_video_WebmEncoder_stop`
+- `Java_org_telegram_messenger_voip_NativeInstance_setNetworkType`
+- `Java_org_telegram_messenger_Intro_setBackgroundColor`
+- `Java_org_webrtc_Logging_nativeEnableLogToDebugOutput`
+- `Java_org_telegram_messenger_voip_NativeInstance_createVideoCapturer`
+- `Java_org_webrtc_PeerConnection_nativeGetNativePeerConnection`
+- `Java_org_webrtc_Logging_nativeLog`
+- `Java_org_telegram_messenger_MediaController_startRecord`
+- `Java_org_webrtc_DtmfSender_nativeDuration`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnByteBufferValue`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegGetSampleRate`
+- `Java_org_telegram_messenger_voip_NativeInstance_onSignalingDataReceive`
+- `Java_org_telegram_messenger_MrzRecognizer_findCornerPoints`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacDecodeMetadata`
+- `Java_org_webrtc_NV12Buffer_nativeCropAndScale`
+- `Java_org_webrtc_PeerConnection_nativeAddTransceiverOfType`
+- `Java_org_telegram_messenger_voip_NativeInstance_stopGroupNative`
+- `Java_org_telegram_messenger_Intro_setDate`
+- `Java_org_webrtc_Histogram_nativeCreateCounts`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1verification_1state`
+- `Java_org_telegram_messenger_Utilities_copyBitmaps`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1describe`
+- `Java_org_telegram_messenger_voip_NativeInstance_getTrafficStats`
+- `Java_org_telegram_messenger_Intro_onDrawFrame`
+- `Java_org_telegram_messenger_video_WebmEncoder_createEncoder`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1pull_1outbound_1messages`
+- `Java_org_telegram_messenger_Utilities_pbkdf2`
+- `Java_org_telegram_SQLite_SQLiteDatabase_beginTransaction`
+- `Java_org_webrtc_RtpTransceiver_nativeStopStandard`
+- `Java_org_webrtc_BuiltinAudioDecoderFactoryFactory_nativeCreateBuiltinAudioDecoderFactory`
+- `Java_org_telegram_messenger_MediaController_joinOpusFiles`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusInit`
+- `Java_org_telegram_messenger_voip_ConferenceCall_key_1from_1public_1key`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nStopDecoder`
+- `Java_org_telegram_messenger_voip_NativeInstance_setupOutgoingVideo`
+- `Java_org_webrtc_RtpTransceiver_nativeGetMediaType`
+- `Java_org_telegram_messenger_MediaController_getWaveform2`
+- `Java_org_telegram_SQLite_SQLiteDatabase_closedb`
+- `Java_org_webrtc_RtcCertificatePem_nativeGenerateCertificate`
+- `Java_org_webrtc_DataChannel_nativeUnregisterObserver`
+- `Java_org_telegram_messenger_voip_NativeInstance_setJoinResponsePayload`
+- `Java_org_webrtc_PeerConnectionFactory_nativeShutdownInternalTracer`
+- `Java_org_webrtc_RtpTransceiver_nativeSetDirection`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetSeekPoints`
+- `Java_org_webrtc_PeerConnection_nativeSetLocalDescriptionAutomatically`
+- `Java_org_telegram_messenger_voip_NativeInstance_onStreamPartAvailable`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_finalize`
+- `Java_org_telegram_messenger_voip_NativeInstance_setConferenceCallId`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nGetVideoInfo`
+- `Java_org_webrtc_PeerConnection_nativeCreateOffer`
+- `Java_org_webrtc_JniCommon_nativeAddRef`
+- `Java_org_telegram_messenger_Utilities_aesCbcEncryption`
+- `Java_org_webrtc_JniCommon_nativeAllocateByteBuffer`
+- `Java_org_webrtc_Histogram_nativeAddSample`
+- `Java_org_telegram_messenger_Utilities_calcCDT`
+- `Java_org_webrtc_TimestampAligner_nativeRtcTimeNanos`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVolume`
+- `Java_org_webrtc_VideoTrack_nativeFreeSink`
+- `Java_org_webrtc_RtpSender_nativeSetStreams`
+- `Java_org_webrtc_PeerConnection_nativeNewGetStatsReceiver`
+- `Java_org_telegram_messenger_voip_NativeInstance_setNoiseSuppressionEnabled`
+- `Java_org_webrtc_RtpSender_nativeGetStreams`
+- `Java_org_telegram_messenger_voip_NativeInstance_switchCamera`
+- `Java_org_webrtc_PeerConnectionFactory_nativeFreeFactory`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacReset`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegRelease`
+- `Java_org_webrtc_PeerConnection_nativeNewGetStats`
+- `Java_org_webrtc_PeerConnection_nativeGetTransceivers`
+- `Java_org_webrtc_PeerConnection_nativeCreateSender`
+- `Java_org_webrtc_PeerConnection_nativeAddTransceiverWithTrack`
+- `Java_org_webrtc_JavaI420Buffer_nativeCropAndScaleI420`
+- `Java_org_webrtc_PeerConnection_nativeNewGetStatsSender`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetKind`
+- `Java_org_webrtc_DtmfSender_nativeInsertDtmf`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnDoubleValue`
+- `Java_org_webrtc_CallSessionFileRotatingLogSink_nativeDeleteSink`
+- `Java_org_webrtc_PeerConnection_nativeGetCertificate`
+- `Java_org_webrtc_SoftwareVideoEncoderFactory_nativeGetSupportedCodecs`
+- `Java_org_webrtc_RtpSender_nativeSetFrameEncryptor`
+- `Java_org_webrtc_LibvpxVp9Decoder_nativeIsSupported`
+- `Java_org_webrtc_PeerConnection_nativeCreatePeerConnectionObserver`
+- `Java_org_webrtc_PeerConnection_nativeSetConfiguration`
+- `Java_org_telegram_messenger_voip_NativeInstance_setMuteMicrophone`
+- `Java_org_webrtc_Logging_nativeEnableLogTimeStamps`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateAudioSource`
+- `Java_org_webrtc_LibvpxVp9Encoder_nativeCreateEncoder`
+- `Java_org_webrtc_LibvpxVp8Encoder_nativeCreateEncoder`
+- `Java_org_webrtc_DataChannel_nativeRegisterObserver`
+- `Java_org_webrtc_RtpSender_nativeGetId`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nSeekToMs`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeAdaptOutputFormat`
+- `Java_org_telegram_messenger_Intro_onSurfaceChanged`
+- `Java_org_webrtc_TimestampAligner_nativeTranslateTimestamp`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeGetSupportedCodecs`
+- `Java_org_webrtc_SoftwareVideoEncoderFactory_nativeCreateFactory`
+- `Java_org_telegram_messenger_voip_NativeInstance_makeGroupNativeInstance`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnIntValue`
+- `Java_org_webrtc_EglBase10Impl_nativeGetCurrentNativeEGLContext`
+- `Java_org_webrtc_audio_JavaAudioDeviceModule_nativeCreateAudioDeviceModule`
+- `Java_org_telegram_messenger_voip_NativeInstance_getPreferredRelayId`
+- `Java_org_telegram_messenger_Utilities_getDirSize`
+- `Java_org_webrtc_PeerConnection_nativeSetLocalDescription`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateVideoSource`
+- `Java_org_telegram_messenger_Utilities_extractAlpha`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_step`
+- `Java_org_telegram_ui_Stories_recorder_FfmpegAudioWaveformLoader_init`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create_1self_1add_1block`
+- `Java_org_telegram_messenger_voip_NativeInstance_resetGroupInstance`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateVideoTrack`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetState`
+- `Java_org_webrtc_RtpTransceiver_nativeCurrentDirection`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetDecodePosition`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnCount`
+- `Java_org_telegram_messenger_MediaController_isOpusFile`
+- `Java_org_webrtc_PeerConnectionFactory_nativePrintStackTrace`
+- `Java_org_webrtc_PeerConnectionFactory_nativeGetRtpSenderCapabilities`
+- `Java_org_webrtc_PeerConnection_nativeSetAudioRecording`
+- `Java_org_telegram_messenger_Utilities_applyAlphaInvert`
+- `Java_org_webrtc_NV21Buffer_nativeCropAndScale`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetLastFrameTimestamp`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1apply_1block`
+- `Java_org_telegram_messenger_voip_NativeInstance_setupOutgoingVideoCreated`
+- `Java_org_telegram_messenger_Utilities_aesCtrDecryption`
+- `Java_org_webrtc_PeerConnection_nativeRemoveTrack`
+- `Java_org_telegram_messenger_voip_ConferenceCall_key_1generate_1temporary_1private_1key`
+- `Java_org_webrtc_PeerConnection_nativeGetSenders`
+- `Java_org_telegram_messenger_Intro_setScrollOffset`
+- `Java_org_telegram_messenger_Utilities_readlink`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfNetworkPreference`
+- `Java_org_telegram_SQLite_SQLiteCursor_columnLongValue`
+- `Java_org_telegram_messenger_MediaController_cropOpusFile`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary_ffmpegGetInputBufferPaddingSize`
+- `Java_org_telegram_messenger_voip_NativeInstance_getDebugInfo`
+- `Java_org_webrtc_PeerConnectionFactory_nativeFindFieldTrialsFullName`
+- `Java_org_webrtc_RtpTransceiver_nativeGetReceiver`
+- `Java_org_telegram_messenger_voip_NativeInstance_setAudioOutputGainControlEnabled`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusGetErrorCode`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateAudioTrack`
+- `Java_org_webrtc_DataChannel_nativeClose`
+- `Java_org_telegram_messenger_Intro_setPowerfulTextures`
+- `Java_org_webrtc_MediaStream_nativeRemoveVideoTrack`
+- `Java_org_webrtc_NetworkMonitor_nativeNotifyOfNetworkDisconnect`
+- `Java_org_webrtc_JniCommon_nativeReleaseRef`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusLibrary_opusGetVersion`
+- `Java_org_telegram_messenger_voip_NativeInstance_prepareForStream`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegInitialize`
+- `Java_org_telegram_messenger_Intro_setPage`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetId`
+- `Java_org_webrtc_PeerConnection_nativeIceConnectionState`
+- `Java_org_telegram_messenger_voip_NativeInstance_getAllVersions`
+- `Java_org_telegram_messenger_Utilities_stackBlurBitmap`
+- `Java_org_webrtc_PeerConnectionFactory_nativeGetRtpReceiverCapabilities`
+- `Java_org_telegram_messenger_Utilities_readlinkFd`
+- `Java_org_telegram_messenger_MrzRecognizer_performRecognition`
+- `Java_org_telegram_messenger_Intro_setFastTextures`
+- `Java_org_telegram_messenger_MediaController_stopRecord`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_reset`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nCreateDecoder`
+- `Java_org_telegram_messenger_voip_NativeInstance_setGlobalServerConfig`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegAudioDecoder_ffmpegGetChannelCount`
+- `Java_org_webrtc_PeerConnection_nativeSetAudioPlayout`
+- `Java_org_telegram_messenger_voip_NativeInstance_removeIncomingVideoOutput`
+- `Java_org_telegram_messenger_voip_GroupCallMessagesController_groupCallMessageEncryptImpl`
+- `Java_org_telegram_messenger_Utilities_aesIgeEncryptionByteArray`
+- `Java_org_telegram_messenger_Intro_setTelegramTextures`
+- `Java_org_webrtc_MediaStream_nativeRemoveAudioTrack`
+- `Java_com_google_android_exoplayer2_ext_ffmpeg_FfmpegLibrary_ffmpegHasDecoder`
+- `Java_org_webrtc_RtpSender_nativeGetParameters`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreatePeerConnection`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStartInternalTracingCapture`
+- `Java_org_webrtc_RtpReceiver_nativeSetFrameDecryptor`
+- `Java_org_webrtc_RtpReceiver_nativeGetId`
+- `Java_org_telegram_ui_Components_RLottieNative_nReplaceColors`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacGetLastFrameFirstSampleIndex`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1receive_1inbound_1message`
+- `Java_org_webrtc_SoftwareVideoDecoderFactory_nativeCreateFactory`
+- `Java_org_webrtc_MediaStream_nativeAddVideoTrackToNativeStream`
+- `Java_org_webrtc_DataChannel_nativeSend`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1describe_1message`
+- `Java_org_telegram_ui_Components_RLottieNative_nDestroy`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindLong`
+- `Java_org_telegram_messenger_voip_NativeInstance_onRequestTimeComplete`
+- `Java_org_webrtc_PeerConnection_nativeSetRemoteDescription`
+- `Java_org_webrtc_H264Utils_nativeIsSameH264Profile`
+- `Java_org_telegram_messenger_Utilities_applySoftLight`
+- `Java_org_telegram_messenger_Intro_setIcTextures`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create_1change_1state_1block`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeAdaptFrame`
+- `Java_org_webrtc_MediaStreamTrack_nativeSetEnabled`
+- `Java_org_webrtc_RtpReceiver_nativeGetParameters`
+- `Java_org_webrtc_PeerConnectionFactory_nativeGetNativePeerConnectionFactory`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInitializeInternalTracer`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStopInternalTracingCapture`
+- `Java_org_webrtc_Metrics_nativeEnable`
+- `Java_org_webrtc_DataChannel_nativeLabel`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacInit`
+- `Java_org_telegram_messenger_voip_NativeInstance_stopNative`
+- `Java_org_telegram_messenger_Utilities_aesCbcEncryptionByteArray`
+- `Java_org_telegram_messenger_voip_NativeInstance_onMediaDescriptionAvailable`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindDouble`
+- `Java_org_webrtc_PeerConnection_nativeGetLocalDescription`
+- `Java_org_webrtc_PeerConnection_nativeSetBitrate`
+- `Java_org_telegram_messenger_Utilities_needInvert`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindInt`
+- `Java_org_webrtc_DataChannel_nativeId`
+- `Java_org_webrtc_VideoTrack_nativeRemoveSink`
+- `Java_org_telegram_SQLite_SQLiteDatabase_commitTransaction`
+- `Java_org_webrtc_PeerConnection_nativeAddLocalStream`
+- `Java_org_webrtc_MediaSource_nativeGetState`
+- `Java_org_webrtc_CallSessionFileRotatingLogSink_nativeAddSink`
+- `Java_org_telegram_messenger_voip_NativeInstance_getPersistentState`
+- `Java_org_webrtc_Histogram_nativeCreateEnumeration`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1create_1zero_1block`
+- `Java_org_webrtc_YuvHelper_nativeI420ToNV12`
+- `Java_org_webrtc_DtmfSender_nativeCanInsertDtmf`
+- `Java_org_telegram_messenger_video_WebmEncoder_writeFrame`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreatePeerConnectionFactory`
+- `Java_org_telegram_messenger_Utilities_drawDitheredGradient`
+- `Java_org_webrtc_YuvHelper_nativeABGRToI420`
+- `Java_org_webrtc_audio_WebRtcAudioTrack_nativeCacheDirectBufferAddress`
+- `Java_org_webrtc_YuvHelper_nativeI420Copy`
+- `Java_org_telegram_messenger_voip_VideoCapturerDevice_nativeGetJavaVideoCapturerObserver`
+- `Java_org_webrtc_VideoDecoderWrapper_nativeOnDecodedFrame`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nPrepareToSeek`
+- `Java_org_webrtc_TimestampAligner_nativeReleaseTimestampAligner`
+- `Java_org_webrtc_TurnCustomizer_nativeFreeTurnCustomizer`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInitializeAndroidGlobals`
+- `Java_org_webrtc_PeerConnectionFactory_nativeInitializeFieldTrials`
+- `Java_org_telegram_messenger_Utilities_setupNativeCrashesListener`
+- `Java_org_webrtc_JniCommon_nativeFreeByteBuffer`
+- `Java_org_webrtc_BuiltinAudioEncoderFactoryFactory_nativeCreateBuiltinAudioEncoderFactory`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1describe_1block`
+- `Java_org_webrtc_RtpSender_nativeGetMediaType`
+- `Java_org_webrtc_RtpTransceiver_nativeStopInternal`
+- `Java_org_webrtc_PeerConnection_nativeOldGetStats`
+- `Java_org_webrtc_PeerConnection_nativeRemoveLocalStream`
+- `Java_org_webrtc_RtpSender_nativeGetDtmfSender`
+- `Java_org_telegram_messenger_voip_NativeInstance_hasVideoCapturer`
+- `Java_org_webrtc_RtpTransceiver_nativeDirection`
+- `Java_com_google_android_exoplayer2_ext_flac_FlacDecoderJni_flacDecodeToArray`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1height`
+- `Java_org_telegram_messenger_voip_NativeInstance_switchCameraCapturer`
+- `Java_org_telegram_messenger_voip_NativeInstance_setVideoEndpointQuality`
+- `Java_org_webrtc_PeerConnectionFactory_nativeCreateLocalMediaStream`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStartAecDump`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1state`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeOnFrameCaptured`
+- `Java_org_telegram_messenger_Utilities_clearDir`
+- `Java_org_webrtc_audio_WebRtcAudioTrack_nativeGetPlayoutData`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusGetErrorMessage`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1get_1verification_1words`
+- `Java_org_telegram_messenger_Utilities_blurBitmap`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindByteBuffer`
+- `Java_org_webrtc_PeerConnectionFactory_nativeStopAecDump`
+- `Java_org_telegram_messenger_MediaController_writeFrame`
+- `Java_org_webrtc_Metrics_nativeGetAndReset`
+- `Java_org_webrtc_Logging_nativeEnableLogThreads`
+- `Java_org_telegram_messenger_voip_NativeInstance_addIncomingVideoOutput`
+- `Java_org_webrtc_YuvHelper_nativeCopyPlane`
+- `Java_com_google_android_exoplayer2_ext_opus_OpusDecoder_opusDecode`
+- `Java_org_webrtc_MediaStreamTrack_nativeGetEnabled`
+- `Java_org_telegram_SQLite_SQLitePreparedStatement_bindString`
+- `Java_org_webrtc_RtpTransceiver_nativeGetMid`
+- `Java_org_webrtc_NativeAndroidVideoTrackSource_nativeSetState`
+- `Java_org_webrtc_VideoDecoderFallback_nativeCreate`
+- `Java_org_telegram_ui_Components_AnimatedFileNative_nDestroyDecoder`
+- `Java_org_webrtc_CallSessionFileRotatingLogSink_nativeGetLogData`
+- `Java_org_webrtc_LibvpxVp9Encoder_nativeIsSupported`
+- `Java_org_webrtc_PeerConnection_nativeStopRtcEventLog`
+- `Java_org_telegram_ui_Components_RLottieNative_nSetLayerColor`
+- `Java_org_telegram_messenger_voip_ConferenceCall_call_1destroy`
+- `Java_org_webrtc_PeerConnection_nativeCreateDataChannel`
+
+</details>
+
+#### Version / library strings from `.rodata`
+
+<details><summary>Expand version strings</summary>
+
+- `BIO_LIB`
+- ` is not implemented. Update your FFmpeg version to the newest one from Git. If the problem still occurs, it means that your file has a feature which has not been implemented.`
+- `7.1.4`
+- `ABI version mismatch`
+- `Profile > 1 not supported in this build configuration`
+- `x264_build`
+- `Unsupported SA3D box version %d`
+- `tde2e seed version`
+- `WelsBuildRefList pCtx->uiTemporalId = %d,pRef->iFrameNum = %d,pRef->uiTemporalId = %d`
+- `0 == libyuv::I444Rotate( src.DataY(), src.StrideY(), src.DataU(), src.StrideU(), src.DataV(), src.StrideV(), buffer->MutableDataY(), buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(), buffer->MutableDataV(), buffer->StrideV(), src.width(), src.height(), static_cast<libyuv::RotationMode>(rotation))`
+- `/home/gradle/TMessagesProj/jni/voip/webrtc/rtc_base/task_queue_libevent.cc`
+- `PEM_LIB`
+- `ASN1_LIB`
+- `Character encoding subtitles conversion needs a libavcodec built with iconv support for this codec`
+- `src/libswresample/audioconvert.c`
+- `(EBML version %lu, doctype %s, doc version %lu)`
+- `src/libavutil/lzo.c`
+- `%s configurationVersion %d`
+- `libyuv::I420Rect(buffer->MutableDataY(), buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(), buffer->MutableDataV(), buffer->StrideV(), 0, 0, buffer->width(), buffer->height(), 0, 128, 128) == 0`
+- `.note.gnu.build-id`
+- `libunwind: %s - %s`
+- `src/libavutil/hwcontext.c`
+- `src/libavcodec/parser.c`
+- `src/libavcodec/vlc.c`
+- `src/libavutil/crc.c`
+- `Extradata version %d`
+- `libdav1d %s`
+- `Unsupported tag version. (>=%d)`
+- `version =%d, isom =%d`
+- `Unsupported Mastering Display Metadata box version %d`
+- `WelsEncoderEncodeExt(), WelsBuildRefList failed for P frames, pCtx->iNumRef0= %d. ForceCodingIDR!`
+- `getAndroidBuildId`
+- `src/libavcodec/libdav1d.c`
+- `src/libswscale/graph.c`
+- `, version=`
+- `0 == libyuv::I444Copy(data_y, stride_y, data_u, stride_u, data_v, stride_v, buffer->MutableDataY(), buffer->StrideY(), buffer->MutableDataU(), buffer->StrideU(), buffer->MutableDataV(), buffer->StrideV(), width, height)`
+- `/home/gradle/TMessagesProj/jni/voip/webrtc/rtc_base/numerics/safe_conversions.h`
+- `Missing version!`
+- `Libvpx VP9 encoder SVC frame drop config: `
+- `protocol_version`
+
+</details>
+
+---
+

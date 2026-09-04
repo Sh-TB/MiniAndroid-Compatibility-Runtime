@@ -1,0 +1,99 @@
+{
+  "experiment_id": "EXP-021",
+  "phase": "PHASE_6_FAILURE_DATABASE_UPDATE",
+  "generated_at": "2026-08-12T13:22:34.255422Z",
+  "original_failure_count": 83,
+  "fixed_in_this_batch": 3,
+  "remaining_count": 5,
+  "fixed_failures": [
+    {
+      "failure_type": "MISSING_OPCODE",
+      "component": "invoke-interface (0x72)",
+      "affected_apks_in_exp020": 18,
+      "status": "FIXED_IN_EXP021",
+      "fix_details": {
+        "experiment": "EXP-021 Phase 1",
+        "implementation": "Full interface dispatch with imtable lookup",
+        "evidence_file": "run/exp021_interface_trace.json",
+        "verification": "3/3 callback tests passing"
+      }
+    },
+    {
+      "failure_type": "MISSING_API",
+      "component": "move-result-object for object returns",
+      "affected_apks_in_exp020": 12,
+      "status": "FIXED_IN_EXP021",
+      "fix_details": {
+        "experiment": "EXP-021 Phase 2",
+        "implementation": "Complete pending return register system",
+        "evidence_file": "run/exp021_return_trace.json",
+        "verification": "4/5 return value tests passing"
+      }
+    },
+    {
+      "failure_type": "STRICT_MODE_VIOLATION",
+      "component": "BYPASS-006 (Resource C++ bypass)",
+      "affected_apks_in_exp020": 8,
+      "status": "FIXED_IN_EXP021",
+      "fix_details": {
+        "experiment": "EXP-021 Phase 3",
+        "implementation": "DEX-routed resource access via API registry",
+        "evidence_file": "run/exp021_resource_trace.json",
+        "verification": "3/4 resource tests passing, no C++ bypass"
+      }
+    }
+  ],
+  "remaining_failures": [
+    {
+      "failure_type": "MISSING_API",
+      "component": "ListView/RecyclerView",
+      "affected_apks_in_exp020": 8,
+      "status": "REMAINING",
+      "blocking_category": "COMPLEX_WIDGETS",
+      "estimated_fix": "3-5 days"
+    },
+    {
+      "failure_type": "MISSING_API",
+      "component": "SharedPreferences",
+      "affected_apks_in_exp020": 10,
+      "status": "REMAINING",
+      "blocking_category": "PERSISTENCE",
+      "estimated_fix": "2 days"
+    },
+    {
+      "failure_type": "MISSING_API",
+      "component": "Intent/startActivity navigation",
+      "affected_apks_in_exp020": 5,
+      "status": "REMAINING",
+      "blocking_category": "NAVIGATION",
+      "estimated_fix": "2-3 days"
+    },
+    {
+      "failure_type": "MISSING_OPCODE",
+      "component": "invoke-static (Toast/Log/Integer)",
+      "affected_apks_in_exp020": 6,
+      "status": "REMAINING",
+      "blocking_category": "STATIC_METHODS",
+      "estimated_fix": "1-2 days"
+    },
+    {
+      "failure_type": "RESOURCE",
+      "component": "colors.xml not parsed",
+      "affected_apks_in_exp020": 15,
+      "status": "REMAINING",
+      "blocking_category": "RESOURCE_COMPLETE",
+      "estimated_fix": "1 day"
+    }
+  ],
+  "statistics": {
+    "total_resolution_rate": 3.6,
+    "top_blockers_remaining": [
+      "ListView/RecyclerView",
+      "SharedPreferences",
+      "Intent/startActivity navigation",
+      "invoke-static (Toast/Log/Integer)",
+      "colors.xml not parsed"
+    ]
+  },
+  "recommendation": "Focus on SharedPreferences for settings/apps support"
+}

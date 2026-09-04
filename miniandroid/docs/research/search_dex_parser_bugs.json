@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://www.fortinet.com/blog/threat-research/how-to-repair-a-dex-file-in-which-some-key-methods-are-erased-with-nops",
+    "name": "How to repair a DEX file, in which some key methods are",
+    "snippet": "Apr 5, 2017 — The insns_size is the length of instructions in code. some key methods are extracted and erased with NOPs.",
+    "host_name": "www.fortinet.com",
+    "rank": 0,
+    "date": "Apr 5, 2017",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/androguard/dex-parser",
+    "name": "DEX-Parser: The Scalpel for Dalvik Executables",
+    "snippet": "This is a standalone, dependency-free, native Python library built to parse the complete structure of DEX files. code. insns_size ,",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.googlesource.com/platform/art/+/android-8.1.0_r2/runtime/dex_file.cc",
+    "name": "runtime/dex_file.cc - platform/art - Git at Google",
+    "snippet": "bug on some versions of android where dex would erroneously be accepted and run. The dex file verifier runs after this method and will reject the file. insns_ ...",
+    "host_name": "android.googlesource.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/51764437/dex-error-converting-bytecode-to-dex-cause-dex-cannot-parse-version-52-byte-c",
+    "name": "Error converting bytecode to dex: Cause: Dex cannot parse",
+    "snippet": "Dex cannot parse version 52. Downgrade tensorflow to 1.4 it works for me. Another solution is using Tensorflow sharp",
+    "host_name": "stackoverflow.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://groups.google.com/g/android-contrib/c/h0sDMo5DVBI",
+    "name": "Status of incremental dexing",
+    "snippet": "I just got back to hooking incremental dexing into my workflow yesterday, and hit an error from dexopt as soon as I tried to run the incrementally updated dexes ... Read more",
+    "host_name": "groups.google.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dexparser.readthedocs.io/_/downloads/en/latest/pdf",
+    "name": "dexparser",
+    "snippet": "DEX file format parser subclass :param string filedir: DEX file path ... Returns list of class definition data extracted from class_def_item example ... Read more",
+    "host_name": "dexparser.readthedocs.io",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://issuetracker.google.com/issues/366412380",
+    "name": "differing DEX bytecode depending on the number of CPU",
+    "snippet": "Sep 13, 2024 — DEX bytecode depending on the number of CPU cores breaks. Fixed Bug P1 ・ classes. dex file ・ insns size : 57 insns size",
+    "host_name": "issuetracker.google.com",
+    "rank": 6,
+    "date": "Sep 13, 2024",
+    "favicon": ""
+  },
+  {
+    "url": "http://mylifewithandroid.blogspot.com/2009/01/disassembling-dex-files.html",
+    "name": "Disassembling DEX files",
+    "snippet": "Jan 9, 2009 — I can open the .apk file and extract the manifest but am unable to figure out how to parse the manifest itself. has anyone ever used the kxml. Read more",
+    "host_name": "mylifewithandroid.blogspot.com",
+    "rank": 7,
+    "date": "Jan 9, 2009",
+    "favicon": ""
+  }
+]

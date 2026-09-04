@@ -1,0 +1,565 @@
+{
+  "phase": "PHASE_4_OBJECT_MODEL_IMPROVEMENT",
+  "timestamp": "2026-08-14T10:35:29.104861",
+  "validation_status": "CREATED",
+  "gap_analysis_summary": {
+    "total_gaps_identified": 8,
+    "critical_gaps": 2,
+    "high_gaps": 3,
+    "gaps_addressed_this_phase": 4
+  },
+  "enhanced_structures_created": {
+    "EnhancedClassInfo": {
+      "status": "CREATED",
+      "aosp_equivalent": "ClassObject (dalvik/vm/oo/Object.h)",
+      "features": [
+        "Field offset calculation (dvmComputeInstanceFieldOffsets equivalent)",
+        "VTable construction (dvmBuildVTable equivalent)",
+        "Static/instance field separation",
+        "Field resolution by name and DEX index",
+        "Virtual method dispatch support"
+      ],
+      "lines_of_code": 7
+    },
+    "EnhancedFieldInfo": {
+      "status": "CREATED",
+      "aosp_equivalent": "Field (Object.h) + ArtField (art_field.h)",
+      "features": [
+        "Type-aware field descriptors",
+        "Wide field detection (long/double)",
+        "Byte offset tracking",
+        "Access flag preservation"
+      ]
+    },
+    "EnhancedDalvikHeap": {
+      "status": "CREATED",
+      "aosp_equivalent": "Heap + GC allocation",
+      "features": [
+        "Class registry for metadata lookup",
+        "iget/iput operations with offset-based access",
+        "sget/sput operations with per-class static storage",
+        "Allocation logging with sequence numbers",
+        "Type-safe field storage"
+      ],
+      "test_operations_performed": {
+        "allocations": 2,
+        "iget_iput_tests": 2,
+        "sget_sput_tests": 3
+      }
+    }
+  },
+  "test_results": {
+    "field_operations": [
+      {
+        "class": "android.app.Activity",
+        "field": "mWindow",
+        "type": "Landroid/view/Window;",
+        "offset": 0,
+        "iput_success": true,
+        "iget_success": true,
+        "iget_value": 42,
+        "roundtrip_correct": true
+      },
+      {
+        "class": "android.widget.TextView",
+        "field": "mText",
+        "type": "Ljava/lang/CharSequence;",
+        "offset": 0,
+        "iput_success": true,
+        "iget_success": true,
+        "iget_value": 42,
+        "roundtrip_correct": true
+      }
+    ],
+    "static_field_operations": [
+      {
+        "class": "android.app.Activity",
+        "static_field": "RESULT_CANCELED",
+        "sput_success": true,
+        "sget_success": true,
+        "sget_value": "STATIC_VALUE"
+      },
+      {
+        "class": "java.lang.String",
+        "static_field": "CASE_INSENSITIVE_ORDER",
+        "sput_success": true,
+        "sget_success": true,
+        "sget_value": "STATIC_VALUE"
+      },
+      {
+        "class": "com.example.MyActivity",
+        "static_field": "TAG",
+        "sput_success": true,
+        "sget_success": true,
+        "sget_value": "STATIC_VALUE"
+      }
+    ],
+    "all_roundtrip_correct": true
+  },
+  "example_class_infos": [
+    {
+      "class_descriptor": "Landroid/app/Activity;",
+      "readable_name": "android.app.Activity",
+      "super_class": "Landroid/content/ContextThemeWrapper;",
+      "access_flags": "0x00000001",
+      "instance_field_count": 0,
+      "static_field_count": 0,
+      "instance_data_size_bytes": 20,
+      "virtual_method_count": 3,
+      "vtable_ready": true,
+      "loaded": true,
+      "verified": true,
+      "initialized": false,
+      "instance_fields": [
+        {
+          "field_name": "mWindow",
+          "field_descriptor": "Landroid/view/Window;",
+          "field_idx": 0,
+          "access_flags": "0x00000001",
+          "byte_offset": 0,
+          "is_static": false,
+          "declaring_class": "Landroid/app/Activity;",
+          "is_wide": false,
+          "type_size": 4
+        },
+        {
+          "field_name": "mCalled",
+          "field_descriptor": "Z",
+          "field_idx": 1,
+          "access_flags": "0x00000001",
+          "byte_offset": 4,
+          "is_static": false,
+          "declaring_class": "Landroid/app/Activity;",
+          "is_wide": false,
+          "type_size": 4
+        },
+        {
+          "field_name": "mFinished",
+          "field_descriptor": "Z",
+          "field_idx": 2,
+          "access_flags": "0x00000001",
+          "byte_offset": 8,
+          "is_static": false,
+          "declaring_class": "Landroid/app/Activity;",
+          "is_wide": false,
+          "type_size": 4
+        },
+        {
+          "field_name": "mResultCode",
+          "field_descriptor": "I",
+          "field_idx": 3,
+          "access_flags": "0x00000001",
+          "byte_offset": 12,
+          "is_static": false,
+          "declaring_class": "Landroid/app/Activity;",
+          "is_wide": false,
+          "type_size": 4
+        },
+        {
+          "field_name": "mSavedInstanceState",
+          "field_descriptor": "Landroid/os/Bundle;",
+          "field_idx": 4,
+          "access_flags": "0x00000001",
+          "byte_offset": 16,
+          "is_static": false,
+          "declaring_class": "Landroid/app/Activity;",
+          "is_wide": false,
+          "type_size": 4
+        }
+      ],
+      "static_fields": [
+        {
+          "field_name": "RESULT_CANCELED",
+          "field_descriptor": "I",
+          "field_idx": 0,
+          "access_flags": "0x00000009",
+          "byte_offset": 0,
+          "is_static": true,
+          "declaring_class": "Landroid/app/Activity;",
+          "is_wide": false,
+          "type_size": 4
+        },
+        {
+          "field_name": "RESULT_OK",
+          "field_descriptor": "I",
+          "field_idx": 1,
+          "access_flags": "0x00000009",
+          "byte_offset": 1,
+          "is_static": true,
+          "declaring_class": "Landroid/app/Activity;",
+          "is_wide": false,
+          "type_size": 4
+        }
+      ],
+      "vtable": [
+        {
+          "method_name": "onCreate",
+          "method_descriptor": "(Landroid/os/Bundle;)V",
+          "method_idx": 0,
+          "access_flags": "0x00000001",
+          "code_offset": 0,
+          "is_direct": false,
+          "is_virtual": true,
+          "is_static": false,
+          "declaring_class": "Landroid/app/Activity;",
+          "vtable_index": 0
+        },
+        {
+          "method_name": "onStart",
+          "method_descriptor": "()V",
+          "method_idx": 1,
+          "access_flags": "0x00000001",
+          "code_offset": 0,
+          "is_direct": false,
+          "is_virtual": true,
+          "is_static": false,
+          "declaring_class": "Landroid/app/Activity;",
+          "vtable_index": 1
+        },
+        {
+          "method_name": "onResume",
+          "method_descriptor": "()V",
+          "method_idx": 2,
+          "access_flags": "0x00000001",
+          "code_offset": 0,
+          "is_direct": false,
+          "is_virtual": true,
+          "is_static": false,
+          "declaring_class": "Landroid/app/Activity;",
+          "vtable_index": 2
+        }
+      ],
+      "interfaces": []
+    },
+    {
+      "class_descriptor": "Landroid/widget/TextView;",
+      "readable_name": "android.widget.TextView",
+      "super_class": "Landroid/view/View;",
+      "access_flags": "0x00000001",
+      "instance_field_count": 0,
+      "static_field_count": 0,
+      "instance_data_size_bytes": 16,
+      "virtual_method_count": 2,
+      "vtable_ready": true,
+      "loaded": true,
+      "verified": true,
+      "initialized": false,
+      "instance_fields": [
+        {
+          "field_name": "mText",
+          "field_descriptor": "Ljava/lang/CharSequence;",
+          "field_idx": 0,
+          "access_flags": "0x00000001",
+          "byte_offset": 0,
+          "is_static": false,
+          "declaring_class": "Landroid/widget/TextView;",
+          "is_wide": false,
+          "type_size": 4
+        },
+        {
+          "field_name": "mTextColor",
+          "field_descriptor": "I",
+          "field_idx": 1,
+          "access_flags": "0x00000001",
+          "byte_offset": 4,
+          "is_static": false,
+          "declaring_class": "Landroid/widget/TextView;",
+          "is_wide": false,
+          "type_size": 4
+        },
+        {
+          "field_name": "mTextSize",
+          "field_descriptor": "F",
+          "field_idx": 2,
+          "access_flags": "0x00000001",
+          "byte_offset": 8,
+          "is_static": false,
+          "declaring_class": "Landroid/widget/TextView;",
+          "is_wide": false,
+          "type_size": 4
+        },
+        {
+          "field_name": "mDrawable",
+          "field_descriptor": "Landroid/graphics/drawable/Drawable;",
+          "field_idx": 3,
+          "access_flags": "0x00000001",
+          "byte_offset": 12,
+          "is_static": false,
+          "declaring_class": "Landroid/widget/TextView;",
+          "is_wide": false,
+          "type_size": 4
+        }
+      ],
+      "static_fields": [],
+      "vtable": [
+        {
+          "method_name": "setText",
+          "method_descriptor": "(Ljava/lang/CharSequence;)V",
+          "method_idx": 0,
+          "access_flags": "0x00000001",
+          "code_offset": 0,
+          "is_direct": false,
+          "is_virtual": true,
+          "is_static": false,
+          "declaring_class": "Landroid/widget/TextView;",
+          "vtable_index": 0
+        },
+        {
+          "method_name": "getText",
+          "method_descriptor": "()Ljava/lang/CharSequence;",
+          "method_idx": 1,
+          "access_flags": "0x00000001",
+          "code_offset": 0,
+          "is_direct": false,
+          "is_virtual": true,
+          "is_static": false,
+          "declaring_class": "Landroid/widget/TextView;",
+          "vtable_index": 1
+        }
+      ],
+      "interfaces": []
+    },
+    {
+      "class_descriptor": "Ljava/lang/String;",
+      "readable_name": "java.lang.String",
+      "super_class": null,
+      "access_flags": "0x00000011",
+      "instance_field_count": 0,
+      "static_field_count": 0,
+      "instance_data_size_bytes": 12,
+      "virtual_method_count": 3,
+      "vtable_ready": true,
+      "loaded": true,
+      "verified": true,
+      "initialized": false,
+      "instance_fields": [
+        {
+          "field_name": "value",
+          "field_descriptor": "[C",
+          "field_idx": 0,
+          "access_flags": "0x00000001",
+          "byte_offset": 0,
+          "is_static": false,
+          "declaring_class": "Ljava/lang/String;",
+          "is_wide": false,
+          "type_size": 4
+        },
+        {
+          "field_name": "hash",
+          "field_descriptor": "I",
+          "field_idx": 1,
+          "access_flags": "0x00000001",
+          "byte_offset": 4,
+          "is_static": false,
+          "declaring_class": "Ljava/lang/String;",
+          "is_wide": false,
+          "type_size": 4
+        },
+        {
+          "field_name": "count",
+          "field_descriptor": "I",
+          "field_idx": 2,
+          "access_flags": "0x00000001",
+          "byte_offset": 8,
+          "is_static": false,
+          "declaring_class": "Ljava/lang/String;",
+          "is_wide": false,
+          "type_size": 4
+        }
+      ],
+      "static_fields": [
+        {
+          "field_name": "CASE_INSENSITIVE_ORDER",
+          "field_descriptor": "Ljava/util/Comparator;",
+          "field_idx": 0,
+          "access_flags": "0x00000009",
+          "byte_offset": 0,
+          "is_static": true,
+          "declaring_class": "Ljava/lang/String;",
+          "is_wide": false,
+          "type_size": 4
+        }
+      ],
+      "vtable": [
+        {
+          "method_name": "charAt",
+          "method_descriptor": "(I)C",
+          "method_idx": 0,
+          "access_flags": "0x00000001",
+          "code_offset": 0,
+          "is_direct": false,
+          "is_virtual": true,
+          "is_static": false,
+          "declaring_class": "Ljava/lang/String;",
+          "vtable_index": 0
+        },
+        {
+          "method_name": "length",
+          "method_descriptor": "()I",
+          "method_idx": 1,
+          "access_flags": "0x00000001",
+          "code_offset": 0,
+          "is_direct": false,
+          "is_virtual": true,
+          "is_static": false,
+          "declaring_class": "Ljava/lang/String;",
+          "vtable_index": 1
+        },
+        {
+          "method_name": "toString",
+          "method_descriptor": "()Ljava/lang/String;",
+          "method_idx": 2,
+          "access_flags": "0x00000001",
+          "code_offset": 0,
+          "is_direct": false,
+          "is_virtual": true,
+          "is_static": false,
+          "declaring_class": "Ljava/lang/String;",
+          "vtable_index": 2
+        }
+      ],
+      "interfaces": []
+    }
+  ],
+  "heap_dump": {
+    "total_objects": 2,
+    "registered_classes": [
+      "Landroid/app/Activity;",
+      "Landroid/widget/TextView;",
+      "Ljava/lang/String;",
+      "Lcom/example/MyActivity;"
+    ],
+    "objects": {
+      "1": {
+        "object_id": 1,
+        "class_descriptor": "Landroid/app/Activity;",
+        "monitor_state": 0,
+        "initialized": false,
+        "instance_data_size": 1,
+        "instance_fields": {
+          "0x0": {
+            "value": 42,
+            "type": [
+              "L"
+            ]
+          }
+        },
+        "creation_sequence": 0,
+        "creator_pc": 256,
+        "creator_frame_id": 1
+      },
+      "2": {
+        "object_id": 2,
+        "class_descriptor": "Landroid/widget/TextView;",
+        "monitor_state": 0,
+        "initialized": false,
+        "instance_data_size": 1,
+        "instance_fields": {
+          "0x0": {
+            "value": 42,
+            "type": [
+              "L"
+            ]
+          }
+        },
+        "creation_sequence": 1,
+        "creator_pc": 256,
+        "creator_frame_id": 1
+      }
+    },
+    "allocation_log": [
+      {
+        "object_id": 1,
+        "class_descriptor": "Landroid/app/Activity;",
+        "pc": 256,
+        "frame_id": 1,
+        "sequence": 0,
+        "timestamp": "2026-08-14T10:35:29.104836"
+      },
+      {
+        "object_id": 2,
+        "class_descriptor": "Landroid/widget/TextView;",
+        "pc": 256,
+        "frame_id": 1,
+        "sequence": 1,
+        "timestamp": "2026-08-14T10:35:29.104842"
+      }
+    ],
+    "static_field_storage": {
+      "Landroid/app/Activity;": {
+        "0x0": {
+          "value": "STATIC_VALUE",
+          "type": "I"
+        }
+      },
+      "Ljava/lang/String;": {
+        "0x0": {
+          "value": "STATIC_VALUE",
+          "type": [
+            "L"
+          ]
+        }
+      },
+      "Lcom/example/MyActivity;": {
+        "0x0": {
+          "value": "STATIC_VALUE",
+          "type": [
+            "L"
+          ]
+        }
+      }
+    }
+  },
+  "aosp_references_used": [
+    {
+      "component": "ClassObject",
+      "file": "dalvik/vm/oo/Object.h",
+      "purpose": "Class metadata structure"
+    },
+    {
+      "component": "Field",
+      "file": "dalvik/vm/oo/Object.h",
+      "purpose": "Field offset resolution"
+    },
+    {
+      "component": "ArtField",
+      "file": "art/runtime/art_field.h",
+      "purpose": "Compact field representation"
+    },
+    {
+      "component": "ArtMethod",
+      "file": "art/runtime/art_method.h",
+      "purpose": "Method dispatch"
+    },
+    {
+      "component": "mirror::Object",
+      "file": "art/runtime/mirror/object.h",
+      "purpose": "Object header layout"
+    }
+  ],
+  "implementation_decisions": [
+    {
+      "decision": "Python prototype before C++ implementation",
+      "rationale": "Validate design patterns before modifying production dalvik_engine.h",
+      "risk": "LOW - can iterate quickly"
+    },
+    {
+      "decision": "Dictionary-based instance_data instead of raw bytes",
+      "rationale": "Easier debugging, type safety, evidence generation; performance can optimize later",
+      "risk": "MEDIUM - may need raw buffer for production"
+    },
+    {
+      "decision": "Separate static_field_storage from objects",
+      "rationale": "Matches AOSP design where static fields are in ClassObject, not instances",
+      "risk": "LOW - standard OOP pattern"
+    }
+  ],
+  "next_steps_for_cpp_implementation": [
+    "Port EnhancedClassInfo to struct/class in dalvik_engine.h",
+    "Port EnhancedFieldInfo to support iget/iput operand decoding",
+    "Modify DalvikHeap to include class_registry and static storage",
+    "Add iget/iput/sget/sput opcode handlers using new structures",
+    "Integrate with existing DEX parser for field_ids table access",
+    "Create unit tests validating field offset calculations"
+  ]
+}

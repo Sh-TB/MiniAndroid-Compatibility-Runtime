@@ -1,0 +1,1 @@
+[{"sequence": 0, "api": "android.widget.TextView.<init>", "class": "android.widget.TextView", "method": "<init>", "arguments": [], "return_value": "void", "status": "IMPLEMENTED"}, {"sequence": 1, "api": "android.widget.TextView.setText", "class": "android.widget.TextView", "method": "setText", "arguments": ["Hello MiniAndroid"], "return_value": "void", "status": "IMPLEMENTED"}]

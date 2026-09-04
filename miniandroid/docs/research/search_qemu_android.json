@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://www.qemu.org/docs/master/user/main.html",
+    "name": "QEMU User space emulator",
+    "snippet": "QEMU can emulate the clone syscall and create a real host thread (with a separate virtual CPU) for each emulated thread.",
+    "host_name": "www.qemu.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://qemu.weilnetz.de/doc/5.2/user/main.html",
+    "name": "QEMU User space emulator",
+    "snippet": "QEMU includes a generic system call translator. QEMU can emulate the clone syscall and create a real host thread (with a separate virtual CPU) for each  ...",
+    "host_name": "qemu.weilnetz.de",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.linaro.org/blog/qemu-a-tale-of-performance-analysis",
+    "name": "QEMU: A Tale of Performance analysis | Blog",
+    "snippet": "Jan 14, 2025 — In this post, we will present the performance issues we identified when booting Android using QEMU , and how we solved these upstream.",
+    "host_name": "www.linaro.org",
+    "rank": 2,
+    "date": "Jan 14, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.instructables.com/Creating-an-Android-Emulator-Using-Qemu",
+    "name": "Creating an Android Emulator Using Qemu : 5 Steps",
+    "snippet": "Qemu is a hardware virtualization software that obscures the actual physical hardware specifics of the machine from the higher level software programs.",
+    "host_name": "www.instructables.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.vinnie.work/docs/AndroidApplicationAnalysis/setup-emulator",
+    "name": "setup-emulator | Vinnie dot Work",
+    "snippet": "QEMU can do userspace emulation , for example: Run a ARM64 binary on a x86_64 based system. The idea here is that the executable is the same ELF format that an ... Read more",
+    "host_name": "www.vinnie.work",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/68106406/tamper-system-calls-behavior-with-qemu",
+    "name": "Tamper system calls behavior with QEMU",
+    "snippet": "I don't know if this is the right place, but I don't know where I could ask. I'd like to change the system call behavior inside QEMU (or even inside the ...",
+    "host_name": "stackoverflow.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.cnblogs.com/pengdonglin137/articles/5020143.html",
+    "name": "Qemu: User mode emulation and Full system emulation",
+    "snippet": "Dec 4, 2015 — This QEMU mode emulates a virtual machine with a configurable CPU, video card, memory size and mode. It is much slower than user mode emulation ... Read more",
+    "host_name": "www.cnblogs.com",
+    "rank": 6,
+    "date": "Dec 4, 2015",
+    "favicon": ""
+  },
+  {
+    "url": "https://people.debian.org/~ballombe/qemu.sarge/qemu.pdf",
+    "name": "Using qemu syscall emulation with Debian.",
+    "snippet": "Qemu is a emulator that can be used as a virtual machine or a syscall emulator . syscall are executed by qemu with- out mangling. there are architecture- ...",
+    "host_name": "people.debian.org",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://developer.android.com/studio/run/emulator-commandline",
+    "name": "Start the emulator from the command line | Android Studio",
+    "snippet": "Apr 20, 2026 — The Android Emulator uses the ( QEMU ) hypervisor. AVD system directory. The system directory contains the Android system images that the emulator ... Read more",
+    "host_name": "developer.android.com",
+    "rank": 8,
+    "date": "Apr 20, 2026",
+    "favicon": ""
+  }
+]

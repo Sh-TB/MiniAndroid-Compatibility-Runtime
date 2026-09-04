@@ -1,0 +1,46 @@
+{
+  "generated": "2026-08-30",
+  "campaign": "UNIFIED_011.1",
+  "supersedes": "UNIFIED_011",
+  "project": "MiniAndroid — Real Android APK compatibility runtime",
+  "git": {
+    "origin": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime.git",
+    "upstream": "NOT AVAILABLE",
+    "remote_head": "bbe0ce3067401211af35402483b96baae69220df",
+    "remote_default_branch": "main",
+    "local_head": "tag v0.11.1-unified-011-1 (HEAD at release; resolve via git describe)",
+    "divergence": "local ahead 10, behind 0",
+    "latest_tag": "v0.11.1-unified-011-1",
+    "push": "PUSH_PENDING (no credentials)"
+  },
+  "build": {
+    "compiler": "g++ 14.2.0 (Debian 14.2.0-19)",
+    "standard": "C++17",
+    "clean_clone_build": "SUCCESS",
+    "dev_binary_sha256_16": "234b2187083d92c7",
+    "clean_clone_binary_sha256_16": "efe29a5abf935bc6",
+    "note": "binaries differ (paths), rendered evidence identical"
+  },
+  "tests": {
+    "runner": "scripts/u011_test_matrix.py",
+    "telegram_v12": {"exit": 0, "runs": 3, "screenshot_sha256": "088ea640587ec0d28fc7cd16b0097f2529ff7da2d594c3c2663c67531d770f6a", "baseline_match": true, "nonwhite_px": 41233, "note": "pixel-identical to 06fb40da lineage; PNG file hash changed by design (libpng encoder, Campaign 010 R1)"},
+    "gmdice": {"exit": 0, "screenshot_sha256": "472c1d3c0ee12330", "nonwhite_px": 158040, "verdict": "REAL UI via UNIFIED_007 inflation (011.1 baseline; pixel metrics unchanged)"},
+    "simplestopwatch": {"exit": 0, "screenshot_sha256": "d495e3cb2ccf6c11", "nonwhite_px": 930980, "verdict": "real controls; geometry bug open (011.1 baseline)"},
+    "fallback_screen_sha256_16": "c200c521628bb8a8",
+    "blank_screen_sha256_16": "c035e9ba62a884ec",
+    "matrix_detail": "TEST_MATRIX.md"
+  },
+  "open_source": {
+    "integrated": ["rlottie 43075538 (MIT)", "libwebp 1.5.0", "libjpeg-turbo 2.1.5", "zlib 1.3.1", "nlohmann/json 3.11.3", "freetype 2.13.x", "harfbuzz 10.2.0", "fribidi 1.0.16", "libpng 1.6.48 (linked, NOT wired)"],
+    "detail": "OPEN_SOURCE_MASTER.md"
+  },
+  "apk_files_in_repo": 0,
+  "large_images_over_100kb": 0,
+  "secrets_found": 0,
+  "handoff_zip": {
+    "name": "UNIFIED_011_CANONICAL_HANDOFF.zip",
+    "sha256": "SEE_UNIFIED_011_CANONICAL_HANDOFF_SHA256.txt",
+    "contains_git_history": true
+  },
+  "master_docs": ["README.md", "MASTER_PROJECT_STATE_011.md", "MASTER_CHANGELOG_KNOWLEDGE_011.md", "MASTER_HANDOFF_011.md", "OPEN_SOURCE_MASTER.md", "DO_NOT_REINVENT.md", "TEST_MATRIX.md", "APK_REGISTRY.json", "RELEASE_NOTES_UNIFIED_011.md"]
+}

@@ -1,0 +1,86 @@
+{
+  "schema": "library_provenance_v1",
+  "campaign": "UNIFIED_008",
+  "libraries": [
+    {
+      "component": "ARSCLib",
+      "repository": "https://github.com/REAndroid/ARSCLib",
+      "version": "V1.4.0 (release jar)",
+      "license": "Apache-2.0",
+      "local_path": "tools/opensource/ARSCLib-1.4.0.jar (outside archive) + ArscDump.java CLI wrapper (in repo docs/tools evidence)",
+      "used_symbols": "ApkModule.loadApkFile, TableBlock, PackageBlock.getTypes, ResourceType, ResourceEntry, Entry.getValueType/getValueAsString",
+      "modifications": "none (library used as-is; wrapper code is ours: tools/opensource/ArscDump.java)",
+      "integration_point": "ARSC ground-truth oracle — cross-validation of MiniAndroid src/resources/arsc_parser.cpp"
+    },
+    {
+      "component": "Apktool",
+      "repository": "https://github.com/iBotPeaches/Apktool",
+      "version": "3.0.3 (release jar)",
+      "license": "Apache-2.0",
+      "local_path": "tools/opensource/apktool.jar (outside archive)",
+      "used_symbols": "CLI: apktool d (resource decode, smali baksmaling)",
+      "modifications": "none",
+      "integration_point": "second ARSC/AXML oracle — gmdice res/values/strings.xml ground truth"
+    },
+    {
+      "component": "androguard",
+      "repository": "https://github.com/androguard/androguard",
+      "version": "4.1.4 (pip)",
+      "license": "Apache-2.0 / LGPL-2.1 dual",
+      "local_path": "system python env",
+      "used_symbols": "androguard.core.dex.DEX (disassembly oracle), androguard.core.axml.ARSCParser (resource value extraction), AXMLPrinter",
+      "modifications": "none — wrapper: tools/u008_gen_resource_values.py (in repo)",
+      "integration_point": "PRODUCTION: generates download/exp038_telegram/resource_values.json consumed by the runtime for LocaleController.getString resolution"
+    },
+    {
+      "component": "Temurin JDK",
+      "repository": "https://github.com/adoptium/temurin21-binaries",
+      "version": "21.0.5+11",
+      "license": "GPL-2.0-with-classpath-exception",
+      "local_path": "tools/opensource/jdk-21.0.5+11 (outside archive)",
+      "used_symbols": "javac, java, javap",
+      "modifications": "none",
+      "integration_point": "build/run of the ARSCLib oracle CLI"
+    },
+    {
+      "component": "SwiftShader (investigation)",
+      "repository": "https://github.com/google/swiftshader",
+      "version": "HEAD 694585a (cloned 2026-08-29)",
+      "license": "Apache-2.0",
+      "local_path": "tools/opensource/swiftshader (outside archive, NOT vendored)",
+      "used_symbols": "none yet — cmake configure succeeded; compile blocked by environment (2 vCPU, 3GB RAM; Reactor/LLVM TUs require more)",
+      "modifications": "none",
+      "integration_point": "GLES bridge path — see GLES_INVESTIGATION_008.md"
+    },
+    {
+      "component": "rlottie",
+      "repository": "https://github.com/Samsung/rlottie",
+      "version": "43075538 (UNIFIED campaign build)",
+      "license": "MIT",
+      "local_path": "/home/z/my-project/tools/rlottie (static lib, outside archive)",
+      "used_symbols": "rlottie::Animation, rlottie::Surface",
+      "modifications": "none",
+      "integration_point": "ACTIVE: RLottieImageView animation frames on Telegram SMS screen"
+    },
+    {
+      "component": "nlohmann/json",
+      "repository": "https://github.com/nlohmann/json",
+      "version": "vendored single-header",
+      "license": "MIT",
+      "local_path": "third_party/nlohmann_json/include",
+      "used_symbols": "nlohmann::json",
+      "modifications": "none",
+      "integration_point": "ACTIVE: job server persistence, resource_values.json loading, traces"
+    },
+    {
+      "component": "FriBidi / HarfBuzz / FreeType",
+      "repository": "https://github.com/fribidi/fribidi, https://github.com/harfbuzz/harfbuzz, https://github.com/freetype/freetype",
+      "version": "1.0.16 / 10.2.0 / 2.13.3 (system libs)",
+      "license": "LGPL-2.1+ / MIT / FTL+GPL-2.0",
+      "local_path": "system (linked -lfribidi -lharfbuzz -lfreetype)",
+      "used_symbols": "fribidi_get_par_embedding_levels, hb_buffer shaping, FT_Outline_Render",
+      "modifications": "none",
+      "integration_point": "ACTIVE: src/fonts/text_shaper.cpp — every rendered string"
+    }
+  ]
+}

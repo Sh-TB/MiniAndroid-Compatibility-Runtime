@@ -1,0 +1,310 @@
+{
+ "generated": "2026-09-03 02:14:39",
+ "total_archive_files_on_disk": 23,
+ "unique_archives": 20,
+ "filebin_files": 26,
+ "filebin_only_names": [
+  "DELIVERY_STATUS_2026-09-02.md",
+  "HANDOFF_ZIP_SHA256.txt",
+  "INTEGRATION_BACKUP_SHA256.txt",
+  "MASTER_RECONCILIATION_FINAL_REPORT.md",
+  "MASTER_RECONCILIATION_PASS3_REPORT.md",
+  "MINIANDROID_HANDOFF_ZIP_SHA256.txt",
+  "MINIANDROID_HANDOFF_ZIP_SHA256_013.txt",
+  "MINIANDROID_HANDOFF_ZIP_SHA256_VERSIONS.txt",
+  "MINIANDROID_REVIEW_ZIP_SHA256.txt",
+  "PASS3_HANDOFF_SHA256.txt",
+  "PHASE9_GIT_RECORD.txt"
+ ],
+ "filebin_bin": "https://filebin.net/miniandroid-k7q9x2",
+ "filebin_expires": "2026-09-10T01:14:50.932459Z",
+ "archives": [
+  {
+   "filename": "MiniAndroid_CAMPAIGN-012-baseline_GIT_HANDOFF.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_CAMPAIGN-012-baseline_GIT_HANDOFF.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_CAMPAIGN-012-baseline_GIT_HANDOFF.zip"
+   ],
+   "size": 9002641,
+   "sha256": "a60f76a1c8f5f30f2f9ef0b67ae6ea7c2f06c2c222d70c85c7d7a5efeae4e2d8",
+   "mtime_epoch": 1788350938.5080402,
+   "mtime": "2026-09-02 12:08:58",
+   "kind": "ZIP",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-01"
+  },
+  {
+   "filename": "MiniAndroid_CAMPAIGN013_REPORTS_bundle.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_CAMPAIGN013_REPORTS_bundle.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_CAMPAIGN013_REPORTS_bundle.zip"
+   ],
+   "size": 21799,
+   "sha256": "64080a22abbe0990a5bad9bcdf5fa20e7fd73e1307eb9ab2fcff70c9fbfb9991",
+   "mtime_epoch": 1788349845.2349527,
+   "mtime": "2026-09-02 11:50:45",
+   "kind": "ZIP",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-02"
+  },
+  {
+   "filename": "MiniAndroid_CANONICAL_MASTER_RECONCILED_272f216c.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_CANONICAL_MASTER_RECONCILED_272f216c.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_CANONICAL_MASTER_RECONCILED_272f216c.zip",
+    "/tmp/my-project/miniandroid_ws/MiniAndroid_CANONICAL_MASTER_RECONCILED_272f216c.zip"
+   ],
+   "size": 158318788,
+   "sha256": "2e93d27d11a9d8da2ffc26015e89facd3d161f329ef3f4195ba636c50937abbb",
+   "mtime_epoch": 1788386476.105239,
+   "mtime": "2026-09-02 22:01:16",
+   "kind": "ZIP",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-03"
+  },
+  {
+   "filename": "MiniAndroid_CANONICAL_MASTER_RECONCILED_f714420.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_CANONICAL_MASTER_RECONCILED_f714420.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_CANONICAL_MASTER_RECONCILED_f714420.zip",
+    "/home/z/my-project/download/MiniAndroid_CANONICAL_MASTER_RECONCILED_f714420.zip"
+   ],
+   "size": 157354279,
+   "sha256": "11b2c482d73d3d52882c471ab599341e7f514030d632125da4025b0e11742300",
+   "mtime_epoch": 1788397952.785821,
+   "mtime": "2026-09-03 01:12:32",
+   "kind": "ZIP",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-04"
+  },
+  {
+   "filename": "MiniAndroid_FULL_VALIDATION_HANDOFF_6c9a91e.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_FULL_VALIDATION_HANDOFF_6c9a91e.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_FULL_VALIDATION_HANDOFF_6c9a91e.zip"
+   ],
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "mtime_epoch": 1788275732.9736297,
+   "mtime": "2026-09-01 15:15:32",
+   "kind": "ZIP",
+   "status": "CORRUPT_EMPTY (0 bytes)",
+   "filebin": "NOT_ON_FILEBIN",
+   "archive_id": "A-05"
+  },
+  {
+   "filename": "MiniAndroid_MASTER_INTEGRATION_REVIEW_0fd1ad6.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_MASTER_INTEGRATION_REVIEW_0fd1ad6.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_MASTER_INTEGRATION_REVIEW_0fd1ad6.zip"
+   ],
+   "size": 161103433,
+   "sha256": "4ae914c2daf68e2a8e6c1225980dd9885626703f11fe82991466e95bc91f5bac",
+   "mtime_epoch": 1788355529.6751454,
+   "mtime": "2026-09-02 13:25:29",
+   "kind": "ZIP",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-06"
+  },
+  {
+   "filename": "MiniAndroid_v0.11-unified-011_GIT_HANDOFF.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_v0.11-unified-011_GIT_HANDOFF.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_v0.11-unified-011_GIT_HANDOFF.zip"
+   ],
+   "size": 8271563,
+   "sha256": "5a664aa7cda9067d92c5cd85ce2080dfd66bb0189a76ecc89662017ca70c7a6e",
+   "mtime_epoch": 1788350936.1110334,
+   "mtime": "2026-09-02 12:08:56",
+   "kind": "ZIP",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-07"
+  },
+  {
+   "filename": "MiniAndroid_v0.11.1-unified-011-1_GIT_HANDOFF.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_v0.11.1-unified-011-1_GIT_HANDOFF.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_v0.11.1-unified-011-1_GIT_HANDOFF.zip"
+   ],
+   "size": 8873186,
+   "sha256": "7f58e8140fdfad4a1a6551d81c7d0ec16a820874beab59e74f2524b123171397",
+   "mtime_epoch": 1788350936.7060351,
+   "mtime": "2026-09-02 12:08:56",
+   "kind": "ZIP",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-08"
+  },
+  {
+   "filename": "MiniAndroid_v0.11.2-unified-011-2_GIT_HANDOFF.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_v0.11.2-unified-011-2_GIT_HANDOFF.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_v0.11.2-unified-011-2_GIT_HANDOFF.zip"
+   ],
+   "size": 8952162,
+   "sha256": "3a56d479b07afe16353aa8e7f1c6e1c8972b982a4561d4f10911718598e96672",
+   "mtime_epoch": 1788350937.3040369,
+   "mtime": "2026-09-02 12:08:57",
+   "kind": "ZIP",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-09"
+  },
+  {
+   "filename": "MiniAndroid_v0.11.3-unified-011-3_GIT_HANDOFF.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_v0.11.3-unified-011-3_GIT_HANDOFF.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_v0.11.3-unified-011-3_GIT_HANDOFF.zip"
+   ],
+   "size": 9755340,
+   "sha256": "45bae5948c0fe403a9d09bfd30ece63ccc70fbb755726b6b41fbb837ddfa9e6d",
+   "mtime_epoch": 1788349837.7579312,
+   "mtime": "2026-09-02 11:50:37",
+   "kind": "ZIP",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-10"
+  },
+  {
+   "filename": "MiniAndroid_v0.11.4-fix-01_GAP-RECONCILIATION_GIT_HANDOFF.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_v0.11.4-fix-01_GAP-RECONCILIATION_GIT_HANDOFF.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_v0.11.4-fix-01_GAP-RECONCILIATION_GIT_HANDOFF.zip"
+   ],
+   "size": 9058888,
+   "sha256": "294ba77ca3aaa9340e542bc17785fae3bfc357ee92cd0a7688fb4536b75e5d07",
+   "mtime_epoch": 1788350937.9030385,
+   "mtime": "2026-09-02 12:08:57",
+   "kind": "ZIP",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-11"
+  },
+  {
+   "filename": "MiniAndroid_v0.13.0_GIT_HANDOFF.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_v0.13.0_GIT_HANDOFF.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_v0.13.0_GIT_HANDOFF.zip"
+   ],
+   "size": 7903986,
+   "sha256": "8beea37a59860811ab6ee40899c612c7eecc2768ace0f20376c700e91ae2b6bd",
+   "mtime_epoch": 1788349837.7489312,
+   "mtime": "2026-09-02 11:50:37",
+   "kind": "ZIP",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-12"
+  },
+  {
+   "filename": "MiniAndroid_v0.14.0_GIT_HANDOFF.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_v0.14.0_GIT_HANDOFF.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_v0.14.0_GIT_HANDOFF.zip"
+   ],
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "mtime_epoch": 1788326342.5574338,
+   "mtime": "2026-09-02 05:19:02",
+   "kind": "ZIP",
+   "status": "CORRUPT_EMPTY (0 bytes)",
+   "filebin": "NOT_ON_FILEBIN",
+   "archive_id": "A-13"
+  },
+  {
+   "filename": "MiniAndroid_v0.14.0_PARTIAL_GIT_HANDOFF.zip",
+   "path": "/tmp/my-project/download/MiniAndroid_v0.14.0_PARTIAL_GIT_HANDOFF.zip",
+   "copies": [
+    "/tmp/my-project/download/MiniAndroid_v0.14.0_PARTIAL_GIT_HANDOFF.zip"
+   ],
+   "size": 9503830,
+   "sha256": "fb1cfd4d23bc005fb188b6e2751c01a02d589af4a459c0c0288f17b83122b94b",
+   "mtime_epoch": 1788350939.2010422,
+   "mtime": "2026-09-02 12:08:59",
+   "kind": "ZIP",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-14"
+  },
+  {
+   "filename": "handoff.zip",
+   "path": "/tmp/my-project/temp_files/handoff.zip",
+   "copies": [
+    "/tmp/my-project/temp_files/handoff.zip"
+   ],
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "mtime_epoch": 1788275733.121208,
+   "mtime": "2026-09-01 15:15:33",
+   "kind": "ZIP",
+   "status": "CORRUPT_EMPTY (0 bytes)",
+   "filebin": "NOT_ON_FILEBIN",
+   "archive_id": "A-15"
+  },
+  {
+   "filename": "handoff2.zip",
+   "path": "/tmp/my-project/temp_files/handoff2.zip",
+   "copies": [
+    "/tmp/my-project/temp_files/handoff2.zip"
+   ],
+   "size": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "mtime_epoch": 1788275733.1278265,
+   "mtime": "2026-09-01 15:15:33",
+   "kind": "ZIP",
+   "status": "CORRUPT_EMPTY (0 bytes)",
+   "filebin": "NOT_ON_FILEBIN",
+   "archive_id": "A-16"
+  },
+  {
+   "filename": "BACKUP_CANONICAL_PASS3_f714420.bundle",
+   "path": "/tmp/my-project/download/BACKUP_CANONICAL_PASS3_f714420.bundle",
+   "copies": [
+    "/tmp/my-project/download/BACKUP_CANONICAL_PASS3_f714420.bundle",
+    "/home/z/my-project/download/BACKUP_CANONICAL_PASS3_f714420.bundle"
+   ],
+   "size": 153568354,
+   "sha256": "6263610fffcd90199166a0fea24ddbd0187dcd832b8c9f2f7bde36a420cf2af8",
+   "mtime_epoch": 1788397953.8618279,
+   "mtime": "2026-09-03 01:12:33",
+   "kind": "GIT_BUNDLE",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-17"
+  },
+  {
+   "filename": "BACKUP_GITHUB_MASTER_FULL.bundle",
+   "path": "/tmp/my-project/download/BACKUP_GITHUB_MASTER_FULL.bundle",
+   "copies": [
+    "/tmp/my-project/download/BACKUP_GITHUB_MASTER_FULL.bundle"
+   ],
+   "size": 152704964,
+   "sha256": "b0578280b39f3ff5704fe15aaa03ead62511dc84d61918ccae0ab04da4452e97",
+   "mtime_epoch": 1788352220.6976662,
+   "mtime": "2026-09-02 12:30:20",
+   "kind": "GIT_BUNDLE",
+   "filebin": "NOT_ON_FILEBIN",
+   "archive_id": "A-18"
+  },
+  {
+   "filename": "BACKUP_GITHUB_MASTER_bbe0ce3.bundle",
+   "path": "/tmp/my-project/download/BACKUP_GITHUB_MASTER_bbe0ce3.bundle",
+   "copies": [
+    "/tmp/my-project/download/BACKUP_GITHUB_MASTER_bbe0ce3.bundle"
+   ],
+   "size": 152706027,
+   "sha256": "b532dea8139b2d5c3edd0bf0b1ed4fd74750df36fbab656f131a1bf36a1c1924",
+   "mtime_epoch": 1788352220.1046646,
+   "mtime": "2026-09-02 12:30:20",
+   "kind": "GIT_BUNDLE",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-19"
+  },
+  {
+   "filename": "BACKUP_LOCAL_INTEGRATION_0fd1ad6.bundle",
+   "path": "/tmp/my-project/download/BACKUP_LOCAL_INTEGRATION_0fd1ad6.bundle",
+   "copies": [
+    "/tmp/my-project/download/BACKUP_LOCAL_INTEGRATION_0fd1ad6.bundle"
+   ],
+   "size": 153497937,
+   "sha256": "81edb258ca11d002ed1de6b51950be4466f7f17cf635f5f96f269bd02f33ef28",
+   "mtime_epoch": 1788355471.617975,
+   "mtime": "2026-09-02 13:24:31",
+   "kind": "GIT_BUNDLE",
+   "filebin": "PRESENT_MATCH",
+   "archive_id": "A-20"
+  }
+ ]
+}
