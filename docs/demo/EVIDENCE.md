@@ -36,13 +36,13 @@ built with the official Android toolchain equivalents (ECJ + AOSP D8, see
 | Click changes state | `dispatch_click` -> DEX `onClick` -> `step()` -> re-render |
 | Screenshots captured | `frames/frame_000..008.png` |
 | Multiple frames | 9 frames, all distinct SHA256 |
-| GIF | `miniandroid-demo-proof.gif` assembled ONLY from runtime frames |
+| GIF | `docs/demo/demo_proof.gif` assembled ONLY from runtime frames (provenance-gated) |
 
 ## Identifiers for this evidence set
 
 ```
-MiniAndroid binary SHA256 (final, includes the 12x/22s AOSP alignment):
-  2016c381357acea025e71d877255bf6feee9e0158bcff909fc2aaeb89e699539
+MiniAndroid binary SHA256 (final; adds png_sha256 to the frame manifest):
+  b9d768703bc26ab8ab619bd76f6d0ed904ea082d789d19e48dcba90d4a4f7b13
 demo APK SHA256:
   c0959a719289735265f8cb0e47a488883c6a6bf39d314b2b783fcdc7ec9ad6e8
 command:
@@ -52,19 +52,42 @@ exit code: 0
 frames: 9 (1 launch + 8 clicks), 1080x1920 each
 ```
 
-Per-frame state and framebuffer hashes (frame 0 includes the built-in
-post-launch probe click, hence `count=1` at launch capture):
+## Two hash domains (both deterministic, both documented)
+
+Every frame carries TWO SHA256 values in `demo_manifest.json`:
+
+* `sha256` — the raw **framebuffer** hash: the deterministic render law
+  (unchanged across every rebuild that did not touch rendering; matches the
+  hashes pinned in earlier evidence).
+* `png_sha256` — the SHA256 of the **PNG file bytes** written to disk: the
+  hash a visitor can recompute after downloading a frame and compare
+  byte-for-byte.
+
+Two independent runs of the same command produce byte-identical PNG files
+(verified: file-level hashes equal across runs AND framebuffer hashes equal
+across runs and equal to the committed evidence).
+
+Scope note: `sha256` (framebuffer) is the cross-platform identity — it is
+the rendering law and must match for every build of the same source. The
+PNG file bytes additionally depend on the bundled codec builds (Linux links
+the system libpng, Windows pins libpng 1.6.44), so `png_sha256` is pinned
+per build lineage; the values documented here are the Linux x64 release
+build, which is also what the release clean-extract test re-verifies.
+
+Per-frame state and both hashes (frame 0 includes the built-in post-launch
+probe click, hence `count=1` at launch capture; `png=` is the hash of the
+PNG file bytes, verifiable on any downloaded frame):
 
 ```
-frame 0: count=1 pos=(220,370) color=GREEN  sha=e5c8d511651e4276
-frame 1: count=2 pos=(400,660) color=BLUE   sha=5c73aa41728bd18e  diff=51637px
-frame 2: count=3 pos=(580,950) color=YELLOW sha=4359e56ddff842d1  diff=51632px
-frame 3: count=4 pos=(760,80)  color=RED    sha=70dbf13233b3      diff=51718px
-frame 4: count=5 pos=(40,370)  color=GREEN  sha=f6862e1923260904  diff=51751px
-frame 5: count=6 pos=(220,660) color=BLUE   sha=dbc7814d96bd63be  diff=51807px
-frame 6: count=7 pos=(400,950) color=YELLOW sha=f19bfb287af9b2a9  diff=51689px
-frame 7: count=8 pos=(580,80)  color=RED    sha=dc929b1f6e21994f  diff=51729px
-frame 8: count=9 pos=(760,370) color=GREEN  sha=276ccd7da2dcf943  diff=51703px
+frame 0: count=1 pos=(220,370) color=GREEN  fb=e5c8d511651e4276 png=99996cec9444b6cb
+frame 1: count=2 pos=(400,660) color=BLUE   fb=5c73aa41728bd18e png=eb900379bd994164  diff=51637px
+frame 2: count=3 pos=(580,950) color=YELLOW fb=4359e56ddff842d1 png=121f669037d60775  diff=51632px
+frame 3: count=4 pos=(760,80)  color=RED    fb=70dbf13233b36e1e png=07abaedf28b70d9b  diff=51718px
+frame 4: count=5 pos=(40,370)  color=GREEN  fb=f6862e1923260904 png=e6fde69e6c04475f  diff=51751px
+frame 5: count=6 pos=(220,660) color=BLUE   fb=dbc7814d96bd63be png=776512caf8fcdfe5  diff=51807px
+frame 6: count=7 pos=(400,950) color=YELLOW fb=f19bfb287af9b2a9 png=82623ed2dcaf880e  diff=51689px
+frame 7: count=8 pos=(580,80)  color=RED    fb=dc929b1f6e21994f png=0b87fd7d06d2f50c  diff=51729px
+frame 8: count=9 pos=(760,370) color=GREEN  fb=276ccd7da2dcf943 png=d229046b4a7f9a40  diff=51703px
 ```
 
 Pixel-vs-state verification (rendered pixels match the app's own status text):
@@ -75,14 +98,30 @@ y is the same stage-relative offset as every other frame.
 Deterministic replay: three independent clean runs produced byte-identical
 frame SHA256 sequences (`e5c8d511651e4276`, `5c73aa41728bd18e`, ...).
 
+## Visual proof assets (generated ONLY from the frames above)
+
+`scripts/make_demo_proof.py` rebuilds both assets. It first runs a
+provenance gate — every input frame PNG must hash to its committed
+`png_sha256` and every framebuffer hash must match the committed manifest —
+and refuses to produce anything on any mismatch. The app-area pixels are
+cropped/scaled runtime output only; the scripts add text exclusively in
+documentation bands around the frames.
+
+| Asset | SHA256 (first 16) | Content |
+|---|---|---|
+| `docs/demo/demo_proof.gif` | `43790411790b641a` | all 9 runtime frames, 540x560, 700 ms/frame |
+| `docs/demo/demo_frames.png` | `114c799fc117cc98` | labeled contact sheet: STATE 0..4 (frames 0..4) |
+
 ## Committed artifacts
 
 | File | Role |
 |---|---|
-| `docs/demo/demo_frames.png` | 9-frame strip (downscaled from the runtime PNGs) |
-| `docs/demo/demo_manifest.json` | full per-frame machine evidence |
+| `docs/demo/demo_frames.png` | labeled STATE 0..4 contact sheet built from runtime frames |
+| `docs/demo/demo_proof.gif` | 9-frame animation assembled only from runtime frames |
+| `docs/demo/demo_manifest.json` | full per-frame machine evidence (framebuffer + PNG hashes) |
+| `scripts/make_demo_proof.py` | provenance-gated generator for the visual assets |
 | `demo/` | demo app source + build + validation fixture |
-| `miniandroid/run/demo_evidence/` | full-resolution runtime frames (local) |
+| `miniandroid/run/demo_evidence/` | full-resolution runtime frames (local, regenerated by the command above) |
 
 ## Runtime fixes that this proof required (and their regression status)
 
