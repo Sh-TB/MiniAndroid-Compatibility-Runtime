@@ -33,6 +33,10 @@ float arg_as_float(const CallContext& ctx, size_t i, float def = 0.f) {
 void CanvasShadow::begin_frame() {
     ops_.clear();
     capturing_ = true;
+    // UC009: fresh frame = fresh canvas state (AOSP Canvas lifecycle).
+    tx_ = ty_ = 0;
+    save_stack_.clear();
+    recording_node_ = 0;
 }
 
 size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
@@ -53,6 +57,21 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
             case DrawOp::Kind::DRAW_RECT: {
                 const float x1 = left + op.x, y1 = top + op.y;
                 const float x2 = left + op.w, y2 = top + op.h;
+                if (op.stroke) {
+                    canvas.draw_rect(x1, y1, x2, y1 + op.stroke_w, c);
+                    canvas.draw_rect(x1, y2 - op.stroke_w, x2, y2, c);
+                    canvas.draw_rect(x1, y1, x1 + op.stroke_w, y2, c);
+                    canvas.draw_rect(x2 - op.stroke_w, y1, x2, y2, c);
+                } else {
+                    canvas.draw_rect(x1, y1, x2, y2, c);
+                }
+                break;
+            }
+            case DrawOp::Kind::DRAW_ROUNDRECT: {
+                // Recorded with width/height convention (unlike DRAW_RECT).
+                const float x1 = left + op.x, y1 = top + op.y;
+                const float x2 = x1 + op.w, y2 = y1 + op.h;
+                // v1: filled rect (corner radius recorded but not rasterized).
                 if (op.stroke) {
                     canvas.draw_rect(x1, y1, x2, y1 + op.stroke_w, c);
                     canvas.draw_rect(x1, y2 - op.stroke_w, x2, y2, c);
@@ -118,6 +137,41 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
     const std::string& cls = ctx.class_name;
     const std::string& m = ctx.method;
 
+
+    // ── RenderNode (UC009 H-072: Compose recording model) ─────────────
+    if (cls == "Landroid/view/RenderNode;" || cls.find("RenderNode;") != std::string::npos) {
+        const uint32_t recv = ctx.receiver_id;
+        if (m == "beginRecording") {
+            // AOSP: switches this node into recording mode and returns the
+            // node's RecordingCanvas. We route subsequent Canvas ops into
+            // the node's op list; the returned object is a shared
+            // RecordingCanvas receiver (single-threaded draw = safe).
+            recording_node_ = recv;
+            uint32_t canvas_id = heap_ ? heap_->get_or_create("Landroid/graphics/RecordingCanvas;") : recv;
+            return CallResult::handled_object(canvas_id, "Landroid/graphics/RecordingCanvas;");
+        }
+        if (m == "endRecording") {
+            recording_node_ = 0;
+            return CallResult::handled_void();
+        }
+        if (m == "setPosition") {
+            // setPosition(left, top, right, bottom)
+            if (ctx.args.size() >= 4) {
+                node_pos_l_[recv] = arg_as_float(ctx, 0, 0.f);
+                node_pos_t_[recv] = arg_as_float(ctx, 1, 0.f);
+            }
+            return CallResult::handled_bool(true);
+        }
+        if (m == "setTranslationX" || m == "setTranslationY" || m == "setElevation" ||
+            m == "setAlpha" || m == "setCameraDistance" || m == "setPivotX" || m == "setPivotY" ||
+            m == "setScaleX" || m == "setScaleY" || m == "setRotation" || m == "setClipToBounds" ||
+            m == "setClipToOutline" || m == "setOutline" || m == "setHasDisplayList" ||
+            m == "setUsageHint" || m == "isValid" || m == "discardDisplayList") {
+            return CallResult::handled_bool(true);
+        }
+        return CallResult::not_handled();
+    }
+
     // ── Paint ──────────────────────────────────────────────────────────
     if (cls.find("Paint;") != std::string::npos) {
         const uint32_t recv = ctx.receiver_id;
@@ -179,7 +233,7 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
                        ((uint32_t)ctx.arg_as_int(1, 0) << 8) |
                        (uint32_t)ctx.arg_as_int(2, 0);
         }
-        ops_.push_back(op);
+        target().push_back(op);
         return CallResult::handled_void();
     }
     if (m == "drawRect") {
@@ -192,7 +246,27 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] == 1;
         auto sw = paint_stroke_w_.find(paint_id);
         op.stroke_w = sw != paint_stroke_w_.end() ? sw->second : 1.f;
-        ops_.push_back(op);
+        // NOTE: drawRect stores ABSOLUTE edges in x,y,w,h (existing replay
+        // convention) — translate shifts both edges.
+        op.x += tx_; op.w += tx_;
+        op.y += ty_; op.h += ty_;
+        target().push_back(op);
+        return CallResult::handled_void();
+    }
+    if (m == "drawRoundRect") {
+        // Compose backgrounds/cards are round rects. Approximate as rect with
+        // corner radius recorded (replay draws filled rect — honest v1).
+        DrawOp op; op.kind = DrawOp::Kind::DRAW_ROUNDRECT;
+        // args are (l,t,r,b,paint,rx,ry)
+        float l = arg_as_float(ctx, 0), t = arg_as_float(ctx, 1);
+        float r = arg_as_float(ctx, 2), b = arg_as_float(ctx, 3);
+        op.x = l + tx_; op.y = t + ty_; op.w = r - l; op.h = b - t;
+        op.r = arg_as_float(ctx, 5, 0.f);
+        uint32_t paint_id = ctx.arg_as_object(4);
+        op.color = paint_color(paint_id);
+        auto sw2 = paint_stroke_w_.find(paint_id);
+        op.stroke_w = sw2 != paint_stroke_w_.end() ? sw2->second : 1.f;
+        target().push_back(op);
         return CallResult::handled_void();
     }
     if (m == "drawCircle") {
@@ -204,7 +278,8 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] == 1;
         auto sw = paint_stroke_w_.find(paint_id);
         op.stroke_w = sw != paint_stroke_w_.end() ? sw->second : 1.f;
-        ops_.push_back(op);
+        op.x += tx_; op.y += ty_;
+        target().push_back(op);
         return CallResult::handled_void();
     }
     if (m == "drawLine") {
@@ -215,7 +290,9 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         op.color = paint_color(paint_id);
         auto sw = paint_stroke_w_.find(paint_id);
         op.stroke_w = sw != paint_stroke_w_.end() ? sw->second : 1.f;
-        ops_.push_back(op);
+        op.x += tx_; op.w += tx_;   // absolute endpoints convention
+        op.y += ty_; op.h += ty_;
+        target().push_back(op);
         return CallResult::handled_void();
     }
     if (m == "drawText") {
@@ -225,22 +302,56 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         op.y = arg_as_float(ctx, 2);
         uint32_t paint_id = ctx.arg_as_object(ctx.args.size() >= 4 ? 3 : 0);
         op.color = paint_color(paint_id);
-        ops_.push_back(op);
+        op.x += tx_; op.y += ty_;
+        target().push_back(op);
         return CallResult::handled_void();
     }
     if (m == "drawPaint") {
         DrawOp op; op.kind = DrawOp::Kind::DRAW_PAINT;
         op.color = paint_color(ctx.arg_as_object(0));
-        ops_.push_back(op);
+        target().push_back(op);
         return CallResult::handled_void();
     }
-    if (m == "save" || m == "restore" || m == "translate" || m == "rotate" ||
-        m == "scale" || m == "skew" || m == "concat" || m == "clipRect" ||
-        m == "saveLayer" || m == "restoreToCount" || m == "drawOval" ||
-        m == "drawRoundRect" || m == "drawArc" || m == "drawPath" ||
+    if (m == "translate") {
+        // AOSP Canvas.translate — needed by Compose child positioning.
+        tx_ += arg_as_float(ctx, 0, 0.f);
+        ty_ += arg_as_float(ctx, 1, 0.f);
+        return CallResult::handled_void();
+    }
+    if (m == "save") {
+        save_stack_.push_back({tx_, ty_});
+        return CallResult::handled_int((int)save_stack_.size());
+    }
+    if (m == "restore") {
+        if (!save_stack_.empty()) {
+            tx_ = save_stack_.back().first;
+            ty_ = save_stack_.back().second;
+            save_stack_.pop_back();
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "drawRenderNode") {
+        // AOSP compositing: replay a recorded RenderNode's display list into
+        // this canvas, offset by the node's position.
+        const uint32_t node_id = ctx.arg_as_object(0, 0);
+        auto it = render_nodes_.find(node_id);
+        if (it != render_nodes_.end()) {
+            float ox = node_pos_l_.count(node_id) ? node_pos_l_[node_id] : 0.f;
+            float oy = node_pos_t_.count(node_id) ? node_pos_t_[node_id] : 0.f;
+            auto& tgt = target();
+            for (const DrawOp& op : it->second) {
+                DrawOp c = op;
+                c.x += ox; c.y += oy;
+                tgt.push_back(c);
+            }
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "rotate" || m == "scale" || m == "skew" || m == "concat" ||
+        m == "clipRect" || m == "saveLayer" || m == "restoreToCount" ||
+        m == "drawOval" || m == "drawArc" || m == "drawPath" ||
         m == "drawBitmap" || m == "drawPoint" || m == "drawPosText") {
-        // State ops are accepted (state model is flat); complex geometry ops
-        // are TODO on evidence.
+        // Accepted (flat state model); complex geometry is TODO on evidence.
         return CallResult::handled_void();
     }
     if (m == "getWidth") return CallResult::handled_int(1080);
