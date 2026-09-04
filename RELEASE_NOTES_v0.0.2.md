@@ -56,23 +56,41 @@ release (`miniandroid-demo-proof.gif`, assembled only from runtime frames).
 `MiniAndroid.exe` (PE32+ x86-64, UCRT, statically linked codecs) is built by
 the reproducible pipeline `miniandroid/scripts/build_windows.sh` (llvm-mingw
 20260826 + pinned upstream deps) and carries the same fixes as the Linux
-binary. Note: the release host has no Wine; native-Windows smoke testing
-remains on the checklist — the build recipe itself is pinned and auditable.
+binary. It imports only KERNEL32 and the UCRT — no bundled DLLs. Note: the
+release host has no Wine; native-Windows smoke testing remains on the
+checklist — the build recipe itself is pinned and auditable.
 
 ## Artifacts
 
 | File | Purpose |
 |---|---|
-| `MiniAndroid-v0.0.2-Australorp-linux-x64.tar.gz` | Linux x64 runtime + launcher + demo APK |
-| `MiniAndroid-v0.0.2-Australorp-windows-x64.zip` | native `MiniAndroid.exe` + demo APK |
+| `MiniAndroid-v0.0.2-Australorp-linux-x64.tar.gz` | Linux x64 runtime (stripped) + launcher + demo APK |
+| `MiniAndroid-v0.0.2-Australorp-windows-x64.zip` | native `MiniAndroid.exe` + demo APK — runtime-only package, no toolchain, no DLLs needed |
 | `miniandroid-demo-proof.gif` | animated proof (from runtime frames only) |
 | `SHA256SUMS_v0.0.2.txt` | checksums for all artifacts |
+
+Every package is produced by `scripts/package_release.sh` and gated by
+`scripts/validate_release_content.py` (`RELEASE_CONTENT_CHECK: PASS`,
+`DEVELOPMENT_ARTIFACTS: 0`) plus `scripts/release_clean_extract_test.sh`
+(demo APK executed from a clean extraction of the shipped archive with a
+deterministic per-frame SHA256 replay). The packages contain only the
+runtime files — no compiler, no dependency source trees, no build trees.
 
 Demo APK `miniandroid-demo.apk` SHA256:
 `c0959a719289735265f8cb0e47a488883c6a6bf39d314b2b783fcdc7ec9ad6e8`
 
-Linux binary (final, incl. 12x alignment) SHA256:
-`2016c381357acea025e71d877255bf6feee9e0158bcff909fc2aaeb89e699539`
+Linux binary (stripped; adds png_sha256 to the frame manifest) SHA256:
+`3df351814288cd8a357fabda17824a1dc6e53b017e3e495d064110e7506cbb60`
+
+Windows `MiniAndroid.exe` SHA256:
+`8ff8694b70ed01ead98195842a44e1200e93fb78cf7e56503052607c854d2666`
+
+Package SHA256 (see `SHA256SUMS_v0.0.2.txt` for the authoritative copy):
+
+```
+8738c72b3e37a5b12f925ffd9dd2d7ecd7462d332196b3b2d30c3fa4f2082ef0  MiniAndroid-v0.0.2-Australorp-linux-x64.tar.gz
+ada02c6d53b616669a9dd6b58b46fbc3ce182acb44f3de6fd883fc9dace915d1  MiniAndroid-v0.0.2-Australorp-windows-x64.zip
+```
 
 ## Known limitations (transparent)
 

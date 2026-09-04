@@ -17,9 +17,33 @@ evidence, a deterministic replay check, and an animated GIF assembled only
 from runtime-produced frames (see [docs/demo/EVIDENCE.md](docs/demo/EVIDENCE.md)
 and the `demo/` directory).
 
-Release naming convention: every meaningful release carries a chicken-breed
-name (Brahma, then Australorp); small bugfix releases may reuse the previous
-name.
+### The proof, in one look
+
+REAL APK → DEX EXECUTION → ANDROID RUNTIME → UI → STATE CHANGE → SCREENSHOT
+
+![Real-APK execution proof — 9 runtime frames of the demo app](docs/demo/demo_proof.gif)
+
+*The animation above is assembled ONLY from frames captured by the
+MiniAndroid runtime while executing the demo APK (`demo/`, MIT). Every
+click dispatches through real DEX bytecode: the counter increments, the box
+moves on a 5x4 grid, its color cycles, and the status text re-renders.*
+
+Static fallback / closer look — STATE 0 → STATE 4 of the same run:
+
+![Labeled runtime states 0-4](docs/demo/demo_frames.png)
+
+*Reproduce it yourself (command also shipped inside the release artifact):*
+```bash
+./run-miniandroid.sh run miniandroid-demo.apk -o proof --click-count 8
+# -> proof/frames/frame_000..008.png + proof/frames/manifest.json (per-frame SHA256)
+```
+*Two runs produce byte-identical frames (deterministic software renderer).
+Frame provenance rules: [docs/demo/EVIDENCE.md](docs/demo/EVIDENCE.md).*
+
+Release naming convention: codenames for meaningful releases are chosen by
+the project owner (v0.0.1 — Brahma, v0.0.2 — Australorp). Small bugfix and
+maintenance releases reuse the previous name or carry none; contributors
+and automation must never invent one.
 
 - `v0.0.1 — Brahma` anchored source `02e72ae` (rollback refs preserved in-repo).
 - See [RELEASE_NOTES_v0.0.2.md](RELEASE_NOTES_v0.0.2.md) and
@@ -69,15 +93,16 @@ click 2: count=3 pos=(580,950) color=YELLOW (51,632 px changed)
 ```
 
 See [docs/demo/EVIDENCE.md](docs/demo/EVIDENCE.md) for the full evidence
-chain (frame hashes, pixel-vs-state verification, OLD-vs-NEW corpus
-comparison) and [docs/demo/demo_frames.png](docs/demo/demo_frames.png) for
-the 9-frame strip captured by the runtime itself.
+chain (framebuffer + PNG-file hashes per frame, pixel-vs-state verification,
+OLD-vs-NEW corpus comparison), [docs/demo/demo_frames.png](docs/demo/demo_frames.png)
+for the labeled STATE 0..4 contact sheet, and
+[docs/demo/demo_proof.gif](docs/demo/demo_proof.gif) for the animation.
 
 ### Proven capability matrix
 
-Every row below is backed by a re-runnable test or artifact at the current
-HEAD (`02e72ae`), re-verified in the 2026-09-03 pre-push audit from a clean
-extraction of the published source archive.
+Every row below is backed by a re-runnable test or artifact, re-verified at
+each push (golden matrix + fixture suites + the demo proof from a clean
+extraction of the release package).
 
 | Capability | Evidence at HEAD |
 |---|---|
@@ -187,11 +212,27 @@ linked into the binary. No JVM, no GPU, no KVM needed.
 ### Windows x64
 
 The Windows release artifact ships the **real native `MiniAndroid.exe`**
-(PE32+ x86-64, UCRT runtime, statically linked codecs) built reproducibly by
-`miniandroid/scripts/build_windows.sh` with the llvm-mingw toolchain and
-pinned upstream dependencies. It carries the same runtime fixes as the Linux
-binary. A source build kit (`BUILD-WINDOWS.md` recipe) remains inside the
-zip for full-source reproducibility.
+(PE32+ x86-64) built reproducibly by `miniandroid/scripts/build_windows.sh`
+with the llvm-mingw toolchain and pinned upstream dependencies. It carries
+the same runtime fixes as the Linux binary. The package contains only the
+runtime: the executable, the demo APK, a README and the license — the exe
+imports only KERNEL32 and the UCRT (present on every Windows 10/11
+install), so **no DLLs are bundled or needed**. The toolchain and the
+dependency source trees are never part of any release package:
+`scripts/validate_release_content.py` hard-fails any package containing
+development content before it can be published.
+
+### Release packaging guarantee
+
+Every release package is produced by `scripts/package_release.sh`: fresh
+staging, an explicit runtime-file list (no tree copies), stripped binaries,
+then a content gate (`scripts/validate_release_content.py`) that rejects
+any compiler/toolchain directory, dependency source tree, nested archive,
+object file or static library — followed by
+`scripts/release_clean_extract_test.sh`, which extracts the final archives
+into a brand-new directory, runs the demo APK from there and verifies the
+deterministic per-frame SHA256 replay. `DEVELOPMENT_ARTIFACTS: 0` is a
+going property of every published artifact, not a one-time cleanup.
 
 ### Build from source (Linux)
 
