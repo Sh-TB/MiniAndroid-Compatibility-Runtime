@@ -1,0 +1,109 @@
+{
+  "test": "EXP086 Phase 4 \u2014 View tree \u2192 render pipeline integration",
+  "generated_at": "2026-08-23T00:32:00.313980+00:00",
+  "pass_count": 3,
+  "partial_count": 0,
+  "fail_count": 0,
+  "skip_count": 0,
+  "results": [
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+      "exit_code": 0,
+      "evidence": {
+        "stage_render_frame_called": false,
+        "frame_rendered": false,
+        "no_content_view_warning": false,
+        "create_view_from_dalvik_result": false,
+        "create_hello_world_view": false,
+        "perform_draw_called": false,
+        "text_views_rendered_count": 0,
+        "frame_count_increment": false
+      },
+      "png_info": {
+        "exists": true,
+        "size_bytes": 10535,
+        "valid_signature": true,
+        "width": 1080,
+        "height": 1920,
+        "idat_bytes": 10478,
+        "decompressed_size": 6222720,
+        "decompressed_ok": true,
+        "first_pixel": [
+          0,
+          0,
+          0
+        ],
+        "non_black_pixels_sampled": 848
+      },
+      "status": "PASS_RENDERED",
+      "stdout_tail": " 0xd4\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 1.076664ms\n[DalvikEngine] Instructions executed: 56\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "gmdice"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/tictactoe.apk",
+      "exit_code": 0,
+      "evidence": {
+        "stage_render_frame_called": false,
+        "frame_rendered": false,
+        "no_content_view_warning": false,
+        "create_view_from_dalvik_result": false,
+        "create_hello_world_view": false,
+        "perform_draw_called": false,
+        "text_views_rendered_count": 0,
+        "frame_count_increment": false
+      },
+      "png_info": {
+        "exists": true,
+        "size_bytes": 10535,
+        "valid_signature": true,
+        "width": 1080,
+        "height": 1920,
+        "idat_bytes": 10478,
+        "decompressed_size": 6222720,
+        "decompressed_ok": true,
+        "first_pixel": [
+          0,
+          0,
+          0
+        ],
+        "non_black_pixels_sampled": 848
+      },
+      "status": "PASS_RENDERED",
+      "stdout_tail": "0x24\n[DalvikEngine] Method returned successfully\n[DalvikEngine] \u2705 execute_method_internal() returned\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 58.842001ms\n[DalvikEngine] Instructions executed: 56\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "tictactoe"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
+      "exit_code": 0,
+      "evidence": {
+        "stage_render_frame_called": false,
+        "frame_rendered": false,
+        "no_content_view_warning": false,
+        "create_view_from_dalvik_result": false,
+        "create_hello_world_view": false,
+        "perform_draw_called": false,
+        "text_views_rendered_count": 0,
+        "frame_count_increment": false
+      },
+      "png_info": {
+        "exists": true,
+        "size_bytes": 10535,
+        "valid_signature": true,
+        "width": 1080,
+        "height": 1920,
+        "idat_bytes": 10478,
+        "decompressed_size": 6222720,
+        "decompressed_ok": true,
+        "first_pixel": [
+          0,
+          0,
+          0
+        ],
+        "non_black_pixels_sampled": 848
+      },
+      "status": "PASS_RENDERED",
+      "stdout_tail": "rg/telegram/ui/LaunchActivity;.onCreate\n[DalvikEngine] \u2705 onCreate invoked via try_recursive_invoke\n[DalvikEngine] \ud83d\udd0d main_method is onCreate, trying fallback...\n[DalvikEngine] Execution completed in 442.959647ms\n[DalvikEngine] Instructions executed: 757\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "name": "telegram"
+    }
+  ]
+}

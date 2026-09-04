@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://stackoverflow.com/questions/34745704/how-to-compile-telegram-jni-folder",
+    "name": "How to compile telegram jni folder",
+    "snippet": "I am trying to compile jni folder in telegram source code in github.com/DrKLO/Telegram/ with ndk But when i am write ndk-build in cmd in ndk folder ...",
+    "host_name": "stackoverflow.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/Telegram-FOSS-Team/Telegram-FOSS/issues/142",
+    "name": "NDK: ERROR:/Users//Desktop/Telegram/TMessagesProj/",
+    "snippet": "Apr 20, 2017 — Hello, I cloned the latest code from the DrKlo Telegram github repository: 3.18.0 When i try to run it in Android Studio i get the following ...",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "Apr 20, 2017",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/Telegram-FOSS-Team/Telegram-FOSS/issues/90",
+    "name": "Run telegram application - build error · Issue #90",
+    "snippet": "Apr 7, 2016 — Solved, Just try ndk-build on TMessageProj instead of jni . It works when I do ndk-build in TMessageProj instead of jni.",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "Apr 7, 2016",
+    "favicon": ""
+  },
+  {
+    "url": "https://andreytzkt.medium.com/a-couple-of-interesting-things-from-telegram-android-app-source-code-867777899525",
+    "name": "A couple of interesting things from Telegram Android app",
+    "snippet": "Telegram splits all devices into three performance classes LOW, AVERAGE and HIGH, and each performance class is being set based on hardware ...",
+    "host_name": "andreytzkt.medium.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dev.to/kcvabeysinghe/how-to-build-an-android-telegram-client-without-touching-c-a-kotlin-first-approach-1j94",
+    "name": "How to Build an Android Telegram Client Without Touching",
+    "snippet": "Apr 16, 2026 — Setting up TDLib for Android usually means spending hours configuring CMake, the NDK, and complex JNI bindings. Read more",
+    "host_name": "dev.to",
+    "rank": 4,
+    "date": "Apr 16, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://news.ycombinator.com/item?id=9774402",
+    "name": "Telegram is not truly open source. They utilize a pre-",
+    "snippet": "the libs/arch/. so files are just compiled JNI /NDK libraries compiled from source of jni /* files (that's completely standard for native code on Android ).",
+    "host_name": "news.ycombinator.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://gitlab.developers.cam.ac.uk/jz448/browser-android-tabs/-/blob/4b57ba1033be4b4d1cd45ea87c8397d66997438e/base/android/jni_generator/README.md",
+    "name": "base/android/jni_generator/README.md",
+    "snippet": "Jun 13, 2019 — JNI (Java Native Interface) is the mechanism that enables Java code to call native functions, and native code to call Java functions.",
+    "host_name": "gitlab.developers.cam.ac.uk",
+    "rank": 6,
+    "date": "Jun 13, 2019",
+    "favicon": ""
+  },
+  {
+    "url": "https://zread.ai/DrKLO/Telegram/TMessagesProj/jni/jni.c",
+    "name": "Overview | DrKLO/Telegram",
+    "snippet": "The TMessagesProj module is the heart of the project. It compiles as an Android library and contains every line of production Java code, all native C/C++ ... Read more",
+    "host_name": "zread.ai",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

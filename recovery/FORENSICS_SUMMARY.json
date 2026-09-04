@@ -1,0 +1,251 @@
+{
+  "UNIFIED_003.zip": {
+    "size": 954460,
+    "sha256": "904b628d46828386d786694640f12a64dadbc10c544dccd4da1410784c29a18b",
+    "recorded": "904b628d46828386d786694640f12a64dadbc10c544dccd4da1410784c29a18b  UNIFIED_003.zip",
+    "hash_match": false,
+    "members": 289,
+    "apk_members": [],
+    "apk_count": 0,
+    "git_members": 0,
+    "md_count": 204,
+    "members_over_1MB": [],
+    "top_level": [
+      "UNIFIED_003"
+    ],
+    "extracted_to": "/home/z/my-project/u011_1_forensics/UNIFIED_003"
+  },
+  "UNIFIED_004.zip": {
+    "size": 1222484,
+    "sha256": "4502303b9d6241dba716b420c601f7c8a7936bc67b5b5c5f7cc97dfe612b53f3",
+    "recorded": "4502303b9d6241dba716b420c601f7c8a7936bc67b5b5c5f7cc97dfe612b53f3  UNIFIED_004.zip",
+    "hash_match": false,
+    "members": 328,
+    "apk_members": [],
+    "apk_count": 0,
+    "git_members": 0,
+    "md_count": 232,
+    "members_over_1MB": [],
+    "top_level": [
+      "UNIFIED_004"
+    ],
+    "extracted_to": "/home/z/my-project/u011_1_forensics/UNIFIED_004"
+  },
+  "UNIFIED_005.zip": {
+    "size": 800451,
+    "sha256": "60e94e029a0328179ccd52fc64ae7edee3482f77f7a012f1693dd7a242f0cc48",
+    "recorded": "60e94e029a0328179ccd52fc64ae7edee3482f77f7a012f1693dd7a242f0cc48  UNIFIED_005.zip\n800451 bytes",
+    "hash_match": false,
+    "members": 37,
+    "apk_members": [],
+    "apk_count": 0,
+    "git_members": 0,
+    "md_count": 4,
+    "members_over_1MB": [],
+    "top_level": [
+      "MANIFEST_005.json",
+      "TASKS_UNIFIED_005.md",
+      "docs",
+      "evidence",
+      "source"
+    ],
+    "extracted_to": "/home/z/my-project/u011_1_forensics/UNIFIED_005"
+  },
+  "UNIFIED_006.zip": {
+    "size": 4657333,
+    "sha256": "a4b4b6046365f8d697e71e287a1c7ea6adaede769150e51b35a335821d71497b",
+    "recorded": "a4b4b6046365f8d697e71e287a1c7ea6adaede769150e51b35a335821d71497b  UNIFIED_006.zip\n4657333 bytes",
+    "hash_match": false,
+    "members": 79,
+    "apk_members": [],
+    "apk_count": 0,
+    "git_members": 0,
+    "md_count": 32,
+    "members_over_1MB": [
+      [
+        "evidence/corpus_extra/freeotpplus_timeout.log",
+        42604265
+      ]
+    ],
+    "top_level": [
+      "MANIFEST_006.json",
+      "TASKS_CAMPAIGN005_MASTER.md",
+      "TASKS_UNIFIED_005.md",
+      "UNIFIED_005_INDEX.md",
+      "docs",
+      "evidence",
+      "source"
+    ],
+    "extracted_to": "/home/z/my-project/u011_1_forensics/UNIFIED_006"
+  },
+  "UNIFIED_007.zip": {
+    "size": 11060369,
+    "sha256": "fb8c1a02feae7c3cffa1b303b76b04c9bccf3d7541371326fbcfe4ff4abab774",
+    "recorded": "fb8c1a02feae7c3cffa1b303b76b04c9bccf3d7541371326fbcfe4ff4abab774  UNIFIED_007.zip",
+    "hash_match": false,
+    "members": 518,
+    "apk_members": [],
+    "apk_count": 0,
+    "git_members": 0,
+    "md_count": 154,
+    "members_over_1MB": [
+      [
+        "UNIFIED_007/logs/tg_regression.log",
+        49646290
+      ],
+      [
+        "UNIFIED_007/logs/regress_dooz.log",
+        14542297
+      ],
+      [
+        "UNIFIED_007/build/miniandroid",
+        3036072
+      ],
+      [
+        "UNIFIED_007/build/exp124_golden_journey",
+        2355808
+      ],
+      [
+        "UNIFIED_007/logs/regress_notes.log",
+        1429426
+      ]
+    ],
+    "top_level": [
+      "UNIFIED_007"
+    ],
+    "extracted_to": "/home/z/my-project/u011_1_forensics/UNIFIED_007"
+  },
+  "UNIFIED_007_FINAL.zip": {
+    "size": 94771893,
+    "sha256": "5f473314f53ff18b4d2ea8e73bca9d0e35999c57cc142eb51f78d81421acd9d0",
+    "recorded": "5f473314f53ff18b4d2ea8e73bca9d0e35999c57cc142eb51f78d81421acd9d0  UNIFIED_007_FINAL.zip",
+    "hash_match": false,
+    "members": 650,
+    "apk_members": [
+      "miniandroid/download/corpus/bgclock.apk",
+      "miniandroid/download/corpus/chessclock.apk",
+      "miniandroid/download/corpus/dooz.apk",
+      "miniandroid/download/corpus/gmdice.apk",
+      "miniandroid/download/corpus/headingcalc.apk",
+      "miniandroid/download/corpus/microtimer.apk",
+      "miniandroid/download/corpus/notes.apk",
+      "miniandroid/download/corpus/openlauncher.apk",
+      "miniandroid/download/corpus/simplekeyboard.apk",
+      "miniandroid/download/corpus/simplestopwatch.apk",
+      "miniandroid/download/corpus/stopwatch.apk",
+      "miniandroid/download/corpus/tictactoe.apk",
+      "miniandroid/download/corpus/tinymusic.apk",
+      "miniandroid/download/corpus/unote.apk",
+      "miniandroid/download/exp038_telegram/Telegram.apk"
+    ],
+    "apk_count": 15,
+    "git_members": 0,
+    "md_count": 198,
+    "members_over_1MB": [
+      [
+        "miniandroid/download/exp038_telegram/Telegram.apk",
+        73028244
+      ],
+      [
+        "EVIDENCE/telegram/telegram_stderr_trace.log",
+        49718868
+      ],
+      [
+        "miniandroid/err_v12.log",
+        49651854
+      ],
+      [
+        "miniandroid/download/corpus/openlauncher.apk",
+        6140320
+      ],
+      [
+        "miniandroid/download/corpus/tictactoe.apk",
+        4474946
+      ],
+      [
+        "miniandroid/download/corpus/dooz.apk",
+        1749880
+      ],
+      [
+        "miniandroid/download/corpus/bgclock.apk",
+        1040099
+      ]
+    ],
+    "top_level": [
+      "API.md",
+      "ARCHITECTURE.md",
+      "EVIDENCE",
+      "QUICKSTART.md",
+      "README.md",
+      "SOURCE_COMMIT.txt",
+      "STATUS.md",
+      "UNIFIED_007_SELFTEST.md",
+      "miniandroid"
+    ],
+    "extracted_to": "/home/z/my-project/u011_1_forensics/UNIFIED_007_FINAL"
+  },
+  "UNIFIED_008_FINAL.zip": {
+    "size": 7595036,
+    "sha256": "4e2723e15f42ad3269afd42eb9b45f5228e567e458ada1837f74a05e8e1b679d",
+    "recorded": "4e2723e15f42ad3269afd42eb9b45f5228e567e458ada1837f74a05e8e1b679d  UNIFIED_008_FINAL.zip",
+    "hash_match": false,
+    "members": 650,
+    "apk_members": [],
+    "apk_count": 0,
+    "git_members": 0,
+    "md_count": 202,
+    "members_over_1MB": [
+      [
+        "evidence/telegram_sms_enter_code/stderr.log",
+        51400673
+      ]
+    ],
+    "top_level": [
+      "README_ARCHIVE.txt",
+      "evidence",
+      "miniandroid"
+    ],
+    "extracted_to": "/home/z/my-project/u011_1_forensics/UNIFIED_008_FINAL"
+  },
+  "UNIFIED_009_FINAL.zip": {
+    "size": 5238878,
+    "sha256": "2c8653ef1291dbdc1bf409653bca9725867ff4e0e94ec6d5c8277a270829fffc",
+    "recorded": "2c8653ef1291dbdc1bf409653bca9725867ff4e0e94ec6d5c8277a270829fffc  UNIFIED_009_FINAL.zip",
+    "hash_match": false,
+    "members": 232,
+    "apk_members": [],
+    "apk_count": 0,
+    "git_members": 0,
+    "md_count": 161,
+    "members_over_1MB": [
+      [
+        "UNIFIED_009_FINAL/miniandroid-src.tar.gz",
+        2681540
+      ],
+      [
+        "UNIFIED_009_FINAL/evidence/dooz/run_attach_trace.log.gz",
+        1265124
+      ]
+    ],
+    "top_level": [
+      "UNIFIED_009_FINAL"
+    ],
+    "extracted_to": "/home/z/my-project/u011_1_forensics/UNIFIED_009_FINAL"
+  },
+  "UNIFIED_010_FINAL.zip": {
+    "size": 3085682,
+    "sha256": "698f7b0b681ee6257c79c1426f0bfd529c8220f40a68f164219ce9a668e6e22b",
+    "recorded": "698f7b0b681ee6257c79c1426f0bfd529c8220f40a68f164219ce9a668e6e22b",
+    "hash_match": true,
+    "members": 651,
+    "apk_members": [],
+    "apk_count": 0,
+    "git_members": 0,
+    "md_count": 207,
+    "members_over_1MB": [],
+    "top_level": [
+      "UNIFIED_010_FINAL"
+    ],
+    "extracted_to": "/home/z/my-project/u011_1_forensics/UNIFIED_010_FINAL"
+  }
+}

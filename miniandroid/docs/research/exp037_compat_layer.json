@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://wladimir-tm4pda.github.io/porting/dalvik.html",
+    "name": "Dalvik | Android Open Source",
+    "snippet": "The one non-portable component of the runtime is the JNI call bridge . Simply put, this converts an array of integers into function arguments of various types, ... Read more",
+    "host_name": "wladimir-tm4pda.github.io",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.googlesource.com/platform/dalvik/+/lollipop-release/docs/porting-guide.html",
+    "name": "docs/porting-guide.html - platform/dalvik - Git at Google",
+    "snippet": "The one non-portable component of the runtime is the JNI call bridge . Simply put, this converts an array of integers into function arguments of various types,",
+    "host_name": "android.googlesource.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://developer.android.com/ndk/guides/jni-tips",
+    "name": "JNI tips - NDK",
+    "snippet": "Mar 6, 2026 — This document provides best practices and detailed guidance for using the Java Native Interface ( JNI ) in Android development, ...",
+    "host_name": "developer.android.com",
+    "rank": 2,
+    "date": "Mar 6, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/Android/comments/1pp4tt/introducing_art_googles_experimental_replacement",
+    "name": "Googles experimental replacement for Dalvik on Android.",
+    "snippet": "Additionally, some hardware interaction actually needs to go through the \" Dalvik /VM/Java layer \" and then use JNI to get to the native code. Read more",
+    "host_name": "www.reddit.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://divyanshblog09.medium.com/bridging-runtimes-a-deep-dive-into-android-c-ndk-and-jni-36143d01847f",
+    "name": "Bridging Runtimes: A Deep Dive into Android, C++, NDK and",
+    "snippet": "The JNI is a native programming interface . It allows Java code that runs inside a Java Virtual Machine (VM) to interoperate with applications ... Read more",
+    "host_name": "divyanshblog09.medium.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/20045784/native-bridge-between-python-and-dalvik-or-aaf",
+    "name": "Native bridge between Python and Dalvik or AAF",
+    "snippet": "Is there any project that bridges Python and Dalvik in same address space? That is an object created in one language can be registered as a listener ...",
+    "host_name": "stackoverflow.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://proandroiddev.com/bridging-kotlin-and-c-a-hands-on-guide-to-jni-c5eda39505e7",
+    "name": "Bridging Kotlin and C++: A Hands-on Guide to JNI",
+    "snippet": "Aug 3, 2025 — JNI lets you combine the safety of Java/Kotlin with the speed and flexibility of native code — a powerful approach in Android operating systems. Read more",
+    "host_name": "proandroiddev.com",
+    "rank": 6,
+    "date": "Aug 3, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://security.stackexchange.com/questions/117030/does-java-dalviks-java-native-interface-jni-make-android-prone-to-better-attack",
+    "name": "Does Java/Dalvik's Java Native Interface JNI make Android",
+    "snippet": "Mar 10, 2016 — This feature allows effectively running machine native code from a native shared library, which -in the case of Android apk apps- the app ... Read more",
+    "host_name": "security.stackexchange.com",
+    "rank": 7,
+    "date": "Mar 10, 2016",
+    "favicon": ""
+  }
+]

@@ -1,0 +1,72 @@
+{
+  "campaign": "UNIFIED_011.1",
+  "date": "2026-08-30",
+  "canonical_repo": "MiniAndroid-Compatibility-Runtime",
+  "local_head_after_docs": "tag v0.11.1-unified-011-1 (resolve via git describe)",
+  "tag": "v0.11.1-unified-011-1",
+  "remote_head": "bbe0ce3",
+  "push_status": "PUSH_PENDING",
+  "baseline": "UNIFIED_011 (388fb45) + import commit 3b862e5",
+  "recoveries": {
+    "archives_found": ["UNIFIED_000", "UNIFIED_001", "UNIFIED_002", "UNIFIED_003", "UNIFIED_004", "UNIFIED_005", "UNIFIED_006", "UNIFIED_007", "UNIFIED_007_FINAL", "UNIFIED_008_FINAL", "UNIFIED_009_FINAL", "UNIFIED_010_FINAL"],
+    "archives_sha_verified": 12,
+    "campaigns_recovered": ["UNIFIED_000", "UNIFIED_001", "UNIFIED_002", "UNIFIED_003", "UNIFIED_004", "UNIFIED_005", "UNIFIED_006", "UNIFIED_007", "UNIFIED_008", "UNIFIED_009", "UNIFIED_010", "UNIFIED_011"],
+    "unavailable": [],
+    "recovery_source": "/tmp/my-project (preserved old workspace) + canonical git",
+    "dangling_git_objects": ["d872616 (stash noise, archived)", "edac6a6 (011 A/B stash, superseded by 23900f8, archived)", "313ed5c (reset consistency pass, superseded by 388fb45, archived)", "3 superseded tag iterations (anchored)"]
+  },
+  "import": {
+    "commit": "3b862e5",
+    "files_changed": 152,
+    "lines_added": 38349,
+    "default_build_additions": ["libpng decoder+encoder (software_renderer)", "src/gles PGLBackend+GLES20Bridge glue", "src/resources/res_config (009 ARSC config matching)", "R14 real stack traces (ThreadShadow fall-through)", "12-fixture PNG decoder test", "31-row APK corpus registry"],
+    "preserved_not_wired": ["src/audio", "src/fonts/text_shaper", "src/games/tictactoe3d.h", "third_party/audio (stb_vorbis, minimp3)", "third_party/stb", "src/renderer/view_renderer", "src/resources/real_layout", "tools/exp113..124", "tools/u007_job_server.cpp", "tests/test_audio.cpp", "tests/fixtures/audio"],
+    "knowledge_sets": ["docs/knowledge/campaign005", "campaign006", "campaign008 (+p1_mining)", "campaign009", "campaign010 (+evidence)"]
+  },
+  "capabilities": {
+    "GMDice": "PROVEN", "Telegram": "PROVEN", "Dooz": "BLOCKED", "Compose": "BLOCKED",
+    "ARSC": "PROVEN", "AXML": "PROVEN", "Font": "PROVEN", "Images": "PROVEN",
+    "Audio": "PARTIAL", "Touch": "PROVEN", "3D": "PARTIAL", "GLES": "PARTIAL",
+    "Browser": "PARTIAL", "Corpus": "PROVEN"
+  },
+  "regression": {
+    "binary": "merged canonical (commit 3b862e5)",
+    "matrix_byte_identical_to_verified_010_snapshot": true,
+    "gmdice": {"exit": 0, "nonwhite_px": 158040, "screenshot_sha256_16": "472c1d3c0ee12330"},
+    "telegram_v12": {"exit": 0, "nonwhite_px": 41233, "screenshot_sha256": "088ea640587ec0d28fc7cd16b0097f2529ff7da2d594c3c2663c67531d770f6a", "determinism": "3/3", "pixel_delta_vs_06fb40da_baseline": 0, "file_hash_change_reason": "libpng encoder replaces custom encoder, by design (Campaign 010 precedent)"},
+    "simplestopwatch": {"exit": 0, "nonwhite_px": 930980, "screenshot_sha256_16": "d495e3cb2ccf6c11"},
+    "microtimer": {"exit": 0, "nonwhite_px": 23472}, "stopwatch": {"exit": 1, "note": "pre-existing truncated APK"},
+    "tictactoe": {"exit": 0, "nonwhite_px": 0, "note": "pre-existing blank"}, "unote": {"exit": 0, "nonwhite_px": 23472},
+    "dooz": {"exit": 0, "nonwhite_px": 0, "note": "blank pre-existing; engine progressed post-R14"}
+  },
+  "open_source": {
+    "ADOPTED": ["libpng 1.6.48", "rlottie 43075538", "FriBidi 1.0.16", "HarfBuzz 10.2.0", "FreeType 2.13.3", "libwebp", "libjpeg-turbo", "PortableGL 7cf39dc (glue)"],
+    "VENDORED": ["nlohmann_json", "stb_image 2.30", "stb_vorbis", "minimp3"],
+    "ADAPTER_READY": ["Yoga bd8fe0d"],
+    "VERIFIED_NOT_INTEGRATED": ["miniaudio 9634bed", "nanosvg 239e102", "resvg", "Catch2", "googletest", "openal-soft", "SDL"],
+    "REJECTED": ["SheenBidi (differential calibration)", "SwiftShader (memory blocker, research only)"]
+  },
+  "hygiene": {
+    "APK_FILES_IN_REPO": 0,
+    "IMAGES_OVER_100KB": 0,
+    "SECRETS": "clean (pattern scan worktree+history, Campaign 011; .env contains only local DATABASE_URL, outside repo)",
+    "policy": "ZERO APK/AAB; evidence PNGs <=100KB; large logs external"
+  },
+  "blockers_current": [
+    "dooz/Compose: LM1/i;.f StringBuilder.append(null) PC-advance livelock",
+    "GLES: GLSL source not executable by PortableGL (GLSL->C translator or llvmpipe future)",
+    "GLES: GLES20 dispatch hook into dalvik_engine framework-static chain (bridge ready)",
+    "Yoga: bounds wiring into engine render stage (adapter ready)",
+    "audio: wire recovered audio_engine (or adopt miniaudio) into runtime",
+    "text_shaper: wire recovered module into runtime text pipeline",
+    "ARSC: @string unresolved refs on some APKs; obfuscated res names",
+    "push: no credentials — PUSH_PENDING"
+  ],
+  "next_actions": [
+    "git push origin main && git push origin --tags (owner with credentials)",
+    "GitHub Release UNIFIED_011_1_CANONICAL (notes in RELEASE_NOTES_011_1.md)",
+    "wire audio_engine + text_shaper; GLES20 dispatch hook; Yoga render-stage wiring",
+    "dooz: fix StringBuilder.append PC-advance; Compose attach re-test",
+    "fetch portablegl.h (rswinkle/PortableGL@7cf39dc) to build GLES harness locally"
+  ]
+}

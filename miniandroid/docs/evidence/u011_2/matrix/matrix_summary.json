@@ -1,0 +1,80 @@
+{
+  "binary": "build/miniandroid",
+  "binary_sha256": "5b8d94b0366944a110198a145e99303ec7c600b38d6715a8a3912f365a10d023",
+  "results": [
+    {
+      "name": "gmdice",
+      "apk": "/home/z/my-project/apk_cache/corpus/gmdice.apk",
+      "exit": 0,
+      "seconds": 0.2,
+      "screenshot_sha256": "472c1d3c0ee123301d49c55d8de382abdcc1f04e3dd382440f2093b37be8c535",
+      "nonwhite_px": 158040,
+      "apk_sha_match": true
+    },
+    {
+      "name": "telegram_v12",
+      "apk": "/home/z/my-project/apk_cache/exp038_telegram/Telegram.apk",
+      "exit": 0,
+      "seconds": 47.3,
+      "screenshot_sha256": "088ea640587ec0d28fc7cd16b0097f2529ff7da2d594c3c2663c67531d770f6a",
+      "baseline_match": true,
+      "nonwhite_px": 41233,
+      "apk_sha_match": true
+    },
+    {
+      "name": "microtimer",
+      "apk": "/home/z/my-project/apk_cache/corpus/microtimer.apk",
+      "exit": 0,
+      "seconds": 0.2,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+      "nonwhite_px": 23472,
+      "apk_sha_match": "unchecked"
+    },
+    {
+      "name": "stopwatch",
+      "apk": "/home/z/my-project/apk_cache/corpus/stopwatch.apk",
+      "exit": 1,
+      "seconds": 0.3,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+      "nonwhite_px": 23472,
+      "apk_sha_match": "unchecked"
+    },
+    {
+      "name": "simplestopwatch",
+      "apk": "/home/z/my-project/apk_cache/corpus/simplestopwatch.apk",
+      "exit": 0,
+      "seconds": 0.2,
+      "screenshot_sha256": "2a12587a0acf196cb9a52a521d6a7bc7d72e2d21dfa71eba41a694dbaa3d8c1b",
+      "baseline_match": true,
+      "nonwhite_px": 916815,
+      "apk_sha_match": "unchecked"
+    },
+    {
+      "name": "tictactoe",
+      "apk": "/home/z/my-project/apk_cache/corpus/tictactoe.apk",
+      "exit": 0,
+      "seconds": 0.9,
+      "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+      "nonwhite_px": 0,
+      "apk_sha_match": "unchecked"
+    },
+    {
+      "name": "unote",
+      "apk": "/home/z/my-project/apk_cache/corpus/unote.apk",
+      "exit": 0,
+      "seconds": 0.2,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+      "nonwhite_px": 23472,
+      "apk_sha_match": "unchecked"
+    },
+    {
+      "name": "dooz",
+      "apk": "/home/z/my-project/apk_cache/corpus/dooz.apk",
+      "exit": 0,
+      "seconds": 0.8,
+      "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+      "nonwhite_px": 0,
+      "apk_sha_match": "unchecked"
+    }
+  ]
+}

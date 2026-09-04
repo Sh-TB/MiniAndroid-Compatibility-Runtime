@@ -1,0 +1,810 @@
+{
+  "experiment": "EXP-032",
+  "phase": "Phase 5 - API Compatibility Strategy",
+  "generated_at": "2026-08-14T09:32:11.715939",
+  "summary": {
+    "total_apis_cataloged": 27,
+    "by_status": {
+      "STUB_EXISTING": 3,
+      "PARTIAL": 5,
+      "STUB": 9,
+      "INHERITED": 1,
+      "BYPASS": 1,
+      "IMPLEMENTED": 3,
+      "NOT_IMPLEMENTED": 5
+    },
+    "by_priority_tier": {
+      "P0_CRITICAL": 10,
+      "P1_HIGH": 6,
+      "P2_MEDIUM": 5,
+      "P3_LOW": 6
+    },
+    "p0_coverage_pct": 30.0,
+    "overall_readiness": 60
+  },
+  "priority_queue": {
+    "immediate": [
+      {
+        "name": "Activity.onCreate(Bundle)",
+        "package": "android.app",
+        "class": "Activity",
+        "method": "onCreate",
+        "signature": "(Landroid/os/Bundle;)V",
+        "frequency_pct": 100.0,
+        "implementation_status": "STUB_EXISTING",
+        "notes": "Currently bypassed via fake lifecycle",
+        "category": "activity_lifecycle",
+        "tier": "P0_CRITICAL"
+      },
+      {
+        "name": "Activity.setContentView(int)",
+        "package": "android.app",
+        "class": "Activity",
+        "method": "setContentView",
+        "signature": "(I)V",
+        "frequency_pct": 98.0,
+        "implementation_status": "PARTIAL",
+        "notes": "Layout inflation entry point",
+        "category": "activity_lifecycle",
+        "tier": "P0_CRITICAL"
+      },
+      {
+        "name": "Activity.onStart()",
+        "package": "android.app",
+        "class": "Activity",
+        "method": "onStart",
+        "signature": "()V",
+        "frequency_pct": 95.0,
+        "implementation_status": "STUB_EXISTING",
+        "notes": "Called after onCreate",
+        "category": "activity_lifecycle",
+        "tier": "P0_CRITICAL"
+      },
+      {
+        "name": "TextView.setText(CharSequence)",
+        "package": "android.widget",
+        "class": "TextView",
+        "method": "setText",
+        "signature": "(Ljava/lang/CharSequence;)V",
+        "frequency_pct": 92.0,
+        "implementation_status": "STUB",
+        "notes": "Most common view operation",
+        "category": "view_system",
+        "tier": "P0_CRITICAL"
+      },
+      {
+        "name": "Activity.onResume()",
+        "package": "android.app",
+        "class": "Activity",
+        "method": "onResume",
+        "signature": "()V",
+        "frequency_pct": 90.0,
+        "implementation_status": "STUB_EXISTING",
+        "notes": "App becomes visible/interactive",
+        "category": "activity_lifecycle",
+        "tier": "P0_CRITICAL"
+      },
+      {
+        "name": "Activity.findViewById(int)",
+        "package": "android.app",
+        "class": "Activity",
+        "method": "findViewById",
+        "signature": "(I)Landroid/view/View;",
+        "frequency_pct": 85.0,
+        "implementation_status": "PARTIAL",
+        "notes": "View lookup by ID",
+        "category": "activity_lifecycle",
+        "tier": "P0_CRITICAL"
+      }
+    ],
+    "short_term": [
+      {
+        "name": "View.setVisibility(int)",
+        "package": "android.view",
+        "class": "View",
+        "method": "setVisibility",
+        "signature": "(I)V",
+        "frequency_pct": 75.0,
+        "implementation_status": "STUB",
+        "notes": "VISIBLE, INVISIBLE, GONE constants",
+        "category": "view_system",
+        "tier": "P0_CRITICAL"
+      },
+      {
+        "name": "Resources.getString(int)",
+        "package": "android.content.res",
+        "class": "Resources",
+        "method": "getString",
+        "signature": "(I)Ljava/lang/String;",
+        "frequency_pct": 70.0,
+        "implementation_status": "BYPASS",
+        "notes": "Currently reads from C++ map, not DEX resources.arsc",
+        "category": "resource_system",
+        "tier": "P1_HIGH"
+      },
+      {
+        "name": "Context.getResources()",
+        "package": "android.content",
+        "class": "Context",
+        "method": "getResources",
+        "signature": "()Landroid/content/res/Resources;",
+        "frequency_pct": 65.0,
+        "implementation_status": "STUB",
+        "notes": "Returns Resources instance",
+        "category": "resource_system",
+        "tier": "P1_HIGH"
+      },
+      {
+        "name": "View.setOnClickListener(OnClickListener)",
+        "package": "android.view",
+        "class": "View",
+        "method": "setOnClickListener",
+        "signature": "(Landroid/view/View$OnClickListener;)V",
+        "frequency_pct": 60.0,
+        "implementation_status": "PARTIAL",
+        "notes": "Event handling setup",
+        "category": "view_system",
+        "tier": "P0_CRITICAL"
+      },
+      {
+        "name": "Button extends TextView",
+        "package": "android.widget",
+        "class": "Button",
+        "method": "[inherited]",
+        "signature": "-",
+        "frequency_pct": 55.0,
+        "implementation_status": "INHERITED",
+        "notes": "Common interactive element",
+        "category": "view_system",
+        "tier": "P0_CRITICAL"
+      },
+      {
+        "name": "Log.d(String tag, String msg)",
+        "package": "android.util",
+        "class": "Log",
+        "method": "d",
+        "signature": "(Ljava/lang/String;Ljava/lang/String;)I",
+        "frequency_pct": 50.0,
+        "implementation_status": "IMPLEMENTED",
+        "notes": "Debug level log",
+        "category": "logging",
+        "tier": "P2_MEDIUM"
+      },
+      {
+        "name": "TextView.getText()",
+        "package": "android.widget",
+        "class": "TextView",
+        "method": "getText",
+        "signature": "()Ljava/lang/CharSequence;",
+        "frequency_pct": 45.0,
+        "implementation_status": "STUB",
+        "notes": "Read text content",
+        "category": "view_system",
+        "tier": "P0_CRITICAL"
+      },
+      {
+        "name": "String.equals(Object)",
+        "package": "java.lang",
+        "class": "String",
+        "method": "equals",
+        "signature": "(Ljava/lang/Object;)Z",
+        "frequency_pct": 45.0,
+        "implementation_status": "PARTIAL",
+        "notes": "String comparison",
+        "category": "collections",
+        "tier": "P3_LOW"
+      },
+      {
+        "name": "Intent(String action)",
+        "package": "android.content",
+        "class": "Intent",
+        "method": "<init>",
+        "signature": "(Ljava/lang/String;)V",
+        "frequency_pct": 40.0,
+        "implementation_status": "STUB",
+        "notes": "Action-based intent creation",
+        "category": "intent_system",
+        "tier": "P1_HIGH"
+      },
+      {
+        "name": "Toast.makeText(Context, CharSequence, int)",
+        "package": "android.widget",
+        "class": "Toast",
+        "method": "makeText",
+        "signature": "(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;",
+        "frequency_pct": 40.0,
+        "implementation_status": "STUB",
+        "notes": "Create toast notification",
+        "category": "toast",
+        "tier": "P2_MEDIUM"
+      }
+    ],
+    "medium_term": [
+      {
+        "name": "Toast.show()",
+        "package": "android.widget",
+        "class": "Toast",
+        "method": "show",
+        "signature": "()V",
+        "frequency_pct": 38.0,
+        "implementation_status": "STUB",
+        "notes": "Display toast",
+        "category": "toast",
+        "tier": "P2_MEDIUM"
+      },
+      {
+        "name": "Intent.putExtra(String, ...)",
+        "package": "android.content",
+        "class": "Intent",
+        "method": "putExtra",
+        "signature": "(Ljava/lang/String;[types])Landroid/content/Intent;",
+        "frequency_pct": 35.0,
+        "implementation_status": "PARTIAL",
+        "notes": "Multiple overloads for different types",
+        "category": "intent_system",
+        "tier": "P1_HIGH"
+      },
+      {
+        "name": "Log.e(String tag, String msg)",
+        "package": "android.util",
+        "class": "Log",
+        "method": "e",
+        "signature": "(Ljava/lang/String;Ljava/lang/String;)I",
+        "frequency_pct": 35.0,
+        "implementation_status": "IMPLEMENTED",
+        "notes": "Error level log",
+        "category": "logging",
+        "tier": "P2_MEDIUM"
+      },
+      {
+        "name": "ArrayList.add(E)",
+        "package": "java.util",
+        "class": "ArrayList",
+        "method": "add",
+        "signature": "(Ljava/lang/Object;)Z",
+        "frequency_pct": 35.0,
+        "implementation_status": "NOT_IMPLEMENTED",
+        "notes": "Dynamic array append",
+        "category": "collections",
+        "tier": "P3_LOW"
+      },
+      {
+        "name": "Activity.startActivity(Intent)",
+        "package": "android.app",
+        "class": "Activity",
+        "method": "startActivity",
+        "signature": "(Landroid/content/Intent;)V",
+        "frequency_pct": 30.0,
+        "implementation_status": "STUB",
+        "notes": "Launch another activity",
+        "category": "intent_system",
+        "tier": "P1_HIGH"
+      },
+      {
+        "name": "getSharedPreferences(String, int)",
+        "package": "android.content",
+        "class": "Context",
+        "method": "getSharedPreferences",
+        "signature": "(Ljava/lang/String;I)Landroid/content/SharedPreferences;",
+        "frequency_pct": 30.0,
+        "implementation_status": "NOT_IMPLEMENTED",
+        "notes": "Open preferences file",
+        "category": "shared_preferences",
+        "tier": "P3_LOW"
+      },
+      {
+        "name": "SharedPreferences.edit()",
+        "package": "android.content",
+        "class": "SharedPreferences",
+        "method": "edit",
+        "signature": "()Landroid/content/SharedPreferences$Editor;",
+        "frequency_pct": 28.0,
+        "implementation_status": "NOT_IMPLEMENTED",
+        "notes": "Get editor for modifications",
+        "category": "shared_preferences",
+        "tier": "P3_LOW"
+      },
+      {
+        "name": "Resources.getIdentifier(String, String, String)",
+        "package": "android.content.res",
+        "class": "Resources",
+        "method": "getIdentifier",
+        "signature": "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I",
+        "frequency_pct": 25.0,
+        "implementation_status": "STUB",
+        "notes": "Dynamic resource ID resolution",
+        "category": "resource_system",
+        "tier": "P1_HIGH"
+      },
+      {
+        "name": "Log.i/w/v(String, String)",
+        "package": "android.util",
+        "class": "Log",
+        "method": "i/w/v",
+        "signature": "(Ljava/lang/String;Ljava/lang/String;)I",
+        "frequency_pct": 25.0,
+        "implementation_status": "IMPLEMENTED",
+        "notes": "Info/Warning/Verbose levels",
+        "category": "logging",
+        "tier": "P2_MEDIUM"
+      },
+      {
+        "name": "Editor.putString/putInt/putBoolean",
+        "package": "android.content",
+        "class": "SharedPreferences.Editor",
+        "method": "put*",
+        "signature": "(Ljava/lang/String;[type])Landroid/content/SharedPreferences$Editor;",
+        "frequency_pct": 25.0,
+        "implementation_status": "NOT_IMPLEMENTED",
+        "notes": "Store key-value pairs",
+        "category": "shared_preferences",
+        "tier": "P3_LOW"
+      },
+      {
+        "name": "HashMap.put(K, V)",
+        "package": "java.util",
+        "class": "HashMap",
+        "method": "put",
+        "signature": "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",
+        "frequency_pct": 20.0,
+        "implementation_status": "NOT_IMPLEMENTED",
+        "notes": "Hash map insertion",
+        "category": "collections",
+        "tier": "P3_LOW"
+      }
+    ],
+    "long_term": []
+  },
+  "api_catalog": {
+    "activity_lifecycle": {
+      "category": "P0_CRITICAL",
+      "description": "Activity lifecycle methods - required by ALL Android apps",
+      "apis": [
+        {
+          "name": "Activity.onCreate(Bundle)",
+          "package": "android.app",
+          "class": "Activity",
+          "method": "onCreate",
+          "signature": "(Landroid/os/Bundle;)V",
+          "frequency_pct": 100.0,
+          "implementation_status": "STUB_EXISTING",
+          "notes": "Currently bypassed via fake lifecycle",
+          "category": "activity_lifecycle",
+          "tier": "P0_CRITICAL"
+        },
+        {
+          "name": "Activity.onStart()",
+          "package": "android.app",
+          "class": "Activity",
+          "method": "onStart",
+          "signature": "()V",
+          "frequency_pct": 95.0,
+          "implementation_status": "STUB_EXISTING",
+          "notes": "Called after onCreate",
+          "category": "activity_lifecycle",
+          "tier": "P0_CRITICAL"
+        },
+        {
+          "name": "Activity.onResume()",
+          "package": "android.app",
+          "class": "Activity",
+          "method": "onResume",
+          "signature": "()V",
+          "frequency_pct": 90.0,
+          "implementation_status": "STUB_EXISTING",
+          "notes": "App becomes visible/interactive",
+          "category": "activity_lifecycle",
+          "tier": "P0_CRITICAL"
+        },
+        {
+          "name": "Activity.setContentView(int)",
+          "package": "android.app",
+          "class": "Activity",
+          "method": "setContentView",
+          "signature": "(I)V",
+          "frequency_pct": 98.0,
+          "implementation_status": "PARTIAL",
+          "notes": "Layout inflation entry point",
+          "category": "activity_lifecycle",
+          "tier": "P0_CRITICAL"
+        },
+        {
+          "name": "Activity.findViewById(int)",
+          "package": "android.app",
+          "class": "Activity",
+          "method": "findViewById",
+          "signature": "(I)Landroid/view/View;",
+          "frequency_pct": 85.0,
+          "implementation_status": "PARTIAL",
+          "notes": "View lookup by ID",
+          "category": "activity_lifecycle",
+          "tier": "P0_CRITICAL"
+        }
+      ]
+    },
+    "view_system": {
+      "category": "P0_CRITICAL",
+      "description": "View hierarchy and widget classes",
+      "apis": [
+        {
+          "name": "View.setVisibility(int)",
+          "package": "android.view",
+          "class": "View",
+          "method": "setVisibility",
+          "signature": "(I)V",
+          "frequency_pct": 75.0,
+          "implementation_status": "STUB",
+          "notes": "VISIBLE, INVISIBLE, GONE constants",
+          "category": "view_system",
+          "tier": "P0_CRITICAL"
+        },
+        {
+          "name": "View.setOnClickListener(OnClickListener)",
+          "package": "android.view",
+          "class": "View",
+          "method": "setOnClickListener",
+          "signature": "(Landroid/view/View$OnClickListener;)V",
+          "frequency_pct": 60.0,
+          "implementation_status": "PARTIAL",
+          "notes": "Event handling setup",
+          "category": "view_system",
+          "tier": "P0_CRITICAL"
+        },
+        {
+          "name": "TextView.setText(CharSequence)",
+          "package": "android.widget",
+          "class": "TextView",
+          "method": "setText",
+          "signature": "(Ljava/lang/CharSequence;)V",
+          "frequency_pct": 92.0,
+          "implementation_status": "STUB",
+          "notes": "Most common view operation",
+          "category": "view_system",
+          "tier": "P0_CRITICAL"
+        },
+        {
+          "name": "TextView.getText()",
+          "package": "android.widget",
+          "class": "TextView",
+          "method": "getText",
+          "signature": "()Ljava/lang/CharSequence;",
+          "frequency_pct": 45.0,
+          "implementation_status": "STUB",
+          "notes": "Read text content",
+          "category": "view_system",
+          "tier": "P0_CRITICAL"
+        },
+        {
+          "name": "Button extends TextView",
+          "package": "android.widget",
+          "class": "Button",
+          "method": "[inherited]",
+          "signature": "-",
+          "frequency_pct": 55.0,
+          "implementation_status": "INHERITED",
+          "notes": "Common interactive element",
+          "category": "view_system",
+          "tier": "P0_CRITICAL"
+        }
+      ]
+    },
+    "intent_system": {
+      "category": "P1_HIGH",
+      "description": "Intent-based component activation",
+      "apis": [
+        {
+          "name": "Intent(String action)",
+          "package": "android.content",
+          "class": "Intent",
+          "method": "<init>",
+          "signature": "(Ljava/lang/String;)V",
+          "frequency_pct": 40.0,
+          "implementation_status": "STUB",
+          "notes": "Action-based intent creation",
+          "category": "intent_system",
+          "tier": "P1_HIGH"
+        },
+        {
+          "name": "Intent.putExtra(String, ...)",
+          "package": "android.content",
+          "class": "Intent",
+          "method": "putExtra",
+          "signature": "(Ljava/lang/String;[types])Landroid/content/Intent;",
+          "frequency_pct": 35.0,
+          "implementation_status": "PARTIAL",
+          "notes": "Multiple overloads for different types",
+          "category": "intent_system",
+          "tier": "P1_HIGH"
+        },
+        {
+          "name": "Activity.startActivity(Intent)",
+          "package": "android.app",
+          "class": "Activity",
+          "method": "startActivity",
+          "signature": "(Landroid/content/Intent;)V",
+          "frequency_pct": 30.0,
+          "implementation_status": "STUB",
+          "notes": "Launch another activity",
+          "category": "intent_system",
+          "tier": "P1_HIGH"
+        }
+      ]
+    },
+    "resource_system": {
+      "category": "P1_HIGH",
+      "description": "Resource access (R.java generated IDs)",
+      "apis": [
+        {
+          "name": "Resources.getString(int)",
+          "package": "android.content.res",
+          "class": "Resources",
+          "method": "getString",
+          "signature": "(I)Ljava/lang/String;",
+          "frequency_pct": 70.0,
+          "implementation_status": "BYPASS",
+          "notes": "Currently reads from C++ map, not DEX resources.arsc",
+          "category": "resource_system",
+          "tier": "P1_HIGH"
+        },
+        {
+          "name": "Context.getResources()",
+          "package": "android.content",
+          "class": "Context",
+          "method": "getResources",
+          "signature": "()Landroid/content/res/Resources;",
+          "frequency_pct": 65.0,
+          "implementation_status": "STUB",
+          "notes": "Returns Resources instance",
+          "category": "resource_system",
+          "tier": "P1_HIGH"
+        },
+        {
+          "name": "Resources.getIdentifier(String, String, String)",
+          "package": "android.content.res",
+          "class": "Resources",
+          "method": "getIdentifier",
+          "signature": "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I",
+          "frequency_pct": 25.0,
+          "implementation_status": "STUB",
+          "notes": "Dynamic resource ID resolution",
+          "category": "resource_system",
+          "tier": "P1_HIGH"
+        }
+      ]
+    },
+    "logging": {
+      "category": "P2_MEDIUM",
+      "description": "Logcat logging utilities",
+      "apis": [
+        {
+          "name": "Log.d(String tag, String msg)",
+          "package": "android.util",
+          "class": "Log",
+          "method": "d",
+          "signature": "(Ljava/lang/String;Ljava/lang/String;)I",
+          "frequency_pct": 50.0,
+          "implementation_status": "IMPLEMENTED",
+          "notes": "Debug level log",
+          "category": "logging",
+          "tier": "P2_MEDIUM"
+        },
+        {
+          "name": "Log.e(String tag, String msg)",
+          "package": "android.util",
+          "class": "Log",
+          "method": "e",
+          "signature": "(Ljava/lang/String;Ljava/lang/String;)I",
+          "frequency_pct": 35.0,
+          "implementation_status": "IMPLEMENTED",
+          "notes": "Error level log",
+          "category": "logging",
+          "tier": "P2_MEDIUM"
+        },
+        {
+          "name": "Log.i/w/v(String, String)",
+          "package": "android.util",
+          "class": "Log",
+          "method": "i/w/v",
+          "signature": "(Ljava/lang/String;Ljava/lang/String;)I",
+          "frequency_pct": 25.0,
+          "implementation_status": "IMPLEMENTED",
+          "notes": "Info/Warning/Verbose levels",
+          "category": "logging",
+          "tier": "P2_MEDIUM"
+        }
+      ]
+    },
+    "toast": {
+      "category": "P2_MEDIUM",
+      "description": "Toast notifications",
+      "apis": [
+        {
+          "name": "Toast.makeText(Context, CharSequence, int)",
+          "package": "android.widget",
+          "class": "Toast",
+          "method": "makeText",
+          "signature": "(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;",
+          "frequency_pct": 40.0,
+          "implementation_status": "STUB",
+          "notes": "Create toast notification",
+          "category": "toast",
+          "tier": "P2_MEDIUM"
+        },
+        {
+          "name": "Toast.show()",
+          "package": "android.widget",
+          "class": "Toast",
+          "method": "show",
+          "signature": "()V",
+          "frequency_pct": 38.0,
+          "implementation_status": "STUB",
+          "notes": "Display toast",
+          "category": "toast",
+          "tier": "P2_MEDIUM"
+        }
+      ]
+    },
+    "shared_preferences": {
+      "category": "P3_LOW",
+      "description": "Key-value persistent storage",
+      "apis": [
+        {
+          "name": "getSharedPreferences(String, int)",
+          "package": "android.content",
+          "class": "Context",
+          "method": "getSharedPreferences",
+          "signature": "(Ljava/lang/String;I)Landroid/content/SharedPreferences;",
+          "frequency_pct": 30.0,
+          "implementation_status": "NOT_IMPLEMENTED",
+          "notes": "Open preferences file",
+          "category": "shared_preferences",
+          "tier": "P3_LOW"
+        },
+        {
+          "name": "SharedPreferences.edit()",
+          "package": "android.content",
+          "class": "SharedPreferences",
+          "method": "edit",
+          "signature": "()Landroid/content/SharedPreferences$Editor;",
+          "frequency_pct": 28.0,
+          "implementation_status": "NOT_IMPLEMENTED",
+          "notes": "Get editor for modifications",
+          "category": "shared_preferences",
+          "tier": "P3_LOW"
+        },
+        {
+          "name": "Editor.putString/putInt/putBoolean",
+          "package": "android.content",
+          "class": "SharedPreferences.Editor",
+          "method": "put*",
+          "signature": "(Ljava/lang/String;[type])Landroid/content/SharedPreferences$Editor;",
+          "frequency_pct": 25.0,
+          "implementation_status": "NOT_IMPLEMENTED",
+          "notes": "Store key-value pairs",
+          "category": "shared_preferences",
+          "tier": "P3_LOW"
+        }
+      ]
+    },
+    "collections": {
+      "category": "P3_LOW",
+      "description": "Java collections used in Android",
+      "apis": [
+        {
+          "name": "ArrayList.add(E)",
+          "package": "java.util",
+          "class": "ArrayList",
+          "method": "add",
+          "signature": "(Ljava/lang/Object;)Z",
+          "frequency_pct": 35.0,
+          "implementation_status": "NOT_IMPLEMENTED",
+          "notes": "Dynamic array append",
+          "category": "collections",
+          "tier": "P3_LOW"
+        },
+        {
+          "name": "HashMap.put(K, V)",
+          "package": "java.util",
+          "class": "HashMap",
+          "method": "put",
+          "signature": "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",
+          "frequency_pct": 20.0,
+          "implementation_status": "NOT_IMPLEMENTED",
+          "notes": "Hash map insertion",
+          "category": "collections",
+          "tier": "P3_LOW"
+        },
+        {
+          "name": "String.equals(Object)",
+          "package": "java.lang",
+          "class": "String",
+          "method": "equals",
+          "signature": "(Ljava/lang/Object;)Z",
+          "frequency_pct": 45.0,
+          "implementation_status": "PARTIAL",
+          "notes": "String comparison",
+          "category": "collections",
+          "tier": "P3_LOW"
+        }
+      ]
+    }
+  },
+  "implementation_roadmap": [
+    {
+      "phase": "Week 1-2: P0 Activity Lifecycle",
+      "apis": [
+        "Activity.onCreate()",
+        "Activity.setContentView()",
+        "Activity.findViewById()"
+      ],
+      "goal": "Basic activity execution through DEX",
+      "acceptance_criteria": [
+        "HelloWorld.apk executes onCreate with real bytecode"
+      ]
+    },
+    {
+      "phase": "Week 2-3: P0 View System",
+      "apis": [
+        "TextView.setText()",
+        "View.setOnClickListener()"
+      ],
+      "goal": "UI manipulation through opcodes",
+      "acceptance_criteria": [
+        "SimpleCalculator can set/get text fields"
+      ]
+    },
+    {
+      "phase": "Week 3-4: P1 Resources & Intents",
+      "apis": [
+        "Resources.getString()",
+        "Intent.putExtra()"
+      ],
+      "goal": "Resource access and navigation",
+      "acceptance_criteria": [
+        "Apps can read strings.xml, create intents"
+      ]
+    },
+    {
+      "phase": "Week 5-8: P1-P2 Complete",
+      "apis": [
+        "Toast",
+        "SharedPreferences basics",
+        "Collections"
+      ],
+      "goal": "Broad compatibility",
+      "acceptance_criteria": [
+        ">50% of sample corpus executes correctly"
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "IMMEDIATE_ACTION",
+      "title": "Fix Resources.getString() BYPASS",
+      "details": "Currently reads strings from C++ map. Route through DEX → resources.arsc parser.",
+      "impact": "Unblocks 70%+ of apps that use string resources",
+      "effort": "2-3 days"
+    },
+    {
+      "type": "ARCHITECTURE",
+      "title": "Implement View Hierarchy as Heap Objects",
+      "details": "Views should be real HeapObjects with field offsets, not C++ objects.",
+      "impact": "Enables iget/iput on View fields (mText, mVisibility)",
+      "effort": "1 week"
+    },
+    {
+      "type": "TESTING",
+      "title": "Create API Compliance Test Suite",
+      "details": "For each P0 API, create test that calls it via DEX invoke-* and verifies result.",
+      "impact": "Prevents regression of API implementations",
+      "effort": "3-5 days"
+    },
+    {
+      "type": "DOCUMENTATION",
+      "title": "API Implementation Status Dashboard",
+      "details": "Live tracking of which APIs are stub vs implemented vs working.",
+      "impact": "Visibility into compatibility progress",
+      "effort": "1 day"
+    }
+  ]
+}

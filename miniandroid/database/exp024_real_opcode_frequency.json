@@ -1,0 +1,74 @@
+{
+  "experiment": "EXP-024",
+  "phase": "Opcode Profile",
+  "generated": "2026-08-12T17:03:47.194600Z",
+  "total_unique": 13,
+  "implemented": 11,
+  "rankings": [
+    {
+      "count": 15,
+      "apps": 1,
+      "implemented": true
+    },
+    {
+      "count": 12,
+      "apps": 1,
+      "implemented": true
+    },
+    {
+      "count": 8,
+      "apps": 1,
+      "implemented": true
+    },
+    {
+      "count": 6,
+      "apps": 1,
+      "implemented": true
+    },
+    {
+      "count": 5,
+      "apps": 1,
+      "implemented": true
+    },
+    {
+      "count": 5,
+      "apps": 1,
+      "implemented": false
+    },
+    {
+      "count": 4,
+      "apps": 1,
+      "implemented": true
+    },
+    {
+      "count": 4,
+      "apps": 1,
+      "implemented": true
+    },
+    {
+      "count": 3,
+      "apps": 1,
+      "implemented": true
+    },
+    {
+      "count": 2,
+      "apps": 1,
+      "implemented": true
+    },
+    {
+      "count": 2,
+      "apps": 1,
+      "implemented": true
+    },
+    {
+      "count": 2,
+      "apps": 1,
+      "implemented": false
+    },
+    {
+      "count": 1,
+      "apps": 1,
+      "implemented": true
+    }
+  ]
+}

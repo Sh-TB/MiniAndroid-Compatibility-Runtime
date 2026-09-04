@@ -1,0 +1,341 @@
+{
+  "test": "EXP085 Phase 5 \u2014 AXML / Resource regression",
+  "generated_at": "2026-08-22T20:34:37.341615+00:00",
+  "pass_count": 0,
+  "partial_count": 5,
+  "fail_count": 0,
+  "skip_count": 0,
+  "results": [
+    {
+      "name": "gmdice",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+      "apk_info": {
+        "has_android_manifest": true,
+        "has_resources_arsc": true,
+        "has_classes_dex": true,
+        "manifest_size": 1816,
+        "arsc_size": 8704,
+        "dex_files": [
+          {
+            "name": "classes.dex",
+            "size": 26628
+          }
+        ],
+        "drawable_entries": [
+          "res/drawable-hdpi-v4/ic_action_brightness_high.png",
+          "res/drawable-hdpi-v4/ic_action_brightness_low.png",
+          "res/drawable-hdpi-v4/logo.png",
+          "res/drawable-xhdpi-v4/ic_action_brightness_high.png",
+          "res/drawable-xhdpi-v4/ic_action_brightness_low.png",
+          "res/drawable-xxhdpi-v4/ic_action_brightness_high.png",
+          "res/drawable-xxhdpi-v4/ic_action_brightness_low.png",
+          "res/drawable/ic_action_brightness_high.png",
+          "res/drawable/ic_action_brightness_low.png",
+          "res/drawable/logo.png",
+          "res/drawable/timepicker_down_btn.xml",
+          "res/drawable/timepicker_down_disabled.9.png",
+          "res/drawable/timepicker_down_disabled_focused.9.png",
+          "res/drawable/timepicker_down_normal.9.png",
+          "res/drawable/timepicker_down_pressed.9.png",
+          "res/drawable/timepicker_down_selected.9.png",
+          "res/drawable/timepicker_input.xml",
+          "res/drawable/timepicker_input_disabled.9.png",
+          "res/drawable/timepicker_input_normal.9.png",
+          "res/drawable/timepicker_input_pressed.9.png",
+          "res/drawable/timepicker_input_selected.9.png",
+          "res/drawable/timepicker_up_btn.xml",
+          "res/drawable/timepicker_up_disabled.9.png",
+          "res/drawable/timepicker_up_disabled_focused.9.png",
+          "res/drawable/timepicker_up_normal.9.png",
+          "res/drawable/timepicker_up_pressed.9.png",
+          "res/drawable/timepicker_up_selected.9.png"
+        ],
+        "layout_entries": [
+          "res/layout/act_gmdice.xml",
+          "res/layout/dg_configure.xml",
+          "res/layout/number_picker.xml",
+          "res/layout/spinner_item.xml",
+          "res/layout/view_log.xml"
+        ],
+        "string_entries": [],
+        "color_entries": []
+      },
+      "runtime_result": {
+        "exit_code": 1,
+        "stdout_tail": "tivity\n[DalvikEngine]   Checking class: [Lde/duenndns/gmdice/RollResultAdapter;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lde/duenndns/gmdice/SignedNumberPicker$1;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lde/duenndns/gmdice/SignedNumberPicker$2;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lde/duenndns/gmdice/SignedNumberPicker$3;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lde/duenndns/gmdice/SignedNumberPicker$OnTextFocusChangedListener;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lde/duenndns/gmdice/SignedNumberPicker;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lde/duenndns/gmdice/StandardDiceSet;] for Activity/Main/activity\n[DalvikEngine] \ud83d\udd0d main_method is EMPTY, trying fallback...\n[DalvikEngine] \ud83d\udccb Entering fallback mode - looking for any class with methods\n[DalvikEngine]   \ud83d\udccb Checking fallback class: [Lde/duenndns/gmdice/DiceSet;] with 8 methods\n[DalvikEngine]   \ud83d\udccb all_methods() returned 8 entries\n[DalvikEngine] \ud83c\udfaf Using fallback entry: Lde/duenndns/gmdice/DiceSet;.<init>\n[DalvikEngine] \ud83c\udfaf Bytecode size: 4\n[DalvikEngine] \ud83d\ude80 ABOUT TO CALL execute_method_internal() for fallback!\n[METHOD-IN] Lde/duenndns/gmdice/DiceSet;.<init> (bytecode_size=4)\n[DalvikEngine] Executing: Lde/duenndns/gmdice/DiceSet;.<init>()V\n[DalvikEngine] Bytecode size: 4 instructions\n[TRY-ENTRY] Ljava/lang/Object;.<init> dex_report=YES\n[DalvikEngine]   API BRIDGE: Ljava/lang/Object;.<init>\n[DalvikEngine]   [0]  0x0:  \u2192 \n[DalvikEngine]   RETURN_VOID at 0x3\n[DalvikEngine] Method returned successfully\n[MEM] method_exit: Lde/duenndns/gmdice/DiceSet;.<init> insns=2 RSS=12.6367 MB\n[DalvikEngine] \u2705 execute_method_internal() completed successfully\n[DalvikEngine] Execution completed in 0.604856ms\n[DalvikEngine] Instructions executed: 2\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+        "artifacts": {
+          "report_md_exists": true,
+          "view_tree_exists": false,
+          "screenshot_exists": false,
+          "screenshot_size_bytes": 0,
+          "api_trace_exists": true
+        },
+        "view_tree_summary": null,
+        "resource_evidence": {
+          "resource_resolution_called": false,
+          "axml_parsed": false,
+          "set_content_view": false,
+          "set_text": false,
+          "inflated_views": 0
+        }
+      },
+      "status": "PARTIAL_GMDICE"
+    },
+    {
+      "name": "tictactoe",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/tictactoe.apk",
+      "apk_info": {
+        "has_android_manifest": true,
+        "has_resources_arsc": true,
+        "has_classes_dex": true,
+        "manifest_size": 2192,
+        "arsc_size": 2788,
+        "dex_files": [
+          {
+            "name": "classes.dex",
+            "size": 3439884
+          }
+        ],
+        "drawable_entries": [
+          "res/mipmap-anydpi-v26/ic_launcher.xml",
+          "res/mipmap-anydpi-v26/ic_launcher_round.xml",
+          "res/mipmap-hdpi-v4/ic_launcher.png",
+          "res/mipmap-hdpi-v4/ic_launcher_foreground.png",
+          "res/mipmap-hdpi-v4/ic_launcher_round.png",
+          "res/mipmap-mdpi-v4/ic_launcher.png",
+          "res/mipmap-mdpi-v4/ic_launcher_foreground.png",
+          "res/mipmap-mdpi-v4/ic_launcher_round.png",
+          "res/mipmap-xhdpi-v4/ic_launcher.png",
+          "res/mipmap-xhdpi-v4/ic_launcher_foreground.png",
+          "res/mipmap-xhdpi-v4/ic_launcher_round.png",
+          "res/mipmap-xxhdpi-v4/ic_launcher.png",
+          "res/mipmap-xxhdpi-v4/ic_launcher_foreground.png",
+          "res/mipmap-xxhdpi-v4/ic_launcher_round.png",
+          "res/mipmap-xxxhdpi-v4/ic_launcher.png",
+          "res/mipmap-xxxhdpi-v4/ic_launcher_foreground.png",
+          "res/mipmap-xxxhdpi-v4/ic_launcher_round.png"
+        ],
+        "layout_entries": [],
+        "string_entries": [],
+        "color_entries": []
+      },
+      "runtime_result": {
+        "exit_code": 1,
+        "stdout_tail": "x/Application$ApplicationType;.Android type=Lcom/badlogic/gdx/Application$ApplicationType; offset=0\n[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=<clinit> pc=63 field=Lcom/badlogic/gdx/Application$ApplicationType;.Android obj_id=1\n[DalvikEngine] \u2705 FIELD RESOLVED: Lcom/badlogic/gdx/Application$ApplicationType;.Desktop type=Lcom/badlogic/gdx/Application$ApplicationType; offset=0\n[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=<clinit> pc=67 field=Lcom/badlogic/gdx/Application$ApplicationType;.Desktop obj_id=2\n[DalvikEngine] \u2705 FIELD RESOLVED: Lcom/badlogic/gdx/Application$ApplicationType;.HeadlessDesktop type=Lcom/badlogic/gdx/Application$ApplicationType; offset=0\n[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=<clinit> pc=71 field=Lcom/badlogic/gdx/Application$ApplicationType;.HeadlessDesktop obj_id=3\n[DalvikEngine] \u2705 FIELD RESOLVED: Lcom/badlogic/gdx/Application$ApplicationType;.Applet type=Lcom/badlogic/gdx/Application$ApplicationType; offset=0\n[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=<clinit> pc=75 field=Lcom/badlogic/gdx/Application$ApplicationType;.Applet obj_id=4\n[DalvikEngine] \u2705 FIELD RESOLVED: Lcom/badlogic/gdx/Application$ApplicationType;.WebGL type=Lcom/badlogic/gdx/Application$ApplicationType; offset=0\n[SGET] class=Lcom/badlogic/gdx/Application$ApplicationType; method=<clinit> pc=79 field=Lcom/badlogic/gdx/Application$ApplicationType;.WebGL obj_id=5\n[DalvikEngine] \u2705 FIELD RESOLVED: Lcom/badlogic/gdx/Application$ApplicationType;.$VALUES type=[Lcom/badlogic/gdx/Application$ApplicationType; offset=0\n[DalvikEngine]   RETURN_VOID at 0x57\n[DalvikEngine] Method returned successfully\n[MEM] method_exit: Lcom/badlogic/gdx/Application$ApplicationType;.<clinit> insns=45 RSS=39.5078 MB\n[DalvikEngine] \u2705 execute_method_internal() completed successfully\n[DalvikEngine] Execution completed in 84.815307ms\n[DalvikEngine] Instructions executed: 45\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+        "artifacts": {
+          "report_md_exists": true,
+          "view_tree_exists": false,
+          "screenshot_exists": false,
+          "screenshot_size_bytes": 0,
+          "api_trace_exists": true
+        },
+        "view_tree_summary": null,
+        "resource_evidence": {
+          "resource_resolution_called": true,
+          "axml_parsed": false,
+          "set_content_view": false,
+          "set_text": true,
+          "inflated_views": 0
+        }
+      },
+      "status": "PARTIAL_BYTECODE_ONLY"
+    },
+    {
+      "name": "headingcalculator",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
+      "apk_info": {
+        "has_android_manifest": true,
+        "has_resources_arsc": true,
+        "has_classes_dex": true,
+        "manifest_size": 2252,
+        "arsc_size": 9216,
+        "dex_files": [
+          {
+            "name": "classes.dex",
+            "size": 18276
+          }
+        ],
+        "drawable_entries": [
+          "res/drawable-hdpi-v4/ic_launcher.png",
+          "res/drawable-mdpi-v4/ic_launcher.png",
+          "res/drawable-xhdpi-v4/ic_launcher.png",
+          "res/drawable-xxhdpi-v4/ic_launcher.png",
+          "res/drawable/dark_background.xml",
+          "res/drawable/digit_button.xml",
+          "res/drawable/display_value.xml",
+          "res/drawable/erase_button.xml",
+          "res/drawable/function_button.xml",
+          "res/drawable/light_background.xml",
+          "res/drawable/pressed_background.xml",
+          "res/drawable/red_background.xml",
+          "res/drawable/text_selection.xml"
+        ],
+        "layout_entries": [
+          "res/layout-land/calculator_display.xml",
+          "res/layout-port/calculator_display.xml",
+          "res/layout/calculator_keypad.xml",
+          "res/layout/main.xml"
+        ],
+        "string_entries": [],
+        "color_entries": []
+      },
+      "runtime_result": {
+        "exit_code": 1,
+        "stdout_tail": "ss: [Lorg/debian/eugen/headingcalculator/ExplainableButton$1;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lorg/debian/eugen/headingcalculator/ExplainableButton;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lorg/debian/eugen/headingcalculator/ExplainableTextView$1;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lorg/debian/eugen/headingcalculator/ExplainableTextView;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lorg/debian/eugen/headingcalculator/KeypadButton;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lorg/debian/eugen/headingcalculator/MainActivity$1;] for Activity/Main/activity\n[DalvikEngine] Found main class candidate: Lorg/debian/eugen/headingcalculator/MainActivity$1;\n[DalvikEngine] \ud83d\udd0d main_method is EMPTY, trying fallback...\n[DalvikEngine] \ud83d\udccb Entering fallback mode - looking for any class with methods\n[DalvikEngine]   \ud83d\udccb Checking fallback class: [Lorg/debian/eugen/headingcalculator/BuildConfig;] with 1 methods\n[DalvikEngine]   \ud83d\udccb all_methods() returned 1 entries\n[DalvikEngine] \ud83c\udfaf Using fallback entry: Lorg/debian/eugen/headingcalculator/BuildConfig;.<init>\n[DalvikEngine] \ud83c\udfaf Bytecode size: 4\n[DalvikEngine] \ud83d\ude80 ABOUT TO CALL execute_method_internal() for fallback!\n[METHOD-IN] Lorg/debian/eugen/headingcalculator/BuildConfig;.<init> (bytecode_size=4)\n[DalvikEngine] Executing: Lorg/debian/eugen/headingcalculator/BuildConfig;.<init>()V\n[DalvikEngine] Bytecode size: 4 instructions\n[TRY-ENTRY] Ljava/lang/Object;.<init> dex_report=YES\n[DalvikEngine]   API BRIDGE: Ljava/lang/Object;.<init>\n[DalvikEngine]   [0]  0x0:  \u2192 \n[DalvikEngine]   RETURN_VOID at 0x3\n[DalvikEngine] Method returned successfully\n[MEM] method_exit: Lorg/debian/eugen/headingcalculator/BuildConfig;.<init> insns=2 RSS=12.6172 MB\n[DalvikEngine] \u2705 execute_method_internal() completed successfully\n[DalvikEngine] Execution completed in 0.417217ms\n[DalvikEngine] Instructions executed: 2\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+        "artifacts": {
+          "report_md_exists": true,
+          "view_tree_exists": false,
+          "screenshot_exists": false,
+          "screenshot_size_bytes": 0,
+          "api_trace_exists": true
+        },
+        "view_tree_summary": null,
+        "resource_evidence": {
+          "resource_resolution_called": false,
+          "axml_parsed": false,
+          "set_content_view": false,
+          "set_text": false,
+          "inflated_views": 0
+        }
+      },
+      "status": "PARTIAL_BYTECODE_ONLY"
+    },
+    {
+      "name": "simplestopwatch",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+      "apk_info": {
+        "has_android_manifest": true,
+        "has_resources_arsc": true,
+        "has_classes_dex": true,
+        "manifest_size": 4340,
+        "arsc_size": 9836,
+        "dex_files": [
+          {
+            "name": "classes.dex",
+            "size": 114004
+          }
+        ],
+        "drawable_entries": [
+          "res/drawable-hdpi-v4/lock.png",
+          "res/drawable-hdpi-v4/menu.png",
+          "res/drawable-hdpi-v4/settings.png",
+          "res/drawable-mdpi-v4/lock.png",
+          "res/drawable-mdpi-v4/menu.png",
+          "res/drawable-mdpi-v4/settings.png",
+          "res/drawable-xhdpi-v4/lock.png",
+          "res/drawable-xhdpi-v4/menu.png",
+          "res/drawable-xhdpi-v4/settings.png",
+          "res/drawable-xxhdpi-v4/lock.png",
+          "res/drawable-xxhdpi-v4/menu.png",
+          "res/drawable-xxhdpi-v4/settings.png",
+          "res/drawable/oval.xml",
+          "res/mipmap-anydpi-v26/ic_launcher.xml",
+          "res/mipmap-anydpi-v26/ic_launcher_round.xml",
+          "res/mipmap-hdpi-v4/ic_launcher.png",
+          "res/mipmap-hdpi-v4/ic_launcher_foreground.png",
+          "res/mipmap-hdpi-v4/ic_launcher_round.png",
+          "res/mipmap-hdpi-v4/icon.png",
+          "res/mipmap-mdpi-v4/ic_launcher.png",
+          "res/mipmap-mdpi-v4/ic_launcher_foreground.png",
+          "res/mipmap-mdpi-v4/ic_launcher_round.png",
+          "res/mipmap-mdpi-v4/icon.png",
+          "res/mipmap-xhdpi-v4/ic_launcher.png",
+          "res/mipmap-xhdpi-v4/ic_launcher_foreground.png",
+          "res/mipmap-xhdpi-v4/ic_launcher_round.png",
+          "res/mipmap-xhdpi-v4/icon.png",
+          "res/mipmap-xxhdpi-v4/ic_launcher.png",
+          "res/mipmap-xxhdpi-v4/ic_launcher_foreground.png",
+          "res/mipmap-xxhdpi-v4/ic_launcher_round.png",
+          "res/mipmap-xxhdpi-v4/icon.png",
+          "res/mipmap-xxxhdpi-v4/ic_launcher.png",
+          "res/mipmap-xxxhdpi-v4/ic_launcher_foreground.png",
+          "res/mipmap-xxxhdpi-v4/ic_launcher_round.png",
+          "res/mipmap-xxxhdpi-v4/icon.png"
+        ],
+        "layout_entries": [
+          "res/layout-v5/activity_stop_watch.xml",
+          "res/layout/activity_clock.xml",
+          "res/layout/activity_stop_watch.xml",
+          "res/layout/pace.xml"
+        ],
+        "string_entries": [],
+        "color_entries": []
+      },
+      "runtime_result": {
+        "exit_code": 1,
+        "stdout_tail": "stopwatch/SevenSegmentBoldItalicDigitsColon$3;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/SevenSegmentBoldItalicDigitsColon$4;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/SevenSegmentBoldItalicDigitsColon$5;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/SevenSegmentBoldItalicDigitsColon$6;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/SevenSegmentBoldItalicDigitsColon$7;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/SevenSegmentBoldItalicDigitsColon$8;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/SevenSegmentBoldItalicDigitsColon$9;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/SevenSegmentBoldItalicDigitsColon;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/StopWatch;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/ClockWithSeconds;] for Activity/Main/activity\n[DalvikEngine]   Checking class: [Lomegacentauri/mobi/simplestopwatch/MyClockWithSeconds;] for Activity/Main/activity\n[DalvikEngine] \ud83d\udd0d main_method is EMPTY, trying fallback...\n[DalvikEngine] \ud83d\udccb Entering fallback mode - looking for any class with methods\n[DalvikEngine]   \ud83d\udccb Checking fallback class: [Lomegacentauri/mobi/simplestopwatch/BigTextView$GetCenter;] with 1 methods\n[DalvikEngine]   \ud83d\udccb all_methods() returned 1 entries\n[DalvikEngine] \ud83c\udfaf Using fallback entry: Lomegacentauri/mobi/simplestopwatch/BigTextView$GetCenter;.getCenter\n[DalvikEngine] \ud83c\udfaf Bytecode size: 0\n[DalvikEngine] \u26a0\ufe0f Fallback method has empty bytecode!\n[DalvikEngine] Execution completed in 1.650293ms\n[DalvikEngine] Instructions executed: 0\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+        "artifacts": {
+          "report_md_exists": true,
+          "view_tree_exists": false,
+          "screenshot_exists": false,
+          "screenshot_size_bytes": 0,
+          "api_trace_exists": true
+        },
+        "view_tree_summary": null,
+        "resource_evidence": {
+          "resource_resolution_called": false,
+          "axml_parsed": false,
+          "set_content_view": false,
+          "set_text": true,
+          "inflated_views": 0
+        }
+      },
+      "status": "PARTIAL_NO_OUTPUT"
+    },
+    {
+      "name": "chessclock",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk",
+      "apk_info": {
+        "has_android_manifest": true,
+        "has_resources_arsc": true,
+        "has_classes_dex": true,
+        "manifest_size": 2200,
+        "arsc_size": 24012,
+        "dex_files": [
+          {
+            "name": "classes.dex",
+            "size": 24556
+          }
+        ],
+        "drawable_entries": [
+          "res/drawable-hdpi-v4/icon.png",
+          "res/drawable-ldpi-v4/icon.png",
+          "res/drawable-mdpi-v4/icon.png",
+          "res/drawable/icon.png",
+          "res/drawable/menu_button.xml",
+          "res/drawable/pause.xml",
+          "res/drawable/pause_button.xml",
+          "res/drawable/reset.xml",
+          "res/drawable/reset_button.xml",
+          "res/drawable/settings.xml"
+        ],
+        "layout_entries": [
+          "res/layout/about_dialog.xml",
+          "res/layout/main.xml"
+        ],
+        "string_entries": [],
+        "color_entries": []
+      },
+      "runtime_result": {
+        "exit_code": 1,
+        "stdout_tail": "[*] Running APK: /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk\n[*] Output directory: /tmp/exp085_phase5_chessclock\n\n=== Execution Result ===\n\nStatus: FAILURE \u274c\n\nMessage: Execution failed\n\n--- Metrics ---\nAPI Calls: 0\nFrames Rendered: 0\nExecution Time: 0ms\nErrors: 1\nWarnings: 0\n\nReport: /tmp/exp085_phase5_chessclock/report.md\n[ApkParser] APK validation passed: /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk\n[ApkParser] Found EOCD at offset 124200\n[ApkParser] Central Directory: 19 entries at offset 122880\n[ApkParser] Cached 19 ZIP entries for fast lookup\n[ApkParser] Found 1 DEX files: \n[ApkParser]   - classes.dex\n[ApkParser] Extracting AndroidManifest.xml...\n[ApkParser] Found EOCD at offset 124200\n[ApkParser] Central Directory: 19 entries at offset 122880\n[ApkParser] Warning: Could not extract AndroidManifest.xml\n[ApkParser] APK parsing complete:  (19 entries)\n[ApkParser] Found EOCD at offset 124200\n[ApkParser] Central Directory: 19 entries at offset 122880\n",
+        "artifacts": {
+          "report_md_exists": true,
+          "view_tree_exists": false,
+          "screenshot_exists": false,
+          "screenshot_size_bytes": 0,
+          "api_trace_exists": true
+        },
+        "view_tree_summary": null,
+        "resource_evidence": {
+          "resource_resolution_called": false,
+          "axml_parsed": false,
+          "set_content_view": false,
+          "set_text": false,
+          "inflated_views": 0
+        }
+      },
+      "status": "PARTIAL_NO_OUTPUT"
+    }
+  ]
+}

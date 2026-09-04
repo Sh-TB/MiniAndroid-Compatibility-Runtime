@@ -1,0 +1,113 @@
+{
+  "test": "EXP085 Phase 14 \u2014 Renderer validation",
+  "generated_at": "2026-08-22T20:38:33.983050+00:00",
+  "pass_count": 0,
+  "partial_count": 3,
+  "fail_count": 1,
+  "results": [
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+      "apk_name": "gmdice",
+      "exit_code": 1,
+      "png_info": {
+        "exists": false,
+        "size_bytes": 0,
+        "sha256": "",
+        "valid_signature": false,
+        "width": 0,
+        "height": 0,
+        "bit_depth": 0,
+        "color_type": 0,
+        "compression": 0,
+        "filter": 0,
+        "interlace": 0,
+        "error": "file does not exist"
+      },
+      "ppm_info": {
+        "exists": true,
+        "size_bytes": 6220817
+      },
+      "idat_info": {},
+      "is_fallback": false,
+      "status": "PARTIAL_PPM_ONLY"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/tictactoe.apk",
+      "apk_name": "tictactoe",
+      "exit_code": 1,
+      "png_info": {
+        "exists": false,
+        "size_bytes": 0,
+        "sha256": "",
+        "valid_signature": false,
+        "width": 0,
+        "height": 0,
+        "bit_depth": 0,
+        "color_type": 0,
+        "compression": 0,
+        "filter": 0,
+        "interlace": 0,
+        "error": "file does not exist"
+      },
+      "ppm_info": {
+        "exists": true,
+        "size_bytes": 6220817
+      },
+      "idat_info": {},
+      "is_fallback": false,
+      "status": "PARTIAL_PPM_ONLY"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
+      "apk_name": "headingcalculator",
+      "exit_code": 1,
+      "png_info": {
+        "exists": false,
+        "size_bytes": 0,
+        "sha256": "",
+        "valid_signature": false,
+        "width": 0,
+        "height": 0,
+        "bit_depth": 0,
+        "color_type": 0,
+        "compression": 0,
+        "filter": 0,
+        "interlace": 0,
+        "error": "file does not exist"
+      },
+      "ppm_info": {
+        "exists": true,
+        "size_bytes": 6220817
+      },
+      "idat_info": {},
+      "is_fallback": false,
+      "status": "PARTIAL_PPM_ONLY"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+      "apk_name": "simplestopwatch",
+      "exit_code": 1,
+      "png_info": {
+        "exists": false,
+        "size_bytes": 0,
+        "sha256": "",
+        "valid_signature": false,
+        "width": 0,
+        "height": 0,
+        "bit_depth": 0,
+        "color_type": 0,
+        "compression": 0,
+        "filter": 0,
+        "interlace": 0,
+        "error": "file does not exist"
+      },
+      "ppm_info": {
+        "exists": false,
+        "size_bytes": 0
+      },
+      "idat_info": {},
+      "is_fallback": false,
+      "status": "FAIL_NO_PNG"
+    }
+  ]
+}

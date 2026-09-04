@@ -1,0 +1,11 @@
+{
+  "move-result": 13,
+  "invoke-virtual": 68,
+  "invoke-direct": 36,
+  "invoke-interface": 9,
+  "invoke-static": 2,
+  "const": 2,
+  "iget": 2,
+  "return-void": 2,
+  "new-instance": 1
+}

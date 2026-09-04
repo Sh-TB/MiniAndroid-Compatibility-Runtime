@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="oracle.SmsLayoutOracleTest" time="5.393" tests="1" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="21"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/home/z/my-project/repo/miniandroid/tools/robolectric-oracle/target/test-classes:/home/z/my-project/repo/miniandroid/tools/robolectric-oracle/target/classes:/home/z/.m2/repository/org/robolectric/android-all/14-robolectric-10818077/android-all-14-robolectric-10818077.jar:/home/z/.m2/repository/org/robolectric/robolectric/4.14.1/robolectric-4.14.1.jar:/home/z/.m2/repository/org/robolectric/annotations/4.14.1/annotations-4.14.1.jar:/home/z/.m2/repository/org/robolectric/junit/4.14.1/junit-4.14.1.jar:/home/z/.m2/repository/org/robolectric/shadowapi/4.14.1/shadowapi-4.14.1.jar:/home/z/.m2/repository/org/robolectric/pluginapi/4.14.1/pluginapi-4.14.1.jar:/home/z/.m2/repository/com/google/guava/guava/33.3.1-jre/guava-33.3.1-jre.jar:/home/z/.m2/repository/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar:/home/z/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/home/z/.m2/repository/org/checkerframework/checker-qual/3.43.0/checker-qual-3.43.0.jar:/home/z/.m2/repository/com/google/errorprone/error_prone_annotations/2.28.0/error_prone_annotations-2.28.0.jar:/home/z/.m2/repository/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.jar:/home/z/.m2/repository/org/robolectric/resources/4.14.1/resources-4.14.1.jar:/home/z/.m2/repository/com/google/auto/value/auto-value-annotations/1.11.0/auto-value-annotations-1.11.0.jar:/home/z/.m2/repository/org/robolectric/sandbox/4.14.1/sandbox-4.14.1.jar:/home/z/.m2/repository/org/ow2/asm/asm/9.7.1/asm-9.7.1.jar:/home/z/.m2/repository/org/ow2/asm/asm-commons/9.7.1/asm-commons-9.7.1.jar:/home/z/.m2/repository/org/ow2/asm/asm-tree/9.7.1/asm-tree-9.7.1.jar:/home/z/.m2/repository/org/robolectric/utils/4.14.1/utils-4.14.1.jar:/home/z/.m2/repository/com/google/errorprone/error_prone_annotation/2.34.0/error_prone_annotation-2.34.0.jar:/home/z/.m2/repository/org/robolectric/utils-reflector/4.14.1/utils-reflector-4.14.1.jar:/home/z/.m2/repository/org/ow2/asm/asm-util/9.7.1/asm-util-9.7.1.jar:/home/z/.m2/repository/org/ow2/asm/asm-analysis/9.7.1/asm-analysis-9.7.1.jar:/home/z/.m2/repository/org/robolectric/plugins-maven-dependency-resolver/4.14.1/plugins-maven-dependency-resolver-4.14.1.jar:/home/z/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar:/home/z/.m2/repository/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar:/home/z/.m2/repository/org/robolectric/shadows-framework/4.14.1/shadows-framework-4.14.1.jar:/home/z/.m2/repository/org/robolectric/nativeruntime/4.14.1/nativeruntime-4.14.1.jar:/home/z/.m2/repository/org/robolectric/nativeruntime-dist-compat/1.0.16/nativeruntime-dist-compat-1.0.16.jar:/home/z/.m2/repository/com/almworks/sqlite4java/sqlite4java/1.0.392/sqlite4java-1.0.392.jar:/home/z/.m2/repository/com/ibm/icu/icu4j/75.1/icu4j-75.1.jar:/home/z/.m2/repository/org/bouncycastle/bcprov-jdk18on/1.78.1/bcprov-jdk18on-1.78.1.jar:/home/z/.m2/repository/org/conscrypt/conscrypt-openjdk-uber/2.5.2/conscrypt-openjdk-uber-2.5.2.jar:/home/z/.m2/repository/org/yaml/snakeyaml/2.3/snakeyaml-2.3.jar:/home/z/.m2/repository/com/google/testparameterinjector/test-parameter-injector/1.18/test-parameter-injector-1.18.jar:/home/z/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/home/z/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/z/.m2/repository/androidx/annotation/annotation/1.7.0-beta01/annotation-1.7.0-beta01.jar:/home/z/.m2/repository/androidx/annotation/annotation-jvm/1.7.0-beta01/annotation-jvm-1.7.0-beta01.jar:/home/z/.m2/repository/androidx/tracing/tracing/1.1.0/tracing-1.1.0.jar:/home/z/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.8.20/kotlin-stdlib-1.8.20.jar:/home/z/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.8.20/kotlin-stdlib-common-1.8.20.jar:/home/z/.m2/repository/org/jetbrains/annotations/13.0/annotations-13.0.jar:/home/z/.m2/repository/androidx/concurrent/concurrent-futures-ktx/1.1.0/concurrent-futures-ktx-1.1.0.jar:/home/z/.m2/repository/androidx/concurrent/concurrent-futures/1.1.0/concurrent-futures-1.1.0.jar:/home/z/.m2/repository/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4.jar:/home/z/.m2/repository/androidx/lifecycle/lifecycle-common/2.3.1/lifecycle-common-2.3.1.jar:/home/z/.m2/repository/androidx/test/monitor/1.7.1/monitor-1.7.1.jar:/home/z/.m2/repository/com/google/guava/listenablefuture/1.0/listenablefuture-1.0.jar:/home/z/.m2/repository/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.7.1/kotlinx-coroutines-core-jvm-1.7.1.jar:/home/z/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.8.20/kotlin-stdlib-jdk8-1.8.20.jar:/home/z/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.8.20/kotlin-stdlib-jdk7-1.8.20.jar:"/>
+    <property name="java.vm.vendor" value="Debian"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="https://tracker.debian.org/openjdk-21"/>
+    <property name="os.name" value="Linux"/>
+    <property name="java.vm.specification.version" value="21"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.boot.library.path" value="/usr/lib/jvm/java-21-openjdk-amd64/lib"/>
+    <property name="sun.java.command" value="/home/z/my-project/repo/miniandroid/tools/robolectric-oracle/target/surefire/surefirebooter-20260827233432484_3.jar /home/z/my-project/repo/miniandroid/tools/robolectric-oracle/target/surefire 2026-08-27T23-34-32_416-jvmRun1 surefire-20260827233432484_1tmp surefire_0-20260827233432484_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="/home/z/my-project/repo/miniandroid/tools/robolectric-oracle/target/test-classes:/home/z/my-project/repo/miniandroid/tools/robolectric-oracle/target/classes:/home/z/.m2/repository/org/robolectric/android-all/14-robolectric-10818077/android-all-14-robolectric-10818077.jar:/home/z/.m2/repository/org/robolectric/robolectric/4.14.1/robolectric-4.14.1.jar:/home/z/.m2/repository/org/robolectric/annotations/4.14.1/annotations-4.14.1.jar:/home/z/.m2/repository/org/robolectric/junit/4.14.1/junit-4.14.1.jar:/home/z/.m2/repository/org/robolectric/shadowapi/4.14.1/shadowapi-4.14.1.jar:/home/z/.m2/repository/org/robolectric/pluginapi/4.14.1/pluginapi-4.14.1.jar:/home/z/.m2/repository/com/google/guava/guava/33.3.1-jre/guava-33.3.1-jre.jar:/home/z/.m2/repository/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar:/home/z/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/home/z/.m2/repository/org/checkerframework/checker-qual/3.43.0/checker-qual-3.43.0.jar:/home/z/.m2/repository/com/google/errorprone/error_prone_annotations/2.28.0/error_prone_annotations-2.28.0.jar:/home/z/.m2/repository/com/google/j2objc/j2objc-annotations/3.0.0/j2objc-annotations-3.0.0.jar:/home/z/.m2/repository/org/robolectric/resources/4.14.1/resources-4.14.1.jar:/home/z/.m2/repository/com/google/auto/value/auto-value-annotations/1.11.0/auto-value-annotations-1.11.0.jar:/home/z/.m2/repository/org/robolectric/sandbox/4.14.1/sandbox-4.14.1.jar:/home/z/.m2/repository/org/ow2/asm/asm/9.7.1/asm-9.7.1.jar:/home/z/.m2/repository/org/ow2/asm/asm-commons/9.7.1/asm-commons-9.7.1.jar:/home/z/.m2/repository/org/ow2/asm/asm-tree/9.7.1/asm-tree-9.7.1.jar:/home/z/.m2/repository/org/robolectric/utils/4.14.1/utils-4.14.1.jar:/home/z/.m2/repository/com/google/errorprone/error_prone_annotation/2.34.0/error_prone_annotation-2.34.0.jar:/home/z/.m2/repository/org/robolectric/utils-reflector/4.14.1/utils-reflector-4.14.1.jar:/home/z/.m2/repository/org/ow2/asm/asm-util/9.7.1/asm-util-9.7.1.jar:/home/z/.m2/repository/org/ow2/asm/asm-analysis/9.7.1/asm-analysis-9.7.1.jar:/home/z/.m2/repository/org/robolectric/plugins-maven-dependency-resolver/4.14.1/plugins-maven-dependency-resolver-4.14.1.jar:/home/z/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar:/home/z/.m2/repository/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar:/home/z/.m2/repository/org/robolectric/shadows-framework/4.14.1/shadows-framework-4.14.1.jar:/home/z/.m2/repository/org/robolectric/nativeruntime/4.14.1/nativeruntime-4.14.1.jar:/home/z/.m2/repository/org/robolectric/nativeruntime-dist-compat/1.0.16/nativeruntime-dist-compat-1.0.16.jar:/home/z/.m2/repository/com/almworks/sqlite4java/sqlite4java/1.0.392/sqlite4java-1.0.392.jar:/home/z/.m2/repository/com/ibm/icu/icu4j/75.1/icu4j-75.1.jar:/home/z/.m2/repository/org/bouncycastle/bcprov-jdk18on/1.78.1/bcprov-jdk18on-1.78.1.jar:/home/z/.m2/repository/org/conscrypt/conscrypt-openjdk-uber/2.5.2/conscrypt-openjdk-uber-2.5.2.jar:/home/z/.m2/repository/org/yaml/snakeyaml/2.3/snakeyaml-2.3.jar:/home/z/.m2/repository/com/google/testparameterinjector/test-parameter-injector/1.18/test-parameter-injector-1.18.jar:/home/z/.m2/repository/junit/junit/4.13.2/junit-4.13.2.jar:/home/z/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/z/.m2/repository/androidx/annotation/annotation/1.7.0-beta01/annotation-1.7.0-beta01.jar:/home/z/.m2/repository/androidx/annotation/annotation-jvm/1.7.0-beta01/annotation-jvm-1.7.0-beta01.jar:/home/z/.m2/repository/androidx/tracing/tracing/1.1.0/tracing-1.1.0.jar:/home/z/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.8.20/kotlin-stdlib-1.8.20.jar:/home/z/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.8.20/kotlin-stdlib-common-1.8.20.jar:/home/z/.m2/repository/org/jetbrains/annotations/13.0/annotations-13.0.jar:/home/z/.m2/repository/androidx/concurrent/concurrent-futures-ktx/1.1.0/concurrent-futures-ktx-1.1.0.jar:/home/z/.m2/repository/androidx/concurrent/concurrent-futures/1.1.0/concurrent-futures-1.1.0.jar:/home/z/.m2/repository/org/jetbrains/kotlinx/kotlinx-coroutines-core/1.3.4/kotlinx-coroutines-core-1.3.4.jar:/home/z/.m2/repository/androidx/lifecycle/lifecycle-common/2.3.1/lifecycle-common-2.3.1.jar:/home/z/.m2/repository/androidx/test/monitor/1.7.1/monitor-1.7.1.jar:/home/z/.m2/repository/com/google/guava/listenablefuture/1.0/listenablefuture-1.0.jar:/home/z/.m2/repository/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.7.1/kotlinx-coroutines-core-jvm-1.7.1.jar:/home/z/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.8.20/kotlin-stdlib-jdk8-1.8.20.jar:/home/z/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.8.20/kotlin-stdlib-jdk7-1.8.20.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/home/z"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2026-08-18"/>
+    <property name="java.home" value="/usr/lib/jvm/java-21-openjdk-amd64"/>
+    <property name="file.separator" value="/"/>
+    <property name="basedir" value="/home/z/my-project/repo/miniandroid/tools/robolectric-oracle"/>
+    <property name="java.vm.compressedOopsMode" value="32-bit"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="surefire.real.class.path" value="/home/z/my-project/repo/miniandroid/tools/robolectric-oracle/target/surefire/surefirebooter-20260827233432484_3.jar"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="21.0.12.1+1-1-deb13u1-Debian"/>
+    <property name="user.name" value="z"/>
+    <property name="stdout.encoding" value="UTF-8"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="5.10.134-013.8.3.kangaroo.al8.x86_64"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="localRepository" value="/home/z/.m2/repository"/>
+    <property name="java.vendor.url.bug" value="https://bugs.debian.org/openjdk-21"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="java.version" value="21.0.12.1"/>
+    <property name="user.dir" value="/home/z/my-project/repo/miniandroid/tools/robolectric-oracle"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/usr/java/packages/lib:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib"/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="UTF-8"/>
+    <property name="java.vendor" value="Debian"/>
+    <property name="java.vm.version" value="21.0.12.1+1-1-deb13u1-Debian"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="65.0"/>
+  </properties>
+  <testcase name="smsScreenLayout" classname="oracle.SmsLayoutOracleTest" time="5.155">
+    <system-out><![CDATA[WARNING: No manifest file found at ./AndroidManifest.xml.
+Falling back to the Android OS resources only.
+To remove this warning, annotate your test class with @Config(manifest=Config.NONE).
+If you're using Android Gradle Plugin, add testOptions.unitTests.includeAndroidResources = true to your build.gradle
+D/LifecycleMonitor: Lifecycle status change: android.app.Activity@62be1d66 in: PRE_ON_CREATE
+W/VirtualDeviceManager: Failed to retrieve virtual devices; no virtual device manager service.
+D/LifecycleMonitor: Lifecycle status change: android.app.Activity@62be1d66 in: CREATED
+D/LifecycleMonitor: Lifecycle status change: android.app.Activity@62be1d66 in: STARTED
+D/LifecycleMonitor: Lifecycle status change: android.app.Activity@62be1d66 in: RESUMED
+ORACLE density=1.0 width=320 height=470
+== ROBOLECTRIC (AOSP android-all) LAYOUT RESULTS ==
+ORACLE root           LinearLayout                 pos=(0,0) size=1080x1920
+ORACLE iconFrame      FrameLayout                  pos=(0,0) size=64x64
+ORACLE title          text="Enter code" pos=(535,82) size=10x41
+ORACLE desc           text="We’ve sent an SMS with an activation code to your phone +1 5551234567." pos=(505,140) size=70x41
+ORACLE codeRow        LinearLayout                 pos=(437,213) size=205x42
+ORACLE   field0       View                         pos=(0,0) size=34x42
+ORACLE   field1       View                         pos=(41,0) size=34x42
+ORACLE   field2       View                         pos=(82,0) size=34x42
+ORACLE   field3       View                         pos=(123,0) size=34x42
+ORACLE   field4       View                         pos=(164,0) size=34x42
+ORACLE link           text="Didn't get the code?" pos=(530,283) size=20x41
+== GRAVITY CONSTANTS ==
+ORACLE Gravity.CENTER_HORIZONTAL=0x1 CENTER=0x11 TOP=0x30 BOTTOM=0x50 LEFT=0x3 RIGHT=0x5 CENTER_VERTICAL=0x10
+== MATCH_PARENT / WRAP_CONTENT ==
+ORACLE MATCH_PARENT=-1 WRAP_CONTENT=-2 (expect -1/-2)
+== TextView.setText/getText identity ==
+ORACLE getText() == same object: true, equals: true
+== String.replace(char,char) nbsp semantics ==
+ORACLE replace(' ', U+00A0) = "+1~5551234567" codepoints=13
+== LinearLayout.LayoutParams defaults ==
+ORACLE default margins=(0,0,0,0) gravity=-1
+== TextView default text color (unstyled) ==
+ORACLE default TextView text color set: true
+]]></system-out>
+  </testcase>
+</testsuite>

@@ -1,0 +1,77 @@
+
+[GROUP X] XmlPullParser — real event progression + termination
+  FAIL  xml_event_sequence_tags_text_comment_end — expected 224331.000000, got 0.000000 (final_status=0 last_op=return ret_type=1)
+  FAIL  xml_eventtype_initial_then_starttag — expected 2.000000, got 0.000000 (final_status=0 last_op=return ret_type=1)
+  FAIL  xml_getname_root_tag — expected "r", got ""
+  FAIL  xml_gettext_text_event — expected "hi", got ""
+  FAIL  xml_getattributevalue_by_name — expected "1", got ""
+  FAIL  xml_next_after_end_document_throws — fell through (no throw)
+  FAIL  xml_selfclosing_tag_end_event — expected 2232433.000000, got 0.000000 (final_status=0 last_op=return ret_type=1)
+
+[GROUP AR] AtomicReference — CAS identity/null semantics
+  FAIL  ar_get_after_noarg_init_is_null — expected null, got type=13
+  PASS  ar_cas_wrong_expect_false — expected 0.000000, got 0.000000
+  FAIL  ar_cas_success_true — expected 1.000000, got 0.000000 (final_status=0 last_op=return ret_type=13)
+  FAIL  ar_getandset_returns_old — expected "v1", got ""
+  FAIL  ar_cas_after_getandset_true — expected 1.000000, got 0.000000 (final_status=0 last_op=return ret_type=13)
+  PASS  ar_cas_object_identity_not_class_match — expected 0.000000, got 0.000000
+  FAIL  ar_cas_object_identity_match_true — expected 1.000000, got 0.000000 (final_status=0 last_op=return ret_type=13)
+
+[GROUP ST] InputStream.read — REAL asset bytes (simplestopwatch license.html)
+  (oracle: first bytes = 43 6f 64)
+  FAIL  st_read_first_bytes_match_asset — expected 6582083.000000, got 0.000000 (final_status=0 last_op=return ret_type=1)
+  FAIL  st_available_decrements_by_one — expected 1.000000, got 0.000000 (final_status=0 last_op=return ret_type=1)
+  FAIL  st_bulk_read_fills_array — expected 16067.000000, got 0.000000 (final_status=0 last_op=return ret_type=1)
+  FAIL  st_read_after_drain_is_eof_minus1 — expected -1.000000, got 0.000000 (final_status=0 last_op=return ret_type=13)
+  FAIL  st_read_after_close_is_eof — expected -1.000000, got 0.000000 (final_status=0 last_op=return ret_type=13)
+
+[GROUP CV] conversions — real numeric semantics (JLS 5.1.3)
+  PASS  cv_long_to_int_truncates — expected 5.000000, got 5.000000
+  PASS  cv_int_to_long_sign_extends — expected -5.000000, got -5.000000
+  PASS  cv_long_to_float_numeric — expected 12345678848.000000, got 12345678848.000000
+  PASS  cv_long_to_double_exact_2p53 — expected 9007199254740992.000000, got 9007199254740992.000000
+  PASS  cv_long_to_double_negative — expected -1234567890123.000000, got -1234567890123.000000
+  PASS  cv_double_to_long_truncates — expected 1234567890.000000, got 1234567890.000000
+  PASS  cv_double_to_long_negative_toward_zero — expected -1234567890.000000, got -1234567890.000000
+  PASS  cv_double_float_long_3p7e9_64bit — expected 3700000000.000000, got 3700000000.000000
+  PASS  cv_double_to_float_rounds — expected 0.100000, got 0.100000
+  PASS  cv_nan_double_to_int_zero — expected 0.000000, got 0.000000
+  PASS  cv_posinf_double_to_int_clamps_max — expected 2147483647.000000, got 2147483647.000000
+  PASS  cv_neginf_double_to_int_clamps_min — expected -2147483648.000000, got -2147483648.000000
+  PASS  cv_posinf_double_to_long_clamps_max — expected 9223372036854775808.000000, got 9223372036854775808.000000
+  PASS  cv_double_float_int_truncates — expected 2.000000, got 2.000000
+
+[GROUP DR] div/rem — lit16/2addr/negative-divisor matrix
+  FAIL  dr_div_int_lit16_negative_divisor — expected -3.000000, got 0.000000 (final_status=0 last_op=return ret_type=0)
+  FAIL  dr_rem_int_lit16_negative_divisor — expected 1.000000, got 0.000000 (final_status=0 last_op=return ret_type=0)
+  PASS  dr_div_int_neg_neg_positive — expected 3.000000, got 3.000000
+  PASS  dr_div_long_negative_divisor — expected -3.000000, got -3.000000
+  PASS  dr_rem_long_negative_divisor — expected 1.000000, got 1.000000
+  PASS  dr_div_int_lit16_zero_throws — expected handler marker 559, got 559.000000
+  PASS  dr_rem_int_lit16_zero_throws — expected handler marker 560, got 560.000000
+  PASS  dr_rem_int_23x_zero_throws — expected handler marker 561, got 561.000000
+  PASS  dr_div_int_2addr_zero_throws — expected handler marker 562, got 562.000000
+
+[GROUP SW] switch — backward targets + non-zero first_key
+  PASS  sw_packed_backward_target — expected 7770.000000, got 7770.000000
+  PASS  sw_packed_nonzero_first_key — expected 8765.000000, got 8765.000000
+  PASS  sw_sparse_backward_target — expected 6110.000000, got 6110.000000
+
+[GROUP PS] parse/substring/concat — Java boundary matrix
+  PASS  ps_parseInt_max_boundary — expected 2147483647.000000, got 2147483647.000000
+  PASS  ps_parseInt_min_boundary — expected -2147483648.000000, got -2147483648.000000
+  FAIL  ps_parseInt_overflow_throws_nfe — expected handler marker 571, got -2147483648.000000
+  PASS  ps_parseInt_empty_throws_nfe — expected handler marker 572, got 572.000000
+  PASS  ps_parseInt_whitespace_throws_nfe — expected handler marker 573, got 573.000000
+  PASS  ps_parseDouble_negative_exponent — expected -250.000000, got -250.000000
+  PASS  ps_parseDouble_nan_word — got nan
+  PASS  ps_parseDouble_infinity_word — got inf
+  PASS  ps_substring_beginning — expected "he", got "he"
+  PASS  ps_substring_one_arg_tail — expected "lo", got "lo"
+  PASS  ps_substring_empty_range — expected "", got ""
+  PASS  ps_substring_inverted_throws_sioobe — expected handler marker 574, got 574.000000
+  PASS  ps_substring_end_oob_throws_sioobe — expected handler marker 575, got 575.000000
+  PASS  ps_concat_empty_first — expected "x", got "x"
+  PASS  ps_concat_unicode_bytes — expected "héllo→!", got "héllo→!"
+
+RESULT: 40 passed, 20 failed

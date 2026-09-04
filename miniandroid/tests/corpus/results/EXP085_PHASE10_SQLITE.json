@@ -1,0 +1,35 @@
+{
+  "test": "EXP085 Phase 10 \u2014 SQLite smoke test",
+  "generated_at": "2026-08-22T20:37:40.184180+00:00",
+  "results": [
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.billthefarmer.notes_139.apk",
+      "package": "org.billthefarmer.notes",
+      "run1_exit_code": 1,
+      "run2_exit_code": 1,
+      "sqlite_evidence": {
+        "sqlite_open_called": false,
+        "create_table_called": false,
+        "insert_called": false,
+        "select_called": false,
+        "sql_native_lib_loaded": false,
+        "sqlite_java_class_loaded": false,
+        "sql_exception": false
+      },
+      "sandbox_evidence": {
+        "sandbox_db_files": [],
+        "sandbox_databases_dir_exists": false
+      },
+      "runtime_data_evidence": {
+        "runtime_data_dir_exists": false,
+        "shared_prefs_files": [],
+        "database_files": []
+      },
+      "has_native_sqlite": false,
+      "classification": "SQLITE_BLOCKED_NO_STARTUP",
+      "run1_stdout_tail": "[DalvikEngine]   \ud83d\udccb Checking fallback class: [Landroid/support/v4/content/FileProvider$PathStrategy;] with 2 methods\n[DalvikEngine]   \ud83d\udccb all_methods() returned 2 entries\n[DalvikEngine] \ud83c\udfaf Using fallback entry: Landroid/support/v4/content/FileProvider$PathStrategy;.getFileForUri\n[DalvikEngine] \ud83c\udfaf Bytecode size: 0\n[DalvikEngine] \u26a0\ufe0f Fallback method has empty bytecode!\n[DalvikEngine] Execution completed in 5.826431ms\n[DalvikEngine] Instructions executed: 0\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "run2_stdout_tail": "[DalvikEngine]   \ud83d\udccb Checking fallback class: [Landroid/support/v4/content/FileProvider$PathStrategy;] with 2 methods\n[DalvikEngine]   \ud83d\udccb all_methods() returned 2 entries\n[DalvikEngine] \ud83c\udfaf Using fallback entry: Landroid/support/v4/content/FileProvider$PathStrategy;.getFileForUri\n[DalvikEngine] \ud83c\udfaf Bytecode size: 0\n[DalvikEngine] \u26a0\ufe0f Fallback method has empty bytecode!\n[DalvikEngine] Execution completed in 5.712329ms\n[DalvikEngine] Instructions executed: 0\n[DalvikEngine] DalvikExecutionEngine destroyed\n",
+      "checked_at": "2026-08-22T20:37:40.183646+00:00"
+    }
+  ]
+}

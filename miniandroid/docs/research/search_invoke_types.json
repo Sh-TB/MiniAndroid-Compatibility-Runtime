@@ -1,0 +1,83 @@
+[
+  {
+    "url": "https://source.android.com/docs/core/runtime/dalvik-bytecode",
+    "name": "Dalvik bytecode format",
+    "snippet": "Jan 7, 2025 — invoke-static is used to invoke a static method (which is always considered a direct method). invoke-interface is used to invoke an interface ... Read more",
+    "host_name": "source.android.com",
+    "rank": 0,
+    "date": "Jan 7, 2025",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/17739417/whats-the-difference-between-invoke-virtual-and-invoke-direct-in-android",
+    "name": "what's the difference between invoke-virtual and",
+    "snippet": "It said that invoke-virtual is invoking the virtual method, while invoke-direct is the direct method. However I'm not clear what is \"virtual method\" and ...",
+    "host_name": "stackoverflow.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.pnfsoftware.com/blog/android-o-and-dex-version-38-new-dalvik-opcodes-to-support-dynamic-invocation",
+    "name": "Android O and DEX 38: Dalvik Opcodes for Dynamic",
+    "snippet": "Jun 26, 2017 — invoke-static for static methods (Java's invokestatic) invoke-direct for constructors (Java's invokespecial, again) the invoke call sites ...",
+    "host_name": "www.pnfsoftware.com",
+    "rank": 2,
+    "date": "Jun 26, 2017",
+    "favicon": ""
+  },
+  {
+    "url": "http://www.dre.vanderbilt.edu/~schmidt/android/android-4.0/dalvik/docs/dalvik-bytecode.html",
+    "name": "Bytecode for the Dalvik VM",
+    "snippet": "invoke-direct is used to invoke a non- static direct method … invoke-static is used to invoke a static method (which is always considered a direct method). ...",
+    "host_name": "www.dre.vanderbilt.edu",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.jrebel.com/blog/using-objects-and-calling-methods-in-java-bytecode",
+    "name": "Java Bytecode: Objects and Calling Methods",
+    "snippet": "Feb 23, 2011 — invokestatic is used to call the class methods , i.e., if the target method is declared with the static keyword. The method is identified by a ... Read more",
+    "host_name": "www.jrebel.com",
+    "rank": 4,
+    "date": "Feb 23, 2011",
+    "favicon": ""
+  },
+  {
+    "url": "http://pallergabor.uw.hu/androidblog/dalvik_opcodes.html",
+    "name": "Dalvik opcodes",
+    "snippet": "Invokes static method with a range of registers . The instruction specifies the first register and the number of registers to be passed to the method. 7703 3A00 ... Read more",
+    "host_name": "pallergabor.uw.hu",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.guardsquare.com/blog/behind-the-scenes-of-jvm-method-invocations",
+    "name": "Java Virtual Machine (JVM) Method Invocations",
+    "snippet": "May 10, 2022 — Learn how the Java Virtual Machine (JVM) uses method invocations and ultimately finds out what the target of a method call is.",
+    "host_name": "www.guardsquare.com",
+    "rank": 6,
+    "date": "May 10, 2022",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/fatalSec/DaliVM",
+    "name": "fatalSec/DaliVM: Dalvik bytecode emulator for Android",
+    "snippet": "A Python-based Dalvik VM emulator designed for static analysis and string decryption in Android applications. Execute targeted methods within APK files without ... Read more",
+    "host_name": "github.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://jakewharton.com/androids-java-8-support",
+    "name": "Android's Java 8 Support",
+    "snippet": "Nov 20, 2018 — Instead, it invokes a static method on the original Java8 class named lambda$main$0 . Again, the original source didn't contain this method but ... Read more",
+    "host_name": "jakewharton.com",
+    "rank": 8,
+    "date": "Nov 20, 2018",
+    "favicon": ""
+  }
+]

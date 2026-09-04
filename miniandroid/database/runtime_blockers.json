@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "generated": "2026-08-13T15:58:28.849115Z",
+    "experiment": "EXP-029",
+    "total_apks_analyzed": 15,
+    "total_blockers_found": 0,
+    "version": "1.0"
+  },
+  "summary": {
+    "by_category": {},
+    "by_stopped_state": {},
+    "high_impact_count": 0,
+    "medium_impact_count": 0,
+    "low_impact_count": 0
+  },
+  "blockers": []
+}
