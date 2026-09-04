@@ -39,6 +39,7 @@ release (`miniandroid-demo-proof.gif`, assembled only from runtime frames).
 | `<clinit>` ran only for `org.telegram.*` | every other app's static final constants were null; now AOSP `ClassLinker::EnsureInitialized` semantics (first active use, re-entrancy guarded), `new-instance` triggers init too |
 | `array-length` + all `/2addr` arithmetic read the wrong register nibble (`>>4` vs `>>12`, AOSP 12x = `B\|A\|op`) | `array-length v1, v0` read v2; `rem-int/2addr v1, v0` read v11 |
 | plain-text manifest parser broke on AAPT-style multi-line tags | launcher activities were missed; entry-point search silently fell back to a name heuristic |
+| the whole 12x/22s decode family (conversions, neg/not, wide /2addr, lit16, move-wide) decoded the mirror image of AOSP `B\|A\|op` — and the hand-built fixture encoders carried the same swap, cancelling out inside the suites while real DEX broke | every dest≠src conversion/negation on real D8 bytecode mis-decoded; engine + fixtures now uniformly AOSP, all semantic suites re-verified green (14/14, 55/55, 25/25) |
 
 ### 3. Regression status (13-APK open-source corpus, OLD vs NEW)
 
@@ -69,6 +70,9 @@ remains on the checklist — the build recipe itself is pinned and auditable.
 
 Demo APK `miniandroid-demo.apk` SHA256:
 `c0959a719289735265f8cb0e47a488883c6a6bf39d314b2b783fcdc7ec9ad6e8`
+
+Linux binary (final, incl. 12x alignment) SHA256:
+`2016c381357acea025e71d877255bf6feee9e0158bcff909fc2aaeb89e699539`
 
 ## Known limitations (transparent)
 

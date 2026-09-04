@@ -41,8 +41,8 @@ built with the official Android toolchain equivalents (ECJ + AOSP D8, see
 ## Identifiers for this evidence set
 
 ```
-MiniAndroid binary SHA256:
-  b44d85483a9aa2c94613e75b5387eead2818d652f0fa01732d8edb0839083b75
+MiniAndroid binary SHA256 (final, includes the 12x/22s AOSP alignment):
+  2016c381357acea025e71d877255bf6feee9e0158bcff909fc2aaeb89e699539
 demo APK SHA256:
   c0959a719289735265f8cb0e47a488883c6a6bf39d314b2b783fcdc7ec9ad6e8
 command:
@@ -102,6 +102,13 @@ frame SHA256 sequences (`e5c8d511651e4276`, `5c73aa41728bd18e`, ...).
    read v11.
 4. Plain-text manifest parsing broke on standard AAPT-style multi-line tags
    (newline not treated as whitespace), so launcher activities were missed.
+5. The whole 12x/22s decode family was split between two nibble conventions:
+   conversions, neg/not, wide /2addr, lit16 and move-wide decoded the mirror
+   image of AOSP `B|A|op` (and move-wide even read its source from the opcode
+   byte). The swapped fixture encoders cancelled the swap inside the test
+   suites while real D8 bytecode broke. The engine and all fixture encoders
+   are now uniformly AOSP (fix f677443c + test d2b6b9a1); all three semantic
+   suites re-verified green (14/14, 55/55, 25/25).
 
 Regression status (13-APK open-source corpus, OLD vs NEW binary, same
 command, screenshot SHA256 compared):
