@@ -1174,9 +1174,41 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                 // found the manifest activity class in the multi-DEX index.
                 // try_recursive_invoke will resolve onCreate via per-DEX raw data.
                 log("🎯 Skipping legacy scan — manifest activity class found in multi-DEX index");
-                // Try to invoke onCreate(Bundle) directly via try_recursive_invoke
-                // which will look up the method in the correct DEX.
+                // DEMO-ACTIVITY-THIS (2026-09-04): pass the REAL activity
+                // instance as p0 (this). Per AOSP ActivityThread.
+                // performLaunchActivity -> activity.onCreate(savedInstanceState),
+                // onCreate(Bundle) is an INSTANCE method: p0 = this (Activity),
+                // p1 = Bundle. The previous code pushed ONLY the Bundle, so
+                // write_p() loaded null into p0 and the bytecode's v_p0 (this)
+                // read as null — every `iput-object v, p0, field` inside
+                // onCreate silently wrote to heap object 0 and every
+                // `iget-object` of an instance field read back null. First
+                // observed with the miniandroid-demo APK where title/status/
+                // stage fields were all lost (addView received null children).
+                // This mirrors the proven legacy path below which allocates
+                // the Activity heap object and passes [this, null].
+                uint32_t activity_obj_id = heap_.allocate(result.main_class, 0, 0);
+                DalvikValue activity_val = DalvikValue::make_object(
+                    activity_obj_id, result.main_class);
+                // Record the activity instance so post-launch probes (click
+                // dispatch, findViewById, getContentResolver) share the SAME
+                // object, exactly like the legacy path (UNIFIED_011.3 FRAME-2).
+                if (shadow_registry_ != nullptr) {
+                    auto* activity_shadow =
+                        shadow_registry_->find_as<framework::ActivityShadow>();
+                    if (activity_shadow != nullptr) {
+                        activity_shadow->set_activity_heap_id(activity_obj_id);
+                        std::cerr << "[U0113-ACTIVITY] activity heap object #"
+                                  << activity_obj_id << " (" << result.main_class
+                                  << ") recorded for handler dispatch" << std::endl;
+                    }
+                }
+                // Cache as the Context singleton so getResources() etc. on the
+                // activity return a stable object across the whole run.
+                api_singletons_[result.main_class] = activity_obj_id;
+
                 std::vector<DalvikValue> entry_args;
+                entry_args.push_back(activity_val);              // p0 = this (Activity)
                 entry_args.push_back(DalvikValue::make_null());  // p1 = Bundle (null)
                 DalvikValue return_val;  // onCreate returns void
                 try {
@@ -1223,15 +1255,42 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                         if (!method.bytecode.empty()) {
                             log("🎯 CALLING execute_method_internal() for " + method.name +
                                 " with " + std::to_string(method.bytecode.size()) + " instructions");
+                            // DEMO-ACTIVITY-THIS (2026-09-04): same fix as the
+                            // manifest path above. The legacy heuristic path
+                            // used to call onCreate with hardcoded regs=10,
+                            // ins=1 and NO arguments — so `this` (p0) read as
+                            // uninitialized and every instance-field write in
+                            // onCreate was silently dropped. Per AOSP
+                            // ActivityThread.performLaunchActivity we allocate
+                            // the Activity heap object and pass [this, Bundle].
+                            uint32_t activity_obj_id = heap_.allocate(cls.name, 0, 0);
+                            DalvikValue activity_val = DalvikValue::make_object(
+                                activity_obj_id, cls.name);
+                            if (shadow_registry_ != nullptr) {
+                                auto* activity_shadow =
+                                    shadow_registry_->find_as<framework::ActivityShadow>();
+                                if (activity_shadow != nullptr) {
+                                    activity_shadow->set_activity_heap_id(activity_obj_id);
+                                    std::cerr << "[U0113-ACTIVITY] activity heap object #"
+                                              << activity_obj_id << " (" << cls.name
+                                              << ") recorded for handler dispatch" << std::endl;
+                                }
+                            }
+                            api_singletons_[cls.name] = activity_obj_id;
+                            std::vector<DalvikValue> entry_args;
+                            if (method.name == "onCreate") {
+                                entry_args.push_back(activity_val);              // p0 = this
+                                entry_args.push_back(DalvikValue::make_null());  // p1 = Bundle
+                            }
                             execute_method_internal(
                                 cls.name,
                                 method.name,
                                 method.descriptor,
                                 method.bytecode,
-                                10,  // registers_size (estimated)
-                                1,   // ins_size (Bundle parameter)
-                                4,   // outs_size
-                                {},  // No args for now
+                                method.registers_size ? method.registers_size : 16,
+                                method.ins_size ? method.ins_size : 2,
+                                method.outs_size ? method.outs_size : 4,
+                                entry_args,
                                 result,
                                 method.tries_size,
                                 method.tries_data.data(),
@@ -1576,15 +1635,20 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
         initialized_classes_.insert(class_descriptor);
         return true;
     }
-    // EXP-053: Only run <clinit> for classes in the org.telegram.* namespace.
-    // EXP-054: Re-enabled after MethodInfo lifetime fix (store by value).
-    // Still limiting to org.telegram/* to avoid deep recursion in androidx
-    // classes (which have complex <clinit> methods that call many other
-    // classes' <clinit>, causing stack overflow).
-    if (class_descriptor.rfind("Lorg/telegram/", 0) != 0) {
-        initialized_classes_.insert(class_descriptor);
-        return true;
-    }
+    // DEMO-CLINIT (2026-09-04): run <clinit> for EVERY application class,
+    // not only org.telegram/*. Per AOSP jvm.cc ClassLinker::EnsureInitialized
+    // semantics, class initialization happens on first ACTIVE USE of any
+    // class with a <clinit>. The old org.telegram-only gate (EXP-053/EXP-054)
+    // left every other app's static fields uninitialized: static final
+    // constants built in <clinit> (int[] palettes, string tables, singletons)
+    // read back as null/0 and silently broke app logic (first observed with
+    // the miniandroid-demo APK: COLORS[]/COLOR_NAMES[] were null because
+    // com.miniandroid.demo.MainActivity.<clinit> never ran).
+    // Deep-recursion protection remains:
+    //   * framework/lib namespaces above are still skipped entirely,
+    //   * the class is marked initialized BEFORE <clinit> runs (re-entrancy
+    //     guard below prevents cycles A->B->A),
+    //   * execution_guard still bounds interpreter steps per method.
     // Need DexReport to find the class.
     if (!dex_report_) {
         initialized_classes_.insert(class_descriptor);
@@ -5226,11 +5290,37 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 if (pc_ >= bytecode_.size()) return false;
                 uint16_t instr = bytecode_[pc_];
                 uint8_t vA = (instr >> 8) & 0xF;   // dest
-                uint8_t vB = (instr >> 4) & 0xF;    // source array
+                // DEMO-ARRLEN-NIBBLE (2026-09-04): source register is the B
+                // nibble = bits 12-15, per AOSP dalvik-bytecode.html 12x
+                // format (B|A|op). The previous read `(instr >> 4) & 0xF`
+                // took bits 4-7 (part of the opcode byte), so `array-length
+                // v1, v0` read v2 (0x0121 >> 4 & 0xF == 2) instead of v0 —
+                // every array-length returned the contents of an unrelated
+                // register (typically 0). Same bug class as EXP-058's move
+                // fix. First observed with the miniandroid-demo APK: step()
+                // computed `count % COLOR_NAMES.length` as a division by 0
+                // because array-length read the wrong register.
+                uint8_t vB = (instr >> 12) & 0xF;   // source array
                 DalvikValue arr = get_register(vB);
+                // Length resolution order (consistent with aget/aput):
+                //   1. int_val carried by the register value (set by NEW_ARRAY)
+                //   2. __array_length__ heap field (survives field storage)
+                //   3. __new_array_length__ heap field (legacy name)
+                int32_t len = 0;
+                if (arr.type == DalvikType::OBJECT_REF) {
+                    len = arr.int_val;
+                    if (len == 0 && heap_.has_object(arr.object_id)) {
+                        auto f1 = heap_.get_object_field(arr.object_id, "__array_length__");
+                        if (f1.has_value() && f1->type == DalvikType::INT32) len = f1->int_val;
+                        if (len == 0) {
+                            auto f2 = heap_.get_object_field(arr.object_id, "__new_array_length__");
+                            if (f2.has_value() && f2->type == DalvikType::INT32) len = f2->int_val;
+                        }
+                    }
+                }
                 DalvikValue result_val;
                 result_val.type = DalvikType::INT32;
-                result_val.int_val = (arr.type == DalvikType::OBJECT_REF) ? arr.int_val : 0;
+                result_val.int_val = (arr.type == DalvikType::OBJECT_REF) ? len : 0;
                 set_register(vA, result_val);
                 trace.opcode_name = "array-length";
                 pc_ = pc_ + 1;
@@ -5975,7 +6065,15 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
                     uint8_t vA = (instr >> 8) & 0xF; \
-                    uint8_t vB = (instr >> 4) & 0xF; \
+                    /* DEMO-2ADDR-NIBBLE (2026-09-04): 12x format is B|A|op — */ \
+                    /* the B source register is bits 12-15. The previous read */ \
+                    /* `(instr >> 4) & 0xF` took bits 4-7 of the opcode byte, */ \
+                    /* so `rem-int/2addr v1, v0` (0x01B2) read v11 (0x01B2>>4 */ \
+                    /* & 0xF == 0xB) instead of v0. Every /2addr arithmetic   */ \
+                    /* op whose second operand register differed from the    */ \
+                    /* phantom nibble computed garbage. Same bug class as    */ \
+                    /* EXP-058's move fix and the ARRAY_LENGTH nibble fix.   */ \
+                    uint8_t vB = (instr >> 12) & 0xF; \
                     DalvikValue a = get_register(vA); \
                     DalvikValue b = get_register(vB); \
                     DalvikValue result_val; \
@@ -8032,7 +8130,14 @@ bool DalvikExecutionEngine::execute_new_instance(uint32_t pc, InstructionTrace& 
     // Allocate on heap
     uint32_t frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
     uint32_t obj_id = heap_.allocate(class_desc, pc, frame_id);
-    
+
+    // DEMO-CLINIT (2026-09-04): per AOSP jvm.cc ClassLinker semantics,
+    // new-instance is an ACTIVE USE of the class and must trigger
+    // initialization (its <clinit>) before the instance is created.
+    // Previously only sget/sput triggered initialization, so classes that
+    // were first touched via new-instance ran with uninitialized statics.
+    ensure_class_initialized(class_desc);
+
     // Store object reference in register
     set_register(dest_reg, DalvikValue::make_object(obj_id, class_desc));
     
