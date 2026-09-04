@@ -16,6 +16,7 @@
 #define MINIANDROID_LAYOUT_INFLATER_H
 
 #include <string>
+#include <map>
 #include <vector>
 #include <functional>
 #include <unordered_map>
@@ -108,6 +109,8 @@ private:
         bool weight_sum_valid = false;
         float weight_sum = 0;
         std::string style_name;   // resolved style for evidence
+        // FIX-2c: RelativeLayout sibling-dependency rules (referenced id names)
+        std::string rel_below, rel_above, rel_right_of, rel_left_of;
         // applied style values
         bool from_style_text_size = false;
         uint32_t style_text_color = 0;
@@ -149,6 +152,9 @@ private:
     apk::ApkParser& apk_;
     std::string apk_path_;
     DeviceMetrics metrics_;
+    // FIX-2c: id → key-name map (lazily built from resources.arsc) used to
+    // name compiled android:id references and bind RelativeLayout rules.
+    std::map<uint32_t, std::string> id_names_;
     std::vector<std::string> apk_entries_;  // cached entry list
     int pending_id_counter_ = 0;
 };

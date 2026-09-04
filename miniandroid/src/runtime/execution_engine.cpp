@@ -9,6 +9,8 @@
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
 // EXP-086 Phase 3 (B1 FIX): PNGWriter for direct PNG output
 #include "../renderer/software_renderer.h"
+#include "../fonts/text_shaper.h"
+#include "../resources/resource_runtime.h"
 // EXP-086 Phase 7 (B4 FIX): HandlerShadow for Runnable queue drain
 #include "../framework/android_shadows.h"
 #include "../framework/dialog_shadow.h"
@@ -254,6 +256,34 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             result.apk_info.package_name,
             result.apk_info.version_code,
             result.apk_info.version_name);
+        // FIX-4 (generic app fonts): register font files the app ships in
+        // its own assets/ (any package, any name — AOSP Typeface family
+        // model). The TextShaper resolves FACE_APP to these faces and falls
+        // back to the system chain when the app ships none. No package or
+        // filename special-casing beyond the "bold in the file name picks
+        // the bold face of the family" rule.
+        {
+            auto entries = apk_parser_.list_entries("assets/");
+            int reg = 0;
+            for (const auto& e : entries) {
+                if (e.is_directory) continue;
+                std::string lower;
+                for (char c : e.name) lower += (char)std::tolower((unsigned char)c);
+                bool ttf = lower.size() > 4 && lower.substr(lower.size() - 4) == ".ttf";
+                bool otf = lower.size() > 4 && lower.substr(lower.size() - 4) == ".otf";
+                if (!ttf && !otf) continue;
+                auto bytes = apk_parser_.extract_entry_cached(e.name);
+                if (bytes.empty()) continue;
+                bool bold = lower.find("bold") != std::string::npos;
+                if (fonts::TextShaper::instance()
+                        .register_app_font_memory(bytes, e.name, bold) >= 0)
+                    reg++;
+            }
+            if (reg > 0)
+                trace_engine_.info("ExecutionEngine", "app_fonts",
+                                   "registered " + std::to_string(reg) +
+                                   " app font face(s) from APK assets");
+        }
         dalvik_engine_.build_class_dex_index(result.dex_report);
         // EXP-088+ Phase 1.2: inject_secondary_dex_classes() is called
         // from inside execute_apk_with_activity() (after dex_report_ is
@@ -1256,6 +1286,22 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                         std::set<uint32_t> visited;
                         const int MAX_NODES = 500;
                         int node_count = 0;
+                        // FIX-2b (AOSP relayout law): RE-MEASURE the tree at
+                        // render time. Views created before lifecycle code ran
+                        // were measured empty; DEX setText()/addView() after
+                        // setContentView must invalidate layout, exactly as
+                        // Android re-measures on requestLayout(). Without this
+                        // every runtime-populated TextView keeps the 0x0
+                        // geometry it measured before its text existed.
+                        {
+                            // Only when the resource runtime actually inflated
+                            // this app's layout (programmatic view trees have
+                            // no inflater state — measured geometry comes from
+                            // the captured LayoutParams path below).
+                            auto& rt = resources::ResourceRuntime::instance();
+                            if (rt.loaded())
+                                rt.inflater().measure_layout(view_shadow, root_id);
+                        }
                         // CAMPAIGN 013: deferred custom-view placeholders.
                         struct CVP { int l, t, w, h; std::string cls; uint32_t view_id = 0; };
                         std::vector<CVP> custom_view_placeholders;
@@ -1383,59 +1429,56 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             }
 
                             // Draw text if present (AFTER background so text is on top)
-                            // EXP-095: honor text gravity (CENTER_HORIZONTAL etc.)
-                            // and word-wrap at the view width. (Also fixes the
-                            // pre-existing double-escaped '\n' literal which
-                            // never matched a real newline.)
+                            // FIX-3: REAL text pipeline — the SAME
+                            // fonts::layout_text that measured this view in
+                            // the layout pass now drives painting, so measured
+                            // geometry and painted pixels cannot disagree.
+                            // Replaces the fixed 8x16 BitmapFont (which
+                            // ignored textSize/colour/bold and rendered
+                            // microscopic text on density-scaled screens).
                             if (!node->text.empty()) {
+                                float ts = node->text_size_px > 0
+                                         ? node->text_size_px
+                                         : 14.0f * config.density;
+                                int hpad = node->padding_left + node->padding_right;
+                                float avail = (float)std::max(0, w - hpad);
+                                auto lay = fonts::layout_text(
+                                    node->text, ts, node->text_bold, avail,
+                                    node->num_lines);
+                                // Honour the captured text colour; fall back
+                                // to the AOSP-ish dark grey used before.
+                                uint32_t tc = node->text_color;
+                                renderer::RGBA tcol = tc != 0
+                                    ? renderer::RGBA{uint8_t((tc >> 16) & 0xFF),
+                                                     uint8_t((tc >> 8) & 0xFF),
+                                                     uint8_t(tc & 0xFF),
+                                                     uint8_t((tc >> 24) & 0xFF)}
+                                    : renderer::Colors::GREY_800;
+                                // Vertical: AOSP draws from the top inset by
+                                // padding; CENTER_VERTICAL centers the block.
+                                float block_h = lay.block_height();
+                                float base_y = (float)top + node->padding_top + lay.ascent;
+                                int vg = node->text_gravity & 0x70;
+                                if ((node->text_gravity & 0x10) || vg == 0x10)
+                                    base_y = (float)top
+                                           + ((float)h - block_h) / 2.0f + lay.ascent;
+                                else if (vg == 0x50)
+                                    base_y = (float)(top + h) - node->padding_bottom
+                                           - block_h + lay.ascent;
                                 int hg = node->text_gravity & 0x7;
-                                std::vector<std::string> out_lines;
-                                {
-                                    int avail = w - 20;
-                                    std::string line, word;
-                                    for (size_t i = 0; i <= node->text.size(); i++) {
-                                        char c = (i < node->text.size()) ? node->text[i] : '\n';
-                                        if (c == '\n') {
-                                            if (!word.empty()) {
-                                                if (!line.empty()) line += ' ';
-                                                line += word; word.clear();
-                                            }
-                                            out_lines.push_back(line); line.clear();
-                                            continue;
-                                        }
-                                        if (c == ' ') {
-                                            if (!word.empty()) {
-                                                if (!line.empty()) line += ' ';
-                                                line += word; word.clear();
-                                            }
-                                            continue;
-                                        }
-                                        word += c;
-                                        if (avail > 20) {
-                                            std::string probe = line.empty() ? word : (line + " " + word);
-                                            if (font.measure_text(probe).width > avail) {
-                                                if (!line.empty()) out_lines.push_back(line);
-                                                line = word; word.clear();
-                                            }
-                                        }
+                                float y = base_y;
+                                for (const auto& ln : lay.lines) {
+                                    if (!ln.text.empty()) {
+                                        float lx = (float)left + node->padding_left;
+                                        if (hg == 1)
+                                            lx = (float)left + ((float)w - ln.width) / 2.0f;
+                                        else if (hg == 5)
+                                            lx = (float)right - node->padding_right - ln.width;
+                                        fonts::TextShaper::instance().draw(
+                                            fb, ln.text, lx, y, ts, tcol,
+                                            node->text_bold);
                                     }
-                                    if (out_lines.empty()) out_lines.push_back("");
-                                }
-                                int text_y = top + font.get_line_height();
-                                for (const auto& ln : out_lines) {
-                                    if (!ln.empty()) {
-                                        int lx = left + 10;
-                                        if (hg == 1) {
-                                            auto lm = font.measure_text(ln);
-                                            lx = left + (w - lm.width) / 2;
-                                        } else if (hg == 5) {
-                                            auto lm = font.measure_text(ln);
-                                            lx = right - 10 - lm.width;
-                                        }
-                                        canvas.draw_text(ln, lx, text_y,
-                                                        renderer::Colors::GREY_800, &font);
-                                    }
-                                    text_y += font.get_line_height();
+                                    y += lay.line_height;
                                 }
                             }
 
@@ -1518,10 +1561,34 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                         }
                                     }
                                     if (!drew_real && !drew_bg && node->bg_color == 0) {
-                                        // Nothing drawn anywhere: defer to the
-                                        // screen-blank grey placeholder (below).
-                                        custom_view_placeholders.push_back(
-                                            {left, top, w, h, node->class_desc, task.view_id});
+                                        // Nothing drawn anywhere: draw the
+                                        // honest placeholder INLINE (grey
+                                        // surface + class name). The old
+                                        // screen-blankness gate hid this when
+                                        // ANY other view painted pixels — an
+                                        // invisible custom view is less
+                                        // truthful than a labeled one, per the
+                                        // CAMPAIGN 013 evidence standard.
+                                        canvas.draw_rect(left, top, right, bottom,
+                                                       renderer::RGBA{0xF0, 0xF0, 0xF0, 0xFF});
+                                        canvas.draw_rect(left, top, right, top + 1,
+                                                       renderer::RGBA{0xD8, 0xD8, 0xD8, 0xFF});
+                                        canvas.draw_rect(left, top, left + 1, bottom,
+                                                       renderer::RGBA{0xD8, 0xD8, 0xD8, 0xFF});
+                                        std::string simple = node->class_desc;
+                                        size_t slash = simple.rfind('/');
+                                        if (slash != std::string::npos)
+                                            simple = simple.substr(slash + 1);
+                                        if (!simple.empty() && simple.back() == ';')
+                                            simple.pop_back();
+                                        canvas.draw_text(simple, left + 12,
+                                                       top + font.get_line_height() + 12,
+                                                       renderer::RGBA{0x99, 0x99, 0x99, 0xFF},
+                                                       &font);
+                                        std::cerr << "[C013-CUSTOMVIEW] inline placeholder: "
+                                                  << node->class_desc
+                                                  << " at (" << left << "," << top
+                                                  << " " << w << "x" << h << ")" << std::endl;
                                     }
                                 }
                             }
@@ -2629,9 +2696,21 @@ bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const Execu
     if (!view_shadow) return true;
 
     auto clickables = view_shadow->find_all_with_click_listener("");
-    std::cerr << "[CLICK-SEQ] " << clickables.size() << " clickable view(s), "
+    // FIX-6 (generic touch path): XML android:onClick views are REAL touch
+    // targets too (AOSP resolves the handler on the hosting Activity).
+    // Without them, XML-driven apps (uNote) had no drivable controls in the
+    // click-sequence proof even though their buttons were touchable on a
+    // real device. Same handler-resolution law as stage_click_test.
+    struct XmlSeqClick { uint32_t view_id; std::string handler; std::string cls; };
+    std::vector<XmlSeqClick> xml_clicks;
+    for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
+        if (node_ptr && !node_ptr->onClick_handler.empty())
+            xml_clicks.push_back({id, node_ptr->onClick_handler, node_ptr->class_desc});
+    }
+    std::cerr << "[CLICK-SEQ] " << clickables.size() << " listener view(s), "
+              << xml_clicks.size() << " XML onClick view(s), "
               << config.click_count << " click(s) requested" << std::endl;
-    if (clickables.empty()) {
+    if (clickables.empty() && xml_clicks.empty()) {
         std::cerr << "[CLICK-SEQ] no clickable views — nothing to drive" << std::endl;
         return true;
     }
@@ -2707,9 +2786,52 @@ bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const Execu
 
     int dispatched_total = 0;
     for (int k = 1; k <= config.click_count; ++k) {
-        uint32_t target = clickables[static_cast<size_t>(k - 1) % clickables.size()];
+        // Round-robin over BOTH touch paths (listener views first, then XML
+        // onClick views) — real Android delivers to whichever the app set.
+        const size_t total = clickables.size() + xml_clicks.size();
+        const size_t idx = static_cast<size_t>(k - 1) % total;
+        uint32_t target = 0;
+        bool is_xml = idx >= clickables.size();
+        std::string xml_handler, xml_cls;
+        if (!is_xml) {
+            target = clickables[idx];
+        } else {
+            const auto& xc = xml_clicks[idx - clickables.size()];
+            target = xc.view_id;
+            xml_handler = xc.handler;
+            xml_cls = xc.cls;
+        }
         const auto* node = view_shadow->find_node(target);
-        bool dispatched = dalvik_engine_.dispatch_click(target);
+        bool dispatched = false;
+        if (!is_xml) {
+            dispatched = dalvik_engine_.dispatch_click(target);
+        } else {
+            // AOSP android:onClick: activity.<handler>(View v) — REAL DEX
+            // dispatch with the real Activity instance as p0.
+            std::string host_class = result.apk_info.main_activity_full;
+            uint32_t activity_this_id = 0;
+            std::string activity_this_class;
+            if (auto* activity_shadow =
+                    shadow_registry_->find_as<framework::ActivityShadow>()) {
+                activity_this_id = activity_shadow->current_activity_id();
+                if (activity_this_id != 0) {
+                    const auto* aobj = dalvik_engine_.get_heap().get(activity_this_id);
+                    activity_this_class = aobj ? aobj->class_descriptor : host_class;
+                }
+            }
+            std::vector<miniandroid::dalvik::DalvikValue> handler_args;
+            if (activity_this_id != 0)
+                handler_args.push_back(miniandroid::dalvik::DalvikValue::make_object(
+                    activity_this_id, activity_this_class));
+            handler_args.push_back(miniandroid::dalvik::DalvikValue::make_object(target, xml_cls));
+            miniandroid::dalvik::DalvikValue ret = miniandroid::dalvik::DalvikValue::make_void();
+            miniandroid::dalvik::DalvikExecutionResult sub;
+            dispatched = dalvik_engine_.try_recursive_invoke(
+                host_class, xml_handler, handler_args, ret, sub);
+            if (dispatched)
+                std::cerr << "[CLICK-SEQ] xml onClick " << xml_handler
+                          << " dispatched on activity" << std::endl;
+        }
         if (dispatched) dispatched_total++;
 
         framebuffer_ = prev;
@@ -2738,6 +2860,12 @@ bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const Execu
         f["event"] = "click";
         f["clicked_view_id"] = target;
         f["clicked_view_class"] = node ? node->class_desc : "?";
+        if (is_xml) {
+            f["click_kind"] = "xml_onClick";
+            f["xml_handler"] = xml_handler;
+        } else {
+            f["click_kind"] = "listener";
+        }
         f["click_dispatched"] = dispatched;
         f["changed_pixels_vs_previous"] = diff_px;
         f["sha256"] = sha256_hex(framebuffer_);

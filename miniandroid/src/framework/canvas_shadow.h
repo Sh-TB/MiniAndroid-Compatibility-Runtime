@@ -38,7 +38,8 @@ class PaintShadow;
 // One recorded draw primitive (coordinates in VIEW space, density=1).
 struct DrawOp {
     enum class Kind {
-        DRAW_COLOR, DRAW_RECT, DRAW_ROUNDRECT, DRAW_CIRCLE, DRAW_LINE, DRAW_TEXT, DRAW_PAINT
+        DRAW_COLOR, DRAW_RECT, DRAW_ROUNDRECT, DRAW_CIRCLE, DRAW_LINE, DRAW_TEXT, DRAW_PAINT,
+        DRAW_PATH
     };
     Kind kind = Kind::DRAW_COLOR;
     float x = 0, y = 0, w = 0, h = 0;   // rect: x,y,w,h ; line: x1,y1,x2,y2 in x,y,w,h
@@ -48,6 +49,10 @@ struct DrawOp {
     std::string text;                   // DRAW_TEXT
     // Paint style: 0=fill, 1=stroke
     bool stroke = false;
+    // DRAW_PATH: flattened contours (absolute canvas-space points). Filled
+    // with the EVEN-ODD rule across all contours (matches digit glyphs with
+    // counters — e.g. '0', '8'); stroke mode draws contour outlines.
+    std::vector<std::vector<std::pair<float, float>>> contours;
 };
 
 class CanvasShadow : public Shadow {
@@ -59,6 +64,12 @@ public:
                cls.find("graphics/Canvas;") != std::string::npos ||
                cls == "Landroid/graphics/Paint;" ||
                cls.find("graphics/Paint;") != std::string::npos ||
+               // FIX-5: android.graphics.Path — real path recording so apps
+               // that draw their own glyphs/shapes (simplestopwatch digit
+               // fonts, clock hands) execute their REAL onDraw bytecode and
+               // produce real pixels instead of a swallowed drawPath.
+               cls == "Landroid/graphics/Path;" ||
+               cls.find("graphics/Path;") != std::string::npos ||
                // UC009 H-072: Compose draws through RenderNode recording.
                cls == "Landroid/view/RenderNode;" ||
                cls.find("graphics/RecordingCanvas;") != std::string::npos;
@@ -103,6 +114,14 @@ private:
     std::map<uint32_t, float> paint_stroke_w_;    // paint obj -> width
     std::map<uint32_t, int> paint_style_;         // paint obj -> 0 fill / 1 stroke
     std::map<uint32_t, float> paint_text_size_;   // paint obj -> text size
+    // FIX-5: android.graphics.Path recording (per heap object id).
+    struct PathData {
+        float cx = 0, cy = 0;                     // current point
+        float sx = 0, sy = 0;                     // sub-path start
+        bool open = false;
+        std::vector<std::vector<std::pair<float, float>>> contours;
+    };
+    std::map<uint32_t, PathData> paths_;          // path obj -> geometry
     friend class PaintShadow;
 };
 

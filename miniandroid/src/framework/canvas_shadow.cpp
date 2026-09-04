@@ -119,6 +119,71 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                 }
                 break;
             }
+            case DrawOp::Kind::DRAW_PATH: {
+                // FIX-5: even-odd scanline fill across ALL recorded contours
+                // (digit glyphs with counters — '0','4','6','8','9' — come
+                // out with real holes). Stroke mode outlines each contour.
+                if (op.contours.empty()) break;
+                // Gather all edges once.
+                struct Edge { float x1, y1, x2, y2; };
+                std::vector<Edge> edges;
+                float min_y = 1e30f, max_y = -1e30f;
+                for (const auto& ct : op.contours) {
+                    for (size_t i = 0; i < ct.size(); ++i) {
+                        const auto& a = ct[i];
+                        const auto& b = ct[(i + 1) % ct.size()];
+                        if (a.second != b.second) {
+                            edges.push_back({a.first + left, a.second + top,
+                                             b.first + left, b.second + top});
+                        }
+                        min_y = std::min(min_y, std::min(a.second, b.second) + top);
+                        max_y = std::max(max_y, std::max(a.second, b.second) + top);
+                    }
+                }
+                if (edges.empty() || max_y < min_y) break;
+                if (op.stroke) {
+                    // Outline: walk each contour with the line rasterizer.
+                    for (const auto& ct : op.contours) {
+                        for (size_t i = 0; i + 1 < ct.size(); ++i) {
+                            float ax = ct[i].first + left, ay = ct[i].second + top;
+                            float bx = ct[i + 1].first + left, by = ct[i + 1].second + top;
+                            float ddx = bx - ax, ddy = by - ay;
+                            int st = int(std::max({std::fabs(ddx), std::fabs(ddy), 1.f}));
+                            for (int s = 0; s <= st; ++s) {
+                                float px = ax + ddx * s / st;
+                                float py = ay + ddy * s / st;
+                                canvas.draw_rect(px, py,
+                                                 px + std::max(op.stroke_w, 1.f),
+                                                 py + std::max(op.stroke_w, 1.f), c);
+                            }
+                        }
+                    }
+                    break;
+                }
+                const int y0 = std::max((int)std::floor(min_y), 0);
+                const int y1 = (int)std::ceil(max_y);
+                std::vector<float> xs;
+                for (int y = y0; y <= y1; ++y) {
+                    const float sy = (float)y + 0.5f;
+                    xs.clear();
+                    for (const auto& e : edges) {
+                        float ey1 = e.y1, ey2 = e.y2;
+                        if ((sy >= ey1 && sy < ey2) || (sy >= ey2 && sy < ey1)) {
+                            float t = (sy - ey1) / (ey2 - ey1);
+                            xs.push_back(e.x1 + t * (e.x2 - e.x1));
+                        }
+                    }
+                    if (xs.size() < 2) continue;
+                    std::sort(xs.begin(), xs.end());
+                    // Even-odd: fill between crossing pairs.
+                    for (size_t i = 0; i + 1 < xs.size(); i += 2) {
+                        float xa = xs[i], xb = xs[i + 1];
+                        if (xb - xa < 0.5f) continue;
+                        canvas.draw_rect(xa, (float)y, xb, (float)y + 1, c);
+                    }
+                }
+                break;
+            }
             case DrawOp::Kind::DRAW_TEXT: {
                 canvas.draw_text(op.text, left + op.x, top + op.y, c, &font);
                 break;
@@ -215,6 +280,71 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         return CallResult::not_handled();
     }
 
+    // ── Path (FIX-5: real geometry recording) ─────────────────────────
+    if (cls.find("graphics/Path;") != std::string::npos) {
+        const uint32_t recv = ctx.receiver_id;
+        PathData& pd = paths_[recv];
+        if (m == "reset" || m == "rewind") {
+            pd = PathData{};
+            return CallResult::handled_void();
+        }
+        if (m == "moveTo") {
+            pd.contours.push_back({});
+            pd.cx = pd.sx = arg_as_float(ctx, 0);
+            pd.cy = pd.sy = arg_as_float(ctx, 1);
+            pd.open = true;
+            pd.contours.back().push_back({pd.cx, pd.cy});
+            return CallResult::handled_void();
+        }
+        if (m == "lineTo") {
+            if (!pd.open) {  // implicit moveTo(0,0) per Android docs
+                pd.contours.push_back({});
+                pd.open = true;
+                pd.sx = pd.sy = 0;
+                pd.contours.back().push_back({0.f, 0.f});
+            }
+            pd.cx = arg_as_float(ctx, 0);
+            pd.cy = arg_as_float(ctx, 1);
+            pd.contours.back().push_back({pd.cx, pd.cy});
+            return CallResult::handled_void();
+        }
+        if (m == "quadTo") {
+            if (!pd.open) {
+                pd.contours.push_back({});
+                pd.open = true;
+                pd.sx = pd.sy = 0;
+                pd.contours.back().push_back({0.f, 0.f});
+            }
+            const float x1 = arg_as_float(ctx, 0), y1 = arg_as_float(ctx, 1);
+            const float x2 = arg_as_float(ctx, 2), y2 = arg_as_float(ctx, 3);
+            // Flatten the quadratic Bézier (8 segments — plenty at UI size).
+            constexpr int kSegs = 8;
+            for (int i = 1; i <= kSegs; ++i) {
+                const float t = (float)i / kSegs, u = 1.0f - t;
+                const float px = u * u * pd.cx + 2 * u * t * x1 + t * t * x2;
+                const float py = u * u * pd.cy + 2 * u * t * y1 + t * t * y2;
+                pd.contours.back().push_back({px, py});
+            }
+            pd.cx = x2; pd.cy = y2;
+            return CallResult::handled_void();
+        }
+        if (m == "close") {
+            if (pd.open && !pd.contours.empty()) {
+                pd.contours.back().push_back({pd.sx, pd.sy});
+                pd.cx = pd.sx; pd.cy = pd.sy;
+                pd.open = false;
+            }
+            return CallResult::handled_void();
+        }
+        // Accepted-but-geometry-free Path calls (state-only semantics).
+        if (m == "setFillType" || m == "isConvex" || m == "isEmpty" ||
+            m == "offset" || m == "transform" || m == "set" || m == "computeBounds")
+            return m == "isEmpty" ? CallResult::handled_int(0)
+                 : m == "isConvex" ? CallResult::handled_int(1)
+                 : CallResult::handled_void();
+        return CallResult::not_handled();
+    }
+
     // ── Canvas ─────────────────────────────────────────────────────────
     if (!capturing_) return CallResult::not_handled();  // outside draw dispatch
 
@@ -304,6 +434,26 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         op.color = paint_color(paint_id);
         op.x += tx_; op.y += ty_;
         target().push_back(op);
+        return CallResult::handled_void();
+    }
+    if (m == "drawPath") {
+        // FIX-5: real path rasterization — apps that build their own glyphs
+        // (stopwatch digits, clock hands) now produce real pixels.
+        const uint32_t path_id = ctx.arg_as_object(0, 0);
+        const uint32_t paint_id = ctx.arg_as_object(ctx.args.size() >= 2 ? 1 : 0);
+        auto pit = paths_.find(path_id);
+        if (pit != paths_.end() && !pit->second.contours.empty()) {
+            DrawOp op; op.kind = DrawOp::Kind::DRAW_PATH;
+            op.color = paint_color(paint_id);
+            op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] == 1;
+            op.stroke_w = paint_stroke_w_.count(paint_id) ? paint_stroke_w_[paint_id] : 1.0f;
+            op.contours = pit->second.contours;
+            if (tx_ != 0.f || ty_ != 0.f) {
+                for (auto& c : op.contours)
+                    for (auto& p : c) { p.first += tx_; p.second += ty_; }
+            }
+            target().push_back(op);
+        }
         return CallResult::handled_void();
     }
     if (m == "drawPaint") {

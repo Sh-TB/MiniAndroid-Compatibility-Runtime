@@ -2,6 +2,7 @@
  * UNIFIED_007 — Real Layout Inflater implementation.
  */
 #include "layout_inflater.h"
+#include "../fonts/text_shaper.h"
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -483,6 +484,17 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
             auto ref = parse_ref(ida->raw_value);
             node->android_id_name = ref.name;
         }
+        if (node->android_id_name.empty() && aid) {
+            // aapt strips the raw string for compiled @id/name references —
+            // resolve the name through resources.arsc (id → key name) so
+            // RelativeLayout sibling rules can bind by name.
+            if (id_names_.empty()) {
+                for (auto& [rid, nm] : arsc_.list_type("", "id"))
+                    id_names_[rid] = nm;
+            }
+            auto it = id_names_.find(aid);
+            if (it != id_names_.end()) node->android_id_name = it->second;
+        }
     }
 
     // children
@@ -631,6 +643,30 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         else if (n == "layout_centerHorizontal") { if (raw == "true") a.layout_gravity |= 0x1; }
         else if (n == "layout_centerInParent") { if (raw == "true") a.layout_gravity |= 0x11; }
         else if (n == "layout_centerVertical") { if (raw == "true") a.layout_gravity |= 0x10; }
+        // FIX-2c: RelativeLayout sibling-dependency rules. The referenced id
+        // name (from "@id/name" / "@+id/name") is resolved later, at layout
+        // time, against the inflated sibling set (AOSP applies rules against
+        // the dependency graph, not raw ids).
+        else if (n == "layout_below" || n == "layout_above" ||
+                 n == "layout_toRightOf" || n == "layout_toLeftOf") {
+            std::string nm = parse_ref(raw).name;
+            // Strip a leading "+" (android:id=@+id/name convention).
+            if (!nm.empty() && nm[0] == '+') nm.erase(nm.begin());
+            if (nm.empty() && at.value.is_reference()) {
+                // compiled reference without raw string: resolve via arsc
+                if (id_names_.empty())
+                    for (auto& [rid, rnm] : arsc_.list_type("", "id"))
+                        id_names_[rid] = rnm;
+                auto it = id_names_.find(at.value.ref_id);
+                if (it != id_names_.end()) nm = it->second;
+            }
+            if (n == "layout_below") a.rel_below = nm;
+            else if (n == "layout_above") a.rel_above = nm;
+            else if (n == "layout_toRightOf") a.rel_right_of = nm;
+            else a.rel_left_of = nm;
+        }
+        else if (n == "layout_alignLeft") { /* align with sibling's left edge */ auto r = parse_ref(raw); std::string nm = r.name; if (!nm.empty() && nm[0]=='+') nm.erase(nm.begin()); a.rel_left_of = nm; }
+        else if (n == "layout_alignRight") { auto r = parse_ref(raw); std::string nm = r.name; if (!nm.empty() && nm[0]=='+') nm.erase(nm.begin()); a.rel_right_of = nm; }
     }
 
     // Apply to node
@@ -656,6 +692,11 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.clickable = a.clickable || !a.onClick.empty();
     node.num_lines = a.num_lines;
     if (!a.onClick.empty()) node.onClick_handler = a.onClick;
+    // FIX-2c: relative-layout sibling rules onto the node
+    node.rel_below_name = a.rel_below;
+    node.rel_above_name = a.rel_above;
+    node.rel_right_of_name = a.rel_right_of;
+    node.rel_left_of_name = a.rel_left_of;
     if (a.bg_color != 0) { node.bg_color = a.bg_color; node.bg_from_xml = true; }
     if (!a.bg_drawable.empty()) { node.bg_drawable_path = a.bg_drawable; node.bg_from_xml = true; }
     if (!a.src_drawable.empty()) node.src_drawable_path = a.src_drawable;
@@ -756,113 +797,216 @@ inline int content_h(const framework::ViewShadow::ViewNode& n) {
 } // namespace
 
 void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_id) {
-    // ---- measure (bottom-up): compute desired size of every node ----
-    // measure(node, parent_spec_w, parent_spec_h) → desired {w,h}
-    std::function<std::pair<int,int>(uint32_t, int, int, bool, bool)> measure =
-        [&](uint32_t vid, int pw, int ph, bool pw_exact, bool ph_exact) -> std::pair<int,int> {
+    // =======================================================================
+    // MEASURE PASS — AOSP MeasureSpec semantics (FIX-2, generic; no app
+    // special-casing). Replaces the fixed 0.62f char-width text estimate:
+    // leaf text desired size now comes from the REAL shaping pipeline
+    // (FriBidi/HarfBuzz/FreeType via fonts::layout_text), and parent/child
+    // size negotiation follows ViewGroup.getChildMeasureSpec:
+    //
+    //   child dim >= 0        -> EXACTLY child
+    //   MATCH_PARENT (-1)     -> EXACTLY(parent) | AT_MOST(parent) | UNSPEC
+    //   WRAP_CONTENT (-2)     -> AT_MOST(parent)  | UNSPEC
+    //
+    // Every node records the full geometry evidence (class, lp, measured,
+    // bounds, text metrics) for the proof artifacts.
+    // =======================================================================
+    enum Mode { M_UNSPEC = 0, M_EXACTLY, M_AT_MOST };
+    struct Spec { int size; Mode mode; };
+
+    auto child_spec = [](const Spec& p, int padding, int child_dim) -> Spec {
+        const int avail = std::max(0, p.size - padding);
+        if (child_dim >= 0)  return {child_dim, M_EXACTLY};
+        if (child_dim == -1) {  // MATCH_PARENT
+            switch (p.mode) {
+                case M_EXACTLY: return {avail, M_EXACTLY};
+                case M_AT_MOST: return {avail, M_AT_MOST};
+                default:        return {avail, M_UNSPEC};
+            }
+        }
+        // WRAP_CONTENT (-2) and any unknown sentinel behave as wrap.
+        switch (p.mode) {
+            case M_EXACTLY: return {avail, M_AT_MOST};
+            case M_AT_MOST: return {avail, M_AT_MOST};
+            default:        return {avail, M_UNSPEC};
+        }
+    };
+
+    auto resolve_final = [](int content, const Spec& s) -> int {
+        switch (s.mode) {
+            case M_EXACTLY: return s.size;
+            case M_AT_MOST: return std::min(content, s.size);
+            default:        return content;
+        }
+    };
+
+    auto is_container_node = [](const framework::ViewShadow::ViewNode* n) -> bool {
+        return n->class_desc.find("Layout") != std::string::npos ||
+               n->class_desc.find("ScrollView") != std::string::npos ||
+               n->class_desc.find("ListView") != std::string::npos ||
+               n->class_desc.find("ViewGroup") != std::string::npos ||
+               n->class_desc.find("Toolbar") != std::string::npos ||
+               n->class_desc.find("ViewPager") != std::string::npos ||
+               n->class_desc.find("RecyclerView") != std::string::npos;
+    };
+
+    // -----------------------------------------------------------------------
+    // measure(vid, spec_w, spec_h) -> desired (w, h) including own padding.
+    // Children are measured FIRST (bottom-up) exactly like AOSP.
+    // -----------------------------------------------------------------------
+    std::function<std::pair<int,int>(uint32_t, const Spec&, const Spec&, int)> measure =
+        [&](uint32_t vid, const Spec& sw, const Spec& sh, int depth) -> std::pair<int,int> {
         auto* n = views->find_node(vid);
         if (!n) return {0, 0};
+        // Defensive depth cap: a real Android view tree is acyclic and
+        // shallow; a cycle here (inflater bug) must fail loudly instead of
+        // overflowing the stack.
+        if (depth > 100) {
+            fprintf(stderr, "[U007-LAYOUT] ERROR: measure depth > 100 at view %u (%s) — cycle suspected\n",
+                    vid, n->class_desc.c_str());
+            return {0, 0};
+        }
 
-        int desired_w = 0, desired_h = 0;
-        bool is_container = n->class_desc.find("Layout") != std::string::npos ||
-                            n->class_desc.find("ScrollView") != std::string::npos ||
-                            n->class_desc.find("ListView") != std::string::npos ||
-                            n->class_desc.find("ViewGroup") != std::string::npos ||
-                            n->class_desc.find("Toolbar") != std::string::npos;
+        const bool container = is_container_node(n);
+        const int hpad = n->padding_left + n->padding_right;
+        const int vpad = n->padding_top + n->padding_bottom;
 
-        // children desired sizes first
+        // 1) measure children with AOSP-derived specs.
         std::vector<std::pair<int,int>> child_sizes(n->children.size());
         for (size_t i = 0; i < n->children.size(); i++) {
             auto* cn = views->find_node(n->children[i]);
-            if (!cn) { child_sizes[i] = {0,0}; continue; }
-            int cw = cn->lp_width, ch = cn->lp_height;
-            if (cw == INT_MIN) cw = -2;
-            if (ch == INT_MIN) ch = -2;
-            // pass parent content specs; children can match only if parent exact
-            child_sizes[i] = measure(n->children[i], pw, ph, pw_exact, ph_exact);
-            (void)cw; (void)ch;
+            if (!cn) { child_sizes[i] = {0, 0}; continue; }
+            int cw = cn->lp_width  == INT_MIN ? -2 : cn->lp_width;
+            int ch = cn->lp_height == INT_MIN ? -2 : cn->lp_height;
+            Spec csw = child_spec(sw, hpad + cn->lp_margin_left + cn->lp_margin_right, cw);
+            Spec csh = child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom, ch);
+            // ScrollView measures its single child with UNSPECIFIED height
+            // (AOSP ScrollView.onMeasure law).
+            if (n->class_desc.find("ScrollView;") != std::string::npos &&
+                n->class_desc.find("Horizontal") == std::string::npos)
+                csh = {std::max(0, sh.size - vpad), M_UNSPEC};
+            child_sizes[i] = measure(n->children[i], csw, csh, depth + 1);
         }
 
-        if (!is_container) {
-            // leaf: text-based or image-based size
-            if (!n->src_drawable_path.empty() || n->image_drawable_path.empty()) {
-                // image default 48dp if unknown; wrap
-                desired_w = std::max(desired_w, (int)std::lround(48 * metrics_.density));
-                desired_h = std::max(desired_h, (int)std::lround(48 * metrics_.density));
+        int content_w = 0, content_h = 0;
+        if (!container) {
+            // ---- leaf: real text/image content size ----
+            const std::string& t = !n->text.empty() ? n->text : n->hint;
+            float ts = n->text_size_px > 0 ? n->text_size_px
+                                           : 14.0f * metrics_.density;
+            if (!t.empty()) {
+                // Real shaped measurement with word wrap against the
+                // available content width (SINGLE SOURCE OF TRUTH with the
+                // draw path — fonts::layout_text).
+                const float avail_w = sw.mode == M_UNSPEC ? 0.0f
+                                          : (float)std::max(0, sw.size - hpad);
+                auto lay = fonts::layout_text(t, ts, n->text_bold, avail_w,
+                                              n->num_lines);
+                content_w = std::max(content_w, (int)std::ceil(
+                    avail_w > 0 ? std::min(lay.max_line_width, avail_w)
+                                : lay.max_line_width));
+                content_h = std::max(content_h, (int)std::ceil(lay.block_height()));
+                // Evidence: remember the measured line count (task §3 log).
+                n->num_lines = (n->num_lines > 0)
+                             ? std::min(n->num_lines, (int)lay.lines.size())
+                             : (int)lay.lines.size();
             }
-            if (!n->text.empty() || !n->hint.empty()) {
-                float ts = n->text_size_px > 0 ? n->text_size_px : 14.0f * metrics_.density;
-                const std::string& t = !n->text.empty() ? n->text : n->hint;
-                desired_w = std::max(desired_w, (int)std::lround(t.size() * ts * 0.62f));
-                desired_h = std::max(desired_h, (int)std::lround(ts * 1.35f) + 2);
+            if (!n->src_drawable_path.empty() ||
+                (n->image_drawable_path.empty() && n->class_desc.find("ImageView") != std::string::npos)) {
+                // image default 48dp when no intrinsic size is known (AOSP
+                // ImageView wrap fallback).
+                content_w = std::max(content_w, (int)std::lround(48 * metrics_.density));
+                content_h = std::max(content_h, (int)std::lround(48 * metrics_.density));
             }
-            if (n->class_desc.find("EditText") != std::string::npos && desired_h < 40 * metrics_.density)
-                desired_h = (int)std::lround(40 * metrics_.density);
+            if (n->class_desc.find("EditText") != std::string::npos &&
+                content_h < (int)std::lround(40 * metrics_.density))
+                content_h = (int)std::lround(40 * metrics_.density);
             if (n->class_desc.find("ProgressBar") != std::string::npos) {
-                desired_w = std::max(desired_w, (int)std::lround(48 * metrics_.density));
-                desired_h = std::max(desired_h, (int)std::lround(48 * metrics_.density));
+                content_w = std::max(content_w, (int)std::lround(48 * metrics_.density));
+                content_h = std::max(content_h, (int)std::lround(48 * metrics_.density));
             }
+            // Compound minimum (AOSP getSuggestedMinimum: 0 + padding).
+            content_w = std::max(content_w, 0);
+            content_h = std::max(content_h, 0);
         } else {
-            // container: sum/extent of children
+            // ---- container: children determine content size ----
+            const bool is_ll = n->class_desc.find("LinearLayout") != std::string::npos;
+            const bool is_scrollv = n->class_desc.find("ScrollView") != std::string::npos &&
+                                    n->class_desc.find("Horizontal") == std::string::npos;
+            const bool is_scrollh = n->class_desc.find("HorizontalScrollView") != std::string::npos;
             bool horizontal = n->orientation == 0;
-            if (n->class_desc.find("ScrollView") != std::string::npos) horizontal = false;
-            if (n->class_desc.find("HorizontalScrollView") != std::string::npos) horizontal = true;
+            if (is_scrollv) horizontal = false;
+            if (is_scrollh) horizontal = true;
             if (n->class_desc.find("FrameLayout") != std::string::npos ||
-                n->class_desc.find("RelativeLayout") != std::string::npos) {
-                for (size_t i = 0; i < n->children.size(); i++) {
-                    desired_w = std::max(desired_w, child_sizes[i].first);
-                    desired_h = std::max(desired_h, child_sizes[i].second);
+                n->class_desc.find("RelativeLayout") != std::string::npos ||
+                (!is_ll && !is_scrollv && !is_scrollh)) {
+                for (const auto& cs : child_sizes) {
+                    content_w = std::max(content_w, cs.first);
+                    content_h = std::max(content_h, cs.second);
                 }
             } else if (horizontal) {
-                int total_w = 0, max_h = 0;
                 for (size_t i = 0; i < n->children.size(); i++) {
                     auto* cn = views->find_node(n->children[i]);
-                    int cmw = cn && cn->lp_margin_left != INT_MIN ? cn->lp_margin_left + cn->lp_margin_right : 0;
-                    total_w += child_sizes[i].first + cmw;
-                    max_h = std::max(max_h, child_sizes[i].second);
+                    int m = cn ? cn->lp_margin_left + cn->lp_margin_right : 0;
+                    content_w += child_sizes[i].first + m;
+                    content_h = std::max(content_h, child_sizes[i].second +
+                                    (cn ? cn->lp_margin_top + cn->lp_margin_bottom : 0));
                 }
-                desired_w = total_w; desired_h = max_h;
             } else {
-                int max_w = 0, total_h = 0;
                 for (size_t i = 0; i < n->children.size(); i++) {
                     auto* cn = views->find_node(n->children[i]);
-                    int cmh = cn && cn->lp_margin_top != INT_MIN ? cn->lp_margin_top + cn->lp_margin_bottom : 0;
-                    max_w = std::max(max_w, child_sizes[i].first);
-                    total_h += child_sizes[i].second + cmh;
+                    int m = cn ? cn->lp_margin_top + cn->lp_margin_bottom : 0;
+                    content_h += child_sizes[i].second + m;
+                    content_w = std::max(content_w, child_sizes[i].first +
+                                    (cn ? cn->lp_margin_left + cn->lp_margin_right : 0));
                 }
-                desired_w = max_w; desired_h = total_h;
             }
-            if (n->class_desc.find("ScrollView") != std::string::npos && n->children.size() == 1)
-                desired_h = child_sizes[0].second;
         }
 
-        // resolve against layout params
-        int lpw = n->lp_width, lph = n->lp_height;
-        if (lpw == INT_MIN) lpw = -2;
-        if (lph == INT_MIN) lph = -2;
-        int final_w = lpw >= 0 ? lpw : (lpw == -1 ? (pw_exact ? pw : std::max(desired_w, 0)) : desired_w);
-        int final_h = lph >= 0 ? lph : (lph == -1 ? (ph_exact ? ph : std::max(desired_h, 0)) : desired_h);
-        final_w += n->padding_left + n->padding_right;
-        final_h += n->padding_top + n->padding_bottom;
-        n->measured_width = final_w;    // desired size (pre-layout)
-        n->measured_height = final_h;
-        return {final_w, final_h};
+        // 2) resolve own lp against the incoming spec (resolveSizeAndState).
+        int lpw = n->lp_width  == INT_MIN ? -2 : n->lp_width;
+        int lph = n->lp_height == INT_MIN ? -2 : n->lp_height;
+        int final_w = lpw >= 0 ? lpw : resolve_final(content_w, sw);
+        int final_h = lph >= 0 ? lph : resolve_final(content_h, sh);
+        // EXACTLY spec wins for match_parent too (already EXACTLY from
+        // child_spec); explicit lp never shrinks below the spec EXACTLY size
+        // when larger (AOSP chooses the child's explicit size).
+        n->measured_width = final_w + hpad;
+        n->measured_height = final_h + vpad;
+        return {n->measured_width, n->measured_height};
     };
 
-    // root fills the screen
-    auto root_size = measure(root_id, metrics_.screen_width, metrics_.screen_height, true, true);
+    // Root fills the screen (EXACTLY), per AOSP window measure.
+    auto root_size = measure(root_id,
+                             {metrics_.screen_width, M_EXACTLY},
+                             {metrics_.screen_height, M_EXACTLY}, 0);
+    (void)root_size;
+
+    // Full per-view geometry evidence (task §3 log format). Gated by env to
+    // keep normal runs quiet; U007_LAYOUT_DEBUG=2 also dumps every node.
     if (getenv("U007_LAYOUT_DEBUG")) {
-        fprintf(stderr, "[U007-LAYOUT] root measured %dx%d\n", root_size.first, root_size.second);
-        if (auto* rn = views->find_node(root_id)) {
-            for (uint32_t cid : rn->children) {
-                if (auto* cn = views->find_node(cid)) {
-                    fprintf(stderr, "[U007-LAYOUT]   child %u %s lp=%d/%d weight=%d measured=%dx%d\n",
-                            cid, cn->class_desc.c_str(), cn->lp_width, cn->lp_height,
-                            cn->layout_weight, cn->measured_width, cn->measured_height);
-                }
-            }
-        }
+        fprintf(stderr, "[U007-LAYOUT] root measured %dx%d\n",
+                root_size.first, root_size.second);
+        std::function<void(uint32_t, int)> dump = [&](uint32_t vid, int depth) {
+            auto* n = views->find_node(vid);
+            if (!n) return;
+            fprintf(stderr,
+                "[U007-LAYOUT] %*sview %u %s id_name=%s lp=%d/%d weight=%d "
+                "measured=%dx%d text_size=%.1f lines=%d below='%s' above='%s' "
+                "right_of='%s' left_of='%s' cgrav=0x%x text='%s'\n",
+                depth * 2, "", vid, n->class_desc.c_str(),
+                n->android_id_name.c_str(), n->lp_width, n->lp_height,
+                n->layout_weight, n->measured_width, n->measured_height,
+                n->text_size_px, n->num_lines,
+                n->rel_below_name.c_str(), n->rel_above_name.c_str(),
+                n->rel_right_of_name.c_str(), n->rel_left_of_name.c_str(),
+                n->child_gravity,
+                n->text.substr(0, 40).c_str());
+            for (uint32_t cid : n->children) dump(cid, depth + 1);
+        };
+        dump(root_id, 1);
     }
+
 
     // ---- layout (top-down): assign geometry ----
     struct Task { uint32_t id; int left, top, width, height; };
@@ -966,22 +1110,107 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 }
             }
         } else if (is_fl || is_rl || is_scroll) {
-            for (uint32_t cid : kids) {
-                auto* cn = views->find_node(cid);
-                int w = cn->lp_width >= 0 ? cn->lp_width
-                      : (cn->lp_width == -1 ? cw : cn->measured_width);
-                int h = cn->lp_height >= 0 ? cn->lp_height
-                      : (cn->lp_height == -1 ? ch : cn->measured_height);
-                int x = cl, y = ct;
-                int vg = cn->child_gravity >= 0 ? cn->child_gravity : n->container_gravity;
-                if (vg > 0) {
-                    if (vg & 0x1) x = cl + (cw - w) / 2;
-                    else if (vg & 0x7) { if ((vg & 0x7) == 0x5) x = cl + cw - w; }
-                    if (vg & 0x10) y = ct + (ch - h) / 2;
-                    else if (vg & 0x30) { if ((vg & 0x70) == 0x50) y = ct + ch - h; }
+            if (is_rl) {
+                // FIX-2c: RelativeLayout with REAL dependency rules (AOSP
+                // applyVerticalSizeRules/applyHorizontalSizeRules, simplified
+                // to the common subset). Fixed-point over children: a child
+                // positioned relative to a sibling resolves once that
+                // sibling's geometry is known.
+                auto name_to_id = [&](const std::string& nm) -> uint32_t {
+                    if (nm.empty()) return 0;
+                    for (uint32_t cid : kids) {
+                        auto* cn = views->find_node(cid);
+                        if (cn && cn->android_id_name == nm) return cid;
+                    }
+                    return 0;
+                };
+                struct Box { int x, y, w, h; bool done; };
+                std::map<uint32_t, Box> boxes;
+                for (uint32_t cid : kids) {
+                    auto* cn = views->find_node(cid);
+                    int w = cn->lp_width >= 0 ? cn->lp_width
+                          : (cn->lp_width == -1 ? cw : cn->measured_width);
+                    int h = cn->lp_height >= 0 ? cn->lp_height
+                          : (cn->lp_height == -1 ? ch : cn->measured_height);
+                    w = std::min(w, cw); h = std::min(h, ch > 0 ? ch : h);
+                    boxes[cid] = {cl, ct, std::max(0, w), std::max(0, h), false};
                 }
-                if (x + w > t.left + t.width) w = std::max(0, t.left + t.width - x);
-                stack.push_back({cid, x, y, w, h});
+                // heights first (layout_below chains), then widths, 3 passes.
+                for (int pass = 0; pass < 3; ++pass) {
+                    int resolved = 0;
+                    for (uint32_t cid : kids) {
+                        auto* cn = views->find_node(cid);
+                        Box& b = boxes[cid];
+                        int vg = cn->child_gravity >= 0 ? cn->child_gravity
+                                                       : n->container_gravity;
+                        // ── vertical ──
+                        int y = b.y;
+                        if (!cn->rel_below_name.empty()) {
+                            if (uint32_t bid = name_to_id(cn->rel_below_name)) {
+                                y = boxes[bid].y + boxes[bid].h + cn->lp_margin_top;
+                            }
+                        } else if (!cn->rel_above_name.empty()) {
+                            if (uint32_t bid = name_to_id(cn->rel_above_name)) {
+                                y = boxes[bid].y - b.h - cn->lp_margin_bottom;
+                            }
+                        } else if (vg & 0x50) {           // alignParentBottom
+                            y = ct + ch - b.h - cn->lp_margin_bottom;
+                        } else if (vg & 0x10) {           // centerVertical
+                            y = ct + (ch - b.h) / 2;
+                        } else if (pass == 0) {           // default: flow top
+                            y = ct;
+                        }
+                        if (y != b.y || b.done) {
+                            b.y = y;
+                            if (pass == 0 || !b.done) resolved++;
+                        }
+                        // ── horizontal ──
+                        int x = b.x;
+                        if (!cn->rel_right_of_name.empty()) {
+                            if (uint32_t rid = name_to_id(cn->rel_right_of_name)) {
+                                x = boxes[rid].x + boxes[rid].w + cn->lp_margin_left;
+                            }
+                        } else if (!cn->rel_left_of_name.empty()) {
+                            if (uint32_t lid = name_to_id(cn->rel_left_of_name)) {
+                                x = boxes[lid].x - b.w - cn->lp_margin_right;
+                            }
+                        } else if (vg & 0x1) {            // centerHorizontal
+                            x = cl + (cw - b.w) / 2;
+                        } else if ((vg & 0x7) == 0x5) {   // alignParentRight
+                            x = cl + cw - b.w - cn->lp_margin_right;
+                        } else if (pass == 0) {
+                            x = cl;
+                        }
+                        if (x != b.x || b.done) {
+                            b.x = x;
+                            if (pass == 0 || !b.done) resolved++;
+                        }
+                        b.done = true;
+                    }
+                    if (resolved == 0) break;
+                }
+                for (uint32_t cid : kids) {
+                    const Box& b = boxes[cid];
+                    stack.push_back({cid, b.x, b.y, b.w, b.h});
+                }
+            } else {
+                for (uint32_t cid : kids) {
+                    auto* cn = views->find_node(cid);
+                    int w = cn->lp_width >= 0 ? cn->lp_width
+                          : (cn->lp_width == -1 ? cw : cn->measured_width);
+                    int h = cn->lp_height >= 0 ? cn->lp_height
+                          : (cn->lp_height == -1 ? ch : cn->measured_height);
+                    int x = cl, y = ct;
+                    int vg = cn->child_gravity >= 0 ? cn->child_gravity : n->container_gravity;
+                    if (vg > 0) {
+                        if (vg & 0x1) x = cl + (cw - w) / 2;
+                        else if (vg & 0x7) { if ((vg & 0x7) == 0x5) x = cl + cw - w; }
+                        if (vg & 0x10) y = ct + (ch - h) / 2;
+                        else if (vg & 0x30) { if ((vg & 0x70) == 0x50) y = ct + ch - h; }
+                    }
+                    if (x + w > t.left + t.width) w = std::max(0, t.left + t.width - x);
+                    stack.push_back({cid, x, y, w, h});
+                }
             }
         } else {
             // generic ViewGroup: stack children vertically top-down

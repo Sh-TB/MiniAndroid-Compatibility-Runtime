@@ -628,6 +628,11 @@ public:
         int num_lines = -1;
         float text_size_sp = 0;          // original sp (evidence)
         std::string android_id_name;     // resolved id name ("btn_roll") for evidence
+        // FIX-2c: RelativeLayout dependency rules (names resolved against the
+        // inflated tree). Captured from layout_below/layout_above/
+        // layout_toRightOf/layout_toLeftOf raw values ("@id/name").
+        std::string rel_below_name, rel_above_name;
+        std::string rel_right_of_name, rel_left_of_name;
         int text_style = 0;              // AOSP Typeface bits (bold=1, italic=2)
     };
 

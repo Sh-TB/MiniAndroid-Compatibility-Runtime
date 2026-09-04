@@ -58,6 +58,9 @@ struct ExecutionConfig {
     int screen_width = 1080;
     int screen_height = 1920;
     uint32_t background_color = 0xFFFFFFFF;  // White
+    // FIX-3: density (px per dp) for default text sizing — must mirror the
+    // DeviceMetrics the LayoutInflater measures with (420dpi bucket default).
+    float density = 2.625f;
     
     // Tracing settings
     bool verbose_logging = false;
