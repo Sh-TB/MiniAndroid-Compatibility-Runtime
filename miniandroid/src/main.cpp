@@ -302,6 +302,14 @@ int main(int argc, char* argv[]) {
             // touch → callback → state change → second frame (§10).
             config.click_test = true;
             std::cout << "[*] CLICK-TEST enabled (dispatch real clicks after first frame)\n";
+        } else if (arg == "--click-count" && i + 1 < argc) {
+            // DEMO-CLICK-SEQUENCE: dispatch N sequential clicks (round-robin
+            // over all clickable views), re-rendering and saving a PNG frame
+            // after each click into <output>/frames/. The state transitions
+            // in those frames come from the APK's own DEX logic.
+            config.click_count = std::stoi(argv[++i]);
+            std::cout << "[*] CLICK-SEQUENCE enabled (" << config.click_count
+                      << " clicks, frames saved to <output>/frames/)\n";
         } else if (arg.find("--execution-mode") == 0) {
             // EXP-031: Parse execution mode
             std::string mode_str;
