@@ -1,0 +1,1828 @@
+# MAIN CODER — LARGE AUTONOMOUS ENGINEERING CAMPAIGN
+
+## Consolidate VALIDATED Agent Discoveries → Generic MiniAndroid Runtime Expansion → Real-APK Proof
+
+This is a major continuation campaign for the MAIN MiniAndroid CODER/INTEGRATOR.
+
+You are the primary implementation authority.
+
+The external agents are **discovery sources only**. Their claims are not authoritative by themselves. However, several of their findings have now been independently confirmed by the main engineering work and/or by source/oracle comparison. Those validated findings must be incorporated into the engineering roadmap below.
+
+Do not blindly trust any remaining agent claim.
+
+Do not merely write a report.
+
+The objective is to leave the repository materially stronger, with generic runtime behavior, real-APK evidence, regression protection, and reproducible public proof.
+
+---
+
+# 0. NON-NEGOTIABLE PROJECT RULES
+
+## Repository ownership
+
+MiniAndroid is the original parent project:
+
+`Sh-TB/MiniAndroid-Compatibility-Runtime`
+
+It is NOT a fork of another runtime project.
+
+Never describe it as a fork.
+
+## Git safety
+
+Before any modification:
+
+1. inspect local `HEAD`
+2. inspect `origin/main`
+3. inspect tags
+4. inspect worklog
+5. create a rollback anchor
+6. verify clean/dirty state
+
+Never:
+
+* reset destructive work
+* rebase shared history
+* force-push
+* delete tags
+* rewrite history
+* delete releases
+* silently discard evidence
+
+Only fast-forward pushes.
+
+## Release naming
+
+CRITICAL OWNER RULE:
+
+The project owner alone chooses chicken-breed release codenames.
+
+You MUST NOT invent a chicken-breed codename.
+
+Do not create a new breed name for:
+
+* bug fixes
+* ordinary commits
+* patch releases
+* internal builds
+* alpha builds
+* maintenance work
+
+The already owner-approved:
+
+`v0.0.2 — Australorp`
+
+must remain exactly that.
+
+Future major release codename selection belongs to the owner.
+
+## Language
+
+All GitHub-facing authored material must be English:
+
+* README
+* comments
+* Markdown
+* worklogs
+* release notes
+* commit messages
+* scripts
+* documentation
+
+Before commit, scan modified text files for Persian/Arabic-script characters.
+
+---
+
+# 1. CURRENT REALITY — START FROM THE ACTUAL CURRENT HEAD
+
+Do not assume the previous reports are correct.
+
+Verify the actual current repository state.
+
+The recent validated baseline reached:
+
+`e5df612a`
+
+and subsequent work may have advanced it.
+
+Determine the real current state first.
+
+Record:
+
+```text
+CURRENT_HEAD=
+ORIGIN_MAIN=
+LATEST_RELEASE_TAG=
+WORKTREE_STATUS=
+BUILD_IDENTITY=
+```
+
+Also inspect whether release packaging remains clean after the previous contamination incident.
+
+---
+
+# 2. IMPORTANT VALIDATED HISTORY TO PRESERVE
+
+The recent main-coder work established several real improvements.
+
+Preserve and regression-test all of them:
+
+### Release packaging
+
+The repository previously had `miniandroid/build-win` accidentally committed, including LLVM toolchain/dependency source content.
+
+That contamination was removed from Git and the release packaging pipeline was hardened.
+
+The permanent release validator exists.
+
+Do not reintroduce this contamination.
+
+### Real APK proof
+
+The project now has a genuine minimal Java APK proof with:
+
+* real DEX execution
+* real UI
+* state changes
+* real clicks
+* deterministic framebuffer hashes
+* PNG hashes
+* GIF derived from genuine runtime frames
+
+Preserve those exact proof contracts.
+
+### Timer-driven execution
+
+The runtime has a virtual-clock / Handler-driven path.
+
+The demo can advance via the APK's own `postDelayed()` logic.
+
+Do not replace this with injected animation state.
+
+---
+
+# 3. MAJOR VALIDATED AGENT FINDING #1 — TEXT PIPELINE WAS ORPHANED
+
+This finding was independently reproduced by the main coder.
+
+The previous runtime had:
+
+```text
+TextView
+→ fixed BitmapFont 8×16 path
+```
+
+while the source contained:
+
+```text
+TextShaper
+FriBidi
+HarfBuzz
+FreeType
+```
+
+but that infrastructure was not actually in the live build/render path.
+
+This was confirmed because:
+
+* release binaries had no expected FreeType dependency
+* the live path used the old bitmap renderer
+* the TextShaper implementation existed but was effectively orphaned
+
+This was then corrected by the main coder.
+
+### Preserve this architecture
+
+The live path must remain conceptually:
+
+```text
+real APK text
+→ TextView state
+→ text measurement
+→ TextShaper
+→ font metrics/shaping
+→ renderer
+→ framebuffer
+```
+
+not:
+
+```text
+real APK text
+→ fixed-width synthetic glyphs
+```
+
+### Next work
+
+Strengthen this path.
+
+Validate:
+
+* font loading
+* glyph metrics
+* text width
+* line height
+* line wrapping
+* multi-line layout
+* punctuation
+* spaces
+* Unicode where supported
+* real APK font assets
+
+Do not break the deterministic golden rendering contract without deliberate re-baselining.
+
+---
+
+# 4. VALIDATED AGENT FINDING #2 — MEASURE/LAYOUT SEMANTICS WERE A REAL CORE BUG
+
+The main coder independently confirmed that:
+
+* TextViews could measure to zero before runtime `setText`
+* `match_parent`/`wrap_content` semantics were incomplete
+* weight behavior was incorrect
+* RelativeLayout positioning was incomplete
+* some controls expanded to incorrect full-screen dimensions
+
+This was fixed substantially.
+
+### Continue from here
+
+Audit the generic View measurement/layout engine against AOSP semantics.
+
+Priority:
+
+```text
+MeasureSpec
+EXACTLY
+AT_MOST
+UNSPECIFIED
+match_parent
+wrap_content
+padding
+margin
+gravity
+min width / height
+LinearLayout weight
+RelativeLayout constraints
+runtime setText → remeasure
+```
+
+Do not special-case:
+
+```text
+org.telegram.*
+```
+
+Do not special-case specific application IDs.
+
+---
+
+# 5. VALIDATED AGENT FINDING #3 — RUNTIME TEXT CHANGES REQUIRE RELAYOUT/REMEASURE
+
+A particularly important discovery was:
+
+```text
+XML inflate
+→ initial measure
+→ DEX calls setText()
+→ geometry remains 0×0
+```
+
+The main coder confirmed this in chessclock and other apps.
+
+The fix added re-measure behavior before render.
+
+### Now harden it
+
+Implement a principled invalidation/relayout model:
+
+```text
+state mutation
+→ requestLayout / invalidate semantics
+→ measure
+→ layout
+→ draw
+```
+
+Do not blindly remeasure everything forever.
+
+Use a minimal deterministic strategy appropriate for MiniAndroid.
+
+The goal is to converge toward Android's invalidation contract while retaining deterministic execution.
+
+Add tests where:
+
+1. TextView starts empty.
+2. DEX calls setText().
+3. DEX changes text length.
+4. next frame recomputes geometry.
+5. renderer receives correct bounds.
+
+---
+
+# 6. VALIDATED AGENT FINDING #4 — APK FONT ASSETS
+
+The Telegram discovery supplied a useful real-world font case:
+
+```text
+assets/fonts/rmedium.ttf
+assets/fonts/mw_bold.ttf
+```
+
+The generic main-coder fix now scans APK assets for TTF fonts.
+
+This must remain generic.
+
+The implementation must support:
+
+```text
+APK
+→ assets/**/*.ttf
+→ font registration
+→ font face lookup
+→ TextShaper
+→ TextView measurement/draw
+```
+
+No Telegram hardcoding.
+
+Add a non-Telegram APK test.
+
+---
+
+# 7. VALIDATED AGENT FINDING #5 — CANVAS DRAWPATH IS REAL APPLICATION BEHAVIOR
+
+A real app's custom View was found to draw digits using:
+
+```text
+Canvas.drawPath(...)
+```
+
+rather than TextView text.
+
+The main coder added Path support.
+
+### Harden this
+
+Audit:
+
+* Path construction
+* moveTo
+* lineTo
+* close
+* fill rules
+* polygon rasterization
+* stroke/fill distinction
+* Paint interaction
+* clipping
+* deterministic replay
+
+Add a dedicated Java APK test that renders a custom shape via Canvas Path.
+
+The test must demonstrate:
+
+```text
+APK DEX
+→ custom onDraw
+→ Canvas Path
+→ MiniAndroid renderer
+→ framebuffer
+```
+
+Do not accept a hardcoded shape generated directly by the runtime.
+
+---
+
+# 8. VALIDATED AGENT FINDING #6 — XML `android:onClick`
+
+The main coder added generic support for XML `android:onClick`.
+
+Continue validating this contract.
+
+Example:
+
+```xml
+android:onClick="onButtonStart"
+```
+
+must produce:
+
+```text
+real input
+→ target View
+→ Activity method resolution
+→ DEX method execution
+→ state mutation
+→ framebuffer change
+```
+
+Add tests for:
+
+* public method
+* inherited Activity method where applicable
+* invalid handler name
+* wrong signature
+* null target
+* disabled View
+* non-clickable View
+
+Do not silently turn invalid handlers into successful clicks.
+
+---
+
+# 9. VALIDATED AGENT FINDING #7 — ARSC IS CORE INFRASTRUCTURE
+
+The agents correctly identified `resources.arsc` as a core MiniAndroid subsystem rather than a side utility.
+
+The important generic pipeline is:
+
+```text
+APK
+↓
+resources.arsc
+↓
+Package
+↓
+Type ID
+↓
+Entry ID
+↓
+Configuration
+↓
+Resource value / file
+↓
+Android object
+```
+
+Recent oracle inspection also showed that the project's `res_config` already contains AOSP-derived matching logic.
+
+Therefore do not unnecessarily replace correct existing code.
+
+### Continue with focused ARSC hardening
+
+Test:
+
+* string resources
+* layout resources
+* drawable resources
+* raw resources
+* IDs
+* aliases
+* configuration qualifiers
+* locale matching
+* version qualifiers
+* density where supported
+* obfuscated resource filenames
+
+The critical distinction is:
+
+```text
+resource ID
+```
+
+must resolve through the resource table.
+
+Never infer resource identity solely from:
+
+```text
+res/--H.webp
+res/--f.xml
+```
+
+filenames.
+
+---
+
+# 10. TELEGRAM RESOURCE OBFUSCATION AS A REAL-WORLD ARSC TEST
+
+The Telegram APK is a demanding resource testcase because compiled resource filenames may be obfuscated.
+
+The correct generic chain is:
+
+```text
+R.drawable.some_id
+→ resource table
+→ entry
+→ actual ZIP path
+→ decoder
+→ Bitmap
+→ View
+→ framebuffer
+```
+
+Likewise:
+
+```text
+R.raw.some_id
+→ ARSC
+→ ZIP member
+→ bytes
+→ runtime consumer
+```
+
+Do not use manually pre-generated `resource_values.json` as the final solution.
+
+That may be used as an analysis oracle, never as evidence of generic ARSC support.
+
+---
+
+# 11. VALIDATED AGENT FINDING #8 — MULTI-DEX METHOD RESOLUTION GAP
+
+Previous agent work around Compose exposed a real multi-DEX method-resolution hole:
+
+* classes could exist in the index
+* but methods could fail to resolve
+* minified classes such as `T1/e` could be present while their methods were not found
+
+This is extremely important for modern APKs.
+
+### Audit the resolver
+
+Ensure:
+
+```text
+classes.dex
+classes2.dex
+classes3.dex
+...
+```
+
+share a consistent global method/class namespace.
+
+Test resolution for:
+
+* normal classes
+* minified classes
+* inheritance
+* static methods
+* virtual methods
+* interface methods
+* synthetic methods
+* lambda classes
+* `$` nested classes
+* methods referenced from another DEX
+
+Add a deliberately split test:
+
+```text
+ClassA in classes.dex
+Method implementation in classes2.dex
+Caller in classes.dex
+```
+
+and require successful runtime invocation.
+
+This should be generic.
+
+---
+
+# 12. VALIDATED AGENT FINDING #9 — COMPOSE / RENDERNODE IS A DISTINCT RENDER PATH
+
+Earlier work established an important fact:
+
+Classic View rendering and Jetpack Compose rendering do not necessarily share the same canvas path.
+
+The agents identified:
+
+```text
+Compose
+→ RenderNode / RecordingCanvas
+```
+
+while the old MiniAndroid path primarily understood:
+
+```text
+Canvas
+```
+
+The project must not confuse the two.
+
+### Continue Compose work deliberately
+
+Investigate:
+
+```text
+View
+→ ViewGroup
+→ dispatchDraw
+→ RenderNode / RecordingCanvas
+→ recorded operations
+→ composition
+→ framebuffer
+```
+
+The previous work showed that the RenderNode bridge can produce a non-black placeholder path, but real Compose content remained blocked by method/multi-DEX execution gaps.
+
+Do not declare Compose support merely because:
+
+* a non-black placeholder exists
+* `ComposeView` is detected
+* `onDraw` is present
+
+The real target is:
+
+```text
+real Compose DEX
+→ real composition
+→ real rendering operations
+→ framebuffer
+```
+
+---
+
+# 13. COMPOSE MUST REMAIN A SECONDARY TRACK
+
+Do not sacrifice classic Android View compatibility for Compose.
+
+Prioritize:
+
+1. classic View
+2. resources/layout
+3. text/fonts
+4. interaction/lifecycle
+5. then deeper Compose
+
+Compose is valuable but represents a larger compatibility surface.
+
+---
+
+# 14. VALIDATED AGENT FINDING #10 — FALSE POSITIVE “BLACK SCREEN SUCCESS”
+
+Earlier agent work exposed a dangerous reporting problem:
+
+Two different apps could produce identical black output while the runtime reported success.
+
+Example:
+
+```text
+tictactoe
+dooz
+```
+
+produced the same default-like framebuffer.
+
+This proves that:
+
+> exit=0 + screenshot exists != application rendered successfully.
+
+### Permanently strengthen success classification
+
+The runtime evidence system should distinguish:
+
+```text
+LOAD_SUCCESS
+DEX_EXECUTION
+VIEW_TREE_CREATED
+DRAW_OPERATIONS
+FRAMEBUFFER_NONDEFAULT
+INTERACTION
+STATE_CHANGE
+```
+
+Do not call a black/default framebuffer “full graphics”.
+
+Do not use “SUCCESS” as a substitute for semantic evidence.
+
+---
+
+# 15. REAL-APK EVIDENCE MODEL
+
+For real applications, maintain a structured state:
+
+```text
+APK_LOADED
+MANIFEST_PARSED
+DEX_LOADED
+ACTIVITY_INSTANTIATED
+LIFECYCLE_ENTERED
+VIEW_TREE_CREATED
+TEXT_ASSIGNED
+MEASURED
+LAYOUT_COMPLETE
+DRAW_EXECUTED
+FRAMEBUFFER_CAPTURED
+INPUT_DISPATCHED
+LISTENER_EXECUTED
+STATE_MUTATED
+FRAME_CHANGED
+```
+
+Only claim the highest level actually proven.
+
+---
+
+# 16. TELEGRAM — DO NOT REUSE THE PILLOW WORKAROUND
+
+The discovery-created Pillow script is useful as an analysis artifact.
+
+It is NOT the runtime solution.
+
+That script explicitly does:
+
+```python
+Pillow layout
+```
+
+and admits:
+
+```text
+C++ geometry was 0-width/overlapped
+```
+
+Therefore:
+
+### Never integrate this approach into MiniAndroid.
+
+Use the evidence to fix:
+
+* TextView metrics
+* MeasureSpec
+* layout
+* font loading
+* ARSC
+* drawable/raw resolution
+* real Canvas/Text drawing
+
+The eventual Telegram screenshot must be produced directly by MiniAndroid's framebuffer.
+
+---
+
+# 17. TELEGRAM PROGRESS MILESTONES
+
+Continue measuring Telegram using precise levels:
+
+### T0
+
+APK loads.
+
+### T1
+
+All DEX files load.
+
+### T2
+
+Activity constructor/lifecycle executes.
+
+### T3
+
+Real View hierarchy exists.
+
+### T4
+
+Real strings reach actual TextViews.
+
+### T5
+
+MiniAndroid computes real layout geometry.
+
+### T6
+
+Real Telegram font assets are used through MiniAndroid.
+
+### T7
+
+Real resources/drawables/raw values resolve.
+
+### T8
+
+Entire visible frame is produced by MiniAndroid itself.
+
+### T9
+
+Real input reaches a real Telegram control.
+
+### T10
+
+Input causes real Telegram DEX state transition and new framebuffer.
+
+Record the current T-level honestly after every Telegram campaign.
+
+---
+
+# 18. REAL TELEGRAM BUTTON TEST
+
+Do not merely prove that a button object exists.
+
+Prove:
+
+```text
+input coordinates
+→ hit test
+→ Telegram View
+→ OnClickListener / handler
+→ DEX instructions
+→ state mutation
+→ View hierarchy change
+→ framebuffer difference
+```
+
+Capture:
+
+```text
+before framebuffer
+after framebuffer
+changed-pixel count
+changed bounding box
+executed listener
+executed method path
+```
+
+The state transition must originate from application logic.
+
+---
+
+# 19. RENDERING FORENSICS
+
+Every public screenshot should carry provenance.
+
+Use:
+
+```text
+REAL_RUNTIME_FRAME
+DERIVED_CONTACT_SHEET
+DERIVED_GIF
+POST_PROCESSED
+RECONSTRUCTED
+UNKNOWN
+```
+
+Only `REAL_RUNTIME_FRAME` counts as direct rendering proof.
+
+Contact sheets may be generated from genuine runtime PNGs.
+
+A contact sheet must never replace the original evidence.
+
+---
+
+# 20. METRICS — ZERO VALUES MUST NEVER HIDE MISSING INSTRUMENTATION
+
+Earlier Telegram reports contained:
+
+```text
+APIs Called = 0
+Execution Time = 0ms
+Memory Peak = 0
+```
+
+despite nontrivial execution.
+
+Audit all metrics.
+
+Distinguish:
+
+```text
+MEASURED_ZERO
+NOT_MEASURED
+UNAVAILABLE
+REAL_VALUE
+```
+
+Do not represent unavailable instrumentation as measured zero.
+
+---
+
+# 21. VALIDATED AGENT FINDING #11 — APUT / ARRAY BOUNDS SEMANTICS
+
+Another previous agent discovery was independently validated against AOSP.
+
+The old MiniAndroid behavior of `aput`:
+
+* silently accepted out-of-bounds writes
+* could auto-grow arrays
+* could skip null behavior incorrectly
+
+was wrong.
+
+The correct AOSP-like behavior is:
+
+```text
+null array → NullPointerException
+invalid index → ArrayIndexOutOfBoundsException
+valid index → store
+```
+
+and:
+
+```text
+array length never changes
+```
+
+The main coder also completed the related `fill-array-data` semantics.
+
+Preserve these validated fixes.
+
+---
+
+# 22. VALIDATED AGENT FINDING #12 — `fill-array-data` MUST NOT MUTATE ARRAY LENGTH
+
+The prior bug could overwrite the logical array length using the payload count.
+
+This was fixed according to AOSP behavior.
+
+Continue regression protection.
+
+Test:
+
+* null array
+* short array
+* exact-size array
+* oversized payload
+* invalid element width
+* valid array
+* post-fill length stability
+
+Keep AOSP as the semantic oracle.
+
+---
+
+# 23. ARRAY BOUNDS REGRESSION MUST BE REAL-DISCRIMINATING
+
+A test is not useful if an incorrect engine also passes.
+
+The existing historical work found exactly this problem: old engines could “fall through” and accidentally appear to satisfy tests.
+
+Therefore every new semantic fixture should contain:
+
+### Positive case
+
+Correct implementation must succeed.
+
+### Negative case
+
+Incorrect implementation must fail observably.
+
+The test should distinguish:
+
+```text
+CORRECT
+vs
+PHANTOM_SUCCESS
+```
+
+Do this for future DEX/runtime semantics as well.
+
+---
+
+# 24. AOSP IS THE SEMANTIC ORACLE
+
+For runtime behavior:
+
+```text
+Agent hypothesis
+↓
+AOSP source/reference
+↓
+MiniAndroid implementation
+↓
+runtime fixture
+↓
+real APK validation
+```
+
+Never:
+
+```text
+Agent says X
+↓
+implement X
+↓
+call it correct
+```
+
+This rule is critical.
+
+---
+
+# 25. OPEN-SOURCE SOURCE REUSE
+
+The project has a curated helper-source strategy.
+
+Use:
+
+**REFERENCE → UNDERSTAND → ADAPT → INTEGRATE → TEST**
+
+Important previously investigated sources include:
+
+* AOSP ART
+* AOSP View/TextView/ViewGroup
+* Android graphics/framework sources
+* AOSP resource semantics
+* `libarsc`
+* aapt-related implementations
+* llvm-mingw
+* FreeType
+* HarfBuzz
+* FriBidi
+* libpng
+* libwebp
+* JPEG libraries
+* rlottie
+* Wine as a validation harness
+
+Do not import a large upstream framework just because it exists.
+
+Reuse targeted algorithms/semantics where that materially reduces fragile custom code.
+
+Record provenance and license.
+
+---
+
+# 26. RESOURCE CONFIGURATION — DO NOT DUPLICATE EXISTING AOSP LOGIC
+
+Previous source inspection found that `res_config.cpp` already contains AOSP-derived:
+
+```text
+match()
+isBetterThan()
+isLocaleBetterThan()
+```
+
+Do not rewrite this merely because a discovery tool suggested resource qualifier work.
+
+First determine:
+
+```text
+what is already correct
+what is missing
+what is incorrectly called
+```
+
+Then add the smallest generic missing behavior.
+
+---
+
+# 27. WINDOWS MUST REMAIN FIRST-CLASS
+
+The project already achieved:
+
+* real Windows PE executable
+* cross-platform deterministic behavior
+* Wine-based validation
+* successful Windows rendering
+
+Preserve this.
+
+Every major rendering/runtime change should eventually be checked on:
+
+* Linux
+* Windows/Wine where available
+
+Do not claim native Windows support merely from Wine.
+
+Label:
+
+```text
+NATIVE_WINDOWS
+WINE_VALIDATED
+LINUX
+```
+
+separately.
+
+---
+
+# 28. DEMO PROOF MUST REMAIN BYTE-STABLE
+
+The existing demo proof has a pinned framebuffer law.
+
+Protect:
+
+* frame count
+* frame sequence
+* framebuffer hashes
+* deterministic replay
+* click semantics
+* timer semantics
+
+If a legitimate rendering change breaks the golden, do not quietly overwrite it.
+
+First prove:
+
+1. intended semantic change
+2. no unrelated regression
+3. visual change is expected
+4. new baseline is deliberately documented
+
+---
+
+# 29. CORPUS EXPANSION
+
+Maintain a balanced real-APK corpus.
+
+At minimum include:
+
+### Classic View / Java
+
+* simplestopwatch
+* gmdice
+* unote
+* chessclock
+* microtimer
+* bgclock
+* headingcalculator
+
+### Custom Canvas
+
+At least one app using:
+
+```text
+Canvas.drawPath
+```
+
+### Resource-heavy
+
+At least one app with:
+
+* many ARSC strings
+* drawable resources
+* configuration-qualified resources
+
+### Asset-font
+
+At least one app with bundled TTF.
+
+### Modern / Compose
+
+At least one Compose app.
+
+### Complex multi-DEX
+
+Telegram or equivalent.
+
+The goal is not to maximize app count.
+
+The goal is to maximize **different compatibility surfaces**.
+
+---
+
+# 30. CORPUS VERDICT MODEL
+
+For each APK record:
+
+| APK | SHA | DEX | Activity | View tree | Layout | Text | Resources | Draw | Input | State transition | Verdict |
+| --- | --- | --- | -------- | --------- | ------ | ---- | --------- | ---- | ----- | ---------------- | ------- |
+
+Allowed verdicts:
+
+```text
+REAL_EXECUTION_VERIFIED
+REAL_EXECUTION_PARTIAL
+LOAD_ONLY
+RENDER_ONLY
+INTERACTION_VERIFIED
+RECONSTRUCTED
+FAILED
+UNKNOWN
+```
+
+Avoid vague labels.
+
+---
+
+# 31. PERFORMANCE / MEMORY
+
+Do not optimize prematurely.
+
+First establish correctness.
+
+Then profile:
+
+* DEX instruction throughput
+* class lookup
+* method lookup
+* resource lookup
+* font shaping
+* layout
+* rendering
+* bitmap decoding
+
+Only optimize with before/after measurements.
+
+Every optimization must show:
+
+```text
+correctness unchanged
+```
+
+plus measurable improvement.
+
+---
+
+# 32. REMOVE DEAD / DUPLICATE PATHS CAREFULLY
+
+The TextShaper discovery showed an important class of problem:
+
+source code can exist while the real engine uses another path.
+
+Search for:
+
+* dead renderers
+* duplicated text paths
+* legacy measure functions
+* unused shadow implementations
+* stale feature flags
+* dead APIs
+* fixture-only paths
+
+But do NOT delete them blindly.
+
+For each candidate:
+
+```text
+is it live?
+who calls it?
+which APKs depend on it?
+which tests cover it?
+```
+
+Then simplify only when evidence supports removal.
+
+---
+
+# 33. FIX REPORTING SO “SUCCESS” MEANS SOMETHING
+
+Execution reports should have separate fields:
+
+```text
+exit_code
+dex_methods_executed
+dex_instructions_executed
+api_calls
+view_count
+draw_ops
+frame_count
+framebuffer_nondefault_pixels
+input_events
+state_transitions
+errors
+warnings
+```
+
+A successful process exit is not enough.
+
+---
+
+# 34. PUBLIC README EVIDENCE
+
+Do not publish reconstructed Telegram images as native runtime evidence.
+
+The README should eventually make this distinction visually obvious:
+
+```text
+REAL MiniAndroid runtime frame
+```
+
+versus:
+
+```text
+Derived analysis / reconstruction
+```
+
+The strongest public proof should be:
+
+```text
+REAL APK
+→ REAL DEX
+→ REAL runtime state
+→ REAL UI
+→ REAL framebuffer
+```
+
+---
+
+# 35. TELEGRAM FULL-RENDER CAMPAIGN
+
+After the generic fixes above are stable, continue Telegram.
+
+Priority:
+
+### Phase A
+
+Resource resolution.
+
+### Phase B
+
+Real text/font measurement.
+
+### Phase C
+
+Layout geometry.
+
+### Phase D
+
+Drawable/raw resource resolution.
+
+### Phase E
+
+Real button/control hit testing.
+
+### Phase F
+
+Real state transition.
+
+### Phase G
+
+Second runtime frame.
+
+### Phase H
+
+Deterministic replay.
+
+Do not skip directly to “make screenshot pretty”.
+
+---
+
+# 36. SECOND-FRAME REQUIREMENT
+
+A single static screenshot is weak proof.
+
+The strongest Telegram proof should contain at least:
+
+```text
+FRAME 0
+initial visible state
+
+REAL INPUT
+
+FRAME 1
+new visible state
+```
+
+and a transition manifest:
+
+```json
+{
+  "input": "...",
+  "target_view": "...",
+  "listener": "...",
+  "methods_executed": [...],
+  "state_change": "...",
+  "frame_before": "...",
+  "frame_after": "...",
+  "changed_pixels": 0
+}
+```
+
+All values must be generated from the actual run.
+
+---
+
+# 37. TELEGRAM NATIVE/JNI PATH
+
+Do not claim “full Telegram execution” unless native/JNI behavior is actually known.
+
+Measure:
+
+* Java/DEX execution
+* JNI calls
+* native library loads
+* unresolved symbols
+* stubs
+* skipped paths
+
+If the native side remains blocked, document it precisely.
+
+The correct claim may be:
+
+```text
+Telegram Java/Dalvik UI path partially executed
+```
+
+rather than:
+
+```text
+Telegram fully executed
+```
+
+---
+
+# 38. REAL-APK STATE MUTATION IS THE GOLD STANDARD
+
+Whenever practical, prefer evidence where the app itself mutates:
+
+```text
+counter
+position
+color
+visibility
+text
+enabled
+navigation
+```
+
+rather than merely loading a static screen.
+
+This is why the existing demo is valuable.
+
+Extend the same principle to real corpus applications.
+
+---
+
+# 39. TEST INTERACTION WITH APPLICATION-OWNED STATE
+
+For each interactive app:
+
+```text
+initial state
+→ input
+→ application method
+→ application state change
+→ new frame
+```
+
+Do not use:
+
+```text
+test harness
+→ directly alter View state
+→ screenshot
+```
+
+That is not application execution.
+
+---
+
+# 40. KEEP AGENT DISCOVERIES IN THE KNOWLEDGE BASE
+
+When a discovery is validated:
+
+* record the original finding
+* record verification method
+* record source/oracle
+* record final implementation
+* record regression evidence
+
+Do not lose useful discoveries.
+
+But distinguish:
+
+```text
+DISCOVERY
+VALIDATED
+IMPLEMENTED
+REGRESSION-PROVEN
+```
+
+These are different statuses.
+
+---
+
+# 41. BUILD A FORMAL “EVIDENCE LEVEL” MODEL
+
+For each capability use:
+
+### E0 — Mention only
+
+No runtime evidence.
+
+### E1 — Source inspection
+
+Code path exists.
+
+### E2 — Fixture proof
+
+Dedicated deterministic fixture.
+
+### E3 — Real APK proof
+
+Real application exercises it.
+
+### E4 — Real interaction proof
+
+User-like input produces app state change.
+
+### E5 — Reproducible public proof
+
+Evidence survives clean extraction/replay and is publicly inspectable.
+
+Use this model in worklogs where useful.
+
+---
+
+# 42. PRIORITY ORDER FOR THIS CAMPAIGN
+
+## P0
+
+1. Protect current working HEAD.
+2. Verify current release/main state.
+3. Harden TextShaper live integration.
+4. Harden MeasureSpec/layout/re-layout.
+5. Harden ARSC resource resolution.
+6. Harden APK asset font loading.
+7. Harden Canvas Path.
+8. Harden multi-DEX method resolution.
+9. Harden truthful execution metrics.
+
+## P1
+
+10. Drawable/raw resource resolution.
+11. Telegram real geometry.
+12. Telegram real font path.
+13. Telegram real control interaction.
+14. Telegram second-frame state transition.
+15. custom View corpus.
+16. Compose method-resolution/render path.
+
+## P2
+
+17. performance profiling
+18. cleanup/dead-path simplification
+19. expanded corpus
+20. improved public diagnostics
+21. improved evidence tooling
+
+---
+
+# 43. NO SPECIAL-CASE TELEGRAM PATCHES
+
+Any code resembling:
+
+```cpp
+if (package == "org.telegram...")
+```
+
+or:
+
+```cpp
+if (className == "org.telegram...")
+```
+
+must be treated as suspicious.
+
+Generic compatibility is required.
+
+Telegram is a compatibility test, not a custom application target.
+
+---
+
+# 44. NO EXTERNAL UI RECONSTRUCTION
+
+Never solve runtime rendering defects by:
+
+* Pillow layout
+* ImageMagick drawing
+* manually placed text
+* manually substituted resources
+* fake screenshots
+* post-run state editing
+
+External tools are allowed only for:
+
+* analysis
+* hashing
+* diffing
+* contact sheets
+* GIF assembly from authentic runtime frames
+
+The primary frame itself must come directly from MiniAndroid.
+
+---
+
+# 45. TEST AFTER EVERY SIGNIFICANT FIX
+
+At minimum:
+
+```text
+existing fixture suites
++
+semantic suites
++
+golden matrix
++
+demo
++
+classic View corpus
++
+custom Canvas app
++
+resource-heavy app
++
+Telegram
++
+Compose testcase where relevant
+```
+
+Do not accept:
+
+```text
+BUILD_OK
+```
+
+as a substitute for runtime validation.
+
+---
+
+# 46. DISCRIMINATING TESTS
+
+Every important test should fail on the known-bad implementation where feasible.
+
+Examples:
+
+```text
+incorrect array bounds → fixture must fail old engine
+missing multi-dex lookup → fixture must fail old resolver
+broken MeasureSpec → fixture must produce wrong geometry
+wrong font metrics → pixel/layout assertion must fail
+missing resource resolution → resource ID assertion must fail
+```
+
+Avoid tests that merely exercise code without proving semantics.
+
+---
+
+# 47. GIT COMMIT DISCIPLINE
+
+Keep commits logically separated.
+
+Examples:
+
+```text
+fix(runtime): ...
+feat(resources): ...
+fix(renderer): ...
+test(corpus): ...
+docs(evidence): ...
+```
+
+Do not use release codenames in ordinary commit subjects.
+
+Do not invent breed names.
+
+Before every push:
+
+```text
+git status
+git log
+git diff
+git diff --stat
+git ls-files
+```
+
+Check for accidental generated/build files.
+
+---
+
+# 48. RELEASE PACKAGING SAFETY
+
+Before any future release artifact:
+
+run:
+
+```text
+validate_release_content.py
+```
+
+and require:
+
+```text
+RELEASE_CONTENT_CHECK: PASS
+DEVELOPMENT_ARTIFACTS: 0
+```
+
+Never package:
+
+* LLVM toolchain
+* compiler archives
+* source dependencies
+* build trees
+* object files
+* temporary work directories
+
+The release must contain only runtime distribution artifacts.
+
+---
+
+# 49. WORKLOG
+
+Maintain a persistent English worklog.
+
+Every significant cycle should record:
+
+```text
+objective
+baseline
+hypothesis
+source/oracle
+implementation
+test
+runtime evidence
+regression
+commit
+next checkpoint
+```
+
+Do not merely record “fixed”.
+
+Record how it was proven.
+
+---
+
+# 50. FINAL REQUIRED OUTCOME
+
+Do not optimize for a prettier report.
+
+Optimize for this:
+
+```text
+REAL APK
+↓
+REAL APK resources
+↓
+REAL DEX
+↓
+REAL method resolution
+↓
+REAL lifecycle
+↓
+REAL Android object state
+↓
+REAL measure/layout
+↓
+REAL font/resource loading
+↓
+REAL Canvas/View drawing
+↓
+REAL framebuffer
+↓
+REAL input
+↓
+REAL application state mutation
+↓
+NEW REAL framebuffer
+↓
+DETERMINISTIC REPLAY
+```
+
+The most important deliverable is a stronger **generic MiniAndroid runtime**, not a Telegram-specific visual demo.
+
+Telegram is the demanding validation target.
+
+The classic View corpus is the regression foundation.
+
+Compose is a separate compatibility frontier.
+
+AOSP is the semantic oracle.
+
+Agent discoveries are leads until validated.
+
+---
+
+# 51. AUTONOMOUS OPERATING MODE
+
+Continue autonomously.
+
+Do not ask the owner to choose each small task.
+
+When one P0/P1 item is completed:
+
+1. verify it
+2. commit it
+3. push fast-forward
+4. update worklog
+5. move to the next highest-impact item
+
+Do not stop simply because one difficult APK remains blocked.
+
+Keep advancing the runtime.
+
+Only stop for a genuine owner-only decision, such as a future release codename.
+
+---
+
+# FINAL CAMPAIGN SUCCESS CRITERIA
+
+By the end of this campaign, the repository should have:
+
+* [ ] current HEAD verified
+* [ ] rollback anchor recorded
+* [ ] no build/toolchain contamination
+* [ ] TextShaper genuinely live
+* [ ] real font asset loading
+* [ ] correct TextView measurement
+* [ ] correct MeasureSpec behavior
+* [ ] runtime remeasure/relayout
+* [ ] Canvas Path support
+* [ ] generic XML onClick support
+* [ ] robust ARSC resolution
+* [ ] obfuscated resource filename handling
+* [ ] raw/drawable resolution
+* [ ] robust multi-DEX method resolution
+* [ ] truthful execution metrics
+* [ ] discriminating runtime fixtures
+* [ ] classic View corpus regression
+* [ ] real interaction evidence
+* [ ] Compose work correctly separated from classic View
+* [ ] Telegram T-level measured honestly
+* [ ] at least one genuine Telegram input→state→frame transition where technically reachable
+* [ ] no Pillow-generated application UI presented as native runtime proof
+* [ ] runtime provenance for public images
+* [ ] deterministic replay evidence
+* [ ] all changes regression-tested
+* [ ] GitHub history preserved
+* [ ] fast-forward push only
+* [ ] no invented release codename
+* [ ] owner-controlled chicken-breed naming policy preserved
+
+The goal is not to say that MiniAndroid supports everything.
+
+The goal is to make every supported claim **technically defensible, reproducible, and backed by real runtime evidence**.
