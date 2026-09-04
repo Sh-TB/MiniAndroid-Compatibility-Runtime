@@ -21,8 +21,15 @@
 // decoder and Skia both delegate to it for WebP.
 // libjpeg (IJG) is the JPEG reference decoder — Android ships libjpeg-turbo
 // (a drop-in replacement using the same API).
+//
+// Build-config note (mirrors AOSP codec availability model): WebP and Lottie
+// codecs are compile-time optional via MINIANDROID_HAVE_WEBP / MINIANDROID_HAVE_LOTTIE
+// so the runtime builds on platforms where these libs are not ported yet.
+// When disabled, decoders report an explicit error (no silent fake success).
+#ifdef MINIANDROID_HAVE_WEBP
 #include <webp/decode.h>
 #include <webp/demux.h>
+#endif
 
 extern "C" {
 #include <stdio.h>
@@ -776,6 +783,7 @@ json PNGWriter::generate_screenshot_info(const FrameBuffer& fb,
 } // namespace renderer
 } // namespace miniandroid
 
+#ifdef MINIANDROID_HAVE_WEBP
 // ============================================================================
 // EXP-097 §5: WebPDecoder — libwebp-backed WebP → RGBA decoder.
 //
@@ -855,6 +863,30 @@ DecodedImage WebPDecoder::decode_file(const std::string& path) {
                                        std::istreambuf_iterator<char>()));
 }
 
+} // namespace renderer
+} // namespace miniandroid
+#else // !MINIANDROID_HAVE_WEBP — explicit capability error, never fake success
+namespace miniandroid {
+namespace renderer {
+
+DecodedImage WebPDecoder::decode(const std::vector<uint8_t>& webp_bytes) {
+    (void)webp_bytes;
+    DecodedImage result;
+    result.error = "WebP codec not available in this build (MINIANDROID_HAVE_WEBP disabled)";
+    return result;
+}
+
+DecodedImage WebPDecoder::decode_file(const std::string& path) {
+    (void)path;
+    DecodedImage result;
+    result.error = "WebP codec not available in this build (MINIANDROID_HAVE_WEBP disabled)";
+    return result;
+}
+
+} // namespace renderer
+} // namespace miniandroid
+#endif // MINIANDROID_HAVE_WEBP
+
 // ============================================================================
 // EXP-097 §6: JPEGDecoder — libjpeg-backed JPEG → RGBA decoder.
 //
@@ -874,6 +906,8 @@ DecodedImage WebPDecoder::decode_file(const std::string& path) {
 // jmp_buf and a custom error_exit handler so a corrupt JPEG returns
 // ok=false instead of aborting the whole process.
 // ============================================================================
+namespace miniandroid {
+namespace renderer {
 
 namespace {
 struct JpegErrorCtx {
@@ -975,6 +1009,7 @@ DecodedImage JPEGDecoder::decode_file(const std::string& path) {
                                        std::istreambuf_iterator<char>()));
 }
 
+#ifdef MINIANDROID_HAVE_LOTTIE
 // ============================================================================
 // EXP-097 §7: RLottieDecoder — rlottie-backed Lottie JSON → RGBA renderer.
 // ============================================================================
@@ -1078,3 +1113,27 @@ RLottieDecoder::DecodedAnim RLottieDecoder::decode_file(const std::string& path,
 
 } // namespace renderer
 } // namespace miniandroid
+#else // !MINIANDROID_HAVE_LOTTIE — explicit capability error, never fake success
+// (still inside namespace miniandroid::renderer opened for the JPEG section)
+
+RLottieDecoder::DecodedAnim RLottieDecoder::decode(const std::string& json_str,
+                                                    int target_w, int target_h,
+                                                    int max_frames) {
+    (void)json_str; (void)target_w; (void)target_h; (void)max_frames;
+    DecodedAnim result;
+    result.error = "Lottie codec not available in this build (MINIANDROID_HAVE_LOTTIE disabled)";
+    return result;
+}
+
+RLottieDecoder::DecodedAnim RLottieDecoder::decode_file(const std::string& path,
+                                                        int target_w, int target_h,
+                                                        int max_frames) {
+    (void)path; (void)target_w; (void)target_h; (void)max_frames;
+    DecodedAnim result;
+    result.error = "Lottie codec not available in this build (MINIANDROID_HAVE_LOTTIE disabled)";
+    return result;
+}
+
+} // namespace renderer
+} // namespace miniandroid
+#endif // MINIANDROID_HAVE_LOTTIE
