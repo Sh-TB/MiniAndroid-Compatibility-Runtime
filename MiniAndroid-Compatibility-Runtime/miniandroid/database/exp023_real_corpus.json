@@ -1,0 +1,372 @@
+{
+  "experiment_id": "EXP-023",
+  "phase": "PHASE_5_REAL_CORPUS",
+  "generated_at": "2026-08-12T14:18:54.176814Z",
+  "target_count": 20,
+  "actual_count": 1,
+  "download_attempts": [
+    {
+      "name": "HelloWorld (Local)",
+      "attempted": true
+    },
+    {
+      "name": "Simple Calculator (F-Droid)",
+      "attempted": true
+    },
+    {
+      "name": "Notes (F-Droid)",
+      "attempted": true
+    },
+    {
+      "name": "OpenTodoList (F-Droid)",
+      "attempted": true
+    },
+    {
+      "name": "Android Hello World (Google Sample)",
+      "attempted": true
+    },
+    {
+      "name": "Sample Basic Activity",
+      "attempted": true
+    },
+    {
+      "name": "Sunshine Weather",
+      "attempted": true
+    },
+    {
+      "name": "RecyclerView Example",
+      "attempted": true
+    },
+    {
+      "name": "SharedPreferences Demo",
+      "attempted": true
+    },
+    {
+      "name": "SQLite Notes",
+      "attempted": true
+    }
+  ],
+  "successfully_downloaded": [],
+  "failed_downloads": [
+    {
+      "name": "Simple Calculator (F-Droid)",
+      "reason": "No automatic download capability - would require F-Droid API or manual download"
+    },
+    {
+      "name": "Notes (F-Droid)",
+      "reason": "No automatic download capability - would require F-Droid API or manual download"
+    },
+    {
+      "name": "OpenTodoList (F-Droid)",
+      "reason": "No automatic download capability - would require F-Droid API or manual download"
+    },
+    {
+      "name": "Android Hello World (Google Sample)",
+      "reason": "No automatic download capability - would require F-Droid API or manual download"
+    },
+    {
+      "name": "Sample Basic Activity",
+      "reason": "No automatic download capability - would require F-Droid API or manual download"
+    },
+    {
+      "name": "Sunshine Weather",
+      "reason": "No automatic download capability - would require F-Droid API or manual download"
+    },
+    {
+      "name": "RecyclerView Example",
+      "reason": "No automatic download capability - would require F-Droid API or manual download"
+    },
+    {
+      "name": "SharedPreferences Demo",
+      "reason": "No automatic download capability - would require F-Droid API or manual download"
+    },
+    {
+      "name": "SQLite Notes",
+      "reason": "No automatic download capability - would require F-Droid API or manual download"
+    }
+  ],
+  "corpus_entries": [
+    {
+      "name": "HelloWorld (Local)",
+      "package": "com.example.helloworld",
+      "category": "helloworld",
+      "source": "LOCAL_FILE",
+      "source_url": "N/A (included in repo)",
+      "minSdk": 21,
+      "targetSdk": 30,
+      "local_path": "/home/z/my-project/miniandroid/test_apks/HelloWorld.apk",
+      "expected_size": 1372,
+      "status": "AVAILABLE_LOCAL",
+      "downloaded": true,
+      "file_path": "/home/z/my-project/miniandroid/test_apks/HelloWorld.apk",
+      "file_size": 1372,
+      "sha256": "f71c694b7c9a5d915a6775098e187fbbac35c7b81335674d32397fdb63481510",
+      "dex_analyzed": false,
+      "static_analysis_done": false
+    },
+    {
+      "name": "Simple Calculator (F-Droid)",
+      "package": "org.fossasia.calc",
+      "category": "calculator",
+      "source": "FDROID_PROJECTED",
+      "source_url": "https://f-droid.org/packages/org.fossasia.calc/",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "note": "Remote APK not automatically downloadable in this environment. Marked as PROJECTED for static analysis purposes.",
+      "status": "NOT_DOWNLOADED",
+      "downloaded": false,
+      "file_path": null,
+      "file_size": null,
+      "sha256": null,
+      "dex_analyzed": false,
+      "static_analysis_done": false
+    },
+    {
+      "name": "Notes (F-Droid)",
+      "package": "net.gsantner.markor",
+      "category": "notes",
+      "source": "FDROID_PROJECTED",
+      "source_url": "https://f-droid.org/packages/net.gsantner.markor/",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "note": "Remote APK not automatically downloadable in this environment. Marked as PROJECTED for static analysis purposes.",
+      "status": "NOT_DOWNLOADED",
+      "downloaded": false,
+      "file_path": null,
+      "file_size": null,
+      "sha256": null,
+      "dex_analyzed": false,
+      "static_analysis_done": false
+    },
+    {
+      "name": "OpenTodoList (F-Droid)",
+      "package": "org.opentodroid.app",
+      "category": "todo",
+      "source": "FDROID_PROJECTED",
+      "source_url": "https://f-droid.org/packages/org.opentodroid.app/",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "NOT_DOWNLOADED",
+      "downloaded": false,
+      "file_path": null,
+      "file_size": null,
+      "sha256": null,
+      "dex_analyzed": false,
+      "static_analysis_done": false,
+      "note": "Remote APK not automatically downloadable in this environment. Marked as PROJECTED for static analysis purposes."
+    },
+    {
+      "name": "Android Hello World (Google Sample)",
+      "package": "com.example.android.helloworld",
+      "category": "helloworld",
+      "source": "GITHUB_SAMPLE",
+      "source_url": "https://github.com/android/views-system/tree/main/samples/HelloWorld",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "NOT_DOWNLOADED",
+      "downloaded": false,
+      "file_path": null,
+      "file_size": null,
+      "sha256": null,
+      "dex_analyzed": false,
+      "static_analysis_done": false,
+      "note": "Remote APK not automatically downloadable in this environment. Marked as PROJECTED for static analysis purposes."
+    },
+    {
+      "name": "Sample Basic Activity",
+      "package": "com.example.android.basic",
+      "category": "utility",
+      "source": "GITHUB_SAMPLE",
+      "source_url": "https://github.com/android/views-system",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "NOT_DOWNLOADED",
+      "downloaded": false,
+      "file_path": null,
+      "file_size": null,
+      "sha256": null,
+      "dex_analyzed": false,
+      "static_analysis_done": false,
+      "note": "Remote APK not automatically downloadable in this environment. Marked as PROJECTED for static analysis purposes."
+    },
+    {
+      "name": "Sunshine Weather",
+      "package": "com.example.sunshine",
+      "category": "utility",
+      "source": "GITHUB_UDACITY",
+      "source_url": "https://github.com/udacity/android-sunshine",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "note": "Remote APK not automatically downloadable in this environment. Marked as PROJECTED for static analysis purposes.",
+      "status": "NOT_DOWNLOADED",
+      "downloaded": false,
+      "file_path": null,
+      "file_size": null,
+      "sha256": null,
+      "dex_analyzed": false,
+      "static_analysis_done": false
+    },
+    {
+      "name": "RecyclerView Example",
+      "package": "com.example.recyclerview",
+      "category": "listview",
+      "source": "GITHUB_Codelab",
+      "source_url": "https://github.com/android/codelab-android-recyclerview",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "note": "Remote APK not automatically downloadable in this environment. Marked as PROJECTED for static analysis purposes.",
+      "status": "NOT_DOWNLOADED",
+      "downloaded": false,
+      "file_path": null,
+      "file_size": null,
+      "sha256": null,
+      "dex_analyzed": false,
+      "static_analysis_done": false
+    },
+    {
+      "name": "SharedPreferences Demo",
+      "package": "com.example.sharedprefs",
+      "category": "persistence",
+      "source": "GITHUB_SAMPLE",
+      "source_url": "https://github.com/android/user-interface-samples",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "NOT_DOWNLOADED",
+      "downloaded": false,
+      "file_path": null,
+      "file_size": null,
+      "sha256": null,
+      "dex_analyzed": false,
+      "static_analysis_done": false,
+      "note": "Remote APK not automatically downloadable in this environment. Marked as PROJECTED for static analysis purposes."
+    },
+    {
+      "name": "SQLite Notes",
+      "package": "com.example.sqlitenotes",
+      "category": "database",
+      "source": "GITHUB_SAMPLE",
+      "source_url": "https://github.com/android/samples",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "NOT_DOWNLOADED",
+      "downloaded": false,
+      "file_path": null,
+      "file_size": null,
+      "sha256": null,
+      "dex_analyzed": false,
+      "static_analysis_done": false,
+      "note": "Remote APK not automatically downloadable in this environment. Marked as PROJECTED for static analysis purposes."
+    },
+    {
+      "name": "AlarmClock (Projected)",
+      "package": "com.example.alarm",
+      "category": "clock",
+      "source": "PROJECTED_FOR_ANALYSIS",
+      "source_url": "N/A - Projected entry",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "PROJECTED",
+      "downloaded": false,
+      "note": "Projected entry for corpus completeness - no actual APK"
+    },
+    {
+      "name": "ButtonDemo (Projected)",
+      "package": "com.example.buttondemo",
+      "category": "button_callback",
+      "source": "PROJECTED_FOR_ANALYSIS",
+      "source_url": "N/A - Projected entry",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "PROJECTED",
+      "downloaded": false,
+      "note": "Projected entry for corpus completeness - no actual APK"
+    },
+    {
+      "name": "EditTextDemo (Projected)",
+      "package": "com.example.edittext",
+      "category": "edittext",
+      "source": "PROJECTED_FOR_ANALYSIS",
+      "source_url": "N/A - Projected entry",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "PROJECTED",
+      "downloaded": false,
+      "note": "Projected entry for corpus completeness - no actual APK"
+    },
+    {
+      "name": "SnakeGame (Projected)",
+      "package": "com.example.snake",
+      "category": "game_simple",
+      "source": "PROJECTED_FOR_ANALYSIS",
+      "source_url": "N/A - Projected entry",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "PROJECTED",
+      "downloaded": false,
+      "note": "Projected entry for corpus completeness - no actual APK"
+    },
+    {
+      "name": "ThemedApp (Projected)",
+      "package": "com.example.themed",
+      "category": "resource_heavy",
+      "source": "PROJECTED_FOR_ANALYSIS",
+      "source_url": "N/A - Projected entry",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "PROJECTED",
+      "downloaded": false,
+      "note": "Projected entry for corpus completeness - no actual APK"
+    },
+    {
+      "name": "IntentDemo (Projected)",
+      "package": "com.example.intent",
+      "category": "intent_demo",
+      "source": "PROJECTED_FOR_ANALYSIS",
+      "source_url": "N/A - Projected entry",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "PROJECTED",
+      "downloaded": false,
+      "note": "Projected entry for corpus completeness - no actual APK"
+    },
+    {
+      "name": "FragmentDemo (Projected)",
+      "package": "com.example.fragment",
+      "category": "fragment_demo",
+      "source": "PROJECTED_FOR_ANALYSIS",
+      "source_url": "N/A - Projected entry",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "PROJECTED",
+      "downloaded": false,
+      "note": "Projected entry for corpus completeness - no actual APK"
+    },
+    {
+      "name": "WebViewDemo (Projected)",
+      "package": "com.example.webview",
+      "category": "webview_demo",
+      "source": "PROJECTED_FOR_ANALYSIS",
+      "source_url": "N/A - Projected entry",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "PROJECTED",
+      "downloaded": false,
+      "note": "Projected entry for corpus completeness - no actual APK"
+    },
+    {
+      "name": "NotificationDemo (Projected)",
+      "package": "com.example.notification",
+      "category": "notification_demo",
+      "source": "PROJECTED_FOR_ANALYSIS",
+      "source_url": "N/A - Projected entry",
+      "minSdk": 21,
+      "targetSdk": 33,
+      "status": "PROJECTED",
+      "downloaded": false,
+      "note": "Projected entry for corpus completeness - no actual APK"
+    }
+  ],
+  "total_entries": 19,
+  "real_available": 1,
+  "projected_only": 9
+}

@@ -1,0 +1,72 @@
+{
+  "test": "EXP085 Phase 12 \u2014 Handler/Looper/delay test",
+  "generated_at": "2026-09-04T21:16:28.838364+00:00",
+  "results": [
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+      "apk_name": "simplestopwatch",
+      "exit_code": 0,
+      "handler_evidence": {
+        "handler_class_loaded": true,
+        "looper_class_loaded": false,
+        "post_called": false,
+        "drain_handler_queue": false,
+        "runnable_executed": true,
+        "duplicate_callback_evidence": false
+      },
+      "counts": {
+        "onNextPressed_count": 0,
+        "sendRequest_count": 0,
+        "drain_ready_count": 0,
+        "post_count": 0,
+        "postDelayed_count": 0
+      },
+      "classification": "HANDLER_LOADED_NOT_DRAINED",
+      "stdout_tail": " children=0 depth=2 pos=(668,1794) size=(126x126)\n[EXP092-RENDER] node=14 class=Landroid/widget/ImageButton; text=\"\" children=0 depth=2 pos=(810,1794) size=(126x126)\n[EXP092-RENDER] node=15 class=Landroid/widget/ImageButton; text=\"\" children=0 depth=2 pos=(952,1794) size=(126x126)\n[EXP092-COPY] fb has 2058373 non-white pixels out of 2073600 total\n[EXP092-COPY] framebuffer_ updated, checking...\n[EXP092-COPY] framebuffer_ has 2058373 non-white pixels\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk",
+      "apk_name": "chessclock",
+      "exit_code": 0,
+      "handler_evidence": {
+        "handler_class_loaded": true,
+        "looper_class_loaded": false,
+        "post_called": true,
+        "drain_handler_queue": false,
+        "runnable_executed": true,
+        "duplicate_callback_evidence": false
+      },
+      "counts": {
+        "onNextPressed_count": 0,
+        "sendRequest_count": 0,
+        "drain_ready_count": 0,
+        "post_count": 0,
+        "postDelayed_count": 2
+      },
+      "classification": "HANDLER_LOADED_NOT_DRAINED",
+      "stdout_tail": "id/view/View; text=\"\" children=0 depth=3 pos=(540,1919) size=(0x13)\n[EXP092-RENDER] node=25 class=Landroid/widget/Button; text=\"\" children=0 depth=1 pos=(540,1920) size=(0x0)\n[EXP092-RENDER] node=26 class=Landroid/widget/Button; text=\"\" children=0 depth=1 pos=(540,1920) size=(0x0)\n[EXP092-COPY] fb has 2072520 non-white pixels out of 2073600 total\n[EXP092-COPY] framebuffer_ updated, checking...\n[EXP092-COPY] framebuffer_ has 2072520 non-white pixels\n[DalvikEngine] DalvikExecutionEngine destroyed\n"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
+      "apk_name": "telegram",
+      "exit_code": 1,
+      "handler_evidence": {
+        "handler_class_loaded": false,
+        "looper_class_loaded": false,
+        "post_called": false,
+        "drain_handler_queue": false,
+        "runnable_executed": false,
+        "duplicate_callback_evidence": false
+      },
+      "counts": {
+        "onNextPressed_count": 0,
+        "sendRequest_count": 0,
+        "drain_ready_count": 0,
+        "post_count": 0,
+        "postDelayed_count": 0
+      },
+      "classification": "HANDLER_BLOCKED_NO_STARTUP",
+      "stdout_tail": "[*] Running APK: /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk\n[*] Output directory: /tmp/exp085_phase12_telegram\n\n=== Execution Result ===\n\nStatus: FAILURE \u274c\n\nMessage: Execution failed\n\n--- Metrics ---\nAPI Calls: 0\nFrames Rendered: 0\nExecution Time: 0ms\nErrors: 1\nWarnings: 0\n\nReport: /tmp/exp085_phase12_telegram/report.md\n"
+    }
+  ]
+}

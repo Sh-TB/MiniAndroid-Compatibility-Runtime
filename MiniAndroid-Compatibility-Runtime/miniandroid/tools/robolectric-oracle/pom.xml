@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>miniandroid.oracle</groupId>
+  <artifactId>robolectric-oracle</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>google-maven</id>
+      <url>https://dl.google.com/dl/android/maven2/</url>
+    </repository>
+  </repositories>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Robolectric's pom declares androidx artifacts without type=aar;
+           Google Maven ships them ONLY as AARs. Pin type+version here so
+           transitive resolution succeeds (UNIFIED_002 EXP-102 tooling fix). -->
+      <dependency>
+        <groupId>androidx.tracing</groupId>
+        <artifactId>tracing</artifactId>
+        <version>1.1.0</version>
+        <type>aar</type>
+      </dependency>
+      <dependency>
+        <groupId>androidx.test</groupId>
+        <artifactId>monitor</artifactId>
+        <version>1.7.1</version>
+        <type>aar</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.robolectric</groupId>
+      <artifactId>android-all</artifactId>
+      <version>14-robolectric-10818077</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.robolectric</groupId>
+      <artifactId>robolectric</artifactId>
+      <version>4.14.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>androidx.test</groupId>
+      <artifactId>monitor</artifactId>
+      <version>1.7.2</version>
+      <type>aar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>androidx.test.espresso</groupId>
+      <artifactId>espresso-idling-resource</artifactId>
+      <version>3.6.1</version>
+      <type>aar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>androidx.test</groupId>
+      <artifactId>core</artifactId>
+      <version>1.6.1</version>
+      <type>aar</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

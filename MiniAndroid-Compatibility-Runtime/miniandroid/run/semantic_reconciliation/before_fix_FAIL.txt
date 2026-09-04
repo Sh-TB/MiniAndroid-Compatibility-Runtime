@@ -1,0 +1,15 @@
+  FAIL  add_long_64bit_2p32_plus_1 — expected 4294967297.000000, got 1.000000
+  FAIL  add_long_2addr_64bit — expected 4294967297.000000, got 4294967296.000000
+  FAIL  add_long_negative — expected -4294967291.000000, got 5.000000
+  FAIL  cmp_long_64bit_greater — expected 1.000000, got 0.000000
+  FAIL  cmp_long_64bit_less — expected -1.000000, got 0.000000
+  PASS  cmp_long_64bit_equal — expected 0.000000, got 0.000000
+  FAIL  cmpl_double_nan_minus1 — expected -1.000000, got 0.000000
+  FAIL  cmpg_double_nan_plus1 — expected 1.000000, got 0.000000
+  PASS  cmpl_double_signed_zero_equal — expected 0.000000, got 0.000000
+  FAIL  int_to_long_sign_extend — expected -5.000000, got 0.000000
+  FAIL  float_to_int_numeric — expected 3.000000, got 0.000000
+  FAIL  int_to_byte_sign_extend — expected -1.000000, got 0.000000
+  FAIL  int_to_char_zero_extend — expected 65.000000, got 0.000000
+  FAIL  int_to_short_sign_extend — expected -32768.000000, got 0.000000
+RESULT: 2 passed, 12 failed

@@ -1,0 +1,44 @@
+# CAMPAIGN 011 (§28) — build/cache/artifact hygiene
+# APK policy (§20): ZERO APK/AAB inside the repository, releases, or source ZIPs.
+# Test APKs are fetched by scripts/download_test_apks.py into an EXTERNAL cache.
+
+# build outputs
+miniandroid/build/
+build/
+*.o
+*.d
+
+# APK / Android app bundles — never commit
+*.apk
+*.aab
+*.so
+
+# local APK caches (legacy in-repo path + external)
+miniandroid/download/
+apk_cache/
+
+# external tool build artifacts
+**/robolectric-oracle/target/
+
+# large local run artifacts (keep curated evidence under docs/evidence instead)
+miniandroid/run/u011/
+miniandroid/run/**/*.log
+miniandroid/run/**/*.ppm
+miniandroid/run/**/*.json
+
+# local logs / temporary artifacts
+*.log
+*.tmp
+.cache/
+
+# secrets / credentials — should never exist here
+*.keystore
+*.jks
+credentials.json
+secrets*
+.env
+
+# UNIFIED_011.3: run/ evidence dirs are external artifacts; curated evidence lives in docs/evidence/
+miniandroid/run/clicktest_*/
+miniandroid/run/corpus_*/
+miniandroid/run/real_whatsapp/

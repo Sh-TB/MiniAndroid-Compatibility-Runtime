@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://source.android.com/docs/core/runtime",
+    "name": "Android runtime and Dalvik",
+    "snippet": "Jul 14, 2026 — Android runtime (ART ) is the managed runtime used by apps and some system services on Android. ART and Dalvik are compatible runtimes running ...",
+    "host_name": "source.android.com",
+    "rank": 0,
+    "date": "Jul 14, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://android.googlesource.com/platform/art/+/master/runtime/runtime.h",
+    "name": "runtime/runtime.h - platform/art - Git at Google",
+    "snippet": "The Android Open Source Project * Starts a runtime , which may cause threads to be started and code to run. Specifies target SDK version to allow workarounds  ...",
+    "host_name": "android.googlesource.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/Project-ARTist/art",
+    "name": "ART - The Android Runtime (Fork for Project ARTist)",
+    "snippet": "This repository is a fork of AOSP's ART project, Androids default runtime since Lollipop (5.0), which integrates the ARTist instrumentation framework into ... Read more",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/androiddev/comments/1wnnpf/art_is_now_the_default_android_runtime_on_aosp",
+    "name": "ART is now the default Android runtime on AOSP",
+    "snippet": "I'm not an expert, but in answer to your question, it will be just as easy to decompile the apks after ART is default because they will be the ... Read more",
+    "host_name": "www.reddit.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://source.android.com/docs/core/ota/modular-system/art",
+    "name": "Android Runtime (ART)",
+    "snippet": "Jul 13, 2026 — The ART module aims to improve the Android experience by offering users the latest managed runtime optimizations, features, and bug fixes.",
+    "host_name": "source.android.com",
+    "rank": 4,
+    "date": "Jul 13, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://stackoverflow.com/questions/37107080/how-to-compile-the-android-runtime-art-from-source",
+    "name": "How to compile the Android runtime (ART) from source",
+    "snippet": "I downloaded the ASOP source and built it for x86_64. In a folder I could find the dalvikvm binary which is what I wanted. Read more",
+    "host_name": "stackoverflow.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://proandroiddev.com/android-runtime-how-dalvik-and-art-work-6e57cf1c50e5",
+    "name": "Android Runtime — How Dalvik and ART work?",
+    "snippet": "Apr 14, 2021 — In this article, you'll learn how Android Runtime works , what is ART, DALVIK, JIT and AOT and how Android Runtime evolved over the years to ...",
+    "host_name": "proandroiddev.com",
+    "rank": 6,
+    "date": "Apr 14, 2021",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@samirdubey/discovering-androids-source-traversing-the-aosp-s-file-structure-7ad239823cc9",
+    "name": "Discovering Android's Source: Traversing the AOSP's File",
+    "snippet": "It contains the source code for the Android framework , which provides a set of core libraries, APIs, and services. Project ( AOSP ) codebase are ...",
+    "host_name": "medium.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

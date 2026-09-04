@@ -1,0 +1,170 @@
+{
+  "test": "EXP086 Phase 1 \u2014 B5 Generic Android Manifest Resolver",
+  "generated_at": "2026-08-23T21:40:56.292173+00:00",
+  "pass_count": 6,
+  "fail_count": 0,
+  "skip_count": 1,
+  "results": [
+    {
+      "name": "telegram",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk",
+      "info": {
+        "package_name": "org.telegram.messenger.web",
+        "main_activity": "org.telegram.ui.LaunchActivity",
+        "main_activity_full": "org.telegram.ui.LaunchActivity",
+        "exit_code": 0
+      },
+      "checks": [
+        {
+          "check": "package_name",
+          "expected": "org.telegram.messenger.web",
+          "actual": "org.telegram.messenger.web",
+          "pass": true
+        },
+        {
+          "check": "main_activity",
+          "expected": "org.telegram.ui.LaunchActivity",
+          "actual": "org.telegram.ui.LaunchActivity",
+          "pass": true
+        },
+        {
+          "check": "main_activity_full",
+          "expected": "org.telegram.ui.LaunchActivity",
+          "actual": "org.telegram.ui.LaunchActivity",
+          "pass": true
+        }
+      ],
+      "pass_count": 3,
+      "fail_count": 0,
+      "status": "PASS",
+      "notes": "Telegram APK uses activity-alias with targetActivity"
+    },
+    {
+      "name": "gmdice",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+      "info": {
+        "package_name": "de.duenndns.gmdice",
+        "main_activity": "de.duenndns.gmdice.GameMasterDice",
+        "main_activity_full": "de.duenndns.gmdice.GameMasterDice",
+        "exit_code": 0
+      },
+      "checks": [
+        {
+          "check": "package_name",
+          "expected": "de.duenndns.gmdice",
+          "actual": "de.duenndns.gmdice",
+          "pass": true
+        },
+        {
+          "check": "main_activity_full",
+          "expected": "de.duenndns.gmdice.GameMasterDice",
+          "actual": "de.duenndns.gmdice.GameMasterDice",
+          "pass": true
+        }
+      ],
+      "pass_count": 2,
+      "fail_count": 0,
+      "status": "PASS",
+      "notes": "Single activity with MAIN+LAUNCHER"
+    },
+    {
+      "name": "tictactoe",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/tictactoe.apk",
+      "info": {
+        "package_name": "com.emmanuelmess.tictactoe",
+        "main_activity": "com.emmanuelmess.tictactoe.AndroidLauncher",
+        "main_activity_full": "com.emmanuelmess.tictactoe.AndroidLauncher",
+        "exit_code": 0
+      },
+      "checks": [
+        {
+          "check": "package_name",
+          "expected": "com.emmanuelmess.tictactoe",
+          "actual": "com.emmanuelmess.tictactoe",
+          "pass": true
+        },
+        {
+          "check": "main_activity_full_contains",
+          "expected": "contains:Launcher",
+          "actual": "com.emmanuelmess.tictactoe.AndroidLauncher",
+          "pass": true
+        }
+      ],
+      "pass_count": 2,
+      "fail_count": 0,
+      "status": "PASS",
+      "notes": "TicTacToe uses AndroidLauncher (libGDX framework)"
+    },
+    {
+      "name": "headingcalculator",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
+      "info": {
+        "package_name": "org.debian.eugen.headingcalculator",
+        "main_activity": "org.debian.eugen.headingcalculator.MainActivity",
+        "main_activity_full": "org.debian.eugen.headingcalculator.MainActivity",
+        "exit_code": 0
+      },
+      "checks": [
+        {
+          "check": "package_name",
+          "expected": "org.debian.eugen.headingcalculator",
+          "actual": "org.debian.eugen.headingcalculator",
+          "pass": true
+        }
+      ],
+      "pass_count": 1,
+      "fail_count": 0,
+      "status": "PASS",
+      "notes": "Simple calculator"
+    },
+    {
+      "name": "notes",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/org.billthefarmer.notes_139.apk",
+      "info": {
+        "package_name": "org.billthefarmer.notes",
+        "main_activity": "org.billthefarmer.notes.Notes",
+        "main_activity_full": "org.billthefarmer.notes.Notes",
+        "exit_code": 0
+      },
+      "checks": [
+        {
+          "check": "package_name",
+          "expected": "org.billthefarmer.notes",
+          "actual": "org.billthefarmer.notes",
+          "pass": true
+        }
+      ],
+      "pass_count": 1,
+      "fail_count": 0,
+      "status": "PASS",
+      "notes": "Notes app with SQLite"
+    },
+    {
+      "name": "simplestopwatch",
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+      "info": {
+        "package_name": "omegacentauri.mobi.simplestopwatch",
+        "main_activity": "omegacentauri.mobi.simplestopwatch.StopWatch",
+        "main_activity_full": "omegacentauri.mobi.simplestopwatch.StopWatch",
+        "exit_code": 0
+      },
+      "checks": [
+        {
+          "check": "package_name",
+          "expected": "omegacentauri.mobi.simplestopwatch",
+          "actual": "omegacentauri.mobi.simplestopwatch",
+          "pass": true
+        }
+      ],
+      "pass_count": 1,
+      "fail_count": 0,
+      "status": "PASS",
+      "notes": "Stopwatch with Handler"
+    },
+    {
+      "name": "chessclock",
+      "status": "SKIP",
+      "reason": "KNOWN ISSUE: APK deflate extraction fails \u2014 not a B5 manifest resolver bug"
+    }
+  ]
+}

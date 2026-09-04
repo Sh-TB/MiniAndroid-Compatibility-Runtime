@@ -1,5 +1,32 @@
 {
   "test": "EXP085 Phase 2 \u2014 Multi-DEX method dispatch verification",
-  "generated_at": "2026-09-04T17:02:19.549000+00:00",
-  "results": []
+  "generated_at": "2026-09-04T21:09:38.624003+00:00",
+  "results": [
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/tictactoe.apk",
+      "apk_name": "tictactoe",
+      "apk_sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+      "dex_count": 1,
+      "cross_dex_method_count": 0,
+      "polymorphic_override_count": 3289,
+      "cpp_dex_class_maps": [],
+      "verification_samples": 0,
+      "verification_pass_count": 0,
+      "status": "PASS",
+      "checked_at": "2026-09-04T21:09:38.607518+00:00"
+    },
+    {
+      "apk": "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+      "apk_name": "de.duenndns.gmdice_8",
+      "apk_sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+      "dex_count": 1,
+      "cross_dex_method_count": 0,
+      "polymorphic_override_count": 35,
+      "cpp_dex_class_maps": [],
+      "verification_samples": 0,
+      "verification_pass_count": 0,
+      "status": "PASS",
+      "checked_at": "2026-09-04T21:09:38.623865+00:00"
+    }
+  ]
 }

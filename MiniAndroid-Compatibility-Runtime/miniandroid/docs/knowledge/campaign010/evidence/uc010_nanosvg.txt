@@ -1,0 +1,2 @@
+parsed: 48x48
+rasterized: 1308/2304 px non-transparent

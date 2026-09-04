@@ -1,0 +1,223 @@
+[
+ {
+  "archive_id": "A-01",
+  "filename": "MiniAndroid_CAMPAIGN-012-baseline_GIT_HANDOFF.zip",
+  "size": 9002641,
+  "sha256": "a60f76a1c8f5f30f2f9ef0b67ae6ea7c2f06c2c222d70c85c7d7a5efeae4e2d8",
+  "integrity_test": "OK",
+  "extract_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-01",
+  "unzip_rc": 0,
+  "top_level": [
+   "PROVENANCE_NOTE_v0.12.0.txt",
+   "repo"
+  ],
+  "files_extracted": 1010,
+  "seconds": 0.5,
+  "status": "EXTRACTED"
+ },
+ {
+  "archive_id": "A-02",
+  "filename": "MiniAndroid_CAMPAIGN013_REPORTS_bundle.zip",
+  "size": 21799,
+  "sha256": "64080a22abbe0990a5bad9bcdf5fa20e7fd73e1307eb9ab2fcff70c9fbfb9991",
+  "integrity_test": "OK",
+  "extract_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-02",
+  "unzip_rc": 0,
+  "top_level": [
+   "BUG_RECONCILIATION_013.md",
+   "CAMPAIGN_013_WORKLOG.md",
+   "COMPATIBILITY_SCOREBOARD_013.md",
+   "COMPOSE_REPORT_013.md",
+   "DIALOG_SURFACE_REPORT_013.md",
+   "FIXES_013.md",
+   "GLES_REPORT_013.md",
+   "HANDOFF_013.md",
+   "REAL_APP_MATRIX_013.md",
+   "RUNTIME_VIEW_REPORT_013.md",
+   "SCREENSHOT_INDEX_013.md",
+   "TOP_BLOCKERS_013.md",
+   "VERSION_HANDOFF_MANIFEST_v0.11.3.md"
+  ],
+  "files_extracted": 13,
+  "seconds": 0.0,
+  "status": "EXTRACTED"
+ },
+ {
+  "archive_id": "A-03",
+  "filename": "MiniAndroid_CANONICAL_MASTER_RECONCILED_272f216c.zip",
+  "size": 158318788,
+  "sha256": "2e93d27d11a9d8da2ffc26015e89facd3d161f329ef3f4195ba636c50937abbb",
+  "integrity_test": "OK",
+  "extract_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-03",
+  "unzip_rc": 0,
+  "top_level": [
+   "repo"
+  ],
+  "files_extracted": 1202,
+  "seconds": 2.0,
+  "status": "EXTRACTED"
+ },
+ {
+  "archive_id": "A-04",
+  "filename": "MiniAndroid_CANONICAL_MASTER_RECONCILED_f714420.zip",
+  "size": 157354279,
+  "sha256": "11b2c482d73d3d52882c471ab599341e7f514030d632125da4025b0e11742300",
+  "integrity_test": "OK",
+  "extract_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-04",
+  "unzip_rc": 0,
+  "top_level": [
+   "repo"
+  ],
+  "files_extracted": 1042,
+  "seconds": 2.0,
+  "status": "EXTRACTED"
+ },
+ {
+  "archive_id": "A-05",
+  "filename": "MiniAndroid_FULL_VALIDATION_HANDOFF_6c9a91e.zip",
+  "size": 0,
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "status": "CORRUPT_EMPTY \u2014 no extraction possible, recorded only"
+ },
+ {
+  "archive_id": "A-06",
+  "filename": "MiniAndroid_MASTER_INTEGRATION_REVIEW_0fd1ad6.zip",
+  "size": 161103433,
+  "sha256": "4ae914c2daf68e2a8e6c1225980dd9885626703f11fe82991466e95bc91f5bac",
+  "integrity_test": "OK",
+  "extract_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-06",
+  "unzip_rc": 0,
+  "top_level": [
+   "repo"
+  ],
+  "files_extracted": 1276,
+  "seconds": 2.5,
+  "status": "EXTRACTED"
+ },
+ {
+  "archive_id": "A-07",
+  "filename": "MiniAndroid_v0.11-unified-011_GIT_HANDOFF.zip",
+  "size": 8271563,
+  "sha256": "5a664aa7cda9067d92c5cd85ce2080dfd66bb0189a76ecc89662017ca70c7a6e",
+  "integrity_test": "OK",
+  "extract_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-07",
+  "unzip_rc": 0,
+  "top_level": [
+   "repo"
+  ],
+  "files_extracted": 821,
+  "seconds": 0.3,
+  "status": "EXTRACTED"
+ },
+ {
+  "archive_id": "A-08",
+  "filename": "MiniAndroid_v0.11.1-unified-011-1_GIT_HANDOFF.zip",
+  "size": 8873186,
+  "sha256": "7f58e8140fdfad4a1a6551d81c7d0ec16a820874beab59e74f2524b123171397",
+  "integrity_test": "OK",
+  "extract_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-08",
+  "unzip_rc": 0,
+  "top_level": [
+   "repo"
+  ],
+  "files_extracted": 971,
+  "seconds": 0.3,
+  "status": "EXTRACTED"
+ },
+ {
+  "archive_id": "A-09",
+  "filename": "MiniAndroid_v0.11.2-unified-011-2_GIT_HANDOFF.zip",
+  "size": 8952162,
+  "sha256": "3a56d479b07afe16353aa8e7f1c6e1c8972b982a4561d4f10911718598e96672",
+  "integrity_test": "OK",
+  "extract_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-09",
+  "unzip_rc": 0,
+  "top_level": [
+   "repo"
+  ],
+  "files_extracted": 994,
+  "seconds": 0.3,
+  "status": "EXTRACTED"
+ },
+ {
+  "archive_id": "A-10",
+  "filename": "MiniAndroid_v0.11.3-unified-011-3_GIT_HANDOFF.zip",
+  "size": 9755340,
+  "sha256": "45bae5948c0fe403a9d09bfd30ece63ccc70fbb755726b6b41fbb837ddfa9e6d",
+  "integrity_test": "OK",
+  "extract_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-10",
+  "unzip_rc": 0,
+  "top_level": [
+   "MiniAndroid_v0.11.3-unified-011-3"
+  ],
+  "files_extracted": 1379,
+  "seconds": 0.3,
+  "status": "EXTRACTED"
+ },
+ {
+  "archive_id": "A-11",
+  "filename": "MiniAndroid_v0.11.4-fix-01_GAP-RECONCILIATION_GIT_HANDOFF.zip",
+  "size": 9058888,
+  "sha256": "294ba77ca3aaa9340e542bc17785fae3bfc357ee92cd0a7688fb4536b75e5d07",
+  "integrity_test": "OK",
+  "extract_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-11",
+  "unzip_rc": 0,
+  "top_level": [
+   "repo"
+  ],
+  "files_extracted": 1013,
+  "seconds": 0.3,
+  "status": "EXTRACTED"
+ },
+ {
+  "archive_id": "A-12",
+  "filename": "MiniAndroid_v0.13.0_GIT_HANDOFF.zip",
+  "size": 7903986,
+  "sha256": "8beea37a59860811ab6ee40899c612c7eecc2768ace0f20376c700e91ae2b6bd",
+  "integrity_test": "OK",
+  "extract_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-12",
+  "unzip_rc": 0,
+  "top_level": [
+   "repo"
+  ],
+  "files_extracted": 884,
+  "seconds": 0.3,
+  "status": "EXTRACTED"
+ },
+ {
+  "archive_id": "A-13",
+  "filename": "MiniAndroid_v0.14.0_GIT_HANDOFF.zip",
+  "size": 0,
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "status": "CORRUPT_EMPTY \u2014 no extraction possible, recorded only"
+ },
+ {
+  "archive_id": "A-14",
+  "filename": "MiniAndroid_v0.14.0_PARTIAL_GIT_HANDOFF.zip",
+  "size": 9503830,
+  "sha256": "fb1cfd4d23bc005fb188b6e2751c01a02d589af4a459c0c0288f17b83122b94b",
+  "integrity_test": "OK",
+  "extract_dir": "/home/z/my-project/miniandroid_ws/forensics/extract/A-14",
+  "unzip_rc": 0,
+  "top_level": [
+   "repo"
+  ],
+  "files_extracted": 1159,
+  "seconds": 0.4,
+  "status": "EXTRACTED"
+ },
+ {
+  "archive_id": "A-15",
+  "filename": "handoff.zip",
+  "size": 0,
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "status": "CORRUPT_EMPTY \u2014 no extraction possible, recorded only"
+ },
+ {
+  "archive_id": "A-16",
+  "filename": "handoff2.zip",
+  "size": 0,
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "status": "CORRUPT_EMPTY \u2014 no extraction possible, recorded only"
+ }
+]

@@ -1,0 +1,117 @@
+{
+  "clickable_views": 0,
+  "frame1_sha_note": "screenshot.png (already written by stage_capture_output)",
+  "per_view": [
+    {
+      "changed_px": 0,
+      "class": "Lcom.dozingcatsoftware.bouncy.ScoreView;",
+      "click_dispatched": true,
+      "handler": "scoreViewClicked",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 12
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/ImageButton;",
+      "click_dispatched": true,
+      "handler": "doPreviousTable",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 19
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "handler": "doShowTableList",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 20
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/ImageButton;",
+      "click_dispatched": true,
+      "handler": "doNextTable",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 21
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "handler": "doStartGame",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 24
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "handler": "doStartGame",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 25
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "handler": "doEndGame",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 26
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "handler": "showHighScore",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 27
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "handler": "doAbout",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 28
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "handler": "doPreferences",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 29
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "handler": "doQuit",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 30
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "handler": "hideHighScore",
+      "kind": "xml_onClick",
+      "state_changed": false,
+      "view_id": 35
+    }
+  ],
+  "views_changed_second_frame": 0,
+  "views_probed": 12,
+  "xml_onclick_views": 12
+}

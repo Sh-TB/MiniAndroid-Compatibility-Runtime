@@ -1,0 +1,17 @@
+{
+  "clickable_views": 1,
+  "frame1_sha_note": "screenshot.png (already written by stage_capture_output)",
+  "per_view": [
+    {
+      "changed_px": 181512,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice;",
+      "screenshot": "click_frame_0.png",
+      "state_changed": true,
+      "view_id": 13
+    }
+  ],
+  "views_changed_second_frame": 1,
+  "views_probed": 1
+}

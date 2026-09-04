@@ -1,0 +1,122 @@
+{
+  "clickable_views": 1,
+  "frame1_sha_note": "screenshot.png (already written by stage_capture_output)",
+  "per_view": [
+    {
+      "changed_px": 1746764,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice;",
+      "screenshot": "click_frame_0.png",
+      "state_changed": true,
+      "view_id": 13
+    },
+    {
+      "changed_px": 1868972,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice$7;",
+      "screenshot": "click_frame_0.png",
+      "state_changed": true,
+      "view_id": 700003
+    },
+    {
+      "changed_px": 1868972,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice$7;",
+      "screenshot": "click_frame_1.png",
+      "state_changed": true,
+      "view_id": 700002
+    },
+    {
+      "changed_px": 1868972,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice$7;",
+      "screenshot": "click_frame_2.png",
+      "state_changed": true,
+      "view_id": 700001
+    },
+    {
+      "changed_px": 1746764,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice$6;",
+      "screenshot": "click_frame_0.png",
+      "state_changed": true,
+      "view_id": 700010
+    },
+    {
+      "changed_px": 1746764,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice$5;",
+      "state_changed": true,
+      "view_id": 700008
+    },
+    {
+      "changed_px": 1868972,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice$7;",
+      "state_changed": true,
+      "view_id": 700014
+    },
+    {
+      "changed_px": 1868972,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice$7;",
+      "state_changed": true,
+      "view_id": 700013
+    },
+    {
+      "changed_px": 1868972,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice$7;",
+      "state_changed": true,
+      "view_id": 700012
+    },
+    {
+      "changed_px": 1746764,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice$6;",
+      "state_changed": true,
+      "view_id": 700021
+    },
+    {
+      "changed_px": 1746764,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice$5;",
+      "state_changed": true,
+      "view_id": 700019
+    },
+    {
+      "changed_px": 1868972,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lde/duenndns/gmdice/GameMasterDice$7;",
+      "state_changed": true,
+      "view_id": 700025
+    }
+  ],
+  "views_changed_second_frame": 12,
+  "views_probed": 12,
+  "xml_onclick_views": 0
+}

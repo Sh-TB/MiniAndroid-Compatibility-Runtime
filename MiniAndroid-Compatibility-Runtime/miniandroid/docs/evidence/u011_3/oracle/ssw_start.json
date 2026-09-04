@@ -1,0 +1,37 @@
+{
+  "before": {
+    "path": "run/u0113_ssw_click3/screenshot.png",
+    "size": [
+      1080,
+      1920
+    ]
+  },
+  "after": {
+    "path": "run/u0113_ssw_click3/click_frame_0.png",
+    "size": [
+      1080,
+      1920
+    ]
+  },
+  "diff": {
+    "changed_px": 12373,
+    "total_px": 2073600,
+    "changed_pct": 0.597,
+    "bbox": {
+      "x0": 24,
+      "y0": 4,
+      "x1": 793,
+      "y1": 1919,
+      "w": 770,
+      "h": 1916
+    },
+    "max_channel_delta": 222,
+    "mean_channel_delta": 0.3993,
+    "row_distribution": {
+      "top": 322,
+      "middle": 0,
+      "bottom": 12051
+    }
+  },
+  "diff_png": "run/u0113_oracle/ssw_start_diff.png"
+}

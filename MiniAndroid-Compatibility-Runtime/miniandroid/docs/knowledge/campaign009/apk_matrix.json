@@ -1,0 +1,250 @@
+[
+ {
+  "name": "Telegram",
+  "package": null,
+  "sha256": "193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp038_telegram/Telegram.apk"
+ },
+ {
+  "name": "gmdice",
+  "package": null,
+  "sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk"
+ },
+ {
+  "name": "TicTacToe (emmanuelmess)",
+  "package": null,
+  "sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/tictactoe.apk"
+ },
+ {
+  "name": "OpenLauncher",
+  "package": null,
+  "sha256": "b7900f56ccbe4768701c6e664aca578091ad8d0aa4245d766a3d24b56766e743",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp076_corpus/com.benny.openlauncher_39.apk"
+ },
+ {
+  "name": "Dooz (TicTacToe variant)",
+  "package": null,
+  "sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp076_corpus/io.github.yamin8000.dooz_18.apk"
+ },
+ {
+  "name": "BGClock (Hans de Zwart)",
+  "package": null,
+  "sha256": "72c140b0083ef273bc6452a7f1006e1e2dc4c64c61f8bcc90d082c3f6d1f9dee",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp076_corpus/nl.hansdezwart.bgclock_2.apk"
+ },
+ {
+  "name": "Stopwatch (muellerma)",
+  "package": null,
+  "sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp076_corpus/com.github.muellerma.stopwatch_6.apk"
+ },
+ {
+  "name": "Simple Keyboard",
+  "package": null,
+  "sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp076_corpus/rkr.simplekeyboard.inputmethod_145.apk"
+ },
+ {
+  "name": "MicroTimer",
+  "package": null,
+  "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp076_corpus/dubrowgn.microtimer_8.apk"
+ },
+ {
+  "name": "uNote",
+  "package": null,
+  "sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp076_corpus/app.varlorg.unote_30.apk"
+ },
+ {
+  "name": "Notes (billthefarmer)",
+  "package": null,
+  "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp073_real_apps/org.billthefarmer.notes_139.apk"
+ },
+ {
+  "name": "Simple Stopwatch",
+  "package": null,
+  "sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk"
+ },
+ {
+  "name": "Chess Clock",
+  "package": null,
+  "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk"
+ },
+ {
+  "name": "Heading Calculator",
+  "package": null,
+  "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk"
+ },
+ {
+  "name": "Tiny Music Player",
+  "package": null,
+  "sha256": "d7bcb24d101b04beb3394b695b24be4e2c3d6ed702f1d0e06bc4dd707f64d86a",
+  "status": "existing-corpus",
+  "path": "miniandroid/download/exp037_real_apks/TinyMusicPlayer.apk"
+ },
+ {
+  "package": "com.looker.droidify",
+  "category": "I-Compose",
+  "note": "Droid-ify: Compose F-Droid client (lists, state)",
+  "version": "760",
+  "url": "https://f-droid.org/repo/com.looker.droidify_760.apk",
+  "status": "downloaded",
+  "path": "/home/z/.cache/miniandroid/apks/com.looker.droidify_760.apk",
+  "bytes": 6132598,
+  "sha256": "08d5a826be0cc5b699139b80bd5b610a9b3663a69987bc082ac0d9825afc72f6"
+ },
+ {
+  "package": "app.accrescent.client",
+  "category": "I-Compose",
+  "note": "Accrescent: Compose app store",
+  "status": "not-found-fdroid"
+ },
+ {
+  "package": "com.github.vagujhelyi.calculatorm3",
+  "category": "I-Compose",
+  "note": "CalculatorM3: tiny Material3 calculator",
+  "status": "not-found-fdroid"
+ },
+ {
+  "package": "org.oxycblt.auxio",
+  "category": "H-Media",
+  "note": "Auxio: music player (Media-style UI)",
+  "version": "75",
+  "url": "https://f-droid.org/repo/org.oxycblt.auxio_75.apk",
+  "status": "downloaded",
+  "path": "/home/z/.cache/miniandroid/apks/org.oxycblt.auxio_75.apk",
+  "bytes": 11229630,
+  "sha256": "c2053d36c28dbe74de40eadcd8978ec874c465ed3352bba655d4b2b364780b45"
+ },
+ {
+  "package": "org.schabi.newpipe",
+  "category": "H-Media",
+  "note": "NewPipe: media + lists (large)",
+  "version": "1015",
+  "url": "https://f-droid.org/repo/org.schabi.newpipe_1015.apk",
+  "status": "downloaded",
+  "path": "/home/z/.cache/miniandroid/apks/org.schabi.newpipe_1015.apk",
+  "bytes": 11507122,
+  "sha256": "1d66d19eedbab969b1be2e44e0ea35f5f8921cbe83b5c5ac810767ca1a84b7e8"
+ },
+ {
+  "package": "com.shatteredpixel.shatteredpixeldungeon",
+  "category": "K-3D",
+  "note": "Shattered Pixel Dungeon: libGDX GLES game",
+  "version": "896",
+  "url": "https://f-droid.org/repo/com.shatteredpixel.shatteredpixeldungeon_896.apk",
+  "status": "download-failed"
+ },
+ {
+  "package": "com.serwylo.retrowars",
+  "category": "K-3D",
+  "note": "RetroWars: libGDX mini-games",
+  "version": "70",
+  "url": "https://f-droid.org/repo/com.serwylo.retrowars_70.apk",
+  "status": "downloaded",
+  "path": "/home/z/.cache/miniandroid/apks/com.serwylo.retrowars_70.apk",
+  "bytes": 15364501,
+  "sha256": "8886269ac43e8f2f7f884fa1db8e2e7c1694db6cbc26311fe2323cef845eb3ec"
+ },
+ {
+  "package": "io.anuke.mindustry",
+  "category": "K-3D",
+  "note": "Mindustry: libGDX GLES factory game",
+  "version": "1107",
+  "url": "https://f-droid.org/repo/io.anuke.mindustry_1107.apk",
+  "status": "downloaded",
+  "path": "/home/z/.cache/miniandroid/apks/io.anuke.mindustry_1107.apk",
+  "bytes": 78293438,
+  "sha256": "0798f9c33be2e7ebe4698edbb8826794aa3336298ce20b2c526d35ba85720bf1"
+ },
+ {
+  "package": "de.stuermerbenjamin.socialhelper",
+  "category": "L-WebView",
+  "note": "SocialHelper: WebView-focused helper app",
+  "status": "not-found-fdroid"
+ },
+ {
+  "package": "com.tobykurien.webapps",
+  "category": "L-WebView",
+  "note": "WebApps: WebView app container",
+  "status": "not-found-fdroid"
+ },
+ {
+  "package": "org.secuso.privacyfriendlynotes",
+  "category": "B-Forms",
+  "note": "Privacy Friendly Notes: forms + persistence",
+  "version": "105",
+  "url": "https://f-droid.org/repo/org.secuso.privacyfriendlynotes_105.apk",
+  "status": "downloaded",
+  "path": "/home/z/.cache/miniandroid/apks/org.secuso.privacyfriendlynotes_105.apk",
+  "bytes": 8483558,
+  "sha256": "71e874f45fa4655f14296fce13791a82f994ea9bc26699f433383f0b4d334037"
+ },
+ {
+  "package": "org.billthefarmer.editor",
+  "category": "B-Forms",
+  "note": "Editor: text input form app",
+  "version": "198",
+  "url": "https://f-droid.org/repo/org.billthefarmer.editor_198.apk",
+  "status": "downloaded",
+  "path": "/home/z/.cache/miniandroid/apks/org.billthefarmer.editor_198.apk",
+  "bytes": 269122,
+  "sha256": "343d17e11d0914e1a7708df2781580a0413e52501c0a41d91f7ef725d9615fe9"
+ },
+ {
+  "package": "fr.neamar.kiss",
+  "category": "D-Lists",
+  "note": "KISS launcher: RecyclerView-heavy + intents",
+  "version": "224",
+  "url": "https://f-droid.org/repo/fr.neamar.kiss_224.apk",
+  "status": "downloaded",
+  "path": "/home/z/.cache/miniandroid/apks/fr.neamar.kiss_224.apk",
+  "bytes": 2205788,
+  "sha256": "da6ab0b1219ad3b5ee573698523fb15d60a918083e0843f94a03c1b12e1098c9"
+ },
+ {
+  "package": "de.stuermerbenjamin.news?",
+  "category": "G-Network",
+  "note": "placeholder \u2014 will fail, honest record",
+  "status": "skipped-invalid-candidate"
+ },
+ {
+  "package": "com.nutomic.syncthingandroid",
+  "category": "G-Network",
+  "note": "Syncthing: network UI state",
+  "status": "not-found-fdroid"
+ },
+ {
+  "package": "org.secuso.privacyfriendly2048",
+  "category": "J-Game",
+  "note": "2048: 2D game logic + animation",
+  "version": "100",
+  "url": "https://f-droid.org/repo/org.secuso.privacyfriendly2048_100.apk",
+  "status": "downloaded",
+  "path": "/home/z/.cache/miniandroid/apks/org.secuso.privacyfriendly2048_100.apk",
+  "bytes": 9294779,
+  "sha256": "02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8"
+ }
+]

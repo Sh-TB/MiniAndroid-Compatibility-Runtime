@@ -1,0 +1,155 @@
+{
+ "campaign": "010",
+ "policy": "every external code: repo + commit + license + used files + modified files + integration path; verified live 2026-08-30",
+ "libraries": [
+  {
+   "name": "libpng",
+   "version": "1.6.48",
+   "repo": "libpng.org (Debian libpng-dev 1.6.48-1+deb13u5)",
+   "license": "libpng/PNG (Zlib-like)",
+   "commit": "system package",
+   "used_files": [
+    "src/renderer/software_renderer.cpp",
+    "run/uc010_png_harness.cpp",
+    "tests/exp088_a4_png_decoder_test.cpp"
+   ],
+   "modified_files": [],
+   "integration": "PNGDecoder::decode + PNGWriter::write_png reimplementation (commit 8d4e25b)"
+  },
+  {
+   "name": "stb_image",
+   "version": "v2.30",
+   "repo": "nothings/stb",
+   "commit": "2c980bb59875",
+   "license": "public domain / MIT dual",
+   "vendored": "third_party/stb/stb_image.h",
+   "used_files": [
+    "run/uc010_stb_bench.cpp (differential oracle)"
+   ],
+   "modified_files": [],
+   "integration": "oracle only; runtime adoption rejected (stbi_* symbol collision with rlottie-bundled v2.19)"
+  },
+  {
+   "name": "PortableGL",
+   "version": "@7cf39dc1741e (2026-08-04)",
+   "repo": "rswinkle/PortableGL",
+   "license": "MIT",
+   "commit": "7cf39dc1741e",
+   "used_files": [
+    "src/gles/pgl_backend.cpp (PORTABLEGL_IMPLEMENTATION TU)",
+    "src/gles/gles20_bridge.cpp",
+    "run/uc010_gles_cube.cpp"
+   ],
+   "modified_files": [],
+   "integration": "GLES backend adopted; golden cube + benchmarks (commit 4e128c0)"
+  },
+  {
+   "name": "yoga",
+   "version": "@bd8fe0d6d243 (2026-08-27)",
+   "repo": "facebook/yoga",
+   "license": "MIT",
+   "commit": "bd8fe0d6d243",
+   "build": "libyogacore.a (cmake 4.4.2)",
+   "used_files": [
+    "run/uc010_yoga_layout.cpp (adapter)"
+   ],
+   "modified_files": [],
+   "integration": "LinearLayout\u2192Flexbox adapter experiment, ADOPT verdict (commit f131606)"
+  },
+  {
+   "name": "rlottie",
+   "version": "vendored (Samsung)",
+   "repo": "Samsung/rlottie",
+   "license": "MIT",
+   "used_files": [
+    "src/renderer/software_renderer.cpp RLottieDecoder"
+   ],
+   "modified_files": [],
+   "integration": "pre-existing (EXP-097); unchanged in 010"
+  },
+  {
+   "name": "miniaudio",
+   "version": "0.11.25",
+   "repo": "mackron/miniaudio",
+   "commit": "9634bedb5b5a",
+   "license": "public domain / MIT choice",
+   "used_files": [
+    "tools/miniaudio (clone)",
+    "evidence/uc010_miniaudio.txt"
+   ],
+   "modified_files": [],
+   "integration": "verified compile+link+context_init; adopt-on-audio-return"
+  },
+  {
+   "name": "nanosvg",
+   "version": "@239e102ec2c6 (2026-07-10)",
+   "repo": "memononen/nanosvg",
+   "license": "Zlib",
+   "used_files": [
+    "tools/nanosvg (clone)",
+    "evidence/uc010_nanosvg.txt"
+   ],
+   "modified_files": [],
+   "integration": "parse+rasterize proven; adopt-on-SVG-demand"
+  },
+  {
+   "name": "SheenBidi",
+   "version": "@9c048a32d213 (2026-04-07)",
+   "repo": "Tehreer/SheenBidi",
+   "license": "Apache-2.0",
+   "used_files": [
+    "tools/SheenBidi (clone, libSheenBidi.a)",
+    "scripts/uc010_sbidiff.c"
+   ],
+   "modified_files": [],
+   "integration": "build+link OK; bidi differential needs recalibration \u2192 E"
+  },
+  {
+   "name": "androguard",
+   "version": "3.3.5 (installed)",
+   "repo": "androguard/androguard",
+   "license": "GPL-3",
+   "used_files": [
+    "demand mining, DEX disassembly for LM1/i;.f root cause"
+   ],
+   "modified_files": [],
+   "integration": "oracle/tooling"
+  },
+  {
+   "name": "googletest/gmock",
+   "version": "bundled with yoga build",
+   "repo": "google/googletest",
+   "commit": "36ba75f0ad53",
+   "license": "BSD-3",
+   "used_files": [
+    "tools/yoga/build (gtest targets)"
+   ],
+   "modified_files": [],
+   "integration": "yoga test infra only"
+  },
+  {
+   "name": "cmake",
+   "version": "4.4.2 (pip)",
+   "repo": "cmake.org",
+   "license": "BSD-3",
+   "used_files": [
+    "yoga build"
+   ],
+   "modified_files": [],
+   "integration": "toolchain"
+  },
+  {
+   "name": "AOSP res_config",
+   "version": "@1cdfff555f4a",
+   "repo": "platform_frameworks_base",
+   "license": "Apache-2.0",
+   "used_files": [
+    "src/resources/res_config.{h,cpp}"
+   ],
+   "modified_files": [
+    "port maintained from 009"
+   ],
+   "integration": "ARSC configuration bucket matching"
+  }
+ ]
+}

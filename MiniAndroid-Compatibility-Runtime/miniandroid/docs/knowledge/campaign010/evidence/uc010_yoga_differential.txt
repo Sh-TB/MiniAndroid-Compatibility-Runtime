@@ -1,0 +1,17 @@
+[U007-RES] ResourceRuntime loaded: download/corpus/gmdice.apk named_ids=73 types=8
+inflated act_gmdice: 10 elements
+
+id    class                                     custom(x,y)   yoga_px(x,y)     d(x,y)
+1000  Landroid/widget/LinearLayout;          0,0                0,0        0.0,0.0
+1001  Landroid/widget/ListView;              0,0                0,0        0.0,0.0
+1002  Landroid/widget/TextView;              0,816              0,814      0.0,2.2
+1003  Landroid/widget/TextView;              0,1632             0,1630     0.0,1.9
+1004  Landroid/widget/LinearLayout;          0,1776             0,1777     0.0,1.1
+1005  Landroid/widget/Button;                0,1776             0,1777     0.0,1.1
+1006  Landroid/widget/Button;              216,1776           215,1777     0.8,1.1
+1007  Landroid/widget/Button;              432,1776           430,1777     1.5,1.1
+1008  Landroid/widget/Button;              648,1776           646,1777     2.2,1.1
+1009  Landroid/widget/Button;              864,1776           864,1777     0.4,1.1
+
+nodes compared: 10  exact-agree(<1.5px): 6 (60.0%)  agree(<8px): 10 (100.0%)
+layout speed (1000 iters): yoga 0.0000 ms/pass, custom 0.0014 ms/pass (39.83x)
