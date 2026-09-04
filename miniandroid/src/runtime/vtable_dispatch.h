@@ -27,6 +27,7 @@
 #include <sstream>
 #include <iomanip>
 #include <cassert>
+#include <chrono>   // portable: was transitively included by libstdc++, not by libc++ (Windows/llvm-mingw)
 
 namespace miniandroid {
 namespace runtime {
