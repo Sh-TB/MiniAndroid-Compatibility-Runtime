@@ -504,6 +504,12 @@ public:
         // We store it so getParentActivity() can find the Activity via
         // getView().getContext() instanceof Activity.
         uint32_t context_object_id = 0;  // The Context (Activity) that created this View
+        // UC009: AOSP View.mAttachInfo equivalence — set when the tree attaches
+        // to the window (dispatchAttachedToWindow), cleared on detach.
+        // Compose's AbstractComposeView chain checks View.isAttachedToWindow()
+        // during ensureCompositionCreated; without this state the composition
+        // bails out and ComposeView keeps children=0 forever.
+        bool attached_to_window = false;
         // EXP-067: Image resource ID — set by ImageView.setImageResource(int)
         // The renderer can look up the drawable path via resource_drawable_paths_.
         int32_t image_resource_id = 0;

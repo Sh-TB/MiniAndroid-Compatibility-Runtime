@@ -6,6 +6,7 @@
  */
 
 #include "application_runtime.h"
+#include <cstdlib>   // std::getenv — UC009-WIRE attach-dispatch gate
 #include "apk/apk_parser.h"
 #include "apk/manifest_reader.h"
 #include "dex/dex_parser.h"
@@ -1915,6 +1916,36 @@ bool ApplicationRuntime::execute_on_create() {
             std::cout << "  Heap objects: " << dalvik_result.heap.size() << std::endl;
             std::cout << "  Duration: " << duration << "ms" << std::endl;
         }
+        
+        // ===== UC009-WIRE: composition trigger for Compose-based apps =====
+        // AOSP ViewRootImpl.performTraversals(): dispatchAttachedToWindow()
+        // runs on the attaching tree BEFORE the first draw. For Compose this
+        // is THE composition trigger:
+        //   AbstractComposeView.onAttachedToWindow -> ensureCompositionCreated()
+        // The hook (dispatch_view_attached, CAMPAIGN 009 §10) existed but was
+        // never invoked — dead code. Env-gated for golden protection; enable
+        // with MINIANDROID_DISPATCH_ATTACH=1.
+        if (std::getenv("MINIANDROID_DISPATCH_ATTACH") != nullptr) {
+            std::cerr << "[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)..." << std::endl;
+            bool attached = dalvik_engine.dispatch_view_attached();
+            if (attached) {
+                // AOSP: composition start posts work to the UI-thread queue
+                // (Recomposer via AndroidUiDispatcher / Handler). Drain bounded
+                // rounds so posted composition work actually executes; each
+                // round may create new views and enqueue more work.
+                for (int round = 0; round < 64; ++round) {
+                    std::vector<uint32_t> drained;
+                    size_t n = drain_handler_queue(&drained);
+                    if (n == 0) break;
+                    std::cerr << "[UC009-WIRE] drain round=" << round
+                              << " runnable(s)=" << n << std::endl;
+                    for (uint32_t rid : drained) {
+                        dalvik_engine.dispatch_runnable(rid);
+                    }
+                }
+            }
+        }
+        // ===== end UC009-WIRE =====
         
         return success;
         

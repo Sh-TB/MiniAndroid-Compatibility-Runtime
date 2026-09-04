@@ -1188,6 +1188,31 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     // View instance methods — receiver_id is the View heap object_id.
 
+    // UC009: AOSP View attach state (mAttachInfo != null). Compose's
+    // ensureCompositionCreated path queries isAttachedToWindow; the
+    // dispatchAttachedToWindow entry point marks the node BEFORE
+    // onAttachedToWindow is invoked (same order as AOSP).
+    if (m == "isAttachedToWindow") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_bool(n ? n->attached_to_window : false);
+    }
+    if (m == "dispatchAttachedToWindow") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->attached_to_window = true;
+        return CallResult::handled_void();
+    }
+    if (m == "dispatchDetachedFromWindow") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->attached_to_window = false;
+        return CallResult::handled_void();
+    }
+    if (m == "isLaidOut") {
+        // AOSP: mLeft != mRight || mTop != mBottom — after performLayout.
+        const auto* n = find_node(ctx.receiver_id);
+        bool laid = n && (n->width > 0 && n->height > 0);
+        return CallResult::handled_bool(laid);
+    }
+
     if (m == "<init>") {
         // View(Context), View(Context, AttributeSet), View(Context, AttributeSet, int)
         // Allocate a fresh node bound to this receiver.
