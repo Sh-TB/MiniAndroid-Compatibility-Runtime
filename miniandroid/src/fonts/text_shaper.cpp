@@ -17,6 +17,7 @@
 #include <cstring>
 #include <cstdio>
 #include <functional>
+#include <algorithm>
 
 namespace miniandroid {
 namespace fonts {
@@ -151,9 +152,12 @@ uint64_t TextShaper::hash_string(const std::string& s, float size_px, bool bold)
 // shape(): bidi + shaping + metrics (glyph rasters NOT generated here)
 // ---------------------------------------------------------------------------
 const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
-                                    bool bold) {
+                                    bool bold, int face_idx) {
     std::lock_guard<std::mutex> lock(mtx_);
-    uint64_t key = hash_string(utf8, size_px, bold);
+    int rf = resolve_face(bold, face_idx);
+    // Cache key covers the resolved face so app-face and system results
+    // never alias.
+    uint64_t key = hash_string(utf8, size_px, bold) ^ ((uint64_t)(uint32_t)rf << 32);
     auto it = shape_cache_.find(key);
     if (it != shape_cache_.end()) return it->second;
 
@@ -163,8 +167,14 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
         return res.first->second;
     }
 
-    int face_idx = bold ? kFaceBold : kFaceRegular;
-    FT_Face face = reinterpret_cast<FT_Face>(faces_[face_idx].ft_face);
+    face_idx = rf;
+    FT_Face face = nullptr;
+    if (face_idx >= 0 && face_idx < kBaseFaceCount)
+        face = reinterpret_cast<FT_Face>(faces_[face_idx].ft_face);
+    else if (face_idx >= kBaseFaceCount &&
+             face_idx < kBaseFaceCount + (int)app_faces_.size())
+        face = reinterpret_cast<FT_Face>(
+            app_faces_[face_idx - kBaseFaceCount].ft_face);
     if (!face) face = reinterpret_cast<FT_Face>(faces_[kFaceRegular].ft_face);
 
     // Fixed pixel size — size_px is exactly the em size in px (26.6 fixed).
@@ -301,6 +311,93 @@ float TextShaper::line_height(float size_px, bool bold) const {
     return size_px * 1.2f;
 }
 
+int TextShaper::resolve_face(bool bold, int face_idx) const {
+    if (face_idx == FACE_APP) {
+        int idx = bold ? app_bold_idx_ : app_regular_idx_;
+        if (idx < 0) idx = (app_regular_idx_ >= 0) ? app_regular_idx_ : app_bold_idx_;
+        if (idx >= 0) return idx;
+        // No app face registered (or registration failed): fall back to the
+        // system family — same behavior as Android's default font chain.
+        return bold ? kFaceBold : kFaceRegular;
+    }
+    if (face_idx == FACE_SYSTEM) return bold ? kFaceBold : kFaceRegular;
+    if (face_idx >= 0 && face_idx < kBaseFaceCount + (int)app_faces_.size())
+        return face_idx;
+    return bold ? kFaceBold : kFaceRegular;
+}
+
+void TextShaper::metrics(float size_px, bool bold, int face_idx,
+                         float* ascent, float* descent, float* line_height) const {
+    int rf = resolve_face(bold, face_idx);
+    FT_Face face = nullptr;
+    if (rf >= 0 && rf < kBaseFaceCount)
+        face = reinterpret_cast<FT_Face>(faces_[rf].ft_face);
+    else if (rf >= kBaseFaceCount && rf < kBaseFaceCount + (int)app_faces_.size())
+        face = reinterpret_cast<FT_Face>(app_faces_[rf - kBaseFaceCount].ft_face);
+    float a = size_px * 0.9f, d = size_px * 0.25f;
+    if (face) {
+        // Read vertical metrics at this pixel size (setting the size is
+        // side-effect-tolerant: shaping/drawing set it again).
+        if (!FT_Set_Pixel_Sizes(face, 0, (FT_UInt)std::lround(size_px))) {
+            float fa = (float)(face->size->metrics.ascender  >> 6);
+            float fd = (float)(-(face->size->metrics.descender >> 6));
+            if (fa > 0) a = fa;
+            if (fd > 0) d = fd;
+        }
+    }
+    if (ascent) *ascent = a;
+    if (descent) *descent = d;
+    if (line_height) *line_height = a + d + std::max(1.0f, size_px * 0.05f);
+}
+
+int TextShaper::register_app_font_memory(const std::vector<uint8_t>& bytes,
+                                         const std::string& debug_name, bool is_bold) {
+    if (!available_ || bytes.empty()) return -1;
+    FT_Face face = nullptr;
+    if (FT_New_Memory_Face(reinterpret_cast<FT_Library>(ft_lib_),
+                           bytes.data(), (FT_Long)bytes.size(), 0, &face)) {
+        std::fprintf(stderr, "[TEXTSHAPER] register_app_font: FT_New_Memory_Face FAILED %s\n",
+                     debug_name.c_str());
+        return -1;
+    }
+    Face f;
+    f.ft_face = face;
+    f.units_per_em = face->units_per_EM;
+    f.path = debug_name;
+    f.bytes = std::make_shared<std::vector<uint8_t>>(bytes);  // must outlive face
+    app_faces_.push_back(std::move(f));
+    int idx = kBaseFaceCount + (int)app_faces_.size() - 1;
+    if (is_bold) {
+        if (app_bold_idx_ < 0) app_bold_idx_ = idx;
+    } else {
+        if (app_regular_idx_ < 0) app_regular_idx_ = idx;
+    }
+    std::fprintf(stderr, "[TEXTSHAPER] app font registered idx=%d bold=%d source=%s\n",
+                 idx, is_bold ? 1 : 0, debug_name.c_str());
+    return idx;
+}
+
+int TextShaper::register_app_font(const std::string& font_path, bool is_bold) {
+    if (!available_) return -1;
+    std::FILE* fp = std::fopen(font_path.c_str(), "rb");
+    if (!fp) {
+        std::fprintf(stderr, "[TEXTSHAPER] register_app_font: cannot open %s\n",
+                     font_path.c_str());
+        return -1;
+    }
+    std::vector<uint8_t> bytes;
+    std::fseek(fp, 0, SEEK_END);
+    long sz = std::ftell(fp);
+    std::fseek(fp, 0, SEEK_SET);
+    if (sz <= 0) { std::fclose(fp); return -1; }
+    bytes.resize((size_t)sz);
+    if (std::fread(bytes.data(), 1, (size_t)sz, fp) != (size_t)sz) {
+        std::fclose(fp); return -1;
+    }
+    std::fclose(fp);
+    return register_app_font_memory(bytes, font_path, is_bold);
+}
+
 // ---------------------------------------------------------------------------
 // glyph raster cache: (face, size, gid) → 8-bit coverage bitmap
 // ---------------------------------------------------------------------------
@@ -371,12 +468,18 @@ static bool raster_glyph(FT_Face face, uint32_t gid, float size_px,
 // ---------------------------------------------------------------------------
 void TextShaper::draw(renderer::FrameBuffer& fb, const std::string& utf8,
                       float x, float y_baseline, float size_px,
-                      const renderer::RGBA& color, bool bold) {
-    const ShapedText& st = shape(utf8, size_px, bold);
+                      const renderer::RGBA& color, bool bold, int face_idx) {
+    const ShapedText& st = shape(utf8, size_px, bold, face_idx);
     if (!available_ || st.glyphs.empty()) return;
 
-    int face_idx = bold ? kFaceBold : kFaceRegular;
-    FT_Face face = reinterpret_cast<FT_Face>(faces_[face_idx].ft_face);
+    face_idx = resolve_face(bold, face_idx);
+    FT_Face face = nullptr;
+    if (face_idx >= 0 && face_idx < kBaseFaceCount)
+        face = reinterpret_cast<FT_Face>(faces_[face_idx].ft_face);
+    else if (face_idx >= kBaseFaceCount &&
+             face_idx < kBaseFaceCount + (int)app_faces_.size())
+        face = reinterpret_cast<FT_Face>(
+            app_faces_[face_idx - kBaseFaceCount].ft_face);
     if (!face) face = reinterpret_cast<FT_Face>(faces_[kFaceRegular].ft_face);
     FT_Face eface = reinterpret_cast<FT_Face>(faces_[kFaceEmoji].ft_face);
 
@@ -463,6 +566,73 @@ void TextShaper::draw(renderer::FrameBuffer& fb, const std::string& utf8,
         }
         pen_x += g.x_advance;
     }
+}
+
+}  // namespace fonts
+}  // namespace miniandroid
+
+namespace miniandroid {
+namespace fonts {
+
+// ---------------------------------------------------------------------------
+// layout_text — word-wrapped block layout from REAL shaped advances.
+// Greedy wrap on spaces (Android TextView/StaticLayout simplified): explicit
+// '\n' always breaks; a word wider than max_width gets its own line (no
+// mid-word break — same as a TextView without breakWords). Trailing spaces
+// are trimmed for measurement. max_lines > 0 caps the number of lines.
+// ---------------------------------------------------------------------------
+TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
+                       float max_width_px, int max_lines, int face_idx) {
+    TextLayout out;
+    auto& sh = TextShaper::instance();
+    sh.metrics(size_px, bold, face_idx, &out.ascent, &out.descent,
+               &out.line_height);
+    if (utf8.empty()) return out;
+
+    auto line_width = [&](const std::string& s) -> float {
+        if (s.empty()) return 0.0f;
+        return sh.shape(s, size_px, bold, face_idx).width;
+    };
+
+    size_t i = 0;
+    bool capped = false;
+    while (i <= utf8.size() && !capped) {
+        // Find next explicit break.
+        size_t j = utf8.find('\n', i);
+        std::string seg = (j == std::string::npos) ? utf8.substr(i)
+                                                   : utf8.substr(i, j - i);
+        // Greedy word wrap within seg.
+        std::string line, word;
+        auto flush_word = [&]() {
+            if (word.empty()) return;
+            std::string probe = line.empty() ? word : (line + ' ' + word);
+            if (max_width_px > 0 && !line.empty() &&
+                line_width(probe) > max_width_px) {
+                out.lines.push_back({line, line_width(line)});
+                if (max_lines > 0 && (int)out.lines.size() >= max_lines) {
+                    line.clear(); word.clear(); capped = true; return;
+                }
+                line = word;
+            } else {
+                line = probe;
+            }
+            word.clear();
+        };
+        for (char c : seg) {
+            if (c == ' ') flush_word();
+            else word += c;
+            if (capped) break;
+        }
+        if (capped) break;
+        flush_word();
+        out.lines.push_back({line, line_width(line)});
+        if (max_lines > 0 && (int)out.lines.size() >= max_lines) break;
+        if (j == std::string::npos) break;
+        i = j + 1;
+    }
+    for (const auto& l : out.lines)
+        out.max_line_width = std::max(out.max_line_width, l.width);
+    return out;
 }
 
 }  // namespace fonts
