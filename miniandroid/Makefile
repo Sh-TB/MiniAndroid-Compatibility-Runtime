@@ -5,12 +5,29 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -g -O2 -MMD -MP
 # EXP-097 §7: rlottie headers + rlottie static lib for Lottie rendering.
 RLOTTIE_DIR ?= /home/z/my-project/tools/rlottie
-INCLUDES = -Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Ithird_party/nlohmann_json/include -I$(RLOTTIE_DIR)/inc
+# Optional codecs (AOSP-style codec availability): WebP/Lottie are compile-time
+# optional so the runtime also builds where those libs are not ported yet.
+MINIANDROID_HAVE_WEBP ?= 1
+MINIANDROID_HAVE_LOTTIE ?= 0
+ifeq ($(MINIANDROID_HAVE_WEBP),1)
+CXXFLAGS += -DMINIANDROID_HAVE_WEBP
+endif
+ifeq ($(MINIANDROID_HAVE_LOTTIE),1)
+INCLUDES += -I$(RLOTTIE_DIR)/inc
+CXXFLAGS += -DMINIANDROID_HAVE_LOTTIE
+endif
+INCLUDES = -Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Ithird_party/nlohmann_json/include
 # EXP-097 §5/§6: image codec libraries.
 # libwebp — Google reference WebP decoder (used by AOSP Skia / BitmapFactory)
 # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
 # rlottie  — Samsung reference Lottie renderer (Telegram uses it directly)
-LIBS = -lz -lwebp -lwebpdemux -ljpeg $(RLOTTIE_DIR)/build/src/librlottie.a -lstdc++ -lm -lpthread
+LIBS = -lz -ljpeg -lstdc++ -lm -lpthread
+ifeq ($(MINIANDROID_HAVE_WEBP),1)
+LIBS += -lwebp -lwebpdemux
+endif
+ifeq ($(MINIANDROID_HAVE_LOTTIE),1)
+LIBS += $(RLOTTIE_DIR)/build/src/librlottie.a
+endif
 # UNIFIED_007: font pipeline + PNG drawable decode
 FONTS_LIBS = -lfreetype -lharfbuzz -lfribidi -lpng
 
