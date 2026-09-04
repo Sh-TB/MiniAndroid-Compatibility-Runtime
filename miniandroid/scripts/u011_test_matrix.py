@@ -42,9 +42,22 @@ MATRIX = [
 # UNIFIED_011.2 IMAGE-RES-RENDER: simplestopwatch anchors move from
 # d495e3cb2ccf6c11 (blank ImageButtons) to 2a12587a0acf196c — the
 # android:src icons (lock/settings/menu) now decode and render for real.
+# 2026-09-04 FIX-1..6 (real text pipeline + AOSP measure/layout): the anchor
+# moves 2a12587a0acf196c -> 97933dbcb993ba09. This is an INTENTIONAL,
+# documented rendering-contract change:
+#   * text is now shaped by the REAL FriBidi/HarfBuzz/FreeType pipeline at
+#     the view's real textSize (was: fixed 8x16 BitmapFont, microscopic on
+#     density-scaled screens);
+#   * measure/layout follows AOSP MeasureSpec modes (EXACTLY/AT_MOST/
+#     UNSPECIFIED) + LinearLayout weights + RelativeLayout dependency rules;
+#   * the toolbar moved to its XML-true position and buttons carry real
+#     label text ("Start"/"Reset");
+#   * the custom BigTextView surface shows an honest labeled placeholder
+#     until its onDraw DEX chain (setText(String[])->drawText) lands.
+# The old anchor's pixels are preserved in git history at 2a12587a.
 BASELINE_SHA = {
     "telegram_v12": "088ea640587ec0d28fc7cd16b0097f2529ff7da2d594c3c2663c67531d770f6a",
-    "simplestopwatch": "2a12587a0acf196cb9a52a521d6a7bc7d72e2d21dfa71eba41a694dbaa3d8c1b",
+    "simplestopwatch": "97933dbcb993ba0975c93a8dce7924f0cd5cd6b0fd802564391bb95387a6a71f",
 }
 
 
