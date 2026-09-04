@@ -49,6 +49,28 @@ reproduces it — agent/analysis claims never count as proof.
 
 ## What is now proven (evidence-backed at this commit)
 
+### Headline: real-APK execution proof with visible state transitions
+
+A dedicated, fully open-source demo app (`demo/`, MIT) is built with the
+official Android toolchain components (ECJ + AOSP D8 + Google's API-34
+`android.jar`) and executed end-to-end. A click dispatches through DEX
+bytecode and changes EVERY visible state dimension at once — counter,
+position, color, status text — with per-frame SHA256 evidence and a
+deterministic replay check:
+
+```
+click 1: count=2 pos=(400,660) color=BLUE   (51,637 px changed)
+click 2: count=3 pos=(580,950) color=YELLOW (51,632 px changed)
+... 8 clicks, 9 frames, all hashes distinct, 3-run replay byte-identical
+```
+
+See [docs/demo/EVIDENCE.md](docs/demo/EVIDENCE.md) for the full evidence
+chain (frame hashes, pixel-vs-state verification, OLD-vs-NEW corpus
+comparison) and [docs/demo/demo_frames.png](docs/demo/demo_frames.png) for
+the 9-frame strip captured by the runtime itself.
+
+### Proven capability matrix
+
 Every row below is backed by a re-runnable test or artifact at the current
 HEAD (`02e72ae`), re-verified in the 2026-09-03 pre-push audit from a clean
 extraction of the published source archive.
@@ -67,7 +89,8 @@ extraction of the published source archive.
 | Multi-DEX loading & execution | 5-DEX APK parsed (Telegram-class apps; 12,544 classes); per-DEX string resolution + class graph (`dex/class_resolver.cpp`) |
 | Android object model / Activity lifecycle | app class onCreate → Activity chain via superclass-chain shadow dispatch (FIX-013-02); journey stages in `runtime/execution_engine.cpp` |
 | View hierarchy + real layout inflation | `resources/layout_inflater.cpp` (1,161 ln) + `view_renderer.cpp` + `real_layout.cpp`; real trees win over synthetic fallback (FIX-013-03) |
-| Real interaction: click → listener → state → new frame | multiframe click test: probed=4, `onButtonStart`/`onButtonReset` dispatched, `state_changed=2`, 12,439 changed pixels per click (`run/click_test_report.json`) |
+| Real interaction: click → listener → state → new frame | multiframe click test: probed=4, `onButtonStart`/`onButtonReset` dispatched, `state_changed=2`, 12,439 changed pixels per click (`run/click_test_report.json`); demo app: 8/8 clicks dispatched, ~51k px changed each (`--click-count 8`) |
+| Full state-transition proof (counter + position + color + text in ONE app) | `demo/` + `docs/demo/demo_manifest.json`: count 1→9, box cycles 5x4 grid, 4-color palette from `<clinit>` arrays, deterministic replay |
 | Dialog / Toast / window model | Dialog→Window→DecorView object model with stacked-window compositing (`framework/dialog_shadow.cpp`); gmdice two-dialog chain pixel-verified |
 | resources.arsc handling (incl. obfuscated) | ARSC probe on a real APK: "arsc valid", layouts 3/3; value-first file-backed path resolution for AGP-obfuscated trees (FIX-013-04) |
 | Binary XML (AXML) parsing | `resources/axml_parser.cpp`; real layout XML → view tree |
@@ -86,7 +109,7 @@ extraction of the published source archive.
 |---|---|---|
 | simplestopwatch | `2a12587a0acf196cb9a52a521d6a7bc7d72e2d21dfa71eba41a694dbaa3d8c1b` | **BASELINE_MATCH** — pixel-exact law, preserved across all campaigns and the 2026-09 semantic fix |
 | gmdice | `4fd3ce0e0c419119…` | byte-stable, two-dialog chain |
-| microtimer | `eb16ab5c68fa9b6c…` | byte-stable |
+| microtimer | `68f408f976b88ac6…` | **IMPROVED 2026-09-04** — the lifecycle `this` fix let its real `onCreate` complete (120 method entries vs 10 before); now renders its actual view tree (LinearLayout + ScrollView + buttons + `RoTimeControl`). Old blank-screen hash `eb16ab5c…` was the symptom, not a law |
 | unote | `d6b854c45a16539f…` | byte-stable |
 | dooz | `31ddd4d5b8e6d18e…` | deterministic BLANK — the documented Compose boundary (see limitations) |
 
@@ -94,9 +117,10 @@ extraction of the published source archive.
 
 | App | Status |
 |---|---|
+| miniandroid-demo | ✅ exit 0 — full state-transition proof (8 clicks, 9 frames, deterministic; see docs/demo) |
 | simplestopwatch | ✅ exit 0, pixel-exact golden, click-dispatch verified |
 | gmdice | ✅ exit 0, dialog chain golden |
-| microtimer | ✅ exit 0, golden |
+| microtimer | ✅ exit 0, real UI now rendered (improved by lifecycle `this` fix; OLD vs NEW comparison in docs/demo/EVIDENCE.md) |
 | unote | ✅ exit 0, golden |
 | dooz | ⚠️ exit 0, deterministic BLANK (Compose boundary) |
 | telegram_v12 | ⛔ blocked — golden APK bytes lost from cache (K-26); journey NOT REPRODUCED until re-acquired |
