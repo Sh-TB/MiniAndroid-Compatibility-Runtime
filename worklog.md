@@ -3940,3 +3940,55 @@ Stage Summary:
 - Next highest-value work (per standing priorities): Handler.postDelayed
   time-driven animation frames; Telegram golden re-acquisition; Wine-based
   Windows smoke run when a Wine host is available; DEX semantics backlog.
+
+---
+Task ID: 4
+Agent: Super Z (main agent)
+Task: Handler.postDelayed time-driven animation — the app animates itself
+through Looper time (next highest-value item from the Task-3 worklog).
+
+Work Log:
+- SOURCE phase: HandlerShadow had a FIFO queue (exp088 23/23) but drained
+  everything at sync points; no virtual clock; no time-driven capture stage.
+- Runtime changes (commit 1962cfb6):
+  * HandlerShadow virtual clock (enqueue computes ready_at on Looper time,
+    no wall clock); drain_ready() dispatches only due entries FIFO;
+    settle() = clock jump + drain reproduces the EXP-088 drain-all law.
+  * stage_frame_sequence (--frames N --frame-delay MS): advance clock per
+    frame -> drain due -> invoke run() via DEX -> re-render -> capture PNG
+    with the same manifest law as clicks. Mutually exclusive with
+    --click-count.
+  * Phase-B probe click scoped to default journey runs (capture modes
+    supply their own driver; the probe double-stepped launch state and
+    killed self-deactivating tickers).
+  * LIFECYCLE FIX found by the ticker: the engine never ran the app's
+    DECLARED Activity <init>()V — instance-field initializers were
+    silently false (demo's `auto = true` read as false inside run()).
+    All three launch paths now run the no-arg constructor first, per AOSP
+    performLaunchActivity.
+  * Demo app: self-reposting postDelayed(this, 300) ticker; click switches
+    to pure interaction mode. New APK ffb50bc7...
+- Proof results (binary 059b640a...):
+  * click mode: 9 frames count 1..9 — PINNED LAW UNCHANGED (e5c8d511...
+    276ccd7da2 sequence) with a MORE honest launch mechanism (app ticker
+    instead of runtime probe click).
+  * timer mode: 8 frames count 1..8 — byte-identical frame sequence,
+    driven ONLY by the app's own ticker (7 fires, zero injected clicks).
+- Tests: exp088 extended to 26/26 with 3 virtual-clock laws (due-only
+  drain, no fire before due, exactly-once); commit 2522bf5d.
+- Regression: goldens unchanged (2a12587a BASELINE_MATCH, gmdice/microtimer/
+  unote intact), semantic suites 14/14 + 25/25, demo VALIDATION_PASS.
+- Windows exe rebuilt with identical changes (e1886d1f...); release
+  repackaged through the gated pipeline (4x RELEASE_CONTENT_CHECK: PASS);
+  clean-extract test extended with TIMER_SELF_ANIMATION check — PASS from
+  the shipped artifact; release v0.0.2 assets refreshed in place;
+  FINAL_PUBLIC_VERIFICATION ALL_PASS (anonymous).
+
+Stage Summary:
+- MiniAndroid now proves BOTH interaction-driven AND time-driven app state
+  changes from real APK DEX logic, with the artifact hashes pinned and the
+  visual law unchanged.
+- Next highest-value: Handler.postDelayed inside corpus apps (re-run the
+  13-APK corpus for OLD vs NEW trace comparison); Telegram golden
+  re-acquisition; Wine-based Windows smoke run; DEX semantics backlog
+  (postAtTime, sendMessageDelayed message objects).
