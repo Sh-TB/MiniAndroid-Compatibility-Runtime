@@ -18,6 +18,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <iterator>
 #include <iostream>
 #include <chrono>
 #include <set>
@@ -2471,7 +2472,11 @@ bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const Execu
     try { std::filesystem::create_directories(frames_dir); } catch (...) {}
 
     // Helper: copy framebuffer_ → FrameBuffer → PNG on disk.
-    auto save_frame = [&](const std::string& path) -> bool {
+    // Returns the SHA256 of the written PNG FILE bytes via png_sha_out so the
+    // manifest can document both hash domains:
+    //   sha256     — raw framebuffer (the deterministic render law)
+    //   png_sha256 — the PNG file bytes (what a user can verify after download)
+    auto save_frame = [&](const std::string& path, std::string* png_sha_out = nullptr) -> bool {
         try {
             renderer::FrameBuffer fb(config.screen_width, config.screen_height);
             for (int y = 0; y < config.screen_height; ++y) {
@@ -2484,7 +2489,14 @@ bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const Execu
                     }
                 }
             }
-            return renderer::PNGWriter::write_png(path, fb);
+            bool ok = renderer::PNGWriter::write_png(path, fb);
+            if (ok && png_sha_out) {
+                std::ifstream pf(path, std::ios::binary);
+                std::vector<unsigned char> bytes((std::istreambuf_iterator<char>(pf)),
+                                                 std::istreambuf_iterator<char>());
+                *png_sha_out = sha256_hex(bytes);
+            }
+            return ok;
         } catch (const std::exception& e) {
             std::cerr << "[CLICK-SEQ] frame save failed: " << e.what() << std::endl;
             return false;
@@ -2518,9 +2530,11 @@ bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const Execu
         f["file"] = "frame_000.png";
         f["event"] = "launch (no interaction)";
         f["sha256"] = sha256_hex(prev);
+        std::string png_sha;
+        save_frame(frames_dir + "/frame_000.png", &png_sha);
+        f["png_sha256"] = png_sha;
         f["visible_texts"] = collect_texts();
         manifest["frames"].push_back(f);
-        save_frame(frames_dir + "/frame_000.png");
     }
 
     int dispatched_total = 0;
@@ -2546,7 +2560,8 @@ bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const Execu
 
         char name[64];
         snprintf(name, sizeof name, "/frame_%03d.png", k);
-        bool saved = save_frame(frames_dir + name);
+        std::string png_sha;
+        bool saved = save_frame(frames_dir + name, &png_sha);
 
         nlohmann::json f;
         f["index"] = k;
@@ -2558,6 +2573,7 @@ bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const Execu
         f["click_dispatched"] = dispatched;
         f["changed_pixels_vs_previous"] = diff_px;
         f["sha256"] = sha256_hex(framebuffer_);
+        f["png_sha256"] = png_sha;
         f["visible_texts"] = collect_texts();
         manifest["frames"].push_back(f);
         if (saved) {
