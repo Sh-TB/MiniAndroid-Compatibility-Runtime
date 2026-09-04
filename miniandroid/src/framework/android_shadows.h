@@ -254,15 +254,34 @@ public:
         return {"obtainMessage", "sendMessageDelayed", "sendMessageAtTime"};
     }
 
-    // Enqueue a Runnable with a delay (in milliseconds).
+    // Enqueue a Runnable with a delay (in milliseconds). The ready time is
+    // computed against the VIRTUAL clock (virtual_now_ms_ + delay_ms), so
+    // scheduling is fully deterministic — no wall-clock involvement.
     void enqueue(uint32_t runnable_id, int64_t delay_ms,
                  const std::string& cls);
 
-    // Drain all ready Runnables. Returns the number drained.
+    // Drain every Runnable whose ready time has been reached on the VIRTUAL
+    // clock (ready_at_ms <= virtual_now_ms_), in enqueue (FIFO) order among
+    // the due entries. Runnables scheduled for a later virtual time stay
+    // queued. Returns the number drained.
     // Each drained Runnable's heap object_id is appended to `out_drained`.
     // The ApplicationRuntime is responsible for actually executing the
     // Runnable's run() method.
     size_t drain_ready(std::vector<uint32_t>* out_drained);
+
+    // ── Deterministic virtual clock (Handler/Looper time model) ──────────
+    // The runtime has no wall-clock rendering, so Looper time is virtual.
+    //  * idle-settle points (post-onCreate) call settle(): the clock jumps
+    //    far into the future and one drain dispatches everything posted so
+    //    far — the documented EXP-088 law (post(A), post(B), postDelayed(C)
+    //    → drain → A, B, C) is preserved.
+    //  * time-driven frame capture (--frames N) advances the clock by
+    //    --frame-delay per frame and drains only what became due, so a
+    //    self-reposting postDelayed animation steps once per frame,
+    //    deterministically.
+    void settle();                       // jump far into the future
+    void advance_virtual(int64_t delta_ms);  // step the clock forward
+    int64_t virtual_now_ms() const { return virtual_now_ms_; }
 
     // EXP-088 Phase F: Remove all queued Runnables matching the given
     // runnable_id. Returns the number removed.
@@ -293,6 +312,7 @@ private:
     uint32_t main_handler_id_ = 0;
     std::deque<QueuedRunnable> queue_;
     uint32_t next_seq_ = 0;
+    int64_t virtual_now_ms_ = 0;   // deterministic Looper time (ms)
 };
 
 // ─────────────────────────────────────────────────────────────────────────

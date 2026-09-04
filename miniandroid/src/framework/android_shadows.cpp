@@ -542,49 +542,54 @@ void HandlerShadow::enqueue(uint32_t runnable_id, int64_t delay_ms,
     QueuedRunnable q;
     q.runnable_id = runnable_id;
     q.enqueue_seq = next_seq_++;
-    auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now().time_since_epoch()).count();
-    q.ready_at_ms = now_ms + delay_ms;
+    // Deterministic Looper time: ready at (virtual now + delay). No wall
+    // clock anywhere — the same APK + the same command produce the same
+    // schedule on every run and every platform.
+    q.ready_at_ms = virtual_now_ms_ + delay_ms;
     q.runnable_class = cls;
     queue_.push_back(std::move(q));
     // EXP-052: Trace queue activity for diagnostics.
     std::cerr << "[QUEUE] Runnable id=" << runnable_id
               << " enqueued (delay=" << delay_ms << "ms"
+              << ", ready_at=" << q.ready_at_ms << "ms virtual"
               << ", queue_depth=" << queue_.size()
               << (cls.empty() ? "" : (", source=" + cls))
               << ")" << std::endl;
 }
 
+void HandlerShadow::settle() {
+    // Idle-settle: the app finished its current work and the main Looper is
+    // draining. Jump far enough forward that every pending entry is due.
+    virtual_now_ms_ += 1000000000LL;
+}
+
+void HandlerShadow::advance_virtual(int64_t delta_ms) {
+    if (delta_ms < 0) delta_ms = 0;
+    virtual_now_ms_ += delta_ms;
+}
+
 size_t HandlerShadow::drain_ready(std::vector<uint32_t>* out_drained) {
     if (!out_drained) return 0;
-    // EXP-071 Phase 8: In our deterministic test runtime, we treat ALL
-    // delays as zero. Real Android's Handler blocks until a message's
-    // ready_at_ms is reached; our runtime drains everything that's been
-    // queued at each well-defined synchronization point (after onCreate,
-    // after click dispatch, etc.). This matches real Android's behavior
-    // when the system is idle (the Looper fires the runnable as soon as
-    // its ready_at_ms is reached, which for a busy main thread is "as
-    // fast as possible").
+    // AOSP Handler/Looper model, made deterministic through the virtual
+    // clock: a message fires when the Looper time reaches its ready time.
+    // Entries posted with delay=0 (or whose delay has already elapsed on
+    // the virtual clock) are dispatched in FIFO order; entries scheduled
+    // for a later virtual time remain queued until a future gate advances
+    // the clock (e.g. --frames time-driven capture, one advance per frame).
     //
-    // Without this, Lambda0 (scheduled with 400ms delay by animateProgress)
-    // would never be drained because the drain loop runs within milliseconds
-    // of the confirm click. The 400ms delay is meant to let the progress
-    // animation complete visually; in a headless test with no animation,
-    // there's no reason to wait.
-    auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now().time_since_epoch()).count();
-    (void)now_ms;  // Not used in drain — we drain everything.
-
+    // The historical behavior ("drain everything immediately") is exactly
+    // what an idle-settle point produces on the new model: settle() jumps
+    // the clock far into the future, making every entry posted so far due.
+    // EXP-088's acceptance law is therefore preserved verbatim:
+    //   post(A), post(B), postDelayed(C,400), removeCallbacks(B), drain → A, C
     size_t drained = 0;
-    // Drain in enqueue order (FIFO). This preserves the relative ordering
-    // of runnables posted by the application.
-    while (!queue_.empty()) {
+    while (!queue_.empty() && queue_.front().ready_at_ms <= virtual_now_ms_) {
         auto q = std::move(queue_.front());
         queue_.pop_front();
         out_drained->push_back(q.runnable_id);
         std::cerr << "[QUEUE] Runnable id=" << q.runnable_id
-                  << " dequeued (delay=" << (q.ready_at_ms - now_ms)
-                  << "ms treated as 0 in deterministic mode)"
+                  << " dequeued (ready_at=" << q.ready_at_ms
+                  << "ms <= now=" << virtual_now_ms_ << "ms virtual)"
                   << std::endl;
         drained++;
     }

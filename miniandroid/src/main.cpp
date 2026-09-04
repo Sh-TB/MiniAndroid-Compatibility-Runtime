@@ -310,6 +310,19 @@ int main(int argc, char* argv[]) {
             config.click_count = std::stoi(argv[++i]);
             std::cout << "[*] CLICK-SEQUENCE enabled (" << config.click_count
                       << " clicks, frames saved to <output>/frames/)\n";
+        } else if (arg == "--frames" && i + 1 < argc) {
+            // TIME-DRIVEN FRAME CAPTURE: advance the Handler virtual clock by
+            // --frame-delay per frame, fire every due postDelayed Runnable
+            // (self-reposting animation tickers step here), re-render, save.
+            // State transitions come from the APK's DEX logic reacting to
+            // Looper time. Mutually exclusive with --click-count.
+            config.frame_count = std::stoi(argv[++i]);
+            std::cout << "[*] FRAME-SEQUENCE enabled (" << config.frame_count
+                      << " frames @ +" << config.frame_delay_ms
+                      << "ms virtual each, saved to <output>/frames/)\n";
+        } else if (arg == "--frame-delay" && i + 1 < argc) {
+            config.frame_delay_ms = std::stoi(argv[++i]);
+            std::cout << "[*] frame delay: " << config.frame_delay_ms << "ms virtual\n";
         } else if (arg.find("--execution-mode") == 0) {
             // EXP-031: Parse execution mode
             std::string mode_str;
@@ -340,6 +353,13 @@ int main(int argc, char* argv[]) {
     if (apk_path.empty()) {
         std::cerr << "[ERROR] No APK file specified\n\n";
         print_usage(argv[0]);
+        return 1;
+    }
+
+    // Interaction drivers are mutually exclusive: one manifest writer per run.
+    if (config.click_count > 0 && config.frame_count > 0) {
+        std::cerr << "[ERROR] --click-count and --frames are mutually exclusive "
+                  << "(use two runs to capture both proof modes)\n";
         return 1;
     }
     

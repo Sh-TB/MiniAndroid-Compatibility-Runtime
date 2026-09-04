@@ -1452,7 +1452,17 @@ public:
         DalvikExecutionResult& result,
         const std::string& method_descriptor = ""
     );
-    
+
+    // AOSP ActivityThread.performLaunchActivity fidelity: after allocating
+    // the Activity heap object, run the app's DECLARED no-arg <init>()V so
+    // instance-field initializers (e.g. `private boolean auto = true;`)
+    // execute before onCreate, exactly like newInstance() + constructor on
+    // real Android. Silently does nothing when the class declares no
+    // callable no-arg <init> (framework-only classes).
+    void run_activity_default_init(const std::string& cls,
+                                   uint32_t activity_obj_id,
+                                   DalvikExecutionResult& result);
+
     bool fetch_decode_execute(DalvikExecutionResult& result);
     uint16_t fetch_opcode(uint32_t pc) const;
 

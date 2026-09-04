@@ -1004,6 +1004,10 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                     activity_val.object_id = activity_obj_id;
                     activity_val.class_desc = cls.name;
 
+                    // AOSP fidelity: run the app's declared <init>()V so
+                    // instance-field initializers are live before onCreate.
+                    run_activity_default_init(cls.name, activity_obj_id, result);
+
                     // UNIFIED_011.3 FRAME-2 (§23): record the activity's heap
                     // object id so post-launch probes (click-test XML
                     // android:onClick dispatch) can pass the REAL activity
@@ -1190,6 +1194,9 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                 uint32_t activity_obj_id = heap_.allocate(result.main_class, 0, 0);
                 DalvikValue activity_val = DalvikValue::make_object(
                     activity_obj_id, result.main_class);
+                // AOSP fidelity: run the app's declared <init>()V so
+                // instance-field initializers are live before onCreate.
+                run_activity_default_init(result.main_class, activity_obj_id, result);
                 // Record the activity instance so post-launch probes (click
                 // dispatch, findViewById, getContentResolver) share the SAME
                 // object, exactly like the legacy path (UNIFIED_011.3 FRAME-2).
@@ -1266,6 +1273,9 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                             uint32_t activity_obj_id = heap_.allocate(cls.name, 0, 0);
                             DalvikValue activity_val = DalvikValue::make_object(
                                 activity_obj_id, cls.name);
+                            // AOSP fidelity: run the app's declared <init>()V so
+                            // instance-field initializers are live before onCreate.
+                            run_activity_default_init(cls.name, activity_obj_id, result);
                             if (shadow_registry_ != nullptr) {
                                 auto* activity_shadow =
                                     shadow_registry_->find_as<framework::ActivityShadow>();
@@ -1993,6 +2003,31 @@ void DalvikExecutionEngine::xml_pull_advance(XmlPullState& st) {
 // EXP-038 (BLOCKER-034): Recursive DEX method invocation.
 // Search the DEX for a method matching declaring_class + method_name.
 // If found with bytecode, recursively execute it.
+
+// AOSP ActivityThread.performLaunchActivity fidelity: run the activity's
+// DECLARED no-arg <init>()V right after heap allocation. Instance-field
+// initializers compiled into <init> (`boolean auto = true;`) must be live
+// before onCreate — on real Android the constructor runs before any
+// lifecycle callback. No-op when the class declares no no-arg <init>
+// (framework classes never reach here with app bytecode).
+void DalvikExecutionEngine::run_activity_default_init(const std::string& cls,
+                                                      uint32_t activity_obj_id,
+                                                      DalvikExecutionResult& result) {
+    try {
+        DalvikValue this_val = DalvikValue::make_object(activity_obj_id, cls);
+        DalvikValue init_ret;
+        std::vector<DalvikValue> init_args;
+        init_args.push_back(this_val);  // p0 = this
+        bool ok = try_recursive_invoke(cls, "<init>", init_args, init_ret,
+                                       result, "()V");
+        if (ok) {
+            log("✅ activity <init>()V executed (instance field initializers live before onCreate)");
+        }
+    } catch (const std::exception& e) {
+        log(std::string("⚠️ activity <init> dispatch skipped: ") + e.what());
+    }
+}
+
 bool DalvikExecutionEngine::try_recursive_invoke(
     const std::string& declaring_class,
     const std::string& method_name,

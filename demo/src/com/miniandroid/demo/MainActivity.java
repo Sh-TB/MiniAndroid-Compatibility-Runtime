@@ -8,11 +8,21 @@
  *   hierarchy -> setContentView -> rendered frame -> user click -> DEX
  *   onClick -> state change (counter, position, color, text) -> re-render.
  *
+ * The app ALSO drives itself the way real apps animate: onCreate schedules a
+ * self-reposting Handler ticker (postDelayed 300 ms). Each tick executes the
+ * same state step as a click. Two deterministic proof modes fall out of this
+ * ONE state machine:
+ *
+ *   --click-count N : clicks drive the state (auto-ticking stops on the
+ *                     first click, so the click proof stays pure)
+ *   --frames N      : Looper time drives the state (the runtime advances
+ *                     its virtual clock and the app's own ticker steps)
+ *
  * Every piece of state is encoded in VISIBLE UI so that a screenshot is
  * self-evidencing:
  *   - a title TextView            ("Hello MiniAndroid!")
  *   - a status TextView           ("count=N pos=(x,y) color=NAME")
- *   - a colored box View          (moves + changes color on every click)
+ *   - a colored box View          (moves + changes color on every step)
  *   - a TAP ME Button             (the interaction that drives state)
  *
  * The UI is built programmatically in Java/DEX (no XML resources) on purpose:
@@ -26,6 +36,7 @@ package com.miniandroid.demo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -33,10 +44,15 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener, Runnable {
 
     // mutable visible state
     private int count = 0;
+
+    // animation ticker state: real apps advance UI from the Looper; the
+    // first click switches the app into pure interaction-driven mode.
+    private Handler handler;
+    private boolean auto = true;
 
     private TextView title;
     private TextView status;
@@ -82,6 +98,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         root.addView(stage, linearParams(-1, 1300));  // fixed-height stage area
 
         setContentView(root);
+
+        // Self-reposting ticker: the canonical Android animation pattern.
+        // The first fire happens when the main Looper first goes idle; every
+        // later fire happens 300 ms of Looper time after the previous one.
+        handler = new Handler();
+        handler.postDelayed(this, 300);
     }
 
     /** Positions the box inside the stage via FrameLayout margins. */
@@ -122,6 +144,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        auto = false;   // interaction takes over; the ticker stops
         step();
+    }
+
+    /** Looper tick: advance the same state machine the click path uses. */
+    @Override
+    public void run() {
+        if (auto) {
+            step();
+            handler.postDelayed(this, 300);
+        }
     }
 }

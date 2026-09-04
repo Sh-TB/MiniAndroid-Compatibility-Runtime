@@ -77,6 +77,16 @@ struct ExecutionConfig {
     // state transitions in the evidence GIF come from the app's own DEX logic
     // reacting to dispatched clicks, not from any host-side animation.
     int click_count = 0;
+    // TIME-DRIVEN FRAME CAPTURE (2026-09-04): when > 0, run a virtual-clock
+    // frame loop: advance the Handler/Looper virtual clock by frame_delay_ms
+    // per frame, drain the Handler queue (firing every Runnable whose
+    // postDelayed time has arrived — including self-reposting animation
+    // tickers), re-render through the SAME pipeline, and save one PNG per
+    // step into frames/ plus manifest.json entries. The state transitions
+    // come from the APK's own DEX logic reacting to Looper time — no clicks,
+    // no host-side animation. Mutually exclusive with click_count.
+    int frame_count = 0;
+    int frame_delay_ms = 300;
     bool generate_reports = true;
     
     // EXP-031: Execution mode (CRITICAL - determines real vs fake path)
@@ -163,6 +173,8 @@ private:
     // UNIFIED_011.2 CLICK-TEST: generic post-first-frame interaction probe.
     bool stage_click_test(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_click_sequence(ExecutionResult& result, const ExecutionConfig& config);
+    bool stage_frame_sequence(ExecutionResult& result, const ExecutionConfig& config);
+    void invoke_handler_runnable(uint32_t runnable_id);
     bool stage_generate_reports(ExecutionResult& result, const ExecutionConfig& config);
     
     // Helper methods

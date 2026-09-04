@@ -64,6 +64,7 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     // DEMO-CLICK-SEQUENCE: multi-click frame capture (see stage docs).
     // Runs after click-test so both probes see the launch framebuffer.
     if (success && config.click_count > 0) stage_click_sequence(result, config);
+    if (success && config.frame_count > 0) stage_frame_sequence(result, config);
     
     // Always try to generate reports
     stage_generate_reports(result, config);
@@ -536,37 +537,22 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         // This is the GENERIC drain (not Telegram-specific).
         if (auto* registry = dalvik_engine_.get_shadow_registry()) {
             if (auto* hs = registry->find_as<framework::HandlerShadow>()) {
+                // Idle-settle: the app finished onCreate and the main Looper
+                // would dispatch everything posted so far. settle() jumps the
+                // virtual clock far forward so every entry posted so far is
+                // due — the documented EXP-088 drain-all law, now expressed
+                // through the deterministic virtual clock. Entries RE-posted
+                // during this drain (self-reposting animation tickers) become
+                // due at a future Looper time and wait for --frames gates.
+                hs->settle();
                 std::vector<uint32_t> drained;
                 size_t n = hs->drain_ready(&drained);
                 if (n > 0) {
                     trace_engine_.info("ExecutionEngine", "drain_handler_queue",
                                        "Drained " + std::to_string(n) + " Runnables after onCreate");
                     // EXP-090: Actually INVOKE each drained Runnable's run() method.
-                    // Previously this only logged "invocation deferred to future work"
-                    // which meant callbacks never executed.
                     for (uint32_t rid : drained) {
-                        try {
-                            // Look up the Runnable's class from the heap
-                            auto& heap = dalvik_engine_.get_heap_public();
-                            if (heap.has_object(rid)) {
-                                const auto* obj = heap.get(rid);
-                                std::string cls = obj ? obj->class_descriptor : "";
-                                if (!cls.empty()) {
-                                    std::cerr << "[EXP090-DRAIN] Invoking Runnable id=" << rid
-                                              << " class=" << cls << std::endl;
-                                    miniandroid::dalvik::DalvikValue ret;
-                                    miniandroid::dalvik::DalvikExecutionResult drain_result;
-                                    std::vector<miniandroid::dalvik::DalvikValue> args;
-                                    args.push_back(miniandroid::dalvik::DalvikValue::make_object(rid, cls));
-                                    dalvik_engine_.try_recursive_invoke(
-                                        cls, "run", args, ret, drain_result);
-                                    std::cerr << "[EXP090-DRAIN] Runnable id=" << rid
-                                              << " invoked" << std::endl;
-                                }
-                            }
-                        } catch (const std::exception& e) {
-                            std::cerr << "[EXP090-DRAIN] Runnable drain failed: " << e.what() << std::endl;
-                        }
+                        invoke_handler_runnable(rid);
                     }
                 }
             }
@@ -709,8 +695,22 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
     // After onCreate completes, find views with click listeners and
     // dispatch one click to verify the full event chain:
     //   click → listener → DEX callback → state change
+    //
+    // EXPLICIT CAPTURE MODES (--click-count / --frames): the probe click
+    // is SKIPPED. Both modes supply their own interaction driver (the
+    // click sequence dispatches its clicks; the frame sequence must see a
+    // zero-interaction run so the app's own postDelayed ticker is the only
+    // state driver). Injecting a probe click on top would double-step the
+    // launch state and (for self-deactivating tickers) kill the animation
+    // the mode exists to capture. Default journey runs keep the probe —
+    // it is the Telegram intro-advance mechanism.
     // ===================================================================
-    if (shadow_registry_ && result.status != ExecutionStatus::FAILURE) {
+    if (config.frame_count > 0 || config.click_count > 0) {
+        trace_engine_.info("ExecutionEngine", "phase_b_click",
+                           std::string("skipped: ") +
+                           (config.frame_count > 0 ? "--frames" : "--click-count") +
+                           " mode supplies its own interaction driver");
+    } else if (shadow_registry_ && result.status != ExecutionStatus::FAILURE) {
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (view_shadow) {
             auto clickables = view_shadow->find_all_with_click_listener("");
@@ -2450,6 +2450,174 @@ std::string sha256_hex(const std::vector<uint8_t>& data) {
     return s.hex();
 }
 }  // namespace
+
+// Shared helper: invoke a drained Runnable's run() method through the DEX
+// engine (used by the post-onCreate idle-settle drain and by the
+// time-driven frame stage).
+void ExecutionEngine::invoke_handler_runnable(uint32_t rid) {
+    try {
+        auto& heap = dalvik_engine_.get_heap_public();
+        if (!heap.has_object(rid)) return;
+        const auto* obj = heap.get(rid);
+        std::string cls = obj ? obj->class_descriptor : "";
+        if (cls.empty()) return;
+        std::cerr << "[EXP090-DRAIN] Invoking Runnable id=" << rid
+                  << " class=" << cls << std::endl;
+        miniandroid::dalvik::DalvikValue ret;
+        miniandroid::dalvik::DalvikExecutionResult drain_result;
+        std::vector<miniandroid::dalvik::DalvikValue> args;
+        args.push_back(miniandroid::dalvik::DalvikValue::make_object(rid, cls));
+        dalvik_engine_.try_recursive_invoke(cls, "run", args, ret, drain_result);
+        std::cerr << "[EXP090-DRAIN] Runnable id=" << rid << " invoked" << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "[EXP090-DRAIN] Runnable drain failed: " << e.what() << std::endl;
+    }
+}
+
+// TIME-DRIVEN FRAME CAPTURE — the Looper-time counterpart of
+// stage_click_sequence. Instead of dispatching clicks, advance the
+// Handler virtual clock one frame_delay per frame and drain whatever
+// became due (self-reposting postDelayed animation tickers step here).
+// Everything on screen is the APK's own DEX logic reacting to Looper
+// time; the runtime only advances the clock, renders, and captures.
+bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const ExecutionConfig& config) {
+    trace_engine_.info("ExecutionEngine", "stage_frame_sequence",
+                       "FRAME-SEQUENCE capture (" + std::to_string(config.frame_count) +
+                       " frames @ +" + std::to_string(config.frame_delay_ms) + "ms virtual each)");
+    if (!shadow_registry_) return true;
+
+    auto* hs = shadow_registry_->find_as<framework::HandlerShadow>();
+    if (!hs) {
+        std::cerr << "[FRAME-SEQ] no HandlerShadow — nothing to drive" << std::endl;
+        return true;
+    }
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!view_shadow) return true;
+
+    const std::string frames_dir = config.output_directory + "/frames";
+    try { std::filesystem::create_directories(frames_dir); } catch (...) {}
+
+    // Same frame saver as the click sequence (framebuffer law + PNG file law).
+    auto save_frame = [&](const std::string& path, std::string* png_sha_out = nullptr) -> bool {
+        try {
+            renderer::FrameBuffer fb(config.screen_width, config.screen_height);
+            for (int y = 0; y < config.screen_height; ++y) {
+                for (int x = 0; x < config.screen_width; ++x) {
+                    size_t i = (static_cast<size_t>(y) * config.screen_width + x) * 4;
+                    if (i + 3 < framebuffer_.size()) {
+                        fb.set_pixel(x, y, renderer::RGBA{
+                            framebuffer_[i], framebuffer_[i + 1],
+                            framebuffer_[i + 2], framebuffer_[i + 3]});
+                    }
+                }
+            }
+            bool ok = renderer::PNGWriter::write_png(path, fb);
+            if (ok && png_sha_out) {
+                std::ifstream pf(path, std::ios::binary);
+                std::vector<unsigned char> bytes((std::istreambuf_iterator<char>(pf)),
+                                                 std::istreambuf_iterator<char>());
+                *png_sha_out = sha256_hex(bytes);
+            }
+            return ok;
+        } catch (const std::exception& e) {
+            std::cerr << "[FRAME-SEQ] frame save failed: " << e.what() << std::endl;
+            return false;
+        }
+    };
+
+    auto collect_texts = [&]() {
+        nlohmann::json arr = nlohmann::json::array();
+        for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
+            if (node_ptr && !node_ptr->text.empty()) {
+                arr.push_back({{"view_id", id},
+                               {"class", node_ptr->class_desc},
+                               {"text", node_ptr->text}});
+            }
+        }
+        return arr;
+    };
+
+    nlohmann::json manifest;
+    manifest["frame_count_requested"] = config.frame_count;
+    manifest["frame_delay_ms"] = config.frame_delay_ms;
+    manifest["screen"] = {{"width", config.screen_width},
+                          {"height", config.screen_height}};
+    manifest["frames"] = nlohmann::json::array();
+
+    // Frame 0: the launch state (identical framing to the click sequence —
+    // post-onCreate, post idle-settle drain).
+    std::vector<uint8_t> prev = framebuffer_;
+    {
+        nlohmann::json f;
+        f["index"] = 0;
+        f["file"] = "frame_000.png";
+        f["event"] = "launch (no interaction)";
+        f["sha256"] = sha256_hex(prev);
+        std::string png_sha;
+        save_frame(frames_dir + "/frame_000.png", &png_sha);
+        f["png_sha256"] = png_sha;
+        f["visible_texts"] = collect_texts();
+        manifest["frames"].push_back(f);
+    }
+
+    int fired_total = 0;
+    for (int k = 1; k < config.frame_count; ++k) {
+        hs->advance_virtual(config.frame_delay_ms);
+        std::vector<uint32_t> drained;
+        size_t n = hs->drain_ready(&drained);
+        fired_total += static_cast<int>(n);
+        for (uint32_t rid : drained) {
+            invoke_handler_runnable(rid);
+        }
+
+        stage_render_frame(result, config);  // re-render CURRENT state
+
+        size_t diff_px = 0;
+        if (framebuffer_.size() == prev.size()) {
+            for (size_t i = 0; i < framebuffer_.size(); i += 4) {
+                if (framebuffer_[i] != prev[i] ||
+                    framebuffer_[i + 1] != prev[i + 1] ||
+                    framebuffer_[i + 2] != prev[i + 2]) {
+                    diff_px++;
+                }
+            }
+        }
+
+        char name[64];
+        snprintf(name, sizeof name, "/frame_%03d.png", k);
+        std::string png_sha;
+        bool saved = save_frame(frames_dir + name, &png_sha);
+
+        nlohmann::json f;
+        f["index"] = k;
+        f["file"] = std::string("frame_") + (k < 100 ? (k < 10 ? "00" : "0") : "") +
+                    std::to_string(k) + ".png";
+        f["event"] = "timer (virtual +" + std::to_string(config.frame_delay_ms) + "ms)";
+        f["runnables_fired"] = n;
+        f["looper_virtual_ms"] = hs->virtual_now_ms();
+        f["changed_pixels_vs_previous"] = diff_px;
+        f["sha256"] = sha256_hex(framebuffer_);
+        f["png_sha256"] = png_sha;
+        f["visible_texts"] = collect_texts();
+        manifest["frames"].push_back(f);
+        if (saved) {
+            std::cerr << "[FRAME-SEQ] frame_" << k << ": runnables_fired=" << n
+                      << ", diff_px=" << diff_px << std::endl;
+        }
+        prev = framebuffer_;
+    }
+
+    manifest["runnables_fired_total"] = fired_total;
+    try {
+        std::ofstream mf(frames_dir + "/manifest.json");
+        mf << manifest.dump(2);
+    } catch (...) {}
+
+    std::cerr << "[FRAME-SEQ] done: runnables_fired=" << fired_total
+              << " frames=" << manifest["frames"].size()
+              << " dir=" << frames_dir << std::endl;
+    return true;
+}
 
 bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const ExecutionConfig& config) {
     if (config.click_count <= 0) return true;
