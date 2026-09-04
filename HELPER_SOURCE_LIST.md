@@ -1,4 +1,4 @@
-# لیست کمکی — MiniAndroid Open-Source Source & Tool Intelligence
+# HELPER_SOURCE_LIST — MiniAndroid Open-Source Source & Tool Intelligence
 
 **HELPER_SOURCE_LIST.md — official permanent project artifact (GAME CHANGER pass, 2026-09-03).**
 Provenance: created in response to the FINAL GAME CHANGER mission (PHASE 8–10); reviewed,
@@ -42,6 +42,19 @@ renders software frames, and is validated by discriminating fixtures + pixel-gol
 | FriBidi | LGPL-2.1+ | bidi algorithm |
 | rlottie @4307553 | MIT | Lottie animation (Telegram parity; see Makefile EXP-097) |
 | nlohmann/json | MIT | JSON persistence in tooling/tests |
+
+### 0.1 Demo-APK toolchain (integrated 2026-09-04, `demo/`)
+
+Used to build the real-APK execution proof without an Android SDK — the same
+official components the Android build plugins wrap:
+
+| Component | Version | License | Exact use | Why selected |
+|---|---|---|---|---|
+| Eclipse ECJ `org.eclipse.jdt:ecj` | 3.33.0 | EPL-2.0 | `java -jar ecj.jar -source 8 -target 8 -bootclasspath android-34.jar` compiles `demo/src/**.java` | runs on a JRE-only host (no JDK), supports `-bootclasspath` Android-style compilation |
+| Google D8 (via `com.android.tools:r8`) | 8.13.23 | Apache-2.0 (AOSP) | `java -cp r8.jar com.android.tools.r8.D8 --release --lib android-34.jar` produces `classes.dex` | THE canonical Android dexer (AOSP); bytecode compatible with what real phones ship |
+| android.jar (platform-34-ext7_r03) | API 34 | Apache-2.0 (AOSP) | compile-time platform stubs for ECJ + D8 `--lib` | official Google platform download, exact API surface apps are built against |
+
+Evidence: `demo/build_demo_apk.sh`, `demo/README.md`, `docs/demo/EVIDENCE.md`.
 
 ---
 
