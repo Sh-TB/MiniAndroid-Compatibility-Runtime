@@ -5184,7 +5184,12 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             case Opcode::MOVE_WIDE: {
                 uint16_t instr = bytecode_[pc_];
                 uint8_t dest = (instr >> 8) & 0xF;
-                uint8_t src = instr & 0xF;
+                // DEMO-12X-NIBBLE (2026-09-04): 12x format is B|A|op — the B
+                // source register is bits 12-15. The previous read `instr &
+                // 0xF` took bits 0-3 of the OPCODE byte, so `move-wide v2,
+                // v0` (0x02BF) read v15 (0x02BF & 0xF == 0xF). Same bug class
+                // as the ARRAY_LENGTH/2addr nibble fixes.
+                uint8_t src = (instr >> 12) & 0xF;
                 DalvikValue val = get_register(src);
                 // If src doesn't hold a wide value, coerce to INT64
                 // (matches the F5 return-wide coercion behavior)
@@ -6215,14 +6220,16 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             // PASS-3 FORENSIC CORRECTION (K-38): the register nibbles were
             // decoded ONE NIBBLE OFF (vA=(>>8), vB=(>>4) — the K-05 bug class
             // again): every lit16 op read its SOURCE from the wrong register
-            // field and wrote the result to the wrong destination. Correct
-            // 22s decode: vA = HIGH nibble (>>12), vB = low nibble of the
-            // high byte (>>8).
+            // field and wrote the result to the wrong destination.
+            // DEMO-12X-NIBBLE (2026-09-04): the K-38 "fix" went to the
+            // opposite swap (vA=HIGH) instead of AOSP. 22s format per AOSP
+            // dalvik-bytecode.html is B|A|op — vA (dest) = bits 8-11, vB
+            // (src) = bits 12-15. Aligned with the 12x family fixes.
             #define ARITH_LIT16_CASE(opcode, op_name, op) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
-                    uint8_t vA = (instr >> 12) & 0xF; \
-                    uint8_t vB = (instr >> 8) & 0xF; \
+                    uint8_t vA = (instr >> 8) & 0xF; \
+                    uint8_t vB = (instr >> 12) & 0xF; \
                     int16_t lit = static_cast<int16_t>(bytecode_[pc_ + 1]); \
                     DalvikValue b = get_register(vB); \
                     DalvikValue result_val; \
@@ -6335,13 +6342,19 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             #define CONV_SRC_I32(opcode, op_name, DST_KIND, STORE_EXPR) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
-                    /* 12x = B|A|op: A (dest) is the HIGH nibble, B (src) the LOW */ \
-                    /* nibble of byte 1. The pre-reconciliation code had these */ \
-                    /* swapped — conversions wrote the source register and read */ \
-                    /* the destination, so results landed in the wrong slot */ \
-                    /* (visible only when dest != src). */ \
-                    uint8_t vA = (instr >> 12) & 0xF; \
-                    uint8_t vB = (instr >> 8) & 0xF; \
+                    /* 12x = B|A|op per AOSP dalvik-bytecode.html: A (dest) is */ \
+                    /* bits 8-11, B (src) is bits 12-15. DEMO-12X-NIBBLE      */ \
+                    /* (2026-09-04): this block previously decoded dest from  */ \
+                    /* bits 12-15 and src from bits 8-11 (with a comment that */ \
+                    /* mis-cited the spec) — swapped vs AOSP, so a real `     */ \
+                    /* long-to-int v0, v2` wrote v2 and read v0 whenever the  */ \
+                    /* registers differed. The swapped decoder and the equally */ \
+                    /* swapped fixture encoder cancelled out inside the test  */ \
+                    /* suite, which is why 14/14 passed while real DEX broke. */ \
+                    /* Now aligned with execute_move (EXP-058) and the fixed  */ \
+                    /* ARITH_2ADDR/ARRAY_LENGTH/MOVE_WIDE decoders.           */ \
+                    uint8_t vA = (instr >> 8) & 0xF; \
+                    uint8_t vB = (instr >> 12) & 0xF; \
                     DalvikValue val = get_register(vB); \
                     DalvikValue out; out.type = DST_KIND; \
                     int32_t s = (val.type == DalvikType::INT32) ? val.int_val \
@@ -6355,8 +6368,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             #define CONV_SRC_I64(opcode, op_name, DST_KIND, STORE_EXPR) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
-                    uint8_t vA = (instr >> 12) & 0xF; /* dest = HIGH nibble (12x) */ \
-                    uint8_t vB = (instr >> 8) & 0xF;  /* src  = LOW nibble  (12x) */ \
+                    uint8_t vA = (instr >> 8) & 0xF;  /* dest = bits 8-11 (12x B|A|op) */ \
+                    uint8_t vB = (instr >> 12) & 0xF; /* src  = bits 12-15 (12x B|A|op) */ \
                     DalvikValue val = get_register(vB); \
                     DalvikValue out; out.type = DST_KIND; \
                     int64_t s = (val.type == DalvikType::INT64) ? val.long_val \
@@ -6370,8 +6383,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             #define CONV_SRC_F32(opcode, op_name, DST_KIND, STORE_EXPR) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
-                    uint8_t vA = (instr >> 12) & 0xF; /* dest = HIGH nibble (12x) */ \
-                    uint8_t vB = (instr >> 8) & 0xF;  /* src  = LOW nibble  (12x) */ \
+                    uint8_t vA = (instr >> 8) & 0xF;  /* dest = bits 8-11 (12x B|A|op) */ \
+                    uint8_t vB = (instr >> 12) & 0xF; /* src  = bits 12-15 (12x B|A|op) */ \
                     DalvikValue val = get_register(vB); \
                     DalvikValue out; out.type = DST_KIND; \
                     float s = (val.type == DalvikType::FLOAT32) ? val.float_val \
@@ -6385,8 +6398,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             #define CONV_SRC_F64(opcode, op_name, DST_KIND, STORE_EXPR) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
-                    uint8_t vA = (instr >> 12) & 0xF; /* dest = HIGH nibble (12x) */ \
-                    uint8_t vB = (instr >> 8) & 0xF;  /* src  = LOW nibble  (12x) */ \
+                    uint8_t vA = (instr >> 8) & 0xF;  /* dest = bits 8-11 (12x B|A|op) */ \
+                    uint8_t vB = (instr >> 12) & 0xF; /* src  = bits 12-15 (12x B|A|op) */ \
                     DalvikValue val = get_register(vB); \
                     DalvikValue out; out.type = DST_KIND; \
                     double s = (val.type == DalvikType::FLOAT64) ? val.double_val \
@@ -6422,18 +6435,21 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             // ABSENT from the dispatch — neg-int/not-int/neg-long/not-long/
             // neg-float/neg-double all hit handle_unimplemented. The audit
             // predicted an int32-alias bug (K-01 class); the truth was worse:
-            // no implementation existed at all. Nibble convention follows the
-            // (already fixed) CONV block: dest = HIGH nibble (instr>>12),
-            // source = low nibble (instr>>8). Wrap-around negation is done in
-            // the UNSIGNED domain to avoid signed-overflow UB — INT32_MIN and
-            // INT64_MIN negate to themselves per the JLS.
+            // no implementation existed at all. Wrap-around negation is done
+            // in the UNSIGNED domain to avoid signed-overflow UB — INT32_MIN
+            // and INT64_MIN negate to themselves per the JLS.
+            // DEMO-12X-NIBBLE (2026-09-04): nibble decode aligned to AOSP
+            // (dest = bits 8-11, src = bits 12-15). This block previously
+            // copied the CONV block's swapped convention (dest = HIGH
+            // nibble), which contradicts the AOSP 12x encoding used by real
+            // D8 bytecode whenever dest != src.
             // Fixture: tests/semantic_switch_parse_neg_test.cpp (group N —
             // 7/7 FAIL pre-fix, all returned 0 via the unimplemented path).
             #define UNARY_I32_CASE(opcode, op_name, EXPR) \
                 case Opcode::opcode: { \
                     uint16_t instr_u = bytecode_[pc_]; \
-                    uint8_t vA_u = (instr_u >> 12) & 0xF; \
-                    uint8_t vB_u = (instr_u >> 8) & 0xF; \
+                    uint8_t vA_u = (instr_u >> 8) & 0xF; \
+                    uint8_t vB_u = (instr_u >> 12) & 0xF; \
                     DalvikValue src_u = get_register(vB_u); \
                     DalvikValue out_u; out_u.type = DalvikType::INT32; \
                     int32_t s_u = (src_u.type == DalvikType::INT32) ? src_u.int_val \
@@ -6447,8 +6463,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             #define UNARY_I64_CASE(opcode, op_name, EXPR) \
                 case Opcode::opcode: { \
                     uint16_t instr_u = bytecode_[pc_]; \
-                    uint8_t vA_u = (instr_u >> 12) & 0xF; \
-                    uint8_t vB_u = (instr_u >> 8) & 0xF; \
+                    uint8_t vA_u = (instr_u >> 8) & 0xF; \
+                    uint8_t vB_u = (instr_u >> 12) & 0xF; \
                     DalvikValue src_u = get_register(vB_u); \
                     DalvikValue out_u; out_u.type = DalvikType::INT64; \
                     int64_t s_u = (src_u.type == DalvikType::INT64) ? src_u.long_val \
@@ -6462,8 +6478,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             #define UNARY_F32_CASE(opcode, op_name, EXPR) \
                 case Opcode::opcode: { \
                     uint16_t instr_u = bytecode_[pc_]; \
-                    uint8_t vA_u = (instr_u >> 12) & 0xF; \
-                    uint8_t vB_u = (instr_u >> 8) & 0xF; \
+                    uint8_t vA_u = (instr_u >> 8) & 0xF; \
+                    uint8_t vB_u = (instr_u >> 12) & 0xF; \
                     DalvikValue src_u = get_register(vB_u); \
                     DalvikValue out_u; out_u.type = DalvikType::FLOAT32; \
                     float s_u = (src_u.type == DalvikType::FLOAT32) ? src_u.float_val \
@@ -6477,8 +6493,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             #define UNARY_F64_CASE(opcode, op_name, EXPR) \
                 case Opcode::opcode: { \
                     uint16_t instr_u = bytecode_[pc_]; \
-                    uint8_t vA_u = (instr_u >> 12) & 0xF; \
-                    uint8_t vB_u = (instr_u >> 8) & 0xF; \
+                    uint8_t vA_u = (instr_u >> 8) & 0xF; \
+                    uint8_t vB_u = (instr_u >> 12) & 0xF; \
                     DalvikValue src_u = get_register(vB_u); \
                     DalvikValue out_u; out_u.type = DalvikType::FLOAT64; \
                     double s_u = (src_u.type == DalvikType::FLOAT64) ? src_u.double_val \
@@ -7325,15 +7341,17 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             #define ARITH_WIDE_2ADDR_CASE(opcode, op_name, op_type, op) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
-                    /* 12x format is B|A|op: A is the HIGH nibble of byte 1. */ \
-                    /* IMPORTANT (RESULT_007 reconciliation): the previous code */ \
-                    /* read vA=(instr>>8) and vB=(instr>>4) — i.e. it swapped the */ \
-                    /* two registers AND read vB from the opcode byte's high */ \
-                    /* nibble (a constant 0xB for add-long/2addr). Every /2addr */ \
-                    /* long op therefore computed regA op reg11. Regression */ \
-                    /* fixture: tests/semantic_long_cmp_conv_test.cpp. */ \
-                    uint8_t vA = (instr >> 12) & 0xF; \
-                    uint8_t vB = (instr >> 8) & 0xF; \
+                    /* 12x format is B|A|op per AOSP dalvik-bytecode.html:   */ \
+                    /* vA (dest) = bits 8-11, vB (src) = bits 12-15.          */ \
+                    /* IMPORTANT (RESULT_007 reconciliation): the original    */ \
+                    /* code read vA=(instr>>8) and vB=(instr>>4) — it swapped */ \
+                    /* the two registers AND read vB from the opcode byte's   */ \
+                    /* nibble. The RESULT_007 fix went to the opposite swap   */ \
+                    /* (vA=HIGH) instead of AOSP, which matched the equally   */ \
+                    /* swapped fixture encoder but not real DEX.              */ \
+                    /* DEMO-12X-NIBBLE (2026-09-04): aligned to AOSP.         */ \
+                    uint8_t vA = (instr >> 8) & 0xF; \
+                    uint8_t vB = (instr >> 12) & 0xF; \
                     DalvikValue a = get_register(vA); \
                     DalvikValue b = get_register(vB); \
                     DalvikValue result_val; \
