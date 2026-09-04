@@ -43,3 +43,66 @@ miniandroid/run/clicktest_*/
 miniandroid/run/corpus_*/
 miniandroid/run/real_whatsapp/
 miniandroid/run/u0113_*/
+
+# =============================================================================
+# RELEASE PACKAGING HYGIENE (2026-09-04)
+# ---------------------------------------------------------------------------
+# Incident: the Windows cross-build tree `miniandroid/build-win/` was never
+# ignored (the old rules only covered `miniandroid/build/`), so one `git add`
+# committed 13,600+ llvm-mingw toolchain files, the 80 MB compiler archive,
+# downloaded dependency source trees (win_src) and object files.
+#
+# RULE: the repository stays SOURCE + intentional project assets.
+# Build trees, toolchains, downloaded dependency sources, staging dirs and
+# generated binaries are NEVER committed. Files that are intentionally
+# released are attached to GitHub Releases as artifacts.
+# `scripts/validate_release_content.py` enforces the same rule on every
+# release package before it is published.
+# =============================================================================
+
+# Windows cross-build tree: llvm-mingw toolchain + win_deps + win_src + objects
+miniandroid/build-win/
+build-win/
+win_src/
+win_deps/
+llvm-mingw*/
+llvm-mingw.tar.xz
+
+# any other cross-build / experiment work trees
+build-*/
+work/
+
+# compiler + linker byproducts anywhere
+*.obj
+*.lib
+*.ninja
+*.ninja_deps
+.ninja_log
+CMakeCache.txt
+CMakeFiles/
+compile_commands.json
+
+# downloaded dependency archives and extracted dependency source trees
+# (upstream sources are fetched by build scripts into ignored work dirs)
+**/freetype-*/
+**/harfbuzz-*/
+**/fribidi-*/
+**/zlib-*/
+**/libpng-*/
+**/jpeg-*/
+**/libwebp-*/
+**/rlottie-*/
+**/hb.tgz
+**/jpeg.zip
+
+# generated release staging (always created fresh by scripts/package_release.sh
+# and validated by scripts/validate_release_content.py before packaging)
+release_staging/
+dist/
+release_audit/
+
+# raw demo-run output (the curated, hash-pinned proof is committed under docs/demo/)
+miniandroid/run/demo_evidence/
+
+# stray runtime data written by corpus runs at the repository root
+/runtime/
