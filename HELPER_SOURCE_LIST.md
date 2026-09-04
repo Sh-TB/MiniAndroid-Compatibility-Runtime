@@ -643,3 +643,61 @@ renders software frames, and is validated by discriminating fixtures + pixel-gol
 | 58 | fuzz corpus | H-036, H-053 |
 | 59 | Android compatibility projects | H-031, H-032, H-052 |
 | 60 | small useful utilities | H-054, H-059, H-065 |
+
+---
+
+## SESSION STATUS — 2026-09-04 (live update: used / inspected / evidence)
+
+This section makes the list a LIVING record: per-entry real status from the
+2026-09-04 autonomous engineering session, with evidence. Status vocabulary:
+CANDIDATE → INSPECTED → REUSABLE → ADAPTED → INTEGRATED.
+
+### S-1. INTEGRATED this session (code + evidence in-repo)
+
+| What | Upstream | License | Integration point | Evidence |
+|---|---|---|---|---|
+| Windows x64 toolchain | llvm-mingw 20260826 (mstorsjo/llvm-mingw) | Apache-2.0/LLVM + mingw-w64 | `miniandroid/scripts/build_windows.sh` | MiniAndroid.exe PE32+ 5,011,968 B; wine smoke: simplestopwatch `2a12587a` byte-identical to Linux golden |
+| zlib 1.3.1 / libpng 1.6.44 / libjpeg **IJG 9f** / freetype 2.13.3 / harfbuzz 8.5.0 / fribidi 1.0.16 / libwebp 1.4.0 (Windows ports) | official upstream repos | zlib/PNG/IJG/FTL/MIT/LGPL/BSD | static-linked into the .exe by the build script | full clean-room rebuild reproduced; exe renders golden-identical |
+| fribidi bidi tables | fribidi `gen.tab` + Unicode UCD **16.0.0** (unicode.org) | LGPL-2.1+ / UCD license | generated 7 `.tab.i` tables in-script (bidi-type/joining/arabic-shaping/mirroring/brackets×2) | reproducible generation inside `build_windows.sh` |
+| Wine-based Windows smoke harness | Debian wine 10.0 / Kron4ek Wine-Builds | LGPL-2.1 | external harness (not committed yet) | exe runs, `version` + `run` commands OK; screenshot SHA equal to Linux |
+
+Codec availability model added to the runtime itself: `MINIANDROID_HAVE_WEBP`
+/ `MINIANDROID_HAVE_LOTTIE` compile guards (mirrors AOSP codec availability);
+disabled codecs return an EXPLICIT capability error — never fake success.
+Lottie (rlottie) stays Linux-host-build-only for now (needs cmake; guarded off
+on Windows v1 — honestly reported).
+
+### S-2. INSPECTED this session (source opened, APIs mapped — not yet adapted)
+
+| Entry | Inspected surface | Verdict for MiniAndroid |
+|---|---|---|
+| **auxten/libarsc** | `jni/libarsc/arsc.cpp` (1,838 lines) — vendored AOSP `ResTable`: Header/Type/Package/PackageGroup structs, `ResTable::add/getEntry/resolve` | REUSABLE as ORACLE. KEY FINDING: our `res_config.cpp` **already mirrors AOSP verbatim** (`match()` @2909, `isBetterThan()` @2641, `isLocaleBetterThan()` @2520 — with line refs in comments; `arsc_parser.cpp` selects buckets via `match`+`isBetterThan` — see arsc_parser.cpp:480-494). The remaining upstream gap is narrower than assumed: PackageGroup resolution + bag/complex values + dynamic references. |
+| **johnsonlee/aapt** (sdklite) | `ChunkParser.java`, `StringPool.java` (212), `ResourceTable.java` (1,209) + visitors, `getResourceName(resId)` | REUSABLE as ORACLE for chunk grammar + resource-name resolution. Clean, small, readable. Best use: differential tests for our `arsc_parser` (id → name → config → value) rather than a port. |
+
+### S-3. STATUS table updates (existing entries)
+
+| ID | Old status | New status | Note |
+|---|---|---|---|
+| H-001 (AOSP ART) | P0 oracle | ORACLE-USED (ongoing) | fill-array-data + aput bounds semantics commits (2a99862, 63b0aa3) came from this oracle; compose chain traced against AOSP View/ViewGroup/ViewRootImpl laws |
+| H-00x Resource/ARSC family | candidate | PARTIALLY ALIGNED (see S-2) | config selection already AOSP-verbatim; package-group/bag gaps remain |
+| FreeType/HarfBuzz/FriBidi/libpng/libjpeg/libwebp/zlib | integrated (Linux) | INTEGRATED (Linux + **Windows**) | this session |
+| rlottie | integrated (Linux) | INTEGRATED + OPTIONALIZED | `MINIANDROID_HAVE_LOTTIE=0` for Windows v1; explicit error, no fake |
+
+### S-4. NEW entries proposed by this session
+
+| ID | Source | License | TYPE/USE | Priority | Why |
+|---|---|---|---|---|---|
+| H-070 | **Kron4ek/Wine-Builds** (self-contained wine tarballs) + Debian `wine`/`wine64`/`libwine` .deb extraction | LGPL-2.1 | TOOL · USE FOR TESTING | P1 | Real Windows-binary smoke testing from Linux CI (no root needed with .deb extraction + LD_PRELOAD path remap); validated this session |
+| H-071 | **mstorsjo/llvm-mingw** | Apache-2.0 | TOOLCHAIN · USE DIRECTLY | P0 | The working Linux-hosted Windows cross toolchain for this repo (clang 23.1 + mingw-w64 ucrt); validated end-to-end |
+| H-072 | **AOSP RenderNode / RecordingCanvas** (`platform_frameworks_base` graphics) | Apache-2.0 | REFERENCE · PORT NEXT | P0 | Compose 1.7 routes ALL composed drawing through RenderNode.beginRecording→RecordingCanvas→drawRenderNode — our CanvasShadow sees 0 ops today. Bridging these is THE next Compose frontier (dooz content rendering). |
+| H-073 | **skylot/jadx** | Apache-2.0 | TOOL · USE AS ORACLE | P0 (workflow) | mandated as the engineering oracle for real-APK call chains (decompile → expected semantics → MiniAndroid execution diff); not yet used this session — adopt in the RenderNode cycle |
+
+### S-5. Session headline (context for statuses above)
+
+- Windows: REAL MiniAndroid.exe produced and cross-verified (byte-identical
+  golden vs Linux on wine).
+- Compose: **composition boundary crossed** — ComposeView children 0 → 1
+  (AndroidComposeView materializes; onAttachedToWindow dispatches on both).
+  Before this session this was documented as permanently blocked (K-24).
+- Golden safety: 12-app corpus without gate → 11/12 byte-identical; dooz's
+  documented blank (31ddd4d5) became the honest §17 placeholder (e33e6e75).
