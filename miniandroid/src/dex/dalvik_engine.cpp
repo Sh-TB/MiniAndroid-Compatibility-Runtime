@@ -4338,8 +4338,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         static thread_local uint64_t miss_log_count = 0;
         if (tm && miss_log_count < 400) {
             miss_log_count++;
+            bool in_index = class_info_index_.count(declaring_class) != 0;
             std::cerr << "[INVOKE-MISS] " << declaring_class << "." << method_name
                       << " (not in DEX — bridges to API/shadow) depth=" << recursion_depth_
+                      << " class_in_index=" << (in_index ? "YES" : "NO")
                       << std::endl;
         }
     }
