@@ -38,11 +38,11 @@ class PaintShadow;
 // One recorded draw primitive (coordinates in VIEW space, density=1).
 struct DrawOp {
     enum class Kind {
-        DRAW_COLOR, DRAW_RECT, DRAW_CIRCLE, DRAW_LINE, DRAW_TEXT, DRAW_PAINT
+        DRAW_COLOR, DRAW_RECT, DRAW_ROUNDRECT, DRAW_CIRCLE, DRAW_LINE, DRAW_TEXT, DRAW_PAINT
     };
     Kind kind = Kind::DRAW_COLOR;
     float x = 0, y = 0, w = 0, h = 0;   // rect: x,y,w,h ; line: x1,y1,x2,y2 in x,y,w,h
-    float r = 0;                        // circle radius / text y used via y
+    float r = 0;                        // circle radius / roundrect corner radius
     uint32_t color = 0xFF000000;
     float stroke_w = 1.0f;
     std::string text;                   // DRAW_TEXT
@@ -58,7 +58,10 @@ public:
         return cls == "Landroid/graphics/Canvas;" ||
                cls.find("graphics/Canvas;") != std::string::npos ||
                cls == "Landroid/graphics/Paint;" ||
-               cls.find("graphics/Paint;") != std::string::npos;
+               cls.find("graphics/Paint;") != std::string::npos ||
+               // UC009 H-072: Compose draws through RenderNode recording.
+               cls == "Landroid/view/RenderNode;" ||
+               cls.find("graphics/RecordingCanvas;") != std::string::npos;
     }
 
     CallResult dispatch(const CallContext& ctx) override;
@@ -82,6 +85,20 @@ public:
 private:
     bool capturing_ = false;
     std::vector<DrawOp> ops_;
+    // UC009 H-072: AOSP RenderNode recording model. Compose (1.7+) records
+    // every LayoutNode's drawing into a RenderNode via a RecordingCanvas,
+    // then composites with Canvas.drawRenderNode. We mirror the model:
+    // beginRecording switches the op target to the node's list;
+    // drawRenderNode replays a node's ops (offset by its position).
+    std::map<uint32_t, std::vector<DrawOp>> render_nodes_;   // node id -> recorded ops
+    std::map<uint32_t, float> node_pos_l_, node_pos_t_;      // node id -> position
+    uint32_t recording_node_ = 0;                            // 0 = frame target
+    float tx_ = 0, ty_ = 0;                                  // canvas translate state
+    std::vector<std::pair<float,float>> save_stack_;
+
+    std::vector<DrawOp>& target() {
+        return recording_node_ ? render_nodes_[recording_node_] : ops_;
+    }
     std::map<uint32_t, uint32_t> paint_color_;    // paint obj -> ARGB
     std::map<uint32_t, float> paint_stroke_w_;    // paint obj -> width
     std::map<uint32_t, int> paint_style_;         // paint obj -> 0 fill / 1 stroke
