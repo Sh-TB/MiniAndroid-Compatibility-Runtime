@@ -39,10 +39,11 @@ java -cp "$TOOLS/d8/r8.jar" com.android.tools.r8.D8 \
 echo "[3/3] APK package"
 python3 - "$OUT_DIR" <<'PY'
 import sys, zipfile, hashlib, os
+from pathlib import Path
 out = sys.argv[1]
 apk = os.path.join(out, "miniandroid-demo.apk")
 with zipfile.ZipFile(apk, "w", zipfile.ZIP_DEFLATED) as z:
-    z.write("/home/z/my-project/ws/demo/AndroidManifest.xml", "AndroidManifest.xml")
+    z.write(str(Path(__file__).resolve().parent / "AndroidManifest.xml"), "AndroidManifest.xml")
     z.write(os.path.join(out, "dex/classes.dex"), "classes.dex")
 h = hashlib.sha256(open(apk, "rb").read()).hexdigest()
 print("APK:", apk)

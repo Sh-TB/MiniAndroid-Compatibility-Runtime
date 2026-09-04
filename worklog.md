@@ -3992,3 +3992,82 @@ Stage Summary:
   13-APK corpus for OLD vs NEW trace comparison); Telegram golden
   re-acquisition; Wine-based Windows smoke run; DEX semantics backlog
   (postAtTime, sendMessageDelayed message objects).
+
+---
+Task ID: 5
+Agent: Super Z (main agent)
+Task: Turn the Telegram-discovery findings into real generic runtime
+capability (P0 measurement/text/resources) and prove a light open-source
+APK corpus (simplestopwatch, gmdice, unote, chessclock + clock + old
+simple apps) actually RUNS with real framebuffer evidence. No fabrication.
+
+Work Log:
+- Environment reset detected; repository re-cloned from GitHub; state
+  verified from Git (HEAD e5df612a == origin/main; history intact).
+- 14 light APKs downloaded into the EXTERNAL cache with SHA-256
+  verification (Tiny Music Player v2 recovered from F-Droid after v1
+  404'd; OpenLauncher upstream hash drifted — registry noted).
+- BASELINE (before fixes): only simplestopwatch rendered real content;
+  gmdice/unote weak; chessclock near-black; tictactoe blank; text was a
+  fixed 8x16 BitmapFont regardless of textSize; text measure was a
+  0.62f-per-char estimate.
+- ROOT CAUSES found and FIXED (all generic, evidence-driven):
+  * FIX-1 The real text pipeline (src/fonts/text_shaper.*: FriBidi ->
+    HarfBuzz -> FreeType) was ORPHANED out of the build; integrated into
+    Makefile/CMake flow + shared fonts::layout_text() (word wrap, real
+    advances) now drives BOTH measure and draw.
+  * FIX-2 Measure pass rewritten to AOSP MeasureSpec semantics
+    (EXACTLY/AT_MOST/UNSPECIFIED via getChildMeasureSpec), LinearLayout
+    weights, ScrollView UNSPECIFIED child law, real text desired size,
+    and render-time re-measure (relayout-after-invalidation) so DEX
+    setText-after-inflation gets real geometry (chessclock TextViews were
+    0x0).
+  * FIX-2c RelativeLayout dependency rules (below/above/toRightOf/
+    toLeftOf/alignParent*) parsed from AXML; compiled id references
+    resolved via resources.arsc id->name; fixed-point layout pass.
+  * FIX-3 View text now drawn by TextShaper at the view's real
+    textSize/color/bold with gravity (was: BitmapFont, GREY_800 only).
+  * FIX-4 Generic APK font assets: any assets/**/*.ttf|otf registers as
+    the app font family (Typeface.createFromAsset equivalence); system
+    chain fallback.
+  * FIX-5 Canvas.drawPath: real path recording (moveTo/lineTo/quadTo/
+    close) + even-odd scanline fill; custom-view onDraw placeholder now
+    drawn INLINE (the old screen-blankness gate hid real surfaces).
+  * FIX-6 Click-sequence proof path drives XML android:onClick views
+    (handler resolved on the hosting Activity with real `this`) in
+    addition to DEX-registered listeners.
+  * CRASH FIX: bgclock segfaulted — render-time re-measure dereferenced
+    the ResourceRuntime inflater for programmatic (non-inflated) UIs;
+    guarded on rt.loaded().
+- Build toolchain restored after environment reset: ecj 3.33.0 (Maven
+  Central), r8/D8 8.3.37 (Google Maven), android-34 stubs (Sable mirror);
+  demo/build_demo_apk.sh path made repo-relative; demo APK rebuilt
+  (7cce495ec86a661...).
+- EVIDENCE (all frames direct runtime framebuffer PNGs):
+  * demo VALIDATION_PASS — frame sequence byte-identical to committed
+    evidence (9/9 provenance gate); release assets stay valid.
+  * Light corpus click evidence (2 runs/app): simplestopwatch 3 state
+    changes (onButtonStart -> Stop/Lap -> Continue/Reset -> Start/Delay;
+    36,595 px per transition), gmdice 3, chessclock 2, unote 1;
+    deterministic replay byte-identical for every app.
+  * Pixel analyzer (non-white/colors/verdicts) + EVIDENCE.json/md +
+    contact sheets under miniandroid/docs/light_corpus/.
+- REGRESSION: semantic suites match HEAD exactly (phase2 4/4 PASS,
+  phase4 4/4 PASS, handler laws pass, phase3 same-skip as committed);
+  golden matrix re-run — simplestopwatch anchor INTENTIONALLY moved
+  2a12587a -> 97933dbc (documented rendering-contract change: real text
+  + AOSP layout); dooz/tictactoe/microtimer/unote/gmdice behaviors
+  unchanged or improved; stopwatch-muellerma exit-1 pre-existing.
+
+Stage Summary:
+- The runtime now measures, lays out, shapes, and paints like Android for
+  the common XML app patterns, and the light corpus PROVES it: 4/4
+  required apps run with real text, real controls, real DEX-driven state
+  changes, and byte-identical replays.
+- Remaining gaps (documented, not hidden): custom-view onDraw chains
+  (simplestopwatch BigTextView digits), WebView surfaces (bgclock face),
+  Compose (tictactoe), full RelativeLayout anchor solver, timer-driven
+  corpus re-run with the virtual clock.
+- Next highest-value: BigTextView setText(String[])->onDraw chain;
+  microtimer listener wiring; Telegram T4->T10 milestones on the new
+  text/layout foundation.

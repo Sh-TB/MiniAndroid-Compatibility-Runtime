@@ -102,6 +102,29 @@ OLD-vs-NEW corpus comparison), [docs/demo/demo_frames.png](docs/demo/demo_frames
 for the labeled STATE 0..4 contact sheet, and
 [docs/demo/demo_proof.gif](docs/demo/demo_proof.gif) for the animation.
 
+### Light open-source corpus — real apps really running
+
+A 12-app corpus of small open-source APKs (F-Droid; SHA-256-verified at
+download) runs through the same runtime. The four anchor apps prove
+real interaction-driven state changes — button clicks dispatch through the
+apps' OWN DEX handlers and re-render:
+
+- **simplestopwatch**: Start → the app's own `onButtonStart` handler swaps
+  the toolbar to Stop/Lap (36,595 px change), pause → Continue/Reset,
+  reset → Start/Delay.
+- **gmdice**: roll/menu state transitions, background color state flips,
+  visible-string set grows 7→14→20 across dispatched clicks.
+- **unote**: XML `android:onClick` handlers resolve on the hosting
+  Activity (AOSP law) and fire for real.
+- **chessclock**: per-panel time text renders via real shaped text;
+  clicks transition panel state.
+
+Strips, pixel evidence (non-white/colors per frame), APK hashes, and the
+deterministic-replay law live in
+[miniandroid/docs/light_corpus/EVIDENCE.md](miniandroid/docs/light_corpus/EVIDENCE.md).
+Honest gaps (custom-view onDraw chains, WebView surfaces, Compose) are
+documented there rather than hidden.
+
 ### Proven capability matrix
 
 Every row below is backed by a re-runnable test or artifact, re-verified at
