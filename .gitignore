@@ -103,6 +103,7 @@ release_audit/
 
 # raw demo-run output (the curated, hash-pinned proof is committed under docs/demo/)
 miniandroid/run/demo_evidence/
+miniandroid/run/demo_timer_evidence/
 
 # stray runtime data written by corpus runs at the repository root
 /runtime/

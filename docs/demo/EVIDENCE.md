@@ -34,6 +34,7 @@ built with the official Android toolchain equivalents (ECJ + AOSP D8, see
 | Color changes | box pixels cycle 0xFFE53935/0xFF43A047/0xFF1E88E5/0xFFFDD835 |
 | Counter advances | status text `count=1..9` rendered on screen |
 | Click changes state | `dispatch_click` -> DEX `onClick` -> `step()` -> re-render |
+| Time changes state | `--frames`: virtual Looper gate -> DEX `Runnable.run()` -> `step()` -> re-render (`demo_timer_manifest.json`) |
 | Screenshots captured | `frames/frame_000..008.png` |
 | Multiple frames | 9 frames, all distinct SHA256 |
 | GIF | `docs/demo/demo_proof.gif` assembled ONLY from runtime frames (provenance-gated) |
@@ -41,16 +42,50 @@ built with the official Android toolchain equivalents (ECJ + AOSP D8, see
 ## Identifiers for this evidence set
 
 ```
-MiniAndroid binary SHA256 (final; adds png_sha256 to the frame manifest):
-  b9d768703bc26ab8ab619bd76f6d0ed904ea082d789d19e48dcba90d4a4f7b13
-demo APK SHA256:
-  c0959a719289735265f8cb0e47a488883c6a6bf39d314b2b783fcdc7ec9ad6e8
-command:
+MiniAndroid binary SHA256 (final; virtual-clock Looper + activity <init> fix):
+  059b640a431bd3d8c71543940b843cf9db02227e08355ea18bf1395868831c79
+demo APK SHA256 (adds the self-reposting postDelayed ticker):
+  ffb50bc7826cd9512455443dc8ee6477ceca703fbb964d5706be47ed986022c1
+commands:
   ./build/miniandroid run demo/build/miniandroid-demo.apk \
-      -o run/demo_evidence --click-count 8
-exit code: 0
-frames: 9 (1 launch + 8 clicks), 1080x1920 each
+      -o run/demo_evidence --click-count 8          # interaction-driven
+  ./build/miniandroid run demo/build/miniandroid-demo.apk \
+      -o run/demo_timer_evidence --frames 8 --frame-delay 300   # time-driven
+exit code: 0 (both)
+frames: click mode 9 (1 launch + 8 clicks); timer mode 8 (1 launch + 7 Looper gates)
 ```
+
+## Time-driven proof: the app animates ITSELF through Looper time
+
+The demo schedules a self-reposting `Handler.postDelayed(this, 300)` ticker
+in `onCreate` — the canonical Android animation pattern. `--frames N`
+runs the app with ZERO injected interaction: the runtime advances its
+deterministic virtual Looper clock 300 ms per frame and drains whatever
+became due, so the app's own DEX ticker is the ONLY state driver:
+
+```
+frame 0: count=1 (the ticker's first fire at the post-onCreate idle-settle)
+frame k: count=k+1 — each gate fires exactly 1 runnable (the re-posted ticker)
+```
+
+The timer-mode frame sequence is BYTE-IDENTICAL to the click-mode sequence
+(same frames 0..7 in `demo_timer_manifest.json` and `demo_manifest.json`):
+one state machine, two independent drivers — input events and Looper time.
+
+Launch-state mechanism note: earlier evidence described frame 0's `count=1`
+as a "built-in post-launch probe click". The probe click (EXP-088 Phase B)
+still exists for default journey runs (it advances Telegram's intro), but
+in `--click-count` / `--frames` capture modes it is now deliberately
+skipped — frame 0's step comes from the app's OWN ticker, which is the
+stronger claim: zero runtime-injected interaction in both capture modes.
+The pinned framebuffer hash sequence is unchanged.
+
+This batch also fixed a lifecycle fidelity gap the ticker exposed: the
+engine allocated the Activity heap object and called onCreate WITHOUT
+running the app's declared `<init>()V` — instance-field initializers
+(`private boolean auto = true;`) were silently false. Per AOSP
+`ActivityThread.performLaunchActivity`, all three activity-launch paths now
+run the app's no-arg constructor before onCreate.
 
 ## Two hash domains (both deterministic, both documented)
 

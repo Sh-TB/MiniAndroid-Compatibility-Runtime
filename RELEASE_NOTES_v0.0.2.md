@@ -77,19 +77,19 @@ deterministic per-frame SHA256 replay). The packages contain only the
 runtime files — no compiler, no dependency source trees, no build trees.
 
 Demo APK `miniandroid-demo.apk` SHA256:
-`c0959a719289735265f8cb0e47a488883c6a6bf39d314b2b783fcdc7ec9ad6e8`
+`ffb50bc7826cd9512455443dc8ee6477ceca703fbb964d5706be47ed986022c1`
 
-Linux binary (stripped; adds png_sha256 to the frame manifest) SHA256:
-`3df351814288cd8a357fabda17824a1dc6e53b017e3e495d064110e7506cbb60`
+Linux binary (stripped; virtual-clock Looper, --frames time-driven capture, activity <init> fix) SHA256:
+`a5f1d0eee8d73c4b89ecb8b14439bb7835a64fd059ffb3c0c2d03e822125cb70`
 
 Windows `MiniAndroid.exe` SHA256:
-`8ff8694b70ed01ead98195842a44e1200e93fb78cf7e56503052607c854d2666`
+`e1886d1f7cb7058e42c1a5e4d416c7898ab8b2891df9b43025fc4f478fa5872c`
 
 Package SHA256 (see `SHA256SUMS_v0.0.2.txt` for the authoritative copy):
 
 ```
-8738c72b3e37a5b12f925ffd9dd2d7ecd7462d332196b3b2d30c3fa4f2082ef0  MiniAndroid-v0.0.2-Australorp-linux-x64.tar.gz
-ada02c6d53b616669a9dd6b58b46fbc3ce182acb44f3de6fd883fc9dace915d1  MiniAndroid-v0.0.2-Australorp-windows-x64.zip
+c24f5caa68984cd2414063f4e490a5a53cc240c2504b896d9432139bf70f11cc  MiniAndroid-v0.0.2-Australorp-linux-x64.tar.gz
+b4360f186feb3d8515e0ffa1355c3188fa0965ff38167ae216e80ca5784e0c3a  MiniAndroid-v0.0.2-Australorp-windows-x64.zip
 ```
 
 ## Known limitations (transparent)

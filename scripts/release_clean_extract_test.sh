@@ -46,6 +46,27 @@ RC=$?
 [ "$RC" -eq 0 ] || { echo "FAIL: demo run exited $RC" >&2; exit 1; }
 echo "[smoke] demo run exit code: 0"
 
+# Time-driven capture from the same clean extraction: the app must animate
+# ITSELF through its own postDelayed ticker (zero injected clicks).
+( cd "$LDIR" && ./run-miniandroid.sh run miniandroid-demo.apk -o proof_timer --frames 4 --frame-delay 300 )
+RC=$?
+[ "$RC" -eq 0 ] || { echo "FAIL: timer-mode demo run exited $RC" >&2; exit 1; }
+python3 - "$LDIR/proof_timer/frames/manifest.json" << 'PYEOF'
+import json, sys
+m = json.load(open(sys.argv[1]))
+seq = []
+for f in m["frames"]:
+    for t in f.get("visible_texts", []):
+        if "count=" in t.get("text", ""):
+            seq.append(t["text"].split(" ")[0])
+ok = m.get("runnables_fired_total", 0) >= 1 and seq == sorted(
+    seq, key=lambda s: int(s.split("=")[1]))
+print("timer mode: runnables_fired=%s states=%s" % (m.get("runnables_fired_total"), seq))
+print("TIMER_SELF_ANIMATION:", "PASS" if ok else "FAIL")
+sys.exit(0 if ok else 1)
+PYEOF
+echo "[smoke] time-driven capture: the app's own ticker advanced the state"
+
 FRAMES="$LDIR/proof/frames"
 [ -f "$FRAMES/manifest.json" ] || { echo "FAIL: manifest.json missing" >&2; exit 1; }
 N=$(ls "$FRAMES"/frame_*.png | wc -l)

@@ -74,6 +74,7 @@ void test_user_scenario() {
 
     // Drain
     std::vector<uint32_t> drained;
+    hs->settle();  // idle-settle: the sync point fires everything posted so far
     size_t n = hs->drain_ready(&drained);
     std::cout << "  drained " << n << " items:";
     for (auto id : drained) std::cout << " " << id;
@@ -111,6 +112,7 @@ void test_exactly_once() {
     hs->enqueue(3, 0, "LC;");
 
     std::vector<uint32_t> drained1;
+    hs->settle();
     size_t n1 = hs->drain_ready(&drained1);
     bool first_drain_3 = (n1 == 3 && drained1.size() == 3);
     record("first_drain_returns_3", first_drain_3);
@@ -120,14 +122,15 @@ void test_exactly_once() {
     record("first_drain_FIFO_order", first_drain_order);
 
     std::vector<uint32_t> drained2;
+    hs->settle();
     size_t n2 = hs->drain_ready(&drained2);
     bool second_drain_0 = (n2 == 0 && drained2.empty());
     record("second_drain_returns_0", second_drain_0,
            "no Runnable should be drained twice");
 }
 
-// Test 3: postDelayed with virtual time — delay_ms is captured but treated
-// as 0 in deterministic mode (the runtime drains everything when drain is called)
+// Test 3: postDelayed with virtual time — the idle-settle point fires
+// every entry posted so far (documented EXP-088 law on the virtual clock)
 void test_postDelayed_virtual_time() {
     std::cout << "\n[Test 3] postDelayed captures delay_ms (deterministic mode treats as 0)\n";
     std::cout << "Expected: delayed item is drained in same drain call as immediate items\n";
@@ -143,10 +146,11 @@ void test_postDelayed_virtual_time() {
     record("queue_accepts_delayed_items", size_3);
 
     std::vector<uint32_t> drained;
+    hs->settle();
     hs->drain_ready(&drained);
     bool all_drained = (drained.size() == 3);
     record("all_delayed_drained_in_deterministic_mode", all_drained,
-           "delays treated as 0 (matches real Android when main thread is idle)");
+           "idle-settle fires everything posted so far (EXP-088 law)");
 
     bool order_ok = (drained.size() == 3 &&
                      drained[0] == 10 && drained[1] == 20 && drained[2] == 30);
@@ -176,6 +180,7 @@ void test_removeCallbacksAndMessages() {
     record("queue_size_0_after_clear", size_0);
 
     std::vector<uint32_t> drained;
+    hs->settle();  // idle-settle: the sync point fires everything posted so far
     size_t n = hs->drain_ready(&drained);
     bool drain_empty = (n == 0);
     record("drain_after_clear_returns_0", drain_empty);
@@ -231,6 +236,7 @@ void test_empty_drain() {
     auto* hs = registry.register_shadow<HandlerShadow>();
 
     std::vector<uint32_t> drained;
+    hs->settle();  // idle-settle: the sync point fires everything posted so far
     size_t n = hs->drain_ready(&drained);
     record("empty_drain_returns_0", n == 0 && drained.empty());
 }
@@ -247,6 +253,7 @@ void test_FIFO_5_items() {
     }
 
     std::vector<uint32_t> drained;
+    hs->settle();
     hs->drain_ready(&drained);
 
     bool fifo = (drained.size() == 5);
@@ -254,6 +261,35 @@ void test_FIFO_5_items() {
         if (drained[i] != i + 1) fifo = false;
     }
     record("FIFO_5_items_drained_in_order", fifo);
+}
+
+// Test 9: time-gated firing on the virtual clock — a Runnable posted for a
+// later Looper time must NOT fire before its time, and must fire exactly
+// once when the clock reaches it. This is the law the --frames stage relies
+// on for self-reposting postDelayed animations.
+void test_time_gated_firing() {
+    std::cout << "\n[Test 9] time-gated firing: due-only drain on the virtual clock\n";
+    ShadowRegistry registry;
+    auto* hs = registry.register_shadow<HandlerShadow>();
+
+    hs->enqueue(100, 0, "LDUE;");     // due immediately
+    hs->enqueue(200, 500, "LLATER;"); // due at t=500
+
+    hs->advance_virtual(100);         // t=100: only the due entry fires
+    std::vector<uint32_t> drained;
+    size_t n = hs->drain_ready(&drained);
+    record("advance_100_drains_only_due", n == 1 && drained.size() == 1 && drained[0] == 100,
+           "the 500ms entry must stay queued at t=100");
+
+    std::vector<uint32_t> drained_again;
+    size_t n_again = hs->drain_ready(&drained_again);
+    record("no_refire_before_due", n_again == 0,
+           "nothing new is due at t=100");
+
+    hs->advance_virtual(400);         // t=500: the delayed entry is due now
+    std::vector<uint32_t> drained_late;
+    size_t n_late = hs->drain_ready(&drained_late);
+    record("delayed_fires_exactly_at_due_time", n_late == 1 && drained_late.size() == 1 && drained_late[0] == 200);
 }
 
 int main() {
@@ -270,6 +306,7 @@ int main() {
     test_removeCallbacks_all_matches();
     test_empty_drain();
     test_FIFO_5_items();
+    test_time_gated_firing();
 
     int passed = 0, failed = 0;
     for (const auto& r : g_results) {

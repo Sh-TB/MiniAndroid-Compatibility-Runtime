@@ -34,8 +34,12 @@ Static fallback / closer look — STATE 0 → STATE 4 of the same run:
 
 *Reproduce it yourself (command also shipped inside the release artifact):*
 ```bash
+# interaction-driven: 8 clicks, 9 frames
 ./run-miniandroid.sh run miniandroid-demo.apk -o proof --click-count 8
-# -> proof/frames/frame_000..008.png + proof/frames/manifest.json (per-frame SHA256)
+# time-driven: the app animates ITSELF through its own postDelayed ticker
+# (zero injected clicks — the runtime only advances Looper time)
+./run-miniandroid.sh run miniandroid-demo.apk -o proof --frames 8
+# -> proof/frames/frame_000..00N.png + proof/frames/manifest.json (per-frame SHA256)
 ```
 *Two runs produce byte-identical frames (deterministic software renderer).
 Frame provenance rules: [docs/demo/EVIDENCE.md](docs/demo/EVIDENCE.md).*
@@ -114,7 +118,7 @@ extraction of the release package).
 | String/parse bridges | `parseInt` / `parseLong` / `parseFloat` / `parseDouble` / `substring` / `concat` dispatch with strict Java semantics (K-19/K-20, 0/25 → 25/25) |
 | neg-long / not-long / lit8 opcode family | whole 0x7B..0x80 family implemented (K-32); lit8 table re-aligned to AOSP (K-31) |
 | filled-new-array 35c nibbles | `unified0112_filled_new_array_test` 5/5 (K-07) |
-| Handler/Looper FIFO async semantics | `exp088_phasef_handler_queue_semantics` 23/23 — controlled async/callback ordering |
+| Handler/Looper FIFO async + virtual-clock semantics | `exp088_phasef_handler_queue_semantics` 26/26 — queue ordering + due-only time-gated drain; the demo APK self-animates via its own postDelayed ticker (`--frames`, `docs/demo/demo_timer_manifest.json`) |
 | Multi-DEX loading & execution | 5-DEX APK parsed (Telegram-class apps; 12,544 classes); per-DEX string resolution + class graph (`dex/class_resolver.cpp`) |
 | Android object model / Activity lifecycle | app class onCreate → Activity chain via superclass-chain shadow dispatch (FIX-013-02); journey stages in `runtime/execution_engine.cpp` |
 | View hierarchy + real layout inflation | `resources/layout_inflater.cpp` (1,161 ln) + `view_renderer.cpp` + `real_layout.cpp`; real trees win over synthetic fallback (FIX-013-03) |
@@ -251,7 +255,10 @@ Runtime CLI: `miniandroid <command> [options] <apk_path>` — commands:
 `analyze` / `dex` / `run` / `version` / `help`; key options: `-o <dir>`
 (output), `-v`, `--click-test` (dispatch real clicks after the first frame),
 `--click-count N` (N sequential clicks with per-click frame capture +
-manifest — the execution-proof mechanism), `--execution-mode
+manifest — the interaction-driven execution-proof mechanism), `--frames N`
++ `--frame-delay MS` (time-driven capture: advance the deterministic virtual
+Looper clock per frame and fire every due `postDelayed` Runnable — the app
+animates ITSELF, no injected clicks), `--execution-mode
 real-dalvik|legacy` (default real-dalvik).
 
 ---
