@@ -66,8 +66,13 @@ static void record(const std::string& name, bool passed, const std::string& deta
 static uint16_t w11x(uint8_t reg, uint16_t op) {            // AA|op
     return static_cast<uint16_t>((reg << 8) | op);
 }
-static uint16_t w12x(uint8_t vA, uint8_t vB, uint16_t op) { // B|A|op  (vA high nibble)
-    return static_cast<uint16_t>((vA << 12) | (vB << 8) | op);
+static uint16_t w12x(uint8_t vA, uint8_t vB, uint16_t op) { // B|A|op (AOSP 12x)
+    // vA = dest = bits 8-11, vB = src = bits 12-15.
+    // DEMO-12X-NIBBLE (2026-09-04): previously encoded the swapped
+    // convention (vA in bits 12-15), cancelling the interpreter's swapped
+    // decoder inside this fixture while real DEX broke. Both sides now
+    // follow AOSP; parameters keep their meaning: w12x(dest, src, op).
+    return static_cast<uint16_t>((vB << 12) | (vA << 8) | op);
 }
 static void emit_const(std::vector<uint16_t>& c, uint8_t reg, int32_t imm) { // 31i
     c.push_back(w11x(reg, opc::CONST));

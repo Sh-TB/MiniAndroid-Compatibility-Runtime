@@ -93,7 +93,14 @@ static void record(const std::string& name, bool passed, const std::string& deta
 // ── opcode encoders ────────────────────────────────────────────────────────
 static uint16_t w11x(uint8_t reg, uint16_t op) { return static_cast<uint16_t>((reg << 8) | op); }
 static uint16_t w12x(uint8_t vA, uint8_t vB, uint16_t op) {
-    return static_cast<uint16_t>((vA << 12) | (vB << 8) | op);
+    // AOSP 12x format is B|A|op: vA (dest) = bits 8-11, vB (src) = bits 12-15.
+    // DEMO-12X-NIBBLE (2026-09-04): this encoder previously emitted
+    // (vA << 12) | (vB << 8) — the swapped convention the interpreter used
+    // to decode with, so the two bugs cancelled out. The interpreter now
+    // decodes per AOSP (aligned with execute_move / EXP-058 and with real
+    // D8 bytecode), so the encoder must emit AOSP too. Parameters keep
+    // their documented meaning: w12x(dest, src, op).
+    return static_cast<uint16_t>((vB << 12) | (vA << 8) | op);
 }
 static void emit_const(std::vector<uint16_t>& c, uint8_t reg, int32_t imm) {
     c.push_back(w11x(reg, opc::CONST));
@@ -115,9 +122,11 @@ static void emit_23x(std::vector<uint16_t>& c, uint16_t op, uint8_t va, uint8_t 
     c.push_back(static_cast<uint16_t>(vb | (vc << 8)));
 }
 static void emit_22s(std::vector<uint16_t>& c, uint16_t op, uint8_t va, uint8_t vb, int16_t lit) {
-    // 22s: word0 = B|A|op (A high nibble, B low nibble of the high byte),
+    // 22s: word0 = B|A|op (AOSP: A = dest = bits 8-11, B = src = bits 12-15),
     //      word1 = the FULL signed 16-bit literal.
-    c.push_back(static_cast<uint16_t>((va << 12) | (vb << 8) | op));
+    // DEMO-12X-NIBBLE (2026-09-04): previously emitted the swapped
+    // (va << 12) | (vb << 8); parameters keep their meaning: (dest, src).
+    c.push_back(static_cast<uint16_t>((vb << 12) | (va << 8) | op));
     c.push_back(static_cast<uint16_t>(static_cast<uint16_t>(lit)));
 }
 static void emit_22b(std::vector<uint16_t>& c, uint16_t op, uint8_t va, uint8_t vb, int8_t lit) {

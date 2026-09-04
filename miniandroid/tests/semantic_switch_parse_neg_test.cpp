@@ -80,8 +80,11 @@ static void record(const std::string& name, bool passed, const std::string& deta
 
 // ── opcode encoders (Dalvik formats) ──────────────────────────────────────
 static uint16_t w11x(uint8_t reg, uint16_t op) { return static_cast<uint16_t>((reg << 8) | op); }
-static uint16_t w12x(uint8_t vA, uint8_t vB, uint16_t op) {  // B|A|op (vA = HIGH nibble)
-    return static_cast<uint16_t>((vA << 12) | (vB << 8) | op);
+static uint16_t w12x(uint8_t vA, uint8_t vB, uint16_t op) {  // B|A|op (AOSP 12x)
+    // vA = dest = bits 8-11, vB = src = bits 12-15.
+    // DEMO-12X-NIBBLE (2026-09-04): previously encoded the swapped
+    // convention; both sides now follow AOSP. w12x(dest, src, op).
+    return static_cast<uint16_t>((vB << 12) | (vA << 8) | op);
 }
 static uint16_t const4(uint8_t reg, int8_t lit) {  // 11n
     return static_cast<uint16_t>((static_cast<uint16_t>(lit & 0xF) << 12) |
