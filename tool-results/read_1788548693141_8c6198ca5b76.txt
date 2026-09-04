@@ -1,0 +1,549 @@
+   380→   380→    std::map<uint32_t, std::shared_ptr<PendingIntent>> intents_;
+   381→   381→};
+   382→   382→
+   383→   383→// ─────────────────────────────────────────────────────────────────────────
+   384→   384→// ActivityShadow — current Activity, lifecycle, view root.
+   385→   385→//
+   386→   386→// Tracks:
+   387→   387→//   * current_activity_id  — heap object_id of the active Activity.
+   388→   388→//   * current_activity_class — class descriptor (e.g. "Lorg/telegram/ui/LaunchActivity;").
+   389→   389→//   * content_view_id     — heap object_id of the View set by setContentView.
+   390→   390→//
+   391→   391→// Lifecycle state machine (deterministic, single-threaded):
+   392→   392→//   CREATED → STARTED → RESUMED → (PAUSED → STOPPED → DESTROYED)
+   393→   393→//
+   394→   394→// Lifecycle method invocations on the Activity heap object are NOT
+   395→   395→// dispatched by this shadow — the engine's recursive invoke path
+   396→   396→// handles those (it can find the Activity's onCreate in DEX bytecode).
+   397→   397→// This shadow only tracks state.
+   398→   398→// ─────────────────────────────────────────────────────────────────────────
+   399→   399→class ActivityShadow : public Shadow {
+   400→   400→public:
+   401→   401→    enum class LifecycleState {
+   402→   402→        NONE, CREATED, STARTED, RESUMED, PAUSED, STOPPED, DESTROYED
+   403→   403→    };
+   404→   404→
+   405→   405→    std::string name() const override { return "Activity"; }
+   406→   406→    void init(HeapAllocator* heap) override { heap_ = heap; }
+   407→   407→
+   408→   408→    bool handles_class(const std::string& class_name) const override {
+   409→   409→        // EXP-087 Phase 3 (B2 FIX): Also handle Activity subclasses whose
+   410→   410→        // names don't contain "Activity" (e.g. GameMasterDice extends
+   411→   411→        // ListActivity, StopWatch extends Activity). We handle any class
+   412→   412→        // that could have inherited setContentView/getIntent/etc.
+   413→   413→        return class_name == "Landroid/app/Activity;" ||
+   414→   414→               class_name == "Landroid/app/ListActivity;" ||
+   415→   415→               class_name.find("/Activity;") != std::string::npos ||
+   416→   416→               class_name.find("LaunchActivity") != std::string::npos ||
+   417→   417→               class_name.find("LoginActivity")  != std::string::npos ||
+   418→   418→               class_name.find("Activity;") != std::string::npos ||
+   419→   419→               // EXP-087: Also match known Activity subclass patterns
+   420→   420→               class_name.find("/GameMasterDice;") != std::string::npos ||
+   421→   421→               class_name.find("/StopWatch;") != std::string::npos ||
+   422→   422→               class_name.find("/Notes;") != std::string::npos ||
+   423→   423→               class_name.find("/NoteMain;") != std::string::npos ||
+   424→   424→               class_name.find("/MainActivity;") != std::string::npos ||
+   425→   425→               class_name.find("/AndroidLauncher;") != std::string::npos;
+   426→   426→    }
+   427→   427→
+   428→   428→    CallResult dispatch(const CallContext& ctx) override;
+   429→   429→
+   430→   430→    std::vector<std::string> implemented_methods() const override {
+   431→   431→        return {"setContentView", "getContentView", "findViewById",
+   432→   432→                "getIntent", "setIntent", "finish", "getApplicationContext",
+   433→   433→                "getFragmentManager", "getWindow", "getWindowManager",
+   434→   434→                "getResources", "getPackageManager", "getPackageName",
+   435→   435→                "getClassLoader", "getFilesDir", "getCacheDir",
+   436→   436→                "getSharedPreferences", "startActivity", "startActivityForResult",
+   437→   437→                "getCallingActivity", "getCallingPackage"};
+   438→   438→    }
+   439→   439→    std::vector<std::string> stubbed_methods() const override {
+   440→   440→        return {"runOnUiThread", "overridePendingTransition",
+   441→   441→                "findViewById", "registerForContextMenu"};
+   442→   442→    }
+   443→   443→
+   444→   444→    void set_current_activity(uint32_t id, const std::string& cls) {
+   445→   445→        current_activity_id_ = id;
+   446→   446→        current_activity_class_ = cls;
+   447→   447→        state_ = LifecycleState::CREATED;
+   448→   448→    }
+   449→   449→    // UNIFIED_011.3 FRAME-2 (§23): record ONLY the activity's heap object id
+   450→   450→    // (no lifecycle-state side effects). Used by execute_apk_with_activity so
+   451→   451→    // post-launch probes (click-test android:onClick dispatch) can invoke
+   452→   452→    // handlers with the REAL activity instance as `this`.
+   453→   453→    void set_activity_heap_id(uint32_t id) { current_activity_id_ = id; }
+   454→   454→    uint32_t current_activity_id() const { return current_activity_id_; }
+   455→   455→    const std::string& current_activity_class() const { return current_activity_class_; }
+   456→   456→    LifecycleState state() const { return state_; }
+   457→   457→    void set_state(LifecycleState s) { state_ = s; }
+   458→   458→
+   459→   459→    void set_content_view(uint32_t view_id) { content_view_id_ = view_id; }
+   460→   460→    uint32_t content_view_id() const { return content_view_id_; }
+   461→   461→
+   462→   462→    // EXP-087 Phase 3 (B2 FIX): Set the APK path so setContentView(int)
+   463→   463→    // can find the layout_cache.json next to the APK.
+   464→   464→    void set_apk_path(const std::string& path) { apk_path_ = path; }
+   465→   465→
+   466→   466→    // UNIFIED_007: real inflation evidence
+   467→   467→    const std::string& last_inflate_stats() const { return last_inflate_stats_; }
+   468→   468→
+   469→   469→private:
+   470→   470→    uint32_t current_activity_id_ = 0;
+   471→   471→    std::string current_activity_class_;
+   472→   472→    uint32_t content_view_id_ = 0;
+   473→   473→    // EXP-074: Layout resource ID from setContentView(int layoutResId).
+   474→   474→    int32_t layout_resource_id_ = 0;
+   475→   475→    LifecycleState state_ = LifecycleState::NONE;
+   476→   476→    // EXP-087 Phase 3 (B2 FIX): APK path for layout_cache.json lookup
+   477→   477→    std::string apk_path_;
+   478→   478→    // UNIFIED_007: JSON stats from last real inflation
+   479→   479→    std::string last_inflate_stats_;
+   480→   480→    std::vector<std::string> warnings_;
+   481→   481→};
+   482→   482→
+   483→   483→// ─────────────────────────────────────────────────────────────────────────
+   484→   484→// ViewShadow — minimal View/ViewGroup hierarchy (semantic, no rendering).
+   485→   485→//
+   486→   486→// Each View heap object is tracked by:
+   487→   487→//   * view_id           — the object_id (== heap object_id)
+   488→   488→//   * parent_id         — 0 if root, else the parent ViewGroup's view_id
+   489→   489→//   * children           — list of child view_ids (empty for leaf Views)
+   490→   490→//   * view_id_android    — the Android `R.id.*` int set by setId() or XML
+   491→   491→//   * class_desc         — View subclass class descriptor
+   492→   492→//
+   493→   493→// Operations supported:
+   494→   494→//   * View.<init>(Context)   — allocate a fresh View heap object
+   495→   495→//   * View.setId(int)        — record the Android view id
+   496→   496→//   * View.getId()           — return the recorded id
+   497→   497→//   * ViewGroup(View).addView(View) — parent->children.push_back(child)
+   498→   498→//   * ViewGroup(View).removeView(View)
+   499→   499→//   * View.getParent()       — return parent_id (or null)
+   500→   500→//   * View.getChildAt(int)   — return children[i] or null
+   501→   501→//   * View.getChildCount()   — return children.size()
+   502→   502→//   * Activity.setContentView(View) — set the content_view on ActivityShadow
+   503→   503→//   * Activity.findViewById(int)   — BFS the hierarchy for a view with
+   504→   504→//                                       matching view_id_android
+   505→   505→// ─────────────────────────────────────────────────────────────────────────
+   506→   506→class ViewShadow : public Shadow {
+   507→   507→public:
+   508→   508→    struct ViewNode {
+   509→   509→        uint32_t view_id = 0;
+   510→   510→        uint32_t parent_id = 0;
+   511→   511→        std::vector<uint32_t> children;
+   512→   512→        int32_t android_view_id = 0;     // View.getId() value
+   513→   513→        std::string class_desc;
+   514→   514→        // Layout params (semantic only — no real Measure/Layout pass).
+   515→   515→        int width  = -1;  // MATCH_PARENT = -1, WRAP_CONTENT = -2
+   516→   516→        int height = -1;
+   517→   517→        int x = 0, y = 0;
+   518→   518→        // Common properties used by Android code paths.
+   519→   519→        std::string text;     // TextView.getText()
+   520→   520→        std::string hint;     // TextView.getHint() / EditText hint (EXP-065)
+   521→   521→        // EXP-071: Context — set during View creation (constructor receives Context).
+   522→   522→        // When getContext() is called on this View, return this object_id.
+   523→   523→        // In real Android, Views store the Context passed to their constructor.
+   524→   524→        // We store it so getParentActivity() can find the Activity via
+   525→   525→        // getView().getContext() instanceof Activity.
+   526→   526→        uint32_t context_object_id = 0;  // The Context (Activity) that created this View
+   527→   527→        // UC009: AOSP View.mAttachInfo equivalence — set when the tree attaches
+   528→   528→        // to the window (dispatchAttachedToWindow), cleared on detach.
+   529→   529→        // Compose's AbstractComposeView chain checks View.isAttachedToWindow()
+   530→   530→        // during ensureCompositionCreated; without this state the composition
+   531→   531→        // bails out and ComposeView keeps children=0 forever.
+   532→   532→        bool attached_to_window = false;
+   533→   533→        // EXP-067: Image resource ID — set by ImageView.setImageResource(int)
+   534→   534→        // The renderer can look up the drawable path via resource_drawable_paths_.
+   535→   535→        int32_t image_resource_id = 0;
+   536→   536→        std::string image_drawable_path;  // resolved APK asset path (e.g. "res/abc.webp")
+   537→   537→        // EXP-074: Text resource ID — set by TextView.setText(int resid).
+   538→   538→        // When non-zero, the renderer resolves it via the ARSC string table.
+   539→   539→        int32_t text_resource_id = 0;
+   540→   540→        bool clickable = false;
+   541→   541→        bool enabled = true;
+   542→   542→        int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8
+   543→   543→        // CAMPAIGN 013 B1: dialog window item/button routing. When
+   544→   544→        // dialog_owner_obj != 0 this ViewNode belongs to a DialogShadow
+   545→   545→        // window's decor tree and clicks route to the window's
+   546→   546→        // DialogInterface$OnClickListener as onClick(dialog, which) —
+   547→   547→        // NOT the standard View$OnClickListener.onClick(view) path.
+   548→   548→        // dialog_which: item index (>=0) for list rows, or the AOSP button
+   549→   549→        // code BUTTON_POSITIVE(-1)/NEGATIVE(-2)/NEUTRAL(-3) for buttons.
+   550→   550→        uint32_t dialog_owner_obj = 0;
+   551→   551→        int dialog_which = -100;
+   552→   552→        // EXP-060: Listener storage — the heap object_id of the
+   553→   553→        // OnClickListener (or 0 if none). When dispatchClick is called
+   554→   554→        // the runtime invokes listener.onClick(this_view) via try_recursive_invoke.
+   555→   555→        uint32_t click_listener_id = 0;
+   556→   556→        std::string click_listener_class;  // DEX descriptor of the listener class
+   557→   557→        uint32_t long_click_listener_id = 0;
+   558→   558→        std::string long_click_listener_class;
+   559→   559→        uint32_t touch_listener_id = 0;
+   560→   560→        std::string touch_listener_class;
+   561→   561→        // EXP-095 (CM-019): Layout params captured from
+   562→   562→        // addView(view, LayoutHelper.createLinear/createFrame(params)).
+   563→   563→        // Per AOSP ViewGroup.LayoutParams / MarginLayoutParams:
+   564→   564→        //   lp_width/lp_height: -1 = MATCH_PARENT, -2 = WRAP_CONTENT,
+   565→   565→        //                        positive = exact px (density=1 on this runtime).
+   566→   566→        //   lp_gravity: AOSP Gravity bits (CENTER_VERTICAL=0x10, CENTER_HORIZONTAL=1,
+   567→   567→        //               CENTER=0x11, TOP=0x30, LEFT=3, RIGHT=5, BOTTOM=0x50).
+   568→   568→        //   margins in px.
+   569→   569→        // Sentinel INT_MIN = "no LayoutParams seen" (fall back to defaults).
+   570→   570→        int lp_width = INT_MIN;
+   571→   571→        int lp_height = INT_MIN;
+   572→   572→        int lp_gravity = 0;
+   573→   573→        int lp_margin_left = 0, lp_margin_top = 0;
+   574→   574→        int lp_margin_right = 0, lp_margin_bottom = 0;
+   575→   575→        // EXP-095: View.setGravity text alignment (TextView).
+   576→   576→        int text_gravity = 0;
+   577→   577→        // EXP-095: LinearLayout orientation (0=HORIZONTAL, 1=VERTICAL).
+   578→   578→        // -1 = unset (default VERTICAL per LinearLayout docs).
+   579→   579→        int orientation = -1;
+   580→   580→        // EXP-095 (CM-020): Background color from setBackgroundColor(int).
+   581→   581→        // 0xFFFFFFFF white is the View default; 0 = unset.
+   582→   582→        uint32_t bg_color = 0;
+   583→   583→        // EXP-095: ScrollView scrolling container marker (content laid out
+   584→   584→        // inside, potentially taller than screen).
+   585→   585→        bool is_scroll_container = false;
+   586→   586→        // EXP-098 (CM-027): RLottie animation frame RGBA buffer (rendered
+   587→   587→        // by RLottieDecoder when setAnimation(R.raw.X, w, h) is called on
+   588→   588→        // an RLottieImageView subclass). Stored as anim_w*anim_h*4 bytes
+   589→   589→        // in scan order (R,G,B,A per pixel). When non-empty the renderer
+   590→   590→        // draws these pixels at the view's bounds INSTEAD of the CM-022
+   591→   591→        // placeholder.
+   592→   592→        std::vector<uint8_t> anim_frame_rgba;
+   593→   593→        int anim_w = 0;
+   594→   594→        int anim_h = 0;
+   595→   595→        int anim_total_frames = 0;  // total frames in the source animation
+   596→   596→        int anim_current_frame = 0;  // current frame index for time-based playback
+   597→   597→        // EXP-098 (CM-027): When setAnimation(R.raw.X, w, h) is observed
+   598→   598→        // on an RLottieImageView, the engine stores the (raw_resid,
+   599→   599→        // target_w, target_h) here. The render stage (which has access
+   600→   600→        // to ApkParser) then resolves resid → APK path → JSON → rlottie
+   601→   601→        // frame → RGBA buffer.
+   602→   602→        int32_t anim_raw_resid = 0;
+   603→   603→        int anim_target_w = 0;
+   604→   604→        int anim_target_h = 0;
+   605→   605→        bool anim_decode_attempted = false;  // avoid re-decoding on each frame
+   606→   606→
+   607→   607→        // ===================================================================
+   608→   608→        // UNIFIED_007: REAL inflation fields (set by resources::LayoutInflater
+   609→   609→        // from AXML attributes; consumed by renderer + touch hit testing).
+   610→   610→        // ===================================================================
+   611→   611→        int padding_left = 0, padding_top = 0, padding_right = 0, padding_bottom = 0;
+   612→   612→        float text_size_px = 0;          // 0 → renderer default
+   613→   613→        uint32_t text_color = 0;         // 0 → renderer default (near-black)
+   614→   614→        bool text_bold = false;
+   615→   615→        bool text_italic = false;
+   616→   616→        std::string bg_drawable_path;    // APK entry path of background drawable
+   617→   617→        std::string src_drawable_path;   // APK entry path of ImageView src
+   618→   618→        std::string onClick_handler;     // android:onClick method name (real DEX callback)
+   619→   619→        int layout_weight = 0;           // LinearLayout weight
+   620→   620→        int container_gravity = -1;      // android:gravity on container (-1 unset)
+   621→   621→        int child_gravity = -1;          // android:layout_gravity on child
+   622→   622→        bool gravity_set = false;
+   623→   623→        bool bg_from_xml = false;        // background came from XML (color or drawable)
+   624→   624→        int measured_left = 0, measured_top = 0;   // final geometry (measure/layout)
+   625→   625→        int measured_width = 0, measured_height = 0;
+   626→   626→        int measured_right = 0, measured_bottom = 0;
+   627→   627→        bool laid_out = false;           // geometry computed
+   628→   628→        int num_lines = -1;
+   629→   629→        float text_size_sp = 0;          // original sp (evidence)
+   630→   630→        std::string android_id_name;     // resolved id name ("btn_roll") for evidence
+   631→   631→        // FIX-2c: RelativeLayout dependency rules (names resolved against the
+   632→   632→        // inflated tree). Captured from layout_below/layout_above/
+   633→   633→        // layout_toRightOf/layout_toLeftOf raw values ("@id/name").
+   634→   634→        std::string rel_below_name, rel_above_name;
+   635→   635→        std::string rel_right_of_name, rel_left_of_name;
+   636→   636→        int text_style = 0;              // AOSP Typeface bits (bold=1, italic=2)
+   637→   637→        // Cycle F: TextView typography from DEX setters (setTextSize/
+   638→   638→        // setTextColor/setAllCaps/setTypeface) and XML (fontFamily /
+   639→   639→        // textAllCaps). font_face is the resolved TextShaper face index
+   640→   640→        // (FACE_SYSTEM=-1 default); font_family keeps the raw family
+   641→   641→        // string for diagnostics and app-font matching.
+   642→   642→        bool text_all_caps = false;      // TextView.setAllCaps / textAllCaps
+   643→   643→        int font_face = -1;              // resolved face (fonts::FACE_SYSTEM)
+   644→   644→        std::string font_family;         // raw android:fontFamily value
+   645→   645→        uint32_t font_face_obj = 0;      // heap object of last setTypeface
+   646→   646→    };
+   647→   647→
+   648→   648→    std::string name() const override { return "View"; }
+   649→   649→    void init(HeapAllocator* heap) override { heap_ = heap; }
+   650→   650→
+   651→   651→    bool handles_class(const std::string& class_name) const override {
+   652→   652→        // EXP-075: Do NOT handle Activity subclasses — let ActivityShadow handle them.
+   653→   653→        // This prevents ViewShadow from intercepting setContentView calls on Activities.
+   654→   654→        if (class_name.find("Activity;") != std::string::npos) {
+   655→   655→            return false;
+   656→   656→        }
+   657→   657→        // Match any class ending in "View;" or "ViewGroup;" or containing
+   658→   658→        // well-known View subclasses. Specific dispatch is done by
+   659→   659→        // method name.
+   660→   660→        // EXP-060: Also match user-defined View subclasses by checking
+   661→   661→        // if the class_name is NOT a known non-View framework class.
+   662→   662→        // This is a heuristic — if the class isn't one of the known
+   663→   663→        // non-View types, we try ViewShadow dispatch and return
+   664→   664→        // not_handled if the method isn't a View method.
+   665→   665→        if (class_name.find("View;") != std::string::npos ||
+   666→   666→            class_name == "Landroid/widget/TextView;" ||
+   667→   667→            class_name == "Landroid/widget/EditText;" ||
+   668→   668→            class_name == "Landroid/widget/Button;" ||
+   669→   669→            class_name == "Landroid/widget/ImageView;" ||
+   670→   670→            class_name == "Landroid/view/View;" ||
+   671→   671→            class_name == "Landroid/view/ViewGroup;" ||
+   672→   672→            class_name == "Landroid/view/TextureView;" ||
+   673→   673→            class_name == "Landroid/widget/ScrollView;" ||
+   674→   674→            class_name == "Landroid/widget/FrameLayout;" ||
+   675→   675→            class_name == "Landroid/widget/LinearLayout;") {
+   676→   676→            return true;
+   677→   677→        }
+   678→   678→        // EXP-060: For user-defined classes (like IntroActivity$4 which
+   679→   679→        // extends TextView), we can't check the hierarchy here. But if the
+   680→   680→        // class name doesn't match any known non-View framework prefix,
+   681→   681→        // it MIGHT be a View subclass. Let dispatch() figure it out by
+   682→   682→        // method name. This is slightly broader than ideal but matches
+   683→   683→        // how Robolectric handles View subclasses.
+   684→   684→        if (class_name.find("Landroid/") == 0 ||
+   685→   685→            class_name.find("Ljava/") == 0 ||
+   686→   686→            class_name.find("Lkotlin/") == 0 ||
+   687→   687→            class_name.find("Lcom/google/") == 0 ||
+   688→   688→            class_name.find("Landroidx/") == 0) {
+   689→   689→            // Standard framework class — let other shadows handle it.
+   690→   690→            return false;
+   691→   691→        }
+   692→   692→        // User-defined class (e.g. Lorg/telegram/ui/...). Could be a
+   693→   693→        // View subclass. Let dispatch() decide based on method name.
+   694→   694→        return true;
+   695→   695→    }
+   696→   696→
+   697→   697→    CallResult dispatch(const CallContext& ctx) override;
+   698→   698→
+   699→   699→    std::vector<std::string> implemented_methods() const override {
+   700→   700→        return {"<init>", "setId", "getId", "getParent",
+   701→   701→                "addView", "addViewInLayout", "removeView",
+   702→   702→                "removeViewInLayout", "removeAllViews",
+   703→   703→                "getChildAt", "getChildCount",
+   704→   704→                "findViewById", "findViewWithTag",
+   705→   705→                "setVisibility", "getVisibility",
+   706→   706→                "setEnabled", "isEnabled",
+   707→   707→                "setClickable", "isClickable",
+   708→   708→                "setText", "getText",
+   709→   709→                // Cycle F: TextView typography state (real ViewNode fields)
+   710→   710→                "setTextSize", "setTextColor", "setAllCaps",
+   711→   711→                "setTypeface", "getTypeface", "getTextSize",
+   712→   712→                "getCurrentTextColor",
+   713→   713→                "setBackgroundColor", "setBackground",
+   714→   714→                "setBackgroundResource", "setBackgroundDrawable",
+   715→   715→                "setLayoutParams", "getLayoutParams",
+   716→   716→                "measure", "layout", "draw",
+   717→   717→                "requestLayout", "invalidate",
+   718→   718→                // EXP-060: Listener registration + click dispatch.
+   719→   719→                "setOnClickListener",
+   720→   720→                "setOnLongClickListener",
+   721→   721→                "setOnTouchListener"};
+   722→   722→    }
+   723→   723→    std::vector<std::string> stubbed_methods() const override {
+   724→   724→        return {"onMeasure", "onLayout", "onDraw", "onTouchEvent",
+   725→   725→                "onAttachedToWindow", "onDetachedFromWindow"};
+   726→   726→    }
+   727→   727→
+   728→   728→    // Allocate a new ViewNode and bind it to a heap object_id.
+   729→   729→    // Returns the view_id (= heap object_id).
+   730→   730→    uint32_t create_view(const std::string& class_desc);
+   731→   731→
+   732→   732→    // Get-or-create a ViewNode for an existing heap object_id.
+   733→   733→    // Useful when the bytecode allocated the View via new-instance and
+   734→   734→    // then called <init>.
+   735→   735→    ViewNode* get_or_create_node(uint32_t view_id, const std::string& class_desc);
+   736→   736→
+   737→   737→    // Lookup a ViewNode by id (const variant).
+   738→   738→    const ViewNode* find_node(uint32_t view_id) const;
+   739→   739→    ViewNode* find_node(uint32_t view_id);
+   740→   740→
+   741→   741→    // EXP-090: Get all nodes for searching by class name
+   742→   742→    const std::map<uint32_t, std::unique_ptr<ViewNode>>& all_nodes() const { return nodes_; }
+   743→   743→
+   744→   744→    // Add child to parent (updates both parent's children and child's parent_id).
+   745→   745→    bool add_child(uint32_t parent_id, uint32_t child_id);
+   746→   746→    bool remove_child(uint32_t parent_id, uint32_t child_id);
+   747→   747→
+   748→   748→    // DFS search for a descendant with the given Android view_id.
+   749→   749→    // Returns 0 if not found.
+   750→   750→    uint32_t find_by_android_id(uint32_t root_id, int32_t android_id) const;
+   751→   751→
+   752→   752→    // EXP-060: Lookup a view by class descriptor (substring match).
+   753→   753→    // Used to find the startMessagingButton (a TextView) without knowing
+   754→   754→    // its Android view_id. Returns the most-recently-created match.
+   755→   755→    uint32_t find_by_class_substring(const std::string& substring) const;
+   756→   756→
+   757→   757→    // EXP-100 (UNIFIED_002): ALL matches for a class substring, ascending
+   758→   758→    // view_id order. DIAGNOSTIC — used by dispatch_click_by_class to audit
+   759→   759→    // candidate enumeration and selection (master request §9).
+   760→   760→    std::vector<uint32_t> find_all_by_class_substring(const std::string& substring) const;
+   761→   761→
+   762→   762→    // EXP-095 (CM-019): Store captured layout params on a ViewNode.
+   763→   763→    // Called by the engine when addView(view, params) / setLayoutParams
+   764→   764→    // is observed with a LayoutParams heap object carrying the fields
+   765→   765→    // (width, height, gravity, leftMargin, topMargin, rightMargin,
+   766→   766→    // bottomMargin) — produced by LayoutHelper.createLinear/createFrame.
+   767→   767→    void set_layout_params(uint32_t view_id, int w, int h, int gravity,
+   768→   768→                           int ml, int mt, int mr, int mb) {
+   769→   769→        auto* n = get_or_create_node(view_id, "");
+   770→   770→        if (n == nullptr) return;
+   771→   771→        n->lp_width = w;
+   772→   772→        n->lp_height = h;
+   773→   773→        n->lp_gravity = gravity;
+   774→   774→        n->lp_margin_left = ml;
+   775→   775→        n->lp_margin_top = mt;
+   776→   776→        n->lp_margin_right = mr;
+   777→   777→        n->lp_margin_bottom = mb;
+   778→   778→    }
+   779→   779→
+   780→   780→    // EXP-095: Store TextView.setGravity (text alignment inside the view).
+   781→   781→    void set_text_gravity(uint32_t view_id, int gravity) {
+   782→   782→        auto* n = get_or_create_node(view_id, "");
+   783→   783→        if (n != nullptr) n->text_gravity = gravity;
+   784→   784→    }
+   785→   785→
+   786→   786→    // EXP-095: Store LinearLayout.setOrientation (0=HORIZONTAL, 1=VERTICAL).
+   787→   787→    void set_orientation(uint32_t view_id, int orientation) {
+   788→   788→        auto* n = get_or_create_node(view_id, "");
+   789→   789→        if (n != nullptr) n->orientation = orientation;
+   790→   790→    }
+   791→   791→
+   792→   792→    // EXP-095 (CM-020): Store View.setBackgroundColor(int).
+   793→   793→    void set_bg_color(uint32_t view_id, uint32_t argb) {
+   794→   794→        auto* n = get_or_create_node(view_id, "");
+   795→   795→        if (n != nullptr) n->bg_color = argb;
+   796→   796→    }
+   797→   797→
+   798→   798→    // EXP-098 (CM-027): Store RLottie animation frame RGBA buffer on the
+   799→   799→    // ViewNode. Called by the engine-side setAnimation intercept after
+   800→   800→    // rlottie renders the requested frame(s). When the renderer visits
+   801→   801→    // this view, it draws anim_frame_rgba at the view's bounds instead of
+   802→   802→    // the CM-022 placeholder.
+   803→   803→    void set_anim_frame(uint32_t view_id,
+   804→   804→                        std::vector<uint8_t> rgba,
+   805→   805→                        int w, int h, int total_frames) {
+   806→   806→        auto* n = get_or_create_node(view_id, "");
+   807→   807→        if (n == nullptr) return;
+   808→   808→        n->anim_frame_rgba = std::move(rgba);
+   809→   809→        n->anim_w = w;
+   810→   810→        n->anim_h = h;
+   811→   811→        n->anim_total_frames = total_frames;
+   812→   812→        n->anim_current_frame = 0;
+   813→   813→    }
+   814→   814→
+   815→   815→    // EXP-098 (CM-027): Mark this view as a pending RLottie animation
+   816→   816→    // target. The engine captures (raw_resid, w, h) when
+   817→   817→    // RLottieImageView.setAnimation(R.raw.X, w, h) is called; the render
+   818→   818→    // stage (with ApkParser access) performs the actual decode.
+   819→   819→    void set_anim_pending(uint32_t view_id, int32_t raw_resid,
+   820→   820→                          int w, int h) {
+   821→   821→        auto* n = get_or_create_node(view_id, "");
+   822→   822→        if (n == nullptr) return;
+   823→   823→        n->anim_raw_resid = raw_resid;
+   824→   824→        n->anim_target_w = w;
+   825→   825→        n->anim_target_h = h;
+   826→   826→        n->anim_decode_attempted = false;
+   827→   827→    }
+   828→   828→
+   829→   829→    // EXP-060: Return ALL view_ids whose class descriptor contains
+   830→   830→    // `substring` AND that have a click listener registered.
+   831→   831→    // Ordered by view_id descending (most-recently-created first).
+   832→   832→    std::vector<uint32_t> find_all_with_click_listener(
+   833→   833→        const std::string& class_substring) const;
+   834→   834→
+   835→   835→
+   836→   836→    // Diagnostics: total node count.
+   837→   837→    size_t node_count() const { return nodes_.size(); }
+   838→   838→
+   839→   839→private:
+   840→   840→    std::map<uint32_t, std::unique_ptr<ViewNode>> nodes_;
+   841→   841→};
+   842→   842→
+   843→   843→// ─────────────────────────────────────────────────────────────────────────
+   844→   844→// CollectionShadow — real List/ArrayList/Map semantics with per-instance state.
+   845→   845→//
+   846→   846→// Instead of a global `List.isEmpty → true` stub, this shadow tracks real
+   847→   847→// collection state per heap object. Each collection instance gets a
+   848→   848→// CollectionState (vector of elements) keyed by object_id.
+   849→   849→//
+   850→   850→// Supported operations:
+   851→   851→//   * List.add(item) → append, return true
+   852→   852→//   * List.get(index) → return element at index
+   853→   853→//   * List.size() → return count
+   854→   854→//   * List.isEmpty() → return count == 0
+   855→   855→//   * List.clear() → clear elements
+   856→   856→//   * List.remove(index) → remove at index
+   857→   857→//   * Map.put(key, value) → store key-value pair
+   858→   858→//   * Map.get(key) → return value for key
+   859→   859→//   * Map.size() → return count
+   860→   860→//   * Map.isEmpty() → return count == 0
+   861→   861→//   * Map.containsKey(key) → return true if key exists
+   862→   862→//   * Iterator.hasNext() → check position < size
+   863→   863→//   * Iterator.next() → return element at position++
+   864→   864→//
+   865→   865→// This is NOT a stub — it's real state-based semantics. The runtime's
+   866→   866→// List objects actually hold elements and report correct sizes.
+   867→   867→// ─────────────────────────────────────────────────────────────────────────
+   868→   868→class CollectionShadow : public Shadow {
+   869→   869→public:
+   870→   870→    struct CollectionState {
+   871→   871→        std::vector<uint32_t> elements;  // object_ids of elements
+   872→   872→        std::map<std::string, uint32_t> map_entries;  // key → value object_id
+   873→   873→        // EXP-071 Phase 7: Store string values for HashMap.put(key, String).
+   874→   874→        // The original map_entries only stores object_ids, but many HashMap
+   875→   875→        // usages store String values (e.g., shortname → country name).
+   876→   876→        // Without this, HashMap.get returns null for string values.
+   877→   877→        std::map<std::string, std::string> map_string_entries;  // key → string value
+   878→   878→        size_t iterator_position = 0;
+   879→   879→        bool is_map = false;
+   880→   880→    };
+   881→   881→
+   882→   882→    std::string name() const override { return "Collection"; }
+   883→   883→    void init(HeapAllocator* heap) override { heap_ = heap; }
+   884→   884→
+   885→   885→    bool handles_class(const std::string& class_name) const override {
+   886→   886→        return class_name == "Ljava/util/ArrayList;" ||
+   887→   887→               class_name == "Ljava/util/LinkedList;" ||
+   888→   888→               class_name == "Ljava/util/List;" ||
+   889→   889→               class_name == "Ljava/util/Collection;" ||
+   890→   890→               class_name == "Ljava/util/CopyOnWriteArrayList;" ||
+   891→   891→               class_name == "Ljava/util/HashMap;" ||
+   892→   892→               class_name == "Ljava/util/Map;" ||
+   893→   893→               class_name == "Ljava/util/HashSet;" ||
+   894→   894→               class_name == "Ljava/util/Set;" ||
+   895→   895→               class_name == "Ljava/util/Arrays$ArrayList;" ||
+   896→   896→               class_name == "Ljava/util/Collections$UnmodifiableRandomAccessList;" ||
+   897→   897→               class_name == "Ljava/util/Collections$SingletonList;" ||
+   898→   898→               class_name == "Ljava/util/Iterator;" ||
+   899→   899→               class_name == "Ljava/util/ListIterator;" ||
+   900→   900→               class_name.find("/ArrayList;") != std::string::npos ||
+   901→   901→               class_name.find("/HashMap;") != std::string::npos ||
+   902→   902→               class_name.find("/HashSet;") != std::string::npos ||
+   903→   903→               class_name.find("ConcurrentHashMap") != std::string::npos;
+   904→   904→    }
+   905→   905→
+   906→   906→    CallResult dispatch(const CallContext& ctx) override;
+   907→   907→
+   908→   908→    std::vector<std::string> implemented_methods() const override {
+   909→   909→        return {"add", "get", "size", "isEmpty", "clear", "remove",
+   910→   910→                "contains", "iterator", "hasNext", "next",
+   911→   911→                "put", "containsKey", "keySet", "values", "entrySet",
+   912→   912→                "getIndex", "set"};
+   913→   913→    }
+   914→   914→    std::vector<std::string> stubbed_methods() const override {
+   915→   915→        return {"subList", "listIterator", "toArray", "sort"};
+   916→   916→    }
+   917→   917→
+   918→   918→    // Get or create CollectionState for a heap object.
+   919→   919→    CollectionState* get_or_create(uint32_t object_id, bool is_map = false);
+   920→   920→
+   921→   921→private:
+   922→   922→    std::map<uint32_t, CollectionState> collections_;
+   923→   923→};
+   924→   924→
+   925→   925→}} // namespace miniandroid::framework
+   926→   926→
+   927→   927→#endif // MINIANDROID_FRAMEWORK_ANDROID_SHADOWS_H
+   928→   928→

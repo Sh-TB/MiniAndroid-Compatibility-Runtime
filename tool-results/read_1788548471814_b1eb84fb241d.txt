@@ -1,0 +1,895 @@
+     1→// CAMPAIGN 013 — Canvas/Paint shadow implementation. See canvas_shadow.h.
+     2→#include "canvas_shadow.h"
+     3→#include "../renderer/software_renderer.h"
+     4→
+     5→#include <algorithm>
+     6→#include <cmath>
+     7→#include <iostream>
+     8→
+     9→namespace miniandroid { namespace framework {
+    10→
+    11→namespace {
+    12→
+    13→renderer::RGBA to_rgba(uint32_t argb) {
+    14→    return renderer::RGBA{
+    15→        static_cast<uint8_t>((argb >> 16) & 0xFF),
+    16→        static_cast<uint8_t>((argb >> 8) & 0xFF),
+    17→        static_cast<uint8_t>(argb & 0xFF),
+    18→        static_cast<uint8_t>((argb >> 24) & 0xFF)};
+    19→}
+    20→
+    21→// Java float args arrive as CallContext::Arg::FLOAT (or DOUBLE).
+    22→float arg_as_float(const CallContext& ctx, size_t i, float def = 0.f) {
+    23→    if (i >= ctx.args.size()) return def;
+    24→    const auto& a = ctx.args[i];
+    25→    if (a.kind == CallContext::Arg::Kind::FLOAT) return a.float_val;
+    26→    if (a.kind == CallContext::Arg::Kind::DOUBLE) return static_cast<float>(a.double_val);
+    27→    if (a.kind == CallContext::Arg::Kind::INT) return static_cast<float>(a.int_val);
+    28→    return def;
+    29→}
+    30→
+    31→// Cycle E: enum-aware integer argument read. Apps pass framework enums
+    32→// (Paint$Style, Path$FillType, Path$Direction, ...) as OBJECT refs; the
+    33→// engine materializes those constants with their AOSP ordinals and
+    34→// registers them (framework::register_enum_ordinal). Decode generically:
+    35→// enum object → ordinal, plain int → value, otherwise the default.
+    36→int arg_as_enum_or_int(const CallContext& ctx, size_t i, int def = 0) {
+    37→    if (i >= ctx.args.size()) return def;
+    38→    const auto& a = ctx.args[i];
+    39→    if (a.kind == CallContext::Arg::Kind::OBJECT) {
+    40→        int ordinal = 0;
+    41→        if (framework::lookup_enum_ordinal(a.object_id, ordinal)) return ordinal;
+    42→        return def;
+    43→    }
+    44→    return (int)ctx.arg_as_int(i, def);
+    45→}
+    46→
+    47→// ── Cycle E geometry helpers ─────────────────────────────────────────────
+    48→using Pt = std::pair<float, float>;
+    49→using Contour = std::vector<Pt>;
+    50→
+    51→// Flatten a cubic Bézier (P0 = current point) into `segs` line segments
+    52→// appended to `out`. De Casteljau in explicit Bernstein form — standard.
+    53→void append_cubic(Contour& out, float x0, float y0,
+    54→                  float x1, float y1, float x2, float y2,
+    55→                  float x3, float y3, int segs = 12) {
+    56→    for (int i = 1; i <= segs; ++i) {
+    57→        const float t = (float)i / segs, u = 1.0f - t;
+    58→        const float a = u * u * u, b = 3 * u * u * t, c = 3 * u * t * t, d = t * t * t;
+    59→        out.push_back({a * x0 + b * x1 + c * x2 + d * x3,
+    60→                       a * y0 + b * y1 + c * y2 + d * y3});
+    61→    }
+    62→}
+    63→
+    64→// Flatten a quadratic Bézier (P0 = current point) into `out`.
+    65→void append_quad(Contour& out, float x0, float y0,
+    66→                 float x1, float y1, float x2, float y2, int segs = 8) {
+    67→    for (int i = 1; i <= segs; ++i) {
+    68→        const float t = (float)i / segs, u = 1.0f - t;
+    69→        out.push_back({u * u * x0 + 2 * u * t * x1 + t * t * x2,
+    70→                       u * u * y0 + 2 * u * t * y1 + t * t * y2});
+    71→    }
+    72→}
+    73→
+    74→// Append a closed ellipse contour spanning (l,t,r,b). AOSP Path.addOval:
+    75→// the contour starts at the LEFT edge midpoint (l, cy) and walks in the
+    76→// given direction. cw=true → clockwise on screen (y down: increasing
+    77→// standard angle), ccw → reversed.
+    78→void append_oval(std::vector<Contour>& contours, float l, float t,
+    79→                 float r, float b, bool cw) {
+    80→    const float cx = (l + r) * 0.5f, cy = (t + b) * 0.5f;
+    81→    const float rx = (r - l) * 0.5f, ry = (b - t) * 0.5f;
+    82→    if (rx <= 0 || ry <= 0) return;
+    83→    Contour ct;
+    84→    constexpr int kSegs = 32;
+    85→    for (int i = 0; i <= kSegs; ++i) {
+    86→        const float tpar = (float)i / kSegs * 2.f * (float)M_PI;
+    87→        const float s = cw ? 1.f : -1.f;   // y-down screen: +sin walks CW
+    88→        ct.push_back({cx + rx * std::cos(tpar),
+    89→                      cy + s * ry * std::sin(tpar)});
+    90→    }
+    91→    ct.back().first = ct.front().first;    // exact closure
+    92→    ct.back().second = ct.front().second;
+    93→    contours.push_back(std::move(ct));
+    94→}
+    95→
+    96→// Append a closed rounded-rect contour spanning (l,t,r,b) with corner
+    97→// radii clamped per AOSP (rx, ry halved when 2*rx > span).
+    98→void append_round_rect(std::vector<Contour>& contours, float l, float t,
+    99→                       float r, float b, float rx, float ry, bool cw) {
+   100→    if (r <= l || b <= t) return;
+   101→    rx = std::min(rx, (r - l) * 0.5f);
+   102→    ry = std::min(ry, (b - t) * 0.5f);
+   103→    if (rx <= 0 || ry <= 0) {   // degenerates to addRect
+   104→        Contour ct = {{l, t}, {r, t}, {r, b}, {l, b}, {l, t}};
+   105→        if (!cw) std::reverse(ct.begin(), ct.end());
+   106→        contours.push_back(std::move(ct));
+   107→        return;
+   108→    }
+   109→    // Eight segments: 4 straight edges + 4 quarter-ellipse corners.
+   110→    // Corner centers and arc start/end angles follow AOSP ordering
+   111→    // (start at (l+rx, t), walk CW on screen); CCW is the reversed walk.
+   112→    const float cxr = r - rx, cxb = b - ry, cxl = l + rx, cyt = t + ry;
+   113→    Contour ct;
+   114→    auto arc = [&](float cx, float cy, float a0, float a1) {
+   115→        constexpr int kSegs = 8;
+   116→        for (int i = 0; i <= kSegs; ++i) {
+   117→            const float a = a0 + (a1 - a0) * (float)i / kSegs;
+   118→            ct.push_back({cx + rx * std::cos(a), cy + ry * std::sin(a)});
+   119→        }
+   120→    };
+   121→    ct.push_back({cxl, t});
+   122→    ct.push_back({cxr, t});
+   123→    arc(cxr, cyt, -M_PI / 2, 0);                 // top-right
+   124→    ct.push_back({r, cxb});
+   125→    arc(cxr, cxb, 0, M_PI / 2);                  // bottom-right
+   126→    ct.push_back({cxl, b});
+   127→    arc(cxl, cxb, M_PI / 2, M_PI);               // bottom-left
+   128→    ct.push_back({l, cyt});
+   129→    arc(cxl, cyt, M_PI, M_PI * 1.5f);            // top-left
+   130→    ct.push_back(ct.front());
+   131→    if (!cw) std::reverse(ct.begin(), ct.end());
+   132→    contours.push_back(std::move(ct));
+   133→}
+   134→
+   135→}  // namespace
+   136→
+   137→void CanvasShadow::begin_frame() {
+   138→    ops_.clear();
+   139→    capturing_ = true;
+   140→    // UC009: fresh frame = fresh canvas state (AOSP Canvas lifecycle).
+   141→    tx_ = ty_ = 0;
+   142→    save_stack_.clear();
+   143→    recording_node_ = 0;
+   144→}
+   145→
+   146→size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
+   147→                            renderer::BitmapFont& font,
+   148→                            float left, float top, float w, float h) {
+   149→    for (const auto& op : ops_) {
+   150→        renderer::RGBA c = to_rgba(op.color);
+   151→        switch (op.kind) {
+   152→            case DrawOp::Kind::DRAW_COLOR: {
+   153→                if (op.x < 0.5f) {  // x flag = full-view rect
+   154→                    canvas.draw_rect(left, top, left + w, top + h, c);
+   155→                } else {
+   156→                    canvas.draw_rect(left + op.x, top + op.y,
+   157→                                     left + op.x + op.w, top + op.y + op.h, c);
+   158→                }
+   159→                break;
+   160→            }
+   161→            case DrawOp::Kind::DRAW_RECT: {
+   162→                const float x1 = left + op.x, y1 = top + op.y;
+   163→                const float x2 = left + op.w, y2 = top + op.h;
+   164→                if (op.stroke) {
+   165→                    canvas.draw_rect(x1, y1, x2, y1 + op.stroke_w, c);
+   166→                    canvas.draw_rect(x1, y2 - op.stroke_w, x2, y2, c);
+   167→                    canvas.draw_rect(x1, y1, x1 + op.stroke_w, y2, c);
+   168→                    canvas.draw_rect(x2 - op.stroke_w, y1, x2, y2, c);
+   169→                } else {
+   170→                    canvas.draw_rect(x1, y1, x2, y2, c);
+   171→                }
+   172→                break;
+   173→            }
+   174→            case DrawOp::Kind::DRAW_ROUNDRECT: {
+   175→                // Recorded with width/height convention (unlike DRAW_RECT).
+   176→                const float x1 = left + op.x, y1 = top + op.y;
+   177→                const float x2 = x1 + op.w, y2 = y1 + op.h;
+   178→                // v1: filled rect (corner radius recorded but not rasterized).
+   179→                if (op.stroke) {
+   180→                    canvas.draw_rect(x1, y1, x2, y1 + op.stroke_w, c);
+   181→                    canvas.draw_rect(x1, y2 - op.stroke_w, x2, y2, c);
+   182→                    canvas.draw_rect(x1, y1, x1 + op.stroke_w, y2, c);
+   183→                    canvas.draw_rect(x2 - op.stroke_w, y1, x2, y2, c);
+   184→                } else {
+   185→                    canvas.draw_rect(x1, y1, x2, y2, c);
+   186→                }
+   187→                break;
+   188→            }
+   189→            case DrawOp::Kind::DRAW_CIRCLE: {
+   190→                // Rasterize by horizontal spans (framebuffer has no circle op).
+   191→                const float cx = left + op.x, cy = top + op.y, rr = op.r;
+   192→                if (op.stroke) {
+   193→                    for (int dy = -int(rr); dy <= int(rr); dy++) {
+   194→                        float t = std::sqrt(std::max(0.f, rr*rr - dy*dy));
+   195→                        float band = op.stroke_w;
+   196→                        float outer = std::sqrt(std::max(0.f, (rr+band)*(rr+band) - dy*dy));
+   197→                        float inner = rr - band > 0 ? std::sqrt(std::max(0.f, (rr-band)*(rr-band) - dy*dy)) : -1;
+   198→                        canvas.draw_rect(cx - outer, top + op.y + dy, cx + outer,
+   199→                                         top + op.y + dy + 1, c);
+   200→                        (void)t; (void)inner;
+   201→                    }
+   202→                } else {
+   203→                    for (int dy = -int(rr); dy <= int(rr); dy++) {
+   204→                        float dx = std::sqrt(std::max(0.f, rr*rr - dy*dy));
+   205→                        canvas.draw_rect(cx - dx, top + op.y + dy, cx + dx,
+   206→                                         top + op.y + dy + 1, c);
+   207→                    }
+   208→                }
+   209→                break;
+   210→            }
+   211→            case DrawOp::Kind::DRAW_LINE: {
+   212→                // Bresenham-lite via rects (axis-dominant lines).
+   213→                float x1 = left + op.x, y1 = top + op.y;
+   214→                float x2 = left + op.w, y2 = top + op.h;
+   215→                float dx = x2 - x1, dy = y2 - y1;
+   216→                int steps = int(std::max(std::fabs(dx), std::fabs(dy)));
+   217→                if (steps <= 0) steps = 1;
+   218→                for (int i = 0; i <= steps; i++) {
+   219→                    float px = x1 + dx * i / steps;
+   220→                    float py = y1 + dy * i / steps;
+   221→                    canvas.draw_rect(px, py, px + std::max(op.stroke_w, 1.f),
+   222→                                     py + std::max(op.stroke_w, 1.f), c);
+   223→                }
+   224→                break;
+   225→            }
+   226→            case DrawOp::Kind::DRAW_PATH: {
+   227→                // FIX-5 + Cycle E: scanline fill across ALL recorded
+   228→                // contours honoring the path's AOSP FillType —
+   229→                //   WINDING (default): nonzero winding-number rule
+   230→                //   EVEN_ODD: crossing-parity rule (digit counters)
+   231→                //   INVERSE_*: complement within the scan band
+   232→                // Stroke mode outlines each contour.
+   233→                if (op.contours.empty()) break;
+   234→                // Gather all edges once (with direction for winding).
+   235→                struct Edge { float x1, y1, x2, y2; bool down; };
+   236→                std::vector<Edge> edges;
+   237→                float min_y = 1e30f, max_y = -1e30f;
+   238→                for (const auto& ct : op.contours) {
+   239→                    for (size_t i = 0; i < ct.size(); ++i) {
+   240→                        const auto& a = ct[i];
+   241→                        const auto& b = ct[(i + 1) % ct.size()];
+   242→                        if (a.second != b.second) {
+   243→                            edges.push_back({a.first + left, a.second + top,
+   244→                                             b.first + left, b.second + top,
+   245→                                             b.second > a.second});
+   246→                        }
+   247→                        min_y = std::min(min_y, std::min(a.second, b.second) + top);
+   248→                        max_y = std::max(max_y, std::max(a.second, b.second) + top);
+   249→                    }
+   250→                }
+   251→                if (edges.empty() || max_y < min_y) break;
+   252→                if (op.stroke) {
+   253→                    // Outline: walk each contour with the line rasterizer.
+   254→                    for (const auto& ct : op.contours) {
+   255→                        for (size_t i = 0; i + 1 < ct.size(); ++i) {
+   256→                            float ax = ct[i].first + left, ay = ct[i].second + top;
+   257→                            float bx = ct[i + 1].first + left, by = ct[i + 1].second + top;
+   258→                            float ddx = bx - ax, ddy = by - ay;
+   259→                            int st = int(std::max({std::fabs(ddx), std::fabs(ddy), 1.f}));
+   260→                            for (int s = 0; s <= st; ++s) {
+   261→                                float px = ax + ddx * s / st;
+   262→                                float py = ay + ddy * s / st;
+   263→                                canvas.draw_rect(px, py,
+   264→                                                 px + std::max(op.stroke_w, 1.f),
+   265→                                                 py + std::max(op.stroke_w, 1.f), c);
+   266→                            }
+   267→                        }
+   268→                    }
+   269→                    break;
+   270→                }
+   271→                const bool inverse = (op.fill_rule & 2) != 0;
+   272→                const bool even_odd = (op.fill_rule & 1) != 0;
+   273→                const int y0 = std::max((int)std::floor(min_y), 0);
+   274→                const int y1 = (int)std::ceil(max_y);
+   275→                std::vector<std::pair<float, bool>> xs;   // crossing + direction
+   276→                for (int y = y0; y <= y1; ++y) {
+   277→                    const float sy = (float)y + 0.5f;
+   278→                    xs.clear();
+   279→                    for (const auto& e : edges) {
+   280→                        float ey1 = e.y1, ey2 = e.y2;
+   281→                        if ((sy >= ey1 && sy < ey2) || (sy >= ey2 && sy < ey1)) {
+   282→                            float t = (sy - ey1) / (ey2 - ey1);
+   283→                            xs.push_back({e.x1 + t * (e.x2 - e.x1), e.down});
+   284→                        }
+   285→                    }
+   286→                    if (xs.empty()) continue;
+   287→                    std::sort(xs.begin(), xs.end(),
+   288→                              [](const std::pair<float, bool>& a,
+   289→                                 const std::pair<float, bool>& b) {
+   290→                                  return a.first < b.first;
+   291→                              });
+   292→                    if (even_odd) {
+   293→                        // Even-odd: fill between crossing pairs.
+   294→                        for (size_t i = 0; i + 1 < xs.size(); i += 2) {
+   295→                            float xa = xs[i].first, xb = xs[i + 1].first;
+   296→                            if (xb - xa < 0.5f) continue;
+   297→                            canvas.draw_rect(xa, (float)y, xb, (float)y + 1, c);
+   298→                        }
+   299→                    } else {
+   300→                        // Winding (nonzero): walk crossings left→right,
+   301→                        // inside while the winding number is non-zero.
+   302→                        int w = 0;
+   303→                        for (size_t i = 0; i + 1 < xs.size(); ++i) {
+   304→                            w += xs[i].second ? 1 : -1;
+   305→                            if (w != 0) {
+   306→                                float xa = xs[i].first, xb = xs[i + 1].first;
+   307→                                if (xb - xa >= 0.5f)
+   308→                                    canvas.draw_rect(xa, (float)y, xb,
+   309→                                                     (float)y + 1, c);
+   310→                            }
+   311→                        }
+   312→                    }
+   313→                    if (inverse) {
+   314→                        // INVERSE_*: complement of the inside spans along
+   315→                        // this scanline (bounded by the path's x extent —
+   316→                        // the framebuffer clip bounds the rest).
+   317→                        std::vector<std::pair<float, float>> inside;
+   318→                        if (even_odd) {
+   319→                            for (size_t i = 0; i + 1 < xs.size(); i += 2)
+   320→                                inside.push_back({xs[i].first, xs[i + 1].first});
+   321→                        } else {
+   322→                            int w = 0;
+   323→                            for (size_t i = 0; i + 1 < xs.size(); ++i) {
+   324→                                w += xs[i].second ? 1 : -1;
+   325→                                if (w != 0)
+   326→                                    inside.push_back({xs[i].first, xs[i + 1].first});
+   327→                            }
+   328→                        }
+   329→                        if (inside.empty()) continue;
+   330→                        float px = xs.front().first;
+   331→                        for (const auto& span : inside) {
+   332→                            if (span.first - px >= 0.5f)
+   333→                                canvas.draw_rect(px, (float)y, span.first,
+   334→                                                 (float)y + 1, c);
+   335→                            px = span.second;
+   336→                        }
+   337→                        // Trailing complement is unbounded on the plane;
+   338→                        // clip it to the path bounding box so inverse
+   339→                        // paths stay visible without flooding the screen.
+   340→                        float x_min = 1e30f, x_max = -1e30f;
+   341→                        for (const auto& e : edges) {
+   342→                            x_min = std::min({x_min, e.x1, e.x2});
+   343→                            x_max = std::max({x_max, e.x1, e.x2});
+   344→                        }
+   345→                        if (x_max - px >= 0.5f)
+   346→                            canvas.draw_rect(px, (float)y, x_max,
+   347→                                             (float)y + 1, c);
+   348→                    }
+   349→                }
+   350→                break;
+   351→            }
+   352→            case DrawOp::Kind::DRAW_OVAL: {
+   353→                // Cycle E: real ellipse via horizontal spans. Stroke mode
+   354→                // draws the ring band between the outer ellipse and the
+   355→                // inner one inset by stroke_w.
+   356→                const float cx = left + op.x + op.w * 0.5f;
+   357→                const float cy = top + op.y + op.h * 0.5f;
+   358→                const float rx = op.w * 0.5f, ry = op.h * 0.5f;
+   359→                if (rx <= 0 || ry <= 0) break;
+   360→                if (op.stroke) {
+   361→                    const float band = std::max(op.stroke_w, 1.f);
+   362→                    const float irx = std::max(0.f, rx - band);
+   363→                    const float iry = std::max(0.f, ry - band);
+   364→                    const int top_dy = (int)std::ceil(ry);
+   365→                    for (int dy = -top_dy; dy <= top_dy; ++dy) {
+   366→                        const float fy = (float)dy;
+   367→                        if (fy < -ry || fy > ry) continue;
+   368→                        const float k = 1.f - (fy * fy) / (ry * ry);
+   369→                        const float outer = rx * std::sqrt(std::max(0.f, k));
+   370→                        float inner = 0.f;
+   371→                        if (irx > 0 && iry > 0 &&
+   372→                            std::fabs(fy) < iry)
+   373→                            inner = irx * std::sqrt(
+   374→                                std::max(0.f, 1.f - (fy * fy) / (iry * iry)));
+   375→                        // Two side bands per row (ring, not disc).
+   376→                        canvas.draw_rect(cx - outer, cy + fy,
+   377→                                         cx - inner, cy + fy + 1, c);
+   378→                        canvas.draw_rect(cx + inner, cy + fy,
+   379→                                         cx + outer, cy + fy + 1, c);
+   380→                    }
+   381→                } else {
+   382→                    const int top_dy = (int)std::ceil(ry);
+   383→                    for (int dy = -top_dy; dy <= top_dy; ++dy) {
+   384→                        const float fy = (float)dy;
+   385→                        if (fy < -ry || fy > ry) continue;
+   386→                        const float dx = rx * std::sqrt(std::max(
+   387→                            0.f, 1.f - (fy * fy) / (ry * ry)));
+   388→                        canvas.draw_rect(cx - dx, cy + fy, cx + dx,
+   389→                                         cy + fy + 1, c);
+   390→                    }
+   391→                }
+   392→                break;
+   393→            }
+   394→            case DrawOp::Kind::DRAW_TEXT: {
+   395→                canvas.draw_text(op.text, left + op.x, top + op.y, c, &font);
+   396→                break;
+   397→            }
+   398→            case DrawOp::Kind::DRAW_PAINT: {
+   399→                canvas.draw_rect(left, top, left + w, top + h, c);
+   400→                break;
+   401→            }
+   402→        }
+   403→    }
+   404→    capturing_ = false;
+   405→    return ops_.size();
+   406→}
+   407→
+   408→CallResult CanvasShadow::dispatch(const CallContext& ctx) {
+   409→    const std::string& cls = ctx.class_name;
+   410→    const std::string& m = ctx.method;
+   411→
+   412→
+   413→    // ── RenderNode (UC009 H-072: Compose recording model) ─────────────
+   414→    if (cls == "Landroid/view/RenderNode;" || cls.find("RenderNode;") != std::string::npos) {
+   415→        const uint32_t recv = ctx.receiver_id;
+   416→        if (m == "beginRecording") {
+   417→            // AOSP: switches this node into recording mode and returns the
+   418→            // node's RecordingCanvas. We route subsequent Canvas ops into
+   419→            // the node's op list; the returned object is a shared
+   420→            // RecordingCanvas receiver (single-threaded draw = safe).
+   421→            recording_node_ = recv;
+   422→            uint32_t canvas_id = heap_ ? heap_->get_or_create("Landroid/graphics/RecordingCanvas;") : recv;
+   423→            return CallResult::handled_object(canvas_id, "Landroid/graphics/RecordingCanvas;");
+   424→        }
+   425→        if (m == "endRecording") {
+   426→            recording_node_ = 0;
+   427→            return CallResult::handled_void();
+   428→        }
+   429→        if (m == "setPosition") {
+   430→            // setPosition(left, top, right, bottom)
+   431→            if (ctx.args.size() >= 4) {
+   432→                node_pos_l_[recv] = arg_as_float(ctx, 0, 0.f);
+   433→                node_pos_t_[recv] = arg_as_float(ctx, 1, 0.f);
+   434→            }
+   435→            return CallResult::handled_bool(true);
+   436→        }
+   437→        if (m == "setTranslationX" || m == "setTranslationY" || m == "setElevation" ||
+   438→            m == "setAlpha" || m == "setCameraDistance" || m == "setPivotX" || m == "setPivotY" ||
+   439→            m == "setScaleX" || m == "setScaleY" || m == "setRotation" || m == "setClipToBounds" ||
+   440→            m == "setClipToOutline" || m == "setOutline" || m == "setHasDisplayList" ||
+   441→            m == "setUsageHint" || m == "isValid" || m == "discardDisplayList") {
+   442→            return CallResult::handled_bool(true);
+   443→        }
+   444→        return CallResult::not_handled();
+   445→    }
+   446→
+   447→    // ── Paint ──────────────────────────────────────────────────────────
+   448→    if (cls.find("Paint;") != std::string::npos) {
+   449→        const uint32_t recv = ctx.receiver_id;
+   450→        if (m == "setColor") {
+   451→            paint_color_[recv] = (uint32_t)ctx.arg_as_int(0, 0xFF000000);
+   452→            return CallResult::handled_void();
+   453→        }
+   454→        if (m == "getColor") {
+   455→            return CallResult::handled_int((int32_t)paint_color(recv));
+   456→        }
+   457→        if (m == "setAlpha") {
+   458→            uint32_t cur = paint_color(recv);
+   459→            uint32_t a = (uint32_t)ctx.arg_as_int(0, 255) & 0xFF;
+   460→            paint_color_[recv] = (cur & 0x00FFFFFF) | (a << 24);
+   461→            return CallResult::handled_void();
+   462→        }
+   463→        if (m == "setAntiAlias" || m == "setDither" || m == "setFilterBitmap" ||
+   464→            m == "setFakeBoldText" || m == "setUnderlineText" || m == "setFlags") {
+   465→            return CallResult::handled_void();
+   466→        }
+   467→        if (m == "setStrokeWidth") {
+   468→            paint_stroke_w_[recv] = arg_as_float(ctx, 0, 1.f);
+   469→            return CallResult::handled_void();
+   470→        }
+   471→        if (m == "setStyle") {
+   472→            // AOSP Paint.Style: FILL=0, STROKE=1, FILL_AND_STROKE=2.
+   473→            // Enum args arrive as materialized framework-enum objects —
+   474→            // decode the real ordinal (Cycle E), int fallback for legacy.
+   475→            paint_style_[recv] = arg_as_enum_or_int(ctx, 0, 0);
+   476→            return CallResult::handled_void();
+   477→        }
+   478→        if (m == "setTextSize") {
+   479→            paint_text_size_[recv] = arg_as_float(ctx, 0, 32.f);
+   480→            return CallResult::handled_void();
+   481→        }
+   482→        if (m == "setTextAlign" || m == "setTypeface" || m == "setShadowLayer") {
+   483→            return CallResult::handled_void();
+   484→        }
+   485→        if (m == "<init>") {
+   486→            paint_color_[recv] = 0xFF000000;
+   487→            return CallResult::handled_void();
+   488→        }
+   489→        return CallResult::not_handled();
+   490→    }
+   491→
+   492→    // ── Path (FIX-5: real geometry recording; Cycle E: cubics, relative
+   493→    //    segments, add* shape constructors, offset, fill-type) ──────────
+   494→    if (cls.find("graphics/Path;") != std::string::npos) {
+   495→        const uint32_t recv = ctx.receiver_id;
+   496→        PathData& pd = paths_[recv];
+   497→        // AOSP: reset() clears geometry AND resets fill type to WINDING;
+   498→        // rewind() clears geometry but KEEPS the fill type for reuse.
+   499→        if (m == "reset") {
+   500→            pd = PathData{};
+   501→            return CallResult::handled_void();
+   502→        }
+   503→        if (m == "rewind") {
+   504→            int keep_fill = pd.fill_type;
+   505→            pd = PathData{};
+   506→            pd.fill_type = keep_fill;
+   507→            return CallResult::handled_void();
+   508→        }
+   509→        if (m == "moveTo") {
+   510→            pd.contours.push_back({});
+   511→            pd.cx = pd.sx = arg_as_float(ctx, 0);
+   512→            pd.cy = pd.sy = arg_as_float(ctx, 1);
+   513→            pd.open = true;
+   514→            pd.contours.back().push_back({pd.cx, pd.cy});
+   515→            return CallResult::handled_void();
+   516→        }
+   517→        if (m == "rMoveTo") {
+   518→            // AOSP: relative move from the CURRENT point; if the path is
+   519→            // empty it behaves like an absolute moveTo(0,0)+delta.
+   520→            const float dx = arg_as_float(ctx, 0), dy = arg_as_float(ctx, 1);
+   521→            if (!pd.open) {
+   522→                pd.contours.push_back({});
+   523→                pd.sx = pd.sy = 0;
+   524→                pd.contours.back().push_back({0.f, 0.f});
+   525→                pd.open = true;
+   526→            }
+   527→            pd.cx += dx; pd.cy += dy;
+   528→            pd.sx = pd.cx; pd.sy = pd.cy;   // AOSP sets the new start point
+   529→            pd.contours.back().push_back({pd.cx, pd.cy});
+   530→            return CallResult::handled_void();
+   531→        }
+   532→        if (m == "lineTo" || m == "rLineTo") {
+   533→            if (!pd.open) {  // implicit moveTo(0,0) per Android docs
+   534→                pd.contours.push_back({});
+   535→                pd.open = true;
+   536→                pd.sx = pd.sy = 0;
+   537→                pd.contours.back().push_back({0.f, 0.f});
+   538→            }
+   539→            if (m == "lineTo") {
+   540→                pd.cx = arg_as_float(ctx, 0);
+   541→                pd.cy = arg_as_float(ctx, 1);
+   542→            } else {
+   543→                pd.cx += arg_as_float(ctx, 0);
+   544→                pd.cy += arg_as_float(ctx, 1);
+   545→            }
+   546→            pd.contours.back().push_back({pd.cx, pd.cy});
+   547→            return CallResult::handled_void();
+   548→        }
+   549→        if (m == "quadTo" || m == "rQuadTo") {
+   550→            if (!pd.open) {
+   551→                pd.contours.push_back({});
+   552→                pd.open = true;
+   553→                pd.sx = pd.sy = 0;
+   554→                pd.contours.back().push_back({0.f, 0.f});
+   555→            }
+   556→            float x1 = arg_as_float(ctx, 0), y1 = arg_as_float(ctx, 1);
+   557→            float x2 = arg_as_float(ctx, 2), y2 = arg_as_float(ctx, 3);
+   558→            if (m == "rQuadTo") {
+   559→                x1 += pd.cx; y1 += pd.cy;
+   560→                x2 += pd.cx; y2 += pd.cy;
+   561→            }
+   562→            append_quad(pd.contours.back(), pd.cx, pd.cy, x1, y1, x2, y2);
+   563→            pd.cx = x2; pd.cy = y2;
+   564→            return CallResult::handled_void();
+   565→        }
+   566→        if (m == "cubicTo" || m == "rCubicTo") {
+   567→            if (!pd.open) {
+   568→                pd.contours.push_back({});
+   569→                pd.open = true;
+   570→                pd.sx = pd.sy = 0;
+   571→                pd.contours.back().push_back({0.f, 0.f});
+   572→            }
+   573→            float x1 = arg_as_float(ctx, 0), y1 = arg_as_float(ctx, 1);
+   574→            float x2 = arg_as_float(ctx, 2), y2 = arg_as_float(ctx, 3);
+   575→            float x3 = arg_as_float(ctx, 4), y3 = arg_as_float(ctx, 5);
+   576→            if (m == "rCubicTo") {
+   577→                x1 += pd.cx; y1 += pd.cy;
+   578→                x2 += pd.cx; y2 += pd.cy;
+   579→                x3 += pd.cx; y3 += pd.cy;
+   580→            }
+   581→            append_cubic(pd.contours.back(), pd.cx, pd.cy, x1, y1, x2, y2, x3, y3);
+   582→            pd.cx = x3; pd.cy = y3;
+   583→            return CallResult::handled_void();
+   584→        }
+   585→        // Shape constructors: append CLOSED contours (AOSP: they start a
+   586→        // new sub-path and close it; the current point moves to the shape
+   587→        // start — setLastPoint semantics aside, we mirror addOval's
+   588→        // (l, cy) start). Direction args are enum-aware (Cycle E).
+   589→        if (m == "addOval" || m == "addCircle" || m == "addRect" ||
+   590→            m == "addRoundRect") {
+   591→            bool cw = true;   // AOSP Path.Direction.CW == 0 (default)
+   592→            float l = 0, t = 0, r = 0, b = 0;
+   593→            if (m == "addOval") {
+   594→                l = arg_as_float(ctx, 0); t = arg_as_float(ctx, 1);
+   595→                r = arg_as_float(ctx, 2); b = arg_as_float(ctx, 3);
+   596→                cw = (ctx.args.size() < 5) || arg_as_enum_or_int(ctx, 4, 0) == 0;
+   597→            } else if (m == "addCircle") {
+   598→                const float cx = arg_as_float(ctx, 0), cy = arg_as_float(ctx, 1);
+   599→                const float rad = arg_as_float(ctx, 2);
+   600→                l = cx - rad; t = cy - rad; r = cx + rad; b = cy + rad;
+   601→                cw = (ctx.args.size() < 4) || arg_as_enum_or_int(ctx, 3, 0) == 0;
+   602→            } else if (m == "addRect") {
+   603→                l = arg_as_float(ctx, 0); t = arg_as_float(ctx, 1);
+   604→                r = arg_as_float(ctx, 2); b = arg_as_float(ctx, 3);
+   605→                cw = (ctx.args.size() < 5) || arg_as_enum_or_int(ctx, 4, 0) == 0;
+   606→            } else {   // addRoundRect(l,t,r,b,rx,ry,dir)
+   607→                l = arg_as_float(ctx, 0); t = arg_as_float(ctx, 1);
+   608→                r = arg_as_float(ctx, 2); b = arg_as_float(ctx, 3);
+   609→                const float rx = arg_as_float(ctx, 4), ry = arg_as_float(ctx, 5);
+   610→                cw = (ctx.args.size() < 7) || arg_as_enum_or_int(ctx, 6, 0) == 0;
+   611→                if (rx > 0 || ry > 0) {
+   612→                    append_round_rect(pd.contours, l, t, r, b, rx, ry, cw);
+   613→                    pd.open = false;
+   614→                    return CallResult::handled_void();
+   615→                }
+   616→            }
+   617→            if (m == "addOval") {
+   618→                append_oval(pd.contours, l, t, r, b, cw);
+   619→            } else {   // addRect / addCircle-with-r0
+   620→                Contour ct = {{l, t}, {r, t}, {r, b}, {l, b}, {l, t}};
+   621→                if (!cw) std::reverse(ct.begin(), ct.end());
+   622→                pd.contours.push_back(std::move(ct));
+   623→            }
+   624→            pd.open = false;
+   625→            return CallResult::handled_void();
+   626→        }
+   627→        if (m == "close") {
+   628→            if (pd.open && !pd.contours.empty()) {
+   629→                pd.contours.back().push_back({pd.sx, pd.sy});
+   630→                pd.cx = pd.sx; pd.cy = pd.sy;
+   631→                pd.open = false;
+   632→            }
+   633→            return CallResult::handled_void();
+   634→        }
+   635→        if (m == "setFillType") {
+   636→            // AOSP Path.FillType ordinals: WINDING=0, EVEN_ODD=1,
+   637→            // INVERSE_WINDING=2, INVERSE_EVEN_ODD=3. Enum-aware (Cycle E).
+   638→            pd.fill_type = arg_as_enum_or_int(ctx, 0, 0) & 3;
+   639→            return CallResult::handled_void();
+   640→        }
+   641→        if (m == "getFillType") {
+   642→            return CallResult::handled_int(pd.fill_type);
+   643→        }
+   644→        if (m == "offset") {
+   645→            // AOSP: translates ALL recorded geometry (and the current
+   646→            // point) by (dx, dy). No new segments are created.
+   647→            const float dx = arg_as_float(ctx, 0), dy = arg_as_float(ctx, 1);
+   648→            if (std::fabs(dx) > 0.f || std::fabs(dy) > 0.f) {
+   649→                for (auto& ct : pd.contours)
+   650→                    for (auto& p : ct) { p.first += dx; p.second += dy; }
+   651→                pd.cx += dx; pd.cy += dy;
+   652→                pd.sx += dx; pd.sy += dy;
+   653→            }
+   654→            return CallResult::handled_void();
+   655→        }
+   656→        if (m == "isEmpty") {
+   657→            for (const auto& ct : pd.contours)
+   658→                if (ct.size() > 1) return CallResult::handled_int(0);
+   659→            return CallResult::handled_int(1);
+   660→        }
+   661→        // Accepted-but-geometry-free Path calls (state-only semantics).
+   662→        if (m == "isConvex" || m == "transform" || m == "set" ||
+   663→            m == "computeBounds" || m == "setLastPoint" ||
+   664→            m == "arcTo" || m == "addPath")
+   665→            return m == "isEmpty" ? CallResult::handled_int(0)
+   666→                 : m == "isConvex" ? CallResult::handled_int(1)
+   667→                 : CallResult::handled_void();
+   668→        return CallResult::not_handled();
+   669→    }
+   670→
+   671→    // ── Canvas ─────────────────────────────────────────────────────────
+   672→    if (!capturing_) return CallResult::not_handled();  // outside draw dispatch
+   673→
+   674→    const uint32_t recv = ctx.receiver_id;
+   675→    if (m == "drawColor" || m == "drawARGB" || m == "drawRGB") {
+   676→        DrawOp op; op.kind = DrawOp::Kind::DRAW_COLOR; op.x = 0.f;  // full view
+   677→        if (m == "drawColor") op.color = (uint32_t)ctx.arg_as_int(0, 0xFFFFFFFF);
+   678→        else if (m == "drawARGB") {
+   679→            op.color = ((uint32_t)ctx.arg_as_int(0, 255) << 24) |
+   680→                       ((uint32_t)ctx.arg_as_int(1, 0) << 16) |
+   681→                       ((uint32_t)ctx.arg_as_int(2, 0) << 8) |
+   682→                       (uint32_t)ctx.arg_as_int(3, 0);
+   683→        } else {
+   684→            op.color = 0xFF000000u |
+   685→                       ((uint32_t)ctx.arg_as_int(0, 0) << 16) |
+   686→                       ((uint32_t)ctx.arg_as_int(1, 0) << 8) |
+   687→                       (uint32_t)ctx.arg_as_int(2, 0);
+   688→        }
+   689→        target().push_back(op);
+   690→        return CallResult::handled_void();
+   691→    }
+   692→    if (m == "drawRect") {
+   693→        DrawOp op; op.kind = DrawOp::Kind::DRAW_RECT;
+   694→        // (l,t,r,b,paint) — floats
+   695→        op.x = arg_as_float(ctx, 0); op.y = arg_as_float(ctx, 1);
+   696→        op.w = arg_as_float(ctx, 2); op.h = arg_as_float(ctx, 3);
+   697→        uint32_t paint_id = ctx.arg_as_object(4);
+   698→        op.color = paint_color(paint_id);
+   699→        op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] == 1;
+   700→        auto sw = paint_stroke_w_.find(paint_id);
+   701→        op.stroke_w = sw != paint_stroke_w_.end() ? sw->second : 1.f;
+   702→        // NOTE: drawRect stores ABSOLUTE edges in x,y,w,h (existing replay
+   703→        // convention) — translate shifts both edges.
+   704→        op.x += tx_; op.w += tx_;
+   705→        op.y += ty_; op.h += ty_;
+   706→        target().push_back(op);
+   707→        return CallResult::handled_void();
+   708→    }
+   709→    if (m == "drawRoundRect") {
+   710→        // Compose backgrounds/cards are round rects. Approximate as rect with
+   711→        // corner radius recorded (replay draws filled rect — honest v1).
+   712→        DrawOp op; op.kind = DrawOp::Kind::DRAW_ROUNDRECT;
+   713→        // args are (l,t,r,b,paint,rx,ry)
+   714→        float l = arg_as_float(ctx, 0), t = arg_as_float(ctx, 1);
+   715→        float r = arg_as_float(ctx, 2), b = arg_as_float(ctx, 3);
+   716→        op.x = l + tx_; op.y = t + ty_; op.w = r - l; op.h = b - t;
+   717→        op.r = arg_as_float(ctx, 5, 0.f);
+   718→        uint32_t paint_id = ctx.arg_as_object(4);
+   719→        op.color = paint_color(paint_id);
+   720→        auto sw2 = paint_stroke_w_.find(paint_id);
+   721→        op.stroke_w = sw2 != paint_stroke_w_.end() ? sw2->second : 1.f;
+   722→        target().push_back(op);
+   723→        return CallResult::handled_void();
+   724→    }
+   725→    if (m == "drawCircle") {
+   726→        DrawOp op; op.kind = DrawOp::Kind::DRAW_CIRCLE;
+   727→        op.x = arg_as_float(ctx, 0); op.y = arg_as_float(ctx, 1);
+   728→        op.r = arg_as_float(ctx, 2);
+   729→        uint32_t paint_id = ctx.arg_as_object(3);
+   730→        op.color = paint_color(paint_id);
+   731→        op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] == 1;
+   732→        auto sw = paint_stroke_w_.find(paint_id);
+   733→        op.stroke_w = sw != paint_stroke_w_.end() ? sw->second : 1.f;
+   734→        op.x += tx_; op.y += ty_;
+   735→        target().push_back(op);
+   736→        return CallResult::handled_void();
+   737→    }
+   738→    if (m == "drawLine") {
+   739→        DrawOp op; op.kind = DrawOp::Kind::DRAW_LINE;
+   740→        op.x = arg_as_float(ctx, 0); op.y = arg_as_float(ctx, 1);
+   741→        op.w = arg_as_float(ctx, 2); op.h = arg_as_float(ctx, 3);
+   742→        uint32_t paint_id = ctx.arg_as_object(4);
+   743→        op.color = paint_color(paint_id);
+   744→        auto sw = paint_stroke_w_.find(paint_id);
+   745→        op.stroke_w = sw != paint_stroke_w_.end() ? sw->second : 1.f;
+   746→        op.x += tx_; op.w += tx_;   // absolute endpoints convention
+   747→        op.y += ty_; op.h += ty_;
+   748→        target().push_back(op);
+   749→        return CallResult::handled_void();
+   750→    }
+   751→    if (m == "drawText") {
+   752→        DrawOp op; op.kind = DrawOp::Kind::DRAW_TEXT;
+   753→        op.text = ctx.arg_as_string(0);
+   754→        op.x = arg_as_float(ctx, 1);
+   755→        op.y = arg_as_float(ctx, 2);
+   756→        uint32_t paint_id = ctx.arg_as_object(ctx.args.size() >= 4 ? 3 : 0);
+   757→        op.color = paint_color(paint_id);
+   758→        op.x += tx_; op.y += ty_;
+   759→        target().push_back(op);
+   760→        return CallResult::handled_void();
+   761→    }
+   762→    if (m == "drawPath") {
+   763→        // FIX-5: real path rasterization — apps that build their own glyphs
+   764→        // (stopwatch digits, clock hands) now produce real pixels.
+   765→        // Cycle E: the path's FILL TYPE travels with the op so the
+   766→        // rasterizer applies WINDING vs EVEN-ODD exactly as recorded.
+   767→        const uint32_t path_id = ctx.arg_as_object(0, 0);
+   768→        const uint32_t paint_id = ctx.arg_as_object(ctx.args.size() >= 2 ? 1 : 0);
+   769→        auto pit = paths_.find(path_id);
+   770→        if (pit != paths_.end() && !pit->second.contours.empty()) {
+   771→            DrawOp op; op.kind = DrawOp::Kind::DRAW_PATH;
+   772→            op.color = paint_color(paint_id);
+   773→            op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] == 1;
+   774→            op.stroke_w = paint_stroke_w_.count(paint_id) ? paint_stroke_w_[paint_id] : 1.0f;
+   775→            op.fill_rule = pit->second.fill_type;
+   776→            op.contours = pit->second.contours;
+   777→            if (tx_ != 0.f || ty_ != 0.f) {
+   778→                for (auto& c : op.contours)
+   779→                    for (auto& p : c) { p.first += tx_; p.second += ty_; }
+   780→            }
+   781→            target().push_back(op);
+   782→        }
+   783→        return CallResult::handled_void();
+   784→    }
+   785→    if (m == "drawOval") {
+   786→        // Cycle E: real ellipse — (l,t,r,b,paint). Recorded top-left +
+   787→        // size (drawRoundRect convention), translate-aware.
+   788→        float l = arg_as_float(ctx, 0), t = arg_as_float(ctx, 1);
+   789→        float r = arg_as_float(ctx, 2), b = arg_as_float(ctx, 3);
+   790→        DrawOp op; op.kind = DrawOp::Kind::DRAW_OVAL;
+   791→        op.x = l + tx_; op.y = t + ty_;
+   792→        op.w = r - l; op.h = b - t;
+   793→        uint32_t paint_id = ctx.arg_as_object(4);
+   794→        op.color = paint_color(paint_id);
+   795→        op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] == 1;
+   796→        auto sw = paint_stroke_w_.find(paint_id);
+   797→        op.stroke_w = sw != paint_stroke_w_.end() ? sw->second : 1.f;
+   798→        target().push_back(op);
+   799→        return CallResult::handled_void();
+   800→    }
+   801→    if (m == "drawArc") {
+   802→        // Cycle E: real arc — (l,t,r,b,start,sweep,useCenter,paint).
+   803→        // Android angles: degrees, 0° = 3 o'clock, POSITIVE sweep runs
+   804→        // clockwise on screen (y-down). Synthesized as a flattened
+   805→        // contour drawn through the path rasterizer (fill for paint
+   806→        // FILL — with useCenter the contour closes at the oval center,
+   807→        // producing the pie wedge; without it the chord closes the
+   808→        // segment). Stroke mode outlines the same contour.
+   809→        float l = arg_as_float(ctx, 0), t = arg_as_float(ctx, 1);
+   810→        float r = arg_as_float(ctx, 2), b = arg_as_float(ctx, 3);
+   811→        float start = arg_as_float(ctx, 4), sweep = arg_as_float(ctx, 5);
+   812→        bool use_center = ctx.args.size() >= 7 && ctx.arg_as_int(6, 0) != 0;
+   813→        uint32_t paint_id = ctx.arg_as_object(7);
+   814→        const float cx = (l + r) * 0.5f, cy = (t + b) * 0.5f;
+   815→        const float rx = (r - l) * 0.5f, ry = (b - t) * 0.5f;
+   816→        if (rx > 0 && ry > 0 && std::fabs(sweep) > 0.01f) {
+   817→            const float a0 = start * (float)M_PI / 180.f;
+   818→            const float a1 = (start + sweep) * (float)M_PI / 180.f;
+   819→            const int segs = std::max(2, (int)(std::fabs(sweep) / 5.f));
+   820→            Contour ct;
+   821→            if (use_center) ct.push_back({cx, cy});
+   822→            for (int i = 0; i <= segs; ++i) {
+   823→                const float a = a0 + (a1 - a0) * (float)i / segs;
+   824→                ct.push_back({cx + rx * std::cos(a), cy + ry * std::sin(a)});
+   825→            }
+   826→            if (!use_center) ct.push_back(ct.front());
+   827→            DrawOp op; op.kind = DrawOp::Kind::DRAW_PATH;
+   828→            op.color = paint_color(paint_id);
+   829→            op.stroke = paint_style_.count(paint_id) && paint_style_[paint_id] == 1;
+   830→            op.stroke_w = paint_stroke_w_.count(paint_id) ? paint_stroke_w_[paint_id] : 1.f;
+   831→            op.fill_rule = 0;   // single contour: winding == even-odd here
+   832→            op.contours.push_back(std::move(ct));
+   833→            if (tx_ != 0.f || ty_ != 0.f) {
+   834→                for (auto& c : op.contours)
+   835→                    for (auto& p : c) { p.first += tx_; p.second += ty_; }
+   836→            }
+   837→            target().push_back(op);
+   838→        }
+   839→        return CallResult::handled_void();
+   840→    }
+   841→    if (m == "drawPaint") {
+   842→        DrawOp op; op.kind = DrawOp::Kind::DRAW_PAINT;
+   843→        op.color = paint_color(ctx.arg_as_object(0));
+   844→        target().push_back(op);
+   845→        return CallResult::handled_void();
+   846→    }
+   847→    if (m == "translate") {
+   848→        // AOSP Canvas.translate — needed by Compose child positioning.
+   849→        tx_ += arg_as_float(ctx, 0, 0.f);
+   850→        ty_ += arg_as_float(ctx, 1, 0.f);
+   851→        return CallResult::handled_void();
+   852→    }
+   853→    if (m == "save") {
+   854→        save_stack_.push_back({tx_, ty_});
+   855→        return CallResult::handled_int((int)save_stack_.size());
+   856→    }
+   857→    if (m == "restore") {
+   858→        if (!save_stack_.empty()) {
+   859→            tx_ = save_stack_.back().first;
+   860→            ty_ = save_stack_.back().second;
+   861→            save_stack_.pop_back();
+   862→        }
+   863→        return CallResult::handled_void();
+   864→    }
+   865→    if (m == "drawRenderNode") {
+   866→        // AOSP compositing: replay a recorded RenderNode's display list into
+   867→        // this canvas, offset by the node's position.
+   868→        const uint32_t node_id = ctx.arg_as_object(0, 0);
+   869→        auto it = render_nodes_.find(node_id);
+   870→        if (it != render_nodes_.end()) {
+   871→            float ox = node_pos_l_.count(node_id) ? node_pos_l_[node_id] : 0.f;
+   872→            float oy = node_pos_t_.count(node_id) ? node_pos_t_[node_id] : 0.f;
+   873→            auto& tgt = target();
+   874→            for (const DrawOp& op : it->second) {
+   875→                DrawOp c = op;
+   876→                c.x += ox; c.y += oy;
+   877→                tgt.push_back(c);
+   878→            }
+   879→        }
+   880→        return CallResult::handled_void();
+   881→    }
+   882→    if (m == "rotate" || m == "scale" || m == "skew" || m == "concat" ||
+   883→        m == "clipRect" || m == "saveLayer" || m == "restoreToCount" ||
+   884→        m == "drawBitmap" || m == "drawPoint" || m == "drawPosText") {
+   885→        // Accepted (flat state model); complex geometry is TODO on evidence.
+   886→        // drawOval/drawArc/drawPath are REAL since Cycle E.
+   887→        return CallResult::handled_void();
+   888→    }
+   889→    if (m == "getWidth") return CallResult::handled_int(1080);
+   890→    if (m == "getHeight") return CallResult::handled_int(1920);
+   891→    return CallResult::not_handled();
+   892→}
+   893→
+   894→} } // namespace miniandroid::framework
+   895→

@@ -1,0 +1,639 @@
+     1→/* UNIFIED_007 EXP-122 — ViewRenderer implementation. */
+     2→
+     3→#include "view_renderer.h"
+     4→#include "text_shaper.h"
+     5→#include "../apk/apk_parser.h"
+     6→#include <algorithm>
+     7→#include <cmath>
+     8→#include <functional>
+     9→
+    10→namespace miniandroid {
+    11→namespace renderer {
+    12→
+    13→using framework::ViewShadow;
+    14→
+    15→static const int kGravityCenterV = 0x10;
+    16→static const int kGravityCenterH = 0x01;
+    17→static const int kGravityBottom = 0x50;
+    18→static const int kGravityRight = 0x05;
+    19→
+    20→static RGBA argb(uint32_t c) {
+    21→    return RGBA{uint8_t((c >> 16) & 0xff), uint8_t((c >> 8) & 0xff),
+    22→                uint8_t(c & 0xff), uint8_t((c >> 24) & 0xff)};
+    23→}
+    24→
+    25→ViewRenderer::ViewRenderer(ViewShadow* views, int screen_w, int screen_h)
+    26→    : views_(views), screen_w_(screen_w), screen_h_(screen_h) {}
+    27→
+    28→bool ViewRenderer::is_linear(const ViewShadow::ViewNode& n) const {
+    29→    return n.class_desc.find("LinearLayout;") != std::string::npos ||
+    30→           n.class_desc.find("RadioGroup;") != std::string::npos ||
+    31→           n.class_desc.find("TableRow;") != std::string::npos;
+    32→}
+    33→bool ViewRenderer::is_relative(const ViewShadow::ViewNode& n) const {
+    34→    return n.class_desc.find("RelativeLayout;") != std::string::npos;
+    35→}
+    36→bool ViewRenderer::is_scroll(const ViewShadow::ViewNode& n) const {
+    37→    return n.class_desc.find("ScrollView;") != std::string::npos ||
+    38→           n.class_desc.find("HorizontalScrollView;") != std::string::npos;
+    39→}
+    40→bool ViewRenderer::is_frame(const ViewShadow::ViewNode& n) const {
+    41→    return n.class_desc.find("FrameLayout;") != std::string::npos ||
+    42→           n.class_desc.find("CoordinatorLayout;") != std::string::npos ||
+    43→           n.class_desc.find("AppBarLayout;") != std::string::npos ||
+    44→           n.class_desc.find("ConstraintLayout;") != std::string::npos;
+    45→}
+    46→bool ViewRenderer::is_image(const ViewShadow::ViewNode& n) const {
+    47→    return n.class_desc.find("ImageView;") != std::string::npos ||
+    48→           n.class_desc.find("ImageButton;") != std::string::npos;
+    49→}
+    50→bool ViewRenderer::is_edit_text(const ViewShadow::ViewNode& n) const {
+    51→    return n.class_desc.find("EditText;") != std::string::npos;
+    52→}
+    53→
+    54→static bool is_text_like(const ViewShadow::ViewNode& n) {
+    55→    return n.class_desc.find("TextView;") != std::string::npos ||
+    56→           n.class_desc.find("Button;") != std::string::npos ||
+    57→           n.class_desc.find("EditText;") != std::string::npos ||
+    58→           n.class_desc.find("CheckBox;") != std::string::npos ||
+    59→           n.class_desc.find("RadioButton;") != std::string::npos ||
+    60→           n.class_desc.find("Switch;") != std::string::npos;
+    61→}
+    62→
+    63→// ---------------------------------------------------------------------------
+    64→// Measure
+    65→// ---------------------------------------------------------------------------
+    66→ViewRenderer::Box ViewRenderer::measure_view(ViewShadow::ViewNode& n,
+    67→                                             int avail_w, int avail_h) {
+    68→    stats_.laid_out++;
+    69→    Box b{0, 0, 0, 0};
+    70→    b.w = (n.lp_width == -1) ? avail_w
+    71→          : (n.lp_width >= 0) ? n.lp_width
+    72→                              : avail_w;  // WRAP/INT_MIN refined below
+    73→    b.h = (n.lp_height == -1) ? avail_h
+    74→          : (n.lp_height >= 0) ? n.lp_height
+    75→                               : avail_h;
+    76→    bool wrap_w = n.lp_width == -2;
+    77→    bool wrap_h = n.lp_height == -2;
+    78→
+    79→    if (wrap_w || wrap_h) {
+    80→        if (is_image(n) && !n.image_drawable_path.empty()) {
+    81→            auto it = bitmap_cache_.find(n.image_drawable_path);
+    82→            if (it != bitmap_cache_.end() && !it->second.rgba.empty()) {
+    83→                float bucket = 1.f;
+    84→                const std::string& p = n.image_drawable_path;
+    85→                if (p.find("-xxxhdpi") != std::string::npos) bucket = 4.f;
+    86→                else if (p.find("-xxhdpi") != std::string::npos) bucket = 3.f;
+    87→                else if (p.find("-xhdpi") != std::string::npos) bucket = 2.f;
+    88→                else if (p.find("-hdpi") != std::string::npos) bucket = 1.5f;
+    89→                float scale = 2.f / bucket;  // runtime density / asset bucket
+    90→                b.w = int(std::lround(it->second.width * scale)) + n.padding_l + n.padding_r;
+    91→                b.h = int(std::lround(it->second.height * scale)) + n.padding_t + n.padding_b;
+    92→            }
+    93→        } else if (is_text_like(n) || is_image(n)) {
+    94→            float ts = n.text_size_px > 0 ? n.text_size_px : 14.f * 2;
+    95→            std::string t = !n.text.empty() ? n.text : n.hint;
+    96→            if (wrap_w) {
+    97→                float tw = 0;
+    98→                if (!t.empty()) {
+    99→                    TextShaper::Options o;
+   100→                    o.size_px = ts;
+   101→                    o.bold = n.text_style_bold;
+   102→                    tw = TextShaper::instance().measure(t, o);
+   103→                }
+   104→                b.w = int(std::lround(tw)) + n.padding_l + n.padding_r + 2;
+   105→            }
+   106→            if (wrap_h) {
+   107→                TextShaper::Metrics m =
+   108→                    TextShaper::instance().metrics(ts, n.text_style_bold);
+   109→                b.h = int(std::lround(m.line_height)) + n.padding_t + n.padding_b + 8;
+   110→            }
+   111→        } else {
+   112→            // container wrap: sum children (single pass)
+   113→            int cw = 0, ch = 0;
+   114→            bool horiz = is_linear(n) && n.orientation == 0;
+   115→            for (uint32_t cid : n.children) {
+   116→                ViewShadow::ViewNode* c = views_->find_node(cid);
+   117→                if (!c || c->visibility == 8) continue;
+   118→                // Android: match_parent children inside a wrap_content
+   119→                // parent do not grow the parent (they resolve against its
+   120→                // final size afterwards). Treat them as 0 along the main
+   121→                // axis during the wrap measurement.
+   122→                int cmain = horiz ? c->lp_width : c->lp_height;
+   123→                if (cmain == -1 || c->layout_weight > 0) {
+   124→                    if (horiz) cw += 0;
+   125→                    else ch += 0;
+   126→                    continue;
+   127→                }
+   128→                Box cb = measure_view(*c, b.w, b.h);
+   129→                if (horiz) {
+   130→                    cw += cb.w + c->lp_margin_left + c->lp_margin_right;
+   131→                    ch = std::max(ch, cb.h + c->lp_margin_top + c->lp_margin_bottom);
+   132→                } else {
+   133→                    ch += cb.h + c->lp_margin_top + c->lp_margin_bottom;
+   134→                    cw = std::max(cw, cb.w + c->lp_margin_left + c->lp_margin_right);
+   135→                }
+   136→            }
+   137→            if (wrap_w) b.w = cw + n.padding_l + n.padding_r;
+   138→            if (wrap_h) b.h = ch + n.padding_t + n.padding_b;
+   139→        }
+   140→    }
+   141→    if (avail_w > 0 && b.w > avail_w) b.w = avail_w;
+   142→    if (avail_h > 0 && b.h > avail_h && n.lp_height != -1) b.h = avail_h;
+   143→    return b;
+   144→}
+   145→
+   146→// ---------------------------------------------------------------------------
+   147→// Layout children
+   148→// ---------------------------------------------------------------------------
+   149→void ViewRenderer::layout_children_linear(ViewShadow::ViewNode& n, const Box& b) {
+   150→    bool horiz = n.orientation == 0;
+   151→    int content_w = b.w - n.padding_l - n.padding_r;
+   152→    int content_h = b.h - n.padding_t - n.padding_b;
+   153→
+   154→    struct Entry {
+   155→        ViewShadow::ViewNode* v;
+   156→        Box box;
+   157→    };
+   158→    std::vector<Entry> entries;
+   159→    for (uint32_t cid : n.children) {
+   160→        ViewShadow::ViewNode* c = views_->find_node(cid);
+   161→        if (!c || c->visibility == 8) continue;
+   162→        entries.push_back({c, Box{0, 0, 0, 0}});
+   163→    }
+   164→
+   165→    // Pass 1: fixed sizes
+   166→    int fixed_size = 0;
+   167→    for (auto& e : entries) {
+   168→        ViewShadow::ViewNode& c = *e.v;
+   169→        if (horiz) {
+   170→            if (c.lp_width >= 0) e.box.w = c.lp_width;
+   171→            else if (c.lp_width == -2 || c.lp_width == INT_MIN) {
+   172→                e.box.w = measure_view(c, content_w, content_h).w;
+   173→            } else e.box.w = 0;  // weighted
+   174→            if (c.lp_height == -1) e.box.h = content_h;
+   175→            else if (c.lp_height >= 0) e.box.h = c.lp_height;
+   176→            else e.box.h = measure_view(c, e.box.w > 0 ? e.box.w : content_w, content_h).h;
+   177→            if (e.box.w > 0) fixed_size += e.box.w + c.lp_margin_left + c.lp_margin_right;
+   178→        } else {
+   179→            if (c.lp_height >= 0) e.box.h = c.lp_height;
+   180→            else if (c.lp_height == -2 || c.lp_height == INT_MIN) {
+   181→                e.box.h = measure_view(c, content_w, content_h).h;
+   182→            } else e.box.h = 0;
+   183→            if (c.lp_width == -1) e.box.w = content_w;
+   184→            else if (c.lp_width >= 0) e.box.w = c.lp_width;
+   185→            else e.box.w = measure_view(c, content_w, e.box.h > 0 ? e.box.h : content_h).w;
+   186→            if (e.box.h > 0) fixed_size += e.box.h + c.lp_margin_top + c.lp_margin_bottom;
+   187→        }
+   188→    }
+   189→
+   190→    // Pass 2: weighted children share the remaining free space
+   191→    // proportionally to layout_weight (Android: width/height=0dp + weight).
+   192→    float weight_sum = 0;
+   193→    for (auto& e : entries) {
+   194→        ViewShadow::ViewNode& c = *e.v;
+   195→        if ((horiz && c.lp_width == -1) || (!horiz && c.lp_height == -1))
+   196→            weight_sum += c.layout_weight > 0 ? c.layout_weight : 1;
+   197→        else if ((horiz && c.lp_width == 0 && c.layout_weight > 0) ||
+   198→                 (!horiz && c.lp_height == 0 && c.layout_weight > 0))
+   199→            weight_sum += c.layout_weight;
+   200→    }
+   201→    int free_space = (horiz ? content_w : content_h) - fixed_size;
+   202→    free_space = std::max(0, free_space);
+   203→    float unit = weight_sum > 0 ? float(free_space) / weight_sum : 0;
+   204→
+   205→    int cursor = horiz ? n.padding_l : n.padding_t;
+   206→    int cursor_pre = horiz ? n.padding_l : n.padding_t;
+   207→    (void)cursor_pre;
+   208→    for (auto& e : entries) {
+   209→        ViewShadow::ViewNode& c = *e.v;
+   210→        int ml = c.lp_margin_left, mr = c.lp_margin_right;
+   211→        int mt = c.lp_margin_top, mb = c.lp_margin_bottom;
+   212→        // weighted share for this child
+   213→        float my_weight = 0;
+   214→        if (horiz && ((c.lp_width == -1) || (c.lp_width == 0 && c.layout_weight > 0)))
+   215→            my_weight = c.layout_weight > 0 ? c.layout_weight : 1;
+   216→        if (!horiz && ((c.lp_height == -1) || (c.lp_height == 0 && c.layout_weight > 0)))
+   217→            my_weight = c.layout_weight > 0 ? c.layout_weight : 1;
+   218→        if (horiz) {
+   219→            if (my_weight > 0 && weight_sum > 0)
+   220→                e.box.w = int(std::lround(float(free_space) * my_weight / weight_sum)) - ml - mr;
+   221→            e.box.w = std::max(0, e.box.w);
+   222→            e.box.h = std::min(e.box.h, std::max(0, content_h));
+   223→            e.box.x = cursor + ml;
+   224→            int y = n.padding_t + mt;
+   225→            int g = c.layout_gravity >= 0 ? c.layout_gravity : n.gravity;
+   226→            if (g & kGravityCenterV) y = n.padding_t + (content_h - e.box.h) / 2;
+   227→            else if (g & kGravityBottom) y = n.padding_t + content_h - e.box.h - mb;
+   228→            e.box.y = y;
+   229→            cursor += e.box.w + ml + mr;
+   230→        } else {
+   231→            if (my_weight > 0 && weight_sum > 0)
+   232→                e.box.h = int(std::lround(float(free_space) * my_weight / weight_sum)) - mt - mb;
+   233→            e.box.h = std::max(0, e.box.h);
+   234→            e.box.w = std::min(e.box.w, std::max(0, content_w));
+   235→            e.box.y = cursor + mt;
+   236→            int x = n.padding_l + ml;
+   237→            int g = c.layout_gravity >= 0 ? c.layout_gravity : n.gravity;
+   238→            if (g & kGravityCenterH) x = n.padding_l + (content_w - e.box.w) / 2;
+   239→            else if (g & kGravityRight) x = n.padding_l + content_w - e.box.w - mr;
+   240→            e.box.x = x;
+   241→            cursor += e.box.h + mt + mb;
+   242→        }
+   243→        c.x = b.x + e.box.x;
+   244→        c.y = b.y + e.box.y;
+   245→        c.width = e.box.w;
+   246→        c.height = e.box.h;
+   247→        Box cb{c.x, c.y, c.width, c.height};
+   248→        if (is_linear(c)) layout_children_linear(c, cb);
+   249→        else if (is_relative(c)) layout_children_relative(c, cb);
+   250→        else layout_children_frame(c, cb);
+   251→    }
+   252→}
+   253→
+   254→void ViewRenderer::layout_children_relative(ViewShadow::ViewNode& n, const Box& b) {
+   255→    int content_w = b.w - n.padding_l - n.padding_r;
+   256→    int content_h = b.h - n.padding_t - n.padding_b;
+   257→    for (uint32_t cid : n.children) {
+   258→        ViewShadow::ViewNode* c = views_->find_node(cid);
+   259→        if (!c || c->visibility == 8) continue;
+   260→        Box cb = measure_view(*c, content_w, content_h);
+   261→        int x = n.padding_l, y = n.padding_t;
+   262→        int g = c->layout_gravity >= 0 ? c->layout_gravity : n.gravity;
+   263→        if (c->rel_parent_right && c->rel_parent_bottom) {
+   264→            x = n.padding_l + content_w - cb.w - c->lp_margin_right;
+   265→            y = n.padding_t + content_h - cb.h - c->lp_margin_bottom;
+   266→        } else if (c->rel_parent_bottom) {
+   267→            y = n.padding_t + content_h - cb.h - c->lp_margin_bottom;
+   268→            if (g & kGravityCenterH) x = n.padding_l + (content_w - cb.w) / 2;
+   269→        } else if (c->rel_parent_top) {
+   270→            y = n.padding_t + c->lp_margin_top;
+   271→            if (g & kGravityCenterH) x = n.padding_l + (content_w - cb.w) / 2;
+   272→        } else if (c->rel_center) {
+   273→            x = n.padding_l + (content_w - cb.w) / 2;
+   274→            y = n.padding_t + (content_h - cb.h) / 2;
+   275→        } else if (c->rel_center_h) {
+   276→            x = n.padding_l + (content_w - cb.w) / 2;
+   277→        } else if (c->rel_center_v) {
+   278→            y = n.padding_t + (content_h - cb.h) / 2;
+   279→        } else {
+   280→            y = n.padding_t + c->lp_margin_top;
+   281→        }
+   282→        c->x = b.x + x;
+   283→        c->y = b.y + y;
+   284→        c->width = cb.w;
+   285→        c->height = cb.h;
+   286→        Box nb{c->x, c->y, c->width, c->height};
+   287→        if (is_linear(*c)) layout_children_linear(*c, nb);
+   288→        else if (is_relative(*c)) layout_children_relative(*c, nb);
+   289→        else layout_children_frame(*c, nb);
+   290→    }
+   291→}
+   292→
+   293→void ViewRenderer::layout_children_frame(ViewShadow::ViewNode& n, const Box& b) {
+   294→    int content_w = b.w - n.padding_l - n.padding_r;
+   295→    int content_h = b.h - n.padding_t - n.padding_b;
+   296→    for (uint32_t cid : n.children) {
+   297→        ViewShadow::ViewNode* c = views_->find_node(cid);
+   298→        if (!c || c->visibility == 8) continue;
+   299→        Box cb = measure_view(*c, content_w, content_h);
+   300→        int x = n.padding_l + c->lp_margin_left;
+   301→        int y = n.padding_t + c->lp_margin_top;
+   302→        int g = c->layout_gravity >= 0 ? c->layout_gravity
+   303→                : c->gravity >= 0 ? c->gravity : n.gravity;
+   304→        if (g & kGravityCenterH) x = n.padding_l + (content_w - cb.w) / 2;
+   305→        else if (g & kGravityRight) x = n.padding_l + content_w - cb.w - c->lp_margin_right;
+   306→        if (g & kGravityCenterV) y = n.padding_t + (content_h - cb.h) / 2;
+   307→        else if (g & kGravityBottom) y = n.padding_t + content_h - cb.h - c->lp_margin_bottom;
+   308→        c->x = b.x + x;
+   309→        c->y = b.y + y;
+   310→        c->width = cb.w;
+   311→        c->height = cb.h;
+   312→        Box nb{c->x, c->y, c->width, c->height};
+   313→        if (is_linear(*c)) layout_children_linear(*c, nb);
+   314→        else if (is_relative(*c)) layout_children_relative(*c, nb);
+   315→        else layout_children_frame(*c, nb);
+   316→    }
+   317→}
+   318→
+   319→int ViewRenderer::layout(uint32_t root_id) {
+   320→    stats_ = Stats{};
+   321→    ViewShadow::ViewNode* root = views_->find_node(root_id);
+   322→    if (!root) return 0;
+   323→    root->x = 0;
+   324→    root->y = 0;
+   325→    root->width = root->lp_width >= 0 ? root->lp_width : screen_w_;
+   326→    root->height = root->lp_height >= 0 ? root->lp_height : screen_h_;
+   327→    Box b{0, 0, root->width, root->height};
+   328→    if (is_linear(*root)) layout_children_linear(*root, b);
+   329→    else if (is_relative(*root)) layout_children_relative(*root, b);
+   330→    else layout_children_frame(*root, b);
+   331→    return stats_.laid_out;
+   332→}
+   333→
+   334→// ---------------------------------------------------------------------------
+   335→// Draw
+   336→// ---------------------------------------------------------------------------
+   337→static void fill_rect(FrameBuffer& fb, int x, int y, int w, int h, RGBA c) {
+   338→    for (int row = std::max(0, y); row < std::min(int(fb.get_height()), y + h); ++row)
+   339→        for (int col = std::max(0, x); col < std::min(int(fb.get_width()), x + w); ++col)
+   340→            fb.set_pixel(col, row, c);
+   341→}
+   342→
+   343→static void fill_round_rect(FrameBuffer& fb, int x, int y, int w, int h,
+   344→                            float r, RGBA c) {
+   345→    int ri = int(std::lround(r));
+   346→    if (ri <= 0) { fill_rect(fb, x, y, w, h, c); return; }
+   347→    ri = std::min(ri, std::min(w, h) / 2);
+   348→    for (int row = 0; row < h; ++row)
+   349→        for (int col = 0; col < w; ++col) {
+   350→            int dx = col < ri ? ri - col : (col >= w - ri ? col - (w - ri - 1) : 0);
+   351→            int dy = row < ri ? ri - row : (row >= h - ri ? row - (h - ri - 1) : 0);
+   352→            if (dx > 0 && dy > 0) {
+   353→                int d2 = (ri - dx) * (ri - dx) + (ri - dy) * (ri - dy);
+   354→                if (d2 > ri * ri) continue;
+   355→            }
+   356→            fb.set_pixel(x + col, y + row, c);
+   357→        }
+   358→}
+   359→
+   360→static void blit_image(FrameBuffer& fb, const DecodedImage& img, int dx, int dy,
+   361→                       int dw, int dh, int& images_drawn) {
+   362→    if (img.rgba.empty() || img.width <= 0 || img.height <= 0 || dw <= 0 || dh <= 0)
+   363→        return;
+   364→    float sx = float(img.width) / dw;
+   365→    float sy = float(img.height) / dh;
+   366→    for (int row = 0; row < dh; ++row)
+   367→        for (int col = 0; col < dw; ++col) {
+   368→            int ix = std::min(img.width - 1, int(col * sx));
+   369→            int iy = std::min(img.height - 1, int(row * sy));
+   370→            size_t o = (size_t(iy) * img.width + ix) * 4;
+   371→            RGBA c{img.rgba[o], img.rgba[o + 1], img.rgba[o + 2], img.rgba[o + 3]};
+   372→            fb.set_pixel(dx + col, dy + row, c);
+   373→        }
+   374→    images_drawn++;
+   375→}
+   376→
+   377→bool ViewRenderer::decode_into(const std::string& zip_path, apk::ApkParser& apk) {
+   378→    auto& entry = bitmap_cache_[zip_path];
+   379→    if (!entry.rgba.empty()) return true;
+   380→    auto bytes = apk.extract_entry_cached(zip_path);
+   381→    if (bytes.empty()) return false;
+   382→    DecodedImage d;
+   383→    if (bytes.size() >= 8 && bytes[0] == 0x89 && bytes[1] == 'P') {
+   384→        d = PNGDecoder::decode(bytes);
+   385→    } else if (bytes.size() >= 12 && bytes[0] == 'R' && bytes[1] == 'I') {
+   386→        d = WebPDecoder::decode(bytes);
+   387→    } else if (bytes.size() >= 2 && bytes[0] == 0xFF && bytes[1] == 0xD8) {
+   388→        d = JPEGDecoder::decode(bytes);
+   389→    }
+   390→    if (d.rgba.empty()) return false;
+   391→    entry = std::move(d);
+   392→    return true;
+   393→}
+   394→
+   395→void ViewRenderer::preload_bitmaps(uint32_t root_id, apk::ApkParser& apk) {
+   396→    std::function<void(uint32_t)> walk = [&](uint32_t id) {
+   397→        ViewShadow::ViewNode* n = views_->find_node(id);
+   398→        if (!n) return;
+   399→        if (!n->image_drawable_path.empty())
+   400→            decode_into(n->image_drawable_path, apk);
+   401→        if (!n->bg_drawable_path.empty())
+   402→            decode_into(n->bg_drawable_path, apk);
+   403→        for (uint32_t cid : n->children) walk(cid);
+   404→    };
+   405→    walk(root_id);
+   406→}
+   407→
+   408→void ViewRenderer::draw_text_into(ViewShadow::ViewNode& n, FrameBuffer& fb,
+   409→                                  int left, int top, int w, int h) {
+   410→    std::string t = !n.text.empty() ? n.text : n.hint;
+   411→    if (t.empty()) return;
+   412→    float ts = n.text_size_px > 0 ? n.text_size_px : 28.f;
+   413→    RGBA col{0, 0, 0, 255};
+   414→    if (n.text_color) {
+   415→        col = argb(n.text_color);
+   416→    } else if (n.class_desc.find("Button;") != std::string::npos &&
+   417→               n.class_desc.find("ImageButton;") == std::string::npos) {
+   418→        col = RGBA{0xff, 0xff, 0xff, 0xff};  // button label default
+   419→    }
+   420→    TextShaper::Options o;
+   421→    o.size_px = ts;
+   422→    o.bold = n.text_style_bold;
+   423→    TextShaper::Metrics m = TextShaper::instance().metrics(ts, n.text_style_bold);
+   424→    int pen_y = top + int(std::lround(m.ascent)) + n.padding_t;
+   425→    float tw = TextShaper::instance().measure(t, o);
+   426→    int pen_x = left + n.padding_l;
+   427→    int g = n.text_gravity ? n.text_gravity : (n.gravity >= 0 ? n.gravity : 0);
+   428→    bool is_btn = n.class_desc.find("Button;") != std::string::npos &&
+   429→                  n.class_desc.find("ImageButton;") == std::string::npos;
+   430→    if (is_btn && !n.text_gravity && n.gravity < 0)
+   431→        g = kGravityCenterH | 0x10;  // Android Button default: center both
+   432→    if (g & kGravityCenterH) pen_x = left + (w - int(tw)) / 2;
+   433→    else if (g & kGravityRight) pen_x = left + w - int(tw) - n.padding_r;
+   434→    if (g & kGravityCenterV || (is_btn && !n.text_gravity && n.gravity < 0))
+   435→        pen_y = top + (h - int(m.line_height)) / 2 + int(m.ascent);
+   436→
+   437→    auto& sh = TextShaper::instance();
+   438→    auto runs = sh.shape(t, o);
+   439→    if (runs.empty()) {
+   440→        stats_.texts_bitmap_fallback++;
+   441→        SoftwareCanvas cv(&fb);
+   442→        cv.draw_text(t, float(pen_x), float(pen_y), col, nullptr);
+   443→        return;
+   444→    }
+   445→    stats_.texts_shaped++;
+   446→    float pen = float(pen_x);
+   447→    for (const auto& gr : runs) {
+   448→        if (!gr.coverage.empty()) {
+   449→            for (unsigned r = 0; r < gr.bmp_h; ++r)
+   450→                for (unsigned c = 0; c < gr.bmp_w; ++c) {
+   451→                    uint8_t a = gr.coverage[size_t(r) * gr.bmp_w + c];
+   452→                    if (!a) continue;
+   453→                    RGBA px = col;
+   454→                    px.a = a;
+   455→                    fb.set_pixel(pen + gr.x_offset + gr.bmp_left + int(c),
+   456→                                 pen_y - gr.bmp_top + int(r), px);
+   457→                }
+   458→        }
+   459→        pen += gr.x_advance;
+   460→    }
+   461→}
+   462→
+   463→void ViewRenderer::draw_view(ViewShadow::ViewNode& n, FrameBuffer& fb,
+   464→                             const RGBA& window_bg) {
+   465→    if (n.visibility != 0) return;  // INVISIBLE(4)/GONE(8) skipped
+   466→    int w = std::max(0, n.width), h = std::max(0, n.height);
+   467→
+   468→    bool have_bg = false;
+   469→    RGBA bg{0, 0, 0, 255};
+   470→    if (n.bg_color) { bg = argb(n.bg_color); have_bg = bg.a > 0; }
+   471→    else if (n.bg_shape_has_solid) {
+   472→        bg = argb(n.bg_shape_solid);
+   473→        have_bg = bg.a > 0;  // fully-transparent shape = no visible background
+   474→    } else if (n.parent_id == 0) { bg = window_bg; have_bg = true; }
+   475→
+   476→    if (n.bg_shape_has_gradient && w > 0 && h > 0) {
+   477→        RGBA g0 = argb(n.bg_shape_grad_start), g1 = argb(n.bg_shape_grad_end);
+   478→        double ang = (n.bg_shape_grad_angle % 360) * 3.14159265 / 180.0;
+   479→        float cx = w / 2.f, cy = h / 2.f;
+   480→        float denom = std::max(1.f, std::abs(w * float(std::cos(ang))) +
+   481→                                        std::abs(h * float(std::sin(ang))));
+   482→        for (int row = 0; row < h; ++row)
+   483→            for (int col = 0; col < w; ++col) {
+   484→                float t = 0.5f + 0.5f * ((col - cx) * float(std::cos(ang)) +
+   485→                                         (row - cy) * float(std::sin(ang))) / denom;
+   486→                t = std::min(1.f, std::max(0.f, t));
+   487→                RGBA c{uint8_t(g0.r * (1 - t) + g1.r * t),
+   488→                       uint8_t(g0.g * (1 - t) + g1.g * t),
+   489→                       uint8_t(g0.b * (1 - t) + g1.b * t),
+   490→                       uint8_t(g0.a * (1 - t) + g1.a * t)};
+   491→                fb.set_pixel(n.x + col, n.y + row, c);
+   492→            }
+   493→        stats_.bg_shapes_drawn++;
+   494→    } else if (have_bg && n.bg_shape_corner_radius > 0) {
+   495→        fill_round_rect(fb, n.x, n.y, w, h, n.bg_shape_corner_radius, bg);
+   496→        stats_.bg_shapes_drawn++;
+   497→    } else if (have_bg && w > 0 && h > 0) {
+   498→        fill_rect(fb, n.x, n.y, w, h, bg);
+   499→    }
+   500→    if (n.bg_shape_has_stroke && w > 0 && h > 0) {
+   501→        RGBA sc = argb(n.bg_shape_stroke_color);
+   502→        int sw = std::max(1, int(std::lround(n.bg_shape_stroke_width)));
+   503→        fill_rect(fb, n.x, n.y, w, sw, sc);
+   504→        fill_rect(fb, n.x, n.y + h - sw, w, sw, sc);
+   505→        fill_rect(fb, n.x, n.y, sw, h, sc);
+   506→        fill_rect(fb, n.x + w - sw, n.y, sw, h, sc);
+   507→    }
+   508→
+   509→    // Button theme fallback: real Android draws a theme-provided button
+   510→    // background (framework resources are not shipped inside APKs). When the
+   511→    // APK defines none explicitly, approximate the Holo/Material default so
+   512→    // buttons remain visible (documented approximation, UNIFIED_007).
+   513→    bool is_button = n.class_desc.find("Button;") != std::string::npos &&
+   514→                     n.class_desc.find("ImageButton;") == std::string::npos;
+   515→    if (is_button && !have_bg && !n.bg_shape_has_solid &&
+   516→        !n.bg_shape_has_gradient && n.bg_drawable_path.empty() && w > 0 && h > 0) {
+   517→        fill_round_rect(fb, n.x, n.y, w, h, 6.f, RGBA{0x3a, 0x3f, 0x44, 0xff});
+   518→        RGBA rim{0x5a, 0x60, 0x66, 0xff};
+   519→        for (int i = 0; i < 2 && i < h; ++i)
+   520→            fill_rect(fb, n.x, n.y + i, w, 1, rim);
+   521→        stats_.bg_shapes_drawn++;
+   522→    }
+   523→    if (!n.bg_drawable_path.empty()) {
+   524→        auto& entry = bitmap_cache_[n.bg_drawable_path];
+   525→        if (!entry.rgba.empty()) {
+   526→            blit_image(fb, entry, n.x, n.y, w, h, stats_.images_drawn);
+   527→            stats_.bg_bitmaps_drawn++;
+   528→        }
+   529→    }
+   530→
+   531→    stats_.drawn++;
+   532→
+   533→    if (is_image(n) && !n.image_drawable_path.empty()) {
+   534→        auto& entry = bitmap_cache_[n.image_drawable_path];
+   535→        if (!entry.rgba.empty()) {
+   536→            blit_image(fb, entry, n.x + n.padding_l, n.y + n.padding_t,
+   537→                       std::max(1, w - n.padding_l - n.padding_r),
+   538→                       std::max(1, h - n.padding_t - n.padding_b), stats_.images_drawn);
+   539→        }
+   540→    }
+   541→
+   542→    if (is_edit_text(n) && w > 0 && h > 0) {
+   543→        RGBA line{128, 128, 128, 255};
+   544→        fill_rect(fb, n.x + n.padding_l, n.y + h - 2,
+   545→                  std::max(1, w - n.padding_l - n.padding_r), 2, line);
+   546→    }
+   547→
+   548→    if (!n.anim_frame_rgba.empty() && n.anim_w > 0 && n.anim_h > 0) {
+   549→        DecodedImage di;
+   550→        di.width = n.anim_w;
+   551→        di.height = n.anim_h;
+   552→        di.rgba = n.anim_frame_rgba;
+   553→        blit_image(fb, di, n.x, n.y, std::min(n.anim_w, std::max(1, w)),
+   554→                   std::min(n.anim_h, std::max(1, h)), stats_.images_drawn);
+   555→    } else {
+   556→        draw_text_into(n, fb, n.x, n.y, w, h);
+   557→    }
+   558→
+   559→    for (uint32_t cid : n.children) {
+   560→        ViewShadow::ViewNode* c = views_->find_node(cid);
+   561→        if (c) draw_view(*c, fb, window_bg);
+   562→    }
+   563→}
+   564→
+   565→bool ViewRenderer::render_png(uint32_t root_id, const std::string& path,
+   566→                              const RGBA& window_bg) {
+   567→    ViewShadow::ViewNode* root = views_->find_node(root_id);
+   568→    if (!root) return false;
+   569→    if (root->width <= 0) layout(root_id);
+   570→    FrameBuffer fb(screen_w_, screen_h_);
+   571→    fb.clear(RGBA{255, 255, 255, 255});
+   572→    draw_view(*root, fb, window_bg);
+   573→    int nonwhite = 0;
+   574→    for (int y = 0; y < screen_h_; y += 4)
+   575→        for (int x = 0; x < screen_w_; x += 4) {
+   576→            RGBA c = fb.get_pixel(x, y);
+   577→            if (!(c.r == 255 && c.g == 255 && c.b == 255)) nonwhite++;
+   578→        }
+   579→    stats_.nonwhite_pixels = nonwhite * 16;
+   580→    return PNGWriter::write_png(path, fb);
+   581→}
+   582→
+   583→uint32_t ViewRenderer::hit_test(uint32_t root_id, int x, int y) const {
+   584→    uint32_t best_clickable = 0, best_any = 0;
+   585→    std::function<void(uint32_t)> walk = [&](uint32_t id) {
+   586→        ViewShadow::ViewNode* n = views_->find_node(id);
+   587→        if (!n || n->visibility != 0) return;
+   588→        if (x >= n->x && x < n->x + std::max(1, n->width) && y >= n->y &&
+   589→            y < n->y + std::max(1, n->height)) {
+   590→            if (!best_any) best_any = id;
+   591→            bool clickable = n->clickable || !n->on_click_method.empty() ||
+   592→                             n->click_listener_id != 0 ||
+   593→                             !n->click_listener_class.empty();
+   594→            if (clickable) best_clickable = id;
+   595→            for (uint32_t cid : n->children) walk(cid);
+   596→        }
+   597→    };
+   598→    walk(root_id);
+   599→    return best_clickable ? best_clickable : best_any;
+   600→}
+   601→
+   602→nlohmann::json ViewRenderer::layout_dump(uint32_t root_id) const {
+   603→    std::function<void(uint32_t, nlohmann::json&)> walk = [&](uint32_t id,
+   604→                                                              nlohmann::json& out) {
+   605→        ViewShadow::ViewNode* n = views_->find_node(id);
+   606→        if (!n) {
+   607→            out = nullptr;
+   608→            return;
+   609→        }
+   610→        out = {
+   611→            {"id", id},
+   612→            {"class", n->class_desc},
+   613→            {"android_id", n->android_view_id},
+   614→            {"x", n->x}, {"y", n->y}, {"w", n->width}, {"h", n->height},
+   615→            {"text", n->text},
+   616→            {"text_size_px", n->text_size_px},
+   617→            {"text_color", n->text_color},
+   618→            {"bg_color", n->bg_color},
+   619→            {"bg_drawable", n->bg_drawable_path},
+   620→            {"image", n->image_drawable_path},
+   621→            {"onClick", n->on_click_method},
+   622→            {"clickable", n->clickable || !n->on_click_method.empty()},
+   623→            {"visibility", n->visibility},
+   624→        };
+   625→        out["children"] = nlohmann::json::array();
+   626→        for (uint32_t cid : n->children) {
+   627→            nlohmann::json cj;
+   628→            walk(cid, cj);
+   629→            out["children"].push_back(cj);
+   630→        }
+   631→    };
+   632→    nlohmann::json out;
+   633→    walk(root_id, out);
+   634→    return out;
+   635→}
+   636→
+   637→}  // namespace renderer
+   638→}  // namespace miniandroid
+   639→

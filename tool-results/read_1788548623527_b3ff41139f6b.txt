@@ -1,0 +1,779 @@
+     1→/*
+     2→ * MiniAndroid VTable Dispatch Implementation — EXP-034 Phase 4
+     3→ * 
+     4→ * Implements runtime method resolution and virtual dispatch for invoke-virtual.
+     5→ * This bridges the gap between bytecode instructions and actual method execution.
+     6→ *
+     7→ * Key Components:
+     8→ * 1. MethodResolver — Resolves method references to concrete methods
+     9→ * 2. VirtualDispatcher — Executes polymorphic method calls via VTable
+    10→ * 3. InvocationContext — Tracks current invocation state (for evidence)
+    11→ *
+    12→ * AOSP Reference Flow:
+    13→ *   invoke-virtual opcode
+    14→ *     → dvmResolveClass() — get object's class
+    15→ *     → dvmFindVirtualMethod() — search VTable by index
+    16→ *     → Execute found method's code_item
+    17→ *
+    18→ * Rule 1: Research before implementation — Follows AOSP flow exactly
+    19→ * Rule 2: REAL evidence only — Every dispatch operation is traceable
+    20→ */
+    21→
+    22→#ifndef MINIANDROID_VTABLE_DISPATCH_H
+    23→#define MINIANDROID_VTABLE_DISPATCH_H
+    24→
+    25→#include "runtime_metadata.h"
+    26→#include <functional>
+    27→#include <sstream>
+    28→#include <iomanip>
+    29→#include <cassert>
+    30→#include <chrono>   // portable: was transitively included by libstdc++, not by libc++ (Windows/llvm-mingw)
+    31→
+    32→namespace miniandroid {
+    33→namespace runtime {
+    34→
+    35→using json = nlohmann::json;
+    36→
+    37→// ============================================================================
+    38→// Invocation Context — Evidence collection for method calls
+    39→// ============================================================================
+    40→
+    41→/**
+    42→ * InvocationContext captures complete information about a single method invocation.
+    43→ * Used for evidence collection and debugging.
+    44→ */
+    45→struct InvocationContext {
+    46→    // === Caller Information ===
+    47→    std::string caller_class;            // Class containing the call site
+    48→    std::string caller_method;           // Method containing the invoke instruction
+    49→    uint32_t caller_pc;                  // Program counter at call site
+    50→    
+    51→    // === Invoke Instruction ===
+    52→    std::string invoke_opcode;           // "invoke-virtual", "invoke-direct", etc.
+    53→    uint32_t method_idx;                 // DEX method_ids[] index being called
+    54→    std::string method_name;             // Resolved method name
+    55→    std::string method_descriptor;       // Resolved method descriptor
+    56→    
+    57→    // === Target Resolution ===
+    58→    std::string target_class;            // Actual class of object (runtime type)
+    59→    std::string target_method;           // Final method that will execute
+    60→    bool is_override;                    // True if target differs from declared type
+    61→    int32_t vtable_index;                // Index in target's VTable (-1 if not virtual)
+    62→    
+    63→    // === Arguments ===
+    64→    std::vector<json> arguments;         // Argument values (JSON for flexibility)
+    65→    
+    66→    // === Execution Result ===
+    67→    bool executed_successfully;          // Did the method run without error?
+    68→    json return_value;                   // Return value (if any)
+    69→    std::string error_message;           // If execution failed
+    70→    
+    71→    // === Timing ===
+    72→    uint64_t resolve_time_ns;            // Time to resolve method (ns)
+    73→    uint64_t execute_time_ns;            // Time to execute method (ns)
+    74→    
+    75→    // === Constructor ===
+    76→    InvocationContext()
+    77→        : caller_pc(0), method_idx(0), vtable_index(-1),
+    78→          executed_successfully(false),
+    79→          resolve_time_ns(0), execute_time_ns(0) {}
+    80→    
+    81→    // === Serialization (Evidence) ===
+    82→    json to_json() const {
+    83→        return {
+    84→            {"caller", {
+    85→                {"class", caller_class},
+    86→                {"method", caller_method},
+    87→                {"pc", caller_pc}
+    88→            }},
+    89→            {"invocation", {
+    90→                {"opcode", invoke_opcode},
+    91→                {"method_idx", method_idx},
+    92→                {"method_name", method_name},
+    93→                {"descriptor", method_descriptor}
+    94→            }},
+    95→            {"resolution", {
+    96→                {"target_class", target_class},
+    97→                {"target_method", target_method},
+    98→                {"is_override", is_override},
+    99→                {"vtable_index", vtable_index}
+   100→            }},
+   101→            {"arguments", arguments},
+   102→            {"result", {
+   103→                {"success", executed_successfully},
+   104→                {"return_value", return_value},
+   105→                {"error", error_message}
+   106→            }},
+   107→            {"timing", {
+   108→                {"resolve_ns", resolve_time_ns},
+   109→                {"execute_ns", execute_time_ns}
+   110→            }}
+   111→        };
+   112→    }
+   113→    
+   114→    std::string debug_string() const {
+   115→        std::ostringstream ss;
+   116→        ss << "Invoke: " << invoke_opcode << " " << target_method << method_descriptor;
+   117→        if (!target_class.empty()) {
+   118→            ss << "\n  Target: " << target_class << "." << target_method;
+   119→            if (is_override) {
+   120→                ss << " [OVERRIDE]";
+   121→            }
+   122→            if (vtable_index >= 0) {
+   123→                ss << " [vtable[" << vtable_index << "]]";
+   124→            }
+   125→        }
+   126→        return ss.str();
+   127→    }
+   128→};
+   129→
+   130→// ============================================================================
+   131→// Method Resolver — Resolves method references at runtime
+   132→// ============================================================================
+   133→
+   134→/**
+   135→ * MethodResolver handles the resolution of method references from DEX format
+   136→ * to actual RuntimeMethodInfo pointers, following Dalvik/ART semantics.
+   137→ * 
+   138→ * Resolution process varies by invoke type:
+   139→ * - invoke-static: Look in direct_methods by signature
+   140→ * - invoke-direct: Look in direct_methods by signature (non-virtual)
+   141→ * - invoke-virtual: Look up VTable index, then dispatch to actual class
+   142→ * - invoke-super: Start from superclass VTable
+   143→ * - invoke-interface: Search interface method tables
+   144→ */
+   145→class MethodResolver {
+   146→private:
+   147→    RuntimeMetadataContainer* metadata_container;
+   148→    
+   149→public:
+   150→    explicit MethodResolver(RuntimeMetadataContainer* container)
+   151→        : metadata_container(container) {}
+   152→    
+   153→    /**
+   154→     * Resolve a static method call.
+   155→     * 
+   156→     * Static methods are resolved at compile/link time to a specific class.
+   157→     * No polymorphism involved.
+   158→     * 
+   159→     * @param class_descriptor Class declaring the static method
+   160→     * @param method_name Method name
+   161→     * @param method_desc Method descriptor
+   162→     * @return Method info or nullptr if not found
+   163→     */
+   164→    const RuntimeMethodInfo* resolve_static(
+   165→        const std::string& class_descriptor,
+   166→        const std::string& method_name,
+   167→        const std::string& method_desc) const
+   168→    {
+   169→        if (!metadata_container) return nullptr;
+   170→        
+   171→        RuntimeClassInfo* cls = metadata_container->find_class(class_descriptor);
+   172→        if (!cls) return nullptr;
+   173→        
+   174→        return cls->find_static_method(method_name, method_desc);
+   175→    }
+   176→    
+   177→    /**
+   178→     * Resolve a direct method call.
+   179→     * 
+   180→     * Direct methods include:
+   181→     * - Private methods (ACC_PRIVATE)
+   182→     * - Constructors (<init>)
+   183→     * - Static methods (though invoke-static is preferred)
+   184→     * 
+   185→     * No polymorphism — always calls the exact method specified.
+   186→     * 
+   187→     * @param class_descriptor Class declaring the method
+   188→     * @param method_name Method name
+   189→     * @param method_desc Method descriptor
+   190→     * @return Method info or nullptr if not found
+   191→     */
+   192→    const RuntimeMethodInfo* resolve_direct(
+   193→        const std::string& class_descriptor,
+   194→        const std::string& method_name,
+   195→        const std::string& method_desc) const
+   196→    {
+   197→        if (!metadata_container) return nullptr;
+   198→        
+   199→        RuntimeClassInfo* cls = metadata_container->find_class(class_descriptor);
+   200→        if (!cls) return nullptr;
+   201→        
+   202→        return cls->find_direct_method(method_name, method_desc);
+   203→    }
+   204→    
+   205→    /**
+   206→     * Resolve a virtual method call to VTable index.
+   207→     * 
+   208→     * This is the key operation for invoke-virtual:
+   209→     * 1. Find the method in the declared class's VTable
+   210→     * 2. Return its VTable index
+   211→     * 3. At call time, use this index on the ACTUAL object's class
+   212→     * 
+   213→     * Example:
+   214→     *   Code: invoke-virtual {v0}, LAnimal;->speak()V
+   215→     *   Declared class: LAnimal;
+   216→     *   Animal.speak() is at VTable[0]
+   217→     *   Return: 0
+   218→     *   
+   219→     *   At runtime, if v0 holds a Dog:
+   220→     *   Dog.vtable[0] = Dog.speak() ← Polymorphism!
+   221→     * 
+   222→     * @param declared_class Class where method is declared
+   223→     * @param method_name Method name
+   224→     * @param method_desc Method descriptor
+   225→     * @return VTable index or -1 if not found
+   226→     */
+   227→    int32_t resolve_virtual_to_vtable_index(
+   228→        const std::string& declared_class,
+   229→        const std::string& method_name,
+   230→        const std::string& method_desc) const
+   231→    {
+   232→        if (!metadata_container) return -1;
+   233→        
+   234→        RuntimeClassInfo* cls = metadata_container->find_class(declared_class);
+   235→        if (!cls || !cls->vtable_built) return -1;
+   236→        
+   237→        // Build signature for lookup
+   238→        std::string signature = method_name + "+" + method_desc;
+   239→        
+   240→        // Search VTable for this signature
+   241→        const RuntimeMethodInfo* method = cls->vtable.lookup_by_signature(signature);
+   242→        if (!method) return -1;
+   243→        
+   244→        return method->vtable_index;
+   245→    }
+   246→    
+   247→    /**
+   248→     * Fully resolve a virtual method call given an actual object.
+   249→     * 
+   250→     * This performs the complete resolution:
+   251→     * 1. Get object's runtime class
+   252→     * 2. Look up method in that class's VTable using pre-resolved index
+   253→     * 3. Return the actual method to execute
+   254→     * 
+   255→     * @param actual_object_class Runtime class of the object being invoked on
+   256→     * @param vtable_index Pre-resolved VTable index
+   257→     * @return Method to execute or nullptr
+   258→     */
+   259→    const RuntimeMethodInfo* resolve_virtual_dispatch(
+   260→        const RuntimeClassInfo* actual_object_class,
+   261→        int32_t vtable_index) const
+   262→    {
+   263→        if (!actual_object_class || vtable_index < 0) return nullptr;
+   264→        if (!actual_object_class->vtable_built) return nullptr;
+   265→        
+   266→        return actual_object_class->find_virtual_method(static_cast<uint32_t>(vtable_index));
+   267→    }
+   268→};
+   269→
+   270→// ============================================================================
+   271→// Virtual Dispatcher — Executes method calls via VTable
+   272→// ============================================================================
+   273→
+   274→/**
+   275→ * VirtualDispatcher executes method calls using VTable-based dispatch.
+   276→ * It demonstrates how invoke-virtual achieves polymorphism.
+   277→ */
+   278→class VirtualDispatcher {
+   279→private:
+   280→    MethodResolver* resolver;
+   281→    
+   282→    // Callback types for method execution
+   283→    using MethodExecutor = std::function<json(
+   284→        const RuntimeMethodInfo*,          // Method to execute
+   285→        const std::vector<json>&,         // Arguments
+   286→        InvocationContext&                // Context to fill
+   287→    )>;
+   288→    
+   289→    MethodExecutor executor;
+   290→    
+   291→    // Trace of all invocations (evidence)
+   292→    std::vector<InvocationContext> invocation_trace;
+   293→    
+   294→public:
+   295→    explicit VirtualDispatcher(MethodResolver* r)
+   296→        : resolver(r) {
+   297→        // Default executor just logs the call
+   298→        executor = [](const RuntimeMethodInfo* method,
+   299→                      const std::vector<json>& args,
+   300→                      InvocationContext& ctx) -> json {
+   301→            ctx.executed_successfully = true;
+   302→            ctx.return_value = nullptr;  // void method
+   303→            return ctx.return_value;
+   304→        };
+   305→    }
+   306→    
+   307→    /**
+   308→     * Set custom method executor
+   309→     */
+   310→    void set_executor(MethodExecutor exec) {
+   311→        executor = exec;
+   312→    }
+   313→    
+   314→    /**
+   315→     * Execute an invoke-virtual instruction.
+   316→     * 
+   317→     * This simulates what the interpreter does when it encounters invoke-virtual:
+   318→     * 
+   319→     * Pseudocode from Dalvik interpreter:
+   320→     * ```
+   321→     * // At invoke-virtual instruction:
+   322→     * Object* obj = (Object*) GET_REGISTER(vB);
+   323→     * ClassObject* clazz = obj->clazz;  // Actual runtime class!
+   324→     * Method* method = clazz->vtable[vtable_A];  // Use pre-resolved index
+   325→     * GOTO(invokeTarget, method);  // Jump to method
+   326→     * ```
+   327→     * 
+   328→     * @param obj_actual_class The actual runtime class of the object
+   329→     * @param vtable_index Pre-resolved VTable index
+   330→     * @param arguments Arguments to pass to the method
+   331→     * @param caller_info Caller context (for traceability)
+   332→     * @return Complete invocation context with result
+   333→     */
+   334→    InvocationContext dispatch_virtual(
+   335→        const RuntimeClassInfo* obj_actual_class,
+   336→        int32_t vtable_index,
+   337→        const std::vector<json>& arguments,
+   338→        const std::pair<std::string, std::string>& caller_info)  // {class, method}
+   339→    {
+   340→        InvocationContext ctx;
+   341→        ctx.caller_class = caller_info.first;
+   342→        ctx.caller_method = caller_info.second;
+   343→        ctx.invoke_opcode = "invoke-virtual";
+   344→        ctx.arguments = arguments;
+   345→        
+   346→        auto start_resolve = std::chrono::high_resolution_clock::now();
+   347→        
+   348→        // Step 1: Resolve method through VTable
+   349→        const RuntimeMethodInfo* target_method = nullptr;
+   350→        
+   351→        if (obj_actual_class && obj_actual_class->vtable_built && vtable_index >= 0) {
+   352→            target_method = obj_actual_class->find_virtual_method(
+   353→                static_cast<uint32_t>(vtable_index));
+   354→            
+   355→            if (target_method) {
+   356→                ctx.target_class = obj_actual_class->class_descriptor;
+   357→                ctx.target_method = target_method->name;
+   358→                ctx.method_name = target_method->name;
+   359→                ctx.method_descriptor = target_method->descriptor;
+   360→                ctx.vtable_index = vtable_index;
+   361→                
+   362→                // Check if this is an override
+   363→                // (In real implementation, compare with declared class's method)
+   364→                ctx.is_override = true;  // Simplified for demo
+   365→            }
+   366→        }
+   367→        
+   368→        auto end_resolve = std::chrono::high_resolution_clock::now();
+   369→        ctx.resolve_time_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+   370→            end_resolve - start_resolve).count();
+   371→        
+   372→        // Step 2: Execute the method
+   373→        if (target_method && executor) {
+   374→            auto start_exec = std::chrono::high_resolution_clock::now();
+   375→            
+   376→            try {
+   377→                ctx.return_value = executor(target_method, arguments, ctx);
+   378→                ctx.executed_successfully = true;
+   379→            } catch (const std::exception& e) {
+   380→                ctx.executed_successfully = false;
+   381→                ctx.error_message = e.what();
+   382→            }
+   383→            
+   384→            auto end_exec = std::chrono::high_resolution_clock::now();
+   385→            ctx.execute_time_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+   386→                end_exec - start_exec).count();
+   387→        } else {
+   388→            ctx.executed_successfully = false;
+   389→            if (!target_method) {
+   390→                ctx.error_message = "Method not found in VTable";
+   391→            } else {
+   392→                ctx.error_message = "No executor set";
+   393→            }
+   394→        }
+   395→        
+   396→        // Step 3: Record in trace (evidence!)
+   397→        invocation_trace.push_back(ctx);
+   398→        
+   399→        return ctx;
+   400→    }
+   401→    
+   402→    /**
+   403→     * Execute an invoke-direct instruction (no polymorphism).
+   404→     */
+   405→    InvocationContext dispatch_direct(
+   406→        const std::string& class_descriptor,
+   407→        const std::string& method_name,
+   408→        const std::string& method_desc,
+   409→        const std::vector<json>& arguments,
+   410→        const std::pair<std::string, std::string>& caller_info)
+   411→    {
+   412→        InvocationContext ctx;
+   413→        ctx.caller_class = caller_info.first;
+   414→        ctx.caller_method = caller_info.second;
+   415→        ctx.invoke_opcode = "invoke-direct";
+   416→        ctx.arguments = arguments;
+   417→        ctx.method_name = method_name;
+   418→        ctx.method_descriptor = method_desc;
+   419→        
+   420→        auto start = std::chrono::high_resolution_clock::now();
+   421→        
+   422→        const RuntimeMethodInfo* method = resolver->resolve_direct(
+   423→            class_descriptor, method_name, method_desc);
+   424→        
+   425→        auto end = std::chrono::high_resolution_clock::now();
+   426→        ctx.resolve_time_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+   427→            end - start).count();
+   428→        
+   429→        if (method) {
+   430→            ctx.target_class = class_descriptor;
+   431→            ctx.target_method = method->name;
+   432→            ctx.is_override = false;  // Direct calls never override
+   433→            
+   434→            if (executor) {
+   435→                try {
+   436→                    ctx.return_value = executor(method, arguments, ctx);
+   437→                    ctx.executed_successfully = true;
+   438→                } catch (const std::exception& e) {
+   439→                    ctx.error_message = e.what();
+   440→                }
+   441→            }
+   442→        } else {
+   443→            ctx.error_message = "Direct method not found: " + class_descriptor + "." + method_name;
+   444→        }
+   445→        
+   446→        invocation_trace.push_back(ctx);
+   447→        return ctx;
+   448→    }
+   449→    
+   450→    /**
+   451→     * Get complete invocation trace (evidence).
+   452→     */
+   453→    const std::vector<InvocationContext>& get_invocation_trace() const {
+   454→        return invocation_trace;
+   455→    }
+   456→    
+   457→    /**
+   458→     * Export trace as JSON (for evidence files).
+   459→     */
+   460→    json export_trace_as_json() const {
+   461→        json arr = json::array();
+   462→        for (const auto& ctx : invocation_trace) {
+   463→            arr.push_back(ctx.to_json());
+   464→        }
+   465→        return {
+   466→            {"total_invocations", invocation_trace.size()},
+   467→            {"trace", arr}
+   468→        };
+   469→    }
+   470→    
+   471→    /**
+   472→     * Clear trace (between test cases).
+   473→     */
+   474→    void clear_trace() {
+   475→        invocation_trace.clear();
+   476→    }
+   477→};
+   478→
+   479→// ============================================================================
+   480→// Demo System — Shows VTable dispatch working end-to-end
+   481→// ============================================================================
+   482→
+   483→/**
+   484→ * VTableDemoSystem creates a complete demonstration of virtual dispatch.
+   485→ * It sets up a small class hierarchy and traces virtual method calls.
+   486→ */
+   487→class VTableDemoSystem {
+   488→private:
+   489→    RuntimeMetadataContainer container;
+   490→    MethodResolver resolver;
+   491→    VirtualDispatcher dispatcher;
+   492→    
+   493→    bool initialized;
+   494→    
+   495→public:
+   496→    VTableDemoSystem()
+   497→        : resolver(&container), dispatcher(&resolver), initialized(false) {}
+   498→    
+   499→    /**
+   500→     * Initialize the demo system with sample classes.
+   501→     * Creates: Animal → Dog/Cat hierarchy like Phase 3 tests.
+   502→     */
+   503→    bool initialize() {
+   504→        // Create Animal class
+   505→        auto animal = std::make_unique<RuntimeClassInfo>("LAnimal;");
+   506→        animal->source_file = "Animal.java";
+   507→        animal->access_flags = AccessFlags::ACC_PUBLIC;
+   508→        animal->dex_class_idx = 0;
+   509→        
+   510→        // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX):
+   511→        // The original code used positional brace-init for RuntimeMethodInfo
+   512→        // like `{0, "speak", "()V", ...}`. RuntimeMethodInfo is NOT an
+   513→        // aggregate (it has a user-provided default ctor), so positional
+   514→        // brace-init does not compile. Rewrote to use default construction
+   515→        // + field assignment. Also fixed a data bug in the original demo:
+   516→        // the 11th positional value was being assigned to is_constructor,
+   517→        // but `speak`/`eat`/`bark`/`meow` are NOT constructors. The intended
+   518→        // mapping was has_code=true at that position.
+   519→        animal->virtual_methods.clear();
+   520→        {
+   521→            RuntimeMethodInfo m;
+   522→            m.method_idx = 0; m.name = "speak"; m.descriptor = "()V"; m.shorty = "V";
+   523→            m.access_flags = AccessFlags::ACC_PUBLIC; m.declaring_class_idx = 0;
+   524→            m.is_direct = false; m.is_virtual = true; m.is_static = false;
+   525→            m.is_abstract = false; m.is_constructor = false;
+   526→            m.has_code = true; m.code_item_offset = 100;
+   527→            m.registers_size = 5; m.ins_size = 1; m.outs_size = 1; m.insns_count = 3;
+   528→            animal->virtual_methods.push_back(std::move(m));
+   529→        }
+   530→        {
+   531→            RuntimeMethodInfo m;
+   532→            m.method_idx = 1; m.name = "eat"; m.descriptor = "()V"; m.shorty = "V";
+   533→            m.access_flags = AccessFlags::ACC_PUBLIC; m.declaring_class_idx = 0;
+   534→            m.is_direct = false; m.is_virtual = true; m.is_static = false;
+   535→            m.is_abstract = false; m.is_constructor = false;
+   536→            m.has_code = true; m.code_item_offset = 120;
+   537→            m.registers_size = 3; m.ins_size = 1; m.outs_size = 1; m.insns_count = 2;
+   538→            animal->virtual_methods.push_back(std::move(m));
+   539→        }
+   540→        
+   541→        // Build Animal's VTable (it has no parent)
+   542→        VirtualDispatchTable empty_vtable;
+   543→        animal->build_vtable(empty_vtable);
+   544→        animal->load_state = RuntimeClassInfo::LoadState::RESOLVED;
+   545→        
+   546→        container.add_class(std::move(animal));
+   547→        
+   548→        // Create Dog class (extends Animal)
+   549→        auto dog = std::make_unique<RuntimeClassInfo>("LDog;");
+   550→        dog->source_file = "Dog.java";
+   551→        dog->access_flags = AccessFlags::ACC_PUBLIC;
+   552→        dog->superclass_descriptor = "LAnimal;";
+   553→        dog->dex_class_idx = 1;
+   554→        
+   555→        dog->instance_fields = {
+   556→            {0, "name", "Ljava/lang/String;", 0, 0},  // dog's name
+   557→            {1, "age", "I", 0, 0}                        // dog's age
+   558→        };
+   559→        
+   560→        // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): see Animal block above.
+   561→        // RuntimeMethodInfo is non-aggregate; use default ctor + assignment.
+   562→        dog->virtual_methods.clear();
+   563→        {
+   564→            RuntimeMethodInfo m;
+   565→            m.method_idx = 2; m.name = "speak"; m.descriptor = "()V"; m.shorty = "V";
+   566→            m.access_flags = AccessFlags::ACC_PUBLIC; m.declaring_class_idx = 1;
+   567→            m.is_direct = false; m.is_virtual = true; m.is_static = false;
+   568→            m.is_abstract = false; m.is_constructor = false;
+   569→            m.has_code = true; m.code_item_offset = 200;
+   570→            m.registers_size = 5; m.ins_size = 1; m.outs_size = 1; m.insns_count = 3;
+   571→            dog->virtual_methods.push_back(std::move(m));
+   572→        }
+   573→        {
+   574→            RuntimeMethodInfo m;
+   575→            m.method_idx = 3; m.name = "bark"; m.descriptor = "()V"; m.shorty = "V";
+   576→            m.access_flags = AccessFlags::ACC_PUBLIC; m.declaring_class_idx = 1;
+   577→            m.is_direct = false; m.is_virtual = true; m.is_static = false;
+   578→            m.is_abstract = false; m.is_constructor = false;
+   579→            m.has_code = true; m.code_item_offset = 220;
+   580→            m.registers_size = 2; m.ins_size = 1; m.outs_size = 1; m.insns_count = 2;
+   581→            dog->virtual_methods.push_back(std::move(m));
+   582→        }
+   583→        
+   584→        // Link to parent and build VTable
+   585→        RuntimeClassInfo* animal_cls = container.find_class("LAnimal;");
+   586→        dog->calculate_field_offsets(animal_cls);
+   587→        dog->build_vtable(animal_cls);
+   588→        dog->load_state = RuntimeClassInfo::LoadState::RESOLVED;
+   589→        
+   590→        container.add_class(std::move(dog));
+   591→        
+   592→        // Create Cat class (extends Animal)
+   593→        auto cat = std::make_unique<RuntimeClassInfo>("LCat;");
+   594→        cat->source_file = "Cat.java";
+   595→        cat->access_flags = AccessFlags::ACC_PUBLIC;
+   596→        cat->superclass_descriptor = "LAnimal;";
+   597→        cat->dex_class_idx = 2;
+   598→        
+   599→        cat->instance_fields = {
+   600→            {0, "name", "Ljava/lang/String;", 0, 0},
+   601→            {1, "livesLeft", "I", 0, 0}  // cats have 9 lives!
+   602→        };
+   603→        
+   604→        // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): see Animal block above.
+   605→        cat->virtual_methods.clear();
+   606→        {
+   607→            RuntimeMethodInfo m;
+   608→            m.method_idx = 4; m.name = "speak"; m.descriptor = "()V"; m.shorty = "V";
+   609→            m.access_flags = AccessFlags::ACC_PUBLIC; m.declaring_class_idx = 2;
+   610→            m.is_direct = false; m.is_virtual = true; m.is_static = false;
+   611→            m.is_abstract = false; m.is_constructor = false;
+   612→            m.has_code = true; m.code_item_offset = 300;
+   613→            m.registers_size = 5; m.ins_size = 1; m.outs_size = 1; m.insns_count = 3;
+   614→            cat->virtual_methods.push_back(std::move(m));
+   615→        }
+   616→        {
+   617→            RuntimeMethodInfo m;
+   618→            m.method_idx = 5; m.name = "meow"; m.descriptor = "()V"; m.shorty = "V";
+   619→            m.access_flags = AccessFlags::ACC_PUBLIC; m.declaring_class_idx = 2;
+   620→            m.is_direct = false; m.is_virtual = true; m.is_static = false;
+   621→            m.is_abstract = false; m.is_constructor = false;
+   622→            m.has_code = true; m.code_item_offset = 320;
+   623→            m.registers_size = 2; m.ins_size = 1; m.outs_size = 1; m.insns_count = 2;
+   624→            cat->virtual_methods.push_back(std::move(m));
+   625→        }
+   626→        
+   627→        cat->calculate_field_offsets(animal_cls);
+   628→        cat->build_vtable(animal_cls);
+   629→        cat->load_state = RuntimeClassInfo::LoadState::RESOLVED;
+   630→        
+   631→        container.add_class(std::move(cat));
+   632→        
+   633→        // Set up a simple executor that logs which method runs
+   634→        dispatcher.set_executor([](const RuntimeMethodInfo* method,
+   635→                                   const std::vector<json>& args,
+   636→                                   InvocationContext& ctx) -> json {
+   637→            // Simulate different behavior based on method name
+   638→            std::string sound;
+   639→            if (method->name == "speak") {
+   640→                // Check which class's speak() this is
+   641→                if (ctx.target_class == "LAnimal;") sound = "...generic animal noise...";
+   642→                else if (ctx.target_class == "LDog;") sound = "Woof! Woof!";
+   643→                else if (ctx.target_class == "LCat;") sound = "Meow~";
+   644→                else sound = "[unknown speak]";
+   645→            } else if (method->name == "eat") {
+   646→                sound = "*munch munch*";
+   647→            } else if (method->name == "bark") {
+   648→                sound = "WOOF WOOF!";
+   649→            } else if (method->name == "meow") {
+   650→                sound = "meow meow~ ♪";
+   651→            } else {
+   652→                sound = "[method " + method->name + " executed]";
+   653→            }
+   654→            
+   655→            ctx.return_value = sound;  // Return the sound as "result"
+   656→            ctx.executed_successfully = true;
+   657→            return ctx.return_value;
+   658→        });
+   659→        
+   660→        initialized = true;
+   661→        return true;
+   662→    }
+   663→    
+   664→    /**
+   665→     * Run a demonstration of polymorphic dispatch.
+   666→     * Shows how the same invoke-virtual produces different results.
+   667→     */
+   668→    json run_polymorphic_demo() {
+   669→        if (!initialized) {
+   670→            // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): the original syntax
+   671→            // `return {"error": "..."};` is ambiguous to the C++ parser when
+   672→            // the return type is `json` (nlohmann::json). It is parsed as a
+   673→            // brace-enclosed initializer with a colon label, not as a JSON
+   674→            // object literal. Use json::parse or json::object() explicitly.
+   675→            return json::object({{"error", "System not initialized"}});
+   676→        }
+   677→        
+   678→        dispatcher.clear_trace();
+   679→        
+   680→        json results = json::array();
+   681→        
+   682→        // Pre-resolve speak() to VTable index
+   683→        int32_t speak_vtable_idx = resolver.resolve_virtual_to_vtable_index(
+   684→            "LAnimal;", "speak", "()V");
+   685→        
+   686→        results.push_back({"step", "Pre-resolution", "detail",
+   687→                         "speak() resolved to VTable[" + std::to_string(speak_vtable_idx) + "]"});
+   688→        
+   689→        // Get class pointers
+   690→        RuntimeClassInfo* animal_cls = container.find_class("LAnimal;");
+   691→        RuntimeClassInfo* dog_cls = container.find_class("LDog;");
+   692→        RuntimeClassInfo* cat_cls = container.find_class("LCat;");
+   693→        
+   694→        // Demo 1: Call speak() on Animal reference pointing to Animal
+   695→        if (animal_cls && speak_vtable_idx >= 0) {
+   696→            InvocationContext ctx1 = dispatcher.dispatch_virtual(
+   697→                animal_cls, speak_vtable_idx, {},
+   698→                {"LDemo;", "main"});
+   699→            
+   700→            results.push_back({
+   701→                {"demo", 1},
+   702→                {"object_type", "Animal"},
+   703→                {"called_method", ctx1.target_method},
+   704→                {"result", ctx1.return_value},
+   705→                {"was_override", ctx1.is_override}
+   706→            });
+   707→        }
+   708→        
+   709→        // Demo 2: Call speak() on Animal reference pointing to Dog
+   710→        // THIS IS THE KEY DEMO: Same VTable index, different result!
+   711→        if (dog_cls && speak_vtable_idx >= 0) {
+   712→            InvocationContext ctx2 = dispatcher.dispatch_virtual(
+   713→                dog_cls, speak_vtable_idx, {},
+   714→                {"LDemo;", "main"});
+   715→            
+   716→            results.push_back({
+   717→                {"demo", 2},
+   718→                {"object_type", "Dog"},
+   719→                {"called_method", ctx2.target_method},
+   720→                {"result", ctx2.return_value},
+   721→                {"was_override", ctx2.is_override},
+   722→                {"note", "Same VTable index, but Dog.speak() runs!"}
+   723→            });
+   724→        }
+   725→        
+   726→        // Demo 3: Call speak() on Animal reference pointing to Cat
+   727→        if (cat_cls && speak_vtable_idx >= 0) {
+   728→            InvocationContext ctx3 = dispatcher.dispatch_virtual(
+   729→                cat_cls, speak_vtable_idx, {},
+   730→                {"LDemo;", "main"});
+   731→            
+   732→            results.push_back({
+   733→                {"demo", 3},
+   734→                {"object_type", "Cat"},
+   735→                {"called_method", ctx3.target_method},
+   736→                {"result", ctx3.return_value},
+   737→                {"was_override", ctx3.is_override},
+   738→                {"note", "Same VTable index again, but Cat.speak() runs!"}
+   739→            });
+   740→        }
+   741→        
+   742→        // Demo 4: Show direct call (no polymorphism)
+   743→        InvocationContext ctx4 = dispatcher.dispatch_direct(
+   744→            "LDog;", "<init>", "(Ljava/lang/String;I)V",
+   745→            {"Rex", 5},
+   746→            {"LDog;", "factoryMethod"});
+   747→        
+   748→        results.push_back({
+   749→            {"demo", 4},
+   750→            {"opcode", "invoke-direct"},
+   751→            {"method", ctx4.target_method},
+   752→            {"success", ctx4.executed_successfully},
+   753→            {"note", "Direct calls don't use VTable"}
+   754→        });
+   755→        
+   756→        // Export full trace as evidence
+   757→        json trace = dispatcher.export_trace_as_json();
+   758→        
+   759→        return {
+   760→            {"demonstration", "Polymorphic Virtual Dispatch"},
+   761→            {"results", results},
+   762→            {"complete_trace", trace},
+   763→            {"conclusion", "VTable-based dispatch enables correct polymorphism!"}
+   764→        };
+   765→    }
+   766→    
+   767→    /**
+   768→     * Get statistics about loaded classes.
+   769→     */
+   770→    json get_system_stats() const {
+   771→        return container.get_statistics();
+   772→    }
+   773→};
+   774→
+   775→} // namespace runtime
+   776→} // namespace miniandroid
+   777→
+   778→#endif // MINIANDROID_VTABLE_DISPATCH_H
+   779→

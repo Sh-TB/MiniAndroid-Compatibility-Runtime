@@ -1,0 +1,944 @@
+     1→/*
+     2→ * MiniAndroid Runtime v0.1 - Manifest Reader Implementation
+     3→ * EXP-001: HelloWorld Loader
+     4→ */
+     5→
+     6→#include "manifest_reader.h"
+     7→
+     8→#include <cstring>
+     9→#include <cstdio>      // snprintf (used by parse_header)
+    10→#include <iostream>
+    11→#include <algorithm>
+    12→
+    13→namespace miniandroid {
+    14→namespace apk {
+    15→
+    16→// AXML magic number
+    17→constexpr uint32_t AXML_MAGIC = 0x00080003;
+    18→
+    19→// String pool flags
+    20→constexpr uint32_t STRING_POOL_UTF8_FLAG = 0x00000100;
+    21→
+    22→ManifestReader::ManifestReader() : verbose_(false), depth_(0) {
+    23→}
+    24→
+    25→ManifestReader::~ManifestReader() {
+    26→}
+    27→
+    28→ManifestInfo ManifestReader::parse(const std::vector<uint8_t>& data) {
+    29→    result_ = ManifestInfo();
+    30→    strings_.clear();
+    31→    resource_ids_.clear();
+    32→    namespace_stack_.clear();
+    33→    depth_ = 0;
+    34→    in_activity_ = false;
+    35→    
+    36→    if (data.empty()) {
+    37→        result_.error_message = "Empty manifest data";
+    38→        result_.parse_success = false;
+    39→        return result_;
+    40→    }
+    41→    
+    42→    const uint8_t* ptr = data.data();
+    43→    size_t size = data.size();
+    44→    
+    45→    // Check if this is plain XML (not binary AXML)
+    46→    // Plain XML starts with '<?' or '<', while AXML starts with 0x00080003
+    47→    bool is_plain_xml = false;
+    48→    if (size >= 2 && (ptr[0] == '<')) {
+    49→        is_plain_xml = true;
+    50→        log("Detected plain XML format");
+    51→    } else if (size >= 4) {
+    52→        uint32_t magic = *reinterpret_cast<const uint32_t*>(ptr);
+    53→        if (magic != AXML_MAGIC) {
+    54→            // Not AXML magic - check if it looks like text
+    55→            if (ptr[0] == '<' || (size >= 5 && strncmp(reinterpret_cast<const char*>(ptr), "<?xml", 5) == 0)) {
+    56→                is_plain_xml = true;
+    57→                log("Detected plain XML format (fallback)");
+    58→            }
+    59→        }
+    60→    }
+    61→    
+    62→    // Parse plain XML if detected
+    63→    if (is_plain_xml) {
+    64→        return parse_plain_xml(data);
+    65→    }
+    66→    
+    67→    // Otherwise parse as binary AXML
+    68→    if (size < sizeof(AxmlHeader)) {
+    69→        result_.error_message = "Data too small for AXML header";
+    70→        result_.parse_success = false;
+    71→        return result_;
+    72→    }
+    73→    
+    74→    // Parse main header
+    75→    if (!parse_header(ptr, size)) {
+    76→        result_.parse_success = false;
+    77→        return result_;
+    78→    }
+    79→    
+    80→    // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+    81→    // The outer AXML file header (RES_XML_TYPE) is exactly 8 bytes:
+    82→    //   uint16_t type         = 0x0003
+    83→    //   uint16_t header_size  = 0x0008
+    84→    //   uint32_t size         = file_size
+    85→    // Inner chunks (STRING_POOL, RESOURCE_MAP, START_NAMESPACE, etc.) begin
+    86→    // at offset 8. The previous code used `sizeof(AxmlHeader)` (= 12) which
+    87→    // skipped 4 bytes into the middle of the STRING_POOL chunk header,
+    88→    // corrupting all subsequent chunk parsing.
+    89→    size_t offset = 8;  // was: sizeof(AxmlHeader) — wrong, that's 12 bytes
+    90→    
+    91→    while (offset < size) {
+    92→        if (offset + sizeof(AxmlChunkHeader) > size) {
+    93→            break;
+    94→        }
+    95→        
+    96→        const AxmlChunkHeader* chunk = reinterpret_cast<const AxmlChunkHeader*>(ptr + offset);
+    97→        
+    98→        // EXP-038 DEBUG: log every chunk's type and size (not just elements)
+    99→        {
+   100→            std::string type_name = "type=0x" + int_to_hex(chunk->type);
+   101→            switch (static_cast<AxmlToken>(chunk->type)) {
+   102→                case AxmlToken::RES_XML_TYPE: type_name = "RES_XML_TYPE"; break;
+   103→                case AxmlToken::STRING_POOL: type_name = "STRING_POOL"; break;
+   104→                case AxmlToken::RESOURCE_MAP: type_name = "RESOURCE_MAP"; break;
+   105→                case AxmlToken::START_NAMESPACE: type_name = "START_NS"; break;
+   106→                case AxmlToken::END_NAMESPACE: type_name = "END_NS"; break;
+   107→                case AxmlToken::START_ELEMENT: type_name = "START_ELEM"; break;
+   108→                case AxmlToken::END_ELEMENT: type_name = "END_ELEM"; break;
+   109→                case AxmlToken::CDATA: type_name = "CDATA"; break;
+   110→                default: break;
+   111→            }
+   112→            // Only log around the LaunchActivity area (offset 43000-49000)
+   113→            if (offset >= 43000 && offset <= 49000) {
+   114→                std::string elem_name;
+   115→                if (static_cast<AxmlToken>(chunk->type) == AxmlToken::START_ELEMENT) {
+   116→                    const AxmlStartElement* se = reinterpret_cast<const AxmlStartElement*>(ptr + offset);
+   117→                    elem_name = " elem=" + get_string(se->name_index);
+   118→                }
+   119→                log("CHUNK @ " + std::to_string(offset) + ": " + type_name +
+   120→                    " hs=" + std::to_string(chunk->header_size) +
+   121→                    " size=" + std::to_string(chunk->size) + elem_name);
+   122→            }
+   123→        }
+   124→        
+   125→        if (chunk->size < sizeof(AxmlChunkHeader) || offset + chunk->size > size) {
+   126→            log("Invalid chunk size at offset " + std::to_string(offset) +
+   127→                " (type=0x" + int_to_hex(chunk->type) + " size=" + std::to_string(chunk->size) + ")");
+   128→            break;
+   129→        }
+   130→        
+   131→        // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+   132→        // Real AXML chunk types per AOSP ResourceTypes.h:
+   133→        switch (static_cast<AxmlToken>(chunk->type)) {
+   134→            case AxmlToken::RES_XML_TYPE:
+   135→                // Outer wrapper — already consumed at offset 0, should not appear again
+   136→                log("Unexpected nested RES_XML_TYPE at offset " + std::to_string(offset));
+   137→                break;
+   138→                
+   139→            case AxmlToken::STRING_POOL:
+   140→                if (!parse_string_pool(ptr + offset, chunk->size)) {
+   141→                    log("Failed to parse string pool at offset " + std::to_string(offset));
+   142→                }
+   143→                break;
+   144→                
+   145→            case AxmlToken::RESOURCE_MAP:
+   146→                parse_resource_ids(ptr + offset, chunk->size);
+   147→                break;
+   148→                
+   149→            case AxmlToken::START_NAMESPACE:
+   150→            case AxmlToken::END_NAMESPACE:
+   151→            case AxmlToken::START_ELEMENT:
+   152→            case AxmlToken::END_ELEMENT:
+   153→            case AxmlToken::CDATA:
+   154→                parse_element(ptr, size, offset);
+   155→                break;
+   156→                
+   157→            default:
+   158→                log("Unknown AXML chunk type 0x" + int_to_hex(chunk->type) +
+   159→                    " at offset " + std::to_string(offset));
+   160→                break;
+   161→        }
+   162→        
+   163→        offset += chunk->size;
+   164→    }
+   165→    
+   166→    result_.parse_success = true;
+   167→    log("Manifest parsing complete. Package: " + result_.package_name);
+   168→    
+   169→    return result_;
+   170→}
+   171→
+   172→bool ManifestReader::parse_header(const uint8_t* data, size_t size) {
+   173→    // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+   174→    // The real AXML file header is just 8 bytes:
+   175→    //   uint16_t type        = 0x0003 (RES_XML_TYPE)
+   176→    //   uint16_t header_size = 0x0008
+   177→    //   uint32_t size        = file_size
+   178→    //
+   179→    // The previous code read this as AxmlHeader{magic(4), header(8)} = 12 bytes,
+   180→    // where `magic` happened to be (header_size<<16)|type = 0x00080003. The
+   181→    // magic check therefore worked by accident. BUT the subsequent check
+   182→    // `header.header.type != START_DOCUMENT (0x0000)` read bytes 4-5, which
+   183→    // are actually the LOW 16 BITS of the file size — for any AXML file
+   184→    // larger than 64KB, this would coincidentally match 0x0000; for any file
+   185→    // smaller than 64KB it would be the size value itself. For our 2056-byte
+   186→    // test APK, bytes 4-5 are `0x08 0x08` = 0x0808, which doesn't match 0x0000,
+   187→    // so EVERY real AXML file was rejected with "Invalid AXML header type".
+   188→    //
+   189→    // Fix: validate only the magic (which encodes both type=0x0003 and
+   190→    // header_size=0x0008). Don't validate the type field separately, since
+   191→    // there is no separate type field at byte 4 — byte 4 is the start of the
+   192→    // size field.
+   193→    if (size < 8) {
+   194→        result_.error_message = "Data too small for AXML header (need 8 bytes)";
+   195→        log(result_.error_message);
+   196→        return false;
+   197→    }
+   198→
+   199→    const AxmlHeader* header = reinterpret_cast<const AxmlHeader*>(data);
+   200→
+   201→    // magic = (header_size << 16) | type = (0x0008 << 16) | 0x0003 = 0x00080003
+   202→    if (header->magic != AXML_MAGIC) {
+   203→        // Bytes 0-3 don't match the RES_XML_TYPE + header_size=8 pattern.
+   204→        // This is not a valid AXML file.
+   205→        char hex[16];
+   206→        snprintf(hex, sizeof(hex), "%08x", header->magic);
+   207→        result_.error_message = "Invalid AXML magic number: got 0x" + std::string(hex) +
+   208→                               ", expected 0x00080003 (RES_XML_TYPE + header_size=8)";
+   209→        log(result_.error_message);
+   210→        return false;
+   211→    }
+   212→
+   213→    // The file size encoded at offset 4 should match the actual data size.
+   214→    // (Optional sanity check — some AXML files pad the size, so we log only.)
+   215→    uint32_t declared_size = header->header.size;
+   216→    if (declared_size != size) {
+   217→        log("AXML header size mismatch: declared=" + std::to_string(declared_size) +
+   218→            ", actual=" + std::to_string(size) + " (continuing anyway)");
+   219→    }
+   220→
+   221→    log("AXML header valid, RES_XML_TYPE outer wrapper, document size: " +
+   222→        std::to_string(declared_size));
+   223→    return true;
+   224→}
+   225→
+   226→bool ManifestReader::parse_string_pool(const uint8_t* chunk, size_t size) {
+   227→    if (size < sizeof(AxmlStringPoolHeader)) {
+   228→        return false;
+   229→    }
+   230→    
+   231→    const AxmlStringPoolHeader* sp_header = reinterpret_cast<const AxmlStringPoolHeader*>(chunk);
+   232→    
+   233→    uint32_t string_count = sp_header->string_count;
+   234→    bool is_utf8 = (sp_header->flags & STRING_POOL_UTF8_FLAG) != 0;
+   235→    
+   236→    log("String pool: " + std::to_string(string_count) + " strings, UTF8=" + 
+   237→        (is_utf8 ? "true" : "false"));
+   238→    
+   239→    strings_.reserve(string_count);
+   240→    
+   241→    // Strings start after the header
+   242→    const uint8_t* strings_start = chunk + sp_header->strings_start;
+   243→    const uint8_t* strings_end = chunk + size;
+   244→    
+   245→    size_t offset = 0;
+   246→    
+   247→    for (uint32_t i = 0; i < string_count && (strings_start + offset) < strings_end; i++) {
+   248→        size_t str_length = 0;
+   249→        size_t bytes_consumed = decode_string_length(strings_start, offset, str_length, is_utf8);
+   250→        offset += bytes_consumed;
+   251→        
+   252→        if ((strings_start + offset + str_length) > strings_end) {
+   253→            log("String " + std::to_string(i) + " extends beyond pool");
+   254→            break;
+   255→        }
+   256→        
+   257→        if (is_utf8) {
+   258→            std::string str(reinterpret_cast<const char*>(strings_start + offset), str_length);
+   259→            strings_.push_back(str);
+   260→        } else {
+   261→            // UTF-16 - convert to UTF-8 (simplified)
+   262→            std::string utf8_str;
+   263→            const char16_t* utf16_ptr = reinterpret_cast<const char16_t*>(strings_start + offset);
+   264→            for (size_t j = 0; j < str_length; j++) {
+   265→                char16_t c = utf16_ptr[j];
+   266→                if (c < 0x80) {
+   267→                    utf8_str += static_cast<char>(c);
+   268→                } else if (c < 0x800) {
+   269→                    utf8_str += static_cast<char>(0xC0 | (c >> 6));
+   270→                    utf8_str += static_cast<char>(0x80 | (c & 0x3F));
+   271→                } else {
+   272→                    utf8_str += static_cast<char>(0xE0 | (c >> 12));
+   273→                    utf8_str += static_cast<char>(0x80 | ((c >> 6) & 0x3F));
+   274→                    utf8_str += static_cast<char>(0x80 | (c & 0x3F));
+   275→                }
+   276→            }
+   277→            strings_.push_back(utf8_str);
+   278→        }
+   279→        
+   280→        offset += is_utf8 ? str_length : str_length * 2;
+   281→        
+   282→        // Skip null terminator(s)
+   283→        if (is_utf8) {
+   284→            offset++;  // 1 byte null terminator
+   285→        } else {
+   286→            offset += 2;  // 2 byte null terminator
+   287→        }
+   288→        
+   289→        // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+   290→        // The previous code aligned `offset` to 4 bytes between strings.
+   291→        // Real AXML string pools do NOT pad strings — they are tightly
+   292→        // packed. Verified against the cachecleanerwidget.apk AndroidManifest:
+   293→        //   string[0]="label" (5 chars UTF-16) = 2 (len) + 10 (chars) + 2 (null) = 14 bytes
+   294→        //   string[1] starts at offset 14 (NOT 16)
+   295→        // The previous alignment logic caused every other string to be
+   296→        // misaligned, producing the garbled "Parsed 7 strings from pool"
+   297→        // output (out of 30 actual strings).
+   298→        // No alignment between strings.
+   299→    }
+   300→    
+   301→    log("Parsed " + std::to_string(strings_.size()) + " strings from pool");
+   302→    return true;
+   303→}
+   304→
+   305→bool ManifestReader::parse_resource_ids(const uint8_t* chunk, size_t size) {
+   306→    if (size < sizeof(AxmlResourceIdsHeader)) {
+   307→        return false;
+   308→    }
+   309→    
+   310→    const AxmlResourceIdsHeader* res_header = reinterpret_cast<const AxmlResourceIdsHeader*>(chunk);
+   311→    
+   312→    size_t id_count = (size - sizeof(AxmlResourceIdsHeader)) / sizeof(uint32_t);
+   313→    resource_ids_.resize(id_count);
+   314→    
+   315→    std::memcpy(resource_ids_.data(), chunk + sizeof(AxmlResourceIdsHeader), 
+   316→                id_count * sizeof(uint32_t));
+   317→    
+   318→    log("Parsed " + std::to_string(id_count) + " resource IDs");
+   319→    return true;
+   320→}
+   321→
+   322→bool ManifestReader::parse_element(const uint8_t* data, size_t size, size_t& offset) {
+   323→    if (offset + sizeof(AxmlChunkHeader) > size) {
+   324→        return false;
+   325→    }
+   326→    
+   327→    const AxmlChunkHeader* chunk = reinterpret_cast<const AxmlChunkHeader*>(data + offset);
+   328→    AxmlToken token_type = static_cast<AxmlToken>(chunk->type);
+   329→    
+   330→    switch (token_type) {
+   331→        case AxmlToken::START_NAMESPACE: {
+   332→            if (offset + sizeof(AxmlStartNamespace) > size) return false;
+   333→            
+   334→            const AxmlStartNamespace* ns = reinterpret_cast<const AxmlStartNamespace*>(data + offset);
+   335→            std::string prefix = get_string(ns->prefix_index);
+   336→            std::string uri = get_string(ns->uri_index);
+   337→            
+   338→            push_namespace(prefix, uri);
+   339→            log("NS Start: " + prefix + " = " + uri);
+   340→            break;
+   341→        }
+   342→        
+   343→        case AxmlToken::END_NAMESPACE: {
+   344→            if (offset + sizeof(AxmlEndNamespace) > size) return false;
+   345→            
+   346→            const AxmlEndNamespace* ns = reinterpret_cast<const AxmlEndNamespace*>(data + offset);
+   347→            std::string prefix = get_string(ns->prefix_index);
+   348→            
+   349→            pop_namespace();
+   350→            log("NS End: " + prefix);
+   351→            break;
+   352→        }
+   353→        
+   354→        case AxmlToken::START_ELEMENT: {
+   355→            if (offset + sizeof(AxmlStartElement) > size) return false;
+   356→            
+   357→            const AxmlStartElement* elem = reinterpret_cast<const AxmlStartElement*>(data + offset);
+   358→            
+   359→            std::string ns = resolve_namespace(elem->namespace_index);
+   360→            std::string name = get_string(elem->name_index);
+   361→            
+   362→            // EXP-038 DEBUG: log EVERY START_ELEMENT's offset and name
+   363→            if (offset >= 48000 && offset <= 49000) {
+   364→                log("  parse_element START_ELEM @ " + std::to_string(offset) +
+   365→                    ": name_idx=" + std::to_string(elem->name_index) +
+   366→                    " name='" + name + "'" +
+   367→                    " header_size=" + std::to_string(chunk->header_size) +
+   368→                    " attr_start=" + std::to_string(elem->attribute_start) +
+   369→                    " attr_count=" + std::to_string(elem->attribute_count));
+   370→            }
+   371→            
+   372→            // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+   373→            // The previous code computed the attribute offset as
+   374→            //   offset + sizeof(AxmlStartElement) + attr_count * sizeof(uint32_t)
+   375→            // which was wrong on TWO counts:
+   376→            //   1. sizeof(AxmlStartElement) was 24 in the old struct (no
+   377→            //      lineNumber/comment/attrStart/attrSize/styleIndex fields),
+   378→            //      so it skipped too few bytes.
+   379→            //   2. The "+attr_count*4" was meant to skip a per-element
+   380→            //      resource-id array, but AXML stores resource IDs in a
+   381→            //      separate RESOURCE_MAP chunk at the start of the file,
+   382→            //      not inline before each element's attributes.
+   383→            //
+   384→            // Per AOSP ResourceTypes.h, the correct attribute offset is:
+   385→            //   chunk_start + chunk_header.header_size + attrExt.attributeStart
+   386→            // where chunk_header.header_size is the size of ResXMLTree_node
+   387→            // (= 16 for AAPT2: chunk_header(8) + lineNumber(4) + comment(4))
+   388→            // and attributeStart is the offset from the end of the header
+   389→            // to where attributes begin (typically = size of attrExt body
+   390→            // fields = 4+4+2+2+2+2+2+2 = 20 bytes).
+   391→            //
+   392→            // For the cachecleanerwidget APK manifest:
+   393→            //   chunk_header.header_size = 16
+   394→            //   attributeStart = 20
+   395→            //   → attrs start at offset 16+20 = 36 from chunk start
+   396→            //   → 7 attributes × 20 bytes each = 140 bytes
+   397→            //   → total chunk size = 36 + 140 = 176 ✓ matches chunk.size
+   398→            size_t attr_array_offset = offset + chunk->header_size + elem->attribute_start;
+   399→            size_t attr_array_end = offset + chunk->size;
+   400→            
+   401→            // EXP-038 DEBUG: print the offset calculation for category elements
+   402→            if (name == "category") {
+   403→                log("  CATEGORY parse_element: offset=" + std::to_string(offset) +
+   404→                    " header_size=" + std::to_string(chunk->header_size) +
+   405→                    " attr_start=" + std::to_string(elem->attribute_start) +
+   406→                    " attr_array_offset=" + std::to_string(attr_array_offset) +
+   407→                    " attr_count=" + std::to_string(elem->attribute_count));
+   408→                // Also print raw bytes at attr_array_offset
+   409→                if (attr_array_offset + 20 <= size) {
+   410→                    std::string hex;
+   411→                    char buf[4];
+   412→                    for (int b = 0; b < 20; b++) {
+   413→                        snprintf(buf, sizeof(buf), "%02x", data[attr_array_offset + b]);
+   414→                        hex += buf;
+   415→                    }
+   416→                    log("  CATEGORY raw bytes at " + std::to_string(attr_array_offset) + ": " + hex);
+   417→                }
+   418→            }
+   419→            
+   420→            std::vector<AxmlAttribute> attrs;
+   421→            attrs.reserve(elem->attribute_count);
+   422→            
+   423→            const uint8_t* attr_ptr = data + attr_array_offset;
+   424→            for (uint16_t i = 0; i < elem->attribute_count; i++) {
+   425→                if (attr_ptr + sizeof(AxmlAttribute) > data + attr_array_end) {
+   426→                    log("Attribute " + std::to_string(i) + " extends beyond chunk");
+   427→                    break;
+   428→                }
+   429→                AxmlAttribute attr;
+   430→                std::memcpy(&attr, attr_ptr, sizeof(AxmlAttribute));
+   431→                attrs.push_back(attr);
+   432→                attr_ptr += sizeof(AxmlAttribute);
+   433→            }
+   434→            
+   435→            process_start_element(ns, name, attrs);
+   436→            depth_++;
+   437→            break;
+   438→        }
+   439→        
+   440→        case AxmlToken::END_ELEMENT: {
+   441→            if (offset + sizeof(AxmlEndElement) > size) return false;
+   442→            
+   443→            const AxmlEndElement* elem = reinterpret_cast<const AxmlEndElement*>(data + offset);
+   444→            
+   445→            std::string ns = resolve_namespace(elem->namespace_index);
+   446→            std::string name = get_string(elem->name_index);
+   447→            
+   448→            process_end_element(ns, name);
+   449→            depth_--;
+   450→            break;
+   451→        }
+   452→        
+   453→        case AxmlToken::CDATA: {
+   454→            // CDATA section - skip for now
+   455→            log("CDATA section found");
+   456→            break;
+   457→        }
+   458→        
+   459→        default:
+   460→            log("Unknown token type: " + std::to_string(chunk->type));
+   461→            break;
+   462→    }
+   463→    
+   464→    return true;
+   465→}
+   466→
+   467→std::string ManifestReader::get_string(size_t index) const {
+   468→    if (index < strings_.size()) {
+   469→        return strings_[index];
+   470→    }
+   471→    return "";  // Empty string for invalid index
+   472→}
+   473→
+   474→size_t ManifestReader::decode_string_length(const uint8_t* data, size_t offset, 
+   475→                                            size_t& out_length, bool utf8) {
+   476→    // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+   477→    // The previous UTF-16 branch treated the length prefix as a 1-or-2 byte
+   478→    // variable-length encoding (like UTF-8). The AOSP ResStringPool spec
+   479→    // (frameworks/base/libs/androidfw/ResourceTypes.cpp) defines different
+   480→    // encodings for UTF-8 vs UTF-16:
+   481→    //
+   482→    // UTF-8 length prefix:
+   483→    //   - 1 byte if length <= 0x7F: just the length, high bit clear
+   484→    //   - 2 bytes if length > 0x7F: (first & 0x7F) << 8 | second_byte
+   485→    //   (followed by a SECOND uleb128-style byte count for the byte length)
+   486→    //
+   487→    // UTF-16 length prefix:
+   488→    //   - 2 bytes (uint16 LE) by default: length = u16 value
+   489→    //   - 4 bytes if (u16 & 0x8000): length = ((u16 & 0x7FFF) << 16) | next_u16
+   490→    //
+   491→    // The previous code read UTF-16 length as 1 byte (for short) which
+   492→    // caused every UTF-16 string to be misaligned by 1 byte — the parser
+   493→    // then read the second byte of the length prefix as the first UTF-16
+   494→    // character, producing garbled CJK output like "欀嘀攀爀猀...".
+   495→    if (utf8) {
+   496→        uint8_t first = data[offset];
+   497→        if ((first & 0x80) == 0) {
+   498→            out_length = first;
+   499→            return 1;
+   500→        } else {
+   501→            uint16_t len = (static_cast<uint16_t>(first & 0x7F) << 8) |
+   502→                           static_cast<uint16_t>(data[offset + 1]);
+   503→            out_length = len;
+   504→            return 2;
+   505→        }
+   506→    } else {
+   507→        // UTF-16: always at least 2 bytes
+   508→        uint16_t first_u16 = static_cast<uint16_t>(data[offset]) |
+   509→                              (static_cast<uint16_t>(data[offset + 1]) << 8);
+   510→        if ((first_u16 & 0x8000) == 0) {
+   511→            out_length = first_u16;
+   512→            return 2;
+   513→        } else {
+   514→            // Long form: 4 bytes total
+   515→            uint32_t len = (static_cast<uint32_t>(first_u16 & 0x7FFF) << 16) |
+   516→                           (static_cast<uint32_t>(data[offset + 2]) |
+   517→                            (static_cast<uint32_t>(data[offset + 3]) << 8));
+   518→            out_length = len;
+   519→            return 4;
+   520→        }
+   521→    }
+   522→}
+   523→
+   524→void ManifestReader::push_namespace(const std::string& prefix, const std::string& uri) {
+   525→    if (namespace_stack_.empty()) {
+   526→        namespace_stack_.push_back({{prefix, uri}});
+   527→    } else {
+   528→        namespace_stack_.back()[prefix] = uri;
+   529→        namespace_stack_.push_back(namespace_stack_.back());
+   530→    }
+   531→}
+   532→
+   533→void ManifestReader::pop_namespace() {
+   534→    if (!namespace_stack_.empty()) {
+   535→        namespace_stack_.pop_back();
+   536→    }
+   537→}
+   538→
+   539→std::string ManifestReader::resolve_namespace(uint32_t ns_index) const {
+   540→    if (ns_index == 0xFFFFFFFF) {
+   541→        return "";  // No namespace
+   542→    }
+   543→    return get_string(ns_index);
+   544→}
+   545→
+   546→void ManifestReader::process_start_element(const std::string& ns, const std::string& name,
+   547→                                           const std::vector<AxmlAttribute>& attrs) {
+   548→    std::string full_path = std::string(depth_ * 2, ' ') + (ns.empty() ? "" : ns + ":") + name;
+   549→    log("Element: " + full_path);
+   550→
+   551→    // EXP-038 DEBUG: Always log category processing state
+   552→    if (name == "category") {
+   553→        std::string cat_val = get_attribute_value(attrs, "name");
+   554→        log("  CATEGORY process_start_element: in_activity_=" + std::string(in_activity_ ? "true" : "false") +
+   555→            " attrs.size()=" + std::to_string(attrs.size()) +
+   556→            " value='" + cat_val + "'");
+   557→    }
+   558→    
+   559→    // Handle manifest element
+   560→    if (name == "manifest") {
+   561→        result_.package_name = get_attribute_value(attrs, "package");
+   562→        result_.version_name = get_attribute_value(attrs, "versionName");
+   563→        result_.version_code = get_attribute_int(attrs, "versionCode");
+   564→        result_.has_application = true;
+   565→        log("Package: " + result_.package_name);
+   566→    }
+   567→    
+   568→    // Handle uses-sdk element
+   569→    if (name == "uses-sdk") {
+   570→        result_.min_sdk_version = get_attribute_value(attrs, "minSdkVersion");
+   571→        result_.target_sdk_version = get_attribute_value(attrs, "targetSdkVersion");
+   572→        log("SDK: min=" + result_.min_sdk_version + ", target=" + result_.target_sdk_version);
+   573→    }
+   574→    
+   575→    // Handle application element
+   576→    if (name == "application") {
+   577→        result_.application_label = get_attribute_value(attrs, "label");
+   578→        // EXP-093/F005: Extract custom Application class name.
+   579→        result_.application_name = get_attribute_value(attrs, "name");
+   580→        log("Application label: " + result_.application_label +
+   581→            " name: " + result_.application_name);
+   582→    }
+   583→    
+   584→    // Handle activity element
+   585→    // EXP-038 (BLOCKER-022 FIX): Also track activity-alias elements.
+   586→    // Telegram (and many real apps) use <activity-alias> to declare launcher
+   587→    // intent-filters. Without tracking activity-alias, the LAUNCHER category
+   588→    // inside activity-alias elements is never detected, and the main activity
+   589→    // is never resolved.
+   590→    if (name == "activity" || name == "activity-alias") {
+   591→        current_activity_name_ = get_attribute_value(attrs, "name");
+   592→        // EXP-038: For activity-alias, also capture targetActivity (the real class)
+   593→        current_activity_target_ = get_attribute_value(attrs, "targetActivity");
+   594→        activity_has_main_action_ = false;
+   595→        activity_has_launcher_category_ = false;
+   596→        in_activity_ = true;
+   597→        
+   598→        ManifestInfo::ActivityInfo act_info;
+   599→        act_info.name = current_activity_name_;
+   600→        result_.activities.push_back(act_info);
+   601→        
+   602→        log("Activity: " + current_activity_name_ + (name == "activity-alias" ? " (alias, target=" + current_activity_target_ + ")" : ""));
+   603→    }
+   604→    
+   605→    // Handle intent-filter elements inside activity
+   606→    if (in_activity_) {
+   607→        if (name == "action") {
+   608→            std::string action_name = get_attribute_value(attrs, "name");
+   609→            if (action_name == "android.intent.action.MAIN" || action_name == "MAIN") {
+   610→                activity_has_main_action_ = true;
+   611→                log("Found MAIN action");
+   612→            }
+   613→        }
+   614→        
+   615→        if (name == "category") {
+   616→            std::string category_name = get_attribute_value(attrs, "name");
+   617→            if (category_name == "android.intent.category.LAUNCHER" || category_name == "LAUNCHER") {
+   618→                activity_has_launcher_category_ = true;
+   619→                log("Found LAUNCHER category");
+   620→            }
+   621→        }
+   622→    }
+   623→    
+   624→    // Handle permission elements
+   625→    if (name == "uses-permission") {
+   626→        std::string perm = get_attribute_value(attrs, "name");
+   627→        if (!perm.empty()) {
+   628→            result_.permissions.push_back(perm);
+   629→            log("Permission: " + perm);
+   630→        }
+   631→    }
+   632→    
+   633→    // Handle uses-feature elements
+   634→    if (name == "uses-feature") {
+   635→        std::string feature = get_attribute_value(attrs, "name");
+   636→        if (!feature.empty()) {
+   637→            result_.uses_features.push_back(feature);
+   638→        }
+   639→    }
+   640→}
+   641→
+   642→void ManifestReader::process_end_element(const std::string& ns, const std::string& name) {
+   643→    // EXP-038 (BLOCKER-022 FIX): Also handle activity-alias END_ELEMENT
+   644→    if ((name == "activity" || name == "activity-alias") && in_activity_) {
+   645→        if (activity_has_main_action_ && activity_has_launcher_category_) {
+   646→            // EXP-038: Only set main_activity on FIRST match (don't overwrite).
+   647→            // Telegram has 6+ activity-alias elements with MAIN+LAUNCHER
+   648→            // (DefaultIcon, NoxIcon, TurboIcon, PremiumIcon, AquaIcon, VintageIcon).
+   649→            // The first one is typically the default launcher.
+   650→            if (result_.main_activity.empty()) {
+   651→                // EXP-038: For activity-alias, use targetActivity as the real
+   652→                // main activity (the alias itself doesn't exist as a class in DEX).
+   653→                std::string effective_activity = current_activity_name_;
+   654→                if (!current_activity_target_.empty()) {
+   655→                    effective_activity = current_activity_target_;
+   656→                    log("  → Using targetActivity for alias: " + effective_activity);
+   657→                }
+   658→                
+   659→                result_.main_activity = effective_activity;
+   660→                
+   661→                // Convert to full class name if needed
+   662→                if (!effective_activity.empty()) {
+   663→                    if (effective_activity[0] == '.') {
+   664→                        result_.main_activity_full = result_.package_name + effective_activity;
+   665→                    } else if (effective_activity.find('.') == std::string::npos) {
+   666→                        result_.main_activity_full = result_.package_name + "." + effective_activity;
+   667→                    } else {
+   668→                        result_.main_activity_full = effective_activity;
+   669→                    }
+   670→                }
+   671→                
+   672→                // Mark as main activity in activities list
+   673→                for (auto& act : result_.activities) {
+   674→                    if (act.name == current_activity_name_) {
+   675→                        act.is_main_activity = true;
+   676→                        act.is_launcher = true;
+   677→                        break;
+   678→                    }
+   679→                }
+   680→                
+   681→                log("Main Activity: " + result_.main_activity + " (" + result_.main_activity_full + ")");
+   682→            }
+   683→        }
+   684→        
+   685→        in_activity_ = false;
+   686→        current_activity_name_.clear();
+   687→    }
+   688→}
+   689→
+   690→std::string ManifestReader::get_attribute_value(const std::vector<AxmlAttribute>& attrs,
+   691→                                                 const std::string& name) const {
+   692→    for (const auto& attr : attrs) {
+   693→        std::string attr_name = get_string(attr.name_index);
+   694→        
+   695→        // Try with and without android: prefix
+   696→        if (attr_name == name || attr_name == "android:" + name) {
+   697→            // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
+   698→            // The previous code compared attr.value_type (u32) to AxmlDataType
+   699→            // enum values, but value_type conflated size+res0+dataType into
+   700→            // one u32. The real dataType is now in attr.value_data_type (u8).
+   701→            uint8_t dt = attr.value_data_type;
+   702→            if (dt == static_cast<uint8_t>(AxmlDataType::STRING)) {
+   703→                // For STRING type, value_data holds a string index (or value_string_index does)
+   704→                // Per AOSP, value_data IS the string index for STRING type
+   705→                if (attr.value_string_index != 0xFFFFFFFF && attr.value_string_index < strings_.size()) {
+   706→                    return get_string(attr.value_string_index);
+   707→                }
+   708→                return get_string(attr.value_data);
+   709→            } else if (dt == static_cast<uint8_t>(AxmlDataType::REFERENCE)) {
+   710→                return "@0x" + int_to_hex(attr.value_data);
+   711→            } else if (dt == static_cast<uint8_t>(AxmlDataType::INT) ||
+   712→                       dt == static_cast<uint8_t>(AxmlDataType::ATTRIBUTE_INT) ||
+   713→                       dt == static_cast<uint8_t>(AxmlDataType::INT_HEX) ||
+   714→                       dt == static_cast<uint8_t>(AxmlDataType::INT_BOOLEAN)) {
+   715→                return std::to_string(static_cast<int32_t>(attr.value_data));
+   716→            } else if (dt == static_cast<uint8_t>(AxmlDataType::STRING_INT)) {
+   717→                // Some AXML files use STRING_INT(17) for string-as-int
+   718→                if (attr.value_string_index != 0xFFFFFFFF && attr.value_string_index < strings_.size()) {
+   719→                    return get_string(attr.value_string_index);
+   720→                }
+   721→                return get_string(attr.value_data);
+   722→            } else {
+   723→                // Default: try value_string_index first, fall back to value_data
+   724→                if (attr.value_string_index != 0xFFFFFFFF && attr.value_string_index < strings_.size()) {
+   725→                    return get_string(attr.value_string_index);
+   726→                }
+   727→                return std::to_string(static_cast<int32_t>(attr.value_data));
+   728→            }
+   729→        }
+   730→    }
+   731→    return "";
+   732→}
+   733→
+   734→int ManifestReader::get_attribute_int(const std::vector<AxmlAttribute>& attrs,
+   735→                                       const std::string& name) const {
+   736→    std::string value = get_attribute_value(attrs, name);
+   737→    if (!value.empty()) {
+   738→        try {
+   739→            return std::stoi(value);
+   740→        } catch (...) {
+   741→            return 0;
+   742→        }
+   743→    }
+   744→    return 0;
+   745→}
+   746→
+   747→void ManifestReader::log(const std::string& message) {
+   748→    if (verbose_) {
+   749→        std::cerr << "[ManifestReader] " << message << std::endl;
+   750→    }
+   751→}
+   752→
+   753→std::string ManifestReader::int_to_hex(uint32_t value) {
+   754→    const char* hex_digits = "0123456789abcdef";
+   755→    std::string result(8, '0');
+   756→    for (int i = 7; i >= 0; i--) {
+   757→        result[i] = hex_digits[value & 0xF];
+   758→        value >>= 4;
+   759→    }
+   760→    return result;
+   761→}
+   762→
+   763→ManifestInfo ManifestReader::parse_plain_xml(const std::vector<uint8_t>& data) {
+   764→    // Convert to string
+   765→    std::string xml_content(data.begin(), data.end());
+   766→    log("Parsing plain XML manifest, size: " + std::to_string(xml_content.size()));
+   767→    
+   768→    // Simple state machine parser for AndroidManifest.xml
+   769→    // This handles basic structure: manifest -> application -> activity
+   770→    
+   771→    enum class XmlState {
+   772→        ROOT,
+   773→        MANIFEST,
+   774→        APPLICATION,
+   775→        ACTIVITY,
+   776→        INTENT_FILTER,
+   777→        ACTION,
+   778→        CATEGORY,
+   779→        UNKNOWN
+   780→    };
+   781→    
+   782→    std::vector<XmlState> state_stack;
+   783→    state_stack.push_back(XmlState::ROOT);
+   784→    
+   785→    size_t pos = 0;
+   786→    while (pos < xml_content.size()) {
+   787→        // Find next tag
+   788→        size_t tag_start = xml_content.find('<', pos);
+   789→        if (tag_start == std::string::npos) break;
+   790→        
+   791→        size_t tag_end = xml_content.find('>', tag_start);
+   792→        if (tag_end == std::string::npos) break;
+   793→        
+   794→        std::string tag = xml_content.substr(tag_start, tag_end - tag_start + 1);
+   795→        pos = tag_end + 1;
+   796→        
+   797→        // Check for end tag
+   798→        if (tag.find("</") == 0) {
+   799→            // End tag
+   800→            if (!state_stack.empty()) {
+   801→                state_stack.pop_back();
+   802→            }
+   803→            if (state_stack.back() == XmlState::ACTIVITY) {
+   804→                in_activity_ = false;
+   805→            }
+   806→            continue;
+   807→        }
+   808→        
+   809→        // Check for self-closing or start tag
+   810→        bool self_closing = (tag.find("/>") != std::string::npos);
+   811→
+   812→        // Extract tag name
+   813→        // DEMO-MANIFEST-WS (2026-09-04): treat \r\n as whitespace. The tag
+   814→        // text spans everything between '<' and '>' INCLUDING newlines when
+   815→        // the element is written in the standard AAPT style with one
+   816→        // attribute per line:
+   817→        //     <activity
+   818→        //         android:name="com.foo.MainActivity" ...>
+   819→        // The old delimiters only listed "< \t", so name_start stopped at the
+   820→        // newline and tag_name became the whole multi-line attribute block —
+   821→        // it never matched "activity", every launcher activity was missed and
+   822→        // main_activity_full stayed empty (the runtime then fell back to a
+   823→        // class-name heuristic for entry-point search).
+   824→        std::string tag_name;
+   825→        size_t name_start = tag.find_first_not_of("< \t\r\n");
+   826→        if (name_start != std::string::npos) {
+   827→            size_t name_end = tag.find_first_of(" \t\r\n/>", name_start);
+   828→            if (name_end != std::string::npos) {
+   829→                tag_name = tag.substr(name_start, name_end - name_start);
+   830→            } else {
+   831→                tag_name = tag.substr(name_start);
+   832→            }
+   833→        }
+   834→        
+   835→        // Extract attributes
+   836→        auto extract_attr = [&](const std::string& attr) -> std::string {
+   837→            std::string search = attr + "=\"";
+   838→            size_t attr_pos = tag.find(search);
+   839→            if (attr_pos != std::string::npos) {
+   840→                size_t val_start = attr_pos + search.length();
+   841→                size_t val_end = tag.find('"', val_start);
+   842→                if (val_end != std::string::npos) {
+   843→                    return tag.substr(val_start, val_end - val_start);
+   844→                }
+   845→            }
+   846→            return "";
+   847→        };
+   848→        
+   849→        // Handle different elements
+   850→        if (tag_name == "manifest") {
+   851→            state_stack.push_back(XmlState::MANIFEST);
+   852→            result_.package_name = extract_attr("package");
+   853→            std::string ver_code = extract_attr("android:versionCode");
+   854→            if (!ver_code.empty()) {
+   855→                try { result_.version_code = std::stoi(ver_code); } catch (...) {}
+   856→            }
+   857→            result_.version_name = extract_attr("android:versionName");
+   858→            log("Found manifest, package: " + result_.package_name);
+   859→            
+   860→        } else if (tag_name == "application") {
+   861→            state_stack.push_back(XmlState::APPLICATION);
+   862→            result_.application_label = extract_attr("android:label");
+   863→            // EXP-093/F005: Extract the custom Application class name.
+   864→            // Per AOSP: <application android:name="..."> specifies the
+   865→            // Application subclass to instantiate. If absent, the default
+   866→            // android.app.Application is used.
+   867→            result_.application_name = extract_attr("android:name");
+   868→            log("Found application: label=" + result_.application_label +
+   869→                " name=" + result_.application_name);
+   870→            
+   871→        } else if (tag_name == "activity") {
+   872→            state_stack.push_back(XmlState::ACTIVITY);
+   873→            in_activity_ = true;
+   874→            current_activity_name_ = extract_attr("android:name");
+   875→            activity_has_main_action_ = false;
+   876→            activity_has_launcher_category_ = false;
+   877→            
+   878→            ManifestInfo::ActivityInfo act;
+   879→            act.name = current_activity_name_;
+   880→            result_.activities.push_back(act);
+   881→            log("Found activity: " + current_activity_name_);
+   882→            
+   883→        } else if (tag_name == "intent-filter" && in_activity_) {
+   884→            state_stack.push_back(XmlState::INTENT_FILTER);
+   885→            
+   886→        } else if (tag_name == "action" && in_activity_) {
+   887→            std::string action_name = extract_attr("android:name");
+   888→            if (action_name == "android.intent.action.MAIN") {
+   889→                activity_has_main_action_ = true;
+   890→                log("Found MAIN action");
+   891→            }
+   892→            
+   893→        } else if (tag_name == "category" && in_activity_) {
+   894→            std::string category_name = extract_attr("android:name");
+   895→            if (category_name == "android.intent.category.LAUNCHER") {
+   896→                activity_has_launcher_category_ = true;
+   897→                log("Found LAUNCHER category");
+   898→            }
+   899→        }
+   900→        
+   901→        // Check for main activity after processing category
+   902→        if (tag_name == "category" && activity_has_main_action_ && activity_has_launcher_category_) {
+   903→            if (!current_activity_name_.empty()) {
+   904→                result_.main_activity = current_activity_name_;
+   905→                
+   906→                // Build fully qualified name
+   907→                if (!current_activity_name_.empty() && current_activity_name_[0] == '.') {
+   908→                    result_.main_activity_full = result_.package_name + current_activity_name_;
+   909→                } else {
+   910→                    result_.main_activity_full = current_activity_name_;
+   911→                }
+   912→                
+   913→                // Mark as launcher activity
+   914→                for (auto& act : result_.activities) {
+   915→                    if (act.name == current_activity_name_) {
+   916→                        act.is_main_activity = true;
+   917→                        act.is_launcher = true;
+   918→                        break;
+   919→                    }
+   920→                }
+   921→                
+   922→                log("Main Activity identified: " + result_.main_activity_full);
+   923→            }
+   924→        }
+   925→        
+   926→        // Pop state if self-closing
+   927→        if (self_closing && !state_stack.empty() && state_stack.back() != XmlState::ROOT) {
+   928→            if (state_stack.back() == XmlState::ACTIVITY) {
+   929→                in_activity_ = false;
+   930→            }
+   931→            state_stack.pop_back();
+   932→        }
+   933→    }
+   934→    
+   935→    result_.parse_success = true;
+   936→    log("Plain XML manifest parsing complete. Package: " + result_.package_name + 
+   937→        ", Main Activity: " + result_.main_activity_full);
+   938→    
+   939→    return result_;
+   940→}
+   941→
+   942→} // namespace apk
+   943→} // namespace miniandroid
+   944→

@@ -1,0 +1,687 @@
+     1→/*
+     2→ * UNIFIED_007 — TextShaper implementation.
+     3→ * FriBidi → HarfBuzz → FreeType → framebuffer alpha blit.
+     4→ * See text_shaper.h for the design contract.
+     5→ */
+     6→
+     7→#include "text_shaper.h"
+     8→
+     9→#include <ft2build.h>
+    10→#include FT_FREETYPE_H
+    11→#include FT_GLYPH_H
+    12→#include <harfbuzz/hb.h>
+    13→#include <harfbuzz/hb-ft.h>
+    14→#include <fribidi/fribidi.h>
+    15→
+    16→#include <cmath>
+    17→#include <cstring>
+    18→#include <cstdio>
+    19→#include <functional>
+    20→#include <algorithm>
+    21→
+    22→namespace miniandroid {
+    23→namespace fonts {
+    24→
+    25→// ---------------------------------------------------------------------------
+    26→// UTF-8 → UTF-32 (permissive but correct for well-formed input)
+    27→// ---------------------------------------------------------------------------
+    28→static std::u32string utf8_to_u32(const std::string& s) {
+    29→    std::u32string out;
+    30→    out.reserve(s.size());
+    31→    size_t i = 0;
+    32→    while (i < s.size()) {
+    33→        uint32_t cp = (unsigned char)s[i];
+    34→        int extra = (cp < 0x80) ? 0 : (cp < 0xE0 ? 1 : (cp < 0xF0 ? 2 : 3));
+    35→        if (cp >= 0x80) {
+    36→            if (cp < 0xE0)      cp &= 0x1F;
+    37→            else if (cp < 0xF0) cp &= 0x0F;
+    38→            else                cp &= 0x07;
+    39→        }
+    40→        bool bad = false;
+    41→        for (int k = 0; k < extra; ++k) {
+    42→            if (i + 1 >= s.size() || ((unsigned char)s[i + 1] & 0xC0) != 0x80) {
+    43→                bad = true; break;
+    44→            }
+    45→            cp = (cp << 6) | ((unsigned char)s[++i] & 0x3F);
+    46→        }
+    47→        if (bad) { ++i; continue; }
+    48→        out.push_back(cp);
+    49→        ++i;
+    50→    }
+    51→    return out;
+    52→}
+    53→
+    54→TextShaper& TextShaper::instance() {
+    55→    static TextShaper inst;
+    56→    return inst;
+    57→}
+    58→
+    59→TextShaper::TextShaper() {
+    60→    if (FT_Init_FreeType(reinterpret_cast<FT_Library*>(&ft_lib_))) {
+    61→        std::fprintf(stderr, "[TEXTSHAPER] FT_Init_FreeType FAILED\n");
+    62→        return;
+    63→    }
+    64→    available_ = true;
+    65→    if (!load_face(kFaceRegular,  font_paths_[kFaceRegular].c_str()))  available_ = false;
+    66→    if (!load_face(kFaceBold,    font_paths_[kFaceBold].c_str())) {
+    67→        // Bold missing is not fatal — fall back to regular metrics.
+    68→        faces_[kFaceBold].ft_face = faces_[kFaceRegular].ft_face;
+    69→        faces_[kFaceBold].path = font_paths_[kFaceRegular];
+    70→        faces_[kFaceBold].units_per_em = faces_[kFaceRegular].units_per_em;
+    71→    }
+    72→    if (!load_face(kFaceFallback, font_paths_[kFaceFallback].c_str())) {
+    73→        faces_[kFaceFallback].ft_face = faces_[kFaceRegular].ft_face;
+    74→        faces_[kFaceFallback].path = font_paths_[kFaceRegular];
+    75→        faces_[kFaceFallback].units_per_em = faces_[kFaceRegular].units_per_em;
+    76→    }
+    77→    // Emoji face (optional): NotoColorEmoji is a CBDT bitmap font with fixed
+    78→    // strikes. Pick the closest strike to typical UI text sizes.
+    79→    if (load_face(kFaceEmoji, font_paths_[kFaceEmoji].c_str())) {
+    80→        FT_Face ef = reinterpret_cast<FT_Face>(faces_[kFaceEmoji].ft_face);
+    81→        if (ef->num_fixed_sizes > 0) {
+    82→            int best = 0, bestd = 1 << 30;
+    83→            for (int i = 0; i < ef->num_fixed_sizes; ++i) {
+    84→                // FT_Bitmap_Size.size is 26.6 fixed point → convert to px.
+    85→                int sz = ef->available_sizes[i].size >> 6;
+    86→                int d = std::abs(sz - 64);
+    87→                if (d < bestd) { bestd = d; best = i; }
+    88→            }
+    89→            FT_Select_Size(ef, best);
+    90→            emoji_strike_px_ = ef->available_sizes[best].size >> 6;
+    91→            emoji_available_ = true;
+    92→        }
+    93→    }
+    94→    if (available_) {
+    95→        std::fprintf(stderr,
+    96→            "[TEXTSHAPER] READY primary=%s bold=%s fallback=%s emoji=%s(strike=%d)\n",
+    97→            faces_[kFaceRegular].path.c_str(),
+    98→            faces_[kFaceBold].path.c_str(),
+    99→            faces_[kFaceFallback].path.c_str(),
+   100→            emoji_available_ ? faces_[kFaceEmoji].path.c_str() : "none",
+   101→            emoji_strike_px_);
+   102→    }
+   103→}
+   104→
+   105→TextShaper::~TextShaper() {
+   106→    for (auto& kv : hb_fonts_) {
+   107→        if (kv.second) hb_font_destroy(reinterpret_cast<hb_font_t*>(kv.second));
+   108→    }
+   109→    for (int i = 0; i < 3; ++i) {
+   110→        // Only destroy faces we own (distinguish by path equality is fine here;
+   111→        // duplicates were aliased, FT_Done_Face on aliased face would double-free,
+   112→        // so we track ownership by comparing pointers).
+   113→    }
+   114→    // Collect unique faces and destroy each once.
+   115→    FT_Face r = reinterpret_cast<FT_Face>(faces_[kFaceRegular].ft_face);
+   116→    FT_Face b = reinterpret_cast<FT_Face>(faces_[kFaceBold].ft_face);
+   117→    FT_Face f = reinterpret_cast<FT_Face>(faces_[kFaceFallback].ft_face);
+   118→    FT_Face e = reinterpret_cast<FT_Face>(faces_[kFaceEmoji].ft_face);
+   119→    if (e && e != r && e != b && e != f) FT_Done_Face(e);
+   120→    if (f && f != r && f != b) FT_Done_Face(f);
+   121→    if (b && b != r) FT_Done_Face(b);
+   122→    if (r) FT_Done_Face(r);
+   123→    if (ft_lib_) FT_Done_FreeType(reinterpret_cast<FT_Library>(ft_lib_));
+   124→}
+   125→
+   126→bool TextShaper::load_face(int idx, const char* path) {
+   127→    FT_Face face = nullptr;
+   128→    if (FT_New_Face(reinterpret_cast<FT_Library>(ft_lib_), path, 0, &face)) {
+   129→        std::fprintf(stderr, "[TEXTSHAPER] FT_New_Face FAILED path=%s\n", path);
+   130→        return false;
+   131→    }
+   132→    faces_[idx].ft_face = face;
+   133→    faces_[idx].units_per_em = face->units_per_EM;
+   134→    faces_[idx].path = path;
+   135→    return true;
+   136→}
+   137→
+   138→uint64_t TextShaper::hash_string(const std::string& s, float size_px, bool bold) const {
+   139→    uint64_t h = 1469598103934665603ull;
+   140→    auto mix = [&h](uint8_t byte) {
+   141→        h ^= byte; h *= 1099511628211ull;
+   142→    };
+   143→    for (char c : s) mix((uint8_t)c);
+   144→    mix(0xFF);
+   145→    uint32_t sz = (uint32_t)std::lround(size_px * 4.0f);
+   146→    for (int k = 0; k < 4; ++k) mix((uint8_t)(sz >> (8 * k)));
+   147→    mix(bold ? 1 : 0);
+   148→    return h;
+   149→}
+   150→
+   151→// ---------------------------------------------------------------------------
+   152→// shape(): bidi + shaping + metrics (glyph rasters NOT generated here)
+   153→// ---------------------------------------------------------------------------
+   154→const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
+   155→                                    bool bold, int face_idx) {
+   156→    std::lock_guard<std::mutex> lock(mtx_);
+   157→    int rf = resolve_face(bold, face_idx);
+   158→    // Cache key covers the resolved face so app-face and system results
+   159→    // never alias.
+   160→    uint64_t key = hash_string(utf8, size_px, bold) ^ ((uint64_t)(uint32_t)rf << 32);
+   161→    auto it = shape_cache_.find(key);
+   162→    if (it != shape_cache_.end()) return it->second;
+   163→
+   164→    ShapedText result;
+   165→    if (!available_ || utf8.empty()) {
+   166→        auto res = shape_cache_.emplace(key, std::move(result));
+   167→        return res.first->second;
+   168→    }
+   169→
+   170→    face_idx = rf;
+   171→    FT_Face face = nullptr;
+   172→    if (face_idx >= 0 && face_idx < kBaseFaceCount)
+   173→        face = reinterpret_cast<FT_Face>(faces_[face_idx].ft_face);
+   174→    else if (face_idx >= kBaseFaceCount &&
+   175→             face_idx < kBaseFaceCount + (int)app_faces_.size())
+   176→        face = reinterpret_cast<FT_Face>(
+   177→            app_faces_[face_idx - kBaseFaceCount].ft_face);
+   178→    if (!face) face = reinterpret_cast<FT_Face>(faces_[kFaceRegular].ft_face);
+   179→
+   180→    // Fixed pixel size — size_px is exactly the em size in px (26.6 fixed).
+   181→    FT_Set_Pixel_Sizes(face, 0, (FT_UInt)std::lround(size_px));
+   182→
+   183→    // Font metrics at this size.
+   184→    result.ascent  = (float)(face->size->metrics.ascender  >> 6);
+   185→    result.descent = (float)(-(face->size->metrics.descender >> 6));
+   186→    if (result.ascent <= 0)  result.ascent  = size_px * 0.9f;
+   187→    if (result.descent <= 0) result.descent = size_px * 0.25f;
+   188→
+   189→    // hb_font for this face+size.
+   190→    uint32_t sz26 = (uint32_t)std::lround(size_px * 64.0f);
+   191→    uint64_t hfkey = ((uint64_t)face_idx << 48) ^ sz26;
+   192→    hb_font_t* hb_font = nullptr;
+   193→    auto hfit = hb_fonts_.find(hfkey);
+   194→    if (hfit != hb_fonts_.end()) {
+   195→        hb_font = reinterpret_cast<hb_font_t*>(hfit->second);
+   196→    } else {
+   197→        hb_font = hb_ft_font_create(face, nullptr);
+   198→        hb_fonts_[hfkey] = hb_font;
+   199→    }
+   200→    if (!hb_font) {
+   201→        std::fprintf(stderr, "[TEXTSHAPER] hb_ft_font_create FAILED size=%.1f\n", size_px);
+   202→        auto res = shape_cache_.emplace(key, std::move(result));
+   203→        return res.first->second;
+   204→    }
+   205→    // NOTE: hb_ft_font_create adopts the face's current scale — no explicit
+   206→    // hb_ft_font_set_scale call (API removed in newer HarfBuzz).
+   207→
+   208→    // UTF-8 → UTF-32.
+   209→    std::u32string u32 = utf8_to_u32(utf8);
+   210→    std::vector<FriBidiChar> src(u32.begin(), u32.end());
+   211→
+   212→    // FriBidi: first-strong base direction.
+   213→    FriBidiParType base = FRIBIDI_PAR_LTR;
+   214→    for (FriBidiChar ch : src) {
+   215→        FriBidiCharType t = fribidi_get_bidi_type(ch);
+   216→        if (t == FRIBIDI_TYPE_R || t == FRIBIDI_TYPE_AL) { base = FRIBIDI_PAR_RTL; break; }
+   217→        if (t == FRIBIDI_TYPE_L) break;
+   218→    }
+   219→    result.rtl_base = (base == FRIBIDI_PAR_RTL);
+   220→
+   221→    // Visual reorder (handles embedded opposite-direction segments).
+   222→    std::vector<FriBidiChar> vis(src.size() + 1);
+   223→    FriBidiLevel lvl = fribidi_log2vis(src.data(), (FriBidiStrIndex)src.size(),
+   224→                                       &base, vis.data(), nullptr, nullptr, nullptr);
+   225→    if (lvl < 0) {
+   226→        // Reorder failed — use logical order as-is (degraded but functional).
+   227→        vis.assign(src.begin(), src.end());
+   228→    }
+   229→
+   230→    // HarfBuzz shaping of the VISUAL sequence.
+   231→    hb_buffer_t* buf = hb_buffer_create();
+   232→    hb_buffer_add_utf32(buf, vis.data(), (int)vis.size(), 0, -1);
+   233→    hb_buffer_guess_segment_properties(buf);
+   234→    hb_shape(hb_font, buf, nullptr, 0);
+   235→
+   236→    unsigned gn = 0;
+   237→    hb_glyph_info_t* gi = hb_buffer_get_glyph_infos(buf, &gn);
+   238→    hb_glyph_position_t* gp = hb_buffer_get_glyph_positions(buf, nullptr);
+   239→
+   240→    result.glyphs.reserve(gn);
+   241→    for (unsigned k = 0; k < gn; ++k) {
+   242→        ShapedGlyph g;
+   243→        g.glyph_id  = gi[k].codepoint;
+   244→        g.cluster   = gi[k].cluster;
+   245→        g.x_advance = (float)(gp[k].x_advance >> 6);
+   246→        g.x_offset  = (float)(gp[k].x_offset >> 6);
+   247→        g.y_offset  = (float)(gp[k].y_offset >> 6);
+   248→        if (g.glyph_id == 0) result.notdef_count++;
+   249→        result.glyphs.push_back(g);
+   250→        result.width += g.x_advance;
+   251→    }
+   252→    hb_buffer_destroy(buf);
+   253→
+   254→    // ------------------------------------------------------------------
+   255→    // Emoji fallback (Android font-chain behavior): for every primary
+   256→    // .notdef, try NotoColorEmoji at the same cluster. Advances come from
+   257→    // the emoji shaping scaled to the requested size.
+   258→    // ------------------------------------------------------------------
+   259→    if (result.notdef_count > 0 && emoji_available_ && emoji_strike_px_ > 0) {
+   260→        FT_Face eface = reinterpret_cast<FT_Face>(faces_[kFaceEmoji].ft_face);
+   261→        uint32_t esz26 = (uint32_t)emoji_strike_px_ * 64;
+   262→        uint64_t ehkey = ((uint64_t)kFaceEmoji << 48) ^ esz26;
+   263→        hb_font_t* ehb = nullptr;
+   264→        auto eit = hb_fonts_.find(ehkey);
+   265→        if (eit != hb_fonts_.end()) ehb = reinterpret_cast<hb_font_t*>(eit->second);
+   266→        else { ehb = hb_ft_font_create(eface, nullptr); hb_fonts_[ehkey] = ehb; }
+   267→        if (ehb) {
+   268→            hb_buffer_t* ebuf = hb_buffer_create();
+   269→            hb_buffer_add_utf32(ebuf, vis.data(), (int)vis.size(), 0, -1);
+   270→            hb_buffer_guess_segment_properties(ebuf);
+   271→            hb_shape(ehb, ebuf, nullptr, 0);
+   272→            unsigned en = 0;
+   273→            hb_glyph_info_t* egi = hb_buffer_get_glyph_infos(ebuf, &en);
+   274→            hb_glyph_position_t* egp = hb_buffer_get_glyph_positions(ebuf, nullptr);
+   275→            float scale = size_px / (float)emoji_strike_px_;
+   276→            std::unordered_map<uint32_t, uint32_t> cluster_to_emoji_gid;
+   277→            std::unordered_map<uint32_t, float> cluster_to_emoji_adv;
+   278→            for (unsigned k = 0; k < en; ++k) {
+   279→                if (egi[k].codepoint != 0) {
+   280→                    cluster_to_emoji_gid[egi[k].cluster] = egi[k].codepoint;
+   281→                    cluster_to_emoji_adv[egi[k].cluster] = (float)(egp[k].x_advance >> 6) * scale;
+   282→                }
+   283→            }
+   284→            hb_buffer_destroy(ebuf);
+   285→            for (auto& g : result.glyphs) {
+   286→                if (g.glyph_id == 0) {
+   287→                    auto fit = cluster_to_emoji_gid.find(g.cluster);
+   288→                    if (fit != cluster_to_emoji_gid.end()) {
+   289→                        g.use_emoji = true;
+   290→                        g.emoji_gid = fit->second;
+   291→                        g.emoji_scale = scale;
+   292→                        auto ait = cluster_to_emoji_adv.find(g.cluster);
+   293→                        if (ait != cluster_to_emoji_adv.end()) {
+   294→                            result.width += ait->second - g.x_advance;
+   295→                            g.x_advance = ait->second;
+   296→                        }
+   297→                        result.notdef_count--;
+   298→                    }
+   299→                }
+   300→            }
+   301→        }
+   302→    }
+   303→
+   304→    auto res = shape_cache_.emplace(key, std::move(result));
+   305→    return res.first->second;
+   306→}
+   307→
+   308→float TextShaper::line_height(float size_px, bool bold) const {
+   309→    (void)bold;
+   310→    // Android-style leading: ascent + descent plus a small gap.
+   311→    return size_px * 1.2f;
+   312→}
+   313→
+   314→int TextShaper::resolve_face(bool bold, int face_idx) const {
+   315→    if (face_idx == FACE_APP) {
+   316→        int idx = bold ? app_bold_idx_ : app_regular_idx_;
+   317→        if (idx < 0) idx = (app_regular_idx_ >= 0) ? app_regular_idx_ : app_bold_idx_;
+   318→        if (idx >= 0) return idx;
+   319→        // No app face registered (or registration failed): fall back to the
+   320→        // system family — same behavior as Android's default font chain.
+   321→        return bold ? kFaceBold : kFaceRegular;
+   322→    }
+   323→    if (face_idx == FACE_SYSTEM) return bold ? kFaceBold : kFaceRegular;
+   324→    if (face_idx >= 0 && face_idx < kBaseFaceCount + (int)app_faces_.size())
+   325→        return face_idx;
+   326→    return bold ? kFaceBold : kFaceRegular;
+   327→}
+   328→
+   329→void TextShaper::metrics(float size_px, bool bold, int face_idx,
+   330→                         float* ascent, float* descent, float* line_height) const {
+   331→    int rf = resolve_face(bold, face_idx);
+   332→    FT_Face face = nullptr;
+   333→    if (rf >= 0 && rf < kBaseFaceCount)
+   334→        face = reinterpret_cast<FT_Face>(faces_[rf].ft_face);
+   335→    else if (rf >= kBaseFaceCount && rf < kBaseFaceCount + (int)app_faces_.size())
+   336→        face = reinterpret_cast<FT_Face>(app_faces_[rf - kBaseFaceCount].ft_face);
+   337→    float a = size_px * 0.9f, d = size_px * 0.25f;
+   338→    if (face) {
+   339→        // Read vertical metrics at this pixel size (setting the size is
+   340→        // side-effect-tolerant: shaping/drawing set it again).
+   341→        if (!FT_Set_Pixel_Sizes(face, 0, (FT_UInt)std::lround(size_px))) {
+   342→            float fa = (float)(face->size->metrics.ascender  >> 6);
+   343→            float fd = (float)(-(face->size->metrics.descender >> 6));
+   344→            if (fa > 0) a = fa;
+   345→            if (fd > 0) d = fd;
+   346→        }
+   347→    }
+   348→    if (ascent) *ascent = a;
+   349→    if (descent) *descent = d;
+   350→    if (line_height) *line_height = a + d + std::max(1.0f, size_px * 0.05f);
+   351→}
+   352→
+   353→int TextShaper::register_app_font_memory(const std::vector<uint8_t>& bytes,
+   354→                                         const std::string& debug_name, bool is_bold) {
+   355→    if (!available_ || bytes.empty()) return -1;
+   356→    // Cycle F (UAF fix): OWN the byte buffer FIRST, then build the
+   357→    // FT_Face on the stable owned storage. FreeType keeps the raw
+   358→    // pointer passed to FT_New_Memory_Face for the face's lifetime; the
+   359→    // previous code built the face on the CALLER's buffer and only then
+   360→    // copied the bytes — a use-after-free whenever the caller's vector
+   361→    // was a temporary.
+   362→    Face f;
+   363→    f.bytes = std::make_shared<std::vector<uint8_t>>(bytes);   // stable owner
+   364→    f.units_per_em = 0;
+   365→    f.path = debug_name;
+   366→    FT_Face face = nullptr;
+   367→    if (FT_New_Memory_Face(reinterpret_cast<FT_Library>(ft_lib_),
+   368→                           f.bytes->data(), (FT_Long)f.bytes->size(), 0, &face)) {
+   369→        std::fprintf(stderr, "[TEXTSHAPER] register_app_font: FT_New_Memory_Face FAILED %s\n",
+   370→                     debug_name.c_str());
+   371→        return -1;
+   372→    }
+   373→    f.ft_face = face;
+   374→    f.units_per_em = face->units_per_EM;
+   375→    app_faces_.push_back(std::move(f));
+   376→    int idx = kBaseFaceCount + (int)app_faces_.size() - 1;
+   377→    if (is_bold) {
+   378→        if (app_bold_idx_ < 0) app_bold_idx_ = idx;
+   379→    } else {
+   380→        if (app_regular_idx_ < 0) app_regular_idx_ = idx;
+   381→    }
+   382→    std::fprintf(stderr, "[TEXTSHAPER] app font registered idx=%d bold=%d source=%s\n",
+   383→                 idx, is_bold ? 1 : 0, debug_name.c_str());
+   384→    return idx;
+   385→}
+   386→
+   387→int TextShaper::find_app_font(const std::string& family, bool bold) const {
+   388→    if (family.empty() || app_faces_.empty()) return -1;
+   389→    // Normalize the requested family (lowercase, no directory part, no
+   390→    // extension) and compare against each registered face's debug name
+   391→    // (the APK entry path) — the basename of "assets/fonts/rmedium.ttf"
+   392→    // is "rmedium", so fontFamily="rmedium" resolves to it.
+   393→    std::string want;
+   394→    size_t slash = family.find_last_of("/\\");
+   395→    for (size_t i = (slash == std::string::npos ? 0 : slash + 1); i < family.size(); ++i)
+   396→        want += (char)std::tolower((unsigned char)family[i]);
+   397→    if (want.size() > 4) {
+   398→        std::string ext = want.substr(want.size() - 4);
+   399→        if (ext == ".ttf" || ext == ".otf") want.resize(want.size() - 4);
+   400→    }
+   401→    if (want.empty()) return -1;
+   402→    // Prefer the regular/bold face of the family per the bold request;
+   403→    // fall back to any face of the family (AOSP-style family behavior).
+   404→    int regular_hit = -1, any_hit = -1;
+   405→    for (size_t i = 0; i < app_faces_.size(); ++i) {
+   406→        const std::string& path = app_faces_[i].path;
+   407→        size_t s2 = path.find_last_of("/\\");
+   408→        std::string base;
+   409→        for (size_t k = (s2 == std::string::npos ? 0 : s2 + 1); k < path.size(); ++k)
+   410→            base += (char)std::tolower((unsigned char)path[k]);
+   411→        if (base.size() > 4) {
+   412→            std::string ext = base.substr(base.size() - 4);
+   413→            if (ext == ".ttf" || ext == ".otf") base.resize(base.size() - 4);
+   414→        }
+   415→        if (base != want) continue;
+   416→        if (any_hit < 0) any_hit = kBaseFaceCount + (int)i;
+   417→        bool face_is_bold = path.find("bold") != std::string::npos ||
+   418→                            path.find("Bold") != std::string::npos;
+   419→        if (!face_is_bold && regular_hit < 0)
+   420→            regular_hit = kBaseFaceCount + (int)i;
+   421→    }
+   422→    if (bold && any_hit >= 0) return any_hit;   // bold request prefers existence
+   423→    if (regular_hit >= 0) return regular_hit;
+   424→    return any_hit;
+   425→}
+   426→
+   427→int TextShaper::register_app_font(const std::string& font_path, bool is_bold) {
+   428→    if (!available_) return -1;
+   429→    std::FILE* fp = std::fopen(font_path.c_str(), "rb");
+   430→    if (!fp) {
+   431→        std::fprintf(stderr, "[TEXTSHAPER] register_app_font: cannot open %s\n",
+   432→                     font_path.c_str());
+   433→        return -1;
+   434→    }
+   435→    std::vector<uint8_t> bytes;
+   436→    std::fseek(fp, 0, SEEK_END);
+   437→    long sz = std::ftell(fp);
+   438→    std::fseek(fp, 0, SEEK_SET);
+   439→    if (sz <= 0) { std::fclose(fp); return -1; }
+   440→    bytes.resize((size_t)sz);
+   441→    if (std::fread(bytes.data(), 1, (size_t)sz, fp) != (size_t)sz) {
+   442→        std::fclose(fp); return -1;
+   443→    }
+   444→    std::fclose(fp);
+   445→    return register_app_font_memory(bytes, font_path, is_bold);
+   446→}
+   447→
+   448→// ---------------------------------------------------------------------------
+   449→// glyph raster cache: (face, size, gid) → 8-bit coverage bitmap
+   450→// ---------------------------------------------------------------------------
+   451→static uint64_t raster_key(int face_idx, float size_px, uint32_t gid) {
+   452→    uint32_t szq = (uint32_t)std::lround(size_px * 4.0f);
+   453→    return ((uint64_t)(uint32_t)face_idx << 56)
+   454→         ^ ((uint64_t)(szq & 0xFFFFFF) << 24)
+   455→         ^ (uint64_t)(gid & 0xFFFFFF);
+   456→}
+   457→
+   458→static bool raster_glyph(FT_Face face, uint32_t gid, float size_px,
+   459→                         RasterPub* out, bool want_color = false) {
+   460→    if (want_color) {
+   461→        // CBDT/CBLC color bitmap path (NotoColorEmoji). The face is already
+   462→        // FT_Select_Size'd to the chosen strike; do NOT call Set_Pixel_Sizes.
+   463→        if (FT_Load_Glyph(face, gid, FT_LOAD_COLOR)) return false;
+   464→        FT_GlyphSlot g = face->glyph;
+   465→        FT_Bitmap& bm = g->bitmap;
+   466→        if (bm.pixel_mode != FT_PIXEL_MODE_BGRA) {
+   467→            // No color bitmap at this gid — signal caller to try grayscale.
+   468→            return false;
+   469→        }
+   470→        out->color = true;
+   471→        out->w = (int)bm.width;
+   472→        out->h = (int)bm.rows;
+   473→        out->left = g->bitmap_left;
+   474→        out->top = g->bitmap_top;
+   475→        out->bgra.assign((size_t)bm.width * bm.rows * 4, 0);
+   476→        for (unsigned ry = 0; ry < bm.rows; ++ry) {
+   477→            memcpy(&out->bgra[(size_t)ry * bm.width * 4],
+   478→                   bm.buffer + (size_t)ry * bm.pitch,
+   479→                   (size_t)bm.width * 4);
+   480→        }
+   481→        return true;
+   482→    }
+   483→    if (FT_Set_Pixel_Sizes(face, 0, (FT_UInt)std::lround(size_px))) return false;
+   484→    if (FT_Load_Glyph(face, gid, FT_LOAD_DEFAULT)) return false;
+   485→    if (FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL)) return false;
+   486→    FT_GlyphSlot g = face->glyph;
+   487→    FT_Bitmap& bm = g->bitmap;
+   488→    out->w = (int)bm.width;
+   489→    out->h = (int)bm.rows;
+   490→    out->left = g->bitmap_left;
+   491→    out->top = g->bitmap_top;
+   492→    out->color = false;
+   493→    out->alpha.assign((size_t)out->w * out->h, 0);
+   494→    if (bm.buffer) {
+   495→        for (int ry = 0; ry < out->h; ++ry) {
+   496→            for (int rx = 0; rx < out->w; ++rx) {
+   497→                uint8_t a;
+   498→                if (bm.pixel_mode == FT_PIXEL_MODE_GRAY) {
+   499→                    a = bm.buffer[(size_t)ry * bm.pitch + rx];
+   500→                } else if (bm.pixel_mode == FT_PIXEL_MODE_MONO) {
+   501→                    const uint8_t* row = bm.buffer + (size_t)ry * bm.pitch;
+   502→                    a = ((row[rx >> 3] >> (7 - (rx & 7))) & 1) ? 255 : 0;
+   503→                } else {
+   504→                    a = bm.buffer[(size_t)ry * bm.pitch + rx];
+   505→                }
+   506→                out->alpha[(size_t)ry * out->w + rx] = a;
+   507→            }
+   508→        }
+   509→    }
+   510→    return true;
+   511→}
+   512→
+   513→// ---------------------------------------------------------------------------
+   514→// draw(): shape + raster + alpha-blend blit
+   515→// ---------------------------------------------------------------------------
+   516→void TextShaper::draw(renderer::FrameBuffer& fb, const std::string& utf8,
+   517→                      float x, float y_baseline, float size_px,
+   518→                      const renderer::RGBA& color, bool bold, int face_idx) {
+   519→    const ShapedText& st = shape(utf8, size_px, bold, face_idx);
+   520→    if (!available_ || st.glyphs.empty()) return;
+   521→
+   522→    face_idx = resolve_face(bold, face_idx);
+   523→    FT_Face face = nullptr;
+   524→    if (face_idx >= 0 && face_idx < kBaseFaceCount)
+   525→        face = reinterpret_cast<FT_Face>(faces_[face_idx].ft_face);
+   526→    else if (face_idx >= kBaseFaceCount &&
+   527→             face_idx < kBaseFaceCount + (int)app_faces_.size())
+   528→        face = reinterpret_cast<FT_Face>(
+   529→            app_faces_[face_idx - kBaseFaceCount].ft_face);
+   530→    if (!face) face = reinterpret_cast<FT_Face>(faces_[kFaceRegular].ft_face);
+   531→    FT_Face eface = reinterpret_cast<FT_Face>(faces_[kFaceEmoji].ft_face);
+   532→
+   533→    std::lock_guard<std::mutex> lock(mtx_);
+   534→    float pen_x = x;
+   535→    for (const auto& g : st.glyphs) {
+   536→        if (g.use_emoji && emoji_available_ && eface) {
+   537→            // ----- color emoji (CBDT) path -----
+   538→            uint64_t rk = raster_key(kFaceEmoji, (float)emoji_strike_px_, g.emoji_gid);
+   539→            auto rit = rasters_.find(rk);
+   540→            if (rit == rasters_.end()) {
+   541→                RasterPub pub;
+   542→                if (raster_glyph(eface, g.emoji_gid, (float)emoji_strike_px_, &pub,
+   543→                                 /*want_color=*/true)) {
+   544→                    rit = rasters_.emplace(rk, std::move(pub)).first;
+   545→                }
+   546→            }
+   547→            if (rit != rasters_.end()) {
+   548→                const auto& r = rit->second;
+   549→                // Scale strike bitmap down to requested size (nearest).
+   550→                int dw = std::max(1, (int)std::lround(r.w * g.emoji_scale));
+   551→                int dh = std::max(1, (int)std::lround(r.h * g.emoji_scale));
+   552→                int gx = (int)std::lround(pen_x + g.x_offset);
+   553→                int gy = (int)std::lround(y_baseline - g.y_offset)
+   554→                       - (int)std::lround(r.top * g.emoji_scale) - dh / 4;
+   555→                for (int dy = 0; dy < dh; ++dy) {
+   556→                    int sy = (dy * r.h) / dh;
+   557→                    for (int dx = 0; dx < dw; ++dx) {
+   558→                        int sx = (dx * r.w) / dw;
+   559→                        const uint8_t* p = &r.bgra[(sy * r.w + sx) * 4];
+   560→                        // FreeType CBDT: premultiplied BGRA.
+   561→                        uint8_t a = p[3];
+   562→                        if (!a) continue;
+   563→                        uint8_t b = std::min(255, (int)p[0] * 255 / a);
+   564→                        uint8_t gr = std::min(255, (int)p[1] * 255 / a);
+   565→                        uint8_t rr = std::min(255, (int)p[2] * 255 / a);
+   566→                        fb.set_pixel(gx + dx, gy + dy,
+   567→                                     renderer::RGBA{rr, gr, b, a});
+   568→                    }
+   569→                }
+   570→            }
+   571→            pen_x += g.x_advance;
+   572→            continue;
+   573→        }
+   574→        // ----- grayscale path -----
+   575→        uint64_t rk = raster_key(face_idx, size_px, g.glyph_id);
+   576→        auto rit = rasters_.find(rk);
+   577→        if (rit == rasters_.end()) {
+   578→            RasterPub pub;
+   579→            if (raster_glyph(face, g.glyph_id, size_px, &pub)) {
+   580→                rit = rasters_.emplace(rk, std::move(pub)).first;
+   581→            }
+   582→        }
+   583→        if (rit != rasters_.end()) {
+   584→            const auto& r = rit->second;
+   585→            if (r.color) {
+   586→                // Color raster reached via grayscale key — blit as color.
+   587→                int gx = (int)std::lround(pen_x + g.x_offset);
+   588→                int gy = (int)std::lround(y_baseline - g.y_offset) - r.top;
+   589→                for (int ry = 0; ry < r.h; ++ry) {
+   590→                    for (int rx = 0; rx < r.w; ++rx) {
+   591→                        const uint8_t* p = &r.bgra[(ry * r.w + rx) * 4];
+   592→                        uint8_t a = p[3];
+   593→                        if (!a) continue;
+   594→                        uint8_t b = std::min(255, (int)p[0] * 255 / a);
+   595→                        uint8_t gr = std::min(255, (int)p[1] * 255 / a);
+   596→                        uint8_t rr = std::min(255, (int)p[2] * 255 / a);
+   597→                        fb.set_pixel(gx + rx, gy + ry, renderer::RGBA{rr, gr, b, a});
+   598→                    }
+   599→                }
+   600→            } else {
+   601→                int gx = (int)std::lround(pen_x + g.x_offset) + r.left;
+   602→                int gy = (int)std::lround(y_baseline - g.y_offset) - r.top;
+   603→                for (int ry = 0; ry < r.h; ++ry) {
+   604→                    for (int rx = 0; rx < r.w; ++rx) {
+   605→                        uint8_t a = r.alpha[(size_t)ry * r.w + rx];
+   606→                        if (!a) continue;
+   607→                        renderer::RGBA px = color;
+   608→                        px.a = (uint8_t)((px.a * a) / 255);
+   609→                        fb.set_pixel(gx + rx, gy + ry, px);
+   610→                    }
+   611→                }
+   612→            }
+   613→        }
+   614→        pen_x += g.x_advance;
+   615→    }
+   616→}
+   617→
+   618→}  // namespace fonts
+   619→}  // namespace miniandroid
+   620→
+   621→namespace miniandroid {
+   622→namespace fonts {
+   623→
+   624→// ---------------------------------------------------------------------------
+   625→// layout_text — word-wrapped block layout from REAL shaped advances.
+   626→// Greedy wrap on spaces (Android TextView/StaticLayout simplified): explicit
+   627→// '\n' always breaks; a word wider than max_width gets its own line (no
+   628→// mid-word break — same as a TextView without breakWords). Trailing spaces
+   629→// are trimmed for measurement. max_lines > 0 caps the number of lines.
+   630→// ---------------------------------------------------------------------------
+   631→TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
+   632→                       float max_width_px, int max_lines, int face_idx) {
+   633→    TextLayout out;
+   634→    auto& sh = TextShaper::instance();
+   635→    sh.metrics(size_px, bold, face_idx, &out.ascent, &out.descent,
+   636→               &out.line_height);
+   637→    if (utf8.empty()) return out;
+   638→
+   639→    auto line_width = [&](const std::string& s) -> float {
+   640→        if (s.empty()) return 0.0f;
+   641→        return sh.shape(s, size_px, bold, face_idx).width;
+   642→    };
+   643→
+   644→    size_t i = 0;
+   645→    bool capped = false;
+   646→    while (i <= utf8.size() && !capped) {
+   647→        // Find next explicit break.
+   648→        size_t j = utf8.find('\n', i);
+   649→        std::string seg = (j == std::string::npos) ? utf8.substr(i)
+   650→                                                   : utf8.substr(i, j - i);
+   651→        // Greedy word wrap within seg.
+   652→        std::string line, word;
+   653→        auto flush_word = [&]() {
+   654→            if (word.empty()) return;
+   655→            std::string probe = line.empty() ? word : (line + ' ' + word);
+   656→            if (max_width_px > 0 && !line.empty() &&
+   657→                line_width(probe) > max_width_px) {
+   658→                out.lines.push_back({line, line_width(line)});
+   659→                if (max_lines > 0 && (int)out.lines.size() >= max_lines) {
+   660→                    line.clear(); word.clear(); capped = true; return;
+   661→                }
+   662→                line = word;
+   663→            } else {
+   664→                line = probe;
+   665→            }
+   666→            word.clear();
+   667→        };
+   668→        for (char c : seg) {
+   669→            if (c == ' ') flush_word();
+   670→            else word += c;
+   671→            if (capped) break;
+   672→        }
+   673→        if (capped) break;
+   674→        flush_word();
+   675→        out.lines.push_back({line, line_width(line)});
+   676→        if (max_lines > 0 && (int)out.lines.size() >= max_lines) break;
+   677→        if (j == std::string::npos) break;
+   678→        i = j + 1;
+   679→    }
+   680→    for (const auto& l : out.lines)
+   681→        out.max_line_width = std::max(out.max_line_width, l.width);
+   682→    return out;
+   683→}
+   684→
+   685→}  // namespace fonts
+   686→}  // namespace miniandroid
+   687→

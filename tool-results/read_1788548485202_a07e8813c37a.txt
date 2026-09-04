@@ -1,0 +1,690 @@
+     1→/*
+     2→ * UNIFIED_007 — ARSC Parser implementation (P0)
+     3→ * See arsc_parser.h for design. Zero-dependency binary reader.
+     4→ */
+     5→#include "arsc_parser.h"
+     6→
+     7→namespace miniandroid {
+     8→namespace resources {
+     9→
+    10→// ---------------------------------------------------------------------------
+    11→// Little-endian readers
+    12→// ---------------------------------------------------------------------------
+    13→static inline uint16_t rd16(const uint8_t* p) { return (uint16_t)(p[0] | (p[1] << 8)); }
+    14→static inline uint32_t rd32(const uint8_t* p) {
+    15→    return (uint32_t)p[0] | ((uint32_t)p[1] << 8) | ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24);
+    16→}
+    17→
+    18→// Decode a COMPLEX_MANTISSA — AOSP TypedValue.complexToFloat (authoritative,
+    19→// verified against platform_frameworks_base TypedValue.java):
+    20→//   value = (data & (MANTISSA_MASK << MANTISSA_SHIFT)) * RADIX_MULTS[(data>>4)&3]
+    21→//   MANTISSA_MASK=0xFFFFFF, MANTISSA_SHIFT=8 → MANTISSA_MULT = 2^-8
+    22→//   UNIT = data & 0xF (COMPLEX_UNIT_SHIFT = 0)
+    23→float complex_to_float(uint32_t data) {
+    24→    static const float MANTISSA_MULT = 1.0f / (1 << 8);
+    25→    static const float RADIX_MULTS[] = {
+    26→        1.0f * MANTISSA_MULT,
+    27→        1.0f / (1 << 7)  * MANTISSA_MULT,
+    28→        1.0f / (1 << 15) * MANTISSA_MULT,
+    29→        1.0f / (1 << 23) * MANTISSA_MULT,
+    30→    };
+    31→    uint32_t mantissa = data & 0xFFFFFF00u;
+    32→    // sign-extend: mantissa is a signed 24-bit value in bits 8..31
+    33→    int32_t signed_m = (int32_t)mantissa;
+    34→    return signed_m * RADIX_MULTS[(data >> 4) & 3];
+    35→}
+    36→
+    37→// ---------------------------------------------------------------------------
+    38→// String pool
+    39→// ---------------------------------------------------------------------------
+    40→bool ArscParser::parse_string_pool(const uint8_t* base, size_t avail, size_t chunk_offset, Pool& out) {
+    41→    if (chunk_offset + 20 > avail) { last_error_ = "string pool: truncated header"; return false; }
+    42→    const uint8_t* p = base + chunk_offset;
+    43→    uint16_t type = rd16(p);
+    44→    uint16_t header_size = rd16(p + 2);
+    45→    uint32_t chunk_size = rd32(p + 4);
+    46→    if (type != RES_STRING_POOL_TYPE) { last_error_ = "string pool: bad chunk type"; return false; }
+    47→    if (chunk_offset + chunk_size > avail) { last_error_ = "string pool: chunk overruns data"; return false; }
+    48→    uint32_t string_count = rd32(p + 8);
+    49→    uint32_t style_count  = rd32(p + 12);
+    50→    uint32_t flags        = rd32(p + 16);
+    51→    uint32_t strings_start= rd32(p + 20);
+    52→    (void)style_count;
+    53→    out.utf8 = (flags & RES_STRING_POOL_UTF8_FLAG) != 0;
+    54→    out.strings.resize(string_count);
+    55→    const uint32_t* offsets = (const uint32_t*)(p + header_size);
+    56→    const uint8_t* sdata = p + strings_start;
+    57→    for (uint32_t i = 0; i < string_count; i++) {
+    58→        uint32_t off = offsets[i];
+    59→        if (strings_start + off >= chunk_size) { out.strings[i].clear(); continue; }
+    60→        const uint8_t* s = sdata + off;
+    61→        if (out.utf8) {
+    62→            // u16len then u8len (each uleb128), then bytes
+    63→            size_t o = 0;
+    64→            // skip u16 length (may be 2 bytes)
+    65→            while (o < chunk_size - strings_start - off && (s[o] & 0x80)) o++;
+    66→            o++;
+    67→            size_t u8len = 0;
+    68→            if (o < chunk_size - strings_start - off) {
+    69→                if (s[o] & 0x80) { u8len = ((s[o] & 0x7F) << 8) | s[o + 1]; o += 2; }
+    70→                else { u8len = s[o]; o++; }
+    71→            }
+    72→            size_t cap = std::min(u8len, chunk_size - strings_start - off - o);
+    73→            out.strings[i].assign((const char*)(s + o), cap);
+    74→        } else {
+    75→            // UTF-16 pool: length is read char16-wise (AOSP decodingString16):
+    76→            // first char16 = len, high bit set → 2-char16 (high:low) length.
+    77→            size_t o = 0;
+    78→            uint32_t u16len = 0;
+    79→            uint16_t c0 = rd16(s);
+    80→            if (c0 & 0x8000) { u16len = ((c0 & 0x7FFF) << 16) | rd16(s + 2); o = 4; }
+    81→            else { u16len = c0; o = 2; }
+    82→            size_t bytes_avail = chunk_size - strings_start - off - o;
+    83→            size_t bytes = std::min<size_t>(u16len * 2, bytes_avail & ~1u);
+    84→            out.strings[i].assign((const char*)(s + o), bytes);  // UTF-16LE raw
+    85→            // convert UTF-16LE → UTF-8
+    86→            const char* rp = out.strings[i].data();
+    87→            std::string utf8;
+    88→            utf8.reserve(bytes);
+    89→            for (size_t ci = 0; ci + 1 < out.strings[i].size(); ci += 2) {
+    90→                uint32_t ch = (uint8_t)rp[ci] | ((uint32_t)(uint8_t)rp[ci + 1] << 8);
+    91→                // surrogate pair
+    92→                if (ch >= 0xD800 && ch <= 0xDBFF && ci + 3 < out.strings[i].size()) {
+    93→                    uint32_t lo = (uint8_t)rp[ci + 2] | ((uint32_t)(uint8_t)rp[ci + 3] << 8);
+    94→                    if (lo >= 0xDC00 && lo <= 0xDFFF) {
+    95→                        ch = 0x10000 + ((ch - 0xD800) << 10) + (lo - 0xDC00);
+    96→                        ci += 2;
+    97→                    }
+    98→                }
+    99→                if (ch < 0x80) utf8 += (char)ch;
+   100→                else if (ch < 0x800) {
+   101→                    utf8 += (char)(0xC0 | (ch >> 6));
+   102→                    utf8 += (char)(0x80 | (ch & 0x3F));
+   103→                } else if (ch < 0x10000) {
+   104→                    utf8 += (char)(0xE0 | (ch >> 12));
+   105→                    utf8 += (char)(0x80 | ((ch >> 6) & 0x3F));
+   106→                    utf8 += (char)(0x80 | (ch & 0x3F));
+   107→                } else {
+   108→                    utf8 += (char)(0xF0 | (ch >> 18));
+   109→                    utf8 += (char)(0x80 | ((ch >> 12) & 0x3F));
+   110→                    utf8 += (char)(0x80 | ((ch >> 6) & 0x3F));
+   111→                    utf8 += (char)(0x80 | (ch & 0x3F));
+   112→                }
+   113→            }
+   114→            out.strings[i] = std::move(utf8);
+   115→        }
+   116→    }
+   117→    return true;
+   118→}
+   119→
+   120→// ---------------------------------------------------------------------------
+   121→// Config → human string (subset of AOSP ResTable_config)
+   122→// ---------------------------------------------------------------------------
+   123→std::string ArscParser::config_to_string(const uint8_t* cfg, size_t /*cfg_size*/) {
+   124→    if (!cfg) return "";
+   125→    uint32_t size = rd32(cfg);
+   126→    std::string out;
+   127→    auto add = [&](const char* q) { if (!out.empty()) out += "-"; out += q; };
+   128→    // language[8..9], country[10..11] (2-byte ISO, possibly unicode pack suffix)
+   129→    if (size >= 12) {
+   130→        char lang[3] = {(char)cfg[8], (char)cfg[9], 0};
+   131→        char country[3] = {(char)cfg[10], (char)cfg[11], 0};
+   132→        if (cfg[8] || cfg[9]) add(lang);
+   133→        if (cfg[10] || cfg[11]) { out += "-r"; out += country; }
+   134→    }
+   135→    if (size >= 16) {
+   136→        uint8_t orientation = cfg[12], touchscreen = cfg[13], density = cfg[14];
+   137→        if (orientation == 1) add("port");
+   138→        else if (orientation == 2) add("land");
+   139→        (void)touchscreen;
+   140→        if (density) {
+   141→            out += "-";
+   142→            out += std::to_string(density == 0xFF ? 65535 : density);
+   143→            out += "dpi";
+   144→        }
+   145→    }
+   146→    if (size >= 20) {
+   147→        uint8_t keyboard = cfg[15], navigation = cfg[16], input_flags = cfg[17];
+   148→        (void)keyboard; (void)navigation; (void)input_flags;
+   149→        uint16_t screen_w = rd16(cfg + 18), screen_h = rd16(cfg + 20);
+   150→        if (screen_w || screen_h) { out += "-"; out += std::to_string(screen_w) + "x" + std::to_string(screen_h); }
+   151→    }
+   152→    if (size >= 28) {
+   153→        uint16_t sdk = rd16(cfg + 26);
+   154→        (void)sdk;
+   155→        uint8_t screen_layout = cfg[28];
+   156→        // smallest width dp
+   157→        if (size >= 32) {
+   158→            uint16_t sw = rd16(cfg + 30);
+   159→            if (sw) { out += "-sw" + std::to_string(sw) + "dp"; }
+   160→        }
+   161→        if (size >= 36) {
+   162→            uint16_t wdp = rd16(cfg + 32), hdp = rd16(cfg + 34);
+   163→            if (wdp) out += "-w" + std::to_string(wdp) + "dp";
+   164→            if (hdp) out += "-h" + std::to_string(hdp) + "dp";
+   165→        }
+   166→        (void)screen_layout;
+   167→    }
+   168→    return out;
+   169→}
+   170→
+   171→// ---------------------------------------------------------------------------
+   172→// Res_value decode
+   173→// ---------------------------------------------------------------------------
+   174→bool ArscParser::decode_res_value(const uint8_t* p, size_t avail, const Pool& /*global*/,
+   175→                                  const Package& pkg, ResValue& out) {
+   176→    if (avail < 8) { return false; }
+   177→    uint16_t vsize = rd16(p);
+   178→    uint8_t res0 = p[2];
+   179→    uint8_t dtype = p[3];
+   180→    uint32_t ddata = rd32(p + 4);
+   181→    if (vsize < 8 || res0 != 0) { /* tolerate */ }
+   182→    out.type = (DataType)dtype;
+   183→    out.data = ddata;
+   184→    switch ((DataType)dtype) {
+   185→        case DataType::STRING: {
+   186→            const std::string* s = pkg.key_strings.get(ddata);  // placeholder; real table uses global pool
+   187→            (void)s;
+   188→            break;
+   189→        }
+   190→        case DataType::DIMENSION: {
+   191→            out.dim_value = complex_to_float(ddata);
+   192→            out.dim_unit = (uint8_t)(ddata & 0xF);   // COMPLEX_UNIT_SHIFT = 0
+   193→            break;
+   194→        }
+   195→        case DataType::REFERENCE:
+   196→        case DataType::ATTRIBUTE:
+   197→        case DataType::DYNAMIC_REFERENCE:
+   198→            out.ref_id = ddata;
+   199→            break;
+   200→        default: break;
+   201→    }
+   202→    return true;
+   203→}
+   204→
+   205→// ---------------------------------------------------------------------------
+   206→// Type chunk (0x0201)
+   207→// ---------------------------------------------------------------------------
+   208→bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pkg,
+   209→                                  size_t chunk_offset, size_t chunk_size) {
+   210→    if (chunk_offset + 20 > avail) { last_error_ = "type: truncated"; return false; }
+   211→    const uint8_t* p = base + chunk_offset;
+   212→    uint16_t header_size = rd16(p + 2);
+   213→    uint8_t  type_id = p[8];
+   214→    uint8_t  res0 = p[9];
+   215→    uint8_t  flags = p[10];
+   216→    uint32_t entry_count = rd32(p + 12);
+   217→    uint32_t entries_start = rd32(p + 16);
+   218→    uint32_t config_size = rd32(p + 20);
+   219→    (void)res0;
+   220→
+   221→    if (chunk_offset + chunk_size > avail) { last_error_ = "type: overruns"; return false; }
+   222→    if (header_size < 20) { last_error_ = "type: bad header"; return false; }
+   223→
+   224→    TypeChunk tc;
+   225→    tc.type_id = type_id;
+   226→    tc.entry_count = entry_count;
+   227→    tc.config_desc = config_to_string(p + 20, config_size);
+   228→    const uint8_t* cfg = p + 20;
+   229→    // CAMPAIGN 009 §6: parse the full AOSP ResTable_config for this bucket
+   230→    {
+   231→        size_t cfg_off = chunk_offset + 20;
+   232→        if (config_size >= 4 && cfg_off < avail) {
+   233→            size_t cfg_avail = std::min((size_t)config_size, avail - cfg_off);
+   234→            tc.config = ResTableConfig::from_bytes(cfg, cfg_avail);
+   235→            tc.has_config = tc.config.size != 0;
+   236→        }
+   237→    }
+   238→
+   239→    if (flags & TYPE_FLAG_SPARSE) {
+   240→        // Sparse entries: header extended by 4 bytes; offsets are
+   241→        // ResTable_sparseTypeEntry pairs {u16 idx, u32le 24-bit offset<<2}
+   242→        if (header_size < 24) { last_error_ = "type: sparse bad header"; return false; }
+   243→        uint16_t off16 = rd16(p + 22);
+   244→        (void)off16;
+   245→        const uint8_t* sp = p + header_size;
+   246→        for (uint32_t i = 0; i < entry_count; i++) {
+   247→            if ((size_t)(sp - base) + 4 > avail) return false;
+   248→            uint16_t idx = rd16(sp);
+   249→            uint16_t off_field = rd16(sp + 2);
+   250→            uint32_t pos = ((uint32_t)off_field) << 2;
+   251→            tc.entry_offsets.push_back((int32_t)idx);
+   252→            tc.entry_positions.push_back(entries_start + pos);
+   253→            sp += 4;
+   254→        }
+   255→        stats_.entry_count += entry_count;
+   256→    } else {
+   257→        const uint32_t* offs = (const uint32_t*)(p + header_size);
+   258→        for (uint32_t i = 0; i < entry_count; i++) {
+   259→            uint32_t o = offs[i];
+   260→            tc.entry_offsets.push_back(o == NO_ENTRY ? -1 : (int32_t)i);
+   261→            tc.entry_positions.push_back(entries_start + (o == NO_ENTRY ? 0 : o));
+   262→        }
+   263→        uint32_t present = 0;
+   264→        for (uint32_t i = 0; i < entry_count; i++) if (tc.entry_offsets[i] >= 0) present++;
+   265→        stats_.entry_count += present;
+   266→    }
+   267→
+   268→    // Parse entries now (need parent package for pools)
+   269→    // NOTE: values referencing strings use the GLOBAL table string pool.
+   270→    for (uint32_t i = 0; i < entry_count; i++) {
+   271→        if (tc.entry_offsets[i] < 0) continue;
+   272→        size_t ep = chunk_offset + tc.entry_positions[i];
+   273→        if (ep + 8 > avail) continue;
+   274→        const uint8_t* e = base + ep;
+   275→        uint16_t esize = rd16(e);
+   276→        uint16_t eflags = rd16(e + 2);
+   277→        uint32_t key_idx = rd32(e + 4);
+   278→        ArscEntry entry;
+   279→        entry.package_id = pkg.id;
+   280→        entry.type_index = type_id;
+   281→        entry.entry_index = i;
+   282→        entry.is_complex = (eflags & ENTRY_FLAG_COMPLEX) != 0;
+   283→        entry.config_desc = tc.config_desc;
+   284→        entry.config = tc.config;          // CAMPAIGN 009 §6
+   285→        entry.has_config = tc.has_config;
+   286→        const std::string* key = pkg.key_strings.get(key_idx);
+   287→        if (key) entry.name = *key;
+   288→        // value
+   289→        size_t vp = ep + esize;
+   290→        // For simple entries esize==8 and Res_value follows.
+   291→        // For complex (map) entries, size field is 8 + parent + count header.
+   292→        if (!entry.is_complex) {
+   293→            ResValue v;
+   294→            if (decode_res_value(base + vp, avail - vp, global_strings_, pkg, v)) {
+   295→                if (v.is_string()) {
+   296→                    const std::string* s = global_strings_.get(v.data);
+   297→                    if (s) v.string_value = *s;
+   298→                }
+   299→                entry.value = v;
+   300→            }
+   301→        } else {
+   302→            // ResTable_map_entry: {size, flags, key, parent(ref), count}
+   303→            if (ep + 16 <= avail) {
+   304→                uint32_t parent = rd32(e + 8);
+   305→                uint32_t count = rd32(e + 12);
+   306→                entry.value.type = DataType::ATTRIBUTE;
+   307→                entry.value.ref_id = parent;
+   308→                const uint8_t* m = base + ep + 16;
+   309→                for (uint32_t mi = 0; mi < count && (size_t)(m - base) + 20 <= avail; mi++, m += 20) {
+   310→                    ResValue item;
+   311→                    if (decode_res_value(m + 4, avail - (m - base) - 4, global_strings_, pkg, item)) {
+   312→                        if (item.is_string()) {
+   313→                            const std::string* s = global_strings_.get(item.data);
+   314→                            if (s) item.string_value = *s;
+   315→                        }
+   316→                        entry.complex_items.push_back(item);
+   317→                    }
+   318→                }
+   319→                // style: first item often text color; keep simple value = first
+   320→                if (!entry.complex_items.empty()) entry.value = entry.complex_items[0];
+   321→            }
+   322→        }
+   323→        type_entries_.push_back(std::move(entry));
+   324→    }
+   325→
+   326→    pkg.types[type_id].push_back(std::move(tc));
+   327→    stats_.type_count++;
+   328→    return true;
+   329→}
+   330→
+   331→// ---------------------------------------------------------------------------
+   332→// Package chunk (0x0200)
+   333→// ---------------------------------------------------------------------------
+   334→bool ArscParser::parse_package(const uint8_t* base, size_t avail, size_t chunk_offset, size_t chunk_size) {
+   335→    if (chunk_offset + 288 > avail) { last_error_ = "package: truncated"; return false; }
+   336→    const uint8_t* p = base + chunk_offset;
+   337→    uint16_t header_size = rd16(p + 2);
+   338→    uint32_t pkg_id = rd32(p + 8);
+   339→    // name: 256 bytes UTF-16 at +12
+   340→    std::string name;
+   341→    {
+   342→        const char16_t* np = (const char16_t*)(p + 12);
+   343→        for (int i = 0; i < 128 && np[i]; i++) {
+   344→            char16_t c = np[i];
+   345→            if (c < 0x80) name += (char)c;
+   346→            else { name += '?'; }
+   347→        }
+   348→    }
+   349→    uint32_t type_strings_off = rd32(p + 268);
+   350→    uint32_t key_strings_off  = rd32(p + 276);
+   351→
+   352→    Package pkg;
+   353→    pkg.id = pkg_id;
+   354→    pkg.name = name;
+   355→
+   356→    if (type_strings_off) {
+   357→        if (!parse_string_pool(base, avail, chunk_offset + type_strings_off, pkg.type_strings))
+   358→            return false;
+   359→    }
+   360→    if (key_strings_off) {
+   361→        if (!parse_string_pool(base, avail, chunk_offset + key_strings_off, pkg.key_strings))
+   362→            return false;
+   363→    }
+   364→
+   365→    // iterate inner chunks after header (+ the two pools' sizes)
+   366→    size_t pos = chunk_offset + header_size;
+   367→    // skip the two string pools if they are directly after header
+   368→    // (their sizes are in their own headers)
+   369→    auto chunk_size_at = [&](size_t off) -> uint32_t {
+   370→        if (off + 8 > avail) return 0;
+   371→        return rd32(base + off + 4);
+   372→    };
+   373→    if (type_strings_off && pos == chunk_offset + type_strings_off) {
+   374→        pos += chunk_size_at(pos);
+   375→    }
+   376→    if (key_strings_off && pos == chunk_offset + key_strings_off) {
+   377→        pos += chunk_size_at(pos);
+   378→    }
+   379→    size_t pkg_end = chunk_offset + chunk_size;
+   380→    while (pos + 8 <= pkg_end && pos + 8 <= avail) {
+   381→        uint16_t ctype = rd16(base + pos);
+   382→        uint32_t csize = rd32(base + pos + 4);
+   383→        if (csize == 0) break;
+   384→        if (ctype == RES_TABLE_TYPE_TYPE) {
+   385→            if (!parse_type_chunk(base, avail, pkg, pos, csize)) return false;
+   386→        } else if (ctype == RES_TABLE_TYPE_SPEC_TYPE) {
+   387→            // skip
+   388→        } else {
+   389→            // unknown — skip
+   390→        }
+   391→        pos += csize;
+   392→    }
+   393→
+   394→    packages_.push_back(std::move(pkg));
+   395→    stats_.package_count++;
+   396→    return true;
+   397→}
+   398→
+   399→// ---------------------------------------------------------------------------
+   400→// Top-level parse
+   401→// ---------------------------------------------------------------------------
+   402→bool ArscParser::parse(const std::vector<uint8_t>& data) {
+   403→    valid_ = false;
+   404→    data_ = data.data();
+   405→    size_ = data.size();
+   406→    packages_.clear();
+   407→    type_entries_.clear();
+   408→    id_index_.clear();
+   409→    stats_ = Stats{};
+   410→
+   411→    if (size_ < 12) { last_error_ = "too small"; return false; }
+   412→    const uint8_t* p = data_;
+   413→    uint16_t type = rd16(p);
+   414→    uint16_t header_size = rd16(p + 2);
+   415→    uint32_t total_size = rd32(p + 4);
+   416→    uint32_t package_count = rd32(p + 8);
+   417→    if (type != RES_TABLE_TYPE) { last_error_ = "not RES_TABLE_TYPE"; return false; }
+   418→    if (total_size > size_) { last_error_ = "size overruns data"; return false; }
+   419→
+   420→    // global string pool directly after header
+   421→    if (!parse_string_pool(p, size_, header_size, global_strings_)) return false;
+   422→    stats_.global_string_count = (uint32_t)global_strings_.strings.size();
+   423→    uint32_t pool_size = rd32(p + header_size + 4);
+   424→
+   425→    size_t pos = header_size + pool_size;
+   426→    size_t pkg_seen = 0;
+   427→    while (pos + 8 <= total_size && pkg_seen < package_count) {
+   428→        uint16_t ctype = rd16(p + pos);
+   429→        uint32_t csize = rd32(p + pos + 4);
+   430→        if (csize == 0) break;
+   431→        if (ctype == RES_TABLE_PACKAGE_TYPE) {
+   432→            if (!parse_package(p, size_, pos, csize)) return false;
+   433→            pkg_seen++;
+   434→        }
+   435→        pos += csize;
+   436→    }
+   437→
+   438→    // build id index
+   439→    finish_index();
+   440→
+   441→    valid_ = true;
+   442→    last_error_.clear();
+   443→    return true;
+   444→}
+   445→
+   446→void ArscParser::finish_index() {
+   447→    by_id_.clear();
+   448→    pkg_of_id_.clear();
+   449→    for (auto& e : type_entries_) {
+   450→        uint32_t id = ((e.package_id & 0xFF) << 24) | ((e.type_index & 0xFF) << 16) | (e.entry_index & 0xFFFF);
+   451→        e.resource_id = id;
+   452→    }
+   453→    for (auto& e : type_entries_) {
+   454→        by_id_[e.resource_id].push_back(&e);
+   455→    }
+   456→    // type_name from package type strings (each entry may lack it)
+   457→    for (auto& e : type_entries_) {
+   458→        if (!e.type_name.empty()) continue;
+   459→        uint32_t pid = (e.resource_id >> 24) & 0xFF;
+   460→        uint8_t tid = (e.resource_id >> 16) & 0xFF;
+   461→        for (const auto& pkg : packages_) {
+   462→            if (pkg.id == pid) {
+   463→                const std::string* tn = pkg.type_strings.get(tid - 1);
+   464→                if (tn) e.type_name = *tn;
+   465→                break;
+   466→            }
+   467→        }
+   468→    }
+   469→    stats_.named_ids = (uint32_t)by_id_.size();
+   470→    stats_.entries_by_type.clear();
+   471→    for (const auto& kv : by_id_) {
+   472→        if (!kv.second.empty())
+   473→            stats_.entries_by_type[kv.second.front()->type_name]++;
+   474→    }
+   475→}
+   476→
+   477→// ---------------------------------------------------------------------------
+   478→// Resolution — CAMPAIGN 009 §6: AOSP configuration matching.
+   479→// Oracle: aosp-mirror/platform_frameworks_base ResourceTypes.cpp — a config is
+   480→// chosen among candidates that match() the device settings via isBetterThan();
+   481→// if nothing matches, the default (qualifier-less) entry is used, mirroring
+   482→// AssetsProvider behavior for unqualified tables.
+   483→// ---------------------------------------------------------------------------
+   484→const ArscEntry* ResolvedResource::best() const {
+   485→    if (configs.empty()) return nullptr;
+   486→    const ResTableConfig& device = device_config();
+   487→    const ArscEntry* best = nullptr;
+   488→    for (const auto& c : configs) {
+   489→        if (c.has_config && !c.config.match(device)) continue;
+   490→        if (!best) { best = &c; continue; }
+   491→        const bool c_has = c.has_config;
+   492→        const bool b_has = best->has_config;
+   493→        if (c_has && b_has) {
+   494→            if (c.config.isBetterThan(best->config, device)) best = &c;
+   495→        } else if (c_has && !b_has) {
+   496→            // qualified config beats default when the qualifier matches the device
+   497→            if (c.config.locale || c.config.density || c.config.smallestScreenWidthDp ||
+   498→                c.config.screenSizeDpMask || c.config.screenConfig || c.config.imsi ||
+   499→                c.config.version || c.config.screenConfig2 || c.config.screenType) {
+   500→                best = &c;
+   501→            }
+   502→        }
+   503→        // !c_has && b_has → keep existing best (default never beats a matching qualifier)
+   504→    }
+   505→    if (best) return best;
+   506→    // No bucket matched the device: fall back to the default config if present.
+   507→    for (const auto& c : configs) if (!c.has_config) return &c;
+   508→    return &configs.front();
+   509→}
+   510→
+   511→std::optional<ResolvedResource> ArscParser::resolve(uint32_t resource_id) const {
+   512→    auto it = by_id_.find(resource_id);
+   513→    if (it == by_id_.end() || it->second.empty()) return std::nullopt;
+   514→    ResolvedResource out;
+   515→    out.id = resource_id;
+   516→    uint32_t pid = (resource_id >> 24) & 0xFF;
+   517→    uint8_t  tid = (resource_id >> 16) & 0xFF;
+   518→    for (const auto& pkg : packages_) {
+   519→        if (pkg.id == pid) { out.package_name = pkg.name; break; }
+   520→    }
+   521→    for (const auto* e : it->second) {
+   522→        out.configs.push_back(*e);
+   523→    }
+   524→    if (!out.configs.empty()) {
+   525→        out.type_name = out.configs.front().type_name;
+   526→        out.name = out.configs.front().name;
+   527→    }
+   528→    // ensure type_name is set even when the front entry missed it
+   529→    if (out.type_name.empty()) {
+   530→        for (const auto& pkg : packages_) if (pkg.id == pid) {
+   531→            const std::string* tn = pkg.type_strings.get(tid - 1);
+   532→            if (tn) out.type_name = *tn;
+   533→            break;
+   534→        }
+   535→        for (auto& e : out.configs) e.type_name = out.type_name;
+   536→    }
+   537→    return out;
+   538→}
+   539→
+   540→std::optional<uint32_t> ArscParser::find_id(const std::string& package, const std::string& type,
+   541→                                            const std::string& name) const {
+   542→    for (const auto& kv : by_id_) {
+   543→        const ArscEntry* e = kv.second.front();
+   544→        if (!name.empty() && e->name != name) continue;
+   545→        if (!type.empty() && e->type_name != type) continue;
+   546→        if (!package.empty()) {
+   547→            uint32_t pid = (kv.first >> 24) & 0xFF;
+   548→            bool match = false;
+   549→            for (const auto& pkg : packages_) if (pkg.id == pid && pkg.name == package) { match = true; break; }
+   550→            if (!match) continue;
+   551→        }
+   552→        return kv.first;
+   553→    }
+   554→    return std::nullopt;
+   555→}
+   556→
+   557→std::optional<ResValue> ArscParser::resolve_value(uint32_t resource_id) const {
+   558→    auto r = resolve(resource_id);
+   559→    if (!r) return std::nullopt;
+   560→    const ArscEntry* e = r->best();
+   561→    if (!e) return std::nullopt;
+   562→    ResValue v = e->value;
+   563→    // follow one reference hop (e.g. color → @color/other, string alias)
+   564→    int hops = 0;
+   565→    while (v.is_reference() && hops < 4) {
+   566→        auto r2 = resolve(v.ref_id);
+   567→        if (!r2) break;
+   568→        const ArscEntry* e2 = r2->best();
+   569→        if (!e2) break;
+   570→        v = e2->value;
+   571→        hops++;
+   572→    }
+   573→    return v;
+   574→}
+   575→
+   576→std::optional<std::string> ArscParser::resolve_string(uint32_t resource_id) const {
+   577→    auto v = resolve_value(resource_id);
+   578→    if (v && v->is_string()) return v->string_value;
+   579→    return std::nullopt;
+   580→}
+   581→
+   582→std::vector<std::pair<uint32_t, std::string>> ArscParser::list_type(
+   583→        const std::string& package, const std::string& type) const {
+   584→    std::vector<std::pair<uint32_t, std::string>> out;
+   585→    for (const auto& kv : by_id_) {
+   586→        auto r = resolve(kv.first);
+   587→        if (!r) continue;
+   588→        if (r->type_name != type) continue;
+   589→        if (!package.empty() && r->package_name != package) continue;
+   590→        out.push_back({kv.first, r->name});
+   591→    }
+   592→    std::sort(out.begin(), out.end());
+   593→    return out;
+   594→}
+   595→
+   596→std::optional<std::string> ArscParser::apk_path_for(uint32_t resource_id,
+   597→                                                    const std::vector<std::string>& apk_paths) const {
+   598→    auto r = resolve(resource_id);
+   599→    if (!r) return std::nullopt;
+   600→
+   601→    // CAMPAIGN 013 (§18): REAL Android resolution for file-backed resources.
+   602→    // In resources.arsc a file-backed entry's VALUE IS THE PATH (STRING type,
+   603→    // e.g. "res/w6.xml"). AGP resource obfuscation renames the FILES and
+   604→    // rewrites these values — the entry NAME no longer appears anywhere in
+   605→    // res/. The old name-matching heuristic returned NONE for every layout of
+   606→    // obfuscated APKs (notesbillthefarmer: name=main, value=res/w6.xml).
+   607→    // Value-first also removes the O(type*files) name scan for normal APKs.
+   608→    for (const auto& cfg : r->configs) {
+   609→        const std::string& v = cfg.value.string_value;
+   610→        if (cfg.value.type == DataType::STRING && v.size() > 4 &&
+   611→            v.compare(0, 4, "res/") == 0) {
+   612→            for (const auto& path : apk_paths)
+   613→                if (path == v) return path;
+   614→        }
+   615→    }
+   616→
+   617→    // Fallback: legacy name matching (entry name = file stem).
+   618→    // candidates: res/<type>-<config>/<name>.<ext> — we match by suffix
+   619→    for (const auto& path : apk_paths) {
+   620→        // path like res/layout/act_gmdice.xml or res/drawable-hdpi/icon.png
+   621→        const std::string prefix = "res/";
+   622→        if (path.compare(0, prefix.size(), prefix) != 0) continue;
+   623→        size_t slash2 = path.find('/', prefix.size());
+   624→        if (slash2 == std::string::npos) continue;
+   625→        std::string dir = path.substr(prefix.size(), slash2 - prefix.size());
+   626→        // dir = layout | layout-v21 | drawable-hdpi ...
+   627→        std::string base_dir = dir;
+   628→        size_t dash = base_dir.find('-');
+   629→        if (dash != std::string::npos) base_dir = base_dir.substr(0, dash);
+   630→        if (base_dir != r->type_name) continue;
+   631→        std::string fname = path.substr(slash2 + 1);
+   632→        size_t dot = fname.find('.');
+   633→        std::string stem = dot == std::string::npos ? fname : fname.substr(0, dot);
+   634→        if (stem == r->name) return path;
+   635→    }
+   636→    return std::nullopt;
+   637→}
+   638→
+   639→// ---------------------------------------------------------------------------
+   640→// JSON evidence
+   641→// ---------------------------------------------------------------------------
+   642→std::string ArscParser::to_json(size_t max_entries) const {
+   643→    std::ostringstream o;
+   644→    o << "{\"valid\":" << (valid_ ? "true" : "false")
+   645→      << ",\"packages\":" << stats_.package_count
+   646→      << ",\"global_strings\":" << stats_.global_string_count
+   647→      << ",\"type_chunks\":" << stats_.type_count
+   648→      << ",\"entry_configs\":" << stats_.entry_count
+   649→      << ",\"named_ids\":" << stats_.named_ids
+   650→      << ",\"entries_by_type\":{";
+   651→    bool first = true;
+   652→    for (auto& kv : stats_.entries_by_type) {
+   653→        if (!first) o << ",";
+   654→        first = false;
+   655→        o << "\"" << kv.first << "\":" << kv.second;
+   656→    }
+   657→    o << "},\"sample\":[";
+   658→    size_t n = 0;
+   659→    for (const auto& kv : by_id_) {
+   660→        if (n++ >= max_entries) break;
+   661→        auto r = resolve(kv.first);
+   662→        if (!r) continue;
+   663→        const ArscEntry* e = r->best();
+   664→        if (!e) continue;
+   665→        if (n > 1) o << ",";
+   666→        o << "{\"id\":0x" << std::hex << kv.first << std::dec
+   667→          << ",\"type\":\"" << r->type_name << "\""
+   668→          << ",\"name\":\"" << r->name << "\""
+   669→          << ",\"config\":\"" << e->config_desc << "\"";
+   670→        if (e->value.is_string()) {
+   671→            std::string esc;
+   672→            for (char c : e->value.string_value) {
+   673→                if (c == '"') esc += "\\\"";
+   674→                else if (c == '\\') esc += "\\\\";
+   675→                else if (c == '\n') esc += "\\n";
+   676→                else if ((unsigned char)c < 0x20) esc += ' ';
+   677→                else esc += c;
+   678→            }
+   679→            o << ",\"value\":\"" << esc << "\"";
+   680→        }
+   681→        else o << ",\"dtype\":" << (int)e->value.type << ",\"data\":" << e->value.data;
+   682→        o << "}";
+   683→    }
+   684→    o << "]}";
+   685→    return o.str();
+   686→}
+   687→
+   688→} // namespace resources
+   689→} // namespace miniandroid
+   690→
