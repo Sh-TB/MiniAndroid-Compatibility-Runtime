@@ -67,6 +67,16 @@ struct ExecutionConfig {
     // listener, re-render, and record which clicks change pixels (L9→L12:
     // touch accepted → callback executed → state changed → second frame).
     bool click_test = false;
+    // DEMO-CLICK-SEQUENCE (2026-09-04): deterministic multi-interaction capture.
+    // When > 0, dispatch this many sequential clicks (round-robin over all
+    // clickable views), re-render through the SAME pipeline after each click,
+    // and save every frame as frames/frame_<NNN>.png plus a frames/manifest.json
+    // recording the click target, pixel diff vs the previous frame, framebuffer
+    // SHA256, and the app's own visible state text (ViewShadow node texts).
+    // This is the runtime mechanism behind the real-APK execution proof: the
+    // state transitions in the evidence GIF come from the app's own DEX logic
+    // reacting to dispatched clicks, not from any host-side animation.
+    int click_count = 0;
     bool generate_reports = true;
     
     // EXP-031: Execution mode (CRITICAL - determines real vs fake path)
@@ -152,6 +162,7 @@ private:
     bool stage_capture_output(ExecutionResult& result, const ExecutionConfig& config);
     // UNIFIED_011.2 CLICK-TEST: generic post-first-frame interaction probe.
     bool stage_click_test(ExecutionResult& result, const ExecutionConfig& config);
+    bool stage_click_sequence(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_generate_reports(ExecutionResult& result, const ExecutionConfig& config);
     
     // Helper methods

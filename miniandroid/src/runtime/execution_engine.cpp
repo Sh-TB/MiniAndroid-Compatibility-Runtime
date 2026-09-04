@@ -60,6 +60,9 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     // UNIFIED_011.2 CLICK-TEST: runs AFTER the first frame is captured so the
     // baseline PNG on disk is the untouched frame 1. Never fails the run.
     if (success && config.click_test) stage_click_test(result, config);
+    // DEMO-CLICK-SEQUENCE: multi-click frame capture (see stage docs).
+    // Runs after click-test so both probes see the launch framebuffer.
+    if (success && config.click_count > 0) stage_click_sequence(result, config);
     
     // Always try to generate reports
     stage_generate_reports(result, config);
@@ -2337,6 +2340,243 @@ bool ExecutionEngine::stage_click_test( ExecutionResult& result, const Execution
     // Leave the framebuffer in the LAST probed state is misleading; restore
     // frame 1 so later evidence (report.md) reflects the launch UI.
     framebuffer_ = frame1;
+    return true;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// DEMO-CLICK-SEQUENCE (2026-09-04): deterministic multi-interaction capture.
+//
+// Motivation: the real-APK execution proof needs a SEQUENCE of frames showing
+// application state evolving across multiple user interactions — not just a
+// single before/after pair. This stage dispatches N sequential clicks
+// (round-robin over every view with a registered OnClickListener), re-renders
+// through the SAME stage_render_frame pipeline after each click, and writes:
+//
+//   frames/frame_000.png          frame 1 (launch UI, no interaction)
+//   frames/frame_001..N.png       after each dispatched click
+//   frames/manifest.json          per-frame evidence:
+//                                   - clicked view id/class/listener class
+//                                   - changed-pixel count vs previous frame
+//                                   - framebuffer SHA256 (frame hash)
+//                                   - the app's own visible state (every
+//                                     ViewShadow node text), so the counter/
+//                                     position/color text inside the app is
+//                                     part of the machine-readable evidence
+//
+// The state transitions are produced ENTIRELY by the APK's own DEX bytecode
+// reacting to dispatched clicks; this stage only drives input + capture.
+// Never alters run success/failure — probe semantics like stage_click_test.
+// ─────────────────────────────────────────────────────────────────────────
+namespace {
+// Minimal SHA-256 (FIPS 180-4) for frame hashing. No external dependency
+// exists in the runtime tree; ~60 lines keep the evidence self-contained.
+struct Sha256 {
+    uint32_t h[8] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+                     0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
+    uint64_t len = 0;
+    uint8_t buf[64] = {0};
+    size_t buf_len = 0;
+
+    static uint32_t rotr(uint32_t x, int n) { return (x >> n) | (x << (32 - n)); }
+    static uint32_t k(int i) {
+        static const uint32_t K[64] = {
+            0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,
+            0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,
+            0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,
+            0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+            0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,
+            0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,
+            0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,
+            0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+            0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,
+            0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,
+            0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2};
+        return K[i];
+    }
+    void block(const uint8_t* p) {
+        uint32_t w[64];
+        for (int i = 0; i < 16; ++i)
+            w[i] = (uint32_t(p[i*4])<<24)|(uint32_t(p[i*4+1])<<16)|
+                   (uint32_t(p[i*4+2])<<8)|uint32_t(p[i*4+3]);
+        for (int i = 16; i < 64; ++i) {
+            uint32_t s0 = rotr(w[i-15],7)^rotr(w[i-15],18)^(w[i-15]>>3);
+            uint32_t s1 = rotr(w[i-2],17)^rotr(w[i-2],19)^(w[i-2]>>10);
+            w[i] = w[i-16]+s0+w[i-7]+s1;
+        }
+        uint32_t a=h[0],b=h[1],c=h[2],d=h[3],e=h[4],f=h[5],g=h[6],hh=h[7];
+        for (int i = 0; i < 64; ++i) {
+            uint32_t S1 = rotr(e,6)^rotr(e,11)^rotr(e,25);
+            uint32_t ch = (e&f)^((~e)&g);
+            uint32_t t1 = hh+S1+ch+k(i)+w[i];
+            uint32_t S0 = rotr(a,2)^rotr(a,13)^rotr(a,22);
+            uint32_t maj = (a&b)^(a&c)^(b&c);
+            uint32_t t2 = S0+maj;
+            hh=g; g=f; f=e; e=d+t1; d=c; c=b; b=a; a=t1+t2;
+        }
+        h[0]+=a; h[1]+=b; h[2]+=c; h[3]+=d; h[4]+=e; h[5]+=f; h[6]+=g; h[7]+=hh;
+    }
+    void update(const uint8_t* data, size_t n) {
+        len += n;
+        while (n > 0) {
+            size_t take = std::min(n, size_t(64) - buf_len);
+            std::memcpy(buf + buf_len, data, take);
+            buf_len += take; data += take; n -= take;
+            if (buf_len == 64) { block(buf); buf_len = 0; }
+        }
+    }
+    std::string hex() {
+        uint64_t bits = len * 8;
+        uint8_t pad = 0x80;
+        update(&pad, 1);
+        uint8_t z = 0;
+        while (buf_len != 56) update(&z, 1);
+        uint8_t l[8];
+        for (int i = 0; i < 8; ++i) l[i] = uint8_t(bits >> (56 - i*8));
+        update(l, 8);
+        std::string out;
+        char s[3];
+        for (int i = 0; i < 8; ++i)
+            for (int j = 3; j >= 0; --j) {
+                snprintf(s, sizeof s, "%02x", uint8_t(h[i] >> (j*8)));
+                out += s;
+            }
+        return out;
+    }
+};
+std::string sha256_hex(const std::vector<uint8_t>& data) {
+    Sha256 s;
+    s.update(data.data(), data.size());
+    return s.hex();
+}
+}  // namespace
+
+bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const ExecutionConfig& config) {
+    if (config.click_count <= 0) return true;
+    trace_engine_.info("ExecutionEngine", "stage_click_sequence",
+                       "CLICK-SEQUENCE capture (" + std::to_string(config.click_count) + " clicks)");
+    if (!shadow_registry_) return true;
+
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!view_shadow) return true;
+
+    auto clickables = view_shadow->find_all_with_click_listener("");
+    std::cerr << "[CLICK-SEQ] " << clickables.size() << " clickable view(s), "
+              << config.click_count << " click(s) requested" << std::endl;
+    if (clickables.empty()) {
+        std::cerr << "[CLICK-SEQ] no clickable views — nothing to drive" << std::endl;
+        return true;
+    }
+
+    const std::string frames_dir = config.output_directory + "/frames";
+    try { std::filesystem::create_directories(frames_dir); } catch (...) {}
+
+    // Helper: copy framebuffer_ → FrameBuffer → PNG on disk.
+    auto save_frame = [&](const std::string& path) -> bool {
+        try {
+            renderer::FrameBuffer fb(config.screen_width, config.screen_height);
+            for (int y = 0; y < config.screen_height; ++y) {
+                for (int x = 0; x < config.screen_width; ++x) {
+                    size_t i = (static_cast<size_t>(y) * config.screen_width + x) * 4;
+                    if (i + 3 < framebuffer_.size()) {
+                        fb.set_pixel(x, y, renderer::RGBA{
+                            framebuffer_[i], framebuffer_[i + 1],
+                            framebuffer_[i + 2], framebuffer_[i + 3]});
+                    }
+                }
+            }
+            return renderer::PNGWriter::write_png(path, fb);
+        } catch (const std::exception& e) {
+            std::cerr << "[CLICK-SEQ] frame save failed: " << e.what() << std::endl;
+            return false;
+        }
+    };
+
+    // Helper: the app's own visible state — every node's text in the tree.
+    auto collect_texts = [&]() {
+        nlohmann::json arr = nlohmann::json::array();
+        for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
+            if (node_ptr && !node_ptr->text.empty()) {
+                arr.push_back({{"view_id", id},
+                               {"class", node_ptr->class_desc},
+                               {"text", node_ptr->text}});
+            }
+        }
+        return arr;
+    };
+
+    nlohmann::json manifest;
+    manifest["click_count_requested"] = config.click_count;
+    manifest["clickable_views"] = clickables.size();
+    manifest["screen"] = {{"width", config.screen_width},
+                          {"height", config.screen_height}};
+    manifest["frames"] = nlohmann::json::array();
+
+    std::vector<uint8_t> prev = framebuffer_;
+    {
+        nlohmann::json f;
+        f["index"] = 0;
+        f["file"] = "frame_000.png";
+        f["event"] = "launch (no interaction)";
+        f["sha256"] = sha256_hex(prev);
+        f["visible_texts"] = collect_texts();
+        manifest["frames"].push_back(f);
+        save_frame(frames_dir + "/frame_000.png");
+    }
+
+    int dispatched_total = 0;
+    for (int k = 1; k <= config.click_count; ++k) {
+        uint32_t target = clickables[static_cast<size_t>(k - 1) % clickables.size()];
+        const auto* node = view_shadow->find_node(target);
+        bool dispatched = dalvik_engine_.dispatch_click(target);
+        if (dispatched) dispatched_total++;
+
+        framebuffer_ = prev;
+        stage_render_frame(result, config);  // re-render CURRENT state
+
+        size_t diff_px = 0;
+        if (framebuffer_.size() == prev.size()) {
+            for (size_t i = 0; i < framebuffer_.size(); i += 4) {
+                if (framebuffer_[i] != prev[i] ||
+                    framebuffer_[i + 1] != prev[i + 1] ||
+                    framebuffer_[i + 2] != prev[i + 2]) {
+                    diff_px++;
+                }
+            }
+        }
+
+        char name[64];
+        snprintf(name, sizeof name, "/frame_%03d.png", k);
+        bool saved = save_frame(frames_dir + name);
+
+        nlohmann::json f;
+        f["index"] = k;
+        f["file"] = std::string("frame_") + (k < 100 ? (k < 10 ? "00" : "0") : "") +
+                    std::to_string(k) + ".png";
+        f["event"] = "click";
+        f["clicked_view_id"] = target;
+        f["clicked_view_class"] = node ? node->class_desc : "?";
+        f["click_dispatched"] = dispatched;
+        f["changed_pixels_vs_previous"] = diff_px;
+        f["sha256"] = sha256_hex(framebuffer_);
+        f["visible_texts"] = collect_texts();
+        manifest["frames"].push_back(f);
+        if (saved) {
+            std::cerr << "[CLICK-SEQ] frame_" << k << ": clicked view " << target
+                      << ", diff_px=" << diff_px << std::endl;
+        }
+        prev = framebuffer_;
+    }
+
+    manifest["clicks_dispatched"] = dispatched_total;
+    try {
+        std::ofstream mf(frames_dir + "/manifest.json");
+        mf << manifest.dump(2);
+    } catch (...) {}
+
+    std::cerr << "[CLICK-SEQ] done: dispatched=" << dispatched_total
+              << "/" << config.click_count
+              << " frames=" << manifest["frames"].size()
+              << " dir=" << frames_dir << std::endl;
     return true;
 }
 
