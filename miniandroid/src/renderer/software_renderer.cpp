@@ -26,7 +26,7 @@
 // codecs are compile-time optional via MINIANDROID_HAVE_WEBP / MINIANDROID_HAVE_LOTTIE
 // so the runtime builds on platforms where these libs are not ported yet.
 // When disabled, decoders report an explicit error (no silent fake success).
-#ifdef MINIANDROID_HAVE_WEBP
+#if defined(MINIANDROID_HAVE_WEBP) && MINIANDROID_HAVE_WEBP
 #include <webp/decode.h>
 #include <webp/demux.h>
 #endif
@@ -783,7 +783,7 @@ json PNGWriter::generate_screenshot_info(const FrameBuffer& fb,
 } // namespace renderer
 } // namespace miniandroid
 
-#ifdef MINIANDROID_HAVE_WEBP
+#if defined(MINIANDROID_HAVE_WEBP) && MINIANDROID_HAVE_WEBP
 // ============================================================================
 // EXP-097 §5: WebPDecoder — libwebp-backed WebP → RGBA decoder.
 //
@@ -1009,7 +1009,7 @@ DecodedImage JPEGDecoder::decode_file(const std::string& path) {
                                        std::istreambuf_iterator<char>()));
 }
 
-#ifdef MINIANDROID_HAVE_LOTTIE
+#if defined(MINIANDROID_HAVE_LOTTIE) && MINIANDROID_HAVE_LOTTIE
 // ============================================================================
 // EXP-097 §7: RLottieDecoder — rlottie-backed Lottie JSON → RGBA renderer.
 // ============================================================================

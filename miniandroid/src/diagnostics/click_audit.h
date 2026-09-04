@@ -42,7 +42,11 @@ inline std::string iso_now() {
     auto now = system_clock::now();
     std::time_t t = system_clock::to_time_t(now);
     struct tm tm_buf;
+#if defined(_WIN32)
+    localtime_s(&tm_buf, &t);   // Win32 secure variant (POSIX localtime_r unavailable)
+#else
     localtime_r(&t, &tm_buf);
+#endif
     char buf[40];
     std::strftime(buf, sizeof(buf), "%Y-%m-%dT%H:%M:%S", &tm_buf);
     auto ms = duration_cast<milliseconds>(now.time_since_epoch()).count() % 1000;
