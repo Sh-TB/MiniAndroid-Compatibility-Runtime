@@ -1,0 +1,33 @@
+{
+  "test": "EXP085 Phase 4 \u2014 Exception / try-catch smoke test",
+  "generated_at": "2026-09-04T17:02:19.591893+00:00",
+  "pass_count": 0,
+  "mismatch_count": 0,
+  "skip_count": 4,
+  "results": [
+    {
+      "fixture": "case1_no_catch_UNHANDLED",
+      "status": "SKIP",
+      "reason": "APK not found",
+      "verifies": "throw with no catch \u2192 exception propagates out"
+    },
+    {
+      "fixture": "case2_local_catch_HANDLED_LOCALLY",
+      "status": "SKIP",
+      "reason": "APK not found",
+      "verifies": "try { throw } catch { continue }"
+    },
+    {
+      "fixture": "case3_nested_catch_HANDLED_LOCALLY",
+      "status": "SKIP",
+      "reason": "APK not found",
+      "verifies": "nested try/catch with inner handler"
+    },
+    {
+      "fixture": "case4_catch_all_HANDLED_LOCALLY",
+      "status": "SKIP",
+      "reason": "APK not found",
+      "verifies": "catch-all handler"
+    }
+  ]
+}
