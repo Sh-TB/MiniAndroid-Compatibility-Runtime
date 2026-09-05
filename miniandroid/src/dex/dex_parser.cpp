@@ -4,6 +4,7 @@
  */
 
 #include "dex_parser.h"
+#include "encoded_value.h"  // FIND-REUSE-DEX: AOSP encoded-value law walker
 #include "mutf8.h"
 
 #include <fstream>
@@ -483,13 +484,34 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
 // Each encoded_value: 1 byte header ((size << 5) | value_type)
 // followed by `size` bytes of value data.
 // Value types per AOSP dex_format.html:
-//   0x00 BYTE, 0x02 SHORT, 0x04 INT, 0x06 LONG
+//   0x00 BYTE, 0x02 SHORT, 0x03 CHAR, 0x04 INT, 0x06 LONG
 //   0x10 FLOAT, 0x11 DOUBLE
 //   0x15 METHOD_TYPE, 0x16 METHOD_HANDLE
 //   0x17 STRING, 0x18 TYPE, 0x19 FIELD, 0x1a METHOD, 0x1b ENUM
 //   0x1c ARRAY, 0x1d ANNOTATION
 //   0x1e NULL (no bytes follow)
 //   0x1f BOOLEAN (size IS the value: 0=false, 1=true)
+//
+// FIND-REUSE-DEX (P2 audit, source: vova7878/DexFile @1616ed0c,
+// raw/DexReader.java readEncodedValue + io/ValueCoder.java — a verbatim
+// transfer of the AOSP art/libdexfile encoded-value laws):
+//   * signed types (BYTE/SHORT/INT/LONG): payload is value_arg+1 bytes,
+//     LITTLE-ENDIAN, SIGN-EXTENDED from width*8 bits (AOSP ValueCoder
+//     readSignedInt/readSignedLong: load into high bits, arithmetic shift).
+//     The previous decoder assembled little-endian without sign extension,
+//     so a sub-width negative (e.g. 1-byte 0xFF VALUE_SHORT) decoded as
+//     +255 instead of -1.
+//   * CHAR (0x03): UNSIGNED zero-extended index-width payload (AOSP
+//     readUnsignedInt fillOnRight=false). Previously dropped entirely.
+//   * FLOAT/DOUBLE: payload is value_arg+1 bytes RIGHT-ZERO-EXTENDED
+//     (bits in the HIGH positions of the full-width value — AOSP
+//     readUnsignedInt/Long fillOnRight=true). Stored here as raw bits.
+//   * ARRAY (0x1c) / ANNOTATION (0x1d): VARIABLE-LENGTH payloads —
+//     encoded_array = ULEB128 size + size encoded_values; encoded_annotation
+//     = uleb name_idx + uleb size + size (name_idx + encoded_value) pairs.
+//     The previous fixed `p += value_arg+1` skip DESYNCHRONIZED the whole
+//     remainder of the static-values stream (every later field default
+//     decoded from the middle of the array payload).
 bool DexParser::parse_static_values(const uint8_t* data, uint32_t offset, ClassInfo& info) {
     // EXP-062: Debug trace
     if (info.name.find("R$") != std::string::npos) {
@@ -517,91 +539,39 @@ bool DexParser::parse_static_values(const uint8_t* data, uint32_t offset, ClassI
     if (count == 0) return true;
     if (count > info.static_fields.size()) count = info.static_fields.size();
 
+    // FIND-REUSE-DEX-001/002/003: decode every value through the generic
+    // law-conforming walker (miniandroid::dex::read_encoded_value) — AOSP
+    // sign-extension for BYTE/SHORT/INT/LONG, unsigned CHAR, right-zero-
+    // extended FLOAT/DOUBLE bits, variable-length ARRAY/ANNOTATION walks
+    // (the old fixed-size skip desynced the whole stream after an array).
     for (uint32_t i = 0; i < count && p < current_size_; i++) {
         if (i >= info.static_fields.size()) break;
 
-        uint8_t header = data[p++];
-        uint8_t value_type = header & 0x1f;
-        uint8_t size_arg = (header >> 5) & 0x07;
-
         FieldInfo& field = info.static_fields[i];
 
-        switch (value_type) {
-            case 0x00: { // VALUE_BYTE — value_arg+1 bytes (DEX spec: size is value_arg+1)
-                int8_t val = 0;
-                if (size_arg >= 0 && p < current_size_) {
-                    val = (int8_t)data[p];  // VALUE_BYTE is exactly 1 byte (value_arg=0)
-                }
-                p += (uint32_t)size_arg + 1;
-                field.has_default_value = true;
-                field.default_int_value = val;
-                break;
-            }
-            case 0x02: { // VALUE_SHORT — value_arg+1 bytes (was: size_arg — dropped the top byte of 2-byte shorts)
-                int16_t val = 0;
-                for (uint8_t s = 0; s <= size_arg && p < current_size_; s++) {
-                    val |= (int16_t)data[p++] << (s * 8);
-                }
-                field.has_default_value = true;
-                field.default_int_value = val;
-                break;
-            }
-            case 0x04: { // VALUE_INT — value_arg+1 bytes.
-                // VISUAL-CAMPAIGN EXT-01 (G17/G24) SPEC FIX: encoded_value's
-                // value_arg is "byte count minus one" (AOSP
-                // art/libdexfile/dex/dex_file.h encoded_value rule). The old
-                // loop read ONLY size_arg bytes, so every 4-byte VALUE_INT
-                // lost its top byte: app R constants 0x7f030000 (layout),
-                // 0x7f020000 (id), 0x7f050001 (string) parsed as 0x030000,
-                // 0x020000, 0x050001. Name-mediated lookups stayed
-                // self-consistent (both sides wrong), but every ID-mediated
-                // lookup broke: setContentView(R.layout.activity_main) →
-                // "root_id=0 views=0", findViewById(R.id.x) → null,
-                // getColor(R.color.y) → default. Exposed by the FIRST real
-                // external APK (HelloWorldSelfAware, aapt2-optimized build).
-                int32_t val = 0;
-                for (uint8_t s = 0; s <= size_arg && p < current_size_; s++) {
-                    val |= (int32_t)data[p++] << (s * 8);
-                }
-                field.has_default_value = true;
-                field.default_int_value = val;
-                break;
-            }
-            case 0x06: { // VALUE_LONG — value_arg+1 bytes (was: size_arg — dropped the top byte of 8-byte longs)
-                int64_t val = 0;
-                for (uint8_t s = 0; s <= size_arg && p < current_size_; s++) {
-                    val |= (int64_t)data[p++] << (s * 8);
-                }
-                field.has_default_value = true;
-                field.default_int_value = (int32_t)val;
-                break;
-            }
-            case 0x17: { // VALUE_STRING — string_idx is value_arg+1 bytes
-                uint32_t str_idx = 0;
-                for (uint8_t s = 0; s <= size_arg && p < current_size_; s++) {
-                    str_idx |= (uint32_t)data[p++] << (s * 8);
-                }
-                field.has_default_value = true;
-                field.default_value_is_string = true;
-                field.default_string_value = get_string(str_idx);
-                break;
-            }
-            case 0x1e: { // VALUE_NULL
-                field.has_default_value = true;
-                break;
-            }
-            case 0x1f: { // VALUE_BOOLEAN (size IS the value: 0=false, 1=true)
-                field.has_default_value = true;
-                field.default_int_value = size_arg;
-                break;
-            }
-            default: {
-                // Skip unknown value types (FLOAT, DOUBLE, TYPE, FIELD, etc.)
-                // DEX spec: payload is value_arg+1 bytes.
-                p += (uint32_t)size_arg + 1;
-                break;
-            }
+        dex::EncodedValue v;
+        if (!dex::read_encoded_value(data, current_size_, p, v)) {
+            // Malformed / truncated stream: stop (defaults seen so far stay).
+            log("  static_values: malformed encoded_value for field " + field.name);
+            break;
         }
+
+        if (v.has_int) {           // BYTE/SHORT/CHAR/INT/LONG (law-typed)
+            field.has_default_value = true;
+            field.default_int_value = (int32_t)v.int_val;
+        } else if (v.is_string) {  // VALUE_STRING
+            field.has_default_value = true;
+            field.default_value_is_string = true;
+            field.default_string_value = get_string(v.string_idx);
+        } else if (v.is_bool) {    // VALUE_BOOLEAN
+            field.has_default_value = true;
+            field.default_int_value = v.bool_val ? 1 : 0;
+        } else if (v.is_null) {    // VALUE_NULL
+            field.has_default_value = true;
+        }
+        // FLOAT/DOUBLE bits and index values (TYPE/FIELD/METHOD/ENUM/...)
+        // are walked past correctly; their default storage remains a
+        // recorded completeness gap (FIND-REUSE-DEX-004, impact LOW).
     }
     // EXP-062: Post-parse trace
     if (info.name.find("R$") != std::string::npos) {
