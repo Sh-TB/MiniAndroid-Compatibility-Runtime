@@ -486,8 +486,12 @@ FontMetrics TextShaper::font_metrics(float size_px, bool bold, int face_idx) con
 
     float a = size_px * 0.9f, d = size_px * 0.25f;  // degenerate fallback
     if (face && FT_Set_Pixel_Sizes(face, 0, (FT_UInt)std::lround(size_px)) == 0) {
-        a = (float)(face->size->metrics.ascender >> 6);
-        d = (float)(-(face->size->metrics.descender >> 6));
+        // Paint JNI law (android-14 Paint.cpp): ascent/descent ints are
+        // CEILed in magnitude from the float metrics (getFontMetricsInt);
+        // FreeType's 26.6 size metrics are already grid-fit, but >> 6
+        // floors the descent — use ceil to match Android's box exactly.
+        a = (float)std::ceil(face->size->metrics.ascender / 64.0);
+        d = (float)std::ceil(-face->size->metrics.descender / 64.0);
     }
     // OS/2 win extents (rounded like the size metrics: px = units*size/upem).
     // FT_Get_Sfnt_Table returns a pointer INTO the face — cheap, no cache
@@ -498,8 +502,8 @@ FontMetrics TextShaper::font_metrics(float size_px, bool bold, int face_idx) con
             FT_Get_Sfnt_Table(face, ft_sfnt_os2));
         if (os2 && os2->version != 0xFFFF && face->units_per_EM > 0) {
             float s = std::lround(size_px) / (float)face->units_per_EM;
-            top = std::round(os2->usWinAscent * s);
-            bottom = std::round(os2->usWinDescent * s);
+            top = std::ceil(os2->usWinAscent * s);
+            bottom = std::ceil(os2->usWinDescent * s);
         }
     }
     // top/bottom are the MAXIMUM extents: never tighter than ascent/descent.
@@ -807,11 +811,18 @@ namespace fonts {
 TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
                        float max_width_px, int max_lines, int face_idx,
                        float spacing_mult, float spacing_add_px,
-                       bool include_pad) {
+                       bool include_pad, bool elegant_height) {
     TextLayout out;
     auto& sh = TextShaper::instance();
     // G36/G47: Android Paint.FontMetrics + StaticLayout line-box law.
     FontMetrics fm = sh.font_metrics(size_px, bold, face_idx);
+    if (elegant_height) {
+        // G36: Paint.setElegantTextHeight — the font's own hhea box becomes
+        // the font-padding extents (no win-clamped maximum).
+        fm.top = fm.ascent;
+        fm.bottom = fm.descent;
+        fm.leading = 0.0f;
+    }
     out.ascent = -fm.ascent;      // store as POSITIVE magnitude (draw law)
     out.descent = fm.descent;
     out.line_height = fm.descent - fm.ascent;
