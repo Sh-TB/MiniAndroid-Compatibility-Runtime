@@ -624,6 +624,34 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             if (raw.find("bold") != std::string::npos) { a.text_style |= 1; }
             if (raw.find("italic") != std::string::npos) { a.text_style |= 2; }
         }
+        else if (n == "lineSpacingMultiplier") {
+            // G47: AOSP TextView L1477 — mSpacingMult = a.getFloat(attr, ...).
+            // FLOAT typed value: data holds the IEEE-754 bits.
+            if (at.value.type == DataType::FLOAT) {
+                float f; memcpy(&f, &at.value.data, 4);
+                a.line_spacing_mult = f;
+            } else a.line_spacing_mult = (float)atof(raw.c_str());
+        }
+        else if (n == "lineSpacingExtra") {
+            // G47: AOSP TextView L1473 — mSpacingAdd =
+            // a.getDimensionPixelSize(attr, ...) (px after unit conversion).
+            a.line_spacing_add_px = (float)parse_dim_attr(&at, stats);
+        }
+        else if (n == "elegantTextHeight") {
+            // G36: TextView L4485 setElegantTextHeight — uses the font's own
+            // hhea box for the font-padding extents instead of the win-clamped
+            // maximum.
+            a.elegant_text_height = at.value.type == DataType::INT_BOOLEAN
+                                          ? at.value.data != 0
+                                          : (raw == "true");
+        }
+        else if (n == "includeFontPadding") {
+            // G47: TextView L1440 — mIncludeFontPadding = a.getBoolean(...)
+            // (default TRUE — layout must say false explicitly).
+            a.include_font_pad = at.value.type == DataType::INT_BOOLEAN
+                                          ? at.value.data != 0
+                                          : (raw != "false");
+        }
         else if (n == "background") {
             if (at.value.is_reference()) {
                 std::string p = drawable_path_for_resid(at.value.ref_id);
@@ -717,6 +745,10 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.text_bold = (a.text_style & 1) != 0;
     node.text_italic = (a.text_style & 2) != 0;
     node.font_family = a.font_family;  // G32
+    node.line_spacing_mult = a.line_spacing_mult;      // G47
+    node.line_spacing_add_px = a.line_spacing_add_px;  // G47
+    node.include_font_pad = a.include_font_pad;        // G47
+    node.elegant_text_height = a.elegant_text_height;  // G36
     node.padding_left = a.pl + a.padding_all;
     node.padding_top = a.pt + a.padding_all;
     node.padding_right = a.pr + a.padding_all;
@@ -947,7 +979,11 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     face_idx = fonts::TextShaper::instance().resolve_family(
                         n->font_family, n->text_bold);
                 auto lay = fonts::layout_text(t, ts, n->text_bold, avail_w,
-                                              n->num_lines, face_idx);
+                                              n->num_lines, face_idx,
+                                              n->line_spacing_mult,
+                                              n->line_spacing_add_px,
+                                              n->include_font_pad,
+                                              n->elegant_text_height);
                 content_w = std::max(content_w, (int)std::ceil(
                     avail_w > 0 ? std::min(lay.max_line_width, avail_w)
                                 : lay.max_line_width));

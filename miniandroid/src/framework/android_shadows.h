@@ -637,6 +637,13 @@ public:
         // G32: android:fontFamily raw string ("monospace", "sans-serif", ...)
         // resolved to a system face via fonts::TextShaper::resolve_family().
         std::string font_family;
+        // G47: AOSP TextView line-spacing state (TextView.java defaults:
+        // mSpacingMult=1.0, mSpacingAdd=0, mIncludeFontPadding=true,
+        // elegantTextHeight=false).
+        float line_spacing_mult = 1.0f;
+        float line_spacing_add_px = 0.0f;
+        bool include_font_pad = true;
+        bool elegant_text_height = false;
     };
 
     std::string name() const override { return "View"; }

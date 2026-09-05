@@ -1555,7 +1555,11 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 float avail = (float)std::max(0, w - hpad);
                                 auto lay = fonts::layout_text(
                                     node->text, ts, node->text_bold, avail,
-                                    node->num_lines, face_idx);
+                                    node->num_lines, face_idx,
+                                    node->line_spacing_mult,
+                                    node->line_spacing_add_px,
+                                    node->include_font_pad,
+                                    node->elegant_text_height);
                                 // Honour the captured text colour; fall back
                                 // to the AOSP-ish dark grey used before.
                                 uint32_t tc = node->text_color;
