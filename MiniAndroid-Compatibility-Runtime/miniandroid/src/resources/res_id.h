@@ -155,6 +155,12 @@ float complex_to_dimension_px(uint32_t complex_data, const DensityContext& metri
 //   if res != 0 → res;  if value == 0 → 0;  else ±1          // nonzero floor
 int complex_to_dimension_pixel_size(uint32_t complex_data, const DensityContext& metrics);
 
+// Same rounding + nonzero-floor law applied to an ALREADY-DECODED (unit,
+// value) pair — TypedValue.getDimensionPixelSize for pre-decoded values.
+// One rounding implementation serves both entry points.
+int complex_unit_to_dimension_pixel_size(uint8_t unit, float value,
+                                         const DensityContext& metrics);
+
 // TypedValue.complexToFraction(data, base, pbase):
 //   FRACTION        → complexToFloat(data) × base
 //   FRACTION_PARENT → complexToFloat(data) × pbase
