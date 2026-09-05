@@ -64,6 +64,23 @@ static std::vector<DalvikValue> build_invoke_args(
 static int framework_enum_ordinal(const std::string& class_desc,
                                   const std::string& field_name);
 
+// CHAR-PROBE campaign: numeric view of an integer-like primitive register.
+// The interpreter carries CHAR/BOOLEAN/BYTE/SHORT values in int_val once
+// signature-aware invoke/field typing is in play; arithmetic, comparisons
+// and array indexing must use that value instead of collapsing every
+// non-INT32 register to 0. Mirrors the EXP-093 if-eqz zero-law.
+static inline int32_t dalvik_int_value(const DalvikValue& v) {
+    switch (v.type) {
+        case DalvikType::INT32:
+        case DalvikType::CHAR:
+        case DalvikType::BOOLEAN:
+        case DalvikType::BYTE:
+        case DalvikType::SHORT:   return v.int_val;
+        case DalvikType::INT64:   return static_cast<int32_t>(v.long_val);
+        default:                  return 0;
+    }
+}
+
 // ============================================================================
 // DalvikValue Serialization
 // ============================================================================
@@ -1468,6 +1485,9 @@ bool DalvikExecutionEngine::execute_method_internal(
     // halt messages and traces can identify the method that halted.
     current_class_ = class_name;
     current_method_ = method_name;
+    // CHAR-PROBE campaign: keep the descriptor for signature-aware return
+    // typing in execute_return (see current_method_descriptor_ declaration).
+    current_method_descriptor_ = descriptor;
     // EXP-052: Save tries[] state for the THROW opcode handler.
     current_tries_size_ = tries_size;
     current_tries_data_ = tries_data;
@@ -3647,6 +3667,18 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         std::string key = class_descriptor + "." + method_name;
         call_counts[key]++;
         int threshold = 10;
+        // CHAR-PROBE campaign (tictactoe_golden discovery): NEVER throttle
+        // compiler-generated synthetic accessor trampolines. ECJ compiles
+        // every private-field read/write from an inner class into static
+        // access$N(...) methods of 2-3 instructions; after 11 calls the
+        // throttle stubbed them mid-game and every subsequent outer-field
+        // read silently returned null (status showed "null WINS", the turn
+        // flip froze, clicks 4..9 became no-ops). These methods are tiny,
+        // loop-free, and semantically REQUIRED — the same law as setText:
+        // not an infinite-loop risk.
+        if (method_name.rfind("access$", 0) == 0) {
+            threshold = 1 << 30;   // synthetic accessors: never throttle
+        }
         // EXP-060: Allow more calls for Fragment lifecycle methods that
         // are legitimately called multiple times (once per Fragment instance).
         // NOTE: <init> is NOT included here because constructor loops are
@@ -5314,7 +5346,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
 
                 // Get array size from vB
                 DalvikValue size_val = get_register(vB);
-                int32_t array_size = (size_val.type == DalvikType::INT32) ? size_val.int_val : 0;
+                int32_t array_size = dalvik_int_value(size_val);
                 if (array_size < 0) array_size = 0;
 
                 // Allocate array object on heap (simplified — just store as OBJECT_REF)
@@ -5413,7 +5445,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     uint8_t vCC = (bytecode_[pc_ + 1] >> 8) & 0xFF; \
                     DalvikValue arr_val = get_register(vBB); \
                     DalvikValue idx_val = get_register(vCC); \
-                    int32_t idx = (idx_val.type == DalvikType::INT32) ? idx_val.int_val : 0; \
+                    int32_t idx = dalvik_int_value(idx_val); \
                     trace.opcode_name = op_name; \
                     /* EXP-062: Read array length from heap field */ \
                     int32_t arr_len = 0; \
@@ -5579,7 +5611,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue arr_val = get_register(vBB); \
                     DalvikValue idx_val = get_register(vCC); \
                     DalvikValue src_val = get_register(vAA); \
-                    int32_t idx = (idx_val.type == DalvikType::INT32) ? idx_val.int_val : 0; \
+                    int32_t idx = dalvik_int_value(idx_val); \
                     if (strcmp(op_name, "aput-object") == 0) { \
                         std::cerr << "[EXP093-APUT] " << op_name \
                                   << " v" << (int)vAA << "→arr[v" << (int)vBB \
@@ -6082,8 +6114,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue b = get_register(vB); \
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT32; \
-                    int32_t a_val = (a.type == DalvikType::INT32) ? a.int_val : 0; \
-                    int32_t b_val = (b.type == DalvikType::INT32) ? b.int_val : 0; \
+                    int32_t a_val = dalvik_int_value(a); \
+                    int32_t b_val = dalvik_int_value(b); \
                     /* MASTER RECONCILIATION (K-29, 2026-09-03): was guard-yield-0 — */ \
                     /* AND the unguarded a_val / b_val below was C++ UB on zero.   */ \
                     /* Now throws ArithmeticException (deferred mechanism).        */ \
@@ -6134,8 +6166,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue c = get_register(vCC); \
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT32; \
-                    int32_t b_val = (b.type == DalvikType::INT32) ? b.int_val : 0; \
-                    int32_t c_val = (c.type == DalvikType::INT32) ? c.int_val : 0; \
+                    int32_t b_val = dalvik_int_value(b); \
+                    int32_t c_val = dalvik_int_value(c); \
                     if ((op == "div" || op == "rem") && c_val == 0) { \
                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-23X"); \
                         pc_ = pc_ + 2; \
@@ -6176,7 +6208,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue b = get_register(vBB); \
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT32; \
-                    int32_t b_val = (b.type == DalvikType::INT32) ? b.int_val : 0; \
+                    int32_t b_val = dalvik_int_value(b); \
                     /* K-29: lit8 div/rem by zero throws (deferred mechanism).  */ \
                     if ((op == "div" || op == "rem") && lit == 0) { \
                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LIT8"); \
@@ -6233,7 +6265,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue b = get_register(vB); \
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT32; \
-                    int32_t b_val = (b.type == DalvikType::INT32) ? b.int_val : 0; \
+                    int32_t b_val = dalvik_int_value(b); \
                     if ((op == "div" || op == "rem") && lit == 0) { \
                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LIT16"); \
                         pc_ = pc_ + 2; \
@@ -9902,6 +9934,41 @@ bool DalvikExecutionEngine::execute_return(uint32_t pc, InstructionTrace& trace)
     
     DalvikValue val = get_register(ret_reg);
     
+    // CHAR-PROBE campaign: signature-aware return typing. DEX registers are
+    // untyped 32-bit cells — a boolean/char/byte/short return leaves the
+    // register as raw INT32. Downstream consumers (StringBuilder.append,
+    // string concat, ==/!= flows into text) then render "88" for 'X' or
+    // "0"/"1" for false/true. Retype by the method's return-type descriptor
+    // char, exactly per the Dalvik spec: only raw INT32 is reinterpreted;
+    // already-typed values pass through untouched.
+    if (val.type == DalvikType::INT32 &&
+        current_method_descriptor_.size() >= 2) {
+        size_t rparen = current_method_descriptor_.find(')');
+        if (rparen != std::string::npos &&
+            rparen + 1 < current_method_descriptor_.size()) {
+            char rt = current_method_descriptor_[rparen + 1];
+            switch (rt) {
+                case 'Z':
+                    val = DalvikValue::make_bool(val.int_val != 0);
+                    break;
+                case 'C':
+                    val.type = DalvikType::CHAR;
+                    val.int_val &= 0xFFFF;
+                    break;
+                case 'B':
+                    val.type = DalvikType::BYTE;
+                    val.int_val = static_cast<int8_t>(val.int_val & 0xFF);
+                    break;
+                case 'S':
+                    val.type = DalvikType::SHORT;
+                    val.int_val = static_cast<int16_t>(val.int_val & 0xFFFF);
+                    break;
+                default:
+                    break;   // I/J/F/D/L/[/V — leave as-is
+            }
+        }
+    }
+    
     trace.status = InstructionTrace::Status::HALT_RETURN;
     trace.return_value = val;
     trace.operands.push_back({"v" + std::to_string(ret_reg), val.to_string()});
@@ -10686,8 +10753,17 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
     If22tRegs r = decode_22t(instr, bytecode_[pc + 1]); \
     DalvikValue a = get_register(r.vA); \
     DalvikValue b = get_register(r.vB); \
-    int32_t a_val = (a.type == DalvikType::INT32) ? a.int_val : 0; \
-    int32_t b_val = (b.type == DalvikType::INT32) ? b.int_val : 0; \
+    /* CHAR-PROBE campaign: extract the numeric value from EVERY integer-like \
+       primitive type, not just INT32. Per the Dalvik spec if-eq/if-ne/... \
+       22t only ever compare same-width ints, but the interpreter's typed \
+       registers (CHAR/BOOLEAN/BYTE/SHORT from signature-aware invoke and \
+       field/array loads) all carry their value in int_val. The previous \
+       "(type==INT32) ? int_val : 0" collapsed every other primitive to 0 — \
+       a char param compared as 0 and EMPTY BOARD CELLS matched it. Same \
+       zero-tolerance law as the EXP-093 if-eqz fix. */ \
+    auto if22t_int = [](const DalvikValue& v) -> int32_t { return dalvik_int_value(v); }; \
+    int32_t a_val = if22t_int(a); \
+    int32_t b_val = if22t_int(b); \
     bool taken = false; \
     bool a_is_ref = (a.type == DalvikType::OBJECT_REF || a.type == DalvikType::NULL_REF); \
     bool b_is_ref = (b.type == DalvikType::OBJECT_REF || b.type == DalvikType::NULL_REF); \
@@ -10923,6 +10999,41 @@ static std::vector<DalvikValue> build_invoke_args(
                 float f; int32_t bits = v.int_val;
                 std::memcpy(&f, &bits, sizeof(f));
                 args.push_back(DalvikValue::make_float(f));
+            } else if (v.type == DalvikType::INT32) {
+                // CHAR-PROBE campaign: signature-aware primitive retyping.
+                // DEX registers are untyped; the proto's param char is the
+                // only authority. Without this, char params leak their int
+                // code into string concat ("88" for 'X') and boolean params
+                // print "0"/"1" instead of "true"/"false".
+                switch (pt.empty() ? 'I' : pt[0]) {
+                    case 'C': {
+                        DalvikValue c = v;
+                        c.type = DalvikType::CHAR;
+                        c.int_val &= 0xFFFF;
+                        args.push_back(c);
+                        break;
+                    }
+                    case 'Z':
+                        args.push_back(DalvikValue::make_bool(v.int_val != 0));
+                        break;
+                    case 'B': {
+                        DalvikValue b = v;
+                        b.type = DalvikType::BYTE;
+                        b.int_val = static_cast<int8_t>(v.int_val & 0xFF);
+                        args.push_back(b);
+                        break;
+                    }
+                    case 'S': {
+                        DalvikValue s = v;
+                        s.type = DalvikType::SHORT;
+                        s.int_val = static_cast<int16_t>(v.int_val & 0xFFFF);
+                        args.push_back(s);
+                        break;
+                    }
+                    default:
+                        args.push_back(v);
+                        break;
+                }
             } else {
                 args.push_back(v);
             }
@@ -11311,6 +11422,101 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     log("  API BRIDGE: " + class_name + "." + method);
 
     // ────────────────────────────────────────────────────────────────────────
+    // GENERIC COMPATIBILITY (campaign §"complete runnable APK"): programmatic
+    // LayoutParams constructors.
+    //
+    // Every programmatic Android UI constructs LayoutParams and passes them
+    // to addView(view, params) / setLayoutParams(params):
+    //   new ViewGroup.LayoutParams(w, h)
+    //   new LinearLayout.LayoutParams(w, h) / (w, h, weight) / (source)
+    //   new MarginLayoutParams(w, h, l, t, r, b) / (source)
+    // The stub android.jar has no runnable constructor bodies, so bridge
+    // them: initialize the receiver's width/height/gravity/margins/weight
+    // fields per AOSP semantics (MATCH_PARENT=-1, WRAP_CONTENT=-2, positive
+    // values = px; density is 1.0 on this runtime so px == dp). The
+    // addView(view, params) capture below then transfers these fields into
+    // the ViewShadow ViewNode that the measure/layout pass consumes.
+    // This is generic Android semantics — no app-specific naming.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "<init>" &&
+        class_name.find("LayoutParams") != std::string::npos &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        uint32_t recv_id = args[0].object_id;
+        auto set_int_f = [&](const char* name, int v) {
+            DalvikValue val;
+            val.type = DalvikType::INT32;
+            val.int_val = v;
+            heap_.set_object_field(recv_id, name, val);
+        };
+        auto arg_int = [&](size_t i, int def) -> int {
+            if (i >= args.size()) return def;
+            const auto& a = args[i];
+            if (a.type == DalvikType::INT32) return a.int_val;
+            if (a.type == DalvikType::FLOAT32) return static_cast<int>(a.float_val);
+            if (a.type == DalvikType::FLOAT64) return static_cast<int>(a.double_val);
+            if (a.type == DalvikType::INT64) return static_cast<int>(a.long_val);
+            return def;
+        };
+        // Overload dispatch by arity (+ float tail for the weight ctor):
+        //   ()                → WRAP_CONTENT defaults (AOSP LayoutParams())
+        //   (w, h)            → width/height
+        //   (w, h, weight F)  → width/height/weight
+        //   (w, h, l, t, r, b)→ MarginLayoutParams
+        //   (source)          → copy width/height/gravity/margins/weight
+        if (args.size() == 1) {
+            set_int_f("width", -2);
+            set_int_f("height", -2);
+        } else if (args.size() == 2 && args[1].type == DalvikType::OBJECT_REF &&
+                   heap_.has_object(args[1].object_id)) {
+            // Copy constructor: mirror the source's fields.
+            uint32_t src = args[1].object_id;
+            auto copy_int = [&](const char* name, int def) {
+                auto fv = heap_.get_object_field(src, name);
+                if (fv.has_value() && fv->type == DalvikType::INT32)
+                    set_int_f(name, fv->int_val);
+                else
+                    set_int_f(name, def);
+            };
+            copy_int("width", -2);
+            copy_int("height", -2);
+            copy_int("gravity", 0);
+            copy_int("leftMargin", 0);
+            copy_int("topMargin", 0);
+            copy_int("rightMargin", 0);
+            copy_int("bottomMargin", 0);
+            auto wv = heap_.get_object_field(src, "weight");
+            if (wv.has_value() && wv->type == DalvikType::FLOAT32) {
+                DalvikValue val;
+                val.type = DalvikType::FLOAT32;
+                val.float_val = wv->float_val;
+                heap_.set_object_field(recv_id, "weight", val);
+            }
+        } else if (args.size() >= 3 && args[1].type != DalvikType::OBJECT_REF) {
+            set_int_f("width", arg_int(1, -2));
+            set_int_f("height", arg_int(2, -2));
+            if (args.size() >= 7) {
+                // MarginLayoutParams(w, h, l, t, r, b)
+                set_int_f("leftMargin", arg_int(3, 0));
+                set_int_f("topMargin", arg_int(4, 0));
+                set_int_f("rightMargin", arg_int(5, 0));
+                set_int_f("bottomMargin", arg_int(6, 0));
+            } else if (args.size() >= 4 && args[3].type == DalvikType::FLOAT32) {
+                // LinearLayout.LayoutParams(w, h, weight)
+                DalvikValue val;
+                val.type = DalvikType::FLOAT32;
+                val.float_val = args[3].float_val;
+                heap_.set_object_field(recv_id, "weight", val);
+            }
+        }
+        std::cerr << "[LP-INIT] bridged " << class_name << ".<init>"
+                  << " argc=" << args.size() << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // ────────────────────────────────────────────────────────────────────────
     // CYCLE-E: java.lang.Enum.ordinal() / name() for the synthesized framework
     // enum constants. The engine materializes android.* enum constants
@@ -11545,18 +11751,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
-    // EXP-095 (CM-019): addView(View child, ViewGroup.LayoutParams params) —
-    // capture the params into the child's ViewNode so the renderer can lay
-    // out with real geometry. The ViewShadow's addView handler (which links
-    // the tree) runs via the normal dispatch path; here we only enrich.
-    // args: [parent, child, params?]
-    if ((method == "addView" || method == "addViewInLayout") &&
-        args.size() >= 3 &&
-        args[1].type == DalvikType::OBJECT_REF && args[1].object_id != 0 &&
-        args[2].type == DalvikType::OBJECT_REF && args[2].object_id != 0 &&
-        heap_.has_object(args[2].object_id)) {
-        uint32_t child_id = args[1].object_id;
-        uint32_t lp_id = args[2].object_id;
+    // EXP-095 (CM-019): addView(View child, ViewGroup.LayoutParams params) /
+    // View.setLayoutParams(params) — capture the params into the view's
+    // ViewNode so the renderer can lay out with real geometry. The
+    // ViewShadow's addView handler (which links the tree) runs via the
+    // normal dispatch path; here we only enrich.
+    // args for addView: [parent, child, params?]
+    // args for setLayoutParams: [receiver, params]
+    if ((method == "addView" || method == "addViewInLayout" ||
+         method == "setLayoutParams") &&
+        args.size() >= 2) {
+        size_t child_idx = (method == "setLayoutParams") ? 0 : 1;
+        size_t lp_idx = child_idx + 1;
+        if (args[lp_idx].type == DalvikType::OBJECT_REF &&
+            args[lp_idx].object_id != 0 &&
+            args[child_idx].type == DalvikType::OBJECT_REF &&
+            args[child_idx].object_id != 0 &&
+            heap_.has_object(args[lp_idx].object_id)) {
+        uint32_t child_id = args[child_idx].object_id;
+        uint32_t lp_id = args[lp_idx].object_id;
         auto read_int = [&](const char* fname, int def) -> int {
             auto fv = heap_.get_object_field(lp_id, fname);
             if (fv.has_value() && fv->type == DalvikType::INT32) return fv->int_val;
@@ -11569,17 +11782,28 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         int mt = read_int("topMargin", 0);
         int mr = read_int("rightMargin", 0);
         int mb = read_int("bottomMargin", 0);
+        float weight = 0.0f;
+        auto wv = heap_.get_object_field(lp_id, "weight");
+        if (wv.has_value()) {
+            if (wv->type == DalvikType::FLOAT32) weight = wv->float_val;
+            else if (wv->type == DalvikType::INT32)
+                weight = static_cast<float>(wv->int_val);
+        }
         if (shadow_registry_ != nullptr) {
             auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
             if (vs != nullptr) {
-                vs->set_layout_params(child_id, w, h, gravity, ml, mt, mr, mb);
+                vs->set_layout_params(child_id, w, h, gravity, ml, mt, mr, mb,
+                                      weight);
                 std::cerr << "[EXP095-ADDVIEW-LP] child=" << child_id
                           << " w=" << w << " h=" << h
                           << " gravity=0x" << std::hex << gravity << std::dec
                           << " margins=(" << ml << "," << mt << "," << mr << "," << mb << ")"
+                          << " weight=" << weight
                           << " parent_class=" << class_name
+                          << " via=" << method
                           << std::endl;
             }
+        }
         }
     }
 
@@ -13299,6 +13523,54 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     //
     // Splits the string by the regex (treated as a literal delimiter).
     // Returns a heap array of String objects.
+    // CHAR-PROBE campaign: java.lang.String.valueOf overloads. ECJ compiles
+    // `char + String` concat into String.valueOf(char) feeding a
+    // StringBuilder — with no handler the char silently became null and the
+    // status bar rendered "null to move". Per OpenJDK:
+    //   valueOf(Z/B/C/S/I/J/F/D) → decimal rendering
+    //   valueOf(Object)          → "null" for null, obj.toString otherwise
+    //   valueOf([C) / valueOf([C, off, len) → char-array contents
+    // args for static valueOf: [receiver-slot?, value] — instance calls pass
+    // `this` first; static calls may or may not. Scan for the first arg
+    // slot that carries the value (args[0] for static resolution here).
+    if (class_name == "Ljava/lang/String;" && method == "valueOf" &&
+        !args.empty()) {
+        // Static: args[0] is the first param. (Some call paths prepend a
+        // null receiver slot — skip it when a second arg exists.)
+        const DalvikValue& a = (args.size() >= 2) ? args[1] : args[0];
+        std::string out;
+        switch (a.type) {
+            case DalvikType::STRING_REF: out = a.string_val; break;
+            case DalvikType::CHAR:
+                out = std::string(1, static_cast<char>(a.int_val & 0xFFFF));
+                break;
+            case DalvikType::BOOLEAN: out = a.bool_val ? "true" : "false"; break;
+            case DalvikType::INT32:
+            case DalvikType::BYTE:
+            case DalvikType::SHORT: out = std::to_string(a.int_val); break;
+            case DalvikType::INT64: out = std::to_string(a.long_val); break;
+            case DalvikType::FLOAT32: out = std::to_string(a.float_val); break;
+            case DalvikType::FLOAT64: out = std::to_string(a.double_val); break;
+            case DalvikType::NULL_REF: out = "null"; break;
+            case DalvikType::OBJECT_REF: {
+                if (heap_.has_object(a.object_id)) {
+                    auto sv = heap_.get_object_field(a.object_id, "value");
+                    if (!sv.has_value() || sv->type != DalvikType::STRING_REF)
+                        sv = heap_.get_object_field(a.object_id, "sb_value");
+                    if (sv.has_value() && sv->type == DalvikType::STRING_REF) {
+                        out = sv->string_val;
+                        break;
+                    }
+                }
+                out = a.class_desc + "@" + std::to_string(a.object_id);
+                break;
+            }
+            default: out = ""; break;
+        }
+        result = DalvikValue::make_string(out, 0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if (class_name == "Ljava/lang/String;" && method == "split") {
         // args[0] = this (String), args[1] = regex
         std::string str = args.empty() ? "" :
