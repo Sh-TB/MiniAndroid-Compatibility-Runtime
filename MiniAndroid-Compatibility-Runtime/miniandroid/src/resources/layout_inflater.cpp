@@ -1069,10 +1069,13 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     int h = cn->lp_height >= 0 ? cn->lp_height
                           : (cn->lp_height == -1 ? ch : cn->measured_height);
                     int y = ct;
-                    int vg = cn->child_gravity;
+                    // EXT-AOSP-001: same container-gravity fallback for the
+                    // horizontal row's cross axis (LinearLayout.java L1777-1778).
+                    int vg = cn->child_gravity >= 0 ? cn->child_gravity
+                           : (n->gravity_set ? n->container_gravity : -1);
                     if (vg >= 0 && !(vg & 0x30)) { /* no vertical bit: center */ y = ct + (ch - h) / 2; }
-                    else if (vg & 0x50) y = ct + ch - h;
-                    else if (vg & 0x10) y = ct + (ch - h) / 2;
+                    else if (vg >= 0 && (vg & 0x50)) y = ct + ch - h;
+                    else if (vg >= 0 && (vg & 0x10)) y = ct + (ch - h) / 2;
                     if (w > cw) w = cw;
                     stack.push_back({cid, x, y, w, h});
                     x += w + cn->lp_margin_right;
@@ -1101,7 +1104,14 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     int w = cn->lp_width >= 0 ? cn->lp_width
                           : (cn->lp_width == -1 ? cw : cn->measured_width);
                     int x = cl;
-                    int vg = cn->child_gravity;
+                    // EXT-AOSP-001 (LinearLayout.java@1cdfff55 L1284/L1466):
+                    // `lp.gravity < 0 ? mGravity : lp.gravity` — a child with
+                    // no explicit layout_gravity inherits the container's
+                    // gravity (set via XML android:gravity or the programmatic
+                    // setGravity intercept). child_gravity == -1 encodes
+                    // "unset" identically to AOSP's -1 sentinel.
+                    int vg = cn->child_gravity >= 0 ? cn->child_gravity
+                           : (n->gravity_set ? n->container_gravity : -1);
                     if (vg >= 0 && (vg & 0x1)) x = cl + (cw - w) / 2;
                     else if (vg >= 0 && (vg & 0x7) == 0x5) x = cl + cw - w;
                     if (w > cw) w = cw;

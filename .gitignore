@@ -1,3 +1,9 @@
 skills/
 node_modules/
 research-clones/
+apk_cache/
+download/
+upload/
+tools/
+tool-results/
+.env
