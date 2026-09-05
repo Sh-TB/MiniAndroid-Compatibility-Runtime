@@ -66,6 +66,8 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     // DEMO-CLICK-SEQUENCE: multi-click frame capture (see stage docs).
     // Runs after click-test so both probes see the launch framebuffer.
     if (success && config.click_count > 0) stage_click_sequence(result, config);
+    // GOLDEN-02: coordinate-anchored long-press gesture (AOSP touch law).
+    if (success && config.long_press_enabled) stage_long_press(result, config);
     if (success && config.frame_count > 0) stage_frame_sequence(result, config);
     
     // Always try to generate reports
@@ -3033,6 +3035,228 @@ bool ExecutionEngine::stage_click_sequence( ExecutionResult& result, const Execu
     std::cerr << "[CLICK-SEQ] done: dispatched=" << dispatched_total
               << "/" << config.click_count
               << " frames=" << manifest["frames"].size()
+              << " dir=" << frames_dir << std::endl;
+    return true;
+}
+
+// GOLDEN-02: coordinate-anchored long-press gesture capture.
+//
+// AOSP gesture law (frameworks/base/core/java/android/view/View.java):
+//   ACTION_DOWN at (x,y)
+//     → dispatchTouchEvent/onTouchEvent → hit testing finds the touch
+//       target (CLICKABLE or LONG_CLICKABLE view under the point)
+//     → postCheckForLongPress: CheckForLongPress posted with delay
+//       ViewConfiguration.getLongPressTimeout() (DEFAULT = 500 ms)
+//     → CheckForLongPress.run(): view enabled && still pressed →
+//       performLongClick() → OnLongClickListener.onLongClick(View)Z
+//     → consumed (true) → mHasPerformedLongPress = true → the subsequent
+//       ACTION_UP does NOT perform a click
+//     → not consumed (false / no listener) → ACTION_UP performs a click.
+//
+// The gesture driver is deterministic: no wall-clock enters the
+// framebuffer; the 500ms timeout is a recorded law, not a sleep.
+// Frame 0 = untouched launch frame; frame 1 = the post-gesture render
+// (the app's own visible consequence, e.g. a Toast window).
+bool ExecutionEngine::stage_long_press(ExecutionResult& result, const ExecutionConfig& config) {
+    if (!config.long_press_enabled) return true;
+    trace_engine_.info("ExecutionEngine", "stage_long_press",
+                       "LONG-PRESS gesture capture at (" +
+                       std::to_string(config.long_press_x) + "," +
+                       std::to_string(config.long_press_y) + ")");
+    if (!shadow_registry_) return true;
+
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    auto* activity_shadow = shadow_registry_->find_as<framework::ActivityShadow>();
+    if (!view_shadow || !activity_shadow) return true;
+
+    const std::string frames_dir = config.output_directory + "/frames";
+    try { std::filesystem::create_directories(frames_dir); } catch (...) {}
+
+    // Same PNG capture helper as stage_click_sequence: framebuffer_ →
+    // FrameBuffer → PNG on disk (+ SHA-256 of both the raw framebuffer and
+    // the PNG file bytes).
+    auto save_frame = [&](const std::string& path, std::string* png_sha_out = nullptr) -> bool {
+        try {
+            renderer::FrameBuffer fb(config.screen_width, config.screen_height);
+            for (int y = 0; y < config.screen_height; ++y) {
+                for (int x = 0; x < config.screen_width; ++x) {
+                    size_t i = (static_cast<size_t>(y) * config.screen_width + x) * 4;
+                    if (i + 3 < framebuffer_.size()) {
+                        fb.set_pixel(x, y, renderer::RGBA{
+                            framebuffer_[i], framebuffer_[i + 1],
+                            framebuffer_[i + 2], framebuffer_[i + 3]});
+                    }
+                }
+            }
+            bool ok = renderer::PNGWriter::write_png(path, fb);
+            if (ok && png_sha_out) {
+                std::ifstream pf(path, std::ios::binary);
+                std::vector<unsigned char> bytes((std::istreambuf_iterator<char>(pf)),
+                                                 std::istreambuf_iterator<char>());
+                *png_sha_out = sha256_hex(bytes);
+            }
+            return ok;
+        } catch (const std::exception& e) {
+            std::cerr << "[G02-GESTURE] frame save failed: " << e.what() << std::endl;
+            return false;
+        }
+    };
+
+    // The app's own visible state — every node's text in the tree.
+    auto collect_texts = [&]() {
+        nlohmann::json arr = nlohmann::json::array();
+        for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
+            if (node_ptr && !node_ptr->text.empty()) {
+                arr.push_back({{"view_id", id},
+                               {"class", node_ptr->class_desc},
+                               {"text", node_ptr->text}});
+            }
+        }
+        return arr;
+    };
+
+    nlohmann::json manifest;
+    manifest["gesture"] = "LONG_PRESS";
+    manifest["view_config_long_press_timeout_ms"] = 500;  // AOSP DEFAULT_LONG_PRESS_TIMEOUT
+    manifest["screen"] = {{"width", config.screen_width},
+                          {"height", config.screen_height}};
+    manifest["frames"] = nlohmann::json::array();
+
+    std::vector<uint8_t> prev = framebuffer_;
+    {
+        nlohmann::json f;
+        f["index"] = 0;
+        f["file"] = "frame_000.png";
+        f["event"] = "launch (no interaction)";
+        f["sha256"] = sha256_hex(prev);
+        std::string png_sha;
+        save_frame(frames_dir + "/frame_000.png", &png_sha);
+        f["png_sha256"] = png_sha;
+        f["visible_texts"] = collect_texts();
+        manifest["frames"].push_back(f);
+    }
+
+    // ── ACTION_DOWN: hit testing ─────────────────────────────────────────
+    // AOSP View touch-target law: dispatchTouchEvent walks the tree and the
+    // deepest VISIBLE view under the point that is CLICKABLE or
+    // LONG_CLICKABLE receives the gesture (View.setOnLongClickListener sets
+    // LONG_CLICKABLE; View.isTouchable() accepts either flag). The walk
+    // mirrors ViewRenderer::hit_test semantics without instantiating the
+    // (currently unlinked) renderer.
+    const int px = config.long_press_x, py = config.long_press_y;
+    uint32_t root_id = activity_shadow->content_view_id();
+    std::function<uint32_t(uint32_t)> hit_walk = [&](uint32_t id) -> uint32_t {
+        const auto* n = view_shadow->find_node(id);
+        if (!n || n->visibility != 0) return 0;
+        uint32_t best = 0;
+        if (px >= n->x && px < n->x + std::max(1, n->width) &&
+            py >= n->y && py < n->y + std::max(1, n->height)) {
+            const bool touchable = n->clickable || !n->onClick_handler.empty() ||
+                                   n->click_listener_id != 0 ||
+                                   !n->click_listener_class.empty() ||
+                                   n->long_click_listener_id != 0;
+            if (touchable) best = id;
+            for (uint32_t cid : n->children) {
+                uint32_t sub = hit_walk(cid);
+                if (sub != 0) best = sub;  // deepest touchable view wins
+            }
+        }
+        return best;
+    };
+    uint32_t target = hit_walk(root_id);
+    manifest["action"] = {{"down_x", px}, {"down_y", py},
+                          {"hit_test_root_id", root_id},
+                          {"target_view_id", target}};
+    const auto* tnode = view_shadow->find_node(target);
+    manifest["target_view_class"] = tnode ? tnode->class_desc : std::string("");
+    manifest["target_bounds"] = tnode ? nlohmann::json({tnode->x, tnode->y,
+                                                        tnode->width, tnode->height})
+                                      : nlohmann::json(nullptr);
+    std::cerr << "[G02-GESTURE] ACTION_DOWN (" << px << "," << py << ")"
+              << " root=" << root_id
+              << " hit_target=" << target
+              << (tnode ? (" class=" + tnode->class_desc) : " (NO TARGET)")
+              << std::endl;
+    if (target == 0) {
+        // Honest evidence: no touch target under the point — no dispatch.
+        manifest["long_click_dispatched"] = false;
+        manifest["consumed"] = false;
+        manifest["up_click_suppressed"] = false;
+        try {
+            std::ofstream mf(frames_dir + "/manifest.json");
+            mf << manifest.dump(2);
+        } catch (...) {}
+        std::cerr << "[G02-GESTURE] no touch target — gesture produced no dispatch"
+                  << std::endl;
+        return true;
+    }
+
+    // ── CheckForLongPress (500ms) → performLongClick ─────────────────────
+    bool dispatched = false, consumed = false;
+    dispatched = dalvik_engine_.dispatch_long_click(target, consumed);
+
+    // ── ACTION_UP: AOSP mHasPerformedLongPress law ───────────────────────
+    bool click_suppressed = false, up_click_dispatched = false;
+    if (dispatched && consumed) {
+        click_suppressed = true;  // mHasPerformedLongPress = true
+        std::cerr << "[G02-GESTURE] ACTION_UP: click SUPPRESSED"
+                  << " (onLongClick consumed — AOSP mHasPerformedLongPress law)"
+                  << std::endl;
+    } else {
+        // AOSP: long press not consumed → UP performs click.
+        up_click_dispatched = dalvik_engine_.dispatch_click(target);
+        std::cerr << "[G02-GESTURE] ACTION_UP: performClick dispatched="
+                  << (up_click_dispatched ? "true" : "false") << std::endl;
+    }
+    manifest["long_click_dispatched"] = dispatched;
+    manifest["consumed"] = consumed;
+    manifest["up_click_suppressed"] = click_suppressed;
+    manifest["up_click_dispatched"] = up_click_dispatched;
+
+    // ── Second frame: re-render CURRENT app state ────────────────────────
+    framebuffer_ = prev;
+    stage_render_frame(result, config);
+
+    size_t diff_px = 0;
+    if (framebuffer_.size() == prev.size()) {
+        for (size_t i = 0; i < framebuffer_.size(); i += 4) {
+            if (framebuffer_[i] != prev[i] ||
+                framebuffer_[i + 1] != prev[i + 1] ||
+                framebuffer_[i + 2] != prev[i + 2]) {
+                diff_px++;
+            }
+        }
+    }
+
+    std::string png_sha;
+    bool saved = save_frame(frames_dir + "/frame_001.png", &png_sha);
+    nlohmann::json f;
+    f["index"] = 1;
+    f["file"] = "frame_001.png";
+    f["event"] = "long_press";
+    f["down"] = {{"x", px}, {"y", py}};
+    f["target_view_id"] = target;
+    f["target_view_class"] = tnode ? tnode->class_desc : std::string("");
+    f["long_click_dispatched"] = dispatched;
+    f["consumed"] = consumed;
+    f["up_click_suppressed"] = click_suppressed;
+    f["up_click_dispatched"] = up_click_dispatched;
+    f["changed_pixels_vs_previous"] = diff_px;
+    f["sha256"] = sha256_hex(framebuffer_);
+    f["png_sha256"] = png_sha;
+    f["visible_texts"] = collect_texts();
+    manifest["frames"].push_back(f);
+    manifest["changed_pixels_vs_previous"] = diff_px;
+
+    try {
+        std::ofstream mf(frames_dir + "/manifest.json");
+        mf << manifest.dump(2);
+    } catch (...) {}
+
+    std::cerr << "[G02-GESTURE] done: dispatched=" << (dispatched ? "yes" : "no")
+              << " consumed=" << (consumed ? "yes" : "no")
+              << " click_suppressed=" << (click_suppressed ? "yes" : "no")
+              << " diff_px=" << diff_px
               << " dir=" << frames_dir << std::endl;
     return true;
 }

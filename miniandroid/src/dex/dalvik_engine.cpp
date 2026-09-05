@@ -4721,6 +4721,157 @@ bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id) {
     return ok;
 }
 
+// GOLDEN-02: Dispatch a LONG-CLICK event on a View — AOSP View.java law.
+//
+// AOSP chain implemented:
+//   View.onTouchEvent(ACTION_DOWN)
+//     → postCheckForLongClick(): CheckForLongPress posted with delay
+//       ViewConfiguration.getLongPressTimeout() (DEFAULT_LONG_PRESS_TIMEOUT
+//       = 500ms, frameworks/base ViewConfiguration.java)
+//     → CheckForLongPress.run(): if enabled && pressed → performLongClick()
+//     → performLongClick(): mListenerInfo.mOnLongClickListener != null →
+//       handled = mOnLongClickListener.onLongClick(this)
+//   The listener's boolean return is the "handled" value: true means the
+//   event is consumed and (View.java) mHasPerformedLongPress = true, so the
+//   subsequent ACTION_UP does NOT perform a click.
+//
+// This is the generic event mechanism — the listener is the REAL object
+// the app registered via View.setOnLongClickListener (heap object), the
+// callback is the app's own onLongClick(View)Z bytecode.
+//
+// Returns true if a listener was found and invoked. listener_consumed
+// receives the listener's boolean return (false when no listener exists —
+// AOSP performLongClick returns false in that case too).
+bool DalvikExecutionEngine::dispatch_long_click(uint32_t view_object_id,
+                                                bool& listener_consumed) {
+    listener_consumed = false;
+    if (shadow_registry_ == nullptr) {
+        std::cerr << "[G02-LONGCLICK] no shadow registry — cannot dispatch" << std::endl;
+        return false;
+    }
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) {
+        std::cerr << "[G02-LONGCLICK] no ViewShadow registered" << std::endl;
+        return false;
+    }
+    const auto* node = view_shadow->find_node(view_object_id);
+    if (node == nullptr) {
+        std::cerr << "[G02-LONGCLICK] view_id=" << view_object_id
+                  << " not found in ViewShadow" << std::endl;
+        return false;
+    }
+    if (node->long_click_listener_id == 0) {
+        // AOSP: no OnLongClickListener → performLongClick() returns false
+        // → the long press is not consumed → UP falls through to performClick.
+        std::cerr << "[G02-LONGCLICK] view_id=" << view_object_id
+                  << " class=" << node->class_desc
+                  << " has no OnLongClickListener (AOSP: not consumed)"
+                  << std::endl;
+        return false;
+    }
+
+    uint32_t listener_id = node->long_click_listener_id;
+    std::string listener_class;
+    // Look up the listener's class from the heap (the real registered object).
+    if (heap_.has_object(listener_id)) {
+        listener_class = heap_.get(listener_id)->class_descriptor;
+    }
+    if (listener_class.empty()) {
+        listener_class = "Landroid/view/View$OnLongClickListener;";
+    }
+
+    std::cerr << "[UI-EVENT] event=LONG_CLICK"
+              << " view_object=" << view_object_id
+              << " view_class=" << node->class_desc
+              << " listener=" << listener_id
+              << " listener_class=" << listener_class
+              << std::endl;
+
+    // Structured per-event audit BEFORE dispatch (same schema family as
+    // EXP-100 click audit): target, hierarchy path, bounds, enabled state.
+    uint64_t lc_no = miniandroid::diagnostics::click_counter().fetch_add(1) + 1;
+    {
+        std::vector<std::string> path_names{node->class_desc};
+        uint32_t pid = node->parent_id;
+        int guard = 0;
+        while (pid != 0 && guard++ < 64) {
+            const auto* p = view_shadow->find_node(pid);
+            if (p == nullptr) break;
+            path_names.push_back(p->class_desc);
+            pid = p->parent_id;
+        }
+        std::string path;
+        for (auto it = path_names.rbegin(); it != path_names.rend(); ++it) {
+            if (!path.empty()) path += "/";
+            path += *it;
+        }
+        std::string rec = "{\"schema\":\"click_audit_v1\",\"record\":\"dispatch\",\"click_no\":" +
+            std::to_string(lc_no) +
+            ",\"t\":\"" + miniandroid::diagnostics::iso_now() + "\"" +
+            ",\"event\":\"LONG_CLICK\"" +
+            ",\"view_id\":" + std::to_string(view_object_id) +
+            ",\"view_class\":\"" + miniandroid::diagnostics::jesc(node->class_desc) + "\"" +
+            ",\"hierarchy_path\":\"" + miniandroid::diagnostics::jesc(path) + "\"" +
+            ",\"bounds\":[" + std::to_string(node->x) + "," + std::to_string(node->y) + "," +
+            std::to_string(node->width) + "," + std::to_string(node->height) + "]" +
+            ",\"enabled\":" + (node->enabled ? "true" : "false") +
+            ",\"visibility\":" + std::to_string(node->visibility) +
+            ",\"listener_id\":" + std::to_string(listener_id) +
+            ",\"listener_class\":\"" + miniandroid::diagnostics::jesc(listener_class) + "\"" +
+            ",\"target_method\":\"onLongClick(View)Z\"}";
+        miniandroid::diagnostics::audit_append(rec);
+    }
+
+    // Args for onLongClick(View v):
+    //   args[0] = this (listener)
+    //   args[1] = view (the View that was long-pressed)
+    std::vector<DalvikValue> args;
+    args.push_back(DalvikValue::make_object(listener_id, listener_class));
+    args.push_back(DalvikValue::make_object(view_object_id, node->class_desc));
+
+    DalvikValue return_val = DalvikValue::make_bool(false);
+    DalvikExecutionResult result;
+    bool ok = try_recursive_invoke(listener_class, "onLongClick", args, return_val, result);
+
+    // AOSP consumption law: the listener's boolean return decides whether
+    // the event was consumed (mHasPerformedLongPress).
+    // Dalvik registers are untyped 32-bit cells: a Z return may surface as
+    // BOOLEAN (signature-aware retype) or raw INT32 (0/1). Both accepted;
+    // nonzero = true, exactly per Dalvik semantics.
+    switch (return_val.type) {
+        case DalvikType::BOOLEAN:
+            listener_consumed = return_val.bool_val;
+            break;
+        case DalvikType::INT32:
+            listener_consumed = (return_val.int_val != 0);
+            break;
+        default:
+            listener_consumed = false;
+            break;
+    }
+    std::cerr << "[G02-LONGCLICK] onLongClick return type="
+              << static_cast<int>(return_val.type)
+              << " val=" << return_val.to_string()
+              << " consumed=" << (listener_consumed ? "true" : "false")
+              << std::endl;
+
+    std::cerr << "[UI-EVENT] event=LONG_CLICK result="
+              << (ok ? "DISPATCHED" : "FAILED")
+              << " listener=" << listener_class
+              << " consumed=" << (listener_consumed ? "true" : "false")
+              << std::endl;
+
+    miniandroid::diagnostics::audit_append(
+        std::string("{\"schema\":\"click_audit_v1\",\"record\":\"dispatch_result\",\"click_no\":") +
+        std::to_string(lc_no) +
+        ",\"event\":\"LONG_CLICK\"" +
+        ",\"view_id\":" + std::to_string(view_object_id) +
+        ",\"dispatch_ok\":" + (ok ? "true" : "false") +
+        ",\"consumed\":" + (listener_consumed ? "true" : "false") +
+        ",\"total_instructions_executed\":" + std::to_string(result.total_instructions_executed) + "}");
+    return ok;
+}
+
 // EXP-071 Phase 8: Generic Runnable dispatch.
 //
 // Looks up a heap object by id, finds its class descriptor, and invokes

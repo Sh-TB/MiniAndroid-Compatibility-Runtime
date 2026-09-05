@@ -1,0 +1,67 @@
+{
+  "action": {
+    "down_x": 540,
+    "down_y": 960,
+    "hit_test_root_id": 4,
+    "target_view_id": 4
+  },
+  "changed_pixels_vs_previous": 12488,
+  "consumed": true,
+  "frames": [
+    {
+      "event": "launch (no interaction)",
+      "file": "frame_000.png",
+      "index": 0,
+      "png_sha256": "142238fd92b69e11d3407526de95cad29bf46e3f4191767d09a24379fbe0bbf2",
+      "sha256": "f8fa4302e1f2a49c41cfeeb4f4f6871ba35ef5305d237fe028ac5bfb90b17688",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "hello world\ni'm 6f1c3a9d2e5b4780\na version 14 android\nwith api level 34",
+          "view_id": 4
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 12488,
+      "consumed": true,
+      "down": {
+        "x": 540,
+        "y": 960
+      },
+      "event": "long_press",
+      "file": "frame_001.png",
+      "index": 1,
+      "long_click_dispatched": true,
+      "png_sha256": "e242ac1e9c8cc224939e07aafa256ded6e93fa1b4b95276de9e76e927d1cd7a0",
+      "sha256": "0f4f54289c1ccafacbe4438542c936fb6f6c91f652047e51474126c0b88c3bb6",
+      "target_view_class": "Landroid/widget/TextView;",
+      "target_view_id": 4,
+      "up_click_dispatched": false,
+      "up_click_suppressed": true,
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "hello world\ni'm 6f1c3a9d2e5b4780\na version 14 android\nwith api level 34",
+          "view_id": 4
+        }
+      ]
+    }
+  ],
+  "gesture": "LONG_PRESS",
+  "long_click_dispatched": true,
+  "screen": {
+    "height": 1920,
+    "width": 1080
+  },
+  "target_bounds": [
+    0,
+    0,
+    1080,
+    1920
+  ],
+  "target_view_class": "Landroid/widget/TextView;",
+  "up_click_dispatched": false,
+  "up_click_suppressed": true,
+  "view_config_long_press_timeout_ms": 500
+}

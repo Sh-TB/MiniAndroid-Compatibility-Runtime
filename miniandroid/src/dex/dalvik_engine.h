@@ -1245,6 +1245,15 @@ public:
     // `view_object_id` is the heap object_id of the target View.
     // Returns true if a listener was found and dispatched.
     bool dispatch_click(uint32_t view_object_id);
+    // GOLDEN-02: AOSP View.performLongClick() law — dispatch to the
+    // registered OnLongClickListener.onLongClick(View)Z via
+    // try_recursive_invoke, using the REAL listener object stored by
+    // View.setOnLongClickListener (ViewShadow long_click_listener_id).
+    // Returns true if a listener was found AND invoked; listener_consumed
+    // receives the listener's boolean return — the AOSP "handled" value
+    // that decides whether the subsequent UP performs a click
+    // (View.java CheckForLongPress → mHasPerformedLongPress law).
+    bool dispatch_long_click(uint32_t view_object_id, bool& listener_consumed);
     // CAMPAIGN 013: run a custom view's REAL onDraw(Canvas) bytecode.
     int dispatch_custom_view_draw(uint32_t view_object_id);
 
