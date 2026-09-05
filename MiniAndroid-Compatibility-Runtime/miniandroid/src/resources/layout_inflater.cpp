@@ -1059,7 +1059,33 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 }
                 int avail = std::max(0, cw - total_margin);
                 int weight_px = weight_total > 0 ? std::max(0, avail - fixed_w) : 0;
-                int x = cl;
+                // FIND-GRAVITY-VERTICAL FIX (AOSP LinearLayout@1cdfff55
+                // layoutHorizontal): the container's main-axis gravity
+                // (mGravity & HORIZONTAL_GRAVITY_MASK) positions the WHOLE
+                // CHILD ROW when leftover width exists — LEFT (default),
+                // CENTER_HORIZONTAL → half the leftover before the row,
+                // RIGHT → all of it. Pre-fix the row always started at the
+                // padding left. Child layout_gravity still governs only the
+                // cross axis (below), identical to AOSP.
+                int content_w = 0;
+                for (uint32_t cid : kids) {
+                    auto* cn = views->find_node(cid);
+                    int w2 = cn->layout_weight > 0 && weight_total > 0
+                           ? weight_px * cn->layout_weight / weight_total
+                           : (cn->lp_width >= 0 ? cn->lp_width : cn->measured_width);
+                    content_w += w2 + cn->lp_margin_left + cn->lp_margin_right;
+                }
+                int hg_main = n->gravity_set ? n->container_gravity : -1;
+                int block_x = cl;
+                if (hg_main >= 0 && content_w < cw) {
+                    // Axis-field equality law: mask the axis field FIRST
+                    // (HORIZONTAL = 0x7) then compare — a bare `& 0x5` test
+                    // misfires on CENTER (0x11 & 0x5 = 0x1 ≠ 0).
+                    int hf = hg_main & 0x7;
+                    if (hf == 0x5)           block_x = cl + (cw - content_w);   // RIGHT
+                    else if (hf == 0x1)      block_x = cl + (cw - content_w) / 2; // CENTER_HORIZONTAL
+                }
+                int x = block_x;
                 for (uint32_t cid : kids) {
                     auto* cn = views->find_node(cid);
                     x += cn->lp_margin_left;
@@ -1073,9 +1099,15 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     // horizontal row's cross axis (LinearLayout.java L1777-1778).
                     int vg = cn->child_gravity >= 0 ? cn->child_gravity
                            : (n->gravity_set ? n->container_gravity : -1);
-                    if (vg >= 0 && !(vg & 0x30)) { /* no vertical bit: center */ y = ct + (ch - h) / 2; }
-                    else if (vg >= 0 && (vg & 0x50)) y = ct + ch - h;
-                    else if (vg >= 0 && (vg & 0x10)) y = ct + (ch - h) / 2;
+                    // Cross-axis vertical law (EXT-AOSP-001), masked-field
+                    // equality: BOTTOM (0x50 field) → bottom; otherwise
+                    // center (covers CENTER 0x10 and the no-bit default).
+                    // Pre-fix a bare `& 0x50` test misfired on CENTER 0x11.
+                    if (vg >= 0) {
+                        int vf = vg & 0x70;
+                        if (vf == 0x50) y = ct + ch - h;
+                        else            y = ct + (ch - h) / 2;
+                    }
                     if (w > cw) w = cw;
                     stack.push_back({cid, x, y, w, h});
                     x += w + cn->lp_margin_right;
@@ -1094,7 +1126,36 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 }
                 int avail = std::max(0, ch - total_margin);
                 int weight_px = weight_total > 0 ? std::max(0, avail - fixed_h) : 0;
-                int y = ct;
+                // FIND-GRAVITY-VERTICAL FIX (AOSP LinearLayout@1cdfff55
+                // layoutVertical): the container's main-axis gravity
+                // (mGravity & VERTICAL_GRAVITY_MASK) positions the whole
+                // CHILD BLOCK when leftover height exists — TOP (default),
+                // CENTER_VERTICAL → half the leftover above the block,
+                // BOTTOM → all of it. Pre-fix the block always started at
+                // the padding top, so setGravity(0x11) centered horizontally
+                // but top-aligned vertically (visible in the old goldens).
+                // Child layout_gravity still governs only the cross axis
+                // (below), identical to AOSP.
+                int content_h = 0;
+                for (uint32_t cid : kids) {
+                    auto* cn = views->find_node(cid);
+                    int h2 = cn->layout_weight > 0 && weight_total > 0
+                           ? weight_px * cn->layout_weight / weight_total
+                           : (cn->lp_height >= 0 ? cn->lp_height : cn->measured_height);
+                    content_h += h2 + cn->lp_margin_top + cn->lp_margin_bottom;
+                }
+                int vg_main = n->gravity_set ? n->container_gravity : -1;
+                int block_y = ct;
+                if (vg_main >= 0 && content_h < ch) {
+                    // Axis-field equality law: mask the axis field FIRST
+                    // (VERTICAL = 0x70) then compare — a bare `& 0x50` test
+                    // misfires on CENTER (0x11 & 0x50 = 0x10 ≠ 0), which
+                    // pushed the block to the BOTTOM in the first attempt.
+                    int vf = vg_main & 0x70;
+                    if (vf == 0x50)          block_y = ct + (ch - content_h);      // BOTTOM
+                    else if (vf == 0x10)     block_y = ct + (ch - content_h) / 2;  // CENTER_VERTICAL
+                }
+                int y = block_y;
                 for (uint32_t cid : kids) {
                     auto* cn = views->find_node(cid);
                     y += cn->lp_margin_top;
