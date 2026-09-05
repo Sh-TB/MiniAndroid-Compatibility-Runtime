@@ -4395,3 +4395,47 @@ Stage Summary:
 - Next highest-value: implement the Winedroid-inspired automation-script +
   UI-dump + trace-category test gate (§26 unification), the §23 opcode gap
   table (DaliVM tables now read), and the ARSC differential test (ARSCLib).
+
+---
+Task ID: 10
+Agent: Super Z (main agent)
+Task: Campaign closure — WineDroid/reference study integration, agent
+finding audit, font corpus verification, final evidence report.
+
+Work Log:
+- REFERENCE STUDY (§1/§2): WineDroid identity RESOLVED after prior BLOCKED
+  sessions — winedroid.soham.sh (Rust Android userspace compatibility
+  layer; Wine-style prefix + framework-call translation; GPL-3.0; repo
+  private → SITE_DOCS_READ evidence, 13 pages fetched). WinDroid =
+  Nova-Systems-Lab/WinDroid-Runtime (Apache-2.0, early ADB tooling —
+  NOT_APPLICABLE_YET); DroidVM = hypervisor manager (GPL-3.0, orthogonal);
+  jadx HEAD license = Apache-2.0 (oracle bar lifted, pin-commit caveat);
+  DaliVM GPL-3.0 per-opcode tables; Skydnir custom all-rights-reserved.
+  Matrix upgraded with evidence legend; every row carries the obtained
+  evidence level (SOURCE_READ/README_ONLY/SEARCH_ONLY/NOT_FOUND).
+- AGENT-FINDING AUDIT (§4/§5): docs/AGENT_FINDING_AUDIT.md — 118/118
+  semantic battery re-run; RESULT_012/013 stale claims corrected (parse*/
+  substring/concat ARE implemented on current HEAD); all runtime/UI
+  findings statused with probes; cross-sandbox regression anchors pinned.
+- FONT CORPUS (§7): real-app evidence — tictactoe assets/fonts 1/1;
+  openlauncher ROOT-ASSETS 6/6 registered (generic discovery, no path
+  hardcoding); NO_FONT_DIRECTORY → SYSTEM proven. res/font remains open
+  (needs synthetic-ARSC fixture; no corpus APK carries it).
+- stopwatch (muellerma) exit=1: verified PRE-EXISTING (same exit + same
+  frame SHA eb16ab5c… before/after campaign commits) — AppCompat startup
+  chain limitation, 23k px partial render; logged honestly.
+- FINAL REPORT (§23): docs/CAMPAIGN_FINAL_REPORT.md — full evidence table,
+  deliverables, honest blockers.
+
+Stage Summary:
+- §24 minimum stop condition SATISFIED for one complete APK:
+  tictactoe_golden (real APK, complete GUI pipeline, real font pipeline
+  for its class, real interaction, real framebuffer, deterministic
+  replay, README-quality evidence) + all discovered knowledge committed
+  to Git.
+- PUSH remains BLOCKED (no remote in this sandbox) — LOCAL_COMMIT chain
+  clean and fast-forward-ready: de5f370 → c7bb9f2 → reference-matrix →
+  audit → final report.
+- Open items for next session: res/font ARSC fixture tooling, Typeface
+  fixtures D/E, libGDX/GL boundary decision, dooz Compose depth,
+  stopwatch AppCompat chain, Telegram artifact, push credentials.
