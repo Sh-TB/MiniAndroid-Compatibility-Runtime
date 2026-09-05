@@ -4,9 +4,11 @@
  */
 
 #include "manifest_reader.h"
-#include "dex/mutf8.h"   // FIND-REUSE-002: the ONE UTF-16LE→UTF-8 primitive
-                        // (this copy previously lacked surrogate handling —
-                        //  non-BMP manifest strings double-encoded; fixed)
+#include "resources/string_pool.h"  // FIND-REUSE-004: the ONE ResStringPool decoder
+                                    // (this reader previously walked entries
+                                    //  sequentially with null-terminator skips;
+                                    //  the canonical uses the offsets table
+                                    //  like AOSP androidfw ResStringPool)
 
 #include <cstring>
 #include <cstdio>      // snprintf (used by parse_header)
@@ -227,70 +229,22 @@ bool ManifestReader::parse_header(const uint8_t* data, size_t size) {
 }
 
 bool ManifestReader::parse_string_pool(const uint8_t* chunk, size_t size) {
-    if (size < sizeof(AxmlStringPoolHeader)) {
+    // FIND-REUSE-004: the parse itself lives ONCE in ResStringPool
+    // (resources/string_pool.cpp) — shared with the ARSC pools and the
+    // AXML pool. The deleted local copy walked entries SEQUENTIALLY with
+    // null-terminator skips; AOSP androidfw ResStringPool (and the
+    // canonical) index entries through the offsets table instead, which
+    // also removes the BLOCKER-006 alignment class of bugs entirely.
+    miniandroid::resources::ResStringPool pool;
+    size_t consumed = 0;
+    std::string err;
+    if (!pool.parse(chunk, size, consumed, &err)) {
+        log("String pool parse failed: " + err);
         return false;
     }
-    
-    const AxmlStringPoolHeader* sp_header = reinterpret_cast<const AxmlStringPoolHeader*>(chunk);
-    
-    uint32_t string_count = sp_header->string_count;
-    bool is_utf8 = (sp_header->flags & STRING_POOL_UTF8_FLAG) != 0;
-    
-    log("String pool: " + std::to_string(string_count) + " strings, UTF8=" + 
-        (is_utf8 ? "true" : "false"));
-    
-    strings_.reserve(string_count);
-    
-    // Strings start after the header
-    const uint8_t* strings_start = chunk + sp_header->strings_start;
-    const uint8_t* strings_end = chunk + size;
-    
-    size_t offset = 0;
-    
-    for (uint32_t i = 0; i < string_count && (strings_start + offset) < strings_end; i++) {
-        size_t str_length = 0;
-        size_t bytes_consumed = decode_string_length(strings_start, offset, str_length, is_utf8);
-        offset += bytes_consumed;
-        
-        if ((strings_start + offset + str_length) > strings_end) {
-            log("String " + std::to_string(i) + " extends beyond pool");
-            break;
-        }
-        
-        if (is_utf8) {
-            std::string str(reinterpret_cast<const char*>(strings_start + offset), str_length);
-            strings_.push_back(str);
-        } else {
-            // UTF-16LE pool → UTF-8 via the ONE shared encoder
-            // (FIND-REUSE-002). The deleted inline loop here lacked
-            // surrogate-pair combination: emoji/CJK-ext strings from a
-            // binary manifest were double-encoded (2×3-byte CESU-8 style).
-            strings_.push_back(miniandroid::dex::mutf8::utf16le_to_utf8(
-                reinterpret_cast<const uint8_t*>(strings_start + offset),
-                static_cast<size_t>(str_length) * 2));
-        }
-        
-        offset += is_utf8 ? str_length : str_length * 2;
-        
-        // Skip null terminator(s)
-        if (is_utf8) {
-            offset++;  // 1 byte null terminator
-        } else {
-            offset += 2;  // 2 byte null terminator
-        }
-        
-        // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
-        // The previous code aligned `offset` to 4 bytes between strings.
-        // Real AXML string pools do NOT pad strings — they are tightly
-        // packed. Verified against the cachecleanerwidget.apk AndroidManifest:
-        //   string[0]="label" (5 chars UTF-16) = 2 (len) + 10 (chars) + 2 (null) = 14 bytes
-        //   string[1] starts at offset 14 (NOT 16)
-        // The previous alignment logic caused every other string to be
-        // misaligned, producing the garbled "Parsed 7 strings from pool"
-        // output (out of 30 actual strings).
-        // No alignment between strings.
-    }
-    
+    log("String pool: " + std::to_string(pool.count()) + " strings, UTF8=" +
+        (pool.utf8_pool ? "true" : "false"));
+    strings_ = std::move(pool.strings);
     log("Parsed " + std::to_string(strings_.size()) + " strings from pool");
     return true;
 }
@@ -464,55 +418,6 @@ std::string ManifestReader::get_string(size_t index) const {
     return "";  // Empty string for invalid index
 }
 
-size_t ManifestReader::decode_string_length(const uint8_t* data, size_t offset, 
-                                            size_t& out_length, bool utf8) {
-    // EXP-037 PHASE A Week 3 (BLOCKER-006 FIX):
-    // The previous UTF-16 branch treated the length prefix as a 1-or-2 byte
-    // variable-length encoding (like UTF-8). The AOSP ResStringPool spec
-    // (frameworks/base/libs/androidfw/ResourceTypes.cpp) defines different
-    // encodings for UTF-8 vs UTF-16:
-    //
-    // UTF-8 length prefix:
-    //   - 1 byte if length <= 0x7F: just the length, high bit clear
-    //   - 2 bytes if length > 0x7F: (first & 0x7F) << 8 | second_byte
-    //   (followed by a SECOND uleb128-style byte count for the byte length)
-    //
-    // UTF-16 length prefix:
-    //   - 2 bytes (uint16 LE) by default: length = u16 value
-    //   - 4 bytes if (u16 & 0x8000): length = ((u16 & 0x7FFF) << 16) | next_u16
-    //
-    // The previous code read UTF-16 length as 1 byte (for short) which
-    // caused every UTF-16 string to be misaligned by 1 byte — the parser
-    // then read the second byte of the length prefix as the first UTF-16
-    // character, producing garbled CJK output like "欀嘀攀爀猀...".
-    if (utf8) {
-        uint8_t first = data[offset];
-        if ((first & 0x80) == 0) {
-            out_length = first;
-            return 1;
-        } else {
-            uint16_t len = (static_cast<uint16_t>(first & 0x7F) << 8) |
-                           static_cast<uint16_t>(data[offset + 1]);
-            out_length = len;
-            return 2;
-        }
-    } else {
-        // UTF-16: always at least 2 bytes
-        uint16_t first_u16 = static_cast<uint16_t>(data[offset]) |
-                              (static_cast<uint16_t>(data[offset + 1]) << 8);
-        if ((first_u16 & 0x8000) == 0) {
-            out_length = first_u16;
-            return 2;
-        } else {
-            // Long form: 4 bytes total
-            uint32_t len = (static_cast<uint32_t>(first_u16 & 0x7FFF) << 16) |
-                           (static_cast<uint32_t>(data[offset + 2]) |
-                            (static_cast<uint32_t>(data[offset + 3]) << 8));
-            out_length = len;
-            return 4;
-        }
-    }
-}
 
 void ManifestReader::push_namespace(const std::string& prefix, const std::string& uri) {
     if (namespace_stack_.empty()) {
