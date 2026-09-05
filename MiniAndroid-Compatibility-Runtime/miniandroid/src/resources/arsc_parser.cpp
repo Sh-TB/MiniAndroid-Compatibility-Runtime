@@ -243,6 +243,11 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
                 entry.value.ref_id = parent;
                 const uint8_t* m = base + ep + 16;
                 for (uint32_t mi = 0; mi < count && (size_t)(m - base) + 20 <= avail; mi++, m += 20) {
+                    // VISUAL-CAMPAIGN G49: keep the map KEY (attribute resource
+                    // id, e.g. 0x01010054 = android:windowBackground) so style
+                    // bags can be queried by attribute, per AOSP
+                    // ResTable_map { name, value }.
+                    entry.complex_keys.push_back(rd32(m));
                     ResValue item;
                     if (decode_res_value(m + 4, avail - (m - base) - 4, global_strings_, pkg, item)) {
                         if (item.is_string()) {
