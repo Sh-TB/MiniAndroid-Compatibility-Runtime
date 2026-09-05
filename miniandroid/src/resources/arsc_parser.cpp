@@ -3,7 +3,7 @@
  * See arsc_parser.h for design. Zero-dependency binary reader.
  */
 #include "arsc_parser.h"
-#include "dex/mutf8.h"   // FIND-REUSE-002: the ONE UTF-16LE→UTF-8 primitive
+#include "string_pool.h"  // FIND-REUSE-004: the ONE ResStringPool decoder
 
 namespace miniandroid {
 namespace resources {
@@ -36,57 +36,20 @@ float complex_to_float(uint32_t data) {
 }
 
 // ---------------------------------------------------------------------------
-// String pool
+// String pool — FIND-REUSE-004: the parse itself lives ONCE in
+// ResStringPool (string_pool.cpp); this wrapper only adapts the Pool type.
 // ---------------------------------------------------------------------------
 bool ArscParser::parse_string_pool(const uint8_t* base, size_t avail, size_t chunk_offset, Pool& out) {
-    if (chunk_offset + 20 > avail) { last_error_ = "string pool: truncated header"; return false; }
-    const uint8_t* p = base + chunk_offset;
-    uint16_t type = rd16(p);
-    uint16_t header_size = rd16(p + 2);
-    uint32_t chunk_size = rd32(p + 4);
-    if (type != RES_STRING_POOL_TYPE) { last_error_ = "string pool: bad chunk type"; return false; }
-    if (chunk_offset + chunk_size > avail) { last_error_ = "string pool: chunk overruns data"; return false; }
-    uint32_t string_count = rd32(p + 8);
-    uint32_t style_count  = rd32(p + 12);
-    uint32_t flags        = rd32(p + 16);
-    uint32_t strings_start= rd32(p + 20);
-    (void)style_count;
-    out.utf8 = (flags & RES_STRING_POOL_UTF8_FLAG) != 0;
-    out.strings.resize(string_count);
-    const uint32_t* offsets = (const uint32_t*)(p + header_size);
-    const uint8_t* sdata = p + strings_start;
-    for (uint32_t i = 0; i < string_count; i++) {
-        uint32_t off = offsets[i];
-        if (strings_start + off >= chunk_size) { out.strings[i].clear(); continue; }
-        const uint8_t* s = sdata + off;
-        if (out.utf8) {
-            // u16len then u8len (each uleb128), then bytes
-            size_t o = 0;
-            // skip u16 length (may be 2 bytes)
-            while (o < chunk_size - strings_start - off && (s[o] & 0x80)) o++;
-            o++;
-            size_t u8len = 0;
-            if (o < chunk_size - strings_start - off) {
-                if (s[o] & 0x80) { u8len = ((s[o] & 0x7F) << 8) | s[o + 1]; o += 2; }
-                else { u8len = s[o]; o++; }
-            }
-            size_t cap = std::min(u8len, chunk_size - strings_start - off - o);
-            out.strings[i].assign((const char*)(s + o), cap);
-        } else {
-            // UTF-16 pool: length is read char16-wise (AOSP decodingString16):
-            // first char16 = len, high bit set → 2-char16 (high:low) length.
-            size_t o = 0;
-            uint32_t u16len = 0;
-            uint16_t c0 = rd16(s);
-            if (c0 & 0x8000) { u16len = ((c0 & 0x7FFF) << 16) | rd16(s + 2); o = 4; }
-            else { u16len = c0; o = 2; }
-            size_t bytes_avail = chunk_size - strings_start - off - o;
-            size_t bytes = std::min<size_t>(u16len * 2, bytes_avail & ~1u);
-            // UTF-16LE pool → UTF-8 via the ONE shared encoder
-            // (FIND-REUSE-002; AOSP surrogate-pair law lives in mutf8.cpp).
-            out.strings[i] = miniandroid::dex::mutf8::utf16le_to_utf8(s + o, bytes);
-        }
+    if (chunk_offset > avail) { last_error_ = "string pool: offset past data"; return false; }
+    ResStringPool pool;
+    size_t consumed = 0;
+    std::string err;
+    if (!pool.parse(base + chunk_offset, avail - chunk_offset, consumed, &err)) {
+        last_error_ = "string pool: " + err;
+        return false;
     }
+    out.utf8 = pool.utf8_pool;
+    out.strings = std::move(pool.strings);
     return true;
 }
 

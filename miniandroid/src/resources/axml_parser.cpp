@@ -8,7 +8,7 @@
  *   resource map: attr resid indexed by attribute NAME string index.
  */
 #include "axml_parser.h"
-#include "dex/mutf8.h"   // FIND-REUSE-002: the ONE UTF-16LE→UTF-8 primitive
+#include "string_pool.h"  // FIND-REUSE-004: the ONE ResStringPool decoder
 #include <functional>
 
 namespace miniandroid {
@@ -39,48 +39,15 @@ std::string AxmlParser::ns_short(const std::string& uri) {
 
 bool AxmlParser::parse_string_pool(const uint8_t* p, size_t avail, size_t& consumed) {
     consumed = 0;
-    if (avail < 28) { last_error_ = "pool truncated"; return false; }
-    uint16_t type = ax_rd16(p);
-    uint16_t header_size = ax_rd16(p + 2);
-    uint32_t size = ax_rd32(p + 4);
-    if (type != RES_STRING_POOL_TYPE_) { last_error_ = "not string pool"; return false; }
-    if (size > avail) { last_error_ = "pool overruns"; return false; }
-    uint32_t count = ax_rd32(p + 8);
-    uint32_t flags = ax_rd32(p + 16);
-    uint32_t strings_start = ax_rd32(p + 20);
-    bool utf8 = (flags & RES_STRING_POOL_UTF8_FLAG) != 0;
-    strings_.clear();
-    strings_.resize(count);
-    const uint32_t* offs = (const uint32_t*)(p + header_size);
-    const uint8_t* sdata = p + strings_start;
-    for (uint32_t i = 0; i < count; i++) {
-        uint32_t off = offs[i];
-        if (strings_start + off >= size) continue;
-        const uint8_t* s = sdata + off;
-        size_t remain = size - strings_start - off;
-        if (utf8) {
-            size_t o = 0;
-            while (o < remain && (s[o] & 0x80)) o++;
-            o++;                              // last u16len byte
-            size_t u8len = 0;
-            if (o < remain) {
-                if (s[o] & 0x80) { u8len = ((s[o] & 0x7F) << 8) | s[o + 1]; o += 2; }
-                else { u8len = s[o]; o++; }
-            }
-            size_t cap = std::min(u8len, remain - o);
-            strings_[i].assign((const char*)(s + o), cap);
-        } else {
-            uint16_t c0 = ax_rd16(s);
-            uint32_t u16len; size_t o;
-            if (c0 & 0x8000) { u16len = ((c0 & 0x7FFF) << 16) | ax_rd16(s + 2); o = 4; }
-            else { u16len = c0; o = 2; }
-            size_t bytes = std::min<size_t>(u16len * 2, (remain - o) & ~1u);
-            // UTF-16LE pool → UTF-8 via the ONE shared encoder
-            // (FIND-REUSE-002; AOSP surrogate-pair law lives in mutf8.cpp).
-            strings_[i] = miniandroid::dex::mutf8::utf16le_to_utf8(s + o, bytes);
-        }
+    // FIND-REUSE-004: the parse itself lives ONCE in ResStringPool
+    // (string_pool.cpp) — shared with the ARSC pools and the manifest pool.
+    ResStringPool pool;
+    std::string err;
+    if (!pool.parse(p, avail, consumed, &err)) {
+        last_error_ = err;
+        return false;
     }
-    consumed = size;
+    strings_ = std::move(pool.strings);
     return true;
 }
 

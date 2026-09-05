@@ -259,7 +259,8 @@ private:
     
     // String pool helpers
     std::string get_string(size_t index) const;
-    size_t decode_string_length(const uint8_t* data, size_t offset, size_t& out_length, bool utf8);
+    // (decode_string_length removed — FIND-REUSE-004 moved pool entry
+    //  decoding into resources/string_pool.cpp, AOSP decodeLength law)
     
     // Namespace tracking
     void push_namespace(const std::string& prefix, const std::string& uri);
