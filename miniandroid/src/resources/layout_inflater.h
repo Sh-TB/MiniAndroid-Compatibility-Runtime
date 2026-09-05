@@ -97,6 +97,8 @@ private:
         uint32_t text_color = 0;
         int  text_style = 0;      // bit0 bold, bit1 italic
         std::string font_family;  // G32: android:fontFamily (raw string)
+        float appearance_text_size_sp = 0;  // G46: TextAppearance textSize (sp)
+        bool  appearance_resolved = false;
         uint32_t bg_color = 0;    // resolved ARGB (opaque)
         std::string bg_drawable;  // APK path
         std::string src_drawable; // APK path (ImageView)
