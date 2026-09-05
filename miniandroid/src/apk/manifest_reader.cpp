@@ -5,6 +5,8 @@
 
 #include "manifest_reader.h"
 #include "resources/string_pool.h"  // FIND-REUSE-004: the ONE ResStringPool decoder
+#include <sstream>
+#include <iomanip>
                                     // (this reader previously walked entries
                                     //  sequentially with null-terminator skips;
                                     //  the canonical uses the offsets table
@@ -475,6 +477,20 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         result_.application_label = get_attribute_value(attrs, "label");
         // EXP-093/F005: Extract custom Application class name.
         result_.application_name = get_attribute_value(attrs, "name");
+        // VISUAL-CAMPAIGN G49: android:theme (attr id 0x01010000) is a
+        // REFERENCE to a style resource — capture the raw resid so the
+        // renderer can resolve the window background.
+        for (const auto& a : attrs) {
+            if (get_string(a.name_index) == "theme" &&
+                (a.value_data_type == 0x01 /*REFERENCE*/ ||
+                 a.value_data_type == 0x02 /*ATTRIBUTE*/)) {
+                result_.application_theme_resid = a.value_data;
+                log("Application theme: @0x" + [] (uint32_t v) {
+                    std::string s; std::stringstream ss; ss << std::hex << v; s = ss.str(); return s;
+                }(a.value_data));
+                break;
+            }
+        }
         log("Application label: " + result_.application_label +
             " name: " + result_.application_name);
     }

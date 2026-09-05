@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <optional>
 
 #include "arsc_parser.h"
 #include "axml_parser.h"
@@ -43,6 +44,16 @@ public:
     const DeviceMetrics& metrics() const { return metrics_; }
     bool loaded() const { return loaded_; }
     const std::string& apk_path() const { return apk_path_; }
+
+    // VISUAL-CAMPAIGN (EXT-01 gate G49) — theme window background.
+    // AOSP law (PhoneWindow.generateLayout → DecorView): the window
+    // background comes from the activity/application theme attribute
+    // android:windowBackground (0x01010054) of the style referenced by
+    // <application android:theme>. It paints BEHIND all content — for
+    // HelloWorldSelfAware this is the black behind the white text.
+    // Returns nullopt when the APK declares no resolvable theme item
+    // (caller falls back to the plain default surface).
+    std::optional<uint32_t> resolve_window_background_argb(const std::string& apk_path);
 
     // Evidence dump
     std::string stats_json() const;

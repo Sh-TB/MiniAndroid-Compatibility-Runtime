@@ -527,43 +527,58 @@ bool DexParser::parse_static_values(const uint8_t* data, uint32_t offset, ClassI
         FieldInfo& field = info.static_fields[i];
 
         switch (value_type) {
-            case 0x00: { // VALUE_BYTE
-                int8_t val = (size_arg > 0 && p < current_size_) ? (int8_t)data[p] : 0;
-                p += size_arg;
+            case 0x00: { // VALUE_BYTE — value_arg+1 bytes (DEX spec: size is value_arg+1)
+                int8_t val = 0;
+                if (size_arg >= 0 && p < current_size_) {
+                    val = (int8_t)data[p];  // VALUE_BYTE is exactly 1 byte (value_arg=0)
+                }
+                p += (uint32_t)size_arg + 1;
                 field.has_default_value = true;
                 field.default_int_value = val;
                 break;
             }
-            case 0x02: { // VALUE_SHORT
+            case 0x02: { // VALUE_SHORT — value_arg+1 bytes (was: size_arg — dropped the top byte of 2-byte shorts)
                 int16_t val = 0;
-                for (uint8_t s = 0; s < size_arg && p < current_size_; s++) {
+                for (uint8_t s = 0; s <= size_arg && p < current_size_; s++) {
                     val |= (int16_t)data[p++] << (s * 8);
                 }
                 field.has_default_value = true;
                 field.default_int_value = val;
                 break;
             }
-            case 0x04: { // VALUE_INT
+            case 0x04: { // VALUE_INT — value_arg+1 bytes.
+                // VISUAL-CAMPAIGN EXT-01 (G17/G24) SPEC FIX: encoded_value's
+                // value_arg is "byte count minus one" (AOSP
+                // art/libdexfile/dex/dex_file.h encoded_value rule). The old
+                // loop read ONLY size_arg bytes, so every 4-byte VALUE_INT
+                // lost its top byte: app R constants 0x7f030000 (layout),
+                // 0x7f020000 (id), 0x7f050001 (string) parsed as 0x030000,
+                // 0x020000, 0x050001. Name-mediated lookups stayed
+                // self-consistent (both sides wrong), but every ID-mediated
+                // lookup broke: setContentView(R.layout.activity_main) →
+                // "root_id=0 views=0", findViewById(R.id.x) → null,
+                // getColor(R.color.y) → default. Exposed by the FIRST real
+                // external APK (HelloWorldSelfAware, aapt2-optimized build).
                 int32_t val = 0;
-                for (uint8_t s = 0; s < size_arg && p < current_size_; s++) {
+                for (uint8_t s = 0; s <= size_arg && p < current_size_; s++) {
                     val |= (int32_t)data[p++] << (s * 8);
                 }
                 field.has_default_value = true;
                 field.default_int_value = val;
                 break;
             }
-            case 0x06: { // VALUE_LONG
+            case 0x06: { // VALUE_LONG — value_arg+1 bytes (was: size_arg — dropped the top byte of 8-byte longs)
                 int64_t val = 0;
-                for (uint8_t s = 0; s < size_arg && p < current_size_; s++) {
+                for (uint8_t s = 0; s <= size_arg && p < current_size_; s++) {
                     val |= (int64_t)data[p++] << (s * 8);
                 }
                 field.has_default_value = true;
-                field.default_int_value = val;
+                field.default_int_value = (int32_t)val;
                 break;
             }
-            case 0x17: { // VALUE_STRING
+            case 0x17: { // VALUE_STRING — string_idx is value_arg+1 bytes
                 uint32_t str_idx = 0;
-                for (uint8_t s = 0; s < size_arg && p < current_size_; s++) {
+                for (uint8_t s = 0; s <= size_arg && p < current_size_; s++) {
                     str_idx |= (uint32_t)data[p++] << (s * 8);
                 }
                 field.has_default_value = true;
@@ -582,7 +597,8 @@ bool DexParser::parse_static_values(const uint8_t* data, uint32_t offset, ClassI
             }
             default: {
                 // Skip unknown value types (FLOAT, DOUBLE, TYPE, FIELD, etc.)
-                p += size_arg;
+                // DEX spec: payload is value_arg+1 bytes.
+                p += (uint32_t)size_arg + 1;
                 break;
             }
         }

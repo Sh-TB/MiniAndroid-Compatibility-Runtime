@@ -1383,6 +1383,23 @@ public:
     void set_shadow_registry(framework::ShadowRegistry* reg) { shadow_registry_ = reg; }
     framework::ShadowRegistry* get_shadow_registry() const { return shadow_registry_; }
 
+    // VISUAL-CAMPAIGN (EXT-01 gate G25): seed the virtual device identity.
+    // AOSP law: Build.VERSION.SDK_INT / Build.VERSION.RELEASE / Build.* and
+    // Settings.Secure.ANDROID_ID are device-provided statics — an app DEX
+    // never defines them. Without a seed every sget returned 0/null, so
+    // AndroidInfo-style version gates took the WRONG branch (SDK_INT=0 < 26
+    // → legacy Build.SERIAL path) and device-identity strings rendered as
+    // "null". Seeds are insert-if-absent: a real <clinit> always wins.
+    void seed_framework_device_statics();
+
+private:
+    // VISUAL-CAMPAIGN (EXT-01 gate G25): the CYCLE-E Java format engine
+    // (previously inline in the String.format handler) — shared by
+    // String.format AND Context.getString(resId, formatArgs) per the AOSP
+    // law Resources.getString(int, Object...) == String.format(load(resId), args).
+    std::string java_format_walk(const std::string& fmt,
+                                 const std::vector<DalvikValue>& fargs);
+
     // EXP-051: Try to dispatch a method call via the shadow registry.
     // Returns true if a shadow handled the call (in which case `result`
     // and `status` are populated). Returns false if no shadow claimed

@@ -11328,6 +11328,270 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     return false;
 }
 
+// ────────────────────────────────────────────────────────────────────
+// VISUAL-CAMPAIGN (EXT-01 gate G25): seed the virtual device identity.
+// AOSP law: Build.VERSION.SDK_INT / Build.VERSION.RELEASE / Build.* and
+// Settings.Secure.ANDROID_ID are FRAMEWORK-provided statics — a real
+// device firmware defines them before any app code runs. MiniAndroid's
+// honest virtual identity tracks the android-34 stubs used by its
+// fixture toolchain (SDK_INT=34, RELEASE="14"). Insert-if-absent:
+// a real app <clinit> always wins over a seed.
+// Evidence: EXT-01 baseline (HelloWorldSelfAware) — AndroidInfo.getId()
+// read SDK_INT=0, took the pre-O Build.SERIAL branch and rendered
+// "i'm null"; with this seed it takes the Settings.Secure ANDROID_ID
+// branch exactly like any Android 8+ device.
+// ────────────────────────────────────────────────────────────────────
+void DalvikExecutionEngine::seed_framework_device_statics() {
+    auto seed = [this](const std::string& key, const DalvikValue& v) {
+        static_field_storage_.emplace(key, v);  // insert-if-absent
+    };
+    seed("Landroid/os/Build$VERSION;.SDK_INT", DalvikValue::make_int(34));
+    seed("Landroid/os/Build$VERSION;.RELEASE", DalvikValue::make_string("14", 0));
+    seed("Landroid/os/Build$VERSION;.CODENAME", DalvikValue::make_string("REL", 0));
+    seed("Landroid/os/Build$VERSION;.SDK", DalvikValue::make_string("34", 0));
+    seed("Landroid/os/Build$VERSION;.INCREMENTAL", DalvikValue::make_string("miniandroid.20260905", 0));
+    seed("Landroid/os/Build;.MODEL", DalvikValue::make_string("MiniAndroid", 0));
+    seed("Landroid/os/Build;.MANUFACTURER", DalvikValue::make_string("MiniAndroid", 0));
+    seed("Landroid/os/Build;.BRAND", DalvikValue::make_string("MiniAndroid", 0));
+    seed("Landroid/os/Build;.DEVICE", DalvikValue::make_string("miniandroid", 0));
+    seed("Landroid/os/Build;.PRODUCT", DalvikValue::make_string("miniandroid", 0));
+    seed("Landroid/os/Build;.HARDWARE", DalvikValue::make_string("miniandroid", 0));
+    seed("Landroid/os/Build;.FINGERPRINT", DalvikValue::make_string("MiniAndroid/miniandroid/miniandroid:14/MINI.20260905/0:userdebug/test-keys", 0));
+    seed("Landroid/os/Build;.SERIAL", DalvikValue::make_string("miniandroid", 0));
+    // AOSP: Settings.Secure.ANDROID_ID == the column name "android_id".
+    seed("Landroid/provider/Settings$Secure;.ANDROID_ID", DalvikValue::make_string("android_id", 0));
+    // Deterministic virtual-device ANDROID_ID (16 lowercase hex chars,
+    // same shape as a real device; constant => Rule 12 determinism).
+    resource_string_values_["android_id"] = "6f1c3a9d2e5b4780";
+}
+
+// ────────────────────────────────────────────────────────────────────
+// VISUAL-CAMPAIGN (EXT-01 gate G25): the CYCLE-E Java format engine,
+// extracted VERBATIM from the String.format handler (one canonical
+// implementation, REUSE-FIRST). Applies
+// %[argument_index$][flags][width][.precision]conversion
+// with d/i/s/S/f/F/x/X/o/b/B/c/C/e/E/g/G/n, zero/space padding,
+// left-align, explicit argument indexes; Java law: null → "null",
+// boxed primitives read their "value" field.
+// ────────────────────────────────────────────────────────────────────
+std::string DalvikExecutionEngine::java_format_walk(
+        const std::string& fmt, const std::vector<DalvikValue>& fargs) {
+    std::string output;
+
+        // Java-correct stringification of one format argument (§34: null
+        // prints as "null", boxed primitives read their "value" field).
+        auto elem_to_string = [&](const DalvikValue& v) -> std::string {
+            switch (v.type) {
+                case DalvikType::STRING_REF: return v.string_val;
+                case DalvikType::INT32: return std::to_string(v.int_val);
+                case DalvikType::INT64: return std::to_string(v.long_val);
+                case DalvikType::FLOAT32: return std::to_string(v.float_val);
+                case DalvikType::FLOAT64: return std::to_string(v.double_val);
+                case DalvikType::BOOLEAN: return v.bool_val ? "true" : "false";
+                case DalvikType::CHAR: return std::string(1, static_cast<char>(v.int_val));
+                case DalvikType::OBJECT_REF: {
+                    if (v.is_null || v.object_id == 0 || !heap_.has_object(v.object_id))
+                        return "null";
+                    auto fv = heap_.get_object_field(v.object_id, "value");
+                    if (fv.has_value()) {
+                        switch (fv->type) {
+                            case DalvikType::INT32: return std::to_string(fv->int_val);
+                            case DalvikType::INT64: return std::to_string(fv->long_val);
+                            case DalvikType::BOOLEAN: return fv->bool_val ? "true" : "false";
+                            case DalvikType::CHAR:
+                                return std::string(1, static_cast<char>(fv->int_val));
+                            case DalvikType::FLOAT32: return std::to_string(fv->float_val);
+                            case DalvikType::FLOAT64: return std::to_string(fv->double_val);
+                            case DalvikType::STRING_REF: return fv->string_val;
+                            default: break;
+                        }
+                    }
+                    return "object@" + std::to_string(v.object_id);
+                }
+                case DalvikType::NULL_REF: return "null";
+                default: return "";
+            }
+        };
+
+        // Java decimal formatting with width/zero-pad/left-align.
+        auto pad = [](std::string s, int width, bool zero, bool left) {
+            if ((int)s.size() >= width) return s;
+            std::string fill((size_t)width - s.size(), zero ? '0' : ' ');
+            return left ? (s + fill) : (fill + s);
+        };
+
+        size_t arg_idx = 0;
+        for (size_t i = 0; i < fmt.size();) {
+            if (fmt[i] != '%') { output += fmt[i++]; continue; }
+            size_t j = i + 1;
+            if (j >= fmt.size()) { output += '%'; break; }
+            if (fmt[j] == '%') { output += '%'; i = j + 1; continue; }
+            // Optional explicit argument index: %2$s
+            size_t spec_start = j;
+            int explicit_idx = 0;
+            {
+                size_t k = j;
+                while (k < fmt.size() && isdigit((unsigned char)fmt[k])) k++;
+                if (k < fmt.size() && fmt[k] == '$' && k > j) {
+                    explicit_idx = std::atoi(fmt.substr(j, k - j).c_str());
+                    j = k + 1;
+                }
+            }
+            // Flags
+            bool left = false, zero = false, alt = false, plus = false;
+            while (j < fmt.size()) {
+                char f = fmt[j];
+                if (f == '-') left = true;
+                else if (f == '0') zero = true;
+                else if (f == '#') alt = true;
+                else if (f == '+') plus = true;
+                else if (f == ' ' || f == ',') { /* accepted, no-op */ }
+                else break;
+                j++;
+            }
+            // Width
+            int width = 0;
+            {
+                size_t k = j;
+                while (k < fmt.size() && isdigit((unsigned char)fmt[k])) k++;
+                if (k > j) { width = std::atoi(fmt.substr(j, k - j).c_str()); j = k; }
+            }
+            // Precision
+            int prec = -1;
+            if (j < fmt.size() && fmt[j] == '.') {
+                size_t k = j + 1;
+                while (k < fmt.size() && isdigit((unsigned char)fmt[k])) k++;
+                prec = std::atoi(fmt.substr(j + 1, k - j - 1).c_str());
+                j = k;
+            }
+            if (j >= fmt.size()) { output += fmt.substr(i); break; }
+            char conv = fmt[j];
+
+            // Resolve the argument (explicit index is 1-based).
+            DalvikValue elem;
+            bool have = false;
+            if (explicit_idx > 0) {
+                size_t pos = (size_t)(explicit_idx - 1);
+                if (pos < fargs.size()) { elem = fargs[pos]; have = true; }
+            } else {
+                if (arg_idx < fargs.size()) { elem = fargs[arg_idx]; have = true; }
+                arg_idx++;
+            }
+            (void)spec_start;
+
+            std::string piece;
+            switch (conv) {
+                case 'd': case 'i': {
+                    int64_t n = 0;
+                    if (have) {
+                        if (elem.type == DalvikType::INT32) n = elem.int_val;
+                        else if (elem.type == DalvikType::INT64) n = elem.long_val;
+                        else if (elem.type == DalvikType::OBJECT_REF) {
+                            auto fv = heap_.has_object(elem.object_id)
+                                          ? heap_.get_object_field(elem.object_id, "value")
+                                          : std::nullopt;
+                            if (fv.has_value() && fv->type == DalvikType::INT32) n = fv->int_val;
+                            else if (fv.has_value() && fv->type == DalvikType::INT64) n = fv->long_val;
+                        }
+                    }
+                    piece = std::to_string(n);
+                    if (plus && n >= 0) piece = "+" + piece;
+                    piece = pad(piece, width, zero, left);
+                    break;
+                }
+                case 'x': case 'X': {
+                    uint64_t n = 0;
+                    if (have) {
+                        if (elem.type == DalvikType::INT32) n = (uint32_t)elem.int_val;
+                        else if (elem.type == DalvikType::INT64) n = (uint64_t)elem.long_val;
+                        else if (elem.type == DalvikType::OBJECT_REF) {
+                            auto fv = heap_.has_object(elem.object_id)
+                                          ? heap_.get_object_field(elem.object_id, "value")
+                                          : std::nullopt;
+                            if (fv.has_value() && fv->type == DalvikType::INT32)
+                                n = (uint32_t)fv->int_val;
+                        }
+                    }
+                    piece = alt ? ("0x" + (conv == 'x'
+                                        ? [] (uint64_t v) { std::string s; std::stringstream ss; ss << std::hex << v; s = ss.str(); return s; }(n)
+                                        : [] (uint64_t v) { std::string s; std::stringstream ss; ss << std::uppercase << std::hex << v; s = ss.str(); return s; }(n)))
+                                : (conv == 'x'
+                                        ? [] (uint64_t v) { std::string s; std::stringstream ss; ss << std::hex << v; s = ss.str(); return s; }(n)
+                                        : [] (uint64_t v) { std::string s; std::stringstream ss; ss << std::uppercase << std::hex << v; s = ss.str(); return s; }(n));
+                    piece = pad(piece, width, zero, left);
+                    break;
+                }
+                case 'f': case 'F': {
+                    double d = 0.0;
+                    if (have) {
+                        if (elem.type == DalvikType::FLOAT32) d = elem.float_val;
+                        else if (elem.type == DalvikType::FLOAT64) d = elem.double_val;
+                        else if (elem.type == DalvikType::INT32) d = elem.int_val;
+                        else if (elem.type == DalvikType::OBJECT_REF) {
+                            auto fv = heap_.has_object(elem.object_id)
+                                          ? heap_.get_object_field(elem.object_id, "value")
+                                          : std::nullopt;
+                            if (fv.has_value() && fv->type == DalvikType::FLOAT32) d = fv->float_val;
+                            else if (fv.has_value() && fv->type == DalvikType::FLOAT64) d = fv->double_val;
+                            else if (fv.has_value() && fv->type == DalvikType::INT32) d = fv->int_val;
+                        }
+                    }
+                    char buf[64];
+                    snprintf(buf, sizeof(buf), "%.*f", prec >= 0 ? prec : 6, d);
+                    piece = pad(buf, width, zero, left);
+                    break;
+                }
+                case 's': case 'S': {
+                    piece = have ? elem_to_string(elem) : "null";
+                    if (prec >= 0 && (int)piece.size() > prec) piece = piece.substr(0, prec);
+                    if (conv == 'S')
+                        std::transform(piece.begin(), piece.end(), piece.begin(), ::toupper);
+                    piece = pad(piece, width, /*zero=*/false, left);
+                    break;
+                }
+                case 'b': case 'B': {
+                    bool b = have && !(elem.type == DalvikType::BOOLEAN && !elem.bool_val);
+                    piece = b ? "true" : "false";
+                    if (conv == 'B')
+                        std::transform(piece.begin(), piece.end(), piece.begin(), ::toupper);
+                    break;
+                }
+                case 'c': case 'C': {
+                    piece = have ? elem_to_string(elem) : "";
+                    break;
+                }
+                case 'e': case 'E': case 'g': case 'G': {
+                    double d = 0.0;
+                    if (have && elem.type == DalvikType::FLOAT64) d = elem.double_val;
+                    else if (have && elem.type == DalvikType::FLOAT32) d = elem.float_val;
+                    char buf[64];
+                    snprintf(buf, sizeof(buf),
+                             conv == 'e' ? "%.*e" : conv == 'E' ? "%.*E" : conv == 'g' ? "%.*g" : "%.*G",
+                             prec >= 0 ? prec : 6, d);
+                    piece = pad(buf, width, zero, left);
+                    break;
+                }
+                case 'o': {
+                    int64_t n = have && elem.type == DalvikType::INT32 ? elem.int_val : 0;
+                    char buf[32]; snprintf(buf, sizeof(buf), "%llo", (long long)n);
+                    piece = buf;
+                    break;
+                }
+                case 'n': piece = "\n"; break;
+                default:
+                    // Unknown conversion — Java throws; we keep the spec
+                    // verbatim and emit a diagnostic (§34).
+                    std::cerr << "UNSUPPORTED_FORMAT_SPECIFICATION spec=%"
+                              << conv << std::endl;
+                    piece = fmt.substr(i, j - i + 1);
+                    break;
+            }
+            output += piece;
+            i = j + 1;
+        }
+    return output;
+}
+
 bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           const std::string& method,
                                           const std::vector<DalvikValue>& args,
@@ -14266,13 +14530,64 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // ──────────────────────────────────────────────────────────────────────
+    // VISUAL-CAMPAIGN (EXT-01 gate G25): Context identity plumbing.
+    // AOSP law (frameworks/base core/java/android/content/Context.java):
+    //   getContentResolver() returns the ContentResolver every Context owns.
+    // The baseline EXT-01 run left it unhandled (register → 0/null).
+    // ──────────────────────────────────────────────────────────────────────
+    if (method == "getContentResolver" &&
+        (class_name.find("Application") != std::string::npos ||
+         class_name.find("Context") != std::string::npos ||
+         class_name.find("ContextWrapper") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        uint32_t cr_id = heap_.allocate("Landroid/content/ContentResolver;", pc_, 0);
+        result = DalvikValue::make_object(cr_id, "Landroid/content/ContentResolver;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // AOSP law (Settings.Secure.getString): returns the string value for the
+    // (name, key) pair under the calling user's secure settings. MiniAndroid
+    // provides the deterministic virtual-device ANDROID_ID seeded by
+    // seed_framework_device_statics(); unknown keys resolve to null (AOSP
+    // behavior for absent settings rows).
+    if (method == "getString" &&
+        class_name.find("Settings$Secure") != std::string::npos) {
+        std::string key;
+        if (!args.empty()) {
+            const DalvikValue& kv = args.size() >= 2 ? args[1] : args[0];
+            if (kv.type == DalvikType::STRING_REF) key = kv.string_val;
+            else if (kv.type == DalvikType::OBJECT_REF && heap_.has_object(kv.object_id)) {
+                auto sv = heap_.get_object_field(kv.object_id, "value");
+                if (sv.has_value() && sv->type == DalvikType::STRING_REF) key = sv->string_val;
+            }
+        }
+        auto it = resource_string_values_.find(key);
+        if (it != resource_string_values_.end()) {
+            result = DalvikValue::make_string(it->second, 0);
+        } else {
+            result = DalvikValue::make_null();
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        std::cerr << "[EXT01-SECURE] Settings$Secure.getString(\"" << key
+                  << "\") → \"" << (it != resource_string_values_.end() ? it->second : std::string("<null>"))
+                  << "\"" << std::endl;
+        return true;
+    }
+
     // EXP-093: Application.getString(int resid) → String
     // Per AOSP: Application delegates to Context.getString which delegates
     // to Resources.getString. We handle it the same way as Resources.getString.
+    // VISUAL-CAMPAIGN (EXT-01 gate G25): Activity/ContextThemeWrapper added —
+    // Activity extends ContextThemeWrapper extends ContextWrapper; getString
+    // is defined FINAL on Context, so EVERY android.app.Activity call lands
+    // here. Baseline EXT-01: Activity.getString fell through to the shadow
+    // dispatcher (8 failed dispatch attempts) and setText received "".
     if (method == "getString" &&
         (class_name.find("Application") != std::string::npos ||
          class_name.find("Context") != std::string::npos ||
-         class_name.find("ContextWrapper") != std::string::npos)) {
+         class_name.find("ContextWrapper") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
         std::cerr << "[EXP093-APPSTR] HIT! class=" << class_name
                   << " args=" << args.size();
         for (size_t i = 0; i < args.size() && i < 3; i++) {
@@ -14322,7 +14637,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (fn_it != field_name_by_resid_.end()) {
                 auto sv_it = resource_string_values_.find(fn_it->second);
                 if (sv_it != resource_string_values_.end()) {
-                    result = DalvikValue::make_string(sv_it->second, 0);
+                    // VISUAL-CAMPAIGN (EXT-01 gate G25): AOSP law —
+                    // Context.getString(int, Object...) ==
+                    // String.format(getString(resId), formatArgs).
+                    // Apply the SAME canonical java_format_walk engine.
+                    std::vector<DalvikValue> fargs;
+                    size_t fidx = (args.size() >= 2 && args[1].type == DalvikType::INT32) ? 2 : 1;
+                    if (args.size() > fidx && args[fidx].type == DalvikType::OBJECT_REF &&
+                        heap_.has_object(args[fidx].object_id)) {
+                        uint32_t arr_id = args[fidx].object_id;
+                        int arr_len = 0;
+                        auto len_field = heap_.get_object_field(arr_id, "__array_length__");
+                        if (len_field.has_value() && len_field->type == DalvikType::INT32)
+                            arr_len = len_field->int_val;
+                        for (int k = 0; k < arr_len; ++k) {
+                            auto elem = heap_.get_object_field(arr_id, "array[" + std::to_string(k) + "]");
+                            if (elem.has_value()) fargs.push_back(*elem);
+                        }
+                    }
+                    std::string output = fargs.empty()
+                        ? sv_it->second
+                        : java_format_walk(sv_it->second, fargs);
+                    std::cerr << "[EXT01-CTXGETSTR] getString(resid=0x" << std::hex << resid
+                              << std::dec << ", field=" << fn_it->second
+                              << ", fargs=" << fargs.size() << ") → \"" << output << "\"" << std::endl;
+                    result = DalvikValue::make_string(output, 0);
                     status = ApiCallTrace::Status::IMPLEMENTED;
                     return true;
                 }
@@ -14421,7 +14760,6 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // String.format is static: args[0] = format string, args[1+] = format args
         // In DEX, the varargs array is passed as a single Object[] argument
         std::string fmt = (args[0].type == DalvikType::STRING_REF) ? args[0].string_val : "";
-        std::string output;
 
         // Fetch varargs from the Object[] on the heap.
         std::vector<DalvikValue> fargs;
@@ -14441,217 +14779,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             for (size_t k = 1; k < args.size(); ++k) fargs.push_back(args[k]);
         }
 
-        // Java-correct stringification of one format argument (§34: null
-        // prints as "null", boxed primitives read their "value" field).
-        auto elem_to_string = [&](const DalvikValue& v) -> std::string {
-            switch (v.type) {
-                case DalvikType::STRING_REF: return v.string_val;
-                case DalvikType::INT32: return std::to_string(v.int_val);
-                case DalvikType::INT64: return std::to_string(v.long_val);
-                case DalvikType::FLOAT32: return std::to_string(v.float_val);
-                case DalvikType::FLOAT64: return std::to_string(v.double_val);
-                case DalvikType::BOOLEAN: return v.bool_val ? "true" : "false";
-                case DalvikType::CHAR: return std::string(1, static_cast<char>(v.int_val));
-                case DalvikType::OBJECT_REF: {
-                    if (v.is_null || v.object_id == 0 || !heap_.has_object(v.object_id))
-                        return "null";
-                    auto fv = heap_.get_object_field(v.object_id, "value");
-                    if (fv.has_value()) {
-                        switch (fv->type) {
-                            case DalvikType::INT32: return std::to_string(fv->int_val);
-                            case DalvikType::INT64: return std::to_string(fv->long_val);
-                            case DalvikType::BOOLEAN: return fv->bool_val ? "true" : "false";
-                            case DalvikType::CHAR:
-                                return std::string(1, static_cast<char>(fv->int_val));
-                            case DalvikType::FLOAT32: return std::to_string(fv->float_val);
-                            case DalvikType::FLOAT64: return std::to_string(fv->double_val);
-                            case DalvikType::STRING_REF: return fv->string_val;
-                            default: break;
-                        }
-                    }
-                    return "object@" + std::to_string(v.object_id);
-                }
-                case DalvikType::NULL_REF: return "null";
-                default: return "";
-            }
-        };
-
-        // Java decimal formatting with width/zero-pad/left-align.
-        auto pad = [](std::string s, int width, bool zero, bool left) {
-            if ((int)s.size() >= width) return s;
-            std::string fill((size_t)width - s.size(), zero ? '0' : ' ');
-            return left ? (s + fill) : (fill + s);
-        };
-
-        size_t arg_idx = 0;
-        for (size_t i = 0; i < fmt.size();) {
-            if (fmt[i] != '%') { output += fmt[i++]; continue; }
-            size_t j = i + 1;
-            if (j >= fmt.size()) { output += '%'; break; }
-            if (fmt[j] == '%') { output += '%'; i = j + 1; continue; }
-            // Optional explicit argument index: %2$s
-            size_t spec_start = j;
-            int explicit_idx = 0;
-            {
-                size_t k = j;
-                while (k < fmt.size() && isdigit((unsigned char)fmt[k])) k++;
-                if (k < fmt.size() && fmt[k] == '$' && k > j) {
-                    explicit_idx = std::atoi(fmt.substr(j, k - j).c_str());
-                    j = k + 1;
-                }
-            }
-            // Flags
-            bool left = false, zero = false, alt = false, plus = false;
-            while (j < fmt.size()) {
-                char f = fmt[j];
-                if (f == '-') left = true;
-                else if (f == '0') zero = true;
-                else if (f == '#') alt = true;
-                else if (f == '+') plus = true;
-                else if (f == ' ' || f == ',') { /* accepted, no-op */ }
-                else break;
-                j++;
-            }
-            // Width
-            int width = 0;
-            {
-                size_t k = j;
-                while (k < fmt.size() && isdigit((unsigned char)fmt[k])) k++;
-                if (k > j) { width = std::atoi(fmt.substr(j, k - j).c_str()); j = k; }
-            }
-            // Precision
-            int prec = -1;
-            if (j < fmt.size() && fmt[j] == '.') {
-                size_t k = j + 1;
-                while (k < fmt.size() && isdigit((unsigned char)fmt[k])) k++;
-                prec = std::atoi(fmt.substr(j + 1, k - j - 1).c_str());
-                j = k;
-            }
-            if (j >= fmt.size()) { output += fmt.substr(i); break; }
-            char conv = fmt[j];
-
-            // Resolve the argument (explicit index is 1-based).
-            DalvikValue elem;
-            bool have = false;
-            if (explicit_idx > 0) {
-                size_t pos = (size_t)(explicit_idx - 1);
-                if (pos < fargs.size()) { elem = fargs[pos]; have = true; }
-            } else {
-                if (arg_idx < fargs.size()) { elem = fargs[arg_idx]; have = true; }
-                arg_idx++;
-            }
-            (void)spec_start;
-
-            std::string piece;
-            switch (conv) {
-                case 'd': case 'i': {
-                    int64_t n = 0;
-                    if (have) {
-                        if (elem.type == DalvikType::INT32) n = elem.int_val;
-                        else if (elem.type == DalvikType::INT64) n = elem.long_val;
-                        else if (elem.type == DalvikType::OBJECT_REF) {
-                            auto fv = heap_.has_object(elem.object_id)
-                                          ? heap_.get_object_field(elem.object_id, "value")
-                                          : std::nullopt;
-                            if (fv.has_value() && fv->type == DalvikType::INT32) n = fv->int_val;
-                            else if (fv.has_value() && fv->type == DalvikType::INT64) n = fv->long_val;
-                        }
-                    }
-                    piece = std::to_string(n);
-                    if (plus && n >= 0) piece = "+" + piece;
-                    piece = pad(piece, width, zero, left);
-                    break;
-                }
-                case 'x': case 'X': {
-                    uint64_t n = 0;
-                    if (have) {
-                        if (elem.type == DalvikType::INT32) n = (uint32_t)elem.int_val;
-                        else if (elem.type == DalvikType::INT64) n = (uint64_t)elem.long_val;
-                        else if (elem.type == DalvikType::OBJECT_REF) {
-                            auto fv = heap_.has_object(elem.object_id)
-                                          ? heap_.get_object_field(elem.object_id, "value")
-                                          : std::nullopt;
-                            if (fv.has_value() && fv->type == DalvikType::INT32)
-                                n = (uint32_t)fv->int_val;
-                        }
-                    }
-                    piece = alt ? ("0x" + (conv == 'x'
-                                        ? [] (uint64_t v) { std::string s; std::stringstream ss; ss << std::hex << v; s = ss.str(); return s; }(n)
-                                        : [] (uint64_t v) { std::string s; std::stringstream ss; ss << std::uppercase << std::hex << v; s = ss.str(); return s; }(n)))
-                                : (conv == 'x'
-                                        ? [] (uint64_t v) { std::string s; std::stringstream ss; ss << std::hex << v; s = ss.str(); return s; }(n)
-                                        : [] (uint64_t v) { std::string s; std::stringstream ss; ss << std::uppercase << std::hex << v; s = ss.str(); return s; }(n));
-                    piece = pad(piece, width, zero, left);
-                    break;
-                }
-                case 'f': case 'F': {
-                    double d = 0.0;
-                    if (have) {
-                        if (elem.type == DalvikType::FLOAT32) d = elem.float_val;
-                        else if (elem.type == DalvikType::FLOAT64) d = elem.double_val;
-                        else if (elem.type == DalvikType::INT32) d = elem.int_val;
-                        else if (elem.type == DalvikType::OBJECT_REF) {
-                            auto fv = heap_.has_object(elem.object_id)
-                                          ? heap_.get_object_field(elem.object_id, "value")
-                                          : std::nullopt;
-                            if (fv.has_value() && fv->type == DalvikType::FLOAT32) d = fv->float_val;
-                            else if (fv.has_value() && fv->type == DalvikType::FLOAT64) d = fv->double_val;
-                            else if (fv.has_value() && fv->type == DalvikType::INT32) d = fv->int_val;
-                        }
-                    }
-                    char buf[64];
-                    snprintf(buf, sizeof(buf), "%.*f", prec >= 0 ? prec : 6, d);
-                    piece = pad(buf, width, zero, left);
-                    break;
-                }
-                case 's': case 'S': {
-                    piece = have ? elem_to_string(elem) : "null";
-                    if (prec >= 0 && (int)piece.size() > prec) piece = piece.substr(0, prec);
-                    if (conv == 'S')
-                        std::transform(piece.begin(), piece.end(), piece.begin(), ::toupper);
-                    piece = pad(piece, width, /*zero=*/false, left);
-                    break;
-                }
-                case 'b': case 'B': {
-                    bool b = have && !(elem.type == DalvikType::BOOLEAN && !elem.bool_val);
-                    piece = b ? "true" : "false";
-                    if (conv == 'B')
-                        std::transform(piece.begin(), piece.end(), piece.begin(), ::toupper);
-                    break;
-                }
-                case 'c': case 'C': {
-                    piece = have ? elem_to_string(elem) : "";
-                    break;
-                }
-                case 'e': case 'E': case 'g': case 'G': {
-                    double d = 0.0;
-                    if (have && elem.type == DalvikType::FLOAT64) d = elem.double_val;
-                    else if (have && elem.type == DalvikType::FLOAT32) d = elem.float_val;
-                    char buf[64];
-                    snprintf(buf, sizeof(buf),
-                             conv == 'e' ? "%.*e" : conv == 'E' ? "%.*E" : conv == 'g' ? "%.*g" : "%.*G",
-                             prec >= 0 ? prec : 6, d);
-                    piece = pad(buf, width, zero, left);
-                    break;
-                }
-                case 'o': {
-                    int64_t n = have && elem.type == DalvikType::INT32 ? elem.int_val : 0;
-                    char buf[32]; snprintf(buf, sizeof(buf), "%llo", (long long)n);
-                    piece = buf;
-                    break;
-                }
-                case 'n': piece = "\n"; break;
-                default:
-                    // Unknown conversion — Java throws; we keep the spec
-                    // verbatim and emit a diagnostic (§34).
-                    std::cerr << "UNSUPPORTED_FORMAT_SPECIFICATION spec=%"
-                              << conv << std::endl;
-                    piece = fmt.substr(i, j - i + 1);
-                    break;
-            }
-            output += piece;
-            i = j + 1;
-        }
+        // VISUAL-CAMPAIGN (EXT-01 gate G25): the format engine was
+        // extracted verbatim into java_format_walk() so the SAME engine
+        // also serves Context.getString(resId, formatArgs) (AOSP law:
+        // Resources.getString(int, Object...) == String.format(load, args)).
+        std::string output = java_format_walk(fmt, fargs);
 
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_string(output, 0);
