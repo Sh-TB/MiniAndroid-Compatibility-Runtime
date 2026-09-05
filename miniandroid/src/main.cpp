@@ -16,6 +16,7 @@
 // EXP-086 Phase 7 (B4 FIX): ShadowRegistry + HandlerShadow for Runnable queue
 #include "framework/android_shadows.h"
 #include "framework/dialog_shadow.h"
+#include "framework/clipboard_shadow.h"
 #include "framework/canvas_shadow.h"
 #include "dex/dex_parser.h"
 
@@ -44,6 +45,9 @@ void print_usage(const char* program_name) {
     std::cout << "  --height <pixels>      Screen height (default: 1920)\n";
     std::cout << "  --text <text>          Override displayed text\n";
     std::cout << "  --click-test           Dispatch real clicks on clickable views after the first frame\n";
+    std::cout << "  --long-press <x>,<y>   Long-press gesture at coordinates after the first frame\n";
+    std::cout << "                         (hit test -> 500ms timeout -> onLongClick; consumed\n";
+    std::cout << "                          long press suppresses the UP click — AOSP law)\n";
     std::cout << "  --execution-mode <mode> Execution mode: legacy | real-dalvik (default: real-dalvik)\n\n";
     std::cout << "Examples:\n";
     std::cout << "  " << program_name << " analyze HelloWorld.apk\n";
@@ -217,6 +221,11 @@ int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config)
     auto* canvas_shadow = shadow_registry.register_shadow<framework::CanvasShadow>();
     auto* activity_shadow = shadow_registry.register_shadow<framework::ActivityShadow>();
     auto* collection_shadow = shadow_registry.register_shadow<framework::CollectionShadow>();
+    // GOLDEN-02: clipboard platform behavior (ClipData.newPlainText,
+    // ClipboardManager.setPrimaryClip/getPrimaryClip/getText, legacy
+    // android.text.ClipboardManager.setText) — registered on the SAME
+    // registry the engine consults via set_shadow_registry below.
+    shadow_registry.register_shadow<framework::ClipboardShadow>();
     if (activity_shadow) {
         activity_shadow->set_apk_path(apk_path);
     }
@@ -320,6 +329,24 @@ int main(int argc, char* argv[]) {
             std::cout << "[*] FRAME-SEQUENCE enabled (" << config.frame_count
                       << " frames @ +" << config.frame_delay_ms
                       << "ms virtual each, saved to <output>/frames/)\n";
+        } else if (arg == "--long-press" && i + 1 < argc) {
+            // GOLDEN-02: coordinate-anchored long-press gesture. After the
+            // launch frame: hit_test(x,y) → target → 500ms long-press
+            // timeout → performLongClick → onLongClick dispatch; consumed
+            // long press suppresses the UP click (AOSP View.java law).
+            std::string spec = argv[++i];
+            auto comma = spec.find(',');
+            if (comma == std::string::npos) {
+                std::cerr << "[ERROR] --long-press expects <x>,<y> (got \""
+                          << spec << "\")\n";
+                return 1;
+            }
+            config.long_press_enabled = true;
+            config.long_press_x = std::stoi(spec.substr(0, comma));
+            config.long_press_y = std::stoi(spec.substr(comma + 1));
+            std::cout << "[*] LONG-PRESS gesture enabled at ("
+                      << config.long_press_x << "," << config.long_press_y
+                      << ") — frame saved to <output>/frames/\n";
         } else if (arg == "--frame-delay" && i + 1 < argc) {
             config.frame_delay_ms = std::stoi(argv[++i]);
             std::cout << "[*] frame delay: " << config.frame_delay_ms << "ms virtual\n";

@@ -1,0 +1,37 @@
+{
+  "schema": "golden02_interaction_v1",
+  "before": "/tmp/g02_runA/frames/frame_000.png",
+  "after": "/tmp/g02_runA/frames/frame_001.png",
+  "frame_size": [
+    1080,
+    1920
+  ],
+  "background_rgb": [
+    0,
+    0,
+    0
+  ],
+  "changed_pixels": 12488,
+  "changed_bbox_xyxy": [
+    428,
+    1768,
+    650,
+    1823
+  ],
+  "toast_band_top_row": 1440,
+  "checks": {
+    "frame_dimensions_equal": true,
+    "background_identical": true,
+    "changed_pixels_exist": true,
+    "changed_region_in_bottom_band": true,
+    "changed_region_centered": true,
+    "text_block_unchanged": true,
+    "long_click_dispatched": true,
+    "listener_consumed_true": true,
+    "up_click_suppressed": true,
+    "press_point_onscreen": true,
+    "target_is_textview": true,
+    "hello_text_unchanged": true
+  },
+  "verdict": "PASS (12/12 checks)"
+}

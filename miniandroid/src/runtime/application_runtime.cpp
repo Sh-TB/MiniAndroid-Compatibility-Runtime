@@ -27,6 +27,7 @@
 #include "framework/shadow_registry.h"
 #include "framework/android_shadows.h"
 #include "framework/dialog_shadow.h"
+#include "framework/clipboard_shadow.h"
 #include "framework/canvas_shadow.h"
 #include "framework/heap_adapter.h"
 // Note: dex_interpreter.h (legacy v1) was DELETED (dead-chain audit 2026-09-05);
@@ -268,6 +269,11 @@ void ApplicationRuntime::initialize_shadow_registry() {
     shadow_dialog_   = shadow_registry_->register_shadow<DialogShadow>();
     shadow_array_adapter_ = shadow_registry_->register_shadow<ArrayAdapterShadow>();
     shadow_canvas_    = shadow_registry_->register_shadow<CanvasShadow>();
+    // GOLDEN-02: clipboard platform behavior — ClipData.newPlainText +
+    // ClipboardManager.setPrimaryClip/getPrimaryClip/getText + legacy
+    // android.text.ClipboardManager.setText. Registered after the other
+    // shadows; first handled=true wins.
+    shadow_registry_->register_shadow<ClipboardShadow>();
 
     // The heap_adapter_ is created later in execute_on_create() once we
     // have a DalvikExecutionEngine to wrap. But we set it on the
