@@ -339,6 +339,11 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         // the Cycle-D ArscParser. The legacy JSON sidecar below remains only
         // as an OVERRIDE for values the ARSC cannot provide — no more
         // dependency on a Telegram-only hand-built sidecar.
+        // VISUAL-CAMPAIGN (EXT-01 gate G25): seed the virtual device identity
+        // statics (Build.VERSION.SDK_INT/RELEASE, Build.*, ANDROID_ID) BEFORE
+        // any DEX executes — AOSP defines these in the framework image, before
+        // any app code runs.
+        dalvik_engine_.seed_framework_device_statics();
         {
             auto& rt = resources::ResourceRuntime::instance();
             if (rt.ensure_loaded(result.apk_info.apk_path)) {
@@ -1327,7 +1332,29 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                 if (root_node) {
                     // Create a FrameBuffer + SoftwareCanvas for real rendering
                     renderer::FrameBuffer fb(config.screen_width, config.screen_height);
-                    fb.clear(renderer::Colors::WHITE);  // White background like Android
+                    // VISUAL-CAMPAIGN (EXT-01 gate G49): the WINDOW BACKGROUND
+                    // is the app theme's android:windowBackground (AOSP
+                    // PhoneWindow law), not an unconditional white. For the
+                    // EXT-01 fixture this resolves to #000000 — without it
+                    // the white text on the white default surface was
+                    // invisible (352 anti-alias pixels at 254,254,254).
+                    renderer::RGBA win_bg{255, 255, 255, 255};
+                    {
+                        auto wb = resources::ResourceRuntime::instance()
+                                      .resolve_window_background_argb(result.apk_info.apk_path);
+                        if (wb.has_value()) {
+                            win_bg = renderer::RGBA{
+                                (uint8_t)((*wb >> 16) & 0xFF),
+                                (uint8_t)((*wb >> 8) & 0xFF),
+                                (uint8_t)(*wb & 0xFF),
+                                (uint8_t)((*wb >> 24) & 0xFF)};
+                            std::cerr << "[EXT01-WINBG] windowBackground=@0x" << std::hex
+                                      << *wb << std::dec << " rgb("
+                                      << (int)win_bg.r << "," << (int)win_bg.g
+                                      << "," << (int)win_bg.b << ")" << std::endl;
+                        }
+                    }
+                    fb.clear(win_bg);
                     renderer::SoftwareCanvas canvas(&fb);
                     renderer::BitmapFont font;
 
