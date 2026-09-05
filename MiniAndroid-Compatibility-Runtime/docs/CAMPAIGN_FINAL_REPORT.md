@@ -1,5 +1,9 @@
 # CAMPAIGN FINAL REPORT — Deep Compatibility Campaign (Task 8 + 9)
 
+> SUPERSEDED-AS-LATEST: the newest campaign report is
+> `docs/CAMPAIGN_FINAL_REPORT_REUSE_FIRST_PROGRESS.md` (2026-09-05).
+> This file is preserved as the historical record of its own campaign.
+
 Base: sandbox-reset snapshot `0edb52b` → campaign commits `de5f370`,
 `c7bb9f2`, reference-matrix commit, audit commit.
 Date: 2026-09-05. All evidence runtime-produced on current HEAD; zero-skip
