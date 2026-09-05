@@ -151,12 +151,30 @@ for y in range(h):
             line[x] = (line[x] + pr) & 255
     out += line; prev = line
 
-def row_ink(y):
-    return sum(1 for x in range(w) if out[y*stride + x*ch] < 200
-               and out[y*stride + x*ch + 1] < 200)
+# Position-independent band discovery (§26 law: tests must not pin old
+# paths). The FIND-GRAVITY-VERTICAL fix centered the child block per AOSP,
+# so text bands can sit anywhere in the frame. Two-stage discrimination:
+#   1. SOLID rows (button surface: ~470 contiguous dark px) vs TEXT rows
+#      (glyph strokes: far fewer dark px per row) — a stacked subtitle and
+#      button can be ADJACENT (no silent gap), so gaps alone cannot split
+#      them; ink density can.
+#   2. Text bands = clusters of non-solid ink rows separated by gaps.
+row_ink = {y: sum(1 for x in range(w) if out[y*stride + x*ch] < 200
+                  and out[y*stride + x*ch + 1] < 200) for y in range(h)}
+SOLID_MIN = 320  # button surface ~470 px/row; headline strokes stay < 300
+text_rows = [y for y in range(h) if row_ink[y] > 3 and row_ink[y] < SOLID_MIN]
+clusters = []
+for y in text_rows:
+    # Split threshold: a real text band's rows are contiguous (0-2 silent
+    # rows max); stacked elements are separated by ≥ 11 silent rows in the
+    # AOSP-centered fixture (measured: subtitle 966-993, button 1005-1050).
+    # <= 12 merged the subtitle with the button outline by one row.
+    if clusters and y - clusters[-1][-1] <= 6:
+        clusters[-1].append(y)
+    else:
+        clusters.append([y])
 
-def band(y0, y1):
-    rows = [y for y in range(y0, min(y1, h)) if row_ink(y) > 3]
+def band(rows):
     if not rows:
         return None
     xs = [x for y in rows[:6] for x in range(w)
@@ -165,9 +183,11 @@ def band(y0, y1):
             "height": rows[-1] - rows[0] + 1,
             "left": min(xs), "right": max(xs)}
 
-headline = band(0, 160)
-sub      = band(160, 300)
+bands = [band(c) for c in clusters]
+headline = bands[0] if len(bands) >= 1 else None
+sub      = bands[1] if len(bands) >= 2 else None
 print(f"frame {w}x{h}")
+print(f"bands found: {len(bands)}")
 print(f"headline band: {headline}")
 print(f"subtitle band: {sub}")
 hc = (headline["left"] + headline["right"]) / 2 if headline else 0
