@@ -80,7 +80,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/reso
     > /tmp/battery_rescfg.log 2>&1
 gate "link resource_config_selection_test" $?
 ./build/resource_config_selection_test > /tmp/battery_rescfg.out 2>&1
-gate "resource-config selection law (expect 19)" $?
+gate "resource-config selection law (expect 48)" $?
 tail -1 /tmp/battery_rescfg.out
 
 # P2 encoded-value AOSP law (hostile/edge; FIND-REUSE-DEX)
