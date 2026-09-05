@@ -8010,6 +8010,37 @@ void DalvikExecutionEngine::populate_resource_drawable_paths(
               << " R-names matched to APK drawable assets" << std::endl;
 }
 
+// GOLDEN-03 §10/§11 — ARSC-AUTHORITATIVE drawable path seeding.
+// AOSP law: a file-backed resource entry's VALUE IS THE PATH inside
+// resources.arsc (a STRING like "res/w6.xml"), and AssetManager2 selects the
+// value under the device configuration. For every resid the engine knows a
+// field name for, ask the canonical resolver for the selected variant's path
+// and bind field_name → path. Replaces name-basename guessing as the primary
+// source; populate_resource_drawable_paths() stays as fallback.
+int DalvikExecutionEngine::populate_drawable_paths_from_arsc(
+        const resources::ArscParser& arsc, const std::vector<std::string>& apk_paths) {
+    if (field_name_by_resid_.empty() || apk_paths.empty()) return 0;
+    int resolved = 0;
+    for (const auto& [resid, field_name] : field_name_by_resid_) {
+        if (field_name.empty()) continue;
+        if (resource_drawable_paths_.count(field_name)) continue;
+        // Only file-backed types make sense as drawable targets.
+        auto r = arsc.resolve(resid);
+        if (!r) continue;
+        if (r->type_name != "drawable" && r->type_name != "mipmap" &&
+            r->type_name != "raw") {
+            continue;
+        }
+        auto path = arsc.apk_path_for(resid, apk_paths);
+        if (!path) continue;
+        resource_drawable_paths_[field_name] = *path;
+        resolved++;
+    }
+    std::cerr << "[ARSC-VALUES] drawable paths resolved via canonical resolver: "
+              << resolved << "/" << field_name_by_resid_.size() << std::endl;
+    return resolved;
+}
+
 uint16_t DalvikExecutionEngine::fetch_opcode(uint32_t pc) const {
     if (pc < bytecode_.size()) {
         return bytecode_[pc];

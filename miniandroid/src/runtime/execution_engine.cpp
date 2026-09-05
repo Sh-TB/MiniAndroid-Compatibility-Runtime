@@ -383,169 +383,53 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         a_bool++;
                     }
                 }
+                // GOLDEN-03 §10: integers seeded ARSC-first (previously only
+                // the removed sidecar could provide them).
+                int a_int = 0;
+                for (const auto& [resid, name] : arsc.list_type("", "integer")) {
+                    auto v = arsc.resolve_value(resid);
+                    if (v.has_value() && (v->type == resources::DataType::INT_DEC ||
+                                          v->type == resources::DataType::INT_HEX) &&
+                        !name.empty()) {
+                        dalvik_engine_.resource_integer_values_[name] =
+                            static_cast<int32_t>(v->data);
+                        a_int++;
+                    }
+                }
+                // GOLDEN-03 §10: raw resources seeded ARSC-first — a raw entry's
+                // VALUE IS THE ASSET PATH (STRING type, e.g. "res/-si.json"),
+                // exactly like file-backed drawables/layouts (Campaign 013 §18).
+                int a_raw = 0;
+                for (const auto& [resid, name] : arsc.list_type("", "raw")) {
+                    auto v = arsc.resolve_value(resid);
+                    if (v.has_value() && v->is_string() && !name.empty() &&
+                        v->string_value.compare(0, 4, "res/") == 0) {
+                        dalvik_engine_.resource_raw_paths_[name] = v->string_value;
+                        a_raw++;
+                    }
+                }
                 std::cerr << "[ARSC-VALUES] apk=" << result.apk_info.apk_path
                           << " strings=" << a_str << " colors=" << a_col
                           << " dimens=" << a_dim << " bools=" << a_bool
-                          << " (ARSC-first resource values)" << std::endl;
+                          << " integers=" << a_int << " raw=" << a_raw
+                          << " (ARSC-authoritative resource values)" << std::endl;
             } else {
                 std::cerr << "[ARSC-VALUES] ResourceRuntime unavailable for "
                           << result.apk_info.apk_path
-                          << " — falling back to sidecar JSON only" << std::endl;
+                          << " (no sidecar exists — ARSC is the only source)" << std::endl;
             }
         }
 
-        // Legacy sidecar (EXP-092): Telegram-era override source. Kept AFTER
-        // the ARSC pass so sidecar entries override ARSC ones (the sidecar
-        // carried curated values for obfuscated Telegram trees).
-        // We attempt to load from TWO candidate paths (absolute first, then
-        // relative to cwd), based on the APK's package name.
-        {
-            std::vector<std::string> candidate_paths;
-            // Path 1: download/exp038_telegram/resource_values.json (legacy fixed)
-            candidate_paths.push_back("download/exp038_telegram/resource_values.json");
-            // Path 2: <apk_dir>/resource_values.json (next to the APK)
-            std::string apk_dir;
-            {
-                auto slash = result.apk_info.apk_path.find_last_of('/');
-                if (slash != std::string::npos) {
-                    apk_dir = result.apk_info.apk_path.substr(0, slash);
-                    candidate_paths.push_back(apk_dir + "/resource_values.json");
-                }
-            }
-            // Path 3: derived from package name
-            if (!result.apk_info.package_name.empty()) {
-                std::string pkg_safe = result.apk_info.package_name;
-                std::replace(pkg_safe.begin(), pkg_safe.end(), '.', '/');
-                candidate_paths.push_back("download/" + pkg_safe + "/resource_values.json");
-            }
-
-            int loaded_strings = 0, loaded_colors = 0, loaded_dimens = 0,
-                loaded_drawables = 0, loaded_integers = 0, loaded_bools = 0,
-                loaded_raws = 0;
-            bool loaded_any = false;
-            std::string loaded_path;
-            for (const auto& path : candidate_paths) {
-                std::ifstream res_file(path);
-                if (!res_file.is_open()) continue;
-                loaded_path = path;
-                json res_json;
-                res_file >> res_json;
-
-                // Strings
-                if (res_json.contains("string")) {
-                    for (auto& [name, value] : res_json["string"].items()) {
-                        if (value.is_string()) {
-                            dalvik_engine_.resource_string_values_[name] = value.get<std::string>();
-                            loaded_strings++;
-                        }
-                    }
-                }
-                // Colors
-                if (res_json.contains("color")) {
-                    for (auto& [name, value] : res_json["color"].items()) {
-                        if (value.is_string()) {
-                            std::string v = value.get<std::string>();
-                            if (v.rfind("type28:", 0) == 0 || v.rfind("type29:", 0) == 0 ||
-                                v.rfind("type30:", 0) == 0 || v.rfind("type31:", 0) == 0) {
-                                size_t colon = v.find(':');
-                                if (colon != std::string::npos) {
-                                    std::string hex = v.substr(colon + 1);
-                                    if (hex.rfind("0x", 0) == 0 || hex.rfind("0X", 0) == 0) {
-                                        hex = hex.substr(2);
-                                    }
-                                    try {
-                                        uint32_t argb = std::stoul(hex, nullptr, 16);
-                                        if (v.rfind("type29:", 0) == 0) argb |= 0xFF000000;
-                                        dalvik_engine_.resource_color_values_[name] = static_cast<int32_t>(argb);
-                                        loaded_colors++;
-                                    } catch (...) {}
-                                }
-                            }
-                        }
-                    }
-                }
-                // Dimens
-                if (res_json.contains("dimen")) {
-                    for (auto& [name, value] : res_json["dimen"].items()) {
-                        if (value.is_string()) {
-                            std::string v = value.get<std::string>();
-                            try {
-                                // Strip "type1:" or "type2:" prefix if present
-                                if (v.rfind("type", 0) == 0) {
-                                    size_t colon = v.find(':');
-                                    if (colon != std::string::npos) v = v.substr(colon + 1);
-                                }
-                                if (!v.empty() && (v.back() == 'd' || v.back() == 'p')) {
-                                    // e.g. "16dp" — parse integer
-                                    int32_t dv = static_cast<int32_t>(std::stoi(v));
-                                    dalvik_engine_.resource_dimen_values_[name] = dv;
-                                    loaded_dimens++;
-                                } else if (!v.empty() && v[0] >= '0' && v[0] <= '9') {
-                                    int32_t dv = static_cast<int32_t>(std::stoi(v));
-                                    dalvik_engine_.resource_dimen_values_[name] = dv;
-                                    loaded_dimens++;
-                                }
-                            } catch (...) {}
-                        }
-                    }
-                }
-                // Drawables
-                if (res_json.contains("drawable")) {
-                    for (auto& [name, value] : res_json["drawable"].items()) {
-                        if (value.is_string()) {
-                            dalvik_engine_.resource_drawable_paths_[name] = value.get<std::string>();
-                            loaded_drawables++;
-                        }
-                    }
-                }
-                // Integers
-                if (res_json.contains("integer")) {
-                    for (auto& [name, value] : res_json["integer"].items()) {
-                        if (value.is_number_integer()) {
-                            dalvik_engine_.resource_integer_values_[name] = value.get<int32_t>();
-                            loaded_integers++;
-                        }
-                    }
-                }
-                // Bools
-                if (res_json.contains("bool")) {
-                    for (auto& [name, value] : res_json["bool"].items()) {
-                        if (value.is_boolean()) {
-                            dalvik_engine_.resource_bool_values_[name] = value.get<bool>();
-                            loaded_bools++;
-                        }
-                    }
-                }
-                // EXP-098 (CM-027): Raw resources — R.raw.X maps to an APK
-                // asset path (e.g. "res/-si.json" for R.raw.sms_incoming_info).
-                // Used by RLottieImageView.setAnimation(R.raw.X, w, h) →
-                // RLottieDrawable(R.raw.X, ...) → AndroidUtilities.readRes(R.raw.X)
-                // → openRawResource(R.raw.X) → load the asset as a UTF-8 string
-                // → RLottieNative.createFromRawJson(json).
-                if (res_json.contains("raw")) {
-                    for (auto& [name, value] : res_json["raw"].items()) {
-                        if (value.is_string()) {
-                            dalvik_engine_.resource_raw_paths_[name] = value.get<std::string>();
-                            loaded_raws++;
-                        }
-                    }
-                }
-                loaded_any = true;
-                break;
-            }
-            std::cerr << "[EXP092-RES] resource_values.json loaded=" << (loaded_any ? "true" : "false")
-                      << " path=\"" << (loaded_any ? loaded_path : "(not found)") << "\""
-                      << " strings=" << loaded_strings
-                      << " colors=" << loaded_colors
-                      << " dimens=" << loaded_dimens
-                      << " drawables=" << loaded_drawables
-                      << " integers=" << loaded_integers
-                      << " bools=" << loaded_bools
-                      << std::endl;
-            if (!loaded_any) {
-                std::cerr << "[EXP092-RES] WARNING: no resource_values.json found — getString will return field names, not values" << std::endl;
-            }
-        }
+        // GOLDEN-03 §10 — ARSC IS THE ONLY RESOURCE VALUE SOURCE.
+        // The legacy resource_values.json sidecar (EXP-092/EXP-067) was a
+        // Telegram-era override that let an arbitrary JSON file next to the
+        // APK (or under download/exp038_telegram) silently override real ARSC
+        // values. Per the GOLDEN-03 §10 law ("ARSC must remain authoritative;
+        // any legacy sidecar bypass must remain removed from the production
+        // path") it is REMOVED — a hostile/foreign resource_values.json can no
+        // longer influence resolution. integers/raw/drawable paths are seeded
+        // ARSC-first below (and at render time for drawables), like every
+        // other value class.
     }
 
     try {
@@ -1241,11 +1125,24 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
     // UNIFIED_011.2 IMAGE-RES-RENDER (§13/§14): populate the R-name → drawable
     // path map once per run from the APK's res/ entry list. Without this the
     // runtime setImageResource chain could never resolve to real pixels.
+    // GOLDEN-03 §10/§11: drawable paths are ARSC-AUTHORITATIVE first — a
+    // file-backed entry's VALUE IS THE PATH (Campaign 013 §18 law), resolved
+    // via apk_path_for() under the device configuration. The basename
+    // heuristic below remains only as fallback for names the ARSC cannot
+    // resolve (e.g. legacy tables without type names).
     if (!result.apk_info.apk_path.empty()) {
         auto entries = apk_parser_.list_entries(result.apk_info.apk_path);
         std::vector<std::string> entry_names;
         entry_names.reserve(entries.size());
         for (const auto& e : entries) entry_names.push_back(e.name);
+        {
+            // ARSC-first: resolve every R.drawable/mipmap resid through the
+            // canonical resolver (config-selected variant included).
+            auto& rt = resources::ResourceRuntime::instance();
+            if (rt.ensure_loaded(result.apk_info.apk_path)) {
+                dalvik_engine_.populate_drawable_paths_from_arsc(rt.arsc(), entry_names);
+            }
+        }
         dalvik_engine_.populate_resource_drawable_paths(entry_names);
     }
 
