@@ -4439,3 +4439,69 @@ Stage Summary:
 - Open items for next session: res/font ARSC fixture tooling, Typeface
   fixtures D/E, libGDX/GL boundary decision, dooz Compose depth,
   stopwatch AppCompat chain, Telegram artifact, push credentials.
+
+---
+Task ID: 1 (REPOSITORY RESEARCH & KNOWLEDGE TRANSFER campaign)
+Agent: Super Z (main agent)
+Task: Deep repository research with exact-URL law — study mandated upstream
+repositories at source level, extract mechanisms with provenance, map to
+MiniAndroid, persist knowledge in docs/research/, commit per logical unit,
+attempt push with remote verification.
+
+Work Log:
+- BASELINE VERIFIED: HEAD 8233432, clean tree, no remote configured,
+  network to GitHub/googlesource confirmed.
+- REPOSITORY LAW EXECUTED (§0/§18/§29): 19 repositories cloned (shallow)
+  and source-studied at exact revisions — winedroid@rickbergs a784c0b,
+  fwbase mirror 1cdfff55, ART OFFICIAL googlesource 6484611f (note:
+  aosp-mirror/platform_art does NOT exist on GitHub — 404 verified; official
+  URL mandated by the campaign was used), frameworks/native 4f463a6b,
+  dalvik mirror, qemu emu-master-dev ae9d18d2 (default branch stale@2015),
+  cuttlefish a1162ca7, crosvm 9d4dc5f, AVF 175a51b3, waydroid e7d73e7f,
+  jadx 8f7ea4e, Apktool baa603f, bundletool 586a43a, droidsaw 50eb045b,
+  skydnir, DroidVM, ARSCLib, auxten/libarsc.
+- WineDroid IDENTITY RESOLVED: rickbergs/winedroid is PUBLIC, Apache-2.0,
+  Rust AOT compiler (APK→DEX→C→ELF x86-64) — a DIFFERENT project from the
+  previously recorded winedroid.soham.sh (GPL, private). Both now separate
+  matrix rows; prior confusion permanently disambiguated.
+- WINEDROID STUDY: all 21 .rs files (7,130 LOC) enumerated; 20 mechanisms
+  cataloged WINEDROID-001..020 with file+function citations (MUTF-8
+  cross-check, ULEB128 hardening, generic invoke ABI incoming_start law,
+  recursive linker per-method rejection reasons, payload-is-data, div/rem
+  corners, diagnostics CLI, warning-accumulation, honest limitation ledger).
+- sim-use = REPOSITORY_UNAVAILABLE (URL 404/credential-fail on retry after
+  one successful listing mid-session; NO substitute used).
+- AndroidRecomp/ReSource/Reveree = REPOSITORY_URL_UNVERIFIED (history-first
+  search produced nothing; no substitution).
+- 14 DOCUMENTS WRITTEN in docs/research/: external-repositories.md,
+  winedroid-study.md, aosp-runtime-study.md (AOSP-001..017), dex-runtime-study.md
+  (DEX-001..009), arsc-resource-study.md, font-runtime-study.md (FONT-002 =
+  AOSP createFromAsset missing→throw vs corrupt→silent-DEFAULT — direct
+  upstream evidence for font Case E/F distinction), graphics-rendering-study.md,
+  layout-study.md, compose-study.md, apk-toolchain-study.md,
+  external-mechanism-matrix.md (34 provenance rows), external-gap-analysis.md
+  (G1..G10 ranked), knowledge-transfer-log.md (KT-001..007 transferred,
+  Q-1..Q-14 queued, R-1..R-7 rejected with reasons),
+  FINAL_EXTERNAL_RESEARCH_AUDIT.md (§32 full report).
+- 5 COMMITS: 9ec751f inventory+winedroid, 5b8b58f aosp+dex, 6b8d3d1
+  subsystem studies+synthesis, 623e084 final audit, f7d8e94 gitignore for
+  research-clones/.
+- PUSH ATTEMPTED PER §31: `git push origin main` → "fatal: 'origin' does
+  not appear to be a git repository" — NO REMOTE CONFIGURED in this
+  sandbox (same condition as prior campaign). Reported honestly; chain is
+  fast-forward-ready: 8233432 → 9ec751f → 5b8b58f → 6b8d3d1 → 623e084 →
+  f7d8e94.
+
+Stage Summary:
+- All 14 mandated research documents exist with exact-URL provenance and
+  source-level citations; no repository substituted; no implementation
+  claimed without evidence; no push claimed without remote verification.
+- Highest-value finds: rickbergs WineDroid (Apache-2.0 — transferable),
+  FONT-002 upstream two-failure-mode semantics, ARSC SPARSE/OFFSET16
+  constants pinned, droidsaw byte-exact round-trip methodology, AOSP
+  layout table line-exact confirmation.
+- Next session queue: Q-1..Q-14 implementation items (font Case-F fixture,
+  MUTF-8 vectors, zero-fill discriminator, payload-is-data fixture, ARSC
+  sparse/offset16 + round-trip harness, per-method link/reject report,
+  inspect enrichment), then golden-APK #2 (HelloWorld-class), then push
+  once remote credentials exist.
