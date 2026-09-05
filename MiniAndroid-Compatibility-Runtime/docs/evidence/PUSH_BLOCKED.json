@@ -25,14 +25,26 @@
       }
     }
   ],
-  "unpushed_commits_at_record_time": 23,
+  "unpushed_commits_at_record_time": 31,
   "unpushed_commit_range": "7024f8d6 (Initial commit) .. 12947e03 (HEAD)",
-  "tags_on_remote_only": ["v0.0.1", "v0.0.2", "v0.0.2-alpha"],
+  "tags_on_remote_only": [
+    "v0.0.1",
+    "v0.0.2",
+    "v0.0.2-alpha"
+  ],
   "github_comment_status": "COMMENT_BLOCKED (same missing-credential cause; no authenticated GitHub API path available)",
   "next_session_recovery_instructions": [
     "Read this file first.",
     "Run: git log --oneline -5 && git ls-remote origin",
     "If credentials now exist: git push origin archive/origin-main-ad95d928, then git push --force-with-lease origin main, then verify remote HEAD equals local HEAD, then post the GitHub comments listed in docs/research/GITHUB_EVIDENCE_INDEX.md (comment texts are pre-drafted there).",
     "If credentials still missing: keep committing locally, update unpushed_commits count, do NOT claim anything is pushed."
+  ],
+  "last_reverified": "2026-09-05 REUSE-FIRST MAXIMUM PROGRESS session (HEAD 31789f6e): git ls-remote origin -> remote main still ad95d928; git push still fails (no credentials); local history rebuilt line now 31 commits ahead",
+  "session_new_commits": [
+    "a3c3aded resource-backed Hello World (aapt2, \u00a736.E)",
+    "e69bc496 FIND-REUSE-002/003",
+    "4d822256 FIND-REUSE-004",
+    "4468e3b9 \u00a726/\u00a735 docs",
+    "31789f6e \u00a720 evidence rows"
   ]
 }
