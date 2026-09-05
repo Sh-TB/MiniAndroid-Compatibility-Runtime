@@ -599,6 +599,27 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             // (fonts.xml) or an app font; arrives as a raw AXML string.
             a.font_family = raw;
         }
+        else if (n == "textAppearance") {
+            // G46: AOSP TextView law (TextView.java@android-14.0.0_r50
+            // applyTextAppearance L4435+): the referenced framework style's
+            // textSize applies UNLESS the view sets an explicit textSize
+            // (view attrs are read after the appearance → they win).
+            // Framework style id law (core/res/res/values/styles.xml
+            // @android-14.0.0_r50 L862-864):
+            //   <style name="TextAppearance.Large"> <item name="textSize">22sp</item>
+            // = android:style 0x01030042 (verified from the EXT-01 AXML:
+            //   textAppearance data=0x01030042).
+            uint32_t sid = at.value.is_reference() ? at.value.ref_id : 0;
+            if (sid == 0x01030042) {
+                a.appearance_text_size_sp = 22.0f;
+                a.appearance_resolved = true;
+            } else if (sid != 0) {
+                stats.unresolved_refs++;
+                stats.warnings.push_back("framework TextAppearance 0x" + [&]{
+                    char b[16]; snprintf(b, sizeof b, "%x", sid);
+                    return std::string(b); }() + " not in the verified law table");
+            }
+        }
         else if (n == "textStyle") {
             if (raw.find("bold") != std::string::npos) { a.text_style |= 1; }
             if (raw.find("italic") != std::string::npos) { a.text_style |= 2; }
@@ -678,6 +699,19 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.text = a.text;
     node.hint = a.hint;
     if (a.text_size_px > 0) node.text_size_px = a.text_size_px;
+    else if (a.appearance_resolved && a.appearance_text_size_sp > 0) {
+        // G46: TypedValue.complexToDimensionPixelSize law — sp -> px with
+        // round-to-nearest: px = (int)(sp * scaledDensity + 0.5). Here
+        // scaledDensity = density * fontScale = 2.625 * 1.0.
+        float px_f = a.appearance_text_size_sp * metrics_.density * metrics_.scale_fonts;
+        int px = (int)(px_f + 0.5f);
+        node.text_size_px = (float)px;
+        node.text_size_sp = a.appearance_text_size_sp;
+        std::cerr << "[G46-TEXTAPPEARANCE] TextAppearance.Large textSize="
+                  << a.appearance_text_size_sp << "sp -> " << px
+                  << "px (scaledDensity=" << metrics_.density * metrics_.scale_fonts
+                  << ")\n";
+    }
     if (a.text_color != 0) node.text_color = a.text_color;
     node.text_style = a.text_style;
     node.text_bold = (a.text_style & 1) != 0;
