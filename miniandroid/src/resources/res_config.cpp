@@ -333,10 +333,24 @@ bool ResTableConfig::isBetterThan(const ResTableConfig& o, const ResTableConfig&
             if (my_delta != other_delta) return my_delta < other_delta;
         }
         if (version || o.version) {
-            if ((sdkVersion != o.sdkVersion) && requested.sdkVersion)
-                return (sdkVersion > o.sdkVersion);
-            if ((minorVersion != o.minorVersion) && requested.minorVersion)
-                return (minorVersion != 0);
+            // G31 session fix: AOSP-EXACT version tie-break
+            // (ResourceTypes.cpp@android-14.0.0_r50 L2489-2501). The old code
+            // returned (sdkVersion > o.sdkVersion), which is NOT the AOSP
+            // law: between two version-qualified candidates isBetterThan
+            // returns false both ways, so the FIRST candidate in table order
+            // stays (AssetManager2::FindEntryInternal). Evidence: EXT-01
+            // layout/activity_main variants () v9.xml, (v16) UD.xml, (v21)
+            // 02.xml — aapt2 dump confirms the order; a conforming runtime
+            // therefore inflates the v16 variant (fontFamily=monospace,
+            // elegantTextHeight absent).
+            if (sdkVersion != o.sdkVersion) {
+                if (!sdkVersion) return false;
+                if (!o.sdkVersion) return true;
+            }
+            if (minorVersion != o.minorVersion) {
+                if (!minorVersion) return false;
+                if (!o.minorVersion) return true;
+            }
         }
         return false;
     }
@@ -412,6 +426,15 @@ static ResTableConfig build_device_config() {
     c.colorMode     = 0x01 | 0x04;   // WIDE_GAMUT_NO | HDR_NO
     c.sdkVersion = 34;               // runtime target API level
     c.minorVersion = 0;
+    // G31 session fix: requested.size MUST be non-zero — AOSP isBetterThan
+    // gates its entire comparison body on `if (requested.size != 0)`
+    // (ResourceTypes.cpp@android-14.0.0_r50 L2641+). With size==0 the whole
+    // law was skipped (falling through to the legacy "no settings" branch),
+    // so SDK-version-qualified layout variants (EXT-01: v16/v21) could never
+    // beat the default variant and fontFamily never reached the inflater.
+    // 64 = the ResTable_config size aapt2 8.x emits for these tables
+    // (matches ResTableConfig::from_bytes' field window).
+    c.size = 64;
     c.compute_fields();
     return c;
 }
