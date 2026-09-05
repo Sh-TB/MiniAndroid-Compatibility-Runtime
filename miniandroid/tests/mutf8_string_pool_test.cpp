@@ -178,6 +178,103 @@ int main() {
                "oks=" + std::to_string(oks) + "/3");
     }
 
+    // FIND-REUSE-003: hardened SLEB128 acceptance window (DEX
+    // encoded_catch_handler sizes). Vectors from the SLEB128 spec/Dalvik
+    // format law.
+    {
+        size_t oks = 0;
+
+        struct Vec { const uint8_t* d; size_t n; int32_t want; };
+        const uint8_t v0[]   = {0x00};            // 0
+        const uint8_t v1[]   = {0x01};            // 1 (bit6 clear → positive)
+        const uint8_t v63[]  = {0x3F};            // 63 (bit6 clear)
+        const uint8_t v64[]  = {0xC0, 0x00};      // 64 (must spill to 2 bytes)
+        const uint8_t vm1[]  = {0x7F};            // -1 (bit6 set → sign-extend)
+        const uint8_t vm64[] = {0x40};            // -64
+        const uint8_t vm65[] = {0xBF, 0x7F};      // -65
+        const uint8_t vbig[] = {0xC0, 0xBB, 0x78};// -123456
+        const Vec vecs[] = {
+            {v0, 1, 0}, {v1, 1, 1}, {v63, 1, 63}, {v64, 2, 64},
+            {vm1, 1, -1}, {vm64, 1, -64}, {vm65, 2, -65}, {vbig, 3, -123456},
+        };
+        for (const auto& v : vecs) {
+            size_t pos = 0; bool ok = true;
+            int32_t got = mutf8::read_sleb128(v.d, v.n, pos, ok);
+            if (ok && got == v.want && pos == v.n) ++oks;
+        }
+
+        // Truncation + >32-bit forms must be rejected without UB.
+        const uint8_t trunc[] = {0x80};
+        size_t pos = 0; bool ok = true;
+        mutf8::read_sleb128(trunc, sizeof(trunc), pos, ok);
+        if (!ok) ++oks;
+
+        const uint8_t over[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x7F};  // 5 bytes, cont. set
+        pos = 0; ok = true;
+        mutf8::read_sleb128(over, sizeof(over), pos, ok);
+        if (!ok) ++oks;
+
+        record("SLEB128 primitive acceptance window", oks == 10,
+               "oks=" + std::to_string(oks) + "/10");
+    }
+
+    // FIND-REUSE-002: utf16le_to_utf8 — ASCII, BMP, surrogate pair,
+    // unpaired surrogate (AOSP U+FFFD law), odd trailing byte.
+    {
+        size_t oks = 0;
+
+        // ASCII "OK"
+        {
+            const uint8_t in[] = {'O', 0, 'K', 0};
+            auto out = mutf8::utf16le_to_utf8(in, sizeof(in));
+            if (out == "OK") ++oks;
+        }
+        // BMP é (U+00E9) → C3 A9
+        {
+            const uint8_t in[] = {0xE9, 0x00};
+            auto out = mutf8::utf16le_to_utf8(in, sizeof(in));
+            const std::string want("\xC3\xA9");
+            if (out == want) ++oks;
+        }
+        // Surrogate pair U+1F600 → F0 9F 98 80
+        {
+            const uint8_t in[] = {0x3D, 0xD8, 0x00, 0xDE};
+            auto out = mutf8::utf16le_to_utf8(in, sizeof(in));
+            const std::string want("\xF0\x9F\x98\x80");
+            if (out == want) ++oks;
+        }
+        // Unpaired high surrogate → U+FFFD (the deleted manifest_reader
+        // copy would have double-encoded this — the FIX-REUSE-002 bug).
+        {
+            const uint8_t in[] = {0x3D, 0xD8, 'a', 0};
+            auto out = mutf8::utf16le_to_utf8(in, sizeof(in));
+            const std::string want("\xEF\xBF\xBD""a");
+            if (out == want) ++oks;
+        }
+        // Odd trailing byte is ignored.
+        {
+            const uint8_t in[] = {'a', 0, 0xEE};
+            auto out = mutf8::utf16le_to_utf8(in, sizeof(in));
+            if (out == "a") ++oks;
+        }
+
+        record("UTF16LE→UTF8 primitive acceptance window", oks == 5,
+               "oks=" + std::to_string(oks) + "/5");
+    }
+
+    // FIND-REUSE-002: append_utf8 single-code-point window (all four
+    // length classes).
+    {
+        size_t oks = 0;
+        std::string s;
+        mutf8::append_utf8(s, 'A');            if (s == "A") ++oks;
+        mutf8::append_utf8(s, 0xE9);           if (s == "A\xC3\xA9") ++oks;
+        mutf8::append_utf8(s, 0x20AC);         if (s == "A\xC3\xA9\xE2\x82\xAC") ++oks;
+        mutf8::append_utf8(s, 0x1F600);        if (s == "A\xC3\xA9\xE2\x82\xAC\xF0\x9F\x98\x80") ++oks;
+        record("append_utf8 code-point window", oks == 4,
+               "oks=" + std::to_string(oks) + "/4");
+    }
+
     std::cout << "\nRESULT: " << g_pass << " passed, " << g_fail << " failed\n";
     return g_fail == 0 ? 0 : 1;
 }

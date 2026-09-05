@@ -8,6 +8,7 @@
  *   resource map: attr resid indexed by attribute NAME string index.
  */
 #include "axml_parser.h"
+#include "dex/mutf8.h"   // FIND-REUSE-002: the ONE UTF-16LE→UTF-8 primitive
 #include <functional>
 
 namespace miniandroid {
@@ -74,33 +75,9 @@ bool AxmlParser::parse_string_pool(const uint8_t* p, size_t avail, size_t& consu
             if (c0 & 0x8000) { u16len = ((c0 & 0x7FFF) << 16) | ax_rd16(s + 2); o = 4; }
             else { u16len = c0; o = 2; }
             size_t bytes = std::min<size_t>(u16len * 2, (remain - o) & ~1u);
-            std::string raw((const char*)(s + o), bytes);
-            std::string utf8out; utf8out.reserve(bytes / 2);
-            for (size_t ci = 0; ci + 1 < raw.size(); ci += 2) {
-                uint32_t ch = (uint8_t)raw[ci] | ((uint32_t)(uint8_t)raw[ci + 1] << 8);
-                if (ch >= 0xD800 && ch <= 0xDBFF && ci + 3 < raw.size()) {
-                    uint32_t lo = (uint8_t)raw[ci + 2] | ((uint32_t)(uint8_t)raw[ci + 3] << 8);
-                    if (lo >= 0xDC00 && lo <= 0xDFFF) {
-                        ch = 0x10000 + ((ch - 0xD800) << 10) + (lo - 0xDC00);
-                        ci += 2;
-                    }
-                }
-                if (ch < 0x80) utf8out += (char)ch;
-                else if (ch < 0x800) {
-                    utf8out += (char)(0xC0 | (ch >> 6));
-                    utf8out += (char)(0x80 | (ch & 0x3F));
-                } else if (ch < 0x10000) {
-                    utf8out += (char)(0xE0 | (ch >> 12));
-                    utf8out += (char)(0x80 | ((ch >> 6) & 0x3F));
-                    utf8out += (char)(0x80 | (ch & 0x3F));
-                } else {
-                    utf8out += (char)(0xF0 | (ch >> 18));
-                    utf8out += (char)(0x80 | ((ch >> 12) & 0x3F));
-                    utf8out += (char)(0x80 | ((ch >> 6) & 0x3F));
-                    utf8out += (char)(0x80 | (ch & 0x3F));
-                }
-            }
-            strings_[i] = std::move(utf8out);
+            // UTF-16LE pool → UTF-8 via the ONE shared encoder
+            // (FIND-REUSE-002; AOSP surrogate-pair law lives in mutf8.cpp).
+            strings_[i] = miniandroid::dex::mutf8::utf16le_to_utf8(s + o, bytes);
         }
     }
     consumed = size;

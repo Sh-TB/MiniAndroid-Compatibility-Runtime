@@ -34,7 +34,7 @@ uint32_t read_uleb128(const uint8_t* data, size_t cap, size_t& pos,
 namespace {
 
 // Append one code point to the output as standard UTF-8.
-void append_utf8(std::string& out, uint32_t cp) {
+void append_utf8_impl(std::string& out, uint32_t cp) {
     if (cp < 0x80) {
         out.push_back(static_cast<char>(cp));
     } else if (cp < 0x800) {
@@ -59,6 +59,74 @@ constexpr uint32_t LOW_MIN = 0xDC00, LOW_MAX = 0xDFFF;
 inline bool is_continuation(uint8_t b) { return (b & 0xC0) == 0x80; }
 
 }  // namespace
+
+int32_t read_sleb128(const uint8_t* data, size_t cap, size_t& pos,
+                     bool& ok, size_t* width) {
+    ok = true;
+    if (width) *width = 0;
+    if (pos >= cap) { ok = false; return 0; }
+
+    int32_t value = 0;
+    int shift = 0;
+    uint8_t byte = 0;
+    for (int i = 0; i < 5; ++i) {
+        if (pos >= cap) { ok = false; return 0; }
+        byte = data[pos++];
+        if (width) *width = static_cast<size_t>(i + 1);
+        if (i == 4) {
+            // 5th byte contributes bits 28..31 only (4 value bits); a
+            // continuation bit or a 5th value bit would exceed i32 —
+            // hardened reject (mirrors read_uleb128's >0x0F law, keeps
+            // the shift inside defined behavior).
+            if ((byte & 0x80) || (byte & 0x7F) > 0x0F) { ok = false; return 0; }
+            value |= static_cast<int32_t>(byte & 0x0F) << 28;
+            return value;  // bit 31 already carries the sign (two's complement)
+        }
+        value |= static_cast<int32_t>(byte & 0x7F) << shift;
+        shift += 7;
+        if ((byte & 0x80) == 0) {
+            // Sign-extend from bit 6 of the final byte (SLEB128 law).
+            if (shift < 32 && (byte & 0x40)) value |= -(1 << shift);
+            return value;
+        }
+    }
+    ok = false;  // unreachable — every path above returns
+    return 0;
+}
+
+void append_utf8(std::string& out, uint32_t cp) { append_utf8_impl(out, cp); }
+
+std::string utf16le_to_utf8(const uint8_t* bytes, size_t byte_len) {
+    std::string out;
+    out.reserve(byte_len);  // upper bound: 1 byte per UTF-16 unit for ASCII
+    size_t i = 0;
+    while (i + 1 < byte_len) {
+        uint32_t ch = static_cast<uint32_t>(bytes[i]) |
+                      (static_cast<uint32_t>(bytes[i + 1]) << 8);
+        if (ch >= HIGH_MIN && ch <= HIGH_MAX) {
+            // High surrogate: combine ONLY with a following low surrogate;
+            // a truncated pair or a non-low tail emits U+FFFD (AOSP law —
+            // the pre-consolidation copies encoded the raw surrogate as
+            // invalid 3-byte WTF-8 instead).
+            bool combined = false;
+            if (i + 3 < byte_len) {
+                const uint32_t lo = static_cast<uint32_t>(bytes[i + 2]) |
+                                    (static_cast<uint32_t>(bytes[i + 3]) << 8);
+                if (lo >= LOW_MIN && lo <= LOW_MAX) {
+                    ch = 0x10000 + ((ch - HIGH_MIN) << 10) + (lo - LOW_MIN);
+                    i += 2;  // consume the low surrogate too
+                    combined = true;
+                }
+            }
+            if (!combined) ch = REPLACEMENT;
+        } else if (ch >= LOW_MIN && ch <= LOW_MAX) {
+            ch = REPLACEMENT;  // standalone low surrogate
+        }
+        i += 2;
+        append_utf8_impl(out, ch);
+    }
+    return out;
+}
 
 DecodeResult decode_string_data(const uint8_t* data, size_t cap, size_t offset) {
     DecodeResult r;

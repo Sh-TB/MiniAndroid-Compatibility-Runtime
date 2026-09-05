@@ -7132,32 +7132,25 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                             // Decode the handler at handler_abs.
                             // sleb128 size, then |size| pairs of (uleb128 type_idx, uleb128 addr),
                             // then catch-all addr if size < 0.
+                            // FIND-REUSE-003: the two inline SLEB/ULEB lambda
+                            // copies here and in find_catch_handler_for_pc
+                            // are gone — ONE shared hardened primitive
+                            // (dex/mutf8.h) with handler_list_end as the
+                            // bounds cap. On truncation the primitive
+                            // returns 0 with ok=false; `vok` is observed
+                            // but deliberately not branched on, preserving
+                            // the exact legacy return-0 semantics
+                            // (malformed-handler policy = FIND-EXC-TRUNC,
+                            // queued — not silently changed by a refactor).
                             auto read_sleb = [&](size_t& p) -> int32_t {
-                                int32_t result = 0;
-                                int shift = 0;
-                                uint8_t b;
-                                do {
-                                    if (p >= handler_list_end) return 0;
-                                    b = current_tries_data_[p++];
-                                    result |= (b & 0x7F) << shift;
-                                    shift += 7;
-                                } while (b & 0x80);
-                                if (shift < 32 && (b & 0x40)) {
-                                    result |= -(1 << shift);
-                                }
-                                return result;
+                                bool vok = true;
+                                return miniandroid::dex::mutf8::read_sleb128(
+                                    current_tries_data_, handler_list_end, p, vok);
                             };
                             auto read_uleb = [&](size_t& p) -> uint32_t {
-                                uint32_t result = 0;
-                                int shift = 0;
-                                uint8_t b;
-                                do {
-                                    if (p >= handler_list_end) return 0;
-                                    b = current_tries_data_[p++];
-                                    result |= (b & 0x7F) << shift;
-                                    shift += 7;
-                                } while (b & 0x80);
-                                return result;
+                                bool vok = true;
+                                return miniandroid::dex::mutf8::read_uleb128(
+                                    current_tries_data_, handler_list_end, p, vok);
                             };
 
                             size_t p = handler_abs;
@@ -7651,32 +7644,18 @@ bool DalvikExecutionEngine::find_catch_handler_for_pc(
         // Decode the handler at handler_abs.
         // sleb128 size, then |size| pairs of (uleb128 type_idx, uleb128 addr),
         // then catch-all addr if size <= 0.
+        // FIND-REUSE-003: ONE shared SLEB/ULEB primitive (dex/mutf8.h)
+        // replaces the second inline lambda copy (see the exception-dispatch
+        // site above for the truncation-semantics note).
         auto read_sleb = [&](size_t& p) -> int32_t {
-            int32_t result = 0;
-            int shift = 0;
-            uint8_t b;
-            do {
-                if (p >= handler_list_end) return 0;
-                b = current_tries_data_[p++];
-                result |= (b & 0x7F) << shift;
-                shift += 7;
-            } while (b & 0x80);
-            if (shift < 32 && (b & 0x40)) {
-                result |= -(1 << shift);
-            }
-            return result;
+            bool vok = true;
+            return miniandroid::dex::mutf8::read_sleb128(
+                current_tries_data_, handler_list_end, p, vok);
         };
         auto read_uleb = [&](size_t& p) -> uint32_t {
-            uint32_t result = 0;
-            int shift = 0;
-            uint8_t b;
-            do {
-                if (p >= handler_list_end) return 0;
-                b = current_tries_data_[p++];
-                result |= (b & 0x7F) << shift;
-                shift += 7;
-            } while (b & 0x80);
-            return result;
+            bool vok = true;
+            return miniandroid::dex::mutf8::read_uleb128(
+                current_tries_data_, handler_list_end, p, vok);
         };
 
         size_t p = handler_abs;
@@ -14231,18 +14210,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // for the nbsp (U+00A0) we substitute the UTF-8 encoding.
             int32_t old_ch = args[1].int_val & 0xFFFF;
             int32_t new_ch = args[2].int_val & 0xFFFF;
+            // FIND-REUSE-002: single-code-point UTF-8 encoding reuses the
+            // ONE shared append_utf8 primitive (dex/mutf8.h) instead of a
+            // private 3-branch lambda copy.
             auto utf8_of = [](int32_t cp) {
                 std::string s;
-                if (cp < 0x80) {
-                    s += static_cast<char>(cp);
-                } else if (cp < 0x800) {
-                    s += static_cast<char>(0xC0 | (cp >> 6));
-                    s += static_cast<char>(0x80 | (cp & 0x3F));
-                } else {
-                    s += static_cast<char>(0xE0 | (cp >> 12));
-                    s += static_cast<char>(0x80 | ((cp >> 6) & 0x3F));
-                    s += static_cast<char>(0x80 | (cp & 0x3F));
-                }
+                miniandroid::dex::mutf8::append_utf8(s, static_cast<uint32_t>(cp));
                 return s;
             };
             std::string old_s = utf8_of(old_ch);
