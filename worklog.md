@@ -4229,3 +4229,72 @@ Stage Summary:
   rules, resolves resources from the APK's own ARSC, formats strings
   like Java, boxes primitives, and reports its font decisions — every
   step with pixel or log evidence and zero-skip gates.
+
+---
+Task ID: 8
+Agent: Super Z (main agent)
+Task: DEEP COMPATIBILITY CAMPAIGN — re-establish ground truth after sandbox
+reset; ONE COMPLETE APK (§10 absolute priority); primitive-type invoke
+truth; regression; README evidence; git delivery.
+
+Work Log:
+- GROUND TRUTH: sandbox was reset — old git history (ad95d928…e0a3a30d)
+  replaced by a rebuilt snapshot (0edb52b) with no remote; 583 mode-only
+  changes silenced via core.fileMode=false. Rebuilt runtime from source;
+  re-verified prior claims on current HEAD: Cycle E validator ALL PASS
+  (same frame SHA 64c8398e… as previous session — cross-sandbox
+  determinism); semantic battery 14/14+55/55+25/25+5/5+8/8+6/6+5/5;
+  simplestopwatch BASELINE_MATCH (97933dbc…); corpus restored via
+  fetch_corpus.py (12/15 hash-OK; OpenLauncher republished upstream,
+  tinymusicplayer 404, Telegram pinned-hash BLOCKED).
+- BASELINE MATRIX RECHECK: tictactoe (emmanuelmess) = libGDX → GL boundary
+  → blank frame (recorded, not faked); dooz renders partial AndroidX gray.
+  Per §9 clean-fixture branch: built tictactoe_golden fixture.
+- TICTACTOE-GOLDEN (§10): real APK via ECJ→D8 with real Outer$Inner
+  listeners. End-to-end now PROVEN: launch → programmatic View tree →
+  weighted measure/layout → glyphs → 9 real-DEX clicks → X/O state
+  machine → "X WINS" on the anti-diagonal at click 7 → frozen gameOver →
+  byte-identical 10-frame replay. Validator: ALL PASS (8 checks,
+  zero-skip counted).
+- SIX GENERIC ENGINE FIXES (each probe-discriminated before/after):
+  1. *LayoutParams.<init> bridge (AOSP overloads; width/height/gravity/
+     margins/weight) + addView/setLayoutParams capture incl. weight.
+  2. setContentView(View) now runs the real measure_layout pass (was:
+     legacy estimator where width=0+weight collapsed to zero size — the
+     board was invisible); ResourceRuntime.inflater() lazily constructs
+     (was: null deref for APKs without resources.arsc).
+  3. execute_return retypes by return descriptor (Z/C/B/S) — booleans
+     printed "0"/"1", chars their int codes.
+  4. build_invoke_args retypes C/Z/B/S params (was: F/J/D only).
+  5. IMPLEMENT_IF_22T/arith/array-index macros collapsed non-INT32
+     primitives to 0 — a char param compared as 0 made EMPTY CELLS match
+     a win check; dalvik_int_value covers all integer-like types.
+  6. Method throttle exempted compiler-generated access$N trampolines
+     (was: stubbed after 11 calls → "null WINS", frozen turn flip).
+  Plus: String.valueOf overloads bridged (char+String concat rendered
+  "null to move"); validate_cycle_e.sh replay gate rejects empty hashes;
+  relative-binary-path absolutization.
+- CHAR-PROBE fixture: 8 discriminators pinning primitive semantics —
+  ALL PASS; committed as permanent regression pins.
+- REGRESSION: full battery green (numbers above); u011 matrix unchanged
+  (gmdice/microtimer/unote/dooz identical SHAs); Cycle E ALL PASS.
+- README (§22): real runtime screenshot pair (launch vs X WINS) with
+  SHA-256 provenance added; validator command shipped.
+- GIT: LOCAL_COMMIT de5f370 (feat(runtime): ONE COMPLETE APK …) on top of
+  0edb52b. PUSH BLOCKED — this sandbox has no git remote configured
+  ("fatal: No configured push destination"); commit is clean and
+  fast-forward-ready; REMOTE_VERIFIED = NO.
+
+Stage Summary:
+- §10 minimum stop-condition satisfied for ONE complete APK: the
+  Tic-Tac-Toe golden demonstrates APK load, DEX execution, Activity
+  lifecycle, View tree, measure/layout, text pipeline, input→state→
+  second-frame, deterministic replay — all evidence runtime-produced and
+  zero-skip counted.
+- New findings carried forward: (a) libGDX/GL boundary = tictactoe
+  (emmanuelmess) blank — needs a GLES path or stays documented;
+  (b) dooz partial AndroidX render (dipmap?) — next interaction target;
+  (c) stopwatch (muellerma) exit=1 with partial frame — uninvestigated;
+  (d) push still credential-less in this sandbox.
+- Next highest-value: reference study (WineDroid re-search + matrix),
+  agent-finding audit table, resource-category differential fixtures.
