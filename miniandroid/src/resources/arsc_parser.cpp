@@ -16,24 +16,14 @@ static inline uint32_t rd32(const uint8_t* p) {
     return (uint32_t)p[0] | ((uint32_t)p[1] << 8) | ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24);
 }
 
-// Decode a COMPLEX_MANTISSA — AOSP TypedValue.complexToFloat (authoritative,
-// verified against platform_frameworks_base TypedValue.java):
-//   value = (data & (MANTISSA_MASK << MANTISSA_SHIFT)) * RADIX_MULTS[(data>>4)&3]
-//   MANTISSA_MASK=0xFFFFFF, MANTISSA_SHIFT=8 → MANTISSA_MULT = 2^-8
-//   UNIT = data & 0xF (COMPLEX_UNIT_SHIFT = 0)
-float complex_to_float(uint32_t data) {
-    static const float MANTISSA_MULT = 1.0f / (1 << 8);
-    static const float RADIX_MULTS[] = {
-        1.0f * MANTISSA_MULT,
-        1.0f / (1 << 7)  * MANTISSA_MULT,
-        1.0f / (1 << 15) * MANTISSA_MULT,
-        1.0f / (1 << 23) * MANTISSA_MULT,
-    };
-    uint32_t mantissa = data & 0xFFFFFF00u;
-    // sign-extend: mantissa is a signed 24-bit value in bits 8..31
-    int32_t signed_m = (int32_t)mantissa;
-    return signed_m * RADIX_MULTS[(data >> 4) & 3];
-}
+// ---------------------------------------------------------------------------
+// GOLDEN-03 §7: complex_to_float() now lives in res_id.cpp — the ONE
+// TypedValue-law source. res_id.h re-exports it in this namespace.
+// ---------------------------------------------------------------------------
+
+// Decode a COMPLEX_MANTISSA — AOSP TypedValue.complexToFloat.
+// GOLDEN-03 §7: the definition MOVED to res_id.cpp (the single TypedValue
+// law source); this translation unit consumes it via res_id.h.
 
 // ---------------------------------------------------------------------------
 // String pool — FIND-REUSE-004: the parse itself lives ONCE in
@@ -125,7 +115,16 @@ bool ArscParser::decode_res_value(const uint8_t* p, size_t avail, const Pool& /*
         }
         case DataType::DIMENSION: {
             out.dim_value = complex_to_float(ddata);
-            out.dim_unit = (uint8_t)(ddata & 0xF);   // COMPLEX_UNIT_SHIFT = 0
+            out.dim_unit = (uint8_t)(ddata & COMPLEX_UNIT_MASK);   // COMPLEX_UNIT_SHIFT = 0
+            break;
+        }
+        case DataType::FRACTION: {
+            // GOLDEN-03 §7: FRACTION (0x06) — same complex mantissa law as
+            // DIMENSION; the low nibble is the FRACTION unit (0 = % of base,
+            // 1 = % of parent). TypedValue.complexToFraction multiplies by the
+            // consumer's base/pbase at use time; here we store the multiplier.
+            out.dim_value = complex_to_float(ddata);
+            out.dim_unit = (uint8_t)(ddata & COMPLEX_UNIT_MASK);
             break;
         }
         case DataType::REFERENCE:
@@ -388,8 +387,8 @@ void ArscParser::finish_index() {
     by_id_.clear();
     pkg_of_id_.clear();
     for (auto& e : type_entries_) {
-        uint32_t id = ((e.package_id & 0xFF) << 24) | ((e.type_index & 0xFF) << 16) | (e.entry_index & 0xFFFF);
-        e.resource_id = id;
+        // GOLDEN-03 §3: canonical id composition via ResId (was inline bit math).
+        e.resource_id = ResId::pack(e.package_id, (uint8_t)e.type_index, e.entry_index);
     }
     for (auto& e : type_entries_) {
         by_id_[e.resource_id].push_back(&e);
@@ -397,11 +396,10 @@ void ArscParser::finish_index() {
     // type_name from package type strings (each entry may lack it)
     for (auto& e : type_entries_) {
         if (!e.type_name.empty()) continue;
-        uint32_t pid = (e.resource_id >> 24) & 0xFF;
-        uint8_t tid = (e.resource_id >> 16) & 0xFF;
+        const ResId rid = ResId::unpack(e.resource_id);
         for (const auto& pkg : packages_) {
-            if (pkg.id == pid) {
-                const std::string* tn = pkg.type_strings.get(tid - 1);
+            if (pkg.id == rid.package) {
+                const std::string* tn = pkg.type_strings.get(rid.type - 1);
                 if (tn) e.type_name = *tn;
                 break;
             }
@@ -458,10 +456,9 @@ std::optional<ResolvedResource> ArscParser::resolve(uint32_t resource_id) const 
     if (it == by_id_.end() || it->second.empty()) return std::nullopt;
     ResolvedResource out;
     out.id = resource_id;
-    uint32_t pid = (resource_id >> 24) & 0xFF;
-    uint8_t  tid = (resource_id >> 16) & 0xFF;
+    const ResId rid = ResId::unpack(resource_id);   // GOLDEN-03 §3
     for (const auto& pkg : packages_) {
-        if (pkg.id == pid) { out.package_name = pkg.name; break; }
+        if (pkg.id == rid.package) { out.package_name = pkg.name; break; }
     }
     for (const auto* e : it->second) {
         out.configs.push_back(*e);
@@ -472,8 +469,8 @@ std::optional<ResolvedResource> ArscParser::resolve(uint32_t resource_id) const 
     }
     // ensure type_name is set even when the front entry missed it
     if (out.type_name.empty()) {
-        for (const auto& pkg : packages_) if (pkg.id == pid) {
-            const std::string* tn = pkg.type_strings.get(tid - 1);
+        for (const auto& pkg : packages_) if (pkg.id == rid.package) {
+            const std::string* tn = pkg.type_strings.get(rid.type - 1);
             if (tn) out.type_name = *tn;
             break;
         }
@@ -489,9 +486,9 @@ std::optional<uint32_t> ArscParser::find_id(const std::string& package, const st
         if (!name.empty() && e->name != name) continue;
         if (!type.empty() && e->type_name != type) continue;
         if (!package.empty()) {
-            uint32_t pid = (kv.first >> 24) & 0xFF;
+            const ResId rid = ResId::unpack(kv.first);   // GOLDEN-03 §3
             bool match = false;
-            for (const auto& pkg : packages_) if (pkg.id == pid && pkg.name == package) { match = true; break; }
+            for (const auto& pkg : packages_) if (pkg.id == rid.package && pkg.name == package) { match = true; break; }
             if (!match) continue;
         }
         return kv.first;
@@ -499,23 +496,164 @@ std::optional<uint32_t> ArscParser::find_id(const std::string& package, const st
     return std::nullopt;
 }
 
-std::optional<ResValue> ArscParser::resolve_value(uint32_t resource_id) const {
-    auto r = resolve(resource_id);
-    if (!r) return std::nullopt;
-    const ArscEntry* e = r->best();
-    if (!e) return std::nullopt;
-    ResValue v = e->value;
-    // follow one reference hop (e.g. color → @color/other, string alias)
-    int hops = 0;
-    while (v.is_reference() && hops < 4) {
-        auto r2 = resolve(v.ref_id);
-        if (!r2) break;
-        const ArscEntry* e2 = r2->best();
-        if (!e2) break;
-        v = e2->value;
+// ─────────────────────────────────────────────────────────────────────────────
+// GOLDEN-03 §4/§6 — canonical structured resolution.
+// AOSP law: AssetManager2/ResTable resolveReference walks REFERENCE values
+// entry-by-entry, each lookup selecting under the requested configuration.
+// MiniAndroid adds the §6 safety contract: bounded depth + cycle detection +
+// named deterministic errors (hostile tables must never loop or corrupt).
+// ─────────────────────────────────────────────────────────────────────────────
+const char* resolution_error_name(ResolutionError e) {
+    switch (e) {
+        case ResolutionError::NONE:            return "NONE";
+        case ResolutionError::INVALID_ID:      return "INVALID_ID";
+        case ResolutionError::MISSING_ENTRY:   return "MISSING_ENTRY";
+        case ResolutionError::MISSING_REFERENCE_TARGET: return "MISSING_REFERENCE_TARGET";
+        case ResolutionError::CYCLE:           return "CYCLE";
+        case ResolutionError::DEPTH_EXCEEDED:  return "DEPTH_EXCEEDED";
+        case ResolutionError::NOT_RESOLVABLE:  return "NOT_RESOLVABLE";
+    }
+    return "UNKNOWN";
+}
+
+ResolutionResult ArscParser::resolve_full(uint32_t resource_id,
+                                          const ResTableConfig& device,
+                                          uint32_t max_depth) const {
+    ResolutionResult out;
+    out.requested_id = resource_id;
+    out.decomposed = ResId::unpack(resource_id);
+    out.requested_config = device;
+
+    if (!out.decomposed.valid()) {
+        out.error = ResolutionError::INVALID_ID;
+        return out;
+    }
+
+    std::unordered_map<uint32_t, uint8_t> visited;   // §6 cycle detection (id → depth)
+    uint32_t next_id = resource_id;
+    uint32_t depth = 0;
+    while (true) {
+        auto seen = visited.find(next_id);
+        if (seen != visited.end()) { out.error = ResolutionError::CYCLE; return out; }
+        if (depth > max_depth)      { out.error = ResolutionError::DEPTH_EXCEEDED; return out; }
+        visited.emplace(next_id, (uint8_t)depth);
+
+        auto r = resolve(next_id);
+        if (!r) {
+            out.error = depth == 0 ? ResolutionError::MISSING_ENTRY
+                                   : ResolutionError::MISSING_REFERENCE_TARGET;
+            return out;
+        }
+        const ArscEntry* e = r->best_for(device);
+        if (!e) { out.error = ResolutionError::NOT_RESOLVABLE; return out; }
+
+        ResolutionStep step;
+        step.id = next_id;
+        step.type_name = r->type_name;
+        step.entry_name = r->name;
+        step.package_name = r->package_name;
+        step.selected_config = e->config;
+        step.selected_config_desc = e->config_desc;
+        step.selected_by_match = e->has_config;   // qualified bucket matched the device
+        step.raw_value = e->value;
+        step.is_complex_entry = e->is_complex;
+        out.type_name = r->type_name;
+        out.entry_name = r->name;
+        out.package_name = r->package_name;
+        out.chain.push_back(std::move(step));
+
+        // Terminal cases: a bag (style/attrs) is NOT a reference even though
+        // its marker value carries the bag PARENT in ref_id; only real
+        // REFERENCE/ATTRIBUTE/DYNAMIC_REFERENCE simple values continue the
+        // chain (AOSP ResTable::resolveReference follows bag identity once).
+        if (e->is_complex) break;
+        if (!e->value.is_reference()) break;
+        next_id = e->value.ref_id;
+        depth++;
+    }
+    out.ok = true;
+    return out;
+}
+
+std::string ResolutionResult::to_json() const {
+    std::ostringstream o;
+    o << "{\"requested_id\":\"0x" << std::hex << requested_id << std::dec << "\""
+      << ",\"package\":\"" << package_name << "\""
+      << ",\"type\":\"" << type_name << "\""
+      << ",\"entry\":\"" << entry_name << "\""
+      << ",\"ok\":" << (ok ? "true" : "false")
+      << ",\"error\":\"" << resolution_error_name(error) << "\""
+      << ",\"hops\":" << reference_hops()
+      << ",\"chain\":[";
+    for (size_t i = 0; i < chain.size(); ++i) {
+        const ResolutionStep& s = chain[i];
+        if (i) o << ",";
+        o << "{\"id\":\"0x" << std::hex << s.id << std::dec << "\""
+          << ",\"type\":\"" << s.type_name << "\""
+          << ",\"entry\":\"" << s.entry_name << "\""
+          << ",\"config\":\"" << s.selected_config_desc << "\""
+          << ",\"config_matched\":" << (s.selected_by_match ? "true" : "false")
+          << ",\"complex\":" << (s.is_complex_entry ? "true" : "false")
+          << ",\"raw_type\":0x" << std::hex << (unsigned)s.raw_value.type << std::dec
+          << ",\"raw_data\":\"0x" << std::hex << s.raw_value.data << std::dec << "\"";
+        if (!s.raw_value.string_value.empty())
+            o << ",\"string\":\"" << s.raw_value.string_value << "\"";
+        if (s.raw_value.is_reference())
+            o << ",\"ref\":\"0x" << std::hex << s.raw_value.ref_id << std::dec << "\"";
+        if (s.raw_value.is_dimension() || s.raw_value.is_fraction())
+            o << ",\"unit\":" << (unsigned)s.raw_value.dim_unit
+              << ",\"value\":" << s.raw_value.dim_value;
+        o << "}";
+    }
+    o << "]}";
+    return o.str();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GOLDEN-03 §8 — attribute-key style-bag query with parent inheritance.
+// AOSP law (ResourceTypes.cpp ResTable::getBagAttributeLock / ResourceTypes
+// ResTable_map): a style entry is a bag of {attr_id → Res_value} items; when
+// the requested attribute is absent the lookup continues through the
+// ResTable_map_entry.parent chain (style inheritance), which Android follows
+// until the attribute is found or the chain ends.
+// ─────────────────────────────────────────────────────────────────────────────
+std::optional<ResValue> ArscParser::bag_value(uint32_t style_resid, uint32_t attr_key,
+                                              const ResTableConfig& device,
+                                              uint32_t max_parent_hops) const {
+    uint32_t cur = style_resid;
+    uint32_t hops = 0;
+    std::unordered_map<uint32_t, uint8_t> visited;
+    while (true) {
+        if (visited.count(cur)) return std::nullopt;              // parent cycle
+        if (hops > max_parent_hops) return std::nullopt;          // bounded
+        visited.emplace(cur, 0);
+
+        auto r = resolve(cur);
+        if (!r) return std::nullopt;
+        const ArscEntry* e = r->best_for(device);
+        if (!e || !e->is_complex) return std::nullopt;
+
+        for (size_t i = 0; i < e->complex_keys.size() && i < e->complex_items.size(); ++i) {
+            if (e->complex_keys[i] == attr_key) return e->complex_items[i];
+        }
+        // Key not in this bag → follow the ResTable_map_entry parent.
+        // (Bag entries carry parent in value.ref_id, value.type ATTRIBUTE.)
+        if (e->value.type != DataType::ATTRIBUTE || e->value.ref_id == 0 ||
+            e->value.ref_id == cur) {
+            return std::nullopt;
+        }
+        cur = e->value.ref_id;
         hops++;
     }
-    return v;
+}
+
+std::optional<ResValue> ArscParser::resolve_value(uint32_t resource_id) const {
+    // GOLDEN-03 §4: resolve_value is now a thin projection of the canonical
+    // resolve_full path (same config law, bounded depth, cycle detection) —
+    // previously it inlined a 4-hop loop with no cycle protection.
+    ResolutionResult r = resolve_full(resource_id, device_config(), kMaxReferenceDepth);
+    if (!r.ok) return std::nullopt;
+    return *r.value();
 }
 
 std::optional<std::string> ArscParser::resolve_string(uint32_t resource_id) const {

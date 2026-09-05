@@ -34,6 +34,7 @@
 #include <sstream>
 #include <algorithm>
 #include "res_config.h"
+#include "res_id.h"   // GOLDEN-03 §3/§7/§9: canonical ResId + TypedValue laws
 
 namespace miniandroid {
 namespace resources {
@@ -91,6 +92,7 @@ struct ResValue {
         }
     }
     bool is_dimension() const { return type == DataType::DIMENSION; }
+    bool is_fraction()  const { return type == DataType::FRACTION; }
     bool is_bool()      const { return type == DataType::INT_BOOLEAN; }
     bool is_int()       const { return type == DataType::INT_DEC || type == DataType::INT_HEX; }
     bool is_null()      const { return type == DataType::NULL_; }
@@ -111,6 +113,62 @@ struct ArscEntry {
     bool       is_complex = false;
     std::vector<uint32_t> complex_keys;           // VISUAL-CAMPAIGN G49: ResTable_map name keys
     std::vector<ResValue> complex_items;  // for arrays/attrs
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GOLDEN-03 §4 — canonical structured resolution result.
+// AOSP law (AssetManager2::FindEntry + ResTable::resolveReference): a lookup
+// returns the selected value TOGETHER WITH the configuration it was selected
+// under, and reference resolution is a distinct step recorded in the chain.
+// ─────────────────────────────────────────────────────────────────────────────
+// One link of the resolution chain: the entry visited for one resource id.
+struct ResolutionStep {
+    uint32_t      id = 0;                      // resource id visited at this step
+    std::string   type_name;                   // "color" / "string" / "style"...
+    std::string   entry_name;                  // "colorPrimary" ...
+    std::string   package_name;
+    ResTableConfig selected_config;            // configuration the value was selected under
+    std::string   selected_config_desc;        // qualifier string ("", "v21", "480dpi"...)
+    bool          selected_by_match = false;   // true = qualified bucket matched; false = default fallback
+    ResValue      raw_value;                   // value as stored in that entry (pre-reference)
+    bool          is_complex_entry = false;    // bag (style/attrs) entry
+};
+
+// Named failure modes (§6: deterministic, diagnosable, never silent).
+enum class ResolutionError {
+    NONE = 0,
+    INVALID_ID,          // package or type byte is 0
+    MISSING_ENTRY,       // requested id absent from the table
+    MISSING_REFERENCE_TARGET, // a @ref in the chain points to an absent id
+    CYCLE,               // reference cycle detected (A→B→A)
+    DEPTH_EXCEEDED,      // chain longer than the bounded depth
+    NOT_RESOLVABLE,      // id present but no entry selectable under the device
+};
+const char* resolution_error_name(ResolutionError e);
+
+// Bounded reference-following depth (§6). AOSP ResTable::resolveReference is
+// iterative with no static cap; MiniAndroid bounds it to keep hostile tables
+// (cycles, 1000-hop chains) deterministic. 16 covers every real table.
+static constexpr uint32_t kMaxReferenceDepth = 16;
+
+// Full canonical result of resolve(resourceId, deviceConfig):
+//   requested_id → [REFERENCE]* → terminal value, with per-step selected
+//   configuration, raw/resolved value distinction, and named error on failure.
+struct ResolutionResult {
+    uint32_t       requested_id = 0;
+    ResId          decomposed;                 // §3 canonical decomposition
+    std::string    package_name;
+    std::string    type_name;
+    std::string    entry_name;
+    ResTableConfig requested_config;
+    bool           ok = false;
+    ResolutionError error = ResolutionError::NONE;
+    std::vector<ResolutionStep> chain;         // requested → ... → terminal
+
+    const ResValue* value() const { return chain.empty() ? nullptr : &chain.back().raw_value; }
+    const ResolutionStep* terminal() const { return chain.empty() ? nullptr : &chain.back(); }
+    size_t reference_hops() const { return chain.empty() ? 0 : chain.size() - 1; }
+    std::string to_json() const;
 };
 
 // Full resolution result: id → every config's entry
@@ -159,6 +217,22 @@ public:
     std::optional<std::string> apk_path_for(uint32_t resource_id,
                                             const std::vector<std::string>& apk_paths,
                                             const ResTableConfig& device) const;
+
+    // ── GOLDEN-03 §4/§6: canonical structured resolution path ──────────────
+    // resolve(resourceId, deviceConfig) → ResolutionResult with the full
+    // reference chain, per-step selected configuration, bounded depth and
+    // cycle detection. All other lookup helpers are layered on this.
+    ResolutionResult resolve_full(uint32_t resource_id,
+                                  const ResTableConfig& device,
+                                  uint32_t max_depth = kMaxReferenceDepth) const;
+
+    // ── GOLDEN-03 §8: attribute-key style-bag query (AOSP ResTable_map law).
+    // Looks up attr_key (e.g. 0x01010054 windowBackground) inside a complex
+    // style entry; walks the ResTable_map_entry PARENT chain when the key is
+    // absent (style inheritance), with hop bound + cycle detection.
+    std::optional<ResValue> bag_value(uint32_t style_resid, uint32_t attr_key,
+                                      const ResTableConfig& device,
+                                      uint32_t max_parent_hops = 8) const;
 
     // --- Stats / evidence ----------------------------------------------------
     struct Stats {
