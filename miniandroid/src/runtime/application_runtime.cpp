@@ -29,13 +29,13 @@
 #include "framework/dialog_shadow.h"
 #include "framework/canvas_shadow.h"
 #include "framework/heap_adapter.h"
-// Note: Do NOT include dex/dex_interpreter.h - it has Opcodes that conflict with dex_interpreter_batch.h
+// Note: dex_interpreter.h (legacy v1) was DELETED (dead-chain audit 2026-09-05);
 #include "object_model.h"
 #include "resources/resource_parser.h"
 #include "renderer/software_renderer.h"
 #include "diagnostics/trace_engine.h"
 
-// Don't include dex_interpreter.h to avoid Opcodes redefinition
+// dex_interpreter_batch.h is the only batch-interpreter header
 // We use dex_interpreter_batch.h which has BatchExecutionTrace
 
 #include <iostream>
