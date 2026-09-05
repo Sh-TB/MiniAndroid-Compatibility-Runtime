@@ -1985,8 +1985,23 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                     row_x = left + (w - total_w) / 2;
                                 }
                                 for (const auto& b : boxes) {
+                                    // EXT-AOSP-001: cross-axis placement in a
+                                    // horizontal row honors the container
+                                    // gravity when the child has none
+                                    // (LinearLayout.java L1777-1778 majorGravity
+                                    // / minorGravity resolution).
+                                    int eff_x_gravity = b.n->lp_gravity;
+                                    if (eff_x_gravity == 0 && node->gravity_set) {
+                                        eff_x_gravity = node->container_gravity;
+                                    }
                                     int cx = row_x + b.n->lp_margin_left;
                                     int cy = top + b.n->lp_margin_top;
+                                    int cyg = eff_x_gravity & 0x70;
+                                    if (cyg == 0x10 || eff_x_gravity == 0x11) {
+                                        cy = top + (h - b.ch) / 2;
+                                    } else if (cyg == 0x50) {
+                                        cy = top + h - b.ch - b.n->lp_margin_bottom;
+                                    }
                                     child_tasks.push_back({b.id, cx, cy, b.cw, b.ch, task.depth + 1});
                                     row_x = cx + b.cw + b.n->lp_margin_right;
                                 }
@@ -1994,9 +2009,19 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             } else {
                                 for (const auto& b : boxes) {
                                     const auto* cnode = b.n;
-                                    int hg = cnode->lp_gravity & 0x7;
+                                    // EXT-AOSP-001 (LinearLayout.java@1cdfff55
+                                    // L1284/L1466): child gravity falls back to
+                                    // the container gravity when the child
+                                    // carries no explicit layout_gravity. This
+                                    // runtime encodes "no explicit gravity" as
+                                    // lp_gravity == 0 (AOSP uses -1).
+                                    int eff_gravity = cnode->lp_gravity;
+                                    if (eff_gravity == 0 && node->gravity_set) {
+                                        eff_gravity = node->container_gravity;
+                                    }
+                                    int hg = eff_gravity & 0x7;
                                     int cx;
-                                    if (hg == 1 || cnode->lp_gravity == 0x11) {
+                                    if (hg == 1 || eff_gravity == 0x11) {
                                         cx = left + (w - b.cw) / 2;
                                     } else if (hg == 5) {
                                         cx = left + w - b.cw - cnode->lp_margin_right;
@@ -2004,14 +2029,14 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                         cx = left + cnode->lp_margin_left;
                                     }
                                     int cy;
-                                    int vg = cnode->lp_gravity & 0x70;
+                                    int vg = eff_gravity & 0x70;
                                     if (is_linear_layout) {
                                         cy = cursor_y + cnode->lp_margin_top;
                                         cursor_y = cy + b.ch + cnode->lp_margin_bottom;
                                     } else {
                                         // FrameLayout semantics: overlap at parent
                                         // origin; gravity may center vertically.
-                                        if (vg == 0x10 || cnode->lp_gravity == 0x11) {
+                                        if (vg == 0x10 || eff_gravity == 0x11) {
                                             cy = top + (h - b.ch) / 2;
                                         } else if (vg == 0x50) {
                                             cy = top + h - b.ch - cnode->lp_margin_bottom;

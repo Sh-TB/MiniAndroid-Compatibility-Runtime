@@ -1,0 +1,8 @@
+frame 1080x1920
+headline band: {'top': 13, 'bottom': 159, 'height': 147, 'left': 202, 'right': 874}
+subtitle band: {'top': 160, 'bottom': 182, 'height': 23, 'left': 513, 'right': 565}
+headline center=538.0 (frame center 540.0)
+subtitle center=539.0
+headline taller than subtitle: True
+headline centered: True
+subtitle centered: True
