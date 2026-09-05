@@ -164,8 +164,44 @@ DexError DexParser::validate_header(const DexHeader& header) {
         last_error_ = "File size in header exceeds actual data";
         return DexError::FILE_TOO_SMALL;
     }
+
+    // Structural law (FIND-REUSE-005, adapted from WineDroid dex.rs):
+    // a DEX cannot declare a file_size smaller than its own header.
+    if (header.file_size < header.header_size) {
+        last_error_ = "file_size smaller than header_size";
+        return DexError::FILE_TOO_SMALL;
+    }
     
     return DexError::NONE;
+}
+
+// Section-table structural law (FIND-REUSE-005, adapted from WineDroid
+// dex.rs validate_table, Apache-2.0): a non-empty section table needs a
+// non-zero, 4-byte-aligned offset, and count*item_size must fit inside
+// the DEX. Enforced BEFORE any allocation so a hostile header cannot
+// trigger an unbounded vector allocation (OOM guard) or a silent misparse.
+bool DexParser::validate_section_table(const char* name, uint32_t count,
+                                       uint32_t offset, size_t item_size) {
+    if (count == 0) return true;
+
+    if (offset == 0) {
+        last_error_ = std::string(name) + " table has items but offset is zero";
+        return false;
+    }
+
+    if (offset % 4 != 0) {
+        last_error_ = std::string(name) + " table is not 4-byte aligned";
+        return false;
+    }
+
+    uint64_t byte_size = static_cast<uint64_t>(count) * static_cast<uint64_t>(item_size);
+    if (offset > current_size_ || byte_size > current_size_ ||
+        offset + byte_size > current_size_) {
+        last_error_ = std::string(name) + " table extends beyond file";
+        return false;
+    }
+
+    return true;
 }
 
 bool DexParser::verify_checksum(const uint8_t* data, size_t size, const DexHeader& header) {
@@ -197,14 +233,14 @@ bool DexParser::parse_string_pool(const uint8_t* data, DexReport& report) {
         return true;
     }
     
+    if (!validate_section_table("string_ids", report.header.string_ids_size,
+                                report.header.string_ids_off, sizeof(DexStringId))) {
+        return false;
+    }
+
     // Read string IDs (array of offsets)
     std::vector<DexStringId> string_ids(report.header.string_ids_size);
     size_t ids_offset = report.header.string_ids_off;
-    
-    if (ids_offset + string_ids.size() * sizeof(DexStringId) > current_size_) {
-        last_error_ = "String IDs extend beyond file";
-        return false;
-    }
     
     std::memcpy(string_ids.data(), data + ids_offset, 
                 string_ids.size() * sizeof(DexStringId));
@@ -235,14 +271,14 @@ bool DexParser::parse_types(const uint8_t* data, DexReport& report) {
         return true;
     }
     
+    if (!validate_section_table("type_ids", report.header.type_ids_size,
+                                report.header.type_ids_off, sizeof(DexTypeId))) {
+        return false;
+    }
+
     // Read type IDs (array of string indices)
     std::vector<DexTypeId> type_ids(report.header.type_ids_size);
     size_t ids_offset = report.header.type_ids_off;
-    
-    if (ids_offset + type_ids.size() * sizeof(DexTypeId) > current_size_) {
-        last_error_ = "Type IDs extend beyond file";
-        return false;
-    }
     
     std::memcpy(type_ids.data(), data + ids_offset,
                 type_ids.size() * sizeof(DexTypeId));
@@ -267,13 +303,13 @@ bool DexParser::parse_prototypes(const uint8_t* data, DexReport& report) {
         return true;
     }
     
-    std::vector<DexProtoId> proto_ids(report.header.proto_ids_size);
-    size_t protos_offset = report.header.proto_ids_off;
-    
-    if (protos_offset + proto_ids.size() * sizeof(DexProtoId) > current_size_) {
-        last_error_ = "Proto IDs extend beyond file";
+    if (!validate_section_table("proto_ids", report.header.proto_ids_size,
+                                report.header.proto_ids_off, sizeof(DexProtoId))) {
         return false;
     }
+
+    std::vector<DexProtoId> proto_ids(report.header.proto_ids_size);
+    size_t protos_offset = report.header.proto_ids_off;
     
     std::memcpy(proto_ids.data(), data + protos_offset,
                 proto_ids.size() * sizeof(DexProtoId));
@@ -290,13 +326,13 @@ bool DexParser::parse_fields(const uint8_t* data, DexReport& report) {
         return true;
     }
     
-    std::vector<DexFieldId> field_ids(report.header.field_ids_size);
-    size_t fields_offset = report.header.field_ids_off;
-    
-    if (fields_offset + field_ids.size() * sizeof(DexFieldId) > current_size_) {
-        last_error_ = "Field IDs extend beyond file";
+    if (!validate_section_table("field_ids", report.header.field_ids_size,
+                                report.header.field_ids_off, sizeof(DexFieldId))) {
         return false;
     }
+
+    std::vector<DexFieldId> field_ids(report.header.field_ids_size);
+    size_t fields_offset = report.header.field_ids_off;
     
     std::memcpy(field_ids.data(), data + fields_offset,
                 field_ids.size() * sizeof(DexFieldId));
@@ -316,13 +352,13 @@ bool DexParser::parse_methods(const uint8_t* data, DexReport& report) {
         return true;
     }
     
-    std::vector<DexMethodId> method_ids(report.header.method_ids_size);
-    size_t methods_offset = report.header.method_ids_off;
-    
-    if (methods_offset + method_ids.size() * sizeof(DexMethodId) > current_size_) {
-        last_error_ = "Method IDs extend beyond file";
+    if (!validate_section_table("method_ids", report.header.method_ids_size,
+                                report.header.method_ids_off, sizeof(DexMethodId))) {
         return false;
     }
+
+    std::vector<DexMethodId> method_ids(report.header.method_ids_size);
+    size_t methods_offset = report.header.method_ids_off;
     
     std::memcpy(method_ids.data(), data + methods_offset,
                 method_ids.size() * sizeof(DexMethodId));
@@ -344,6 +380,12 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
         return true;
     }
     
+    if (!validate_section_table("class_defs", report.header.class_defs_size,
+                                report.header.class_defs_off, sizeof(DexClassDef))) {
+        log("ERROR: " + last_error_);
+        return false;
+    }
+
     std::vector<DexClassDef> class_defs(report.header.class_defs_size);
     size_t defs_offset = report.header.class_defs_off;
     

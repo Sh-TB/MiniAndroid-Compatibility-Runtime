@@ -68,7 +68,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/mutf
     > /tmp/battery_mutf8.log 2>&1
 gate "link mutf8_test" $?
 ./build/mutf8_test > /tmp/battery_mutf8.out 2>&1
-gate "mutf8 string-pool battery (expect 10)" $?
+gate "mutf8 string-pool battery (expect 14)" $?
 tail -1 /tmp/battery_mutf8.out
 
 # goldens

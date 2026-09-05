@@ -363,6 +363,11 @@ private:
     DexError validate_header(const DexHeader& header);
     bool verify_checksum(const uint8_t* data, size_t size, const DexHeader& header);
     bool verify_signature(const uint8_t* data, size_t size, const DexHeader& header);
+    // FIND-REUSE-005 (WineDroid validate_table law): ONE structural gate for
+    // every section table — offset non-zero + 4-byte aligned, count*size
+    // bounds-checked BEFORE allocation (hostile-header OOM guard).
+    bool validate_section_table(const char* name, uint32_t count,
+                                uint32_t offset, size_t item_size);
     
     // Parsing functions
     bool parse_string_pool(const uint8_t* data, DexReport& report);
