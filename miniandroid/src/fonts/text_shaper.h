@@ -75,11 +75,22 @@ struct TextLayoutLine {
 
 struct TextLayout {
     std::vector<TextLayoutLine> lines;
-    float line_height = 0.0f;     // ascent + descent + leading
-    float ascent = 0.0f;
-    float descent = 0.0f;
+    float line_height = 0.0f;     // ascent + descent + leading (single-line box)
+    float ascent = 0.0f;          // px above baseline (POSITIVE magnitude)
+    float descent = 0.0f;         // px below baseline (positive)
     float max_line_width = 0.0f;  // longest line advance (desired width)
-    float block_height() const { return lines.empty() ? 0.0f : line_height * (float)lines.size(); }
+    // G36/G47 — AOSP StaticLayout per-line law (staticlayout_line_boxes):
+    //   baseline_k = v_k + line_above[k];  v_{k+1} = v_k + line_boxes[k].
+    //   line_above is the POSITIVE px from the line-box top to the baseline
+    //   (|fm.top| for the first line with includeFontPadding, else |fm.ascent|).
+    //   line_boxes[k] = the full box height of line k (multiplier applied).
+    std::vector<float> line_above;
+    std::vector<float> line_boxes;
+    float block_height() const {
+        float h = 0;
+        for (float b : line_boxes) h += b;
+        return h;
+    }
 };
 
 // Face tokens shared by shape()/draw()/layout_text().
@@ -253,10 +264,14 @@ private:
 // layout_text — word-wrapped block layout from REAL shaped advances.
 // Shared by the layout measure pass and the render draw path so measured
 // geometry and painted pixels always agree. face_idx as in shape().
+// spacing_mult/add/include_pad follow the AOSP TextView/StaticLayout law
+// (defaults = the TextView defaults: multiplier 1, extra 0, font padding ON).
 // ---------------------------------------------------------------------------
 TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
                        float max_width_px, int max_lines = 0,
-                       int face_idx = FACE_SYSTEM);
+                       int face_idx = FACE_SYSTEM,
+                       float spacing_mult = 1.0f, float spacing_add_px = 0.0f,
+                       bool include_pad = true);
 
 }  // namespace fonts
 }  // namespace miniandroid
