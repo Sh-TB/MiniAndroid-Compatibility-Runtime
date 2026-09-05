@@ -1543,11 +1543,19 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 float ts = node->text_size_px > 0
                                          ? node->text_size_px
                                          : 14.0f * config.density;
+                                // G32: resolve the node's requested system
+                                // family ONCE per node draw (AOSP fonts.xml
+                                // law — "monospace" -> DroidSansMono face).
+                                int face_idx = fonts::FACE_SYSTEM;
+                                if (!node->font_family.empty())
+                                    face_idx = fonts::TextShaper::instance()
+                                                   .resolve_family(node->font_family,
+                                                                   node->text_bold);
                                 int hpad = node->padding_left + node->padding_right;
                                 float avail = (float)std::max(0, w - hpad);
                                 auto lay = fonts::layout_text(
                                     node->text, ts, node->text_bold, avail,
-                                    node->num_lines);
+                                    node->num_lines, face_idx);
                                 // Honour the captured text colour; fall back
                                 // to the AOSP-ish dark grey used before.
                                 uint32_t tc = node->text_color;
@@ -1579,7 +1587,7 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                             lx = (float)right - node->padding_right - ln.width;
                                         fonts::TextShaper::instance().draw(
                                             fb, ln.text, lx, y, ts, tcol,
-                                            node->text_bold);
+                                            node->text_bold, face_idx);
                                     }
                                     y += lay.line_height;
                                 }
