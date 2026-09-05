@@ -1,0 +1,308 @@
+[*] Running APK: /tmp/tmp.xnFhWzctZQ/helloworld_golden.apk
+[*] Output directory: /tmp/tmp.xnFhWzctZQ/runA
+[ApkParser] APK validation passed: /tmp/tmp.xnFhWzctZQ/helloworld_golden.apk
+[ApkParser] Found EOCD at offset 3127
+[ApkParser] Central Directory: 4 entries at offset 2871
+[ApkParser] Cached 4 ZIP entries for fast lookup
+[ApkParser] Found 1 DEX files: 
+[ApkParser]   - classes.dex
+[ApkParser] Extracting AndroidManifest.xml...
+[ApkParser] Found EOCD at offset 3127
+[ApkParser] Central Directory: 4 entries at offset 2871
+[ApkParser] APK parsing complete: com.miniandroid.helloworldgolden (4 entries)
+[ApkParser] Found EOCD at offset 3127
+[ApkParser] Central Directory: 4 entries at offset 2871
+[DexParser] DEX version: 035
+[DexParser] Parsed 45 strings
+[DexParser] Parsed 18 types
+[DexParser] Parsed 5 prototypes
+[DexParser] Parsed 8 fields
+[DexParser] Parsed 15 method IDs
+[DexParser] === EXP-031.6 CLASS_DEF PARSING ===
+[DexParser] class_defs_size: 5
+[DexParser] class_defs_off: 0x608
+[DexParser] file_size: 0x2452
+[DexParser] Reading 5 class_defs (32 bytes each)...
+[DexParser] CLASS_DEF[0] @ offset 0x608:
+[DexParser]   class_idx: 8 (max valid: 18)
+[DexParser]   access_flags: 0x1
+[DexParser]   superclass_idx: 2
+[DexParser]   class_data_off: 0x2019
+[DexParser]   → Resolved name: [Lcom/miniandroid/helloworldgolden/MainActivity;]
+[DexParser]   → Parsing class_data at 0x2019
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x2019 ===
+[DexParser]   First bytes: 00 00 01 01 06 81 80 04 80 06 08 01 98 06 04 00 01 00 00 19 01 19 01 19 01 19 0a 81 80 04 c0 07 
+[DexParser]   ULEB128[static_fields_size] @ 0x2019 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x2020 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x2021 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x2022 = 1
+[DexParser]   → Header: static=0, instance=0, direct=1, virtual=1
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x2023 = 6
+[DexParser]   ULEB128[dm_access_flags] @ 0x2024 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x2027 = 768
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x768 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x1056
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 0000 0000 000e 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x2029 = 8
+[DexParser]   ULEB128[vm_access_flags] @ 0x2030 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x2031 = 792
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x792 for onCreate ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x1060
+[DexParser]   insns_size: 76 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 76 INSTRUCTIONS!
+[DexParser]   First opcodes: 206f 0001 0021 0215 7f02 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[1] @ offset 0x640:
+[DexParser]   class_idx: 9 (max valid: 18)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 16
+[DexParser]   class_data_off: 0x2033
+[DexParser]   → Resolved name: [Lcom/miniandroid/helloworldgolden/R$id;]
+[DexParser]   → Parsing class_data at 0x2033
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x2033 ===
+[DexParser]   First bytes: 04 00 01 00 00 19 01 19 01 19 01 19 0a 81 80 04 c0 07 01 00 01 00 04 19 0b 81 80 04 d8 07 03 00 
+[DexParser]   ULEB128[static_fields_size] @ 0x2033 = 4
+[DexParser]   ULEB128[instance_fields_size] @ 0x2034 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x2035 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x2036 = 0
+[DexParser]   → Header: static=4, instance=0, direct=1, virtual=0
+[DexParser]   ULEB128[sf_field_diff] @ 0x2037 = 0
+[DexParser]   ULEB128[sf_access_flags] @ 0x2038 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x2039 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x2040 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x2041 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x2042 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x2043 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x2044 = 25
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x2045 = 10
+[DexParser]   ULEB128[dm_access_flags] @ 0x2046 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x2049 = 960
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x960 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x1076
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 000e 0000 000e 
+[EXP062-SV] parse_static_values for Lcom/miniandroid/helloworldgolden/R$id; offset=0x829 static_fields=4 with_defaults=0
+[EXP062-SV-DONE] Lcom/miniandroid/helloworldgolden/R$id; with_defaults=4/4
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] CLASS_DEF[2] @ offset 0x672:
+[DexParser]   class_idx: 10 (max valid: 18)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 16
+[DexParser]   class_data_off: 0x2051
+[DexParser]   → Resolved name: [Lcom/miniandroid/helloworldgolden/R$layout;]
+[DexParser]   → Parsing class_data at 0x2051
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x2051 ===
+[DexParser]   First bytes: 01 00 01 00 04 19 0b 81 80 04 d8 07 03 00 01 00 05 19 01 19 01 19 0c 81 80 04 f0 07 00 00 01 00 
+[DexParser]   ULEB128[static_fields_size] @ 0x2051 = 1
+[DexParser]   ULEB128[instance_fields_size] @ 0x2052 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x2053 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x2054 = 0
+[DexParser]   → Header: static=1, instance=0, direct=1, virtual=0
+[DexParser]   ULEB128[sf_field_diff] @ 0x2055 = 4
+[DexParser]   ULEB128[sf_access_flags] @ 0x2056 = 25
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x2057 = 11
+[DexParser]   ULEB128[dm_access_flags] @ 0x2058 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x2061 = 984
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x984 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x1080
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 000e 0000 000e 
+[EXP062-SV] parse_static_values for Lcom/miniandroid/helloworldgolden/R$layout; offset=0x83e static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/miniandroid/helloworldgolden/R$layout; with_defaults=1/1
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] CLASS_DEF[3] @ offset 0x704:
+[DexParser]   class_idx: 11 (max valid: 18)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 16
+[DexParser]   class_data_off: 0x2063
+[DexParser]   → Resolved name: [Lcom/miniandroid/helloworldgolden/R$string;]
+[DexParser]   → Parsing class_data at 0x2063
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x2063 ===
+[DexParser]   First bytes: 03 00 01 00 05 19 01 19 01 19 0c 81 80 04 f0 07 00 00 01 00 0d 81 80 04 88 08 04 64 00 00 01 7f 
+[DexParser]   ULEB128[static_fields_size] @ 0x2063 = 3
+[DexParser]   ULEB128[instance_fields_size] @ 0x2064 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x2065 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x2066 = 0
+[DexParser]   → Header: static=3, instance=0, direct=1, virtual=0
+[DexParser]   ULEB128[sf_field_diff] @ 0x2067 = 5
+[DexParser]   ULEB128[sf_access_flags] @ 0x2068 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x2069 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x2070 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x2071 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x2072 = 25
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x2073 = 12
+[DexParser]   ULEB128[dm_access_flags] @ 0x2074 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x2077 = 1008
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x1008 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x1084
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 000e 0000 000e 
+[EXP062-SV] parse_static_values for Lcom/miniandroid/helloworldgolden/R$string; offset=0x844 static_fields=3 with_defaults=0
+[EXP062-SV-DONE] Lcom/miniandroid/helloworldgolden/R$string; with_defaults=3/3
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] CLASS_DEF[4] @ offset 0x736:
+[DexParser]   class_idx: 12 (max valid: 18)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 16
+[DexParser]   class_data_off: 0x2079
+[DexParser]   → Resolved name: [Lcom/miniandroid/helloworldgolden/R;]
+[DexParser]   → Parsing class_data at 0x2079
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x2079 ===
+[DexParser]   First bytes: 00 00 01 00 0d 81 80 04 88 08 04 64 00 00 01 7f 64 01 00 01 7f 64 02 00 01 7f 64 03 00 01 7f 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x2079 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x2080 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x2081 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x2082 = 0
+[DexParser]   → Header: static=0, instance=0, direct=1, virtual=0
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x2083 = 13
+[DexParser]   ULEB128[dm_access_flags] @ 0x2084 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x2087 = 1032
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x1032 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x1088
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 000e 0000 000e 
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] === END CLASS_DEF PARSING ===
+[DexParser] Parsed 5 classes
+[DexParser] DEX parsing complete: 5 classes, 15 methods
+FONT_SOURCE apk=/tmp/tmp.xnFhWzctZQ/helloworld_golden.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 37 entries (5 from APK + 32 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.miniandroid.helloworldgolden.MainActivity'
+[U007-RES] ResourceRuntime loaded: /tmp/tmp.xnFhWzctZQ/helloworld_golden.apk named_ids=8 types=3
+[ARSC-VALUES] apk=/tmp/tmp.xnFhWzctZQ/helloworld_golden.apk strings=3 colors=0 dimens=0 bools=0 (ARSC-first resource values)
+[EXP092-RES] resource_values.json loaded=false path="(not found)" strings=0 colors=0 dimens=0 drawables=0 integers=0 bools=0
+[EXP092-RES] WARNING: no resource_values.json found — getString will return field names, not values
+[EXP093-APP] No custom Application class declared in manifest
+[TRY-ENTRY] Lcom/miniandroid/helloworldgolden/MainActivity;.<init> dex_report=YES
+[RET-BEFORE] Lcom/miniandroid/helloworldgolden/MainActivity;.<init> bytecode_size=4
+[METHOD-IN] Lcom/miniandroid/helloworldgolden/MainActivity;.<init> (bytecode_size=4)
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[MEM] method_exit: Lcom/miniandroid/helloworldgolden/MainActivity;.<init> insns=2 RSS=14.1094 MB
+[U0113-ACTIVITY] activity heap object #3 (Lcom/miniandroid/helloworldgolden/MainActivity;) recorded for handler dispatch
+[METHOD-IN] Lcom/miniandroid/helloworldgolden/MainActivity;.onCreate (bytecode_size=76)
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;<super>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[TRY-ENTRY] Lcom/miniandroid/helloworldgolden/MainActivity;.setContentView dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Lcom/miniandroid/helloworldgolden/MainActivity; args=1 arg0_kind=0 arg0_int=2130837504
+[U007-INFLATE] setContentView(layoutResId=0x7f020000)
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf(strike=109)
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+[U007-INFLATE] root_id=4 views=4 strings=3 ids=0 unresolved=0
+[TRY-ENTRY] Lcom/miniandroid/helloworldgolden/MainActivity;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Lcom/miniandroid/helloworldgolden/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/miniandroid/helloworldgolden/MainActivity; args=1 arg0_kind=0 arg0_int=2130771971
+[EXP088-B-DBG] findViewById: target=0x7f010003 content_view_id=4 registry=YES
+[EXP088-B] findViewById(0x7f010003) → view_id=4
+[TRY-ENTRY] Landroid/widget/LinearLayout;.setGravity dex_report=YES
+[EXP061-NOTFOUND] class_descriptor=Landroid/widget/LinearLayout; method=setGravity (class not in index) caller=Lcom/miniandroid/helloworldgolden/MainActivity;.onCreate
+[EXT-AOSP-001] container setGravity view=4 class=Landroid/widget/LinearLayout; gravity=0x11
+[TRY-ENTRY] Lcom/miniandroid/helloworldgolden/MainActivity;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Lcom/miniandroid/helloworldgolden/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/miniandroid/helloworldgolden/MainActivity; args=1 arg0_kind=0 arg0_int=2130771968
+[EXP088-B-DBG] findViewById: target=0x7f010000 content_view_id=4 registry=YES
+[EXP088-B] findViewById(0x7f010000) → view_id=5
+[TRY-ENTRY] Landroid/widget/TextView;.setTextSize dex_report=YES
+[EXT-AOSP-002] setTextSize view=5 class=Landroid/widget/TextView; px=73.5
+[TRY-ENTRY] Landroid/widget/TextView;.setText dex_report=YES
+[EXP091-SETTEXT] view_id=5 class=Landroid/view/View; arg_kind=0 text=""
+[TRY-ENTRY] Lcom/miniandroid/helloworldgolden/MainActivity;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Lcom/miniandroid/helloworldgolden/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/miniandroid/helloworldgolden/MainActivity; args=1 arg0_kind=0 arg0_int=2130771969
+[EXP088-B-DBG] findViewById: target=0x7f010001 content_view_id=4 registry=YES
+[EXP088-B] findViewById(0x7f010001) → view_id=6
+[TRY-ENTRY] Landroid/widget/TextView;.setTextSize dex_report=YES
+[EXT-AOSP-002] setTextSize view=6 class=Landroid/widget/TextView; px=36.75
+[TRY-ENTRY] Landroid/widget/TextView;.setText dex_report=YES
+[EXP091-SETTEXT] view_id=6 class=Landroid/view/View; arg_kind=0 text=""
+[TRY-ENTRY] Lcom/miniandroid/helloworldgolden/MainActivity;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Lcom/miniandroid/helloworldgolden/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lcom/miniandroid/helloworldgolden/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lcom/miniandroid/helloworldgolden/MainActivity; args=1 arg0_kind=0 arg0_int=2130771970
+[EXP088-B-DBG] findViewById: target=0x7f010002 content_view_id=4 registry=YES
+[EXP088-B] findViewById(0x7f010002) → view_id=7
+[TRY-ENTRY] Landroid/widget/Button;.setText dex_report=YES
+[EXP091-SETTEXT] view_id=7 class=Landroid/view/View; arg_kind=0 text=""
+[EXP088-PHASE-B] ViewShadow found: 0x55ebb5a5acb0 clickables: 0
+[EXP088-PHASE-B] No views with click listeners found
+[ApkParser] Found EOCD at offset 3127
+[ApkParser] Central Directory: 4 entries at offset 2871
+[EXP092-RENDER] node=4 class=Landroid/widget/LinearLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=5 class=Landroid/widget/TextView; text="Hello, MiniAndroid!" children=0 depth=1 pos=(195,0) size=(690x91)
+[EXP092-RENDER] node=6 class=Landroid/widget/TextView; text="real APK - real DEX - real render" children=0 depth=1 pos=(253,91) size=(573x46)
+[EXP092-RENDER] node=7 class=Landroid/widget/Button; text="OK" children=0 depth=1 pos=(513,137) size=(53x46)
+[EXP092-COPY] fb has 20163 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 20163 non-white pixels
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 1
+Execution Time: 0ms
+Errors: 0
+Warnings: 0
+
+Screenshot: /tmp/tmp.xnFhWzctZQ/runA/screenshot.png
+Report: /tmp/tmp.xnFhWzctZQ/runA/report.md
