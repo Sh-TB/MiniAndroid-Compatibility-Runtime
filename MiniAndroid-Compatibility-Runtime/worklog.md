@@ -4505,3 +4505,67 @@ Stage Summary:
   sparse/offset16 + round-trip harness, per-method link/reject report,
   inspect enrichment), then golden-APK #2 (HelloWorld-class), then push
   once remote credentials exist.
+
+---
+Task ID: 2-11 (EXECUTION PUSH campaign — final session record)
+Agent: Super Z (main agent)
+Task: DEEP EXTERNAL REPOSITORY MINING + COMPLETE EXECUTION PUSH + GITHUB
+EVIDENCE PRESERVATION — revalidate goldens, implement the queued
+mechanism transfers, new-repo studies, §31/§33/§40 documents, §26 font
+consolidation, push attempt.
+
+Work Log:
+- BASELINE VERIFIED at 5810f6e: build PASS; TicTacToe golden ALL PASS
+  (fresh ECJ+D8 build de3649db…, 9/9 clicks, X-WINS state machine, pixel
+  discriminators, byte-identical 10-frame replay 0d339d84…).
+- REGRESSION BATTERY: semantic 14+55+25=94/94 PASS; u011 matrix
+  re-established (corpus APKs re-fetched, all HASH MATCH; simplestopwatch
+  BASELINE_MATCH 97933dbc).
+- DISCOVERY: src/renderer/view_renderer.cpp is DEAD CODE (does not
+  compile against current ViewNode — padding_l/gravity/text_style_bold
+  field drift); recorded as gap #8; live render path is
+  ExecutionEngine::stage_render_frame.
+- §20 TRANSFER UNIT: EXT-AOSP-001 (LinearLayout.setGravity container-
+  gravity law, LinearLayout.java@1cdfff55 L1933-1945/L1284/L1466/
+  L1777-1778) + EXT-AOSP-002 (TextView.setTextSize sp→px law,
+  TextView.java L4720-4722/L4752-4762): class-aware bridge_to_api
+  dispatch + ViewShadow setters + child-gravity fallback in BOTH layout
+  engines (inflater measure/layout + legacy render walk).
+- §28 GOLDEN: helloworld_golden fixture (real ECJ+D8 APK 584cda57…, DEX
+  70298937…), 18-check validator ALL PASS, screenshot 93b42621…
+  1080×1920, byte-identical deterministic replay; evidence committed at
+  docs/evidence/helloworld_golden/EVIDENCE.md.
+- REGRESSION AFTER FIXES: tictactoe frames byte-identical; simplestopwatch
+  BASELINE_MATCH; 94/94; unote 21eb0fd3→df92f1d9 = AOSP-correct
+  container-gravity improvement (FAB + search labels centered), exit 0,
+  documented (not hidden).
+- NEW REPOS (Task 5, repo-study-agent): android-rro a113f0a MIT (RRO
+  REJECTED — needs OMS; Res_value edge vectors queued), Android-Dex
+  c57cbc8 NO-LICENSE (methodology only), dexterpreter b83d1513 URL
+  VERIFIED (returns-only; reference), screenshot ecosystem ×5
+  (methodology: triage ladder, failure dirs, UI-tree sidecar), sim-use
+  UNAVAILABLE (2nd session retry).
+- ZERO-APK INCIDENT (fixed in-session): tool-default cache placed 10
+  corpus APKs inside the worktree; commit 0611323 amended → 738ac50 with
+  apk_cache/ gitignored; cache lives at repo-root/apk_cache (untracked).
+- TELEGRAM: pinned 10.14.5 no longer served (live URL → 1.2MB HTML);
+  BLOCKED recorded honestly.
+- DOCUMENTS: MASTER_EXTERNAL_REFERENCE_MATRIX.md (§31, 66 rows),
+  EXTERNAL_KNOWLEDGE_TRANSFER.md (§33 five-way), font-runtime-study §26
+  Cases A–F table, CAMPAIGN_EXTERNAL_REFERENCE_AND_EXECUTION_FINAL.md
+  (§40 + §37 scoreboard).
+- PUSH: remote origin configured; `git push origin main` →
+  "could not read Username for 'https://github.com'" — PUSH BLOCKED,
+  exact error in final report; chain fast-forward-ready.
+
+Stage Summary:
+- FINAL HEAD 715b0ba (chain: 5810f6e → 738ac50 → c8d17f3 → ede3c14 →
+  fe5e5ba → 715b0ba), worktree clean.
+- §38 success criteria: (A) knowledge transfer — 2 mechanisms
+  IMPLEMENTED+VALIDATED with AOSP provenance + 5 methodology transfers;
+  (B) real execution — helloworld_golden §27/§28 chain PASS and
+  TicTacToe §29 interaction PASS at the same HEAD.
+- Open queue for next session: push+comments (credentials), Q-11 Case-F
+  fixture, res/font synthetic-ARSC tooling, ARSC hardening wave
+  (Q-8/Q-10/RRO-006), WineDroid diagnostics (Q-1/Q-3/Q-4/Q-12/Q-13),
+  view_renderer.cpp delete-or-resync, unote baseline pin df92f1d9.
