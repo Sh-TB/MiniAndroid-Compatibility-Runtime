@@ -594,6 +594,11 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             node.text_size_sp = a.text_size_px / metrics_.density;
         }
         else if (n == "textColor") a.text_color = parse_color_attr(&at, stats);
+        else if (n == "fontFamily") {
+            // G32: AOSP TextView law — fontFamily names a system family
+            // (fonts.xml) or an app font; arrives as a raw AXML string.
+            a.font_family = raw;
+        }
         else if (n == "textStyle") {
             if (raw.find("bold") != std::string::npos) { a.text_style |= 1; }
             if (raw.find("italic") != std::string::npos) { a.text_style |= 2; }
@@ -677,6 +682,7 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.text_style = a.text_style;
     node.text_bold = (a.text_style & 1) != 0;
     node.text_italic = (a.text_style & 2) != 0;
+    node.font_family = a.font_family;  // G32
     node.padding_left = a.pl + a.padding_all;
     node.padding_top = a.pt + a.padding_all;
     node.padding_right = a.pr + a.padding_all;
@@ -900,8 +906,14 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 // draw path — fonts::layout_text).
                 const float avail_w = sw.mode == M_UNSPEC ? 0.0f
                                           : (float)std::max(0, sw.size - hpad);
+                // G32: measure with the SAME face the draw path resolves
+                // (AOSP fonts.xml family law).
+                int face_idx = fonts::FACE_SYSTEM;
+                if (!n->font_family.empty())
+                    face_idx = fonts::TextShaper::instance().resolve_family(
+                        n->font_family, n->text_bold);
                 auto lay = fonts::layout_text(t, ts, n->text_bold, avail_w,
-                                              n->num_lines);
+                                              n->num_lines, face_idx);
                 content_w = std::max(content_w, (int)std::ceil(
                     avail_w > 0 ? std::min(lay.max_line_width, avail_w)
                                 : lay.max_line_width));
