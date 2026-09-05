@@ -275,6 +275,72 @@ int main() {
                "oks=" + std::to_string(oks) + "/4");
     }
 
+    // FIND-REUSE-005: hostile-header structural gate (section tables +
+    // header size law), transferred from WineDroid dex.rs validate_table.
+    // Each case patches ONE header word of an otherwise valid minimal DEX,
+    // then requires a NAMED error and a clean parse failure — a crash, an
+    // OOM (huge count allocates before bounds math), or a silent misparse
+    // is a failure. The test returning at all proves no unbounded alloc.
+    {
+        // Build a valid minimal 1-string DEX, patch one header word,
+        // recompute the adler (mirrors the real bytes a fuzzer would ship).
+        auto patched = [&](uint32_t off, uint32_t val, std::string* err)
+                -> miniandroid::dex::DexReport {
+            std::vector<uint8_t> dex(0x70 + 4 + 8, 0);
+            std::memcpy(dex.data(), "dex\n035\0", 8);
+            put32(dex.data() + 0x20, static_cast<uint32_t>(dex.size()));
+            put32(dex.data() + 0x24, 0x70);
+            put32(dex.data() + 0x28, 0x12345678);
+            put32(dex.data() + 0x38, 1);          // string_ids_size = 1
+            put32(dex.data() + 0x3C, 0x70);       // string_ids_off  = 0x70
+            put32(dex.data() + 0x70, 0x74);       // → string data "x\0"
+            dex[0x74] = 1; dex[0x75] = 'x'; dex[0x76] = 0;
+            put32(dex.data() + off, val);         // hostile patch
+            uint32_t adler = adler32(0L, Z_NULL, 0);
+            adler = adler32(adler, dex.data() + 12, static_cast<uInt>(dex.size() - 12));
+            put32(dex.data() + 8, adler);
+            DexParser parser;
+            auto report = parser.parse_data(dex, "hostile-header");
+            if (err) *err = parser.get_last_error();
+            return report;
+        };
+
+        // T7: items present but offset zero — silent misparse pre-law.
+        {
+            std::string err;
+            auto rep = patched(0x3C, 0x00000000, &err);
+            record("T7 zero section-table offset rejected (named error)",
+                   !rep.is_valid && err.find("offset is zero") != std::string::npos,
+                   "is_valid=" + std::to_string(rep.is_valid) + " err='" + err + "'");
+        }
+        // T8: misaligned table offset — unvalidated pre-law.
+        {
+            std::string err;
+            auto rep = patched(0x3C, 0x00000071, &err);
+            record("T8 misaligned section-table offset rejected (named error)",
+                   !rep.is_valid && err.find("not 4-byte aligned") != std::string::npos,
+                   "is_valid=" + std::to_string(rep.is_valid) + " err='" + err + "'");
+        }
+        // T9: hostile count 0xFFFFFFFF — pre-law this allocated ~16 GB of
+        // DexStringId BEFORE any bounds math (OOM/crash); post-law a named
+        // bounds error with no allocation.
+        {
+            std::string err;
+            auto rep = patched(0x38, 0xFFFFFFFF, &err);
+            record("T9 hostile table count rejected before allocation (OOM guard)",
+                   !rep.is_valid && err.find("extends beyond file") != std::string::npos,
+                   "is_valid=" + std::to_string(rep.is_valid) + " err='" + err + "'");
+        }
+        // T10: file_size < header_size — header-level structural law.
+        {
+            std::string err;
+            auto rep = patched(0x20, 0x00000010, &err);
+            record("T10 file_size smaller than header_size rejected",
+                   !rep.is_valid && err.find("file_size smaller than header_size") != std::string::npos,
+                   "is_valid=" + std::to_string(rep.is_valid) + " err='" + err + "'");
+        }
+    }
+
     std::cout << "\nRESULT: " << g_pass << " passed, " << g_fail << " failed\n";
     return g_fail == 0 ? 0 : 1;
 }
