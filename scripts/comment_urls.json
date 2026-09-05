@@ -1,0 +1,61 @@
+{
+  "issue": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8",
+  "issue_number": 8,
+  "results": [
+    {
+      "n": "1. Campaign baseline & repository state",
+      "status": "POSTED",
+      "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995211"
+    },
+    {
+      "n": "2. Clean rebuild + 11/11 battery gate",
+      "status": "POSTED",
+      "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995299"
+    },
+    {
+      "n": "3. Real resource-backed Hello World (aapt2 / ARSC / AXML / §36.E)",
+      "status": "POSTED",
+      "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995394"
+    },
+    {
+      "n": "4. Tic-Tac-Toe real UI",
+      "status": "POSTED",
+      "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995472"
+    },
+    {
+      "n": "5. WineDroid reuse + MUTF-8 findings (FIND-REUSE-001)",
+      "status": "POSTED",
+      "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995545"
+    },
+    {
+      "n": "6. UTF-16LE→UTF-8 consolidation + manifest surrogate bug (FIND-REUSE-002)",
+      "status": "POSTED",
+      "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995676"
+    },
+    {
+      "n": "7. SLEB128 consolidation + UB hardening (FIND-REUSE-003)",
+      "status": "POSTED",
+      "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995765"
+    },
+    {
+      "n": "8. ResStringPool consolidation (FIND-REUSE-004)",
+      "status": "POSTED",
+      "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995861"
+    },
+    {
+      "n": "9. −294 production LOC / code-minimization scoreboard (§28)",
+      "status": "POSTED",
+      "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995932"
+    },
+    {
+      "n": "10. Corpus pixel-identical validation",
+      "status": "POSTED",
+      "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551996014"
+    },
+    {
+      "n": "11. Research index / coverage + evidence summary",
+      "status": "POSTED",
+      "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551996090"
+    }
+  ]
+}
