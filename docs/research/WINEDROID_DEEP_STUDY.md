@@ -63,6 +63,26 @@ Maintenance effect (§22): future DEX string issues have exactly one
 place to fix and one battery to extend; corruption is now observable
 (declared-vs-actual cross-check) instead of silent.
 
+## §2 mechanism mapping table (REUSE-FIRST MAXIMUM PROGRESS session, 2026-09-05)
+
+The mandated per-mechanism chain — mechanism → MiniAndroid equivalent →
+existing implementation → duplicate? → reusable primitive? → missing
+behavior? → required test → can code be deleted? — resolved for the
+high-value mechanisms. Strongest result: YES in the last column three
+more times this session (FIND-REUSE-002/003/004).
+
+| WineDroid mechanism | MiniAndroid equivalent | Existing implementation (current HEAD) | Duplicate? | Reusable primitive? | Missing behavior | Required test | Can code be deleted? |
+|---|---|---|---|---|---|---|---|
+| 004 MUTF-8 decode (0xC0 0x80 NUL, CESU-8 pairs, declared-vs-actual) | DEX string pool decode | `dex/mutf8.cpp decode_string_data` (ONE, since FIND-REUSE-001) | NO (was ×3) | YES — the only MUTF-8 decoder | none open | mutf8 battery T1–T6 | YES — deleted (−68 LOC, prior session) |
+| 005 hardened ULEB128 (≤5 bytes, final ≤0x0F) | DEX varint readers | `mutf8::read_uleb128` | NO (was ×3) | YES | none open | T5 + ULEB window | YES — deleted (prior session) |
+| (Dalvik format) SLEB128 handler sizes | try/catch handler parse | `mutf8::read_sleb128` (NEW, FIND-REUSE-003) | NO (was ×2 inline lambda pairs) | YES | truncation policy = FIND-EXC-TRUNC (queued) | mutf8 SLEB window (10 vectors) | YES — deleted this session (−56 LOC) |
+| (ARSC/AXML law) UTF-16LE pool → UTF-8 | string pool text decode | `mutf8::utf16le_to_utf8` (NEW, FIND-REUSE-002) | NO (was ×5, one buggy) | YES | unpaired → U+FFFD law now applied (old copies WTF-8'd) | T8–T12 windows | YES — deleted this session (−94 LOC incl. bug fix) |
+| (androidfw law) ONE ResStringPool for ARSC+AXML+manifest | pool chunk parse | `resources/string_pool.{h,cpp}` (NEW, FIND-REUSE-004) | NO (was ×3) | YES | offsets-table indexing replaces sequential walk (BLOCKER-006 class dead) | battery + corpus pixel-identity ×3 | YES — deleted this session (−158 LOC net) |
+| 007 absent-arg determinism | invoke argument marshalling | engine zero-init policy | no | test only | — | `wd_absent_arg_deterministic_winedroid007` | — (test pins it) |
+| 011 packed-switch payload-is-data | switch decode | switch decoder + discriminator | no | test only | — | `sw_packed_payload_is_data_winedroid011` | — |
+| 003 per-table bounds/alignment pre-validation | DEX table loops | dex_parser validation (looser) | n/a | adapt | strictness gap open | corrupt-DEX fixture (queued) | no new code; tighten existing |
+| AOT C emission/ELF pipeline | (opposite model — in-process interpreter) | n/a | n/a | NO — architecture REJECTED for MiniAndroid | n/a | n/a | n/a |
+
 ## Honest limits of this study
 
 - WineDroid revision is pinned (a784c0b); re-run `ls crates` + `rg`
