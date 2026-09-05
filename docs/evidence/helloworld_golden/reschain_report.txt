@@ -1,0 +1,7 @@
+has resources.arsc: True
+has binary layout:  True
+layout AXML magic (0x0003 RES_XML): True
+binary manifest:    True
+string in ARSC and NOT in DEX [Hello, MiniAndroid!]: True
+string in ARSC and NOT in DEX [real APK - real DEX - real render]: True
+string in ARSC and NOT in DEX [OK]: True
