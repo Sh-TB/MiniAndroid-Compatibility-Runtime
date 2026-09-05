@@ -46,21 +46,22 @@ enum class AxmlToken : uint16_t {
     CDATA                     = 0x0104
 };
 
-// AXML resource values
+// AXML resource values — GOLDEN-03 §7: AOSP Res_value dataType constants
+// (ResourceTypes.h; the ONLY constants binary AXML can carry).
+// The previous table (STRING=1, REFERENCE=6, INT=18, INT_BOOLEAN=21…) was
+// non-AOSP: typed-STRING (0x03) attrs fell to the int fallback and typed
+// INT_DEC/INT_BOOLEAN missed the int branch entirely.
 enum class AxmlDataType : uint8_t {
-    NULL_TYPE = 0,
-    STRING = 1,
-    INTEGER = 2,
-    FLOAT = 3,
-    BINARY = 4,
-    ATTRIBUTE = 5,
-    REFERENCE = 6,
-    ATTRIBUTE_INT = 16,
-    STRING_INT = 17,
-    INT = 18,
-    FLOAT_INT = 19,
-    INT_HEX = 20,
-    INT_BOOLEAN = 21
+    NULL_TYPE = 0x00,   // TYPE_NULL
+    REFERENCE = 0x01,   // TYPE_REFERENCE      (data = resource id)
+    ATTRIBUTE = 0x02,   // TYPE_ATTRIBUTE      (data = attr id)
+    STRING    = 0x03,   // TYPE_STRING         (data = string pool index)
+    FLOAT     = 0x04,   // TYPE_FLOAT          (data = IEEE-754 bits)
+    DIMENSION = 0x05,   // TYPE_DIMENSION      (complex)
+    FRACTION  = 0x06,   // TYPE_FRACTION       (complex)
+    INT_DEC   = 0x10,   // TYPE_INT_DEC        (signed decimal int)
+    INT_HEX   = 0x11,   // TYPE_INT_HEX
+    INT_BOOLEAN = 0x12, // TYPE_INT_BOOLEAN    (0 or 1)
 };
 
 // Parsed manifest information
