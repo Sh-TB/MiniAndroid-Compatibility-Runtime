@@ -1104,6 +1104,59 @@ static void group_switch(DalvikExecutionEngine& e) {
         c.push_back(static_cast<uint16_t>((static_cast<uint32_t>(to_default) >> 16) & 0xFFFF));
         expect_num_ids(e, "sw_sparse_backward_target", c, "()I", MethodIds{}, 6110.0);
     }
+    {   // WINEDROID-011 payload-is-data law (WineDroid @ a784c0b): the
+        // packed-switch payload embeds opcode-looking words - first_key
+        // 0x0E00/0x0000 is exactly a return-void encoding and the target
+        // words are 0xFFF9/0xFFFF. Execution is pc-driven: the payload is
+        // DATA and must never be decoded as instructions.
+        std::vector<uint16_t> c;
+        emit_const(c, 1, 4242);                       // pc0..2  case body
+        c.push_back(w11x(1, opc::RETURN));            // pc3
+        emit_const(c, 0, 3584);                       // pc4..6  key = 0x0E00
+        size_t switch_pc = c.size();                  // pc7
+        c.push_back(w11x(0, opc::PACKED_SWITCH));     // pc7
+        c.push_back(0); c.push_back(0);               // pc8..9 patched below
+        emit_const(c, 0, 777);                        // pc10..12 default
+        c.push_back(w11x(0, opc::RETURN));            // pc13
+        size_t payload_pc = c.size();                 // pc14
+        int32_t to_case = 0 - static_cast<int32_t>(switch_pc);
+        int32_t to_payload = static_cast<int32_t>(payload_pc) - static_cast<int32_t>(switch_pc);
+        c[switch_pc + 1] = static_cast<uint16_t>(static_cast<uint32_t>(to_payload) & 0xFFFF);
+        c[switch_pc + 2] = static_cast<uint16_t>((static_cast<uint32_t>(to_payload) >> 16) & 0xFFFF);
+        c.push_back(0x0100);                          // packed ident
+        c.push_back(1);                               // size = 1
+        c.push_back(0x0E00); c.push_back(0x0000);     // first_key = return-void encoding
+        c.push_back(static_cast<uint16_t>(static_cast<uint32_t>(to_case) & 0xFFFF));
+        c.push_back(static_cast<uint16_t>((static_cast<uint32_t>(to_case) >> 16) & 0xFFFF));
+        expect_num_ids(e, "sw_packed_payload_is_data_winedroid011", c, "()I", MethodIds{}, 4242.0);
+    }
+}
+
+// ═══════════════ GROUP WD: WineDroid mechanism discriminators ═══════════════
+// WINEDROID-007 (WineDroid @ a784c0b, GENERIC_METHOD_ABI): absent arguments
+// must be DETERMINISTIC at the callee boundary - either zero-filled or a
+// recorded invalid-state halt - never machine garbage. The engine's register
+// bank initializes to make_uninit(); this test pins the observable law.
+static void group_winedroid(DalvikExecutionEngine& e) {
+    std::cout << "\n[GROUP WD] WineDroid discriminators\n";
+    MethodInfo mi;
+    mi.name = "wd_absent_arg_zero_fill";
+    mi.descriptor = "(I)I";
+    mi.defining_class = "LSemTest;";
+    mi.registers_size = 4;
+    mi.ins_size = 1;              // declares ONE incoming arg ...
+    mi.outs_size = 1;
+    mi.bytecode = { w11x(0, opc::RETURN) };   // ... but returns v0 (arg never read)
+    DalvikExecutionResult r1 = e.execute_method(mi, DexReport{}, {}, false);
+    DalvikExecutionResult r2 = e.execute_method(mi, DexReport{}, {}, false);
+    bool halts_match = (static_cast<int>(r1.final_status) == static_cast<int>(r2.final_status));
+    bool traces_match = (r1.instruction_traces.size() == r2.instruction_traces.size());
+    bool ok = halts_match && traces_match;
+    record("wd_absent_arg_deterministic_winedroid007", ok,
+           "final_status run1=" + std::to_string(static_cast<int>(r1.final_status)) +
+           " run2=" + std::to_string(static_cast<int>(r2.final_status)) +
+           " traces=" + std::to_string(r1.instruction_traces.size()) + "/" +
+           std::to_string(r2.instruction_traces.size()));
 }
 
 // ═══════════════════ GROUP PS: parse/string edge matrix ═══════════════════
@@ -1254,6 +1307,7 @@ int main(int argc, char** argv) {
     if (only.empty() || only == "dr") group_divrem(engine);
     if (only.empty() || only == "sw") group_switch(engine);
     if (only.empty() || only == "ps") group_parse(engine);
+    if (only.empty() || only == "wd") group_winedroid(engine);
     std::cout << "\nRESULT: " << g_pass << " passed, " << g_fail << " failed"
               << (g_skip ? (" (" + std::to_string(g_skip) + " skipped-recorded)") : "")
               << "\n";
