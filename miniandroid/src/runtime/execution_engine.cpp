@@ -1565,31 +1565,36 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                      uint8_t(tc & 0xFF),
                                                      uint8_t((tc >> 24) & 0xFF)}
                                     : renderer::Colors::GREY_800;
-                                // Vertical: AOSP draws from the top inset by
-                                // padding; CENTER_VERTICAL centers the block.
+                                // G36/G47: per-line StaticLayout law —
+                                // baseline_k = v_k + line_above[k];
+                                // v_{k+1} = v_k + line_boxes[k]. Vertical
+                                // gravity positions the LAW-COMPUTED block
+                                // (sum of line boxes), not an ad-hoc height.
                                 float block_h = lay.block_height();
-                                float base_y = (float)top + node->padding_top + lay.ascent;
+                                float v = (float)top + node->padding_top;
                                 int vg = node->text_gravity & 0x70;
                                 if ((node->text_gravity & 0x10) || vg == 0x10)
-                                    base_y = (float)top
-                                           + ((float)h - block_h) / 2.0f + lay.ascent;
+                                    v = (float)top + ((float)h - block_h) / 2.0f;
                                 else if (vg == 0x50)
-                                    base_y = (float)(top + h) - node->padding_bottom
-                                           - block_h + lay.ascent;
+                                    v = (float)(top + h) - node->padding_bottom
+                                       - block_h;
                                 int hg = node->text_gravity & 0x7;
-                                float y = base_y;
-                                for (const auto& ln : lay.lines) {
+                                for (size_t li = 0; li < lay.lines.size(); ++li) {
+                                    const auto& ln = lay.lines[li];
                                     if (!ln.text.empty()) {
                                         float lx = (float)left + node->padding_left;
                                         if (hg == 1)
                                             lx = (float)left + ((float)w - ln.width) / 2.0f;
                                         else if (hg == 5)
                                             lx = (float)right - node->padding_right - ln.width;
+                                        float above = li < lay.line_above.size()
+                                                    ? lay.line_above[li] : lay.ascent;
                                         fonts::TextShaper::instance().draw(
-                                            fb, ln.text, lx, y, ts, tcol,
+                                            fb, ln.text, lx, v + above, ts, tcol,
                                             node->text_bold, face_idx);
                                     }
-                                    y += lay.line_height;
+                                    v += li < lay.line_boxes.size()
+                                       ? lay.line_boxes[li] : lay.line_height;
                                 }
                             }
 

@@ -353,8 +353,11 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
 
 float TextShaper::line_height(float size_px, bool bold) const {
     (void)bold;
-    // Android-style leading: ascent + descent plus a small gap.
-    return size_px * 1.2f;
+    // G36 law (was: size*1.2 ad-hoc): Android Paint.getFontMetricsInt(null)
+    // returns descent - ascent (TextView.getLineHeight uses this value).
+    float a, d, lh;
+    metrics(size_px, bold, FACE_SYSTEM, &a, &d, &lh);
+    return lh;
 }
 
 int TextShaper::resolve_face(bool bold, int face_idx) const {
@@ -564,7 +567,10 @@ void TextShaper::metrics(float size_px, bool bold, int face_idx,
     }
     if (ascent) *ascent = a;
     if (descent) *descent = d;
-    if (line_height) *line_height = a + d + std::max(1.0f, size_px * 0.05f);
+    // G36 law (was: +max(1, 5% of size) ad-hoc leading): the Android
+    // single-line box is exactly descent - ascent (Paint.getFontMetricsInt).
+    // a/d here are magnitudes (a>0 above baseline, d>0 below).
+    if (line_height) *line_height = a + d;
 }
 
 int TextShaper::register_app_font_memory(const std::vector<uint8_t>& bytes,
@@ -799,12 +805,23 @@ namespace fonts {
 // are trimmed for measurement. max_lines > 0 caps the number of lines.
 // ---------------------------------------------------------------------------
 TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
-                       float max_width_px, int max_lines, int face_idx) {
+                       float max_width_px, int max_lines, int face_idx,
+                       float spacing_mult, float spacing_add_px,
+                       bool include_pad) {
     TextLayout out;
     auto& sh = TextShaper::instance();
-    sh.metrics(size_px, bold, face_idx, &out.ascent, &out.descent,
-               &out.line_height);
-    if (utf8.empty()) return out;
+    // G36/G47: Android Paint.FontMetrics + StaticLayout line-box law.
+    FontMetrics fm = sh.font_metrics(size_px, bold, face_idx);
+    out.ascent = -fm.ascent;      // store as POSITIVE magnitude (draw law)
+    out.descent = fm.descent;
+    out.line_height = fm.descent - fm.ascent;
+    if (utf8.empty()) {
+        // Keep the law-computed single-line box even for empty text so
+        // callers measuring a blank TextView match Android's line height.
+        out.line_above.push_back(-fm.top);
+        out.line_boxes.push_back(fm.bottom - fm.top);
+        return out;
+    }
 
     auto line_width = [&](const std::string& s) -> float {
         if (s.empty()) return 0.0f;
@@ -849,6 +866,22 @@ TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
     }
     for (const auto& l : out.lines)
         out.max_line_width = std::max(out.max_line_width, l.width);
+    // G47: per-line boxes + baselines per the StaticLayout out() law —
+    // identical-metric lines, spacingmult/spacingadd from the TextView attrs,
+    // includeFontPadding default true (first line above=fm.top, last
+    // below=fm.bottom).
+    out.line_boxes = staticlayout_line_boxes((int)out.lines.size(), fm,
+                                             spacing_mult, spacing_add_px,
+                                             include_pad);
+    out.line_above.reserve(out.lines.size());
+    for (int k = 0; k < (int)out.lines.size(); ++k) {
+        bool first = (k == 0);
+        bool last = (k == (int)out.lines.size() - 1);
+        float above = fm.ascent;
+        if (include_pad && first) above = fm.top;
+        // (last-line bottom adjustments affect only the box, not the baseline)
+        out.line_above.push_back(-above);
+    }
     return out;
 }
 
