@@ -95,11 +95,52 @@ static std::vector<uint8_t> config28(uint16_t sdk) {
     return c;
 }
 
+// GOLDEN-03 §5: arbitrary-qualifier config builder (AOSP ResTable_config
+// on-disk layout — see res_config.h from_bytes offset table).
+struct CfgQualifiers {
+    const char* language = nullptr;   // "en" — 2-char ISO
+    const char* country = nullptr;    // "US"
+    uint16_t density = 0;             // 0 = default
+    uint8_t  orientation = 0;         // 1 port, 2 land
+    uint16_t smallest_width_dp = 0;   // sw<N>dp
+    uint16_t width_dp = 0;            // w<N>dp
+    uint16_t height_dp = 0;           // h<N>dp
+    uint8_t  ui_mode = 0;             // 0x20 = night
+    uint16_t sdk = 0;                 // v<N>
+    uint16_t screen_width = 0;        // exact px screen
+    uint16_t screen_height = 0;
+};
+static std::vector<uint8_t> config_custom(const CfgQualifiers& q) {
+    std::vector<uint8_t> c(40, 0);
+    put32(c, 0, 40);
+    if (q.language) { c[8] = (uint8_t)q.language[0]; c[9] = (uint8_t)q.language[1]; }
+    if (q.country)  { c[10] = (uint8_t)q.country[0]; c[11] = (uint8_t)q.country[1]; }
+    c[12] = q.orientation;
+    put16(c, 14, q.density);
+    put16(c, 20, q.screen_width);
+    put16(c, 22, q.screen_height);
+    put16(c, 24, q.sdk);
+    c[29] = q.ui_mode;
+    put16(c, 30, q.smallest_width_dp);
+    put16(c, 36, q.width_dp);
+    put16(c, 38, q.height_dp);
+    return c;
+}
+
 // type chunk (0x0201) with ONE entry (key idx 0), value = STRING pool ref.
+static std::vector<uint8_t> build_type_chunk_raw(uint8_t type_id,
+                                                 const std::vector<uint8_t>& cfg,
+                                                 uint32_t string_pool_idx);
 static std::vector<uint8_t> build_type_chunk(uint8_t type_id, uint16_t sdk,
                                              uint32_t string_pool_idx) {
-    // layout: header(20) + config(config28) + offsets[1] + entry(8) + value(8)
-    std::vector<uint8_t> cfg = config28(sdk);
+    return build_type_chunk_raw(type_id, config28(sdk), string_pool_idx);
+}
+
+// GOLDEN-03 §5: generalized variant — arbitrary pre-built config bytes.
+static std::vector<uint8_t> build_type_chunk_raw(uint8_t type_id,
+                                                 const std::vector<uint8_t>& cfg,
+                                                 uint32_t string_pool_idx) {
+    // layout: header(20) + config + offsets[1] + entry(8) + value(8)
     const uint16_t header_size = (uint16_t)(20 + cfg.size());
     const uint32_t entries_start = header_size + 4;  // + 1 offset u32
     const uint32_t chunk_size = entries_start + 8 + 8;
@@ -138,7 +179,7 @@ static std::vector<uint8_t> build_type_spec(uint8_t type_id) {
 
 // Full minimal table: 1 package, type "layout", entry "main", variants in
 // the given (path, sdk) ORDER — order is part of the law under test.
-struct Variant { std::string path; uint16_t sdk; };  // sdk 0 = default
+struct Variant { std::string path; uint16_t sdk; const CfgQualifiers* q = nullptr; };  // sdk 0 = default
 static std::vector<uint8_t> build_table(const std::vector<Variant>& variants) {
     // global pool: [0]=variants[0].path, [1]=..., typeStrings=["layout"], keyStrings=["main"]
     std::vector<std::string> global;
@@ -154,7 +195,9 @@ static std::vector<uint8_t> build_table(const std::vector<Variant>& variants) {
     std::vector<uint8_t> spec = build_type_spec(1);
     inner.insert(inner.end(), spec.begin(), spec.end());
     for (size_t i = 0; i < variants.size(); i++) {
-        std::vector<uint8_t> tc = build_type_chunk(1, variants[i].sdk, (uint32_t)i);
+        std::vector<uint8_t> tc = variants[i].q
+            ? build_type_chunk_raw(1, config_custom(*variants[i].q), (uint32_t)i)
+            : build_type_chunk(1, variants[i].sdk, (uint32_t)i);
         inner.insert(inner.end(), tc.begin(), tc.end());
     }
 
@@ -197,6 +240,29 @@ static ResTableConfig device_with_sdk(uint16_t sdk, uint32_t size_field = 64) {
     ResTableConfig c;
     c.size = size_field;
     c.sdkVersion = sdk;
+    c.compute_fields();
+    return c;
+}
+
+// GOLDEN-03 §5: device with arbitrary settings (the requested configuration).
+static ResTableConfig device_custom(uint16_t density, const char* language,
+                                    uint8_t orientation, uint16_t sw_dp,
+                                    uint16_t w_dp, uint16_t h_dp, uint8_t ui_mode,
+                                    uint16_t screen_w = 0, uint16_t screen_h = 0,
+                                    const char* country = nullptr) {
+    ResTableConfig c;
+    c.size = 64;
+    c.sdkVersion = 34;
+    c.density = density;
+    if (language) { c.language[0] = (uint8_t)language[0]; c.language[1] = (uint8_t)language[1]; }
+    if (country)  { c.country[0] = (uint8_t)country[0]; c.country[1] = (uint8_t)country[1]; }
+    c.orientation = orientation;
+    c.smallestScreenWidthDp = sw_dp;
+    c.screenWidthDp = w_dp;
+    c.screenHeightDp = h_dp;
+    c.uiMode = ui_mode;
+    c.screenWidth = screen_w;
+    c.screenHeight = screen_h;
     c.compute_fields();
     return c;
 }
@@ -323,6 +389,186 @@ int main() {
                       "res/layout/only.xml",
                   "default-only table resolves to default on any device");
         }
+    }
+
+    // ══ GOLDEN-03 §5 — configuration-engine matrix expansion ══════════════
+    // Every check below drives the REAL match()/isBetterThan() law through
+    // the synthetic table; no fixture-specific logic. AOSP oracle:
+    // ResourceTypes.cpp match() @2909 / isBetterThan() @2641.
+
+    // ── [locale] language match + refinement beats plain language ────────
+    {
+        const CfgQualifiers en{.language = "en"};
+        const CfgQualifiers en_us{.language = "en", .country = "US"};
+        std::vector<uint8_t> blob = build_table({
+            {"res/values-en/strings.xml", 0, &en},
+            {"res/values-en-rUS/strings.xml", 0, &en_us},
+        });
+        ArscParser arsc;
+        check(arsc.parse(blob), "locale arsc (en, en-rUS) parses");
+        if (arsc.valid()) {
+            const std::vector<std::string> paths = {"res/values-en/strings.xml",
+                                                    "res/values-en-rUS/strings.xml"};
+            check(selected_path(arsc, device_custom(0, "en", 0, 0, 0, 0, 0, 0, 0, "US"), paths)
+                      == "res/values-en-rUS/strings.xml",
+                  "device en-US → en-rUS beats plain en (country refinement law)");
+            check(selected_path(arsc, device_custom(0, "en", 0, 0, 0, 0, 0), paths)
+                      == "res/values-en/strings.xml",
+                  "device en WITHOUT country → plain en (en-rUS rejected by country match law)");
+        }
+    }
+
+    // ── [locale] different-language candidate must NOT match ─────────────
+    {
+        const CfgQualifiers fa{.language = "fa"};
+        std::vector<uint8_t> c = config_custom(fa);
+        ResTableConfig fa_cfg = ResTableConfig::from_bytes(c.data(), c.size());
+        ResTableConfig dev = device_custom(0, "en", 0, 0, 0, 0, 0);
+        check(!fa_cfg.match(dev), "match: fa candidate REJECTED on en device");
+        ResTableConfig dev_fa = device_custom(0, "fa", 0, 0, 0, 0, 0);
+        check(fa_cfg.match(dev_fa), "match: fa candidate matches fa device");
+        // qualified beats default through the full table path
+        const CfgQualifiers def{};
+        std::vector<uint8_t> blob = build_table({
+            {"res/values/strings.xml", 0, &def},
+            {"res/values-fa/strings.xml", 0, &fa},
+        });
+        ArscParser arsc;
+        check(arsc.parse(blob), "locale arsc (default, fa) parses");
+        if (arsc.valid()) {
+            check(selected_path(arsc, dev_fa, {"res/values/strings.xml", "res/values-fa/strings.xml"})
+                      == "res/values-fa/strings.xml",
+                  "device fa → fa variant beats default (locale isBetterThan law)");
+            check(selected_path(arsc, dev, {"res/values/strings.xml", "res/values-fa/strings.xml"})
+                      == "res/values/strings.xml",
+                  "device en → default fallback (fa rejected by match)");
+        }
+    }
+
+    // ── [density] bucket law: exact match wins; wrong density REJECTED ───
+    {
+        const CfgQualifiers d240{.density = 240};
+        const CfgQualifiers d480{.density = 480};
+        std::vector<uint8_t> c240 = config_custom(d240);
+        ResTableConfig r240 = ResTableConfig::from_bytes(c240.data(), c240.size());
+        check(r240.match(device_custom(240, nullptr, 0, 0, 0, 0, 0)),
+              "match: 240dpi candidate matches 240dpi device");
+        check(r240.match(device_custom(480, nullptr, 0, 0, 0, 0, 0)),
+              "match: density is NOT a rejection criterion (AOSP closest-bucket law — "
+              "240 candidate still matches a 480 device and is scaled)");
+        check(r240.isBetterThan(ResTableConfig{}, device_custom(240, nullptr, 0, 0, 0, 0, 0)),
+              "isBetterThan: 240dpi beats DEFAULT on 240dpi device");
+        std::vector<uint8_t> blob = build_table({
+            {"res/drawable-mdpi/icon.png", 0, &d240},
+            {"res/drawable-xxhdpi/icon.png", 0, &d480},
+        });
+        ArscParser arsc;
+        check(arsc.parse(blob), "density arsc (240, 480) parses");
+        if (arsc.valid()) {
+            const std::vector<std::string> paths = {"res/drawable-mdpi/icon.png",
+                                                    "res/drawable-xxhdpi/icon.png"};
+            check(selected_path(arsc, device_custom(480, nullptr, 0, 0, 0, 0, 0), paths)
+                      == "res/drawable-xxhdpi/icon.png",
+                  "device 480dpi → xxhdpi variant");
+            check(selected_path(arsc, device_custom(240, nullptr, 0, 0, 0, 0, 0), paths)
+                      == "res/drawable-mdpi/icon.png",
+                  "device 240dpi → mdpi variant");
+        }
+    }
+
+    // ── [density] closest-bucket laws: scale-down preference + bigger-wins ─
+    {
+        const CfgQualifiers d480{.density = 480};
+        const CfgQualifiers d240{.density = 240};
+        // {480, 240} on a 160dpi device: h=480, l=240 ≥ 160 → prefer scale DOWN → 240
+        std::vector<uint8_t> blob = build_table({
+            {"res/drawable-xxhdpi/icon.png", 0, &d480},
+            {"res/drawable-hdpi/icon.png", 0, &d240},
+        });
+        ArscParser arsc;
+        check(arsc.parse(blob), "density scale-down arsc parses");
+        if (arsc.valid()) {
+            check(selected_path(arsc, device_custom(160, nullptr, 0, 0, 0, 0, 0),
+                                {"res/drawable-xxhdpi/icon.png", "res/drawable-hdpi/icon.png"})
+                      == "res/drawable-hdpi/icon.png",
+                  "device 160dpi with {240,480} → 240 (AOSP scale-down preference law)");
+        }
+    }
+    {
+        const CfgQualifiers d480{.density = 480};
+        const CfgQualifiers def{};
+        std::vector<uint8_t> blob = build_table({
+            {"res/drawable/icon.png", 0, &def},
+            {"res/drawable-xxhdpi/icon.png", 0, &d480},
+        });
+        ArscParser arsc;
+        check(arsc.parse(blob), "density default-vs-480 arsc parses");
+        if (arsc.valid()) {
+            // default bucket ≈ DENSITY_MEDIUM(160): {480 vs 160} around requested 240
+            // → h(480) != 240, l(160) < 240 → the BIGGER bucket wins (AOSP law).
+            check(selected_path(arsc, device_custom(240, nullptr, 0, 0, 0, 0, 0),
+                                {"res/drawable/icon.png", "res/drawable-xxhdpi/icon.png"})
+                      == "res/drawable-xxhdpi/icon.png",
+                  "device 240dpi with {default(≈160), 480} → 480 (bigger-bucket law, "
+                  "scale-down applies only when l ≥ requested)");
+        }
+    }
+
+    // ── [orientation] land matches land, rejected on port ─────────────────
+    {
+        const CfgQualifiers land{.orientation = 2};
+        std::vector<uint8_t> c = config_custom(land);
+        ResTableConfig rland = ResTableConfig::from_bytes(c.data(), c.size());
+        check(rland.match(device_custom(0, nullptr, 2, 0, 0, 0, 0)),
+              "match: landscape candidate matches landscape device");
+        check(!rland.match(device_custom(0, nullptr, 1, 0, 0, 0, 0)),
+              "match: landscape candidate REJECTED on portrait device");
+    }
+
+    // ── [sw] smallest-width: ≥ device width matches, smaller REJECTED ────
+    {
+        const CfgQualifiers sw720{.smallest_width_dp = 720};
+        std::vector<uint8_t> c = config_custom(sw720);
+        ResTableConfig rsw = ResTableConfig::from_bytes(c.data(), c.size());
+        check(rsw.match(device_custom(0, nullptr, 0, 800, 0, 0, 0)),
+              "match: sw720 candidate matches device sw800");
+        check(!rsw.match(device_custom(0, nullptr, 0, 600, 0, 0, 0)),
+              "match: sw720 candidate REJECTED on device sw600");
+        check(rsw.isBetterThan(ResTableConfig{}, device_custom(0, nullptr, 0, 800, 0, 0, 0)),
+              "isBetterThan: sw720 beats DEFAULT on sw800 device");
+    }
+
+    // ── [w] width-dp: w<N>dp match law ───────────────────────────────────
+    {
+        const CfgQualifiers w1080{.width_dp = 1080};
+        std::vector<uint8_t> c = config_custom(w1080);
+        ResTableConfig rw = ResTableConfig::from_bytes(c.data(), c.size());
+        check(rw.match(device_custom(0, nullptr, 0, 0, 1080, 1920, 0)),
+              "match: w1080dp candidate matches device w1080dp");
+        check(!rw.match(device_custom(0, nullptr, 0, 0, 720, 1280, 0)),
+              "match: w1080dp candidate REJECTED on device w720dp");
+    }
+
+    // ── [uiMode] night candidate matches night device only ───────────────
+    {
+        const CfgQualifiers night{.ui_mode = 0x20};
+        std::vector<uint8_t> c = config_custom(night);
+        ResTableConfig rnight = ResTableConfig::from_bytes(c.data(), c.size());
+        check(rnight.match(device_custom(0, nullptr, 0, 0, 0, 0, 0x20)),
+              "match: night candidate matches uiMode night device");
+        check(!rnight.match(device_custom(0, nullptr, 0, 0, 0, 0, 0x10)),
+              "match: night candidate REJECTED on uiMode day device");
+    }
+
+    // ── [screenSize] exact px screen match ────────────────────────────────
+    {
+        const CfgQualifiers scr{.screen_width = 1080, .screen_height = 1920};
+        std::vector<uint8_t> c = config_custom(scr);
+        ResTableConfig rscr = ResTableConfig::from_bytes(c.data(), c.size());
+        check(rscr.match(device_custom(0, nullptr, 0, 0, 0, 0, 0, 1080, 1920)),
+              "match: 1080x1920 candidate matches same-screen device");
+        check(!rscr.match(device_custom(0, nullptr, 0, 0, 0, 0, 0, 720, 1280)),
+              "match: 1080x1920 candidate REJECTED on 720x1280 device");
     }
 
     std::cout << "RESULT: " << g_pass << " passed, " << g_fail << " failed\n";
