@@ -613,6 +613,8 @@ std::string ManifestReader::get_attribute_value(const std::vector<AxmlAttribute>
             // enum values, but value_type conflated size+res0+dataType into
             // one u32. The real dataType is now in attr.value_data_type (u8).
             uint8_t dt = attr.value_data_type;
+            // GOLDEN-03 §7: dispatch on AOSP Res_value dataTypes (see
+            // AxmlDataType in manifest_reader.h — constants now AOSP-faithful).
             if (dt == static_cast<uint8_t>(AxmlDataType::STRING)) {
                 // For STRING type, value_data holds a string index (or value_string_index does)
                 // Per AOSP, value_data IS the string index for STRING type
@@ -620,19 +622,13 @@ std::string ManifestReader::get_attribute_value(const std::vector<AxmlAttribute>
                     return get_string(attr.value_string_index);
                 }
                 return get_string(attr.value_data);
-            } else if (dt == static_cast<uint8_t>(AxmlDataType::REFERENCE)) {
+            } else if (dt == static_cast<uint8_t>(AxmlDataType::REFERENCE) ||
+                       dt == static_cast<uint8_t>(AxmlDataType::ATTRIBUTE)) {
                 return "@0x" + int_to_hex(attr.value_data);
-            } else if (dt == static_cast<uint8_t>(AxmlDataType::INT) ||
-                       dt == static_cast<uint8_t>(AxmlDataType::ATTRIBUTE_INT) ||
+            } else if (dt == static_cast<uint8_t>(AxmlDataType::INT_DEC) ||
                        dt == static_cast<uint8_t>(AxmlDataType::INT_HEX) ||
                        dt == static_cast<uint8_t>(AxmlDataType::INT_BOOLEAN)) {
                 return std::to_string(static_cast<int32_t>(attr.value_data));
-            } else if (dt == static_cast<uint8_t>(AxmlDataType::STRING_INT)) {
-                // Some AXML files use STRING_INT(17) for string-as-int
-                if (attr.value_string_index != 0xFFFFFFFF && attr.value_string_index < strings_.size()) {
-                    return get_string(attr.value_string_index);
-                }
-                return get_string(attr.value_data);
             } else {
                 // Default: try value_string_index first, fall back to value_data
                 if (attr.value_string_index != 0xFFFFFFFF && attr.value_string_index < strings_.size()) {
