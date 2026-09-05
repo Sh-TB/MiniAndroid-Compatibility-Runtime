@@ -71,6 +71,18 @@ gate "link mutf8_test" $?
 gate "mutf8 string-pool battery (expect 14)" $?
 tail -1 /tmp/battery_mutf8.out
 
+# P1 resource-configuration regression (generic default/v16/v21 law)
+g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/resource_config_selection_test \
+    tests/resource_config_selection_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread \
+    > /tmp/battery_rescfg.log 2>&1
+gate "link resource_config_selection_test" $?
+./build/resource_config_selection_test > /tmp/battery_rescfg.out 2>&1
+gate "resource-config selection law (expect 19)" $?
+tail -1 /tmp/battery_rescfg.out
+
 # goldens
 bash tests/fixtures/helloworld_golden/validate_helloworld_golden.sh build/miniandroid \
     > /tmp/battery_hw.out 2>&1
