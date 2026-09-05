@@ -894,6 +894,22 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         if (!ctx.args.empty()) {
             if (ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
                 content_view_id_ = ctx.args[0].object_id;
+                // GENERIC (tictactoe_golden campaign): programmatic View trees
+                // get the SAME real measure/layout pass as XML-inflated trees.
+                // AOSP: setContentView(View) attaches the view to the window
+                // and runs a full measure/layout — without it the render walk
+                // fell back to its unweighted legacy estimator where
+                // width=0+weight collapses to zero size and weighted rows
+                // render nothing (the board was invisible).
+                if (registry_ && content_view_id_ != 0) {
+                    auto* view_shadow = registry_->find_as<ViewShadow>();
+                    if (view_shadow) {
+                        auto& rt = resources::ResourceRuntime::instance();
+                        rt.inflater().measure_layout(view_shadow, content_view_id_);
+                        std::cerr << "[U007-MEASURE] setContentView(View) measured programmatic tree root="
+                                  << content_view_id_ << std::endl;
+                    }
+                }
             } else if (ctx.args[0].kind == CallContext::Arg::Kind::INT) {
                 // UNIFIED_007: setContentView(int layoutResId) now inflates the
                 // REAL layout from the APK: resource id → resources.arsc →

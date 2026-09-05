@@ -28,7 +28,18 @@ public:
 
     ArscParser& arsc() { return arsc_; }
     apk::ApkParser& apk() { return apk_; }
-    LayoutInflater& inflater() { return *inflater_; }
+    // TICTACTOE-GOLDEN campaign: always return a usable inflater. The old
+    // accessor dereferenced a null unique_ptr for APKs with no
+    // resources.arsc (fixtures, plain-asset apps) the moment any code path
+    // needed the layout engine without ARSC — e.g. the generic
+    // setContentView(View) measure pass for programmatic View trees.
+    LayoutInflater& inflater() {
+        if (!inflater_) {
+            metrics_ = DeviceMetrics{};
+            inflater_ = std::make_unique<LayoutInflater>(arsc_, apk_, apk_path_, metrics_);
+        }
+        return *inflater_;
+    }
     const DeviceMetrics& metrics() const { return metrics_; }
     bool loaded() const { return loaded_; }
     const std::string& apk_path() const { return apk_path_; }

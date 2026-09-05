@@ -1709,6 +1709,11 @@ public:
     // EXP-035: Current execution context (for VTable evidence)
     std::string current_class_ = "<unknown>";
     std::string current_method_ = "<unknown>";
+    // CHAR-PROBE campaign: full descriptor of the method currently executed
+    // by execute_method_internal. execute_return uses the return-type char
+    // to type the returned value signature-aware ('Z'→BOOLEAN, 'C'→CHAR,
+    // 'B'→BYTE, 'S'→SHORT) instead of leaking raw INT32 registers.
+    std::string current_method_descriptor_;
     // EXP-071 Phase 8: Tracks whether the current invoke is static.
     // Set to true by execute_invoke_static, false by execute_invoke_virtual/direct.
     // try_shadow_dispatch uses this to decide whether args[0] is `this` (instance)
