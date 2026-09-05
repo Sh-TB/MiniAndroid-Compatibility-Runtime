@@ -4,6 +4,9 @@
  */
 
 #include "manifest_reader.h"
+#include "dex/mutf8.h"   // FIND-REUSE-002: the ONE UTF-16LE→UTF-8 primitive
+                        // (this copy previously lacked surrogate handling —
+                        //  non-BMP manifest strings double-encoded; fixed)
 
 #include <cstring>
 #include <cstdio>      // snprintf (used by parse_header)
@@ -258,23 +261,13 @@ bool ManifestReader::parse_string_pool(const uint8_t* chunk, size_t size) {
             std::string str(reinterpret_cast<const char*>(strings_start + offset), str_length);
             strings_.push_back(str);
         } else {
-            // UTF-16 - convert to UTF-8 (simplified)
-            std::string utf8_str;
-            const char16_t* utf16_ptr = reinterpret_cast<const char16_t*>(strings_start + offset);
-            for (size_t j = 0; j < str_length; j++) {
-                char16_t c = utf16_ptr[j];
-                if (c < 0x80) {
-                    utf8_str += static_cast<char>(c);
-                } else if (c < 0x800) {
-                    utf8_str += static_cast<char>(0xC0 | (c >> 6));
-                    utf8_str += static_cast<char>(0x80 | (c & 0x3F));
-                } else {
-                    utf8_str += static_cast<char>(0xE0 | (c >> 12));
-                    utf8_str += static_cast<char>(0x80 | ((c >> 6) & 0x3F));
-                    utf8_str += static_cast<char>(0x80 | (c & 0x3F));
-                }
-            }
-            strings_.push_back(utf8_str);
+            // UTF-16LE pool → UTF-8 via the ONE shared encoder
+            // (FIND-REUSE-002). The deleted inline loop here lacked
+            // surrogate-pair combination: emoji/CJK-ext strings from a
+            // binary manifest were double-encoded (2×3-byte CESU-8 style).
+            strings_.push_back(miniandroid::dex::mutf8::utf16le_to_utf8(
+                reinterpret_cast<const uint8_t*>(strings_start + offset),
+                static_cast<size_t>(str_length) * 2));
         }
         
         offset += is_utf8 ? str_length : str_length * 2;
