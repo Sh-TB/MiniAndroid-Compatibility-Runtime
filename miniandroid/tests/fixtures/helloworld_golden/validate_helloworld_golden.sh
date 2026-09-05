@@ -1,20 +1,24 @@
 #!/usr/bin/env bash
 # validate_helloworld_golden.sh — §27/§28 "simplest permanent boot/render
-# regression test".
+# regression test", RESOURCE-BACKED variant (§36.E).
 #
-# Proves, from a REAL toolchain-built APK (ECJ → D8 → zip):
-#   1. fixture build + APK/DEX SHA-256 evidence
-#   2. runtime boot: APK → manifest → Activity.onCreate → DEX execution →
-#      View tree (LinearLayout + 2 TextView + Button) → measure → layout →
-#      fonts → Canvas → renderer → visible PNG
-#   3. §27 semantic chain checks from runtime-produced evidence:
+# Proves, from a REAL toolchain-built APK (aapt2 → ECJ → D8):
+#   1. fixture build + APK/DEX SHA-256 evidence (aapt2-linked:
+#      binary manifest + resources.arsc + binary AXML)
+#   2. §36.E resource-backed discriminator: the display strings live in
+#      resources.arsc and are ABSENT from the DEX string pool
+#   3. runtime boot: APK → manifest → Activity.onCreate → DEX execution →
+#      setContentView(R.layout) → AXML inflation + ARSC @string/@id
+#      resolution → View tree (LinearLayout + 2 TextView + Button) →
+#      measure → layout → fonts → Canvas → renderer → visible PNG
+#   4. §27 semantic chain checks from runtime-produced evidence:
 #        AOSP gravity law (EXT-AOSP-001): container setGravity(0x11)
 #        horizontally centers children ((screen_w - child_w)/2)
 #        AOSP sp law (EXT-AOSP-002): setTextSize(28sp) → 28*2.625=73.5px,
 #        visibly larger than 14sp line
-#   4. pixel discriminators: headline ink band taller than subtitle band;
+#   5. pixel discriminators: headline ink band taller than subtitle band;
 #        both text rows horizontally centered; button surface present
-#   5. §28 deterministic replay: run B byte-identical (SHA-256)
+#   6. §28 deterministic replay: run B byte-identical (SHA-256)
 #
 # Required §28 evidence record: APK SHA256, DEX SHA256, runtime command,
 # exit status, screenshot SHA256, dimensions, run #1 vs run #2.
@@ -42,16 +46,43 @@ BIN="$(cd "$(dirname "$BIN")" && pwd)/$(basename "$BIN")"
 
 cd "$REPO/miniandroid"
 
-say "── [1] fixture build (real toolchain: ECJ + D8) ──────────────────"
+say "── [1] fixture build (real toolchain: aapt2 + ECJ + D8) ──────────"
 APK="$WORK/helloworld_golden.apk"
 if bash "$REPO/scripts/build_fixture_apk.sh" "$FIXTURE" "$APK" > "$WORK/build.log" 2>&1; then
-    pass "build_fixture_apk: ECJ + D8 + package OK"
+    pass "build_fixture_apk: aapt2 + ECJ + D8 + package OK"
     APK_SHA=$(grep '^SHA256:' "$WORK/build.log" | cut -d' ' -f2)
     [ -n "$APK_SHA" ] && pass "APK SHA256 = $APK_SHA" || fail "APK hash missing"
+    grep -q "aapt2: linked" "$WORK/build.log" \
+        && pass "aapt2 link (binary manifest + resources.arsc)" \
+        || fail "APK is not aapt2-linked (resource path missing)"
 else
     fail "build_fixture_apk failed (see $WORK/build.log)"; cat "$WORK/build.log"
     exit 1
 fi
+
+say "── [1b] §36.E resource-backed discriminator ─────────────────────"
+python3 - "$APK" > "$WORK/reschain.report" <<'PY'
+import sys, zipfile
+z = zipfile.ZipFile(sys.argv[1])
+names = z.namelist()
+dex = z.read("classes.dex")
+arsc = z.read("resources.arsc") if "resources.arsc" in names else b""
+print(f"has resources.arsc: {'resources.arsc' in names}")
+print(f"has binary layout:  {'res/layout/activity_main.xml' in names}")
+axml = z.read("res/layout/activity_main.xml") if "res/layout/activity_main.xml" in names else b""
+print(f"layout AXML magic (0x0003 RES_XML): {axml[:2] == b'\x03\x00'}")
+print(f"binary manifest:    {names[0] == 'AndroidManifest.xml' and z.read('AndroidManifest.xml')[:2] == b'\x03\x00'}")
+for s in [b"Hello, MiniAndroid!", b"real APK - real DEX - real render", b"OK"]:
+    print(f"string in ARSC and NOT in DEX [{s.decode()}]: {s in arsc and s not in dex}")
+PY
+grep -q "has resources.arsc: True" "$WORK/reschain.report" && pass "APK contains resources.arsc" || fail "resources.arsc missing"
+grep -q "has binary layout:  True" "$WORK/reschain.report" && pass "APK contains binary res/layout/activity_main.xml" || fail "binary layout missing"
+grep -q "layout AXML magic (0x0003 RES_XML): True" "$WORK/reschain.report" && pass "layout is binary AXML (RES_XML type)" || fail "layout not binary AXML"
+grep -q "binary manifest:    True" "$WORK/reschain.report" && pass "manifest is binary AXML (aapt2-compiled)" || fail "manifest not binary"
+N_RESDISC=$(grep -c "string in ARSC and NOT in DEX .*: True" "$WORK/reschain.report")
+[ "$N_RESDISC" -eq 3 ] && pass "all 3 display strings in resources.arsc, ABSENT from DEX (§36.E)" \
+    || fail "§36.E discriminator failed ($N_RESDISC/3 strings resource-backed)"
+
 # DEX SHA-256 (classes.dex extracted from the APK)
 python3 - "$APK" > "$WORK/dex.sha" <<'PY'
 import sys, zipfile, hashlib
@@ -67,6 +98,12 @@ OUTA="$WORK/runA"
 rc=$?
 [ $rc -eq 0 ] && pass "run exit 0" || fail "run exit $rc"
 [ -f "$OUTA/screenshot.png" ] && pass "screenshot produced" || fail "screenshot missing"
+grep -q "ResourceRuntime loaded" "$OUTA.log" 2>/dev/null \
+    && pass "ResourceRuntime loaded (resources.arsc parsed at boot)" \
+    || fail "ResourceRuntime did not load resources.arsc"
+grep -q "ARSC-VALUES.*strings=3" "$OUTA.log" 2>/dev/null \
+    && pass "ARSC-first string values resolved (strings=3)" \
+    || fail "ARSC-first string resolution not observed"
 grep -q "EXT-AOSP-001" "$OUTA.log" 2>/dev/null \
     && pass "EXT-AOSP-001 container setGravity intercepted (real DEX dispatch)" \
     || fail "container setGravity intercept not observed"

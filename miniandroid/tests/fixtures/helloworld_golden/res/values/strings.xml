@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  HELLOWORLD-GOLDEN fixture strings — the display texts live HERE (in
+  resources.arsc after aapt2 link), NOT in the DEX string pool. The
+  validation script uses this as the §36.E resource-backed discriminator:
+  it asserts the strings are present in resources.arsc and ABSENT from
+  classes.dex.
+-->
+<resources>
+    <string name="hello_headline">Hello, MiniAndroid!</string>
+    <string name="hello_subtitle">real APK - real DEX - real render</string>
+    <string name="ok_label">OK</string>
+</resources>
