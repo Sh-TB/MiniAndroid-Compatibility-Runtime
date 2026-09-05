@@ -101,6 +101,24 @@ else
     echo "  (fixture missing: $EXT01_APK — fetch per docs/evidence/EXTERNAL_FIXTURE_HELLOWORLDSELFAWARE.md)"
 fi
 
+# GOLDEN-02: EXT-01 long-press interaction golden (12 static checks, Rule 10)
+if [ -f "$EXT01_APK" ]; then
+    EXT02_OUT=/tmp/battery_ext02
+    rm -rf "$EXT02_OUT"; mkdir -p "$EXT02_OUT"
+    ./build/miniandroid run "$EXT01_APK" -o "$EXT02_OUT" --long-press 540,960 \
+        > "$EXT02_OUT/run.log" 2>&1
+    gate "EXT-02 long-press run (external APK interaction)" $?
+    python3 "$REPO/scripts/compare_ext01_interaction.py" \
+        "$EXT02_OUT/frames/frame_000.png" "$EXT02_OUT/frames/frame_001.png" \
+        "$EXT02_OUT/frames/manifest.json" --json "$EXT02_OUT/interaction_golden.json" \
+        > "$EXT02_OUT/compare.log" 2>&1
+    gate "EXT-02 interaction golden (12 static checks)" $?
+    grep -h "verdict" "$EXT02_OUT/interaction_golden.json"
+else
+    gate "EXT-02 interaction golden (12 static checks)" 1
+    echo "  (fixture missing: $EXT01_APK)"
+fi
+
 # corpus regression: real external APKs must still boot and render
 CORPUS_DIR="$MA/download"
 python3 "$REPO/MiniAndroid-Compatibility-Runtime/scripts/fetch_corpus.py" \
