@@ -80,7 +80,7 @@ more times this session (FIND-REUSE-002/003/004).
 | (androidfw law) ONE ResStringPool for ARSC+AXML+manifest | pool chunk parse | `resources/string_pool.{h,cpp}` (NEW, FIND-REUSE-004) | NO (was ×3) | YES | offsets-table indexing replaces sequential walk (BLOCKER-006 class dead) | battery + corpus pixel-identity ×3 | YES — deleted this session (−158 LOC net) |
 | 007 absent-arg determinism | invoke argument marshalling | engine zero-init policy | no | test only | — | `wd_absent_arg_deterministic_winedroid007` | — (test pins it) |
 | 011 packed-switch payload-is-data | switch decode | switch decoder + discriminator | no | test only | — | `sw_packed_payload_is_data_winedroid011` | — |
-| 003 per-table bounds/alignment pre-validation | DEX table loops | dex_parser validation (looser) | n/a | adapt | strictness gap open | corrupt-DEX fixture (queued) | no new code; tighten existing |
+| 003 per-table bounds/alignment pre-validation | DEX table loops | `dex_parser validate_section_table` (**IMPLEMENTED 2026-09-05, FIND-REUSE-005, commit b6ba545d**) | n/a | adapt — DONE | closed: zero-offset + 4-byte alignment + checked count×item_size BEFORE allocation + file_size ≥ header_size | mutf8 battery T7–T10 (hostile-header group; std::bad_alloc pre-law reproduced as discrimination proof) | 6 duplicated inline bounds checks collapsed into 1 gate |
 | AOT C emission/ELF pipeline | (opposite model — in-process interpreter) | n/a | n/a | NO — architecture REJECTED for MiniAndroid | n/a | n/a | n/a |
 
 ## Honest limits of this study
