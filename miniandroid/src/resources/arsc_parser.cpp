@@ -422,17 +422,17 @@ void ArscParser::finish_index() {
 // if nothing matches, the default (qualifier-less) entry is used, mirroring
 // AssetsProvider behavior for unqualified tables.
 // ---------------------------------------------------------------------------
-const ArscEntry* ResolvedResource::best() const {
+const ArscEntry* ResolvedResource::best_for(const ResTableConfig& device) const {
     if (configs.empty()) return nullptr;
-    const ResTableConfig& device = device_config();
+    const ResTableConfig& req = device;
     const ArscEntry* best = nullptr;
     for (const auto& c : configs) {
-        if (c.has_config && !c.config.match(device)) continue;
+        if (c.has_config && !c.config.match(req)) continue;
         if (!best) { best = &c; continue; }
         const bool c_has = c.has_config;
         const bool b_has = best->has_config;
         if (c_has && b_has) {
-            if (c.config.isBetterThan(best->config, device)) best = &c;
+            if (c.config.isBetterThan(best->config, req)) best = &c;
         } else if (c_has && !b_has) {
             // qualified config beats default when the qualifier matches the device
             if (c.config.locale || c.config.density || c.config.smallestScreenWidthDp ||
@@ -447,6 +447,10 @@ const ArscEntry* ResolvedResource::best() const {
     // No bucket matched the device: fall back to the default config if present.
     for (const auto& c : configs) if (!c.has_config) return &c;
     return &configs.front();
+}
+
+const ArscEntry* ResolvedResource::best() const {
+    return best_for(device_config());
 }
 
 std::optional<ResolvedResource> ArscParser::resolve(uint32_t resource_id) const {
@@ -536,6 +540,12 @@ std::vector<std::pair<uint32_t, std::string>> ArscParser::list_type(
 
 std::optional<std::string> ArscParser::apk_path_for(uint32_t resource_id,
                                                     const std::vector<std::string>& apk_paths) const {
+    return apk_path_for(resource_id, apk_paths, device_config());
+}
+
+std::optional<std::string> ArscParser::apk_path_for(uint32_t resource_id,
+                                                    const std::vector<std::string>& apk_paths,
+                                                    const ResTableConfig& device) const {
     auto r = resolve(resource_id);
     if (!r) return std::nullopt;
 
@@ -552,9 +562,10 @@ std::optional<std::string> ArscParser::apk_path_for(uint32_t resource_id,
     // SDK-versioned layouts into multiple variants (EXT-01: () v9.xml,
     // (v16) UD.xml, (v21) 02.xml) and the AOSP AssetManager2 law picks the
     // best MATCHING config — so the version-selected variant must win, not
-    // the first row. Resolve through best() (match + isBetterThan, the same
-    // law resolve_value uses) and only then map the value to the APK path.
-    if (const ArscEntry* e = r->best()) {
+    // the first row. Resolve through best_for(device) (match + isBetterThan,
+    // the same law resolve_value uses) and only then map the value to the
+    // APK path.
+    if (const ArscEntry* e = r->best_for(device)) {
         const std::string& v = e->value.string_value;
         if (e->value.type == DataType::STRING && v.size() > 4 &&
             v.compare(0, 4, "res/") == 0) {

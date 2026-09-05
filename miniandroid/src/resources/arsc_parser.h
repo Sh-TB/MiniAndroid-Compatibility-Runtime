@@ -121,6 +121,11 @@ struct ResolvedResource {
     std::string name;
     std::vector<ArscEntry> configs;   // all configs, default-first ordering applied on demand
     const ArscEntry* best() const;    // best/default config (see .cpp)
+    // GOLDEN-02 P1: testable selection — same match()+isBetterThan law as
+    // best(), evaluated against an EXPLICIT device configuration instead of
+    // the global singleton. Lets the generic resource-selection regression
+    // drive any (default/v16/v21 × device-sdk) matrix through the real law.
+    const ArscEntry* best_for(const ResTableConfig& device) const;
 };
 
 class ArscParser {
@@ -150,6 +155,10 @@ public:
     // Searches raw file paths from the APK (caller supplies path list).
     std::optional<std::string> apk_path_for(uint32_t resource_id,
                                             const std::vector<std::string>& apk_paths) const;
+    // GOLDEN-02 P1: device-injectable overload (same law, explicit device).
+    std::optional<std::string> apk_path_for(uint32_t resource_id,
+                                            const std::vector<std::string>& apk_paths,
+                                            const ResTableConfig& device) const;
 
     // --- Stats / evidence ----------------------------------------------------
     struct Stats {
