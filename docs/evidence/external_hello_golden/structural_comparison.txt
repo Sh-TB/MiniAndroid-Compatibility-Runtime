@@ -1,0 +1,14 @@
+== reference == {'label': 'reference(phone)', 'w': 600, 'h': 1067, 'bg': 0, 'ink': 10179, 'bbox': (107, 406, 492, 669), 'cx': 299.5, 'cy': 537.5}
+   text bands: [(406, 431), (486, 511), (562, 586), (637, 669)]
+== miniandroid == {'label': 'miniandroid', 'w': 1080, 'h': 1920, 'bg': 0, 'ink': 11029, 'bbox': (333, 875, 747, 1048), 'cx': 540.0, 'cy': 961.5}
+   text bands: [(875, 902), (921, 948), (967, 994), (1013, 1048)]
+
+PASS  background identical (black)
+PASS  background match
+PASS  ink present
+PASS  4-line band structure
+PASS  horizontal centering within 3%
+PASS  vertical centering within 6%
+FAIL  text block width ratio within 25%
+
+GOLDEN-01 STRUCTURAL COMPARISON: FAIL (6/7 checks)

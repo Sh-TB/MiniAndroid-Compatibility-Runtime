@@ -95,6 +95,10 @@ struct ManifestInfo {
     // Application info
     std::string application_label;
     std::string application_name;  // EXP-093/F005: android:name attribute
+    // VISUAL-CAMPAIGN G49: <application android:theme> raw resource id
+    // (attribute 0x01010000, REFERENCE value) — the style whose
+    // windowBackground item paints the window behind all content.
+    uint32_t application_theme_resid = 0;
     bool has_application = false;
     
     // Raw data access

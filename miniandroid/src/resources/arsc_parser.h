@@ -109,6 +109,7 @@ struct ArscEntry {
     bool has_config = false;       // true once raw config bytes were present
     ResValue   value;              // best value (for complex: first item)
     bool       is_complex = false;
+    std::vector<uint32_t> complex_keys;           // VISUAL-CAMPAIGN G49: ResTable_map name keys
     std::vector<ResValue> complex_items;  // for arrays/attrs
 };
 
