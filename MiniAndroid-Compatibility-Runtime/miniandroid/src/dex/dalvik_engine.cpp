@@ -12,6 +12,7 @@
 
 #include "dalvik_engine.h"
 #include "dex_parser.h"
+#include "mutf8.h"
 #include "../api/android_stubs.h"
 #include "../diagnostics/mem_probe.h"
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
@@ -448,19 +449,12 @@ std::string DalvikExecutionEngine::read_dex_string_from_raw(
 
     if (string_data_off >= raw.size()) return "<str_data_oob>";
 
-    // Read ULEB128 length
-    size_t pos = string_data_off;
-    uint32_t length = 0;
-    int shift = 0;
-    while (pos < raw.size()) {
-        uint8_t byte = raw[pos++];
-        length |= (byte & 0x7F) << shift;
-        if (!(byte & 0x80)) break;
-        shift += 7;
-    }
-
-    if (pos + length > raw.size()) return "<str_truncated>";
-    return std::string(reinterpret_cast<const char*>(raw.data() + pos), length);
+    // FIND-REUSE-001: delegate to the ONE shared MUTF-8 primitive.
+    // Previously a third inline ULEB128 copy lived here with the same
+    // utf16-size-as-byte-count truncation bug for non-ASCII strings.
+    const auto r = miniandroid::dex::mutf8::decode_string_data(raw.data(), raw.size(), string_data_off);
+    if (!r.stream_ok && r.utf8.empty()) return "<str_truncated>";  // structural failure, nothing decoded
+    return r.utf8;
 }
 
 // EXP-065: Per-DEX string resolution.
