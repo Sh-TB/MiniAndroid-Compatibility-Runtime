@@ -40,6 +40,15 @@
     "If credentials still missing: keep committing locally, update unpushed_commits count, do NOT claim anything is pushed."
   ],
   "last_reverified": "2026-09-05 REUSE-FIRST MAXIMUM PROGRESS session (HEAD 31789f6e): git ls-remote origin -> remote main still ad95d928; git push still fails (no credentials); local history rebuilt line now 31 commits ahead",
+  "RESOLUTION_2026-09-05": {
+    "status": "PUSH_BLOCKED RESOLVED",
+    "method": "user-provided PAT configured via git credential store (mode 600, outside repo); recovery plan in history_preservation_plan executed exactly",
+    "push_archive_branch": "git push origin archive/origin-main-ad95d928 -> new remote branch at ad95d92876a355a719d2a8959053f8a47c2b1e79 (394-commit original line preserved)",
+    "push_main": "git push --force-with-lease=refs/heads/main:ad95d928... origin main -> ad95d928...7d005525 (forced update)",
+    "verified_remote_main": "7d00552506d07c479812ed625955d92fb9ee5c29 (git ls-remote match)",
+    "security": "git grep token-pattern sweep over all tracked files before push: CLEAN",
+    "evidence_comment": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5552103280"
+  },
   "session_new_commits": [
     "a3c3aded resource-backed Hello World (aapt2, \u00a736.E)",
     "e69bc496 FIND-REUSE-002/003",
