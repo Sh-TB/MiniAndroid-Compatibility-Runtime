@@ -12268,22 +12268,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // EXT-AOSP-002: TextView.setTextSize — AOSP TextView.java@1cdfff55
     // L4720-4722: setTextSize(float) == setTextSize(COMPLEX_UNIT_SP, size);
     // L4752-4762: TypedValue.applyDimension → px = sp * scaledDensity.
-    // This runtime's scaledDensity == ExecutionConfig::density (2.625),
-    // the same factor the renderer uses for its default size (14px default).
-    // Handles both the (float) and (int unit, float size) shapes; unit
-    // COMPLEX_UNIT_PX(2) skips the density multiply (AOSP applyDimension).
+    // GOLDEN-03 §9: the unit constants are the AOSP TypedValue ones
+    // (PX=0, DIP=1, SP=2 — the previous comment mislabeled them) and the
+    // conversion goes through the ONE canonical DensityContext law.
     if (method == "setTextSize" && shadow_registry_ != nullptr &&
         !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
-        const float kDensity = 2.625f;
+        const resources::DensityContext ctx =
+            resources::DensityContext::from_density(2.625f /* device density law */);
         float px = -1.0f;
         if (args.size() >= 2 && args[1].type == DalvikType::FLOAT32) {
-            px = args[1].float_val * kDensity;                     // sp
+            px = resources::complex_unit_to_dimension_px(
+                resources::COMPLEX_UNIT_SP, args[1].float_val, ctx);      // sp
         } else if (args.size() >= 3 &&
                    args[1].type == DalvikType::INT32 &&
                    args[2].type == DalvikType::FLOAT32) {
-            const int unit = args[1].int_val;   // 0=DIP 1=SP 2=PX
-            px = (unit == 2) ? args[2].float_val
-                             : args[2].float_val * kDensity;
+            // 2-arg form: unit is an AOSP TypedValue COMPLEX_UNIT_* constant.
+            const int unit = args[1].int_val;
+            px = resources::complex_unit_to_dimension_px(
+                (uint8_t)unit, args[2].float_val, ctx);
         } else if (args.size() >= 2 && args[1].type == DalvikType::INT32 &&
                    args[1].int_val > 0 && args[1].int_val < 10000) {
             // DEX float args may surface as raw IEEE bits in INT32 slots on
@@ -12292,7 +12294,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // call silently.
             float f;
             std::memcpy(&f, &args[1].int_val, sizeof(f));
-            if (f > 0.0f && f < 1000.0f) px = f * kDensity;
+            if (f > 0.0f && f < 1000.0f)
+                px = resources::complex_unit_to_dimension_px(
+                    resources::COMPLEX_UNIT_SP, f, ctx);
         }
         if (px > 0.0f) {
             auto* vs = shadow_registry_->find_as<framework::ViewShadow>();

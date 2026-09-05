@@ -41,14 +41,21 @@ float complex_to_dimension_px(uint32_t complex_data, const DensityContext& metri
     return complex_unit_to_dimension_px(unit, complex_to_float(complex_data), metrics);
 }
 
-int complex_to_dimension_pixel_size(uint32_t complex_data, const DensityContext& metrics) {
-    // TypedValue.complexToDimensionPixelSize — exact law including the
-    // nonzero-floor tail (a 0.3px dimension does NOT silently become 0px).
-    const float value = complex_to_dimension_px(complex_data, metrics);
-    const int res = (int)(value >= 0 ? (value + 0.5f) : (value - 0.5f));
+int complex_unit_to_dimension_pixel_size(uint8_t unit, float value, const DensityContext& metrics) {
+    // The ONE rounding + nonzero-floor implementation (both pixel-size entry
+    // points delegate here).
+    const float px = complex_unit_to_dimension_px(unit, value, metrics);
+    const int res = (int)(px >= 0 ? (px + 0.5f) : (px - 0.5f));
     if (res != 0) return res;
-    if (value == 0.0f) return 0;
-    return (value > 0.0f) ? 1 : -1;
+    if (px == 0.0f) return 0;
+    return (px > 0.0f) ? 1 : -1;
+}
+
+int complex_to_dimension_pixel_size(uint32_t complex_data, const DensityContext& metrics) {
+    // TypedValue.complexToDimensionPixelSize: decode then apply the shared
+    // rounding law.
+    const uint8_t unit = (uint8_t)((complex_data >> COMPLEX_UNIT_SHIFT) & COMPLEX_UNIT_MASK);
+    return complex_unit_to_dimension_pixel_size(unit, complex_to_float(complex_data), metrics);
 }
 
 float complex_to_fraction(uint32_t complex_data, float base, float pbase) {
