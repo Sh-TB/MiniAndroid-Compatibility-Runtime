@@ -546,6 +546,24 @@ std::optional<std::string> ArscParser::apk_path_for(uint32_t resource_id,
     // res/. The old name-matching heuristic returned NONE for every layout of
     // obfuscated APKs (notesbillthefarmer: name=main, value=res/w6.xml).
     // Value-first also removes the O(type*files) name scan for normal APKs.
+    //
+    // G31 session fix: the value→path walk previously took the FIRST config
+    // in parse order, IGNORING the device-configuration law. aapt2 optimizes
+    // SDK-versioned layouts into multiple variants (EXT-01: () v9.xml,
+    // (v16) UD.xml, (v21) 02.xml) and the AOSP AssetManager2 law picks the
+    // best MATCHING config — so the version-selected variant must win, not
+    // the first row. Resolve through best() (match + isBetterThan, the same
+    // law resolve_value uses) and only then map the value to the APK path.
+    if (const ArscEntry* e = r->best()) {
+        const std::string& v = e->value.string_value;
+        if (e->value.type == DataType::STRING && v.size() > 4 &&
+            v.compare(0, 4, "res/") == 0) {
+            for (const auto& path : apk_paths)
+                if (path == v) return path;
+        }
+    }
+    // Fallback when best() resolved to a non-path value (should not happen
+    // for file-backed entries): scan all configs for any res/ path value.
     for (const auto& cfg : r->configs) {
         const std::string& v = cfg.value.string_value;
         if (cfg.value.type == DataType::STRING && v.size() > 4 &&

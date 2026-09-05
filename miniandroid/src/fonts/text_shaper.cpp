@@ -9,11 +9,13 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
+#include <freetype/tttables.h>
 #include <harfbuzz/hb.h>
 #include <harfbuzz/hb-ft.h>
 #include <fribidi/fribidi.h>
 
 #include <cmath>
+#include <cstdlib>
 #include <cstring>
 #include <cstdio>
 #include <functional>
@@ -74,6 +76,51 @@ TextShaper::TextShaper() {
         faces_[kFaceFallback].path = font_paths_[kFaceRegular];
         faces_[kFaceFallback].units_per_em = faces_[kFaceRegular].units_per_em;
     }
+    // G32: AOSP system monospace family (fonts.xml law: monospace ->
+    // DroidSansMono.ttf). The file ships inside MiniAndroid's virtual
+    // system image (runtime/data/fonts/, Apache-2.0, SHA-256 pinned in
+    // runtime/data/fonts/NOTICE.md). Resolve against the same candidate
+    // dirs the runtime is run from; a missing file is a loud error, never
+    // a silent substitution with a proportional face.
+    {
+        const char* env_dir = std::getenv("MINIANDROID_FONT_DIR");
+        const char* kCandidates[] = {
+            "runtime/data/fonts/DroidSansMono.ttf",
+            "../runtime/data/fonts/DroidSansMono.ttf",
+            "data/fonts/DroidSansMono.ttf",
+            "miniandroid/runtime/data/fonts/DroidSansMono.ttf",
+        };
+        std::string resolved;
+        if (env_dir && *env_dir) {
+            std::string c = std::string(env_dir) + "/DroidSansMono.ttf";
+            std::FILE* fp = std::fopen(c.c_str(), "rb");
+            if (fp) { std::fclose(fp); resolved = c; }
+        }
+        if (resolved.empty()) {
+            for (const char* c : kCandidates) {
+                std::FILE* fp = std::fopen(c, "rb");
+                if (fp) { std::fclose(fp); resolved = c; break; }
+            }
+        }
+        if (!resolved.empty()) {
+            font_paths_[kFaceMonospace] = resolved;
+            if (!load_face(kFaceMonospace, resolved.c_str())) {
+                // load_face already printed the failure.
+                faces_[kFaceMonospace].ft_face = faces_[kFaceRegular].ft_face;
+                faces_[kFaceMonospace].path = font_paths_[kFaceRegular];
+                faces_[kFaceMonospace].units_per_em = faces_[kFaceRegular].units_per_em;
+            }
+        } else {
+            std::fprintf(stderr,
+                "[TEXTSHAPER] SYSTEM FONT MISSING: DroidSansMono.ttf not found "
+                "(searched MINIANDROID_FONT_DIR, runtime/data/fonts/, "
+                "../runtime/data/fonts/, data/fonts/, "
+                "miniandroid/runtime/data/fonts/) — family 'monospace' will "
+                "resolve to the default sans face and REPORT it\n");
+            // No face — resolve_family() reports loudly when requested.
+            faces_[kFaceMonospace].ft_face = nullptr;
+        }
+    }
     // Emoji face (optional): NotoColorEmoji is a CBDT bitmap font with fixed
     // strikes. Pick the closest strike to typical UI text sizes.
     if (load_face(kFaceEmoji, font_paths_[kFaceEmoji].c_str())) {
@@ -93,12 +140,14 @@ TextShaper::TextShaper() {
     }
     if (available_) {
         std::fprintf(stderr,
-            "[TEXTSHAPER] READY primary=%s bold=%s fallback=%s emoji=%s(strike=%d)\n",
+            "[TEXTSHAPER] READY primary=%s bold=%s fallback=%s emoji=%s(strike=%d) monospace=%s\n",
             faces_[kFaceRegular].path.c_str(),
             faces_[kFaceBold].path.c_str(),
             faces_[kFaceFallback].path.c_str(),
             emoji_available_ ? faces_[kFaceEmoji].path.c_str() : "none",
-            emoji_strike_px_);
+            emoji_strike_px_,
+            faces_[kFaceMonospace].ft_face
+                ? faces_[kFaceMonospace].path.c_str() : "MISSING");
     }
 }
 
@@ -106,16 +155,13 @@ TextShaper::~TextShaper() {
     for (auto& kv : hb_fonts_) {
         if (kv.second) hb_font_destroy(reinterpret_cast<hb_font_t*>(kv.second));
     }
-    for (int i = 0; i < 3; ++i) {
-        // Only destroy faces we own (distinguish by path equality is fine here;
-        // duplicates were aliased, FT_Done_Face on aliased face would double-free,
-        // so we track ownership by comparing pointers).
-    }
     // Collect unique faces and destroy each once.
     FT_Face r = reinterpret_cast<FT_Face>(faces_[kFaceRegular].ft_face);
     FT_Face b = reinterpret_cast<FT_Face>(faces_[kFaceBold].ft_face);
     FT_Face f = reinterpret_cast<FT_Face>(faces_[kFaceFallback].ft_face);
     FT_Face e = reinterpret_cast<FT_Face>(faces_[kFaceEmoji].ft_face);
+    FT_Face m = reinterpret_cast<FT_Face>(faces_[kFaceMonospace].ft_face);
+    if (m && m != r && m != b && m != f && m != e) FT_Done_Face(m);
     if (e && e != r && e != b && e != f) FT_Done_Face(e);
     if (f && f != r && f != b) FT_Done_Face(f);
     if (b && b != r) FT_Done_Face(b);
@@ -349,6 +395,152 @@ int TextShaper::resolve_face(bool bold, int face_idx) const {
     if (face_idx >= 0 && face_idx < kBaseFaceCount + (int)app_faces_.size())
         return face_idx;
     return bold ? kFaceBold : kFaceRegular;
+}
+
+// ---------------------------------------------------------------------------
+// G32 — system font family resolution (AOSP fonts.xml law).
+// fonts.xml@android-14.0.0_r50 L253-257:
+//     <family name="monospace"> -> DroidSansMono.ttf
+//     <alias name="sans-serif-monospace" to="monospace" />
+//     <alias name="monaco" to="monospace" />
+// plus the classic families: sans-serif (default), serif.
+// ---------------------------------------------------------------------------
+int TextShaper::resolve_family(const std::string& family, bool bold) const {
+    // lowercase compare (Android family names are case-insensitive).
+    std::string f;
+    f.reserve(family.size());
+    for (char c : family) f += (char)std::tolower((unsigned char)c);
+
+    if (f == "monospace" || f == "sans-serif-monospace" || f == "monaco") {
+        if (faces_[kFaceMonospace].ft_face) {
+            static std::once_flag once;
+            std::call_once(once, [] {
+                std::fprintf(stderr,
+                    "FONT_RESOLUTION source=SYSTEM family=monospace "
+                    "font=DroidSansMono.ttf (AOSP fonts.xml law)\n");
+            });
+            return kFaceMonospace;
+        }
+        std::fprintf(stderr,
+            "FONT_RESOLUTION family=monospace FAILED: DroidSansMono.ttf not "
+            "loaded — falling back to default sans (REPORTED)\n");
+        return bold ? kFaceBold : kFaceRegular;
+    }
+    if (f == "serif") return kFaceFallback;
+    if (f == "serif-monospace" || f == "courier" || f == "courier new") {
+        // AOSP maps serif-monospace to CutiveMono; the system image here has
+        // no Cutive Mono — FreeSerif is the closest serif face. REPORTED.
+        static std::once_flag once2;
+        std::call_once(once2, [] {
+            std::fprintf(stderr,
+                "FONT_RESOLUTION family=serif-monospace -> FreeSerif "
+                "(CutiveMono not shipped in this system image)\n");
+        });
+        return kFaceFallback;
+    }
+    if (f.empty() || f == "sans-serif" || f == "sans" || f == "sans-serif-light"
+        || f == "sans-serif-thin" || f == "sans-serif-condensed"
+        || f == "sans-serif-medium" || f == "sans-serif-black"
+        || f == "sans-serif-condensed-light" || f == "default")
+        return bold ? kFaceBold : kFaceRegular;
+    // Unknown family: Android would match against fonts.xml families and
+    // fall back to the default sans — we do the same, LOUDLY.
+    std::fprintf(stderr,
+        "FONT_RESOLUTION family='%s' unknown -> default sans (REPORTED)\n",
+        family.c_str());
+    return bold ? kFaceBold : kFaceRegular;
+}
+
+bool TextShaper::has_family(const std::string& family) const {
+    std::string f;
+    f.reserve(family.size());
+    for (char c : family) f += (char)std::tolower((unsigned char)c);
+    if (f == "monospace" || f == "sans-serif-monospace" || f == "monaco")
+        return faces_[kFaceMonospace].ft_face != nullptr;
+    if (f == "serif" || f == "serif-monospace") return true;
+    return true;  // sans/default always available
+}
+
+// ---------------------------------------------------------------------------
+// G36 — Android Paint.FontMetrics law.
+//   ascent/descent: the single-spaced line box — FreeType's scaled
+//     size metrics (which read hhea, honoring OS/2 USE_TYPO_METRICS exactly
+//     like the AOSP/hb chain does for fonts without that flag).
+//   top/bottom: the maximum extents used by TextView's includeFontPadding:
+//     OS/2 usWinAscent/usWinDescent when available (that is what "top is
+//     the maximum distance above the baseline" means in Paint.FontMetrics),
+//     clamped to be at least as far out as ascent/descent.
+//   leading: bottom - descent + top - ascent (Paint.FontMetrics.leading).
+// ---------------------------------------------------------------------------
+FontMetrics TextShaper::font_metrics(float size_px, bool bold, int face_idx) const {
+    FontMetrics out;
+    int rf = resolve_face(bold, face_idx);
+    FT_Face face = nullptr;
+    if (rf >= 0 && rf < kBaseFaceCount)
+        face = reinterpret_cast<FT_Face>(faces_[rf].ft_face);
+    else if (rf >= kBaseFaceCount && rf < kBaseFaceCount + (int)app_faces_.size())
+        face = reinterpret_cast<FT_Face>(app_faces_[rf - kBaseFaceCount].ft_face);
+
+    float a = size_px * 0.9f, d = size_px * 0.25f;  // degenerate fallback
+    if (face && FT_Set_Pixel_Sizes(face, 0, (FT_UInt)std::lround(size_px)) == 0) {
+        a = (float)(face->size->metrics.ascender >> 6);
+        d = (float)(-(face->size->metrics.descender >> 6));
+    }
+    // OS/2 win extents (rounded like the size metrics: px = units*size/upem).
+    // FT_Get_Sfnt_Table returns a pointer INTO the face — cheap, no cache
+    // (the extents depend on the requested size, so caching would be wrong).
+    float top = a, bottom = d;
+    if (face && rf >= 0 && rf < kBaseFaceCount) {
+        TT_OS2* os2 = static_cast<TT_OS2*>(
+            FT_Get_Sfnt_Table(face, ft_sfnt_os2));
+        if (os2 && os2->version != 0xFFFF && face->units_per_EM > 0) {
+            float s = std::lround(size_px) / (float)face->units_per_EM;
+            top = std::round(os2->usWinAscent * s);
+            bottom = std::round(os2->usWinDescent * s);
+        }
+    }
+    // top/bottom are the MAXIMUM extents: never tighter than ascent/descent.
+    if (top < a) top = a;
+    if (bottom < d) bottom = d;
+    out.ascent = -a;
+    out.descent = d;
+    out.top = -top;
+    out.bottom = bottom;
+    out.leading = (bottom - d) + (a - top);
+    return out;
+}
+
+// ---------------------------------------------------------------------------
+// G47 — AOSP StaticLayout line-box law (StaticLayout.java out(),
+// android-14.0.0_r50):
+//     if (firstLine && includePad) above = top;
+//     if (lastLine && includePad) below = bottom;
+//     extra = (below - above) * (spacingmult - 1) + spacingadd
+//             for every non-last line (needMultiply && !lastLine);
+//     v += (below + extra) - above;
+// ---------------------------------------------------------------------------
+std::vector<float> staticlayout_line_boxes(int line_count,
+                                           const FontMetrics& fm,
+                                           float spacing_mult, float spacing_add,
+                                           bool include_pad) {
+    std::vector<float> boxes;
+    if (line_count <= 0) return boxes;
+    boxes.reserve((size_t)line_count);
+    for (int k = 0; k < line_count; ++k) {
+        bool first = (k == 0);
+        bool last = (k == line_count - 1);
+        float above = fm.ascent;
+        float below = fm.descent;
+        if (include_pad && first) above = fm.top;
+        if (include_pad && last) below = fm.bottom;
+        float extra = 0.0f;
+        if (spacing_mult != 1.0f || spacing_add != 0.0f) {
+            if (!last)  // (addLastLineLineSpacing || !lastLine) — default false
+                extra = (below - above) * (spacing_mult - 1.0f) + spacing_add;
+        }
+        boxes.push_back((below + extra) - above);
+    }
+    return boxes;
 }
 
 void TextShaper::metrics(float size_px, bool bold, int face_idx,

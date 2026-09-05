@@ -634,6 +634,9 @@ public:
         std::string rel_below_name, rel_above_name;
         std::string rel_right_of_name, rel_left_of_name;
         int text_style = 0;              // AOSP Typeface bits (bold=1, italic=2)
+        // G32: android:fontFamily raw string ("monospace", "sans-serif", ...)
+        // resolved to a system face via fonts::TextShaper::resolve_family().
+        std::string font_family;
     };
 
     std::string name() const override { return "View"; }

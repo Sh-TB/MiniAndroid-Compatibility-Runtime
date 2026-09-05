@@ -88,6 +88,42 @@ struct TextLayout {
 constexpr int FACE_SYSTEM = -1;  // legacy: system family (regular/bold by flag)
 constexpr int FACE_APP = -2;     // app-provided family (APK assets/fonts)
 
+// -----------------------------------------------------------------------
+// G36 — Android Paint.FontMetrics equivalent, from the resolved face at a
+// pixel size. AOSP semantics (Paint.java / StaticLayout.java at
+// android-14.0.0_r50, StaticLayout.out()):
+//   ascent/descent — the single-spaced line box of the run's fonts
+//                    (hhea-scaled; FreeType size metrics, which honor the
+//                    OS/2 USE_TYPO_METRICS flag exactly like hb/AOSP).
+//   top/bottom     — the maximum extents: with includeFontPadding=true
+//                    (the TextView default) the FIRST line box uses top
+//                    and the LAST line box uses bottom instead of
+//                    ascent/descent. For faces where the full extents
+//                    equal the single-spaced extents (e.g. DroidSansMono:
+//                    hhea lineGap=0, win≈hhea) top==ascent and
+//                    bottom==descent.
+//   leading        — bottom - descent + top - ascent (0 for gap-less fonts).
+// All values in px, ascent/top NEGATIVE, descent/bottom/leading POSITIVE.
+// -----------------------------------------------------------------------
+struct FontMetrics {
+    float ascent = 0, descent = 0, top = 0, bottom = 0, leading = 0;
+};
+
+// -----------------------------------------------------------------------
+// G47 — AOSP StaticLayout line-box law (StaticLayout.java out(),
+// android-14.0.0_r50), verbatim semantics for a run of N identical-metric
+// lines:
+//   line box above/below = font metrics ascent/descent,
+//   with includePad: first line above = top, last line below = bottom,
+//   extra_k = (below_k - above_k) * (spacingMult - 1) + spacingAdd for
+//             every line EXCEPT the last (the last line gets NO extra),
+//   next v += (below + extra) - above.
+// Returns the per-line box heights (px). boxes.size() == line_count.
+// -----------------------------------------------------------------------
+std::vector<float> staticlayout_line_boxes(int line_count,
+                                           const FontMetrics& fm,
+                                           float spacing_mult, float spacing_add,
+                                           bool include_pad);
 // Public raster struct (used internally by the cache; exposed for tests).
 struct RasterPub {
     std::vector<uint8_t> alpha;      // 8-bit coverage (grayscale path)
@@ -114,6 +150,18 @@ public:
     // Vertical metrics for the resolved face at size_px.
     void metrics(float size_px, bool bold, int face_idx,
                  float* ascent, float* descent, float* line_height) const;
+
+    // G32/G36 — FULL Android-style FontMetrics for the resolved face.
+    FontMetrics font_metrics(float size_px, bool bold, int face_idx) const;
+
+    // G32 — family resolution (AOSP fonts.xml law, system families):
+    //   "monospace" / "sans-serif-monospace" / "monaco" -> DroidSansMono face
+    //   "serif"                                          -> serif fallback face
+    //   "sans-serif"/"sans"/""/unknown                   -> default sans face
+    // Unknown names are reported on stderr (no silent substitution).
+    int resolve_family(const std::string& family, bool bold) const;
+    bool has_family(const std::string& family) const;
+    std::string monospace_font_path() const { return font_paths_[kFaceMonospace]; }
 
     // Draw shaped text. (x, y_baseline) = pen origin. Alpha-blends onto fb.
     void draw(renderer::FrameBuffer& fb, const std::string& utf8,
@@ -151,7 +199,8 @@ private:
     static constexpr int kFaceBold = 1;
     static constexpr int kFaceFallback = 2;  // FreeSerif (wide coverage)
     static constexpr int kFaceEmoji = 3;     // NotoColorEmoji (CBDT)
-    static constexpr int kBaseFaceCount = 4;
+    static constexpr int kFaceMonospace = 4; // G32: DroidSansMono (AOSP fonts.xml)
+    static constexpr int kBaseFaceCount = 5;
 
     bool load_face(int idx, const char* path);
 
@@ -188,11 +237,15 @@ private:
     std::unordered_map<uint64_t, ShapedText> shape_cache_;
     uint64_t hash_string(const std::string& s, float size_px, bool bold) const;
 
-    std::string font_paths_[4] = {
+    std::string font_paths_[5] = {
         "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
         "/usr/share/fonts/truetype/freefont/FreeSerif.ttf",
         "/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf",
+        // G32: AOSP system monospace (fonts.xml law). Loaded lazily from
+        // the candidate dirs below; a missing file is reported, never
+        // silently substituted.
+        "runtime/data/fonts/DroidSansMono.ttf",
     };
 };
 
