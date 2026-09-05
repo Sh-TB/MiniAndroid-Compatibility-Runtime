@@ -4569,3 +4569,70 @@ Stage Summary:
   fixture, res/font synthetic-ARSC tooling, ARSC hardening wave
   (Q-8/Q-10/RRO-006), WineDroid diagnostics (Q-1/Q-3/Q-4/Q-12/Q-13),
   view_renderer.cpp delete-or-resync, unote baseline pin df92f1d9.
+
+---
+Task ID: G31-G48 (TYPOGRAPHY CAMPAIGN — close G31–G48 REAL FONT / TEXT / TYPOGRAPHY)
+Agent: Super Z (main agent / MAIN CODER)
+Task: Close gates G31–G48 on the EXT-01 HelloWorldSelfAware fixture: identify the real
+font, trace resolution, verify FreeType rasterization/lookup/metrics, transfer the
+Android FontMetrics/baseline/textSize/lineSpacing laws, rerun the GOLDEN-01 visual
+golden, restore/extend the battery, persist evidence.
+
+Work Log:
+- Sandbox state re-established: fixture APK + reference re-downloaded (SHA-256 match
+  vs frozen record), aapt2 restored to tools/aapt2 from the /tmp copy of the old
+  sandbox; /home/z/.gh_token GONE → PUSH_BLOCKED + COMMENT_BLOCKED (recorded honestly).
+- G31 (PASS verified): APK AXML dumped with a stdlib parser (scripts/dump_axml_attrs.py):
+  fontFamily='monospace', lineSpacingMultiplier=2.0f, elegantTextHeight=true,
+  textAppearance=@android:style/TextAppearance.Large, NO textSize. AOSP laws fetched at
+  exact revisions: fonts.xml monospace→DroidSansMono.ttf (byte-identical API 34/35/36);
+  styles.xml TextAppearance.Large→22sp. docs/evidence/G31_FONT_SOURCE.md.
+- G32 (PASS verified): shipped DroidSansMono.ttf in the virtual system image
+  (runtime/data/fonts + NOTICE), TextShaper kFaceMonospace + resolve_family() law,
+  fontFamily parsed into ViewShadow and resolved in BOTH measure and draw paths.
+- DISCOVERED + FIXED 2 REAL ARSC BUGS en route: device ResTableConfig.size=0 gated the
+  entire AOSP isBetterThan body off (version qualifiers never compared), and
+  apk_path_for() ignored config matching (first res/ string in parse order). aapt2 dump
+  ground truth: layout variants () v9.xml / (v16) UD.xml / (v21) 02.xml — the law picks
+  v16 (fontFamily active; elegantTextHeight unreachable per the version law — recorded).
+- G33/G34/G35 (PASS): tests/font_pipeline_probe.cpp evidence — face metrics (upem 2048,
+  hhea 1900/−500/0, OS/2 win 1901/483), per-glyph gid/advance/bearing/ink for the EXT-01
+  charset, uniform 35.00px advance @58px, 0 bad glyphs. Committed probe output.
+- G36/G37 (PASS): Paint.FontMetrics law (win extents top/bottom, CEIL'd ints per Paint
+  JNI), StaticLayout out() line-box law (first=top, last=bottom, extra=(below-above)*
+  (mult−1)+add, v+=(below−above)+extra). Removed ad-hoc "+5% leading" and "size×1.2".
+- G46 (PASS — the primary blocker): TextAppearance.Large→22sp was unhandled entirely;
+  implemented the style law + TypedValue getDimensionPixelSize rounding → runtime log
+  [G46-TEXTAPPEARANCE] 22sp→58px. Root cause of the original 0.383-vs-0.642 width gap
+  was the missing TextAppearance resolution + proportional face, NOT an SP bug.
+- G47 (PASS): lineSpacingMultiplier/Extra/includeFontPadding/elegantTextHeight parsed
+  and plumbed; MiniAndroid line spacing 46px→138px (ref 137–144 @1080-scale).
+- G48 (PASS 9/9 static checks): scripts/compare_ext01_typography.py (Rule 10
+  per-quantity comparator; dynamic device values excluded by design); determinism 3
+  runs byte-identical 142238fd…; BEFORE/AFTER + reference numbers in
+  docs/evidence/G48_TYPOGRAPHY_GOLDEN.md. Known residual recorded (first-line gap +6px,
+  device fm.top≠fm.ascent) — no constant tuning.
+- G38/G43/G44/G45: implemented in the live pipeline but NOT exercised by the fixture —
+  recorded honestly, external fixtures queued (no claims).
+- Battery: run_test_battery.sh extended 11→16 stages (EXT-01 run, EXT-01 typography
+  golden 9/9, corpus fetch+runs). BATTERY GATE: ALL PASS (16 stages) at final HEAD —
+  helloworld 26/26, tictactoe 8/8, MUTF-8 14/14, semantic 96/96, corpus
+  simplestopwatch/gmdice/microtimer SUCCESS (hash-verified fetches).
+- Commits: d2d4469a (G31/G32 diagnostics), ea51d96a (G32 font resolution + ARSC law),
+  598e2432 (G36/G37 metrics law), b9e6e66f (G46 TextAppearance law), 98794ed0 (G47
+  line-spacing plumbing), f2717ab6 (G48 golden + battery). All build; chain
+  fast-forward-ready on top of remote main 47f0aa47.
+- Persistence: `git push origin main` → "could not read Username" (no credentials in
+  this sandbox). Comment payloads PREPARED and committed-ready at
+  scripts/post_typography_comments.py (3 evidence comments; poster verifies auth,
+  redacts token on errors, appends URLs to scripts/comment_urls.json).
+
+Stage Summary:
+- GOLDEN-01-EXTERNAL-HELLO-VISUAL: typography gates CLOSED — 9/9 static visual checks
+  PASS vs the trusted phone reference; G31–G48 statuses: G31–G37, G39–G42, G46–G48
+  PASS/verified; G38/G43/G44/G45 implemented-but-not-exercised (queued fixtures).
+- Final HEAD f2717ab6 (7 commits this session), worktree clean, battery 16/16.
+- Next gate: GOLDEN-02-EXTERNAL-INTERACTIVE-VISUAL (real long-click → onLongClick
+  callback → state change → second screenshot) — the ONLY permitted next campaign step.
+- Persistence blocker: provide a GitHub token (GH auth) → run
+  scripts/post_typography_comments.py + git push origin main (fast-forward).
