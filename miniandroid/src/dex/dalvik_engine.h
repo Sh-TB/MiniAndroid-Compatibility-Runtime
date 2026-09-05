@@ -18,6 +18,7 @@
 #include "../runtime/runtime_metadata.h"
 #include "../runtime/vtable_dispatch.h"
 #include "../api/android_stubs.h"
+#include "../resources/arsc_parser.h"   // GOLDEN-03: canonical resolver hook
 // EXP-051: Shadow registry forward-declarations.
 namespace miniandroid { namespace framework {
 class ShadowRegistry;
@@ -1862,6 +1863,13 @@ public:
     // setImageResource() calls. Resolution order per §14 density rule:
     // xxxhdpi > xxhdpi > xhdpi > hdpi > mdpi > plain drawable/.
     void populate_resource_drawable_paths(const std::vector<std::string>& entry_names);
+    // GOLDEN-03 §10/§11: ARSC-AUTHORITATIVE drawable path seeding — resolves
+    // every known drawable/mipmap resid via the canonical ArscParser
+    // (apk_path_for, config-selected) instead of basename heuristics.
+    // Returns the number of names resolved. The basename heuristic
+    // (populate_resource_drawable_paths) remains only as fallback.
+    int populate_drawable_paths_from_arsc(
+        const resources::ArscParser& arsc, const std::vector<std::string>& apk_paths);
     bool drawable_paths_populated_ = false;
     // EXP-098 (CM-027): resource_raw_paths_ maps R.raw.X name → APK asset
     // path (e.g. "res/-si.json" for R.raw.sms_incoming_info). Used by
