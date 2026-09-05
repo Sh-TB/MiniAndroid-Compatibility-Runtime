@@ -4,6 +4,7 @@
  */
 
 #include "dex_parser.h"
+#include "mutf8.h"
 
 #include <fstream>
 #include <iostream>
@@ -585,33 +586,24 @@ bool DexParser::parse_class_data(const uint8_t* data, const DexClassDef& class_d
         log("  First bytes: " + hex_dump);
     }
     
-    // Read encoded header using ULEB128
+    // Read encoded header using ULEB128 - delegated to the shared
+    // mutf8::read_uleb128 primitive (FIND-REUSE-001 dedup; adds the
+    // 5-byte/32-bit-overflow cap this lambda previously lacked).
     auto read_uleb128 = [&data, &offset, this](uint32_t& value, const char* field_name) -> bool {
-        if (offset >= current_size_) {
-            log("  ULEB128 ERROR at " + std::string(field_name) + ": offset beyond end");
+        bool ok = true;
+        size_t width = 0;
+        value = miniandroid::dex::mutf8::read_uleb128(data, current_size_, offset, ok, &width);
+        if (!ok) {
+            log(std::string("  ULEB128 ERROR at ") + field_name +
+                (offset >= current_size_ ? ": offset beyond end" : ": value exceeds 32 bits"));
             return false;
         }
-        
-        value = 0;
-        int shift = 0;
-        uint8_t byte;
-        size_t start_offset = offset;
-        
-        do {
-            if (offset >= current_size_) {
-                log("  ULEB128 TRUNCATE at " + std::string(field_name));
-                return false;
-            }
-            byte = data[offset++];
-            value |= static_cast<uint32_t>(byte & 0x7F) << shift;
-            shift += 7;
-        } while (byte & 0x80);
-        
-        log("  ULEB128[" + std::string(field_name) + "] @ 0x" + std::to_string(start_offset) + 
+
+        log("  ULEB128[" + std::string(field_name) + "] @ 0x" + std::to_string(offset - width) +
             " = " + std::to_string(value));
         return true;
     };
-    
+
     DexClassDataHeader header;
     if (!read_uleb128(header.static_fields_size, "static_fields_size")) return false;
     if (!read_uleb128(header.instance_fields_size, "instance_fields_size")) return false;
@@ -791,34 +783,20 @@ std::string DexParser::read_dex_string(const uint8_t* data, uint32_t offset) {
     if (offset >= current_size_) {
         return "<out of bounds>";
     }
-    
-    // MUTF-8 encoded string with ULEB128 length prefix
-    size_t pos = offset;
-    
-    // Read ULEB128 length
-    uint32_t length = 0;
-    int shift = 0;
-    uint8_t byte;
-    
-    do {
-        if (pos >= current_size_) return "<error>";
-        byte = data[pos++];
-        length |= static_cast<uint32_t>(byte & 0x7F) << shift;
-        shift += 7;
-    } while (byte & 0x80);
-    
-    // Skip 1 or 2 bytes of high-byte content (for MUTF-8)
-    if ((byte & 0x80) != 0) {
-        pos++;  // Additional byte for lengths > 127
+
+    // FIND-REUSE-001: ONE shared MUTF-8 primitive (src/dex/mutf8.h).
+    // Previously this function inlined a second ULEB128 reader and treated
+    // the utf16_size prefix as a BYTE count, truncating every non-ASCII
+    // string and leaving 0xC0 0x80 (encoded NUL) undecoded.
+    const auto r = miniandroid::dex::mutf8::decode_string_data(data, current_size_, offset);
+    if (!r.stream_ok) {
+        char off_hex[16];
+        snprintf(off_hex, sizeof(off_hex), "%x", offset);
+        log("  MUTF-8 WARNING: string@0x" + std::string(off_hex) +
+            " stream-corrupt (declared_utf16=" + std::to_string(r.declared_units) +
+            " decoded=" + std::to_string(r.decoded_units) + ")");
     }
-    
-    // Read string characters
-    if (pos + length > current_size_) {
-        return "<truncated>";
-    }
-    
-    std::string result(reinterpret_cast<const char*>(data + pos), length);
-    return result;
+    return r.utf8;
 }
 
 std::string DexParser::get_string(uint32_t index) const {
