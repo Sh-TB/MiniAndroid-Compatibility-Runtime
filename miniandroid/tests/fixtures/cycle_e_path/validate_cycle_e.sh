@@ -31,6 +31,9 @@ fail() { CHECKS=$((CHECKS+1)); FAIL=1; printf '  FAIL: %s\n' "$*"; }
 
 [ -x "$BIN" ] || BIN="$REPO/miniandroid/$BIN"
 [ -x "$BIN" ] || { say "FAIL: binary not found: ${1:-build/miniandroid}"; exit 1; }
+# §zero-skip hygiene: absolutize BEFORE the cd below — a relative -x check
+# passes at the caller's CWD but then 127s once the script cd's elsewhere.
+BIN="$(cd "$(dirname "$BIN")" && pwd)/$(basename "$BIN")"
 
 cd "$REPO/miniandroid"
 
@@ -128,12 +131,21 @@ PY
 say "── [4] deterministic replay (run #2) ─────────────────────────────"
 OUT2="$WORK/run2"
 "$BIN" run "$APK" -o "$OUT2" --width 480 --height 800 > "$OUT2.log" 2>&1
-H1=$(sha256sum "$OUT1/screenshot.png" | cut -d' ' -f1)
-H2=$(sha256sum "$OUT2/screenshot.png" | cut -d' ' -f1)
+# Zero-skip law: identical EMPTY hashes must never count as a replay pass.
+if [ -f "$OUT1/screenshot.png" ] && [ -f "$OUT2/screenshot.png" ]; then
+    H1=$(sha256sum "$OUT1/screenshot.png" | cut -d' ' -f1)
+    H2=$(sha256sum "$OUT2/screenshot.png" | cut -d' ' -f1)
+else
+    H1=""; H2=""
+    fail "replay frames missing (run1/run2 screenshots)"
+fi
 say "  frame#1 SHA256 = $H1"
 say "  frame#2 SHA256 = $H2"
-[ "$H1" == "$H2" ] && pass "byte-identical replay (Canvas replay deterministic)" \
-                   || fail "replay differs — nondeterministic Canvas path"
+if [ -n "$H1" ] && [ "$H1" == "$H2" ]; then
+    pass "byte-identical replay (Canvas replay deterministic)"
+elif [ -n "$H1" ]; then
+    fail "replay differs — nondeterministic Canvas path"
+fi
 
 say "── [5] zero-skip gate ────────────────────────────────────────────"
 [ "$CHECKS" -gt 0 ] && pass "$CHECKS checks executed (none skipped)" \
