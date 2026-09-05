@@ -4298,3 +4298,100 @@ Stage Summary:
   (d) push still credential-less in this sandbox.
 - Next highest-value: reference study (WineDroid re-search + matrix),
   agent-finding audit table, resource-category differential fixtures.
+
+---
+Task ID: 9-a
+Agent: research agent (RESEARCH-ONLY, no code changes)
+Task: Reference-project study for docs/research/COMPATIBILITY_REFERENCE_MATRIX.md —
+WineDroid deep search (top priority) + license/source re-verification of all
+listed references (libarsc, ARSCLib, DaliVM, JADX, Skydnir, dexterpreter,
+Android-RRO, WinDroid, DroidVM, Android Code Studio).
+
+Work Log:
+- WINEDROID FOUND (prior sessions: NOT FOUND / BLOCKED). Official site
+  winedroid.soham.sh located via web search ("\"WineDroid\" android github");
+  13 site pages fetched and read (home, about, appdb, download, news index,
+  demo, docs index/installation/cli/automation, 3 news posts). VERDICT:
+  MATCH to the §20 target architecture — Winedroid (sohzm/winedroid) is a
+  Rust "Android userspace compatibility layer for macOS and Linux" that
+  "translates Android framework calls into host-native equivalents on-the-fly";
+  explicitly "not a VM, an emulator, or a container"; DEX interpreter/runtime
+  path; own canvas renderer (Jetpack Compose runs against it); Room→native
+  SQLite; JIT + OAT (news 2026-08-16); WINEPREFIX-style package prefix
+  (~/.winedroid/default) with an emulated /storage/emulated/0 volume
+  (filesystem abstraction); diagnostics CLI (inspect / art-probe / dex-run
+  single-method execution); categorized tracing (ui/click/bounds/render/perf);
+  WINEDROID_MISSING_PRIMITIVE_LOG + WINEDROID_UI_DUMP (view tree with bounds +
+  clickable flags) + WINEDROID_RENDER_DUMP_PNG; automation harness
+  (tap/type/wait-text/assert/screenshot scripts, per-step latency CSV,
+  WINEDROID_HEADLESS=1 CI mode, autoclick point:/view: targets); AppDB
+  compatibility ratings (Platinum/Gold/Silver/Bronze/Garbage) over 6 F-Droid
+  apps; WASM web demo running real APKs (~12 MB runtime). NAMING CLARIFICATION:
+  it is NOT a Wine/Windows bridge — it applies the Wine-STYLE approach
+  (prefix + framework-call translation) to Android APKs.
+- WINEDROID SOURCE NOT READABLE: github.com/sohzm/winedroid returns HTTP 404
+  anonymously (private / not-yet-public; raw.githubusercontent 404; GitHub API
+  rate-limited). Evidence level recorded honestly as SITE_DOCS_READ
+  (README_ONLY-equivalent); no source-level claims made.
+- WINEDROID LICENSE: GPL-3.0 (project About page, fetched and read) →
+  ORACLE/CONCEPT ONLY, zero code import. Six concrete adaptation concepts
+  recorded in the matrix (dex-run CLI, trace-category convention, automation-
+  script + headless test gate, UI dump format, missing-primitive log, AppDB
+  ratings for the corpus registry).
+- LICENSE RE-VERIFICATION at HEAD for every reference (LICENSE files fetched
+  and read where present): jadx = Apache-2.0 (SUPERSEDES the prior GPL-3.0
+  oracle-only bar; relicensing commit NOT verified → pin-commit caveat kept);
+  DaliVM = GPL-3.0 (upgraded from "unknown" → oracle only); skydnir = CUSTOM
+  "All rights reserved unless a separate written license is provided" (no
+  reuse; methodology observation only); ARSCLib = Apache-2.0 (confirmed);
+  auxten/libarsc = Apache-2.0 (confirmed); mirzachi/android-rro = MIT
+  (confirmed); DroidVM = GPL-3.0 per README (LICENSE.txt 404 at HEAD);
+  android-code-studio = GPL-3.0 (confirmed); WinDroid-Runtime = Apache-2.0
+  (confirmed); dexterpreter = NO LICENSE FILE (LICENSE/LICENSE.txt/
+  LICENSE.md/COPYING all 404); MartinStyk/Android-RRO = NO LICENSE FILE (404).
+- OTHER REFERENCES studied this session (README+LICENSE fetched where listed):
+  * DaliVM: full capability tables read — per-opcode hex-range table (127+
+    ops), backward data-flow + forward-lookup argument resolution, multi-DEX
+    index, <clinit> tracking, Android API mock tables, Java stdlib hooks.
+  * skydnir: README "Current Evidence Snapshot" — fixed verification record
+    (build 20260505.1 @ dd3ce31), 69-PASS/0-FAIL generated compatibility audit,
+    P0 release-readiness blockers, "UI tells the truth" policy (methodology
+    gold; license forbids reuse).
+  * ARSCLib: README example now read in full — programmatic APK creation
+    (TableBlock.newPackage, Entry.setValueAsString with -de/-ru-rRU
+    qualifiers, ValueCoder.encode, framework init, dummy classes.dex).
+  * WinDroid IDENTITY RESOLVED: Nova-Systems-Lab/WinDroid-Runtime (Windows 11,
+    C#, Apache-2.0) — early development, currently WinDroid Studio + ADB
+    tooling only, README states "not yet a usable Android runtime" →
+    NOT APPLICABLE YET (was BLOCKED).
+  * DroidVM: hypervisor manager (Gunyah/GenieZone/KVM, crosvm/QEMU, UEFI,
+    VirGL/GfxStream, qcow2, 9p) — orthogonal to MiniAndroid → NOT APPLICABLE.
+  * Android Code Studio: AndroidIDE-lineage on-device Gradle IDE; layout
+    inflater + resource-reference resolution + "API since/removed/deprecated"
+    index concept noted for MiniAndroid's future framework-shim coverage
+    table; GPL-3.0 → oracle only.
+  * dexterpreter: README is a single line; no license file — downgraded
+    expectation, kept as low-yield differential reference.
+- MATRIX UPDATED (docs/research/COMPATIBILITY_REFERENCE_MATRIX.md):
+  preserved all prior honest entries; Winedroid row rewritten BLOCKED →
+  MATCH with full observation; WinDroid row BLOCKED → identity-resolved
+  NOT APPLICABLE YET; DroidVM + android-code-studio upgraded SEARCH_ONLY →
+  SOURCE_READ; evidence legend added (SOURCE_READ / README_ONLY /
+  SEARCH_ONLY / NOT_FOUND / SITE_DOCS_READ); every edited row marked with
+  the evidence actually obtained; re-validation queue updated (Winedroid
+  URL request resolved; follow-up = read source when repo goes public).
+- No code changes; no reference code imported (GPL/custom licenses honored).
+
+Stage Summary:
+- The §20 Winedroid study is EXECUTED with the strongest evidence honestly
+  obtainable from this sandbox: the project EXISTS, MATCHES MiniAndroid's
+  architecture class (userspace translation layer: APK load → DEX → framework
+  shims → canvas → input, plus prefix filesystem abstraction), and is GPL-3.0
+  with its source not yet public — so it enters the matrix as
+  MATCH — ADAPT CONCEPTS ONLY.
+- License landscape materially improved the oracle picture: jadx is Apache-2.0
+  at HEAD (import becomes license-possible once provenance is pinned), while
+  DaliVM/skydnir/DroidVM/Android-Code-Studio are now PROVEN no-import.
+- Next highest-value: implement the Winedroid-inspired automation-script +
+  UI-dump + trace-category test gate (§26 unification), the §23 opcode gap
+  table (DaliVM tables now read), and the ARSC differential test (ARSCLib).
