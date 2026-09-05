@@ -18,7 +18,7 @@ golden instead of remaining corpus-only)
 | Runtime command | `miniandroid/build/miniandroid run <apk> -o <outdir>` |
 | Exit status | 0 (runs A and B) |
 | Screenshot | `docs/evidence/helloworld_golden/screenshot.png` (= `golden_helloworld.png`), 1080×1920 |
-| Screenshot SHA256 | `a61f5b224ace9fd7e9ff4e3c50dec44cf5ffa84843cce161e8fc4950cc24ad66` |
+| Screenshot SHA256 | `87820741706277409bd0163ecad2855f86fcc5ed946b8a3fc6f1448a5fa30392` (re-baselined 2026-09-05 by FIND-GRAVITY-VERTICAL FIX — pre-fix top-aligned golden was `a61f5b22…`; see §FIND-GRAVITY-VERTICAL below) |
 | Determinism | run B byte-identical (cmp); APK build itself is byte-deterministic (aapt2 + repackager pin 1980-01-01 zip epochs) |
 
 APK-vs-DEX hashing note: the aapt2 path made BOTH the APK and its
@@ -80,14 +80,27 @@ differ, not because the visual result differs.
 | EXT-AAPT2-001 | aapt2 (Google Maven 8.13.2-14304508) replaces a hand-written binary AXML/ARSC generator — REUSE-FIRST win: zero new format-writer LOC in MiniAndroid | aapt2 Apache-2.0; res zip epoch 1980 determinism observed | APK entries + reschain report |
 | EXT-AAPT2-002 | D8 8.3.37 rejects bare class DIRECTORY input; deterministic classes.jar packaging is required | recorded in build_fixture_apk.sh | build log "[3/4] jar entries" |
 
-## FIND recorded this session (not a golden blocker)
+## FIND recorded this session — RESOLVED 2026-09-05
 
-- FIND-GRAVITY-VERTICAL: LinearLayout `android:gravity="center"` centers
-  children horizontally but the vertical axis still top-aligns (visible
-  in BOTH the old programmatic golden and this resource-backed golden;
-  AOSP LinearLayout would also center vertically). Queued for the
-  Measure/Layout/Draw gate (P0-9); the golden's pixel checks pin only
-  horizontal centering, so no gate change.
+- ~~FIND-GRAVITY-VERTICAL~~ **FIXED**: AOSP LinearLayout main-axis law
+  implemented (`layout_inflater.cpp`): the container's main-axis gravity
+  (mGravity & VERTICAL/HORIZONTAL_GRAVITY_MASK) now offsets the whole
+  child block when leftover space exists — CENTER_VERTICAL halves it,
+  BOTTOM takes all of it; pre-fix the block always top/left-aligned.
+  Axis-field EQUALITY law added (mask 0x70/0x7 then compare — a bare
+  `& 0x50` test misfires on CENTER 0x11 because 0x11 & 0x50 = 0x10; the
+  same misfire existed in the horizontal path's cross-axis law and is
+  fixed identically). Verified: headline block now rows 881-945 of 1920
+  (vertically centered). The validator analyzer was made
+  position-independent per §26: full-frame ink-band clustering with
+  density-based text/surface separation and a measured ≤6-row split
+  threshold (the fixed row windows `band(0,160)`/`band(160,300)` had
+  encoded the buggy top-aligned geometry). Corpus impact measured
+  honestly: gmdice + microtimer pixel-IDENTICAL (no container gravity
+  set — the law is opt-in per container); simplestopwatch (real F-Droid
+  app) changed by 1,777 px (0.09 %) in one 64×74 px bottom-center
+  element — a CENTER-gravity child the old misfire had bottom-aligned
+  now centers. New golden SHA `87820741…`.
 
 ## Regression state at this HEAD
 
