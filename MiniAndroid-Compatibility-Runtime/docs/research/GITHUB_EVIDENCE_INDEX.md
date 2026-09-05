@@ -1,62 +1,58 @@
-# GITHUB_EVIDENCE_INDEX — §20/§21 evidence and persistence record
+# GITHUB_EVIDENCE_INDEX — §20/§21 authoritative achievement→evidence map
 
-Campaign: REUSE-FIRST FULL COMPATIBILITY + RESEARCH-TO-CODE
-Date: 2026-09-05 · Parent repository (mandated):
-https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime
+Campaign: REUSE-FIRST FULL COMPATIBILITY + RESEARCH-TO-CODE → MAXIMUM REUSE /
+FULL SOURCE AUDIT / COMPLETE APK EXECUTION (session 2026-09-05)
+Parent repository (mandated): https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime
 
-## Push / persistence state (§21 — exact, no claims without proof)
+## Push / persistence state (§21 — exact, verified this session)
 
 | Item | Value |
 |---|---|
-| Local HEAD (final this campaign) | see `git rev-parse HEAD` — commits listed below |
-| Remote main at campaign start | `ad95d92876a355a719d2a8959053f8a47c2b1e79` |
-| Remote history relationship | **UNRELATED** to local history (`git merge-base` empty): remote = original 394-commit project history (project at repo root); local = workspace superproject rebuilt in this environment (project under `MiniAndroid-Compatibility-Runtime/`), 23 commits at start + this campaign's commits |
-| Push attempts | `git push origin main` → **FAILED** |
-| Exact error | `fatal: could not read Username for 'https://github.com': No such device or address` |
-| Credential check | no credential helper; gh CLI absent; `~/.ssh` absent; no token env vars; no `~/.netrc`, `~/.config/gh`, `.env` |
-| Status | **PUSH_BLOCKED** — machine-readable record: `docs/evidence/PUSH_BLOCKED.json` (includes next-session recovery instructions) |
-| Preservation measures | (1) all work committed locally; (2) local branch `archive/origin-main-ad95d928` → `ad95d928` keeps the 394-commit original line reachable for a future push; (3) remote-only file `miniandroid/run/exp096_evidence/metrics.json` recovered into the local tree (commit `3c39f1fa`); (4) PUSH_BLOCKED.json documents the subtree-split push plan |
-| GitHub comments | **COMMENT_BLOCKED** — same missing-credential cause; no authenticated API path. Pre-drafted comment texts: see "Comment drafts" below. Never claim a comment exists when its URL is absent. |
+| Remote main (verified `git ls-remote`) | `7d00552506d07c479812ed625955d92fb9ee5c29` = local HEAD |
+| Original 394-commit history | preserved at remote branch `archive/origin-main-ad95d928` = `ad95d92876a355a719d2a8959053f8a47c2b1e79` |
+| Push method | documented recovery plan in `docs/evidence/PUSH_BLOCKED.json` executed: archive branch pushed first, then `--force-with-lease=refs/heads/main:ad95d928…` |
+| PUSH_BLOCKED | **RESOLVED** (was 33 commits blocked across prior sessions; exact error archived in PUSH_BLOCKED.json) |
+| Security sweep before push | `git grep` for PAT/ghp token patterns over all tracked files → CLEAN |
 
-## Achievement → commit → evidence table
+## GitHub evidence anchor
 
-| Achievement | Commit | Evidence artifact | GitHub URL | Comment URL |
-|---|---|---|---|---|
-| Remote-only EXP096 metrics.json recovered + PUSH_BLOCKED record + archive ref | `3c39f1fa` | docs/evidence/PUSH_BLOCKED.json | pending push | COMMENT_BLOCKED |
-| FIND-REUSE-001: ONE MUTF-8/ULEB128 primitive (3 copies → 1), non-ASCII string corruption FIXED | `2c8bf2da` | miniandroid/src/dex/mutf8.{h,cpp}; tests/mutf8_string_pool_test.cpp 7/7; pre-fix reproducer output in AGENT_FINDINGS_VALIDATION.md | pending push | COMMENT_BLOCKED |
-| WineDroid 007/011 discriminators + one-command battery gate (§12) | `9e7c0e9b` | semantic_pass3_bridge_test 57-case group WD/SW; scripts/run_test_battery.sh 10-stage ALL PASS | pending push | COMMENT_BLOCKED |
-| §24 evidence docs (GOLDEN_HELLOWORLD / TICTACTOE_STATUS / CURRENT_COMPATIBILITY_MATRIX) | this campaign's docs commit | docs/evidence/*.md | pending push | COMMENT_BLOCKED |
-| §24 research docs (WINEDROID_DEEP_STUDY / REFERENCE_PROJECT_MATRIX / TRANSFER_MATRIX / AGENT_FINDINGS_VALIDATION / REUSE_REDUCTION_REPORT / GITHUB_EVIDENCE_INDEX) | this campaign's docs commit | docs/research/*.md | pending push | COMMENT_BLOCKED |
-| Resource-backed Hello World — REAL aapt2 APK (binary manifest + resources.arsc + binary AXML), §36.E discriminator permanent (strings in ARSC, ABSENT from DEX), golden gate 18→26 checks | `a3c3aded` | docs/evidence/GOLDEN_HELLOWORLD.md; reschain_report.txt; screenshot a61f5b22…; APK 3cf76fb7…; battery 11/11 | pending push | COMMENT_BLOCKED |
-| FIND-REUSE-002/003: UTF-16LE→UTF-8 5 copies→1 (manifest surrogate BUG fixed) + SLEB128 2→1 (UB hardened); battery caught 2 defects in the new canonical code pre-landing | `e69bc496` | tests/mutf8_string_pool_test.cpp 10/10; corpus pixels byte-identical (gmdice, simplestopwatch) | pending push | COMMENT_BLOCKED |
-| FIND-REUSE-004: ONE ResStringPool decoder (ARSC+AXML+manifest 3 copies→1; AOSP offsets-table law; BLOCKER-006 class dead; decode_string_length orphaned+removed) | `4d822256` | resources/string_pool.{h,cpp}; battery 11/11 after make clean; corpus pixel-identity ×3 | pending push | COMMENT_BLOCKED |
-| §26 research index + §35 final report + §2 WineDroid mechanism table + §11/§28 metrics | `4468e3b9` | docs/research/GITHUB_RESEARCH_INDEX.md (36 rows); docs/CAMPAIGN_FINAL_REPORT_REUSE_FIRST_PROGRESS.md | pending push | COMMENT_BLOCKED |
-| helloworld_golden + EXT-AOSP-001/002 (prior campaign, revalidated ×2 this campaign) | `738ac50` (remote: not yet — part of unrelated-history backlog) | docs/evidence/helloworld_golden/*, screenshot SHA 93b42621… | pending push | COMMENT_BLOCKED |
-| tictactoe_golden end-to-end (prior campaign, revalidated ×2) | `de5f370e` | docs/evidence/tictactoe_golden/*, frames byte-identical | pending push | COMMENT_BLOCKED |
+Issue: **https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8**
+("MiniAndroid campaign evidence — verified achievements (REUSE-FIRST campaign, 2026-09-05)")
 
-## Comment drafts (post after push succeeds; do NOT post without a real commit URL)
+## Authoritative map — achievement → commit → test → evidence file → issue/comment URL → status
 
-1. **FIND-REUSE-001 (DEX string pool)** — "Fixed real MUTF-8 corruption:
-   string_data_item utf16_size (code units) was treated as a byte count,
-   truncating every non-ASCII string; encoded NUL undecoded; ULEB128 had
-   no 5-byte cap (UB on hostile input). Replaced 3 duplicated readers
-   with one primitive (src/dex/mutf8), adapted from WineDroid
-   WINEDROID-004/005 (Apache-2.0, behavioral reference). Regression
-   battery 7/7; full gate 96 semantic + 18 + 8 golden checks green;
-   golden screenshots byte-identical. Commit: <SHA>."
-2. **WineDroid laws pinned as tests** — "WineDroid mechanisms 007
-   (absent-arg determinism) and 011 (switch payload-is-data) are now
-   executable discriminators in the semantic battery (96/96). One-command
-   gate added: scripts/run_test_battery.sh (10 stages, zero-skip)."
-3. **Revalidation record** — "Hello World golden (18/18, screenshot SHA
-   93b42621…) and Tic-Tac-Toe golden (9/9 clicks → 'X WINS', 10 frames
-   deterministic) revalidated at the campaign HEAD from clean builds."
+Every comment URL below was READ BACK from the GitHub API (authenticated GET
+`/repos/…/issues/8/comments`) this session — never claimed without read-back.
 
-## §38 double success criteria
+| # | Achievement | Commit | Test | Evidence file | Comment URL | Status |
+|---|---|---|---|---|---|---|
+| 1 | Campaign baseline & repository state (HEAD/remote/unpushed audit) | `4d822256`+`1b86da8a` | battery 11/11 | CURRENT_HEAD_BASELINE.md; docs/evidence/PUSH_BLOCKED.json | [#8 c-5551995211](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995211) | POSTED+VERIFIED |
+| 2 | Clean rebuild + one-command battery gate (11 stages) | `9e7c0e9b` | run_test_battery.sh ALL PASS | scripts/run_test_battery.sh; CURRENT_HEAD_BASELINE.md | [#8 c-5551995299](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995299) | POSTED+VERIFIED |
+| 3 | Real resource-backed Hello World — aapt2/ARSC/AXML/§36.E (26/26) | `a3c3aded` | validate_helloworld_golden.sh 26/26 | docs/evidence/GOLDEN_HELLOWORLD.md; reschain_report.txt | [#8 c-5551995394](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995394) | POSTED+VERIFIED |
+| 4 | Tic-Tac-Toe real UI — 9/9 clicks, X-WINS, deterministic replay | `de5f370e` | tictactoe_golden 8/8 | docs/evidence/tictactoe_golden/ | [#8 c-5551995472](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995472) | POSTED+VERIFIED |
+| 5 | WineDroid reuse — MUTF-8/ULEB128 ONE primitive (FIND-REUSE-001) + 007/011 discriminators | `2c8bf2da`+`9e7c0e9b` | mutf8 battery 10/10; pass3 bridge 57 | docs/research/WINEDROID_DEEP_STUDY.md; tests/mutf8_string_pool_test.cpp | [#8 c-5551995545](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995545) | POSTED+VERIFIED |
+| 6 | UTF-16LE→UTF-8 5→1 + manifest surrogate bug fixed (FIND-REUSE-002) | `e69bc496` | mutf8 T8–T12; corpus pixel-identity | docs/research/REUSE_REDUCTION_REPORT.md | [#8 c-5551995676](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995676) | POSTED+VERIFIED |
+| 7 | SLEB128 2→1, UB hardened (FIND-REUSE-003) | `e69bc496` | SLEB 10 vectors 10/10 | docs/research/REUSE_REDUCTION_REPORT.md | [#8 c-5551995765](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995765) | POSTED+VERIFIED |
+| 8 | ResStringPool 3→1 canonical decoder (FIND-REUSE-004) | `4d822256` | battery 11/11 after make clean | resources/string_pool.{h,cpp}; REUSE_REDUCTION_REPORT.md | [#8 c-5551995861](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995861) | POSTED+VERIFIED |
+| 9 | −294 production LOC code-minimization scoreboard (§28) | `e69bc496`+`4d822256` | git-verified per-commit LOC | docs/research/REUSE_REDUCTION_REPORT.md §28 | [#8 c-5551995932](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551995932) | POSTED+VERIFIED |
+| 10 | Corpus pixel-identical validation (gmdice/simplestopwatch/microtimer) | `e69bc496`+`4d822256` | 3 consecutive pixel-identity rounds | CURRENT_HEAD_BASELINE.md §Corpus | [#8 c-5551996014](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551996014) | POSTED+VERIFIED |
+| 11 | §26 research index (36 repos) + evidence summary | `4468e3b9`+`31789f6e` | append-only index audit | docs/research/GITHUB_RESEARCH_INDEX.md | [#8 c-5551996090](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5551996090) | POSTED+VERIFIED |
+| 12 | PUSH_BLOCKED resolved — 34 commits on remote, verified | `7d005525` | `git ls-remote` SHA match | docs/evidence/PUSH_BLOCKED.json | [#8 c-5552103280](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5552103280) | POSTED+VERIFIED |
 
-- (A) Knowledge transfer completed: WineDroid 004/005 implemented,
-  007/011 pinned, queue documented; matrix consolidated; URL law honored
-  (2 honest UNAVAILABLE/UNVERIFIED entries).
-- (B) At least one real APK LOAD→EXECUTE→UI→RENDER→SCREENSHOT with
-  Tic-Tac-Toe interaction explicitly tested: **both goldens revalidated
-  deterministic at current HEAD.**
+## Session append — 2026-09-05 (MAXIMUM REUSE / FULL SOURCE AUDIT session)
+
+- aapt2 tool restoration from documented Google Maven URL
+  (8.13.2-14304508) after external-tool loss was caught by the battery
+  (helloworld_golden FAIL → root cause: missing tool, not code). Battery
+  re-run → **ALL PASS (11 stages)** on clean build. Lesson recorded: the
+  zero-skip gate detects MISSING TOOLING as harness failure, per §26 law.
+- This file is now the authoritative achievement map (§0 rules 7–12):
+  old "Comment drafts" section retired — drafts 1–3 were superseded by
+  the 11 posted comments (superset, verbatim evidence preserved in the
+  issue).
+
+## Law going forward (§38)
+
+After every major milestone: commit → push → `git ls-remote` verify →
+comment on #8 → read back via API → append row here with the real URL.
+COMMENT_BLOCKED returns only if authentication is genuinely absent.
