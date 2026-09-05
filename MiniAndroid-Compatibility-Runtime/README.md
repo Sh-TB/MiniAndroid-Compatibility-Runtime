@@ -17,6 +17,31 @@ evidence, a deterministic replay check, and an animated GIF assembled only
 from runtime-produced frames (see [docs/demo/EVIDENCE.md](docs/demo/EVIDENCE.md)
 and the `demo/` directory).
 
+### ONE COMPLETE APK: interactive Tic-Tac-Toe (§ golden)
+
+A real APK built with the stock toolchain (ECJ → D8, real `Outer$Inner`
+listener classes, no mocks) plays a full game through the runtime:
+programmatic View tree → weighted measure/layout → text/glyph rendering →
+9 click dispatches through real DEX bytecode → X/O state machine with win
+detection → deterministic replay.
+
+![TicTacToe golden — launch board vs X WINS, both frames runtime-produced](docs/evidence/tictactoe_golden/launch_vs_xwins.png)
+
+*Left: launch frame, status "X to move". Right: after 7 dispatched clicks
+X completes the anti-diagonal — status "X WINS". Both frames are produced
+by the MiniAndroid framebuffer; SHA-256 of the exact PNGs:
+board_launch.png `0d339d847f91d6a3…`, board_x_wins.png `284f1c9e47ef2b59…`.*
+
+Reproduce:
+```bash
+bash miniandroid/tests/fixtures/tictactoe_golden/validate_tictactoe_golden.sh \
+    miniandroid/build/miniandroid
+# → TICTACTOE-GOLDEN VALIDATION: ALL PASS
+#   9/9 clicks dispatched · turn alternation · X WINS · glyph ink localized
+#   per cell · frames 7/8/9 byte-identical (frozen game) · 10-frame replay
+#   byte-identical across independent runs
+```
+
 ### The proof, in one look
 
 REAL APK → DEX EXECUTION → ANDROID RUNTIME → UI → STATE CHANGE → SCREENSHOT
