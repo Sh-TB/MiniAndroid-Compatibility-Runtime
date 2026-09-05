@@ -99,16 +99,21 @@ int main(int argc, char** argv) {
         std::fprintf(stderr, "PROBE FAIL: TextShaper unavailable\n");
         return 2;
     }
-    std::printf("== live TextShaper faces ==\n");
+    std::printf("\n== live TextShaper faces ==\n");
     std::printf("primary_font_path=%s\n", sh.primary_font_path().c_str());
+    std::printf("monospace_font_path=%s\n", sh.monospace_font_path().c_str());
     std::printf("app_fonts_registered=%zu\n", sh.app_font_count());
+    std::printf("resolve_family(monospace)=%d\n",
+                sh.resolve_family("monospace", false));
 
     // Raw FreeType view of the same files (G33/G35 evidence).
     FT_Library lib;
     if (FT_Init_FreeType(&lib)) return 2;
     const std::string primary_path = sh.primary_font_path();
+    const std::string mono_path = sh.monospace_font_path();
     const char* paths[] = {
         primary_path.c_str(),
+        mono_path.c_str(),
         "/usr/share/fonts/truetype/freefont/FreeSerif.ttf",
     };
     for (const char* p : paths) {
@@ -123,7 +128,10 @@ int main(int argc, char** argv) {
 
     std::printf("\n== glyph lookup + metrics @ %ldpx (G33/G34/G35) ==\n", size_px);
     FT_Face f = nullptr;
-    if (FT_New_Face(lib, primary_path.c_str(), 0, &f) != 0) return 2;
+    // G32: probe the face the family law resolves — 'monospace' for EXT-01.
+    const std::string& probe_path =
+        sh.resolve_family("monospace", false) >= 0 ? mono_path : primary_path;
+    if (FT_New_Face(lib, probe_path.c_str(), 0, &f) != 0) return 2;
     FT_Set_Pixel_Sizes(f, 0, (FT_UInt)size_px);
     int bad = 0;
     for (const char* p = kProbeChars; *p; ++p) {
