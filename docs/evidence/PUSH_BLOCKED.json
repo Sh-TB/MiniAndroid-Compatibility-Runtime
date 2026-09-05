@@ -1,0 +1,38 @@
+{
+  "record_type": "PUSH_BLOCKED",
+  "law": "Section 0 GitHub Preservation / Section 21 Push Law",
+  "recorded_at_session": "REUSE-FIRST FULL COMPATIBILITY + RESEARCH-TO-CODE CAMPAIGN",
+  "recorded_at_head": "12947e03d1a2eef3ef84b8e20777d4bc837c56b7",
+  "branch": "main",
+  "origin": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime.git",
+  "remote_head_at_record_time": "ad95d92876a355a719d2a8959053f8a47c2b1e79",
+  "remote_history_note": "Remote main (394 commits) and local main (23-commit rebuilt history) are UNRELATED (git merge-base is empty). Local tree content supersedes remote tree content with exactly one file recovered from remote objects: miniandroid/run/exp096_evidence/metrics.json (recovered this session, see commit). Remote tags v0.0.1, v0.0.2, v0.0.2-alpha point to remote-only commits.",
+  "history_preservation_plan": [
+    "1. Local branch archive/origin-main-ad95d928 created at ad95d928 so the 394-commit original history stays reachable for a future push (git push origin archive/origin-main-ad95d928).",
+    "2. When credentials exist: first push archive/origin-main-ad95d928 (fast-forward upload of old line), then push main with --force-with-lease so the rebuilt+current history replaces remote main WITHOUT destroying the archived line."
+  ],
+  "push_attempts": [
+    {
+      "command": "git push origin main",
+      "exit_status": "failed",
+      "exact_error": "fatal: could not read Username for 'https://github.com': No such device or address",
+      "credential_check": {
+        "git_credential_helper": "not configured",
+        "gh_cli": "not installed",
+        "ssh_keys": "~/.ssh absent",
+        "token_env_vars": "none",
+        "token_files": "~/.netrc, ~/.config/gh, .env: absent"
+      }
+    }
+  ],
+  "unpushed_commits_at_record_time": 23,
+  "unpushed_commit_range": "7024f8d6 (Initial commit) .. 12947e03 (HEAD)",
+  "tags_on_remote_only": ["v0.0.1", "v0.0.2", "v0.0.2-alpha"],
+  "github_comment_status": "COMMENT_BLOCKED (same missing-credential cause; no authenticated GitHub API path available)",
+  "next_session_recovery_instructions": [
+    "Read this file first.",
+    "Run: git log --oneline -5 && git ls-remote origin",
+    "If credentials now exist: git push origin archive/origin-main-ad95d928, then git push --force-with-lease origin main, then verify remote HEAD equals local HEAD, then post the GitHub comments listed in docs/research/GITHUB_EVIDENCE_INDEX.md (comment texts are pre-drafted there).",
+    "If credentials still missing: keep committing locally, update unpushed_commits count, do NOT claim anything is pushed."
+  ]
+}
