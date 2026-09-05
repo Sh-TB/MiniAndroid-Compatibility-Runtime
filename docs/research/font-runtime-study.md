@@ -75,3 +75,33 @@ driving TextView's baseline math (`Paint.ascent()` negative convention).
   feed measure/layout (Cycle A) — the negative-ascent convention matches
   TextView expectations in our layout fixtures. Status: VERIFIED (prior
   HEAD fixtures; re-run queued).
+
+---
+
+## §26 CONSOLIDATION — Font Cases A–F status at campaign HEAD 738ac50 (2026-09-05)
+
+| Case | Question | Status | Evidence at this HEAD |
+|---|---|---|---|
+| A | APK explicitly requests a bundled font (assets/fonts present, app registers + uses it) | **VERIFIED** | tictactoe_golden: assets/fonts 1/1 registered; board text rendered from the registered face; frames manifest per-frame sha256 (validate_tictactoe_golden.sh ALL PASS at 738ac50) |
+| B | assets/fonts directory discovery (generic, multi-font) | **VERIFIED** | openlauncher ROOT-ASSETS 6/6 registered via generic discovery (no path hardcoding) — prior-cycle probe, standing evidence |
+| C | res/font directory | **OPEN — BLOCKED on fixture** | no corpus APK carries res/font; requires synthetic-ARSC fixture tooling (queued Q-11-adjacent); honestly NOT claimed |
+| D | Typeface.create(family, style) API selection | **VERIFIED** | Cycle A/B fixtures (sDefaults[style] indexing law, setTypeface intercept); AOSP-confirmed resolution order FONT-003; text renders through the selected style in corpus goldens |
+| E | system/default fallback (no app font) | **VERIFIED** | NO_FONT_DIRECTORY → SYSTEM proven (stopwatch/microtimer/dice class); simplestopwatch BASELINE_MATCH pixel-exact at 738ac50 |
+| F | unloadable/corrupt font — DISTINCT event from E | **SPEC PINNED, FIXTURE QUEUED** | FONT-002: AOSP createFromAsset missing→throw vs corrupt→silent-DEFAULT are DIFFERENT failure modes (fwbase 1cdfff55 L1127); MiniAndroid must never report F and E as the same event; fixture = queued Q-11 |
+
+§26 required per-stage evidence map:
+
+- FONT_SOURCE: A/B/E VERIFIED (see above); C open.
+- FONT_RESOLUTION: order assets/fonts → res/font → Typeface.create →
+  fontFamily → theme → default → system fallback implemented + fixture-
+  distinguished (FONT-003).
+- FONT_LOAD: register_app_font_memory use-after-free FIXED (Cycle B,
+  FT_Face on stable memory); load path exercised by tictactoe golden.
+- FONT_FALLBACK: deciding step logged (NO_FONT_DIRECTORY → SYSTEM
+  diagnostic line); Case F distinct-event semantics pinned.
+- FONT_RENDER: real FreeType/HarfBuzz/FriBidi shaping feeding BOTH the
+  measure pass and the draw path (UNIFIED_007; Makefile FONTS wiring);
+  helloworld_golden 28sp-vs-14sp pixel-band discriminator at 738ac50.
+- FONT_METRICS: fonts::layout_text metrics (ascent/descent/leading,
+  negative-ascent convention) drive measure/layout (Cycle A);
+  tictactoe board cell text placement verified per-frame.
