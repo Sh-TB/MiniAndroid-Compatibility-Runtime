@@ -49,7 +49,7 @@ RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp
 # out of the build; the 8x16 BitmapFont answered all text geometry).
 FONTS_SOURCES = $(SRCDIR)/fonts/text_shaper.cpp
 # EXP-084: framework and storage sources are required for linkage
-FRAMEWORK_SOURCES = $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp $(SRCDIR)/framework/dialog_shadow.cpp $(SRCDIR)/framework/canvas_shadow.cpp
+FRAMEWORK_SOURCES = $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp $(SRCDIR)/framework/dialog_shadow.cpp $(SRCDIR)/framework/clipboard_shadow.cpp $(SRCDIR)/framework/canvas_shadow.cpp
 API_SOURCES = $(SRCDIR)/api/application_context.cpp $(SRCDIR)/api/shared_prefs.cpp
 STORAGE_SOURCES = $(wildcard $(SRCDIR)/storage/*.cpp)
 

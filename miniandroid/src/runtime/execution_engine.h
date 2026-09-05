@@ -90,6 +90,17 @@ struct ExecutionConfig {
     // no host-side animation. Mutually exclusive with click_count.
     int frame_count = 0;
     int frame_delay_ms = 300;
+    // GOLDEN-02: coordinate-anchored long-press gesture (AOSP View touch law).
+    // After the launch frame: hit_test(x,y) → target view → DOWN →
+    // ViewConfiguration.getLongPressTimeout() (500ms) → CheckForLongPress →
+    // performLongClick → dispatch_long_click. The listener's boolean return
+    // is the AOSP "handled" value: true → mHasPerformedLongPress → the UP
+    // click is SUPPRESSED; false (or no listener) → UP performs a click.
+    // The post-interaction frame is captured with the same pipeline as
+    // click-sequence frames (frames/longpress manifest + PNG + SHA-256).
+    bool long_press_enabled = false;
+    int long_press_x = 0;
+    int long_press_y = 0;
     bool generate_reports = true;
     
     // EXP-031: Execution mode (CRITICAL - determines real vs fake path)
@@ -177,6 +188,7 @@ private:
     bool stage_click_test(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_click_sequence(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_frame_sequence(ExecutionResult& result, const ExecutionConfig& config);
+    bool stage_long_press(ExecutionResult& result, const ExecutionConfig& config);
     void invoke_handler_runnable(uint32_t runnable_id);
     bool stage_generate_reports(ExecutionResult& result, const ExecutionConfig& config);
     

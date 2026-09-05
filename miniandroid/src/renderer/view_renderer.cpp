@@ -588,9 +588,17 @@ uint32_t ViewRenderer::hit_test(uint32_t root_id, int x, int y) const {
         if (x >= n->x && x < n->x + std::max(1, n->width) && y >= n->y &&
             y < n->y + std::max(1, n->height)) {
             if (!best_any) best_any = id;
+            // GOLDEN-02: AOSP View touchability law — a view is a touch
+            // target when it is CLICKABLE or LONG_CLICKABLE
+            // (View.java: setOnLongClickListener sets LONG_CLICKABLE;
+            // onTouchEvent handles press sequences for either flag).
+            // The legacy predicate only covered clickable, so a view with
+            // ONLY a long-click listener (the AOSP-legal pattern in the
+            // EXT-01 fixture) was invisible to hit testing.
             bool clickable = n->clickable || !n->on_click_method.empty() ||
                              n->click_listener_id != 0 ||
-                             !n->click_listener_class.empty();
+                             !n->click_listener_class.empty() ||
+                             n->long_click_listener_id != 0;
             if (clickable) best_clickable = id;
             for (uint32_t cid : n->children) walk(cid);
         }
