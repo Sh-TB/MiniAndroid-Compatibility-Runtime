@@ -271,7 +271,7 @@ TextLayout layout_text(const std::string& utf8, float size_px, bool bold,
                        float max_width_px, int max_lines = 0,
                        int face_idx = FACE_SYSTEM,
                        float spacing_mult = 1.0f, float spacing_add_px = 0.0f,
-                       bool include_pad = true);
+                       bool include_pad = true, bool elegant_height = false);
 
 }  // namespace fonts
 }  // namespace miniandroid

@@ -99,6 +99,12 @@ private:
         std::string font_family;  // G32: android:fontFamily (raw string)
         float appearance_text_size_sp = 0;  // G46: TextAppearance textSize (sp)
         bool  appearance_resolved = false;
+        // G47: android:lineSpacingMultiplier / lineSpacingExtra /
+        // elegantTextHeight / includeFontPadding (TextView defaults).
+        float line_spacing_mult = 1.0f;
+        float line_spacing_add_px = 0.0f;
+        bool include_font_pad = true;
+        bool elegant_text_height = false;
         uint32_t bg_color = 0;    // resolved ARGB (opaque)
         std::string bg_drawable;  // APK path
         std::string src_drawable; // APK path (ImageView)
