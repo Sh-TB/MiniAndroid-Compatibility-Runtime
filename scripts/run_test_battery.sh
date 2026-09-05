@@ -83,6 +83,14 @@ gate "link resource_config_selection_test" $?
 gate "resource-config selection law (expect 19)" $?
 tail -1 /tmp/battery_rescfg.out
 
+# P2 encoded-value AOSP law (hostile/edge; FIND-REUSE-DEX)
+g++ -std=c++17 -w -g -O1 -Isrc -o build/encoded_value_law_test \
+    tests/encoded_value_law_test.cpp > /tmp/battery_ev.log 2>&1
+gate "link encoded_value_law_test" $?
+./build/encoded_value_law_test > /tmp/battery_ev.out 2>&1
+gate "encoded_value AOSP law (expect 18)" $?
+tail -1 /tmp/battery_ev.out
+
 # goldens
 bash tests/fixtures/helloworld_golden/validate_helloworld_golden.sh build/miniandroid \
     > /tmp/battery_hw.out 2>&1
