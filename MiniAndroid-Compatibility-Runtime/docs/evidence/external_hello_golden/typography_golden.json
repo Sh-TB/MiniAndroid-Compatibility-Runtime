@@ -1,0 +1,222 @@
+{
+ "reference": {
+  "label": "reference_phone",
+  "path": "/home/z/corpus/external_hello/helloworldselfaware-android-phone-screenshot.png",
+  "w": 600,
+  "h": 1067,
+  "bg": 0,
+  "ink_total": 9237,
+  "sysbar_excluded_frac": 0.07,
+  "bands": [],
+  "lines": [
+   {
+    "band": 0,
+    "y0": 406,
+    "y1": 431,
+    "height": 26,
+    "x0": 196,
+    "x1": 404,
+    "width": 209,
+    "ink": 1523,
+    "rel_width": 0.34833333333333333,
+    "advance_px": 44.0,
+    "advance_conf": 0.27420185927392055
+   },
+   {
+    "band": 1,
+    "y0": 486,
+    "y1": 511,
+    "height": 26,
+    "x0": 108,
+    "x1": 492,
+    "width": 385,
+    "ink": 3022,
+    "rel_width": 0.6416666666666667,
+    "advance_px": 39.0,
+    "advance_conf": 0.4675481418185675
+   },
+   {
+    "band": 2,
+    "y0": 562,
+    "y1": 586,
+    "height": 25,
+    "x0": 107,
+    "x1": 492,
+    "width": 386,
+    "ink": 2509,
+    "rel_width": 0.6433333333333333,
+    "advance_px": 39.0,
+    "advance_conf": 0.28392910121622456
+   },
+   {
+    "band": 3,
+    "y0": 637,
+    "y1": 669,
+    "height": 33,
+    "x0": 135,
+    "x1": 463,
+    "width": 329,
+    "ink": 2183,
+    "rel_width": 0.5483333333333333,
+    "advance_px": 58.0,
+    "advance_conf": 0.2551853909237537
+   }
+  ],
+  "block_bbox": [
+   107,
+   406,
+   492,
+   669
+  ],
+  "block_width": 386,
+  "block_height": 264,
+  "rel_block_width": 0.6433333333333333,
+  "rel_block_height": 0.24742268041237114,
+  "cx": 0.49916666666666665,
+  "cy": 0.5037488284910965,
+  "top_to_top": [
+   80,
+   76,
+   75
+  ],
+  "bottom_to_bottom": [
+   80,
+   75,
+   83
+  ]
+ },
+ "miniandroid": {
+  "label": "miniandroid",
+  "path": "/tmp/ext01_c5/screenshot.png",
+  "w": 1080,
+  "h": 1920,
+  "bg": 0,
+  "ink_total": 25659,
+  "sysbar_excluded_frac": 0.0,
+  "bands": [],
+  "lines": [
+   {
+    "band": 0,
+    "y0": 729,
+    "y1": 773,
+    "height": 45,
+    "x0": 357,
+    "x1": 723,
+    "width": 367,
+    "ink": 4347,
+    "rel_width": 0.3398148148148148,
+    "advance_px": 79.0,
+    "advance_conf": 0.2965746431783253
+   },
+   {
+    "band": 1,
+    "y0": 867,
+    "y1": 911,
+    "height": 45,
+    "x0": 205,
+    "x1": 876,
+    "width": 672,
+    "ink": 8379,
+    "rel_width": 0.6222222222222222,
+    "advance_px": 68.0,
+    "advance_conf": 0.4106159419300366
+   },
+   {
+    "band": 2,
+    "y0": 1005,
+    "y1": 1049,
+    "height": 45,
+    "x0": 204,
+    "x1": 876,
+    "width": 673,
+    "ink": 6897,
+    "rel_width": 0.6231481481481481,
+    "advance_px": 69.0,
+    "advance_conf": 0.2645175510894572
+   },
+   {
+    "band": 3,
+    "y0": 1143,
+    "y1": 1200,
+    "height": 58,
+    "x0": 251,
+    "x1": 826,
+    "width": 576,
+    "ink": 6036,
+    "rel_width": 0.5333333333333333,
+    "advance_px": 102.0,
+    "advance_conf": 0.26717745442434676
+   }
+  ],
+  "block_bbox": [
+   204,
+   729,
+   876,
+   1200
+  ],
+  "block_width": 673,
+  "block_height": 472,
+  "rel_block_width": 0.6231481481481481,
+  "rel_block_height": 0.24583333333333332,
+  "cx": 0.5,
+  "cy": 0.50234375,
+  "top_to_top": [
+   138,
+   138,
+   138
+  ],
+  "bottom_to_bottom": [
+   138,
+   138,
+   151
+  ]
+ },
+ "checks": [
+  {
+   "name": "background identical (black)",
+   "pass": true,
+   "detail": "ref bg=0 mini bg=0"
+  },
+  {
+   "name": "ink present",
+   "pass": true,
+   "detail": "ref ink=9237 mini ink=25659 (grayscale, ink = |px-bg| > 60)"
+  },
+  {
+   "name": "4-line band structure",
+   "pass": true,
+   "detail": "ref bands=4 mini bands=4"
+  },
+  {
+   "name": "horizontal centering within 3%",
+   "pass": true,
+   "detail": "ref cx=0.4992 mini cx=0.5000"
+  },
+  {
+   "name": "vertical centering within 6%",
+   "pass": true,
+   "detail": "ref cy=0.5037 mini cy=0.5023"
+  },
+  {
+   "name": "text block width ratio within 10%",
+   "pass": true,
+   "detail": "ref=0.6433 mini=0.6231 rel.diff=3.14%"
+  },
+  {
+   "name": "text block height ratio within 10%",
+   "pass": true,
+   "detail": "ref=0.2474 mini=0.2458 rel.diff=0.64%"
+  },
+  {
+   "name": "line spacing ratio within 10%",
+   "pass": true,
+   "detail": "ref median spacing=75.5px (0.07076 of height) mini=138.0px (0.07187) rel.diff=1.58%"
+  },
+  {
+   "name": "monospace advance ratio within 10%",
+   "pass": true,
+   "detail": "ref advance=0.03208 of width/char mini=0.03111 rel.diff=3.03%"
+  }
+ ],
+ "verdict": "PASS"
+}

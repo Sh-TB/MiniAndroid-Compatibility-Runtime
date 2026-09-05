@@ -82,6 +82,48 @@ bash tests/fixtures/tictactoe_golden/validate_tictactoe_golden.sh build/miniandr
 gate "tictactoe_golden (§29 interaction + determinism)" $?
 grep -h "ALL PASS" /tmp/battery_ttt.out | head -1
 
+# G48: EXT-01 external APK typography golden (9 static checks, Rule 10)
+EXT01_APK=/home/z/corpus/external_hello/HelloWorldSelfAware-1.1.0-android.apk
+EXT01_REF=/home/z/corpus/external_hello/helloworldselfaware-android-phone-screenshot.png
+EXT01_OUT=/tmp/battery_ext01
+rm -rf "$EXT01_OUT"; mkdir -p "$EXT01_OUT"
+if [ -f "$EXT01_APK" ] && [ -f "$EXT01_REF" ]; then
+    echo "$EXT01_APK" | grep -q . && \
+    ./build/miniandroid run "$EXT01_APK" -o "$EXT01_OUT" > "$EXT01_OUT/run.log" 2>&1
+    gate "EXT-01 run (external APK)" $?
+    python3 "$REPO/scripts/compare_ext01_typography.py" "$EXT01_REF" \
+        "$EXT01_OUT/screenshot.png" --json "$EXT01_OUT/typography_golden.json" \
+        > "$EXT01_OUT/compare.log" 2>&1
+    gate "EXT-01 typography golden (9 static checks)" $?
+    grep -h "TYPOGRAPHY GOLDEN" "$EXT01_OUT/compare.log"
+else
+    gate "EXT-01 typography golden (9 static checks)" 1
+    echo "  (fixture missing: $EXT01_APK — fetch per docs/evidence/EXTERNAL_FIXTURE_HELLOWORLDSELFAWARE.md)"
+fi
+
+# corpus regression: real external APKs must still boot and render
+CORPUS_DIR="$MA/download"
+python3 "$REPO/MiniAndroid-Compatibility-Runtime/scripts/fetch_corpus.py" \
+    "Simple Stopwatch" gmdice microtimer \
+    > /tmp/battery_corpus_fetch.log 2>&1
+CORPUS_RC=$?
+gate "corpus fetch (hash-verified)" $CORPUS_RC
+for rel in "exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk" \
+           "exp073_real_apps/de.duenndns.gmdice_8.apk" \
+           "exp076_corpus/dubrowgn.microtimer_8.apk"; do
+    name=$(basename "$rel" .apk)
+    if [ -f "$CORPUS_DIR/$rel" ]; then
+        out="/tmp/battery_corpus_$name"; rm -rf "$out"; mkdir -p "$out"
+        ./build/miniandroid run "$CORPUS_DIR/$rel" -o "$out" \
+            > "$out/run.log" 2>&1
+        rc=$?
+        grep -q "Status: SUCCESS" "$out/run.log" && [ -f "$out/screenshot.png" ] && rc=0 || rc=1
+        gate "corpus run $name" $rc
+    else
+        gate "corpus run $name" 1
+    fi
+done
+
 echo "──────────────────────────────────────────────"
 for r in "${RESULTS[@]}"; do printf '%s\n' "$r"; done
 if [ $FAIL -eq 0 ]; then

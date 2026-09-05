@@ -26,6 +26,27 @@ Fixture: `EXT-01-HELLOWORLDSELFAWARE-1.1.0` (see EXTERNAL_FIXTURE_HELLOWORLDSELF
 | G63 | Pixel golden vs reference | **STRUCTURAL 6/7** | `structural_comparison.txt` |
 | G46/G47 | Text relative size + line spacing | **FAIL (documented)** | width ratio 0.383 vs 0.642; band height 1.4% vs 2.34% — NEXT GATES |
 
+## 2026-09-06 UPDATE — G31–G48 CLOSED (typography campaign)
+
+The typography gates above (G46/G47 FAIL) are now CLOSED. Full records:
+`G31_FONT_SOURCE.md`, `G32_G48_TYPOGRAPHY_GATES.md`, `G48_TYPOGRAPHY_GOLDEN.md`.
+
+| Gate group | Status | Root causes fixed (all law-based, no tuned constants) |
+|---|---|---|
+| G31/G32 | PASS | fontFamily="monospace" was parsed by NOTHING → AOSP fonts.xml law + DroidSansMono.ttf (byte-identical to AOSP API 34/35/36) + ARSC version-qualifier law (device config size=0 gated the whole isBetterThan body off; apk_path_for ignored config matching entirely) |
+| G33–G35 | PASS | FreeType raster/glyph/metrics evidence via committed probe output |
+| G36/G37 | PASS | ad-hoc "+5% leading" and "size×1.2" replaced by Paint.FontMetrics + StaticLayout line-box laws |
+| G39–G42 | PASS | digits/punct/whitespace/mixed-case measured on the real render path |
+| G43–G45 | `not exercised by primary fixture` (implemented; queued fixtures) | — |
+| G46 | **PASS** | TextAppearance.Large (22sp) was unhandled → renderer default 14dp; now 22sp→58px via TypedValue rounding law |
+| G47 | **PASS** | lineSpacingMultiplier=2.0/elegant/includeFontPadding parsed + StaticLayout extra law plumbed to measure AND draw |
+| G48 | **PASS 9/9 static checks** | `compare_ext01_typography.py`; determinism 3 runs byte-identical `142238fd…` |
+
+GOLDEN-01 status: **PASS (typography closed)** — 9/9 static visual checks,
+dynamic device values excluded by design. Regression at the same HEAD:
+helloworld 26/26, tictactoe 8/8, MUTF-8 14/14, semantic 96/96, corpus
+(simplestopwatch/gmdice/microtimer) SUCCESS, battery 16/16 stages.
+
 ## Root causes found by this external APK (all real bugs, Rule 5 independent reproduction)
 
 ### FIX-1 — DEX `encoded_value` size law (dex_parser.cpp) — CRITICAL SPEC BUG

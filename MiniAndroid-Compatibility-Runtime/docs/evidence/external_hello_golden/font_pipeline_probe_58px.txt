@@ -1,0 +1,68 @@
+
+== live TextShaper faces ==
+primary_font_path=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
+monospace_font_path=runtime/data/fonts/DroidSansMono.ttf
+app_fonts_registered=0
+resolve_family(monospace)=4
+FACE /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf: family='DejaVu Sans' style='Book' num_glyphs=6253 num_faces=1
+  unitsPerEm=2048 (F26Dot6 basis; scalable=1)
+  @58px: metrics.ascender=54.00 descender=-14.00 height=68.00 max_advance=109.00  (26.6 raw: asc=3456 desc=-896 h=4352 adv=6976)
+  -> Android FontMetrics(ascent=-54 descent=14) lineBox(descent-ascent)=-68.00
+  hhea: ascender=1901 descender=-483 lineGap=0 (units)
+  OS/2: usWinAscent=1901 usWinDescent=483 sTypoAscender=1556 sTypoDescender=-492 sTypoLineGap=410 fsSelection=0x0040
+FACE runtime/data/fonts/DroidSansMono.ttf: family='Droid Sans Mono' style='Regular' num_glyphs=895 num_faces=1
+  unitsPerEm=2048 (F26Dot6 basis; scalable=1)
+  @58px: metrics.ascender=54.00 descender=-15.00 height=68.00 max_advance=35.00  (26.6 raw: asc=3456 desc=-960 h=4352 adv=2240)
+  -> Android FontMetrics(ascent=-54 descent=15) lineBox(descent-ascent)=-69.00
+  hhea: ascender=1900 descender=-500 lineGap=0 (units)
+  OS/2: usWinAscent=1901 usWinDescent=483 sTypoAscender=1567 sTypoDescender=-492 sTypoLineGap=132 fsSelection=0x0040
+FACE /usr/share/fonts/truetype/freefont/FreeSerif.ttf: family='FreeSerif' style='Regular' num_glyphs=13477 num_faces=1
+  unitsPerEm=1000 (F26Dot6 basis; scalable=1)
+  @58px: metrics.ascender=47.00 descender=-12.00 height=64.00 max_advance=174.00  (26.6 raw: asc=3008 desc=-768 h=4096 adv=11136)
+  -> Android FontMetrics(ascent=-47 descent=12) lineBox(descent-ascent)=-59.00
+  hhea: ascender=900 descender=-302 lineGap=100 (units)
+  OS/2: usWinAscent=900 usWinDescent=302 sTypoAscender=800 sTypoDescender=-200 sTypoLineGap=100 fsSelection=0x00c0
+
+== glyph lookup + metrics @ 58px (G33/G34/G35) ==
+  U+0068 'h' gid= 73 adv=35.00 lsb=4.00 rsb=4.00 ink=27x44@(+4,+44) asc_ink_top=44
+  U+0065 'e' gid= 70 adv=35.00 lsb=3.00 rsb=3.00 ink=29x33@(+3,+32) asc_ink_top=32
+  U+006C 'l' gid= 77 adv=35.00 lsb=5.00 rsb=4.00 ink=26x44@(+5,+44) asc_ink_top=44
+  U+006F 'o' gid= 80 adv=35.00 lsb=3.00 rsb=3.00 ink=29x33@(+3,+32) asc_ink_top=32
+  U+0020 ' ' gid=  1 adv=35.00 lsb=0.00 rsb=35.00 ink=0x0@(+0,+0) asc_ink_top=0
+  U+0077 'w' gid= 88 adv=35.00 lsb=-1.00 rsb=0.00 ink=36x31@(+-1,+31) asc_ink_top=31
+  U+0072 'r' gid= 83 adv=35.00 lsb=7.00 rsb=5.00 ink=23x32@(+7,+32) asc_ink_top=32
+  U+0064 'd' gid= 69 adv=35.00 lsb=3.00 rsb=4.00 ink=28x45@(+3,+44) asc_ink_top=44
+  U+0048 'H' gid= 41 adv=35.00 lsb=3.00 rsb=4.00 ink=28x41@(+3,+41) asc_ink_top=41
+  U+0045 'E' gid= 38 adv=35.00 lsb=6.00 rsb=5.00 ink=24x41@(+6,+41) asc_ink_top=41
+  U+004C 'L' gid= 45 adv=35.00 lsb=6.00 rsb=5.00 ink=24x41@(+6,+41) asc_ink_top=41
+  U+0073 's' gid= 84 adv=35.00 lsb=5.00 rsb=5.00 ink=25x33@(+5,+32) asc_ink_top=32
+  U+0065 'e' gid= 70 adv=35.00 lsb=3.00 rsb=3.00 ink=29x33@(+3,+32) asc_ink_top=32
+  U+006E 'n' gid= 79 adv=35.00 lsb=4.00 rsb=4.00 ink=27x32@(+4,+32) asc_ink_top=32
+  U+0064 'd' gid= 69 adv=35.00 lsb=3.00 rsb=4.00 ink=28x45@(+3,+44) asc_ink_top=44
+  U+0027 ''' gid=  8 adv=35.00 lsb=14.00 rsb=14.00 ink=7x16@(+14,+41) asc_ink_top=41
+  U+006D 'm' gid= 78 adv=35.00 lsb=2.00 rsb=2.00 ink=31x32@(+2,+32) asc_ink_top=32
+  U+0076 'v' gid= 87 adv=35.00 lsb=2.00 rsb=2.00 ink=31x31@(+2,+31) asc_ink_top=31
+  U+0069 'i' gid= 74 adv=35.00 lsb=5.00 rsb=4.00 ink=26x44@(+5,+44) asc_ink_top=44
+  U+0067 'g' gid= 72 adv=35.00 lsb=2.00 rsb=3.00 ink=30x46@(+2,+32) asc_ink_top=32
+  U+0070 'p' gid= 81 adv=35.00 lsb=4.00 rsb=4.00 ink=27x46@(+4,+32) asc_ink_top=32
+  U+0030 '0' gid= 17 adv=35.00 lsb=4.00 rsb=4.00 ink=27x43@(+4,+42) asc_ink_top=42
+  U+0034 '4' gid= 21 adv=35.00 lsb=1.00 rsb=3.00 ink=31x41@(+1,+41) asc_ink_top=41
+  U+0033 '3' gid= 20 adv=35.00 lsb=3.00 rsb=5.00 ink=27x43@(+3,+42) asc_ink_top=42
+  U+0032 '2' gid= 19 adv=35.00 lsb=4.00 rsb=4.00 ink=27x42@(+4,+42) asc_ink_top=42
+  U+0031 '1' gid= 18 adv=35.00 lsb=6.00 rsb=13.00 ink=16x41@(+6,+41) asc_ink_top=41
+  U+0036 '6' gid= 23 adv=35.00 lsb=4.00 rsb=4.00 ink=27x43@(+4,+42) asc_ink_top=42
+  U+0037 '7' gid= 24 adv=35.00 lsb=4.00 rsb=4.00 ink=27x41@(+4,+41) asc_ink_top=41
+  U+0038 '8' gid= 25 adv=35.00 lsb=4.00 rsb=4.00 ink=27x43@(+4,+42) asc_ink_top=42
+  U+0039 '9' gid= 26 adv=35.00 lsb=4.00 rsb=4.00 ink=27x43@(+4,+42) asc_ink_top=42
+  U+002E '.' gid= 15 adv=35.00 lsb=13.00 rsb=13.00 ink=9x9@(+13,+8) asc_ink_top=8
+  U+002C ',' gid= 13 adv=35.00 lsb=12.00 rsb=12.00 ink=11x16@(+12,+7) asc_ink_top=7
+  U+0027 ''' gid=  8 adv=35.00 lsb=14.00 rsb=14.00 ink=7x16@(+14,+41) asc_ink_top=41
+  U+0021 '!' gid=  2 adv=35.00 lsb=13.00 rsb=14.00 ink=8x42@(+13,+41) asc_ink_top=41
+
+== live pipeline shaping of the REAL EXT-01 lines ==
+  line hello world            glyphs=12 width=313.00 notdef=0 rtl=0
+  line i'm 6f1c3a9d2e5b4780   glyphs=21 width=658.00 notdef=0 rtl=0
+  line a version 14 android   glyphs=21 width=586.00 notdef=0 rtl=0
+  line with api level 34      glyphs=18 width=470.00 notdef=0 rtl=0
+
+PROBE RESULT: PASS (0 bad glyphs)
