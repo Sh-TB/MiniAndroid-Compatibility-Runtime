@@ -97,7 +97,10 @@ private:
         uint32_t text_color = 0;
         int  text_style = 0;      // bit0 bold, bit1 italic
         std::string font_family;  // G32: android:fontFamily (raw string)
-        float appearance_text_size_sp = 0;  // G46: TextAppearance textSize (sp)
+        // G46/GOLDEN-03 §8: TextAppearance textSize, ALREADY converted to px
+        // through the canonical TypedValue law (complexToDimensionPixelSize —
+        // 22sp → 58px at density 2.625).
+        float appearance_text_size_px = 0;
         bool  appearance_resolved = false;
         // G47: android:lineSpacingMultiplier / lineSpacingExtra /
         // elegantTextHeight / includeFontPadding (TextView defaults).
@@ -152,6 +155,19 @@ private:
     int      resolve_size_or_match(const AxmlAttribute* attr, InflateStats& stats); // -1/-2/px
     uint32_t resolve_id_attr(const AxmlAttribute* attr, InflateStats& stats);
     static uint32_t parse_hex_color(const std::string& s);
+
+    // ── GOLDEN-03 §8/§9 ─────────────────────────────────────────────────
+    // §9: the ONE TypedValue conversion context for this inflater.
+    DensityContext density_context() const;
+    // §8: apply ONE style-bag item selected by its AOSP attribute KEY
+    // (ResTable_map law) — textSize/textColor with reference dereferencing.
+    // Returns true when the item was applied (counted in stats).
+    bool apply_style_item(Attrs& a, uint32_t attr_key, const ResValue& item,
+                          InflateStats& stats);
+    // §8/G46: textAppearance resolution — generic app-style bags via the
+    // canonical bag resolver (parent inheritance included) + the byte-verified
+    // framework TextAppearance table. Returns false when unresolvable.
+    bool resolve_text_appearance(uint32_t style_resid, Attrs& a, InflateStats& stats);
 
     static std::string class_to_descriptor(const std::string& xml_name);
     static int gravity_bits(const std::string& s);

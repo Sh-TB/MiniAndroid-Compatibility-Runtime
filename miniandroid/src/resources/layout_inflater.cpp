@@ -251,30 +251,31 @@ int LayoutInflater::resolve_dimen_px(const std::string& v, InflateStats& stats) 
         auto val = arsc_.resolve_value(*id);
         if (val && val->is_dimension()) {
             stats.dimens_resolved++;
-            float px;
-            switch (val->dim_unit) {
-                case DIM_DIP: px = val->dim_value * metrics_.density; break;
-                case DIM_SP:  px = val->dim_value * metrics_.density * metrics_.scale_fonts; break;
-                default:      px = val->dim_value; break;  // PX/PT/IN/MM treated as px
-            }
-            return (int)std::lround(px);
+            // GOLDEN-03 §9: ONE canonical conversion path (AOSP
+            // TypedValue.complexToDimensionPixelSize law — rounding +
+            // nonzero-floor tail). Was a local switch that treated PT/IN/MM
+            // as plain px.
+            return complex_to_dimension_pixel_size(val->data, density_context());
         }
         stats.unresolved_refs++;
         return 0;
     }
     if (!ref.is_ref) {
-        // raw string form "12dp" / "14sp" / "8px"
+        // raw string form "12dp" / "14sp" / "8px" / "1in" / "12pt" / "5mm"
+        // GOLDEN-03 §9: same canonical law for literal dimensions.
         std::string s = v;
-        float mult = metrics_.density;
         if (s.size() > 2) {
             std::string suf = s.substr(s.size() - 2);
             float val = (float)atof(s.c_str());
-            if (suf == "dp" || suf == "dip") return (int)std::lround(val * mult);
-            if (suf == "sp") return (int)std::lround(val * mult * metrics_.scale_fonts);
-            if (suf == "px") return (int)std::lround(val);
-            if (s.back() == 'p' || isdigit((unsigned char)s.back())) {
-                if (suf == "in") return (int)std::lround(val * 160 * mult);
-            }
+            uint8_t unit;
+            if (suf == "dp" || suf == "dip") unit = COMPLEX_UNIT_DIP;
+            else if (suf == "sp")           unit = COMPLEX_UNIT_SP;
+            else if (suf == "px")           unit = COMPLEX_UNIT_PX;
+            else if (suf == "in")           unit = COMPLEX_UNIT_IN;
+            else if (suf == "pt")           unit = COMPLEX_UNIT_PT;
+            else if (suf == "mm")           unit = COMPLEX_UNIT_MM;
+            else return 0;
+            return complex_unit_to_dimension_pixel_size(unit, val, density_context());
         }
     }
     return 0;
@@ -283,14 +284,9 @@ int LayoutInflater::resolve_dimen_px(const std::string& v, InflateStats& stats) 
 int LayoutInflater::parse_dim_attr(const AxmlAttribute* attr, InflateStats& stats) {
     if (!attr) return 0;
     if (attr->value.is_dimension()) {
-        float px;
-        switch (attr->value.dim_unit) {
-            case DIM_DIP: px = attr->value.dim_value * metrics_.density; break;
-            case DIM_SP:  px = attr->value.dim_value * metrics_.density * metrics_.scale_fonts; break;
-            default:      px = attr->value.dim_value; break;
-        }
         stats.dimens_resolved++;
-        return (int)std::lround(px);
+        // GOLDEN-03 §9: canonical TypedValue law (raw complex word + context).
+        return complex_to_dimension_pixel_size(attr->value.data, density_context());
     }
     if (attr->value.is_string()) return resolve_dimen_px(attr->value.string_value, stats);
     if (!attr->raw_value.empty()) return resolve_dimen_px(attr->raw_value, stats);
@@ -373,34 +369,67 @@ uint32_t LayoutInflater::resolve_id_attr(const AxmlAttribute* attr, InflateStats
 // ---------------------------------------------------------------------------
 // style application (complex entries from ARSC)
 // ---------------------------------------------------------------------------
+// ── GOLDEN-03 §8 — verified framework attribute constants ──────────────
+// Every constant below was READ FROM APK BYTES (never from memory):
+//   0x01010095 textSize          — helloworld_golden fixture AXML resource map
+//   0x01010098 textColor         — EXT-01 AND helloworld_golden maps (agree)
+// Framework TextAppearance.Large = 0x01030042 with textSize 22sp — AOSP
+// core/res/res/values/styles.xml; the id was verified from the EXT-01 AXML
+// (textAppearance attr data=0x01030042) and the 22sp→58px G46 runtime law.
+static constexpr uint32_t ATTR_TEXT_SIZE  = 0x01010095;
+static constexpr uint32_t ATTR_TEXT_COLOR = 0x01010098;
+static constexpr uint32_t FRAMEWORK_STYLE_TEXTAPPEARANCE_LARGE = 0x01030042;
+static constexpr float    TEXTAPPEARANCE_LARGE_SP = 22.0f;
+
+// §9: the ONE TypedValue conversion context for this inflater.
+resources::DensityContext LayoutInflater::density_context() const {
+    return DensityContext::from_density(metrics_.density, metrics_.scale_fonts);
+}
+
+bool LayoutInflater::apply_style_item(Attrs& a, uint32_t attr_key,
+                                      const ResValue& item, InflateStats& stats) {
+    (void)stats;
+    ResValue v = item;
+    // AOSP Style law: a style item may itself be a reference
+    // (e.g. <item name="textColor">@color/foo</item>) — dereference through
+    // the canonical resolver before interpreting.
+    if (v.is_reference()) {
+        auto rv = arsc_.resolve_value(v.ref_id);
+        if (!rv) return false;
+        v = *rv;
+    }
+    if (attr_key == ATTR_TEXT_SIZE) {
+        if (a.from_style_text_size) return false;      // first-writer wins
+        if (!v.is_dimension()) return false;
+        a.style_text_size_px =
+            complex_to_dimension_pixel_size(v.data, density_context());
+        a.from_style_text_size = true;
+        return true;
+    }
+    if (attr_key == ATTR_TEXT_COLOR) {
+        if (a.style_text_color != 0) return false;
+        if (!v.is_color() && !v.is_int()) return false;
+        a.style_text_color = v.data;
+        return true;
+    }
+    return false;   // key not consumed by the inflater (honest stats)
+}
+
 void LayoutInflater::apply_style(framework::ViewShadow::ViewNode& node, Attrs& a,
                                  uint32_t style_resid, InflateStats& stats) {
+    (void)node;
     auto r = arsc_.resolve(style_resid);
     if (!r) return;
     const ArscEntry* e = r->best();
     if (!e || !e->is_complex) return;
     // name of style for evidence
     a.style_name = r->name;
-    for (const auto& item : e->complex_items) {
-        if (item.is_string()) {
-            // textSize etc are not strings; skip
-            continue;
-        }
-        if (item.is_dimension()) {
-            // could be textSize/textSize from style — apply to textSize if unset
-            if (a.text_size_px == 0 && !a.from_style_text_size) {
-                float px;
-                switch (item.dim_unit) {
-                    case DIM_DIP: px = item.dim_value * metrics_.density; break;
-                    case DIM_SP:  px = item.dim_value * metrics_.density * metrics_.scale_fonts; break;
-                    default:      px = item.dim_value; break;
-                }
-                a.style_text_size_px = px;
-                a.from_style_text_size = true;
-                stats.styles_applied++;
-            }
-        } else if (item.is_color()) {
-            if (a.text_color == 0) a.style_text_color = item.data;
+    // GOLDEN-03 §8: attribute-KEY-aware application (AOSP ResTable_map law).
+    // The previous code iterated complex_items POSITIONALLY and applied any
+    // dimension as textSize / any color as textColor regardless of which
+    // attribute they actually carried.
+    for (size_t i = 0; i < e->complex_keys.size() && i < e->complex_items.size(); ++i) {
+        if (apply_style_item(a, e->complex_keys[i], e->complex_items[i], stats)) {
             stats.styles_applied++;
         }
     }
@@ -410,6 +439,44 @@ void LayoutInflater::apply_style_by_name(framework::ViewShadow::ViewNode& node, 
                                          const std::string& style_name, InflateStats& stats) {
     auto id = arsc_.find_id("", "style", style_name);
     if (id) apply_style(node, a, *id, stats);
+}
+
+// ── GOLDEN-03 §8/G46 — textAppearance resolution (generic) ───────────────
+bool LayoutInflater::resolve_text_appearance(uint32_t style_resid, Attrs& a,
+                                             InflateStats& stats) {
+    (void)stats;
+    // AOSP TextView.applyTextAppearance: the referenced style's textSize
+    // applies unless the view sets an explicit textSize.
+    // 1) GENERIC path: query the style bag by the AOSP textSize key through
+    //    the canonical resolver — works for ANY app-local style (any package),
+    //    parent inheritance included, cycle-safe.
+    if (auto item = arsc_.bag_value(style_resid, ATTR_TEXT_SIZE, device_config())) {
+        ResValue v = *item;
+        if (v.is_reference()) {
+            auto rv = arsc_.resolve_value(v.ref_id);
+            if (!rv) return false;
+            v = *rv;
+        }
+        if (v.is_dimension()) {
+            a.appearance_text_size_px =
+                complex_to_dimension_pixel_size(v.data, density_context());
+            a.appearance_resolved = true;
+            return true;
+        }
+        return false;
+    }
+    // 2) Framework style table — byte-verified entries only (see the constant
+    //    block above). Unknown framework ids stay unresolved with a warning;
+    //    nothing is invented.
+    if (style_resid == FRAMEWORK_STYLE_TEXTAPPEARANCE_LARGE) {
+        // Encoded exactly as the ARSC would: mantissa 22 @ radix 0, unit SP.
+        const uint32_t data22sp = (22u << COMPLEX_MANTISSA_SHIFT) | COMPLEX_UNIT_SP;
+        a.appearance_text_size_px =
+            complex_to_dimension_pixel_size(data22sp, density_context());
+        a.appearance_resolved = true;
+        return true;
+    }
+    return false;
 }
 
 // ---------------------------------------------------------------------------
@@ -600,24 +667,21 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             a.font_family = raw;
         }
         else if (n == "textAppearance") {
-            // G46: AOSP TextView law (TextView.java@android-14.0.0_r50
-            // applyTextAppearance L4435+): the referenced framework style's
-            // textSize applies UNLESS the view sets an explicit textSize
-            // (view attrs are read after the appearance → they win).
-            // Framework style id law (core/res/res/values/styles.xml
-            // @android-14.0.0_r50 L862-864):
-            //   <style name="TextAppearance.Large"> <item name="textSize">22sp</item>
-            // = android:style 0x01030042 (verified from the EXT-01 AXML:
-            //   textAppearance data=0x01030042).
+            // G46/GOLDEN-03 §8: AOSP TextView law (applyTextAppearance): the
+            // referenced style's textSize applies UNLESS the view sets an
+            // explicit textSize (view attrs are read after the appearance →
+            // they win). Resolution is GENERIC: app-local style bags go
+            // through the canonical bag resolver (key 0x01010095, parent
+            // inheritance included); framework styles fall to the byte-
+            // verified framework table.
             uint32_t sid = at.value.is_reference() ? at.value.ref_id : 0;
-            if (sid == 0x01030042) {
-                a.appearance_text_size_sp = 22.0f;
-                a.appearance_resolved = true;
-            } else if (sid != 0) {
-                stats.unresolved_refs++;
-                stats.warnings.push_back("framework TextAppearance 0x" + [&]{
-                    char b[16]; snprintf(b, sizeof b, "%x", sid);
-                    return std::string(b); }() + " not in the verified law table");
+            if (sid != 0) {
+                if (!resolve_text_appearance(sid, a, stats)) {
+                    stats.unresolved_refs++;
+                    stats.warnings.push_back("framework TextAppearance 0x" + [&]{
+                        char b[16]; snprintf(b, sizeof b, "%x", sid);
+                        return std::string(b); }() + " not in the verified law table");
+                }
             }
         }
         else if (n == "textStyle") {
@@ -727,20 +791,24 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.text = a.text;
     node.hint = a.hint;
     if (a.text_size_px > 0) node.text_size_px = a.text_size_px;
-    else if (a.appearance_resolved && a.appearance_text_size_sp > 0) {
-        // G46: TypedValue.complexToDimensionPixelSize law — sp -> px with
-        // round-to-nearest: px = (int)(sp * scaledDensity + 0.5). Here
-        // scaledDensity = density * fontScale = 2.625 * 1.0.
-        float px_f = a.appearance_text_size_sp * metrics_.density * metrics_.scale_fonts;
-        int px = (int)(px_f + 0.5f);
-        node.text_size_px = (float)px;
-        node.text_size_sp = a.appearance_text_size_sp;
-        std::cerr << "[G46-TEXTAPPEARANCE] TextAppearance.Large textSize="
-                  << a.appearance_text_size_sp << "sp -> " << px
-                  << "px (scaledDensity=" << metrics_.density * metrics_.scale_fonts
-                  << ")\n";
+    else if (a.style_text_size_px > 0) {
+        // GOLDEN-03 §8: style-bag textSize now reaches the node (AOSP order:
+        // view explicit attrs win over style attrs; appearance below wins
+        // only when no style provided one — TextView applyTextAppearance).
+        node.text_size_px = a.style_text_size_px;
+        node.text_size_sp = a.style_text_size_px / metrics_.density;
+    }
+    else if (a.appearance_resolved && a.appearance_text_size_px > 0) {
+        // G46/GOLDEN-03 §8: the appearance px was produced by the canonical
+        // complexToDimensionPixelSize law at resolution time (22sp → 58px).
+        node.text_size_px = a.appearance_text_size_px;
+        node.text_size_sp = a.appearance_text_size_px / metrics_.density;
+        std::cerr << "[G46-TEXTAPPEARANCE] TextAppearance textSize="
+                  << a.appearance_text_size_px << "px (density="
+                  << metrics_.density * metrics_.scale_fonts << ")\n";
     }
     if (a.text_color != 0) node.text_color = a.text_color;
+    else if (a.style_text_color != 0) node.text_color = a.style_text_color;   // GOLDEN-03 §8
     node.text_style = a.text_style;
     node.text_bold = (a.text_style & 1) != 0;
     node.text_italic = (a.text_style & 2) != 0;
