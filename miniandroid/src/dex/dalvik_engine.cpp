@@ -11807,14 +11807,82 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
 
-    // EXP-095 (CM-019): TextView/LinearLayout.setGravity — text alignment
-    // inside the view. Per AOSP Gravity constants.
+    // EXP-095 (CM-019) + EXT-AOSP-001: setGravity dispatch by receiver class.
+    // AOSP semantics (frameworks/base@1cdfff55):
+    //   * TextView.setGravity (TextView.java L5936) → text alignment INSIDE
+    //     the view.
+    //   * LinearLayout.setGravity (LinearLayout.java L1933) → container
+    //     gravity that positions CHILDREN lacking explicit layout_gravity
+    //     (L1284/L1466: `lp.gravity < 0 ? mGravity : lp.gravity`).
+    // The engine previously routed every receiver to text_gravity, so a
+    // programmatic LinearLayout.setGravity(CENTER) never reached child
+    // layout — recorded as the Hello-World golden probe finding EXT-002.
     if (method == "setGravity" && !args.empty() &&
         args[0].type == DalvikType::OBJECT_REF &&
         args[1].type == DalvikType::INT32 && shadow_registry_ != nullptr) {
         auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
         if (vs != nullptr) {
-            vs->set_text_gravity(args[0].object_id, args[1].int_val);
+            const bool is_text_view =
+                class_name.find("TextView;") != std::string::npos ||
+                class_name.find("EditText;") != std::string::npos ||
+                class_name.find("Button;") != std::string::npos;
+            const bool is_container =
+                class_name.find("LinearLayout;") != std::string::npos ||
+                class_name.find("FrameLayout;") != std::string::npos ||
+                class_name.find("RelativeLayout;") != std::string::npos ||
+                class_name.find("GridLayout;") != std::string::npos ||
+                class_name.find("RadioGroup;") != std::string::npos;
+            if (is_container) {
+                vs->set_container_gravity(args[0].object_id, args[1].int_val);
+                std::cerr << "[EXT-AOSP-001] container setGravity view="
+                          << args[0].object_id << " class=" << class_name
+                          << " gravity=0x" << std::hex << args[1].int_val
+                          << std::dec << std::endl;
+            } else {
+                // TextView-family (and legacy/unclassified receivers — no
+                // behavior change for pre-existing call sites).
+                vs->set_text_gravity(args[0].object_id, args[1].int_val);
+            }
+        }
+    }
+
+    // EXT-AOSP-002: TextView.setTextSize — AOSP TextView.java@1cdfff55
+    // L4720-4722: setTextSize(float) == setTextSize(COMPLEX_UNIT_SP, size);
+    // L4752-4762: TypedValue.applyDimension → px = sp * scaledDensity.
+    // This runtime's scaledDensity == ExecutionConfig::density (2.625),
+    // the same factor the renderer uses for its default size (14px default).
+    // Handles both the (float) and (int unit, float size) shapes; unit
+    // COMPLEX_UNIT_PX(2) skips the density multiply (AOSP applyDimension).
+    if (method == "setTextSize" && shadow_registry_ != nullptr &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+        const float kDensity = 2.625f;
+        float px = -1.0f;
+        if (args.size() >= 2 && args[1].type == DalvikType::FLOAT32) {
+            px = args[1].float_val * kDensity;                     // sp
+        } else if (args.size() >= 3 &&
+                   args[1].type == DalvikType::INT32 &&
+                   args[2].type == DalvikType::FLOAT32) {
+            const int unit = args[1].int_val;   // 0=DIP 1=SP 2=PX
+            px = (unit == 2) ? args[2].float_val
+                             : args[2].float_val * kDensity;
+        } else if (args.size() >= 2 && args[1].type == DalvikType::INT32 &&
+                   args[1].int_val > 0 && args[1].int_val < 10000) {
+            // DEX float args may surface as raw IEEE bits in INT32 slots on
+            // some invoke shapes (see signature-aware float correction work);
+            // recover the float value defensively rather than dropping the
+            // call silently.
+            float f;
+            std::memcpy(&f, &args[1].int_val, sizeof(f));
+            if (f > 0.0f && f < 1000.0f) px = f * kDensity;
+        }
+        if (px > 0.0f) {
+            auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+            if (vs != nullptr) {
+                vs->set_text_size_px(args[0].object_id, px);
+                std::cerr << "[EXT-AOSP-002] setTextSize view="
+                          << args[0].object_id << " class=" << class_name
+                          << " px=" << px << std::endl;
+            }
         }
     }
 

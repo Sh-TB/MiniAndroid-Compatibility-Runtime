@@ -773,6 +773,31 @@ public:
         if (n != nullptr) n->text_gravity = gravity;
     }
 
+    // EXT-AOSP-001 (LinearLayout.setGravity): container gravity — AOSP
+    // LinearLayout.java@1cdfff55 L1933-1945 stores mGravity and L1284/L1466
+    // resolve child placement as `lp.gravity < 0 ? mGravity : lp.gravity`.
+    // The live renderer consumes this when a child carries no explicit
+    // layout_gravity (lp_gravity == 0 in this runtime).
+    void set_container_gravity(uint32_t view_id, int gravity) {
+        auto* n = get_or_create_node(view_id, "");
+        if (n != nullptr) {
+            n->container_gravity = gravity;
+            n->gravity_set = true;
+        }
+    }
+
+    // EXT-AOSP-002 (TextView.setTextSize): AOSP TextView.java@1cdfff55
+    // L4720-4722 routes setTextSize(float) to COMPLEX_UNIT_SP and
+    // L4752-4762 applies TypedValue.applyDimension → paint.setTextSize.
+    // Bridge converts sp → px (scaledDensity) BEFORE calling this.
+    void set_text_size_px(uint32_t view_id, float px) {
+        auto* n = get_or_create_node(view_id, "");
+        if (n != nullptr && px > 0.0f) {
+            n->text_size_px = px;
+            n->text_size_sp = px;  // density-scaled evidence value
+        }
+    }
+
     // EXP-095: Store LinearLayout.setOrientation (0=HORIZONTAL, 1=VERTICAL).
     void set_orientation(uint32_t view_id, int orientation) {
         auto* n = get_or_create_node(view_id, "");
