@@ -119,6 +119,18 @@ gate "link linear_layout_law_test" $?
 gate "LinearLayout/MeasureSpec law (expect 24)" $?
 tail -1 /tmp/battery_lllaw.out
 
+# G04/G05 §16: hostile drawable/image/layout safety battery
+g++ -std=c++17 -w -g -O1 -Isrc -Itests -o build/g04_hostile_test \
+    tests/g04_hostile_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread \
+    > /tmp/battery_g04h.log 2>&1
+gate "link g04_hostile_test" $?
+timeout 60 ./build/g04_hostile_test > /tmp/battery_g04h.out 2>&1
+gate "G04 hostile safety (expect 24)" $?
+tail -1 /tmp/battery_g04h.out
+
 # P2 encoded-value AOSP law (hostile/edge; FIND-REUSE-DEX)
 g++ -std=c++17 -w -g -O1 -Isrc -o build/encoded_value_law_test \
     tests/encoded_value_law_test.cpp > /tmp/battery_ev.log 2>&1
