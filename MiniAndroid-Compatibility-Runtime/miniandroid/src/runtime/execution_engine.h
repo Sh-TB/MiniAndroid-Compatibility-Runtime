@@ -27,6 +27,7 @@
 // G06 §4: canonical input pipeline (TouchDispatcher) + StateListDrawable law
 #include "framework/touch_dispatcher.h"
 #include "framework/state_list.h"
+#include "framework/lifecycle_controller.h"
 
 namespace miniandroid {
 namespace runtime {
@@ -203,6 +204,13 @@ private:
     // UnsetPressedState → drained frame). Frames + touch trace manifest.
     bool stage_tap(ExecutionResult& result, const ExecutionConfig& config);
     void invoke_handler_runnable(uint32_t runnable_id);
+    // G07 §7: lifecycle state machine + real-DEX lifecycle dispatch.
+    bool dispatch_app_lifecycle(const std::string& method,
+                                nlohmann::json* record);
+    // Consumes a pending finish() at a frame boundary: onPause → onStop →
+    // onDestroy through real DEX (AOSP ActivityThread cascade). Returns a
+    // JSON record (null when nothing pending).
+    nlohmann::json consume_finish_cascade();
     bool stage_generate_reports(ExecutionResult& result, const ExecutionConfig& config);
     
     // Helper methods
@@ -239,6 +247,8 @@ private:
     std::map<uint32_t,
              std::pair<bool, std::vector<framework::ViewShadow::ViewNode::BgStateItem>>>
         state_list_cache_;
+    // G07 §7/§10: runtime lifecycle state machine (real transitions only).
+    framework::LifecycleController lifecycle_;
     
     // State
     std::vector<uint8_t> framebuffer_;

@@ -149,6 +149,18 @@ timeout 120 ./build/input_pipeline_law_test > /tmp/battery_g06law.out 2>&1
 gate "G06 input pipeline law (expect 45)" $?
 tail -1 /tmp/battery_g06law.out
 
+# G07 §7/§8/§10: lifecycle state machine + MessageQueue ordering law battery
+g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/lifecycle_law_test \
+    tests/lifecycle_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread \
+    > /tmp/battery_g07law.log 2>&1
+gate "link lifecycle_law_test" $?
+timeout 120 ./build/lifecycle_law_test > /tmp/battery_g07law.out 2>&1
+gate "G07 lifecycle law (expect 22)" $?
+tail -1 /tmp/battery_g07law.out
+
 # P2 encoded-value AOSP law (hostile/edge; FIND-REUSE-DEX)
 g++ -std=c++17 -w -g -O1 -Isrc -o build/encoded_value_law_test \
     tests/encoded_value_law_test.cpp > /tmp/battery_ev.log 2>&1
@@ -243,6 +255,38 @@ if [ -d "$G06_FIX_SRC" ]; then
     gate "G06 tap 3-run determinism (frame SHAs identical)" $?
 else
     gate "G06 interaction golden (21 law checks)" 1
+fi
+
+# G07 §9/§10: lifecycle golden — real-toolchain fixture, real DEX lifecycle
+# callbacks, finish() cascade at the frame boundary, tick chain scheduling.
+G07_FIX_SRC="$MA/tests/fixtures/g07_lifecycle"
+rm -rf /tmp/battery_g07; mkdir -p /tmp/battery_g07
+if [ -d "$G07_FIX_SRC" ]; then
+    bash "$REPO/MiniAndroid-Compatibility-Runtime/scripts/build_fixture_apk.sh" \
+        "$G07_FIX_SRC" /tmp/battery_g07/g07_lifecycle.apk \
+        > /tmp/battery_g07/build.log 2>&1
+    gate "G07 fixture build (aapt2+ECJ+D8)" $?
+    for i in 1 2 3; do
+        mkdir -p "/tmp/battery_g07/fin$i"
+        ./build/miniandroid run /tmp/battery_g07/g07_lifecycle.apk \
+            -o "/tmp/battery_g07/fin$i" --tap 540,400 \
+            > "/tmp/battery_g07/fin$i/run.log" 2>&1
+    done
+    mkdir -p /tmp/battery_g07/frames
+    ./build/miniandroid run /tmp/battery_g07/g07_lifecycle.apk \
+        -o /tmp/battery_g07/frames --frames 4 --frame-delay 250 \
+        > /tmp/battery_g07/frames/run.log 2>&1
+    python3 "$REPO/scripts/compare_g07_lifecycle.py" \
+        /tmp/battery_g07/fin1 /tmp/battery_g07/frames \
+        --json /tmp/battery_g07/golden.json > /tmp/battery_g07/compare.log 2>&1
+    gate "G07 lifecycle golden (16 machine checks)" $?
+    L1=$(python3 -c "import json;print(json.dumps([f['sha256'] for f in json.load(open('/tmp/battery_g07/fin1/frames/manifest.json'))['frames']]))")
+    L2=$(python3 -c "import json;print(json.dumps([f['sha256'] for f in json.load(open('/tmp/battery_g07/fin2/frames/manifest.json'))['frames']]))")
+    L3=$(python3 -c "import json;print(json.dumps([f['sha256'] for f in json.load(open('/tmp/battery_g07/fin3/frames/manifest.json'))['frames']]))")
+    [ "$L1" = "$L2" ] && [ "$L2" = "$L3" ] && [ -n "$L1" ]
+    gate "G07 finish-cascade 3-run determinism (frame SHAs identical)" $?
+else
+    gate "G07 lifecycle golden (16 machine checks)" 1
 fi
 
 # corpus regression: real external APKs must still boot and render
