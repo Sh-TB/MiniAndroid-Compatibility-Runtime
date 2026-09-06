@@ -11,7 +11,7 @@
   "base": {
     "rc": 0,
     "status": "SUCCESS",
-    "seconds": 1.01,
+    "seconds": 0.92,
     "has_screenshot": true,
     "screenshot_sha256": "2f85dd74aa54e46304537868822071f12e4411e1dc8e41c2f354ba9dff076edb",
     "log_path": "/tmp/g09_runs/nl.hansdezwart.bgclock/base/console.log"
@@ -22,7 +22,7 @@
   },
   "lifecycle": {
     "present": true,
-    "final_state": "ACTIVITY_CREATED",
+    "final_state": "RESUMED",
     "transitions": [
       [
         "PROCESS_CREATED",
@@ -31,8 +31,13 @@
       ],
       [
         "ACTIVITY_CREATED",
+        "STARTED",
+        true
+      ],
+      [
+        "STARTED",
         "RESUMED",
-        false
+        true
       ]
     ],
     "finish_cascade": null,

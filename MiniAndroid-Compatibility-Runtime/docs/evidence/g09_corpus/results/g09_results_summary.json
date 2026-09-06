@@ -1,34 +1,66 @@
 [
   {
-    "package": "de.duenndns.gmdice",
+    "package": "com.appliberated.helloworldselfaware",
     "status": "SUCCESS",
     "screenshot": true,
     "lifecycle_final": "RESUMED",
-    "probed": 8,
-    "changed": 8
-  },
-  {
-    "package": "omegacentauri.mobi.simplestopwatch",
-    "status": "SUCCESS",
-    "screenshot": true,
-    "lifecycle_final": "RESUMED",
-    "probed": 4,
-    "changed": 2
-  },
-  {
-    "package": "com.chessclock.android",
-    "status": "SUCCESS",
-    "screenshot": true,
-    "lifecycle_final": "RESUMED",
-    "probed": 8,
+    "probed": 0,
     "changed": 0
   },
   {
-    "package": "org.billthefarmer.notes",
+    "package": "com.emmanuelmess.tictactoe",
     "status": "SUCCESS",
     "screenshot": true,
     "lifecycle_final": "RESUMED",
-    "probed": 2,
+    "probed": 0,
+    "changed": 0
+  },
+  {
+    "package": "org.debian.eugen.headingcalculator",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 0,
+    "changed": 0
+  },
+  {
+    "package": "com.benny.openlauncher",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "DESTROYED",
+    "probed": 1,
+    "changed": 0
+  },
+  {
+    "package": "io.github.yamin8000.dooz",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 0,
+    "changed": 0
+  },
+  {
+    "package": "nl.hansdezwart.bgclock",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 0,
+    "changed": 0
+  },
+  {
+    "package": "com.github.muellerma.stopwatch",
+    "status": "PARTIAL",
+    "screenshot": true,
+    "lifecycle_final": "PROCESS_CREATED",
+    "probed": 0,
+    "changed": 0
+  },
+  {
+    "package": "rkr.simplekeyboard.inputmethod",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 0,
     "changed": 0
   },
   {
@@ -40,11 +72,35 @@
     "changed": 0
   },
   {
-    "package": "app.varlorg.unote",
+    "package": "fr.neamar.kiss",
+    "status": "PARTIAL",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 0,
+    "changed": 0
+  },
+  {
+    "package": "org.fossify.notes",
     "status": "SUCCESS",
     "screenshot": true,
     "lifecycle_final": "RESUMED",
-    "probed": 4,
-    "changed": 2
+    "probed": 0,
+    "changed": 0
+  },
+  {
+    "package": "net.gsantner.markor",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 0,
+    "changed": 0
+  },
+  {
+    "package": "org.connectbot",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 0,
+    "changed": 0
   }
 ]
