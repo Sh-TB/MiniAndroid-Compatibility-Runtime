@@ -223,6 +223,14 @@ private:
 // ─────────────────────────────────────────────────────────────────────────
 class HandlerShadow : public Shadow {
 public:
+    // Reserved framework-callback token base (G06). Framework-internal
+    // Runnables (PerformClick / UnsetPressedState / CheckForLongPress) ride
+    // this queue through tokens >= this base so the engine can route drained
+    // entries to the TouchDispatcher instead of the DEX run() path — one
+    // MessageQueue, one ordering law. Heap object ids grow from 1 and never
+    // reach this range in any reachable corpus.
+    static constexpr uint32_t kFrameworkTokenBase = 0xF0000000u;
+
     struct QueuedRunnable {
         uint32_t runnable_id = 0;        // heap object_id of the Runnable
         uint32_t enqueue_seq = 0;        // FIFO tiebreaker
@@ -259,6 +267,19 @@ public:
     // scheduling is fully deterministic — no wall-clock involvement.
     void enqueue(uint32_t runnable_id, int64_t delay_ms,
                  const std::string& cls);
+
+    // G06 §4: enqueue a FRAMEWORK-INTERNAL callback (PerformClick /
+    // UnsetPressedState / CheckForLongPress) on the SAME queue and clock as
+    // app Runnables. The AOSP law is one MessageQueue per main thread:
+    // a posted PerformClick must be ordered against app Runnables by
+    // (when, FIFO). `token` must be >= kFrameworkTokenBase (touch_dispatcher.h)
+    // so the engine can route the drained entry to the TouchDispatcher
+    // instead of the DEX Runnable path.
+    void enqueue_framework(uint32_t token, int64_t delay_ms,
+                           const std::string& label) {
+        if (token < kFrameworkTokenBase) return;  // hostile-token safe
+        enqueue(token, delay_ms, label);
+    }
 
     // Drain every Runnable whose ready time has been reached on the VIRTUAL
     // clock (ready_at_ms <= virtual_now_ms_), in enqueue (FIFO) order among
@@ -547,6 +568,34 @@ public:
         bool clickable = false;
         bool enabled = true;
         int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8
+        // ── G06 §5: view state model (View.java view-flag laws) ─────────
+        // pressed: set by the TouchDispatcher per the View.onTouchEvent law
+        // (DOWN non-scrolling → setPressed(true); UP → UnsetPressedState
+        // posted at PRESSED_STATE_DURATION; CANCEL/move-outside → cleared).
+        // Drives state-list background re-resolution at draw time.
+        bool pressed = false;
+        bool long_clickable = false;     // View.setLongClickable / listener
+        bool focusable = false;          // View.setFocusable
+        bool focusable_in_touch_mode = false;  // View.setFocusableInTouchMode
+        bool focused = false;            // requestFocus result
+        bool selected = false;           // View.setSelected
+        // ── G06 §5: state-list background (StateListDrawable law) ────────
+        // When the android:background drawable resolves to a <selector>
+        // XML, the items are parsed once and the winning item is re-picked
+        // per (pressed, enabled, selected) EVERY frame (DrawableContainer
+        // law — the drawable reacts to drawableStateChanged).
+        bool bg_state_list = false;
+        bool bg_state_list_checked = false;  // lazy selector parse guard
+        struct BgStateItem {
+            // -1 = wildcard (state not declared on the item), 0/1 = required
+            int state_pressed = -1;
+            int state_enabled = -1;
+            int state_selected = -1;
+            uint32_t color = 0;           // android:color or shape solid
+            bool has_color = false;
+            std::string drawable_path;    // android:drawable file (may be empty)
+        };
+        std::vector<BgStateItem> bg_state_items;
         // CAMPAIGN 013 B1: dialog window item/button routing. When
         // dialog_owner_obj != 0 this ViewNode belongs to a DialogShadow
         // window's decor tree and clicks route to the window's
