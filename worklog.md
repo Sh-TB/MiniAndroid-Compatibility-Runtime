@@ -462,3 +462,34 @@ Stage Summary:
   d8b66526/0115452b chain pushed; final HEAD 0115452b.
 - Remaining (ranked): headingcalculator keypad width (needs reference evidence),
   AppCompat/Compose shells, G07 timer ticks, implicit intents, TableLayout column law.
+
+---
+Task ID: MASTER (Real APK Compatibility Recovery)
+Agent: Super Z (main agent)
+Task: Audit CURRENT HEAD from APK container to first rendered frame + user
+interaction across real external APKs; root-cause and fix the highest-value
+reusable layers; regression + determinism gates; GitHub evidence.
+
+Work Log:
+- Baseline at cc9e67ef: clean tree, origin verified in sync, battery harness
+  restored from sandbox, fresh 52-stage battery ALL PASS before code changes.
+- Corpus: 16 frozen APKs; KISS restored SHA-matched; bouncy_43 + scope_140
+  frozen as new independent additions; Fossify/Markor/TinyMusic/Telegram
+  URL-drift + HTML-page findings recorded honestly (no substitutes).
+- Phase-0 matrix (16 APKs) via scripts/master_phase0.py: per-APK status +
+  pixel audit + view trees; blank/partial set triaged per first failing layer.
+- Cluster A root-caused (R8 horizontal class merging ground truth: 24 classes
+  extend DBHelper merge target; Object.<init> fallthrough + ViewShadow
+  catch-all claim; dual shadow registry hid Thread/Looper/ArchTaskExecutor
+  shadows; capped-ring lifecycle inference) → 3 law fixes + diagnostics.
+- Cluster B: real-DEX onMeasure execution + getDefaultSize + MeasureSpec +
+  Math laws; scope custom views measured by their own bytecode.
+- F16 proofs: simplestopwatch/unote/bouncy tap→DEX→state→frame, 3× identical.
+- Regression: fresh battery ALL PASS after every fix; goldens unchanged.
+- Evidence posted to Issue #8 (4 comments, direct URLs verified, dupes purged).
+
+Stage Summary:
+- Commits b812c214, ef691b35, e49b9bdd, e86f5d51, b343b969; remote b343b969.
+- kiss PARTIAL(rc=1) → SUCCESS(5/5); scope blank → real app-measured render.
+- Honest blockers remain: scope Scope/Unit hook gap, G07 timer-tick labels,
+  bouncy field draw coverage, §29 shells, Telegram freeze-blocked.
