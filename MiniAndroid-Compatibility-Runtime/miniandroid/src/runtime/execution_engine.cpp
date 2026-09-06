@@ -1462,8 +1462,18 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             // no inflater state — measured geometry comes from
                             // the captured LayoutParams path below).
                             auto& rt = resources::ResourceRuntime::instance();
-                            if (rt.loaded())
+                            if (rt.loaded()) {
+                                // G10 FIX-G10-002: wire the DEX-backed
+                                // superclass-chain classifier so container
+                                // semantics follow real class ancestry
+                                // (CalculatorDisplay extends LinearLayout,
+                                // ViewSwitcher extends FrameLayout, ...).
+                                rt.inflater().set_is_a(
+                                    [this](const std::string& c, const std::string& a) {
+                                        return dalvik_engine_.is_subclass_of(c, a);
+                                    });
                                 rt.inflater().measure_layout(view_shadow, root_id);
+                            }
                         }
                         // CAMPAIGN 013: deferred custom-view placeholders.
                         struct CVP { int l, t, w, h; std::string cls; uint32_t view_id = 0; };
@@ -2145,7 +2155,8 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                       << std::endl;
                             // Orientation: captured setOrientation(0=H, 1=V).
                             // Default VERTICAL per LinearLayout docs.
-                            bool horizontal = is_linear_layout && (node->orientation == 0);
+                            // FIX-G10-001 (AOSP LinearLayout.java): unset orientation (-1) = HORIZONTAL
+                            bool horizontal = is_linear_layout && (node->orientation != 1);
                             (void)is_frame_layout;
 
                             // ── Two-phase child layout ──────────────────────

@@ -185,6 +185,23 @@ gate "LinearLayout/MeasureSpec law (expect 24)" $?
 tail -1 /tmp/battery_lllaw.out
 fi
 
+# G10: measurement/layout law battery (orientation default, superclass-chain
+# classification, gravity axis-field equality, hostile geometry safety)
+if cached "link g10_layout_law_test"; then
+    skip "link g10_layout_law_test"; skip "G10 measurement/layout law (expect 23)"
+else
+g++ -std=c++17 -w -g -O1 -Isrc -o build/g10_layout_law_test \
+    tests/g10_layout_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread \
+    > /tmp/battery_g10law.log 2>&1
+gate "link g10_layout_law_test" $?
+./build/g10_layout_law_test > /tmp/battery_g10law.out 2>&1
+gate "G10 measurement/layout law (expect 23)" $?
+tail -1 /tmp/battery_g10law.out
+fi
+
 # G04/G05 §16: hostile drawable/image/layout safety battery
 if cached "G04 hostile safety (expect 24)"; then
     skip "link g04_hostile_test"; skip "G04 hostile safety (expect 24)"

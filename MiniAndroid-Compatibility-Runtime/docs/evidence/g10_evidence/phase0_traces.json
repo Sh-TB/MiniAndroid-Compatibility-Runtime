@@ -1,0 +1,2987 @@
+[
+ {
+  "apk": "microtimer",
+  "trace_lines": 50,
+  "tree": [
+   {
+    "depth": 1,
+    "vid": 54,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 55,
+    "class": "ScrollView",
+    "id_name": "",
+    "lp": "-1/0",
+    "weight": 1000.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 56,
+    "class": "inearLayout",
+    "id_name": "layoutAlarms",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 57,
+    "class": "View",
+    "id_name": "",
+    "lp": "-1/3",
+    "weight": 0.0,
+    "measured": "1080x3",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 58,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x252",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 59,
+    "class": "ImageButton",
+    "id_name": "btnClear",
+    "lp": "-2/-1",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 60,
+    "class": "dubrowgn.microtimer.RoTimeControl",
+    "id_name": "lblInput",
+    "lp": "0/-2",
+    "weight": 1000.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 61,
+    "class": "ImageButton",
+    "id_name": "btnBackspace",
+    "lp": "-2/-1",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 62,
+    "class": "View",
+    "id_name": "",
+    "lp": "-1/3",
+    "weight": 0.0,
+    "measured": "1080x3",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 63,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/210",
+    "weight": 0.0,
+    "measured": "1080x210",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 64,
+    "class": "Button",
+    "id_name": "btn1",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "1"
+   },
+   {
+    "depth": 3,
+    "vid": 65,
+    "class": "Button",
+    "id_name": "btn2",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "2"
+   },
+   {
+    "depth": 3,
+    "vid": 66,
+    "class": "Button",
+    "id_name": "btn3",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "3"
+   },
+   {
+    "depth": 2,
+    "vid": 67,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/210",
+    "weight": 0.0,
+    "measured": "1080x210",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 68,
+    "class": "Button",
+    "id_name": "btn4",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "4"
+   },
+   {
+    "depth": 3,
+    "vid": 69,
+    "class": "Button",
+    "id_name": "btn5",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "5"
+   },
+   {
+    "depth": 3,
+    "vid": 70,
+    "class": "Button",
+    "id_name": "btn6",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "6"
+   },
+   {
+    "depth": 2,
+    "vid": 71,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/210",
+    "weight": 0.0,
+    "measured": "1080x210",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 72,
+    "class": "Button",
+    "id_name": "btn7",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "7"
+   },
+   {
+    "depth": 3,
+    "vid": 73,
+    "class": "Button",
+    "id_name": "btn8",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "8"
+   },
+   {
+    "depth": 3,
+    "vid": 74,
+    "class": "Button",
+    "id_name": "btn9",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "9"
+   },
+   {
+    "depth": 2,
+    "vid": 75,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/210",
+    "weight": 0.0,
+    "measured": "1080x210",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 76,
+    "class": "Button",
+    "id_name": "btn00",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "46x44",
+    "text": "00"
+   },
+   {
+    "depth": 3,
+    "vid": 77,
+    "class": "Button",
+    "id_name": "btn0",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "0"
+   },
+   {
+    "depth": 3,
+    "vid": 78,
+    "class": "Button",
+    "id_name": "btnStart",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 1,
+    "vid": 54,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 55,
+    "class": "ScrollView",
+    "id_name": "",
+    "lp": "-1/0",
+    "weight": 1000.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 56,
+    "class": "inearLayout",
+    "id_name": "layoutAlarms",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 57,
+    "class": "View",
+    "id_name": "",
+    "lp": "-1/3",
+    "weight": 0.0,
+    "measured": "1080x3",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 58,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x252",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 59,
+    "class": "ImageButton",
+    "id_name": "btnClear",
+    "lp": "-2/-1",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 60,
+    "class": "dubrowgn.microtimer.RoTimeControl",
+    "id_name": "lblInput",
+    "lp": "0/-2",
+    "weight": 1000.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 61,
+    "class": "ImageButton",
+    "id_name": "btnBackspace",
+    "lp": "-2/-1",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 62,
+    "class": "View",
+    "id_name": "",
+    "lp": "-1/3",
+    "weight": 0.0,
+    "measured": "1080x3",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 63,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/210",
+    "weight": 0.0,
+    "measured": "1080x210",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 64,
+    "class": "Button",
+    "id_name": "btn1",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "1"
+   },
+   {
+    "depth": 3,
+    "vid": 65,
+    "class": "Button",
+    "id_name": "btn2",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "2"
+   },
+   {
+    "depth": 3,
+    "vid": 66,
+    "class": "Button",
+    "id_name": "btn3",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "3"
+   },
+   {
+    "depth": 2,
+    "vid": 67,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/210",
+    "weight": 0.0,
+    "measured": "1080x210",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 68,
+    "class": "Button",
+    "id_name": "btn4",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "4"
+   },
+   {
+    "depth": 3,
+    "vid": 69,
+    "class": "Button",
+    "id_name": "btn5",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "5"
+   },
+   {
+    "depth": 3,
+    "vid": 70,
+    "class": "Button",
+    "id_name": "btn6",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "6"
+   },
+   {
+    "depth": 2,
+    "vid": 71,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/210",
+    "weight": 0.0,
+    "measured": "1080x210",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 72,
+    "class": "Button",
+    "id_name": "btn7",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "7"
+   },
+   {
+    "depth": 3,
+    "vid": 73,
+    "class": "Button",
+    "id_name": "btn8",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "8"
+   },
+   {
+    "depth": 3,
+    "vid": 74,
+    "class": "Button",
+    "id_name": "btn9",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "9"
+   },
+   {
+    "depth": 2,
+    "vid": 75,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/210",
+    "weight": 0.0,
+    "measured": "1080x210",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 76,
+    "class": "Button",
+    "id_name": "btn00",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "46x44",
+    "text": "00"
+   },
+   {
+    "depth": 3,
+    "vid": 77,
+    "class": "Button",
+    "id_name": "btn0",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "0"
+   },
+   {
+    "depth": 3,
+    "vid": 78,
+    "class": "Button",
+    "id_name": "btnStart",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   }
+  ],
+  "root": {
+   "depth": 1,
+   "vid": 54,
+   "class": "inearLayout",
+   "id_name": "",
+   "lp": "-1/-1",
+   "weight": 0.0,
+   "measured": "1080x1920",
+   "text": ""
+  },
+  "shallow": [
+   {
+    "depth": 1,
+    "vid": 54,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 55,
+    "class": "ScrollView",
+    "id_name": "",
+    "lp": "-1/0",
+    "weight": 1000.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 56,
+    "class": "inearLayout",
+    "id_name": "layoutAlarms",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 57,
+    "class": "View",
+    "id_name": "",
+    "lp": "-1/3",
+    "weight": 0.0,
+    "measured": "1080x3",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 58,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x252",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 59,
+    "class": "ImageButton",
+    "id_name": "btnClear",
+    "lp": "-2/-1",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 60,
+    "class": "dubrowgn.microtimer.RoTimeControl",
+    "id_name": "lblInput",
+    "lp": "0/-2",
+    "weight": 1000.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 61,
+    "class": "ImageButton",
+    "id_name": "btnBackspace",
+    "lp": "-2/-1",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 62,
+    "class": "View",
+    "id_name": "",
+    "lp": "-1/3",
+    "weight": 0.0,
+    "measured": "1080x3",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 63,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/210",
+    "weight": 0.0,
+    "measured": "1080x210",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 64,
+    "class": "Button",
+    "id_name": "btn1",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "1"
+   },
+   {
+    "depth": 3,
+    "vid": 65,
+    "class": "Button",
+    "id_name": "btn2",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "2"
+   },
+   {
+    "depth": 3,
+    "vid": 66,
+    "class": "Button",
+    "id_name": "btn3",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "3"
+   },
+   {
+    "depth": 2,
+    "vid": 67,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/210",
+    "weight": 0.0,
+    "measured": "1080x210",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 68,
+    "class": "Button",
+    "id_name": "btn4",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "4"
+   },
+   {
+    "depth": 3,
+    "vid": 69,
+    "class": "Button",
+    "id_name": "btn5",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "5"
+   },
+   {
+    "depth": 3,
+    "vid": 70,
+    "class": "Button",
+    "id_name": "btn6",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "6"
+   },
+   {
+    "depth": 2,
+    "vid": 71,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/210",
+    "weight": 0.0,
+    "measured": "1080x210",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 72,
+    "class": "Button",
+    "id_name": "btn7",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "7"
+   },
+   {
+    "depth": 3,
+    "vid": 73,
+    "class": "Button",
+    "id_name": "btn8",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "8"
+   },
+   {
+    "depth": 3,
+    "vid": 74,
+    "class": "Button",
+    "id_name": "btn9",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "9"
+   },
+   {
+    "depth": 2,
+    "vid": 75,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/210",
+    "weight": 0.0,
+    "measured": "1080x210",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 76,
+    "class": "Button",
+    "id_name": "btn00",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "46x44",
+    "text": "00"
+   },
+   {
+    "depth": 3,
+    "vid": 77,
+    "class": "Button",
+    "id_name": "btn0",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "23x44",
+    "text": "0"
+   },
+   {
+    "depth": 3,
+    "vid": 78,
+    "class": "Button",
+    "id_name": "btnStart",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 1,
+    "vid": 54,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 55,
+    "class": "ScrollView",
+    "id_name": "",
+    "lp": "-1/0",
+    "weight": 1000.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 56,
+    "class": "inearLayout",
+    "id_name": "layoutAlarms",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 57,
+    "class": "View",
+    "id_name": "",
+    "lp": "-1/3",
+    "weight": 0.0,
+    "measured": "1080x3",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 58,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x252",
+    "text": ""
+   }
+  ],
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    255,
+    255,
+    255
+   ],
+   "nonbg_pct": 57.19,
+   "content_bbox": [
+    0,
+    822,
+    1074,
+    1914
+   ]
+  },
+  "base_status": "SUCCESS"
+ },
+ {
+  "apk": "billthefarmer_notes",
+  "trace_lines": 6,
+  "tree": [
+   {
+    "depth": 1,
+    "vid": 11,
+    "class": "View",
+    "id_name": "button_switcher",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 12,
+    "class": "ImageButton",
+    "id_name": "accept",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 13,
+    "class": "ImageButton",
+    "id_name": "edit",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 1,
+    "vid": 11,
+    "class": "View",
+    "id_name": "button_switcher",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 12,
+    "class": "ImageButton",
+    "id_name": "accept",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 13,
+    "class": "ImageButton",
+    "id_name": "edit",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   }
+  ],
+  "root": {
+   "depth": 1,
+   "vid": 11,
+   "class": "View",
+   "id_name": "button_switcher",
+   "lp": "-2/-2",
+   "weight": 0.0,
+   "measured": "1080x1920",
+   "text": ""
+  },
+  "shallow": [
+   {
+    "depth": 1,
+    "vid": 11,
+    "class": "View",
+    "id_name": "button_switcher",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 12,
+    "class": "ImageButton",
+    "id_name": "accept",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 13,
+    "class": "ImageButton",
+    "id_name": "edit",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 1,
+    "vid": 11,
+    "class": "View",
+    "id_name": "button_switcher",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 12,
+    "class": "ImageButton",
+    "id_name": "accept",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 13,
+    "class": "ImageButton",
+    "id_name": "edit",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   }
+  ],
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    255,
+    255,
+    255
+   ],
+   "nonbg_pct": 1.53,
+   "content_bbox": [
+    0,
+    0,
+    120,
+    246
+   ]
+  },
+  "base_status": "SUCCESS"
+ },
+ {
+  "apk": "headingcalculator",
+  "trace_lines": 6,
+  "tree": [
+   {
+    "depth": 1,
+    "vid": 4,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 5,
+    "class": "org.debian.eugen.headingcalculator.CalculatorDisplay",
+    "id_name": "display",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 6,
+    "class": "org.debian.eugen.headingcalculator.CalculatorKeypad",
+    "id_name": "keypad",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 1,
+    "vid": 4,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 5,
+    "class": "org.debian.eugen.headingcalculator.CalculatorDisplay",
+    "id_name": "display",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 6,
+    "class": "org.debian.eugen.headingcalculator.CalculatorKeypad",
+    "id_name": "keypad",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   }
+  ],
+  "root": {
+   "depth": 1,
+   "vid": 4,
+   "class": "inearLayout",
+   "id_name": "",
+   "lp": "-1/-1",
+   "weight": 0.0,
+   "measured": "1080x1920",
+   "text": ""
+  },
+  "shallow": [
+   {
+    "depth": 1,
+    "vid": 4,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 5,
+    "class": "org.debian.eugen.headingcalculator.CalculatorDisplay",
+    "id_name": "display",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 6,
+    "class": "org.debian.eugen.headingcalculator.CalculatorKeypad",
+    "id_name": "keypad",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 1,
+    "vid": 4,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 5,
+    "class": "org.debian.eugen.headingcalculator.CalculatorDisplay",
+    "id_name": "display",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 6,
+    "class": "org.debian.eugen.headingcalculator.CalculatorKeypad",
+    "id_name": "keypad",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   }
+  ],
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    216,
+    216,
+    216
+   ],
+   "nonbg_pct": 99.13,
+   "content_bbox": [
+    6,
+    6,
+    1074,
+    1914
+   ]
+  },
+  "base_status": "SUCCESS"
+ },
+ {
+  "apk": "gmdice",
+  "trace_lines": 18,
+  "tree": [
+   {
+    "depth": 1,
+    "vid": 19,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 20,
+    "class": "istView",
+    "id_name": "",
+    "lp": "-1/263",
+    "weight": 1000.0,
+    "measured": "1080x263",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 22,
+    "class": "TextView",
+    "id_name": "rollresult",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x123",
+    "text": "Roll it!"
+   },
+   {
+    "depth": 2,
+    "vid": 23,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x144",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 24,
+    "class": "Button",
+    "id_name": "die0",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "!"
+   },
+   {
+    "depth": 3,
+    "vid": 25,
+    "class": "Button",
+    "id_name": "die1",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "!"
+   },
+   {
+    "depth": 3,
+    "vid": 26,
+    "class": "Button",
+    "id_name": "die2",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "!"
+   },
+   {
+    "depth": 3,
+    "vid": 27,
+    "class": "Button",
+    "id_name": "die3",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "!"
+   },
+   {
+    "depth": 3,
+    "vid": 28,
+    "class": "Button",
+    "id_name": "more",
+    "lp": "184/144",
+    "weight": 1000.0,
+    "measured": "184x144",
+    "text": "..."
+   },
+   {
+    "depth": 1,
+    "vid": 19,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 20,
+    "class": "istView",
+    "id_name": "",
+    "lp": "-1/263",
+    "weight": 1000.0,
+    "measured": "1080x263",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 22,
+    "class": "TextView",
+    "id_name": "rollresult",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 23,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x144",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 24,
+    "class": "Button",
+    "id_name": "die0",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "3D20"
+   },
+   {
+    "depth": 3,
+    "vid": 25,
+    "class": "Button",
+    "id_name": "die1",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "1d20"
+   },
+   {
+    "depth": 3,
+    "vid": 26,
+    "class": "Button",
+    "id_name": "die2",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "1d6"
+   },
+   {
+    "depth": 3,
+    "vid": 27,
+    "class": "Button",
+    "id_name": "die3",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "1d6+4"
+   },
+   {
+    "depth": 3,
+    "vid": 28,
+    "class": "Button",
+    "id_name": "more",
+    "lp": "184/144",
+    "weight": 1000.0,
+    "measured": "184x144",
+    "text": "..."
+   }
+  ],
+  "root": {
+   "depth": 1,
+   "vid": 19,
+   "class": "inearLayout",
+   "id_name": "",
+   "lp": "-1/-1",
+   "weight": 0.0,
+   "measured": "1080x1920",
+   "text": ""
+  },
+  "shallow": [
+   {
+    "depth": 1,
+    "vid": 19,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 20,
+    "class": "istView",
+    "id_name": "",
+    "lp": "-1/263",
+    "weight": 1000.0,
+    "measured": "1080x263",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 22,
+    "class": "TextView",
+    "id_name": "rollresult",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x123",
+    "text": "Roll it!"
+   },
+   {
+    "depth": 2,
+    "vid": 23,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x144",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 24,
+    "class": "Button",
+    "id_name": "die0",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "!"
+   },
+   {
+    "depth": 3,
+    "vid": 25,
+    "class": "Button",
+    "id_name": "die1",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "!"
+   },
+   {
+    "depth": 3,
+    "vid": 26,
+    "class": "Button",
+    "id_name": "die2",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "!"
+   },
+   {
+    "depth": 3,
+    "vid": 27,
+    "class": "Button",
+    "id_name": "die3",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "!"
+   },
+   {
+    "depth": 3,
+    "vid": 28,
+    "class": "Button",
+    "id_name": "more",
+    "lp": "184/144",
+    "weight": 1000.0,
+    "measured": "184x144",
+    "text": "..."
+   },
+   {
+    "depth": 1,
+    "vid": 19,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 20,
+    "class": "istView",
+    "id_name": "",
+    "lp": "-1/263",
+    "weight": 1000.0,
+    "measured": "1080x263",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 22,
+    "class": "TextView",
+    "id_name": "rollresult",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 23,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x144",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 24,
+    "class": "Button",
+    "id_name": "die0",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "3D20"
+   },
+   {
+    "depth": 3,
+    "vid": 25,
+    "class": "Button",
+    "id_name": "die1",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "1d20"
+   },
+   {
+    "depth": 3,
+    "vid": 26,
+    "class": "Button",
+    "id_name": "die2",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "1d6"
+   },
+   {
+    "depth": 3,
+    "vid": 27,
+    "class": "Button",
+    "id_name": "die3",
+    "lp": "263/144",
+    "weight": 1000.0,
+    "measured": "263x144",
+    "text": "1d6+4"
+   },
+   {
+    "depth": 3,
+    "vid": 28,
+    "class": "Button",
+    "id_name": "more",
+    "lp": "184/144",
+    "weight": 1000.0,
+    "measured": "184x144",
+    "text": "..."
+   }
+  ],
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    153,
+    153,
+    153
+   ],
+   "nonbg_pct": 24.74,
+   "content_bbox": [
+    0,
+    780,
+    1074,
+    1914
+   ]
+  },
+  "base_status": "SUCCESS"
+ },
+ {
+  "apk": "simplestopwatch",
+  "trace_lines": 22,
+  "tree": [
+   {
+    "depth": 1,
+    "vid": 5,
+    "class": "RelativeLayout",
+    "id_name": "main",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 6,
+    "class": "inearLayout",
+    "id_name": "chrono_and_laps",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 7,
+    "class": "omegacentauri.mobi.simplestopwatch.BigTextView",
+    "id_name": "chrono",
+    "lp": "-1/0",
+    "weight": 1000.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 8,
+    "class": "TextView",
+    "id_name": "laps",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 9,
+    "class": "inearLayout",
+    "id_name": "controlBar",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x105",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 10,
+    "class": "Button",
+    "id_name": "start",
+    "lp": "0/-1",
+    "weight": 1000.0,
+    "measured": "0x49",
+    "text": "Start"
+   },
+   {
+    "depth": 3,
+    "vid": 11,
+    "class": "Button",
+    "id_name": "reset",
+    "lp": "0/-1",
+    "weight": 1000.0,
+    "measured": "0x49",
+    "text": "Reset"
+   },
+   {
+    "depth": 3,
+    "vid": 12,
+    "class": "TextView",
+    "id_name": "fraction",
+    "lp": "0/-2",
+    "weight": 850.0,
+    "measured": "0x98",
+    "text": ".0"
+   },
+   {
+    "depth": 3,
+    "vid": 13,
+    "class": "ImageButton",
+    "id_name": "lock",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "72x105",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 14,
+    "class": "ImageButton",
+    "id_name": "settings",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "105x105",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 15,
+    "class": "ImageButton",
+    "id_name": "menu",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "105x105",
+    "text": ""
+   },
+   {
+    "depth": 1,
+    "vid": 5,
+    "class": "RelativeLayout",
+    "id_name": "main",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 6,
+    "class": "inearLayout",
+    "id_name": "chrono_and_laps",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 7,
+    "class": "omegacentauri.mobi.simplestopwatch.BigTextView",
+    "id_name": "chrono",
+    "lp": "-1/0",
+    "weight": 1000.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 8,
+    "class": "TextView",
+    "id_name": "laps",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 9,
+    "class": "inearLayout",
+    "id_name": "controlBar",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x105",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 10,
+    "class": "Button",
+    "id_name": "start",
+    "lp": "0/-1",
+    "weight": 1000.0,
+    "measured": "0x49",
+    "text": "Start"
+   },
+   {
+    "depth": 3,
+    "vid": 11,
+    "class": "Button",
+    "id_name": "reset",
+    "lp": "0/-1",
+    "weight": 1000.0,
+    "measured": "0x49",
+    "text": "Delay"
+   },
+   {
+    "depth": 3,
+    "vid": 12,
+    "class": "TextView",
+    "id_name": "fraction",
+    "lp": "0/-2",
+    "weight": 850.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 13,
+    "class": "ImageButton",
+    "id_name": "lock",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "72x105",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 14,
+    "class": "ImageButton",
+    "id_name": "settings",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "105x105",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 15,
+    "class": "ImageButton",
+    "id_name": "menu",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "105x105",
+    "text": ""
+   }
+  ],
+  "root": {
+   "depth": 1,
+   "vid": 5,
+   "class": "RelativeLayout",
+   "id_name": "main",
+   "lp": "-1/-1",
+   "weight": 0.0,
+   "measured": "1080x1920",
+   "text": ""
+  },
+  "shallow": [
+   {
+    "depth": 1,
+    "vid": 5,
+    "class": "RelativeLayout",
+    "id_name": "main",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 6,
+    "class": "inearLayout",
+    "id_name": "chrono_and_laps",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 7,
+    "class": "omegacentauri.mobi.simplestopwatch.BigTextView",
+    "id_name": "chrono",
+    "lp": "-1/0",
+    "weight": 1000.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 8,
+    "class": "TextView",
+    "id_name": "laps",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 9,
+    "class": "inearLayout",
+    "id_name": "controlBar",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x105",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 10,
+    "class": "Button",
+    "id_name": "start",
+    "lp": "0/-1",
+    "weight": 1000.0,
+    "measured": "0x49",
+    "text": "Start"
+   },
+   {
+    "depth": 3,
+    "vid": 11,
+    "class": "Button",
+    "id_name": "reset",
+    "lp": "0/-1",
+    "weight": 1000.0,
+    "measured": "0x49",
+    "text": "Reset"
+   },
+   {
+    "depth": 3,
+    "vid": 12,
+    "class": "TextView",
+    "id_name": "fraction",
+    "lp": "0/-2",
+    "weight": 850.0,
+    "measured": "0x98",
+    "text": ".0"
+   },
+   {
+    "depth": 3,
+    "vid": 13,
+    "class": "ImageButton",
+    "id_name": "lock",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "72x105",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 14,
+    "class": "ImageButton",
+    "id_name": "settings",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "105x105",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 15,
+    "class": "ImageButton",
+    "id_name": "menu",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "105x105",
+    "text": ""
+   },
+   {
+    "depth": 1,
+    "vid": 5,
+    "class": "RelativeLayout",
+    "id_name": "main",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 6,
+    "class": "inearLayout",
+    "id_name": "chrono_and_laps",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 7,
+    "class": "omegacentauri.mobi.simplestopwatch.BigTextView",
+    "id_name": "chrono",
+    "lp": "-1/0",
+    "weight": 1000.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 8,
+    "class": "TextView",
+    "id_name": "laps",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 9,
+    "class": "inearLayout",
+    "id_name": "controlBar",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x105",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 10,
+    "class": "Button",
+    "id_name": "start",
+    "lp": "0/-1",
+    "weight": 1000.0,
+    "measured": "0x49",
+    "text": "Start"
+   },
+   {
+    "depth": 3,
+    "vid": 11,
+    "class": "Button",
+    "id_name": "reset",
+    "lp": "0/-1",
+    "weight": 1000.0,
+    "measured": "0x49",
+    "text": "Delay"
+   },
+   {
+    "depth": 3,
+    "vid": 12,
+    "class": "TextView",
+    "id_name": "fraction",
+    "lp": "0/-2",
+    "weight": 850.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 13,
+    "class": "ImageButton",
+    "id_name": "lock",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "72x105",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 14,
+    "class": "ImageButton",
+    "id_name": "settings",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "105x105",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 15,
+    "class": "ImageButton",
+    "id_name": "menu",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "105x105",
+    "text": ""
+   }
+  ],
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "nonbg_pct": 3.93,
+   "content_bbox": [
+    0,
+    1818,
+    1074,
+    1914
+   ]
+  },
+  "base_status": "SUCCESS"
+ },
+ {
+  "apk": "unote",
+  "trace_lines": 28,
+  "tree": [
+   {
+    "depth": 1,
+    "vid": 7,
+    "class": "RelativeLayout",
+    "id_name": "notemain_layout",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 8,
+    "class": "inearLayout",
+    "id_name": "buttons",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x44",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 9,
+    "class": "Button",
+    "id_name": "addNoteButton",
+    "lp": "-1/-1",
+    "weight": 500.0,
+    "measured": "1080x44",
+    "text": "Add note"
+   },
+   {
+    "depth": 3,
+    "vid": 10,
+    "class": "Button",
+    "id_name": "returnSearch",
+    "lp": "-1/-1",
+    "weight": 500.0,
+    "measured": "1080x44",
+    "text": "Search"
+   },
+   {
+    "depth": 3,
+    "vid": 11,
+    "class": "Button",
+    "id_name": "returnButton",
+    "lp": "-1/-1",
+    "weight": 500.0,
+    "measured": "1080x44",
+    "text": "Quit"
+   },
+   {
+    "depth": 2,
+    "vid": 12,
+    "class": "inearLayout",
+    "id_name": "notemain",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x170",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 13,
+    "class": "FrameLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x126",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 14,
+    "class": "EditText",
+    "id_name": "search",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x105",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 15,
+    "class": "TextView",
+    "id_name": "search_count",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 16,
+    "class": "ImageButton",
+    "id_name": "btn_clear",
+    "lp": "126/126",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 17,
+    "class": "inearLayout",
+    "id_name": "search_options",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x44",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 18,
+    "class": "CheckBox",
+    "id_name": "search_case_cb",
+    "lp": "-2/-2",
+    "weight": 50000.0,
+    "measured": "208x44",
+    "text": "Ignore case"
+   },
+   {
+    "depth": 4,
+    "vid": 19,
+    "class": "CheckBox",
+    "id_name": "search_content_cb",
+    "lp": "-2/-2",
+    "weight": 50000.0,
+    "measured": "317x44",
+    "text": "Search in content"
+   },
+   {
+    "depth": 2,
+    "vid": 20,
+    "class": "istView",
+    "id_name": "listView",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 1,
+    "vid": 7,
+    "class": "RelativeLayout",
+    "id_name": "notemain_layout",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 8,
+    "class": "inearLayout",
+    "id_name": "buttons",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x44",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 9,
+    "class": "Button",
+    "id_name": "addNoteButton",
+    "lp": "-1/-1",
+    "weight": 500.0,
+    "measured": "1080x44",
+    "text": "Add note"
+   },
+   {
+    "depth": 3,
+    "vid": 10,
+    "class": "Button",
+    "id_name": "returnSearch",
+    "lp": "-1/-1",
+    "weight": 500.0,
+    "measured": "1080x44",
+    "text": "Search"
+   },
+   {
+    "depth": 3,
+    "vid": 11,
+    "class": "Button",
+    "id_name": "returnButton",
+    "lp": "-1/-1",
+    "weight": 500.0,
+    "measured": "1080x44",
+    "text": "Quit"
+   },
+   {
+    "depth": 2,
+    "vid": 12,
+    "class": "inearLayout",
+    "id_name": "notemain",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x175",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 13,
+    "class": "FrameLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x126",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 14,
+    "class": "EditText",
+    "id_name": "search",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x105",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 15,
+    "class": "TextView",
+    "id_name": "search_count",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 16,
+    "class": "ImageButton",
+    "id_name": "btn_clear",
+    "lp": "126/126",
+    "weight": 0.0,
+    "measured": "126x126",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 17,
+    "class": "inearLayout",
+    "id_name": "search_options",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x49",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 18,
+    "class": "CheckBox",
+    "id_name": "search_case_cb",
+    "lp": "-2/-2",
+    "weight": 50000.0,
+    "measured": "237x49",
+    "text": "Ignore case"
+   },
+   {
+    "depth": 4,
+    "vid": 19,
+    "class": "CheckBox",
+    "id_name": "search_content_cb",
+    "lp": "-2/-2",
+    "weight": 50000.0,
+    "measured": "361x49",
+    "text": "Search in content"
+   },
+   {
+    "depth": 2,
+    "vid": 20,
+    "class": "istView",
+    "id_name": "listView",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   }
+  ],
+  "root": {
+   "depth": 1,
+   "vid": 7,
+   "class": "RelativeLayout",
+   "id_name": "notemain_layout",
+   "lp": "-1/-1",
+   "weight": 0.0,
+   "measured": "1080x1920",
+   "text": ""
+  },
+  "shallow": [
+   {
+    "depth": 1,
+    "vid": 7,
+    "class": "RelativeLayout",
+    "id_name": "notemain_layout",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 8,
+    "class": "inearLayout",
+    "id_name": "buttons",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x44",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 9,
+    "class": "Button",
+    "id_name": "addNoteButton",
+    "lp": "-1/-1",
+    "weight": 500.0,
+    "measured": "1080x44",
+    "text": "Add note"
+   },
+   {
+    "depth": 3,
+    "vid": 10,
+    "class": "Button",
+    "id_name": "returnSearch",
+    "lp": "-1/-1",
+    "weight": 500.0,
+    "measured": "1080x44",
+    "text": "Search"
+   },
+   {
+    "depth": 3,
+    "vid": 11,
+    "class": "Button",
+    "id_name": "returnButton",
+    "lp": "-1/-1",
+    "weight": 500.0,
+    "measured": "1080x44",
+    "text": "Quit"
+   },
+   {
+    "depth": 2,
+    "vid": 12,
+    "class": "inearLayout",
+    "id_name": "notemain",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x170",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 13,
+    "class": "FrameLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x126",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 17,
+    "class": "inearLayout",
+    "id_name": "search_options",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x44",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 20,
+    "class": "istView",
+    "id_name": "listView",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 1,
+    "vid": 7,
+    "class": "RelativeLayout",
+    "id_name": "notemain_layout",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 8,
+    "class": "inearLayout",
+    "id_name": "buttons",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x44",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 9,
+    "class": "Button",
+    "id_name": "addNoteButton",
+    "lp": "-1/-1",
+    "weight": 500.0,
+    "measured": "1080x44",
+    "text": "Add note"
+   },
+   {
+    "depth": 3,
+    "vid": 10,
+    "class": "Button",
+    "id_name": "returnSearch",
+    "lp": "-1/-1",
+    "weight": 500.0,
+    "measured": "1080x44",
+    "text": "Search"
+   },
+   {
+    "depth": 3,
+    "vid": 11,
+    "class": "Button",
+    "id_name": "returnButton",
+    "lp": "-1/-1",
+    "weight": 500.0,
+    "measured": "1080x44",
+    "text": "Quit"
+   },
+   {
+    "depth": 2,
+    "vid": 12,
+    "class": "inearLayout",
+    "id_name": "notemain",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x175",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 13,
+    "class": "FrameLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x126",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 17,
+    "class": "inearLayout",
+    "id_name": "search_options",
+    "lp": "-1/-2",
+    "weight": 0.0,
+    "measured": "1080x49",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 20,
+    "class": "istView",
+    "id_name": "listView",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   }
+  ],
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    255,
+    255,
+    255
+   ],
+   "nonbg_pct": 9.06,
+   "content_bbox": [
+    0,
+    1746,
+    1074,
+    1914
+   ]
+  },
+  "base_status": "SUCCESS"
+ },
+ {
+  "apk": "chessclock",
+  "trace_lines": 30,
+  "tree": [
+   {
+    "depth": 1,
+    "vid": 12,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 13,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 14,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 1000.0,
+    "measured": "1080x13",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 15,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 5,
+    "vid": 16,
+    "class": "Button",
+    "id_name": "Player1",
+    "lp": "-1/-1",
+    "weight": 1000.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 17,
+    "class": "TextView",
+    "id_name": "t_Player1",
+    "lp": "-2/-2",
+    "weight": 1000.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 18,
+    "class": "View",
+    "id_name": "l_Player1",
+    "lp": "0/13",
+    "weight": 0.0,
+    "measured": "0x13",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 19,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/13",
+    "weight": 0.0,
+    "measured": "1080x13",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 20,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 1000.0,
+    "measured": "1080x13",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 21,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 5,
+    "vid": 22,
+    "class": "Button",
+    "id_name": "Player2",
+    "lp": "-1/-1",
+    "weight": 1000.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 23,
+    "class": "TextView",
+    "id_name": "t_Player2",
+    "lp": "-2/-2",
+    "weight": 1000.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 24,
+    "class": "View",
+    "id_name": "l_Player2",
+    "lp": "0/13",
+    "weight": 0.0,
+    "measured": "0x13",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 25,
+    "class": "Button",
+    "id_name": "Menu",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 26,
+    "class": "Button",
+    "id_name": "Pause",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 1,
+    "vid": 12,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 13,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 14,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 1000.0,
+    "measured": "1080x276",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 15,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 5,
+    "vid": 16,
+    "class": "Button",
+    "id_name": "Player1",
+    "lp": "-1/-1",
+    "weight": 1000.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 17,
+    "class": "TextView",
+    "id_name": "t_Player1",
+    "lp": "-2/-2",
+    "weight": 1000.0,
+    "measured": "428x276",
+    "text": "null"
+   },
+   {
+    "depth": 4,
+    "vid": 18,
+    "class": "View",
+    "id_name": "l_Player1",
+    "lp": "0/13",
+    "weight": 0.0,
+    "measured": "0x13",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 19,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/13",
+    "weight": 0.0,
+    "measured": "1080x13",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 20,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 1000.0,
+    "measured": "1080x276",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 21,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 5,
+    "vid": 22,
+    "class": "Button",
+    "id_name": "Player2",
+    "lp": "-1/-1",
+    "weight": 1000.0,
+    "measured": "1080x0",
+    "text": ""
+   },
+   {
+    "depth": 4,
+    "vid": 23,
+    "class": "TextView",
+    "id_name": "t_Player2",
+    "lp": "-2/-2",
+    "weight": 1000.0,
+    "measured": "428x276",
+    "text": "null"
+   },
+   {
+    "depth": 4,
+    "vid": 24,
+    "class": "View",
+    "id_name": "l_Player2",
+    "lp": "0/13",
+    "weight": 0.0,
+    "measured": "0x13",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 25,
+    "class": "Button",
+    "id_name": "Menu",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 26,
+    "class": "Button",
+    "id_name": "Pause",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   }
+  ],
+  "root": {
+   "depth": 1,
+   "vid": 12,
+   "class": "RelativeLayout",
+   "id_name": "",
+   "lp": "-1/-1",
+   "weight": 0.0,
+   "measured": "1080x1920",
+   "text": ""
+  },
+  "shallow": [
+   {
+    "depth": 1,
+    "vid": 12,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 13,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 14,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 1000.0,
+    "measured": "1080x13",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 19,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/13",
+    "weight": 0.0,
+    "measured": "1080x13",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 20,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 1000.0,
+    "measured": "1080x13",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 25,
+    "class": "Button",
+    "id_name": "Menu",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 26,
+    "class": "Button",
+    "id_name": "Pause",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 1,
+    "vid": 12,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 13,
+    "class": "inearLayout",
+    "id_name": "",
+    "lp": "-1/-1",
+    "weight": 0.0,
+    "measured": "1080x1920",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 14,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 1000.0,
+    "measured": "1080x276",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 19,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/13",
+    "weight": 0.0,
+    "measured": "1080x13",
+    "text": ""
+   },
+   {
+    "depth": 3,
+    "vid": 20,
+    "class": "RelativeLayout",
+    "id_name": "",
+    "lp": "-1/-2",
+    "weight": 1000.0,
+    "measured": "1080x276",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 25,
+    "class": "Button",
+    "id_name": "Menu",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   },
+   {
+    "depth": 2,
+    "vid": 26,
+    "class": "Button",
+    "id_name": "Pause",
+    "lp": "-2/-2",
+    "weight": 0.0,
+    "measured": "0x0",
+    "text": ""
+   }
+  ],
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "nonbg_pct": 2.62,
+   "content_bbox": [
+    0,
+    720,
+    1074,
+    1866
+   ]
+  },
+  "base_status": "SUCCESS"
+ }
+]

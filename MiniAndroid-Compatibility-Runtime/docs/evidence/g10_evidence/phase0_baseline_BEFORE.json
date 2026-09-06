@@ -1,0 +1,253 @@
+[
+ {
+  "apk": "microtimer",
+  "path": "download/exp076_corpus/dubrowgn.microtimer_8.apk",
+  "selected_because": "F8 keypad collapsed to left column (G09)",
+  "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+  "base": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    255,
+    255,
+    255
+   ],
+   "nonbg_pct": 57.19,
+   "content_bbox": [
+    0,
+    822,
+    1074,
+    1914
+   ]
+  },
+  "tree": null,
+  "click": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "click_report": {}
+ },
+ {
+  "apk": "billthefarmer_notes",
+  "path": "download/exp073_real_apps/org.billthefarmer.notes_139.apk",
+  "selected_because": "F8 ListView rows collapsed top-left (G09)",
+  "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+  "base": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    255,
+    255,
+    255
+   ],
+   "nonbg_pct": 1.53,
+   "content_bbox": [
+    0,
+    0,
+    120,
+    246
+   ]
+  },
+  "tree": null,
+  "click": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "click_report": {}
+ },
+ {
+  "apk": "headingcalculator",
+  "path": "download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
+  "selected_because": "F8/F9 custom views measured 1080x0, no draw (G09)",
+  "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+  "base": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    216,
+    216,
+    216
+   ],
+   "nonbg_pct": 99.13,
+   "content_bbox": [
+    6,
+    6,
+    1074,
+    1914
+   ]
+  },
+  "tree": null,
+  "click": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  }
+ },
+ {
+  "apk": "gmdice",
+  "path": "download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+  "selected_because": "RENDERED guard - ScrollView/LinearLayout/CheckBox (G09)",
+  "sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+  "base": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    153,
+    153,
+    153
+   ],
+   "nonbg_pct": 24.74,
+   "content_bbox": [
+    0,
+    780,
+    1074,
+    1914
+   ]
+  },
+  "tree": null,
+  "click": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "click_report": {}
+ },
+ {
+  "apk": "simplestopwatch",
+  "path": "download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+  "selected_because": "RENDERED guard - buttons/rows (G09)",
+  "sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+  "base": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "nonbg_pct": 3.93,
+   "content_bbox": [
+    0,
+    1818,
+    1074,
+    1914
+   ]
+  },
+  "tree": null,
+  "click": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "click_report": {}
+ },
+ {
+  "apk": "unote",
+  "path": "download/exp076_corpus/app.varlorg.unote_30.apk",
+  "selected_because": "RENDERED guard - ListView/toolbar/FAB (G09)",
+  "sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+  "base": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    255,
+    255,
+    255
+   ],
+   "nonbg_pct": 9.06,
+   "content_bbox": [
+    0,
+    1746,
+    1074,
+    1914
+   ]
+  },
+  "tree": null,
+  "click": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "click_report": {}
+ },
+ {
+  "apk": "chessclock",
+  "path": "download/exp073_real_apps/com.chessclock.android_29.apk",
+  "selected_because": "PARTIAL guard - null texts, LinearLayout (G09)",
+  "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+  "base": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "pixel_audit": {
+   "w": 1080,
+   "h": 1920,
+   "bg": [
+    0,
+    0,
+    0
+   ],
+   "nonbg_pct": 2.62,
+   "content_bbox": [
+    0,
+    720,
+    1074,
+    1866
+   ]
+  },
+  "tree": null,
+  "click": {
+   "rc": 0,
+   "status": "SUCCESS",
+   "screenshot": true,
+   "view_tree": false
+  },
+  "click_report": {}
+ }
+]
