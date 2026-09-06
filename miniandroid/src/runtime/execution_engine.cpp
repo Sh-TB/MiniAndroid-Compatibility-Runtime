@@ -107,7 +107,28 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     // pipeline (DOWN → pressed frame → UP → queued callbacks → drained frame).
     if (success && config.tap_enabled) stage_tap(result, config);
     if (success && config.frame_count > 0) stage_frame_sequence(result, config);
-    
+
+    // G07 §10: final frame boundary — apply any still-pending finish() and
+    // persist the lifecycle state-machine trace as runtime evidence.
+    {
+        nlohmann::json finish_rec = consume_finish_cascade();
+        try {
+            std::filesystem::create_directories(config.output_directory);
+            auto* as = shadow_registry_
+                           ? shadow_registry_->find_as<framework::ActivityShadow>()
+                           : nullptr;
+            nlohmann::json lt = lifecycle_.to_json(
+                result.apk_info.apk_path,
+                as ? as->current_activity_class() : std::string());
+            lt["finish_cascade"] = finish_rec;
+            std::ofstream lf(config.output_directory + "/lifecycle_trace.json");
+            lf << lt.dump(2);
+        } catch (const std::exception& e) {
+            std::cerr << "[G07] lifecycle trace write failed: " << e.what()
+                      << std::endl;
+        }
+    }
+
     // Always try to generate reports
     stage_generate_reports(result, config);
     
@@ -609,6 +630,61 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         invoke_handler_runnable(rid);
                     }
                 }
+            }
+        }
+
+        // ===================================================================
+        // G07 §7: RUNTIME LIFECYCLE STATE MACHINE — the launch sequence.
+        // onCreate already executed via the DEX interpreter above
+        // (ActivityThread.performLaunchActivity law). The remaining launch
+        // callbacks follow the AOSP transaction order (handleResumeActivity
+        // → performResume): onStart then onResume, dispatched through the
+        // REAL DEX engine on the launcher activity class. Apps that
+        // override them run real bytecode; apps that do not fall through to
+        // the framework Activity stub — the super-class law.
+        // ===================================================================
+        {
+            auto* as = shadow_registry_
+                           ? shadow_registry_->find_as<framework::ActivityShadow>()
+                           : nullptr;
+            auto* hs_clock =
+                shadow_registry_
+                    ? shadow_registry_->find_as<framework::HandlerShadow>()
+                    : nullptr;
+            // The launcher activity class comes from the manifest entry the
+            // DEX engine executed (execute_apk_with_activity registered the
+            // heap id); register the class on the shadow so the lifecycle
+            // dispatcher and the Intent pipeline (G08) share one identity.
+            std::string act_class;
+            if (as && as->current_activity_class().empty() &&
+                !result.apk_info.main_activity_full.empty()) {
+                std::string desc = "L" + result.apk_info.main_activity_full + ";";
+                for (auto& c : desc)
+                    if (c == '.') c = '/';
+                as->set_current_activity(as->current_activity_id(), desc);
+            }
+            if (as) act_class = as->current_activity_class();
+            if (as && hs_clock && !act_class.empty()) {
+                lifecycle_.transition_to(
+                    framework::LifecyclePhase::ACTIVITY_CREATED,
+                    "Activity.onCreate() executed via DEX interpreter "
+                    "(ActivityThread.performLaunchActivity law)",
+                    hs_clock->virtual_now_ms());
+                nlohmann::json rec;
+                if (dispatch_app_lifecycle("onStart", &rec)) {
+                    lifecycle_.transition_to(
+                        framework::LifecyclePhase::STARTED,
+                        "Activity.onStart() dispatched via DEX engine",
+                        hs_clock->virtual_now_ms());
+                }
+                if (dispatch_app_lifecycle("onResume", &rec)) {
+                    lifecycle_.transition_to(
+                        framework::LifecyclePhase::RESUMED,
+                        "Activity.onResume() dispatched via DEX engine "
+                        "(handleResumeActivity law)",
+                        hs_clock->virtual_now_ms());
+                }
+                as->set_state(framework::ActivityShadow::LifecycleState::RESUMED);
             }
         }
         
@@ -2871,6 +2947,12 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
         for (uint32_t rid : drained) {
             invoke_handler_runnable(rid);
         }
+        // G07: frame boundary finish law — an app finish() requested by a
+        // callback drained this frame applies its cascade at THIS boundary.
+        {
+            nlohmann::json fin = consume_finish_cascade();
+            if (!fin.is_null()) manifest["finish_cascade"] = fin;
+        }
 
         stage_render_frame(result, config);  // re-render CURRENT state
 
@@ -3349,6 +3431,95 @@ bool ExecutionEngine::stage_long_press(ExecutionResult& result, const ExecutionC
     return true;
 }
 
+// G07 §7 — dispatch ONE app lifecycle callback through the REAL DEX engine.
+// `this` = the launcher activity's recorded heap object (execute_apk_
+// with_activity allocated it during onCreate). Apps overriding the method
+// run real bytecode; apps that do not hit the framework Activity stub —
+// the AOSP super-class behavior. Never a scripted log line: the DEX
+// interpreter (or the stub bridge) is the ONLY dispatch path.
+bool ExecutionEngine::dispatch_app_lifecycle(const std::string& method,
+                                             nlohmann::json* record) {
+    auto* as = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ActivityShadow>()
+                   : nullptr;
+    if (!as || as->current_activity_class().empty()) return false;
+    try {
+        auto& heap = dalvik_engine_.get_heap_public();
+        uint32_t act_id = as->current_activity_id();
+        if (act_id == 0 || !heap.has_object(act_id)) {
+            trace_engine_.warning("ExecutionEngine", "dispatch_app_lifecycle",
+                                  "no activity heap object — " + method +
+                                      " not dispatched");
+            return false;
+        }
+        miniandroid::dalvik::DalvikValue ret;
+        miniandroid::dalvik::DalvikExecutionResult result;
+        std::vector<miniandroid::dalvik::DalvikValue> args;
+        args.push_back(miniandroid::dalvik::DalvikValue::make_object(
+            act_id, as->current_activity_class()));
+        bool ok = dalvik_engine_.try_recursive_invoke(
+            as->current_activity_class(), method, args, ret, result);
+        if (record) {
+            (*record)["method"] = method;
+            (*record)["class"] = as->current_activity_class();
+            (*record)["dispatched"] = ok;
+            (*record)["instructions"] = result.total_instructions_executed;
+        }
+        std::cerr << "[G07-LIFECYCLE] " << as->current_activity_class() << "."
+                  << method << "() dispatched via DEX engine (ok=" << ok
+                  << ", instructions=" << result.total_instructions_executed
+                  << ")" << std::endl;
+        return ok;
+    } catch (const std::exception& e) {
+        std::cerr << "[G07-LIFECYCLE] " << method << " dispatch failed: "
+                  << e.what() << std::endl;
+        return false;
+    }
+}
+
+// G07 — consume a pending finish() at a frame boundary. AOSP law
+// (Activity.finish + ActivityThread.handleDestroyActivity):
+// onPause → onStop → onDestroy. Each callback is dispatched through the
+// real DEX engine BEFORE its state transition is recorded — the state
+// machine reflects EXECUTED callbacks, not intentions.
+nlohmann::json ExecutionEngine::consume_finish_cascade() {
+    auto* as = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ActivityShadow>()
+                   : nullptr;
+    auto* hs = shadow_registry_
+                   ? shadow_registry_->find_as<framework::HandlerShadow>()
+                   : nullptr;
+    if (!as || !hs || !as->take_pending_finish()) return nullptr;
+    // A finish() during a destroyed/idle state is hostile input — the
+    // controller records the rejected attempt as evidence.
+    nlohmann::json rec;
+    rec["finish_requested"] = true;
+    rec["callbacks"] = nlohmann::json::array();
+    auto dispatch = [&](const char* m) {
+        nlohmann::json r;
+        dispatch_app_lifecycle(m, &r);
+        rec["callbacks"].push_back(r);
+    };
+    dispatch("onPause");
+    lifecycle_.transition_to(framework::LifecyclePhase::PAUSED,
+                             "finish cascade: onPause dispatched via DEX",
+                             hs->virtual_now_ms());
+    dispatch("onStop");
+    lifecycle_.transition_to(framework::LifecyclePhase::STOPPED,
+                             "finish cascade: onStop dispatched via DEX",
+                             hs->virtual_now_ms());
+    dispatch("onDestroy");
+    lifecycle_.transition_to(framework::LifecyclePhase::DESTROYED,
+                             "finish cascade: onDestroy dispatched via DEX "
+                             "(performDestroyActivity law)",
+                             hs->virtual_now_ms());
+    as->set_state(framework::ActivityShadow::LifecycleState::DESTROYED);
+    rec["final_state"] = framework::lifecycle_phase_name(lifecycle_.state());
+    std::cerr << "[G07-FINISH] cascade complete at virtual_ms="
+              << hs->virtual_now_ms() << std::endl;
+    return rec;
+}
+
 // G06 §4/§6 — deterministic tap gesture through the canonical input
 // pipeline. Event law: View.onTouchEvent (touch_dispatcher.cpp).
 //   t0        ACTION_DOWN  → setPressed(true) + CheckForLongPress @ +500ms
@@ -3530,6 +3701,12 @@ bool ExecutionEngine::stage_tap(ExecutionResult& result,
 
     manifest["click_drain"] = click_drain;
     manifest["unset_drain"] = unset_drain;
+
+    // G07: this tap landed on a frame boundary — a finish() requested by
+    // the click callback (e.g. a FINISH button) applies its lifecycle
+    // cascade HERE, before the final frame is captured.
+    nlohmann::json finish_rec = consume_finish_cascade();
+    if (!finish_rec.is_null()) manifest["finish_cascade"] = finish_rec;
 
     // ── frame_002: post-click, unpressed state ──────────────────────────
     framebuffer_ = prev;
