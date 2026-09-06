@@ -377,3 +377,88 @@ Stage Summary:
   implemented and verified on the same 7-APK corpus; 3 APKs improved,
   0 regressions; 50/50 battery; merge law honestly marked LAW-TESTED.
 - Next campaign (evidence-ranked): F5 app-constructor/addView execution.
+
+---
+Task ID: G11-1
+Agent: Super Z (main agent)
+Task: G11/G12 campaign — §1 current-HEAD recovery, §4-§8 constructor layer verification + Factory-law fix, corpus verification loop.
+
+Work Log:
+- §1 HEAD recovery: local HEAD was 167c27fb (stale "docs(g10)" message) containing the lost
+  session's G11 WIP; origin/main 3d063e01 was a verified byte-identical subset. Rebased onto
+  origin (linear 3d063e01 -> d8b66526), reworded commit honestly, pushed 3d063e01..d8b66526.
+- §1 environment restore: aapt2 8.13.2-14304508 (Google Maven, hash-verified usage), external
+  fixture HelloWorldSelfAware (SHA 009b4671... == doc), 18-APK corpus manifest fetch (8 campaign
+  APKs hash-verified). Build green.
+- §1 baseline battery: 50/50 ALL PASS at d8b66526 (battery checkpoints at uncommitted-then-
+  committed WIP HEAD; goldens intact).
+- Verified phase0 baseline was captured PRE-change (4 screenshot hashes == G10 goldens:
+  microtimer 57503a12, simplestopwatch ed1dfc89, gmdice db0f4c4b, unote 8197687f).
+- F5-C1 ROOT CAUSE (trace-proven): per-instance ctor hook installed on the LAZY DEFAULT
+  LayoutInflater; the subsequent ensure_loaded() recreate (make_unique) silently wiped it.
+  headingcalculator inflated factory-less (3 views, screenshot byte-identical to G10 baseline).
+- FIX (AOSP Factory law, commit f42cf79c): ResourceRuntime now OWNS the process-wide
+  custom-view ctor hook and re-applies it to EVERY LayoutInflater it creates
+  (ensure_loaded + lazy inflater() accessor) — AppCompatDelegateImpl.installViewFactory law.
+- Runtime proof (headingcalculator, MINIANDROID_G11_TRACE=1): CalculatorDisplay,
+  CalculatorKeypad, ExplainableTextView, ExplainableButton real DEX <init>(Context, AttributeSet)
+  EXECUTED; real super chains (CalculatorKeypad -> LinearLayout -> ViewGroup -> View -> Object);
+  ctor-built subtrees MOUNTED (display grid TC/TAS/WD/WS/TH/GS + 4 keypad rows digit1..9/DEL/CE);
+  initializeDisplay() ran (text '0'); screenshot 6ab39944 -> 47646e76.
+- Corpus 8-APK after-run (phase1_after): 6 guards byte-identical (ZERO regression);
+  headingcalculator 0.263% -> 6.455% nonbg (25x real content); microtimer hash CHANGED with
+  identical pixel stats — classified LAWFUL: obfuscated Lk/g;.<init> real DEX executes
+  setOrientation + new Button + new RoTimeControl + addView(x2) (F5-C7/F5-C8 laws exercised by
+  real app code); RoTimeControl.a() creates TextView programmatically; 'null:null:null' label =
+  app's own format of null fields at construction (Java String.valueOf law); pixel delta band
+  rows 951-1076 == exactly the new real TextView 640x123. Timer-tick label update = G07 domain,
+  recorded as future layer.
+- Battery re-run after fix: 50/50 ALL PASS at f42cf79c.
+
+Stage Summary:
+- G11 constructor layer: implemented + runtime-proven on 2 real APKs (headingcalculator,
+  microtimer) + 6 guards byte-identical. G12 blockers MOVED to measurement layer:
+  (a) TableLayout/TableRow wrap-height aggregation (rows 0x0 with 44px children),
+  (b) vertical-LL weight=1000 row redistribution (rows 1080x0, buttons 0 height).
+- Next: g11 law/hostile test battery, G12 measurement clusters, muellerma ACF trace.
+
+---
+Task ID: G11/G12-CLOSE
+Agent: Super Z (main agent)
+Task: G11/G12 closure — G12 measurement laws, muellerma independent trace, determinism, evidence publication.
+
+Work Log:
+- G12 clusters root-caused via opt-in U007_LAYOUT_DEBUG=3 spec dumps (§3 chain):
+  (1) framework classes had NO ancestry layer (TableRow substring-missed "Layout"
+  → leaf → 0x0 rows under 44px children); FIX-G12-001: src/framework/view_ancestry.h
+  single authority (view_ancestry.h) consulted by is_subclass_of + inflater fallback.
+  (2) descriptor form law: AXML dot-form vs DEX slash-form — normalize_class_desc()
+  at every cross-layer compare (FIX-G12-001b). (3) TableLayout stacks rows VERTICALLY
+  (was measured as one horizontal row, content_w=473). (4) is_a classifier Factory
+  survival (was only wired on the renderer pass — window path classified app
+  containers as leaves) (FIX-G12-002).
+- Result: headingcalculator final pass CalculatorDisplay 1080x0 → 1080x158; TableLayout
+  1080x158; screenshot 47646e76 → 0f933ff8 (268,977 px diff); 3-run determinism unique
+  hash count 1.
+- muellerma independent trace (§25): NOT the headingcalculator cluster. Evidence:
+  (a) manifest AXML string pool shows NO activity (StopwatchApp/Service/Tile/provider
+  only — a QS-tile-only app real Android never opens from a launcher) → new cluster
+  FIND-G11-NOACTIVITY-001, EXP-031.5 zero-bytecode assertion scoped to activity apps;
+  (b) bundled android.app.AppComponentFactory.<clinit> disassembly = unconditional
+  construct-and-throw — FIX-G12-003 parent-delegation law: framework-namespace <clinit>
+  never executes from app DEX (choke-point skip in execute_method_internal).
+  Result: PARTIAL preserved with byte-identical screenshot (diff=0), stub skipped.
+- microtimer classified LAWFUL (Lk/g; real ctor + addView; RoTimeControl programmatic
+  TextView; 'null:null:null' = app's own Java null-concat at construction).
+- Battery 52/52 ALL PASS at every commit (d8b66526 → 28c1bfe1); zero golden changes.
+- Evidence published to Issue #8 (URLs read back from the API, recorded in
+  scripts/comment_urls.json): recovery+baseline 5561889945, laws+fixes 5561890236,
+  cross-APK validation 5561890536.
+
+Stage Summary:
+- G11/G12 CLOSED: real DEX constructor execution + custom hierarchy + measurement laws
+  runtime-proven + visually-proven on 2 independent real APKs (different packages, UI
+  architectures); 6 byte-identical guards; determinism proven; 5 semantic commits
+  d8b66526/0115452b chain pushed; final HEAD 0115452b.
+- Remaining (ranked): headingcalculator keypad width (needs reference evidence),
+  AppCompat/Compose shells, G07 timer ticks, implicit intents, TableLayout column law.
