@@ -1863,6 +1863,12 @@ public:
     const std::map<uint32_t, uint16_t>& drawable_density_by_resid() const {
         return resource_drawable_density_by_resid_;
     }
+    // G04 §4 (FIND-G04-AUDIT-006): resid → path cache for the DIRECT
+    // canonical resolution law. The legacy chain resid → R-field-name →
+    // basename/path broke whenever R$drawable statics were not parsed
+    // (Markor: 0/35). The resid IS the canonical key (§1); field names are
+    // not part of the resource law.
+    std::map<uint32_t, std::string> resource_drawable_path_by_resid_;
     // UNIFIED_011.2 IMAGE-RES-RENDER (§13/§14 campaign): populate
     // resource_drawable_paths_ from the APK's actual res/ entry list by
     // matching R-field names to drawable file basenames. Prior to this the
