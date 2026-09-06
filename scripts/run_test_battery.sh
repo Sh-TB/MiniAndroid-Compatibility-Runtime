@@ -212,6 +212,39 @@ bash "$REPO/scripts/validate_density_matrix.sh" /tmp/battery_density \
 gate "density-matrix oracle (G04 §4)" $?
 grep -h "DENSITY MATRIX" /tmp/battery_density.log | head -1
 
+# G06 §6: interaction golden — real-toolchain fixture (aapt2+ECJ+D8), real
+# DEX listeners. Tap law (pressed visible + queued PerformClick + counter
+# mutation) + disabled law (consumes, zero visual response) + 3-run SHA.
+G06_FIX_SRC="$MA/tests/fixtures/g06_interaction"
+rm -rf /tmp/battery_g06; mkdir -p /tmp/battery_g06
+if [ -d "$G06_FIX_SRC" ]; then
+    bash "$REPO/MiniAndroid-Compatibility-Runtime/scripts/build_fixture_apk.sh" \
+        "$G06_FIX_SRC" /tmp/battery_g06/g06_interaction.apk \
+        > /tmp/battery_g06/build.log 2>&1
+    gate "G06 fixture build (aapt2+ECJ+D8)" $?
+    for i in 1 2 3; do
+        mkdir -p "/tmp/battery_g06/tap$i"
+        ./build/miniandroid run /tmp/battery_g06/g06_interaction.apk \
+            -o "/tmp/battery_g06/tap$i" --tap 540,178 \
+            > "/tmp/battery_g06/tap$i/run.log" 2>&1
+    done
+    mkdir -p /tmp/battery_g06/dis
+    ./build/miniandroid run /tmp/battery_g06/g06_interaction.apk \
+        -o /tmp/battery_g06/dis --tap 540,430 \
+        > /tmp/battery_g06/dis/run.log 2>&1
+    python3 "$REPO/scripts/compare_g06_interaction.py" \
+        /tmp/battery_g06/tap1 /tmp/battery_g06/dis \
+        --json /tmp/battery_g06/golden.json > /tmp/battery_g06/compare.log 2>&1
+    gate "G06 interaction golden (21 law checks)" $?
+    S1=$(python3 -c "import json;m=json.load(open('/tmp/battery_g06/tap1/frames/manifest.json'));print(','.join(f['sha256'] for f in m['frames']))")
+    S2=$(python3 -c "import json;m=json.load(open('/tmp/battery_g06/tap2/frames/manifest.json'));print(','.join(f['sha256'] for f in m['frames']))")
+    S3=$(python3 -c "import json;m=json.load(open('/tmp/battery_g06/tap3/frames/manifest.json'));print(','.join(f['sha256'] for f in m['frames']))")
+    [ "$S1" = "$S2" ] && [ "$S2" = "$S3" ] && [ -n "$S1" ]
+    gate "G06 tap 3-run determinism (frame SHAs identical)" $?
+else
+    gate "G06 interaction golden (21 law checks)" 1
+fi
+
 # corpus regression: real external APKs must still boot and render
 CORPUS_DIR="$MA/download"
 python3 "$REPO/MiniAndroid-Compatibility-Runtime/scripts/fetch_corpus.py" \

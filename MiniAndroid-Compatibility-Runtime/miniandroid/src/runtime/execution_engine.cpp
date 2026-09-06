@@ -759,10 +759,16 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
     // the mode exists to capture. Default journey runs keep the probe —
     // it is the Telegram intro-advance mechanism.
     // ===================================================================
-    if (config.frame_count > 0 || config.click_count > 0) {
+    // G06 §6: gesture stages (--tap/--long-press) are interaction drivers
+    // too — the probe click must not pollute a gesture golden's launch frame
+    // (it fires BEFORE the scripted gesture and would double-step state).
+    if (config.frame_count > 0 || config.click_count > 0 ||
+        config.tap_enabled || config.long_press_enabled) {
         trace_engine_.info("ExecutionEngine", "phase_b_click",
                            std::string("skipped: ") +
-                           (config.frame_count > 0 ? "--frames" : "--click-count") +
+                           (config.frame_count > 0 ? "--frames"
+                            : config.click_count > 0 ? "--click-count"
+                            : config.tap_enabled ? "--tap" : "--long-press") +
                            " mode supplies its own interaction driver");
     } else if (shadow_registry_ && result.status != ExecutionStatus::FAILURE) {
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
