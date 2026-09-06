@@ -1525,6 +1525,33 @@ bool DalvikExecutionEngine::execute_method_internal(
     halted_ = false;
     halted_on_return_ = false;
     instruction_sequence_ = 0;
+    // G12 FIX-G12-003 (AOSP parent-delegation law, FIND-G09-ACF-001): the
+    // boot classpath owns android.*/java.* classes — an app-bundled copy
+    // (androidx shading, R8 stubs) must never shadow framework semantics.
+    // The one choke point every <clinit> dispatch passes through is here:
+    // a framework-namespace class's static initializer is NOT executed
+    // from app DEX bytecode (muellerma stopwatch: bundled
+    // android.app.AppComponentFactory.<clinit> threw NoClassDefFoundError
+    // at boot and killed the app before the Activity inflated).
+    if (method_name == "<clinit>") {
+        const std::string norm = framework::normalize_class_desc(class_name);
+        if (norm.rfind("Landroid/", 0) == 0 ||
+            norm.rfind("Landroidx/", 0) == 0 ||
+            norm.rfind("Ljava/", 0) == 0 ||
+            norm.rfind("Lkotlin/", 0) == 0 ||
+            norm.rfind("Lkotlinx/", 0) == 0 ||
+            norm.rfind("Lcom/google/", 0) == 0 ||
+            norm.rfind("Lj$/", 0) == 0) {
+            initialized_classes_.insert(norm);
+            initialized_classes_.insert(class_name);
+            std::cerr << "[G12-ACF] framework-namespace <clinit> skipped "
+                      << "(parent-delegation): " << class_name << std::endl;
+            halted_ = false;
+            return true;  // initialized; bytecode not executed
+        }
+    }
+    halted_on_return_ = false;
+    instruction_sequence_ = 0;
     // EXP-042 Phase 1: Per-frame loop detection counter. Reset on each new
     // method invocation so recursive calls do not pollute each other.
     pc_visit_count_.clear();
@@ -1717,8 +1744,20 @@ bool DalvikExecutionEngine::execute_method_internal(
 //   - We guard against re-entrancy: if the class is currently being
 //     initialized (in_initialization_ set), we return immediately.
 bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_descriptor) {
+    // G12 FIX-G12-001b (descriptor form law): normalize BEFORE any prefix
+    // test — the UI/init layer hands us dot-form descriptors
+    // (Landroid.app.AppComponentFactory;) and the framework-namespace skip
+    // below tests slash prefixes (Landroid/). Without normalization the
+    // app-bundled android.* stub <clinit> executed and threw
+    // NoClassDefFoundError at boot (muellerma stopwatch PARTIAL cluster,
+    // FIND-G09-ACF-001): AOSP parent-delegation law — framework classes
+    // resolve from the boot classpath, an app-bundled android.* copy must
+    // never shadow framework semantics.
+    const std::string normalized =
+        framework::normalize_class_desc(class_descriptor);
     // Already initialized?
-    if (initialized_classes_.count(class_descriptor) > 0) {
+    if (initialized_classes_.count(normalized) > 0 ||
+        initialized_classes_.count(class_descriptor) > 0) {
         return true;
     }
     // Framework classes — skip <clinit> (they're stubbed).
@@ -1727,13 +1766,14 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     // libraries that we don't have full bytecode semantics for; their
     // R classes are auto-generated and would need Resource table parsing
     // to populate correctly).
-    if (class_descriptor.rfind("Landroid/", 0) == 0 ||
-        class_descriptor.rfind("Landroidx/", 0) == 0 ||
-        class_descriptor.rfind("Ljava/", 0) == 0 ||
-        class_descriptor.rfind("Lkotlin/", 0) == 0 ||
-        class_descriptor.rfind("Lkotlinx/", 0) == 0 ||
-        class_descriptor.rfind("Lcom/google/", 0) == 0 ||
-        class_descriptor.rfind("Lj$/", 0) == 0) {
+    if (normalized.rfind("Landroid/", 0) == 0 ||
+        normalized.rfind("Landroidx/", 0) == 0 ||
+        normalized.rfind("Ljava/", 0) == 0 ||
+        normalized.rfind("Lkotlin/", 0) == 0 ||
+        normalized.rfind("Lkotlinx/", 0) == 0 ||
+        normalized.rfind("Lcom/google/", 0) == 0 ||
+        normalized.rfind("Lj$/", 0) == 0) {
+        initialized_classes_.insert(normalized);
         initialized_classes_.insert(class_descriptor);
         return true;
     }
