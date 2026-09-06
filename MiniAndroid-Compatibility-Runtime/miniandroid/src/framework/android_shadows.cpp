@@ -1171,6 +1171,36 @@ bool ViewShadow::add_child(uint32_t parent_id, uint32_t child_id) {
     auto* parent = find_node(parent_id);
     auto* child  = find_node(child_id);
     if (!parent || !child) return false;
+    // G11 hostile hardening (§28): a View is mounted exactly once.
+    // AOSP ViewGroup.addView law: "The specified child already has a
+    // parent" — a (re)mount that would create a second parent edge or a
+    // parent/child cycle is rejected, not silently recorded.
+    if (parent_id == child_id) {
+        std::cerr << "[G11-HOSTILE] addView(self) rejected: view="
+                  << parent_id << std::endl;
+        return false;
+    }
+    if (child->parent_id == parent_id) {
+        // Already mounted HERE: idempotent no-op (AOSP throws
+        // IllegalStateException before mutating; the post-state — no
+        // duplicate child entry, single parent edge — must hold either
+        // way). Never push_back a second edge for the same child.
+        return true;
+    }
+    // Ancestry-cycle guard: mounting `parent_id` UNDER `child_id` is only
+    // legal when child_id is not an ancestor of parent_id (else the tree
+    // gains A->B->A and every BFS/measure/layout pass recurses forever).
+    for (uint32_t anc = parent_id; anc != 0;) {
+        auto* n = find_node(anc);
+        if (!n) break;
+        if (anc == child_id) {
+            std::cerr << "[G11-HOSTILE] addView cycle rejected: view="
+                      << child_id << " is an ancestor of " << parent_id
+                      << std::endl;
+            return false;
+        }
+        anc = n->parent_id;
+    }
     // Remove from previous parent if any.
     if (child->parent_id != 0 && child->parent_id != parent_id) {
         if (auto* prev = find_node(child->parent_id)) {

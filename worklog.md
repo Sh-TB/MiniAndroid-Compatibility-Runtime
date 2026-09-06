@@ -377,3 +377,47 @@ Stage Summary:
   implemented and verified on the same 7-APK corpus; 3 APKs improved,
   0 regressions; 50/50 battery; merge law honestly marked LAW-TESTED.
 - Next campaign (evidence-ranked): F5 app-constructor/addView execution.
+
+---
+Task ID: G11-1
+Agent: Super Z (main agent)
+Task: G11/G12 campaign — §1 current-HEAD recovery, §4-§8 constructor layer verification + Factory-law fix, corpus verification loop.
+
+Work Log:
+- §1 HEAD recovery: local HEAD was 167c27fb (stale "docs(g10)" message) containing the lost
+  session's G11 WIP; origin/main 3d063e01 was a verified byte-identical subset. Rebased onto
+  origin (linear 3d063e01 -> d8b66526), reworded commit honestly, pushed 3d063e01..d8b66526.
+- §1 environment restore: aapt2 8.13.2-14304508 (Google Maven, hash-verified usage), external
+  fixture HelloWorldSelfAware (SHA 009b4671... == doc), 18-APK corpus manifest fetch (8 campaign
+  APKs hash-verified). Build green.
+- §1 baseline battery: 50/50 ALL PASS at d8b66526 (battery checkpoints at uncommitted-then-
+  committed WIP HEAD; goldens intact).
+- Verified phase0 baseline was captured PRE-change (4 screenshot hashes == G10 goldens:
+  microtimer 57503a12, simplestopwatch ed1dfc89, gmdice db0f4c4b, unote 8197687f).
+- F5-C1 ROOT CAUSE (trace-proven): per-instance ctor hook installed on the LAZY DEFAULT
+  LayoutInflater; the subsequent ensure_loaded() recreate (make_unique) silently wiped it.
+  headingcalculator inflated factory-less (3 views, screenshot byte-identical to G10 baseline).
+- FIX (AOSP Factory law, commit f42cf79c): ResourceRuntime now OWNS the process-wide
+  custom-view ctor hook and re-applies it to EVERY LayoutInflater it creates
+  (ensure_loaded + lazy inflater() accessor) — AppCompatDelegateImpl.installViewFactory law.
+- Runtime proof (headingcalculator, MINIANDROID_G11_TRACE=1): CalculatorDisplay,
+  CalculatorKeypad, ExplainableTextView, ExplainableButton real DEX <init>(Context, AttributeSet)
+  EXECUTED; real super chains (CalculatorKeypad -> LinearLayout -> ViewGroup -> View -> Object);
+  ctor-built subtrees MOUNTED (display grid TC/TAS/WD/WS/TH/GS + 4 keypad rows digit1..9/DEL/CE);
+  initializeDisplay() ran (text '0'); screenshot 6ab39944 -> 47646e76.
+- Corpus 8-APK after-run (phase1_after): 6 guards byte-identical (ZERO regression);
+  headingcalculator 0.263% -> 6.455% nonbg (25x real content); microtimer hash CHANGED with
+  identical pixel stats — classified LAWFUL: obfuscated Lk/g;.<init> real DEX executes
+  setOrientation + new Button + new RoTimeControl + addView(x2) (F5-C7/F5-C8 laws exercised by
+  real app code); RoTimeControl.a() creates TextView programmatically; 'null:null:null' label =
+  app's own format of null fields at construction (Java String.valueOf law); pixel delta band
+  rows 951-1076 == exactly the new real TextView 640x123. Timer-tick label update = G07 domain,
+  recorded as future layer.
+- Battery re-run after fix: 50/50 ALL PASS at f42cf79c.
+
+Stage Summary:
+- G11 constructor layer: implemented + runtime-proven on 2 real APKs (headingcalculator,
+  microtimer) + 6 guards byte-identical. G12 blockers MOVED to measurement layer:
+  (a) TableLayout/TableRow wrap-height aggregation (rows 0x0 with 44px children),
+  (b) vertical-LL weight=1000 row redistribution (rows 1080x0, buttons 0 height).
+- Next: g11 law/hostile test battery, G12 measurement clusters, muellerma ACF trace.
