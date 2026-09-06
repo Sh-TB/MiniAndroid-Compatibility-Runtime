@@ -1175,6 +1175,18 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         [&](uint32_t vid, const Spec& sw, const Spec& sh, int depth) -> std::pair<int,int> {
         auto* n = views->find_node(vid);
         if (!n) return {0, 0};
+        // G12 diagnostic (opt-in): incoming specs + container classification — level 3.
+        if (getenv("U007_LAYOUT_DEBUG") &&
+            std::string(getenv("U007_LAYOUT_DEBUG") ? getenv("U007_LAYOUT_DEBUG") : "") == "3") {
+            static const std::string mode_names[] = {"UNSPEC", "EXACTLY", "AT_MOST"};
+            fprintf(stderr, "[U007-SPEC] view %u %s spec=%d/%s x %d/%s depth=%d container=%d vgsub=%d llsub=%d\n",
+                    vid, n->class_desc.c_str(), sw.size,
+                    mode_names[(int)sw.mode].c_str(), sh.size,
+                    mode_names[(int)sh.mode].c_str(), depth,
+                    (int)is_container_node(n),
+                    (int)is_a(n->class_desc, "Landroid/view/ViewGroup;"),
+                    (int)is_a(n->class_desc, "Landroid/widget/LinearLayout;"));
+        }
         // Defensive depth cap: a real Android view tree is acyclic and
         // shallow; a cycle here (inflater bug) must fail loudly instead of
         // overflowing the stack.
@@ -1291,6 +1303,13 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                                     n->class_desc.find("Horizontal") == std::string::npos;
             const bool is_scrollh = n->class_desc.find("HorizontalScrollView") != std::string::npos;
             bool horizontal = n->orientation != 1;   // FIX-G10-001: unset (-1) = HORIZONTAL
+            // G12 FIX-G12-001: AOSP TableLayout stacks its rows VERTICALLY
+            // (android.widget.TableLayout — rows are its only children, its
+            // own LinearLayout orientation field is never XML-set). Without
+            // this the table measured as a horizontal row (content_w = sum
+            // of row widths).
+            if (is_a(n->class_desc, "Landroid/widget/TableLayout;"))
+                horizontal = false;
             if (is_scrollv) horizontal = false;
             if (is_scrollh) horizontal = true;
             if (is_a(n->class_desc, "Landroid/widget/FrameLayout;") ||
@@ -1338,6 +1357,13 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         // when larger (AOSP chooses the child's explicit size).
         n->measured_width = final_w;
         n->measured_height = final_h;
+        // G12 diagnostic (opt-in): measure result — level 3.
+        if (getenv("U007_LAYOUT_DEBUG") &&
+            std::string(getenv("U007_LAYOUT_DEBUG") ? getenv("U007_LAYOUT_DEBUG") : "") == "3") {
+            fprintf(stderr, "[U007-SPEC-OUT] view %u %s content=%dx%d -> %dx%d\n",
+                    vid, n->class_desc.c_str(), content_w, content_h,
+                    final_w, final_h);
+        }
         return {n->measured_width, n->measured_height};
     };
 
@@ -1402,6 +1428,9 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         bool is_scroll = n->class_desc.find("ScrollView") != std::string::npos &&
                          n->class_desc.find("Horizontal") == std::string::npos;
         bool horizontal = n->orientation != 1;   // FIX-G10-001: unset (-1) = HORIZONTAL
+        // G12 FIX-G12-001: TableLayout stacks rows VERTICALLY (see measure).
+        if (is_ll && is_a(n->class_desc, "Landroid/widget/TableLayout;"))
+            horizontal = false;
 
         // gather visible children + margins
         std::vector<uint32_t> kids;

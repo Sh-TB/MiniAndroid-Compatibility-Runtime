@@ -399,6 +399,20 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         return dalvik_engine_.run_custom_view_constructor(
                             view_id, class_desc);
                     });
+                // G12 FIX-G12-002 (completes G10 FIX-G10-002's intent): the
+                // DEX superclass classifier must be wired for EVERY inflate/
+                // measure/layout path — window setContentView, constructor
+                // subtree inflates (FIX-G11-001), and the renderer pass.
+                // Previously only the renderer's measure pass installed it,
+                // so app containers (CalculatorDisplay extends LinearLayout)
+                // classified as LEAF nodes on the window path and measured
+                // 0x0 despite real children. The classifier consults the
+                // AOSP framework ancestry table (FIX-G12-001) for framework
+                // classes and app DEX chains for app classes.
+                rt.set_is_a(
+                    [this](const std::string& c, const std::string& a) {
+                        return dalvik_engine_.is_subclass_of(c, a);
+                    });
             }
             // G06 §4: canonical input pipeline. The dispatcher shares the
             // ViewShadow tree (geometry/state) and the HandlerShadow virtual
@@ -1482,12 +1496,13 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             // the captured LayoutParams path below).
                             auto& rt = resources::ResourceRuntime::instance();
                             if (rt.loaded()) {
-                                // G10 FIX-G10-002: wire the DEX-backed
-                                // superclass-chain classifier so container
-                                // semantics follow real class ancestry
-                                // (CalculatorDisplay extends LinearLayout,
-                                // ViewSwitcher extends FrameLayout, ...).
-                                rt.inflater().set_is_a(
+                                // G10 FIX-G10-002 + G12 FIX-G12-002: the
+                                // DEX-backed superclass classifier is owned
+                                // by the ResourceRuntime (Factory law) and
+                                // installed once at stage entry — re-assert
+                                // here so a stage entered without the early
+                                // wiring still classifies by real ancestry.
+                                rt.set_is_a(
                                     [this](const std::string& c, const std::string& a) {
                                         return dalvik_engine_.is_subclass_of(c, a);
                                     });
