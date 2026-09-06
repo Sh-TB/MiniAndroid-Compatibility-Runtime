@@ -664,6 +664,25 @@ public:
         // during ensureCompositionCreated; without this state the composition
         // bails out and ComposeView keeps children=0 forever.
         bool attached_to_window = false;
+        // MASTER CAMPAIGN FIX (F8 default-onMeasure law, View.java):
+        // TRUE when this node's class chain does NOT override onMeasure up
+        // to a framework content class — the AOSP DEFAULT View.onMeasure
+        // then applies: setMeasuredDimension(getDefaultSize(...)) where
+        // getDefaultSize returns specSize for AT_MOST/EXACTLY (i.e. the
+        // parent-available size, NOT the content size). Computed by the DEX
+        // engine at constructor time (dex-report-backed override query) and
+        // consumed by the measure pass for leaf nodes with no text/image
+        // content source. Evidence: org.billthefarmer.scope v140 measured
+        // its plain custom Views (Scope/YScale/XScale/Unit) at 0x0/0x1920.
+        bool aosp_default_measure = false;
+        // MASTER CAMPAIGN FIX (F10 real-DEX onMeasure): TRUE when the DEX
+        // chain DOES override onMeasure — the runtime must EXECUTE the
+        // app's onMeasure bytecode (via the engine hook) instead of the
+        // content model or the default law. Capture fields for the
+        // setMeasuredDimension shadow dispatch during that execution:
+        bool overrides_on_measure = false;
+        int dex_measured_w = 0, dex_measured_h = 0;
+        bool dex_measure_valid = false;
         // EXP-067: Image resource ID — set by ImageView.setImageResource(int)
         // The renderer can look up the drawable path via resource_drawable_paths_.
         int32_t image_resource_id = 0;
