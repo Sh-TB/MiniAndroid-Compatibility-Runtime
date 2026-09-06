@@ -230,6 +230,105 @@ json SoftwareCanvas::to_trace_json() const {
 }
 
 // ============================================================================
+// ── G04 §4: header-only dimension probe (law: see software_renderer.h) ─────
+namespace {
+uint32_t rd_be32(const uint8_t* p) {
+    return (uint32_t(p[0]) << 24) | (uint32_t(p[1]) << 16) |
+           (uint32_t(p[2]) << 8) | uint32_t(p[3]);
+}
+} // namespace
+
+bool probe_image_size(const std::vector<uint8_t>& bytes, ImageSizeProbe* out) {
+    if (!out) return false;
+    out->width = out->height = 0;
+    const size_t n = bytes.size();
+    if (n >= 33 && bytes[0] == 0x89 && bytes[1] == 'P' && bytes[2] == 'N' &&
+        bytes[3] == 'G') {
+        // PNG: IHDR must be the first chunk: 8 sig + 4 len + 4 "IHDR" then
+        // 4 width + 4 height. (A hostile file whose 13-byte IHDR window is
+        // truncated simply fails the probe — bounds-checked, no allocation.)
+        out->width  = (int)rd_be32(&bytes[16]);
+        out->height = (int)rd_be32(&bytes[20]);
+        return out->width > 0 && out->height > 0;
+    }
+    if (n >= 30 && bytes[0] == 'R' && bytes[1] == 'I' && bytes[2] == 'F' &&
+        bytes[3] == 'F' && bytes[8] == 'W' && bytes[9] == 'E' &&
+        bytes[10] == 'B' && bytes[11] == 'P') {
+        const uint8_t* f = &bytes[12];          // first chunk fourcc
+        if (std::memcmp(f, "VP8X", 4) == 0 && n >= 30) {
+            // VP8X: 24-bit-1 canvas width at offset 24, height at 27.
+            uint32_t w = 1 + (uint32_t(bytes[24]) | (uint32_t(bytes[25]) << 8) |
+                              (uint32_t(bytes[26]) << 16));
+            uint32_t h = 1 + (uint32_t(bytes[27]) | (uint32_t(bytes[28]) << 8) |
+                              (uint32_t(bytes[29]) << 16));
+            out->width = (int)w; out->height = (int)h;
+            return out->width > 0 && out->height > 0;
+        }
+        if (std::memcmp(f, "VP8 ", 4) == 0 && n >= 30) {
+            // lossy VP8: frame tag 3 bytes at 20, then sync 0x9D012A at 23,
+            // then 14-bit width/height little-endian at 26/28.
+            if (bytes[23] == 0x9D && bytes[24] == 0x01 && bytes[25] == 0x2A) {
+                out->width  = int(bytes[26] | (bytes[27] << 8)) & 0x3FFF;
+                out->height = int(bytes[28] | (bytes[29] << 8)) & 0x3FFF;
+                return out->width > 0 && out->height > 0;
+            }
+        }
+        if (std::memcmp(f, "VP8L", 4) == 0 && n >= 25) {
+            // lossless: signature 0x2F then 14-bit w-1 / h-1 packed LSB-first.
+            if (bytes[20] == 0x2F) {
+                uint32_t b = uint32_t(bytes[21]) | (uint32_t(bytes[22]) << 8) |
+                             (uint32_t(bytes[23]) << 16) | (uint32_t(bytes[24]) << 24);
+                out->width  = int((b & 0x3FFF) + 1);
+                out->height = int(((b >> 14) & 0x3FFF) + 1);
+                return out->width > 0 && out->height > 0;
+            }
+        }
+        return false;
+    }
+    if (n >= 4 && bytes[0] == 0xFF && bytes[1] == 0xD8 && bytes[2] == 0xFF) {
+        // JPEG: scan segment markers for SOF0..SOF3 (baseline/progressive).
+        size_t i = 2;
+        while (i + 9 < n) {
+            if (bytes[i] != 0xFF) { i++; continue; }
+            uint8_t marker = bytes[i + 1];
+            if (marker == 0xD8 || marker == 0x01 || (marker >= 0xD0 && marker <= 0xD7)) {
+                i += 2; continue;                       // standalone markers
+            }
+            if (i + 3 >= n) break;
+            uint16_t seg_len = (uint16_t)((bytes[i + 2] << 8) | bytes[i + 3]);
+            if ((marker >= 0xC0 && marker <= 0xC3) ||
+                (marker >= 0xC5 && marker <= 0xC7) ||
+                (marker >= 0xC9 && marker <= 0xCB) ||
+                (marker >= 0xCD && marker <= 0xCF)) {
+                if (i + 9 <= n) {
+                    out->height = int((bytes[i + 5] << 8) | bytes[i + 6]);
+                    out->width  = int((bytes[i + 7] << 8) | bytes[i + 8]);
+                    return out->width > 0 && out->height > 0;
+                }
+                break;
+            }
+            i += 2 + seg_len;
+        }
+        return false;
+    }
+    return false;
+}
+
+// ── G04 §12: FIT_CENTER placement (ImageView.java default scaleType law) ───
+FitRect fit_center_rect(int src_w, int src_h, int box_x, int box_y,
+                        int box_w, int box_h) {
+    FitRect r;
+    if (src_w <= 0 || src_h <= 0 || box_w <= 0 || box_h <= 0) return r;
+    // scale = min(dW/srcW, dH/srcH) — the FIT_CENTER matrix law. Integer
+    // dims via float intermediate to avoid premature truncation, then round.
+    float scale = std::min(float(box_w) / float(src_w), float(box_h) / float(src_h));
+    r.w = std::max(1, int(std::lround(float(src_w) * scale)));
+    r.h = std::max(1, int(std::lround(float(src_h) * scale)));
+    r.x = box_x + (box_w - r.w) / 2;
+    r.y = box_y + (box_h - r.h) / 2;
+    return r;
+}
+
 // EXP-088 Phase A4: SoftwareCanvas::draw_image
 //
 // Draws an RGBA pixel buffer (decoded from a PNG via PNGDecoder) into the
