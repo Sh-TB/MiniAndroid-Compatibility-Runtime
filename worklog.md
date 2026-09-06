@@ -421,3 +421,44 @@ Stage Summary:
   (a) TableLayout/TableRow wrap-height aggregation (rows 0x0 with 44px children),
   (b) vertical-LL weight=1000 row redistribution (rows 1080x0, buttons 0 height).
 - Next: g11 law/hostile test battery, G12 measurement clusters, muellerma ACF trace.
+
+---
+Task ID: G11/G12-CLOSE
+Agent: Super Z (main agent)
+Task: G11/G12 closure — G12 measurement laws, muellerma independent trace, determinism, evidence publication.
+
+Work Log:
+- G12 clusters root-caused via opt-in U007_LAYOUT_DEBUG=3 spec dumps (§3 chain):
+  (1) framework classes had NO ancestry layer (TableRow substring-missed "Layout"
+  → leaf → 0x0 rows under 44px children); FIX-G12-001: src/framework/view_ancestry.h
+  single authority (view_ancestry.h) consulted by is_subclass_of + inflater fallback.
+  (2) descriptor form law: AXML dot-form vs DEX slash-form — normalize_class_desc()
+  at every cross-layer compare (FIX-G12-001b). (3) TableLayout stacks rows VERTICALLY
+  (was measured as one horizontal row, content_w=473). (4) is_a classifier Factory
+  survival (was only wired on the renderer pass — window path classified app
+  containers as leaves) (FIX-G12-002).
+- Result: headingcalculator final pass CalculatorDisplay 1080x0 → 1080x158; TableLayout
+  1080x158; screenshot 47646e76 → 0f933ff8 (268,977 px diff); 3-run determinism unique
+  hash count 1.
+- muellerma independent trace (§25): NOT the headingcalculator cluster. Evidence:
+  (a) manifest AXML string pool shows NO activity (StopwatchApp/Service/Tile/provider
+  only — a QS-tile-only app real Android never opens from a launcher) → new cluster
+  FIND-G11-NOACTIVITY-001, EXP-031.5 zero-bytecode assertion scoped to activity apps;
+  (b) bundled android.app.AppComponentFactory.<clinit> disassembly = unconditional
+  construct-and-throw — FIX-G12-003 parent-delegation law: framework-namespace <clinit>
+  never executes from app DEX (choke-point skip in execute_method_internal).
+  Result: PARTIAL preserved with byte-identical screenshot (diff=0), stub skipped.
+- microtimer classified LAWFUL (Lk/g; real ctor + addView; RoTimeControl programmatic
+  TextView; 'null:null:null' = app's own Java null-concat at construction).
+- Battery 52/52 ALL PASS at every commit (d8b66526 → 28c1bfe1); zero golden changes.
+- Evidence published to Issue #8 (URLs read back from the API, recorded in
+  scripts/comment_urls.json): recovery+baseline 5561889945, laws+fixes 5561890236,
+  cross-APK validation 5561890536.
+
+Stage Summary:
+- G11/G12 CLOSED: real DEX constructor execution + custom hierarchy + measurement laws
+  runtime-proven + visually-proven on 2 independent real APKs (different packages, UI
+  architectures); 6 byte-identical guards; determinism proven; 5 semantic commits
+  d8b66526/0115452b chain pushed; final HEAD 0115452b.
+- Remaining (ranked): headingcalculator keypad width (needs reference evidence),
+  AppCompat/Compose shells, G07 timer ticks, implicit intents, TableLayout column law.
