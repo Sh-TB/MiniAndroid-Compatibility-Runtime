@@ -1,0 +1,30 @@
+{
+  "apk": "tictactoe",
+  "rel": "download/tictactoe.apk",
+  "sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 1.02,
+    "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": true,
+    "views": 2,
+    "zero_sized": 0
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      255,
+      255,
+      255
+    ],
+    "nonbg_pct": 0.0,
+    "content_bbox": null
+  }
+}

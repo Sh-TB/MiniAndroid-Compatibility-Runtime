@@ -1,0 +1,35 @@
+{
+  "apk": "simplestopwatch",
+  "rel": "download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+  "sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.24,
+    "screenshot_sha256": "ed1dfc8981c5ac7a670dd207c834e8fb4d9b16bd509c62e625435af23c8da9aa"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": true,
+    "views": 22,
+    "zero_sized": 11
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "nonbg_pct": 4.0509,
+    "content_bbox": [
+      0,
+      1815,
+      1079,
+      1919
+    ]
+  }
+}

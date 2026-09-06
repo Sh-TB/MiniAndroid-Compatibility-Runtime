@@ -1,0 +1,35 @@
+{
+  "apk": "headingcalculator",
+  "rel": "download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
+  "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.22,
+    "screenshot_sha256": "0f933ff814f45bca08c851703bb3b1e643a64da332f9fd6febbab11efc950daa"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": true,
+    "views": 135,
+    "zero_sized": 85
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      225,
+      225,
+      225
+    ],
+    "nonbg_pct": 6.7101,
+    "content_bbox": [
+      0,
+      8,
+      343,
+      1720
+    ]
+  }
+}
