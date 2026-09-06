@@ -8031,10 +8031,15 @@ int DalvikExecutionEngine::populate_drawable_paths_from_arsc(
             r->type_name != "raw") {
             continue;
         }
-        auto path = arsc.apk_path_for(resid, apk_paths);
-        if (!path) continue;
-        resource_drawable_paths_[field_name] = *path;
-        resolved++;
+        // G04 §4: select_file (canonical resolve_full law) replaces
+        // apk_path_for so the SELECTED config density is captured too —
+        // the BitmapFactory inDensity→inTargetDensity scaling input.
+        if (auto sel = arsc.select_file(resid, apk_paths,
+                                        resources::device_config())) {
+            resource_drawable_paths_[field_name] = sel->path;
+            resource_drawable_density_by_resid_[resid] = sel->selected_density();
+            resolved++;
+        }
     }
     std::cerr << "[ARSC-VALUES] drawable paths resolved via canonical resolver: "
               << resolved << "/" << field_name_by_resid_.size() << std::endl;

@@ -3,6 +3,8 @@
  */
 #include "layout_inflater.h"
 #include "../fonts/text_shaper.h"
+#include "../renderer/software_renderer.h"  // G04 §8: header-only image size probe
+#include "res_config.h"                     // G04 §4: device density law
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -199,16 +201,49 @@ std::string LayoutInflater::find_apk_file(const std::string& type, const std::st
 }
 
 std::string LayoutInflater::drawable_path_for_name(const std::string& name) {
+    return drawable_file_for_name(name, nullptr);
+}
+
+// G04 §4 (FIND-G04-AUDIT-003): ALL drawable/mipmap/raw path selection goes
+// through the canonical ARSC engine (select_file → resolve_full →
+// best_for(device) — the same AssetManager2 law every other lookup uses).
+// The previous implementations ranked ZIP PATH STRINGS ("prefer xxxhdpi",
+// or "shortest dir name"), a parallel resource system that violated the
+// AOSP density-bucket law (isBetterThan: exact > both-above→smaller >
+// straddle→higher) and could never report the SELECTED config density.
+// out_density: selected ResTable_config.density (raw table form: 0 = unset
+// → TypedValue DENSITY_DEFAULT 160; 0xFFFF DENSITY_NONE → never scale).
+std::string LayoutInflater::drawable_file_for_name(const std::string& name,
+                                                   uint16_t* out_density) {
+    const char* types[] = {"drawable", "mipmap", "raw"};
+    for (const char* t : types) {
+        auto id = arsc_.find_id("", t, name);
+        if (!id) continue;
+        if (auto sel = arsc_.select_file(*id, apk_entries_, device_config())) {
+            if (out_density) *out_density = sel->selected_density();
+            return sel->path;
+        }
+    }
+    // Table-less fallback (no ARSC entry — e.g. assets-style files): keep the
+    // old zip scan as a LAST resort, never as an authority over the table.
     std::string p = find_apk_file("drawable", name);
     if (p.empty()) p = find_apk_file("mipmap", name);
     if (p.empty()) p = find_apk_file("raw", name);
+    if (out_density) *out_density = 0;
     return p;
 }
 
 std::string LayoutInflater::drawable_path_for_resid(uint32_t resid) {
-    auto r = arsc_.resolve(resid);
-    if (!r) return "";
-    return drawable_path_for_name(r->name);
+    return drawable_file_for_resid(resid, nullptr);
+}
+
+std::string LayoutInflater::drawable_file_for_resid(uint32_t resid, uint16_t* out_density) {
+    if (auto sel = arsc_.select_file(resid, apk_entries_, device_config())) {
+        if (out_density) *out_density = sel->selected_density();
+        return sel->path;
+    }
+    if (out_density) *out_density = 0;
+    return "";
 }
 
 // ---------------------------------------------------------------------------
@@ -718,8 +753,9 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         }
         else if (n == "background") {
             if (at.value.is_reference()) {
-                std::string p = drawable_path_for_resid(at.value.ref_id);
-                if (!p.empty()) a.bg_drawable = p;
+                uint16_t sel_d = 0;
+                std::string p = drawable_file_for_resid(at.value.ref_id, &sel_d);
+                if (!p.empty()) { a.bg_drawable = p; a.bg_drawable_density = sel_d; }
                 else {
                     auto val = arsc_.resolve_value(at.value.ref_id);
                     if (val && (val->is_color() || val->is_int())) a.bg_color = val->data;
@@ -729,8 +765,9 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             } else if (!raw.empty() && raw[0] == '@') {
                 auto ref = parse_ref(raw);
                 if (ref.kind == RefKind::DRAWABLE) {
-                    std::string p = drawable_path_for_name(ref.name);
-                    if (!p.empty()) a.bg_drawable = p;
+                    uint16_t sel_d = 0;
+                    std::string p = drawable_file_for_name(ref.name, &sel_d);
+                    if (!p.empty()) { a.bg_drawable = p; a.bg_drawable_density = sel_d; }
                 } else if (ref.kind == RefKind::COLOR) {
                     a.bg_color = resolve_color(raw, stats);
                 }
@@ -738,11 +775,16 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         }
         else if (n == "src" || n == "srcCompat") {
             if (at.value.is_reference()) {
-                std::string p = drawable_path_for_resid(at.value.ref_id);
-                if (!p.empty()) a.src_drawable = p;
+                uint16_t sel_d = 0;
+                std::string p = drawable_file_for_resid(at.value.ref_id, &sel_d);
+                if (!p.empty()) { a.src_drawable = p; a.src_drawable_density = sel_d; }
             } else if (!raw.empty() && raw[0] == '@') {
                 auto ref = parse_ref(raw);
-                if (ref.kind == RefKind::DRAWABLE) a.src_drawable = drawable_path_for_name(ref.name);
+                if (ref.kind == RefKind::DRAWABLE) {
+                    uint16_t sel_d = 0;
+                    a.src_drawable = drawable_file_for_name(ref.name, &sel_d);
+                    a.src_drawable_density = sel_d;
+                }
             }
         }
         else if (n == "onClick") a.onClick = raw;
@@ -838,8 +880,14 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.rel_right_of_name = a.rel_right_of;
     node.rel_left_of_name = a.rel_left_of;
     if (a.bg_color != 0) { node.bg_color = a.bg_color; node.bg_from_xml = true; }
-    if (!a.bg_drawable.empty()) { node.bg_drawable_path = a.bg_drawable; node.bg_from_xml = true; }
-    if (!a.src_drawable.empty()) node.src_drawable_path = a.src_drawable;
+    if (!a.bg_drawable.empty()) {
+        node.bg_drawable_path = a.bg_drawable; node.bg_from_xml = true;
+        node.bg_drawable_density = a.bg_drawable_density;   // G04 §4
+    }
+    if (!a.src_drawable.empty()) {
+        node.src_drawable_path = a.src_drawable;
+        node.src_density = a.src_drawable_density;          // G04 §4
+    }
     // width/height semantics on node
     node.width = a.layout_width;
     node.height = a.layout_height;
@@ -935,6 +983,45 @@ inline int content_h(const framework::ViewShadow::ViewNode& n) {
 }
 
 } // namespace
+
+// ── G04 §8: drawable intrinsic size (AOSP Drawable.getIntrinsicWidth law) ──
+// ImageView.onMeasure (ImageView.java L1147) uses the drawable's intrinsic
+// size as the content dimension. The intrinsic size of a BitmapDrawable is
+// the encoded bitmap size SCALED by targetDensity/inDensity
+// (BitmapDrawable.cpp scaleFromDensity). Header probe only — no decode
+// (measure must not pay decode cost; the renderer decodes at draw time).
+bool LayoutInflater::image_intrinsic_size(const std::string& path,
+                                          uint16_t sel_density,
+                                          int* out_w, int* out_h) {
+    if (path.empty() || !out_w || !out_h) return false;
+    auto it = image_probe_cache_.find(path);
+    if (it == image_probe_cache_.end()) {
+        auto bytes = apk_.extract_entry_cached(path);
+        renderer::ImageSizeProbe p;
+        if (bytes.empty() || !renderer::probe_image_size(bytes, &p)) {
+            image_probe_cache_[path] = {-1, -1};
+            return false;
+        }
+        it = image_probe_cache_.emplace(path, std::make_pair(p.width, p.height)).first;
+    }
+    if (it->second.first <= 0 || it->second.second <= 0) return false;
+    int w = it->second.first, h = it->second.second;
+    // BitmapFactory density law: 0 → DENSITY_DEFAULT(160); DENSITY_NONE → no
+    // scale; else scale by device/selected (the single-device law — the same
+    // device_config() the config matcher uses).
+    uint16_t src_d = (sel_density == 0xFFFF) ? 0 : (sel_density ? sel_density : 160);
+    if (src_d > 0) {
+        uint16_t tgt = device_config().density;
+        if (tgt > 0 && src_d != tgt) {
+            float s = float(tgt) / float(src_d);
+            w = std::max(1, (int)std::lround(w * s));
+            h = std::max(1, (int)std::lround(h * s));
+        }
+    }
+    *out_w = w;
+    *out_h = h;
+    return true;
+}
 
 void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_id) {
     // =======================================================================
@@ -1061,7 +1148,18 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                              ? std::min(n->num_lines, (int)lay.lines.size())
                              : (int)lay.lines.size();
             }
-            if (!n->src_drawable_path.empty() ||
+            // G04 §8 (ImageView.java onMeasure L1141+ law): the drawable's
+            // density-scaled intrinsic size IS the image content dimension.
+            // The 48dp default applies ONLY when no intrinsic size is
+            // knowable (no file / unprobeable image) — the AOSP wrap
+            // fallback for an unresolvable drawable.
+            int iw = 0, ih = 0;
+            if (image_intrinsic_size(n->src_drawable_path, n->src_density, &iw, &ih) ||
+                image_intrinsic_size(n->image_drawable_path, n->src_density, &iw, &ih)) {
+                content_w = std::max(content_w, iw);
+                content_h = std::max(content_h, ih);
+                n->src_w = iw; n->src_h = ih;   // evidence + draw-path reuse
+            } else if (!n->src_drawable_path.empty() ||
                 (n->image_drawable_path.empty() && n->class_desc.find("ImageView") != std::string::npos)) {
                 // image default 48dp when no intrinsic size is known (AOSP
                 // ImageView wrap fallback).

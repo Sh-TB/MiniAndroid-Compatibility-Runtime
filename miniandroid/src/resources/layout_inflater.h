@@ -70,6 +70,12 @@ public:
     std::string drawable_path_for_resid(uint32_t resid);
     // Resolve drawable by name
     std::string drawable_path_for_name(const std::string& name);
+    // G04 §4: canonical selection that ALSO reports the SELECTED config
+    // density (raw ResTable_config form: 0=unset→DENSITY_DEFAULT 160,
+    // 0xFFFF=DENSITY_NONE → caller must not scale). Single implementation
+    // of the density-bucket law; the plain-path variants delegate here.
+    std::string drawable_file_for_resid(uint32_t resid, uint16_t* out_density);
+    std::string drawable_file_for_name(const std::string& name, uint16_t* out_density);
 
     // Measure + layout pass: compute real geometry for the tree under root.
     // Fills node x/y/width/height (+padding) — the renderer uses these.
@@ -81,6 +87,11 @@ public:
     std::unordered_map<uint32_t, std::string> onClick_handlers;
 
 private:
+    // G04 §8: drawable intrinsic-size probe cache (path → natural dims;
+    // {-1,-1} = probe failed — never retried, honest 48dp fallback applies).
+    std::map<std::string, std::pair<int,int>> image_probe_cache_;
+    bool image_intrinsic_size(const std::string& path, uint16_t sel_density,
+                              int* out_w, int* out_h);
     struct Attrs {
         int  id_resid = 0;
         int  layout_width = -2;   // -1 match, -2 wrap, >0 px
@@ -111,6 +122,11 @@ private:
         uint32_t bg_color = 0;    // resolved ARGB (opaque)
         std::string bg_drawable;  // APK path
         std::string src_drawable; // APK path (ImageView)
+        // G04 §4: SELECTED config density (raw form) for the file-backed
+        // drawables above — drives the BitmapFactory inDensity→inTargetDensity
+        // scaling law at draw and intrinsic-size measurement.
+        uint16_t bg_drawable_density = 0;
+        uint16_t src_drawable_density = 0;
         std::string onClick;      // handler method name
         int  visibility = 0;      // 0 visible, 4 invisible, 8 gone
         bool clickable = false;
