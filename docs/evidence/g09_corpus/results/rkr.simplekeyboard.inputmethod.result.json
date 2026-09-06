@@ -1,0 +1,50 @@
+{
+  "package": "rkr.simplekeyboard.inputmethod",
+  "apk_file": "rkr.simplekeyboard.inputmethod_145.apk",
+  "sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
+  "minSdk": "24",
+  "targetSdk": "36",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "n_activities": 1,
+  "interactive_surface": true,
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.19,
+    "has_screenshot": true,
+    "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+    "log_path": "/tmp/g09_runs/rkr.simplekeyboard.inputmethod/base/console.log"
+  },
+  "click_run_status": false,
+  "click": {
+    "present": false
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "STARTED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "STARTED",
+        true
+      ]
+    ],
+    "finish_cascade": null,
+    "activity_launch": null
+  },
+  "g08": {
+    "startActivity_in_dex_trace": false,
+    "startActivityForResult_in_dex_trace": false,
+    "intent_apis_seen": [
+      "getIntent"
+    ],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

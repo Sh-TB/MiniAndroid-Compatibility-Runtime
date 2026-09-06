@@ -1,0 +1,2088 @@
+[
+  {
+    "activities": [
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "com.appliberated.helloworldselfaware.MainActivity",
+        "target": null
+      }
+    ],
+    "apk_abs": "/home/z/corpus/external_hello/HelloWorldSelfAware-1.1.0-android.apk",
+    "apk_file": "HelloWorldSelfAware-1.1.0-android.apk",
+    "corpus_rel": null,
+    "dex": {
+      "androidx_core": false,
+      "appcompat": false,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": false,
+      "material": false,
+      "set_on_click": false,
+      "set_on_long_click": true,
+      "set_result": false,
+      "start_activity": false,
+      "start_activity_for_result": false,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.TextView",
+        "android.widget.Toast"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "Hello World Self-Aware",
+    "launchable_activity": "com.appliberated.helloworldselfaware.MainActivity",
+    "minSdk": "9",
+    "multi_activity": false,
+    "n_activities": 1,
+    "non_launcher_intent_filters": 1,
+    "package": "com.appliberated.helloworldselfaware",
+    "result_api_surface": false,
+    "sha256": "009b467109c4d48d4b00610b06f37f3a77eed75178fbaae344a111acc848cc41",
+    "source_name": "HelloWorldSelfAware (Appliberated)",
+    "source_url": "https://github.com/Appliberated/HelloWorldSelfAware/releases (v1.1.0)",
+    "targetSdk": "35",
+    "uses_appcompat": false,
+    "uses_compose": false,
+    "versionCode": "2",
+    "versionName": "1.1.0"
+  },
+  {
+    "activities": [
+      {
+        "exported": null,
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "com.emmanuelmess.tictactoe.AndroidLauncher",
+        "target": null
+      }
+    ],
+    "apk_file": "tictactoe.apk",
+    "corpus_rel": "download/tictactoe.apk",
+    "dex": {
+      "androidx_core": false,
+      "appcompat": false,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": false,
+      "material": false,
+      "set_on_click": false,
+      "set_on_long_click": false,
+      "set_result": true,
+      "start_activity": true,
+      "start_activity_for_result": false,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.EditText",
+        "android.widget.FrameLayout",
+        "android.widget.TextView"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": false,
+    "label": "TicTacToe",
+    "launchable_activity": "com.emmanuelmess.tictactoe.AndroidLauncher",
+    "minSdk": "14",
+    "multi_activity": false,
+    "n_activities": 1,
+    "non_launcher_intent_filters": 1,
+    "package": "com.emmanuelmess.tictactoe",
+    "result_api_surface": true,
+    "sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+    "source_name": "TicTacToe (emmanuelmess)",
+    "source_url": "https://f-droid.org/repo/com.emmanuelmess.tictactoe_3.apk",
+    "targetSdk": "29",
+    "uses_appcompat": false,
+    "uses_compose": false,
+    "versionCode": "3",
+    "versionName": "1.0.0"
+  },
+  {
+    "activities": [
+      {
+        "exported": null,
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "de.duenndns.gmdice.GameMasterDice",
+        "target": null
+      }
+    ],
+    "apk_file": "de.duenndns.gmdice_8.apk",
+    "corpus_rel": "download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+    "dex": {
+      "androidx_core": false,
+      "appcompat": false,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": false,
+      "material": false,
+      "set_on_click": true,
+      "set_on_long_click": true,
+      "set_result": false,
+      "start_activity": true,
+      "start_activity_for_result": false,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.EditText",
+        "android.widget.ListView",
+        "android.widget.TextView"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "GM Dice",
+    "launchable_activity": "de.duenndns.gmdice.GameMasterDice",
+    "minSdk": "11",
+    "multi_activity": false,
+    "n_activities": 1,
+    "non_launcher_intent_filters": 1,
+    "package": "de.duenndns.gmdice",
+    "result_api_surface": false,
+    "sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+    "source_name": "gmdice",
+    "source_url": "https://f-droid.org/repo/de.duenndns.gmdice_8.apk",
+    "targetSdk": "27",
+    "uses_appcompat": false,
+    "uses_compose": false,
+    "versionCode": "8",
+    "versionName": "1.0"
+  },
+  {
+    "activities": [
+      {
+        "exported": null,
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "omegacentauri.mobi.simplestopwatch.StopWatch",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "omegacentauri.mobi.simplestopwatch.Clock",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "omegacentauri.mobi.simplestopwatch.ClockWithSeconds",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [
+          {
+            "actions": [],
+            "categories": [
+              "android.intent.category.PREFERENCE"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "omegacentauri.mobi.simplestopwatch.Options",
+        "target": null
+      }
+    ],
+    "apk_file": "omegacentauri.mobi.simplestopwatch_26.apk",
+    "corpus_rel": "download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+    "dex": {
+      "androidx_core": false,
+      "appcompat": false,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": true,
+      "material": false,
+      "set_on_click": true,
+      "set_on_long_click": true,
+      "set_result": false,
+      "start_activity": true,
+      "start_activity_for_result": false,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.EditText",
+        "android.widget.LinearLayout",
+        "android.widget.TextView",
+        "android.widget.Toast"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "Giant Stopwatch",
+    "launchable_activity": "omegacentauri.mobi.simplestopwatch.StopWatch",
+    "minSdk": "4",
+    "multi_activity": true,
+    "n_activities": 4,
+    "non_launcher_intent_filters": 2,
+    "package": "omegacentauri.mobi.simplestopwatch",
+    "result_api_surface": false,
+    "sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+    "source_name": "Simple Stopwatch",
+    "source_url": "https://f-droid.org/repo/omegacentauri.mobi.simplestopwatch_26.apk",
+    "targetSdk": "29",
+    "uses_appcompat": false,
+    "uses_compose": false,
+    "versionCode": "26",
+    "versionName": "1.26"
+  },
+  {
+    "activities": [
+      {
+        "exported": null,
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": ".ChessClock",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": ".Prefs",
+        "target": null
+      }
+    ],
+    "apk_file": "com.chessclock.android_29.apk",
+    "corpus_rel": "download/exp073_real_apps/com.chessclock.android_29.apk",
+    "dex": {
+      "androidx_core": false,
+      "appcompat": false,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": true,
+      "material": false,
+      "set_on_click": true,
+      "set_on_long_click": false,
+      "set_result": false,
+      "start_activity": true,
+      "start_activity_for_result": false,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.TextView"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "Simple Chess Clock",
+    "launchable_activity": "com.chessclock.android.ChessClock",
+    "minSdk": "21",
+    "multi_activity": true,
+    "n_activities": 2,
+    "non_launcher_intent_filters": 1,
+    "package": "com.chessclock.android",
+    "result_api_surface": false,
+    "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+    "source_name": "Chess Clock",
+    "source_url": "https://f-droid.org/repo/com.chessclock.android_29.apk",
+    "targetSdk": "25",
+    "uses_appcompat": false,
+    "uses_compose": false,
+    "versionCode": "29",
+    "versionName": "2.11.2"
+  },
+  {
+    "activities": [
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.VIEW",
+              "android.intent.action.EDIT"
+            ],
+            "categories": [
+              "android.intent.category.BROWSABLE",
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.VIEW",
+              "android.intent.action.EDIT"
+            ],
+            "categories": [
+              "android.intent.category.BROWSABLE",
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.SEND"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.SEND",
+              "android.intent.action.SEND_MULTIPLE"
+            ],
+            "categories": [
+              "android.intent.category.BROWSABLE",
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.VIEW"
+            ],
+            "categories": [
+              "android.intent.category.BROWSABLE",
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "org.billthefarmer.notes.Notes",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "org.billthefarmer.notes.Editor",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "org.billthefarmer.notes.Settings",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.CREATE_SHORTCUT"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "org.billthefarmer.notes.Shortcut",
+        "target": null
+      }
+    ],
+    "apk_file": "org.billthefarmer.notes_139.apk",
+    "corpus_rel": "download/exp073_real_apps/org.billthefarmer.notes_139.apk",
+    "dex": {
+      "androidx_core": false,
+      "appcompat": false,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": true,
+      "material": false,
+      "set_on_click": true,
+      "set_on_long_click": true,
+      "set_result": true,
+      "start_activity": true,
+      "start_activity_for_result": true,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.EditText",
+        "android.widget.LinearLayout",
+        "android.widget.ScrollView",
+        "android.widget.TextView",
+        "android.widget.Toast"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "Notes",
+    "launchable_activity": "org.billthefarmer.notes.Notes",
+    "minSdk": "21",
+    "multi_activity": true,
+    "n_activities": 4,
+    "non_launcher_intent_filters": 7,
+    "package": "org.billthefarmer.notes",
+    "result_api_surface": true,
+    "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+    "source_name": "Notes (billthefarmer)",
+    "source_url": "https://f-droid.org/repo/org.billthefarmer.notes_139.apk",
+    "targetSdk": "28",
+    "uses_appcompat": false,
+    "uses_compose": false,
+    "versionCode": "139",
+    "versionName": "1.39"
+  },
+  {
+    "activities": [
+      {
+        "exported": null,
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "org.debian.eugen.headingcalculator.MainActivity",
+        "target": null
+      }
+    ],
+    "apk_file": "org.debian.eugen.headingcalculator_1.apk",
+    "corpus_rel": "download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
+    "dex": {
+      "androidx_core": false,
+      "appcompat": false,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": false,
+      "material": false,
+      "set_on_click": true,
+      "set_on_long_click": true,
+      "set_result": false,
+      "start_activity": false,
+      "start_activity_for_result": false,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.LinearLayout",
+        "android.widget.TextView",
+        "android.widget.Toast"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "Heading Calculator",
+    "launchable_activity": "org.debian.eugen.headingcalculator.MainActivity",
+    "minSdk": "5",
+    "multi_activity": false,
+    "n_activities": 1,
+    "non_launcher_intent_filters": 1,
+    "package": "org.debian.eugen.headingcalculator",
+    "result_api_surface": false,
+    "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+    "source_name": "Heading Calculator",
+    "source_url": "https://f-droid.org/repo/org.debian.eugen.headingcalculator_1.apk",
+    "targetSdk": "19",
+    "uses_appcompat": false,
+    "uses_compose": false,
+    "versionCode": "1",
+    "versionName": "1.0"
+  },
+  {
+    "activities": [
+      {
+        "exported": null,
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "com.benny.openlauncher.activity.OnBoardActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.VIEW",
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.HOME",
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "com.benny.openlauncher.activity.HomeActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "com.benny.openlauncher.activity.AutoFinishActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "com.benny.openlauncher.activity.MinibarEditActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "com.benny.openlauncher.activity.SettingsActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "com.benny.openlauncher.activity.HideAppsActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "com.benny.openlauncher.activity.MoreInfoActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.GET_CONTENT"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "com.nononsenseapps.filepicker.FilePickerActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "cat.ereza.customactivityoncrash.activity.DefaultErrorActivity",
+        "target": null
+      }
+    ],
+    "apk_file": "com.benny.openlauncher_39.apk",
+    "corpus_rel": "download/exp076_corpus/com.benny.openlauncher_39.apk",
+    "dex": {
+      "androidx_core": true,
+      "appcompat": false,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": true,
+      "material": true,
+      "set_on_click": true,
+      "set_on_long_click": true,
+      "set_result": true,
+      "start_activity": true,
+      "start_activity_for_result": true,
+      "support_v7": true,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.CheckBox",
+        "android.widget.EditText",
+        "android.widget.FrameLayout",
+        "android.widget.GridLayout",
+        "android.widget.ImageView",
+        "android.widget.LinearLayout",
+        "android.widget.ListView",
+        "android.widget.RadioButton",
+        "android.widget.ScrollView",
+        "android.widget.SeekBar",
+        "android.widget.TextView",
+        "android.widget.Toast"
+      ]
+    },
+    "findings": {
+      "corpus_drift": "F-Droid repo file for com.benny.openlauncher_39 now serves SHA-256 b3320463a7a1ed46c52464bae83a97317d062b1e2097bd1885cdf265f2089f89; the G0x-era frozen manifest recorded b7900f56ccbe4768\u2026 (re-signed/republished upstream). G09 freezes TODAY's bytes and records both hashes."
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "OpenLauncher",
+    "launchable_activity": "com.benny.openlauncher.activity.OnBoardActivity",
+    "minSdk": "17",
+    "multi_activity": true,
+    "n_activities": 9,
+    "non_launcher_intent_filters": 3,
+    "package": "com.benny.openlauncher",
+    "result_api_surface": true,
+    "sha256": "b3320463a7a1ed46c52464bae83a97317d062b1e2097bd1885cdf265f2089f89",
+    "targetSdk": "28",
+    "uses_appcompat": true,
+    "uses_compose": false,
+    "versionCode": "39",
+    "versionName": "0.7.1"
+  },
+  {
+    "activities": [
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "io.github.yamin8000.dooz.content.MainActivity",
+        "target": null
+      }
+    ],
+    "apk_file": "io.github.yamin8000.dooz_18.apk",
+    "corpus_rel": "download/exp076_corpus/io.github.yamin8000.dooz_18.apk",
+    "dex": {
+      "androidx_core": true,
+      "appcompat": false,
+      "compose": true,
+      "dex_files": 1,
+      "handler_postdelayed": true,
+      "material": false,
+      "set_on_click": false,
+      "set_on_long_click": false,
+      "set_result": true,
+      "start_activity": true,
+      "start_activity_for_result": true,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.FrameLayout",
+        "android.widget.ScrollView"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": false,
+    "label": "Dooz",
+    "launchable_activity": "io.github.yamin8000.dooz.content.MainActivity",
+    "minSdk": "24",
+    "multi_activity": false,
+    "n_activities": 1,
+    "non_launcher_intent_filters": 1,
+    "package": "io.github.yamin8000.dooz",
+    "result_api_surface": true,
+    "sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
+    "source_name": "Dooz (TicTacToe variant)",
+    "source_url": "https://f-droid.org/repo/io.github.yamin8000.dooz_18.apk",
+    "targetSdk": "34",
+    "uses_appcompat": false,
+    "uses_compose": true,
+    "versionCode": "18",
+    "versionName": "1.0.18"
+  },
+  {
+    "activities": [
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "nl.hansdezwart.bgclock.MainActivity",
+        "target": null
+      }
+    ],
+    "apk_file": "nl.hansdezwart.bgclock_2.apk",
+    "corpus_rel": "download/exp076_corpus/nl.hansdezwart.bgclock_2.apk",
+    "dex": {
+      "androidx_core": true,
+      "appcompat": false,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": true,
+      "material": false,
+      "set_on_click": false,
+      "set_on_long_click": true,
+      "set_result": true,
+      "start_activity": true,
+      "start_activity_for_result": true,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.FrameLayout",
+        "android.widget.ImageView",
+        "android.widget.ListView",
+        "android.widget.ScrollView",
+        "android.widget.TextView"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "BG Clock",
+    "launchable_activity": "nl.hansdezwart.bgclock.MainActivity",
+    "minSdk": "26",
+    "multi_activity": false,
+    "n_activities": 1,
+    "non_launcher_intent_filters": 1,
+    "package": "nl.hansdezwart.bgclock",
+    "result_api_surface": true,
+    "sha256": "72c140b0083ef273bc6452a7f1006e1e2dc4c64c61f8bcc90d082c3f6d1f9dee",
+    "source_name": "BGClock (Hans de Zwart)",
+    "source_url": "https://f-droid.org/repo/nl.hansdezwart.bgclock_2.apk",
+    "targetSdk": "36",
+    "uses_appcompat": false,
+    "uses_compose": false,
+    "versionCode": "2",
+    "versionName": "1.1"
+  },
+  {
+    "activities": [],
+    "apk_file": "com.github.muellerma.stopwatch_6.apk",
+    "corpus_rel": "download/exp076_corpus/com.github.muellerma.stopwatch_6.apk",
+    "dex": {
+      "androidx_core": true,
+      "appcompat": true,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": true,
+      "material": false,
+      "set_on_click": true,
+      "set_on_long_click": true,
+      "set_result": true,
+      "start_activity": true,
+      "start_activity_for_result": false,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.CheckBox",
+        "android.widget.EditText",
+        "android.widget.FrameLayout",
+        "android.widget.ImageView",
+        "android.widget.LinearLayout",
+        "android.widget.ListView",
+        "android.widget.RadioButton",
+        "android.widget.ScrollView",
+        "android.widget.TextView"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "Stopwatch",
+    "minSdk": "24",
+    "multi_activity": false,
+    "n_activities": 0,
+    "non_launcher_intent_filters": 0,
+    "package": "com.github.muellerma.stopwatch",
+    "result_api_surface": true,
+    "sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
+    "source_name": "Stopwatch (muellerma)",
+    "source_url": "https://f-droid.org/repo/com.github.muellerma.stopwatch_6.apk",
+    "targetSdk": "33",
+    "uses_appcompat": true,
+    "uses_compose": false,
+    "versionCode": "6",
+    "versionName": "1.5"
+  },
+  {
+    "activities": [
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "rkr.simplekeyboard.inputmethod.latin.settings.SettingsActivity",
+        "target": null
+      }
+    ],
+    "apk_file": "rkr.simplekeyboard.inputmethod_145.apk",
+    "corpus_rel": "download/exp076_corpus/rkr.simplekeyboard.inputmethod_145.apk",
+    "dex": {
+      "androidx_core": false,
+      "appcompat": false,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": false,
+      "material": false,
+      "set_on_click": true,
+      "set_on_long_click": false,
+      "set_result": false,
+      "start_activity": true,
+      "start_activity_for_result": false,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.FrameLayout",
+        "android.widget.ListView",
+        "android.widget.RadioButton",
+        "android.widget.SeekBar",
+        "android.widget.TextView"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "Simple Keyboard",
+    "launchable_activity": "rkr.simplekeyboard.inputmethod.latin.settings.SettingsActivity",
+    "minSdk": "24",
+    "multi_activity": false,
+    "n_activities": 1,
+    "non_launcher_intent_filters": 1,
+    "package": "rkr.simplekeyboard.inputmethod",
+    "result_api_surface": false,
+    "sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
+    "source_name": "Simple Keyboard",
+    "source_url": "https://f-droid.org/repo/rkr.simplekeyboard.inputmethod_145.apk",
+    "targetSdk": "36",
+    "uses_appcompat": false,
+    "uses_compose": false,
+    "versionCode": "145",
+    "versionName": "6.4"
+  },
+  {
+    "activities": [
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "dubrowgn.microtimer.MainActivity",
+        "target": null
+      }
+    ],
+    "apk_file": "dubrowgn.microtimer_8.apk",
+    "corpus_rel": "download/exp076_corpus/dubrowgn.microtimer_8.apk",
+    "dex": {
+      "androidx_core": true,
+      "appcompat": false,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": true,
+      "material": false,
+      "set_on_click": true,
+      "set_on_long_click": false,
+      "set_result": false,
+      "start_activity": true,
+      "start_activity_for_result": false,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.FrameLayout",
+        "android.widget.LinearLayout",
+        "android.widget.TextView"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "Micro Timer",
+    "launchable_activity": "dubrowgn.microtimer.MainActivity",
+    "minSdk": "28",
+    "multi_activity": false,
+    "n_activities": 1,
+    "non_launcher_intent_filters": 1,
+    "package": "dubrowgn.microtimer",
+    "result_api_surface": false,
+    "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+    "source_name": "MicroTimer",
+    "source_url": "https://f-droid.org/repo/dubrowgn.microtimer_8.apk",
+    "targetSdk": "34",
+    "uses_appcompat": false,
+    "uses_compose": false,
+    "versionCode": "8",
+    "versionName": "1.8"
+  },
+  {
+    "activities": [
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.SEND"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "app.varlorg.unote.NoteEdition",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "app.varlorg.unote.NoteMain",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "app.varlorg.unote.Preference",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "app.varlorg.unote.RestoreDbActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "app.varlorg.unote.PreferenceEdition",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "app.varlorg.unote.PreferenceExport",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "app.varlorg.unote.PreferenceGlobal",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "app.varlorg.unote.PreferenceMain",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "app.varlorg.unote.ReminderActivity",
+        "target": null
+      }
+    ],
+    "apk_file": "app.varlorg.unote_30.apk",
+    "corpus_rel": "download/exp076_corpus/app.varlorg.unote_30.apk",
+    "dex": {
+      "androidx_core": false,
+      "appcompat": false,
+      "compose": false,
+      "dex_files": 1,
+      "handler_postdelayed": true,
+      "material": false,
+      "set_on_click": true,
+      "set_on_long_click": false,
+      "set_result": false,
+      "start_activity": true,
+      "start_activity_for_result": false,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.CheckBox",
+        "android.widget.EditText",
+        "android.widget.FrameLayout",
+        "android.widget.ImageView",
+        "android.widget.LinearLayout",
+        "android.widget.ListView",
+        "android.widget.TextView",
+        "android.widget.Toast"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "uNote",
+    "launchable_activity": "app.varlorg.unote.NoteMain",
+    "minSdk": "21",
+    "multi_activity": true,
+    "n_activities": 9,
+    "non_launcher_intent_filters": 2,
+    "package": "app.varlorg.unote",
+    "result_api_surface": false,
+    "sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+    "source_name": "uNote",
+    "source_url": "https://f-droid.org/repo/app.varlorg.unote_30.apk",
+    "targetSdk": "34",
+    "uses_appcompat": false,
+    "uses_compose": false,
+    "versionCode": "30",
+    "versionName": "1.8.0"
+  },
+  {
+    "activities": [
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER",
+              "android.intent.category.HOME",
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.ASSIST"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.content.pm.action.CONFIRM_PIN_SHORTCUT"
+            ],
+            "categories": [],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.SEND"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "fr.neamar.kiss.MainActivity",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.HOME",
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "fr.neamar.kiss.DummyActivity",
+        "target": null
+      },
+      {
+        "exported": "false",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.APPLICATION_PREFERENCES"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "fr.neamar.kiss.SettingsActivity",
+        "target": null
+      },
+      {
+        "exported": "false",
+        "filters": [],
+        "kind": "activity",
+        "name": "fr.neamar.kiss.PickAppWidgetActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "fr.neamar.kiss.kustomsupport.AutoFinishTransparentActivity",
+        "target": null
+      }
+    ],
+    "apk_file": "fr.neamar.kiss_224.apk",
+    "corpus_rel": "download/g04_corpus/fr.neamar.kiss_224.apk",
+    "dex": {
+      "androidx_core": true,
+      "appcompat": true,
+      "compose": false,
+      "dex_files": 2,
+      "handler_postdelayed": true,
+      "material": false,
+      "set_on_click": true,
+      "set_on_long_click": true,
+      "set_result": true,
+      "start_activity": true,
+      "start_activity_for_result": true,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.CheckBox",
+        "android.widget.EditText",
+        "android.widget.FrameLayout",
+        "android.widget.ImageView",
+        "android.widget.LinearLayout",
+        "android.widget.ListView",
+        "android.widget.RadioButton",
+        "android.widget.ScrollView",
+        "android.widget.SeekBar",
+        "android.widget.TextView",
+        "android.widget.Toast"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "KISS launcher",
+    "launchable_activity": "fr.neamar.kiss.MainActivity",
+    "minSdk": "21",
+    "multi_activity": true,
+    "n_activities": 5,
+    "non_launcher_intent_filters": 6,
+    "package": "fr.neamar.kiss",
+    "result_api_surface": true,
+    "sha256": "da6ab0b1219ad3b5ee573698523fb15d60a918083e0843f94a03c1b12e1098c9",
+    "source_name": "KISS",
+    "source_url": "https://f-droid.org/repo/fr.neamar.kiss_224.apk",
+    "targetSdk": "36",
+    "uses_appcompat": true,
+    "uses_compose": false,
+    "versionCode": "224",
+    "versionName": "3.26.0"
+  },
+  {
+    "activities": [
+      {
+        "exported": "false",
+        "filters": [],
+        "kind": "activity",
+        "name": "org.fossify.notes.activities.SplashActivity",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Grey_black",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Blue_grey",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Brown",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Deep_orange",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Orange",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Amber",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Yellow",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Lime",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Light_green",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Green",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Teal",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Cyan",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Light_blue",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Blue",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Indigo",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Deep_purple",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Purple",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Pink",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "org.fossify.notes.activities.SplashActivity.Red",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.SEND"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.VIEW"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "org.fossify.notes.activities.MainActivity",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.appwidget.action.APPWIDGET_CONFIGURE"
+            ],
+            "categories": [],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "org.fossify.notes.activities.WidgetConfigureActivity",
+        "target": null
+      },
+      {
+        "exported": "false",
+        "filters": [],
+        "kind": "activity",
+        "name": "org.fossify.commons.activities.AboutActivity",
+        "target": null
+      },
+      {
+        "exported": "false",
+        "filters": [],
+        "kind": "activity",
+        "name": "org.fossify.commons.activities.CustomizationActivity",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.APPLICATION_PREFERENCES"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "org.fossify.notes.activities.SettingsActivity",
+        "target": null
+      },
+      {
+        "exported": "false",
+        "filters": [],
+        "kind": "activity",
+        "name": "org.fossify.commons.activities.ContributorsActivity",
+        "target": null
+      },
+      {
+        "exported": "false",
+        "filters": [],
+        "kind": "activity",
+        "name": "org.fossify.commons.activities.FAQActivity",
+        "target": null
+      },
+      {
+        "exported": "false",
+        "filters": [],
+        "kind": "activity",
+        "name": "org.fossify.commons.activities.LicenseActivity",
+        "target": null
+      },
+      {
+        "exported": "false",
+        "filters": [],
+        "kind": "activity",
+        "name": "org.fossify.commons.activities.ManageBlockedNumbersActivity",
+        "target": null
+      },
+      {
+        "exported": "false",
+        "filters": [],
+        "kind": "activity",
+        "name": "org.fossify.commons.activities.DonationActivity",
+        "target": null
+      },
+      {
+        "exported": "false",
+        "filters": [],
+        "kind": "activity",
+        "name": "org.fossify.commons.activities.AppLockActivity",
+        "target": null
+      }
+    ],
+    "apk_file": "org.fossify.notes_13.apk",
+    "corpus_rel": "download/g04_corpus/org.fossify.notes_13.apk",
+    "dex": {
+      "androidx_core": true,
+      "appcompat": true,
+      "compose": true,
+      "dex_files": 1,
+      "handler_postdelayed": true,
+      "material": true,
+      "set_on_click": true,
+      "set_on_long_click": true,
+      "set_result": true,
+      "start_activity": true,
+      "start_activity_for_result": true,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.CheckBox",
+        "android.widget.EditText",
+        "android.widget.FrameLayout",
+        "android.widget.GridView",
+        "android.widget.ImageView",
+        "android.widget.LinearLayout",
+        "android.widget.ListView",
+        "android.widget.RadioButton",
+        "android.widget.ScrollView",
+        "android.widget.SeekBar",
+        "android.widget.TextView",
+        "android.widget.Toast"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "Notes",
+    "minSdk": "26",
+    "multi_activity": true,
+    "n_activities": 31,
+    "non_launcher_intent_filters": 23,
+    "package": "org.fossify.notes",
+    "result_api_surface": true,
+    "sha256": "5a56e0e39cc488e1f3b947d3801006d3b7450ec73c67f03195c64c5fd3b6bced",
+    "source_name": "Fossify Notes",
+    "source_url": "https://f-droid.org/repo/org.fossify.notes_13.apk",
+    "targetSdk": "36",
+    "uses_appcompat": true,
+    "uses_compose": true,
+    "versionCode": "13",
+    "versionName": "1.7.0"
+  },
+  {
+    "activities": [
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "net.gsantner.markor.activity.MainActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "net.gsantner.markor.activity.SettingsActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "net.gsantner.markor.activity.StoragePermissionActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "net.gsantner.markor.activity.ActionButtonSettingsActivity",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.appwidget.action.APPWIDGET_CONFIGURE"
+            ],
+            "categories": [],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "other.writeily.widget.WrWidgetConfigure",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "net.gsantner.markor.activity.openeditor.OpenEditorTodoActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "net.gsantner.markor.activity.IntroActivity",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "net.gsantner.markor.activity.openeditor.OpenEditorQuickNoteActivity",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "net.gsantner.markor.activity.openeditor.OpenShareIntoActivity",
+        "target": null
+      },
+      {
+        "exported": null,
+        "filters": [],
+        "kind": "activity",
+        "name": "net.gsantner.markor.activity.openeditor.OpenFromShortcutOrWidgetActivity",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.SEND",
+              "com.google.android.gm.action.AUTO_SEND",
+              "com.google.android.gms.actions.CREATE_NOTE"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT",
+              "com.google.android.voicesearch.SELF_NOTE"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.VIEW",
+              "android.intent.action.EDIT"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.EDIT",
+              "android.intent.action.VIEW"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "net.gsantner.markor.activity.DocumentActivity",
+        "target": null
+      },
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.PROCESS_TEXT"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity-alias",
+        "name": "net.gsantner.markor.AliasDocumentProcessText",
+        "target": null
+      }
+    ],
+    "apk_file": "net.gsantner.markor_163.apk",
+    "corpus_rel": "download/g04_corpus/net.gsantner.markor_163.apk",
+    "dex": {
+      "androidx_core": true,
+      "appcompat": true,
+      "compose": false,
+      "dex_files": 2,
+      "handler_postdelayed": true,
+      "material": true,
+      "set_on_click": true,
+      "set_on_long_click": true,
+      "set_result": true,
+      "start_activity": true,
+      "start_activity_for_result": true,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.CheckBox",
+        "android.widget.EditText",
+        "android.widget.FrameLayout",
+        "android.widget.GridLayout",
+        "android.widget.GridView",
+        "android.widget.ImageView",
+        "android.widget.LinearLayout",
+        "android.widget.ListView",
+        "android.widget.RadioButton",
+        "android.widget.ScrollView",
+        "android.widget.SeekBar",
+        "android.widget.TextView",
+        "android.widget.Toast"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "Markor",
+    "launchable_activity": "net.gsantner.markor.activity.openeditor.OpenShareIntoActivity",
+    "minSdk": "18",
+    "multi_activity": true,
+    "n_activities": 12,
+    "non_launcher_intent_filters": 9,
+    "package": "net.gsantner.markor",
+    "result_api_surface": true,
+    "sha256": "3f9f260dc3e32a1281cb8803eea6f926eef897579f68a5d35f922523974b84b9",
+    "source_name": "Markor",
+    "source_url": "https://f-droid.org/repo/net.gsantner.markor_163.apk",
+    "targetSdk": "35",
+    "uses_appcompat": true,
+    "uses_compose": false,
+    "versionCode": "163",
+    "versionName": "2.16.1"
+  },
+  {
+    "activities": [
+      {
+        "exported": "true",
+        "filters": [
+          {
+            "actions": [
+              "android.intent.action.MAIN"
+            ],
+            "categories": [
+              "android.intent.category.LAUNCHER"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.CREATE_SHORTCUT"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.PICK"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT"
+            ],
+            "kind": "intent-filter"
+          },
+          {
+            "actions": [
+              "android.intent.action.VIEW"
+            ],
+            "categories": [
+              "android.intent.category.DEFAULT",
+              "android.intent.category.BROWSABLE"
+            ],
+            "kind": "intent-filter"
+          }
+        ],
+        "kind": "activity",
+        "name": "org.connectbot.ui.MainActivity",
+        "target": null
+      }
+    ],
+    "apk_file": "org.connectbot_11009000.apk",
+    "corpus_rel": "download/g08_corpus/org.connectbot_11009000.apk",
+    "dex": {
+      "androidx_core": true,
+      "appcompat": true,
+      "compose": true,
+      "dex_files": 1,
+      "handler_postdelayed": true,
+      "material": true,
+      "set_on_click": true,
+      "set_on_long_click": true,
+      "set_result": true,
+      "start_activity": true,
+      "start_activity_for_result": true,
+      "support_v7": false,
+      "view_classes": [
+        "android.widget.Button",
+        "android.widget.CheckBox",
+        "android.widget.EditText",
+        "android.widget.FrameLayout",
+        "android.widget.ImageView",
+        "android.widget.LinearLayout",
+        "android.widget.ListView",
+        "android.widget.RadioButton",
+        "android.widget.ScrollView",
+        "android.widget.SeekBar",
+        "android.widget.TextView",
+        "android.widget.Toast"
+      ]
+    },
+    "frozen_date": "2026-09-06",
+    "interactive_surface": true,
+    "label": "ConnectBot",
+    "launchable_activity": "org.connectbot.ui.MainActivity",
+    "minSdk": "24",
+    "multi_activity": false,
+    "n_activities": 1,
+    "non_launcher_intent_filters": 4,
+    "package": "org.connectbot",
+    "result_api_surface": true,
+    "sha256": "191e6990a4db95b04b6d3d98906e06281872a5963133afb5b46e4d324736742f",
+    "source_name": "ConnectBot (F-Droid)",
+    "source_url": "https://f-droid.org/repo/org.connectbot_11009000.apk",
+    "targetSdk": "36",
+    "uses_appcompat": true,
+    "uses_compose": true,
+    "versionCode": "11009000",
+    "versionName": "1.10.9-oss"
+  }
+]

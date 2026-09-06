@@ -1,0 +1,225 @@
+{
+  "activities": [
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "net.gsantner.markor.activity.MainActivity",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "net.gsantner.markor.activity.SettingsActivity",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "net.gsantner.markor.activity.StoragePermissionActivity",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "net.gsantner.markor.activity.ActionButtonSettingsActivity",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.appwidget.action.APPWIDGET_CONFIGURE"
+          ],
+          "categories": [],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "other.writeily.widget.WrWidgetConfigure",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "net.gsantner.markor.activity.openeditor.OpenEditorTodoActivity",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "net.gsantner.markor.activity.IntroActivity",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "net.gsantner.markor.activity.openeditor.OpenEditorQuickNoteActivity",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "net.gsantner.markor.activity.openeditor.OpenShareIntoActivity",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "net.gsantner.markor.activity.openeditor.OpenFromShortcutOrWidgetActivity",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.SEND",
+            "com.google.android.gm.action.AUTO_SEND",
+            "com.google.android.gms.actions.CREATE_NOTE"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT",
+            "com.google.android.voicesearch.SELF_NOTE"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.VIEW",
+            "android.intent.action.EDIT"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.EDIT",
+            "android.intent.action.VIEW"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "net.gsantner.markor.activity.DocumentActivity",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.PROCESS_TEXT"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "net.gsantner.markor.AliasDocumentProcessText",
+      "target": null
+    }
+  ],
+  "apk_file": "net.gsantner.markor_163.apk",
+  "dex": {
+    "androidx_core": true,
+    "appcompat": true,
+    "compose": false,
+    "dex_files": 2,
+    "handler_postdelayed": true,
+    "material": true,
+    "set_on_click": true,
+    "set_on_long_click": true,
+    "set_result": true,
+    "start_activity": true,
+    "start_activity_for_result": true,
+    "support_v7": false,
+    "view_classes": [
+      "android.widget.Button",
+      "android.widget.CheckBox",
+      "android.widget.EditText",
+      "android.widget.FrameLayout",
+      "android.widget.GridLayout",
+      "android.widget.GridView",
+      "android.widget.ImageView",
+      "android.widget.LinearLayout",
+      "android.widget.ListView",
+      "android.widget.RadioButton",
+      "android.widget.ScrollView",
+      "android.widget.SeekBar",
+      "android.widget.TextView",
+      "android.widget.Toast"
+    ]
+  },
+  "interactive_surface": true,
+  "label": "Markor",
+  "launchable_activity": "net.gsantner.markor.activity.openeditor.OpenShareIntoActivity",
+  "minSdk": "18",
+  "multi_activity": true,
+  "n_activities": 12,
+  "non_launcher_intent_filters": 9,
+  "package": "net.gsantner.markor",
+  "result_api_surface": true,
+  "sha256": "3f9f260dc3e32a1281cb8803eea6f926eef897579f68a5d35f922523974b84b9",
+  "targetSdk": "35",
+  "uses_appcompat": true,
+  "uses_compose": false,
+  "versionCode": "163",
+  "versionName": "2.16.1"
+}
