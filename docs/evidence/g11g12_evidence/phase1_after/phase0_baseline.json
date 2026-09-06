@@ -4,7 +4,7 @@
   "path": "download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
   "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
   "base_status": "SUCCESS",
-  "screenshot_sha256": "47646e7666ac2fc919a44369d79ef0eaad2326ecbcc27101382be0cad431cb4c",
+  "screenshot_sha256": "0f933ff814f45bca08c851703bb3b1e643a64da332f9fd6febbab11efc950daa",
   "pixel_audit": {
    "w": 1080,
    "h": 1920,
@@ -13,12 +13,12 @@
     225,
     225
    ],
-   "nonbg_pct": 6.455,
+   "nonbg_pct": 6.72,
    "content_bbox": [
     0,
-    0,
+    8,
     343,
-    1562
+    1720
    ]
   },
   "trace_rows": 135,
@@ -44,7 +44,7 @@
     "lp": "-2/-2",
     "weight": 0.0,
     "orient": -1,
-    "measured": "0x0",
+    "measured": "112x44",
     "text": ""
    },
    {
@@ -128,7 +128,7 @@
     "lp": "-2/-2",
     "weight": 0.0,
     "orient": -1,
-    "measured": "0x0",
+    "measured": "123x44",
     "text": ""
    },
    {
@@ -212,7 +212,7 @@
     "lp": "-2/-2",
     "weight": 0.0,
     "orient": -1,
-    "measured": "0x0",
+    "measured": "100x44",
     "text": ""
    },
    {
@@ -572,7 +572,7 @@
     "lp": "-1/-2",
     "weight": 0.0,
     "orient": -1,
-    "measured": "1080x0",
+    "measured": "1080x158",
     "text": ""
    },
    {
@@ -584,7 +584,7 @@
     "lp": "-2/-2",
     "weight": 0.0,
     "orient": -1,
-    "measured": "0x0",
+    "measured": "158x44",
     "text": ""
    },
    {
@@ -668,7 +668,7 @@
     "lp": "-2/-2",
     "weight": 0.0,
     "orient": -1,
-    "measured": "0x0",
+    "measured": "169x44",
     "text": ""
    },
    {
@@ -752,7 +752,7 @@
     "lp": "-2/-2",
     "weight": 0.0,
     "orient": -1,
-    "measured": "0x0",
+    "measured": "146x44",
     "text": ""
    },
    {
@@ -1112,7 +1112,7 @@
     "lp": "-1/-2",
     "weight": 0.0,
     "orient": -1,
-    "measured": "1080x0",
+    "measured": "1080x158",
     "text": ""
    },
    {
@@ -1124,7 +1124,7 @@
     "lp": "-1/-2",
     "weight": 0.0,
     "orient": -1,
-    "measured": "1080x70",
+    "measured": "1080x158",
     "text": ""
    },
    {
@@ -1657,7 +1657,7 @@
   "path": "download/exp076_corpus/dubrowgn.microtimer_8.apk",
   "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
   "base_status": "SUCCESS",
-  "screenshot_sha256": "388b0d6d028e11b806b5aef930365d1fe3a9de148662fbecca5d6387542f02a7",
+  "screenshot_sha256": "0c90e96036d45aac509c0deec199260214b67fb732a3cfa2dca6dc699def161f",
   "pixel_audit": {
    "w": 1080,
    "h": 1920,
@@ -2069,7 +2069,7 @@
     "lp": "-2/-2",
     "weight": 0.0,
     "orient": -1,
-    "measured": "0x0",
+    "measured": "640x123",
     "text": ""
    },
    {
@@ -2402,7 +2402,7 @@
     "lp": "-2/-2",
     "weight": 0.0,
     "orient": -1,
-    "measured": "0x0",
+    "measured": "126x126",
     "text": ""
    },
    {

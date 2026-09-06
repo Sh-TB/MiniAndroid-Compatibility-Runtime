@@ -751,7 +751,21 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         // EXP-031.5 HARD ASSERTION: Real execution MUST occur in REAL_DALVIK mode
         // NO FALLBACK ALLOWED - Golden Debug Protocol
         // ===================================================================
-        if (dalvik_result.total_instructions_executed == 0) {
+        // G12 FIND-G11-NOACTIVITY-001 (AOSP launcher law): the hard
+        // "bytecode must have executed" assertion applies to apps that
+        // DECLARE a launchable activity. Some real apps (muellerma
+        // stopwatch: Quick-Settings TILE app) declare NO activity at all —
+        // on a real device the launcher never starts them; their DEX runs
+        // only as service/tile processes. For those the framework-path
+        // boot (G09 FIND-G09-LC-001) plus the default window IS the lawful
+        // result; demanding activity bytecode would fail an app real
+        // Android never renders an activity for. Activity apps keep the
+        // honest hard assertion unchanged.
+        const bool declares_no_activity =
+            result.apk_info.main_activity.empty() &&
+            result.apk_info.main_activity_full.empty();
+        if (dalvik_result.total_instructions_executed == 0 &&
+            !declares_no_activity) {
             // CRITICAL: No bytecode was executed!
             std::string error_msg = "EXP-031.5 ASSERTION FAILED: REAL_DALVIK mode selected but ExecuteInstruction() was never called. "
                                    "This means no actual Dalvik bytecode was executed. "
@@ -759,14 +773,22 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                                    "(2) No methods found matching entry point criteria, "
                                    "(3) All methods had empty bytecode arrays. "
                                    "Instructions expected: > 0, Actual: 0";
-            
+
             trace_engine_.record_error("REAL_EXECUTION_ASSERTION_FAIL", error_msg,
                                        "ExecutionEngine", "stage_execute_application_real_dalvik");
-            
+
             // DO NOT FALLBACK TO FAKE SUCCESS - Fail honestly per Golden Debug Protocol
             set_error(error_msg);
             result.status = ExecutionStatus::FAILURE;
             return false;
+        }
+        if (dalvik_result.total_instructions_executed == 0 &&
+            declares_no_activity) {
+            trace_engine_.info("ExecutionEngine", "activity_less_boot",
+                               "App declares no launchable activity (AOSP "
+                               "launcher law: tile/service-only app) — "
+                               "framework-path boot without activity "
+                               "bytecode is the lawful result");
         }
         
         // ===================================================================
