@@ -160,6 +160,41 @@ int main() {
               "same-when entries keep FIFO (EXP-088 law preserved)");
     }
 
+    printf("── G09 §6: corpus-derived boot/finish law (FIND-G09-LC-001) ─────\n");
+    {
+        // Real-APK evidence (G09): framework-only apps whose classes do not
+        // override onStart/onResume previously SKIPPED the STARTED hop
+        // because the boot driver gated the transition on DEX dispatch
+        // success. AOSP law: the ACTIVITY RECORD advances on the framework
+        // path regardless of app overrides. Machine-level assertions of that
+        // law:
+        //  (a) CREATED → RESUMED directly is ILLEGAL (guard intact);
+        //  (b) the lawful framework boot chain CREATED→STARTED→RESUMED
+        //      terminates in a state from which the FULL finish cascade is
+        //      legal (PAUSED→STOPPED→DESTROYED) — exactly the invariant the
+        //      unote/simplestopwatch corpus runs violated before the fix.
+        LifecycleController boot;
+        check(!boot.transition_to(LifecyclePhase::RESUMED,
+                                  "hostile direct resume (no STARTED)", 0),
+              "CREATED → RESUMED without STARTED stays REJECTED (guard law)");
+        boot.transition_to(LifecyclePhase::ACTIVITY_CREATED, "onCreate", 0);
+        boot.transition_to(LifecyclePhase::STARTED,
+                           "onStart (framework stub answered)", 0);
+        boot.transition_to(LifecyclePhase::RESUMED,
+                           "onResume (framework stub answered)", 0);
+        check(boot.finish_cascade(10),
+              "finish cascade legal from stub-answered RESUMED "
+              "(PAUSED→STOPPED→DESTROYED)");
+        const auto& es = boot.entries();
+        check(es.size() >= 6 &&
+                  es[es.size() - 3].to == LifecyclePhase::PAUSED &&
+                  es[es.size() - 2].to == LifecyclePhase::STOPPED &&
+                  es[es.size() - 1].to == LifecyclePhase::DESTROYED &&
+                  es[es.size() - 1].success,
+              "cascade order PAUSED→STOPPED→DESTROYED recorded with "
+              "success=true");
+    }
+
     printf("════════════════════════════════════════════════════\n");
     printf("RESULT: %d checks, %d failures\n", g_checks, g_fail);
     printf(g_fail == 0 ? "LIFECYCLE LAW: ALL PASS\n"
