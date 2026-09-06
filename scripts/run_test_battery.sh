@@ -161,6 +161,18 @@ timeout 120 ./build/lifecycle_law_test > /tmp/battery_g07law.out 2>&1
 gate "G07 lifecycle law (expect 22)" $?
 tail -1 /tmp/battery_g07law.out
 
+# G06-G08 §18: hostile input/lifecycle/queue-safety battery
+g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/g06g08_hostile_test \
+    tests/g06g08_hostile_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread \
+    > /tmp/battery_h18.log 2>&1
+gate "link g06g08_hostile_test" $?
+timeout 120 ./build/g06g08_hostile_test > /tmp/battery_h18.out 2>&1
+gate "G06-G08 hostile safety (expect 16)" $?
+tail -1 /tmp/battery_h18.out
+
 # P2 encoded-value AOSP law (hostile/edge; FIND-REUSE-DEX)
 g++ -std=c++17 -w -g -O1 -Isrc -o build/encoded_value_law_test \
     tests/encoded_value_law_test.cpp > /tmp/battery_ev.log 2>&1
