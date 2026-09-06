@@ -1,0 +1,14 @@
+theme chain for /home/z/corpus/external_hello/HelloWorldSelfAware-1.1.0-android.apk
+  manifest android:theme = 0x7f060000
+  windowBackground item = REFERENCE 0x7f010001
+  → tracing REFERENCE 0x7f010001
+  requested device: size=64 density=480 sdkVersion=34 locale=en-US
+resource 0x7f010001 (pkg=0x7f type=0x01 entry=0x0001)
+  package 'com.appliberated.helloworldselfaware'  type 'color'  entry 'colorPrimary'
+  candidates: 1 config bucket(s)
+    - "" (has_config=true)
+  step 0: 0x7f010001 (color/colorPrimary)  selected config: "" (matched)
+          raw value: COLOR (type 0x1d) raw 0xff000000 → # ff000000
+  reference hops: 0
+  final: COLOR (type 0x1d) raw 0xff000000 → # ff000000
+  json evidence: /tmp/golden03_evidence/chain_a_theme.json
