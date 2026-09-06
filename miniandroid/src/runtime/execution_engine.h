@@ -108,9 +108,10 @@ struct ExecutionConfig {
     // G06 §4/§6: canonical tap gesture through the TouchDispatcher law
     // pipeline. DOWN at t0 (pressed frame captured), UP at t0+50ms virtual,
     // queued PerformClick + UnsetPressedState drained before the final frame.
+    // G08: REPEATABLE — each --tap appends to the sequence, enabling
+    // A→B→back navigation proofs in one deterministic run.
     bool tap_enabled = false;
-    int tap_x = 0;
-    int tap_y = 0;
+    std::vector<std::pair<int, int>> tap_sequence;
     bool generate_reports = true;
     
     // EXP-031: Execution mode (CRITICAL - determines real vs fake path)
@@ -211,6 +212,10 @@ private:
     // onDestroy through real DEX (AOSP ActivityThread cascade). Returns a
     // JSON record (null when nothing pending).
     nlohmann::json consume_finish_cascade();
+    // G08: consumes a pending startActivity() at a frame boundary —
+    // A.onPause → B.onCreate(intent) → B.onStart → B.onResume → A.onStop
+    // (TransactionExecutor law) with REAL DEX on both activities.
+    nlohmann::json consume_pending_intent();
     bool stage_generate_reports(ExecutionResult& result, const ExecutionConfig& config);
     
     // Helper methods

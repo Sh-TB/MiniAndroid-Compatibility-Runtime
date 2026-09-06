@@ -1011,9 +1011,16 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "getIntent") {
         // EXP-056: Real Android ALWAYS passes a non-null Intent to onCreate.
+        // G08: when the activity was LAUNCHED via startActivity, getIntent()
+        // returns THE LAUNCH INTENT so putExtra/getStringExtra propagate
+        // through the real pipeline (no synthetic empty intent).
         if (heap_) {
-            uint32_t intent_id = heap_->get_or_create("Landroid/content/Intent;");
-            std::cerr << "[EXP057-INTENT] getIntent → intent_id=" << intent_id << std::endl;
+            uint32_t intent_id = launch_intent_id_ != 0
+                                     ? launch_intent_id_
+                                     : heap_->get_or_create("Landroid/content/Intent;");
+            std::cerr << "[EXP057-INTENT] getIntent → intent_id=" << intent_id
+                      << (launch_intent_id_ != 0 ? " (launch intent)" : " (synthetic)")
+                      << std::endl;
             return CallResult::handled_object(intent_id, "Landroid/content/Intent;");
         }
         std::cerr << "[EXP057-INTENT] getIntent → null (heap_ is null!)" << std::endl;
@@ -1045,10 +1052,13 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         m == "getClassLoader" || m == "getFilesDir" || m == "getCacheDir" ||
         m == "getSharedPreferences" || m == "getWindow" || m == "getWindowManager" ||
         m == "getFragmentManager" || m == "getCallingActivity" || m == "getCallingPackage" ||
-        m == "startActivityForResult" || m == "startActivityFromChild" ||
+        m == "startActivityFromChild" ||
         m == "startActivityIfNeeded" || m == "startNextMatchingActivity") {
         // Let these fall through to the legacy bridge which has more
         // specific handlers (e.g. getResources → Resources singleton).
+        // FIND-G08-007 fix: startActivityForResult was in this list, so it
+        // returned not_handled BEFORE the real handler below — the for-
+        // result launch never recorded a pending intent.
         return CallResult::not_handled();
     }
     // startActivity(Intent) — record the pending intent on the IntentShadow.
@@ -1065,18 +1075,44 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                 }
                 if (intent_id != 0) {
                     auto pi = intent_shadow->get_or_create_intent(intent_id);
+                    pi->intent_object_id = intent_id;   // G08: keep the object
                     intent_shadow->set_pending(pi);
+                    // G08: startActivityForResult(Intent, int) — capture the
+                    // request code for onActivityResult delivery on pop.
+                    if (m == "startActivityForResult" && ctx.args.size() >= 2 &&
+                        ctx.args[1].kind == CallContext::Arg::Kind::INT) {
+                        set_pending_launch_request_code(
+                            static_cast<int>(ctx.args[1].int_val));
+                    }
                     if (!pi->component_class.empty()) {
-                        std::cerr << "[INTENT] startActivity called → "
+                        std::cerr << "[INTENT] " << m << " called → "
                                   << pi->component_class << std::endl;
                     } else {
-                        std::cerr << "[INTENT] startActivity called (no component set)"
+                        std::cerr << "[INTENT] " << m
+                                  << " called (no component set)"
                                   << std::endl;
                     }
                 }
             }
         }
         return CallResult::handled_void();
+    }
+    if (m == "setResult") {
+        // Activity.setResult(int resultCode, Intent data) — the result is
+        // delivered to the caller by Activity.onActivityResult when THIS
+        // activity finishes (G08 result law).
+        int rc = ctx.arg_as_int(0, 0);
+        uint32_t data_id = 0;
+        if (ctx.args.size() >= 2 && ctx.args[1].kind == CallContext::Arg::Kind::OBJECT) {
+            data_id = ctx.args[1].object_id;
+        }
+        set_result(rc, data_id);
+        std::cerr << "[G08-RESULT] setResult(" << rc
+                  << ", intent_id=" << data_id << ")" << std::endl;
+        return CallResult::handled_void();
+    }
+    if (m == "getCallingActivity" || m == "getCallingPackage") {
+        return CallResult::handled_null();
     }
     if (m == "runOnUiThread") {
         // Defer to HandlerShadow — return void so the call doesn't

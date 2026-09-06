@@ -227,6 +227,13 @@ int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config)
     // android.text.ClipboardManager.setText) — registered on the SAME
     // registry the engine consults via set_shadow_registry below.
     shadow_registry.register_shadow<framework::ClipboardShadow>();
+    // FIND-G08-006 fix: IntentShadow was registered ONLY on the legacy
+    // ApplicationRuntime path (application_runtime.cpp) — the cmd_run
+    // engine path dispatched Intent.<init>/setClassName/putExtra through
+    // the interpreter bridge with NO shadow, so startActivity recorded
+    // nothing and second activities never launched. Registering it makes
+    // the Intent pipeline (G08 §12) reachable from real APK code.
+    shadow_registry.register_shadow<framework::IntentShadow>();
     if (activity_shadow) {
         activity_shadow->set_apk_path(apk_path);
     }
@@ -360,10 +367,11 @@ int main(int argc, char* argv[]) {
                 return 1;
             }
             config.tap_enabled = true;
-            config.tap_x = std::stoi(spec.substr(0, comma));
-            config.tap_y = std::stoi(spec.substr(comma + 1));
-            std::cout << "[*] TAP gesture enabled at (" << config.tap_x
-                      << "," << config.tap_y
+            config.tap_sequence.emplace_back(std::stoi(spec.substr(0, comma)),
+                                             std::stoi(spec.substr(comma + 1)));
+            std::cout << "[*] TAP gesture " << config.tap_sequence.size()
+                      << " queued at (" << config.tap_sequence.back().first
+                      << "," << config.tap_sequence.back().second
                       << ") — frames + touch trace saved to <output>/frames/\n";
         } else if (arg == "--frame-delay" && i + 1 < argc) {
             config.frame_delay_ms = std::stoi(argv[++i]);
