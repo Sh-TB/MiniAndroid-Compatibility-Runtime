@@ -289,6 +289,38 @@ else
     gate "G07 lifecycle golden (16 machine checks)" 1
 fi
 
+# G08 §11-14: navigation golden — two real DEX activities, explicit Intent,
+# extras roundtrip, for-result + back, pixel-real window switch.
+G08_FIX_SRC="$MA/tests/fixtures/g08_navigation"
+rm -rf /tmp/battery_g08; mkdir -p /tmp/battery_g08
+if [ -d "$G08_FIX_SRC" ]; then
+    bash "$REPO/MiniAndroid-Compatibility-Runtime/scripts/build_fixture_apk.sh" \
+        "$G08_FIX_SRC" /tmp/battery_g08/g08_navigation.apk \
+        > /tmp/battery_g08/build.log 2>&1
+    gate "G08 fixture build (aapt2+ECJ+D8)" $?
+    for i in 1 2 3; do
+        mkdir -p "/tmp/battery_g08/nav$i"
+        ./build/miniandroid run /tmp/battery_g08/g08_navigation.apk \
+            -o "/tmp/battery_g08/nav$i" --tap 540,378 --tap 540,356 \
+            > "/tmp/battery_g08/nav$i/run.log" 2>&1
+    done
+    mkdir -p /tmp/battery_g08/extras
+    ./build/miniandroid run /tmp/battery_g08/g08_navigation.apk \
+        -o /tmp/battery_g08/extras --tap 540,178 \
+        > /tmp/battery_g08/extras/run.log 2>&1
+    python3 "$REPO/scripts/compare_g08_navigation.py" \
+        /tmp/battery_g08/nav1 /tmp/battery_g08/extras \
+        --json /tmp/battery_g08/golden.json > /tmp/battery_g08/compare.log 2>&1
+    gate "G08 navigation golden (17 law checks)" $?
+    N1=$(python3 -c "import json;print(json.dumps([f['sha256'] for f in json.load(open('/tmp/battery_g08/nav1/frames/manifest.json'))['frames']]))")
+    N2=$(python3 -c "import json;print(json.dumps([f['sha256'] for f in json.load(open('/tmp/battery_g08/nav2/frames/manifest.json'))['frames']]))")
+    N3=$(python3 -c "import json;print(json.dumps([f['sha256'] for f in json.load(open('/tmp/battery_g08/nav3/frames/manifest.json'))['frames']]))")
+    [ "$N1" = "$N2" ] && [ "$N2" = "$N3" ] && [ -n "$N1" ]
+    gate "G08 navigation 3-run determinism (frame SHAs identical)" $?
+else
+    gate "G08 navigation golden (17 law checks)" 1
+fi
+
 # corpus regression: real external APKs must still boot and render
 CORPUS_DIR="$MA/download"
 python3 "$REPO/MiniAndroid-Compatibility-Runtime/scripts/fetch_corpus.py" \
