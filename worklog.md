@@ -89,3 +89,100 @@ Stage Summary:
   regression-guarded; candidate next: input-path depth (ACTION_MOVE
   cancel semantics / multi-touch) or Toast typography law vs device
   reference — to be decided by the next execution request.
+---
+Task ID: GOLDEN-03
+Agent: Super Z (main agent)
+Task: GOLDEN-03 RESOURCE COMPATIBILITY INFRASTRUCTURE + RESOURCE→PIXEL; plus
+user-requested GitHub persistence of all prior GOLDEN-01/GOLDEN-02 commits.
+
+Work Log:
+- GitHub persistence (user request): token installed at /home/z/.gh_token
+  (mode 600, never printed), auth verified (login Sh-TB), 14 unpushed
+  commits (G31–G48 + GOLDEN-01 + GOLDEN-02) pushed to main, verified
+  0/0 with ls-remote; G31–G48 + GOLDEN-02 evidence comments posted to
+  Issue #8 with read-back (issuecomment-5555363421, -5555363541).
+- Ground truth: sandbox wipe had removed aapt2 + the EXT-01 fixture — both
+  restored per documented procedures (Google Maven 8.13.2-14304508;
+  Appliberated v1.1.0 release URL), SHA-256 verified exactly
+  (009b4671…cc41). Battery reproduced.
+- §3/§4/§6/§7/§9 core (3c87e279): res_id.{h,cpp} canonical ResId +
+  TypedValue laws; ArscParser::resolve_full → ResolutionResult with
+  selected-config-per-step, bounded depth (16), cycle detection, NAMED
+  errors; bag_value with parent inheritance; FRACTION decode.
+  tests/synthetic_arsc.h + resource_core_law_test 42/42.
+- §5 (724e5a0b): config matrix 19 → 48 checks (locale/density/orientation/
+  sw/w/uiMode/screen; density does NOT reject in match() — AOSP
+  closest-bucket law documented).
+- §7/§10 (86f47365): resource_values.json sidecar override REMOVED from
+  production path; integers/raw ARSC-first; drawable paths ARSC-first via
+  value-IS-path law; manifest AxmlDataType aligned to AOSP Res_value.
+- §8/§9 (bf3056c1): key-aware apply_style (byte-verified attr ids),
+  style values reach the node, textAppearance generic via bag_value +
+  byte-verified framework table, ONE dimension path everywhere, engine
+  setTextSize unit constants fixed (PX=0 DIP=1 SP=2).
+- §12/§13 (d306f1e2): tools/resource_trace (make resource_trace) +
+  docs/RESOURCE_MATRIX.md + dump_ext01_attr_ids.py oracle.
+- §14 (40eaca85): parse_type_chunk hardening (entryCount OOB read fixed)
+  + resource_hostile_test 18/18; battery 23 → 27 stages.
+- §15/§16 (6c352981): evidence harness EXPOSED a real determinism
+  violation — DroidSansMono.ttf resolved cwd-relative; fixed via
+  /proc/self/exe-relative law. 3-run byte-identity restored to the frozen
+  G48 golden SHA 142238fd…bbf2; chains A/B/C 6/6; typography 9/9.
+- Docs: FIND_REUSE_RES.md (FIND-REUSE-RES-001..008), GOLDEN03 record A–H.
+
+Stage Summary:
+- GOLDEN-03 = VERIFIED per §22 checklist (all 17 boxes): canonical ids,
+  generic config selection, traceable selected config, TypedValue
+  semantics, generic references with cycle safety, generic bags/themes,
+  dimension/density law, ARSC-first strings (sidecar removed), AXML
+  canonical resolver, hostile-input safety, resource_trace tooling,
+  external resource→view→pixel (chains A/B/C), 3-run determinism,
+  battery 27/27, no fixture-specific code, reproducible from HEAD.
+- Battery is now 27 stages: ALL PASS at HEAD 6c352981 (pre-push).
+- Next gate proposal is NOT part of this execution (per §21/§22 rule).
+
+---
+Task ID: G04+G05
+Agent: Super Z (main agent)
+Task: Unified G04 (drawable/image) + G05 (layout/measure/render) compatibility
+closure campaign on the frozen-APK corpus.
+
+Work Log:
+- Baseline blind-verified: HEAD cc42a891, battery ALL PASS, G03 reproducible,
+  EXT-01 fixture + reference + aapt2 + corpus re-frozen after sandbox wipe
+  (SHA-exact), 3-run determinism re-proven (142238fd92b69e11).
+- §0 finding: resource_trace.cpp never committed (FIND-001) → make target
+  broken at HEAD; device split 480/420 (FIND-002); drawable selection by
+  ZIP-path string rank (FIND-003); zero density scaling (FIND-004);
+  Fossify Notes = Compose (FIND-005); KISS/Markor blank = AppCompat shell
+  (FIND-006).
+- AOSP laws fetched at android-14.0.0_r2 (ImageView/ViewGroup/LinearLayout/
+  BitmapFactory java+native/ResourceTypes/BitmapDrawable/View).
+- C2 768b1481: unified 420dpi device; select_file (canonical chain-safe
+  drawable selection with selected-config density); BitmapFactory scaling;
+  FIT_CENTER; header-only ImageSizeProbe; intrinsic measure.
+- C3 291914c7: resource_trace recreated (repair) + G04/G05 channels
+  (density, file/XML/BINARY, intrinsic, --bag, --layout inflate+measure dump).
+- C4 894e6ef3: EXACT LinearLayout weight law (sequential shares, 0dp+weight
+  skip/from-scratch, base+share shrinkable, weightSum, subtree re-measure) +
+  3 MeasureSpec/layout fixes (padding double-count; cross-axis measured dims;
+  re-measure propagation) + 24-check battery.
+- C5 e7e6ec1b: density-matrix differential oracle — aapt2-built fixture,
+  color-coded buckets, 11-check gate, 3-run deterministic (351340a7…).
+  Proves: straddle law (420dpi→xxxhdpi 26×13), exact bucket (320dpi→xhdpi
+  40×20), DENSITY_NONE never scaled, alias chain, FIT_CENTER.
+- C6 ae37abf4: hostile battery 24/24 (probe/decoder/cycles/depth/weights).
+- C7 3d1eba51: DIRECT resid→select_file resolution (FIND-007, Markor 0/35
+  root cause) + AppCompat boundary record.
+- Final battery: ALL PASS (31 stages) at e371a82b. GitHub PUSH/COMMENT
+  BLOCKED (no token this session; 403 on anonymous write — recorded).
+
+Stage Summary:
+- G04+G05 CLOSED — VERIFIED WITH EXPLICIT NON-BLOCKING BOUNDARIES:
+  pipeline REAL APK→ARSC→config→TypedValue→drawable→density→inflate→
+  measure→layout→render→deterministic PNG runtime- and pixel-proven on
+  classic-View APKs; boundaries: AppCompatDelegateImpl shell (G06+),
+  NinePatch chunks, nearest-neighbour resampling note.
+- 8 commits local (e98cf4b0…e371a82b), fast-forward-ready on origin/main.
+- NEXT: provide GitHub token → push + post scripts/issue_comment_g0405.md;
+  G06 candidate: AppCompatDelegate shell emulation.
