@@ -16,6 +16,7 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <unistd.h>
 #include <cstring>
 #include <cstdio>
 #include <functional>
@@ -84,6 +85,20 @@ TextShaper::TextShaper() {
     // a silent substitution with a proportional face.
     {
         const char* env_dir = std::getenv("MINIANDROID_FONT_DIR");
+        // GOLDEN-03 §16 determinism law: resolve relative to the EXECUTABLE
+        // first — the rendered output must not depend on the invoker's cwd.
+        // (/proc/self/exe; fallback keeps the legacy cwd-relative candidates
+        // so manual runs from the source tree keep working.)
+        auto exe_relative = [](const char* rel) -> std::string {
+            char buf[4096];
+            ssize_t n = ::readlink("/proc/self/exe", buf, sizeof(buf) - 1);
+            if (n <= 0) return "";
+            buf[n] = '\0';
+            std::string dir = buf;
+            size_t slash = dir.find_last_of('/');
+            if (slash == std::string::npos) return "";
+            return dir.substr(0, slash) + "/" + rel;
+        };
         const char* kCandidates[] = {
             "runtime/data/fonts/DroidSansMono.ttf",
             "../runtime/data/fonts/DroidSansMono.ttf",
@@ -95,6 +110,17 @@ TextShaper::TextShaper() {
             std::string c = std::string(env_dir) + "/DroidSansMono.ttf";
             std::FILE* fp = std::fopen(c.c_str(), "rb");
             if (fp) { std::fclose(fp); resolved = c; }
+        }
+        if (resolved.empty()) {
+            // exe-relative candidates FIRST (§16 determinism)
+            for (const char* rel : { "runtime/data/fonts/DroidSansMono.ttf",
+                                     "../runtime/data/fonts/DroidSansMono.ttf" }) {
+                std::string c = exe_relative(rel);
+                if (!c.empty()) {
+                    std::FILE* fp = std::fopen(c.c_str(), "rb");
+                    if (fp) { std::fclose(fp); resolved = c; break; }
+                }
+            }
         }
         if (resolved.empty()) {
             for (const char* c : kCandidates) {

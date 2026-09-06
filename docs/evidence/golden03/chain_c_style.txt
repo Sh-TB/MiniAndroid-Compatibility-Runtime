@@ -1,0 +1,15 @@
+  requested device: size=64 density=480 sdkVersion=34 locale=en-US
+resource 0x7f060000 (pkg=0x7f type=0x06 entry=0x0000)
+  package 'com.appliberated.helloworldselfaware'  type 'style'  entry 'AppTheme'
+  candidates: 3 config bucket(s)
+    - "" (has_config=true) [bag]
+    - "" (has_config=true) [bag]
+    - "" (has_config=true) [bag]
+  step 0: 0x7f060000 (style/AppTheme)  selected config: "" (matched)
+          raw value: REFERENCE 0x7f010001
+          bag entry: query items with --bag <attr-key>
+  reference hops: 0
+  final: REFERENCE 0x7f010001
+  bag items (style 0x7f060000):
+    key 0x1010054 → REFERENCE 0x7f010001
+  json evidence: /tmp/golden03_evidence/chain_c_style.json

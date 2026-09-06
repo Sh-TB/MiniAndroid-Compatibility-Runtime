@@ -1,0 +1,34 @@
+{
+ "fixture": "EXT-01-HELLOWORLDSELFAWARE-1.1.0",
+ "apk_sha256": "009b467109c4d48d4b00610b06f37f3a77eed75178fbaae344a111acc848cc41",
+ "head": "40eaca85",
+ "determinism": {
+  "runs": 3,
+  "byte_identical": true,
+  "screenshot_sha256": "142238fd92b69e11d3407526de95cad29bf46e3f4191767d09a24379fbe0bbf2"
+ },
+ "chain_a_theme_background": {
+  "trace": "chain_a_theme.txt",
+  "final_color": "#ff000000",
+  "pixel_check": "5 static regions exactly rgb(0,0,0)"
+ },
+ "chain_b_string": {
+  "trace": "chain_b_string.txt",
+  "raw_pattern": "hello world\\ni'm %1$s\\na version %2$s android\\nwith api level %3$d",
+  "runtime": "getString(0x7f050002, 3 args) ARSC-first, substituted at runtime",
+  "ink_pixels": 25659
+ },
+ "chain_c_dimension": {
+  "trace": "chain_c_style.txt",
+  "law": "TextAppearance.Large(0x01030042) 22sp \u2192 scaledDensity \u2192 58px",
+  "line_heights_px": [
+   45,
+   45,
+   45,
+   58
+  ],
+  "pixel_check": "tallest line band = 58px \u00b1 1"
+ },
+ "typography_golden": "PASS",
+ "chain_checks": "PASS (6/6 chain checks)"
+}

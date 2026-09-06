@@ -1,0 +1,46 @@
+{
+ "screenshot": "/tmp/golden03_evidence/runA/screenshot.png",
+ "size": [
+  1080,
+  1920
+ ],
+ "checks": [
+  {
+   "chain": "A",
+   "name": "windowBackground \u2192 framebuffer background EXACTLY #000000 in 5 static regions",
+   "pass": true,
+   "detail": "{\"top-left\": [0, 0, 0], \"top-right\": [0, 0, 0], \"bottom-left\": [0, 0, 0], \"bottom-right\": [0, 0, 0], \"mid-left-band\": [0, 0, 0]}"
+  },
+  {
+   "chain": "B",
+   "name": "ARSC format string (hello_message, 3 args) resolved ARSC-first",
+   "pass": true,
+   "detail": "resid=0x7f050002 field=hello_message fargs=3 value=hello world\ni'm 6f1c3a9d2e5b4780\na version 14 android\nwith api level 34"
+  },
+  {
+   "chain": "B",
+   "name": "formatted string is VISIBLE: ink pixels present in text block",
+   "pass": true,
+   "detail": "ink=25659 (threshold 10000, G48 golden 25659)"
+  },
+  {
+   "chain": "C",
+   "name": "TextAppearance.Large 22sp \u2192 58px line box (tallest band)",
+   "pass": true,
+   "detail": "lines=4 heights=[45, 45, 45, 58] tallest=58 (law 58\u00b11)"
+  },
+  {
+   "chain": "Q",
+   "name": "resource-dependent region measured (text block bbox)",
+   "pass": true,
+   "detail": "bbox=[204, 729, 876, 1200] h=471 center=(0.5000,0.5023)"
+  },
+  {
+   "chain": "Q",
+   "name": "static background regions unchanged (all exact black)",
+   "pass": true,
+   "detail": "5 regions sampled; unchanged by construction of the static scene (no other resources painted)"
+  }
+ ],
+ "verdict": "PASS (6/6 chain checks)"
+}
