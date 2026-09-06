@@ -132,6 +132,17 @@ std::string LayoutInflater::class_to_descriptor(const std::string& xml_name) {
         {"GridLayout", "Landroid/widget/GridLayout;"},
         {"ScrollView", "Landroid/widget/ScrollView;"},
         {"HorizontalScrollView", "Landroid/widget/HorizontalScrollView;"},
+        // G10 FIX-G10-002: ViewAnimator family + RadioGroup keep their REAL
+        // descriptors (AOSP: ViewSwitcher/ViewFlipper → ViewAnimator →
+        // FrameLayout; RadioGroup → LinearLayout) so the DEX-backed
+        // superclass chain classifies their container behavior. The old
+        // unknown-short-name→View fallback degraded them to content-less
+        // leaves (billthefarmer: FAB ViewSwitcher measured 0x0, FABs pushed
+        // offscreen; main editor switcher stacked instead of overlapped).
+        {"ViewSwitcher", "Landroid/widget/ViewSwitcher;"},
+        {"ViewFlipper", "Landroid/widget/ViewFlipper;"},
+        {"ViewAnimator", "Landroid/widget/ViewAnimator;"},
+        {"RadioGroup", "Landroid/widget/RadioGroup;"},
         {"View", "Landroid/view/View;"},
         {"ViewGroup", "Landroid/view/ViewGroup;"},
         {"ViewStub", "Landroid/view/ViewStub;"},
@@ -562,10 +573,27 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
 
     // <merge> → inflate children into parent directly
     if (el.name == "merge") {
-        uint32_t last = parent_view_id;
+        // G10 FIX-G10-003 (AOSP LayoutInflater merge law): <merge> has no
+        // view of its own — its children attach DIRECTLY to the parent.
+        // At the ROOT (parent_view_id == 0) the attach target is the window
+        // content frame (PhoneWindow DecorView contentParent) — synthesize
+        // one FrameLayout so ALL merged children land under ONE rendered
+        // root. Returning the LAST merged child orphaned every earlier
+        // subtree (billthefarmer: the main editor ViewSwitcher never
+        // rendered; only the FAB switcher under the returned id survived).
+        if (parent_view_id == 0) {
+            uint32_t decor = views->create_view("Landroid/widget/FrameLayout;");
+            if (auto* dn = views->find_node(decor)) {
+                dn->lp_width = -1;    // window content frame fills the window
+                dn->lp_height = -1;
+            }
+            for (const auto& child : el.children)
+                inflate_element(views, child, decor, stats);
+            return decor;
+        }
         for (const auto& child : el.children)
-            last = inflate_element(views, child, parent_view_id, stats);
-        return last;
+            inflate_element(views, child, parent_view_id, stats);
+        return parent_view_id;
     }
 
     uint32_t view_id = views->create_view(class_desc);
@@ -606,6 +634,19 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
         if (cid) last_child = cid;
     }
     (void)last_child;
+    // G10 FIX-G10-002b (AOSP ViewAnimator law): ViewAnimator.initView calls
+    // showOnly(mWhichChild=0) — at inflation only the FIRST child is
+    // visible; the rest are GONE until showNext/showPrevious. Without this
+    // both switcher children render overlapped (billthefarmer FABs drew
+    // edit-over-accept; the preview MarkdownView covered the editor).
+    if (node->class_desc.find("ViewSwitcher") != std::string::npos ||
+        node->class_desc.find("ViewFlipper") != std::string::npos ||
+        node->class_desc.find("ViewAnimator") != std::string::npos) {
+        for (size_t i = 1; i < node->children.size(); i++) {
+            if (auto* cn = views->find_node(node->children[i]))
+                cn->visibility = 8;   // GONE (ViewAnimator.showOnly(0) law)
+        }
+    }
     return view_id;
 }
 
@@ -1075,14 +1116,20 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         }
     };
 
-    auto is_container_node = [](const framework::ViewShadow::ViewNode* n) -> bool {
-        return n->class_desc.find("Layout") != std::string::npos ||
-               n->class_desc.find("ScrollView") != std::string::npos ||
-               n->class_desc.find("ListView") != std::string::npos ||
-               n->class_desc.find("ViewGroup") != std::string::npos ||
-               n->class_desc.find("Toolbar") != std::string::npos ||
-               n->class_desc.find("ViewPager") != std::string::npos ||
-               n->class_desc.find("RecyclerView") != std::string::npos;
+    auto is_container_node = [&](const framework::ViewShadow::ViewNode* n) -> bool {
+        const std::string& cd = n->class_desc;
+        // G10 FIX-G10-002: superclass-chain law first — any ViewGroup
+        // subclass (incl. app classes like CalculatorDisplay extends
+        // LinearLayout) is a container even when its leaf class name does
+        // not contain the ancestor's substring.
+        if (is_a(cd, "Landroid/view/ViewGroup;")) return true;
+        return cd.find("Layout") != std::string::npos ||
+               cd.find("ScrollView") != std::string::npos ||
+               cd.find("ListView") != std::string::npos ||
+               cd.find("ViewGroup") != std::string::npos ||
+               cd.find("Toolbar") != std::string::npos ||
+               cd.find("ViewPager") != std::string::npos ||
+               cd.find("RecyclerView") != std::string::npos;
     };
 
     // -----------------------------------------------------------------------
@@ -1108,8 +1155,14 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
 
         // 1) measure children with AOSP-derived specs.
         std::vector<std::pair<int,int>> child_sizes(n->children.size());
-        const bool parent_ll = n->class_desc.find("LinearLayout") != std::string::npos;
-        const bool horiz_ll = n->orientation == 0;
+        const bool parent_ll = is_a(n->class_desc, "Landroid/widget/LinearLayout;");
+        // G10 FIX-G10-001 (AOSP LinearLayout.java): the orientation field is
+        // `mOrientation = a.getInt(..., HORIZONTAL)` with the field itself
+        // initialized to HORIZONTAL — an orientation that was never set
+        // (XML omitted the attribute / programmatic construction) means
+        // HORIZONTAL. ViewNode keeps -1 as the "unset" evidence value; the
+        // layout law consumes unset as horizontal at every decision point.
+        const bool horiz_ll = n->orientation != 1;
         for (size_t i = 0; i < n->children.size(); i++) {
             auto* cn = views->find_node(n->children[i]);
             if (!cn) { child_sizes[i] = {0, 0}; continue; }
@@ -1198,15 +1251,15 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             content_h = std::max(content_h, 0);
         } else {
             // ---- container: children determine content size ----
-            const bool is_ll = n->class_desc.find("LinearLayout") != std::string::npos;
+            const bool is_ll = is_a(n->class_desc, "Landroid/widget/LinearLayout;");
             const bool is_scrollv = n->class_desc.find("ScrollView") != std::string::npos &&
                                     n->class_desc.find("Horizontal") == std::string::npos;
             const bool is_scrollh = n->class_desc.find("HorizontalScrollView") != std::string::npos;
-            bool horizontal = n->orientation == 0;
+            bool horizontal = n->orientation != 1;   // FIX-G10-001: unset (-1) = HORIZONTAL
             if (is_scrollv) horizontal = false;
             if (is_scrollh) horizontal = true;
-            if (n->class_desc.find("FrameLayout") != std::string::npos ||
-                n->class_desc.find("RelativeLayout") != std::string::npos ||
+            if (is_a(n->class_desc, "Landroid/widget/FrameLayout;") ||
+                is_a(n->class_desc, "Landroid/widget/RelativeLayout;") ||
                 (!is_ll && !is_scrollv && !is_scrollh)) {
                 for (const auto& cs : child_sizes) {
                     content_w = std::max(content_w, cs.first);
@@ -1269,11 +1322,12 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             if (!n) return;
             fprintf(stderr,
                 "[U007-LAYOUT] %*sview %u %s id_name=%s lp=%d/%d weight=%d "
-                "measured=%dx%d text_size=%.1f lines=%d below='%s' above='%s' "
+                "orient=%d measured=%dx%d text_size=%.1f lines=%d below='%s' above='%s' "
                 "right_of='%s' left_of='%s' cgrav=0x%x text='%s'\n",
                 depth * 2, "", vid, n->class_desc.c_str(),
                 n->android_id_name.c_str(), n->lp_width, n->lp_height,
-                n->layout_weight, n->measured_width, n->measured_height,
+                n->layout_weight, n->orientation, n->measured_width,
+                n->measured_height,
                 n->text_size_px, n->num_lines,
                 n->rel_below_name.c_str(), n->rel_above_name.c_str(),
                 n->rel_right_of_name.c_str(), n->rel_left_of_name.c_str(),
@@ -1307,12 +1361,12 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         int cw = std::max(0, t.width - n->padding_left - n->padding_right);
         int ch = std::max(0, t.height - n->padding_top - n->padding_bottom);
 
-        bool is_ll = n->class_desc.find("LinearLayout") != std::string::npos;
-        bool is_fl = n->class_desc.find("FrameLayout") != std::string::npos;
-        bool is_rl = n->class_desc.find("RelativeLayout") != std::string::npos;
+        bool is_ll = is_a(n->class_desc, "Landroid/widget/LinearLayout;");
+        bool is_fl = is_a(n->class_desc, "Landroid/widget/FrameLayout;");
+        bool is_rl = is_a(n->class_desc, "Landroid/widget/RelativeLayout;");
         bool is_scroll = n->class_desc.find("ScrollView") != std::string::npos &&
                          n->class_desc.find("Horizontal") == std::string::npos;
-        bool horizontal = n->orientation == 0;
+        bool horizontal = n->orientation != 1;   // FIX-G10-001: unset (-1) = HORIZONTAL
 
         // gather visible children + margins
         std::vector<uint32_t> kids;
@@ -1664,11 +1718,21 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                           : (cn->lp_height == -1 ? ch : cn->measured_height);
                     int x = cl, y = ct;
                     int vg = cn->child_gravity >= 0 ? cn->child_gravity : n->container_gravity;
+                    // G10 FIX-G10-004 (AOSP Gravity axis-field equality law —
+                    // same masked-field rule as the LinearLayout fixes):
+                    // mask the axis field FIRST, then compare. Raw bit tests
+                    // misroute combined gravities: bottom|end (0x00800055)
+                    // has bit0 set, so `vg & 0x1` turned RIGHT into CENTER;
+                    // 0x55 also carries 0x10, so `vg & 0x10` turned BOTTOM
+                    // into CENTER_VERTICAL (billthefarmer FAB pair was
+                    // centered instead of bottom-right).
                     if (vg > 0) {
-                        if (vg & 0x1) x = cl + (cw - w) / 2;
-                        else if (vg & 0x7) { if ((vg & 0x7) == 0x5) x = cl + cw - w; }
-                        if (vg & 0x10) y = ct + (ch - h) / 2;
-                        else if (vg & 0x30) { if ((vg & 0x70) == 0x50) y = ct + ch - h; }
+                        const int hf = vg & 0x7;
+                        if (hf == 0x1) x = cl + (cw - w) / 2;
+                        else if (hf == 0x5) x = cl + cw - w;
+                        const int vf = vg & 0x70;
+                        if (vf == 0x10) y = ct + (ch - h) / 2;
+                        else if (vf == 0x50) y = ct + ch - h;
                     }
                     if (x + w > t.left + t.width) w = std::max(0, t.left + t.width - x);
                     stack.push_back({cid, x, y, w, h});

@@ -83,6 +83,24 @@ public:
 
     const DeviceMetrics& metrics() const { return metrics_; }
 
+    // G10 FIX-G10-002 (AOSP class-hierarchy law): container behavior
+    // (LinearLayout/FrameLayout/RelativeLayout measure+layout semantics)
+    // follows the RESOLVED SUPERCLASS CHAIN of the view's class, not the
+    // leaf class-name substring. App-defined subclasses (CalculatorDisplay
+    // extends LinearLayout) and framework containers (ViewSwitcher extends
+    // FrameLayout) must classify by their real ancestors. The executor
+    // wires its DEX-backed is_subclass_of here; without it the inflater
+    // falls back to the legacy substring law (keeps law-test harnesses
+    // that drive the inflater standalone green).
+    void set_is_a(std::function<bool(const std::string&, const std::string&)> fn) {
+        is_a_ = std::move(fn);
+    }
+    bool is_a(const std::string& class_desc, const std::string& ancestor) const {
+        if (is_a_) return is_a_(class_desc, ancestor);
+        // legacy fallback: descriptor-substring containment
+        return !ancestor.empty() && class_desc.find(ancestor) != std::string::npos;
+    }
+
     // after inflate, call this to register android:onClick handlers on nodes
     std::unordered_map<uint32_t, std::string> onClick_handlers;
 
@@ -193,6 +211,8 @@ private:
     apk::ApkParser& apk_;
     std::string apk_path_;
     DeviceMetrics metrics_;
+    // G10 FIX-G10-002: DEX-backed superclass-chain classifier (may be null)
+    std::function<bool(const std::string&, const std::string&)> is_a_;
     // FIX-2c: id → key-name map (lazily built from resources.arsc) used to
     // name compiled android:id references and bind RelativeLayout rules.
     std::map<uint32_t, std::string> id_names_;
