@@ -582,10 +582,29 @@ size_t HandlerShadow::drain_ready(std::vector<uint32_t>* out_drained) {
     // the clock far into the future, making every entry posted so far due.
     // EXP-088's acceptance law is therefore preserved verbatim:
     //   post(A), post(B), postDelayed(C,400), removeCallbacks(B), drain → A, C
+    // FIND-G07-003 (fixed): the drain was HEAD-GATED FIFO — it stopped at
+    // the first not-yet-due entry, so a due message queued behind a
+    // longer-delay message NEVER fired. AOSP law (MessageQueue.next):
+    // messages dispatch in (when, enqueue order) — insertion position is
+    // irrelevant; the earliest-`when` due message runs first.
     size_t drained = 0;
-    while (!queue_.empty() && queue_.front().ready_at_ms <= virtual_now_ms_) {
-        auto q = std::move(queue_.front());
-        queue_.pop_front();
+    std::vector<size_t> due_idx;
+    for (size_t i = 0; i < queue_.size(); ++i)
+        if (queue_[i].ready_at_ms <= virtual_now_ms_) due_idx.push_back(i);
+    if (due_idx.empty()) return 0;
+    std::stable_sort(due_idx.begin(), due_idx.end(),
+                     [&](size_t a, size_t b) {
+                         if (queue_[a].ready_at_ms != queue_[b].ready_at_ms)
+                             return queue_[a].ready_at_ms < queue_[b].ready_at_ms;
+                         return queue_[a].enqueue_seq < queue_[b].enqueue_seq;
+                     });
+    std::vector<QueuedRunnable> taken;
+    taken.reserve(due_idx.size());
+    for (size_t i : due_idx) taken.push_back(std::move(queue_[i]));
+    // Erase the taken slots (descending index order keeps offsets valid).
+    std::sort(due_idx.begin(), due_idx.end(), std::greater<size_t>());
+    for (size_t i : due_idx) queue_.erase(queue_.begin() + static_cast<long>(i));
+    for (auto& q : taken) {
         out_drained->push_back(q.runnable_id);
         std::cerr << "[QUEUE] Runnable id=" << q.runnable_id
                   << " dequeued (ready_at=" << q.ready_at_ms
@@ -1004,8 +1023,16 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "finish") {
-        state_ = LifecycleState::DESTROYED;
+        // G07 law (Activity.java finish() + ActivityThread
+        // handleDestroyActivity): finish() requests destruction; the
+        // runtime applies the lifecycle cascade at the next frame boundary.
+        // The old behavior (state_ = DESTROYED immediately) skipped the
+        // onPause/onStop/onDestroy callbacks entirely.
+        request_finish();
         return CallResult::handled_void();
+    }
+    if (m == "isFinishing") {
+        return CallResult::handled_bool(pending_finish_);
     }
     if (m == "getApplicationContext") {
         if (heap_) {
