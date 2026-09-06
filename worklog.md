@@ -356,3 +356,24 @@ Stage Summary:
   0 regressions; merge law honestly marked LAW-TESTED (single-APK exerciser);
   updated evidence in docs/evidence/g10_evidence/ (report + JSONs + traces +
   6 visual frames). GitHub publication to Issue #8 follows.
+
+---
+Task ID: G10-PUB
+Agent: Super Z (main agent)
+Task: G10 GitHub publication (Rule 0.2 direct URLs) + closure.
+
+Work Log:
+- Token file restored to /home/z/.gh_token (600, outside worktree); pushed
+  4 commits: ae98a23f → 3c9b7001 (residue) → 2df49003 (5 law fixes + 23-check
+  battery) → e6e51648 (inflate-time classifier) → 403b0689 (report+visuals);
+  verified via push output ae98a23f..403b0689 main->main.
+- 4 evidence comments posted to Issue #8, URLs read back from the API and
+  recorded in scripts/comment_urls.json:
+  baseline+clusters 5560118010 · laws+fixes 5560118079 ·
+  cross-APK validation 5560118162 · impact+ranking 5560118251.
+
+Stage Summary:
+- G10 CLOSED — 4 generic AOSP measurement/layout laws + 1 ViewAnimator law
+  implemented and verified on the same 7-APK corpus; 3 APKs improved,
+  0 regressions; 50/50 battery; merge law honestly marked LAW-TESTED.
+- Next campaign (evidence-ranked): F5 app-constructor/addView execution.

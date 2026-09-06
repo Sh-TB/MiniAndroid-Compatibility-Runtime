@@ -269,6 +269,9 @@ void ApplicationRuntime::initialize_shadow_registry() {
     shadow_dialog_   = shadow_registry_->register_shadow<DialogShadow>();
     shadow_array_adapter_ = shadow_registry_->register_shadow<ArrayAdapterShadow>();
     shadow_canvas_    = shadow_registry_->register_shadow<CanvasShadow>();
+    // G11 FIX-G11-002: LayoutInflater.from/inflate shadow on the runtime
+    // registry too (both registries must agree — GOLDEN-02 lesson).
+    shadow_registry_->register_shadow<LayoutInflaterShadow>();
     // GOLDEN-02: clipboard platform behavior — ClipData.newPlainText +
     // ClipboardManager.setPrimaryClip/getPrimaryClip/getText + legacy
     // android.text.ClipboardManager.setText. Registered after the other

@@ -1259,6 +1259,18 @@ public:
     // CAMPAIGN 013: run a custom view's REAL onDraw(Canvas) bytecode.
     int dispatch_custom_view_draw(uint32_t view_object_id);
 
+    // ── G11 FIX-G11-001 (AOSP LayoutInflater.createView law) ───────────
+    // Execute an app class's REAL View constructor on the DEX interpreter.
+    // Called by the LayoutInflater custom-view hook for fully-qualified app
+    // tags (and usable for programmatic new-instance support). The receiver
+    // heap object already exists (ViewShadow::create_view allocated it);
+    // this runs <init>(Context, AttributeSet) / <init>(Context) so the
+    // app-side child hierarchy (inflate/addView/findViewById inside the
+    // constructor) is created through the real runtime path.
+    // Returns true when a constructor body executed.
+    bool run_custom_view_constructor(uint32_t view_object_id,
+                                     const std::string& class_desc_slashed);
+
     // EXP-060: Convenience wrapper — find a View by class descriptor
     // substring (e.g. "IntroActivity$4" or "startMessagingButton") and
     // dispatch a click on it. Returns true if a matching View with a
@@ -1438,6 +1450,10 @@ public:
     // Built from dex_report_->classes[i].superclass_name.
     // Used by is_subclass_of() for semantic View inheritance resolution.
     std::map<std::string, std::string> class_to_superclass_;
+    // G11 FIX-G11-001: view object ids currently inside
+    // run_custom_view_constructor — cyclic constructor/inflate chains
+    // re-entering the same view must fail loudly instead of recursing.
+    std::set<uint32_t> ctors_in_progress_;
 
     // EXP-045 Phase 2: O(1) class lookup index for try_recursive_invoke().
     // Maps class descriptor → index into dex_report_->classes vector.
