@@ -38,6 +38,11 @@ echo "── run_test_battery @ $(git -C "$REPO" rev-parse --short HEAD) ──"
 if [ "${1:-}" != "--skip-build" ]; then
     make -j"$(nproc)" > /tmp/battery_build.log 2>&1
     gate "build (make -j)" $?
+    # FIND-G06AUDIT-001 fix: the density-oracle stage needs resource_trace;
+    # build it with the same make invocation (separate target) so a clean
+    # checkout never fails stage 27 for an environment gap.
+    make resource_trace >> /tmp/battery_build.log 2>&1
+    gate "build (make resource_trace)" $?
 fi
 
 # semantic battery binaries (relinked against current objects)
@@ -130,6 +135,19 @@ gate "link g04_hostile_test" $?
 timeout 60 ./build/g04_hostile_test > /tmp/battery_g04h.out 2>&1
 gate "G04 hostile safety (expect 24)" $?
 tail -1 /tmp/battery_g04h.out
+
+# G06 §4/§5: canonical input pipeline law battery (touch dispatcher +
+# state-list pick law + disabled/focus/cancel/move laws, 45 checks)
+g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/input_pipeline_law_test \
+    tests/input_pipeline_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread \
+    > /tmp/battery_g06law.log 2>&1
+gate "link input_pipeline_law_test" $?
+timeout 120 ./build/input_pipeline_law_test > /tmp/battery_g06law.out 2>&1
+gate "G06 input pipeline law (expect 45)" $?
+tail -1 /tmp/battery_g06law.out
 
 # P2 encoded-value AOSP law (hostile/edge; FIND-REUSE-DEX)
 g++ -std=c++17 -w -g -O1 -Isrc -o build/encoded_value_law_test \
