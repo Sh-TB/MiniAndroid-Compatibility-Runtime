@@ -1,0 +1,30 @@
+{
+  "apk": "scope",
+  "rel": "download/master_campaign/org.billthefarmer.scope_140.apk",
+  "sha256": "0e34439ce43bfd47d039ab91a7056051e0cf94c03948eb97236d7d2648ea17de",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.19,
+    "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": true,
+    "views": 10,
+    "zero_sized": 8
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      255,
+      255,
+      255
+    ],
+    "nonbg_pct": 0.0,
+    "content_bbox": null
+  }
+}

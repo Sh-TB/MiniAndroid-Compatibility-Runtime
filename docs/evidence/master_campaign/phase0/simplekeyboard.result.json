@@ -1,0 +1,33 @@
+{
+  "apk": "simplekeyboard",
+  "rel": "download/exp076_corpus/rkr.simplekeyboard.inputmethod_145.apk",
+  "sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.19,
+    "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": false
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "nonbg_pct": 98.8681,
+    "content_bbox": [
+      0,
+      0,
+      1079,
+      1919
+    ]
+  }
+}

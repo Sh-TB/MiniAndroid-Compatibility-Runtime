@@ -1,0 +1,35 @@
+{
+  "apk": "microtimer",
+  "rel": "download/exp076_corpus/dubrowgn.microtimer_8.apk",
+  "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 29.01,
+    "screenshot_sha256": "0c90e96036d45aac509c0deec199260214b67fb732a3cfa2dca6dc699def161f"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": true,
+    "views": 52,
+    "zero_sized": 7
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      255,
+      255,
+      255
+    ],
+    "nonbg_pct": 50.625,
+    "content_bbox": [
+      0,
+      948,
+      1079,
+      1919
+    ]
+  }
+}

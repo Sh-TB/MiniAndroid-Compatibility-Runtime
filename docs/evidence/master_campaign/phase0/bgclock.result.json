@@ -1,0 +1,30 @@
+{
+  "apk": "bgclock",
+  "rel": "download/exp076_corpus/nl.hansdezwart.bgclock_2.apk",
+  "sha256": "72c140b0083ef273bc6452a7f1006e1e2dc4c64c61f8bcc90d082c3f6d1f9dee",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.78,
+    "screenshot_sha256": "2f85dd74aa54e46304537868822071f12e4411e1dc8e41c2f354ba9dff076edb"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": true,
+    "views": 2,
+    "zero_sized": 0
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      51,
+      46,
+      43
+    ],
+    "nonbg_pct": 0.0,
+    "content_bbox": null
+  }
+}

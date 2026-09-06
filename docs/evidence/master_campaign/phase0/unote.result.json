@@ -1,0 +1,35 @@
+{
+  "apk": "unote",
+  "rel": "download/exp076_corpus/app.varlorg.unote_30.apk",
+  "sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.21,
+    "screenshot_sha256": "8197687fe7d4b2cb40e276acd66af24d41bed4c7eaf16e296499281397fe0dd2"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": true,
+    "views": 28,
+    "zero_sized": 2
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      255,
+      255,
+      255
+    ],
+    "nonbg_pct": 9.1146,
+    "content_bbox": [
+      0,
+      1745,
+      1079,
+      1919
+    ]
+  }
+}

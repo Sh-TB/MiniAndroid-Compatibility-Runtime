@@ -1,0 +1,35 @@
+{
+  "apk": "chessclock",
+  "rel": "download/exp073_real_apps/com.chessclock.android_29.apk",
+  "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.24,
+    "screenshot_sha256": "4f32761409cba594532f621e5148e7a98dec838e3ebb00efb17947f87a05aeaa"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": true,
+    "views": 30,
+    "zero_sized": 18
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "nonbg_pct": 2.7077,
+    "content_bbox": [
+      0,
+      718,
+      1079,
+      1866
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "apk": "gmdice",
+  "rel": "download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+  "sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.21,
+    "screenshot_sha256": "db0f4c4b9dca867acf3946a886a179d2555862e1f17bc5828e525f65f5c1b9ff"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": true,
+    "views": 20,
+    "zero_sized": 1
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      153,
+      153,
+      153
+    ],
+    "nonbg_pct": 24.6074,
+    "content_bbox": [
+      0,
+      778,
+      1079,
+      1919
+    ]
+  }
+}
