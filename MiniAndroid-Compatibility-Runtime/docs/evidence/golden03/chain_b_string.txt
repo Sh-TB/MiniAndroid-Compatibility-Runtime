@@ -1,0 +1,16 @@
+  requested device: size=64 density=480 sdkVersion=34 locale=en-US
+resource 0x7f050002 (pkg=0x7f type=0x05 entry=0x0002)
+  package 'com.appliberated.helloworldselfaware'  type 'string'  entry 'hello_message'
+  candidates: 1 config bucket(s)
+    - "" (has_config=true)
+  step 0: 0x7f050002 (string/hello_message)  selected config: "" (matched)
+          raw value: STRING "hello world
+i'm %1$s
+a version %2$s android
+with api level %3$d"
+  reference hops: 0
+  final: STRING "hello world
+i'm %1$s
+a version %2$s android
+with api level %3$d"
+  json evidence: /tmp/golden03_evidence/chain_b_string.json
