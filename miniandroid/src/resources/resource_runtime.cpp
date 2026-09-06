@@ -41,6 +41,9 @@ bool ResourceRuntime::ensure_loaded(const std::string& apk_path) {
     // (AppCompatDelegateImpl.installViewFactory re-applies Factory2 on every
     // new PhoneLayoutInflater).
     apply_custom_view_ctor_hook();
+    // MASTER CAMPAIGN FIX (F10): same Factory law for the real-DEX
+    // onMeasure hook.
+    apply_custom_view_measure_hook();
     loaded_ = true;
     std::cerr << "[U007-RES] ResourceRuntime loaded: " << apk_path
               << " named_ids=" << arsc_.stats().named_ids

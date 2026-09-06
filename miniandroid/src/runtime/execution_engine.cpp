@@ -413,6 +413,16 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     [this](const std::string& c, const std::string& a) {
                         return dalvik_engine_.is_subclass_of(c, a);
                     });
+                // MASTER CAMPAIGN FIX (F10 real-DEX onMeasure): measure-pass
+                // bridge for custom Views whose DEX chain overrides
+                // onMeasure — the override executes as real bytecode and
+                // setMeasuredDimension writes back through the ViewShadow.
+                rt.set_custom_view_measure_hook(
+                    [this](uint32_t view_id, int wspec, int hspec,
+                           int& out_w, int& out_h) -> bool {
+                        return dalvik_engine_.dispatch_custom_view_measure(
+                            view_id, wspec, hspec, out_w, out_h);
+                    });
             }
             // G06 §4: canonical input pipeline. The dispatcher shares the
             // ViewShadow tree (geometry/state) and the HandlerShadow virtual

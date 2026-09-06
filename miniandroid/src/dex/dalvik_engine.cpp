@@ -689,6 +689,60 @@ bool DalvikExecutionEngine::is_view_group_class(const std::string& class_desc) c
     return is_subclass_of(class_desc, "Landroid/view/ViewGroup;");
 }
 
+// MASTER CAMPAIGN FIX (F8 default-onMeasure law — View.java getDefaultSize):
+// Walk the semantic superclass chain (class_to_superclass_ — DEX-derived for
+// app classes, factual AOSP table for framework families) and report whether
+// `method` is defined before the chain reaches a framework content class.
+// Law (AOSP View.java): View.onMeasure default =
+//   setMeasuredDimension(getDefaultSize(suggestedMinimumWidth, widthMeasureSpec), ...)
+//   getDefaultSize: AT_MOST/EXACTLY -> specSize; UNSPECIFIED -> suggested size.
+// It applies iff NO class in the chain overrides onMeasure. The runtime
+// implements the CONTENT semantics of the framework measuring classes
+// (TextView/ImageView/ProgressBar families) itself, so reaching one of those
+// in the chain means CONTENT law (flag false). Reaching plain
+// View/ViewGroup/SurfaceView etc. means the DEFAULT law applies (flag true).
+bool DalvikExecutionEngine::class_chain_defines_method(
+    const std::string& class_desc, const std::string& method) const {
+    // Framework classes whose measure law is CONTENT-based (runtime
+    // implements their onMeasure semantics directly). Factual AOSP
+    // hierarchy (frameworks/base core/java/android/widget).
+    static const std::set<std::string> content_measure_classes = {
+        "Landroid/widget/TextView;", "Landroid/widget/EditText;",
+        "Landroid/widget/Button;", "Landroid/widget/CheckBox;",
+        "Landroid/widget/RadioButton;", "Landroid/widget/ImageView;",
+        "Landroid/widget/ProgressBar;",
+        "Landroidx/appcompat/widget/AppCompatTextView;",
+        "Landroidx/appcompat/widget/AppCompatEditText;",
+        "Landroidx/appcompat/widget/AppCompatButton;",
+        "Landroidx/appcompat/widget/AppCompatImageView;",
+        "Landroidx/appcompat/widget/AppCompatCheckBox;",
+    };
+    std::string cur = class_desc;
+    int guard = 0;
+    while (!cur.empty() && guard++ < 16) {
+        auto cit = class_info_index_.find(cur);
+        if (cit != class_info_index_.end() && dex_report_) {
+            const auto& cls = dex_report_->classes[cit->second];
+            for (const auto& m : cls.all_methods()) {
+                if (m.name == method) return true;
+            }
+        }
+        if (content_measure_classes.count(cur)) return false;
+        // Plain framework View families: no onMeasure override below here —
+        // the AOSP DEFAULT View.onMeasure (getDefaultSize) law applies.
+        if (cur == "Landroid/view/View;" || cur == "Landroid/view/SurfaceView;")
+            return true;
+        auto sup_it = class_to_superclass_.find(cur);
+        if (sup_it == class_to_superclass_.end()) {
+            // Unknown ancestor (framework class outside the seeded table):
+            // conservative false (content model — prior behavior).
+            return false;
+        }
+        cur = sup_it->second;
+    }
+    return false;
+}
+
 std::string DalvikExecutionEngine::resolve_method_name_for_dex(
     uint32_t method_idx, uint32_t dex_index) const {
 
@@ -4754,6 +4808,32 @@ bool DalvikExecutionEngine::run_custom_view_constructor(
                        DalvikValue::make_object(ctx_id, "Landroid/content/Context;")});
     }
     if (ok) heap_.mark_initialized(view_object_id);
+    // MASTER CAMPAIGN FIX (F8 default-onMeasure law): record whether the
+    // AOSP DEFAULT View.onMeasure applies (no onMeasure override in the
+    // semantic chain below a framework content class) — same law as the
+    // execute_invoke_direct path; inflation-constructed views go through
+    // THIS entry (run_custom_view_constructor), not invoke-direct.
+    if (ok && shadow_registry_) {
+        auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+        if (view_shadow) {
+            auto* node = view_shadow->find_node(view_object_id);
+            bool overrides = class_chain_defines_method(cls, "onMeasure");
+            if (node) {
+                node->aosp_default_measure = !overrides;
+                node->overrides_on_measure = overrides;
+            }
+            static thread_local uint64_t dm_log = 0;
+            if (dm_log < 12) {
+                dm_log++;
+                std::cerr << "[DEFAULT-MEASURE] class=" << cls
+                          << " view=" << view_object_id
+                          << " node=" << (node ? "FOUND" : "MISSING")
+                          << " overrides_onMeasure=" << overrides
+                          << " flag=" << (node ? node->aosp_default_measure : false)
+                          << std::endl;
+            }
+        }
+    }
 
     // 7) Opt-in diagnostic trace (MINIANDROID_G11_TRACE=1): constructor
     //    proof + super chain (task §7 format; diagnostic only).
@@ -4773,6 +4853,47 @@ bool DalvikExecutionEngine::run_custom_view_constructor(
         }
     }
     return ok;
+}
+
+// MASTER CAMPAIGN FIX (F10 real-DEX onMeasure): execute an app custom
+// View's REAL onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+// bytecode. AOSP measure contract (View.measure → onMeasure →
+// setMeasuredDimension): the override computes the measured size from the
+// incoming specs; ViewShadow's setMeasuredDimension dispatch captures the
+// write-back onto the node. Called from the measure pass through the
+// ResourceRuntime hook (Factory law — process-wide, survives inflater
+// recreation).
+bool DalvikExecutionEngine::dispatch_custom_view_measure(
+    uint32_t view_object_id, int wspec, int hspec, int& out_w, int& out_h) {
+    out_w = out_h = 0;
+    if (!dex_report_ || !shadow_registry_) return false;
+    if (view_object_id == 0) return false;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!view_shadow) return false;
+    auto* node = view_shadow->find_node(view_object_id);
+    if (!node || !node->overrides_on_measure) return false;
+    std::string cls = node->class_desc;
+    if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < cls.size(); ++i)
+            norm += (cls[i] == '.') ? '/' : cls[i];
+        cls = norm;
+    }
+    if (!class_info_index_.count(cls)) return false;
+    node->dex_measure_valid = false;
+    DalvikValue ret = DalvikValue::make_void();
+    DalvikExecutionResult res;
+    bool ok = try_recursive_invoke(
+        cls, "onMeasure",
+        {DalvikValue::make_object(view_object_id, node->class_desc),
+         DalvikValue::make_int(wspec), DalvikValue::make_int(hspec)},
+        ret, res);
+    if (ok && node->dex_measure_valid) {
+        out_w = node->dex_measured_w;
+        out_h = node->dex_measured_h;
+        return true;
+    }
+    return false;
 }
 
 // EXP-060: Dispatch a synthetic CLICK event on a View.
@@ -9894,6 +10015,28 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     trace.invoked_method = class_name + "." + method_name;
     trace.operands.push_back({"method", std::to_string(method_idx)});
 
+    // MASTER CAMPAIGN FIX (F8 default-onMeasure law): at constructor
+    // completion, record whether the AOSP DEFAULT View.onMeasure applies to
+    // this node (no onMeasure override anywhere in the semantic chain below
+    // a framework content class). The measure pass consumes this for leaf
+    // nodes with no content source (View.getDefaultSize: AT_MOST/EXACTLY →
+    // specSize). Evidence: org.billthefarmer.scope v140 custom views
+    // measured 0x0 (content model) where AOSP measures them at the
+    // parent-available size.
+    if (method_name == "<init>" && shadow_registry_ && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF) {
+        auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+        if (view_shadow) {
+            auto* node = view_shadow->find_node(args[0].object_id);
+            if (node) {
+                const std::string& cls = !args[0].class_desc.empty()
+                                             ? args[0].class_desc : class_name;
+                bool overrides = class_chain_defines_method(cls, "onMeasure");
+                node->aosp_default_measure = !overrides;
+            }
+        }
+    }
+
     // EXP-071 Phase 7: Restore the saved static flag.
     current_invoke_is_static_ = saved_is_static;
     pc_ = pc + 3;
@@ -13829,6 +13972,127 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = get_or_create_singleton("Landroid/os/Looper;");
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // MASTER CAMPAIGN FIX (F8/F10 measure laws): View$MeasureSpec statics
+    // are PURE BITWISE laws (AOSP View.java MeasureSpec):
+    //   getMode(spec)  = spec >>> 30          (UNSPECIFIED=0, EXACTLY=1, AT_MOST=2)
+    //   getSize(spec)  = spec & MASK_SIZE     (MASK_SIZE = 0x3FFFFFFF)
+    //   makeMeasureSpec(size, mode) = (mode << 30) | (size & MASK_SIZE)
+    // Real custom-view onMeasure overrides call these first; without them
+    // every DEX onMeasure computed zeros (evidence: org.billthefarmer.scope
+    // v140 — YScale.onMeasure → getSize×2 → Math.min → setMeasuredDimension(0,0)).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/view/View$MeasureSpec;" &&
+        !args.empty() && args[0].type == DalvikType::INT32) {
+        auto spec = [](const DalvikValue& v) -> int32_t { return v.int_val; };
+        if (method == "getMode") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int((int32_t)(((uint32_t)spec(args[0])) >> 30));
+            return true;
+        }
+        if (method == "getSize") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(spec(args[0]) & 0x3FFFFFFF);
+            return true;
+        }
+        if (method == "makeMeasureSpec" && args.size() >= 2) {
+            auto val_of = [](const DalvikValue& v) -> int32_t {
+                switch (v.type) {
+                    case DalvikType::INT32: return v.int_val;
+                    case DalvikType::FLOAT32: return (int32_t)v.float_val;
+                    case DalvikType::INT64: return (int32_t)v.long_val;
+                    default: return 0;
+                }
+            };
+            // AOSP signature: makeMeasureSpec(int size, int mode).
+            int32_t sz = val_of(args[0]), mode = val_of(args[1]);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int((mode << 30) | (sz & 0x3FFFFFFF));
+            return true;
+        }
+        if (method == "toString") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string("MeasureSpec", 0);
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // MASTER CAMPAIGN FIX (F8 default-onMeasure law): View.onMeasure(I, I)V
+    // IS the default implementation (AOSP View.java onMeasure →
+    // setMeasuredDimension(getDefaultSize(suggestedMinimumWidth, widthMeasureSpec), …);
+    // getDefaultSize: AT_MOST/EXACTLY → specSize, UNSPECIFIED → suggested).
+    // A custom override that calls super.onMeasure gets exactly this. The
+    // suggested minimum is mMinWidth + padding — 0 for the corpus views.
+    // Writes through the ViewShadow node (same channel as
+    // setMeasuredDimension dispatch).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/view/View;" && method == "onMeasure" &&
+        args.size() >= 3 && shadow_registry_) {
+        auto spec_mode = [](int32_t s) -> int32_t { return (int32_t)(((uint32_t)s) >> 30); };
+        auto spec_size = [](int32_t s) -> int32_t { return s & 0x3FFFFFFF; };
+        auto default_size = [&](int32_t s) -> int32_t {
+            int32_t m = spec_mode(s);
+            return (m == 1 || m == 2) ? spec_size(s) : 0;  // + suggested min (0)
+        };
+        auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+        if (view_shadow && args[0].type == DalvikType::OBJECT_REF) {
+            if (auto* n = view_shadow->find_node(args[0].object_id)) {
+                n->dex_measured_w = default_size(args[1].int_val);
+                n->dex_measured_h = default_size(args[2].int_val);
+                n->dex_measure_valid = true;
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // MASTER CAMPAIGN FIX (F3 DEX semantics): java.lang.Math min/max/abs —
+    // pure arithmetic the interpreter reaches via the bridge when the class
+    // is not in the APK DEX. Universal java.lang semantics, no app specifics.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/Math;" && args.size() >= 1) {
+        auto num = [](const DalvikValue& v) -> double {
+            switch (v.type) {
+                case DalvikType::INT32: return (double)v.int_val;
+                case DalvikType::INT64: return (double)v.long_val;
+                case DalvikType::FLOAT32: return (double)v.float_val;
+                case DalvikType::FLOAT64: return v.double_val;
+                default: return 0.0;
+            }
+        };
+        if ((method == "min" || method == "max") && args.size() >= 2) {
+            double a = num(args[0]), b = num(args[1]);
+            bool wide = args[0].type == DalvikType::INT64 ||
+                        args[1].type == DalvikType::INT64;
+            bool fp = args[0].type == DalvikType::FLOAT32 ||
+                      args[0].type == DalvikType::FLOAT64 ||
+                      args[1].type == DalvikType::FLOAT32 ||
+                      args[1].type == DalvikType::FLOAT64;
+            double r = (method == "min") ? (a < b ? a : b) : (a > b ? a : b);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (wide)            result = DalvikValue::make_long((int64_t)r);
+            else if (fp)         result = DalvikValue::make_float((float)r);
+            else                 result = DalvikValue::make_int((int32_t)r);
+            return true;
+        }
+        if (method == "abs") {
+            double a = num(args[0]);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (args[0].type == DalvikType::INT64)
+                result = DalvikValue::make_long(args[0].long_val < 0 ? -args[0].long_val : args[0].long_val);
+            else if (args[0].type == DalvikType::FLOAT32)
+                result = DalvikValue::make_float(std::abs((float)a));
+            else if (args[0].type == DalvikType::FLOAT64)
+                result = DalvikValue::make_double(std::abs(a));
+            else
+                result = DalvikValue::make_int(args[0].int_val < 0 ? -args[0].int_val : args[0].int_val);
+            return true;
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────

@@ -134,6 +134,21 @@ public:
         return custom_view_ctor_hook_;
     }
 
+    // MASTER CAMPAIGN FIX (F10 real-DEX onMeasure): the executor installs
+    // this hook (same law as the ctor hook — resources layer cannot depend
+    // on the dex layer). The measure pass calls it for a leaf node whose
+    // DEX chain overrides onMeasure; the hook executes the REAL bytecode
+    // and returns the setMeasuredDimension write-back.
+    using CustomViewMeasureHook =
+        std::function<bool(uint32_t view_id, int wspec, int hspec,
+                           int& out_w, int& out_h)>;
+    void set_custom_view_measure_hook(CustomViewMeasureHook fn) {
+        custom_view_measure_hook_ = std::move(fn);
+    }
+    const CustomViewMeasureHook& custom_view_measure_hook() const {
+        return custom_view_measure_hook_;
+    }
+
 private:
     // G04 §8: drawable intrinsic-size probe cache (path → natural dims;
     // {-1,-1} = probe failed — never retried, honest 48dp fallback applies).
@@ -246,6 +261,7 @@ private:
     // G11 FIX-G11-001: DEX constructor-execution bridge (may be unset —
     // standalone law-test harnesses drive the inflater without the engine).
     CustomViewCtorHook custom_view_ctor_hook_;
+    CustomViewMeasureHook custom_view_measure_hook_;
     // FIX-2c: id → key-name map (lazily built from resources.arsc) used to
     // name compiled android:id references and bind RelativeLayout rules.
     std::map<uint32_t, std::string> id_names_;
