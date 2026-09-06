@@ -23,6 +23,7 @@
 
 #include "arsc_parser.h"
 #include "axml_parser.h"
+#include "../framework/view_ancestry.h"  // G12 FIX-G12-001: framework ancestry law
 #include "../framework/android_shadows.h"
 #include "../apk/apk_parser.h"
 
@@ -101,6 +102,10 @@ public:
     }
     bool is_a(const std::string& class_desc, const std::string& ancestor) const {
         if (is_a_) return is_a_(class_desc, ancestor);
+        // G12 FIX-G12-001: framework ancestry law before the legacy
+        // substring fallback (TableRow extends LinearLayout — the substring
+        // test called it a leaf and measured 0x0 rows).
+        if (framework::framework_is_subclass(class_desc, ancestor)) return true;
         // legacy fallback: descriptor-substring containment
         return !ancestor.empty() && class_desc.find(ancestor) != std::string::npos;
     }

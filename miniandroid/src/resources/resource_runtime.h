@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <functional>
 #include <optional>
 
 #include "arsc_parser.h"
@@ -39,6 +40,7 @@ public:
             metrics_ = DeviceMetrics{};
             inflater_ = std::make_unique<LayoutInflater>(arsc_, apk_, apk_path_, metrics_);
             apply_custom_view_ctor_hook();
+            apply_is_a();
         }
         return *inflater_;
     }
@@ -58,10 +60,23 @@ public:
         if (inflater_) inflater_->set_custom_view_ctor_hook(custom_view_ctor_hook_);
     }
 
+    // G12 FIX-G12-002: same Factory law for the superclass classifier —
+    // an is_a installed on one instance was silently wiped by the next
+    // ensure_loaded (app containers classified as leaves on the window
+    // path). Owned process-wide, re-applied on every (re)creation.
+    void set_is_a(std::function<bool(const std::string&, const std::string&)> fn) {
+        is_a_ = std::move(fn);
+        if (inflater_) inflater_->set_is_a(is_a_);
+    }
+
 private:
     void apply_custom_view_ctor_hook() {
         if (inflater_ && custom_view_ctor_hook_)
             inflater_->set_custom_view_ctor_hook(custom_view_ctor_hook_);
+    }
+    void apply_is_a() {
+        if (inflater_ && is_a_)
+            inflater_->set_is_a(is_a_);
     }
 
 public:
@@ -94,6 +109,8 @@ private:
     // G11 FIX-G11-001: process-wide custom-view constructor hook (Factory
     // law — survives LayoutInflater recreation in ensure_loaded()).
     LayoutInflater::CustomViewCtorHook custom_view_ctor_hook_;
+    // G12 FIX-G12-002: process-wide superclass classifier (same Factory law).
+    std::function<bool(const std::string&, const std::string&)> is_a_;
 };
 
 } // namespace resources
