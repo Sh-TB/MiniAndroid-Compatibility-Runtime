@@ -11,7 +11,7 @@
   "base": {
     "rc": 0,
     "status": "SUCCESS",
-    "seconds": 0.2,
+    "seconds": 0.19,
     "has_screenshot": true,
     "screenshot_sha256": "6ab39944ba1a88b1808ddd212e433920a8f2b95cc61917fa4d224173aea67fa1",
     "log_path": "/tmp/g09_runs/org.debian.eugen.headingcalculator/base/console.log"
@@ -22,11 +22,21 @@
   },
   "lifecycle": {
     "present": true,
-    "final_state": "ACTIVITY_CREATED",
+    "final_state": "RESUMED",
     "transitions": [
       [
         "PROCESS_CREATED",
         "ACTIVITY_CREATED",
+        true
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "STARTED",
+        true
+      ],
+      [
+        "STARTED",
+        "RESUMED",
         true
       ]
     ],
