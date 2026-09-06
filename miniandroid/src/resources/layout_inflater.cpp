@@ -1203,6 +1203,26 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         // 1) measure children with AOSP-derived specs.
         std::vector<std::pair<int,int>> child_sizes(n->children.size());
         const bool parent_ll = is_a(n->class_desc, "Landroid/widget/LinearLayout;");
+        // MASTER CAMPAIGN FIX (F10 real-DEX onMeasure): custom leaf Views
+        // whose DEX chain overrides onMeasure execute the REAL override
+        // through the engine hook (View.measure → onMeasure →
+        // setMeasuredDimension). The override is authoritative for its
+        // subtree measure; the returned size becomes the content size.
+        if (!is_container_node(n) && n->overrides_on_measure &&
+            custom_view_measure_hook_) {
+            auto encode = [](const Spec& s) -> int {
+                // Android MeasureSpec encoding: mode in the top 2 bits.
+                int mode_bits = s.mode == M_EXACTLY ? 1
+                              : s.mode == M_AT_MOST ? 2 : 0;
+                return (mode_bits << 30) | (s.size & 0x3FFFFFFF);
+            };
+            int ow = 0, oh = 0;
+            if (custom_view_measure_hook_(vid, encode(sw), encode(sh), ow, oh)) {
+                n->measured_width = ow;
+                n->measured_height = oh;
+                return {ow, oh};
+            }
+        }
         // G10 FIX-G10-001 (AOSP LinearLayout.java): the orientation field is
         // `mOrientation = a.getInt(..., HORIZONTAL)` with the field itself
         // initialized to HORIZONTAL — an orientation that was never set
@@ -1292,6 +1312,24 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             if (n->class_desc.find("ProgressBar") != std::string::npos) {
                 content_w = std::max(content_w, (int)std::lround(48 * metrics_.density));
                 content_h = std::max(content_h, (int)std::lround(48 * metrics_.density));
+            }
+            // MASTER CAMPAIGN FIX (F8 default-onMeasure law — AOSP
+            // View.java getDefaultSize): a custom leaf View whose chain
+            // defines NO onMeasure override measures itself with
+            // getDefaultSize(suggestedMinimum, spec): AT_MOST/EXACTLY →
+            // specSize (the parent-available size), NOT the content size.
+            // The flag is computed by the DEX engine at constructor time
+            // (class_chain_defines_method — semantic ancestry, no name
+            // heuristics). Evidence: org.billthefarmer.scope v140 —
+            // Scope/YScale/XScale/Unit (plain View subclasses, wrap_content)
+            // measured 0x0/0x1920 under the content-only model where AOSP
+            // measures them at the available size.
+            if (n->aosp_default_measure && content_w == 0 && content_h == 0 &&
+                n->src_drawable_path.empty() && n->image_drawable_path.empty()) {
+                if (sw.mode != M_UNSPEC)
+                    content_w = std::max(0, sw.size - hpad);
+                if (sh.mode != M_UNSPEC)
+                    content_h = std::max(0, sh.size - vpad);
             }
             // Compound minimum (AOSP getSuggestedMinimum: 0 + padding).
             content_w = std::max(content_w, 0);

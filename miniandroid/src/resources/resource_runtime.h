@@ -60,6 +60,13 @@ public:
         if (inflater_) inflater_->set_custom_view_ctor_hook(custom_view_ctor_hook_);
     }
 
+    // MASTER CAMPAIGN FIX (F10): same Factory law for the real-DEX
+    // onMeasure hook.
+    void set_custom_view_measure_hook(LayoutInflater::CustomViewMeasureHook fn) {
+        custom_view_measure_hook_ = std::move(fn);
+        if (inflater_) inflater_->set_custom_view_measure_hook(custom_view_measure_hook_);
+    }
+
     // G12 FIX-G12-002: same Factory law for the superclass classifier —
     // an is_a installed on one instance was silently wiped by the next
     // ensure_loaded (app containers classified as leaves on the window
@@ -73,6 +80,10 @@ private:
     void apply_custom_view_ctor_hook() {
         if (inflater_ && custom_view_ctor_hook_)
             inflater_->set_custom_view_ctor_hook(custom_view_ctor_hook_);
+    }
+    void apply_custom_view_measure_hook() {
+        if (inflater_ && custom_view_measure_hook_)
+            inflater_->set_custom_view_measure_hook(custom_view_measure_hook_);
     }
     void apply_is_a() {
         if (inflater_ && is_a_)
@@ -109,6 +120,9 @@ private:
     // G11 FIX-G11-001: process-wide custom-view constructor hook (Factory
     // law — survives LayoutInflater recreation in ensure_loaded()).
     LayoutInflater::CustomViewCtorHook custom_view_ctor_hook_;
+    // MASTER CAMPAIGN FIX (F10): process-wide real-DEX onMeasure hook
+    // (same Factory law).
+    LayoutInflater::CustomViewMeasureHook custom_view_measure_hook_;
     // G12 FIX-G12-002: process-wide superclass classifier (same Factory law).
     std::function<bool(const std::string&, const std::string&)> is_a_;
 };

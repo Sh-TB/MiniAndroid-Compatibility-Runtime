@@ -1259,6 +1259,13 @@ public:
     // CAMPAIGN 013: run a custom view's REAL onDraw(Canvas) bytecode.
     int dispatch_custom_view_draw(uint32_t view_object_id);
 
+    // MASTER CAMPAIGN FIX (F10 real-DEX onMeasure): execute an app custom
+    // View's REAL onMeasure(wSpec, hSpec) bytecode; the setMeasuredDimension
+    // shadow dispatch captures the write-back. Returns true when a real
+    // override executed and produced measured dimensions.
+    bool dispatch_custom_view_measure(uint32_t view_object_id, int wspec,
+                                      int hspec, int& out_w, int& out_h);
+
     // ── G11 FIX-G11-001 (AOSP LayoutInflater.createView law) ───────────
     // Execute an app class's REAL View constructor on the DEX interpreter.
     // Called by the LayoutInflater custom-view hook for fully-qualified app
@@ -1409,6 +1416,15 @@ public:
     // runs (fr.neamar.kiss v224: same byte-identical screenshot, status
     // oscillated SUCCESS vs PARTIAL SUCCESS).
     bool lifecycle_methods_from_dex() const { return lifecycle_from_dex_; }
+
+    // MASTER CAMPAIGN FIX (F8 default-onMeasure law): dex-report-backed
+    // query — does class_desc, or any app-defined ancestor below the
+    // framework content boundary, define `method`? Walks the DEX
+    // superclass map (semantic ancestry — no name heuristics). Used at
+    // View-constructor time to decide whether the AOSP DEFAULT
+    // View.onMeasure (getDefaultSize) applies to a custom leaf View.
+    bool class_chain_defines_method(const std::string& class_desc,
+                                    const std::string& method) const;
 
     // EXP-051: Attach a shadow registry. The engine does NOT own the
     // registry — it's owned by ApplicationRuntime so the runtime can
