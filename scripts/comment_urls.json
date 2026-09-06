@@ -10,5 +10,9 @@
   "g09_corpus_matrix": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5559441103",
   "g09_fix_and_regression": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5559441172",
   "g09_api_audit": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5559441251",
-  "g09_phase9_ranking": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5559441356"
+  "g09_phase9_ranking": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5559441356",
+  "g10_phase0_baseline": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5560118010",
+  "g10_laws_fixes": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5560118079",
+  "g10_crossapk_validation": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5560118162",
+  "g10_impact_ranking": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5560118251"
 }
