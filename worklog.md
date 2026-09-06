@@ -186,3 +186,44 @@ Stage Summary:
 - 8 commits local (e98cf4b0…e371a82b), fast-forward-ready on origin/main.
 - NEXT: provide GitHub token → push + post scripts/issue_comment_g0405.md;
   G06 candidate: AppCompatDelegate shell emulation.
+
+---
+Task ID: G06-G08
+Agent: Super Z (main agent)
+Task: Unified G06 (state/input/interaction) + G07 (lifecycle/main thread/
+frames) + G08 (multi-Activity/Intent/result/back) compatibility closure.
+
+Work Log:
+- P0 persistence: token verified, 10 unpushed G04+G05 commits pushed
+  (67812290), payload posted → issuecomment-5558532580.
+- §1 baseline after full sandbox wipe: runtime rebuilt, EXT-01/reference/
+  aapt2/corpus re-frozen SHA-exact; battery 31/31; all frozen hashes
+  reproduced (142238fd92b69e11, e242ac1e9c8cc224, 351340a7a92e645c).
+- Initial audit published (c3a083e4 → issuecomment-5558625727).
+- G06 (7ba05034 + a0ac4544): TouchDispatcher (View.onTouchEvent law:
+  touchable/disabled/DOWN-press/UP-post(PerformClick)+UnsetPressed(64ms)/
+  focusTaken/CANCEL/MOVE-slop), StateListDrawable per-frame re-pick,
+  framework tokens on the ONE HandlerShadow queue, --tap CLI; fixed
+  FIND-G06AUDIT-003 (typed COLOR bg) + -004 (LinearLayout margin law,
+  both axes); law battery 45/45; interaction golden 21/21 + 3-run
+  byte-identity (pressed #FF5252 visible mid-gesture; disabled 0 px).
+- G07 (83ebbf3f): LifecycleController (guarded machine + restart law),
+  real-DEX onStart/onResume/onPause/onStop/onDestroy, finish()=request +
+  cascade at frame boundaries, FIND-G07-003 MessageQueue (when,seq) fix;
+  law battery 22/22; lifecycle golden 16/16 + 3-run identity ("CSRPHD").
+- G08 (38f9f202): consume_pending_intent (A.onPause→B.onCreate(Intent)→
+  B.onStart→B.onResume→A.onStop, real DEX both sides), task stack +
+  restart law + onActivityResult-before-onStart, FIND-G08-001/006/007
+  fixes + pop-law crash fix; navigation golden 17/17 + 3-run identity
+  (pixel-real window switch, "hello:7", "R42:-1").
+- §18 hostile (9e99a74c): 16/16 (floods, zombies, drain caps) + EXT-08
+  ConnectBot 11009000 frozen (191e6990…742f; boots SUCCESS).
+- Final report A–P (dbbe4057, docs/evidence/G06G08_FINAL_REPORT.md);
+  G06/G07/G08/final evidence comments posted with DIRECT URLs
+  (scripts/comment_urls.json).
+
+Stage Summary:
+- Battery: 46 named stages ALL PASS at dbbe4057; G01–G05 goldens unchanged.
+- Campaign G06–G08 CLOSED — VERIFIED with explicit non-blocking boundaries
+  (AppCompat shell, NinePatch, implicit intents, KEYCODE_BACK, multi-touch).
+- All GitHub artifacts published with direct URLs per Rule 0.2.
