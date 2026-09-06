@@ -624,6 +624,10 @@ public:
         std::string src_drawable_path;   // APK entry path of ImageView src
         std::string onClick_handler;     // android:onClick method name (real DEX callback)
         int layout_weight = 0;           // LinearLayout weight
+        // G04 §9: container weightSum (raw XML value; valid flag distinguishes
+        // "declared 0" from "not declared" — AOSP mWeightSum law).
+        float weight_sum = 0.0f;
+        bool weight_sum_valid = false;
         int container_gravity = -1;      // android:gravity on container (-1 unset)
         int child_gravity = -1;          // android:layout_gravity on child
         bool gravity_set = false;
