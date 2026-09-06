@@ -182,6 +182,24 @@ std::string LayoutInflater::class_to_descriptor(const std::string& xml_name) {
     return "Landroid/view/View;";
 }
 
+// G11 FIX-G11-001 descriptor gate: "does this descriptor LOOK like app code?"
+// Framework/library prefixes are excluded (their tags never carry app
+// constructors). The obfuscated-package case (microtimer `Lk/g;`) must PASS
+// this gate — the hook's DEX class-index check is the real authority; this
+// gate only avoids invoking the hook for framework tags.
+bool LayoutInflater::is_app_class_descriptor(const std::string& class_desc) {
+    static const char* kNonAppPrefixes[] = {
+        "Landroid/", "Ljava/", "Ljavax/", "Ldalvik/", "Lkotlin/", "Lkotlinx/",
+        "Lcom/google/android/", "Lcom/google/", "Lorg/apache/", "Lorg/json/",
+        "Lorg/xml/", "Lorg/w3c/", "Lorg/ccil/", "Lj$/",
+    };
+    if (class_desc.size() < 3 || class_desc.front() != 'L') return false;
+    for (const char* p : kNonAppPrefixes) {
+        if (class_desc.compare(0, std::string(p).size(), p) == 0) return false;
+    }
+    return true;
+}
+
 LayoutInflater::LayoutInflater(ArscParser& arsc, apk::ApkParser& apk, const std::string& apk_path,
                                const DeviceMetrics& metrics)
     : arsc_(arsc), apk_(apk), apk_path_(apk_path), metrics_(metrics) {
@@ -627,6 +645,21 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
         }
     }
 
+    // G11 FIX-G11-001 (AOSP LayoutInflater.createView law): a fully-qualified
+    // app-class tag is an INSTANTIATION. Execute the class's real DEX
+    // constructor BEFORE XML children inflate — the constructor itself may
+    // build the child hierarchy (CalculatorDisplay.<init> inflates
+    // calculator_display.xml into itself via LayoutInflater.inflate(res, this)).
+    // App-class test is a pure descriptor gate (framework prefixes excluded);
+    // the hook re-verifies the class actually exists in the app DEX.
+    if (custom_view_ctor_hook_ && is_app_class_descriptor(node->class_desc)) {
+        const bool constructed = custom_view_ctor_hook_(view_id, node->class_desc);
+        if (!constructed) {
+            stats.warnings.push_back(
+                "custom-view constructor not executed: " + node->class_desc);
+        }
+    }
+
     // children
     uint32_t last_child = 0;
     for (const auto& child : el.children) {
@@ -946,14 +979,14 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
 // inflate entry points
 // ---------------------------------------------------------------------------
 uint32_t LayoutInflater::inflate_layout_resid(framework::ViewShadow* views, uint32_t layout_resid,
-                                              InflateStats& stats) {
+                                              InflateStats& stats, uint32_t parent_view_id) {
     auto path = arsc_.apk_path_for(layout_resid, apk_entries_);
     if (!path) {
         auto r = arsc_.resolve(layout_resid);
         if (r) path = find_apk_file("layout", r->name);
     }
     if (!path) {
-        stats.warnings.push_back("layout resid not found in ARSC/APK: 0x" + [&]{ 
+        stats.warnings.push_back("layout resid not found in ARSC/APK: 0x" + [&]{
             char b[16]; snprintf(b, sizeof b, "%x", layout_resid); return std::string(b); }());
         return 0;
     }
@@ -968,8 +1001,10 @@ uint32_t LayoutInflater::inflate_layout_resid(framework::ViewShadow* views, uint
         stats.warnings.push_back("AXML parse failed: " + *path + " (" + parser.last_error() + ")");
         return 0;
     }
-    // inflate root element as the content root
-    uint32_t root = inflate_element(views, parser.root(), 0, stats);
+    // inflate root element as the content root. parent_view_id != 0 is the
+    // LayoutInflater.inflate(resId, root[, attachToRoot=true]) path — the
+    // inflated root attaches INTO the given parent (G11 FIX-G11-002).
+    uint32_t root = inflate_element(views, parser.root(), parent_view_id, stats);
     if (root) measure_layout(views, root);
     return root;
 }

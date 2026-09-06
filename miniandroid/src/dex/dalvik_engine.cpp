@@ -4582,6 +4582,113 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
     return ops;
 }
 
+// ── G11 FIX-G11-001 (AOSP LayoutInflater.createView law) ───────────────────
+// Execute an app class's REAL View constructor. Law chain (AOSP
+// frameworks/base/core/java/android/view/LayoutInflater.java createView):
+//   XML tag → resolve class → verify View subtype → resolve constructor
+//   → invoke (Context, AttributeSet...) → execute real DEX → super chain
+//   → constructed object.
+// The receiver heap object already exists (ViewShadow::create_view ran
+// heap_->allocate with the SAME class descriptor — inflated nodes and DEX
+// objects share ONE heap/id space), so constructor side effects
+// (inflate(res, this), addView, findViewById) operate on the live node.
+bool DalvikExecutionEngine::run_custom_view_constructor(
+    uint32_t view_object_id, const std::string& class_desc_slashed) {
+    if (!dex_report_ || !shadow_registry_) return false;
+    if (view_object_id == 0 || class_desc_slashed.empty()) return false;
+
+    // 1) The class must be an app-DEX class (the O(1) index is the real
+    //    authority — the inflater gate is only a fast prefix filter).
+    std::string cls = class_desc_slashed;
+    if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < cls.size(); ++i)
+            norm += (cls[i] == '.') ? '/' : cls[i];
+        cls = norm;
+    }
+    if (!class_info_index_.count(cls)) {
+        static const bool g11_trace =
+            std::getenv("MINIANDROID_G11_TRACE") != nullptr;
+        if (g11_trace)
+            std::cerr << "[G11-CTOR] class not in app DEX index: " << cls
+                      << std::endl;
+        return false;
+    }
+
+    // 2) The receiver heap object must exist (inflated node allocation).
+    if (!heap_.has_object(view_object_id)) {
+        std::cerr << "[G11-CTOR] view=" << view_object_id << " class=" << cls
+                  << " heap object missing — cannot construct" << std::endl;
+        return false;
+    }
+
+    // 3) Cycle guard: an unterminated constructor chain (cyclic class
+    //    hierarchy / recursive inflate) must fail loudly, not hang.
+    if (ctors_in_progress_.count(view_object_id)) {
+        std::cerr << "[G11-CTOR] ERROR: constructor re-entry on view="
+                  << view_object_id << " class=" << cls
+                  << " (cyclic hierarchy suspected) — skipped" << std::endl;
+        return false;
+    }
+    ctors_in_progress_.insert(view_object_id);
+    struct Guard {
+        std::set<uint32_t>& s; uint32_t id;
+        ~Guard() { s.erase(id); }
+    } guard{ctors_in_progress_, view_object_id};
+
+    // 4) Context argument: the current Activity (AOSP: the context passed
+    //    to LayoutInflater.from(activity) → view constructor arg 1).
+    uint32_t ctx_id = 0;
+    if (auto* act = shadow_registry_->find_as<framework::ActivityShadow>())
+        ctx_id = act->current_activity_id();
+    if (ctx_id == 0)
+        ctx_id = heap_.allocate("Landroid/content/Context;", pc_, 0);
+
+    // 5) AttributeSet argument: marker heap object (corpus constructors do
+    //    not read attrs today; reading framework attrs inside app
+    //    constructors is recorded as a future layer).
+    uint32_t attrs_id =
+        heap_.allocate("Landroid/util/AttributeSet;", pc_, 0);
+
+    // 6) Constructor signature probe (AOSP order): (Context, AttributeSet)
+    //    is the XML-inflation constructor; fall back to (Context). The
+    //    interpreter's overload matcher selects by parameter count, so the
+    //    arg vector itself picks the right overload.
+    auto try_ctor = [&](std::vector<DalvikValue> args) {
+        DalvikValue ret = DalvikValue::make_void();
+        DalvikExecutionResult res;
+        return try_recursive_invoke(cls, "<init>", args, ret, res);
+    };
+    bool ok = false;
+    ok = try_ctor({DalvikValue::make_object(view_object_id, cls),
+                   DalvikValue::make_object(ctx_id, "Landroid/content/Context;"),
+                   DalvikValue::make_object(attrs_id, "Landroid/util/AttributeSet;")});
+    if (!ok) {
+        ok = try_ctor({DalvikValue::make_object(view_object_id, cls),
+                       DalvikValue::make_object(ctx_id, "Landroid/content/Context;")});
+    }
+    if (ok) heap_.mark_initialized(view_object_id);
+
+    // 7) Opt-in diagnostic trace (MINIANDROID_G11_TRACE=1): constructor
+    //    proof + super chain (task §7 format; diagnostic only).
+    static const bool g11_trace =
+        std::getenv("MINIANDROID_G11_TRACE") != nullptr;
+    if (g11_trace) {
+        std::cerr << "[G11-CTOR] class=" << cls << " view=" << view_object_id
+                  << " executed=" << (ok ? "YES" : "NO") << std::endl;
+        std::string sup = cls;
+        int hops = 0;
+        while (hops++ < 8) {
+            auto it = class_to_superclass_.find(sup);
+            if (it == class_to_superclass_.end()) break;
+            std::cerr << "[G11-SUPER] " << sup << " -> " << it->second
+                      << std::endl;
+            sup = it->second;
+        }
+    }
+    return ok;
+}
+
 // EXP-060: Dispatch a synthetic CLICK event on a View.
 //
 // This is the generic event mechanism. The runtime:

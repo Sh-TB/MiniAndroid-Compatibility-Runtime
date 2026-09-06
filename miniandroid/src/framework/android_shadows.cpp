@@ -1268,6 +1268,49 @@ std::vector<uint32_t> ViewShadow::find_all_with_click_listener(
     return result;
 }
 
+// ── G11 FIX-G11-002 (AOSP LayoutInflater law) ───────────────────────────
+// from(Context) → singleton; inflate(resid[, root[, attachToRoot]]).
+// AOSP InflateException-free subset: inflate(resid, root) attaches the
+// parsed tree into root and returns root; inflate(resid) returns the new
+// root; the 3-arg overload honors the explicit attachToRoot flag.
+CallResult LayoutInflaterShadow::dispatch(const CallContext& ctx) {
+    const auto& m = ctx.method;
+    if (m == "from") {
+        // static LayoutInflater.from(Context) — shared singleton.
+        if (!heap_) return CallResult::not_handled();
+        uint32_t id = heap_->get_or_create("Landroid/view/LayoutInflater;");
+        return CallResult::handled_object(id, "Landroid/view/LayoutInflater;");
+    }
+    if (m == "inflate") {
+        if (!registry_ || !heap_) return CallResult::not_handled();
+        auto* view_shadow = registry_->find_as<ViewShadow>();
+        if (!view_shadow) return CallResult::not_handled();
+        uint32_t resid = ctx.arg_as_int(0, 0);
+        if (resid == 0) return CallResult::handled_null();
+
+        bool has_root = ctx.args.size() >= 2 &&
+                        ctx.args[1].kind == CallContext::Arg::Kind::OBJECT &&
+                        ctx.args[1].object_id != 0;
+        uint32_t root_id = has_root ? ctx.args[1].object_id : 0;
+        // AOSP law: 2-arg inflate(resid, root) == inflate(resid, root,
+        // root != null). The explicit 3-arg flag wins when present.
+        bool attach = ctx.args.size() >= 3 ? ctx.arg_as_bool(2, false)
+                                           : has_root;
+
+        auto& rt = resources::ResourceRuntime::instance();
+        resources::InflateStats st;
+        uint32_t inflated = rt.inflater().inflate_layout_resid(
+            view_shadow, resid, st, (attach && root_id != 0) ? root_id : 0);
+        if (attach && root_id != 0) {
+            // Attached into the caller's root — AOSP returns the ROOT.
+            return CallResult::handled_object(root_id, "Landroid/view/View;");
+        }
+        if (inflated == 0) return CallResult::handled_null();
+        return CallResult::handled_object(inflated, "Landroid/view/View;");
+    }
+    return CallResult::not_handled();
+}
+
 CallResult ViewShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     // View instance methods — receiver_id is the View heap object_id.
