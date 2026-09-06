@@ -155,6 +155,16 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
 
     if (chunk_offset + chunk_size > avail) { last_error_ = "type: overruns"; return false; }
     if (header_size < 20) { last_error_ = "type: bad header"; return false; }
+    // GOLDEN-03 §14 hardening: hostile entryCount / entries_start must not
+    // push the offset-array read past the chunk (the offs[i] scan below is
+    // data-driven and MUST be pre-bounded before dereferencing).
+    if ((uint64_t)header_size + (uint64_t)entry_count * 4 > chunk_size) {
+        last_error_ = "type: entry offsets overrun chunk"; return false;
+    }
+    if (entries_start < (uint32_t)header_size + entry_count * 4 ||
+        entries_start > chunk_size) {
+        last_error_ = "type: entries_start out of range"; return false;
+    }
 
     TypeChunk tc;
     tc.type_id = type_id;
@@ -225,6 +235,9 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
         // For simple entries esize==8 and Res_value follows.
         // For complex (map) entries, size field is 8 + parent + count header.
         if (!entry.is_complex) {
+            // §14: hostile esize must not underflow avail (vp can be past the
+            // buffer with a crafted entry size).
+            if (vp + 8 > avail) continue;
             ResValue v;
             if (decode_res_value(base + vp, avail - vp, global_strings_, pkg, v)) {
                 if (v.is_string()) {

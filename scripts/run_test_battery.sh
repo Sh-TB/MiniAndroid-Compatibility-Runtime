@@ -83,6 +83,30 @@ gate "link resource_config_selection_test" $?
 gate "resource-config selection law (expect 48)" $?
 tail -1 /tmp/battery_rescfg.out
 
+# GOLDEN-03 §3/§4/§6/§7/§8/§9: canonical id/resolution/TypedValue law
+g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/resource_core_law_test \
+    tests/resource_core_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread \
+    > /tmp/battery_reslaw.log 2>&1
+gate "link resource_core_law_test" $?
+./build/resource_core_law_test > /tmp/battery_reslaw.out 2>&1
+gate "resource core law (expect 42)" $?
+tail -1 /tmp/battery_reslaw.out
+
+# GOLDEN-03 §14: hostile resource-table safety (named deterministic failures)
+g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include -o build/resource_hostile_test \
+    tests/resource_hostile_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread \
+    > /tmp/battery_hostile.log 2>&1
+gate "link resource_hostile_test" $?
+timeout 120 ./build/resource_hostile_test > /tmp/battery_hostile.out 2>&1
+gate "resource hostile safety (expect 18)" $?
+tail -1 /tmp/battery_hostile.out
+
 # P2 encoded-value AOSP law (hostile/edge; FIND-REUSE-DEX)
 g++ -std=c++17 -w -g -O1 -Isrc -o build/encoded_value_law_test \
     tests/encoded_value_law_test.cpp > /tmp/battery_ev.log 2>&1
