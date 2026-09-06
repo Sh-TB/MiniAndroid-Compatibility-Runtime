@@ -1552,6 +1552,14 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
     halted_on_return_ = false;
     instruction_sequence_ = 0;
+    // MASTER CAMPAIGN FIX (lifecycle-provenance law): record lifecycle
+    // execution AT ENTRY — never inferred from the capacity-capped
+    // api_call_traces ring (volume-dependent eviction flipped the
+    // lifecycle-source validation between identical runs).
+    if (method_name == "onCreate" || method_name == "onStart" ||
+        method_name == "onResume") {
+        lifecycle_from_dex_ = true;
+    }
     // EXP-042 Phase 1: Per-frame loop detection counter. Reset on each new
     // method invocation so recursive calls do not pollute each other.
     pc_visit_count_.clear();
