@@ -289,6 +289,19 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
         {"Landroidx/appcompat/widget/AppCompatButton;", "Landroid/widget/Button;"},
         {"Landroidx/appcompat/widget/AppCompatImageView;", "Landroid/widget/ImageView;"},
         {"Landroidx/appcompat/widget/AppCompatCheckBox;", "Landroid/widget/CheckBox;"},
+        // G10 FIX-G10-002 (AOSP framework hierarchy, factual):
+        // container families the inflater must classify by ancestry.
+        // ViewAnimator extends FrameLayout; ViewSwitcher/ViewFlipper extend
+        // ViewAnimator; TableLayout/TableRow/RadioGroup extend LinearLayout;
+        // GridLayout/Toolbar extend ViewGroup. (AOSP frameworks/base/core.)
+        {"Landroid/widget/ViewAnimator;", "Landroid/widget/FrameLayout;"},
+        {"Landroid/widget/ViewSwitcher;", "Landroid/widget/ViewAnimator;"},
+        {"Landroid/widget/ViewFlipper;", "Landroid/widget/ViewAnimator;"},
+        {"Landroid/widget/TableLayout;", "Landroid/widget/LinearLayout;"},
+        {"Landroid/widget/TableRow;", "Landroid/widget/LinearLayout;"},
+        {"Landroid/widget/RadioGroup;", "Landroid/widget/LinearLayout;"},
+        {"Landroid/widget/GridLayout;", "Landroid/view/ViewGroup;"},
+        {"Landroid/widget/Toolbar;", "Landroid/view/ViewGroup;"},
     };
     for (const auto& [cls, sup] : framework_views) {
         class_to_superclass_[cls] = sup;

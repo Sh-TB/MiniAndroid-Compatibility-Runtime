@@ -111,7 +111,7 @@ ViewRenderer::Box ViewRenderer::measure_view(ViewShadow::ViewNode& n,
         } else {
             // container wrap: sum children (single pass)
             int cw = 0, ch = 0;
-            bool horiz = is_linear(n) && n.orientation == 0;
+            bool horiz = is_linear(n) && n.orientation != 1;  // FIX-G10-001
             for (uint32_t cid : n.children) {
                 ViewShadow::ViewNode* c = views_->find_node(cid);
                 if (!c || c->visibility == 8) continue;
@@ -147,7 +147,7 @@ ViewRenderer::Box ViewRenderer::measure_view(ViewShadow::ViewNode& n,
 // Layout children
 // ---------------------------------------------------------------------------
 void ViewRenderer::layout_children_linear(ViewShadow::ViewNode& n, const Box& b) {
-    bool horiz = n.orientation == 0;
+    bool horiz = n.orientation != 1;  // FIX-G10-001: unset = HORIZONTAL
     int content_w = b.w - n.padding_l - n.padding_r;
     int content_h = b.h - n.padding_t - n.padding_b;
 
@@ -301,10 +301,13 @@ void ViewRenderer::layout_children_frame(ViewShadow::ViewNode& n, const Box& b) 
         int y = n.padding_t + c->lp_margin_top;
         int g = c->layout_gravity >= 0 ? c->layout_gravity
                 : c->gravity >= 0 ? c->gravity : n.gravity;
-        if (g & kGravityCenterH) x = n.padding_l + (content_w - cb.w) / 2;
-        else if (g & kGravityRight) x = n.padding_l + content_w - cb.w - c->lp_margin_right;
-        if (g & kGravityCenterV) y = n.padding_t + (content_h - cb.h) / 2;
-        else if (g & kGravityBottom) y = n.padding_t + content_h - cb.h - c->lp_margin_bottom;
+        // G10 FIX-G10-004: axis-field equality — mask each gravity field
+        // before comparing (combined values like bottom|end 0x00800055 have
+        // both bits set; raw bit tests misroute them to center).
+        if ((g & 0x7) == kGravityCenterH) x = n.padding_l + (content_w - cb.w) / 2;
+        else if ((g & 0x7) == kGravityRight) x = n.padding_l + content_w - cb.w - c->lp_margin_right;
+        if ((g & 0x70) == kGravityCenterV) y = n.padding_t + (content_h - cb.h) / 2;
+        else if ((g & 0x70) == kGravityBottom) y = n.padding_t + content_h - cb.h - c->lp_margin_bottom;
         c->x = b.x + x;
         c->y = b.y + y;
         c->width = cb.w;
