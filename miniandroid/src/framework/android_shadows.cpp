@@ -433,6 +433,15 @@ CallResult ArchTaskExecutorShadow::dispatch(const CallContext& ctx) {
 CallResult ThreadShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     if (m == "currentThread") {
+        // MASTER-TRIAGE: cap-limited identity evidence (Looper.getThread vs
+        // Thread.currentThread object ids) — the androidx main-thread law
+        // depends on these being the SAME heap object.
+        static thread_local uint64_t tid_log = 0;
+        if (tid_log < 8) {
+            tid_log++;
+            std::cerr << "[THREAD-ID] currentThread -> obj=" << main_thread_id_
+                      << " (class=" << ctx.class_name << ")" << std::endl;
+        }
         return CallResult::handled_object(main_thread_id_, "Ljava/lang/Thread;");
     }
     if (m == "getName") {
@@ -493,6 +502,12 @@ CallResult LooperShadow::dispatch(const CallContext& ctx) {
                 // Lazy bind: ask the heap for the main Thread singleton.
                 tid = heap_->get_or_create("Ljava/lang/Thread;");
                 bound_thread_id_ = tid;
+            }
+            static thread_local uint64_t gt_log = 0;
+            if (gt_log < 8) {
+                gt_log++;
+                std::cerr << "[THREAD-ID] Looper.getThread -> obj=" << tid
+                          << " main_looper=" << main_looper_id_ << std::endl;
             }
             return CallResult::handled_object(tid, "Ljava/lang/Thread;");
         }
