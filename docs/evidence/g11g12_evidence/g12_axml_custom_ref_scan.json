@@ -1,0 +1,286 @@
+{
+ "de.duenndns.gmdice_8.apk": {
+  "custom_classes": [
+   "Lde/duenndns/gmdice/RollResultAdapter;",
+   "Lde/duenndns/gmdice/SignedNumberPicker;"
+  ],
+  "layout_refs": {
+   "res/layout/dg_configure.xml": [
+    "de.duenndns.gmdice.SignedNumberPicker"
+   ]
+  }
+ },
+ "omegacentauri.mobi.simplestopwatch_26.apk": {
+  "custom_classes": [
+   "Lomegacentauri/mobi/simplestopwatch/BigTextView;",
+   "Lomegacentauri/mobi/simplestopwatch/ShowTime$2;"
+  ],
+  "layout_refs": {
+   "res/layout-v5/activity_stop_watch.xml": [
+    "omegacentauri.mobi.simplestopwatch.BigTextView"
+   ],
+   "res/layout/activity_clock.xml": [
+    "omegacentauri.mobi.simplestopwatch.BigTextView"
+   ],
+   "res/layout/activity_stop_watch.xml": [
+    "omegacentauri.mobi.simplestopwatch.BigTextView"
+   ]
+  }
+ },
+ "org.billthefarmer.notes_139.apk": {
+  "custom_classes": [
+   "Lorg/billthefarmer/markdown/MarkdownView;",
+   "Lorg/billthefarmer/notes/FileAdapter;",
+   "Lorg/billthefarmer/notes/Notes$1;",
+   "Lorg/billthefarmer/notes/Notes$GestureListener;"
+  ],
+  "layout_refs": {}
+ },
+ "org.debian.eugen.headingcalculator_1.apk": {
+  "custom_classes": [
+   "Lorg/debian/eugen/headingcalculator/CalculatorDisplay;",
+   "Lorg/debian/eugen/headingcalculator/CalculatorKeypad;",
+   "Lorg/debian/eugen/headingcalculator/ExplainableButton;",
+   "Lorg/debian/eugen/headingcalculator/ExplainableTextView;"
+  ],
+  "layout_refs": {
+   "res/layout-land/calculator_display.xml": [
+    "org.debian.eugen.headingcalculator.ExplainableTextView"
+   ],
+   "res/layout-port/calculator_display.xml": [
+    "org.debian.eugen.headingcalculator.ExplainableTextView"
+   ],
+   "res/layout/calculator_keypad.xml": [
+    "org.debian.eugen.headingcalculator.ExplainableButton"
+   ],
+   "res/layout/main.xml": [
+    "org.debian.eugen.headingcalculator.CalculatorDisplay",
+    "org.debian.eugen.headingcalculator.CalculatorKeypad"
+   ]
+  }
+ },
+ "app.varlorg.unote_30.apk": {
+  "custom_classes": [
+   "Lapp/varlorg/ambilwarna/AmbilWarnaSquare;",
+   "Lapp/varlorg/ambilwarna/widget/AmbilWarnaPrefWidgetView;",
+   "Lc/s;"
+  ],
+  "layout_refs": {}
+ },
+ "dubrowgn.microtimer_8.apk": {
+  "custom_classes": [
+   "Ldubrowgn/microtimer/RoTimeControl;",
+   "Lk/g;"
+  ],
+  "layout_refs": {}
+ },
+ "io.github.yamin8000.dooz_18.apk": {
+  "custom_classes": [
+   "LC/m;",
+   "LC/p;",
+   "LJ0/s$a;",
+   "LJ0/t;",
+   "LR0/a$a;",
+   "LT/a;",
+   "Ll/I;",
+   "Lo0/a;",
+   "LR0/E$d$a;",
+   "LS/i;",
+   "LI0/a;"
+  ],
+  "layout_refs": {}
+ },
+ "nl.hansdezwart.bgclock_2.apk": {
+  "custom_classes": [
+   "Lnl/hansdezwart/bgclock/MainActivity$1;"
+  ],
+  "layout_refs": {}
+ },
+ "rkr.simplekeyboard.inputmethod_145.apk": {
+  "custom_classes": [
+   "Lj;",
+   "Lw0;",
+   "Lrkr/simplekeyboard/inputmethod/keyboard/MainKeyboardView;",
+   "Lrkr/simplekeyboard/inputmethod/keyboard/MoreKeysKeyboardView;",
+   "Lrkr/simplekeyboard/inputmethod/latin/InputView;",
+   "Lx;"
+  ],
+  "layout_refs": {}
+ },
+ "fr.neamar.kiss_224.apk": {
+  "custom_classes": [
+   "Lfr/neamar/kiss/adapter/RecordAdapter;",
+   "Lfr/neamar/kiss/forwarder/ExperienceTweaks$1;",
+   "Lfr/neamar/kiss/forwarder/LiveWallpaper$Anim;",
+   "Lfr/neamar/kiss/forwarder/TagsMenu$MenuAdapter;",
+   "Lfr/neamar/kiss/ui/AnimatedListView;",
+   "Lfr/neamar/kiss/ui/BottomPullEffectView;",
+   "Lfr/neamar/kiss/ui/ShapedContactBadge;",
+   "Lfr/neamar/kiss/ui/ImprovedQuickContactBadge;",
+   "Lfr/neamar/kiss/ui/ListPopup$ScrollView;",
+   "Lfr/neamar/kiss/ui/ListPopup;"
+  ],
+  "layout_refs": {}
+ },
+ "net.gsantner.markor_163.apk": {
+  "custom_classes": [
+   "Lcom/github/appintro/indicator/DotIndicatorController;",
+   "Lcom/github/appintro/indicator/ProgressIndicatorController;",
+   "Lcom/github/appintro/internal/ScrollerCustomDuration;",
+   "Lcom/rarepebble/colorpicker/SliderViewBase;",
+   "Lcom/rarepebble/colorpicker/AlphaView;",
+   "Lcom/rarepebble/colorpicker/ColorPickerView;",
+   "Lcom/rarepebble/colorpicker/SquareView;",
+   "Lcom/rarepebble/colorpicker/HueSatView;",
+   "Lcom/rarepebble/colorpicker/SwatchView;",
+   "Lcom/rarepebble/colorpicker/ValueView;",
+   "Lnet/gsantner/markor/frontend/DraggableScrollbarScrollView;",
+   "Lnet/gsantner/markor/frontend/SearchAndReplaceTextDialog$1;",
+   "Lnet/gsantner/markor/frontend/textview/LineNumbersView;",
+   "Lnet/gsantner/markor/web/DraggableScrollbarWebView;",
+   "Lnet/gsantner/opoc/web/GsWebViewClient;",
+   "Lnet/gsantner/markor/web/MarkorWebViewClient;",
+   "Lnet/gsantner/markor/widget/TodoWidgetService;",
+   "Lnet/gsantner/opoc/frontend/GsHorizontalScrollView;",
+   "Lnet/gsantner/opoc/frontend/GsLinearSplitLayout;",
+   "Lnet/gsantner/opoc/frontend/GsSearchOrCustomTextDialog$Adapter;",
+   "Lnet/gsantner/opoc/frontend/filebrowser/GsFileBrowserListAdapter$StringFilter;",
+   "Lnet/gsantner/opoc/web/GsWebViewChromeClient;",
+   "Lother/writeily/widget/WrFilesWidgetService;"
+  ],
+  "layout_refs": {}
+ },
+ "org.fossify.notes_13.apk": {
+  "custom_classes": [
+   "LB3/q;",
+   "LA3/c;",
+   "Lp/v0;",
+   "LB3/e;",
+   "Lp/Q0;",
+   "LC3/a;",
+   "LD2/e;",
+   "LD2/j;",
+   "LD2/o;",
+   "Lp/A;",
+   "LE3/a;",
+   "LF2/n;",
+   "LG1/a;",
+   "LG1/g0;",
+   "LG2/e;",
+   "LH1/g;",
+   "LI1/b;",
+   "LJ0/W0;",
+   "LJ0/X0;",
+   "LJ0/a;",
+   "LJ0/d0;",
+   "LJ0/t0;",
+   "LJ0/w;",
+   "LK1/g;",
+   "LK3/c;",
+   "LL0/a;",
+   "LM3/g;",
+   "LM3/k;",
+   "LN3/m;",
+   "LN3/p;",
+   "LN3/s;",
+   "Lp/n;",
+   "LN3/t;",
+   "LN3/v;",
+   "LS/d;",
+   "LS/e;",
+   "LS1/b;",
+   "LV1/w;",
+   "Lq1/c;",
+   "Lq1/u;",
+   "Lcom/andrognito/patternlockview/PatternLockView;",
+   "Lp/o;",
+   "Lr3/d;",
+   "Lp/p;",
+   "Lp/w;",
+   "Lp/u;",
+   "Lcom/qtalk/recyclerviewfastscroller/RecyclerViewFastScroller;",
+   "Li1/i;",
+   "Li1/q;",
+   "Li2/Z;",
+   "Li2/t0;",
+   "Li2/u;",
+   "Li2/y;",
+   "Li3/d;",
+   "Lj/a;",
+   "Lj/e;",
+   "Lj1/s;",
+   "Lj1/x;",
+   "Lk0/f;",
+   "Lm3/d;",
+   "Lm3/e;",
+   "Ln/e;",
+   "Ln/h;",
+   "Lo/g;",
+   "Lo/i;",
+   "Lo/p;",
+   "Lorg/fossify/commons/views/Breadcrumbs;",
+   "Lorg/fossify/commons/views/ColorPickerSquare;",
+   "Lorg/fossify/commons/views/FingerprintTab;",
+   "Lorg/fossify/commons/views/LineColorPicker;",
+   "Lorg/fossify/commons/views/MyAppBarLayout;",
+   "Lorg/fossify/commons/views/MyAppCompatCheckbox;",
+   "Lorg/fossify/commons/views/MyButton;",
+   "Lorg/fossify/commons/views/MyCompatRadioButton;",
+   "Lorg/fossify/commons/views/MyDialogViewPager;",
+   "Lorg/fossify/commons/views/MyEditText;",
+   "Lorg/fossify/commons/views/MyFloatingActionButton;",
+   "Lorg/fossify/commons/views/MyMaterialSwitch;",
+   "Lorg/fossify/commons/views/MyScrollView;",
+   "Lorg/fossify/commons/views/MySeekBar;",
+   "Lorg/fossify/commons/views/MyTextView;",
+   "Lorg/fossify/commons/views/MyViewPager;",
+   "Lorg/fossify/commons/views/PurchaseThankYouItem;",
+   "Lorg/fossify/commons/views/RenamePatternTab;",
+   "Lorg/fossify/commons/views/RenameSimpleTab;",
+   "Lorg/fossify/notes/services/WidgetService;",
+   "Lorg/fossify/notes/views/MyHorizontalScrollView;",
+   "Lp/B;",
+   "Lp/D;",
+   "Lp/q0;",
+   "Lp/G0;",
+   "Lp/L;",
+   "Lp/M0;",
+   "Lp/N0;",
+   "Lp/N;",
+   "Lp/Z0;",
+   "Lp/d;",
+   "Lp/e0;",
+   "Lp/e;",
+   "Lp/u0;",
+   "Lp/l;",
+   "Lp/q;",
+   "Lp/x;",
+   "Lp/y;",
+   "Lq1/a;",
+   "Lq1/e;",
+   "Lq1/q;",
+   "Ls1/e;",
+   "Lt0/l;",
+   "Lt3/b;",
+   "Lt3/c;",
+   "Lt5/f;",
+   "Lu0/a;",
+   "Lu0/b;",
+   "Lu3/a;",
+   "Lu5/o;",
+   "Ly/Q;"
+  ],
+  "layout_refs": {}
+ },
+ "tictactoe.apk": {
+  "custom_classes": [
+   "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$1;",
+   "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$1;",
+   "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20API18$1;",
+   "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18;",
+   "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20API18;",
+   "Lcom/badlogic/gdx/backends/android/AndroidGraphicsLiveWallpaper$1;"
+  ],
+  "layout_refs": {}
+ }
+}

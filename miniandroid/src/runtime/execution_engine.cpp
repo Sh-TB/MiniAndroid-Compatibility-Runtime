@@ -381,6 +381,18 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             heap_adapter_ = std::make_unique<framework::DalvikHeapAdapter>(
                 &dalvik_engine_.get_heap_public(), &dalvik_engine_);
             shadow_registry_->set_heap(heap_adapter_.get());
+            // G11 FIX-G11-001: custom-view constructor execution bridge.
+            // Must be installed BEFORE Application/Activity onCreate runs —
+            // setContentView→inflate fires app constructors during onCreate.
+            {
+                auto& rt = resources::ResourceRuntime::instance();
+                rt.inflater().set_custom_view_ctor_hook(
+                    [this](uint32_t view_id,
+                           const std::string& class_desc) -> bool {
+                        return dalvik_engine_.run_custom_view_constructor(
+                            view_id, class_desc);
+                    });
+            }
             // G06 §4: canonical input pipeline. The dispatcher shares the
             // ViewShadow tree (geometry/state) and the HandlerShadow virtual
             // queue (PerformClick/UnsetPressedState/CheckForLongPress ride

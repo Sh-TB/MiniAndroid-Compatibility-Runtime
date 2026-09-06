@@ -607,6 +607,36 @@ private:
 //   * Activity.findViewById(int)   — BFS the hierarchy for a view with
 //                                       matching view_id_android
 // ─────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────
+// G11 FIX-G11-002 — LayoutInflaterShadow (AOSP LayoutInflater law).
+//
+// Real Android: LayoutInflater.from(context) returns the shared inflater;
+// inflate(resid, root[, attachToRoot]) parses the layout XML and, when a
+// root is supplied with attachToRoot (the 2-arg overload defaults
+// attachToRoot to root != null), attaches the inflated tree INTO the root
+// and returns the root. App View constructors rely on this to build their
+// child hierarchy (CalculatorDisplay.<init> → inflate(R.layout.display, this)).
+// Without this shadow the call silently bridged to nothing and the
+// constructor-built subtree vanished.
+//
+// Dispatch:
+//   * static LayoutInflater.from(Context) — singleton heap object
+//   * inflate(int)                       — inflate, return new root
+//   * inflate(int, View)                 — attach INTO root, return root
+//   * inflate(int, View, boolean)        — attach per attachToRoot flag
+// ─────────────────────────────────────────────────────────────────────────
+class LayoutInflaterShadow : public Shadow {
+public:
+    std::string name() const override { return "LayoutInflater"; }
+    bool handles_class(const std::string& cls) const override {
+        return cls == "Landroid/view/LayoutInflater;";
+    }
+    CallResult dispatch(const CallContext& ctx) override;
+    std::vector<std::string> implemented_methods() const override {
+        return {"from", "inflate"};
+    }
+};
+
 class ViewShadow : public Shadow {
 public:
     struct ViewNode {

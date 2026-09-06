@@ -59,8 +59,12 @@ public:
 
     // Inflate layout by resource id (e.g. 0x7f030000 from setContentView).
     // Returns root view_id (0 on failure).
+    // G11 FIX-G11-002 (AOSP LayoutInflater.inflate law): parent_view_id lets
+    // LayoutInflater.inflate(resId, root[, attachToRoot]) attach the inflated
+    // tree INTO an existing view (app constructors inflate their own
+    // children this way — CalculatorDisplay.<init>). parent 0 = window path.
     uint32_t inflate_layout_resid(framework::ViewShadow* views, uint32_t layout_resid,
-                                  InflateStats& stats);
+                                  InflateStats& stats, uint32_t parent_view_id = 0);
 
     // Inflate layout by name ("act_gmdice").
     uint32_t inflate_layout_by_name(framework::ViewShadow* views, const std::string& name,
@@ -101,8 +105,29 @@ public:
         return !ancestor.empty() && class_desc.find(ancestor) != std::string::npos;
     }
 
+    // G11 FIX-G11-001: descriptor gate for the constructor hook — true when
+    // the descriptor does not belong to a framework/library package.
+    static bool is_app_class_descriptor(const std::string& class_desc);
+
     // after inflate, call this to register android:onClick handlers on nodes
     std::unordered_map<uint32_t, std::string> onClick_handlers;
+
+    // ── G11 FIX-G11-001 (AOSP LayoutInflater.createView law) ────────────
+    // A fully-qualified app-class XML tag (<org.debian.eugen…CalculatorKeypad/>)
+    // is an INSTANTIATION: the runtime must execute the class's REAL DEX
+    // constructor <init>(Context, AttributeSet)/(Context) so the app-side
+    // hierarchy built inside it (LayoutInflater.inflate(res, this), addView,
+    // findViewById) exists. The resources layer cannot depend on the dex
+    // layer, so the executor installs this hook (same law as set_is_a).
+    // Hook returns true when a constructor executed (class found in app DEX).
+    using CustomViewCtorHook =
+        std::function<bool(uint32_t view_id, const std::string& class_desc)>;
+    void set_custom_view_ctor_hook(CustomViewCtorHook fn) {
+        custom_view_ctor_hook_ = std::move(fn);
+    }
+    const CustomViewCtorHook& custom_view_ctor_hook() const {
+        return custom_view_ctor_hook_;
+    }
 
 private:
     // G04 §8: drawable intrinsic-size probe cache (path → natural dims;
@@ -213,6 +238,9 @@ private:
     DeviceMetrics metrics_;
     // G10 FIX-G10-002: DEX-backed superclass-chain classifier (may be null)
     std::function<bool(const std::string&, const std::string&)> is_a_;
+    // G11 FIX-G11-001: DEX constructor-execution bridge (may be unset —
+    // standalone law-test harnesses drive the inflater without the engine).
+    CustomViewCtorHook custom_view_ctor_hook_;
     // FIX-2c: id → key-name map (lazily built from resources.arsc) used to
     // name compiled android:id references and bind RelativeLayout rules.
     std::map<uint32_t, std::string> id_names_;
