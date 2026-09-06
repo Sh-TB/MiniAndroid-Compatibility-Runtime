@@ -672,20 +672,36 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     "Activity.onCreate() executed via DEX interpreter "
                     "(ActivityThread.performLaunchActivity law)",
                     hs_clock->virtual_now_ms());
+                // FIND-G09-LC-001 law fix (G09 corpus evidence: 10+
+                // framework-only APKs, e.g. app.varlorg.unote /
+                // omegacentauri.mobi.simplestopwatch, skipped the STARTED hop
+                // and had the whole finish cascade REJECTED by the guard).
+                // AOSP law (ActivityThread.handleLaunchActivity →
+                // handleStartActivity → handleResumeActivity): the activity
+                // record advances on the FRAMEWORK path — whether or not the
+                // application overrides the callback (the framework stub
+                // answers for non-overriding apps). The machine therefore
+                // advances unconditionally; the record documents whether real
+                // app bytecode ran.
                 nlohmann::json rec;
-                if (dispatch_app_lifecycle("onStart", &rec)) {
-                    lifecycle_.transition_to(
-                        framework::LifecyclePhase::STARTED,
-                        "Activity.onStart() dispatched via DEX engine",
-                        hs_clock->virtual_now_ms());
-                }
-                if (dispatch_app_lifecycle("onResume", &rec)) {
-                    lifecycle_.transition_to(
-                        framework::LifecyclePhase::RESUMED,
-                        "Activity.onResume() dispatched via DEX engine "
-                        "(handleResumeActivity law)",
-                        hs_clock->virtual_now_ms());
-                }
+                bool start_ok = dispatch_app_lifecycle("onStart", &rec);
+                lifecycle_.transition_to(
+                    framework::LifecyclePhase::STARTED,
+                    std::string("Activity.onStart() dispatched via DEX "
+                                "engine") +
+                        (start_ok ? ""
+                                  : " (framework stub answered — super-class "
+                                    "law; record state advances regardless)"),
+                    hs_clock->virtual_now_ms());
+                bool resume_ok = dispatch_app_lifecycle("onResume", &rec);
+                lifecycle_.transition_to(
+                    framework::LifecyclePhase::RESUMED,
+                    std::string("Activity.onResume() dispatched via DEX "
+                                "engine (handleResumeActivity law)") +
+                        (resume_ok ? ""
+                                   : " (framework stub answered — super-class "
+                                     "law; record state advances regardless)"),
+                    hs_clock->virtual_now_ms());
                 as->set_state(framework::ActivityShadow::LifecycleState::RESUMED);
             }
         }
