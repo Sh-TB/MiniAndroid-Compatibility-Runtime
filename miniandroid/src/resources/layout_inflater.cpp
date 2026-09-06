@@ -760,6 +760,12 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
                     auto val = arsc_.resolve_value(at.value.ref_id);
                     if (val && (val->is_color() || val->is_int())) a.bg_color = val->data;
                 }
+            } else if (at.value.is_color()) {
+                // FIND-G06AUDIT-003: aapt2 compiles android:background="#RRGGBB"
+                // into a TYPED COLOR Res_value (COLOR_RGB8/ARGB8/...), not a raw
+                // string. Res_value COLOR law: data IS the ARGB constant.
+                a.bg_color = at.value.data;
+                stats.colors_resolved++;
             } else if (!raw.empty() && raw[0] == '#') {
                 a.bg_color = li_parse_hex_color(raw);
             } else if (!raw.empty() && raw[0] == '@') {
@@ -1423,10 +1429,16 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     // equality: BOTTOM (0x50 field) → bottom; otherwise
                     // center (covers CENTER 0x10 and the no-bit default).
                     // Pre-fix a bare `& 0x50` test misfired on CENTER 0x11.
+                    // FIND-G06AUDIT-004: the margin law holds on this axis
+                    // too (layoutHorizontal placeChild: topMargin added on
+                    // TOP/center, rightMargin subtracted on BOTTOM).
+                    int cmt = cn->lp_margin_top, cmb = cn->lp_margin_bottom;
                     if (vg >= 0) {
                         int vf = vg & 0x70;
-                        if (vf == 0x50) y = ct + ch - h;
-                        else            y = ct + (ch - h) / 2;
+                        if (vf == 0x50) y = ct + ch - h - cmb;
+                        else            y = ct + (ch - h) / 2 + cmt - cmb;
+                    } else {
+                        y = ct + cmt;
                     }
                     if (w > cw) w = cw;
                     // G04 §9: the weight distribution IS the EXACTLY
@@ -1541,8 +1553,15 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     // "unset" identically to AOSP's -1 sentinel.
                     int vg = cn->child_gravity >= 0 ? cn->child_gravity
                            : (n->gravity_set ? n->container_gravity : -1);
-                    if (vg >= 0 && (vg & 0x1)) x = cl + (cw - w) / 2;
-                    else if (vg >= 0 && (vg & 0x7) == 0x5) x = cl + cw - w;
+                    // FIND-G06AUDIT-004 (LinearLayout.layoutVertical
+                    // placeChild law): every branch adds the child's own
+                    // horizontal margins — LEFT (default) childLeft =
+                    // paddingLeft + lp.leftMargin; CENTER adds
+                    // leftMargin − rightMargin; RIGHT subtracts rightMargin.
+                    int cml = cn->lp_margin_left, cmr = cn->lp_margin_right;
+                    if (vg >= 0 && (vg & 0x1)) x = cl + (cw - w) / 2 + cml - cmr;
+                    else if (vg >= 0 && (vg & 0x7) == 0x5) x = cl + cw - w - cmr;
+                    else x = cl + cml;
                     if (w > cw) w = cw;
                     // G04 §9: the weight distribution IS the EXACTLY
                     // re-measure — record the final main size on the node so
