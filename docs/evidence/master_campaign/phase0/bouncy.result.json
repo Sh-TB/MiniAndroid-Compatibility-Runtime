@@ -1,0 +1,35 @@
+{
+  "apk": "bouncy",
+  "rel": "download/master_campaign/com.dozingcatsoftware.bouncy_43.apk",
+  "sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 1.11,
+    "screenshot_sha256": "072ff17874b74846c623b98d0540a4442f8bbc1ec05f6b738ce5ffa50866e1e7"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": true,
+    "views": 62,
+    "zero_sized": 54
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      225,
+      225,
+      225
+    ],
+    "nonbg_pct": 83.4255,
+    "content_bbox": [
+      0,
+      147,
+      1079,
+      1919
+    ]
+  }
+}

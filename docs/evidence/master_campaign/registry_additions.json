@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "campaign": "MASTER_REAL_APK_COMPATIBILITY_RECOVERY",
+  "generated": "2026-09-07",
+  "base_head": "cc9e67ef65f0f4962c185345105244761c8826fe",
+  "zero_apk_policy": "repository contains ZERO .apk; this registry records SHA-256 of externally cached files under miniandroid/download/ (cache only, gitignored)",
+  "frozen_on_fetch": [
+    {
+      "name": "KISS launcher",
+      "package": "fr.neamar.kiss",
+      "version_code": 224,
+      "sha256": "da6ab0b1219ad3b5ee575651f4b91c74cb4a2f5a97f42a3d94164701a25996e4",
+      "size_bytes": 2205788,
+      "source": "https://f-droid.org/repo/fr.neamar.kiss_224.apk",
+      "license": "Apache-2.0",
+      "status": "RESTORED — SHA matches frozen 18-APK manifest entry; previously missing from sandbox"
+    },
+    {
+      "name": "Bouncy Ball",
+      "package": "com.dozingcatsoftware.bouncy",
+      "version_code": 43,
+      "version_name": "1.16.0",
+      "sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+      "size_bytes": "recorded at fetch; see miniandroid/download/master_campaign/",
+      "source": "https://f-droid.org/repo/com.dozingcatsoftware.bouncy_43.apk",
+      "license": "Apache-2.0",
+      "test_purpose": "campaign addition: real custom View hierarchy (ScoreView/CanvasFieldView/GLFieldView), LinearLayout weight, touch interaction",
+      "status": "NEW — frozen at fetch (independent addition #1)"
+    },
+    {
+      "name": "Oscilloscope",
+      "package": "org.billthefarmer.scope",
+      "version_code": 140,
+      "version_name": "1.40",
+      "sha256": "0e34439ce43bfd47d039ab91a7056051e0cf94c03948eb97236d7d2648ea17de",
+      "source": "https://f-droid.org/repo/org.billthefarmer.scope_140.apk",
+      "license": "GPL-3.0",
+      "test_purpose": "campaign addition: plain custom Views (Scope/YScale/XScale/Unit) in RelativeLayout — default onMeasure law probe",
+      "status": "NEW — frozen at fetch (independent addition #2)"
+    }
+  ],
+  "registry_url_drift": [
+    {
+      "name": "Tiny Music Player",
+      "registry_sha256": "d7bcb24d101b04be",
+      "observed": "https://f-droid.org/repo/com.martinmimigames.tinymusicplayer_1.apk serves an HTML error page (F-Droid 404); archive URL also 404",
+      "action": "UNFROZEABLE at recorded URL — excluded from matrix, recorded honestly (matches G09 finding)"
+    },
+    {
+      "name": "Fossify Notes",
+      "registry_sha256": "5a56e0e39cc488e1",
+      "observed": "repo URL serves org.fossify.notes_13.apk with SHA d3989c3e181df161ee2b… — MISMATCH vs frozen record; archive URL 404",
+      "action": "REFUSED silently accepting substitute — excluded from this campaign's matrix"
+    },
+    {
+      "name": "Markor",
+      "registry_sha256": "3f9f260dc3e32a12",
+      "observed": "repo URL serves net.gsantner.markor_163.apk with SHA e3588b46852f4961c028… — MISMATCH vs frozen record; archive URL 404",
+      "action": "REFUSED silently accepting substitute — excluded from this campaign's matrix"
+    },
+    {
+      "name": "Telegram",
+      "registry_sha256": "193ad551e2cbb745387f26370369f9cd0cf0353ecbc318398ada087ac2bf945e",
+      "observed": "local exp038_telegram/Telegram.apk is an HTML document (SHA 324929779f196b22…, 1.3 MB) — a failed download, NOT the frozen APK; telegram.org/dl/android serves latest-version redirects whose SHA cannot match the frozen v10.14.5",
+      "action": "NO FABRICATED TELEGRAM RESULT — F19 milestone recorded as BLOCKED-ON-FREEZE; exact-version APK (arm64 v10.14.5) not obtainable from its recorded URL this session"
+    }
+  ]
+}
