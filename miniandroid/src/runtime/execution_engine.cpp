@@ -1165,11 +1165,15 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
     // via apk_path_for() under the device configuration. The basename
     // heuristic below remains only as fallback for names the ARSC cannot
     // resolve (e.g. legacy tables without type names).
+    // G04 §4: entry list hoisted to function scope — the draw stage below
+    // resolves resids DIRECTLY via select_file (canonical law), no R-field
+    // indirection.
+    std::vector<std::string> apk_entry_names;
     if (!result.apk_info.apk_path.empty()) {
         auto entries = apk_parser_.list_entries(result.apk_info.apk_path);
-        std::vector<std::string> entry_names;
-        entry_names.reserve(entries.size());
-        for (const auto& e : entries) entry_names.push_back(e.name);
+        apk_entry_names.reserve(entries.size());
+        for (const auto& e : entries) apk_entry_names.push_back(e.name);
+        std::vector<std::string>& entry_names = apk_entry_names;
         {
             // ARSC-first: resolve every R.drawable/mipmap resid through the
             // canonical resolver (config-selected variant included).
@@ -1665,6 +1669,38 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             // by the framebuffer's own bounds (draw_image skips out-of-bounds
                             // pixels). For the simplestopwatch icons (27x40, 40x40) this is
                             // the correct behaviour.
+                            // G04 §4 (FIND-G04-AUDIT-006): DIRECT resid →
+                            // drawable resolution via the canonical select_file
+                            // (resolve_full chain, selected config, cycle-safe).
+                            // Replaces resid → R-field-name → basename indirection,
+                            // which failed for every app whose R$drawable statics
+                            // had not been parsed (Markor 0/35 evidence).
+                            std::function<bool(uint32_t, std::string*, uint16_t*)>
+                                canonical_drawable_for =
+                                [&](uint32_t resid, std::string* out_path,
+                                    uint16_t* out_density) -> bool {
+                                if (resid == 0 || !out_path || !out_density) return false;
+                                auto& by_resid = dalvik_engine_.resource_drawable_path_by_resid_;
+                                auto hit = by_resid.find(resid);
+                                if (hit != by_resid.end()) {
+                                    *out_path = hit->second;
+                                    auto d = dalvik_engine_.drawable_density_by_resid().find(resid);
+                                    *out_density = d != dalvik_engine_.drawable_density_by_resid().end()
+                                                       ? d->second : 0;
+                                    return true;
+                                }
+                                auto& rt = resources::ResourceRuntime::instance();
+                                if (!rt.ensure_loaded(result.apk_info.apk_path)) return false;
+                                auto sel = rt.arsc().select_file(resid, apk_entry_names,
+                                                                 resources::device_config());
+                                if (!sel) return false;
+                                by_resid[resid] = sel->path;
+                                dalvik_engine_.resource_drawable_density_by_resid_[resid] =
+                                    sel->selected_density();
+                                *out_path = sel->path;
+                                *out_density = sel->selected_density();
+                                return true;
+                            };
                             bool is_image_view = node->class_desc.find("ImageView") != std::string::npos ||
                                                  node->class_desc.find("ImageButton") != std::string::npos;
                             if (is_image_view && !node->image_drawable_path.empty()) {
@@ -1734,18 +1770,16 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 //   structure itself (§16 boundary preserved) — it only
                                 //   consumes paths resolved by the resource layer.
                                 std::string resolved_img_path;
+                                uint16_t resolved_img_density = 0;
                                 if (node->image_resource_id != 0) {
-                                    auto& fn_map = dalvik_engine_.field_name_by_resid_;
-                                    auto fn_it = fn_map.find(node->image_resource_id);
-                                    if (fn_it != fn_map.end()) {
-                                        auto& dp_map = dalvik_engine_.resource_drawable_paths_;
-                                        auto dp_it = dp_map.find(fn_it->second);
-                                        if (dp_it != dp_map.end())
-                                            resolved_img_path = dp_it->second;
-                                    }
+                                    canonical_drawable_for(
+                                        (uint32_t)node->image_resource_id,
+                                        &resolved_img_path, &resolved_img_density);
                                 }
-                                if (resolved_img_path.empty())
+                                if (resolved_img_path.empty()) {
                                     resolved_img_path = node->src_drawable_path;
+                                    resolved_img_density = node->src_density;
+                                }
 
                                 if (!resolved_img_path.empty()) {
                                     auto img_data = apk_parser_.extract_entry_cached(resolved_img_path);
@@ -1776,13 +1810,10 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                     }
                                     if (attempted && decoded.ok && !decoded.rgba.empty()) {
                                         // G04 §4/§12: same density + FIT_CENTER law as
-                                        // every other image draw (single shared helper).
-                                        uint16_t sel_d = node->src_density;
-                                        if (sel_d == 0 && node->image_resource_id != 0) {
-                                            auto& dm = dalvik_engine_.drawable_density_by_resid();
-                                            auto it = dm.find((uint32_t)node->image_resource_id);
-                                            if (it != dm.end()) sel_d = it->second;
-                                        }
+                                        // every other image draw (single shared helper);
+                                        // density comes from the canonical resolver.
+                                        uint16_t sel_d = resolved_img_density;
+                                        if (sel_d == 0) sel_d = node->src_density;
                                         int pl = node->padding_left, pt = node->padding_top;
                                         int pr = node->padding_right, pb = node->padding_bottom;
                                         renderer::FitRect fr = g04_image_draw_rect(
