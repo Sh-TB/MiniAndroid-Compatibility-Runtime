@@ -11,7 +11,7 @@
   "base": {
     "rc": 0,
     "status": "SUCCESS",
-    "seconds": 1.7,
+    "seconds": 1.66,
     "has_screenshot": true,
     "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
     "log_path": "/tmp/g09_runs/org.connectbot/base/console.log"
@@ -22,11 +22,21 @@
   },
   "lifecycle": {
     "present": true,
-    "final_state": "ACTIVITY_CREATED",
+    "final_state": "RESUMED",
     "transitions": [
       [
         "PROCESS_CREATED",
         "ACTIVITY_CREATED",
+        true
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "STARTED",
+        true
+      ],
+      [
+        "STARTED",
+        "RESUMED",
         true
       ]
     ],
