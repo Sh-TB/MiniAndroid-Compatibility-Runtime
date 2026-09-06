@@ -1,0 +1,93 @@
+{
+  "activities": [
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.CREATE_SHORTCUT"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.PICK"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.VIEW"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT",
+            "android.intent.category.BROWSABLE"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "org.connectbot.ui.MainActivity",
+      "target": null
+    }
+  ],
+  "apk_file": "org.connectbot_11009000.apk",
+  "dex": {
+    "androidx_core": true,
+    "appcompat": true,
+    "compose": true,
+    "dex_files": 1,
+    "handler_postdelayed": true,
+    "material": true,
+    "set_on_click": true,
+    "set_on_long_click": true,
+    "set_result": true,
+    "start_activity": true,
+    "start_activity_for_result": true,
+    "support_v7": false,
+    "view_classes": [
+      "android.widget.Button",
+      "android.widget.CheckBox",
+      "android.widget.EditText",
+      "android.widget.FrameLayout",
+      "android.widget.ImageView",
+      "android.widget.LinearLayout",
+      "android.widget.ListView",
+      "android.widget.RadioButton",
+      "android.widget.ScrollView",
+      "android.widget.SeekBar",
+      "android.widget.TextView",
+      "android.widget.Toast"
+    ]
+  },
+  "interactive_surface": true,
+  "label": "ConnectBot",
+  "launchable_activity": "org.connectbot.ui.MainActivity",
+  "minSdk": "24",
+  "multi_activity": false,
+  "n_activities": 1,
+  "non_launcher_intent_filters": 4,
+  "package": "org.connectbot",
+  "result_api_surface": true,
+  "sha256": "191e6990a4db95b04b6d3d98906e06281872a5963133afb5b46e4d324736742f",
+  "targetSdk": "36",
+  "uses_appcompat": true,
+  "uses_compose": true,
+  "versionCode": "11009000",
+  "versionName": "1.10.9-oss"
+}

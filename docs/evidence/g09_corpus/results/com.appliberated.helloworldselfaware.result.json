@@ -1,0 +1,43 @@
+{
+  "package": "com.appliberated.helloworldselfaware",
+  "apk_file": "HelloWorldSelfAware-1.1.0-android.apk",
+  "sha256": "009b467109c4d48d4b00610b06f37f3a77eed75178fbaae344a111acc848cc41",
+  "minSdk": "9",
+  "targetSdk": "35",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "n_activities": 1,
+  "interactive_surface": true,
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.19,
+    "has_screenshot": true,
+    "screenshot_sha256": "142238fd92b69e11d3407526de95cad29bf46e3f4191767d09a24379fbe0bbf2",
+    "log_path": "/tmp/g09_runs/com.appliberated.helloworldselfaware/base/console.log"
+  },
+  "click_run_status": false,
+  "click": {
+    "present": false
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "ACTIVITY_CREATED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ]
+    ],
+    "finish_cascade": null,
+    "activity_launch": null
+  },
+  "g08": {
+    "startActivity_in_dex_trace": false,
+    "startActivityForResult_in_dex_trace": false,
+    "intent_apis_seen": [],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

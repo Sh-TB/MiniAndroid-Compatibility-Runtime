@@ -1,0 +1,76 @@
+{
+  "package": "org.billthefarmer.notes",
+  "apk_file": "org.billthefarmer.notes_139.apk",
+  "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+  "minSdk": "21",
+  "targetSdk": "28",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "n_activities": 4,
+  "interactive_surface": true,
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.31,
+    "has_screenshot": true,
+    "screenshot_sha256": "1d334ec3837e7466d1d0523d8cf2f820d5d1e7315b0519cf514446ca7461abfe",
+    "log_path": "/tmp/g09_runs/org.billthefarmer.notes/base/console.log"
+  },
+  "click_run_status": true,
+  "click": {
+    "present": true,
+    "views_probed": 2,
+    "xml_onclick_views": 0,
+    "views_changed_second_frame": 0,
+    "per_view": [
+      {
+        "class": "Landroid/widget/ImageButton;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/ImageButton;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": false,
+        "changed_px": 0
+      }
+    ]
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "RESUMED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "STARTED",
+        true
+      ],
+      [
+        "STARTED",
+        "RESUMED",
+        true
+      ]
+    ],
+    "finish_cascade": null,
+    "activity_launch": null
+  },
+  "g08": {
+    "startActivity_in_dex_trace": false,
+    "startActivityForResult_in_dex_trace": false,
+    "intent_apis_seen": [
+      "getIntent"
+    ],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

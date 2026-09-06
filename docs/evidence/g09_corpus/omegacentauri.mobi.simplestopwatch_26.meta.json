@@ -1,0 +1,87 @@
+{
+  "activities": [
+    {
+      "exported": null,
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "omegacentauri.mobi.simplestopwatch.StopWatch",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "omegacentauri.mobi.simplestopwatch.Clock",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "omegacentauri.mobi.simplestopwatch.ClockWithSeconds",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [
+        {
+          "actions": [],
+          "categories": [
+            "android.intent.category.PREFERENCE"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "omegacentauri.mobi.simplestopwatch.Options",
+      "target": null
+    }
+  ],
+  "apk_file": "omegacentauri.mobi.simplestopwatch_26.apk",
+  "dex": {
+    "androidx_core": false,
+    "appcompat": false,
+    "compose": false,
+    "dex_files": 1,
+    "handler_postdelayed": true,
+    "material": false,
+    "set_on_click": true,
+    "set_on_long_click": true,
+    "set_result": false,
+    "start_activity": true,
+    "start_activity_for_result": false,
+    "support_v7": false,
+    "view_classes": [
+      "android.widget.Button",
+      "android.widget.EditText",
+      "android.widget.LinearLayout",
+      "android.widget.TextView",
+      "android.widget.Toast"
+    ]
+  },
+  "interactive_surface": true,
+  "label": "Giant Stopwatch",
+  "launchable_activity": "omegacentauri.mobi.simplestopwatch.StopWatch",
+  "minSdk": "4",
+  "multi_activity": true,
+  "n_activities": 4,
+  "non_launcher_intent_filters": 2,
+  "package": "omegacentauri.mobi.simplestopwatch",
+  "result_api_surface": false,
+  "sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+  "targetSdk": "29",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "versionCode": "26",
+  "versionName": "1.26"
+}

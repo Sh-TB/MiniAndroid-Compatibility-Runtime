@@ -1,0 +1,492 @@
+{
+  "activities": [
+    {
+      "exported": "false",
+      "filters": [],
+      "kind": "activity",
+      "name": "org.fossify.notes.activities.SplashActivity",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Grey_black",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Blue_grey",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Brown",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Deep_orange",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Orange",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Amber",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Yellow",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Lime",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Light_green",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Green",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Teal",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Cyan",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Light_blue",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Blue",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Indigo",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Deep_purple",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Purple",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Pink",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity-alias",
+      "name": "org.fossify.notes.activities.SplashActivity.Red",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.SEND"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.VIEW"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "org.fossify.notes.activities.MainActivity",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.appwidget.action.APPWIDGET_CONFIGURE"
+          ],
+          "categories": [],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "org.fossify.notes.activities.WidgetConfigureActivity",
+      "target": null
+    },
+    {
+      "exported": "false",
+      "filters": [],
+      "kind": "activity",
+      "name": "org.fossify.commons.activities.AboutActivity",
+      "target": null
+    },
+    {
+      "exported": "false",
+      "filters": [],
+      "kind": "activity",
+      "name": "org.fossify.commons.activities.CustomizationActivity",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.APPLICATION_PREFERENCES"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "org.fossify.notes.activities.SettingsActivity",
+      "target": null
+    },
+    {
+      "exported": "false",
+      "filters": [],
+      "kind": "activity",
+      "name": "org.fossify.commons.activities.ContributorsActivity",
+      "target": null
+    },
+    {
+      "exported": "false",
+      "filters": [],
+      "kind": "activity",
+      "name": "org.fossify.commons.activities.FAQActivity",
+      "target": null
+    },
+    {
+      "exported": "false",
+      "filters": [],
+      "kind": "activity",
+      "name": "org.fossify.commons.activities.LicenseActivity",
+      "target": null
+    },
+    {
+      "exported": "false",
+      "filters": [],
+      "kind": "activity",
+      "name": "org.fossify.commons.activities.ManageBlockedNumbersActivity",
+      "target": null
+    },
+    {
+      "exported": "false",
+      "filters": [],
+      "kind": "activity",
+      "name": "org.fossify.commons.activities.DonationActivity",
+      "target": null
+    },
+    {
+      "exported": "false",
+      "filters": [],
+      "kind": "activity",
+      "name": "org.fossify.commons.activities.AppLockActivity",
+      "target": null
+    }
+  ],
+  "apk_file": "org.fossify.notes_13.apk",
+  "dex": {
+    "androidx_core": true,
+    "appcompat": true,
+    "compose": true,
+    "dex_files": 1,
+    "handler_postdelayed": true,
+    "material": true,
+    "set_on_click": true,
+    "set_on_long_click": true,
+    "set_result": true,
+    "start_activity": true,
+    "start_activity_for_result": true,
+    "support_v7": false,
+    "view_classes": [
+      "android.widget.Button",
+      "android.widget.CheckBox",
+      "android.widget.EditText",
+      "android.widget.FrameLayout",
+      "android.widget.GridView",
+      "android.widget.ImageView",
+      "android.widget.LinearLayout",
+      "android.widget.ListView",
+      "android.widget.RadioButton",
+      "android.widget.ScrollView",
+      "android.widget.SeekBar",
+      "android.widget.TextView",
+      "android.widget.Toast"
+    ]
+  },
+  "interactive_surface": true,
+  "label": "Notes",
+  "minSdk": "26",
+  "multi_activity": true,
+  "n_activities": 31,
+  "non_launcher_intent_filters": 23,
+  "package": "org.fossify.notes",
+  "result_api_surface": true,
+  "sha256": "5a56e0e39cc488e1f3b947d3801006d3b7450ec73c67f03195c64c5fd3b6bced",
+  "targetSdk": "36",
+  "uses_appcompat": true,
+  "uses_compose": true,
+  "versionCode": "13",
+  "versionName": "1.7.0"
+}

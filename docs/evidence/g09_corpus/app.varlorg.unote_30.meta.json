@@ -1,0 +1,128 @@
+{
+  "activities": [
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.SEND"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "app.varlorg.unote.NoteEdition",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "app.varlorg.unote.NoteMain",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "app.varlorg.unote.Preference",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "app.varlorg.unote.RestoreDbActivity",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "app.varlorg.unote.PreferenceEdition",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "app.varlorg.unote.PreferenceExport",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "app.varlorg.unote.PreferenceGlobal",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "app.varlorg.unote.PreferenceMain",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "app.varlorg.unote.ReminderActivity",
+      "target": null
+    }
+  ],
+  "apk_file": "app.varlorg.unote_30.apk",
+  "dex": {
+    "androidx_core": false,
+    "appcompat": false,
+    "compose": false,
+    "dex_files": 1,
+    "handler_postdelayed": true,
+    "material": false,
+    "set_on_click": true,
+    "set_on_long_click": false,
+    "set_result": false,
+    "start_activity": true,
+    "start_activity_for_result": false,
+    "support_v7": false,
+    "view_classes": [
+      "android.widget.Button",
+      "android.widget.CheckBox",
+      "android.widget.EditText",
+      "android.widget.FrameLayout",
+      "android.widget.ImageView",
+      "android.widget.LinearLayout",
+      "android.widget.ListView",
+      "android.widget.TextView",
+      "android.widget.Toast"
+    ]
+  },
+  "interactive_surface": true,
+  "label": "uNote",
+  "launchable_activity": "app.varlorg.unote.NoteMain",
+  "minSdk": "21",
+  "multi_activity": true,
+  "n_activities": 9,
+  "non_launcher_intent_filters": 2,
+  "package": "app.varlorg.unote",
+  "result_api_surface": false,
+  "sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+  "targetSdk": "34",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "versionCode": "30",
+  "versionName": "1.8.0"
+}

@@ -1,0 +1,40 @@
+{
+  "package": "com.github.muellerma.stopwatch",
+  "apk_file": "com.github.muellerma.stopwatch_6.apk",
+  "sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
+  "minSdk": "24",
+  "targetSdk": "33",
+  "uses_appcompat": true,
+  "uses_compose": false,
+  "n_activities": 0,
+  "interactive_surface": true,
+  "base": {
+    "rc": 1,
+    "status": "PARTIAL",
+    "seconds": 0.4,
+    "has_screenshot": true,
+    "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+    "log_path": "/tmp/g09_runs/com.github.muellerma.stopwatch/base/console.log"
+  },
+  "click_run_status": false,
+  "click": {
+    "present": false
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "PROCESS_CREATED",
+    "transitions": [],
+    "finish_cascade": null,
+    "activity_launch": null
+  },
+  "g08": {
+    "startActivity_in_dex_trace": false,
+    "startActivityForResult_in_dex_trace": false,
+    "intent_apis_seen": [
+      "getIntent",
+      "setClassName"
+    ],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

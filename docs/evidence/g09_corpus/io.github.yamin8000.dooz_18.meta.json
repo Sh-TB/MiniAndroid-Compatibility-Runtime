@@ -1,0 +1,55 @@
+{
+  "activities": [
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "io.github.yamin8000.dooz.content.MainActivity",
+      "target": null
+    }
+  ],
+  "apk_file": "io.github.yamin8000.dooz_18.apk",
+  "dex": {
+    "androidx_core": true,
+    "appcompat": false,
+    "compose": true,
+    "dex_files": 1,
+    "handler_postdelayed": true,
+    "material": false,
+    "set_on_click": false,
+    "set_on_long_click": false,
+    "set_result": true,
+    "start_activity": true,
+    "start_activity_for_result": true,
+    "support_v7": false,
+    "view_classes": [
+      "android.widget.FrameLayout",
+      "android.widget.ScrollView"
+    ]
+  },
+  "interactive_surface": false,
+  "label": "Dooz",
+  "launchable_activity": "io.github.yamin8000.dooz.content.MainActivity",
+  "minSdk": "24",
+  "multi_activity": false,
+  "n_activities": 1,
+  "non_launcher_intent_filters": 1,
+  "package": "io.github.yamin8000.dooz",
+  "result_api_surface": true,
+  "sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
+  "targetSdk": "34",
+  "uses_appcompat": false,
+  "uses_compose": true,
+  "versionCode": "18",
+  "versionName": "1.0.18"
+}

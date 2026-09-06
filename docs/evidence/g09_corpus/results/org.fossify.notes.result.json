@@ -1,0 +1,45 @@
+{
+  "package": "org.fossify.notes",
+  "apk_file": "org.fossify.notes_13.apk",
+  "sha256": "5a56e0e39cc488e1f3b947d3801006d3b7450ec73c67f03195c64c5fd3b6bced",
+  "minSdk": "26",
+  "targetSdk": "36",
+  "uses_appcompat": true,
+  "uses_compose": true,
+  "n_activities": 31,
+  "interactive_surface": true,
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 1.87,
+    "has_screenshot": true,
+    "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+    "log_path": "/tmp/g09_runs/org.fossify.notes/base/console.log"
+  },
+  "click_run_status": false,
+  "click": {
+    "present": false
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "ACTIVITY_CREATED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ]
+    ],
+    "finish_cascade": null,
+    "activity_launch": null
+  },
+  "g08": {
+    "startActivity_in_dex_trace": false,
+    "startActivityForResult_in_dex_trace": true,
+    "intent_apis_seen": [
+      "getIntent"
+    ],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

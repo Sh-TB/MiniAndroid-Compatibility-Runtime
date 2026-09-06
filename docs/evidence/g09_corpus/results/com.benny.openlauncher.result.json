@@ -1,0 +1,103 @@
+{
+  "package": "com.benny.openlauncher",
+  "apk_file": "com.benny.openlauncher_39.apk",
+  "sha256": "b3320463a7a1ed46c52464bae83a97317d062b1e2097bd1885cdf265f2089f89",
+  "minSdk": "17",
+  "targetSdk": "28",
+  "uses_appcompat": true,
+  "uses_compose": false,
+  "n_activities": 9,
+  "interactive_surface": true,
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 1.52,
+    "has_screenshot": true,
+    "screenshot_sha256": "4bb6437507142f0eba8d82abc5ac80edc638b175e2322d5567c1ca688751a314",
+    "log_path": "/tmp/g09_runs/com.benny.openlauncher/base/console.log"
+  },
+  "click_run_status": true,
+  "click": {
+    "present": true,
+    "views_probed": 1,
+    "xml_onclick_views": 0,
+    "views_changed_second_frame": 0,
+    "per_view": [
+      {
+        "class": "Landroid/widget/ImageButton;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": false,
+        "changed_px": 0
+      }
+    ]
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "ACTIVITY_CREATED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "PAUSED",
+        false
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "STOPPED",
+        false
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "DESTROYED",
+        false
+      ]
+    ],
+    "finish_cascade": {
+      "callbacks": [
+        {
+          "class": "Lcom/benny/openlauncher/activity/OnBoardActivity;",
+          "dispatched": false,
+          "instructions": 0,
+          "method": "onPause"
+        },
+        {
+          "class": "Lcom/benny/openlauncher/activity/OnBoardActivity;",
+          "dispatched": false,
+          "instructions": 0,
+          "method": "onStop"
+        },
+        {
+          "class": "Lcom/benny/openlauncher/activity/OnBoardActivity;",
+          "dispatched": false,
+          "instructions": 0,
+          "method": "onDestroy"
+        }
+      ],
+      "final_state": "ACTIVITY_CREATED",
+      "finish_requested": true
+    },
+    "activity_launch": {
+      "callbacks": [],
+      "component": "",
+      "error": "ACTIVITY_NOT_FOUND: implicit intent (no component)",
+      "launched": false
+    }
+  },
+  "g08": {
+    "startActivity_in_dex_trace": true,
+    "startActivityForResult_in_dex_trace": true,
+    "intent_apis_seen": [
+      "putExtra",
+      "getIntent",
+      "setClassName"
+    ],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}
