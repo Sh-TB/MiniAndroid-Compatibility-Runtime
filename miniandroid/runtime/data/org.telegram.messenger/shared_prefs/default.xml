@@ -1,9 +1,4 @@
 <?xml version='1.0' encoding='utf-8' standalone='yes' ?>
 <map>
-    <boolean name="_has_set_default_values" value="true" />
-    <int name="app_sideloading_status" value="2" />
-    <boolean name="first-run-favorites" value="false" />
-    <boolean name="first-run-shortcuts" value="false" />
-    <long name="first_launch" value="1788685378504" />
-    <long name="launch_count_l" value="3" />
+    <boolean name="stopwatchSwipeInfo2" value="true" />
 </map>
