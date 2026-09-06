@@ -4636,3 +4636,65 @@ Stage Summary:
   callback → state change → second screenshot) — the ONLY permitted next campaign step.
 - Persistence blocker: provide a GitHub token (GH auth) → run
   scripts/post_typography_comments.py + git push origin main (fast-forward).
+
+---
+
+## MASTER CAMPAIGN — REAL APK COMPATIBILITY RECOVERY (base cc9e67ef → final e86f5d51)
+
+Base HEAD: cc9e67ef (clean; origin verified in sync via ls-remote — the G11/G12
+publication was already on the remote; stale local tracking ref refreshed).
+Baseline: fresh 52-stage battery ALL PASS at base HEAD before any engine change.
+Harness restored from sandbox copy (run_test_battery.sh — still untracked, gap recorded).
+
+Corpus: 16 frozen APKs (14 restored/existing + KISS recovered SHA-matched +
+2 NEW independent additions frozen at fetch: bouncy_43 ffda0d9c…, scope_140
+0e34439c…). URL drift honestly recorded (TinyMusic 404, Fossify/Markor SHA
+mismatch refused, Telegram local file = HTML error page — BLOCKED-ON-FREEZE).
+
+Failure matrix + triage: docs/evidence/master_campaign/MASTER_PHASE0_MATRIX.md
+(16-APK per-layer classification; pixel audit + U007 view trees).
+
+Cluster A (KISS) root cause chain, fully traced and verified against DEX
+ground truth (scripts/dex_superclass_check.py):
+R8 horizontal class merging → 24 classes extend DBHelper merge target →
+every merged ctor's invoke-direct Object.<init> fell through to shadows →
+C013 ancestor walk + ViewShadow user-class catch-all claimed <init> →
+PLUS dual shadow registry (cmd_run vs ApplicationRuntime) left
+ThreadShadow/LooperShadow invisible → androidx main-thread identity law
+failed → IllegalStateException cascade → PARTIAL rc=1.
+Fixes (b812c214): Object.<init> no-op law; <init>/<clinit> refused by
+ancestor walk; canonical register_platform_shadows().
+Fix (e49b9bdd): lifecycle provenance at method entry (capped-ring inference
+made status oscillate between byte-identical runs). kiss: rc=0, SUCCESS 5/5,
+3× byte-identical eb16ab5c….
+
+Cluster B (scope) — F8/F10 measure laws (e86f5d51):
+real-DEX onMeasure execution (dispatch_custom_view_measure +
+setMeasuredDimension ViewShadow capture + ResourceRuntime Factory-law hook),
+class_chain_defines_method semantic-ancestry override query,
+View.getDefaultSize law handler, View$MeasureSpec bitwise laws,
+java.lang.Math min/max/abs. scope: YScale 45x1080 / XScale 1920x60 measured
+by the app's own bytecode (~84K px new render content).
+
+F16 interaction proofs (CROSS-APK VERIFIED, 3 independent real APKs,
+3× byte-identical each): simplestopwatch onButtonStart/onButtonReset
+(base = G10 golden ed1dfc89… → 6823fc04…), unote search/quit
+(base = G11 golden 8197687f… → 86aed616…), bouncy 12 handlers/3 frames
+(072ff178… → 14500d73…).
+
+Regression: fresh 52-stage battery ALL PASS after every fix; goldens
+byte-identical (helloworld 26/26, tictactoe 8/8); zero golden updates.
+
+GitHub evidence (Issue #8, direct URLs, API-verified, duplicates removed):
+- A/B baseline+matrix+clusters: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5562757725
+- C fixes+laws: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5562757964
+- D interaction proofs: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5562758182
+- E final matrix+blockers: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/8#issuecomment-5562758441
+
+Commits: b812c214 classlink+shadow laws · ef691b35 evidence+harness ·
+e49b9bdd lifecycle provenance · e86f5d51 measure laws. Remote verified e86f5d51.
+
+Queued (diagnosed, not patched): scope Scope/Unit onMeasure hook dispatch
+gap; chessclock/microtimer timer-tick layer (G07); bouncy field draw
+coverage; battery script should be committed; ViewShadow user-class
+catch-all should migrate to semantic ancestry (F2 debt recorded).
