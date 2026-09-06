@@ -227,3 +227,94 @@ Stage Summary:
 - Campaign G06–G08 CLOSED — VERIFIED with explicit non-blocking boundaries
   (AppCompat shell, NinePatch, implicit intents, KEYCODE_BACK, multi-touch).
 - All GitHub artifacts published with direct URLs per Rule 0.2.
+
+---
+Task ID: G09-P0
+Agent: Super Z (main agent)
+Task: G09 Phase 0 — current-HEAD baseline (46-stage battery + frozen hashes
++ determinism) before any real-APK corpus validation.
+
+Work Log:
+- HEAD af99f763 (main, clean; 1 unpushed commit vs origin/main@5e33f198 —
+  runtime/data telegram shared-prefs residue commit, engine untouched).
+- Environment constraint discovered: background processes are killed with
+  the tool call's process group → battery now runs FOREGROUND with
+  same-HEAD resume checkpoints (run_test_battery.sh patched; stage results
+  checkpointed to /tmp/g09_battery_state keyed by HEAD).
+- Battery reproduced: 48 stage gates ALL PASS at af99f763 (build ×2,
+  semantic 6, law batteries, goldens, EXT-01/02, density oracle, G06/G07/G08
+  goldens + 3-run determinism, corpus fetch + 3 runs).
+- Frozen hashes reproduced BYTE-IDENTICALLY:
+  EXT-01/EXT-02 frame_000 png 142238fd92b69e11…
+  EXT-02 frame_001 png e242ac1e9c8cc224…
+  density-matrix 351340a7a92e645c (det2/det3 identical)
+  (note: manifest `sha256` field ≠ PNG file hash; frozen constants are the
+  png_sha256 / file-bytes values — false alarm resolved and documented)
+- Corpus cache restored SHA-exact for 17/18 manifest APKs; findings:
+  CORPUS-DRIFT OpenLauncher_39 (F-Droid now serves b3320463…, frozen
+  b7900f56…), TinyMusicPlayer URL 404 (dead), Telegram URL not a frozen APK.
+
+Stage Summary:
+- PHASE 0 = COMPLETE. Baseline recorded; engine NOT modified.
+- NEXT: Phase 1 corpus metadata freeze (g09_corpus_metadata.py).
+
+---
+Task ID: G09-P1..P9
+Agent: Super Z (main agent)
+Task: G09 Phases 1-9 — real APK corpus validation + G06-G08 cross-app proof.
+
+Work Log:
+- P1: 18-APK frozen corpus (registry committed; binaries gitignored).
+  Findings: OpenLauncher F-Droid URL content drift (b3320463 vs b7900f56),
+  TinyMusicPlayer 404, Telegram non-freezable URL. ConnectBot 11009000
+  manifest = 1 Activity + 3 Services (corrects "multi-Activity" record).
+- P2-P4: g09_corpus_runner over all 18 (base + --click-test), lifecycle
+  traces, g08 signal scan, pixel-content audit of every screenshot.
+  Verdicts: 4 RENDERED, 4 partial-visible, 10 blank; per-APK blockers
+  classified F5/F8/F10/F12.
+- P5: API-level audit (code-anchored): SDK_INT=34 constant, device
+  sdkVersion=34, min/targetSdk = metadata only → API 9/10 matrix = NOT
+  APPLICABLE as a runtime switch; v-qualifier law is the real version
+  axis (48/48). Phase 8 = N/A same rationale.
+- P6/P7: clusters identified; GENERIC LAW FIX FIND-G09-LC-001 (commit
+  84f0fb55): boot lifecycle record advances on the FRAMEWORK path
+  (ActivityThread.handleStartActivity law) — corpus evidence: 10+ apps
+  skipped STARTED, 4+ had guard-rejected finish cascades. Law test 22→25
+  ALL PASS; corpus re-run 6/6 now RESUMED (unote full lawful chain).
+  48-gate battery ALL PASS at 98c25ba2; frozen goldens byte-identical.
+- Corpus 3-run determinism: simplestopwatch ed1dfc89… ×3, gmdice
+  db0f4c4b… ×3 byte-identical.
+- Classified-not-fixed (Phase 9 ranked): F8 item-width collapse (microtimer
+  + billthefarmer — TOP next-campaign pick), F12 AppCompat/Compose/WebView/
+  GL shells (11/18), F10 component-less intents (chessclock + unote),
+  FIND-G09-ACF-001 AppComponentFactory (6-app cluster entry law).
+- P9 + final report: docs/evidence/G09_FINAL_REPORT.md (required table +
+  12 statistics + IMPACT ranking); 16 visual-evidence PNGs committed.
+
+Stage Summary:
+- G09 CLOSED: 18 real APKs tested, classified with earliest-blocker
+  taxonomy; 1 cross-APK generic law implemented + verified; zero regression;
+  fixture-proof vs real-APK-proof separation now quantified.
+- GitHub publication to Issue #8 follows (Rule 0.2 direct URLs).
+
+---
+Task ID: G09-PUB
+Agent: Super Z (main agent)
+Task: G09 GitHub publication (Rule 0.2) + closure.
+
+Work Log:
+- Pushed 5 commits to origin/main, verified via ls-remote:
+  af99f763 (pre-existing residue) → 84f0fb55 (FIND-G09-LC-001 fix) →
+  98c25ba2 (corpus registry + harness + results) → 48c2883b (final report
+  + 16 visual frames) → ae98a23f (post-fix re-run evidence).
+- 6 evidence comments posted to Issue #8 (auth Sh-TB), URLs read back from
+  the API and recorded in scripts/comment_urls.json:
+  baseline 5559440911 · corpus registry 5559441025 · matrix 5559441103 ·
+  fix+regression 5559441172 · API audit 5559441251 · Phase-9 ranking
+  5559441356.
+
+Stage Summary:
+- G09 CLOSED — 18 real APKs REAL-APK TESTED; 4 RENDERED / 4 partial /
+  10 blank with earliest-blocker taxonomy; 1 generic law fixed and
+  corpus-verified; 48/48 battery green at ae98a23f; all evidence published
+  with direct URLs.
