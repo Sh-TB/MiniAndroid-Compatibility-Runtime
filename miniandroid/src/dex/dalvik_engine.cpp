@@ -8039,6 +8039,10 @@ int DalvikExecutionEngine::populate_drawable_paths_from_arsc(
             resource_drawable_paths_[field_name] = sel->path;
             resource_drawable_density_by_resid_[resid] = sel->selected_density();
             resolved++;
+        } else if (getenv("MINIANDROID_DEBUG_DRAWABLES")) {
+            std::cerr << "[ARSC-VALUES] FAIL resid=" << std::hex << resid
+                      << std::dec << " field=" << field_name
+                      << " type=" << (r ? r->type_name : "?") << std::endl;
         }
     }
     std::cerr << "[ARSC-VALUES] drawable paths resolved via canonical resolver: "
