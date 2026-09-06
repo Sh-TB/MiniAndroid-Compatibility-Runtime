@@ -867,6 +867,8 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     if (a.gravity >= 0) { node.text_gravity = a.gravity; node.container_gravity = a.gravity; node.gravity_set = true; }
     if (a.layout_gravity >= 0) node.child_gravity = a.layout_gravity;
     node.layout_weight = a.layout_weight;
+    node.weight_sum = a.weight_sum;                 // G04 §9: weightSum law
+    node.weight_sum_valid = a.weight_sum_valid;
     node.lp_margin_left = a.ml; node.lp_margin_top = a.mt;
     node.lp_margin_right = a.mr; node.lp_margin_bottom = a.mb;
     node.lp_width = a.layout_width; node.lp_height = a.layout_height;
@@ -1100,13 +1102,25 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
 
         // 1) measure children with AOSP-derived specs.
         std::vector<std::pair<int,int>> child_sizes(n->children.size());
+        const bool parent_ll = n->class_desc.find("LinearLayout") != std::string::npos;
+        const bool horiz_ll = n->orientation == 0;
         for (size_t i = 0; i < n->children.size(); i++) {
             auto* cn = views->find_node(n->children[i]);
             if (!cn) { child_sizes[i] = {0, 0}; continue; }
-            int cw = cn->lp_width  == INT_MIN ? -2 : cn->lp_width;
-            int ch = cn->lp_height == INT_MIN ? -2 : cn->lp_height;
-            Spec csw = child_spec(sw, hpad + cn->lp_margin_left + cn->lp_margin_right, cw);
-            Spec csh = child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom, ch);
+            int cw_ = cn->lp_width  == INT_MIN ? -2 : cn->lp_width;
+            int ch_ = cn->lp_height == INT_MIN ? -2 : cn->lp_height;
+            Spec csw = child_spec(sw, hpad + cn->lp_margin_left + cn->lp_margin_right, cw_);
+            Spec csh = child_spec(sh, vpad + cn->lp_margin_top + cn->lp_margin_bottom, ch_);
+            // G04 §9 (LinearLayout.java L855 useExcessSpace law): a
+            // 0dp+weight child is NOT measured at its content size in the
+            // first pass — it contributes only its margins to mTotalLength
+            // and is sized from scratch with an EXACTLY share in the weight
+            // pass. Measure it with an EXACTLY-0 main-axis spec (cross axis
+            // still normal) so its cross-axis content size stays correct.
+            if (parent_ll && cn->layout_weight > 0) {
+                if (!horiz_ll && ch_ == 0) csh = {0, M_EXACTLY};
+                if (horiz_ll && cw_ == 0)  csw = {0, M_EXACTLY};
+            }
             // ScrollView measures its single child with UNSPECIFIED height
             // (AOSP ScrollView.onMeasure law).
             if (n->class_desc.find("ScrollView;") != std::string::npos &&
@@ -1212,15 +1226,24 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         }
 
         // 2) resolve own lp against the incoming spec (resolveSizeAndState).
+        // G04 §8 FIX (caught by the law battery): the spec size INCLUDES the
+        // view's own padding (AOSP View.measure → setMeasuredDimension
+        // resolves the TOTAL size against the spec; LinearLayout adds
+        // mPadding* into the content BEFORE resolve). Resolving the padding-
+        // exclusive content and then re-adding padding double-counted it for
+        // EXACTLY/AT_MOST specs (a 1080px EXACTLY container with 100px
+        // padding measured 1180px and laid children out 100px too wide).
         int lpw = n->lp_width  == INT_MIN ? -2 : n->lp_width;
         int lph = n->lp_height == INT_MIN ? -2 : n->lp_height;
-        int final_w = lpw >= 0 ? lpw : resolve_final(content_w, sw);
-        int final_h = lph >= 0 ? lph : resolve_final(content_h, sh);
+        int total_content_w = content_w + hpad;
+        int total_content_h = content_h + vpad;
+        int final_w = lpw >= 0 ? lpw : resolve_final(total_content_w, sw);
+        int final_h = lph >= 0 ? lph : resolve_final(total_content_h, sh);
         // EXACTLY spec wins for match_parent too (already EXACTLY from
         // child_spec); explicit lp never shrinks below the spec EXACTLY size
         // when larger (AOSP chooses the child's explicit size).
-        n->measured_width = final_w + hpad;
-        n->measured_height = final_h + vpad;
+        n->measured_width = final_w;
+        n->measured_height = final_h;
         return {n->measured_width, n->measured_height};
     };
 
@@ -1294,34 +1317,83 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
 
         if (is_ll && (horizontal || !is_scroll) && (horizontal || true)) {
             if (horizontal) {
-                // horizontal: weights expand surplus width
-                int total_margin = 0, fixed_w = 0, weight_total = 0;
+                // ── G04 §9: AOSP LinearLayout weight law, EXACT port ────
+                // (LinearLayout.java @android-14 L1385-1445 measureHorizontal;
+                //  sequential share distribution with remainingWeightSum
+                //  decrement — NOT one division by the total).
+                //   remainingExcess = size − mTotalLength   (may be negative →
+                //                             weighted children SHRINK)
+                //   remainingWeightSum = weightSum > 0 ? weightSum : totalWeight
+                //   per weighted child (in order):
+                //     share = (int)(childWeight * remainingExcess / remainingWeightSum)
+                //     remainingExcess −= share; remainingWeightSum −= childWeight
+                //     main size = (lp == 0) ? share : measuredBase + share   [≥ 0]
+                // The 0dp+weight child is measured FROM SCRATCH with EXACTLY
+                // share; a nonzero-base child keeps its base and takes the
+                // share on top (shrinkable). Every weighted child is
+                // effectively re-measured with an EXACTLY spec (second pass).
+                int total_length = 0;
+                float weight_total = 0.0f;
                 for (uint32_t cid : kids) {
                     auto* cn = views->find_node(cid);
-                    total_margin += cn->lp_margin_left + cn->lp_margin_right;
+                    int m = cn->lp_margin_left + cn->lp_margin_right;
                     if (cn->layout_weight > 0) {
-                        weight_total += cn->layout_weight;   // weighted child base = 0 (AOSP)
+                        weight_total += cn->layout_weight / 1000.0f;
+                        if (cn->lp_width != 0)
+                            total_length += (cn->lp_width >= 0 ? cn->lp_width
+                                                        : cn->measured_width) + m;
+                        else
+                            total_length += m;   // 0dp+weight: measured from scratch
                     } else {
-                        fixed_w += (cn->lp_width >= 0 ? cn->lp_width : cn->measured_width);
+                        total_length += (cn->lp_width >= 0 ? cn->lp_width
+                                                    : cn->measured_width) + m;
                     }
                 }
-                int avail = std::max(0, cw - total_margin);
-                int weight_px = weight_total > 0 ? std::max(0, avail - fixed_w) : 0;
+                int remaining_excess = cw - total_length;   // shrinkable (§9 law)
+                float remaining_weight_sum =
+                    (n->weight_sum_valid && n->weight_sum > 0.0f)
+                        ? n->weight_sum : weight_total;
+                // sequential shares (exact AOSP rounding/decrement order)
+                std::vector<int> final_w(kids.size());
+                for (size_t i = 0; i < kids.size(); i++) {
+                    auto* cn = views->find_node(kids[i]);
+                    if (cn->layout_weight > 0 && weight_total > 0.0f) {
+                        float wgt = cn->layout_weight / 1000.0f;
+                        int share = 0;
+                        if (remaining_weight_sum > 0.0f) {
+                            share = (int)(wgt * (float)remaining_excess /
+                                          remaining_weight_sum);
+                            remaining_excess -= share;
+                            remaining_weight_sum -= wgt;
+                        }
+                        int base = cn->lp_width == 0 ? 0
+                                 : (cn->lp_width >= 0 ? cn->lp_width
+                                                      : cn->measured_width);
+                        final_w[i] = std::max(0, base + share);
+                        // AOSP second pass (LinearLayout.java L1435): EXACTLY
+                        // re-measure of the weighted subtree (see vertical).
+                        int cross = std::max(0, ch - cn->lp_margin_top - cn->lp_margin_bottom);
+                        Spec rsh = cn->lp_height >= 0 ? Spec{cn->lp_height, M_EXACTLY}
+                                 : cn->lp_height == -1 ? Spec{cross, M_EXACTLY}
+                                 : Spec{cross, M_AT_MOST};
+                        measure(kids[i], {std::max(0, final_w[i]), M_EXACTLY}, rsh, 0);
+                    } else if (cn->lp_width >= 0) {
+                        final_w[i] = cn->lp_width;
+                    } else {
+                        final_w[i] = cn->measured_width;
+                    }
+                }
                 // FIND-GRAVITY-VERTICAL FIX (AOSP LinearLayout@1cdfff55
                 // layoutHorizontal): the container's main-axis gravity
                 // (mGravity & HORIZONTAL_GRAVITY_MASK) positions the WHOLE
-                // CHILD ROW when leftover width exists — LEFT (default),
-                // CENTER_HORIZONTAL → half the leftover before the row,
-                // RIGHT → all of it. Pre-fix the row always started at the
-                // padding left. Child layout_gravity still governs only the
-                // cross axis (below), identical to AOSP.
+                // CHILD BLOCK when leftover width exists — LEFT (default),
+                // CENTER_HORIZONTAL → half the leftover left of the block,
+                // RIGHT → all of it. Child layout_gravity still governs only
+                // the cross axis (below), identical to AOSP.
                 int content_w = 0;
-                for (uint32_t cid : kids) {
-                    auto* cn = views->find_node(cid);
-                    int w2 = cn->layout_weight > 0 && weight_total > 0
-                           ? weight_px * cn->layout_weight / weight_total
-                           : (cn->lp_width >= 0 ? cn->lp_width : cn->measured_width);
-                    content_w += w2 + cn->lp_margin_left + cn->lp_margin_right;
+                for (size_t i = 0; i < kids.size(); i++) {
+                    auto* cn = views->find_node(kids[i]);
+                    content_w += final_w[i] + cn->lp_margin_left + cn->lp_margin_right;
                 }
                 int hg_main = n->gravity_set ? n->container_gravity : -1;
                 int block_x = cl;
@@ -1334,14 +1406,14 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     else if (hf == 0x1)      block_x = cl + (cw - content_w) / 2; // CENTER_HORIZONTAL
                 }
                 int x = block_x;
-                for (uint32_t cid : kids) {
+                for (size_t i = 0; i < kids.size(); i++) {
+                    uint32_t cid = kids[i];
                     auto* cn = views->find_node(cid);
                     x += cn->lp_margin_left;
-                    int w = cn->layout_weight > 0 && weight_total > 0
-                          ? weight_px * cn->layout_weight / weight_total
-                          : (cn->lp_width >= 0 ? cn->lp_width : cn->measured_width);
-                    int h = cn->lp_height >= 0 ? cn->lp_height
-                          : (cn->lp_height == -1 ? ch : cn->measured_height);
+                    int w = final_w[i];
+                    // G04 §8 FIX: cross axis uses the measured height (same
+                    // View.layout law as the vertical fix above).
+                    int h = cn->lp_height >= 0 ? cn->lp_height : cn->measured_height;
                     int y = ct;
                     // EXT-AOSP-001: same container-gravity fallback for the
                     // horizontal row's cross axis (LinearLayout.java L1777-1778).
@@ -1357,40 +1429,85 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         else            y = ct + (ch - h) / 2;
                     }
                     if (w > cw) w = cw;
+                    // G04 §9: the weight distribution IS the EXACTLY
+                    // re-measure — record the final main size on the node so
+                    // evidence/dumps see post-weight measured dims.
+                    cn->measured_width = w;
                     stack.push_back({cid, x, y, w, h});
                     x += w + cn->lp_margin_right;
                 }
             } else {
-                // vertical: weights expand surplus height
-                int total_margin = 0, fixed_h = 0, weight_total = 0;
+                // ── G04 §9: AOSP LinearLayout weight law, EXACT port ────
+                // (LinearLayout.java @android-14 L985-1045 measureVertical.)
+                // Sequential share distribution with remainingWeightSum
+                // decrement; 0dp+weight measured from scratch with EXACTLY
+                // share; nonzero-base child keeps base and takes the share on
+                // top (shrinkable when remainingExcess < 0). weightSum caps
+                // the sum when > 0.
+                int total_length = 0;
+                float weight_total = 0.0f;
                 for (uint32_t cid : kids) {
                     auto* cn = views->find_node(cid);
-                    total_margin += cn->lp_margin_top + cn->lp_margin_bottom;
+                    int m = cn->lp_margin_top + cn->lp_margin_bottom;
                     if (cn->layout_weight > 0) {
-                        weight_total += cn->layout_weight;   // weighted child base = 0 (AOSP)
+                        weight_total += cn->layout_weight / 1000.0f;
+                        if (cn->lp_height != 0)
+                            total_length += (cn->lp_height >= 0 ? cn->lp_height
+                                                          : cn->measured_height) + m;
+                        else
+                            total_length += m;   // 0dp+weight: measured from scratch
                     } else {
-                        fixed_h += (cn->lp_height >= 0 ? cn->lp_height : cn->measured_height);
+                        total_length += (cn->lp_height >= 0 ? cn->lp_height
+                                                      : cn->measured_height) + m;
                     }
                 }
-                int avail = std::max(0, ch - total_margin);
-                int weight_px = weight_total > 0 ? std::max(0, avail - fixed_h) : 0;
+                int remaining_excess = ch - total_length;   // shrinkable (§9 law)
+                float remaining_weight_sum =
+                    (n->weight_sum_valid && n->weight_sum > 0.0f)
+                        ? n->weight_sum : weight_total;
+                std::vector<int> final_h(kids.size());
+                for (size_t i = 0; i < kids.size(); i++) {
+                    auto* cn = views->find_node(kids[i]);
+                    if (cn->layout_weight > 0 && weight_total > 0.0f) {
+                        float wgt = cn->layout_weight / 1000.0f;
+                        int share = 0;
+                        if (remaining_weight_sum > 0.0f) {
+                            share = (int)(wgt * (float)remaining_excess /
+                                          remaining_weight_sum);
+                            remaining_excess -= share;
+                            remaining_weight_sum -= wgt;
+                        }
+                        int base = cn->lp_height == 0 ? 0
+                                 : (cn->lp_height >= 0 ? cn->lp_height
+                                                       : cn->measured_height);
+                        final_h[i] = std::max(0, base + share);
+                        // AOSP second pass (LinearLayout.java L1031): the
+                        // weighted child (and its whole subtree) is RE-
+                        // MEASURED with an EXACTLY share on the main axis —
+                        // first-pass specs were resolved against the
+                        // pre-weight container size and are stale.
+                        int cross = std::max(0, cw - cn->lp_margin_left - cn->lp_margin_right);
+                        Spec rsw = cn->lp_width >= 0 ? Spec{cn->lp_width, M_EXACTLY}
+                                 : cn->lp_width == -1 ? Spec{cross, M_EXACTLY}
+                                 : Spec{cross, M_AT_MOST};
+                        measure(kids[i], rsw, {std::max(0, final_h[i]), M_EXACTLY}, 0);
+                    } else if (cn->lp_height >= 0) {
+                        final_h[i] = cn->lp_height;
+                    } else {
+                        final_h[i] = cn->measured_height;
+                    }
+                }
                 // FIND-GRAVITY-VERTICAL FIX (AOSP LinearLayout@1cdfff55
                 // layoutVertical): the container's main-axis gravity
                 // (mGravity & VERTICAL_GRAVITY_MASK) positions the whole
                 // CHILD BLOCK when leftover height exists — TOP (default),
                 // CENTER_VERTICAL → half the leftover above the block,
-                // BOTTOM → all of it. Pre-fix the block always started at
-                // the padding top, so setGravity(0x11) centered horizontally
-                // but top-aligned vertically (visible in the old goldens).
-                // Child layout_gravity still governs only the cross axis
-                // (below), identical to AOSP.
+                // BOTTOM → all of it. Child layout_gravity still governs only
+                // the cross axis (below), identical to AOSP.
                 int content_h = 0;
-                for (uint32_t cid : kids) {
-                    auto* cn = views->find_node(cid);
-                    int h2 = cn->layout_weight > 0 && weight_total > 0
-                           ? weight_px * cn->layout_weight / weight_total
-                           : (cn->lp_height >= 0 ? cn->lp_height : cn->measured_height);
-                    content_h += h2 + cn->lp_margin_top + cn->lp_margin_bottom;
+                for (size_t i = 0; i < kids.size(); i++) {
+                    auto* cn = views->find_node(kids[i]);
+                    content_h += final_h[i] + cn->lp_margin_top + cn->lp_margin_bottom;
                 }
                 int vg_main = n->gravity_set ? n->container_gravity : -1;
                 int block_y = ct;
@@ -1404,14 +1521,17 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     else if (vf == 0x10)     block_y = ct + (ch - content_h) / 2;  // CENTER_VERTICAL
                 }
                 int y = block_y;
-                for (uint32_t cid : kids) {
+                for (size_t i = 0; i < kids.size(); i++) {
+                    uint32_t cid = kids[i];
                     auto* cn = views->find_node(cid);
                     y += cn->lp_margin_top;
-                    int h = cn->layout_weight > 0 && weight_total > 0
-                          ? weight_px * cn->layout_weight / weight_total
-                          : (cn->lp_height >= 0 ? cn->lp_height : cn->measured_height);
-                    int w = cn->lp_width >= 0 ? cn->lp_width
-                          : (cn->lp_width == -1 ? cw : cn->measured_width);
+                    int h = final_h[i];
+                    // G04 §8 FIX: layout consumes the MEASURED cross size
+                    // (View.layout law). The old recomputation
+                    // `lp == -1 ? cw : measured` ignored the margins the
+                    // measure pass had already subtracted, inflating
+                    // match_parent children back to the full content width.
+                    int w = cn->lp_width >= 0 ? cn->lp_width : cn->measured_width;
                     int x = cl;
                     // EXT-AOSP-001 (LinearLayout.java@1cdfff55 L1284/L1466):
                     // `lp.gravity < 0 ? mGravity : lp.gravity` — a child with
@@ -1424,6 +1544,10 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     if (vg >= 0 && (vg & 0x1)) x = cl + (cw - w) / 2;
                     else if (vg >= 0 && (vg & 0x7) == 0x5) x = cl + cw - w;
                     if (w > cw) w = cw;
+                    // G04 §9: the weight distribution IS the EXACTLY
+                    // re-measure — record the final main size on the node so
+                    // evidence/dumps see post-weight measured dims.
+                    cn->measured_height = h;
                     stack.push_back({cid, x, y, w, h});
                     y += h + cn->lp_margin_bottom;
                 }
