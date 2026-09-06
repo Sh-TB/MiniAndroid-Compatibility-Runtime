@@ -107,6 +107,18 @@ timeout 120 ./build/resource_hostile_test > /tmp/battery_hostile.out 2>&1
 gate "resource hostile safety (expect 18)" $?
 tail -1 /tmp/battery_hostile.out
 
+# G04/G05 §8/§9: MeasureSpec + LinearLayout weight law battery
+g++ -std=c++17 -w -g -O1 -Isrc -o build/linear_layout_law_test \
+    tests/linear_layout_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread \
+    > /tmp/battery_lllaw.log 2>&1
+gate "link linear_layout_law_test" $?
+./build/linear_layout_law_test > /tmp/battery_lllaw.out 2>&1
+gate "LinearLayout/MeasureSpec law (expect 24)" $?
+tail -1 /tmp/battery_lllaw.out
+
 # P2 encoded-value AOSP law (hostile/edge; FIND-REUSE-DEX)
 g++ -std=c++17 -w -g -O1 -Isrc -o build/encoded_value_law_test \
     tests/encoded_value_law_test.cpp > /tmp/battery_ev.log 2>&1
