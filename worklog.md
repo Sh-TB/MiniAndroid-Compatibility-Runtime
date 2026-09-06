@@ -318,3 +318,41 @@ Stage Summary:
   10 blank with earliest-blocker taxonomy; 1 generic law fixed and
   corpus-verified; 48/48 battery green at ae98a23f; all evidence published
   with direct URLs.
+
+---
+Task ID: G10-P0..P8
+Agent: Super Z (main agent)
+Task: G10 — cross-APK measurement & layout law campaign (microtimer +
+billthefarmer + headingcalculator + 4 guard APKs, same corpus before/after).
+
+Work Log:
+- Env restore (NOT engine change): aapt2 re-fetched, corpus cache restored
+  SHA-exact (15/18 exact, 3 documented G09 drifts); baseline battery 48/48 at
+  3c9b7001 (G09 residue commit, engine-identical to ae98a23f).
+- Phase 0: 7-APK subset baseline + pixel audits + U007_LAYOUT_DEBUG traces
+  (orientation added to trace dump — diagnostic only). Screenshot hashes
+  matched G09 frozen (simplestopwatch ed1dfc89, gmdice db0f4c4b).
+- Phase 1 clusters (evidence): F8-C-DEFAULT (LL unset orientation → AOSP
+  HORIZONTAL; microtimer XML lines 31/66/87/108/130 lack the attribute),
+  F8-B-SUPER (DEX superclass chain: CalculatorDisplay/Keypad extend
+  LinearLayout, RoTimeControl extends FrameLayout, ViewSwitcher degraded to
+  View), F8-A-MERGE (merge root returned LAST child; main editor orphaned),
+  F8-G-GRAV (frame gravity axis fields not masked: 0x00800055 → center).
+- Fixes (commits 2df49003, e6e51648): FIX-G10-001/002/002b/003/004 + early
+  classifier wiring at inflate time. Zero package branches; all law-level.
+- Phase 5: tests/g10_layout_law_test.cpp — 23 hostile checks ALL PASS;
+  battery extended 48→50 stages.
+- Phase 3/4: same 7-APK corpus re-run — microtimer improved (rows horizontal,
+  3-run det 57503a12), billthefarmer improved (editor bar + bottom-right FAB,
+  3-run det 06ba8026, clicks 2→3), unote lawful gravity correction
+  (8197687f), guards byte-identical, headingcalculator unchanged (remaining
+  blocker = F4/F5 constructor/addView layer, classified not patched).
+- Phase 6 regression: 50/50 ALL PASS at e6e51648; G09 goldens intact.
+- Phase 8 re-rank: next campaign = F5 app-constructor/addView (headingcalc
+  keypad, muellerma ACF), then AppCompat shells (11/18), then implicit Intent.
+
+Stage Summary:
+- G10 CLOSED: 4 generic AOSP laws implemented + verified; 3 APKs improved,
+  0 regressions; merge law honestly marked LAW-TESTED (single-APK exerciser);
+  updated evidence in docs/evidence/g10_evidence/ (report + JSONs + traces +
+  6 visual frames). GitHub publication to Issue #8 follows.
