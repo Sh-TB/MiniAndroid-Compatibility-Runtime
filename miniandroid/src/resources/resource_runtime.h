@@ -38,9 +38,33 @@ public:
         if (!inflater_) {
             metrics_ = DeviceMetrics{};
             inflater_ = std::make_unique<LayoutInflater>(arsc_, apk_, apk_path_, metrics_);
+            apply_custom_view_ctor_hook();
         }
         return *inflater_;
     }
+
+    // ── G11 FIX-G11-001 (AOSP LayoutInflater Factory law) ───────────
+    // The custom-view constructor hook is a PROCESS-WIDE framework
+    // setting (like AppCompatDelegateImpl installing Factory2), NOT a
+    // property of one LayoutInflater instance: ensure_loaded() recreates
+    // the inflater whenever the APK path changes, and AOSP's law is that
+    // the phone process (re)applies the Factory to EVERY newly created
+    // LayoutInflater (AppCompatDelegateImpl.installViewFactory →
+    // LayoutInflater.setFactory2 on each new PhoneLayoutInflater).
+    // ResourceRuntime owns the hook and propagates it to every inflater
+    // it creates — the engine installs it once, order-independent.
+    void set_custom_view_ctor_hook(LayoutInflater::CustomViewCtorHook fn) {
+        custom_view_ctor_hook_ = std::move(fn);
+        if (inflater_) inflater_->set_custom_view_ctor_hook(custom_view_ctor_hook_);
+    }
+
+private:
+    void apply_custom_view_ctor_hook() {
+        if (inflater_ && custom_view_ctor_hook_)
+            inflater_->set_custom_view_ctor_hook(custom_view_ctor_hook_);
+    }
+
+public:
     const DeviceMetrics& metrics() const { return metrics_; }
     bool loaded() const { return loaded_; }
     const std::string& apk_path() const { return apk_path_; }
@@ -67,6 +91,9 @@ private:
     bool loaded_ = false;
     std::string apk_path_;
     std::string load_error_;
+    // G11 FIX-G11-001: process-wide custom-view constructor hook (Factory
+    // law — survives LayoutInflater recreation in ensure_loaded()).
+    LayoutInflater::CustomViewCtorHook custom_view_ctor_hook_;
 };
 
 } // namespace resources

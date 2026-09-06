@@ -382,11 +382,18 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 &dalvik_engine_.get_heap_public(), &dalvik_engine_);
             shadow_registry_->set_heap(heap_adapter_.get());
             // G11 FIX-G11-001: custom-view constructor execution bridge.
-            // Must be installed BEFORE Application/Activity onCreate runs —
-            // setContentView→inflate fires app constructors during onCreate.
+            // Installed on the ResourceRuntime (process-wide Factory law) —
+            // NOT on one LayoutInflater instance: ensure_loaded() (first
+            // called below at the framework-statics preload and later by
+            // ActivityShadow.setContentView) recreates the inflater, and a
+            // per-instance hook set before that recreation is silently
+            // wiped (headingcalculator F5-C1 root cause: hook installed on
+            // the lazy default inflater, then the real inflater was created
+            // and the factory was gone). AOSP law: the phone process
+            // re-applies the Factory to EVERY new LayoutInflater.
             {
                 auto& rt = resources::ResourceRuntime::instance();
-                rt.inflater().set_custom_view_ctor_hook(
+                rt.set_custom_view_ctor_hook(
                     [this](uint32_t view_id,
                            const std::string& class_desc) -> bool {
                         return dalvik_engine_.run_custom_view_constructor(

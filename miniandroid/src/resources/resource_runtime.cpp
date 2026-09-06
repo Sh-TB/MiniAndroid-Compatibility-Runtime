@@ -36,6 +36,11 @@ bool ResourceRuntime::ensure_loaded(const std::string& apk_path) {
     }
     metrics_ = DeviceMetrics{};  // default 1080x1920 @420dpi
     inflater_ = std::make_unique<LayoutInflater>(arsc_, apk_, apk_path_, metrics_);
+    // G11 FIX-G11-001 (AOSP Factory law): a freshly created LayoutInflater
+    // starts factory-less — re-apply the process-wide custom-view ctor hook
+    // (AppCompatDelegateImpl.installViewFactory re-applies Factory2 on every
+    // new PhoneLayoutInflater).
+    apply_custom_view_ctor_hook();
     loaded_ = true;
     std::cerr << "[U007-RES] ResourceRuntime loaded: " << apk_path
               << " named_ids=" << arsc_.stats().named_ids
