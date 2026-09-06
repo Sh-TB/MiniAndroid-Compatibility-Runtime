@@ -1,0 +1,127 @@
+{
+  "package": "com.chessclock.android",
+  "apk_file": "com.chessclock.android_29.apk",
+  "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+  "minSdk": "21",
+  "targetSdk": "25",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "n_activities": 2,
+  "interactive_surface": true,
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.24,
+    "has_screenshot": true,
+    "screenshot_sha256": "4f32761409cba594532f621e5148e7a98dec838e3ebb00efb17947f87a05aeaa",
+    "log_path": "/tmp/g09_runs/com.chessclock.android/base/console.log"
+  },
+  "click_run_status": true,
+  "click": {
+    "present": true,
+    "views_probed": 8,
+    "xml_onclick_views": 4,
+    "views_changed_second_frame": 0,
+    "per_view": [
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": "P1ClickHandler",
+        "kind": "xml_onClick",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": "P2ClickHandler",
+        "kind": "xml_onClick",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": "MenuListener",
+        "kind": "xml_onClick",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": "PauseListener",
+        "kind": "xml_onClick",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      }
+    ]
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "RESUMED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "STARTED",
+        true
+      ],
+      [
+        "STARTED",
+        "RESUMED",
+        true
+      ]
+    ],
+    "finish_cascade": null,
+    "activity_launch": {
+      "callbacks": [],
+      "component": "",
+      "error": "ACTIVITY_NOT_FOUND: implicit intent (no component)",
+      "launched": false
+    }
+  },
+  "g08": {
+    "startActivity_in_dex_trace": true,
+    "startActivityForResult_in_dex_trace": false,
+    "intent_apis_seen": [],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

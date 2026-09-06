@@ -1,0 +1,58 @@
+{
+  "package": "net.gsantner.markor",
+  "apk_file": "net.gsantner.markor_163.apk",
+  "sha256": "3f9f260dc3e32a1281cb8803eea6f926eef897579f68a5d35f922523974b84b9",
+  "minSdk": "18",
+  "targetSdk": "35",
+  "uses_appcompat": true,
+  "uses_compose": false,
+  "n_activities": 12,
+  "interactive_surface": true,
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 3.32,
+    "has_screenshot": true,
+    "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+    "log_path": "/tmp/g09_runs/net.gsantner.markor/base/console.log"
+  },
+  "click_run_status": false,
+  "click": {
+    "present": false
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "ACTIVITY_CREATED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "RESUMED",
+        false
+      ]
+    ],
+    "finish_cascade": null,
+    "activity_launch": {
+      "callbacks": [],
+      "component": "",
+      "error": "ACTIVITY_NOT_FOUND: implicit intent (no component)",
+      "launched": false
+    }
+  },
+  "g08": {
+    "startActivity_in_dex_trace": true,
+    "startActivityForResult_in_dex_trace": true,
+    "intent_apis_seen": [
+      "putExtra",
+      "setResult",
+      "getIntent",
+      "setClassName"
+    ],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

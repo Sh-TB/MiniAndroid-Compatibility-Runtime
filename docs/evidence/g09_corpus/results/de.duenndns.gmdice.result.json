@@ -1,0 +1,122 @@
+{
+  "package": "de.duenndns.gmdice",
+  "apk_file": "de.duenndns.gmdice_8.apk",
+  "sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+  "minSdk": "11",
+  "targetSdk": "27",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "n_activities": 1,
+  "interactive_surface": true,
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.21,
+    "has_screenshot": true,
+    "screenshot_sha256": "db0f4c4b9dca867acf3946a886a179d2555862e1f17bc5828e525f65f5c1b9ff",
+    "log_path": "/tmp/g09_runs/de.duenndns.gmdice/base/console.log"
+  },
+  "click_run_status": true,
+  "click": {
+    "present": true,
+    "views_probed": 8,
+    "xml_onclick_views": 0,
+    "views_changed_second_frame": 8,
+    "per_view": [
+      {
+        "class": "Landroid/widget/TextView;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": true,
+        "changed_px": 1868540
+      },
+      {
+        "class": "Landroid/widget/TextView;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": true,
+        "changed_px": 1868540
+      },
+      {
+        "class": "Landroid/widget/TextView;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": true,
+        "changed_px": 1868540
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": true,
+        "changed_px": 1746699
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": true,
+        "changed_px": 1746699
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": true,
+        "changed_px": 1746699
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": true,
+        "changed_px": 1746699
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": true,
+        "state_changed": true,
+        "changed_px": 1746699
+      }
+    ]
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "RESUMED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "STARTED",
+        true
+      ],
+      [
+        "STARTED",
+        "RESUMED",
+        true
+      ]
+    ],
+    "finish_cascade": null,
+    "activity_launch": null
+  },
+  "g08": {
+    "startActivity_in_dex_trace": false,
+    "startActivityForResult_in_dex_trace": false,
+    "intent_apis_seen": [],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

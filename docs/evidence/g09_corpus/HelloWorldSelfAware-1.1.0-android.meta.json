@@ -1,0 +1,55 @@
+{
+  "activities": [
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "com.appliberated.helloworldselfaware.MainActivity",
+      "target": null
+    }
+  ],
+  "apk_file": "HelloWorldSelfAware-1.1.0-android.apk",
+  "dex": {
+    "androidx_core": false,
+    "appcompat": false,
+    "compose": false,
+    "dex_files": 1,
+    "handler_postdelayed": false,
+    "material": false,
+    "set_on_click": false,
+    "set_on_long_click": true,
+    "set_result": false,
+    "start_activity": false,
+    "start_activity_for_result": false,
+    "support_v7": false,
+    "view_classes": [
+      "android.widget.TextView",
+      "android.widget.Toast"
+    ]
+  },
+  "interactive_surface": true,
+  "label": "Hello World Self-Aware",
+  "launchable_activity": "com.appliberated.helloworldselfaware.MainActivity",
+  "minSdk": "9",
+  "multi_activity": false,
+  "n_activities": 1,
+  "non_launcher_intent_filters": 1,
+  "package": "com.appliberated.helloworldselfaware",
+  "result_api_surface": false,
+  "sha256": "009b467109c4d48d4b00610b06f37f3a77eed75178fbaae344a111acc848cc41",
+  "targetSdk": "35",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "versionCode": "2",
+  "versionName": "1.1.0"
+}

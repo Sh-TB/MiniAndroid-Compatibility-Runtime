@@ -1,0 +1,57 @@
+{
+  "activities": [
+    {
+      "exported": null,
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "org.debian.eugen.headingcalculator.MainActivity",
+      "target": null
+    }
+  ],
+  "apk_file": "org.debian.eugen.headingcalculator_1.apk",
+  "dex": {
+    "androidx_core": false,
+    "appcompat": false,
+    "compose": false,
+    "dex_files": 1,
+    "handler_postdelayed": false,
+    "material": false,
+    "set_on_click": true,
+    "set_on_long_click": true,
+    "set_result": false,
+    "start_activity": false,
+    "start_activity_for_result": false,
+    "support_v7": false,
+    "view_classes": [
+      "android.widget.Button",
+      "android.widget.LinearLayout",
+      "android.widget.TextView",
+      "android.widget.Toast"
+    ]
+  },
+  "interactive_surface": true,
+  "label": "Heading Calculator",
+  "launchable_activity": "org.debian.eugen.headingcalculator.MainActivity",
+  "minSdk": "5",
+  "multi_activity": false,
+  "n_activities": 1,
+  "non_launcher_intent_filters": 1,
+  "package": "org.debian.eugen.headingcalculator",
+  "result_api_surface": false,
+  "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+  "targetSdk": "19",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "versionCode": "1",
+  "versionName": "1.0"
+}

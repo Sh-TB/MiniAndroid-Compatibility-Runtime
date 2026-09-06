@@ -1,0 +1,43 @@
+{
+  "package": "org.debian.eugen.headingcalculator",
+  "apk_file": "org.debian.eugen.headingcalculator_1.apk",
+  "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+  "minSdk": "5",
+  "targetSdk": "19",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "n_activities": 1,
+  "interactive_surface": true,
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.2,
+    "has_screenshot": true,
+    "screenshot_sha256": "6ab39944ba1a88b1808ddd212e433920a8f2b95cc61917fa4d224173aea67fa1",
+    "log_path": "/tmp/g09_runs/org.debian.eugen.headingcalculator/base/console.log"
+  },
+  "click_run_status": false,
+  "click": {
+    "present": false
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "ACTIVITY_CREATED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ]
+    ],
+    "finish_cascade": null,
+    "activity_launch": null
+  },
+  "g08": {
+    "startActivity_in_dex_trace": false,
+    "startActivityForResult_in_dex_trace": false,
+    "intent_apis_seen": [],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

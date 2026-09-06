@@ -1,0 +1,45 @@
+{
+  "package": "com.emmanuelmess.tictactoe",
+  "apk_file": "tictactoe.apk",
+  "sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+  "minSdk": "14",
+  "targetSdk": "29",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "n_activities": 1,
+  "interactive_surface": false,
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 1.11,
+    "has_screenshot": true,
+    "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+    "log_path": "/tmp/g09_runs/com.emmanuelmess.tictactoe/base/console.log"
+  },
+  "click_run_status": false,
+  "click": {
+    "present": false
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "ACTIVITY_CREATED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ]
+    ],
+    "finish_cascade": null,
+    "activity_launch": null
+  },
+  "g08": {
+    "startActivity_in_dex_trace": true,
+    "startActivityForResult_in_dex_trace": false,
+    "intent_apis_seen": [
+      "setResult"
+    ],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

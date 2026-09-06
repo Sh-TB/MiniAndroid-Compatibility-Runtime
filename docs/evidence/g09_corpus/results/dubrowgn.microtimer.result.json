@@ -1,0 +1,159 @@
+{
+  "package": "dubrowgn.microtimer",
+  "apk_file": "dubrowgn.microtimer_8.apk",
+  "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+  "minSdk": "28",
+  "targetSdk": "34",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "n_activities": 1,
+  "interactive_surface": true,
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.24,
+    "has_screenshot": true,
+    "screenshot_sha256": "518cc9c5051610a492bf05eded42be89fae6996758800c9fde3df3ede379371b",
+    "log_path": "/tmp/g09_runs/dubrowgn.microtimer/base/console.log"
+  },
+  "click_run_status": true,
+  "click": {
+    "present": true,
+    "views_probed": 12,
+    "xml_onclick_views": 0,
+    "views_changed_second_frame": 0,
+    "per_view": [
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      },
+      {
+        "class": "Landroid/widget/Button;",
+        "handler": null,
+        "kind": "listener",
+        "dispatched": false,
+        "state_changed": false,
+        "changed_px": 0
+      }
+    ]
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "RESUMED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "STARTED",
+        true
+      ],
+      [
+        "STARTED",
+        "RESUMED",
+        true
+      ]
+    ],
+    "finish_cascade": null,
+    "activity_launch": {
+      "callbacks": [],
+      "component": "",
+      "error": "ACTIVITY_NOT_FOUND: implicit intent (no component)",
+      "launched": false
+    }
+  },
+  "g08": {
+    "startActivity_in_dex_trace": true,
+    "startActivityForResult_in_dex_trace": false,
+    "intent_apis_seen": [],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

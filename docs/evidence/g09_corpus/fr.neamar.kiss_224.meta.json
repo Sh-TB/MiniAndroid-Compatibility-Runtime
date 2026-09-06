@@ -1,0 +1,141 @@
+{
+  "activities": [
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.HOME",
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.ASSIST"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.content.pm.action.CONFIRM_PIN_SHORTCUT"
+          ],
+          "categories": [],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.SEND"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "fr.neamar.kiss.MainActivity",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.HOME",
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "fr.neamar.kiss.DummyActivity",
+      "target": null
+    },
+    {
+      "exported": "false",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.APPLICATION_PREFERENCES"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "fr.neamar.kiss.SettingsActivity",
+      "target": null
+    },
+    {
+      "exported": "false",
+      "filters": [],
+      "kind": "activity",
+      "name": "fr.neamar.kiss.PickAppWidgetActivity",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "fr.neamar.kiss.kustomsupport.AutoFinishTransparentActivity",
+      "target": null
+    }
+  ],
+  "apk_file": "fr.neamar.kiss_224.apk",
+  "dex": {
+    "androidx_core": true,
+    "appcompat": true,
+    "compose": false,
+    "dex_files": 2,
+    "handler_postdelayed": true,
+    "material": false,
+    "set_on_click": true,
+    "set_on_long_click": true,
+    "set_result": true,
+    "start_activity": true,
+    "start_activity_for_result": true,
+    "support_v7": false,
+    "view_classes": [
+      "android.widget.Button",
+      "android.widget.CheckBox",
+      "android.widget.EditText",
+      "android.widget.FrameLayout",
+      "android.widget.ImageView",
+      "android.widget.LinearLayout",
+      "android.widget.ListView",
+      "android.widget.RadioButton",
+      "android.widget.ScrollView",
+      "android.widget.SeekBar",
+      "android.widget.TextView",
+      "android.widget.Toast"
+    ]
+  },
+  "interactive_surface": true,
+  "label": "KISS launcher",
+  "launchable_activity": "fr.neamar.kiss.MainActivity",
+  "minSdk": "21",
+  "multi_activity": true,
+  "n_activities": 5,
+  "non_launcher_intent_filters": 6,
+  "package": "fr.neamar.kiss",
+  "result_api_surface": true,
+  "sha256": "da6ab0b1219ad3b5ee573698523fb15d60a918083e0843f94a03c1b12e1098c9",
+  "targetSdk": "36",
+  "uses_appcompat": true,
+  "uses_compose": false,
+  "versionCode": "224",
+  "versionName": "3.26.0"
+}
