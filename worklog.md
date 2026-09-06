@@ -140,3 +140,49 @@ Stage Summary:
   battery 27/27, no fixture-specific code, reproducible from HEAD.
 - Battery is now 27 stages: ALL PASS at HEAD 6c352981 (pre-push).
 - Next gate proposal is NOT part of this execution (per §21/§22 rule).
+
+---
+Task ID: G04+G05
+Agent: Super Z (main agent)
+Task: Unified G04 (drawable/image) + G05 (layout/measure/render) compatibility
+closure campaign on the frozen-APK corpus.
+
+Work Log:
+- Baseline blind-verified: HEAD cc42a891, battery ALL PASS, G03 reproducible,
+  EXT-01 fixture + reference + aapt2 + corpus re-frozen after sandbox wipe
+  (SHA-exact), 3-run determinism re-proven (142238fd92b69e11).
+- §0 finding: resource_trace.cpp never committed (FIND-001) → make target
+  broken at HEAD; device split 480/420 (FIND-002); drawable selection by
+  ZIP-path string rank (FIND-003); zero density scaling (FIND-004);
+  Fossify Notes = Compose (FIND-005); KISS/Markor blank = AppCompat shell
+  (FIND-006).
+- AOSP laws fetched at android-14.0.0_r2 (ImageView/ViewGroup/LinearLayout/
+  BitmapFactory java+native/ResourceTypes/BitmapDrawable/View).
+- C2 768b1481: unified 420dpi device; select_file (canonical chain-safe
+  drawable selection with selected-config density); BitmapFactory scaling;
+  FIT_CENTER; header-only ImageSizeProbe; intrinsic measure.
+- C3 291914c7: resource_trace recreated (repair) + G04/G05 channels
+  (density, file/XML/BINARY, intrinsic, --bag, --layout inflate+measure dump).
+- C4 894e6ef3: EXACT LinearLayout weight law (sequential shares, 0dp+weight
+  skip/from-scratch, base+share shrinkable, weightSum, subtree re-measure) +
+  3 MeasureSpec/layout fixes (padding double-count; cross-axis measured dims;
+  re-measure propagation) + 24-check battery.
+- C5 e7e6ec1b: density-matrix differential oracle — aapt2-built fixture,
+  color-coded buckets, 11-check gate, 3-run deterministic (351340a7…).
+  Proves: straddle law (420dpi→xxxhdpi 26×13), exact bucket (320dpi→xhdpi
+  40×20), DENSITY_NONE never scaled, alias chain, FIT_CENTER.
+- C6 ae37abf4: hostile battery 24/24 (probe/decoder/cycles/depth/weights).
+- C7 3d1eba51: DIRECT resid→select_file resolution (FIND-007, Markor 0/35
+  root cause) + AppCompat boundary record.
+- Final battery: ALL PASS (31 stages) at e371a82b. GitHub PUSH/COMMENT
+  BLOCKED (no token this session; 403 on anonymous write — recorded).
+
+Stage Summary:
+- G04+G05 CLOSED — VERIFIED WITH EXPLICIT NON-BLOCKING BOUNDARIES:
+  pipeline REAL APK→ARSC→config→TypedValue→drawable→density→inflate→
+  measure→layout→render→deterministic PNG runtime- and pixel-proven on
+  classic-View APKs; boundaries: AppCompatDelegateImpl shell (G06+),
+  NinePatch chunks, nearest-neighbour resampling note.
+- 8 commits local (e98cf4b0…e371a82b), fast-forward-ready on origin/main.
+- NEXT: provide GitHub token → push + post scripts/issue_comment_g0405.md;
+  G06 candidate: AppCompatDelegate shell emulation.
