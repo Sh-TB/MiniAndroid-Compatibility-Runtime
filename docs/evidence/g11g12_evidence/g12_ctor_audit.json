@@ -1,0 +1,1429 @@
+{
+ "org.debian.eugen.headingcalculator_1.apk": {
+  "apk": "org.debian.eugen.headingcalculator_1.apk",
+  "classes": {
+   "Lorg/debian/eugen/headingcalculator/CalculatorDisplay;": {
+    "dex": "classes.dex",
+    "methods": {
+     "<init>(D?type1024)V [direct]": {
+      "regs": 5,
+      "ins": 3,
+      "code_units": 85,
+      "interesting_calls": [
+       {
+        "off": 0,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/LinearLayout;-><init>(D?type1024)V"
+       },
+       {
+        "off": 13,
+        "op": "invoke-virtual",
+        "target": "Landroid/view/LayoutInflater;->inflate(D?type256)Landroid/view/View;"
+       },
+       {
+        "off": 18,
+        "op": "invoke-virtual",
+        "target": "Lorg/debian/eugen/headingcalculator/CalculatorDisplay;->findViewById(D)Landroid/view/View;"
+       },
+       {
+        "off": 29,
+        "op": "invoke-virtual",
+        "target": "Lorg/debian/eugen/headingcalculator/CalculatorDisplay;->findViewById(D)Landroid/view/View;"
+       },
+       {
+        "off": 40,
+        "op": "invoke-virtual",
+        "target": "Lorg/debian/eugen/headingcalculator/CalculatorDisplay;->findViewById(D)Landroid/view/View;"
+       },
+       {
+        "off": 51,
+        "op": "invoke-virtual",
+        "target": "Lorg/debian/eugen/headingcalculator/CalculatorDisplay;->findViewById(D)Landroid/view/View;"
+       },
+       {
+        "off": 62,
+        "op": "invoke-virtual",
+        "target": "Lorg/debian/eugen/headingcalculator/CalculatorDisplay;->findViewById(D)Landroid/view/View;"
+       },
+       {
+        "off": 73,
+        "op": "invoke-virtual",
+        "target": "Lorg/debian/eugen/headingcalculator/CalculatorDisplay;->findViewById(D)Landroid/view/View;"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "formatNumber(D)Ljava/lang/String; [direct]": {
+      "regs": 5,
+      "ins": 1,
+      "code_units": 17,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": [
+       "%d"
+      ]
+     },
+     "initializeDisplay()V [direct]": {
+      "regs": 4,
+      "ins": 1,
+      "code_units": 118,
+      "interesting_calls": [
+       {
+        "off": 19,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       },
+       {
+        "off": 28,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       },
+       {
+        "off": 37,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       },
+       {
+        "off": 46,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       },
+       {
+        "off": 55,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       },
+       {
+        "off": 66,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       },
+       {
+        "off": 78,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       },
+       {
+        "off": 89,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       },
+       {
+        "off": 100,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       },
+       {
+        "off": 111,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "updateValues()V [direct]": {
+      "regs": 7,
+      "ins": 1,
+      "code_units": 63,
+      "interesting_calls": [
+       {
+        "off": 24,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       },
+       {
+        "off": 42,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       },
+       {
+        "off": 59,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "getCurrentValue()I [virtual]": {
+      "regs": 3,
+      "ins": 1,
+      "code_units": 40,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "onRestoreInstanceState(D)V [virtual]": {
+      "regs": 5,
+      "ins": 2,
+      "code_units": 56,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": [
+       "TrueCourse",
+       "TrueAirspeed",
+       "WindDirection",
+       "WindSpeed",
+       "Input"
+      ]
+     },
+     "onSaveInstanceState(D)V [virtual]": {
+      "regs": 4,
+      "ins": 2,
+      "code_units": 40,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": [
+       "TrueCourse",
+       "TrueAirspeed",
+       "WindDirection",
+       "WindSpeed",
+       "Input"
+      ]
+     },
+     "setCurrentValue(D)V [virtual]": {
+      "regs": 4,
+      "ins": 2,
+      "code_units": 50,
+      "interesting_calls": [
+       {
+        "off": 19,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(D)V"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "setInput(D)V [virtual]": {
+      "regs": 4,
+      "ins": 2,
+      "code_units": 62,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     }
+    }
+   },
+   "Lorg/debian/eugen/headingcalculator/CalculatorKeypad;": {
+    "dex": "classes.dex",
+    "methods": {
+     "<clinit>()V [direct]": {
+      "regs": 3,
+      "ins": 0,
+      "code_units": 138,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "<init>(D?type1024)V [direct]": {
+      "regs": 7,
+      "ins": 3,
+      "code_units": 39,
+      "interesting_calls": [
+       {
+        "off": 0,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/LinearLayout;-><init>(D?type1024)V"
+       },
+       {
+        "off": 10,
+        "op": "invoke-virtual",
+        "target": "Landroid/view/LayoutInflater;->inflate(D?type256)Landroid/view/View;"
+       },
+       {
+        "off": 15,
+        "op": "invoke-direct",
+        "target": "Lorg/debian/eugen/headingcalculator/CalculatorKeypad$1;-><init>(D)V"
+       }
+      ],
+      "new_instances": [
+       "Lorg/debian/eugen/headingcalculator/CalculatorKeypad$1;"
+      ],
+      "strings": []
+     },
+     "access$000(D)Lorg/debian/eugen/headingcalculator/CalculatorKeypad$OnKeypadClickListener; [direct]": {
+      "regs": 2,
+      "ins": 1,
+      "code_units": 3,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "initButton(D?type256?type11264)V [direct]": {
+      "regs": 5,
+      "ins": 4,
+      "code_units": 13,
+      "interesting_calls": [
+       {
+        "off": 0,
+        "op": "invoke-virtual",
+        "target": "Lorg/debian/eugen/headingcalculator/CalculatorKeypad;->findViewById(D)Landroid/view/View;"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "setOnKeypadClickListener(D)V [virtual]": {
+      "regs": 2,
+      "ins": 2,
+      "code_units": 3,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     }
+    }
+   },
+   "Lorg/debian/eugen/headingcalculator/ExplainableButton;": {
+    "dex": "classes.dex",
+    "methods": {
+     "<init>(D?type1024)V [direct]": {
+      "regs": 4,
+      "ins": 3,
+      "code_units": 12,
+      "interesting_calls": [
+       {
+        "off": 0,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/Button;-><init>(D?type1024)V"
+       },
+       {
+        "off": 5,
+        "op": "invoke-direct",
+        "target": "Lorg/debian/eugen/headingcalculator/ExplainableButton$1;-><init>(D)V"
+       }
+      ],
+      "new_instances": [
+       "Lorg/debian/eugen/headingcalculator/ExplainableButton$1;"
+      ],
+      "strings": []
+     }
+    }
+   },
+   "Lorg/debian/eugen/headingcalculator/ExplainableTextView;": {
+    "dex": "classes.dex",
+    "methods": {
+     "<init>(D?type1024)V [direct]": {
+      "regs": 4,
+      "ins": 3,
+      "code_units": 12,
+      "interesting_calls": [
+       {
+        "off": 0,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/TextView;-><init>(D?type1024)V"
+       },
+       {
+        "off": 5,
+        "op": "invoke-direct",
+        "target": "Lorg/debian/eugen/headingcalculator/ExplainableTextView$1;-><init>(D)V"
+       }
+      ],
+      "new_instances": [
+       "Lorg/debian/eugen/headingcalculator/ExplainableTextView$1;"
+      ],
+      "strings": []
+     }
+    }
+   },
+   "Lorg/debian/eugen/headingcalculator/MainActivity;": {
+    "dex": "classes.dex",
+    "methods": {
+     "<init>()V [direct]": {
+      "regs": 2,
+      "ins": 1,
+      "code_units": 7,
+      "interesting_calls": [
+       {
+        "off": 0,
+        "op": "invoke-direct",
+        "target": "Landroid/app/Activity;-><init>()V"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "access$000(D?type12032)V [direct]": {
+      "regs": 2,
+      "ins": 2,
+      "code_units": 4,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "processKeypadInput(D)V [direct]": {
+      "regs": 9,
+      "ins": 2,
+      "code_units": 126,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "onCreate(D)V [virtual]": {
+      "regs": 4,
+      "ins": 2,
+      "code_units": 45,
+      "interesting_calls": [
+       {
+        "off": 6,
+        "op": "invoke-virtual",
+        "target": "Lorg/debian/eugen/headingcalculator/MainActivity;->setContentView(D)V"
+       },
+       {
+        "off": 12,
+        "op": "invoke-virtual",
+        "target": "Lorg/debian/eugen/headingcalculator/MainActivity;->findViewById(D)Landroid/view/View;"
+       },
+       {
+        "off": 30,
+        "op": "invoke-virtual",
+        "target": "Lorg/debian/eugen/headingcalculator/MainActivity;->findViewById(D)Landroid/view/View;"
+       },
+       {
+        "off": 38,
+        "op": "invoke-direct",
+        "target": "Lorg/debian/eugen/headingcalculator/MainActivity$1;-><init>(D)V"
+       }
+      ],
+      "new_instances": [
+       "Lorg/debian/eugen/headingcalculator/MainActivity$1;"
+      ],
+      "strings": []
+     },
+     "onSaveInstanceState(D)V [virtual]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 9,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     }
+    }
+   }
+  }
+ },
+ "dubrowgn.microtimer_8.apk": {
+  "apk": "dubrowgn.microtimer_8.apk",
+  "classes": {
+   "Ldubrowgn/microtimer/RoTimeControl;": {
+    "dex": "classes.dex",
+    "methods": {
+     "<init>(C)V [direct]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 12,
+      "interesting_calls": [
+       {
+        "off": 5,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/FrameLayout;-><init>(C)V"
+       }
+      ],
+      "new_instances": [],
+      "strings": [
+       "context"
+      ]
+     },
+     "<init>(C?type7168)V [direct]": {
+      "regs": 4,
+      "ins": 3,
+      "code_units": 17,
+      "interesting_calls": [
+       {
+        "off": 10,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/FrameLayout;-><init>(C?type7168)V"
+       }
+      ],
+      "new_instances": [],
+      "strings": [
+       "context",
+       "attrs"
+      ]
+     },
+     "a()V [virtual]": {
+      "regs": 5,
+      "ins": 1,
+      "code_units": 95,
+      "interesting_calls": [
+       {
+        "off": 3,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/LinearLayout$LayoutParams;-><init>(C?type768)V"
+       },
+       {
+        "off": 15,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/TextView;-><init>(C)V"
+       },
+       {
+        "off": 23,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/LinearLayout$LayoutParams;-><init>(C?type768)V"
+       },
+       {
+        "off": 47,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setTextSize(C)V"
+       },
+       {
+        "off": 55,
+        "op": "invoke-virtual",
+        "target": "Landroid/view/View;->setTextAlignment(C)V"
+       }
+      ],
+      "new_instances": [
+       "Landroid/widget/LinearLayout$LayoutParams;",
+       "Landroid/widget/TextView;",
+       "Landroid/widget/LinearLayout$LayoutParams;"
+      ],
+      "strings": [
+       "lblValue"
+      ]
+     },
+     "b(C)V [virtual]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 26,
+      "interesting_calls": [
+       {
+        "off": 15,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setText(C)V"
+       }
+      ],
+      "new_instances": [],
+      "strings": [
+       "",
+       "lblValue"
+      ]
+     }
+    }
+   },
+   "Ldubrowgn/microtimer/MicroTimerActivity;": {
+    "error": "class not found"
+   },
+   "Lk/g;": {
+    "dex": "classes.dex",
+    "methods": {
+     "<init>(C?type7168)V [direct]": {
+      "regs": 11,
+      "ins": 3,
+      "code_units": 232,
+      "interesting_calls": [
+       {
+        "off": 10,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/LinearLayout;-><init>(C)V"
+       },
+       {
+        "off": 19,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/LinearLayout$LayoutParams;-><init>(C?type768)V"
+       },
+       {
+        "off": 26,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/LinearLayout;->setOrientation(C)V"
+       },
+       {
+        "off": 55,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/Button;-><init>(C)V"
+       },
+       {
+        "off": 60,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/LinearLayout$LayoutParams;-><init>(C?type768)V"
+       },
+       {
+        "off": 97,
+        "op": "invoke-direct",
+        "target": "Lk/f;-><init>(C?type5888)V"
+       },
+       {
+        "off": 103,
+        "op": "invoke-virtual",
+        "target": "Landroid/view/ViewGroup;->addView(C)V"
+       },
+       {
+        "off": 108,
+        "op": "invoke-direct",
+        "target": "Ldubrowgn/microtimer/RoTimeControl;-><init>(C)V"
+       },
+       {
+        "off": 117,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/LinearLayout$LayoutParams;-><init>(C?type768?type768)V"
+       },
+       {
+        "off": 123,
+        "op": "invoke-virtual",
+        "target": "Landroid/view/ViewGroup;->addView(C)V"
+       },
+       {
+        "off": 128,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/Button;-><init>(C)V"
+       },
+       {
+        "off": 135,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/LinearLayout$LayoutParams;-><init>(C?type768)V"
+       },
+       {
+        "off": 171,
+        "op": "invoke-direct",
+        "target": "Lk/f;-><init>(C?type5888)V"
+       },
+       {
+        "off": 177,
+        "op": "invoke-virtual",
+        "target": "Landroid/view/ViewGroup;->addView(C)V"
+       },
+       {
+        "off": 182,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/Button;-><init>(C)V"
+       },
+       {
+        "off": 189,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/LinearLayout$LayoutParams;-><init>(C?type768)V"
+       },
+       {
+        "off": 225,
+        "op": "invoke-direct",
+        "target": "Lk/f;-><init>(C?type5888)V"
+       }
+      ],
+      "new_instances": [
+       "Landroid/widget/LinearLayout$LayoutParams;",
+       "Landroid/widget/Button;",
+       "Landroid/widget/LinearLayout$LayoutParams;",
+       "Lk/f;",
+       "Ldubrowgn/microtimer/RoTimeControl;",
+       "Landroid/widget/LinearLayout$LayoutParams;",
+       "Landroid/widget/Button;",
+       "Landroid/widget/LinearLayout$LayoutParams;",
+       "Lk/f;",
+       "Landroid/widget/Button;",
+       "Landroid/widget/LinearLayout$LayoutParams;",
+       "Lk/f;"
+      ],
+      "strings": [
+       "context",
+       "alarm"
+      ]
+     },
+     "a()V [virtual]": {
+      "regs": 8,
+      "ins": 1,
+      "code_units": 91,
+      "interesting_calls": [
+       {
+        "off": 24,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setTextColor(C)V"
+       },
+       {
+        "off": 73,
+        "op": "invoke-virtual",
+        "target": "Landroid/view/ViewGroup;->addView(C)V"
+       },
+       {
+        "off": 80,
+        "op": "invoke-virtual",
+        "target": "Landroid/view/ViewGroup;->addView(C)V"
+       }
+      ],
+      "new_instances": [],
+      "strings": [
+       "lblValue"
+      ]
+     },
+     "getAlarm()Ll/a; [virtual]": {
+      "regs": 2,
+      "ins": 1,
+      "code_units": 3,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "getOnDelete()Lr/a; [virtual]": {
+      "regs": 2,
+      "ins": 1,
+      "code_units": 3,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "getOnPause()Lr/a; [virtual]": {
+      "regs": 2,
+      "ins": 1,
+      "code_units": 3,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "getOnResume()Lr/a; [virtual]": {
+      "regs": 2,
+      "ins": 1,
+      "code_units": 3,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "setOnDelete(C)V [virtual]": {
+      "regs": 2,
+      "ins": 2,
+      "code_units": 3,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "setOnPause(C)V [virtual]": {
+      "regs": 2,
+      "ins": 2,
+      "code_units": 3,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "setOnResume(C)V [virtual]": {
+      "regs": 2,
+      "ins": 2,
+      "code_units": 3,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     }
+    }
+   }
+  }
+ },
+ "omegacentauri.mobi.simplestopwatch_26.apk": {
+  "apk": "omegacentauri.mobi.simplestopwatch_26.apk",
+  "classes": {
+   "Lomegacentauri/mobi/simplestopwatch/BigTextView;": {
+    "dex": "classes.dex",
+    "methods": {
+     "<init>(C?type2816)V [direct]": {
+      "regs": 4,
+      "ins": 3,
+      "code_units": 84,
+      "interesting_calls": [
+       {
+        "off": 0,
+        "op": "invoke-direct",
+        "target": "Landroid/view/View;-><init>(C?type2816)V"
+       },
+       {
+        "off": 5,
+        "op": "invoke-direct",
+        "target": "Landroid/graphics/RectF;-><init>()V"
+       },
+       {
+        "off": 34,
+        "op": "invoke-direct",
+        "target": "Landroid/graphics/Paint;-><init>(C)V"
+       },
+       {
+        "off": 41,
+        "op": "invoke-direct",
+        "target": "Lomegacentauri/mobi/simplestopwatch/SansDigitsColon;-><init>()V"
+       },
+       {
+        "off": 62,
+        "op": "invoke-direct",
+        "target": "Landroid/graphics/Paint;-><init>()V"
+       },
+       {
+        "off": 71,
+        "op": "invoke-virtual",
+        "target": "Landroid/graphics/Paint;->setTextSize(C)V"
+       },
+       {
+        "off": 80,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/BigTextView;->setText(C?type29696)V"
+       }
+      ],
+      "new_instances": [
+       "Landroid/graphics/RectF;",
+       "Landroid/graphics/Paint;",
+       "Lomegacentauri/mobi/simplestopwatch/SansDigitsColon;",
+       "Landroid/graphics/Paint;"
+      ],
+      "strings": [
+       ""
+      ]
+     },
+     "adjustCenter(C?type512?type32256)F [direct]": {
+      "regs": 7,
+      "ins": 4,
+      "code_units": 36,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "onDraw(C)V [virtual]": {
+      "regs": 19,
+      "ins": 2,
+      "code_units": 248,
+      "interesting_calls": [
+       {
+        "off": 176,
+        "op": "invoke-virtual",
+        "target": "Landroid/graphics/Paint;->setTextSize(C)V"
+       },
+       {
+        "off": 183,
+        "op": "invoke-virtual",
+        "target": "Landroid/graphics/Paint;->setTextScaleX(C)V"
+       },
+       {
+        "off": 240,
+        "op": "invoke-virtual/range",
+        "target": "Lomegacentauri/mobi/simplestopwatch/MiniFont;->drawText(C?type5888?type29696?type512?type512?type6912)V"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "setFont(C)V [virtual]": {
+      "regs": 2,
+      "ins": 2,
+      "code_units": 6,
+      "interesting_calls": [
+       {
+        "off": 2,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/BigTextView;->invalidate()V"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "setLetterSpacing(C)V [virtual]": {
+      "regs": 2,
+      "ins": 2,
+      "code_units": 6,
+      "interesting_calls": [
+       {
+        "off": 2,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/BigTextView;->invalidate()V"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "setLineSpacing(C)V [virtual]": {
+      "regs": 2,
+      "ins": 2,
+      "code_units": 6,
+      "interesting_calls": [
+       {
+        "off": 2,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/BigTextView;->invalidate()V"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "setMaxAspect(C)V [virtual]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 12,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "setScale(C)V [virtual]": {
+      "regs": 2,
+      "ins": 2,
+      "code_units": 6,
+      "interesting_calls": [
+       {
+        "off": 2,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/BigTextView;->invalidate()V"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "setText(C)V [virtual]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 9,
+      "interesting_calls": [
+       {
+        "off": 5,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/BigTextView;->setText(C?type29696)V"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "setText(C?type29696)V [virtual]": {
+      "regs": 3,
+      "ins": 3,
+      "code_units": 51,
+      "interesting_calls": [
+       {
+        "off": 21,
+        "op": "invoke-direct",
+        "target": "Ljava/lang/String;-><init>(C)V"
+       },
+       {
+        "off": 47,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/BigTextView;->invalidate()V"
+       }
+      ],
+      "new_instances": [
+       "Ljava/lang/String;"
+      ],
+      "strings": [
+       "\\n"
+      ]
+     },
+     "setTextColor(C)V [virtual]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 17,
+      "interesting_calls": [
+       {
+        "off": 13,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/BigTextView;->invalidate()V"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     }
+    }
+   },
+   "Lomegacentauri/mobi/simplestopwatch/ShowTime;": {
+    "dex": "classes.dex",
+    "methods": {
+     "<clinit>()V [direct]": {
+      "regs": 3,
+      "ins": 0,
+      "code_units": 27,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "<init>()V [direct]": {
+      "regs": 2,
+      "ins": 1,
+      "code_units": 8,
+      "interesting_calls": [
+       {
+        "off": 0,
+        "op": "invoke-direct",
+        "target": "Landroid/app/Activity;-><init>()V"
+       }
+      ],
+      "new_instances": [],
+      "strings": [
+       "color"
+      ]
+     },
+     "access$000(C)Landroid/view/GestureDetector; [direct]": {
+      "regs": 1,
+      "ins": 1,
+      "code_units": 3,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "clip(C?type2816)V [direct]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 12,
+      "interesting_calls": [
+       {
+        "off": 8,
+        "op": "invoke-virtual",
+        "target": "Landroid/text/ClipboardManager;->setText(C)V"
+       }
+      ],
+      "new_instances": [],
+      "strings": [
+       "clipboard"
+      ]
+     },
+     "debug(C)V [direct]": {
+      "regs": 1,
+      "ins": 1,
+      "code_units": 1,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "getStateDescription(C?type768)[I [direct]": {
+      "regs": 4,
+      "ins": 2,
+      "code_units": 48,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "vibrate(C?type1536)V [direct]": {
+      "regs": 6,
+      "ins": 3,
+      "code_units": 19,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": [
+       "vibrator"
+      ]
+     },
+     "AlertDialog_Builder()Landroid/app/AlertDialog$Builder; [virtual]": {
+      "regs": 3,
+      "ins": 1,
+      "code_units": 20,
+      "interesting_calls": [
+       {
+        "off": 10,
+        "op": "invoke-direct",
+        "target": "Landroid/app/AlertDialog$Builder;-><init>(C?type2816)V"
+       },
+       {
+        "off": 16,
+        "op": "invoke-direct",
+        "target": "Landroid/app/AlertDialog$Builder;-><init>(C)V"
+       }
+      ],
+      "new_instances": [
+       "Landroid/app/AlertDialog$Builder;",
+       "Landroid/app/AlertDialog$Builder;"
+      ],
+      "strings": []
+     },
+     "dp2px(C)F [virtual]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 16,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "flingDown()V [virtual]": {
+      "regs": 3,
+      "ins": 1,
+      "code_units": 10,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "flingLeft()V [virtual]": {
+      "regs": 3,
+      "ins": 1,
+      "code_units": 10,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "flingRight()V [virtual]": {
+      "regs": 3,
+      "ins": 1,
+      "code_units": 10,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "flingUp()V [virtual]": {
+      "regs": 3,
+      "ins": 1,
+      "code_units": 10,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "focusedColor(C)I [virtual]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 8,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "getActivityCircle()[Ljava/lang/Class; [virtual]": {
+      "regs": 6,
+      "ins": 1,
+      "code_units": 78,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": [
+       "clockWithLittleSeconds",
+       "clockWithBigSeconds"
+      ]
+     },
+     "getControlBarForeColor()I [virtual]": {
+      "regs": 6,
+      "ins": 1,
+      "code_units": 48,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": [
+       "fullscreen",
+       "fsBright",
+       "0"
+      ]
+     },
+     "hasTouch()Z [virtual]": {
+      "regs": 4,
+      "ins": 1,
+      "code_units": 28,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": [
+       "android.hardware.touchscreen"
+      ]
+     },
+     "isTV()Z [virtual]": {
+      "regs": 3,
+      "ins": 1,
+      "code_units": 56,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": [
+       "AFT",
+       "android.hardware.type.television"
+      ]
+     },
+     "lockOrientation()V [virtual]": {
+      "regs": 3,
+      "ins": 1,
+      "code_units": 64,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": [
+       "window"
+      ]
+     },
+     "makeOvalButtonBackground(C)Landroid/graphics/drawable/StateListDrawable; [virtual]": {
+      "regs": 9,
+      "ins": 2,
+      "code_units": 67,
+      "interesting_calls": [
+       {
+        "off": 2,
+        "op": "invoke-direct",
+        "target": "Landroid/graphics/drawable/StateListDrawable;-><init>()V"
+       }
+      ],
+      "new_instances": [
+       "Landroid/graphics/drawable/StateListDrawable;"
+      ],
+      "strings": []
+     },
+     "nextActivity(C)Ljava/lang/Class; [virtual]": {
+      "regs": 7,
+      "ins": 2,
+      "code_units": 58,
+      "interesting_calls": [
+       {
+        "off": 29,
+        "op": "invoke-direct",
+        "target": "Ljava/lang/StringBuilder;-><init>()V"
+       }
+      ],
+      "new_instances": [
+       "Ljava/lang/StringBuilder;"
+      ],
+      "strings": [
+       ""
+      ]
+     },
+     "onButtonMenu(C)V [virtual]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 13,
+      "interesting_calls": [
+       {
+        "off": 6,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/ShowTime;->invalidateOptionsMenu()V"
+       }
+      ],
+      "new_instances": [],
+      "strings": []
+     },
+     "onButtonSettings(C)V [virtual]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 11,
+      "interesting_calls": [
+       {
+        "off": 4,
+        "op": "invoke-direct",
+        "target": "Landroid/content/Intent;-><init>(C?type2816)V"
+       }
+      ],
+      "new_instances": [
+       "Landroid/content/Intent;"
+      ],
+      "strings": []
+     },
+     "onConfigurationChanged(C)V [virtual]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 14,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": [
+       "onConfChanged"
+      ]
+     },
+     "onCreate(C)V [virtual]": {
+      "regs": 3,
+      "ins": 2,
+      "code_units": 31,
+      "interesting_calls": [
+       {
+        "off": 25,
+        "op": "invoke-direct",
+        "target": "Lomegacentauri/mobi/simplestopwatch/ShowTime$1;-><init>(C)V"
+       }
+      ],
+      "new_instances": [
+       "Lomegacentauri/mobi/simplestopwatch/ShowTime$1;"
+      ],
+      "strings": []
+     },
+     "onDestroy()V [virtual]": {
+      "regs": 2,
+      "ins": 1,
+      "code_units": 9,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "onKeyDown(C?type768)Z [virtual]": {
+      "regs": 6,
+      "ins": 3,
+      "code_units": 61,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "onOptionsItemSelected(C)Z [virtual]": {
+      "regs": 4,
+      "ins": 2,
+      "code_units": 20,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "onOptionsMenuClosed(C)V [virtual]": {
+      "regs": 2,
+      "ins": 2,
+      "code_units": 7,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "onPause()V [virtual]": {
+      "regs": 2,
+      "ins": 1,
+      "code_units": 14,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": []
+     },
+     "onResume()V [virtual]": {
+      "regs": 4,
+      "ins": 1,
+      "code_units": 112,
+      "interesting_calls": [
+       {
+        "off": 20,
+        "op": "invoke-direct",
+        "target": "Landroid/util/DisplayMetrics;-><init>()V"
+       },
+       {
+        "off": 38,
+        "op": "invoke-direct",
+        "target": "Lomegacentauri/mobi/simplestopwatch/ShowTime$2;-><init>(C?type63488)V"
+       },
+       {
+        "off": 41,
+        "op": "invoke-direct",
+        "target": "Landroid/view/GestureDetector;-><init>(C?type2816)V"
+       },
+       {
+        "off": 57,
+        "op": "invoke-direct",
+        "target": "Lomegacentauri/mobi/simplestopwatch/ShowTime$3;-><init>(C)V"
+       },
+       {
+        "off": 72,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/ShowTime;->setOrientation()V"
+       }
+      ],
+      "new_instances": [
+       "Landroid/util/DisplayMetrics;",
+       "Landroid/view/GestureDetector;",
+       "Lomegacentauri/mobi/simplestopwatch/ShowTime$2;",
+       "Lomegacentauri/mobi/simplestopwatch/ShowTime$3;"
+      ],
+      "strings": [
+       "theme",
+       "onResume"
+      ]
+     },
+     "setFullScreen()V [virtual]": {
+      "regs": 8,
+      "ins": 1,
+      "code_units": 197,
+      "interesting_calls": [
+       {
+        "off": 173,
+        "op": "invoke-direct",
+        "target": "Landroid/widget/RelativeLayout$LayoutParams;-><init>(C?type768)V"
+       }
+      ],
+      "new_instances": [
+       "Landroid/widget/RelativeLayout$LayoutParams;"
+      ],
+      "strings": [
+       "controlFS",
+       "fullscreen",
+       "fsBright",
+       "0"
+      ]
+     },
+     "setOrientation()V [virtual]": {
+      "regs": 4,
+      "ins": 1,
+      "code_units": 49,
+      "interesting_calls": [],
+      "new_instances": [],
+      "strings": [
+       "orientation",
+       "automatic",
+       "landscape",
+       "portrait"
+      ]
+     },
+     "setTheme()V [virtual]": {
+      "regs": 11,
+      "ins": 1,
+      "code_units": 273,
+      "interesting_calls": [
+       {
+        "off": 127,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/ShowTime;->findViewById(C)Landroid/view/View;"
+       },
+       {
+        "off": 144,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/ShowTime;->findViewById(C)Landroid/view/View;"
+       },
+       {
+        "off": 150,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/TextView;->setTextColor(C)V"
+       },
+       {
+        "off": 173,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/BigTextView;->setTextColor(C)V"
+       },
+       {
+        "off": 184,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/ShowTime;->findViewById(C)Landroid/view/View;"
+       },
+       {
+        "off": 190,
+        "op": "invoke-virtual",
+        "target": "Landroid/widget/Button;->setTextColor(C)V"
+       },
+       {
+        "off": 213,
+        "op": "invoke-virtual",
+        "target": "Lomegacentauri/mobi/simplestopwatch/ShowTime;->findViewById(C)Landroid/view/View;"
+       },
+       {
+        "off": 223,
+        "op": "invoke-direct",
+        "target": "Lomegacentauri/mobi/simplestopwatch/MyStateDrawable;-><init>(C?type2816)V"
+       }
+      ],
+      "new_instances": [
+       "Lomegacentauri/mobi/simplestopwatch/MyStateDrawable;"
+      ],
+      "strings": [
+       "lineSpacing",
+       "105%",
+       "%",
+       "",
+       "letterSpacing",
+       "95%",
+       "%",
+       "",
+       "scale",
+       "98%",
+       "%",
+       "",
+       "controlFore=%x"
+      ]
+     },
+     "switchActivity(C?type27136)V [virtual]": {
+      "regs": 6,
+      "ins": 3,
+      "code_units": 104,
+      "interesting_calls": [
+       {
+        "off": 20,
+        "op": "invoke-direct",
+        "target": "Landroid/content/Intent;-><init>(C?type2816)V"
+       }
+      ],
+      "new_instances": [
+       "Landroid/content/Intent;"
+      ],
+      "strings": [
+       "lastActivity"
+      ]
+     },
+     "timedMessage(C?type29696?type29696)V [virtual]": {
+      "regs": 6,
+      "ins": 5,
+      "code_units": 31,
+      "interesting_calls": [
+       {
+        "off": 19,
+        "op": "invoke-direct",
+        "target": "Landroid/os/Handler;-><init>()V"
+       },
+       {
+        "off": 24,
+        "op": "invoke-direct",
+        "target": "Lomegacentauri/mobi/simplestopwatch/ShowTime$4;-><init>(C?type63488)V"
+       }
+      ],
+      "new_instances": [
+       "Landroid/os/Handler;",
+       "Lomegacentauri/mobi/simplestopwatch/ShowTime$4;"
+      ],
+      "strings": []
+     }
+    }
+   }
+  }
+ }
+}
