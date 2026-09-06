@@ -23,6 +23,7 @@
 #include "../framework/dialog_shadow.h"
 #include "../framework/canvas_shadow.h"
 #include "../framework/heap_adapter.h"
+#include "../resources/resource_runtime.h"  // G10 FIX-G10-002: early classifier wiring
 #include <chrono>
 #include <algorithm>
 #include <iostream>
@@ -320,6 +321,20 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
               << " — LinearLayout present: "
               << (class_to_superclass_.count("Landroid/widget/LinearLayout;") ? "YES" : "NO")
               << std::endl;
+
+    // G10 FIX-G10-002: wire the DEX-backed superclass classifier into the
+    // resource inflater IMMEDIATELY (not only at render time) so the
+    // inflate-time measure pass (setContentView) classifies custom and
+    // framework containers by their REAL ancestors. Without this the first
+    // measure of a ViewSwitcher/custom ViewGroup ran through the legacy
+    // substring fallback (e.g. billthefarmer's FAB switcher measured 0x0
+    // before the render-time re-measure corrected it).
+    {
+        auto& rt = resources::ResourceRuntime::instance();
+        rt.inflater().set_is_a([this](const std::string& c, const std::string& a) {
+            return is_subclass_of(c, a);
+        });
+    }
 
     // EXP-045 Phase 2: Build O(1) class→ClassInfo index for try_recursive_invoke().
     class_info_index_.clear();
