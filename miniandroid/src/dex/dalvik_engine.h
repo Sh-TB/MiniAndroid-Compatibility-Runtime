@@ -1400,6 +1400,16 @@ public:
     // EXP-051: Public heap accessor for the shadow registry adapter.
     DalvikHeap& get_heap_public() { return heap_; }
 
+    // MASTER CAMPAIGN FIX (lifecycle-provenance law): whether onCreate/
+    // onStart/onResume actually EXECUTED as DEX bytecode in this engine.
+    // Set at method-entry time (execute_method_internal), never inferred
+    // from api_call_traces — that ring buffer is capacity-capped, so a
+    // volume-dependent eviction made the lifecycle-source validation flip
+    // between REAL_DALVIK_INTERPRETER and HOST_SHORTCUT across identical
+    // runs (fr.neamar.kiss v224: same byte-identical screenshot, status
+    // oscillated SUCCESS vs PARTIAL SUCCESS).
+    bool lifecycle_methods_from_dex() const { return lifecycle_from_dex_; }
+
     // EXP-051: Attach a shadow registry. The engine does NOT own the
     // registry — it's owned by ApplicationRuntime so the runtime can
     // also drain the HandlerShadow queue and read IntentShadow state.
@@ -1791,6 +1801,8 @@ public:
     std::string resolve_string_for_dex(uint32_t string_idx, uint32_t dex_index) const;
     
     bool halted_ = false;
+    // MASTER CAMPAIGN FIX: lifecycle-provenance flag (see lifecycle_methods_from_dex).
+    bool lifecycle_from_dex_ = false;
     bool halted_on_return_ = false;
     std::string halt_reason_;
     std::string last_error_;
