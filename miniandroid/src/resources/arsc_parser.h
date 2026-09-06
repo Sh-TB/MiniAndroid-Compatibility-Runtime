@@ -218,6 +218,28 @@ public:
                                             const std::vector<std::string>& apk_paths,
                                             const ResTableConfig& device) const;
 
+    // ── G04 §4: canonical file-resource selection WITH the selected config ──
+    // AOSP law: ResourcesImpl.getValue → TypedValue carries the SELECTED
+    // entry's ResTable_config; BitmapFactory.decodeResourceStream reads
+    // value.density as inDensity and scales the bitmap by
+    // inTargetDensity/inDensity (inScaled, DENSITY_NONE → no scale).
+    // A drawable selector therefore must return not only the winning APK
+    // path but the winning CONFIG (its density) — the old path-string ranker
+    // (FIND-G04-AUDIT-003) could not and picked the wrong bucket.
+    // Selection law = resolve_full (reference/alias chain, per-step selected
+    // config, cycle-safe) → terminal STRING "res/…" value.
+    struct FileSelection {
+        std::string    path;             // winning APK zip entry path
+        ResTableConfig selected;         // terminal step's selected config
+        bool           has_selected = false;
+        // AOSP TypedValue density law: unset (0) → DENSITY_DEFAULT (160);
+        // DENSITY_NONE → caller must NOT scale. Returned in raw table form.
+        uint16_t selected_density() const { return selected.density; }
+    };
+    std::optional<FileSelection> select_file(uint32_t resource_id,
+                                             const std::vector<std::string>& apk_paths,
+                                             const ResTableConfig& device) const;
+
     // ── GOLDEN-03 §4/§6: canonical structured resolution path ──────────────
     // resolve(resourceId, deviceConfig) → ResolutionResult with the full
     // reference chain, per-step selected configuration, bounded depth and

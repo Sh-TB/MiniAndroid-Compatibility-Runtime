@@ -400,6 +400,33 @@ struct DecodedImage {
     std::string error;
 };
 
+// ── G04 §4/§8: header-only image dimension probe ───────────────────────────
+// AOSP law: Drawable.getIntrinsicWidth/Height must be answerable BEFORE a
+// full decode (ImageView.onMeasure runs pre-draw; decoding every bitmap
+// during measure would be the wrong complexity class). We parse the encoded
+// headers only:
+//   PNG  → IHDR width/height (big-endian u32 at byte 16/20 after the 8-byte
+//          signature + 4 len + 4 type)
+//   WebP → VP8X canvas size (24-bit-1) / VP8 frame header / VP8L 14-bit dims
+//   JPEG → SOF0/SOF2 frame header dimensions
+// Returns true with w/h filled on success. NEVER decodes pixel data — safe
+// on hostile input beyond the header window (bounds-checked, no allocation).
+struct ImageSizeProbe {
+    int width = 0, height = 0;
+};
+bool probe_image_size(const std::vector<uint8_t>& bytes, ImageSizeProbe* out);
+
+// ── G04 §12: ImageView FIT_CENTER placement law (ImageView.java L255:
+// mScaleType = ScaleType.FIT_CENTER default). Matrix law: scale =
+// min(dW/srcW, dH/srcH); centered within the destination box. Shared by the
+// ViewRenderer paint path and the ExecutionEngine frame path so the two
+// render outputs cannot drift (§12: one renderer, one law).
+struct FitRect {
+    int x = 0, y = 0, w = 0, h = 0;
+};
+FitRect fit_center_rect(int src_w, int src_h, int box_x, int box_y,
+                        int box_w, int box_h);
+
 class PNGDecoder {
 public:
     // Decode a PNG file from a raw byte buffer.

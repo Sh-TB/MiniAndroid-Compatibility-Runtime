@@ -66,7 +66,8 @@ private:
     uint32_t color_of(const AxmlAttribute& a, InflateReport& rep) const;
     void load_shape_drawable(const std::string& zip_path, RView& rv,
                              InflateReport& rep);
-    std::string drawable_path_for(const AxmlAttribute& a, InflateReport& rep) const;
+    std::string drawable_path_for(const AxmlAttribute& a, InflateReport& rep,
+                                  uint16_t* out_density = nullptr) const;
 
     struct RView {
         std::string cls;
@@ -92,6 +93,9 @@ private:
         float corner_radius = 0;
         bool has_stroke = false; uint32_t stroke_color = 0; float stroke_w = 0;
         std::string src_path;             // ImageView source
+        // G04 §4: selected config density (raw form) of the resolved file drawables
+        uint16_t src_density = 0;
+        uint16_t bg_drawable_density = 0;
         bool clickable = false;
         int visibility = 0;
         // relative layout rules
@@ -106,6 +110,11 @@ private:
     apk::ApkParser& apk_;
     ArscParser& arsc_;
     float density_;
+    // G04: APK entry list for canonical select_file lookups. NOTE: this
+    // class is currently NOT referenced by the build (audited this campaign;
+    // LayoutInflater is the single live inflation path). Kept law-consistent;
+    // deletion is queued for the duplicate-implementation ledger.
+    std::vector<std::string> apk_entries_;
 };
 
 }  // namespace resources

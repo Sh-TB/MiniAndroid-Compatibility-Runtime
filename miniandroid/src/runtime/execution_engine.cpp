@@ -11,6 +11,7 @@
 #include "../renderer/software_renderer.h"
 #include "../fonts/text_shaper.h"
 #include "../resources/resource_runtime.h"
+#include "../resources/res_config.h"  // G04 §4: device_config() density law
 // EXP-086 Phase 7 (B4 FIX): HandlerShadow for Runnable queue drain
 #include "../framework/android_shadows.h"
 #include "../framework/dialog_shadow.h"
@@ -30,6 +31,40 @@ namespace miniandroid {
 namespace runtime {
 
 namespace fs = std::filesystem;
+
+// ── G04 §4/§12: ONE density-scaling + placement law for EVERY image draw ───
+// BitmapFactory law chain (BitmapFactory.java decodeResourceStream +
+// BitmapFactory.cpp native scale): inDensity = the SELECTED entry's config
+// density (0 → DENSITY_DEFAULT 160; DENSITY_NONE → never scale);
+// inTargetDensity = the device densityDpi; scale = target/source.
+// ImageView law (ImageView.java L255): default scaleType FIT_CENTER —
+// scale = min(boxW/srcW, boxH/srcH), centered in the padding-excluded box.
+// Shared by both render output paths so they cannot drift (§12).
+static uint16_t g04_selected_source_density(uint16_t selected_density) {
+    if (selected_density == 0xFFFF) return 0;            // DENSITY_NONE → no scale
+    return selected_density ? selected_density : 160;    // DENSITY_DEFAULT law
+}
+
+static renderer::FitRect g04_image_draw_rect(
+        int decoded_w, int decoded_h, uint16_t selected_density,
+        int box_x, int box_y, int box_w, int box_h) {
+    int src_w = decoded_w, src_h = decoded_h;
+    uint16_t src_density = g04_selected_source_density(selected_density);
+    if (src_density > 0) {
+        uint16_t target = resources::device_config().density;   // single device law
+        if (target > 0 && src_density != target) {
+            float scale = float(target) / float(src_density);
+            // BitmapFactory scales the BITMAP ITSELF: intrinsic size =
+            // natural × target/source (rounded). Guard the int ceiling.
+            if (decoded_w > 0 && decoded_h > 0 &&
+                decoded_w * decoded_h < (1 << 24)) {   // allocation-safety bound
+                src_w = std::max(1, (int)std::lround(decoded_w * scale));
+                src_h = std::max(1, (int)std::lround(decoded_h * scale));
+            }
+        }
+    }
+    return renderer::fit_center_rect(src_w, src_h, box_x, box_y, box_w, box_h);
+}
 
 ExecutionEngine::ExecutionEngine() {
 }
@@ -1639,17 +1674,37 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                     png_data[2] == 0x4E && png_data[3] == 0x47) {
                                     auto decoded = renderer::PNGDecoder::decode(png_data);
                                     if (decoded.ok && !decoded.rgba.empty()) {
+                                        // G04 §4/§12: density scale (selected config →
+                                        // device) + FIT_CENTER in the padding-excluded
+                                        // box (ImageView.java L255 default scaleType law).
+                                        // Replaces the old (left+5, top+5) natural-size
+                                        // draw — an ad-hoc placement with no AOSP law.
+                                        uint16_t sel_d = node->src_density;
+                                        if (sel_d == 0 && node->image_resource_id != 0) {
+                                            auto& dm = dalvik_engine_.drawable_density_by_resid();
+                                            auto it = dm.find((uint32_t)node->image_resource_id);
+                                            if (it != dm.end()) sel_d = it->second;
+                                        }
+                                        int pl = node->padding_left, pt = node->padding_top;
+                                        int pr = node->padding_right, pb = node->padding_bottom;
+                                        renderer::FitRect fr = g04_image_draw_rect(
+                                            decoded.width, decoded.height, sel_d,
+                                            left + pl, top + pt,
+                                            std::max(1, w - pl - pr),
+                                            std::max(1, h - pt - pb));
                                         canvas.draw_image(decoded.rgba.data(),
                                                           decoded.width, decoded.height,
-                                                          left + 5, top + 5);
+                                                          fr.x, fr.y, fr.w, fr.h);
                                         trace_engine_.info("ExecutionEngine",
                                             "stage_render_frame",
                                             std::string("Drew image '") + node->image_drawable_path +
                                             "' (" + std::to_string(decoded.width) + "x" +
                                             std::to_string(decoded.height) + ", " +
-                                            decoded.color_type_name + ") at (" +
-                                            std::to_string(left + 5) + "," +
-                                            std::to_string(top + 5) + ")");
+                                            decoded.color_type_name + ", src_density=" +
+                                            std::to_string(sel_d) + ") fit-center at (" +
+                                            std::to_string(fr.x) + "," +
+                                            std::to_string(fr.y) + " " +
+                                            std::to_string(fr.w) + "x" + std::to_string(fr.h) + ")");
                                     } else if (!decoded.ok) {
                                         trace_engine_.warning("ExecutionEngine",
                                             "stage_render_frame",
@@ -1720,18 +1775,35 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                         }
                                     }
                                     if (attempted && decoded.ok && !decoded.rgba.empty()) {
+                                        // G04 §4/§12: same density + FIT_CENTER law as
+                                        // every other image draw (single shared helper).
+                                        uint16_t sel_d = node->src_density;
+                                        if (sel_d == 0 && node->image_resource_id != 0) {
+                                            auto& dm = dalvik_engine_.drawable_density_by_resid();
+                                            auto it = dm.find((uint32_t)node->image_resource_id);
+                                            if (it != dm.end()) sel_d = it->second;
+                                        }
+                                        int pl = node->padding_left, pt = node->padding_top;
+                                        int pr = node->padding_right, pb = node->padding_bottom;
+                                        renderer::FitRect fr = g04_image_draw_rect(
+                                            decoded.width, decoded.height, sel_d,
+                                            left + pl, top + pt,
+                                            std::max(1, w - pl - pr),
+                                            std::max(1, h - pt - pb));
                                         canvas.draw_image(decoded.rgba.data(),
                                                           decoded.width, decoded.height,
-                                                          left + 5, top + 5);
+                                                          fr.x, fr.y, fr.w, fr.h);
                                         trace_engine_.info("ExecutionEngine",
                                             "stage_render_frame",
                                             std::string("IMG-RES-RENDER drew '") +
                                             resolved_img_path + "' (" +
                                             std::to_string(decoded.width) + "x" +
                                             std::to_string(decoded.height) + ", " +
-                                            decoded.color_type_name + ") at (" +
-                                            std::to_string(left + 5) + "," +
-                                            std::to_string(top + 5) + ")");
+                                            decoded.color_type_name + ", src_density=" +
+                                            std::to_string(sel_d) + ") fit-center at (" +
+                                            std::to_string(fr.x) + "," +
+                                            std::to_string(fr.y) + " " +
+                                            std::to_string(fr.w) + "x" + std::to_string(fr.h) + ")");
                                     } else {
                                         // Resolution succeeded but decode failed (or
                                         // unsupported format, e.g. XML drawable) — keep
