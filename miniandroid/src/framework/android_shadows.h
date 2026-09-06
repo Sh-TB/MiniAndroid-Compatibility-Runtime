@@ -358,6 +358,7 @@ public:
         std::map<std::string, int32_t>  extras_int;
         std::map<std::string, bool>     extras_bool;
         int flags = 0;
+        uint32_t intent_object_id = 0; // G08: heap object of this Intent
     };
 
     std::string name() const override { return "Intent"; }
@@ -480,6 +481,66 @@ public:
     void set_content_view(uint32_t view_id) { content_view_id_ = view_id; }
     uint32_t content_view_id() const { return content_view_id_; }
 
+    // ── G08: Activity stack + result + launch-intent identity ──────────
+    // TransactionExecutor law: a launched activity pushes onto the task
+    // stack; finish() pops and RESTORES the previous entry (restart law).
+    struct ActivityRecord {
+        uint32_t obj_id = 0;            // heap object of the Activity
+        std::string cls;                // DEX descriptor
+        uint32_t content_view_id = 0;   // its window content root
+        LifecycleState state = LifecycleState::CREATED;
+        // G08: >= 0 when THIS record's activity launched the current one
+        // for a result — delivered to it on pop as onActivityResult.
+        int launched_for_request = -1;
+    };
+    void push_activity_record(const ActivityRecord& r) {
+        stack_.push_back(r);
+    }
+    // Pop the top record: the popped entry IS the previous activity —
+    // restore it as current (the current activity, which is NOT in the
+    // stack, is being destroyed by the finish cascade). Returns false when
+    // the stack is empty (plain finish of the root — nothing to restore).
+    bool pop_activity_record(ActivityRecord* out_popped) {
+        if (stack_.empty()) return false;
+        ActivityRecord top = stack_.back();
+        stack_.pop_back();
+        current_activity_id_ = top.obj_id;
+        current_activity_class_ = top.cls;
+        content_view_id_ = top.content_view_id;
+        state_ = top.state;
+        if (out_popped) *out_popped = top;
+        return true;
+    }
+    size_t stack_depth() const { return stack_.size(); }
+
+    // startActivityForResult(Intent, requestCode): the request code rides
+    // with the pending launch; onActivityResult(request, result, data) is
+    // delivered to the CALLER on pop (before its onStart — the
+    // onActivityResult-before-onResume law).
+    void set_pending_launch_request_code(int rc) { pending_request_code_ = rc; }
+    int take_pending_launch_request_code() {
+        int rc = pending_request_code_;
+        pending_request_code_ = -1;
+        return rc;
+    }
+    // Activity.setResult(resultCode, data) — recorded on the CURRENT record.
+    void set_result(int result_code, uint32_t data_intent_id) {
+        has_result_ = true;
+        result_code_ = result_code;
+        result_data_intent_id_ = data_intent_id;
+    }
+    bool take_result(int* result_code, uint32_t* data_intent_id) {
+        if (!has_result_) return false;
+        has_result_ = false;
+        if (result_code) *result_code = result_code_;
+        if (data_intent_id) *data_intent_id = result_data_intent_id_;
+        return true;
+    }
+    // The Intent the current activity was LAUNCHED with — getIntent()
+    // returns it so extras propagate through the real pipeline.
+    void set_launch_intent_id(uint32_t id) { launch_intent_id_ = id; }
+    uint32_t launch_intent_id() const { return launch_intent_id_; }
+
     // G07: Activity.finish() law (Activity.java finish → ActivityThread.
     // handleDestroyActivity): finish() does NOT destroy synchronously — it
     // REQUESTS destruction; the runtime performs the PAUSED → STOPPED →
@@ -508,6 +569,14 @@ private:
     int32_t layout_resource_id_ = 0;
     LifecycleState state_ = LifecycleState::NONE;
     bool pending_finish_ = false;   // G07: finish() requested, not yet applied
+    // G08: task stack (bottom..top; the ROOT activity is stack_[0] once a
+    // second activity pushes — the current activity is NOT in the stack).
+    std::vector<ActivityRecord> stack_;
+    int pending_request_code_ = -1;
+    bool has_result_ = false;
+    int result_code_ = 0;
+    uint32_t result_data_intent_id_ = 0;
+    uint32_t launch_intent_id_ = 0;
     // EXP-087 Phase 3 (B2 FIX): APK path for layout_cache.json lookup
     std::string apk_path_;
     // UNIFIED_007: JSON stats from last real inflation
