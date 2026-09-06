@@ -1,0 +1,50 @@
+[
+  {
+    "package": "de.duenndns.gmdice",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 8,
+    "changed": 8
+  },
+  {
+    "package": "omegacentauri.mobi.simplestopwatch",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 4,
+    "changed": 2
+  },
+  {
+    "package": "com.chessclock.android",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 8,
+    "changed": 0
+  },
+  {
+    "package": "org.billthefarmer.notes",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 2,
+    "changed": 0
+  },
+  {
+    "package": "dubrowgn.microtimer",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 12,
+    "changed": 0
+  },
+  {
+    "package": "app.varlorg.unote",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 4,
+    "changed": 2
+  }
+]

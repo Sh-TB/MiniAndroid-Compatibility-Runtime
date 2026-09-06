@@ -1,0 +1,142 @@
+{
+  "activities": [
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.VIEW",
+            "android.intent.action.EDIT"
+          ],
+          "categories": [
+            "android.intent.category.BROWSABLE",
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.VIEW",
+            "android.intent.action.EDIT"
+          ],
+          "categories": [
+            "android.intent.category.BROWSABLE",
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.SEND"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.SEND",
+            "android.intent.action.SEND_MULTIPLE"
+          ],
+          "categories": [
+            "android.intent.category.BROWSABLE",
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        },
+        {
+          "actions": [
+            "android.intent.action.VIEW"
+          ],
+          "categories": [
+            "android.intent.category.BROWSABLE",
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "org.billthefarmer.notes.Notes",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "org.billthefarmer.notes.Editor",
+      "target": null
+    },
+    {
+      "exported": null,
+      "filters": [],
+      "kind": "activity",
+      "name": "org.billthefarmer.notes.Settings",
+      "target": null
+    },
+    {
+      "exported": "true",
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.CREATE_SHORTCUT"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "org.billthefarmer.notes.Shortcut",
+      "target": null
+    }
+  ],
+  "apk_file": "org.billthefarmer.notes_139.apk",
+  "dex": {
+    "androidx_core": false,
+    "appcompat": false,
+    "compose": false,
+    "dex_files": 1,
+    "handler_postdelayed": true,
+    "material": false,
+    "set_on_click": true,
+    "set_on_long_click": true,
+    "set_result": true,
+    "start_activity": true,
+    "start_activity_for_result": true,
+    "support_v7": false,
+    "view_classes": [
+      "android.widget.Button",
+      "android.widget.EditText",
+      "android.widget.LinearLayout",
+      "android.widget.ScrollView",
+      "android.widget.TextView",
+      "android.widget.Toast"
+    ]
+  },
+  "interactive_surface": true,
+  "label": "Notes",
+  "launchable_activity": "org.billthefarmer.notes.Notes",
+  "minSdk": "21",
+  "multi_activity": true,
+  "n_activities": 4,
+  "non_launcher_intent_filters": 7,
+  "package": "org.billthefarmer.notes",
+  "result_api_surface": true,
+  "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+  "targetSdk": "28",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "versionCode": "139",
+  "versionName": "1.39"
+}

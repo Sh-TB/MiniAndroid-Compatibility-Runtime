@@ -1,0 +1,55 @@
+{
+  "package": "fr.neamar.kiss",
+  "apk_file": "fr.neamar.kiss_224.apk",
+  "sha256": "da6ab0b1219ad3b5ee573698523fb15d60a918083e0843f94a03c1b12e1098c9",
+  "minSdk": "21",
+  "targetSdk": "36",
+  "uses_appcompat": true,
+  "uses_compose": false,
+  "n_activities": 5,
+  "interactive_surface": true,
+  "base": {
+    "rc": 1,
+    "status": "PARTIAL",
+    "seconds": 15.5,
+    "has_screenshot": true,
+    "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+    "log_path": "/tmp/g09_runs/fr.neamar.kiss/base/console.log"
+  },
+  "click_run_status": false,
+  "click": {
+    "present": false
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "RESUMED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "STARTED",
+        true
+      ],
+      [
+        "STARTED",
+        "RESUMED",
+        true
+      ]
+    ],
+    "finish_cascade": null,
+    "activity_launch": null
+  },
+  "g08": {
+    "startActivity_in_dex_trace": true,
+    "startActivityForResult_in_dex_trace": true,
+    "intent_apis_seen": [
+      "getIntent"
+    ],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

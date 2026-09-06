@@ -1,0 +1,43 @@
+{
+  "package": "io.github.yamin8000.dooz",
+  "apk_file": "io.github.yamin8000.dooz_18.apk",
+  "sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
+  "minSdk": "24",
+  "targetSdk": "34",
+  "uses_appcompat": false,
+  "uses_compose": true,
+  "n_activities": 1,
+  "interactive_surface": false,
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 1.1,
+    "has_screenshot": true,
+    "screenshot_sha256": "e33e6e751b8c4a4aae5f2e143a5544bea0e3519b1ca87bcc8338ed8c5fb39a5f",
+    "log_path": "/tmp/g09_runs/io.github.yamin8000.dooz/base/console.log"
+  },
+  "click_run_status": false,
+  "click": {
+    "present": false
+  },
+  "lifecycle": {
+    "present": true,
+    "final_state": "ACTIVITY_CREATED",
+    "transitions": [
+      [
+        "PROCESS_CREATED",
+        "ACTIVITY_CREATED",
+        true
+      ]
+    ],
+    "finish_cascade": null,
+    "activity_launch": null
+  },
+  "g08": {
+    "startActivity_in_dex_trace": false,
+    "startActivityForResult_in_dex_trace": true,
+    "intent_apis_seen": [],
+    "second_activity_instantiated": null,
+    "activity_not_found": false
+  }
+}

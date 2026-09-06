@@ -1,0 +1,57 @@
+{
+  "activities": [
+    {
+      "exported": null,
+      "filters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "kind": "intent-filter"
+        }
+      ],
+      "kind": "activity",
+      "name": "de.duenndns.gmdice.GameMasterDice",
+      "target": null
+    }
+  ],
+  "apk_file": "de.duenndns.gmdice_8.apk",
+  "dex": {
+    "androidx_core": false,
+    "appcompat": false,
+    "compose": false,
+    "dex_files": 1,
+    "handler_postdelayed": false,
+    "material": false,
+    "set_on_click": true,
+    "set_on_long_click": true,
+    "set_result": false,
+    "start_activity": true,
+    "start_activity_for_result": false,
+    "support_v7": false,
+    "view_classes": [
+      "android.widget.Button",
+      "android.widget.EditText",
+      "android.widget.ListView",
+      "android.widget.TextView"
+    ]
+  },
+  "interactive_surface": true,
+  "label": "GM Dice",
+  "launchable_activity": "de.duenndns.gmdice.GameMasterDice",
+  "minSdk": "11",
+  "multi_activity": false,
+  "n_activities": 1,
+  "non_launcher_intent_filters": 1,
+  "package": "de.duenndns.gmdice",
+  "result_api_surface": false,
+  "sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+  "targetSdk": "27",
+  "uses_appcompat": false,
+  "uses_compose": false,
+  "versionCode": "8",
+  "versionName": "1.0"
+}

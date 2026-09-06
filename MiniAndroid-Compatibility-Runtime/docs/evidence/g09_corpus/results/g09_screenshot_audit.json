@@ -1,0 +1,652 @@
+{
+  "app.varlorg.unote": {
+    "base": {
+      "file": "/tmp/g09_runs/app.varlorg.unote/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 194,
+      "background_rgb": "ff:ff:ff",
+      "background_share": 0.9089,
+      "nonbg_pixels": 189000,
+      "nonbg_share": 0.09115,
+      "top_colors": [
+        {
+          "rgb": "ff:ff:ff",
+          "share": 0.9089
+        },
+        {
+          "rgb": "e1:e1:e1",
+          "share": 0.0804
+        },
+        {
+          "rgb": "6f:a8:dc",
+          "share": 0.0077
+        }
+      ]
+    },
+    "click_frames": {
+      "click_frame_2.png": {
+        "file": "/tmp/g09_runs/app.varlorg.unote/click/click_frame_2.png",
+        "w": 1080,
+        "h": 1920,
+        "unique_colors": 194,
+        "background_rgb": "ff:ff:ff",
+        "background_share": 0.9089,
+        "nonbg_pixels": 189000,
+        "nonbg_share": 0.09115,
+        "top_colors": [
+          {
+            "rgb": "ff:ff:ff",
+            "share": 0.9089
+          },
+          {
+            "rgb": "e1:e1:e1",
+            "share": 0.0794
+          },
+          {
+            "rgb": "6f:a8:dc",
+            "share": 0.0077
+          }
+        ]
+      },
+      "click_frame_3.png": {
+        "file": "/tmp/g09_runs/app.varlorg.unote/click/click_frame_3.png",
+        "w": 1080,
+        "h": 1920,
+        "unique_colors": 194,
+        "background_rgb": "ff:ff:ff",
+        "background_share": 0.9089,
+        "nonbg_pixels": 189000,
+        "nonbg_share": 0.09115,
+        "top_colors": [
+          {
+            "rgb": "ff:ff:ff",
+            "share": 0.9089
+          },
+          {
+            "rgb": "e1:e1:e1",
+            "share": 0.0794
+          },
+          {
+            "rgb": "6f:a8:dc",
+            "share": 0.0077
+          }
+        ]
+      }
+    }
+  },
+  "com.appliberated.helloworldselfaware": {
+    "base": {
+      "file": "/tmp/g09_runs/com.appliberated.helloworldselfaware/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 256,
+      "background_rgb": "00:00:00",
+      "background_share": 0.9866,
+      "nonbg_pixels": 27827,
+      "nonbg_share": 0.01342,
+      "top_colors": [
+        {
+          "rgb": "00:00:00",
+          "share": 0.9866
+        },
+        {
+          "rgb": "ff:ff:ff",
+          "share": 0.0085
+        },
+        {
+          "rgb": "78:78:78",
+          "share": 0.0002
+        }
+      ]
+    }
+  },
+  "com.benny.openlauncher": {
+    "base": {
+      "file": "/tmp/g09_runs/com.benny.openlauncher/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 3,
+      "background_rgb": "f0:f0:f0",
+      "background_share": 0.9973,
+      "nonbg_pixels": 5676,
+      "nonbg_share": 0.00274,
+      "top_colors": [
+        {
+          "rgb": "f0:f0:f0",
+          "share": 0.9973
+        },
+        {
+          "rgb": "d8:d8:d8",
+          "share": 0.0014
+        },
+        {
+          "rgb": "99:99:99",
+          "share": 0.0013
+        }
+      ]
+    }
+  },
+  "com.chessclock.android": {
+    "base": {
+      "file": "/tmp/g09_runs/com.chessclock.android/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 35,
+      "background_rgb": "00:00:00",
+      "background_share": 0.9725,
+      "nonbg_pixels": 57026,
+      "nonbg_share": 0.0275,
+      "top_colors": [
+        {
+          "rgb": "00:00:00",
+          "share": 0.9725
+        },
+        {
+          "rgb": "21:21:21",
+          "share": 0.0188
+        },
+        {
+          "rgb": "4f:4f:4f",
+          "share": 0.0068
+        }
+      ]
+    }
+  },
+  "com.emmanuelmess.tictactoe": {
+    "base": {
+      "file": "/tmp/g09_runs/com.emmanuelmess.tictactoe/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 1,
+      "background_rgb": "ff:ff:ff",
+      "background_share": 1.0,
+      "nonbg_pixels": 0,
+      "nonbg_share": 0.0,
+      "top_colors": [
+        {
+          "rgb": "ff:ff:ff",
+          "share": 1.0
+        }
+      ]
+    }
+  },
+  "com.github.muellerma.stopwatch": {
+    "base": {
+      "file": "/tmp/g09_runs/com.github.muellerma.stopwatch/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 2,
+      "background_rgb": "ff:ff:ff",
+      "background_share": 0.9887,
+      "nonbg_pixels": 23472,
+      "nonbg_share": 0.01132,
+      "top_colors": [
+        {
+          "rgb": "ff:ff:ff",
+          "share": 0.9887
+        },
+        {
+          "rgb": "00:00:00",
+          "share": 0.0113
+        }
+      ]
+    }
+  },
+  "de.duenndns.gmdice": {
+    "base": {
+      "file": "/tmp/g09_runs/de.duenndns.gmdice/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 299,
+      "background_rgb": "99:99:99",
+      "background_share": 0.7536,
+      "nonbg_pixels": 510862,
+      "nonbg_share": 0.24636,
+      "top_colors": [
+        {
+          "rgb": "99:99:99",
+          "share": 0.7536
+        },
+        {
+          "rgb": "ff:ff:ff",
+          "share": 0.1587
+        },
+        {
+          "rgb": "42:64:84",
+          "share": 0.073
+        }
+      ]
+    },
+    "click_frames": {
+      "click_frame_0.png": {
+        "file": "/tmp/g09_runs/de.duenndns.gmdice/click/click_frame_0.png",
+        "w": 1080,
+        "h": 1920,
+        "unique_colors": 195,
+        "background_rgb": "5b:5b:5b",
+        "background_share": 0.7537,
+        "nonbg_pixels": 510779,
+        "nonbg_share": 0.24632,
+        "top_colors": [
+          {
+            "rgb": "5b:5b:5b",
+            "share": 0.7537
+          },
+          {
+            "rgb": "ff:ff:ff",
+            "share": 0.0994
+          },
+          {
+            "rgb": "27:3c:4f",
+            "share": 0.073
+          }
+        ]
+      },
+      "click_frame_1.png": {
+        "file": "/tmp/g09_runs/de.duenndns.gmdice/click/click_frame_1.png",
+        "w": 1080,
+        "h": 1920,
+        "unique_colors": 195,
+        "background_rgb": "5b:5b:5b",
+        "background_share": 0.7537,
+        "nonbg_pixels": 510779,
+        "nonbg_share": 0.24632,
+        "top_colors": [
+          {
+            "rgb": "5b:5b:5b",
+            "share": 0.7537
+          },
+          {
+            "rgb": "ff:ff:ff",
+            "share": 0.0994
+          },
+          {
+            "rgb": "27:3c:4f",
+            "share": 0.073
+          }
+        ]
+      },
+      "click_frame_2.png": {
+        "file": "/tmp/g09_runs/de.duenndns.gmdice/click/click_frame_2.png",
+        "w": 1080,
+        "h": 1920,
+        "unique_colors": 195,
+        "background_rgb": "5b:5b:5b",
+        "background_share": 0.7537,
+        "nonbg_pixels": 510779,
+        "nonbg_share": 0.24632,
+        "top_colors": [
+          {
+            "rgb": "5b:5b:5b",
+            "share": 0.7537
+          },
+          {
+            "rgb": "ff:ff:ff",
+            "share": 0.0994
+          },
+          {
+            "rgb": "27:3c:4f",
+            "share": 0.073
+          }
+        ]
+      },
+      "click_frame_3.png": {
+        "file": "/tmp/g09_runs/de.duenndns.gmdice/click/click_frame_3.png",
+        "w": 1080,
+        "h": 1920,
+        "unique_colors": 123,
+        "background_rgb": "36:36:36",
+        "background_share": 0.638,
+        "nonbg_pixels": 750733,
+        "nonbg_share": 0.36204,
+        "top_colors": [
+          {
+            "rgb": "36:36:36",
+            "share": 0.638
+          },
+          {
+            "rgb": "ff:ff:ff",
+            "share": 0.2747
+          },
+          {
+            "rgb": "17:24:2f",
+            "share": 0.073
+          }
+        ]
+      },
+      "click_frame_4.png": {
+        "file": "/tmp/g09_runs/de.duenndns.gmdice/click/click_frame_4.png",
+        "w": 1080,
+        "h": 1920,
+        "unique_colors": 123,
+        "background_rgb": "36:36:36",
+        "background_share": 0.638,
+        "nonbg_pixels": 750733,
+        "nonbg_share": 0.36204,
+        "top_colors": [
+          {
+            "rgb": "36:36:36",
+            "share": 0.638
+          },
+          {
+            "rgb": "ff:ff:ff",
+            "share": 0.2747
+          },
+          {
+            "rgb": "17:24:2f",
+            "share": 0.073
+          }
+        ]
+      }
+    }
+  },
+  "dubrowgn.microtimer": {
+    "base": {
+      "file": "/tmp/g09_runs/dubrowgn.microtimer/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 225,
+      "background_rgb": "e1:e1:e1",
+      "background_share": 0.5476,
+      "nonbg_pixels": 938136,
+      "nonbg_share": 0.45242,
+      "top_colors": [
+        {
+          "rgb": "e1:e1:e1",
+          "share": 0.5476
+        },
+        {
+          "rgb": "ff:ff:ff",
+          "share": 0.4281
+        },
+        {
+          "rgb": "cc:cc:cc",
+          "share": 0.0128
+        }
+      ]
+    }
+  },
+  "fr.neamar.kiss": {
+    "base": {
+      "file": "/tmp/g09_runs/fr.neamar.kiss/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 2,
+      "background_rgb": "ff:ff:ff",
+      "background_share": 0.9887,
+      "nonbg_pixels": 23472,
+      "nonbg_share": 0.01132,
+      "top_colors": [
+        {
+          "rgb": "ff:ff:ff",
+          "share": 0.9887
+        },
+        {
+          "rgb": "00:00:00",
+          "share": 0.0113
+        }
+      ]
+    }
+  },
+  "io.github.yamin8000.dooz": {
+    "base": {
+      "file": "/tmp/g09_runs/io.github.yamin8000.dooz/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 3,
+      "background_rgb": "f0:f0:f0",
+      "background_share": 0.9984,
+      "nonbg_pixels": 3404,
+      "nonbg_share": 0.00164,
+      "top_colors": [
+        {
+          "rgb": "f0:f0:f0",
+          "share": 0.9984
+        },
+        {
+          "rgb": "d8:d8:d8",
+          "share": 0.0014
+        },
+        {
+          "rgb": "99:99:99",
+          "share": 0.0002
+        }
+      ]
+    }
+  },
+  "net.gsantner.markor": {
+    "base": {
+      "file": "/tmp/g09_runs/net.gsantner.markor/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 2,
+      "background_rgb": "ff:ff:ff",
+      "background_share": 0.9887,
+      "nonbg_pixels": 23472,
+      "nonbg_share": 0.01132,
+      "top_colors": [
+        {
+          "rgb": "ff:ff:ff",
+          "share": 0.9887
+        },
+        {
+          "rgb": "00:00:00",
+          "share": 0.0113
+        }
+      ]
+    }
+  },
+  "nl.hansdezwart.bgclock": {
+    "base": {
+      "file": "/tmp/g09_runs/nl.hansdezwart.bgclock/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 1,
+      "background_rgb": "33:2e:2b",
+      "background_share": 1.0,
+      "nonbg_pixels": 0,
+      "nonbg_share": 0.0,
+      "top_colors": [
+        {
+          "rgb": "33:2e:2b",
+          "share": 1.0
+        }
+      ]
+    }
+  },
+  "omegacentauri.mobi.simplestopwatch": {
+    "base": {
+      "file": "/tmp/g09_runs/omegacentauri.mobi.simplestopwatch/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 387,
+      "background_rgb": "00:00:00",
+      "background_share": 0.9595,
+      "nonbg_pixels": 84000,
+      "nonbg_share": 0.04051,
+      "top_colors": [
+        {
+          "rgb": "00:00:00",
+          "share": 0.9595
+        },
+        {
+          "rgb": "6f:a8:dc",
+          "share": 0.0347
+        },
+        {
+          "rgb": "ff:ff:ff",
+          "share": 0.0038
+        }
+      ]
+    },
+    "click_frames": {
+      "click_frame_0.png": {
+        "file": "/tmp/g09_runs/omegacentauri.mobi.simplestopwatch/click/click_frame_0.png",
+        "w": 1080,
+        "h": 1920,
+        "unique_colors": 379,
+        "background_rgb": "00:00:00",
+        "background_share": 0.9595,
+        "nonbg_pixels": 84000,
+        "nonbg_share": 0.04051,
+        "top_colors": [
+          {
+            "rgb": "00:00:00",
+            "share": 0.9595
+          },
+          {
+            "rgb": "6f:a8:dc",
+            "share": 0.035
+          },
+          {
+            "rgb": "ff:ff:ff",
+            "share": 0.0038
+          }
+        ]
+      },
+      "click_frame_1.png": {
+        "file": "/tmp/g09_runs/omegacentauri.mobi.simplestopwatch/click/click_frame_1.png",
+        "w": 1080,
+        "h": 1920,
+        "unique_colors": 379,
+        "background_rgb": "00:00:00",
+        "background_share": 0.9595,
+        "nonbg_pixels": 84000,
+        "nonbg_share": 0.04051,
+        "top_colors": [
+          {
+            "rgb": "00:00:00",
+            "share": 0.9595
+          },
+          {
+            "rgb": "6f:a8:dc",
+            "share": 0.035
+          },
+          {
+            "rgb": "ff:ff:ff",
+            "share": 0.0038
+          }
+        ]
+      }
+    }
+  },
+  "org.billthefarmer.notes": {
+    "base": {
+      "file": "/tmp/g09_runs/org.billthefarmer.notes/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 4,
+      "background_rgb": "ff:ff:ff",
+      "background_share": 0.9847,
+      "nonbg_pixels": 31752,
+      "nonbg_share": 0.01531,
+      "top_colors": [
+        {
+          "rgb": "ff:ff:ff",
+          "share": 0.9847
+        },
+        {
+          "rgb": "cc:cc:cc",
+          "share": 0.0128
+        },
+        {
+          "rgb": "6f:a8:dc",
+          "share": 0.0023
+        }
+      ]
+    }
+  },
+  "org.connectbot": {
+    "base": {
+      "file": "/tmp/g09_runs/org.connectbot/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 2,
+      "background_rgb": "ff:ff:ff",
+      "background_share": 0.9887,
+      "nonbg_pixels": 23472,
+      "nonbg_share": 0.01132,
+      "top_colors": [
+        {
+          "rgb": "ff:ff:ff",
+          "share": 0.9887
+        },
+        {
+          "rgb": "00:00:00",
+          "share": 0.0113
+        }
+      ]
+    }
+  },
+  "org.debian.eugen.headingcalculator": {
+    "base": {
+      "file": "/tmp/g09_runs/org.debian.eugen.headingcalculator/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 3,
+      "background_rgb": "f0:f0:f0",
+      "background_share": 0.9974,
+      "nonbg_pixels": 5444,
+      "nonbg_share": 0.00263,
+      "top_colors": [
+        {
+          "rgb": "f0:f0:f0",
+          "share": 0.9974
+        },
+        {
+          "rgb": "d8:d8:d8",
+          "share": 0.0014
+        },
+        {
+          "rgb": "99:99:99",
+          "share": 0.0012
+        }
+      ]
+    }
+  },
+  "org.fossify.notes": {
+    "base": {
+      "file": "/tmp/g09_runs/org.fossify.notes/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 2,
+      "background_rgb": "ff:ff:ff",
+      "background_share": 0.9887,
+      "nonbg_pixels": 23472,
+      "nonbg_share": 0.01132,
+      "top_colors": [
+        {
+          "rgb": "ff:ff:ff",
+          "share": 0.9887
+        },
+        {
+          "rgb": "00:00:00",
+          "share": 0.0113
+        }
+      ]
+    }
+  },
+  "rkr.simplekeyboard.inputmethod": {
+    "base": {
+      "file": "/tmp/g09_runs/rkr.simplekeyboard.inputmethod/base/screenshot.png",
+      "w": 1080,
+      "h": 1920,
+      "unique_colors": 2,
+      "background_rgb": "ff:ff:ff",
+      "background_share": 0.9887,
+      "nonbg_pixels": 23472,
+      "nonbg_share": 0.01132,
+      "top_colors": [
+        {
+          "rgb": "ff:ff:ff",
+          "share": 0.9887
+        },
+        {
+          "rgb": "00:00:00",
+          "share": 0.0113
+        }
+      ]
+    }
+  }
+}
