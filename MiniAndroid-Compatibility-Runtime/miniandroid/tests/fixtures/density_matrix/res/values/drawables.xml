@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- G04 §5 alias/reference chain: icon_alias → icon (multi-bucket entry) -->
+    <item name="icon_alias" type="drawable">@drawable/icon</item>
+</resources>

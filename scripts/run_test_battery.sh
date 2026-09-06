@@ -175,6 +175,13 @@ else
     echo "  (fixture missing: $EXT01_APK)"
 fi
 
+# G04 §4: density-matrix differential oracle (aapt2-built fixture;
+# selection law + density scaling + DENSITY_NONE + alias chain + FIT_CENTER)
+bash "$REPO/scripts/validate_density_matrix.sh" /tmp/battery_density \
+    > /tmp/battery_density.log 2>&1
+gate "density-matrix oracle (G04 §4)" $?
+grep -h "DENSITY MATRIX" /tmp/battery_density.log | head -1
+
 # corpus regression: real external APKs must still boot and render
 CORPUS_DIR="$MA/download"
 python3 "$REPO/MiniAndroid-Compatibility-Runtime/scripts/fetch_corpus.py" \
