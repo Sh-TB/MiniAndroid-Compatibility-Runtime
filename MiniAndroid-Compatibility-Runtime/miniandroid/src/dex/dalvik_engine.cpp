@@ -23,6 +23,7 @@
 #include "../framework/dialog_shadow.h"
 #include "../framework/canvas_shadow.h"
 #include "../framework/heap_adapter.h"
+#include "../framework/view_ancestry.h"  // G12 FIX-G12-001: AOSP framework ancestry law
 #include "../resources/resource_runtime.h"  // G10 FIX-G10-002: early classifier wiring
 #include <chrono>
 #include <algorithm>
@@ -527,16 +528,40 @@ fallback:
 
 bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
                                              const std::string& ancestor_desc) const {
-    if (class_desc == ancestor_desc) return true;
-    std::string current = class_desc;
+    // G12 FIX-G12-001b (descriptor form law): the UI layer hands us
+    // dot-form descriptors (Lfoo.bar.Baz; from AXML tags) while the
+    // class_to_superclass_ map and the framework ancestry table are
+    // slash-form (Lfoo/bar/Baz; from the DEX). Normalize once here.
+    const std::string want =
+        framework::normalize_class_desc(ancestor_desc);
+    std::string current = framework::normalize_class_desc(class_desc);
+    if (current == want) return true;
     std::unordered_set<std::string> visited;  // cycle protection
     for (int i = 0; i < 50; ++i) {  // max depth 50 to prevent infinite loops
         if (visited.count(current)) return false;  // cycle
         visited.insert(current);
-        auto it = class_to_superclass_.find(current);
-        if (it == class_to_superclass_.end()) return false;
-        current = it->second;
-        if (current == ancestor_desc) return true;
+        // G12 FIX-G12-001 (AOSP framework ancestry law): when the class is
+        // a framework class (or the walk exits app code into one), the
+        // AOSP `extends` hierarchy is the authority — TableRow/TableLayout
+        // extend LinearLayout, ScrollView extends FrameLayout, Button
+        // extends TextView. Without this layer the framework classes fell
+        // to substring heuristics and TableRow classified as a leaf
+        // (0x0 rows under 44px children — headingcalculator display grid).
+        if (auto sup = framework::framework_superclass_of(current);
+            !sup.empty()) {
+            current = sup;
+        } else {
+            auto it = class_to_superclass_.find(current);
+            if (it == class_to_superclass_.end()) {
+                // Unknown in BOTH layers: fall back to the framework walk
+                // for the original descriptor (covers multi-hop app->
+                // framework chains where the app entry point itself is
+                // framework-relative).
+                return framework::framework_is_subclass(current, want);
+            }
+            current = it->second;
+        }
+        if (current == want) return true;
         if (current.empty() || current == "Ljava/lang/Object;") return false;
     }
     return false;
