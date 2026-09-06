@@ -234,6 +234,11 @@ int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config)
     // nothing and second activities never launched. Registering it makes
     // the Intent pipeline (G08 §12) reachable from real APK code.
     shadow_registry.register_shadow<framework::IntentShadow>();
+    // G11 FIX-G11-002: LayoutInflater.from/inflate — app View constructors
+    // build their child hierarchy through LayoutInflater.inflate(res, this);
+    // without the shadow those calls bridge to nothing and the subtree
+    // created inside the constructor is lost.
+    shadow_registry.register_shadow<framework::LayoutInflaterShadow>();
     if (activity_shadow) {
         activity_shadow->set_apk_path(apk_path);
     }

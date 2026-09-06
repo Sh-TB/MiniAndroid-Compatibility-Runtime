@@ -1,0 +1,2679 @@
+[
+ {
+  "apk": "TinyMusicPlayer.apk",
+  "dex_files": 0,
+  "custom_views": [],
+  "error": "BadZipFile('File is not a zip file')"
+ },
+ {
+  "apk": "Telegram.apk",
+  "dex_files": 0,
+  "custom_views": [],
+  "error": "BadZipFile('File is not a zip file')"
+ },
+ {
+  "apk": "com.chessclock.android_29.apk",
+  "dex_files": 1,
+  "custom_views": []
+ },
+ {
+  "apk": "de.duenndns.gmdice_8.apk",
+  "dex_files": 1,
+  "custom_views": [
+   {
+    "class": "Lde/duenndns/gmdice/RollResultAdapter;",
+    "direct_super": "Landroid/widget/ArrayAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lde/duenndns/gmdice/SignedNumberPicker;",
+    "direct_super": "Landroid/widget/NumberPicker;",
+    "dex": "classes.dex"
+   }
+  ]
+ },
+ {
+  "apk": "omegacentauri.mobi.simplestopwatch_26.apk",
+  "dex_files": 1,
+  "custom_views": [
+   {
+    "class": "Lomegacentauri/mobi/simplestopwatch/BigTextView;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lomegacentauri/mobi/simplestopwatch/ShowTime$2;",
+    "direct_super": "Landroid/view/GestureDetector$SimpleOnGestureListener;",
+    "dex": "classes.dex"
+   }
+  ]
+ },
+ {
+  "apk": "org.billthefarmer.notes_139.apk",
+  "dex_files": 1,
+  "custom_views": [
+   {
+    "class": "Lorg/billthefarmer/markdown/MarkdownView;",
+    "direct_super": "Landroid/webkit/WebView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/billthefarmer/notes/FileAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/billthefarmer/notes/Notes$1;",
+    "direct_super": "Landroid/webkit/WebViewClient;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/billthefarmer/notes/Notes$GestureListener;",
+    "direct_super": "Landroid/view/GestureDetector$SimpleOnGestureListener;",
+    "dex": "classes.dex"
+   }
+  ]
+ },
+ {
+  "apk": "org.debian.eugen.headingcalculator_1.apk",
+  "dex_files": 1,
+  "custom_views": [
+   {
+    "class": "Lorg/debian/eugen/headingcalculator/CalculatorDisplay;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/debian/eugen/headingcalculator/CalculatorKeypad;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/debian/eugen/headingcalculator/ExplainableButton;",
+    "direct_super": "Landroid/widget/Button;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/debian/eugen/headingcalculator/ExplainableTextView;",
+    "direct_super": "Landroid/widget/TextView;",
+    "dex": "classes.dex"
+   }
+  ]
+ },
+ {
+  "apk": "app.varlorg.unote_30.apk",
+  "dex_files": 1,
+  "custom_views": [
+   {
+    "class": "Lapp/varlorg/ambilwarna/AmbilWarnaSquare;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lapp/varlorg/ambilwarna/widget/AmbilWarnaPrefWidgetView;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lc/s;",
+    "direct_super": "Landroid/widget/ArrayAdapter;",
+    "dex": "classes.dex"
+   }
+  ]
+ },
+ {
+  "apk": "com.benny.openlauncher_39.apk",
+  "dex_files": 0,
+  "custom_views": [],
+  "error": "BadZipFile('File is not a zip file')"
+ },
+ {
+  "apk": "com.github.muellerma.stopwatch_6.apk",
+  "dex_files": 1,
+  "custom_views": [
+   {
+    "class": "Landroidx/appcompat/app/ActionBar$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/app/AlertController$RecycleListView;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/SupportMenuInflater;",
+    "direct_super": "Landroid/view/MenuInflater;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/MenuAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AbsActionBarView;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarContainer;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarOverlayLayout$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarOverlayLayout$NoSystemUiLayoutFlagView;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActivityChooserView$InnerLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatAutoCompleteTextView;",
+    "direct_super": "Landroid/widget/AutoCompleteTextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatImageButton;",
+    "direct_super": "Landroid/widget/ImageButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatImageView;",
+    "direct_super": "Landroid/widget/ImageView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatPopupWindow;",
+    "direct_super": "Landroid/widget/PopupWindow;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatTextView;",
+    "direct_super": "Landroid/widget/TextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ButtonBarLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ContentFrameLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/DropDownListView;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/FitWindowsFrameLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/FitWindowsLinearLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/LinearLayoutCompat$LayoutParams;",
+    "direct_super": "Landroid/widget/LinearLayout$LayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/LinearLayoutCompat;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ScrollingTabContainerView;",
+    "direct_super": "Landroid/widget/HorizontalScrollView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/Toolbar;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ViewStubCompat;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/view/AccessibilityDelegateCompat$AccessibilityDelegateAdapter;",
+    "direct_super": "Landroid/view/View$AccessibilityDelegate;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/NestedScrollView$SavedState;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/emoji2/viewsintegration/EmojiInputConnection;",
+    "direct_super": "Landroid/view/inputmethod/InputConnectionWrapper;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/ExpandedMenuView;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/ListMenuItemView;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarOverlayLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/NestedScrollView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   }
+  ]
+ },
+ {
+  "apk": "dubrowgn.microtimer_8.apk",
+  "dex_files": 1,
+  "custom_views": [
+   {
+    "class": "Ldubrowgn/microtimer/RoTimeControl;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lk/g;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   }
+  ]
+ },
+ {
+  "apk": "io.github.yamin8000.dooz_18.apk",
+  "dex_files": 1,
+  "custom_views": [
+   {
+    "class": "LC/m;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LC/p;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LJ0/s$a;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LJ0/t;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LR0/a$a;",
+    "direct_super": "Landroid/view/View$AccessibilityDelegate;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LT/a;",
+    "direct_super": "Landroid/view/View$DragShadowBuilder;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/compose/ui/platform/AbstractComposeView;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/compose/ui/platform/AndroidComposeViewAccessibilityDelegateCompat$d;",
+    "direct_super": "Landroid/view/accessibility/AccessibilityNodeProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/compose/ui/platform/L0$a;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/compose/ui/platform/N;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/compose/ui/platform/f0;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/ContentLoadingProgressBar;",
+    "direct_super": "Landroid/widget/ProgressBar;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/NestedScrollView$SavedState;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Ll/I;",
+    "direct_super": "Landroid/widget/EdgeEffect;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lo0/a;",
+    "direct_super": "Landroid/view/ActionMode$Callback2;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LR0/E$d$a;",
+    "direct_super": "Landroid/view/WindowInsetsAnimation$Callback;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LS/i;",
+    "direct_super": "Landroid/view/autofill/AutofillManager$AutofillCallback;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/compose/ui/platform/L0;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LI0/a;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/compose/ui/platform/AndroidComposeView;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/NestedScrollView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   }
+  ]
+ },
+ {
+  "apk": "nl.hansdezwart.bgclock_2.apk",
+  "dex_files": 1,
+  "custom_views": [
+   {
+    "class": "Landroidx/core/view/AccessibilityDelegateCompat$AccessibilityDelegateAdapter;",
+    "direct_super": "Landroid/view/View$AccessibilityDelegate;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/view/accessibility/AccessibilityNodeProviderCompat$AccessibilityNodeProviderApi16;",
+    "direct_super": "Landroid/view/accessibility/AccessibilityNodeProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/view/inputmethod/InputConnectionCompat$1;",
+    "direct_super": "Landroid/view/inputmethod/InputConnectionWrapper;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/view/inputmethod/InputConnectionCompat$2;",
+    "direct_super": "Landroid/view/inputmethod/InputConnectionWrapper;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/ContentLoadingProgressBar;",
+    "direct_super": "Landroid/widget/ProgressBar;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/NestedScrollView$SavedState;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/NestedScrollView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/webkit/WebViewClientCompat;",
+    "direct_super": "Landroid/webkit/WebViewClient;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/webkit/WebViewCompat$1;",
+    "direct_super": "Landroid/webkit/WebView$VisualStateCallback;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/webkit/internal/FrameworkServiceWorkerClient;",
+    "direct_super": "Landroid/webkit/ServiceWorkerClient;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/webkit/internal/WebMessagePortImpl$1;",
+    "direct_super": "Landroid/webkit/WebMessagePort$WebMessageCallback;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/webkit/internal/WebMessagePortImpl$2;",
+    "direct_super": "Landroid/webkit/WebMessagePort$WebMessageCallback;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/webkit/internal/WebViewRenderProcessClientFrameworkAdapter;",
+    "direct_super": "Landroid/webkit/WebViewRenderProcessClient;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lnl/hansdezwart/bgclock/MainActivity$1;",
+    "direct_super": "Landroid/webkit/WebViewClient;",
+    "dex": "classes.dex"
+   }
+  ]
+ },
+ {
+  "apk": "rkr.simplekeyboard.inputmethod_145.apk",
+  "dex_files": 1,
+  "custom_views": [
+   {
+    "class": "Lj;",
+    "direct_super": "Landroid/widget/RelativeLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lw0;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lrkr/simplekeyboard/inputmethod/keyboard/MainKeyboardView;",
+    "direct_super": "Lw0;",
+    "view_root": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lrkr/simplekeyboard/inputmethod/keyboard/MoreKeysKeyboardView;",
+    "direct_super": "Lw0;",
+    "view_root": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lrkr/simplekeyboard/inputmethod/latin/InputView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lx;",
+    "direct_super": "Landroid/widget/TextView;",
+    "dex": "classes.dex"
+   }
+  ]
+ },
+ {
+  "apk": "fr.neamar.kiss_224.apk",
+  "dex_files": 2,
+  "custom_views": [
+   {
+    "class": "Landroidx/appcompat/app/AlertController$AlertParams$1;",
+    "direct_super": "Landroid/widget/ArrayAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/app/AlertController$CheckedItemAdapter;",
+    "direct_super": "Landroid/widget/ArrayAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/app/AlertController$RecycleListView;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ContentFrameLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/SupportActionModeWrapper;",
+    "direct_super": "Landroid/view/ActionMode;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/SupportMenuInflater;",
+    "direct_super": "Landroid/view/MenuInflater;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatTextView;",
+    "direct_super": "Landroid/widget/TextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/ExpandedMenuView;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/ListMenuItemView;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/ListMenuPresenter$MenuAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/MenuAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/MenuItemWrapperICS$CollapsibleActionViewWrapper;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarContainer;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarContextView;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarOverlayLayout$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarOverlayLayout$NoSystemUiLayoutFlagView;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarOverlayLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatImageView;",
+    "direct_super": "Landroid/widget/ImageView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/LinearLayoutCompat$LayoutParams;",
+    "direct_super": "Landroid/widget/LinearLayout$LayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/LinearLayoutCompat;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActivityChooserView$InnerLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatAutoCompleteTextView;",
+    "direct_super": "Landroid/widget/AutoCompleteTextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatButton;",
+    "direct_super": "Landroid/widget/Button;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatCheckBox;",
+    "direct_super": "Landroid/widget/CheckBox;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatCheckedTextView;",
+    "direct_super": "Landroid/widget/CheckedTextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatEditText;",
+    "direct_super": "Landroid/widget/EditText;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatImageButton;",
+    "direct_super": "Landroid/widget/ImageButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatMultiAutoCompleteTextView;",
+    "direct_super": "Landroid/widget/MultiAutoCompleteTextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatPopupWindow;",
+    "direct_super": "Landroid/widget/PopupWindow;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatRadioButton;",
+    "direct_super": "Landroid/widget/RadioButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatRatingBar;",
+    "direct_super": "Landroid/widget/RatingBar;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatSeekBar;",
+    "direct_super": "Landroid/widget/SeekBar;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatSpinner$SavedState;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatSpinner;",
+    "direct_super": "Landroid/widget/Spinner;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatToggleButton;",
+    "direct_super": "Landroid/widget/ToggleButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ButtonBarLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/DropDownListView;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/FitWindowsFrameLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/FitWindowsLinearLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ScrollingTabContainerView;",
+    "direct_super": "Landroid/widget/HorizontalScrollView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/SwitchCompat;",
+    "direct_super": "Landroid/widget/CompoundButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/Toolbar$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/Toolbar;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ViewStubCompat;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/view/AccessibilityDelegateCompat$AccessibilityDelegateAdapter;",
+    "direct_super": "Landroid/view/View$AccessibilityDelegate;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/view/inputmethod/InputConnectionCompat$1;",
+    "direct_super": "Landroid/view/inputmethod/InputConnectionWrapper;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/view/inputmethod/InputConnectionCompat$2;",
+    "direct_super": "Landroid/view/inputmethod/InputConnectionWrapper;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/NestedScrollView$SavedState;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/NestedScrollView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/emoji2/viewsintegration/EmojiInputConnection;",
+    "direct_super": "Landroid/view/inputmethod/InputConnectionWrapper;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/fragment/app/FragmentAnim$EndViewTransitionAnimation;",
+    "direct_super": "Landroid/view/animation/AnimationSet;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/fragment/app/FragmentContainerView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/preference/Preference$BaseSavedState;",
+    "direct_super": "Landroid/view/AbsSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/preference/UnPressableLinearLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/preference/internal/PreferenceImageView;",
+    "direct_super": "Landroid/widget/ImageView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/recyclerview/widget/RecyclerView$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/recyclerview/widget/ItemTouchHelper$ItemTouchHelperGestureListener;",
+    "direct_super": "Landroid/view/GestureDetector$SimpleOnGestureListener;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/recyclerview/widget/RecyclerView;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lfr/neamar/kiss/adapter/RecordAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lfr/neamar/kiss/forwarder/ExperienceTweaks$1;",
+    "direct_super": "Landroid/view/GestureDetector$SimpleOnGestureListener;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lfr/neamar/kiss/forwarder/LiveWallpaper$Anim;",
+    "direct_super": "Landroid/view/animation/Animation;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lfr/neamar/kiss/forwarder/TagsMenu$MenuAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lfr/neamar/kiss/ui/AnimatedListView;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lfr/neamar/kiss/ui/BottomPullEffectView;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lfr/neamar/kiss/ui/ShapedContactBadge;",
+    "direct_super": "Landroid/widget/QuickContactBadge;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lfr/neamar/kiss/ui/ImprovedQuickContactBadge;",
+    "direct_super": "Lfr/neamar/kiss/ui/ShapedContactBadge;",
+    "view_root": "Landroid/widget/QuickContactBadge;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lfr/neamar/kiss/ui/ListPopup$ScrollView;",
+    "direct_super": "Landroid/widget/ScrollView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lfr/neamar/kiss/ui/ListPopup;",
+    "direct_super": "Landroid/widget/PopupWindow;",
+    "dex": "classes.dex"
+   }
+  ]
+ },
+ {
+  "apk": "net.gsantner.markor_163.apk",
+  "dex_files": 2,
+  "custom_views": [
+   {
+    "class": "Landroidx/appcompat/app/ActionBar$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/app/AlertController$AlertParams$1;",
+    "direct_super": "Landroid/widget/ArrayAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/app/AlertController$AlertParams$2;",
+    "direct_super": "Landroid/widget/CursorAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/app/AlertController$CheckedItemAdapter;",
+    "direct_super": "Landroid/widget/ArrayAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/app/AlertController$RecycleListView;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ContentFrameLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/SupportActionModeWrapper;",
+    "direct_super": "Landroid/view/ActionMode;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/SupportMenuInflater;",
+    "direct_super": "Landroid/view/MenuInflater;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatTextView;",
+    "direct_super": "Landroid/widget/TextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/ExpandedMenuView;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/ListMenuItemView;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/ListMenuPresenter$MenuAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/MenuAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/MenuItemWrapperICS$CollapsibleActionViewWrapper;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AbsActionBarView;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarContainer;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarOverlayLayout$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarOverlayLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatImageView;",
+    "direct_super": "Landroid/widget/ImageView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/LinearLayoutCompat$LayoutParams;",
+    "direct_super": "Landroid/widget/LinearLayout$LayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/LinearLayoutCompat;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActivityChooserView$3;",
+    "direct_super": "Landroid/view/View$AccessibilityDelegate;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActivityChooserView$ActivityChooserViewAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActivityChooserView$InnerLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActivityChooserView;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatAutoCompleteTextView;",
+    "direct_super": "Landroid/widget/AutoCompleteTextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatButton;",
+    "direct_super": "Landroid/widget/Button;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatCheckBox;",
+    "direct_super": "Landroid/widget/CheckBox;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatCheckedTextView;",
+    "direct_super": "Landroid/widget/CheckedTextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatEditText;",
+    "direct_super": "Landroid/widget/EditText;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatImageButton;",
+    "direct_super": "Landroid/widget/ImageButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatMultiAutoCompleteTextView;",
+    "direct_super": "Landroid/widget/MultiAutoCompleteTextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatPopupWindow;",
+    "direct_super": "Landroid/widget/PopupWindow;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatRadioButton;",
+    "direct_super": "Landroid/widget/RadioButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatRatingBar;",
+    "direct_super": "Landroid/widget/RatingBar;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatSeekBar;",
+    "direct_super": "Landroid/widget/SeekBar;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatSpinner$SavedState;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatSpinner;",
+    "direct_super": "Landroid/widget/Spinner;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatToggleButton;",
+    "direct_super": "Landroid/widget/ToggleButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ButtonBarLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/DropDownListView;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/FitWindowsFrameLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/FitWindowsLinearLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ScrollingTabContainerView$TabAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ScrollingTabContainerView$TabView;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ScrollingTabContainerView;",
+    "direct_super": "Landroid/widget/HorizontalScrollView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/SearchView$UpdatableTouchDelegate;",
+    "direct_super": "Landroid/view/TouchDelegate;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/cursoradapter/widget/CursorAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/SwitchCompat;",
+    "direct_super": "Landroid/widget/CompoundButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/Toolbar;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ViewStubCompat;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/asynclayoutinflater/view/AsyncLayoutInflater$BasicInflater;",
+    "direct_super": "Landroid/view/LayoutInflater;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/browser/browseractions/BrowserActionsFallbackMenuAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/browser/browseractions/BrowserActionsFallbackMenuView;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/cardview/widget/CardView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/widget/ConstraintHelper;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/widget/ConstraintLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/utils/widget/ImageFilterButton$1;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/utils/widget/ImageFilterButton$2;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/utils/widget/ImageFilterView$1;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/utils/widget/ImageFilterView$2;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/utils/widget/MockView;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/utils/widget/MotionButton$1;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/utils/widget/MotionButton$2;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/utils/widget/MotionLabel$1;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/utils/widget/MotionLabel$2;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/utils/widget/MotionLabel;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/widget/ConstraintLayout$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/widget/Constraints;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/widget/Guideline;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/widget/Placeholder;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/widget/ReactiveGuide;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/coordinatorlayout/widget/CoordinatorLayout$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/coordinatorlayout/widget/CoordinatorLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/view/AccessibilityDelegateCompat$AccessibilityDelegateAdapter;",
+    "direct_super": "Landroid/view/View$AccessibilityDelegate;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/view/WindowInsetsAnimationCompat$Impl30$ProxyCallback;",
+    "direct_super": "Landroid/view/WindowInsetsAnimation$Callback;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/view/accessibility/AccessibilityNodeProviderCompat$AccessibilityNodeProviderApi16;",
+    "direct_super": "Landroid/view/accessibility/AccessibilityNodeProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/view/inputmethod/InputConnectionCompat$1;",
+    "direct_super": "Landroid/view/inputmethod/InputConnectionWrapper;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/view/inputmethod/InputConnectionCompat$2;",
+    "direct_super": "Landroid/view/inputmethod/InputConnectionWrapper;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/ContentLoadingProgressBar;",
+    "direct_super": "Landroid/widget/ProgressBar;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/NestedScrollView$SavedState;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/NestedScrollView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/cursoradapter/widget/CursorFilter;",
+    "direct_super": "Landroid/widget/Filter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/drawerlayout/widget/DrawerLayout$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/drawerlayout/widget/DrawerLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/emoji2/viewsintegration/EmojiInputConnection;",
+    "direct_super": "Landroid/view/inputmethod/InputConnectionWrapper;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/fragment/app/FragmentAnim$EndViewTransitionAnimation;",
+    "direct_super": "Landroid/view/animation/AnimationSet;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/fragment/app/FragmentContainerView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/fragment/app/FragmentTabHost$SavedState;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/fragment/app/FragmentTabHost;",
+    "direct_super": "Landroid/widget/TabHost;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/legacy/widget/Space;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/preference/Preference$BaseSavedState;",
+    "direct_super": "Landroid/view/AbsSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/preference/UnPressableLinearLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/preference/internal/PreferenceImageView;",
+    "direct_super": "Landroid/widget/ImageView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/recyclerview/widget/RecyclerView$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/recyclerview/widget/ItemTouchHelper$ItemTouchHelperGestureListener;",
+    "direct_super": "Landroid/view/GestureDetector$SimpleOnGestureListener;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/recyclerview/widget/RecyclerView;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/slidingpanelayout/widget/SlidingPaneLayout$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/slidingpanelayout/widget/SlidingPaneLayout$TouchBlocker;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/slidingpanelayout/widget/SlidingPaneLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/swiperefreshlayout/widget/CircleImageView;",
+    "direct_super": "Landroid/widget/ImageView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout$2;",
+    "direct_super": "Landroid/view/animation/Animation;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout$3;",
+    "direct_super": "Landroid/view/animation/Animation;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout$4;",
+    "direct_super": "Landroid/view/animation/Animation;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout$6;",
+    "direct_super": "Landroid/view/animation/Animation;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout$7;",
+    "direct_super": "Landroid/view/animation/Animation;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout$8;",
+    "direct_super": "Landroid/view/animation/Animation;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/transition/GhostViewHolder;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/transition/GhostViewPort;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/viewpager/widget/PagerTitleStrip;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/viewpager/widget/ViewPager$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$LayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/viewpager/widget/ViewPager;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/viewpager2/widget/ViewPager2$SavedState;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/viewpager2/widget/ViewPager2;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/github/appintro/indicator/DotIndicatorController;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/github/appintro/indicator/ProgressIndicatorController;",
+    "direct_super": "Landroid/widget/ProgressBar;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/github/appintro/internal/ScrollerCustomDuration;",
+    "direct_super": "Landroid/widget/Scroller;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/appbar/AppBarLayout$LayoutParams;",
+    "direct_super": "Landroid/widget/LinearLayout$LayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/appbar/AppBarLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/appbar/CollapsingToolbarLayout$LayoutParams;",
+    "direct_super": "Landroid/widget/FrameLayout$LayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/appbar/CollapsingToolbarLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/navigation/NavigationBarItemView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/navigation/NavigationBarMenuView;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/navigation/NavigationBarView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/button/MaterialButtonToggleGroup;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/chip/Chip$3;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/chip/ChipGroup$LayoutParams;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/internal/FlowLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/circularreveal/CircularRevealFrameLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/circularreveal/CircularRevealGridLayout;",
+    "direct_super": "Landroid/widget/GridLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/circularreveal/CircularRevealLinearLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/circularreveal/CircularRevealRelativeLayout;",
+    "direct_super": "Landroid/widget/RelativeLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/datepicker/DaysOfWeekAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/datepicker/MaterialCalendarGridView;",
+    "direct_super": "Landroid/widget/GridView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/datepicker/MonthAdapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/divider/MaterialDivider;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/internal/VisibilityAwareImageButton;",
+    "direct_super": "Landroid/widget/ImageButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/imageview/ShapeableImageView$OutlineProvider;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/internal/BaselineLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/internal/ScrimInsetsFrameLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/progressindicator/BaseProgressIndicator;",
+    "direct_super": "Landroid/widget/ProgressBar;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/slider/BaseSlider$SliderState;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/slider/BaseSlider;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/slider/RangeSlider$RangeSliderState;",
+    "direct_super": "Landroid/view/AbsSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/snackbar/BaseTransientBottomBar$SnackbarBaseLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/snackbar/SnackbarContentLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/tabs/TabItem;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/tabs/TabLayout$SlidingTabIndicator;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/tabs/TabLayout$TabView;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/tabs/TabLayout;",
+    "direct_super": "Landroid/widget/HorizontalScrollView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/textfield/IndicatorViewController$2;",
+    "direct_super": "Landroid/view/View$AccessibilityDelegate;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/textfield/StartCompoundLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/textfield/TextInputLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/timepicker/ChipTextInputComboView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/timepicker/ClockHandView;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/timepicker/TimePickerView$3;",
+    "direct_super": "Landroid/view/GestureDetector$SimpleOnGestureListener;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/rarepebble/colorpicker/SliderViewBase;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/rarepebble/colorpicker/AlphaView;",
+    "direct_super": "Lcom/rarepebble/colorpicker/SliderViewBase;",
+    "view_root": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/rarepebble/colorpicker/ColorPickerView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/rarepebble/colorpicker/SquareView;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/rarepebble/colorpicker/HueSatView;",
+    "direct_super": "Lcom/rarepebble/colorpicker/SquareView;",
+    "view_root": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/rarepebble/colorpicker/SwatchView;",
+    "direct_super": "Lcom/rarepebble/colorpicker/SquareView;",
+    "view_root": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/rarepebble/colorpicker/ValueView;",
+    "direct_super": "Lcom/rarepebble/colorpicker/SliderViewBase;",
+    "view_root": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lnet/gsantner/markor/frontend/DraggableScrollbarScrollView;",
+    "direct_super": "Landroid/widget/ScrollView;",
+    "dex": "classes2.dex"
+   },
+   {
+    "class": "Lnet/gsantner/markor/frontend/SearchAndReplaceTextDialog$1;",
+    "direct_super": "Landroid/widget/ArrayAdapter;",
+    "dex": "classes2.dex"
+   },
+   {
+    "class": "Lnet/gsantner/markor/frontend/textview/LineNumbersView;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes2.dex"
+   },
+   {
+    "class": "Lnet/gsantner/markor/web/DraggableScrollbarWebView;",
+    "direct_super": "Landroid/webkit/WebView;",
+    "dex": "classes2.dex"
+   },
+   {
+    "class": "Lnet/gsantner/opoc/web/GsWebViewClient;",
+    "direct_super": "Landroid/webkit/WebViewClient;",
+    "dex": "classes2.dex"
+   },
+   {
+    "class": "Lnet/gsantner/markor/web/MarkorWebViewClient;",
+    "direct_super": "Lnet/gsantner/opoc/web/GsWebViewClient;",
+    "view_root": "Landroid/webkit/WebViewClient;",
+    "dex": "classes2.dex"
+   },
+   {
+    "class": "Lnet/gsantner/markor/widget/TodoWidgetService;",
+    "direct_super": "Landroid/widget/RemoteViewsService;",
+    "dex": "classes2.dex"
+   },
+   {
+    "class": "Lnet/gsantner/opoc/frontend/GsHorizontalScrollView;",
+    "direct_super": "Landroid/widget/HorizontalScrollView;",
+    "dex": "classes2.dex"
+   },
+   {
+    "class": "Lnet/gsantner/opoc/frontend/GsLinearSplitLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes2.dex"
+   },
+   {
+    "class": "Lnet/gsantner/opoc/frontend/GsSearchOrCustomTextDialog$Adapter;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes2.dex"
+   },
+   {
+    "class": "Lnet/gsantner/opoc/frontend/filebrowser/GsFileBrowserListAdapter$StringFilter;",
+    "direct_super": "Landroid/widget/Filter;",
+    "dex": "classes2.dex"
+   },
+   {
+    "class": "Lnet/gsantner/opoc/web/GsWebViewChromeClient;",
+    "direct_super": "Landroid/webkit/WebChromeClient;",
+    "dex": "classes2.dex"
+   },
+   {
+    "class": "Lother/writeily/widget/WrFilesWidgetService;",
+    "direct_super": "Landroid/widget/RemoteViewsService;",
+    "dex": "classes2.dex"
+   }
+  ]
+ },
+ {
+  "apk": "org.fossify.notes_13.apk",
+  "dex_files": 1,
+  "custom_views": [
+   {
+    "class": "LB3/q;",
+    "direct_super": "Landroid/widget/ImageButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LA3/c;",
+    "direct_super": "LB3/q;",
+    "view_root": "Landroid/widget/ImageButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/v0;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LB3/e;",
+    "direct_super": "Lp/v0;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/Q0;",
+    "direct_super": "Landroid/widget/CompoundButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LC3/a;",
+    "direct_super": "Lp/Q0;",
+    "view_root": "Landroid/widget/CompoundButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LD2/e;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LD2/j;",
+    "direct_super": "Landroid/view/ViewGroup$LayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LD2/o;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/A;",
+    "direct_super": "Landroid/widget/RadioButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LE3/a;",
+    "direct_super": "Lp/A;",
+    "view_root": "Landroid/widget/RadioButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/recyclerview/widget/RecyclerView;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LF2/n;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LG1/a;",
+    "direct_super": "Landroid/view/View$AccessibilityDelegate;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LG1/g0;",
+    "direct_super": "Landroid/view/WindowInsetsAnimation$Callback;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LG2/e;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LH1/g;",
+    "direct_super": "Landroid/view/accessibility/AccessibilityNodeProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LI1/b;",
+    "direct_super": "Landroid/view/inputmethod/InputConnectionWrapper;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LJ0/W0;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LJ0/X0;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LJ0/a;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LJ0/d0;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LJ0/t0;",
+    "direct_super": "LJ0/a;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LJ0/w;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LK1/g;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LK3/c;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LL0/a;",
+    "direct_super": "Landroid/view/ActionMode$Callback2;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LM3/g;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LM3/k;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LN3/m;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LN3/p;",
+    "direct_super": "Landroid/view/View$AccessibilityDelegate;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LN3/s;",
+    "direct_super": "Landroid/widget/ArrayAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/n;",
+    "direct_super": "Landroid/widget/AutoCompleteTextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LN3/t;",
+    "direct_super": "Lp/n;",
+    "view_root": "Landroid/widget/AutoCompleteTextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LN3/v;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatTextView;",
+    "direct_super": "Landroid/widget/TextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LS/d;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LS/e;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LS1/b;",
+    "direct_super": "Landroid/view/inputmethod/InputConnectionWrapper;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "LV1/w;",
+    "direct_super": "Landroid/view/animation/AnimationSet;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/app/AlertController$RecycleListView;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/ExpandedMenuView;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/view/menu/ListMenuItemView;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarContainer;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarContextView;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionBarOverlayLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActionMenuView;",
+    "direct_super": "Lp/v0;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ActivityChooserView$InnerLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AlertDialogLayout;",
+    "direct_super": "Lp/v0;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/AppCompatImageView;",
+    "direct_super": "Landroid/widget/ImageView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ButtonBarLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ContentFrameLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/FitWindowsFrameLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/FitWindowsLinearLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/SearchView$SearchAutoComplete;",
+    "direct_super": "Lp/n;",
+    "view_root": "Landroid/widget/AutoCompleteTextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/Toolbar;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/appcompat/widget/ViewStubCompat;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lq1/c;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lq1/u;",
+    "direct_super": "Lq1/c;",
+    "view_root": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/helper/widget/Flow;",
+    "direct_super": "Lq1/u;",
+    "view_root": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/constraintlayout/widget/ConstraintLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/coordinatorlayout/widget/CoordinatorLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/core/widget/NestedScrollView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/fragment/app/FragmentContainerView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/viewpager/widget/PagerTabStrip;",
+    "direct_super": "LD2/e;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Landroidx/viewpager2/widget/ViewPager2;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/andrognito/patternlockview/PatternLockView;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/o;",
+    "direct_super": "Landroid/widget/Button;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/button/MaterialButton;",
+    "direct_super": "Lp/o;",
+    "view_root": "Landroid/widget/Button;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lr3/d;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/button/MaterialButtonToggleGroup;",
+    "direct_super": "Lr3/d;",
+    "view_root": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/p;",
+    "direct_super": "Landroid/widget/CheckBox;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/chip/Chip;",
+    "direct_super": "Lp/p;",
+    "view_root": "Landroid/widget/CheckBox;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/datepicker/MaterialCalendarGridView;",
+    "direct_super": "Landroid/widget/GridView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/datepicker/e;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/datepicker/o;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/divider/MaterialDivider;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/internal/BaselineLayout;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/w;",
+    "direct_super": "Landroid/widget/ImageButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/internal/CheckableImageButton;",
+    "direct_super": "Lp/w;",
+    "view_root": "Landroid/widget/ImageButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/internal/ClippableRoundedCornerLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/internal/NavigationMenuItemView;",
+    "direct_super": "LB3/e;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/internal/TouchObserverFrameLayout;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/snackbar/Snackbar$SnackbarLayout;",
+    "direct_super": "LK3/c;",
+    "view_root": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/snackbar/SnackbarContentLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/tabs/TabItem;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/tabs/TabLayout;",
+    "direct_super": "Landroid/widget/HorizontalScrollView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/u;",
+    "direct_super": "Landroid/widget/EditText;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/textfield/TextInputEditText;",
+    "direct_super": "Lp/u;",
+    "view_root": "Landroid/widget/EditText;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/textfield/TextInputLayout;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/timepicker/ChipTextInputComboView;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/timepicker/ClockHandView;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/google/android/material/timepicker/k;",
+    "direct_super": "Landroid/view/GestureDetector$SimpleOnGestureListener;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/qtalk/recyclerviewfastscroller/RecyclerViewFastScroller;",
+    "direct_super": "Landroid/widget/RelativeLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Li1/i;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Li1/q;",
+    "direct_super": "Li1/i;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Li2/Z;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Li2/t0;",
+    "direct_super": "Li2/Z;",
+    "view_root": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Li2/u;",
+    "direct_super": "Li2/Z;",
+    "view_root": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Li2/y;",
+    "direct_super": "Landroid/view/GestureDetector$SimpleOnGestureListener;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Li3/d;",
+    "direct_super": "LD2/o;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lj/a;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lj/e;",
+    "direct_super": "Landroid/widget/ArrayAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lj1/s;",
+    "direct_super": "LJ0/a;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lj1/x;",
+    "direct_super": "LJ0/a;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lk0/f;",
+    "direct_super": "Landroid/view/autofill/AutofillManager$AutofillCallback;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lm3/d;",
+    "direct_super": "Landroid/widget/LinearLayout$LayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lm3/e;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Ln/e;",
+    "direct_super": "Landroid/view/ActionMode;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Ln/h;",
+    "direct_super": "Landroid/view/MenuInflater;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lo/g;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lo/i;",
+    "direct_super": "Landroid/widget/BaseAdapter;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lo/p;",
+    "direct_super": "Landroid/widget/FrameLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/Breadcrumbs;",
+    "direct_super": "Landroid/widget/HorizontalScrollView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/ColorPickerSquare;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/FingerprintTab;",
+    "direct_super": "Landroid/widget/RelativeLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/LineColorPicker;",
+    "direct_super": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/MyAppBarLayout;",
+    "direct_super": "Lm3/e;",
+    "view_root": "Landroid/widget/LinearLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/MyAppCompatCheckbox;",
+    "direct_super": "Lp/p;",
+    "view_root": "Landroid/widget/CheckBox;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/MyButton;",
+    "direct_super": "Landroid/widget/Button;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/MyCompatRadioButton;",
+    "direct_super": "Lp/A;",
+    "view_root": "Landroid/widget/RadioButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/MyDialogViewPager;",
+    "direct_super": "LD2/o;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/MyEditText;",
+    "direct_super": "Lp/u;",
+    "view_root": "Landroid/widget/EditText;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/MyFloatingActionButton;",
+    "direct_super": "LA3/c;",
+    "view_root": "Landroid/widget/ImageButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/MyMaterialSwitch;",
+    "direct_super": "LC3/a;",
+    "view_root": "Landroid/widget/CompoundButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/MyScrollView;",
+    "direct_super": "Landroid/widget/ScrollView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/MySeekBar;",
+    "direct_super": "Landroid/widget/SeekBar;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/MyTextView;",
+    "direct_super": "Landroid/widget/TextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/MyViewPager;",
+    "direct_super": "Li3/d;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/PurchaseThankYouItem;",
+    "direct_super": "Landroid/widget/RelativeLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/RenamePatternTab;",
+    "direct_super": "Landroid/widget/RelativeLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/commons/views/RenameSimpleTab;",
+    "direct_super": "Landroid/widget/RelativeLayout;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/notes/services/WidgetService;",
+    "direct_super": "Landroid/widget/RemoteViewsService;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lorg/fossify/notes/views/MyHorizontalScrollView;",
+    "direct_super": "Landroid/widget/HorizontalScrollView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/B;",
+    "direct_super": "Landroid/widget/RatingBar;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/D;",
+    "direct_super": "Landroid/widget/SeekBar;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/q0;",
+    "direct_super": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/G0;",
+    "direct_super": "Lp/q0;",
+    "view_root": "Landroid/widget/ListView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/L;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/M0;",
+    "direct_super": "Landroid/widget/HorizontalScrollView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/N0;",
+    "direct_super": "Lp/v0;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/N;",
+    "direct_super": "Landroid/widget/Spinner;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/Z0;",
+    "direct_super": "Lj/a;",
+    "view_root": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/d;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/e0;",
+    "direct_super": "Landroid/widget/ToggleButton;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/e;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/u0;",
+    "direct_super": "Landroid/widget/LinearLayout$LayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/l;",
+    "direct_super": "Lp/u0;",
+    "view_root": "Landroid/widget/LinearLayout$LayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/q;",
+    "direct_super": "Landroid/widget/CheckedTextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/x;",
+    "direct_super": "Landroid/widget/MultiAutoCompleteTextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lp/y;",
+    "direct_super": "Landroid/widget/PopupWindow;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lq1/a;",
+    "direct_super": "Lq1/c;",
+    "view_root": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lq1/e;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lq1/q;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Ls1/e;",
+    "direct_super": "Landroid/view/ViewGroup$MarginLayoutParams;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lt0/l;",
+    "direct_super": "Landroid/view/View;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lt3/b;",
+    "direct_super": "Landroid/view/View$BaseSavedState;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lt3/c;",
+    "direct_super": "Lp/p;",
+    "view_root": "Landroid/widget/CheckBox;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lt5/f;",
+    "direct_super": "Landroid/view/ScaleGestureDetector$SimpleOnScaleGestureListener;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lu0/a;",
+    "direct_super": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lu0/b;",
+    "direct_super": "Lu0/a;",
+    "view_root": "Landroid/view/ViewGroup;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lu3/a;",
+    "direct_super": "Landroid/view/ViewOutlineProvider;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lu5/o;",
+    "direct_super": "Landroid/webkit/WebViewClient;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Ly/Q;",
+    "direct_super": "Landroid/widget/EdgeEffect;",
+    "dex": "classes.dex"
+   }
+  ]
+ },
+ {
+  "apk": "tictactoe.apk",
+  "dex_files": 1,
+  "custom_views": [
+   {
+    "class": "Lcom/badlogic/gdx/backends/android/AndroidOnscreenKeyboard$1;",
+    "direct_super": "Landroid/widget/TextView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20$1;",
+    "direct_super": "Landroid/view/inputmethod/BaseInputConnection;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20API18$1;",
+    "direct_super": "Landroid/view/inputmethod/BaseInputConnection;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18;",
+    "direct_super": "Landroid/view/SurfaceView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20API18;",
+    "direct_super": "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceViewAPI18;",
+    "view_root": "Landroid/view/SurfaceView;",
+    "dex": "classes.dex"
+   },
+   {
+    "class": "Lcom/badlogic/gdx/backends/android/AndroidGraphicsLiveWallpaper$1;",
+    "direct_super": "Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20API18;",
+    "view_root": "Landroid/view/SurfaceView;",
+    "dex": "classes.dex"
+   }
+  ]
+ }
+]

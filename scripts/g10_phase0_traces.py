@@ -33,7 +33,6 @@ SUBSET = [
 LINE = re.compile(
     r"\[U007-LAYOUT\] (?P<indent>\s*)view (?P<vid>\d+) (?P<cls>\S+) "
     r"id_name=(?P<idn>\S*) lp=(?P<lpw>-?\d+)/(?P<lph>-?\d+) weight=(?P<w>-?[\d.]+) "
-    r"(?:orient=(?P<orient>-?\d+) )?"
     r"measured=(?P<mw>\d+)x(?P<mh>\d+) text_size=(?P<ts>[\d.]+) lines=(?P<ln>-?\d+) "
     r"below='(?P<below>[^']*)' above='(?P<above>[^']*)' right_of='(?P<ro>[^']*)' "
     r"left_of='(?P<lo>[^']*)' cgrav=(?P<cg>0x[0-9a-fA-F]+|\d+) text='(?P<text>.*)'")
@@ -48,7 +47,6 @@ def parse_trace(log: str):
             "vid": int(d["vid"]), "class": d["cls"].split("/")[-1].rstrip(";").lstrip("L"),
             "id_name": d["idn"], "lp": f"{d['lpw']}/{d['lph']}",
             "weight": float(d["w"]), "measured": f"{d['mw']}x{d['mh']}",
-            "orient": int(d["orient"]) if d.get("orient") else None,
             "text": d["text"][:40],
         })
     return rows
