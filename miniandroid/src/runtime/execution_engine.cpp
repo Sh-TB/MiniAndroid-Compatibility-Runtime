@@ -103,6 +103,9 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     if (success && config.click_count > 0) stage_click_sequence(result, config);
     // GOLDEN-02: coordinate-anchored long-press gesture (AOSP touch law).
     if (success && config.long_press_enabled) stage_long_press(result, config);
+    // G06 §4/§6: canonical tap gesture through the TouchDispatcher law
+    // pipeline (DOWN → pressed frame → UP → queued callbacks → drained frame).
+    if (success && config.tap_enabled) stage_tap(result, config);
     if (success && config.frame_count > 0) stage_frame_sequence(result, config);
     
     // Always try to generate reports
@@ -355,6 +358,25 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             heap_adapter_ = std::make_unique<framework::DalvikHeapAdapter>(
                 &dalvik_engine_.get_heap_public(), &dalvik_engine_);
             shadow_registry_->set_heap(heap_adapter_.get());
+            // G06 §4: canonical input pipeline. The dispatcher shares the
+            // ViewShadow tree (geometry/state) and the HandlerShadow virtual
+            // queue (PerformClick/UnsetPressedState/CheckForLongPress ride
+            // the SAME queue as app Runnables — one-MessageQueue law).
+            auto* handler_shadow = shadow_registry_->find_as<framework::HandlerShadow>();
+            auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+            if (handler_shadow && view_shadow) {
+                touch_dispatcher_ = std::make_unique<framework::TouchDispatcher>(
+                    view_shadow, handler_shadow);
+                touch_dispatcher_->set_click_dispatch(
+                    [this](uint32_t view_id) -> bool {
+                        return dalvik_engine_.dispatch_click(view_id);
+                    });
+                touch_dispatcher_->set_long_click_dispatch(
+                    [this](uint32_t view_id, bool& consumed) -> bool {
+                        return dalvik_engine_.dispatch_long_click(view_id,
+                                                                  consumed);
+                    });
+            }
         }
         std::cerr << "[EXP086-P1] Configured dalvik_engine_ with "
                   << sorted_dex_files.size() << " DEX files for '"
@@ -1424,11 +1446,59 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             // from setBackgroundColor(int) take priority. Per §17:
                             // do not accept default white unless the source
                             // actually requires it.
+                            // G06 §5: StateListDrawable law — when the
+                            // background is a <selector>, the winning item is
+                            // re-picked against the node's CURRENT state
+                            // (pressed/enabled/selected) EVERY frame
+                            // (drawableStateChanged → re-pick law).
                             bool is_full_screen = (w >= config.screen_width && h >= config.screen_height);
                             bool drew_bg = false;
-                            if (node->bg_color != 0) {
+                            // G06 §5: selector parse is lazy + cached per
+                            // view (parse-once law); the pick itself re-runs
+                            // EVERY frame against the node's CURRENT state.
+                            auto sl_it = state_list_cache_.find(node->view_id);
+                            if (sl_it == state_list_cache_.end() &&
+                                node->bg_drawable_path.size() > 4 &&
+                                node->bg_drawable_path.compare(
+                                    node->bg_drawable_path.size() - 4, 4,
+                                    ".xml") == 0) {
+                                auto axml = apk_parser_.extract_entry_cached(
+                                    node->bg_drawable_path);
+                                std::vector<
+                                    framework::ViewShadow::ViewNode::BgStateItem>
+                                    items;
+                                bool is_sl = !axml.empty() &&
+                                             framework::parse_state_list(axml,
+                                                                         &items) &&
+                                             !items.empty();
+                                if (is_sl) {
+                                    trace_engine_.info(
+                                        "ExecutionEngine", "stage_render_frame",
+                                        "STATE-LIST bg '" + node->bg_drawable_path +
+                                            "' parsed: " +
+                                            std::to_string(items.size()) +
+                                            " item(s)");
+                                }
+                                sl_it = state_list_cache_
+                                            .emplace(node->view_id,
+                                                     std::make_pair(is_sl,
+                                                                    std::move(items)))
+                                            .first;
+                            }
+                            uint32_t eff_bg_color = node->bg_color;
+                            if (sl_it != state_list_cache_.end() &&
+                                sl_it->second.first) {
+                                uint32_t c = 0;
+                                std::string p;
+                                if (framework::pick_state_list(
+                                        sl_it->second.second, node->pressed,
+                                        node->enabled, node->selected, &c, &p)) {
+                                    if (p.empty() && c != 0) eff_bg_color = c;
+                                }
+                            }
+                            if (eff_bg_color != 0) {
                                 // ARGB int → RGBA
-                                uint32_t c = node->bg_color;
+                                uint32_t c = eff_bg_color;
                                 renderer::RGBA rgba{
                                     static_cast<uint8_t>((c >> 16) & 0xFF),
                                     static_cast<uint8_t>((c >> 8) & 0xFF),
@@ -2669,6 +2739,18 @@ std::string sha256_hex(const std::vector<uint8_t>& data) {
 // engine (used by the post-onCreate idle-settle drain and by the
 // time-driven frame stage).
 void ExecutionEngine::invoke_handler_runnable(uint32_t rid) {
+    // G06 §4: framework-internal callbacks (PerformClick / UnsetPressedState
+    // / CheckForLongPress) ride the same queue as app Runnables through
+    // reserved tokens; route them to the TouchDispatcher instead of the DEX
+    // run() path. One MessageQueue, one ordering law.
+    if (rid >= framework::HandlerShadow::kFrameworkTokenBase) {
+        if (touch_dispatcher_) {
+            nlohmann::json rec;
+            touch_dispatcher_->fire_framework_callback(rid, &rec);
+            std::cerr << "[G06-TOKEN] " << rec.dump() << std::endl;
+        }
+        return;
+    }
     try {
         auto& heap = dalvik_engine_.get_heap_public();
         if (!heap.has_object(rid)) return;
@@ -3258,6 +3340,230 @@ bool ExecutionEngine::stage_long_press(ExecutionResult& result, const ExecutionC
               << " click_suppressed=" << (click_suppressed ? "yes" : "no")
               << " diff_px=" << diff_px
               << " dir=" << frames_dir << std::endl;
+    return true;
+}
+
+// G06 §4/§6 — deterministic tap gesture through the canonical input
+// pipeline. Event law: View.onTouchEvent (touch_dispatcher.cpp).
+//   t0        ACTION_DOWN  → setPressed(true) + CheckForLongPress @ +500ms
+//   t0+20ms   frame_001    → pressed state VISIBLE (input → state → render)
+//   t0+50ms   ACTION_UP    → removeLongPressCallback + post(PerformClick)
+//                           + post(UnsetPressedState @ PRESSED_STATE_DURATION)
+//   t0+50ms   drain        → PerformClick fires → real DEX onClick →
+//                           app state mutation (queued app Runnables drain
+//                           in the same loop — one-queue law)
+//   t0+120ms  drain        → UnsetPressedState → setPressed(false)
+//   final     frame_002    → post-click, unpressed state
+// No sleeps anywhere: every timestamp is the HandlerShadow virtual clock.
+bool ExecutionEngine::stage_tap(ExecutionResult& result,
+                                const ExecutionConfig& config) {
+    if (!config.tap_enabled) return true;
+    if (!shadow_registry_ || !touch_dispatcher_) return true;
+    trace_engine_.info("ExecutionEngine", "stage_tap",
+                       "TAP gesture through canonical input pipeline at (" +
+                           std::to_string(config.tap_x) + "," +
+                           std::to_string(config.tap_y) + ")");
+
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    auto* activity_shadow = shadow_registry_->find_as<framework::ActivityShadow>();
+    auto* handler_shadow = shadow_registry_->find_as<framework::HandlerShadow>();
+    if (!view_shadow || !activity_shadow || !handler_shadow) return true;
+
+    const std::string frames_dir = config.output_directory + "/frames";
+    try { std::filesystem::create_directories(frames_dir); } catch (...) {}
+
+    // Same PNG capture helper as stage_long_press / stage_click_sequence.
+    auto save_frame = [&](const std::string& path,
+                          std::string* png_sha_out = nullptr) -> bool {
+        try {
+            renderer::FrameBuffer fb(config.screen_width, config.screen_height);
+            for (int y = 0; y < config.screen_height; ++y) {
+                for (int x = 0; x < config.screen_width; ++x) {
+                    size_t i = (static_cast<size_t>(y) * config.screen_width + x) * 4;
+                    if (i + 3 < framebuffer_.size()) {
+                        fb.set_pixel(x, y, renderer::RGBA{
+                            framebuffer_[i], framebuffer_[i + 1],
+                            framebuffer_[i + 2], framebuffer_[i + 3]});
+                    }
+                }
+            }
+            bool ok = renderer::PNGWriter::write_png(path, fb);
+            if (ok && png_sha_out) {
+                std::ifstream pf(path, std::ios::binary);
+                std::vector<unsigned char> bytes((std::istreambuf_iterator<char>(pf)),
+                                                 std::istreambuf_iterator<char>());
+                *png_sha_out = sha256_hex(bytes);
+            }
+            return ok;
+        } catch (const std::exception& e) {
+            std::cerr << "[G06-TAP] frame save failed: " << e.what() << std::endl;
+            return false;
+        }
+    };
+
+    auto collect_texts = [&]() {
+        nlohmann::json arr = nlohmann::json::array();
+        for (const auto& [id, node_ptr] : view_shadow->all_nodes()) {
+            if (node_ptr && !node_ptr->text.empty()) {
+                arr.push_back({{"view_id", id},
+                               {"class", node_ptr->class_desc},
+                               {"text", node_ptr->text}});
+            }
+        }
+        return arr;
+    };
+
+    // Bounded drain-until-quiescent at a fixed virtual instant: fires every
+    // due queue entry (framework tokens AND app Runnables, FIFO by (when,
+    // seq)); newly enqueued due entries drain in the same instant, capped
+    // (hostile re-post storms cannot loop forever — §18 safety law).
+    auto drain_quiescent = [&](nlohmann::json* drain_log) {
+        for (int iter = 0; iter < 64; ++iter) {
+            std::vector<uint32_t> due;
+            size_t n = handler_shadow->drain_ready(&due);
+            if (n == 0) return;
+            if (drain_log) {
+                for (uint32_t id : due)
+                    drain_log->push_back({{"virtual_ms",
+                                           handler_shadow->virtual_now_ms()},
+                                          {"entry", id}});
+            }
+            for (uint32_t id : due) invoke_handler_runnable(id);
+        }
+        std::cerr << "[G06-TAP] drain loop hit iteration cap (hostile "
+                     "re-post storm bounded)" << std::endl;
+    };
+
+    nlohmann::json manifest;
+    manifest["gesture"] = "TAP";
+    manifest["pipeline"] = "canonical (TouchDispatcher law)";
+    manifest["laws"] = {"View.java L17044-17047 touchable",
+                        "L17049-17057 disabled",
+                        "L17113-17125 DOWN setPressed + long-press arm",
+                        "L17133-17169 UP post(PerformClick)+UnsetPressed(64ms)",
+                        "L17172-17184 CANCEL cleanup",
+                        "CheckForLongPress mHasPerformedLongPress suppression",
+                        "one-MessageQueue ordering (framework tokens)"};
+    manifest["screen"] = {{"width", config.screen_width},
+                          {"height", config.screen_height}};
+    manifest["events"] = nlohmann::json::array();
+    manifest["frames"] = nlohmann::json::array();
+
+    std::vector<uint8_t> prev = framebuffer_;
+    {
+        nlohmann::json f;
+        f["index"] = 0;
+        f["file"] = "frame_000.png";
+        f["event"] = "launch (no interaction)";
+        f["sha256"] = sha256_hex(prev);
+        std::string png_sha;
+        save_frame(frames_dir + "/frame_000.png", &png_sha);
+        f["png_sha256"] = png_sha;
+        f["visible_texts"] = collect_texts();
+        manifest["frames"].push_back(f);
+    }
+
+    const int px = config.tap_x, py = config.tap_y;
+    uint32_t root_id = activity_shadow->content_view_id();
+
+    // ── t0: ACTION_DOWN ──────────────────────────────────────────────────
+    auto down_rec = touch_dispatcher_->dispatch(
+        root_id, {framework::TouchAction::DOWN, px, py});
+    manifest["events"].push_back(down_rec);
+    const uint32_t target = down_rec.value("target_view_id", 0u);
+    std::cerr << "[G06-TAP] DOWN (" << px << "," << py << ") target="
+              << target << " consumed="
+              << down_rec.value("consumed", false) << std::endl;
+    if (target == 0) {
+        manifest["no_target"] = true;
+        try {
+            std::ofstream mf(frames_dir + "/manifest.json");
+            mf << manifest.dump(2);
+        } catch (...) {}
+        return true;
+    }
+
+    // ── t0+20ms: pressed frame (state visible) ──────────────────────────
+    framebuffer_ = prev;
+    handler_shadow->advance_virtual(20);
+    stage_render_frame(result, config);
+    {
+        std::string png_sha;
+        nlohmann::json f;
+        f["index"] = 1;
+        f["file"] = "frame_001.png";
+        f["event"] = "ACTION_DOWN pressed state (mid-gesture)";
+        f["virtual_ms"] = handler_shadow->virtual_now_ms();
+        f["target_view_id"] = target;
+        f["target_pressed"] = view_shadow->find_node(target)
+                                  ? view_shadow->find_node(target)->pressed
+                                  : false;
+        f["sha256"] = sha256_hex(framebuffer_);
+        save_frame(frames_dir + "/frame_001.png", &png_sha);
+        f["png_sha256"] = png_sha;
+        f["visible_texts"] = collect_texts();
+        manifest["frames"].push_back(f);
+    }
+
+    // ── t0+50ms: ACTION_UP → queue PerformClick + UnsetPressedState ─────
+    handler_shadow->advance_virtual(30);
+    auto up_rec = touch_dispatcher_->dispatch(
+        root_id, {framework::TouchAction::UP, px, py});
+    manifest["events"].push_back(up_rec);
+    std::cerr << "[G06-TAP] UP click_posted="
+              << up_rec.value("click_posted", false) << std::endl;
+
+    // ── drain t0+50: PerformClick fires → real DEX onClick ──────────────
+    nlohmann::json click_drain = nlohmann::json::array();
+    drain_quiescent(&click_drain);
+
+    // ── t0+120ms: UnsetPressedState clears pressed ──────────────────────
+    handler_shadow->advance_virtual(70);
+    nlohmann::json unset_drain = nlohmann::json::array();
+    drain_quiescent(&unset_drain);
+
+    manifest["click_drain"] = click_drain;
+    manifest["unset_drain"] = unset_drain;
+
+    // ── frame_002: post-click, unpressed state ──────────────────────────
+    framebuffer_ = prev;
+    stage_render_frame(result, config);
+    size_t diff_px = 0;
+    if (framebuffer_.size() == prev.size()) {
+        for (size_t i = 0; i < framebuffer_.size(); i += 4) {
+            if (framebuffer_[i] != prev[i] ||
+                framebuffer_[i + 1] != prev[i + 1] ||
+                framebuffer_[i + 2] != prev[i + 2]) {
+                diff_px++;
+            }
+        }
+    }
+    std::string png_sha;
+    bool saved = save_frame(frames_dir + "/frame_002.png", &png_sha);
+    nlohmann::json f;
+    f["index"] = 2;
+    f["file"] = "frame_002.png";
+    f["event"] = "post-click (PerformClick drained, UnsetPressedState applied)";
+    f["virtual_ms"] = handler_shadow->virtual_now_ms();
+    f["target_view_id"] = target;
+    f["target_pressed_after"] = view_shadow->find_node(target)
+                                    ? view_shadow->find_node(target)->pressed
+                                    : false;
+    f["changed_pixels_vs_previous"] = diff_px;
+    f["sha256"] = sha256_hex(framebuffer_);
+    f["png_sha256"] = png_sha;
+    f["visible_texts"] = collect_texts();
+    manifest["frames"].push_back(f);
+    manifest["changed_pixels_vs_launch"] = diff_px;
+    manifest["touch_trace"] = touch_dispatcher_->trace();
+
+    try {
+        std::ofstream mf(frames_dir + "/manifest.json");
+        mf << manifest.dump(2);
+    } catch (...) {}
+    (void)saved;
+    std::cerr << "[G06-TAP] done: target=" << target
+              << " diff_px=" << diff_px << " dir=" << frames_dir << std::endl;
     return true;
 }
 

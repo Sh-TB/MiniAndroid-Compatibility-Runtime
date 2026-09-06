@@ -24,6 +24,9 @@
 #include "framework/shadow_registry.h"
 // EXP-087 Phase 3 (B2 FIX): DalvikHeapAdapter for shadow heap access
 #include "framework/heap_adapter.h"
+// G06 §4: canonical input pipeline (TouchDispatcher) + StateListDrawable law
+#include "framework/touch_dispatcher.h"
+#include "framework/state_list.h"
 
 namespace miniandroid {
 namespace runtime {
@@ -101,6 +104,12 @@ struct ExecutionConfig {
     bool long_press_enabled = false;
     int long_press_x = 0;
     int long_press_y = 0;
+    // G06 §4/§6: canonical tap gesture through the TouchDispatcher law
+    // pipeline. DOWN at t0 (pressed frame captured), UP at t0+50ms virtual,
+    // queued PerformClick + UnsetPressedState drained before the final frame.
+    bool tap_enabled = false;
+    int tap_x = 0;
+    int tap_y = 0;
     bool generate_reports = true;
     
     // EXP-031: Execution mode (CRITICAL - determines real vs fake path)
@@ -189,6 +198,10 @@ private:
     bool stage_click_sequence(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_frame_sequence(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_long_press(ExecutionResult& result, const ExecutionConfig& config);
+    // G06 §4/§6: deterministic tap gesture through the canonical input
+    // pipeline (DOWN → pressed frame → UP → queued PerformClick →
+    // UnsetPressedState → drained frame). Frames + touch trace manifest.
+    bool stage_tap(ExecutionResult& result, const ExecutionConfig& config);
     void invoke_handler_runnable(uint32_t runnable_id);
     bool stage_generate_reports(ExecutionResult& result, const ExecutionConfig& config);
     
@@ -217,6 +230,15 @@ private:
     framework::ShadowRegistry* shadow_registry_ = nullptr;
     // EXP-087 Phase 3 (B2 FIX): Heap adapter for shadow heap access
     std::unique_ptr<framework::DalvikHeapAdapter> heap_adapter_;
+    // G06 §4: canonical input dispatcher (owns the gesture state machine;
+    // framework callbacks ride the SAME HandlerShadow queue as app
+    // Runnables via kFrameworkTokenBase tokens).
+    std::unique_ptr<framework::TouchDispatcher> touch_dispatcher_;
+    // G06 §5: per-view state-list parse cache (parse-once, pick-per-frame).
+    // value.first = is a selector; value.second = parsed items.
+    std::map<uint32_t,
+             std::pair<bool, std::vector<framework::ViewShadow::ViewNode::BgStateItem>>>
+        state_list_cache_;
     
     // State
     std::vector<uint8_t> framebuffer_;

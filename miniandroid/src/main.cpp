@@ -46,6 +46,7 @@ void print_usage(const char* program_name) {
     std::cout << "  --text <text>          Override displayed text\n";
     std::cout << "  --click-test           Dispatch real clicks on clickable views after the first frame\n";
     std::cout << "  --long-press <x>,<y>   Long-press gesture at coordinates after the first frame\n";
+    std::cout << "  --tap <x>,<y>         Canonical tap gesture (DOWN/UP law pipeline) after the first frame\n";
     std::cout << "                         (hit test -> 500ms timeout -> onLongClick; consumed\n";
     std::cout << "                          long press suppresses the UP click — AOSP law)\n";
     std::cout << "  --execution-mode <mode> Execution mode: legacy | real-dalvik (default: real-dalvik)\n\n";
@@ -347,6 +348,23 @@ int main(int argc, char* argv[]) {
             std::cout << "[*] LONG-PRESS gesture enabled at ("
                       << config.long_press_x << "," << config.long_press_y
                       << ") — frame saved to <output>/frames/\n";
+        } else if (arg == "--tap" && i + 1 < argc) {
+            // G06 §4/§6: canonical tap gesture through the TouchDispatcher
+            // law pipeline: DOWN → pressed frame → UP → queued PerformClick
+            // (one-MessageQueue law) → UnsetPressedState → post-click frame.
+            std::string spec = argv[++i];
+            auto comma = spec.find(',');
+            if (comma == std::string::npos) {
+                std::cerr << "[ERROR] --tap expects <x>,<y> (got \""
+                          << spec << "\")\n";
+                return 1;
+            }
+            config.tap_enabled = true;
+            config.tap_x = std::stoi(spec.substr(0, comma));
+            config.tap_y = std::stoi(spec.substr(comma + 1));
+            std::cout << "[*] TAP gesture enabled at (" << config.tap_x
+                      << "," << config.tap_y
+                      << ") — frames + touch trace saved to <output>/frames/\n";
         } else if (arg == "--frame-delay" && i + 1 < argc) {
             config.frame_delay_ms = std::stoi(argv[++i]);
             std::cout << "[*] frame delay: " << config.frame_delay_ms << "ms virtual\n";
