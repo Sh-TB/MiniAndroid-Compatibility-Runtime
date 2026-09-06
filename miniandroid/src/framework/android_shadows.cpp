@@ -1360,6 +1360,21 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     // View instance methods — receiver_id is the View heap object_id.
 
+    // MASTER CAMPAIGN FIX (F10 real-DEX onMeasure): View.setMeasuredDimension
+    // is the measure contract's write-back (AOSP View.measure → onMeasure →
+    // setMeasuredDimension). When an app's REAL onMeasure bytecode executes,
+    // this dispatch captures the result onto the node so the measure pass
+    // can consume it (dex_measured_w/h + dex_measure_valid).
+    if (m == "setMeasuredDimension") {
+        auto* n = find_node(ctx.receiver_id);
+        if (n && ctx.args.size() >= 2) {
+            n->dex_measured_w = ctx.arg_as_int(0);
+            n->dex_measured_h = ctx.arg_as_int(1);
+            n->dex_measure_valid = true;
+        }
+        return CallResult::handled_void();
+    }
+
     // UC009: AOSP View attach state (mAttachInfo != null). Compose's
     // ensureCompositionCreated path queries isAttachedToWindow; the
     // dispatchAttachedToWindow entry point marks the node BEFORE
