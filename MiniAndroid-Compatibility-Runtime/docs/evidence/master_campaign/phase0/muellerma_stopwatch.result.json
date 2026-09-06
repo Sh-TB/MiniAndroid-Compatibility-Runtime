@@ -1,0 +1,33 @@
+{
+  "apk": "muellerma_stopwatch",
+  "rel": "download/exp076_corpus/com.github.muellerma.stopwatch_6.apk",
+  "sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
+  "base": {
+    "rc": 1,
+    "status": "PARTIAL",
+    "seconds": 0.4,
+    "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+  },
+  "trace": {
+    "status": "PARTIAL"
+  },
+  "view_tree": {
+    "present": false
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      0,
+      0,
+      0
+    ],
+    "nonbg_pct": 98.8681,
+    "content_bbox": [
+      0,
+      0,
+      1079,
+      1919
+    ]
+  }
+}

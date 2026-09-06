@@ -1,0 +1,35 @@
+{
+  "apk": "openlauncher",
+  "rel": "download/exp076_corpus/com.benny.openlauncher_39.apk",
+  "sha256": "b3320463a7a1ed46c52464bae83a97317d062b1e2097bd1885cdf265f2089f89",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 1.67,
+    "screenshot_sha256": "a49fd6c72d5707a2d057e113a972eb4d5d906f2dcc653ef97ecd56c0ab637c0b"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": true,
+    "views": 20,
+    "zero_sized": 4
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      216,
+      216,
+      216
+    ],
+    "nonbg_pct": 99.8554,
+    "content_bbox": [
+      1,
+      1,
+      1079,
+      1919
+    ]
+  }
+}

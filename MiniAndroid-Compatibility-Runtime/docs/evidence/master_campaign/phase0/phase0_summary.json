@@ -1,0 +1,135 @@
+[
+  {
+    "apk": "simplekeyboard",
+    "rel": "download/exp076_corpus/rkr.simplekeyboard.inputmethod_145.apk",
+    "sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.19,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": false
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        0,
+        0,
+        0
+      ],
+      "nonbg_pct": 98.8681,
+      "content_bbox": [
+        0,
+        0,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
+    "apk": "kiss",
+    "rel": "download/g04_corpus/fr.neamar.kiss_224.apk",
+    "sha256": "da6ab0b1219ad3b5ee573698523fb15d60a918083e0843f94a03c1b12e1098c9",
+    "base": {
+      "rc": 1,
+      "status": "PARTIAL",
+      "seconds": 62.36,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 15,
+      "zero_sized": 1
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        0,
+        0,
+        0
+      ],
+      "nonbg_pct": 98.8681,
+      "content_bbox": [
+        0,
+        0,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
+    "apk": "bouncy",
+    "rel": "download/master_campaign/com.dozingcatsoftware.bouncy_43.apk",
+    "sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.11,
+      "screenshot_sha256": "072ff17874b74846c623b98d0540a4442f8bbc1ec05f6b738ce5ffa50866e1e7"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 62,
+      "zero_sized": 54
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        225,
+        225,
+        225
+      ],
+      "nonbg_pct": 83.4255,
+      "content_bbox": [
+        0,
+        147,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
+    "apk": "scope",
+    "rel": "download/master_campaign/org.billthefarmer.scope_140.apk",
+    "sha256": "0e34439ce43bfd47d039ab91a7056051e0cf94c03948eb97236d7d2648ea17de",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.19,
+      "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 10,
+      "zero_sized": 8
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "nonbg_pct": 0.0,
+      "content_bbox": null
+    }
+  }
+]

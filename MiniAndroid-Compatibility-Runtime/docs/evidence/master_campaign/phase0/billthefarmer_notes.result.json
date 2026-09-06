@@ -1,0 +1,35 @@
+{
+  "apk": "billthefarmer_notes",
+  "rel": "download/exp073_real_apps/org.billthefarmer.notes_139.apk",
+  "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+  "base": {
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 0.32,
+    "screenshot_sha256": "06ba8026b670b15201ab977781a86c47ff43b16b911fd1ad0f548c114dd97d40"
+  },
+  "trace": {
+    "status": "SUCCESS"
+  },
+  "view_tree": {
+    "present": true,
+    "views": 16,
+    "zero_sized": 0
+  },
+  "pixel": {
+    "w": 1080,
+    "h": 1920,
+    "bg": [
+      153,
+      153,
+      153
+    ],
+    "nonbg_pct": 99.8859,
+    "content_bbox": [
+      0,
+      1,
+      1079,
+      1919
+    ]
+  }
+}
