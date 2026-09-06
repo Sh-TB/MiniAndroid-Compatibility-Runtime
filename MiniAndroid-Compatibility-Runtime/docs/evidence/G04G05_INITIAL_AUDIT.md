@@ -142,3 +142,48 @@ Cache: `/home/z/corpus/g04_corpus/` (outside repo, zero-APK-in-repo law intact).
 3. **Render**: ImageView pixels land in FIT_CENTER geometry; deterministic 3-run byte-identity preserved on ALL existing goldens (hash-protected).
 4. **Evidence**: trace tool exists at HEAD and covers request→…→draw for ≥10 scenarios; corpus frozen incl. boundary records; hostile battery green; full prior battery green; GitHub evidence with direct URLs (auth permitting; else payloads prepared + BLOCKED recorded).
 5. **Status vocabulary**: only tested/observed/runtime-proven/visually-proven/verified with artifacts; boundaries marked explicitly, never silently omitted.
+
+---
+
+# G04+G05 IMPLEMENTATION RECORD (appended at close of implementation phase)
+
+Commits: e98cf4b0 (audit) → 768b1481 (C2 drawable/density law) →
+291914c7 (C3 resource_trace) → 894e6ef3 (C4 weight/measure law + 24-check
+battery) → e7e6ec1b (C5 density-matrix oracle) → ae37abf4 (C6 hostile
+battery) + C7 (this record + direct-resid resolution fix).
+
+## FIND-G04-AUDIT-007 (found during corpus validation)
+
+`populate_drawable_paths_from_arsc` counts resids via the LEGACY chain
+`resid → R-field-name → basename match` — broken twice over: R$drawable
+statics may never be parsed (Markor: 0/35) and the basename match is a
+parallel resolution system (§1 violation). FIXED: `canonical_drawable_for`
+resolves `resid → select_file(...)` DIRECTLY at the draw stage, caching
+`resid → {path, selected_density}`. The resid is the canonical key; R
+field names are not part of the resource law. Status: FIXED + runtime
+proven on the density-matrix fixture (the 0/35 instrumentation remains
+env-gated: MINIANDROID_DEBUG_DRAWABLES=1).
+
+## External corpus results at implementation HEAD
+
+| APK | Result | Evidence |
+|---|---|---|
+| EXT-01 HelloWorldSelfAware | 3-run byte-identical 142238fd92b69e11 (frozen golden unchanged through every G04 commit) | battery stages 19–22 |
+| EXT-02/03/04 corpus | 3/3 Status SUCCESS | battery stages |
+| EXT-05 KISS 3.26.0 | boots, executes real DEX; UI window renders blank | AppCompat boundary below |
+| EXT-06 Fossify Notes 1.7.0 | NOT APPLICABLE — Compose UI (androidx.compose classes in DEX) | FIND-G04-AUDIT-005 |
+| EXT-07 Markor 2.16.1 | boots, executes real DEX (file-browser adapter logic visible in logs); UI window renders blank | AppCompat boundary below |
+| density-matrix fixture | 11/11 gate incl. 3-run determinism 351340a7a92e645c | scripts/validate_density_matrix.sh |
+
+## AppCompat boundary (explicit, non-blocking, evidence-backed)
+
+KISS and Markor reach Status: SUCCESS with zero API calls rendered into
+the window: their activities are AppCompatActivity and the content is
+assembled inside `androidx.appcompat.app.AppCompatDelegateImpl`
+(createSubDecor/ContentView wiring), which the runtime does not emulate —
+the ViewShadow content tree never materializes, so there is nothing for
+the (now law-correct) drawable/layout/render layer to draw. This is a
+framework-delegation gap, NOT a resource-layer gap: the same binary
+renders real pixel geometry for classic-View APKs (EXT-01, corpus 3/3,
+density-matrix fixture). Required to lift: AppCompatDelegateImpl
+subDecor/theme emulation — recorded as G06+ scope, not silently dropped.
