@@ -253,30 +253,25 @@ void ApplicationRuntime::initialize_subsystems() {
 void ApplicationRuntime::initialize_shadow_registry() {
     shadow_registry_ = std::make_unique<ShadowRegistry>();
 
-    // Register all default shadows. The registry takes ownership.
-    // EXP-052: ArchTaskExecutorShadow registered FIRST so it wins
-    // over the legacy bridge_to_api if/else chain for isMainThread.
-    shadow_arch_task_ = shadow_registry_->register_shadow<ArchTaskExecutorShadow>();
-    shadow_collection_ = shadow_registry_->register_shadow<CollectionShadow>();  // EXP-054
-    shadow_thread_   = shadow_registry_->register_shadow<ThreadShadow>();
-    shadow_looper_   = shadow_registry_->register_shadow<LooperShadow>();
-    shadow_handler_  = shadow_registry_->register_shadow<HandlerShadow>();
-    shadow_activity_ = shadow_registry_->register_shadow<ActivityShadow>();
-    shadow_intent_   = shadow_registry_->register_shadow<IntentShadow>();
-    shadow_view_     = shadow_registry_->register_shadow<ViewShadow>();
-    // CAMPAIGN 013 B1: dialog/toast/adapter windows (after ViewShadow so
-    // decor trees can be built on demand).
-    shadow_dialog_   = shadow_registry_->register_shadow<DialogShadow>();
-    shadow_array_adapter_ = shadow_registry_->register_shadow<ArrayAdapterShadow>();
-    shadow_canvas_    = shadow_registry_->register_shadow<CanvasShadow>();
-    // G11 FIX-G11-002: LayoutInflater.from/inflate shadow on the runtime
-    // registry too (both registries must agree — GOLDEN-02 lesson).
-    shadow_registry_->register_shadow<LayoutInflaterShadow>();
-    // GOLDEN-02: clipboard platform behavior — ClipData.newPlainText +
-    // ClipboardManager.setPrimaryClip/getPrimaryClip/getText + legacy
-    // android.text.ClipboardManager.setText. Registered after the other
-    // shadows; first handled=true wins.
-    shadow_registry_->register_shadow<ClipboardShadow>();
+    // MASTER CAMPAIGN FIX (F20 §23): ONE canonical platform shadow list.
+    // This registry previously diverged from cmd_run's main.cpp registry
+    // (different shadow sets; last set_shadow_registry call won), which left
+    // ThreadShadow/LooperShadow/ArchTaskExecutorShadow invisible on the
+    // cmd_run path and broke the androidx main-thread identity law on real
+    // APKs (fr.neamar.kiss v224 LifecycleRegistry enforceMainThreadIfNeeded
+    // IllegalStateException). Both owners now call the SAME factory.
+    register_platform_shadows(*shadow_registry_);
+    shadow_arch_task_ = shadow_registry_->find_as<ArchTaskExecutorShadow>();
+    shadow_collection_ = shadow_registry_->find_as<CollectionShadow>();
+    shadow_thread_   = shadow_registry_->find_as<ThreadShadow>();
+    shadow_looper_   = shadow_registry_->find_as<LooperShadow>();
+    shadow_handler_  = shadow_registry_->find_as<HandlerShadow>();
+    shadow_activity_ = shadow_registry_->find_as<ActivityShadow>();
+    shadow_intent_   = shadow_registry_->find_as<IntentShadow>();
+    shadow_view_     = shadow_registry_->find_as<ViewShadow>();
+    shadow_dialog_   = shadow_registry_->find_as<DialogShadow>();
+    shadow_array_adapter_ = shadow_registry_->find_as<ArrayAdapterShadow>();
+    shadow_canvas_    = shadow_registry_->find_as<CanvasShadow>();
 
     // The heap_adapter_ is created later in execute_on_create() once we
     // have a DalvikExecutionEngine to wrap. But we set it on the

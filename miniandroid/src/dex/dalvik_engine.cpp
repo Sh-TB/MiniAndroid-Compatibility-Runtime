@@ -3935,6 +3935,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                       << " (class not in index)"
                       << std::endl;
         }
+        // MASTER-TRIAGE: generic (cap-limited) diagnostic for every
+        // recursive-invoke class miss. A miss here means the DECLARING class
+        // has no DEX body in this APK (framework class, R8-merged-away
+        // class, or lookup bug) — the caller falls through to the shadow
+        // layer. Without this line the wrongful-shadow triage (which shadow
+        // swallowed the call, via which ancestor chain) is invisible.
+        static thread_local uint64_t rec_miss_count = 0;
+        if (rec_miss_count < 400) {
+            rec_miss_count++;
+            std::cerr << "[REC-MISS] " << class_descriptor << "." << method_name
+                      << " caller=" << current_class_ << "." << current_method_
+                      << std::endl;
+        }
         recursion_depth_--;
         return false;  // class not found in DEX, bridge to API
     }
@@ -9773,6 +9786,29 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
                   << std::endl;
     }
     
+    // MASTER CAMPAIGN FIX (F2 constructor-direct law): java.lang.Object.<init>
+    // is the compiler-mandated empty constructor (AOSP/ART: Object has no
+    // constructor logic; javac/d8 emit invoke-direct Object;-><init>()V as
+    // the first instruction of EVERY constructor). It must be a no-op at the
+    // engine level. Letting it fall through to the shadow layer let the
+    // C013 ancestor walk + ViewShadow's user-class catch-all claim it
+    // (evidence: fr.neamar.kiss v224, R8 horizontal class merging — 24
+    // classes extend the merged target Lfr/neamar/kiss/db/DBHelper;, every
+    // merged constructor's Object.<init> super call walked
+    // ArchTaskExecutor->DBHelper and ViewShadow allocated bogus view nodes).
+    if (method_name == "<init>" && class_name == "Ljava/lang/Object;") {
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            if (auto* obj = heap_.get(args[0].object_id)) {
+                heap_.mark_initialized(args[0].object_id);
+            }
+        }
+        trace.invoked_method = "Ljava/lang/Object;.<init> (no-op law)";
+        trace.operands.push_back({"method", std::to_string(method_idx)});
+        current_invoke_is_static_ = saved_is_static;
+        pc_ = pc + 3;
+        return true;
+    }
+
     // Check if first arg is an object we allocated
     // EXP-061 FIX: Do NOT overwrite class_name with the runtime class for
     // invoke-direct. invoke-direct uses the DECLARING class (from method_ids[]),
@@ -11686,6 +11722,18 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     // superclass chain of the receiver and retry the shadow registry with
     // each ancestor. ChessClock → android/app/Activity → ActivityShadow
     // handles setContentView exactly as for any other Activity subclass.
+    //
+    // MASTER CAMPAIGN FIX (F2 constructor-direct law): constructors are
+    // DIRECT invocation targets resolved on the DECLARING class (ART
+    // ClassLinker: there is no virtual constructor dispatch). The ancestor
+    // walk emulates VIRTUAL dispatch only — it must never route <init>/
+    // <clinit> to a shadow of an ANCESTOR class. Evidence: with <init>
+    // walkable, ViewShadow's user-class catch-all claimed
+    // Lfr/neamar/kiss/db/DBHelper;.<init> (an R8 merge target with 24
+    // merged androidx/app subclasses) and swallowed real constructors.
+    if (method == "<init>" || method == "<clinit>") {
+        return false;
+    }
     {
         std::string cur;
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
@@ -11703,7 +11751,12 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
             auto cr3 = shadow_registry_->dispatch(build_ctx(sup));
             if (cr3.handled) {
                 std::cerr << "[C013-HIER] " << method << " dispatched via superclass chain: "
-                          << cur << " -> " << sup << std::endl;
+                          << cur << " -> " << sup
+                          << " (declared=" << class_name
+                          << " receiver=" << (!args.empty() &&
+                             args[0].type == DalvikType::OBJECT_REF
+                             ? args[0].class_desc : std::string("-"))
+                          << ")" << std::endl;
                 switch (cr3.status) {
                     case framework::ApiCallStatus::IMPLEMENTED:
                         status = ApiCallTrace::Status::IMPLEMENTED; break;
@@ -11989,6 +12042,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status,
                                           uint32_t method_idx_hint) {
+    // MASTER-TRIAGE: cap-limited evidence for the androidx main-thread
+    // identity chain (which layer answers Thread/Looper, with what value).
+    if ((method == "currentThread" || method == "getThread" ||
+         method == "getMainLooper") &&
+        (class_name.find("Thread") != std::string::npos ||
+         class_name.find("Looper") != std::string::npos)) {
+        static thread_local uint64_t bridge_tid_log = 0;
+        if (bridge_tid_log < 12) {
+            bridge_tid_log++;
+            std::cerr << "[BRIDGE-TID] " << class_name << "." << method
+                      << " static=" << current_invoke_is_static_
+                      << " shadow=" << (shadow_registry_ ? "YES" : "NO")
+                      << std::endl;
+        }
+    }
     // EXP-088 Phase B debug
     if (method == "findViewById") {
         std::cerr << "[EXP088-B-ENTER] bridge_to_api: " << class_name << "." << method

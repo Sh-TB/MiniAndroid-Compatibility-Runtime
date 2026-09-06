@@ -215,30 +215,24 @@ int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config)
     // onNextPressed takes the needShowAlert side path instead of reaching
     // auth.sendCode.
     framework::ShadowRegistry shadow_registry;
-    auto* handler_shadow = shadow_registry.register_shadow<framework::HandlerShadow>();
-    auto* view_shadow = shadow_registry.register_shadow<framework::ViewShadow>();
-    auto* dialog_shadow = shadow_registry.register_shadow<framework::DialogShadow>();
-    auto* array_adapter_shadow = shadow_registry.register_shadow<framework::ArrayAdapterShadow>();
-    auto* canvas_shadow = shadow_registry.register_shadow<framework::CanvasShadow>();
-    auto* activity_shadow = shadow_registry.register_shadow<framework::ActivityShadow>();
-    auto* collection_shadow = shadow_registry.register_shadow<framework::CollectionShadow>();
-    // GOLDEN-02: clipboard platform behavior (ClipData.newPlainText,
-    // ClipboardManager.setPrimaryClip/getPrimaryClip/getText, legacy
-    // android.text.ClipboardManager.setText) — registered on the SAME
-    // registry the engine consults via set_shadow_registry below.
-    shadow_registry.register_shadow<framework::ClipboardShadow>();
-    // FIND-G08-006 fix: IntentShadow was registered ONLY on the legacy
-    // ApplicationRuntime path (application_runtime.cpp) — the cmd_run
-    // engine path dispatched Intent.<init>/setClassName/putExtra through
-    // the interpreter bridge with NO shadow, so startActivity recorded
-    // nothing and second activities never launched. Registering it makes
-    // the Intent pipeline (G08 §12) reachable from real APK code.
-    shadow_registry.register_shadow<framework::IntentShadow>();
-    // G11 FIX-G11-002: LayoutInflater.from/inflate — app View constructors
-    // build their child hierarchy through LayoutInflater.inflate(res, this);
-    // without the shadow those calls bridge to nothing and the subtree
-    // created inside the constructor is lost.
-    shadow_registry.register_shadow<framework::LayoutInflaterShadow>();
+    // MASTER CAMPAIGN FIX (F20 §23): ONE canonical platform shadow list.
+    // This registry previously held a REDUCED shadow set (no ThreadShadow,
+    // LooperShadow, ArchTaskExecutorShadow) while ApplicationRuntime built a
+    // FULL one — whichever registry won DalvikExecutionEngine::
+    // set_shadow_registry left the other's shadows invisible. On this path
+    // the androidx main-thread identity chain
+    // (Looper.getMainLooper().getThread() == Thread.currentThread()) then
+    // fell to the legacy bridge with mismatching object ids and every
+    // LifecycleRegistry.enforceMainThreadIfNeeded call threw
+    // IllegalStateException (fr.neamar.kiss v224 = motivating failure).
+    framework::register_platform_shadows(shadow_registry);
+    auto* handler_shadow = shadow_registry.find_as<framework::HandlerShadow>();
+    auto* view_shadow = shadow_registry.find_as<framework::ViewShadow>();
+    auto* dialog_shadow = shadow_registry.find_as<framework::DialogShadow>();
+    auto* array_adapter_shadow = shadow_registry.find_as<framework::ArrayAdapterShadow>();
+    auto* canvas_shadow = shadow_registry.find_as<framework::CanvasShadow>();
+    auto* activity_shadow = shadow_registry.find_as<framework::ActivityShadow>();
+    auto* collection_shadow = shadow_registry.find_as<framework::CollectionShadow>();
     if (activity_shadow) {
         activity_shadow->set_apk_path(apk_path);
     }

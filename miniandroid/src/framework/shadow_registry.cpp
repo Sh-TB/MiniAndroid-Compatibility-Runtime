@@ -3,6 +3,10 @@
 // EXP-051 — Android Framework Shadow Registry (implementation)
 
 #include "shadow_registry.h"
+#include "android_shadows.h"
+#include "dialog_shadow.h"
+#include "canvas_shadow.h"
+#include "clipboard_shadow.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -159,6 +163,30 @@ std::string format_shadow_report(const ShadowRegistry& reg) {
            << coverage << "%\n";
     }
     return os.str();
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// MASTER CAMPAIGN FIX — canonical platform shadow registration.
+// ONE list, used by every registry owner (cmd_run + ApplicationRuntime).
+// Registration order matters: ArchTaskExecutorShadow first (EXP-052 law:
+// wins over the legacy bridge chain for isMainThread); ViewShadow before
+// DialogShadow (CAMPAIGN 013 B1: dialog decor trees build on ViewShadow
+// nodes); ClipboardShadow/LayoutInflaterShadow last (first handled wins).
+// ─────────────────────────────────────────────────────────────────────────
+void register_platform_shadows(ShadowRegistry& reg) {
+    reg.register_shadow<ArchTaskExecutorShadow>();
+    reg.register_shadow<CollectionShadow>();
+    reg.register_shadow<ThreadShadow>();
+    reg.register_shadow<LooperShadow>();
+    reg.register_shadow<HandlerShadow>();
+    reg.register_shadow<ActivityShadow>();
+    reg.register_shadow<IntentShadow>();
+    reg.register_shadow<ViewShadow>();
+    reg.register_shadow<DialogShadow>();
+    reg.register_shadow<ArrayAdapterShadow>();
+    reg.register_shadow<CanvasShadow>();
+    reg.register_shadow<LayoutInflaterShadow>();
+    reg.register_shadow<ClipboardShadow>();
 }
 
 }} // namespace miniandroid::framework

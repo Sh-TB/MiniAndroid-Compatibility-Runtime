@@ -302,6 +302,21 @@ private:
 // ─────────────────────────────────────────────────────────────────────────
 std::string format_shadow_report(const ShadowRegistry& reg);
 
+// MASTER CAMPAIGN FIX (F20 §23 — dual-registry correctness bug):
+// ONE canonical registration list for the platform shadow set. Before this
+// factory, main.cpp's cmd_run path and ApplicationRuntime each built their
+// OWN registry with DIFFERENT shadow sets; whichever called
+// DalvikExecutionEngine::set_shadow_registry last won, so shadows registered
+// only on the losing registry (ThreadShadow, LooperShadow,
+// ArchTaskExecutorShadow on the cmd_run path) were INVISIBLE to dispatch.
+// That silently broke the androidx main-thread identity law
+// (Looper.getMainLooper().getThread() == Thread.currentThread(), LifecycleRegistry
+// enforceMainThreadIfNeeded) for every real APK whose DEX executes it —
+// fr.neamar.kiss v224 was the motivating failure (IllegalStateException at
+// LifecycleRegistry.enforceMainThreadIfNeeded → PARTIAL).
+// Any future shadow MUST be added here exactly once.
+void register_platform_shadows(ShadowRegistry& reg);
+
 }} // namespace miniandroid::framework
 
 #endif // MINIANDROID_FRAMEWORK_SHADOW_REGISTRY_H
