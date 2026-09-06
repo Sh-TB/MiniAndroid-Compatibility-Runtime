@@ -11,7 +11,7 @@
   "base": {
     "rc": 0,
     "status": "SUCCESS",
-    "seconds": 1.52,
+    "seconds": 1.58,
     "has_screenshot": true,
     "screenshot_sha256": "4bb6437507142f0eba8d82abc5ac80edc638b175e2322d5567c1ca688751a314",
     "log_path": "/tmp/g09_runs/com.benny.openlauncher/base/console.log"
@@ -35,7 +35,7 @@
   },
   "lifecycle": {
     "present": true,
-    "final_state": "ACTIVITY_CREATED",
+    "final_state": "DESTROYED",
     "transitions": [
       [
         "PROCESS_CREATED",
@@ -44,18 +44,28 @@
       ],
       [
         "ACTIVITY_CREATED",
+        "STARTED",
+        true
+      ],
+      [
+        "STARTED",
+        "RESUMED",
+        true
+      ],
+      [
+        "RESUMED",
         "PAUSED",
-        false
+        true
       ],
       [
-        "ACTIVITY_CREATED",
+        "PAUSED",
         "STOPPED",
-        false
+        true
       ],
       [
-        "ACTIVITY_CREATED",
+        "STOPPED",
         "DESTROYED",
-        false
+        true
       ]
     ],
     "finish_cascade": {
@@ -79,7 +89,7 @@
           "method": "onDestroy"
         }
       ],
-      "final_state": "ACTIVITY_CREATED",
+      "final_state": "DESTROYED",
       "finish_requested": true
     },
     "activity_launch": {

@@ -11,7 +11,7 @@
   "base": {
     "rc": 1,
     "status": "PARTIAL",
-    "seconds": 15.5,
+    "seconds": 15.38,
     "has_screenshot": true,
     "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
     "log_path": "/tmp/g09_runs/fr.neamar.kiss/base/console.log"

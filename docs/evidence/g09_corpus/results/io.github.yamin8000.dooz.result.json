@@ -11,7 +11,7 @@
   "base": {
     "rc": 0,
     "status": "SUCCESS",
-    "seconds": 1.1,
+    "seconds": 1.23,
     "has_screenshot": true,
     "screenshot_sha256": "e33e6e751b8c4a4aae5f2e143a5544bea0e3519b1ca87bcc8338ed8c5fb39a5f",
     "log_path": "/tmp/g09_runs/io.github.yamin8000.dooz/base/console.log"
@@ -22,11 +22,21 @@
   },
   "lifecycle": {
     "present": true,
-    "final_state": "ACTIVITY_CREATED",
+    "final_state": "RESUMED",
     "transitions": [
       [
         "PROCESS_CREATED",
         "ACTIVITY_CREATED",
+        true
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "STARTED",
+        true
+      ],
+      [
+        "STARTED",
+        "RESUMED",
         true
       ]
     ],

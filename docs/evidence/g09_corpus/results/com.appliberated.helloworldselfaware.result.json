@@ -22,11 +22,21 @@
   },
   "lifecycle": {
     "present": true,
-    "final_state": "ACTIVITY_CREATED",
+    "final_state": "RESUMED",
     "transitions": [
       [
         "PROCESS_CREATED",
         "ACTIVITY_CREATED",
+        true
+      ],
+      [
+        "ACTIVITY_CREATED",
+        "STARTED",
+        true
+      ],
+      [
+        "STARTED",
+        "RESUMED",
         true
       ]
     ],

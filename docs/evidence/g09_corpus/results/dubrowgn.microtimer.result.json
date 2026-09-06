@@ -11,7 +11,7 @@
   "base": {
     "rc": 0,
     "status": "SUCCESS",
-    "seconds": 0.24,
+    "seconds": 0.25,
     "has_screenshot": true,
     "screenshot_sha256": "518cc9c5051610a492bf05eded42be89fae6996758800c9fde3df3ede379371b",
     "log_path": "/tmp/g09_runs/dubrowgn.microtimer/base/console.log"
