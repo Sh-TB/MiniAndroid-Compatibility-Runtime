@@ -812,19 +812,20 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         api::Bundle* null_bundle = nullptr;
         
         // Check if lifecycle methods were invoked through DEX execution
-        bool lifecycle_from_dex = false;
-        for (const auto& api_trace : dalvik_result.api_call_traces) {
-            std::string method_full = api_trace.api_class + "." + api_trace.method;
-            if (method_full.find("onCreate") != std::string::npos ||
-                method_full.find("onStart") != std::string::npos ||
-                method_full.find("onResume") != std::string::npos) {
-                lifecycle_from_dex = true;
-                trace_engine_.info("ExecutionEngine", "lifecycle_source",
-                                   "✅ Lifecycle method '" + method_full + "' from REAL_DALVIK_INTERPRETER");
-                break;
-            }
+        // MASTER CAMPAIGN FIX (lifecycle-provenance law): the engine records
+        // lifecycle execution AT METHOD ENTRY (execute_method_internal).
+        // The previous scan over dalvik_result.api_call_traces read a
+        // capacity-CAPPED ring buffer — volume-dependent eviction made the
+        // verdict flip between identical runs (same byte-identical
+        // screenshot, status oscillated SUCCESS vs PARTIAL SUCCESS on
+        // fr.neamar.kiss v224).
+        bool lifecycle_from_dex = dalvik_engine_.lifecycle_methods_from_dex();
+        if (lifecycle_from_dex) {
+            trace_engine_.info("ExecutionEngine", "lifecycle_source",
+                               "✅ Lifecycle onCreate/onStart/onResume executed as DEX bytecode "
+                               "(REAL_DALVIK_INTERPRETER, entry-time provenance)");
         }
-        
+
         if (!lifecycle_from_dex) {
             // WARNING: Lifecycle not from DEX execution
             // This is allowed for now but MUST be tracked as HOST_SHORTCUT
