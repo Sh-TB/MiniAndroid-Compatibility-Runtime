@@ -153,34 +153,29 @@ uint32_t RealInflater::color_of(const AxmlAttribute& a, InflateReport& rep) cons
     return 0;
 }
 
+// G04 §4 (FIND-G04-AUDIT-003): the density-bucket ranker over ZIP PATH
+// STRINGS is REMOVED. Selection goes through the canonical ARSC engine
+// (select_file → resolve_full → best_for(device)), which implements the
+// AOSP isBetterThan density law (exact > both-above→smaller > straddle→
+// higher > both-below→higher, ResourceTypes.cpp L2690–2737) and reports the
+// SELECTED config density for the BitmapFactory scaling law.
+// out_density: raw config form (0=unset→160, 0xFFFF=DENSITY_NONE).
 std::string RealInflater::drawable_path_for(const AxmlAttribute& a,
-                                            InflateReport& rep) const {
+                                            InflateReport& rep,
+                                            uint16_t* out_density) const {
     if (a.value_type != 0x01) return {};
-    auto paths = arsc_.drawable_paths(a.value_data);
-    // Prefer the highest-density variant (xxxhdpi > xxhdpi > ... > mdpi),
-    // matching Android device scaling at our runtime density (>= 2.0).
-    auto rank = [](const std::string& p) -> int {
-        if (p.find("drawable-xxxhdpi") != std::string::npos ||
-            p.find("mipmap-xxxhdpi") != std::string::npos) return 6;
-        if (p.find("drawable-xxhdpi") != std::string::npos ||
-            p.find("mipmap-xxhdpi") != std::string::npos) return 5;
-        if (p.find("drawable-xhdpi") != std::string::npos ||
-            p.find("mipmap-xhdpi") != std::string::npos) return 4;
-        if (p.find("-hdpi") != std::string::npos) return 3;
-        if (p.find("-mdpi") != std::string::npos) return 2;
-        return 1;  // res/drawable/ or res/mipmap/ (unqualified)
-    };
-    std::string best;
-    int best_rank = -1;
-    for (const auto& p : paths) {
-        if (!apk_.extract_entry_cached(p).empty() && rank(p) > best_rank) {
-            best = p;
-            best_rank = rank(p);
-        }
-    }
-    if (!best.empty()) {
+    if (out_density) *out_density = 0;
+    if (auto sel = arsc_.select_file(a.value_data, apk_entries_,
+                                     device_config())) {
+        if (out_density) *out_density = sel->selected_density();
         rep.resolved_drawable_refs++;
-        return best;
+        return sel->path;
+    }
+    // Table-miss fallback kept for non-value-IS-path tables (name scan),
+    // never an authority over the table.
+    auto paths = arsc_.drawable_paths(a.value_data);
+    for (const auto& p : paths) {
+        if (!apk_.extract_entry_cached(p).empty()) { rep.unresolved_refs++; return p; }
     }
     if (!paths.empty()) rep.unresolved_refs++;
     return {};
@@ -269,12 +264,15 @@ RealInflater::RView RealInflater::build(const AxmlNode& node, InflateReport& rep
                     rv.bg_color = r.color_argb;
                     rep.resolved_color_refs++;
                 } else {
-                    std::string p = drawable_path_for(a, rep);
+                    uint16_t sel_d = 0;
+                    std::string p = drawable_path_for(a, rep, &sel_d);
                     if (!p.empty()) {
                         if (p.size() > 4 && p.substr(p.size() - 4) == ".xml")
                             load_shape_drawable(p, rv, rep);
-                        else
+                        else {
                             rv.bg_drawable = p;
+                            rv.bg_drawable_density = sel_d;   // G04 §4
+                        }
                     }
                 }
             } else if (!a.raw_value.empty() && a.raw_value[0] == '#') {
@@ -282,8 +280,9 @@ RealInflater::RView RealInflater::build(const AxmlNode& node, InflateReport& rep
                 rv.bg_color = color_of(a, rep);
             }
         } else if (n == "src") {
-            std::string p = drawable_path_for(a, rep);
-            if (!p.empty()) rv.src_path = p;
+            uint16_t sel_d = 0;
+            std::string p = drawable_path_for(a, rep, &sel_d);
+            if (!p.empty()) { rv.src_path = p; rv.src_density = sel_d; }   // G04 §4
         } else if (n == "clickable") {
             rv.clickable = a.value_data != 0;
         } else if (n == "visibility") {
@@ -365,6 +364,7 @@ void RealInflater::convert_and_attach(const RView& rv, uint32_t parent_shadow_id
         if (rv.text_gravity >= 0) n->text_gravity = rv.text_gravity;
         n->bg_color = rv.bg_color;
         n->bg_drawable_path = rv.bg_drawable;
+        n->bg_drawable_density = rv.bg_drawable_density;   // G04 §4
         n->bg_shape_has_solid = rv.bg_shape_has_solid;
         n->bg_shape_solid = rv.bg_shape_solid;
         n->bg_shape_has_gradient = rv.bg_shape_has_gradient;
@@ -392,6 +392,7 @@ void RealInflater::convert_and_attach(const RView& rv, uint32_t parent_shadow_id
         n->rel_center = rv.rel_center;
         if (!rv.src_path.empty()) {
             n->image_drawable_path = rv.src_path;
+            n->src_density = rv.src_density;                   // G04 §4
         }
     }
     if (rep.root_view_id == 0) rep.root_view_id = vid;

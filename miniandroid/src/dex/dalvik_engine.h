@@ -19,6 +19,7 @@
 #include "../runtime/vtable_dispatch.h"
 #include "../api/android_stubs.h"
 #include "../resources/arsc_parser.h"   // GOLDEN-03: canonical resolver hook
+#include "../resources/res_config.h"    // G04 §4: device_config() (inTargetDensity)
 // EXP-051: Shadow registry forward-declarations.
 namespace miniandroid { namespace framework {
 class ShadowRegistry;
@@ -1855,6 +1856,13 @@ public:
     // EXP-067: resource_drawable_paths_ maps field name → APK asset path (e.g. "res/abc.webp").
     // Loaded from resource_values.json["drawable"] and ["mipmap"].
     std::map<std::string, std::string> resource_drawable_paths_;
+    // G04 §4: resid → SELECTED config density (raw ResTable_config form) of
+    // the resolved file drawable — the BitmapFactory inDensity input. Filled
+    // by populate_drawable_paths_from_arsc (canonical select_file law).
+    std::map<uint32_t, uint16_t> resource_drawable_density_by_resid_;
+    const std::map<uint32_t, uint16_t>& drawable_density_by_resid() const {
+        return resource_drawable_density_by_resid_;
+    }
     // UNIFIED_011.2 IMAGE-RES-RENDER (§13/§14 campaign): populate
     // resource_drawable_paths_ from the APK's actual res/ entry list by
     // matching R-field names to drawable file basenames. Prior to this the

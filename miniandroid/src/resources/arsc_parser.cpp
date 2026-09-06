@@ -697,54 +697,20 @@ std::optional<std::string> ArscParser::apk_path_for(uint32_t resource_id,
 std::optional<std::string> ArscParser::apk_path_for(uint32_t resource_id,
                                                     const std::vector<std::string>& apk_paths,
                                                     const ResTableConfig& device) const {
+    auto sel = select_file(resource_id, apk_paths, device);
+    if (sel) return sel->path;
+    // G04: preserve the legacy name-matching fallback for tables whose
+    // file-backed entries are NOT stored as value-IS-path strings (older
+    // non-obfuscated APKs built without aapt2 value rewriting). select_file
+    // itself already covers every value-IS-path case via resolve_full.
     auto r = resolve(resource_id);
     if (!r) return std::nullopt;
-
-    // CAMPAIGN 013 (§18): REAL Android resolution for file-backed resources.
-    // In resources.arsc a file-backed entry's VALUE IS THE PATH (STRING type,
-    // e.g. "res/w6.xml"). AGP resource obfuscation renames the FILES and
-    // rewrites these values — the entry NAME no longer appears anywhere in
-    // res/. The old name-matching heuristic returned NONE for every layout of
-    // obfuscated APKs (notesbillthefarmer: name=main, value=res/w6.xml).
-    // Value-first also removes the O(type*files) name scan for normal APKs.
-    //
-    // G31 session fix: the value→path walk previously took the FIRST config
-    // in parse order, IGNORING the device-configuration law. aapt2 optimizes
-    // SDK-versioned layouts into multiple variants (EXT-01: () v9.xml,
-    // (v16) UD.xml, (v21) 02.xml) and the AOSP AssetManager2 law picks the
-    // best MATCHING config — so the version-selected variant must win, not
-    // the first row. Resolve through best_for(device) (match + isBetterThan,
-    // the same law resolve_value uses) and only then map the value to the
-    // APK path.
-    if (const ArscEntry* e = r->best_for(device)) {
-        const std::string& v = e->value.string_value;
-        if (e->value.type == DataType::STRING && v.size() > 4 &&
-            v.compare(0, 4, "res/") == 0) {
-            for (const auto& path : apk_paths)
-                if (path == v) return path;
-        }
-    }
-    // Fallback when best() resolved to a non-path value (should not happen
-    // for file-backed entries): scan all configs for any res/ path value.
-    for (const auto& cfg : r->configs) {
-        const std::string& v = cfg.value.string_value;
-        if (cfg.value.type == DataType::STRING && v.size() > 4 &&
-            v.compare(0, 4, "res/") == 0) {
-            for (const auto& path : apk_paths)
-                if (path == v) return path;
-        }
-    }
-
-    // Fallback: legacy name matching (entry name = file stem).
-    // candidates: res/<type>-<config>/<name>.<ext> — we match by suffix
     for (const auto& path : apk_paths) {
-        // path like res/layout/act_gmdice.xml or res/drawable-hdpi/icon.png
         const std::string prefix = "res/";
         if (path.compare(0, prefix.size(), prefix) != 0) continue;
         size_t slash2 = path.find('/', prefix.size());
         if (slash2 == std::string::npos) continue;
         std::string dir = path.substr(prefix.size(), slash2 - prefix.size());
-        // dir = layout | layout-v21 | drawable-hdpi ...
         std::string base_dir = dir;
         size_t dash = base_dir.find('-');
         if (dash != std::string::npos) base_dir = base_dir.substr(0, dash);
@@ -753,6 +719,54 @@ std::optional<std::string> ArscParser::apk_path_for(uint32_t resource_id,
         size_t dot = fname.find('.');
         std::string stem = dot == std::string::npos ? fname : fname.substr(0, dot);
         if (stem == r->name) return path;
+    }
+    return std::nullopt;
+}
+
+// ── G04 §4: canonical file selection with the selected config ──────────────
+// Law chain (see header): resolve_full walks references/aliases with the
+// per-step selected config; the TERMINAL step must carry a STRING value that
+// IS the zip path ("res/…", the aapt2 value-IS-path law, incl. AGP
+// obfuscation-rewritten values). The terminal's selected config is the
+// config BitmapFactory receives as TypedValue.density → inDensity.
+std::optional<ArscParser::FileSelection> ArscParser::select_file(
+        uint32_t resource_id, const std::vector<std::string>& apk_paths,
+        const ResTableConfig& device) const {
+    ResolutionResult rr = resolve_full(resource_id, device, kMaxReferenceDepth);
+    if (!rr.ok || rr.chain.empty()) return std::nullopt;
+    const ResolutionStep& term = rr.chain.back();
+    const ResValue& v = term.raw_value;
+    if (v.type == DataType::STRING && v.string_value.size() > 4 &&
+        v.string_value.compare(0, 4, "res/") == 0) {
+        for (const auto& path : apk_paths)
+            if (path == v.string_value) {
+                FileSelection sel;
+                sel.path = path;
+                sel.selected = term.selected_config;
+                sel.has_selected = true;
+                return sel;
+            }
+    }
+    // Reference chains may terminate on a non-path value while an
+    // intermediate/other config of the SAME entry holds the path (rare
+    // mixed tables): fall back to any res/ path value of the terminal id,
+    // still reporting that config's density (best-for the device first).
+    auto r = resolve(resource_id);
+    if (r) {
+        if (const ArscEntry* e = r->best_for(device)) {
+            const std::string& ev = e->value.string_value;
+            if (e->value.type == DataType::STRING && ev.size() > 4 &&
+                ev.compare(0, 4, "res/") == 0) {
+                for (const auto& path : apk_paths)
+                    if (path == ev) {
+                        FileSelection sel;
+                        sel.path = path;
+                        sel.selected = e->config;
+                        sel.has_selected = true;
+                        return sel;
+                    }
+            }
+        }
     }
     return std::nullopt;
 }

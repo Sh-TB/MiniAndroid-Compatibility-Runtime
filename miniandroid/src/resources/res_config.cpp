@@ -404,8 +404,16 @@ static ResTableConfig build_device_config() {
         c.country[0] = (uint8_t)std::toupper((unsigned char)ctry[0]);
         c.country[1] = (uint8_t)std::toupper((unsigned char)ctry[1]);
     }
-    // density: MINIANDROID_DENSITY — default 480 (xxhdpi for a 1080p phone)
-    c.density = DENSITY_XXHIGH;
+    // density: MINIANDROID_DENSITY — default 420.
+    // G04 FIND-G04-AUDIT-002 (single-device law): DeviceMetrics.density =
+    // 2.625 px/dp = 420dpi drives ALL dp→px conversion and the visual
+    // goldens (22sp→58px = ceil(22×2.625)). AOSP DisplayMetrics law: the
+    // SAME densityDpi feeds config selection (AssetManager2), TypedValue
+    // unit conversion AND BitmapFactory inTargetDensity. Requesting 480
+    // here while converting at 2.625 was TWO devices in one runtime.
+    // DENSITY_XXHIGH (480) was the historical default; the pixel-proven
+    // device is the 420dpi one, so 420 wins.
+    c.density = 420;
     const char* dens = std::getenv("MINIANDROID_DENSITY");
     if (dens && *dens) {
         int d = std::atoi(dens);

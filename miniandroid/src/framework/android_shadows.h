@@ -534,6 +534,13 @@ public:
         // The renderer can look up the drawable path via resource_drawable_paths_.
         int32_t image_resource_id = 0;
         std::string image_drawable_path;  // resolved APK asset path (e.g. "res/abc.webp")
+        // G04 §4: SELECTED config density (raw ResTable_config form) of the
+        // resolved drawable + its NATURAL pixel dims (probed from the encoded
+        // image). BitmapFactory law: displayed/intrinsic size =
+        // natural × inTargetDensity/inDensity (DENSITY_NONE → natural).
+        uint16_t src_density = 0;         // selected config density of src drawable
+        uint16_t bg_drawable_density = 0; // selected config density of bg drawable
+        int src_w = 0, src_h = 0;         // natural encoded dims (0 = unknown)
         // EXP-074: Text resource ID — set by TextView.setText(int resid).
         // When non-zero, the renderer resolves it via the ARSC string table.
         int32_t text_resource_id = 0;
