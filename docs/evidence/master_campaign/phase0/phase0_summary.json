@@ -1,5 +1,205 @@
 [
   {
+    "apk": "microtimer",
+    "rel": "download/exp076_corpus/dubrowgn.microtimer_8.apk",
+    "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 28.31,
+      "screenshot_sha256": "0c90e96036d45aac509c0deec199260214b67fb732a3cfa2dca6dc699def161f"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 52,
+      "zero_sized": 7
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "nonbg_pct": 50.625,
+      "content_bbox": [
+        0,
+        948,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
+    "apk": "chessclock",
+    "rel": "download/exp073_real_apps/com.chessclock.android_29.apk",
+    "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.24,
+      "screenshot_sha256": "4f32761409cba594532f621e5148e7a98dec838e3ebb00efb17947f87a05aeaa"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 30,
+      "zero_sized": 18
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        0,
+        0,
+        0
+      ],
+      "nonbg_pct": 2.7077,
+      "content_bbox": [
+        0,
+        718,
+        1079,
+        1866
+      ]
+    }
+  },
+  {
+    "apk": "tictactoe",
+    "rel": "download/tictactoe.apk",
+    "sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.11,
+      "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 2,
+      "zero_sized": 0
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "nonbg_pct": 0.0,
+      "content_bbox": null
+    }
+  },
+  {
+    "apk": "openlauncher",
+    "rel": "download/exp076_corpus/com.benny.openlauncher_39.apk",
+    "sha256": "b3320463a7a1ed46c52464bae83a97317d062b1e2097bd1885cdf265f2089f89",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.71,
+      "screenshot_sha256": "a49fd6c72d5707a2d057e113a972eb4d5d906f2dcc653ef97ecd56c0ab637c0b"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 20,
+      "zero_sized": 4
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        216,
+        216,
+        216
+      ],
+      "nonbg_pct": 99.8554,
+      "content_bbox": [
+        1,
+        1,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
+    "apk": "dooz",
+    "rel": "download/exp076_corpus/io.github.yamin8000.dooz_18.apk",
+    "sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.14,
+      "screenshot_sha256": "e33e6e751b8c4a4aae5f2e143a5544bea0e3519b1ca87bcc8338ed8c5fb39a5f"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 2,
+      "zero_sized": 0
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        216,
+        216,
+        216
+      ],
+      "nonbg_pct": 99.8554,
+      "content_bbox": [
+        1,
+        1,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
+    "apk": "bgclock",
+    "rel": "download/exp076_corpus/nl.hansdezwart.bgclock_2.apk",
+    "sha256": "72c140b0083ef273bc6452a7f1006e1e2dc4c64c61f8bcc90d082c3f6d1f9dee",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.83,
+      "screenshot_sha256": "2f85dd74aa54e46304537868822071f12e4411e1dc8e41c2f354ba9dff076edb"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 2,
+      "zero_sized": 0
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        51,
+        46,
+        43
+      ],
+      "nonbg_pct": 0.0,
+      "content_bbox": null
+    }
+  },
+  {
     "apk": "simplekeyboard",
     "rel": "download/exp076_corpus/rkr.simplekeyboard.inputmethod_145.apk",
     "sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
@@ -39,7 +239,7 @@
     "base": {
       "rc": 1,
       "status": "PARTIAL",
-      "seconds": 62.36,
+      "seconds": 65.8,
       "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
     },
     "trace": {
@@ -65,71 +265,6 @@
         1079,
         1919
       ]
-    }
-  },
-  {
-    "apk": "bouncy",
-    "rel": "download/master_campaign/com.dozingcatsoftware.bouncy_43.apk",
-    "sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
-    "base": {
-      "rc": 0,
-      "status": "SUCCESS",
-      "seconds": 1.11,
-      "screenshot_sha256": "072ff17874b74846c623b98d0540a4442f8bbc1ec05f6b738ce5ffa50866e1e7"
-    },
-    "trace": {
-      "status": "SUCCESS"
-    },
-    "view_tree": {
-      "present": true,
-      "views": 62,
-      "zero_sized": 54
-    },
-    "pixel": {
-      "w": 1080,
-      "h": 1920,
-      "bg": [
-        225,
-        225,
-        225
-      ],
-      "nonbg_pct": 83.4255,
-      "content_bbox": [
-        0,
-        147,
-        1079,
-        1919
-      ]
-    }
-  },
-  {
-    "apk": "scope",
-    "rel": "download/master_campaign/org.billthefarmer.scope_140.apk",
-    "sha256": "0e34439ce43bfd47d039ab91a7056051e0cf94c03948eb97236d7d2648ea17de",
-    "base": {
-      "rc": 0,
-      "status": "SUCCESS",
-      "seconds": 0.19,
-      "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
-    },
-    "trace": {
-      "status": "SUCCESS"
-    },
-    "view_tree": {
-      "present": true,
-      "views": 10,
-      "zero_sized": 8
-    },
-    "pixel": {
-      "w": 1080,
-      "h": 1920,
-      "bg": [
-        255,
-        255,
-        255
-      ],
-      "nonbg_pct": 0.0,
-      "content_bbox": null
     }
   }
 ]
