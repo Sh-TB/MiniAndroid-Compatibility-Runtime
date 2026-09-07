@@ -799,6 +799,9 @@ public:
         int padding_left = 0, padding_top = 0, padding_right = 0, padding_bottom = 0;
         float text_size_px = 0;          // 0 → renderer default
         uint32_t text_color = 0;         // 0 → renderer default (near-black)
+        // M3 FIX-M3-005b: setTextColor(ColorStateList) heap object id — the
+        // CSL default-color law resolves at draw time (0 = none captured).
+        uint32_t text_color_state_object = 0;
         bool text_bold = false;
         bool text_italic = false;
         std::string bg_drawable_path;    // APK entry path of background drawable
