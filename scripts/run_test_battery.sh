@@ -14,7 +14,25 @@
 set -uo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-MA="$REPO/MiniAndroid-Compatibility-Runtime/miniandroid"
+# Resolves BOTH layouts: the in-repo copy (scripts/ inside
+# MiniAndroid-Compatibility-Runtime) and the legacy sandbox copy
+# (/home/z/my-project/scripts/ next to the repo directory).
+if [ -d "$REPO/miniandroid" ]; then
+    MA="$REPO/miniandroid"
+    IN_REPO=1
+else
+    MA="$REPO/MiniAndroid-Compatibility-Runtime/miniandroid"
+    IN_REPO=0
+fi
+# SHARED (comparators, fixture builders, corpus fetch) always live in the
+# OUTER scripts/ directory — the sandbox tools location that predates the
+# in-repo harness copy. TOOLREPO = repo root when run from the sandbox
+# layout, or the parent when run from the in-repo layout.
+if [ "$IN_REPO" -eq 1 ]; then TOOLREPO="$REPO/.."; else TOOLREPO="$REPO"; fi
+TOOLS="$TOOLREPO/scripts"
+# Fixture builders + fetch_corpus live in the REPO's scripts/ in both layouts.
+REPOSCRIPTS="$REPO/scripts"
+if [ "$IN_REPO" -eq 0 ]; then REPOSCRIPTS="$REPO/MiniAndroid-Compatibility-Runtime/scripts"; fi
 cd "$MA"
 
 # G09 resume support: each PASSing stage is checkpointed to a state dir so a
@@ -344,7 +362,7 @@ elif [ -f "$EXT01_APK" ] && [ -f "$EXT01_REF" ]; then
     echo "$EXT01_APK" | grep -q . && \
     ./build/miniandroid run "$EXT01_APK" -o "$EXT01_OUT" > "$EXT01_OUT/run.log" 2>&1
     gate "EXT-01 run (external APK)" $?
-    python3 "$REPO/scripts/compare_ext01_typography.py" "$EXT01_REF" \
+    python3 "$TOOLS/compare_ext01_typography.py" "$EXT01_REF" \
         "$EXT01_OUT/screenshot.png" --json "$EXT01_OUT/typography_golden.json" \
         > "$EXT01_OUT/compare.log" 2>&1
     gate "EXT-01 typography golden (9 static checks)" $?
@@ -362,7 +380,7 @@ elif [ -f "$EXT01_APK" ]; then
     ./build/miniandroid run "$EXT01_APK" -o "$EXT02_OUT" --long-press 540,960 \
         > "$EXT02_OUT/run.log" 2>&1
     gate "EXT-02 long-press run (external APK interaction)" $?
-    python3 "$REPO/scripts/compare_ext01_interaction.py" \
+    python3 "$TOOLS/compare_ext01_interaction.py" \
         "$EXT02_OUT/frames/frame_000.png" "$EXT02_OUT/frames/frame_001.png" \
         "$EXT02_OUT/frames/manifest.json" --json "$EXT02_OUT/interaction_golden.json" \
         > "$EXT02_OUT/compare.log" 2>&1
@@ -376,7 +394,7 @@ fi
 # G04 §4: density-matrix differential oracle (aapt2-built fixture;
 # selection law + density scaling + DENSITY_NONE + alias chain + FIT_CENTER)
 if cached "density-matrix oracle (G04 §4)"; then skip "density-matrix oracle (G04 §4)"; else
-bash "$REPO/scripts/validate_density_matrix.sh" /tmp/battery_density \
+bash "$TOOLS/validate_density_matrix.sh" /tmp/battery_density \
     > /tmp/battery_density.log 2>&1
 gate "density-matrix oracle (G04 §4)" $?
 grep -h "DENSITY MATRIX" /tmp/battery_density.log | head -1
@@ -391,7 +409,7 @@ if cached "G06 tap 3-run determinism (frame SHAs identical)"; then
     skip "G06 fixture build (aapt2+ECJ+D8)"; skip "G06 interaction golden (21 law checks)"
     skip "G06 tap 3-run determinism (frame SHAs identical)"
 elif [ -d "$G06_FIX_SRC" ]; then
-    bash "$REPO/MiniAndroid-Compatibility-Runtime/scripts/build_fixture_apk.sh" \
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
         "$G06_FIX_SRC" /tmp/battery_g06/g06_interaction.apk \
         > /tmp/battery_g06/build.log 2>&1
     gate "G06 fixture build (aapt2+ECJ+D8)" $?
@@ -405,7 +423,7 @@ elif [ -d "$G06_FIX_SRC" ]; then
     ./build/miniandroid run /tmp/battery_g06/g06_interaction.apk \
         -o /tmp/battery_g06/dis --tap 540,430 \
         > /tmp/battery_g06/dis/run.log 2>&1
-    python3 "$REPO/scripts/compare_g06_interaction.py" \
+    python3 "$TOOLS/compare_g06_interaction.py" \
         /tmp/battery_g06/tap1 /tmp/battery_g06/dis \
         --json /tmp/battery_g06/golden.json > /tmp/battery_g06/compare.log 2>&1
     gate "G06 interaction golden (21 law checks)" $?
@@ -426,7 +444,7 @@ if cached "G07 finish-cascade 3-run determinism (frame SHAs identical)"; then
     skip "G07 fixture build (aapt2+ECJ+D8)"; skip "G07 lifecycle golden (16 machine checks)"
     skip "G07 finish-cascade 3-run determinism (frame SHAs identical)"
 elif [ -d "$G07_FIX_SRC" ]; then
-    bash "$REPO/MiniAndroid-Compatibility-Runtime/scripts/build_fixture_apk.sh" \
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
         "$G07_FIX_SRC" /tmp/battery_g07/g07_lifecycle.apk \
         > /tmp/battery_g07/build.log 2>&1
     gate "G07 fixture build (aapt2+ECJ+D8)" $?
@@ -440,7 +458,7 @@ elif [ -d "$G07_FIX_SRC" ]; then
     ./build/miniandroid run /tmp/battery_g07/g07_lifecycle.apk \
         -o /tmp/battery_g07/frames --frames 4 --frame-delay 250 \
         > /tmp/battery_g07/frames/run.log 2>&1
-    python3 "$REPO/scripts/compare_g07_lifecycle.py" \
+    python3 "$TOOLS/compare_g07_lifecycle.py" \
         /tmp/battery_g07/fin1 /tmp/battery_g07/frames \
         --json /tmp/battery_g07/golden.json > /tmp/battery_g07/compare.log 2>&1
     gate "G07 lifecycle golden (16 machine checks)" $?
@@ -461,7 +479,7 @@ if cached "G08 navigation 3-run determinism (frame SHAs identical)"; then
     skip "G08 fixture build (aapt2+ECJ+D8)"; skip "G08 navigation golden (17 law checks)"
     skip "G08 navigation 3-run determinism (frame SHAs identical)"
 elif [ -d "$G08_FIX_SRC" ]; then
-    bash "$REPO/MiniAndroid-Compatibility-Runtime/scripts/build_fixture_apk.sh" \
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
         "$G08_FIX_SRC" /tmp/battery_g08/g08_navigation.apk \
         > /tmp/battery_g08/build.log 2>&1
     gate "G08 fixture build (aapt2+ECJ+D8)" $?
@@ -475,7 +493,7 @@ elif [ -d "$G08_FIX_SRC" ]; then
     ./build/miniandroid run /tmp/battery_g08/g08_navigation.apk \
         -o /tmp/battery_g08/extras --tap 540,178 \
         > /tmp/battery_g08/extras/run.log 2>&1
-    python3 "$REPO/scripts/compare_g08_navigation.py" \
+    python3 "$TOOLS/compare_g08_navigation.py" \
         /tmp/battery_g08/nav1 /tmp/battery_g08/extras \
         --json /tmp/battery_g08/golden.json > /tmp/battery_g08/compare.log 2>&1
     gate "G08 navigation golden (17 law checks)" $?
@@ -496,7 +514,7 @@ if cached "corpus run dubrowgn.microtimer_8"; then
     skip "corpus run dubrowgn.microtimer_8"
 else
 CORPUS_DIR="$MA/download"
-python3 "$REPO/MiniAndroid-Compatibility-Runtime/scripts/fetch_corpus.py" \
+python3 "$REPOSCRIPTS/fetch_corpus.py" \
     "Simple Stopwatch" gmdice microtimer \
     > /tmp/battery_corpus_fetch.log 2>&1
 CORPUS_RC=$?
