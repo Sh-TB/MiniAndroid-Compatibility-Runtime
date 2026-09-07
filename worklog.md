@@ -732,3 +732,56 @@ Stage Summary:
   R8 interface dispatch is signature-correct. 59/59 battery green.
 - Next: microtimer tick visual loop (post-insert branch), then F-ARGS
   (SECUSO), then PHASE 3+ (shadow ancestry, geometry, image pipeline).
+
+---
+Task ID: M3-C3 (MASTER-3 OPEN-ENDED FORENSIC — session 6)
+Agent: Super Z (main agent)
+Task: Open-ended forensic/compatibility closure campaign. Baseline recovery, then
+exhaustive frontier mapping with FINDING-NNN registry, no finding quota.
+
+Work Log:
+- PHASE 0 baseline: rebuilt binary from HEAD 0b6f85bb (container reset wiped build/).
+  FINDING-001: aapt2 missing → restored from documented Google Maven URL
+  (2.20-14304508) + wrote scripts/bootstrap_toolchain.sh (AE gate).
+  FINDING-002: master_campaign APK cache unreproducible → wrote
+  scripts/fetch_master_campaign.py (registry_additions.json frozen SHA-256s).
+  Restored HelloWorldSelfAware fixture (SHA 009b4671…cc41 MATCH).
+  Battery: 59/59 ALL PASS — baseline established.
+- Diagnostics rebuilt (RULE 2): wrote scripts/m3_disasm.py (spec-conformant
+  Dalvik disassembler). Validated against live AOSP instruction-formats page +
+  androguard: 35c = Ag|op, BBBB@index, FEDC@regs; per-sub-list method_idx delta
+  chains reset; payload pseudo-instructions consumed; 22b/22c nibble laws.
+  Cross-validation: 28/30 methods fully agree (2 = payload label cosmetics).
+  scripts/m3_invoke_inventory.py: invoked-class inventory.
+- DEX interpreter audit: runtime opcode constant table (168 entries) verified
+  against the authoritative dalvik-bytecode spec — zero value mismatches.
+- PHASE 1 F-ROOM-CHAIN forensics (microtimer v8):
+  * Mapped the REAL button law: R8-merged Lk/d.onClick + packed-switch
+    payload — tags 0/2=digits, 4=backspace, 6=clear, 7=createTimer(▶),
+    8/10/12=digits. Buttons: id=121 blank key = ▶ createTimer.
+  * Scheduling law: app uses Handler.postDelayed(Runnable, Object token, long)
+    — the HIDDEN token overload — + removeCallbacksAndMessages(token).
+  * FINDING-004 (P0): HandlerShadow read args[1].long_val as delay on the
+    token form (garbage), delay never scheduled. FIXED: token-aware
+    enqueue_tokened + identity-based remove_by_token (AOSP law).
+  * FINDING-007 (P0): Math.ceil ABSENT from the Math shadow → silent 0.0
+    default zeroed MicroTimer's remaining (Ll/a.a→MainActivity.e) → label
+    00:00:00, schedule branch dead. FIXED: full Math surface (ceil/floor/
+    sqrt/pow/round/floorDiv/floorMod/trig/…, saturated round law).
+  * RUNTIME PROOF: INSERT expires_ms=1000082410 (= elapsed + 82*1000 exact);
+    label 00:01:22 → 00:00:01 mutating across frames; token=378 posts drain
+    via Lk/c runnables; sub-second alignment delay=930ms posts appear.
+  * REMAINING (next session): tick re-post delay law (68× delay=0 spins —
+    (expires-now)%1000 alignment vs Lk/a.c interval), row label "null"
+    formatting after finish branch, off-screen row geometry (Button
+    (wrap,match) rendered 1080x0 — view_renderer horizontal LL law).
+- REGRESSION: battery 59/59 ALL PASS at commit 3ea265be (zero regressions).
+
+Stage Summary:
+- Two P0-class semantic roots closed (Handler token law, Math surface);
+  7 findings registered (FINDING-001..007 incl. diagnostics infrastructure);
+  spec-conformant disassembler + 2 env-gated value tracers added as reusable
+  campaign diagnostics.
+- PUBLISH BLOCKED — TOKEN ABSENT: /home/z/.gh_token lost in container reset;
+  push + Issue #8 evidence comments deferred until token is restored.
+  (Commit 3ea265be holds all work locally; zero fabricated URLs.)
