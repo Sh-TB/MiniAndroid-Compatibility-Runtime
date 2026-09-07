@@ -4735,3 +4735,39 @@ Work Log:
   pixel-identical. Battery 52/52 ALL PASS after cluster; goldens unchanged.
 - Next: interaction expansion (§20 ≥5 APKs), timer cluster (§19), class
   system audit (§5/§6), corpus +4 (§23).
+
+---
+Task ID: MASTER-2 (wave 2) — session closeout
+Agent: Super Z (main agent)
+Task: §13 measurement close, §20 interaction expansion, §5/§6 audits,
+§23 corpus +4, §27/§28 persistence.
+
+Work Log:
+- FIX-MEASURE-001..004 (commits 5f7d1f8f, 4af8d90b): override-query law,
+  AOSP RelativeLayout measure law (dependency sort + applySizeRules +
+  getChildMeasureSpec + onLayout edge replay), resolveSizeAndState
+  spec-purity, in-measure weight redistribution. Root causes proven
+  against DEX ground truth + AXML ground truth + [DEX-MEASURE]/[VSTACK]
+  diagnostics. scope 4.22→99.77%; unote 9.11→91.95% (lawful); 14/16
+  APKs pixel-identical; goldens byte-identical.
+- FIX-INPUT-001 + FIX-INTENT-001 (commit 3fb28e26): DeclaredOnClickListener
+  tap dispatch; Intent(Context, Class) component law. unote: search tap
+  2,011px; addNote → full cross-Activity navigation (NoteEdition.onCreate
+  462 real DEX instructions, 112,840px second screen, 3× bbb46431…).
+  gmdice: 5 clicks + 3 dialog clicks dispatched, 1,401,540px diff, 3×
+  50f58884…. Tier-2 = 5 independent real APKs.
+- §6 (commit 58e3921d): shadow registry architectural invariant battery
+  (24 checks: completeness, count, ownership, isolation, reduced-registry
+  detection). Battery extended to 54 stages; harness committed (037e8fbc)
+  + dual-layout path fix.
+- §23: +4 frozen additions (survivalmanual 6dbc943c…, coffee ae4688fe…,
+  diary 979e8cd8…, SECUSO todo 80c6f68e…). diary SUCCESS 99.88% (3×);
+  survivalmanual/coffee = known AppCompat-shell/tile families
+  (deterministic default-window); SECUSO blocked-on-time at androidx
+  ResourcesCompat color-state-list (logged honestly).
+- §25: every new proof 3× byte-identical. §26: 54/54 battery ALL PASS at
+  every commit; zero golden changes.
+- Remaining blockers (unchanged in kind): Compose, libGDX, WebView,
+  Fragment/ViewPager, IME, AppCompat shells, headingcalculator keypad
+  placement oscillation (evidence recorded), timer-tick labels, Telegram
+  BLOCKED-ON-FREEZE.
