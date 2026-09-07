@@ -171,7 +171,11 @@ public:
 
     bool handles_class(const std::string& class_name) const override {
         return class_name == "Landroid/os/Looper;" ||
-               class_name == "Landroid/os/MessageQueue;";
+               class_name == "Landroid/os/MessageQueue;" ||
+               // M3 FIX-M3-014: SystemClock reads the same deterministic
+               // virtual clock that the G07 Looper machinery schedules
+               // against (one clock, one authority).
+               class_name == "Landroid/os/SystemClock;";
     }
 
     CallResult dispatch(const CallContext& ctx) override;

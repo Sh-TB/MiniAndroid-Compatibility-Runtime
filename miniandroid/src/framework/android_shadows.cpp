@@ -489,6 +489,57 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
 // ─────────────────────────────────────────────────────────────────────────
 CallResult LooperShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
+    // M3 FIX-M3-014 (§9 event loop / deterministic time law):
+    // SystemClock must read the SAME deterministic virtual clock that the
+    // G07 Handler/Looper machinery schedules against. AOSP law:
+    //   * elapsedRealtime(): ms since boot incl. deep sleep — the app-visible
+    //     monotonic base for absolute-time math (Alarm expiresMs = ERT + N).
+    //   * uptimeMillis(): ms since boot excl. deep sleep — no sleep model in
+    //     this headless runtime, so it equals elapsedRealtime.
+    //   * currentTimeMillis(): epoch wall time — mapped to the virtual clock
+    //     with a FIXED base so runs stay byte-identical (no wall clock).
+    // Evidence: microtimer v8 Alarm.unpause/update compute
+    // expiresMs = elapsedRealtime() + totalSeconds*1000 and compare against
+    // elapsedRealtime() each tick; with the bridge returning garbage the
+    // math collapsed (nowMs >= expiresMs immediately → alarm expired at
+    // tick 1 → Vibration.start instead of the postDelayed countdown).
+    // One clock, one authority: Looper scheduling and SystemClock agree.
+    if (ctx.class_name == "Landroid/os/SystemClock;") {
+        int64_t now = 0;
+        if (registry_) {
+            if (auto* hs = registry_->find_as<HandlerShadow>())
+                now = hs->virtual_now_ms();
+        }
+        if (m == "elapsedRealtime" || m == "uptimeMillis" ||
+            m == "elapsedRealtimeNanos") {
+            if (m == "elapsedRealtimeNanos") {
+                static const int64_t kNanosPerMs = 1000000LL;
+                return CallResult::handled_long(now * kNanosPerMs);
+            }
+            static thread_local uint64_t sc_log = 0;
+            if (sc_log < 24) {
+                sc_log++;
+                std::cerr << "[M3-CLOCK] SystemClock." << m << " -> " << now
+                          << "ms virtual" << std::endl;
+            }
+            return CallResult::handled_long(now);
+        }
+        if (m == "currentThreadTimeMillis" || m == "currentTimeMillis") {
+            return CallResult::handled_long(now);
+        }
+        if (m == "sleep") {
+            // SystemClock.sleep(ms) — sleeps WITHOUT interrupt handling.
+            // Deterministic subset: advance the virtual clock by the
+            // requested delta (no wall time, no thread suspension).
+            if (!ctx.args.empty()) {
+                int64_t ms = ctx.args[0].long_val;
+                if (auto* hs = registry_ ? registry_->find_as<HandlerShadow>()
+                                         : nullptr)
+                    hs->advance_virtual(ms < 0 ? 0 : ms);
+            }
+            return CallResult::handled_void();
+        }
+    }
     if (ctx.class_name == "Landroid/os/Looper;") {
         if (m == "getMainLooper" || m == "myLooper") {
             return CallResult::handled_object(main_looper_id_, "Landroid/os/Looper;");
