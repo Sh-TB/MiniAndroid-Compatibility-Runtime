@@ -4771,3 +4771,58 @@ Work Log:
   Fragment/ViewPager, IME, AppCompat shells, headingcalculator keypad
   placement oscillation (evidence recorded), timer-tick labels, Telegram
   BLOCKED-ON-FREEZE.
+
+---
+Task ID: M3-C1 (MASTER CAMPAIGN 3 — cluster 1: cross-pass geometry + style/weight law)
+Agent: Super Z (main agent)
+Task: §1 baseline at c0f178a7; §2 frontier; §6/§7 headingcalculator cross-pass
+oscillation + weight semantics; §13 resource law.
+
+Work Log:
+- Env restored from scratch: aapt2 2.20-14304508, corpus cache SHA-exact
+  (22 frozen APKs available: 15 base + 6 master_campaign additions +
+  OpenLauncher arbitrated b3320463; Telegram BLOCKED-ON-FREEZE (HTML),
+  TinyMusic 404 — both pre-recorded), EXT-01 HelloWorldSelfAware fixture
+  re-fetched SHA-exact 009b4671. resource_trace tool rebuilt.
+- Baseline battery ALL PASS at c0f178a7 (clean tree, g++ 14.2.0).
+- §2 frontier (docs/evidence/m3_campaign/phase0/): 20-APK matrix, zero drift
+  vs MASTER-2: 12 real-content, 4 partial, 3 blank (tictactoe/dooz/bgclock),
+  1 timeout (secuso); all 2x deterministic.
+- §7 ROOT CAUSE (headingcalculator oscillation), 3 independent defects:
+  FIX-M3-001 (commit 1df3b263): is_a DEX-classifier registered on the LAZY
+  default inflater, destroyed by ensure_loaded() recreation → the
+  authoritative window measure ran with substring fallback (CalculatorDisplay
+  extends LinearLayout classified LEAF → View-default 1920) while the render
+  pass re-asserted the classifier (container → 158). apply_is_a() now
+  re-applied on every (re)creation; engine registers at ResourceRuntime.
+  [U007-SPEC] evidence: container=0 (pass 1) vs container=1 (pass 2) → now
+  container=1 in every pass.
+- FIX-M3-003/003b (83f1a04d): ARSC ResTable_map stride 20 → 12 bytes (AOSP
+  law: name u32 + Res_value(8)). Only coincidentally-aligned keys decoded;
+  every bag with ≥2 keys dropped attributes app-wide. aapt2 ground truth:
+  keypad_button keys [95,98,d4,e6,f4,f5,f6,181] vs runtime garbage. Also:
+  bag parent ref was overwritten by complex_items[0] → style inheritance
+  unreachable; now preserved in ArscEntry::bag_parent.
+- FIX-M3-002/002c (5d8303e4): style= bag layout params (width/height/weight/
+  margin) applied with AOSP precedence (direct XML > style > theme) +
+  parent-chain walk; modern-aapt2 compiled-reference style= attrs (no raw
+  string) resolved by ref_id. Ground truth: headingcalculator buttons carry
+  NO direct layout attrs; keypad_button bag supplies 0dp/match/weight1/
+  margin1dp.
+- FIX-M3-004 + memo (2f91c63f): AOSP LL match-parent second-pass remeasure
+  (remaining space after non-match siblings, child margins + parent padding
+  in the spec) + §7 convergence memo (identical (view,spec) measured once
+  per pass; kills exponential re-measure — G04 hostile timeout fixed).
+- Law battery: m3_arsc_style_law_test (17 checks, real aapt2 fixture ARSC) +
+  m3_style_geometry_check (6 checks) + fixture m3_style_weight wired into
+  the harness (008573bd, harness commit): battery now 55 stages.
+
+Stage Summary:
+- headingcalculator nonbg 6.71% → 82.51% (keypad fills screen via style
+  weight shares; keypad measured 1080x1762 = remaining-space law), 3×
+  byte-identical 8a6ce425. microtimer lawful delta (style/PadButton
+  0dp+weight+match+margins now applied). 19/20 other APKs pixel-identical.
+- 55-stage battery ALL PASS at HEAD; goldens byte-identical; zero
+  package-specific code.
+- Next: §9 event-loop closure (chessclock/microtimer), §3 ViewShadow
+  catch-all, §13 SECUSO, §20 corpus +5, §21 tier-2 ≥8.
