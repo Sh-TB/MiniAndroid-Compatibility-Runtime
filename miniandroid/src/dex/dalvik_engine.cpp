@@ -43,6 +43,49 @@ namespace dalvik {
 // in try_recursive_invoke (defined later in this file at line ~5795).
 static framework::CallContext::Arg dalvik_value_to_arg(const DalvikValue& v);
 
+// ─── M3 FIELD-TRACE (AG diagnostic) ───────────────────────────────────────
+// MINIANDROID_FIELD_TRACE=<substr> — env-gated, deterministic, bounded.
+// Logs iget/iput field accesses whose FIELD NAME contains <substr>, or ALL
+// accesses when <substr> is "1"/"all" (hard-capped at 2000 lines so a
+// full-corpus run can never flood the log). Disabled by default: the check
+// is a single thread_local pointer compare — cheap when off.
+static bool field_trace_active(const char* field_name, const char* where) {
+    static thread_local const char* filter = std::getenv("MINIANDROID_FIELD_TRACE");
+    if (!filter) return false;
+    std::string f(filter);
+    if (f != "1" && f != "all") {
+        // R8 renames fields to single letters — match the FIELD NAME or the
+        // CALLING METHOD signature so forensics can target e.g. "MainActivity;.e".
+        std::string fn = field_name ? field_name : "";
+        std::string w = where ? where : "";
+        if (fn.find(f) == std::string::npos && w.find(f) == std::string::npos)
+            return false;
+    }
+    static thread_local uint32_t budget = 2000;
+    return budget-- > 0;
+}
+static std::string dalvik_value_to_string(const DalvikValue& v) {
+    switch (v.type) {
+        case DalvikType::INT32:
+        case DalvikType::BOOLEAN:
+        case DalvikType::CHAR:
+            return std::to_string(v.int_val);
+        case DalvikType::INT64:
+            return std::to_string(v.long_val);
+        case DalvikType::FLOAT32:
+            return std::to_string(v.float_val);
+        case DalvikType::FLOAT64:
+            return std::to_string(v.double_val);
+        case DalvikType::STRING_REF:
+            return "\"" + v.string_val + "\"";
+        case DalvikType::OBJECT_REF:
+            return "obj#" + std::to_string(v.object_id);
+        default:
+            return "<unset>";
+    }
+}
+
+
 // CYCLE-E: parse a DEX method proto "(params)return" into per-param type
 // strings ('F','J','D','I','Z',…, full 'L…;' / '[…' for references).
 static std::vector<std::string> parse_proto_param_types(const std::string& proto);
@@ -6726,6 +6769,12 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     else if (op == "shl") result_val.int_val = a_val << (b_val & 0x1f); \
                     else if (op == "shr") result_val.int_val = a_val >> (b_val & 0x1f); \
                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) >> (b_val & 0x1f)); \
+                    if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                        std::cerr << "[WIDE-DIAG] " << op_name << " @" << current_class_ << "." \
+                                  << current_method_ << " v" << (int)vA << "=" << a_val \
+                                  << " v" << (int)vB << "=" << b_val \
+                                  << " -> " << result_val.int_val << std::endl; \
+                    } \
                     set_register(vA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ = pc_ + 1; \
@@ -6997,6 +7046,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     int64_t s = (val.type == DalvikType::INT64) ? val.long_val \
                               : (val.type == DalvikType::INT32 ? static_cast<int64_t>(val.int_val) : 0); \
                     STORE_EXPR; \
+                    if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                        std::cerr << "[WIDE-DIAG] conv " << op_name << " @" << current_class_ << "." \
+                                  << current_method_ << " v" << (int)vB << "(J=" << s << ") -> " \
+                                  << out.long_val << std::endl; \
+                    } \
                     set_register(vA, out); \
                     trace.opcode_name = op_name; \
                     pc_ += 1; \
@@ -7193,6 +7247,14 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     int64_t cv = (c.type == DalvikType::INT64) ? c.long_val \
                                : (c.type == DalvikType::INT32 ? static_cast<int64_t>(c.int_val) : 0); \
                     result_val.int_val = (bv < cv) ? -1 : (bv > cv) ? 1 : 0; \
+                    if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                        std::cerr << "[WIDE-DIAG] cmp-long @" << current_class_ << "." \
+                                  << current_method_ << " b=(" << (b.type == DalvikType::INT64 ? "J" : "i") \
+                                  << (b.type == DalvikType::INT64 ? b.long_val : b.int_val) << ") v" \
+                                  << (int)vBB << " c=(" << (c.type == DalvikType::INT64 ? "J" : "i") \
+                                  << (c.type == DalvikType::INT64 ? c.long_val : c.int_val) << ") v" \
+                                  << (int)vCC << " -> " << result_val.int_val << std::endl; \
+                    } \
                     set_register(vAA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ += 2; \
@@ -7232,6 +7294,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     } \
                     bool cmp_nan = (bv != bv) || (cv != cv); \
                     result_val.int_val = cmp_nan ? (NAN_RESULT) : ((bv < cv) ? -1 : (bv > cv) ? 1 : 0); \
+                    if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                        std::cerr << "[WIDE-DIAG] " << op_name << " @" << current_class_ << "." \
+                                  << current_method_ << " b=" << (double)bv << " c=" << (double)cv \
+                                  << " -> " << result_val.int_val << std::endl; \
+                    } \
                     set_register(vAA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ += 2; \
@@ -7995,6 +8062,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         else if (std::string(op) == "shl") result_val.long_val = av << static_cast<int>(bv & 0x3f); \
                         else if (std::string(op) == "shr") result_val.long_val = av >> static_cast<int>(bv & 0x3f); \
                         else if (std::string(op) == "ushr") result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) >> static_cast<int>(bv & 0x3f)); \
+                        if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                            std::cerr << "[WIDE-DIAG] " << op_name << " @" << current_class_ << "." \
+                                      << current_method_ << " v" << (int)vA << "(J=" << av << ") v" \
+                                      << (int)vB << "(J=" << bv << ") -> " << result_val.long_val << std::endl; \
+                        } \
                     } else if (op_type == DalvikType::FLOAT32) { \
                         float af = (a.type == DalvikType::FLOAT32) ? a.float_val : (float)a.int_val; \
                         float bf = (b.type == DalvikType::FLOAT32) ? b.float_val : (float)b.int_val; \
@@ -9037,6 +9109,18 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
             }
         }
     }
+    // M3 FIELD-TRACE (AG diagnostic): env-gated field-access value trace.
+    {
+        DalvikValue tgt = get_register(obj_reg);
+        if (field_trace_active(field_res.field_name.c_str(),
+                               (current_class_ + "." + current_method_).c_str())) {
+            std::cerr << "[FIELD-TRACE] get " << current_class_ << "." << current_method_
+                      << " " << field_res.class_descriptor << "." << field_res.field_name
+                      << " obj#" << (tgt.type == DalvikType::OBJECT_REF ? tgt.object_id : 0)
+                      << " value=" << dalvik_value_to_string(result_value)
+                      << std::endl;
+        }
+    }
     // EXP-042 Phase 2: on any failure path, fall through with default 0 and
     // advance pc_ — never return false (which would cause an infinite loop).
     
@@ -9189,6 +9273,18 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
         heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
+        // M3 FIELD-TRACE (AG diagnostic): env-gated field-store value trace.
+        // NOTE: render via dalvik_value_to_string — printing .long_val on an
+        // INT32 union read shows stale upper bytes as false corruption.
+        if (field_trace_active(field_res.field_name.c_str(),
+                               (current_class_ + "." + current_method_).c_str())) {
+            std::cerr << "[FIELD-TRACE] put " << current_class_ << "."
+                      << current_method_ << " "
+                      << field_res.class_descriptor << "."
+                      << field_res.field_name
+                      << " obj#" << obj_ref.object_id
+                      << " value=" << dalvik_value_to_string(src_val) << std::endl;
+        }
         // M3-DIAG (temporary): long field writes — Alarm expiresMs math.
         static thread_local uint64_t m3w = 0;
         if (src_val.type == DalvikType::INT64 && m3w < 30) {
@@ -14780,6 +14876,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         if (method == "compareUnsigned" && args.size() >= 2) {
             uint32_t a = as_u32(args[0]), b = as_u32(args[1]);
+            if (std::getenv("MINIANDROID_WIDE_DIAG")) {
+                std::cerr << "[WIDE-DIAG] compareUnsigned caller="
+                          << current_class_ << "." << current_method_
+                          << " arg0=" << a << " arg1=" << b
+                          << " -> " << (a < b ? -1 : (a > b ? 1 : 0))
+                          << std::endl;
+            }
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_int(a < b ? -1 : (a > b ? 1 : 0));
             return true;
@@ -14892,6 +14995,127 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             else
                 result = DalvikValue::make_int(args[0].int_val < 0 ? -args[0].int_val : args[0].int_val);
             return true;
+        }
+        // ─── FINDING-007 (M3 F-ROOM-CHAIN): Math.ceil was ABSENT — the
+        // silent default returned 0.0 and zeroed MicroTimer's countdown
+        // remaining (Ll/a.a → MainActivity.e → label 00:00:00, no tick
+        // scheduling). Implement the full 1-arg/2-arg Math double/float
+        // surface demanded by real APKs. OpenJDK law:
+        //   ceil/floor → D; round(D)→J (floor(a+0.5) w/ saturation),
+        //   round(F)→I; sqrt/exp/log/log10/… → D; floorDiv/floorMod
+        //   follow java.lang.Math floor semantics (mod sign of divisor).
+        if (method == "ceil" || method == "floor" || method == "sqrt" ||
+            method == "exp" || method == "log" || method == "log10" ||
+            method == "log1p" || method == "cbrt" || method == "sin" ||
+            method == "cos" || method == "tan" || method == "asin" ||
+            method == "acos" || method == "atan" || method == "sinh" ||
+            method == "cosh" || method == "tanh" || method == "signum") {
+            double a = num(args[0]);
+            double r = a;
+            if (method == "ceil")          r = std::ceil(a);
+            else if (method == "floor")    r = std::floor(a);
+            else if (method == "sqrt")     r = std::sqrt(a);
+            else if (method == "exp")      r = std::exp(a);
+            else if (method == "log")      r = std::log(a);
+            else if (method == "log10")    r = std::log10(a);
+            else if (method == "log1p")    r = std::log1p(a);
+            else if (method == "cbrt")     r = std::cbrt(a);
+            else if (method == "sin")      r = std::sin(a);
+            else if (method == "cos")      r = std::cos(a);
+            else if (method == "tan")      r = std::tan(a);
+            else if (method == "asin")     r = std::asin(a);
+            else if (method == "acos")     r = std::acos(a);
+            else if (method == "atan")     r = std::atan(a);
+            else if (method == "sinh")     r = std::sinh(a);
+            else if (method == "cosh")     r = std::cosh(a);
+            else if (method == "tanh")     r = std::tanh(a);
+            else if (method == "signum")   r = (a != 0.0) ? (a > 0.0 ? 1.0 : -1.0) : a;
+            bool was_float = args[0].type == DalvikType::FLOAT32;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (was_float && method != "signum")
+                result = DalvikValue::make_float((float)r);
+            else if (was_float)
+                result = DalvikValue::make_float((float)r);
+            else
+                result = DalvikValue::make_double(r);
+            return true;
+        }
+        if (method == "round" && args.size() >= 1) {
+            double a = num(args[0]);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (args[0].type == DalvikType::FLOAT64) {
+                // OpenJDK Math.round(double): floor(a + 0.5), saturated to J.
+                double r = std::floor(a + 0.5);
+                if (r >= 9223372036854775807.0) result = DalvikValue::make_long(9223372036854775807LL);
+                else if (r <= -9223372036854775808.0) result = DalvikValue::make_long(-9223372036854775807LL - 1);
+                else result = DalvikValue::make_long((int64_t)r);
+            } else {
+                // Math.round(float) → int, same law with float precision.
+                float f = (args[0].type == DalvikType::FLOAT32) ? args[0].float_val : (float)a;
+                double r = std::floor((double)f + 0.5);
+                if (r >= 2147483647.0) result = DalvikValue::make_int(2147483647);
+                else if (r <= -2147483648.0) result = DalvikValue::make_int(-2147483647 - 1);
+                else result = DalvikValue::make_int((int32_t)r);
+            }
+            return true;
+        }
+        if ((method == "pow" || method == "atan2" || method == "hypot" ||
+             method == "IEEEremainder") && args.size() >= 2) {
+            double a = num(args[0]), b = num(args[1]);
+            double r = a;
+            if (method == "pow")             r = std::pow(a, b);
+            else if (method == "atan2")      r = std::atan2(a, b);
+            else if (method == "hypot")      r = std::hypot(a, b);
+            else if (method == "IEEEremainder") r = std::remainder(a, b);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_double(r);
+            return true;
+        }
+        if (method == "toRadians" || method == "toDegrees") {
+            double a = num(args[0]);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_double(method == "toRadians"
+                                              ? a * (M_PI / 180.0)
+                                              : a * (180.0 / M_PI));
+            return true;
+        }
+        // Math.floorDiv / floorMod — (II)I and (JJ)J overloads. OpenJDK law:
+        // floorDiv rounds toward NEGATIVE infinity; floorMod's sign follows
+        // the divisor. Division by zero → ArithmeticException (deferred).
+        if (method == "floorDiv" || method == "floorMod") {
+            if (args.size() >= 2) {
+                bool wide = args[0].type == DalvikType::INT64 ||
+                            args[1].type == DalvikType::INT64;
+                if (wide) {
+                    int64_t a = args[0].type == DalvikType::INT64 ? args[0].long_val : args[0].int_val;
+                    int64_t b = args[1].type == DalvikType::INT64 ? args[1].long_val : args[1].int_val;
+                    if (b == 0) {
+                        throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "MATH-FLOORDIV-J");
+                        result = DalvikValue::make_long(0);
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                    int64_t q = a / b;
+                    if ((a % b != 0) && ((a < 0) != (b < 0))) q--;  // floor
+                    int64_t r = (method == "floorDiv") ? q : (a - q * b);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_long(r);
+                    return true;
+                }
+                int32_t a = args[0].int_val, b = args[1].int_val;
+                if (b == 0) {
+                    throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "MATH-FLOORDIV-I");
+                    result = DalvikValue::make_int(0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                int32_t q = a / b;
+                if ((a % b != 0) && ((a < 0) != (b < 0))) q--;
+                int32_t r = (method == "floorDiv") ? q : (a - q * b);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(r);
+                return true;
+            }
         }
     }
 

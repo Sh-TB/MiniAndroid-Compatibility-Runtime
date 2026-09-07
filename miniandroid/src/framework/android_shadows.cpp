@@ -695,6 +695,12 @@ uint32_t HandlerShadow::extract_runnable(const CallContext& ctx, size_t arg_idx)
 
 void HandlerShadow::enqueue(uint32_t runnable_id, int64_t delay_ms,
                             const std::string& cls) {
+    enqueue_tokened(runnable_id, delay_ms, cls, /*token_id=*/0);
+}
+
+void HandlerShadow::enqueue_tokened(uint32_t runnable_id, int64_t delay_ms,
+                                    const std::string& cls,
+                                    uint32_t token_id) {
     if (runnable_id == 0) return;
     QueuedRunnable q;
     q.runnable_id = runnable_id;
@@ -704,14 +710,33 @@ void HandlerShadow::enqueue(uint32_t runnable_id, int64_t delay_ms,
     // schedule on every run and every platform.
     q.ready_at_ms = virtual_now_ms_ + delay_ms;
     q.runnable_class = cls;
+    q.token_id = token_id;
     queue_.push_back(std::move(q));
     // EXP-052: Trace queue activity for diagnostics.
     std::cerr << "[QUEUE] Runnable id=" << runnable_id
               << " enqueued (delay=" << delay_ms << "ms"
               << ", ready_at=" << q.ready_at_ms << "ms virtual"
               << ", queue_depth=" << queue_.size()
+              << (token_id ? (", token=" + std::to_string(token_id)) : "")
               << (cls.empty() ? "" : (", source=" + cls))
               << ")" << std::endl;
+}
+
+// AOSP removeCallbacksAndMessages(token) for a non-null token: identity
+// match against Message.obj. Token 0 (no token) is handled by remove_all.
+size_t HandlerShadow::remove_by_token(uint32_t token_id) {
+    if (token_id == 0) return remove_all();
+    size_t removed = 0;
+    auto it = queue_.begin();
+    while (it != queue_.end()) {
+        if (it->token_id == token_id) {
+            it = queue_.erase(it);
+            removed++;
+        } else {
+            ++it;
+        }
+    }
+    return removed;
 }
 
 void HandlerShadow::settle() {
@@ -822,12 +847,27 @@ CallResult HandlerShadow::dispatch(const CallContext& ctx) {
         }
         if (m == "postDelayed") {
             uint32_t r = extract_runnable(ctx, 0);
-            int64_t delay = ctx.args.size() >= 2 ? ctx.args[1].long_val : 0;
             if (r == 0) return CallResult::handled_bool(false);
-            enqueue(r, delay, /*cls=*/"");
-            return CallResult::handled_bool(true);
-        }
-        if (m == "postDelayed") {
+            // FINDING-004 (M3 F-ROOM-CHAIN): two AOSP overloads exist.
+            //   public  postDelayed(Runnable r, long delayMillis)
+            //   hidden  postDelayed(Runnable r, Object token, long delayMillis)
+            //           (Handler.java: sendMessageDelayed(obtainMessage(r, token), delay))
+            // Real demand: MicroTimer v8's K/e.b tick loop posts with the
+            // token form (token = boxed expires Long) and cancels the old
+            // tick with removeCallbacksAndMessages(oldToken). Reading
+            // args[1].long_val on the token form treated the token object
+            // id as the delay and the tick was never scheduled correctly.
+            if (ctx.args.size() >= 3 &&
+                (ctx.args[1].kind == CallContext::Arg::Kind::OBJECT ||
+                 ctx.args[1].kind == CallContext::Arg::Kind::NULL_REF) &&
+                ctx.args[2].kind == CallContext::Arg::Kind::LONG) {
+                uint32_t token = extract_runnable(ctx, 1);
+                int64_t delay = ctx.args[2].long_val;
+                enqueue_tokened(r, delay, /*cls=*/"", token);
+            } else {
+                int64_t delay = ctx.args.size() >= 2 ? ctx.args[1].long_val : 0;
+                enqueue(r, delay, /*cls=*/"");
+            }
             return CallResult::handled_bool(true);
         }
         if (m == "removeCallbacks" || m == "removeMessages" || m == "hasMessages" || m == "hasCallbacks") {
@@ -842,13 +882,24 @@ CallResult HandlerShadow::dispatch(const CallContext& ctx) {
             return CallResult::handled_void();
         }
         if (m == "removeCallbacksAndMessages") {
-            // removeCallbacksAndMessages(null) clears the entire queue.
-            // The token arg (often null) is currently ignored — we always
-            // clear everything, which is correct for the null-token case
-            // that is by far the most common usage.
-            size_t removed = remove_all();
-            std::cerr << "[QUEUE] removeCallbacksAndMessages cleared "
-                      << removed << " entries" << std::endl;
+            // AOSP law (Handler.removeCallbacksAndMessages(Object token)):
+            //   token == null → remove EVERY pending post;
+            //   token != null → remove only posts riding that token object
+            //                   (identity — Message.obj == token).
+            // MicroTimer's pause/cancel path calls this with the boxed
+            // expires Long of one timer while OTHER timers' pending ticks
+            // must survive, so the old always-clear-all behavior was
+            // observably wrong for multi-timer apps.
+            uint32_t token = extract_runnable(ctx, 0);
+            size_t removed = 0;
+            if (token == 0) {
+                removed = remove_all();
+            } else {
+                removed = remove_by_token(token);
+            }
+            std::cerr << "[QUEUE] removeCallbacksAndMessages(token="
+                      << (token == 0 ? "null" : std::to_string(token))
+                      << ") removed " << removed << " entries" << std::endl;
             return CallResult::handled_void();
         }
         if (m == "getLooper") {
