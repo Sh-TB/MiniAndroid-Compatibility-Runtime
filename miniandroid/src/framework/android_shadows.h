@@ -817,6 +817,16 @@ public:
         int measured_width = 0, measured_height = 0;
         int measured_right = 0, measured_bottom = 0;
         bool laid_out = false;           // geometry computed
+        // MASTER-2 FIX-MEASURE-002e (AOSP onLayout replay law): RelativeLayout
+        // resolves a child's mLeft/mTop/mRight/mBottom edges DURING measure
+        // (applySizeRules + positionChild*) and RelativeLayout.onLayout only
+        // REPLAYS the cached edges — the child's measured size is NOT used
+        // for anchor-constrained children (a view can measure 1x45 yet be
+        // laid out 45x1860 when anchored alignParentTop + alignBottom to a
+        // sibling; ground truth: org.billthefarmer.scope v140 YScale).
+        int rl_cached_left = 0, rl_cached_top = 0;
+        int rl_cached_right = 0, rl_cached_bottom = 0;
+        bool rl_edges_valid = false;
         int num_lines = -1;
         float text_size_sp = 0;          // original sp (evidence)
         std::string android_id_name;     // resolved id name ("btn_roll") for evidence
@@ -825,6 +835,25 @@ public:
         // layout_toRightOf/layout_toLeftOf raw values ("@id/name").
         std::string rel_below_name, rel_above_name;
         std::string rel_right_of_name, rel_left_of_name;
+        // MASTER-2 FIX-MEASURE-002 (AOSP RelativeLayout measure law): the
+        // ALIGN_* edge-alignment family is DISTINCT from the position
+        // family (alignLeft aligns EDGES; toLeftOf positions BEFORE the
+        // sibling) and alignParentLeft/Right had no representation at all
+        // (ground truth: org.billthefarmer.scope v140 res/v9.xml — XScale's
+        // layout_alignLeft was silently dropped, Scope/Unit lost
+        // alignParentRight/Left, leaving the dependency graph incomplete).
+        std::string rel_align_left_name, rel_align_right_name;
+        std::string rel_align_top_name, rel_align_bottom_name;
+        bool rel_align_parent_left = false, rel_align_parent_right = false;
+        // MASTER-2 FIX-MEASURE-002d: explicit RL rule booleans. The legacy
+        // gravity-bit encoding (TOP=0x30, BOTTOM=0x50, CENTER_V=0x10,
+        // CENTER_IN=0x11) is AMBIGUOUS for RelativeLayout rules — the masks
+        // overlap (0x50 & 0x30 = 0x10) so alignParentBottom triggered the
+        // alignParentTop check. AOSP RelativeLayout reads RULES, not
+        // Gravity; the RL paths consume these booleans only.
+        bool rel_align_parent_top = false, rel_align_parent_bottom = false;
+        bool rel_center_in_parent = false, rel_center_horizontal = false;
+        bool rel_center_vertical = false;
         int text_style = 0;              // AOSP Typeface bits (bold=1, italic=2)
         // G32: android:fontFamily raw string ("monospace", "sans-serif", ...)
         // resolved to a system face via fonts::TextShaper::resolve_family().

@@ -728,10 +728,21 @@ bool DalvikExecutionEngine::class_chain_defines_method(
             }
         }
         if (content_measure_classes.count(cur)) return false;
-        // Plain framework View families: no onMeasure override below here —
-        // the AOSP DEFAULT View.onMeasure (getDefaultSize) law applies.
+        // MASTER-2 FIX-MEASURE-001 (override-query law): reaching a plain
+        // framework View family means the APP chain does NOT define the
+        // method — View.onMeasure is FRAMEWORK-OWNED. The query answers
+        // "does the app chain DEFINE the method" (override semantics), so
+        // the answer here is FALSE; the AOSP DEFAULT View.onMeasure
+        // (getDefaultSize) law then applies via aosp_default_measure=true
+        // at the flag sites. The previous `return true` conflated
+        // "framework owns the method" with "the app chain defines it" and
+        // inverted BOTH flags for every no-override View descendant:
+        // org.billthefarmer.scope v140 Scope/Unit (no onMeasure in DEX,
+        // verified) were flagged as overriders, the real-DEX measure hook
+        // missed, and aosp_default_measure=false blocked the
+        // getDefaultSize fallback → measured 0x0 (§3 reverse chain).
         if (cur == "Landroid/view/View;" || cur == "Landroid/view/SurfaceView;")
-            return true;
+            return false;
         auto sup_it = class_to_superclass_.find(cur);
         if (sup_it == class_to_superclass_.end()) {
             // Unknown ancestor (framework class outside the seeded table):
@@ -4888,10 +4899,26 @@ bool DalvikExecutionEngine::dispatch_custom_view_measure(
         {DalvikValue::make_object(view_object_id, node->class_desc),
          DalvikValue::make_int(wspec), DalvikValue::make_int(hspec)},
         ret, res);
-    if (ok && node->dex_measure_valid) {
-        out_w = node->dex_measured_w;
-        out_h = node->dex_measured_h;
-        return true;
+    if (ok) {
+        if (node->dex_measure_valid) {
+            out_w = node->dex_measured_w;
+            out_h = node->dex_measured_h;
+        }
+        // MASTER-2 §22 structured diagnostic (opt-in): real-DEX onMeasure
+        // contract evidence — incoming MeasureSpec words and the app's own
+        // setMeasuredDimension write-back. Answers "why is this custom view
+        // measured NxM" from the APK's own bytecode.
+        static thread_local uint64_t dxm_log = 0;
+        if (dxm_log < 24) {
+            dxm_log++;
+            fprintf(stderr,
+                    "[DEX-MEASURE] %s.onMeasure spec_w=%d (0x%08x) spec_h=%d "
+                    "(0x%08x) -> %dx%d %s\n",
+                    cls.c_str(), wspec, (uint32_t)wspec, hspec, (uint32_t)hspec,
+                    out_w, out_h,
+                    node->dex_measure_valid ? "" : "FAILED(no write-back)");
+        }
+        return node->dex_measure_valid;
     }
     return false;
 }

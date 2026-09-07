@@ -6,7 +6,7 @@
     "rc": 0,
     "status": "SUCCESS",
     "seconds": 0.21,
-    "screenshot_sha256": "8197687fe7d4b2cb40e276acd66af24d41bed4c7eaf16e296499281397fe0dd2"
+    "screenshot_sha256": "7b30d52201bb22ac8467cc9c8257f23b60f169c8406f39cdfe0ad8fe48355971"
   },
   "trace": {
     "status": "SUCCESS"
@@ -20,14 +20,14 @@
     "w": 1080,
     "h": 1920,
     "bg": [
-      255,
-      255,
-      255
+      225,
+      225,
+      225
     ],
-    "nonbg_pct": 9.1146,
+    "nonbg_pct": 91.9512,
     "content_bbox": [
       0,
-      1745,
+      0,
       1079,
       1919
     ]
