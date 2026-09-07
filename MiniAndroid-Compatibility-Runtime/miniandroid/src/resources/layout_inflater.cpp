@@ -788,7 +788,15 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     const AxmlAttribute* style_attr = el.attr("style", "");
     if (style_attr) {
         std::string sv = raw_of(style_attr);
-        if (!sv.empty()) {
+        if (sv.empty() && style_attr->value.is_reference()) {
+            // M3 FIX-M3-002c (compiled-reference law): modern aapt2 emits
+            // style="@style/Name" as a typed REFERENCE with NO raw string —
+            // the reference id IS the style id. Old-aapt APKs carry the raw
+            // "@style/Name" string (handled below). Without this branch the
+            // style bag was silently skipped for every aapt2-built APK
+            // (fixture m3_style_weight: buttons lost ALL style geometry).
+            apply_style(node, a, style_attr->value.ref_id, stats);
+        } else if (!sv.empty()) {
             auto ref = parse_ref(sv);
             if (ref.kind == RefKind::STYLE) apply_style_by_name(node, a, ref.name, stats);
             else if (sv[0] == '@') {
@@ -1325,10 +1333,39 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
     // measure(vid, spec_w, spec_h) -> desired (w, h) including own padding.
     // Children are measured FIRST (bottom-up) exactly like AOSP.
     // -----------------------------------------------------------------------
-    std::function<std::pair<int,int>(uint32_t, const Spec&, const Spec&, int)> measure =
+    // M3 §7 convergence memo: within ONE measure_layout call, measuring the
+    // same view with the same specs is PURE — it must return the identical
+    // result without recomputing (and without re-executing DEX onMeasure
+    // hooks, whose app-visible side effects must not double-apply). The
+    // match-parent second pass (FIX-M3-004) makes repeated subtree measures
+    // structurally likely; without the memo a deep match chain re-measures
+    // exponentially (hostile-battery timeout evidence). Key covers the full
+    // spec inputs — different specs are different measurements.
+    struct M3MemoKey {
+        uint32_t vid;
+        int w_size, w_mode, h_size, h_mode;
+        bool operator<(const M3MemoKey& o) const {
+            if (vid != o.vid) return vid < o.vid;
+            if (w_size != o.w_size) return w_size < o.w_size;
+            if (w_mode != o.w_mode) return w_mode < o.w_mode;
+            if (h_size != o.h_size) return h_size < o.h_size;
+            return h_mode < o.h_mode;
+        }
+    };
+    std::map<M3MemoKey, std::pair<int,int>> m3_measure_memo;
+    std::function<std::pair<int,int>(uint32_t, const Spec&, const Spec&, int)> measure;
+    std::function<std::pair<int,int>(uint32_t, const Spec&, const Spec&, int)> measure_raw =
         [&](uint32_t vid, const Spec& sw, const Spec& sh, int depth) -> std::pair<int,int> {
         auto* n = views->find_node(vid);
         if (!n) return {0, 0};
+        // M3 §7 memo hit: same view + same specs inside one pass → the
+        // already-computed result (pure-function law; protects DEX hooks
+        // from double execution).
+        {
+            M3MemoKey k{vid, sw.size, (int)sw.mode, sh.size, (int)sh.mode};
+            auto it = m3_measure_memo.find(k);
+            if (it != m3_measure_memo.end()) return it->second;
+        }
         // G12 diagnostic (opt-in): incoming specs + container classification — level 3.
         if (getenv("U007_LAYOUT_DEBUG") &&
             std::string(getenv("U007_LAYOUT_DEBUG") ? getenv("U007_LAYOUT_DEBUG") : "") == "3") {
@@ -1833,15 +1870,24 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     const int remaining =
                         std::max(0, mspec2.size - mpad2 - used);
                     const Spec& cspec2 = main_horiz2 ? sh : sw;
+                    const int cpad2 = main_horiz2 ? vpad : hpad;
                     for (size_t i : match_idx) {
                         auto* cn = views->find_node(n->children[i]);
+                        // AOSP getChildMeasureSpec for a MATCH_PARENT child:
+                        // the spec excludes the PARENT padding AND the
+                        // child's own margins on BOTH axes.
+                        const int m_main = main_horiz2
+                                               ? cn->lp_margin_left + cn->lp_margin_right
+                                               : cn->lp_margin_top + cn->lp_margin_bottom;
+                        const int m_cross = main_horiz2
+                                                ? cn->lp_margin_top + cn->lp_margin_bottom
+                                                : cn->lp_margin_left + cn->lp_margin_right;
                         const int lp_cross = main_horiz2 ? cn->lp_height
                                                         : cn->lp_width;
-                        const int cm = main_horiz2
-                                           ? cn->lp_margin_top + cn->lp_margin_bottom
-                                           : cn->lp_margin_left + cn->lp_margin_right;
-                        const Spec main_s{remaining, M_EXACTLY};
-                        const Spec cross_s = child_spec(cspec2, cm, lp_cross);
+                        const Spec main_s{std::max(0, remaining - m_main),
+                                          M_EXACTLY};
+                        const Spec cross_s = child_spec(cspec2, cpad2 + m_cross,
+                                                        lp_cross);
                         child_sizes[i] = main_horiz2
                                              ? measure(n->children[i], main_s,
                                                        cross_s, depth + 1)
@@ -2015,6 +2061,21 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     final_w, final_h);
         }
         return {n->measured_width, n->measured_height};
+    };
+    // M3 §7 memo wrapper: every measure(…) call (root + all recursive
+    // sites) routes through this — identical (view, specs) inside one
+    // measure_layout call are computed exactly ONCE and replayed
+    // byte-identically thereafter (convergence law + DEX-hook
+    // single-execution law + complexity bound for the match-parent
+    // second pass).
+    measure = [&](uint32_t vid, const Spec& sw, const Spec& sh,
+                  int depth) -> std::pair<int,int> {
+        M3MemoKey k{vid, sw.size, (int)sw.mode, sh.size, (int)sh.mode};
+        auto it = m3_measure_memo.find(k);
+        if (it != m3_measure_memo.end()) return it->second;
+        auto r = measure_raw(vid, sw, sh, depth);
+        m3_measure_memo.emplace(k, r);
+        return r;
     };
 
     // Root fills the screen (EXACTLY), per AOSP window measure.
