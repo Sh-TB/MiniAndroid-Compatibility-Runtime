@@ -119,3 +119,77 @@ chessclock probed 8 (4 handlers) but 0 state change (timer state layer — G07
 future). microtimer probed 12, 0 change (timer-tick scheduling — recorded G11).
 notes probed 3, 0 change (menu-driven app). gmdice produced no click report
 (listener wiring not yet probed by the click-test surface — recorded).
+
+---
+
+# MASTER-2 WAVE-2 MATRIX ADDENDUM (2026-09-07, HEAD 3fb28e26+)
+
+Base: battery 54/54 ALL PASS at wave-1 post-fix state (zero drift at
+40988007). Corpus: 16 APKs SHA-verified; OpenLauncher registry record was
+STALE — source URL serves b3320463… (re-fetched, identical); arbitrated
+and corrected (no substitute taken). Telegram stays BLOCKED-ON-FREEZE.
+
+## Measurement cluster (§13, HIGH PRIORITY) — CLOSED
+
+Root-cause chains (reverse-traced, not symptom-patched):
+- FIX-MEASURE-001: class_chain_defines_method returned TRUE at
+  Landroid/view/View; — framework-owned onMeasure counted as an APP
+  override → aosp_default_measure=false blocked the AOSP getDefaultSize
+  law. scope Scope/Unit measured 0x0 (DEX ground truth: no onMeasure).
+- FIX-MEASURE-002 (a-d): AOSP RelativeLayout.onMeasure (android-15) —
+  two dependency-sorted passes, applyHorizontal/VerticalSizeRules,
+  getChildMeasureSpec (both-edges → EXACTLY(end-start)), positionChild*
+  edge caching + onLayout REPLAY. Missing rule families (alignLeft/
+  alignTop/alignBottom/alignParentLeft/Right), compiled-boolean law
+  (typed 0x12, no raw string), sentinel-OR law (-1 |= bit stays -1 — the
+  alignParent/center bits were DEAD since introduction), overlapping
+  legacy masks (0x50 & 0x30 = 0x10) replaced by explicit rule booleans.
+- FIX-MEASURE-003: EXACTLY spec always wins the resolve (the view's own
+  lp never enters its own resolve) — the XML 0dp no longer overwrites the
+  weight share.
+- FIX-MEASURE-004(+b): AOSP LinearLayout weight re-distribution INSIDE
+  onMeasure (every measure pass), cross-axis spec = first-pass child_spec
+  law. Hostile-safe: RL cycle → declaration-order fallback + diagnostic.
+
+Results: scope 4.22% → **99.77%** (3× ff60bf23…); unote 9.11% → **91.95%**
+LAWFUL (alignParentBottom finally executes; buttons row lands at the
+bottom edge; 3× 7b30d522…); headingcalculator weight=1000 keypad rows
+1080x480 (was 0) — keypad still laid off-screen in the draw-consuming
+pass (CalculatorDisplay/CalculatorKeypad cross-pass oscillation) =
+REMAINING BLOCKER, evidence [VSTACK]/[SPEC-OUT] traces; other 13 APKs
+pixel-identical. 54/54 battery ALL PASS; goldens byte-identical.
+
+## Interaction cluster (§20) — Tier-2 now 5 APKs
+
+- FIX-INPUT-001 (AOSP DeclaredOnClickListener): android:onClick buttons
+  are tap-dispatched through the precise tap path (hosting-Activity
+  handler resolution) — unote search → 2,011px state change.
+- FIX-INTENT-001 (AOSP Intent(Context, Class)): const-class descriptors
+  survive to the component; unote addNote → real DEX addNote →
+  NoteMain.onPause → NoteEdition.onCreate (462 real instructions) →
+  onResume → NEW VIEW ROOT → 112,840px second screen. **First cross-
+  Activity navigation from a real APK.** 3× bbb46431….
+- gmdice (already SHA-frozen): 5 programmatic-listener clicks DISPATCHED
+  to real DEX + 3 DIALOG_CLICK; 1,401,540px before/after diff; 3×
+  50f58884….
+
+F16 interaction proofs now: simplestopwatch, unote (incl. cross-Activity),
+bouncy, **gmdice (new)**, EXT-01 HelloWorldSelfAware (long-press →
+clipboard → toast, battery-guarded) = **5 independent real APKs**.
+
+## §23 corpus expansion (+4, frozen at fetch, registry_additions.json)
+
+| APK | SHA-256 (16) | result |
+|---|---|---|
+| org.ligi.survivalmanual_500 | 6dbc943ce56b34a5 | default-window render (AppCompat shell family), 3× eb16ab5c… |
+| com.github.muellerma.coffee_47 | ae4688fe48e75151 | default-window render (tile/service family — muellerma precedent), 3× eb16ab5c… |
+| org.billthefarmer.diary_1105 | 979e8cd8702ab5c0 | SUCCESS, real content 99.88%, 3× 1605eb99… |
+| org.secuso.privacyfriendlytodolist_103 | 80c6f68ec94a5611 | BLOCKED-ON-TIME (>150 s) inside androidx ResourcesCompat.inflateColorStateList — performance layer, recorded with logs |
+
+Corpus is now 20 APKs. Remaining blockers unchanged in kind: Compose
+(dooz), GLSurfaceView/libGDX (tictactoe), WebView/androidx-webkit
+(bgclock), Fragment/ViewPager host (openlauncher), IME surface
+(simplekeyboard), AppCompat default-window shells (survivalmanual,
+coffee), androidx color-state-list perf (SECUSO todo), calculator keypad
+off-screen placement (headingcalculator, evidence recorded), timer-tick
+labels (chessclock/microtimer), Telegram freeze-blocked.
