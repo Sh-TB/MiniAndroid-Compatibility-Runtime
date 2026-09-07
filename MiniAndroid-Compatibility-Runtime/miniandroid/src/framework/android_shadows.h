@@ -265,6 +265,13 @@ public:
         uint32_t enqueue_seq = 0;        // FIFO tiebreaker
         int64_t  ready_at_ms = 0;        // logical "ready" timestamp
         std::string runnable_class;     // for diagnostics
+        // FINDING-004 (M3 F-ROOM-CHAIN): AOSP postDelayed(Runnable, Object
+        // token, long) rides Message.obj. MicroTimer v8 schedules each
+        // countdown tick with the token-overload and cancels per-timer work
+        // with removeCallbacksAndMessages(token) where the token is the
+        // boxed expires Long. token_id 0 = AOSP msg.obj == null (the public
+        // 2-arg overload) — removeCallbacksAndMessages(null) clears those.
+        uint32_t token_id = 0;
     };
 
     std::string name() const override { return "Handler"; }
@@ -296,6 +303,17 @@ public:
     // scheduling is fully deterministic — no wall-clock involvement.
     void enqueue(uint32_t runnable_id, int64_t delay_ms,
                  const std::string& cls);
+
+    // Token-bearing enqueue (AOSP postDelayed(Runnable, Object token, long)
+    // and Message.obtain(r, token)). token_id 0 = no token (msg.obj null).
+    void enqueue_tokened(uint32_t runnable_id, int64_t delay_ms,
+                         const std::string& cls, uint32_t token_id);
+
+    // AOSP removeCallbacksAndMessages(Object token): a NULL token removes
+    // every pending post; a non-null token removes only the posts riding
+    // that exact token object (identity, not equality). Returns the number
+    // of entries removed.
+    size_t remove_by_token(uint32_t token_id);
 
     // G06 §4: enqueue a FRAMEWORK-INTERNAL callback (PerformClick /
     // UnsetPressedState / CheckForLongPress) on the SAME queue and clock as
