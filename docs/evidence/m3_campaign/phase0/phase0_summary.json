@@ -49,55 +49,6 @@
     }
   },
   {
-    "apk": "microtimer",
-    "rel": "download/exp076_corpus/dubrowgn.microtimer_8.apk",
-    "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
-    "base": {
-      "rc": 0,
-      "status": "SUCCESS",
-      "seconds": 0.38,
-      "screenshot_sha256": "c51269309cd14594b6d6b24dbf940cb5494cd74673b1e391f0c006f0d8dca94a"
-    },
-    "rerun": {
-      "rc": 0,
-      "status": "SUCCESS",
-      "seconds": 0.38,
-      "screenshot_sha256": "c51269309cd14594b6d6b24dbf940cb5494cd74673b1e391f0c006f0d8dca94a"
-    },
-    "deterministic_2x": true,
-    "trace": {
-      "status": "SUCCESS"
-    },
-    "view_tree": {
-      "present": true,
-      "views": 52,
-      "zero_sized": 2
-    },
-    "pixel": {
-      "w": 1080,
-      "h": 1920,
-      "bg": [
-        255,
-        255,
-        255
-      ],
-      "nonbg_pct": 50.2008,
-      "content_bbox": [
-        0,
-        948,
-        1079,
-        1919
-      ]
-    },
-    "signals": {
-      "status": [
-        "SUCCESS"
-      ],
-      "exception_mentions": 0,
-      "last_line": "[G08-LAUNCH] FAILED: no component (implicit intent)"
-    }
-  },
-  {
     "apk": "billthefarmer_notes",
     "rel": "download/exp073_real_apps/org.billthefarmer.notes_139.apk",
     "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
@@ -338,55 +289,6 @@
       ],
       "exception_mentions": 0,
       "last_line": "[EXP092-COPY] framebuffer_ has 236520 non-white pixels"
-    }
-  },
-  {
-    "apk": "chessclock",
-    "rel": "download/exp073_real_apps/com.chessclock.android_29.apk",
-    "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
-    "base": {
-      "rc": 0,
-      "status": "SUCCESS",
-      "seconds": 0.25,
-      "screenshot_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9"
-    },
-    "rerun": {
-      "rc": 0,
-      "status": "SUCCESS",
-      "seconds": 0.25,
-      "screenshot_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9"
-    },
-    "deterministic_2x": true,
-    "trace": {
-      "status": "SUCCESS"
-    },
-    "view_tree": {
-      "present": true,
-      "views": 30,
-      "zero_sized": 9
-    },
-    "pixel": {
-      "w": 1080,
-      "h": 1920,
-      "bg": [
-        0,
-        0,
-        0
-      ],
-      "nonbg_pct": 0.6771,
-      "content_bbox": [
-        0,
-        954,
-        1079,
-        966
-      ]
-    },
-    "signals": {
-      "status": [
-        "SUCCESS"
-      ],
-      "exception_mentions": 0,
-      "last_line": "[G08-LAUNCH] launched Lcom/chessclock/android/Prefs; (stack depth now 1, B view root 0)"
     }
   },
   {
@@ -908,19 +810,117 @@
     }
   },
   {
+    "apk": "microtimer",
+    "rel": "download/exp076_corpus/dubrowgn.microtimer_8.apk",
+    "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.5,
+      "screenshot_sha256": "c51269309cd14594b6d6b24dbf940cb5494cd74673b1e391f0c006f0d8dca94a"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.46,
+      "screenshot_sha256": "c51269309cd14594b6d6b24dbf940cb5494cd74673b1e391f0c006f0d8dca94a"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 52,
+      "zero_sized": 2
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "nonbg_pct": 50.2008,
+      "content_bbox": [
+        0,
+        948,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[G08-LAUNCH] FAILED: no component (implicit intent)"
+    }
+  },
+  {
+    "apk": "chessclock",
+    "rel": "download/exp073_real_apps/com.chessclock.android_29.apk",
+    "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.24,
+      "screenshot_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.24,
+      "screenshot_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 30,
+      "zero_sized": 9
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        0,
+        0,
+        0
+      ],
+      "nonbg_pct": 0.6771,
+      "content_bbox": [
+        0,
+        954,
+        1079,
+        966
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[G08-LAUNCH] launched Lcom/chessclock/android/Prefs; (stack depth now 1, B view root 0)"
+    }
+  },
+  {
     "apk": "secuso_todo",
     "rel": "download/master_campaign/org.secuso.privacyfriendlytodolist_103.apk",
     "sha256": "80c6f68ec94a561157ad8db4d335003d2b2c8aeba2b649ab9f446b44743fc0af",
     "base": {
       "rc": 0,
       "status": "SUCCESS",
-      "seconds": 3.18,
+      "seconds": 3.43,
       "screenshot_sha256": "8a7d0d7b5a3702ed687f9978bcf87256c024fb573f416772f508c1acebb465fa"
     },
     "rerun": {
       "rc": 0,
       "status": "SUCCESS",
-      "seconds": 3.35,
+      "seconds": 3.55,
       "screenshot_sha256": "8a7d0d7b5a3702ed687f9978bcf87256c024fb573f416772f508c1acebb465fa"
     },
     "deterministic_2x": true,

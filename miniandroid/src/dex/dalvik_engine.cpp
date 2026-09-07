@@ -9188,6 +9188,16 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
         heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
+        // M3-DIAG (temporary): long field writes — Alarm expiresMs math.
+        static thread_local uint64_t m3w = 0;
+        if (src_val.type == DalvikType::INT64 && m3w < 30) {
+            m3w++;
+            std::cerr << "[M3-LONG-PUT] field="
+                      << field_res.class_descriptor << "."
+                      << field_res.field_name
+                      << " caller=" << current_class_ << "." << current_method_
+                      << " value=" << src_val.long_val << std::endl;
+        }
     }
     // EXP-042 Phase 2: on any failure path, just advance pc_ — never spin.
 
@@ -12590,10 +12600,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         };
         if (method == "<init>") {
-            // StringBuilder(), StringBuilder(String), StringBuilder(CharSequence),
-            // StringBuilder(int capacity) — capacity is ignored.
+            // M3 FIX-M3-013 (§15 StringBuilder law): StringBuilder(int
+            // capacity) sets ONLY the internal buffer size — never content.
+            // OpenJDK: public StringBuilder(int capacity) { super(capacity); }.
+            // The old code stringified args[1] unconditionally, so the
+            // capacity constructor produced initial content "2" for
+            // new StringBuilder(2) — poisoning every padStart(2, '0')
+            // (microtimer label "00:00:01" rendered as "200:200:201").
+            // Content is initialized ONLY by the String/CharSequence
+            // overloads: STRING_REF arg, or an OBJECT carrying text.
             if (args.size() >= 2) {
-                cur = stringify_arg(args[1]);
+                const DalvikValue& a = args[1];
+                const bool is_capacity_ctor =
+                    (a.type == DalvikType::INT32 || a.type == DalvikType::INT64);
+                if (is_capacity_ctor) {
+                    cur.clear();  // capacity-only constructor: empty content
+                } else {
+                    cur = stringify_arg(a);
+                }
             } else {
                 cur.clear();
             }
@@ -14222,6 +14246,222 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // java.lang semantics (OpenJDK Integer.java) — no app specifics.
     // Evidence: microtimer v8 obfuscated formatter Lk/a;.toString +
     // Le/b;.b reach toUnsignedString; the label computed "200null:…".
+    //
+    // M3 FIX-M3-012 (§14 reflection identity): Class.getPackage() /
+    // Package.getName() / Class.getCanonicalName(). AOSP/OpenJDK law:
+    //   * Class.getPackage() returns the Package object for the class's
+    //     package — NON-NULL for classes loaded from an APK (the classloader
+    //     owns package metadata). Returns null only when no package info
+    //     exists (e.g. primitives, arrays of primitives).
+    //   * Package.getName() returns the dotted package name.
+    //   * Class.getCanonicalName() equals the dotted binary name for
+    //     ordinary (non-array, non-local, non-anonymous) classes.
+    // Evidence: microtimer v8 initDb() — Room's generated build chain does
+    // Database.class.getPackage().getName() and getCanonicalName() to derive
+    // "…Database_Impl" for Class.forName reflection; with the bridge
+    // returning null the Kotlin Intrinsics check threw NPE (swallowed by the
+    // compat unwind), fullPackage collapsed to "", the Database_Impl lookup
+    // broke, MainActivity.alarmDao was never assigned, and the START button
+    // died in throwUninitializedPropertyAccessException before any tick
+    // (runtime trace: [REC-MISS] Class.getPackage → NPE → Lm/c; at click).
+    // The referred class descriptor travels on the receiver's CLASS_REF
+    // (execute_const_class law), NOT in "Ljava/lang/Class;".
+    if (class_name == "Ljava/lang/Class;") {
+        auto dotted_from_desc = [](const std::string& desc) -> std::string {
+            if (desc.size() < 3 || desc[0] != 'L' || desc.back() != ';')
+                return "";  // not an ordinary class descriptor
+            std::string s = desc.substr(1, desc.size() - 2);
+            for (auto& c : s)
+                if (c == '/') c = '.';
+            return s;
+        };
+        // FIX-M3-012b: dotted name → descriptor (forName path). AOSP accepts
+        // the dotted binary name; array syntax ([x, x.y[], L-forms) is out of
+        // the deterministic subset — only ordinary classes resolve here.
+        auto desc_from_dotted = [](const std::string& dotted)
+            -> std::string {
+            if (dotted.empty() || dotted[0] == '[') return "";
+            for (auto c : dotted)
+                if (!(c == '.' || (c >= 'a' && c <= 'z') ||
+                      (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') ||
+                      c == '_' || c == '$' || c == '/'))
+                    return "";
+            std::string s = dotted;
+            for (auto& c : s)
+                if (c == '.') c = '/';
+            return "L" + s + ";";
+        };
+        // Receiver identity: for instance invokes args[0] is `this` — a
+        // CLASS_REF whose class_desc is the REFERRED type descriptor.
+        std::string referent_desc;
+        if (!args.empty() && args[0].type == DalvikType::CLASS_REF)
+            referent_desc = args[0].class_desc;
+        else if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+            referent_desc = args[0].class_desc;
+        const std::string dotted = dotted_from_desc(referent_desc);
+
+        // FIX-M3-012b (static): Class.forName — resolve the named class
+        // against the APK DEX index (our authoritative classloader domain)
+        // and return its CLASS_REF. AOSP: forName(name, init, loader)
+        // initializes the class when init=true. Unknown names throw
+        // ClassNotFoundException (real law, not a silent null).
+        if (method == "forName" && !args.empty() &&
+            args[0].type == DalvikType::STRING_REF) {
+            const std::string& want = args[0].string_val;
+            std::string desc = desc_from_dotted(want);
+            auto cit = desc.empty() ? class_info_index_.end()
+                                    : class_info_index_.find(desc);
+            if (cit == class_info_index_.end()) {
+                // AOSP Class.forName law: unknown class → CNFE.
+                std::cerr << "[M3-REFLECT] Class.forName \"" << want
+                          << "\" → ClassNotFoundException" << std::endl;
+                throw_deferred("Ljava/lang/ClassNotFoundException;",
+                               want, "M3-REFLECT");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            if (args.size() >= 2 && args[1].type == DalvikType::INT32 &&
+                args[1].int_val != 0) {
+                ensure_class_initialized(desc);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_class(desc, instruction_sequence_);
+            std::cerr << "[M3-REFLECT] Class.forName \"" << want
+                      << "\" → " << desc << std::endl;
+            return true;
+        }
+        // FIX-M3-012b (instance): Class.getDeclaredConstructor — return a
+        // Constructor object bound to the referent class. The parameter
+        // list rides in the (possibly null/empty) Class[] argument; the
+        // deterministic subset records "()V" for the no-arg lookup.
+        if (method == "getDeclaredConstructor" && !dotted.empty()) {
+            uint32_t ctor_id = heap_.allocate(
+                "Ljava/lang/reflect/Constructor;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(
+                ctor_id, "class_desc",
+                DalvikValue::make_string(referent_desc, 0));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(
+                ctor_id, "Ljava/lang/reflect/Constructor;");
+            std::cerr << "[M3-REFLECT] Class.getDeclaredConstructor -> "
+                      << referent_desc << " (ctor=" << ctor_id << ")"
+                      << std::endl;
+            return true;
+        }
+        if (method == "getCanonicalName" && !dotted.empty()) {
+            // Ordinary class law: canonical == dotted binary name.
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(dotted, 0);
+            std::cerr << "[M3-REFLECT] Class.getCanonicalName -> " << dotted
+                      << std::endl;
+            return true;
+        }
+        if (method == "getSimpleName" && !dotted.empty()) {
+            const size_t dot = dotted.rfind('.');
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(
+                dot == std::string::npos ? dotted : dotted.substr(dot + 1), 0);
+            return true;
+        }
+        if (method == "getPackage") {
+            if (dotted.empty()) {
+                // Primitive/array-of-primitive law: no package → null.
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            const size_t dot = dotted.rfind('.');
+            const std::string pkg_name = dot == std::string::npos
+                                             ? ""
+                                             : dotted.substr(0, dot);
+            // Package identity: one object per package name (AOSP packages
+            // are classloader-scoped singletons; we scope by name).
+            auto it = package_object_ids_.find(pkg_name);
+            uint32_t pkg_id;
+            if (it != package_object_ids_.end() &&
+                heap_.has_object(it->second)) {
+                pkg_id = it->second;
+            } else {
+                pkg_id = heap_.allocate("Ljava/lang/Package;", pc_,
+                                        call_stack_.empty()
+                                            ? 0
+                                            : call_stack_.top().frame_id);
+                heap_.set_object_field(
+                    pkg_id, "name",
+                    DalvikValue::make_string(pkg_name, 0));
+                package_object_ids_[pkg_name] = pkg_id;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(pkg_id, "Ljava/lang/Package;");
+            std::cerr << "[M3-REFLECT] Class.getPackage -> \""
+                      << pkg_name << "\" (obj=" << pkg_id << ")" << std::endl;
+            return true;
+        }
+    }
+    // Package.getName() — returns the dotted package name stored at
+    // construction (FIX-M3-012 counterpart; OpenJDK Package.getName law).
+    if (class_name == "Ljava/lang/Package;" && method == "getName") {
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            auto name = heap_.get_object_field(args[0].object_id, "name");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (name.has_value() && name->type == DalvikType::STRING_REF)
+                result = DalvikValue::make_string(name->string_val, 0);
+            else
+                result = DalvikValue::make_string("", 0);
+            return true;
+        }
+    }
+    // FIX-M3-012b: Constructor.newInstance(Object...) — allocate the bound
+    // class, then run its real DEX <init> when one exists (AOSP: newInstance
+    // constructs the object through the declared constructor). The arg
+    // array (possibly null) carries the constructor parameters.
+    if (class_name == "Ljava/lang/reflect/Constructor;" &&
+        method == "newInstance") {
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            auto bound = heap_.get_object_field(args[0].object_id, "class_desc");
+            if (bound.has_value() && bound->type == DalvikType::STRING_REF) {
+                const std::string& target = bound->string_val;
+                auto cit = class_info_index_.find(target);
+                if (cit == class_info_index_.end()) {
+                    std::cerr << "[M3-REFLECT] Constructor.newInstance: "
+                              << target << " not in DEX index" << std::endl;
+                    status = ApiCallTrace::Status::STUBBED;
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                uint32_t obj_id = heap_.allocate(
+                    target, pc_,
+                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                // Run the real <init> DEX body when the class defines one.
+                DalvikValue ctor_result;
+                DalvikExecutionResult ctor_exec;
+                std::vector<DalvikValue> ctor_args;
+                ctor_args.push_back(
+                    DalvikValue::make_object(obj_id, target));
+                try_recursive_invoke(target, "<init>", ctor_args,
+                                     ctor_result, ctor_exec);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_object(obj_id, target);
+                std::cerr << "[M3-REFLECT] Constructor.newInstance -> "
+                          << target << " (obj=" << obj_id << ")" << std::endl;
+                return true;
+            }
+        }
+    }
+    // FIX-M3-012b: Object.getClass() — the runtime class identity law: the
+    // heap object's runtime class is authoritative (dispatch invariant).
+    // The Class object for the receiver's class is materialized as CLASS_REF.
+    if (class_name == "Ljava/lang/Object;" && method == "getClass") {
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            !args[0].class_desc.empty()) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_class(args[0].class_desc,
+                                             instruction_sequence_);
+            return true;
+        }
+    }
     if (class_name == "Ljava/lang/Integer;") {
         auto as_u32 = [](const DalvikValue& v) -> uint32_t {
             return v.type == DalvikType::INT32 ? (uint32_t)v.int_val : 0u;
