@@ -167,6 +167,13 @@ public:
                                          const std::string& value) {
         (void)object_id; (void)field_name; (void)value; return false;
     }
+    // M3 F-005 FIX-B: string field reads for shadows
+    // (View.setForeground resolving the Drawable's resource path).
+    virtual bool get_object_string_field(uint32_t object_id,
+                                         const std::string& field_name,
+                                         std::string& out) {
+        (void)object_id; (void)field_name; (void)out; return false;
+    }
     virtual bool set_object_int_field(uint32_t object_id,
                                       const std::string& field_name,
                                       int32_t value) {
