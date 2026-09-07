@@ -20,6 +20,7 @@
 #include <vector>
 #include <functional>
 #include <unordered_map>
+#include <climits>   // M3 FIX-M3-002: INT_MIN sentinels for style-bag layout params
 
 #include "arsc_parser.h"
 #include "axml_parser.h"
@@ -160,6 +161,14 @@ private:
         int  layout_width = -2;   // -1 match, -2 wrap, >0 px
         int  layout_height = -2;
         bool width_set = false, height_set = false;
+        bool weight_set = false;  // M3 FIX-M3-002: direct layout_weight present
+        bool margin_set = false;  // M3 FIX-M3-002: any direct layout_margin*
+        // M3 FIX-M3-002: style-bag layout params (style= > theme, direct
+        // XML attr > style). INT_MIN/-1 = "absent from every bag".
+        int  style_layout_width = INT_MIN;
+        int  style_layout_height = INT_MIN;
+        int  style_layout_weight = -1;   // ×1000 scale, -1 = absent
+        int  style_margin_all = INT_MIN; // layout_margin px (all edges)
         int  ml = 0, mt = 0, mr = 0, mb = 0;
         int  pl = 0, pt = 0, pr = 0, pb = 0;
         int  orientation = -1;
