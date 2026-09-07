@@ -253,8 +253,21 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
                 uint32_t count = rd32(e + 12);
                 entry.value.type = DataType::ATTRIBUTE;
                 entry.value.ref_id = parent;
+                entry.bag_parent = parent;   // M3 FIX-M3-003b: survives the value overwrite below
                 const uint8_t* m = base + ep + 16;
-                for (uint32_t mi = 0; mi < count && (size_t)(m - base) + 20 <= avail; mi++, m += 20) {
+                // M3 FIX-M3-003 (§13 — AOSP ResTable_map stride law):
+                // ResTable_map = { name: u32, value: Res_value(8) } = 12
+                // bytes. The previous 20-byte stride desynchronized the bag
+                // walk: only entries that coincidentally aligned (typically
+                // key[0] and one mid-bag hit) decoded correctly, every other
+                // style attribute (textColor, background, layout_width,
+                // layout_weight, layout_margin …) decoded as garbage keys
+                // (ground truth aapt2 dump vs runtime [M3-BAG] trace on
+                // headingcalculator style/keypad_button: aapt2 keys
+                // [95,98,d4,e6,f4,f5,f6,181] vs runtime
+                // [95,7f040004,12000008,f5,101,38,7f050000,39]). Bags with
+                // ≥2 meaningful keys silently dropped attributes app-wide.
+                for (uint32_t mi = 0; mi < count && (size_t)(m - base) + 12 <= avail; mi++, m += 12) {
                     // VISUAL-CAMPAIGN G49: keep the map KEY (attribute resource
                     // id, e.g. 0x01010054 = android:windowBackground) so style
                     // bags can be queried by attribute, per AOSP
@@ -650,12 +663,13 @@ std::optional<ResValue> ArscParser::bag_value(uint32_t style_resid, uint32_t att
             if (e->complex_keys[i] == attr_key) return e->complex_items[i];
         }
         // Key not in this bag → follow the ResTable_map_entry parent.
-        // (Bag entries carry parent in value.ref_id, value.type ATTRIBUTE.)
-        if (e->value.type != DataType::ATTRIBUTE || e->value.ref_id == 0 ||
-            e->value.ref_id == cur) {
+        // (M3 FIX-M3-003b: parent now read from bag_parent — the
+        // entry.value slot is overwritten with complex_items[0] for
+        // single-value compat and no longer carries the parent ref.)
+        if (e->bag_parent == 0 || e->bag_parent == cur) {
             return std::nullopt;
         }
-        cur = e->value.ref_id;
+        cur = e->bag_parent;
         hops++;
     }
 }
