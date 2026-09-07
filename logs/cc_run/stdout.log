@@ -1,0 +1,19 @@
+[*] TAP gesture 1 queued at (540,480) — frames + touch trace saved to <output>/frames/
+[*] Running APK: miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk
+[*] Output directory: /home/z/my-project/logs/cc_run
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 3
+Execution Time: 0ms
+Errors: 0
+Warnings: 0
+
+Screenshot: /home/z/my-project/logs/cc_run/screenshot.png
+Report: /home/z/my-project/logs/cc_run/report.md

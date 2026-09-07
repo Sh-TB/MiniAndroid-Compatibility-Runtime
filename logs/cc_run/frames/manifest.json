@@ -1,0 +1,169 @@
+{
+  "changed_pixels_vs_launch": 13754,
+  "drains": [
+    [
+      {
+        "entry": 4026531842,
+        "virtual_ms": 1000000050
+      }
+    ],
+    [
+      {
+        "entry": 4026531843,
+        "virtual_ms": 1000000120
+      }
+    ]
+  ],
+  "events": [
+    {
+      "action": "ACTION_DOWN",
+      "consumed": true,
+      "long_press_armed_ms": 500,
+      "root_id": 16,
+      "state_changes": [
+        "setPressed(true)"
+      ],
+      "target_class": "Landroid/widget/Button;",
+      "target_view_id": 20,
+      "virtual_ms": 1000000000,
+      "x": 540,
+      "y": 480
+    },
+    {
+      "action": "ACTION_UP",
+      "click_posted": true,
+      "consumed": true,
+      "root_id": 16,
+      "state_changes": [],
+      "target_view_id": 20,
+      "virtual_ms": 1000000050,
+      "was_pressed": true,
+      "x": 540,
+      "y": 480
+    }
+  ],
+  "frames": [
+    {
+      "event": "launch (no interaction)",
+      "file": "frame_000.png",
+      "index": 0,
+      "png_sha256": "a552cac4e8690f6ef954007816b272550a2cb26b7a1591d0e87617c740d661c9",
+      "sha256": "34475797180a2410411a7b2dfc0b4ba28a67d682ae4b745d566e8023282c2110",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "event": "ACTION_DOWN pressed state (mid-gesture)",
+      "file": "frame_001.png",
+      "index": 1,
+      "png_sha256": "a552cac4e8690f6ef954007816b272550a2cb26b7a1591d0e87617c740d661c9",
+      "sha256": "34475797180a2410411a7b2dfc0b4ba28a67d682ae4b745d566e8023282c2110",
+      "target_pressed": true,
+      "target_view_id": 20,
+      "virtual_ms": 1000000020,
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 13754,
+      "event": "post-gesture (callbacks drained, transitions applied)",
+      "file": "frame_002.png",
+      "index": 2,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "target_pressed_after": false,
+      "target_view_id": 20,
+      "virtual_ms": 1000000120,
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 27
+        }
+      ]
+    }
+  ],
+  "gesture": "TAP",
+  "gesture_count": 1,
+  "laws": [
+    "View.java L17044-17047 touchable",
+    "L17049-17057 disabled",
+    "L17113-17125 DOWN setPressed + long-press arm",
+    "L17133-17169 UP post(PerformClick)+UnsetPressed(64ms)",
+    "L17172-17184 CANCEL cleanup",
+    "CheckForLongPress mHasPerformedLongPress suppression",
+    "one-MessageQueue ordering (framework tokens)"
+  ],
+  "pipeline": "canonical (TouchDispatcher law)",
+  "screen": {
+    "height": 1920,
+    "width": 1080
+  },
+  "touch_trace": [
+    {
+      "action": "ACTION_DOWN",
+      "consumed": true,
+      "long_press_armed_ms": 500,
+      "root_id": 16,
+      "state_changes": [
+        "setPressed(true)"
+      ],
+      "target_class": "Landroid/widget/Button;",
+      "target_view_id": 20,
+      "virtual_ms": 1000000000,
+      "x": 540,
+      "y": 480
+    },
+    {
+      "action": "ACTION_UP",
+      "click_posted": true,
+      "consumed": true,
+      "root_id": 16,
+      "state_changes": [],
+      "target_view_id": 20,
+      "virtual_ms": 1000000050,
+      "was_pressed": true,
+      "x": 540,
+      "y": 480
+    },
+    {
+      "callback": "PerformClick",
+      "click_dispatched": true,
+      "target_view_id": 20,
+      "virtual_ms": 1000000050
+    },
+    {
+      "callback": "UnsetPressedState",
+      "state_changes": [
+        "setPressed(false)"
+      ],
+      "target_view_id": 20,
+      "virtual_ms": 1000000120
+    }
+  ]
+}

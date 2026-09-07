@@ -1,0 +1,2737 @@
+[ApkParser] APK validation passed: miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk
+[ApkParser] Found EOCD at offset 124200
+[ApkParser] Central Directory: 19 entries at offset 122880
+[ApkParser] Cached 19 ZIP entries for fast lookup
+[ApkParser] Found 1 DEX files: 
+[ApkParser]   - classes.dex
+[ApkParser] Extracting AndroidManifest.xml...
+[ApkParser] Found EOCD at offset 124200
+[ApkParser] Central Directory: 19 entries at offset 122880
+[ApkParser] APK parsing complete: com.chessclock.android (19 entries)
+[ApkParser] Found EOCD at offset 124200
+[ApkParser] Central Directory: 19 entries at offset 122880
+[DexParser] DEX version: 035
+[DexParser] Parsed 436 strings
+[DexParser] Parsed 72 types
+[DexParser] Parsed 77 prototypes
+[DexParser] Parsed 125 fields
+[DexParser] Parsed 169 method IDs
+[DexParser] === EXP-031.6 CLASS_DEF PARSING ===
+[DexParser] class_defs_size: 22
+[DexParser] class_defs_off: 0x5420
+[DexParser] file_size: 0x24556
+[DexParser] Reading 22 class_defs (32 bytes each)...
+[DexParser] CLASS_DEF[0] @ offset 0x5420:
+[DexParser]   class_idx: 33 (max valid: 72)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x23544
+[DexParser]   → Resolved name: [Lcom/chessclock/android/BuildConfig;]
+[DexParser]   → Parsing class_data at 0x23544
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x23544 ===
+[DexParser]   First bytes: 01 00 01 00 01 19 35 81 80 04 f8 30 00 01 01 01 02 90 20 36 80 80 04 90 31 37 01 ac 31 00 01 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x23544 = 1
+[DexParser]   ULEB128[instance_fields_size] @ 0x23545 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x23546 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x23547 = 0
+[DexParser]   → Header: static=1, instance=0, direct=1, virtual=0
+[DexParser]   ULEB128[sf_field_diff] @ 0x23548 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x23549 = 25
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23550 = 53
+[DexParser]   ULEB128[dm_access_flags] @ 0x23551 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x23554 = 6264
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6264 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21509
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00a2 0000 000e 
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] CLASS_DEF[1] @ offset 0x5452:
+[DexParser]   class_idx: 34 (max valid: 72)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x23556
+[DexParser]   → Resolved name: [Lcom/chessclock/android/ChessClock$1;]
+[DexParser]   → Parsing class_data at 0x23556
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x23556 ===
+[DexParser]   First bytes: 00 01 01 01 02 90 20 36 80 80 04 90 31 37 01 ac 31 00 01 01 01 03 90 20 38 80 80 04 f4 31 39 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x23556 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x23557 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x23558 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x23559 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x23560 = 2
+[DexParser]   ULEB128[if_access_flags] @ 0x23561 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23563 = 54
+[DexParser]   ULEB128[dm_access_flags] @ 0x23564 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x23567 = 6288
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6288 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21514
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0002 1070 00a2 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x23569 = 55
+[DexParser]   ULEB128[vm_access_flags] @ 0x23570 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x23571 = 6316
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6316 for onClick ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21522
+[DexParser]   insns_size: 28 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 28 INSTRUCTIONS!
+[DexParser]   First opcodes: 2054 0002 1071 004e 0000 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[2] @ offset 0x5484:
+[DexParser]   class_idx: 35 (max valid: 72)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x23573
+[DexParser]   → Resolved name: [Lcom/chessclock/android/ChessClock$2;]
+[DexParser]   → Parsing class_data at 0x23573
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x23573 ===
+[DexParser]   First bytes: 00 01 01 01 03 90 20 38 80 80 04 f4 31 39 01 90 32 00 01 01 01 04 90 20 3a 80 80 04 d8 32 3b 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x23573 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x23574 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x23575 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x23576 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x23577 = 3
+[DexParser]   ULEB128[if_access_flags] @ 0x23578 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23580 = 56
+[DexParser]   ULEB128[dm_access_flags] @ 0x23581 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x23584 = 6388
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6388 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21535
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0003 1070 00a2 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x23586 = 57
+[DexParser]   ULEB128[vm_access_flags] @ 0x23587 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x23588 = 6416
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6416 for onClick ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21543
+[DexParser]   insns_size: 28 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 28 INSTRUCTIONS!
+[DexParser]   First opcodes: 2054 0003 1071 004e 0000 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[3] @ offset 0x5516:
+[DexParser]   class_idx: 36 (max valid: 72)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x23590
+[DexParser]   → Resolved name: [Lcom/chessclock/android/ChessClock$3;]
+[DexParser]   → Parsing class_data at 0x23590
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x23590 ===
+[DexParser]   First bytes: 00 01 01 01 04 90 20 3a 80 80 04 d8 32 3b 01 f4 32 00 01 01 01 05 90 20 3c 80 80 04 9c 33 3d 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x23590 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x23591 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x23592 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x23593 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x23594 = 4
+[DexParser]   ULEB128[if_access_flags] @ 0x23595 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23597 = 58
+[DexParser]   ULEB128[dm_access_flags] @ 0x23598 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x23601 = 6488
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6488 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21556
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0004 1070 00a2 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x23603 = 59
+[DexParser]   ULEB128[vm_access_flags] @ 0x23604 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x23605 = 6516
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6516 for onClick ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21564
+[DexParser]   insns_size: 11 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 11 INSTRUCTIONS!
+[DexParser]   First opcodes: 1054 0004 2071 004f 0020 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[4] @ offset 0x5548:
+[DexParser]   class_idx: 37 (max valid: 72)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x23607
+[DexParser]   → Resolved name: [Lcom/chessclock/android/ChessClock$4;]
+[DexParser]   → Parsing class_data at 0x23607
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x23607 ===
+[DexParser]   First bytes: 00 01 01 01 05 90 20 3c 80 80 04 9c 33 3d 01 b8 33 00 01 01 01 06 90 20 3e 80 80 04 e0 33 3f 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x23607 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x23608 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x23609 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x23610 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x23611 = 5
+[DexParser]   ULEB128[if_access_flags] @ 0x23612 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23614 = 60
+[DexParser]   ULEB128[dm_access_flags] @ 0x23615 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x23618 = 6556
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6556 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21574
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0005 1070 00a2 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x23620 = 61
+[DexParser]   ULEB128[vm_access_flags] @ 0x23621 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x23622 = 6584
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6584 for onClick ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21582
+[DexParser]   insns_size: 11 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 11 INSTRUCTIONS!
+[DexParser]   First opcodes: 1054 0005 2071 004f 0020 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[5] @ offset 0x5580:
+[DexParser]   class_idx: 38 (max valid: 72)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x23624
+[DexParser]   → Resolved name: [Lcom/chessclock/android/ChessClock$5;]
+[DexParser]   → Parsing class_data at 0x23624
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x23624 ===
+[DexParser]   First bytes: 00 01 01 01 06 90 20 3e 80 80 04 e0 33 3f 01 fc 33 00 01 01 01 07 90 20 40 80 80 04 94 34 41 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x23624 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x23625 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x23626 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x23627 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x23628 = 6
+[DexParser]   ULEB128[if_access_flags] @ 0x23629 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23631 = 62
+[DexParser]   ULEB128[dm_access_flags] @ 0x23632 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x23635 = 6624
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6624 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21592
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0006 1070 00a2 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x23637 = 63
+[DexParser]   ULEB128[vm_access_flags] @ 0x23638 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x23639 = 6652
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6652 for onClick ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21600
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1072 0010 0001 000e 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[6] @ offset 0x5612:
+[DexParser]   class_idx: 39 (max valid: 72)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x23641
+[DexParser]   → Resolved name: [Lcom/chessclock/android/ChessClock$6;]
+[DexParser]   → Parsing class_data at 0x23641
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x23641 ===
+[DexParser]   First bytes: 00 01 01 01 07 90 20 40 80 80 04 94 34 41 01 b0 34 00 01 01 01 08 90 20 42 80 80 04 d4 34 43 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x23641 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x23642 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x23643 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x23644 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x23645 = 7
+[DexParser]   ULEB128[if_access_flags] @ 0x23646 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23648 = 64
+[DexParser]   ULEB128[dm_access_flags] @ 0x23649 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x23652 = 6676
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6676 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21611
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0007 1070 00a2 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x23654 = 65
+[DexParser]   ULEB128[vm_access_flags] @ 0x23655 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x23656 = 6704
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6704 for onClick ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21619
+[DexParser]   insns_size: 10 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 10 INSTRUCTIONS!
+[DexParser]   First opcodes: 2054 0007 1112 2071 0066 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[7] @ offset 0x5644:
+[DexParser]   class_idx: 40 (max valid: 72)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x23658
+[DexParser]   → Resolved name: [Lcom/chessclock/android/ChessClock$7;]
+[DexParser]   → Parsing class_data at 0x23658
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x23658 ===
+[DexParser]   First bytes: 00 01 01 01 08 90 20 42 80 80 04 d4 34 43 01 f0 34 00 01 01 01 09 90 20 44 80 80 04 e0 39 45 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x23658 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x23659 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x23660 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x23661 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x23662 = 8
+[DexParser]   ULEB128[if_access_flags] @ 0x23663 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23665 = 66
+[DexParser]   ULEB128[dm_access_flags] @ 0x23666 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x23669 = 6740
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6740 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21631
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0008 1070 00a2 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x23671 = 67
+[DexParser]   ULEB128[vm_access_flags] @ 0x23672 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x23673 = 6768
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x6768 for run ===
+[DexParser]   registers_size: 12
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 6
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21639
+[DexParser]   insns_size: 303 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 303 INSTRUCTIONS!
+[DexParser]   First opcodes: b054 0008 0214 0002 7f08 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[8] @ offset 0x5676:
+[DexParser]   class_idx: 41 (max valid: 72)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x23675
+[DexParser]   → Resolved name: [Lcom/chessclock/android/ChessClock$8;]
+[DexParser]   → Parsing class_data at 0x23675
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x23675 ===
+[DexParser]   First bytes: 00 01 01 01 09 90 20 44 80 80 04 e0 39 45 01 fc 39 0e 1c 33 08 0a 0a 01 0a 02 0a 01 0a 01 0a 02 
+[DexParser]   ULEB128[static_fields_size] @ 0x23675 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x23676 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x23677 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x23678 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x23679 = 9
+[DexParser]   ULEB128[if_access_flags] @ 0x23680 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23682 = 68
+[DexParser]   ULEB128[dm_access_flags] @ 0x23683 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x23686 = 7392
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7392 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21719
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0009 1070 00a2 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x23688 = 69
+[DexParser]   ULEB128[vm_access_flags] @ 0x23689 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x23690 = 7420
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7420 for run ===
+[DexParser]   registers_size: 12
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 6
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21727
+[DexParser]   insns_size: 303 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 303 INSTRUCTIONS!
+[DexParser]   First opcodes: b054 0009 0214 0002 7f08 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[9] @ offset 0x5708:
+[DexParser]   class_idx: 42 (max valid: 72)
+[DexParser]   access_flags: 0x1
+[DexParser]   superclass_idx: 3
+[DexParser]   class_data_off: 0x23692
+[DexParser]   → Resolved name: [Lcom/chessclock/android/ChessClock;]
+[DexParser]   → Parsing class_data at 0x23692
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x23692 ===
+[DexParser]   First bytes: 0e 1c 33 08 0a 0a 01 0a 02 0a 01 0a 01 0a 02 0a 04 1a 01 0a 01 0a 01 19 01 0a 01 19 01 19 01 19 
+[DexParser]   ULEB128[static_fields_size] @ 0x23692 = 14
+[DexParser]   ULEB128[instance_fields_size] @ 0x23693 = 28
+[DexParser]   ULEB128[direct_methods_size] @ 0x23694 = 51
+[DexParser]   ULEB128[virtual_methods_size] @ 0x23695 = 8
+[DexParser]   → Header: static=14, instance=28, direct=51, virtual=8
+[DexParser]   ULEB128[sf_field_diff] @ 0x23696 = 10
+[DexParser]   ULEB128[sf_access_flags] @ 0x23697 = 10
+[DexParser]   ULEB128[sf_field_diff] @ 0x23698 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x23699 = 10
+[DexParser]   ULEB128[sf_field_diff] @ 0x23700 = 2
+[DexParser]   ULEB128[sf_access_flags] @ 0x23701 = 10
+[DexParser]   ULEB128[sf_field_diff] @ 0x23702 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x23703 = 10
+[DexParser]   ULEB128[sf_field_diff] @ 0x23704 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x23705 = 10
+[DexParser]   ULEB128[sf_field_diff] @ 0x23706 = 2
+[DexParser]   ULEB128[sf_access_flags] @ 0x23707 = 10
+[DexParser]   ULEB128[sf_field_diff] @ 0x23708 = 4
+[DexParser]   ULEB128[sf_access_flags] @ 0x23709 = 26
+[DexParser]   ULEB128[sf_field_diff] @ 0x23710 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x23711 = 10
+[DexParser]   ULEB128[sf_field_diff] @ 0x23712 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x23713 = 10
+[DexParser]   ULEB128[sf_field_diff] @ 0x23714 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x23715 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x23716 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x23717 = 10
+[DexParser]   ULEB128[sf_field_diff] @ 0x23718 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x23719 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x23720 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x23721 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x23722 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x23723 = 25
+[DexParser]   ULEB128[if_field_diff] @ 0x23724 = 12
+[DexParser]   ULEB128[if_access_flags] @ 0x23725 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23726 = 4
+[DexParser]   ULEB128[if_access_flags] @ 0x23727 = 1
+[DexParser]   ULEB128[if_field_diff] @ 0x23728 = 2
+[DexParser]   ULEB128[if_access_flags] @ 0x23729 = 1
+[DexParser]   ULEB128[if_field_diff] @ 0x23730 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23731 = 1
+[DexParser]   ULEB128[if_field_diff] @ 0x23732 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23733 = 1
+[DexParser]   ULEB128[if_field_diff] @ 0x23734 = 9
+[DexParser]   ULEB128[if_access_flags] @ 0x23735 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23736 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23737 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23738 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23739 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23740 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23741 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23742 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23743 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23744 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23745 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23746 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23747 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23748 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23749 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23750 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23751 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23752 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23753 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23754 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23755 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23756 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23757 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23758 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23759 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23760 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23761 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23762 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23763 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23764 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23765 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23766 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23767 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23768 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23769 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23770 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23771 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23772 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23773 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23774 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23775 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23776 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23777 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x23778 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x23779 = 2
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23780 = 70
+[DexParser]   ULEB128[dm_access_flags] @ 0x23781 = 65544
+[DexParser]   ULEB128[dm_code_off] @ 0x23784 = 8044
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8044 for <clinit> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 0
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21807
+[DexParser]   insns_size: 37 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 37 INSTRUCTIONS!
+[DexParser]   First opcodes: 0013 0064 0067 0019 0013 
+[DexParser]   → Direct method[1]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23786 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23787 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x23790 = 8136
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8136 for <init> ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21820
+[DexParser]   insns_size: 101 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 101 INSTRUCTIONS!
+[DexParser]   First opcodes: 0213 000a 0112 1070 0000 
+[DexParser]   → Direct method[2]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23792 = 2
+[DexParser]   ULEB128[dm_access_flags] @ 0x23793 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23794 = 8356
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8356 for P1Click ===
+[DexParser]   registers_size: 14
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 6
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21859
+[DexParser]   insns_size: 248 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 248 INSTRUCTIONS!
+[DexParser]   First opcodes: 0b12 2c12 1a12 d052 002c 
+[DexParser]   → Direct method[3]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23796 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23797 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23798 = 8868
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8868 for P2Click ===
+[DexParser]   registers_size: 16
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 6
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x21930
+[DexParser]   insns_size: 266 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 266 INSTRUCTIONS!
+[DexParser]   First opcodes: 2e12 0d12 1c12 f052 002c 
+[DexParser]   → Direct method[4]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23800 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23801 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23802 = 9416
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9416 for PauseGame ===
+[DexParser]   registers_size: 8
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22013
+[DexParser]   insns_size: 108 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 108 INSTRUCTIONS!
+[DexParser]   First opcodes: 0614 0001 7f05 0514 0003 
+[DexParser]   → Direct method[5]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23804 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23805 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23806 = 9648
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9648 for PauseToggle ===
+[DexParser]   registers_size: 10
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22059
+[DexParser]   insns_size: 135 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 135 INSTRUCTIONS!
+[DexParser]   First opcodes: 0814 0001 7f05 0514 0003 
+[DexParser]   → Direct method[6]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23808 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23809 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23810 = 9936
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9936 for ResetDialog ===
+[DexParser]   registers_size: 6
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22114
+[DexParser]   insns_size: 45 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 45 INSTRUCTIONS!
+[DexParser]   First opcodes: 0122 0004 2070 0005 0051 
+[DexParser]   → Direct method[7]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23812 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23813 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23815 = 10044
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10044 for access$000 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22136
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 1052 002c 000f 
+[DexParser]   → Direct method[8]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23817 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23818 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23820 = 10068
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10068 for access$100 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22143
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 2070 007d 0010 000e 
+[DexParser]   → Direct method[9]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23822 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23823 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23825 = 10092
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10092 for access$1000 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22152
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 1052 001e 000f 
+[DexParser]   → Direct method[10]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23827 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23828 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23830 = 10116
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10116 for access$1002 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22159
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 0159 001e 010f 
+[DexParser]   → Direct method[11]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23832 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23833 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23835 = 10140
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10140 for access$1100 ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 0
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22168
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 0060 0019 000f 
+[DexParser]   → Direct method[12]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23837 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23838 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23840 = 10164
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10164 for access$1200 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22173
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 1052 0022 000f 
+[DexParser]   → Direct method[13]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23842 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23843 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23845 = 10188
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10188 for access$1300 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22180
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 1054 0021 0011 
+[DexParser]   → Direct method[14]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23847 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23848 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23850 = 10212
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10212 for access$1400 ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22187
+[DexParser]   insns_size: 5 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 5 INSTRUCTIONS!
+[DexParser]   First opcodes: 3070 0088 0321 000a 000f 
+[DexParser]   → Direct method[15]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23852 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23853 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23855 = 10240
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10240 for access$1500 ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22198
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 2053 0031 0010 
+[DexParser]   → Direct method[16]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23857 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23858 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23860 = 10264
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10264 for access$1502 ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22205
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 125a 0031 0210 
+[DexParser]   → Direct method[17]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23862 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23863 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23865 = 10288
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10288 for access$1600 ===
+[DexParser]   registers_size: 6
+[DexParser]   ins_size: 6
+[DexParser]   outs_size: 6
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22214
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 0676 0081 0000 000e 
+[DexParser]   → Direct method[18]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23867 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23868 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23870 = 10312
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10312 for access$1700 ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22227
+[DexParser]   insns_size: 5 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 5 INSTRUCTIONS!
+[DexParser]   First opcodes: 3070 007c 0321 000a 000f 
+[DexParser]   → Direct method[19]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23872 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23873 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23875 = 10340
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10340 for access$1802 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22236
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 015c 0033 010f 
+[DexParser]   → Direct method[20]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23877 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23878 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23880 = 10364
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10364 for access$1900 ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22245
+[DexParser]   insns_size: 5 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 5 INSTRUCTIONS!
+[DexParser]   First opcodes: 2070 006b 0021 000a 000f 
+[DexParser]   → Direct method[21]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23882 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23883 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23885 = 10392
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10392 for access$200 ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22254
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 0049 0000 000e 
+[DexParser]   → Direct method[22]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23887 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23888 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23890 = 10416
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10416 for access$2000 ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22261
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 007e 0000 000e 
+[DexParser]   → Direct method[23]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23892 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23893 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23895 = 10440
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10440 for access$2100 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22268
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 1054 0029 0011 
+[DexParser]   → Direct method[24]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23897 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23898 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23900 = 10464
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10464 for access$2200 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22275
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 1054 002b 0011 
+[DexParser]   → Direct method[25]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23902 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23903 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23905 = 10488
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10488 for access$2300 ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22282
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 2053 0032 0010 
+[DexParser]   → Direct method[26]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23907 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23908 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23910 = 10512
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10512 for access$2302 ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22289
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 125a 0032 0210 
+[DexParser]   → Direct method[27]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23912 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23913 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23915 = 10536
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10536 for access$2400 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22298
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 1054 002a 0011 
+[DexParser]   → Direct method[28]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23917 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23918 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23920 = 10560
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10560 for access$300 ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22305
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 004a 0000 000e 
+[DexParser]   → Direct method[29]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23922 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23923 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23925 = 10584
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10584 for access$400 ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22312
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 004c 0000 000e 
+[DexParser]   → Direct method[30]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23927 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23928 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23930 = 10608
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10608 for access$500 ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22319
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 0085 0000 000e 
+[DexParser]   → Direct method[31]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23932 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23933 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23935 = 10632
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10632 for access$600 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22326
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 2070 0083 0010 000e 
+[DexParser]   → Direct method[32]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23937 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23938 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23940 = 10656
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10656 for access$700 ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 0
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22335
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 0062 000a 0011 
+[DexParser]   → Direct method[33]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23942 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23943 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23945 = 10680
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10680 for access$800 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22340
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 1054 0020 0011 
+[DexParser]   → Direct method[34]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23947 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23948 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23950 = 10704
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10704 for access$900 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22347
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 1055 0023 000f 
+[DexParser]   → Direct method[35]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23952 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23953 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x23955 = 10728
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10728 for access$902 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22354
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 015c 0023 010f 
+[DexParser]   → Direct method[36]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23957 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23958 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23959 = 10752
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10752 for color ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22363
+[DexParser]   insns_size: 10 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 10 INSTRUCTIONS!
+[DexParser]   First opcodes: 106e 0071 0002 000c 0112 
+[DexParser]   → Direct method[37]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23961 = 2
+[DexParser]   ULEB128[dm_access_flags] @ 0x23962 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23963 = 10788
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10788 for formatTime ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 4
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22371
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 0012 4070 006e 0321 000c 
+[DexParser]   → Direct method[38]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23965 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23966 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23967 = 10816
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10816 for formatTime ===
+[DexParser]   registers_size: 15
+[DexParser]   ins_size: 4
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22379
+[DexParser]   insns_size: 173 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 173 INSTRUCTIONS!
+[DexParser]   First opcodes: b555 0030 0539 0012 c686 
+[DexParser]   → Direct method[39]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23969 = 2
+[DexParser]   ULEB128[dm_access_flags] @ 0x23970 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23971 = 11180
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11180 for getIntPref ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 1
+[DexParser]   debug_info_off: 0x22447
+[DexParser]   insns_size: 33 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 33 INSTRUCTIONS!
+[DexParser]   First opcodes: 1071 0026 0004 020c 1071 
+[DexParser]   → Direct method[40]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23973 = 3
+[DexParser]   ULEB128[dm_access_flags] @ 0x23974 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23975 = 11276
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11276 for initRingtone ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22484
+[DexParser]   insns_size: 17 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 17 INSTRUCTIONS!
+[DexParser]   First opcodes: 2154 001d 1071 001e 0001 
+[DexParser]   → Direct method[41]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23977 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23978 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23979 = 11328
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11328 for initTime ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22497
+[DexParser]   insns_size: 16 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 16 INSTRUCTIONS!
+[DexParser]   First opcodes: 1055 0024 0038 000b 1012 
+[DexParser]   → Direct method[42]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23981 = 8
+[DexParser]   ULEB128[dm_access_flags] @ 0x23982 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23983 = 11376
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11376 for outOfTime ===
+[DexParser]   registers_size: 10
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22505
+[DexParser]   insns_size: 31 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 31 INSTRUCTIONS!
+[DexParser]   First opcodes: 0416 0000 1012 0112 7254 
+[DexParser]   → Direct method[43]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23985 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23986 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23987 = 11456
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11456 for performHapticFeedback ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22517
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 1012 2112 306e 0029 0103 
+[DexParser]   → Direct method[44]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23989 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23990 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23991 = 11484
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11484 for playAlert ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22525
+[DexParser]   insns_size: 13 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 13 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 0073 0001 1054 002e 
+[DexParser]   → Direct method[45]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23993 = 2
+[DexParser]   ULEB128[dm_access_flags] @ 0x23994 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23995 = 11528
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11528 for setClock ===
+[DexParser]   registers_size: 10
+[DexParser]   ins_size: 4
+[DexParser]   outs_size: 6
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22534
+[DexParser]   insns_size: 9 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 9 INSTRUCTIONS!
+[DexParser]   First opcodes: 0416 0000 6007 7107 8204 
+[DexParser]   → Direct method[46]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x23997 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x23998 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x23999 = 11564
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11564 for setClock ===
+[DexParser]   registers_size: 10
+[DexParser]   ins_size: 6
+[DexParser]   outs_size: 4
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22545
+[DexParser]   insns_size: 71 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 71 INSTRUCTIONS!
+[DexParser]   First opcodes: 1212 4070 006e 2984 010c 
+[DexParser]   → Direct method[47]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24001 = 2
+[DexParser]   ULEB128[dm_access_flags] @ 0x24002 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x24003 = 11724
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11724 for setUpGame ===
+[DexParser]   registers_size: 21
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 6
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22577
+[DexParser]   insns_size: 574 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 574 INSTRUCTIONS!
+[DexParser]   First opcodes: 0177 0026 0013 120c 0214 
+[DexParser]   → Direct method[48]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24005 = 2
+[DexParser]   ULEB128[dm_access_flags] @ 0x24006 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x24007 = 12888
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x12888 for showPrefs ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22709
+[DexParser]   insns_size: 11 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 11 INSTRUCTIONS!
+[DexParser]   First opcodes: 0022 000a 011c 002d 3070 
+[DexParser]   → Direct method[49]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24009 = 2
+[DexParser]   ULEB128[dm_access_flags] @ 0x24010 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x24011 = 12928
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x12928 for stopAlert ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22722
+[DexParser]   insns_size: 18 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 18 INSTRUCTIONS!
+[DexParser]   First opcodes: 1054 002e 0038 000f 1054 
+[DexParser]   → Direct method[50]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24013 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x24014 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x24015 = 12980
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x12980 for toMillis ===
+[DexParser]   registers_size: 6
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22730
+[DexParser]   insns_size: 64 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 64 INSTRUCTIONS!
+[DexParser]   First opcodes: 0062 000e 206e 00a4 0005 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x24017 = 72
+[DexParser]   ULEB128[vm_access_flags] @ 0x24018 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x24019 = 13124
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13124 for CheckForNewPrefs ===
+[DexParser]   registers_size: 9
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22747
+[DexParser]   insns_size: 168 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 168 INSTRUCTIONS!
+[DexParser]   First opcodes: 0713 000a 1612 0512 1071 
+[DexParser]   → Virtual method[1]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x24021 = 45
+[DexParser]   ULEB128[vm_access_flags] @ 0x24022 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x24023 = 13476
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13476 for onCreate ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22792
+[DexParser]   insns_size: 26 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 26 INSTRUCTIONS!
+[DexParser]   First opcodes: 1212 206f 0001 0043 206e 
+[DexParser]   → Virtual method[2]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x24025 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x24026 = 4
+[DexParser]   ULEB128[vm_code_off] @ 0x24027 = 13544
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13544 for onCreateDialog ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22805
+[DexParser]   insns_size: 20 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 20 INSTRUCTIONS!
+[DexParser]   First opcodes: 0022 0006 2070 000b 0010 
+[DexParser]   → Virtual method[3]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x24029 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x24030 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x24031 = 13600
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13600 for onDestroy ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22822
+[DexParser]   insns_size: 7 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 7 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 0087 0000 106f 0002 
+[DexParser]   → Virtual method[4]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x24033 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x24034 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x24035 = 13632
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13632 for onPause ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22830
+[DexParser]   insns_size: 10 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 10 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 0087 0000 1070 004b 
+[DexParser]   → Virtual method[5]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x24037 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x24038 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x24039 = 13668
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13668 for onPrepareOptionsMenu ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22839
+[DexParser]   insns_size: 10 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 10 INSTRUCTIONS!
+[DexParser]   First opcodes: 1012 105c 002d 1070 0087 
+[DexParser]   → Virtual method[6]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x24041 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x24042 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x24043 = 13704
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13704 for onResume ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22850
+[DexParser]   insns_size: 7 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 7 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 0087 0000 106f 0004 
+[DexParser]   → Virtual method[7]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x24045 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x24046 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x24047 = 13736
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13736 for onWindowFocusChanged ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22858
+[DexParser]   insns_size: 12 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 12 INSTRUCTIONS!
+[DexParser]   First opcodes: 1055 002d 0039 0006 106e 
+[DexParser]   → Result: 51 direct methods, 8 virtual methods
+[DexParser] CLASS_DEF[10] @ offset 0x5740:
+[DexParser]   class_idx: 43 (max valid: 72)
+[DexParser]   access_flags: 0x1
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x24049
+[DexParser]   → Resolved name: [Lcom/chessclock/android/DialogFactory;]
+[DexParser]   → Parsing class_data at 0x24049
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x24049 ===
+[DexParser]   First bytes: 00 00 01 01 89 01 81 80 04 d0 6b 8a 01 01 e8 6b 00 01 01 01 34 90 20 8b 01 80 80 04 f0 6c 8c 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x24049 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x24050 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x24051 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x24052 = 1
+[DexParser]   → Header: static=0, instance=0, direct=1, virtual=1
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24053 = 137
+[DexParser]   ULEB128[dm_access_flags] @ 0x24055 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x24058 = 13776
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13776 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22869
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00a2 0000 000e 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x24060 = 138
+[DexParser]   ULEB128[vm_access_flags] @ 0x24062 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x24063 = 13800
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13800 for AboutDialog ===
+[DexParser]   registers_size: 12
+[DexParser]   ins_size: 5
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22875
+[DexParser]   insns_size: 60 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 60 INSTRUCTIONS!
+[DexParser]   First opcodes: 0022 0006 2070 000b 0080 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[11] @ offset 0x5772:
+[DexParser]   class_idx: 44 (max valid: 72)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x24065
+[DexParser]   → Resolved name: [Lcom/chessclock/android/Prefs$1;]
+[DexParser]   → Parsing class_data at 0x24065
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x24065 ===
+[DexParser]   First bytes: 00 01 01 01 34 90 20 8b 01 80 80 04 f0 6c 8c 01 01 8c 6d 01 01 01 02 35 1a 36 02 8d 01 81 80 04 
+[DexParser]   ULEB128[static_fields_size] @ 0x24065 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x24066 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x24067 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x24068 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x24069 = 52
+[DexParser]   ULEB128[if_access_flags] @ 0x24070 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24072 = 139
+[DexParser]   ULEB128[dm_access_flags] @ 0x24074 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x24077 = 13936
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13936 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22905
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0034 1070 00a2 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x24079 = 140
+[DexParser]   ULEB128[vm_access_flags] @ 0x24081 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x24082 = 13964
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13964 for onPreferenceClick ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22912
+[DexParser]   insns_size: 7 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 7 INSTRUCTIONS!
+[DexParser]   First opcodes: 1112 2054 0034 206e 0092 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[12] @ offset 0x5804:
+[DexParser]   class_idx: 45 (max valid: 72)
+[DexParser]   access_flags: 0x1
+[DexParser]   superclass_idx: 22
+[DexParser]   class_data_off: 0x24084
+[DexParser]   → Resolved name: [Lcom/chessclock/android/Prefs;]
+[DexParser]   → Parsing class_data at 0x24084
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x24084 ===
+[DexParser]   First bytes: 01 01 01 02 35 1a 36 02 8d 01 81 80 04 ac 6d 90 01 04 d4 6d 01 04 b8 6e 04 00 01 00 37 19 01 19 
+[DexParser]   ULEB128[static_fields_size] @ 0x24084 = 1
+[DexParser]   ULEB128[instance_fields_size] @ 0x24085 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x24086 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x24087 = 2
+[DexParser]   → Header: static=1, instance=1, direct=1, virtual=2
+[DexParser]   ULEB128[sf_field_diff] @ 0x24088 = 53
+[DexParser]   ULEB128[sf_access_flags] @ 0x24089 = 26
+[DexParser]   ULEB128[if_field_diff] @ 0x24090 = 54
+[DexParser]   ULEB128[if_access_flags] @ 0x24091 = 2
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24092 = 141
+[DexParser]   ULEB128[dm_access_flags] @ 0x24094 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x24097 = 13996
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13996 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22920
+[DexParser]   insns_size: 11 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 11 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 0024 0001 0022 002b 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x24099 = 144
+[DexParser]   ULEB128[vm_access_flags] @ 0x24101 = 4
+[DexParser]   ULEB128[vm_code_off] @ 0x24102 = 14036
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14036 for onCreate ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22926
+[DexParser]   insns_size: 41 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 41 INSTRUCTIONS!
+[DexParser]   First opcodes: 206f 0025 0043 011a 0029 
+[DexParser]   → Virtual method[1]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x24104 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x24105 = 4
+[DexParser]   ULEB128[vm_code_off] @ 0x24106 = 14136
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14136 for onCreateDialog ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 5
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22944
+[DexParser]   insns_size: 28 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 28 INSTRUCTIONS!
+[DexParser]   First opcodes: 0022 0006 2070 000b 0050 
+[DexParser]   → Result: 1 direct methods, 2 virtual methods
+[DexParser] CLASS_DEF[13] @ offset 0x5836:
+[DexParser]   class_idx: 46 (max valid: 72)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x24108
+[DexParser]   → Resolved name: [Lcom/chessclock/android/R$array;]
+[DexParser]   → Parsing class_data at 0x24108
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x24108 ===
+[DexParser]   First bytes: 04 00 01 00 37 19 01 19 01 19 01 19 93 01 81 80 04 80 6f 00 00 01 00 94 01 81 80 04 98 6f 08 00 
+[DexParser]   ULEB128[static_fields_size] @ 0x24108 = 4
+[DexParser]   ULEB128[instance_fields_size] @ 0x24109 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x24110 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x24111 = 0
+[DexParser]   → Header: static=4, instance=0, direct=1, virtual=0
+[DexParser]   ULEB128[sf_field_diff] @ 0x24112 = 55
+[DexParser]   ULEB128[sf_access_flags] @ 0x24113 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24114 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24115 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24116 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24117 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24118 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24119 = 25
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24120 = 147
+[DexParser]   ULEB128[dm_access_flags] @ 0x24122 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x24125 = 14208
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14208 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22964
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00a2 0000 000e 
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$array; offset=0x5a93 static_fields=4 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$array; with_defaults=4/4
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] CLASS_DEF[14] @ offset 0x5868:
+[DexParser]   class_idx: 47 (max valid: 72)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x24127
+[DexParser]   → Resolved name: [Lcom/chessclock/android/R$attr;]
+[DexParser]   → Parsing class_data at 0x24127
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x24127 ===
+[DexParser]   First bytes: 00 00 01 00 94 01 81 80 04 98 6f 08 00 01 00 3b 19 01 19 01 19 01 19 01 19 01 19 01 19 01 19 95 
+[DexParser]   ULEB128[static_fields_size] @ 0x24127 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x24128 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x24129 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x24130 = 0
+[DexParser]   → Header: static=0, instance=0, direct=1, virtual=0
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24131 = 148
+[DexParser]   ULEB128[dm_access_flags] @ 0x24133 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x24136 = 14232
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14232 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22969
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00a2 0000 000e 
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] CLASS_DEF[15] @ offset 0x5900:
+[DexParser]   class_idx: 48 (max valid: 72)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x24138
+[DexParser]   → Resolved name: [Lcom/chessclock/android/R$color;]
+[DexParser]   → Parsing class_data at 0x24138
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x24138 ===
+[DexParser]   First bytes: 08 00 01 00 3b 19 01 19 01 19 01 19 01 19 01 19 01 19 01 19 95 01 81 80 04 b0 6f 07 00 01 00 43 
+[DexParser]   ULEB128[static_fields_size] @ 0x24138 = 8
+[DexParser]   ULEB128[instance_fields_size] @ 0x24139 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x24140 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x24141 = 0
+[DexParser]   → Header: static=8, instance=0, direct=1, virtual=0
+[DexParser]   ULEB128[sf_field_diff] @ 0x24142 = 59
+[DexParser]   ULEB128[sf_access_flags] @ 0x24143 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24144 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24145 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24146 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24147 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24148 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24149 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24150 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24151 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24152 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24153 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24154 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24155 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24156 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24157 = 25
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24158 = 149
+[DexParser]   ULEB128[dm_access_flags] @ 0x24160 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x24163 = 14256
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14256 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22974
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00a2 0000 000e 
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$color; offset=0x5aa8 static_fields=8 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$color; with_defaults=8/8
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] CLASS_DEF[16] @ offset 0x5932:
+[DexParser]   class_idx: 49 (max valid: 72)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x24165
+[DexParser]   → Resolved name: [Lcom/chessclock/android/R$drawable;]
+[DexParser]   → Parsing class_data at 0x24165
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x24165 ===
+[DexParser]   First bytes: 07 00 01 00 43 19 01 19 01 19 01 19 01 19 01 19 01 19 96 01 81 80 04 c8 6f 0a 00 01 00 4a 19 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x24165 = 7
+[DexParser]   ULEB128[instance_fields_size] @ 0x24166 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x24167 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x24168 = 0
+[DexParser]   → Header: static=7, instance=0, direct=1, virtual=0
+[DexParser]   ULEB128[sf_field_diff] @ 0x24169 = 67
+[DexParser]   ULEB128[sf_access_flags] @ 0x24170 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24171 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24172 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24173 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24174 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24175 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24176 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24177 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24178 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24179 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24180 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24181 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24182 = 25
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24183 = 150
+[DexParser]   ULEB128[dm_access_flags] @ 0x24185 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x24188 = 14280
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14280 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22979
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00a2 0000 000e 
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$drawable; offset=0x5ad1 static_fields=7 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$drawable; with_defaults=7/7
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] CLASS_DEF[17] @ offset 0x5964:
+[DexParser]   class_idx: 50 (max valid: 72)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x24190
+[DexParser]   → Resolved name: [Lcom/chessclock/android/R$id;]
+[DexParser]   → Parsing class_data at 0x24190
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x24190 ===
+[DexParser]   First bytes: 0a 00 01 00 4a 19 01 19 01 19 01 19 01 19 01 19 01 19 01 19 01 19 01 19 97 01 81 80 04 e0 6f 02 
+[DexParser]   ULEB128[static_fields_size] @ 0x24190 = 10
+[DexParser]   ULEB128[instance_fields_size] @ 0x24191 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x24192 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x24193 = 0
+[DexParser]   → Header: static=10, instance=0, direct=1, virtual=0
+[DexParser]   ULEB128[sf_field_diff] @ 0x24194 = 74
+[DexParser]   ULEB128[sf_access_flags] @ 0x24195 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24196 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24197 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24198 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24199 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24200 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24201 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24202 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24203 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24204 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24205 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24206 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24207 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24208 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24209 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24210 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24211 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24212 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24213 = 25
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24214 = 151
+[DexParser]   ULEB128[dm_access_flags] @ 0x24216 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x24219 = 14304
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14304 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22984
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00a2 0000 000e 
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$id; offset=0x5af5 static_fields=10 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$id; with_defaults=10/10
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] CLASS_DEF[18] @ offset 0x5996:
+[DexParser]   class_idx: 51 (max valid: 72)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x24221
+[DexParser]   → Resolved name: [Lcom/chessclock/android/R$layout;]
+[DexParser]   → Parsing class_data at 0x24221
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x24221 ===
+[DexParser]   First bytes: 02 00 01 00 54 19 01 19 98 01 81 80 04 f8 6f 26 00 01 00 56 19 01 19 01 19 01 19 01 19 01 19 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x24221 = 2
+[DexParser]   ULEB128[instance_fields_size] @ 0x24222 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x24223 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x24224 = 0
+[DexParser]   → Header: static=2, instance=0, direct=1, virtual=0
+[DexParser]   ULEB128[sf_field_diff] @ 0x24225 = 84
+[DexParser]   ULEB128[sf_access_flags] @ 0x24226 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24227 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24228 = 25
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24229 = 152
+[DexParser]   ULEB128[dm_access_flags] @ 0x24231 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x24234 = 14328
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14328 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22989
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00a2 0000 000e 
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$layout; offset=0x5b28 static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$layout; with_defaults=2/2
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] CLASS_DEF[19] @ offset 0x6028:
+[DexParser]   class_idx: 52 (max valid: 72)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x24236
+[DexParser]   → Resolved name: [Lcom/chessclock/android/R$string;]
+[DexParser]   → Parsing class_data at 0x24236
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x24236 ===
+[DexParser]   First bytes: 26 00 01 00 56 19 01 19 01 19 01 19 01 19 01 19 01 19 01 19 01 19 01 19 01 19 01 19 01 19 01 19 
+[DexParser]   ULEB128[static_fields_size] @ 0x24236 = 38
+[DexParser]   ULEB128[instance_fields_size] @ 0x24237 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x24238 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x24239 = 0
+[DexParser]   → Header: static=38, instance=0, direct=1, virtual=0
+[DexParser]   ULEB128[sf_field_diff] @ 0x24240 = 86
+[DexParser]   ULEB128[sf_access_flags] @ 0x24241 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24242 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24243 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24244 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24245 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24246 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24247 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24248 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24249 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24250 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24251 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24252 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24253 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24254 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24255 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24256 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24257 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24258 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24259 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24260 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24261 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24262 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24263 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24264 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24265 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24266 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24267 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24268 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24269 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24270 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24271 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24272 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24273 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24274 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24275 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24276 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24277 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24278 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24279 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24280 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24281 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24282 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24283 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24284 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24285 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24286 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24287 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24288 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24289 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24290 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24291 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24292 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24293 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24294 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24295 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24296 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24297 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24298 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24299 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24300 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24301 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24302 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24303 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24304 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24305 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24306 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24307 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24308 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24309 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24310 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24311 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24312 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24313 = 25
+[DexParser]   ULEB128[sf_field_diff] @ 0x24314 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x24315 = 25
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24316 = 153
+[DexParser]   ULEB128[dm_access_flags] @ 0x24318 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x24321 = 14352
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14352 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22994
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00a2 0000 000e 
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$string; offset=0x5b33 static_fields=38 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$string; with_defaults=38/38
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] CLASS_DEF[20] @ offset 0x6060:
+[DexParser]   class_idx: 53 (max valid: 72)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x24323
+[DexParser]   → Resolved name: [Lcom/chessclock/android/R$xml;]
+[DexParser]   → Parsing class_data at 0x24323
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x24323 ===
+[DexParser]   First bytes: 01 00 01 00 7c 19 9a 01 81 80 04 a8 70 00 00 01 00 9b 01 81 80 04 c0 70 00 11 00 00 00 00 00 00 
+[DexParser]   ULEB128[static_fields_size] @ 0x24323 = 1
+[DexParser]   ULEB128[instance_fields_size] @ 0x24324 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x24325 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x24326 = 0
+[DexParser]   → Header: static=1, instance=0, direct=1, virtual=0
+[DexParser]   ULEB128[sf_field_diff] @ 0x24327 = 124
+[DexParser]   ULEB128[sf_access_flags] @ 0x24328 = 25
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24329 = 154
+[DexParser]   ULEB128[dm_access_flags] @ 0x24331 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x24334 = 14376
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14376 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x22999
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00a2 0000 000e 
+[EXP062-SV] parse_static_values for Lcom/chessclock/android/R$xml; offset=0x5bf2 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/chessclock/android/R$xml; with_defaults=1/1
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] CLASS_DEF[21] @ offset 0x6092:
+[DexParser]   class_idx: 54 (max valid: 72)
+[DexParser]   access_flags: 0x17
+[DexParser]   superclass_idx: 64
+[DexParser]   class_data_off: 0x24336
+[DexParser]   → Resolved name: [Lcom/chessclock/android/R;]
+[DexParser]   → Parsing class_data at 0x24336
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x24336 ===
+[DexParser]   First bytes: 00 00 01 00 9b 01 81 80 04 c0 70 00 11 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 01 00 00 00 
+[DexParser]   ULEB128[static_fields_size] @ 0x24336 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x24337 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x24338 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x24339 = 0
+[DexParser]   → Header: static=0, instance=0, direct=1, virtual=0
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x24340 = 155
+[DexParser]   ULEB128[dm_access_flags] @ 0x24342 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x24345 = 14400
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14400 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x23004
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00a2 0000 000e 
+[DexParser]   → Result: 1 direct methods, 0 virtual methods
+[DexParser] === END CLASS_DEF PARSING ===
+[DexParser] Parsed 22 classes
+[DexParser] DEX parsing complete: 22 classes, 169 methods
+FONT_SOURCE apk=miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 62 entries (22 from APK + 40 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.chessclock.android.ChessClock'
+[U007-RES] ResourceRuntime loaded: miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk named_ids=70 types=7
+[ARSC-VALUES] apk=miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk strings=38 colors=8 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[EXP093-APP] No custom Application class declared in manifest
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.<init> dex_report=YES
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.<init> bytecode_size=101
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.<init> (bytecode_size=101)
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/chessclock/android/ChessClock;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[TRY-ENTRY] Landroid/os/Handler;.<init> dex_report=YES
+[REC-MISS] Landroid/os/Handler;.<init> caller=Lcom/chessclock/android/ChessClock;.<init>
+[TRY-ENTRY] Lcom/chessclock/android/DialogFactory;.<init> dex_report=YES
+[RET-BEFORE] Lcom/chessclock/android/DialogFactory;.<init> bytecode_size=4
+[METHOD-IN] Lcom/chessclock/android/DialogFactory;.<init> (bytecode_size=4)
+[MEM] method_exit: Lcom/chessclock/android/DialogFactory;.<init> insns=2 RSS=15.7344 MB
+[EXP062-INIT] Lcom/chessclock/android/ChessClock; static_fields=14 with_defaults=14
+[CLASS_INIT] class=Lcom/chessclock/android/ChessClock; method=<clinit> bytecode_size=37
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.<clinit> dex_report=YES
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.<clinit> bytecode_size=37
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.<clinit> (bytecode_size=37)
+[CLASS_INIT] class=Lcom/chessclock/android/ChessClock; method=<clinit> result=OK
+[SGET] class=Lcom/chessclock/android/ChessClock; method=<init> pc=20 field=Lcom/chessclock/android/ChessClock;.NO_DELAY obj_id=0
+[SGET] class=Lcom/chessclock/android/ChessClock; method=<init> pc=27 field=Lcom/chessclock/android/ChessClock;.MINUTES obj_id=0
+[SGET] class=Lcom/chessclock/android/ChessClock; method=<init> pc=31 field=Lcom/chessclock/android/ChessClock;.SECONDS obj_id=0
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock$1;.<init> dex_report=YES
+[RET-BEFORE] Lcom/chessclock/android/ChessClock$1;.<init> bytecode_size=6
+[METHOD-IN] Lcom/chessclock/android/ChessClock$1;.<init> (bytecode_size=6)
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock$2;.<init> dex_report=YES
+[RET-BEFORE] Lcom/chessclock/android/ChessClock$2;.<init> bytecode_size=6
+[METHOD-IN] Lcom/chessclock/android/ChessClock$2;.<init> (bytecode_size=6)
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock$3;.<init> dex_report=YES
+[RET-BEFORE] Lcom/chessclock/android/ChessClock$3;.<init> bytecode_size=6
+[METHOD-IN] Lcom/chessclock/android/ChessClock$3;.<init> (bytecode_size=6)
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock$4;.<init> dex_report=YES
+[RET-BEFORE] Lcom/chessclock/android/ChessClock$4;.<init> bytecode_size=6
+[METHOD-IN] Lcom/chessclock/android/ChessClock$4;.<init> (bytecode_size=6)
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock$7;.<init> dex_report=YES
+[RET-BEFORE] Lcom/chessclock/android/ChessClock$7;.<init> bytecode_size=6
+[METHOD-IN] Lcom/chessclock/android/ChessClock$7;.<init> (bytecode_size=6)
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock$8;.<init> dex_report=YES
+[RET-BEFORE] Lcom/chessclock/android/ChessClock$8;.<init> bytecode_size=6
+[METHOD-IN] Lcom/chessclock/android/ChessClock$8;.<init> (bytecode_size=6)
+[U0113-ACTIVITY] activity heap object #7 (Lcom/chessclock/android/ChessClock;) recorded for handler dispatch
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.onCreate (bytecode_size=26)
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/chessclock/android/ChessClock;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;<super>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.requestWindowFeature dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=requestWindowFeature class=Landroid/app/Activity;
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.getWindow dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/Activity;
+[TRY-ENTRY] Landroid/view/Window;.addFlags dex_report=YES
+[REC-MISS] Landroid/view/Window;.addFlags caller=Lcom/chessclock/android/ChessClock;.onCreate
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.setContentView dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Landroid/app/Activity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Landroid/app/Activity; args=1 arg0_kind=0 arg0_int=2130903041
+[U007-INFLATE] setContentView(layoutResId=0x7f030001)
+[U007-INFLATE] root_id=16 views=15 strings=0 ids=0 unresolved=0
+[C013-HIER] setContentView dispatched via superclass chain: Lcom/chessclock/android/ChessClock; -> Landroid/app/Activity; (declared=Lcom/chessclock/android/ChessClock; receiver=Lcom/chessclock/android/ChessClock;)
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.setUpGame dex_report=YES
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.setUpGame bytecode_size=574
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.setUpGame (bytecode_size=574)
+[TRY-ENTRY] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences dex_report=YES
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080003 search_root=10
+[EXP088-B-VS] FOUND view_id=21
+[TRY-ENTRY] Lcom/chessclock/android/ChessClock;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080006 search_root=10
+[EXP088-B-VS] FOUND view_id=27
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.color bytecode_size=10
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.color (bytecode_size=10)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/chessclock/android/ChessClock;.color
+[RES] getColor resid=0x0 -> 0xff000000 (M3-COLOR-UNRESOLVED)
+[REC-MISS] Landroid/widget/TextView;.setTextColor caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[M3-SETTEXTCOLOR] view_id=21 color=0xff000000
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.color bytecode_size=10
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.color (bytecode_size=10)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/chessclock/android/ChessClock;.color
+[RES] getColor resid=0x0 -> 0xff000000 (M3-COLOR-UNRESOLVED)
+[REC-MISS] Landroid/widget/TextView;.setTextColor caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[M3-SETTEXTCOLOR] view_id=27 color=0xff000000
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080004 search_root=10
+[EXP088-B-VS] FOUND view_id=22
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080007 search_root=10
+[EXP088-B-VS] FOUND view_id=28
+[REC-MISS] Landroid/view/View;.setVisibility caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/view/View;.setVisibility caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080002 search_root=10
+[EXP088-B-VS] FOUND view_id=20
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080005 search_root=10
+[EXP088-B-VS] FOUND view_id=26
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080009 search_root=10
+[EXP088-B-VS] FOUND view_id=30
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080008 search_root=10
+[EXP088-B-VS] FOUND view_id=29
+[REC-MISS] Landroid/widget/Button;.setHapticFeedbackEnabled caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/widget/Button;.setHapticFeedbackEnabled caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/widget/Button;.setHapticFeedbackEnabled caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/widget/Button;.setHapticFeedbackEnabled caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.color bytecode_size=10
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.color (bytecode_size=10)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/chessclock/android/ChessClock;.color
+[RES] getColor resid=0x0 -> 0xff000000 (M3-COLOR-UNRESOLVED)
+[REC-MISS] Landroid/widget/Button;.setBackgroundColor caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP095-BG] view=20 color=0xff000000
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.color bytecode_size=10
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.color (bytecode_size=10)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/chessclock/android/ChessClock;.color
+[RES] getColor resid=0x0 -> 0xff000000 (M3-COLOR-UNRESOLVED)
+[REC-MISS] Landroid/widget/Button;.setBackgroundColor caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP095-BG] view=26 color=0xff000000
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[SGET] class=Lcom/chessclock/android/ChessClock; method=setUpGame pc=223 field=Lcom/chessclock/android/ChessClock;.NO_DELAY obj_id=0
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[SGET] class=Lcom/chessclock/android/ChessClock; method=setUpGame pc=237 field=Lcom/chessclock/android/ChessClock;.MINUTES obj_id=0
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[SGET] class=Lcom/chessclock/android/ChessClock; method=setUpGame pc=251 field=Lcom/chessclock/android/ChessClock;.SECONDS obj_id=0
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.getIntPref bytecode_size=33
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.getIntPref (bytecode_size=33)
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/Integer;.toString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "") method=Lcom/chessclock/android/ChessClock;.getIntPref pc=12 → deferred handler @0x0x11 type=Ljava/lang/Exception;
+[REC-MISS] Landroid/content/SharedPreferences;.edit caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Ljava/lang/Integer;.toString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Landroid/content/SharedPreferences$Editor;.putString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Landroid/content/SharedPreferences$Editor;.commit caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[PREFS] Saved default.xml (1 entries)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.getIntPref bytecode_size=33
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.getIntPref (bytecode_size=33)
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/Integer;.toString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "") method=Lcom/chessclock/android/ChessClock;.getIntPref pc=12 → deferred handler @0x0x11 type=Ljava/lang/Exception;
+[REC-MISS] Landroid/content/SharedPreferences;.edit caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Ljava/lang/Integer;.toString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Landroid/content/SharedPreferences$Editor;.putString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Landroid/content/SharedPreferences$Editor;.commit caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[PREFS] Saved default.xml (2 entries)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.getIntPref bytecode_size=33
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.getIntPref (bytecode_size=33)
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/Integer;.toString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "") method=Lcom/chessclock/android/ChessClock;.getIntPref pc=12 → deferred handler @0x0x11 type=Ljava/lang/Exception;
+[REC-MISS] Landroid/content/SharedPreferences;.edit caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Ljava/lang/Integer;.toString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Landroid/content/SharedPreferences$Editor;.putString caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[REC-MISS] Landroid/content/SharedPreferences$Editor;.commit caller=Lcom/chessclock/android/ChessClock;.getIntPref
+[PREFS] Saved default.xml (3 entries)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=setUpGame pc=319 field=Landroid/provider/Settings$System;.DEFAULT_RINGTONE_URI obj_id=0
+[REC-MISS] Landroid/net/Uri;.toString caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[SGET] class=Lcom/chessclock/android/ChessClock; method=setUpGame pc=347 field=Landroid/provider/Settings$System;.DEFAULT_RINGTONE_URI obj_id=0
+[REC-MISS] Landroid/net/Uri;.toString caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/content/SharedPreferences;.edit caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/content/SharedPreferences$Editor;.putString caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[REC-MISS] Landroid/content/SharedPreferences$Editor;.commit caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[PREFS] Saved default.xml (4 entries)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.initRingtone bytecode_size=17
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.initRingtone (bytecode_size=17)
+[REC-MISS] Landroid/net/Uri;.parse caller=Lcom/chessclock/android/ChessClock;.initRingtone
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getBaseContext class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getBaseContext class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getBaseContext class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getBaseContext class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getBaseContext class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getBaseContext class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getBaseContext class=Landroid/app/Activity;
+[REC-MISS] Landroid/media/RingtoneManager;.getRingtone caller=Lcom/chessclock/android/ChessClock;.initRingtone
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.initTime bytecode_size=16
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.initTime (bytecode_size=16)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.toMillis bytecode_size=64
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.toMillis (bytecode_size=64)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=toMillis pc=0 field=Lcom/chessclock/android/ChessClock;.HOURS obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.initTime bytecode_size=16
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.initTime (bytecode_size=16)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.toMillis bytecode_size=64
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.toMillis (bytecode_size=64)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=toMillis pc=0 field=Lcom/chessclock/android/ChessClock;.HOURS obj_id=0
+[SGET] class=Lcom/chessclock/android/ChessClock; method=setUpGame pc=439 field=Lcom/chessclock/android/ChessClock;.BRONSTEIN obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.toMillis bytecode_size=64
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.toMillis (bytecode_size=64)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=toMillis pc=0 field=Lcom/chessclock/android/ChessClock;.HOURS obj_id=0
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP060-LISTENER] setOnClickListener view_id=20 class=Landroid/widget/Button; listener_id=10
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP060-LISTENER] setOnClickListener view_id=26 class=Landroid/widget/Button; listener_id=11
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP060-LISTENER] setOnClickListener view_id=30 class=Landroid/widget/Button; listener_id=12
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lcom/chessclock/android/ChessClock;.setUpGame
+[EXP060-LISTENER] setOnClickListener view_id=29 class=Landroid/widget/Button; listener_id=13
+[M3-19-RANGE] setClock op=118 caller=Lcom/chessclock/android/ChessClock;.setUpGame recv_obj=7 recv_val_cls=Lcom/chessclock/android/ChessClock; recv_heap_cls=Lcom/chessclock/android/ChessClock; static_cls=Lcom/chessclock/android/ChessClock; runtime_pick=
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.setClock bytecode_size=71
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.setClock (bytecode_size=71)
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=110 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=2 class=Lcom/chessclock/android/ChessClock;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.formatTime bytecode_size=173
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.formatTime (bytecode_size=173)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=formatTime pc=118 field=Lcom/chessclock/android/ChessClock;.SHOW_DECISECONDS_THRESHOLD value=10
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-APUT] aput-object v7→arr[v5] idx_v6 arr_type=7 arr_obj=35 src_type=7 idx=0
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-APUT] aput-object v7→arr[v5] idx_v6 arr_type=7 arr_obj=35 src_type=7 idx=1
+[EXP093-STRFMT] String.format("0:%02d.%d", n=2) → "0:00.0"
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/chessclock/android/ChessClock;.setClock
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=109 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=2 class=Lcom/chessclock/android/ChessClock;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.formatTime bytecode_size=173
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.formatTime (bytecode_size=173)
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=39 src_type=7 idx=0
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=39 src_type=7 idx=1
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=39 src_type=7 idx=2
+[EXP093-STRFMT] String.format("%d:%02d:%02d", n=3) → "10:00:00"
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lcom/chessclock/android/ChessClock;.setClock
+[EXP091-SETTEXT] view_id=21 class=Landroid/view/View; arg_kind=5 text="10:00:00"
+[M3-19-RANGE] setClock op=118 caller=Lcom/chessclock/android/ChessClock;.setUpGame recv_obj=7 recv_val_cls=Lcom/chessclock/android/ChessClock; recv_heap_cls=Lcom/chessclock/android/ChessClock; static_cls=Lcom/chessclock/android/ChessClock; runtime_pick=
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.setClock bytecode_size=71
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.setClock (bytecode_size=71)
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=110 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=2 class=Lcom/chessclock/android/ChessClock;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.formatTime bytecode_size=173
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.formatTime (bytecode_size=173)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=formatTime pc=118 field=Lcom/chessclock/android/ChessClock;.SHOW_DECISECONDS_THRESHOLD value=10
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-APUT] aput-object v7→arr[v5] idx_v6 arr_type=7 arr_obj=43 src_type=7 idx=0
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-APUT] aput-object v7→arr[v5] idx_v6 arr_type=7 arr_obj=43 src_type=7 idx=1
+[EXP093-STRFMT] String.format("0:%02d.%d", n=2) → "0:00.0"
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/chessclock/android/ChessClock;.setClock
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=109 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=2 class=Lcom/chessclock/android/ChessClock;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.formatTime bytecode_size=173
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.formatTime (bytecode_size=173)
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=47 src_type=7 idx=0
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=47 src_type=7 idx=1
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lcom/chessclock/android/ChessClock;.formatTime
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=47 src_type=7 idx=2
+[EXP093-STRFMT] String.format("%d:%02d:%02d", n=3) → "10:00:00"
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lcom/chessclock/android/ChessClock;.setClock
+[EXP091-SETTEXT] view_id=27 class=Landroid/view/View; arg_kind=5 text="10:00:00"
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/chessclock/android/ChessClock; runtime_class=Lcom/chessclock/android/ChessClock;
+[G07-LIFECYCLE] Lcom/chessclock/android/ChessClock;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/chessclock/android/ChessClock; runtime_class=Lcom/chessclock/android/ChessClock;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.onResume bytecode_size=7
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.onResume (bytecode_size=7)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.stopAlert bytecode_size=18
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.stopAlert (bytecode_size=18)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/Activity; runtime_class=Lcom/chessclock/android/ChessClock;
+[REC-MISS] Landroid/app/Activity;.onResume caller=Lcom/chessclock/android/ChessClock;.onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;<super>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[G07-LIFECYCLE] Lcom/chessclock/android/ChessClock;.onResume() dispatched via DEX engine (ok=1, instructions=6)
+[ApkParser] Found EOCD at offset 124200
+[ApkParser] Central Directory: 19 entries at offset 122880
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf(strike=109) monospace=/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/build/../runtime/data/fonts/DroidSansMono.ttf
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=19 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=21 class=Landroid/widget/TextView; text="10:00:00" children=0 depth=3 pos=(11,339) size=(1058x276)
+[EXP092-RENDER] node=22 class=Landroid/view/View; text="" children=0 depth=3 pos=(11,339) size=(1058x0)
+[EXP092-RENDER] node=23 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=24 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=25 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=26 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=27 class=Landroid/widget/TextView; text="10:00:00" children=0 depth=3 pos=(11,1305) size=(1058x276)
+[EXP092-RENDER] node=28 class=Landroid/view/View; text="" children=0 depth=3 pos=(11,1581) size=(1058x13)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,960) size=(0x0)
+[EXP092-RENDER] node=30 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(1080,960) size=(0x0)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[QUEUE] Runnable id=4026531841 enqueued (delay=500ms, ready_at=1000000500ms virtual, queue_depth=1, source=framework:CheckForLongPress)
+[G06-TAP] DOWN (540,480) target=20 consumed=1
+[ApkParser] Found EOCD at offset 124200
+[ApkParser] Central Directory: 19 entries at offset 122880
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=19 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=21 class=Landroid/widget/TextView; text="10:00:00" children=0 depth=3 pos=(11,339) size=(1058x276)
+[EXP092-RENDER] node=22 class=Landroid/view/View; text="" children=0 depth=3 pos=(11,339) size=(1058x0)
+[EXP092-RENDER] node=23 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=24 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=25 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=26 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=27 class=Landroid/widget/TextView; text="10:00:00" children=0 depth=3 pos=(11,1305) size=(1058x276)
+[EXP092-RENDER] node=28 class=Landroid/view/View; text="" children=0 depth=3 pos=(11,1581) size=(1058x13)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,960) size=(0x0)
+[EXP092-RENDER] node=30 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(1080,960) size=(0x0)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[QUEUE] Runnable id=4026531841 removed (was at depth=0)
+[QUEUE] Runnable id=4026531842 enqueued (delay=0ms, ready_at=1000000050ms virtual, queue_depth=1, source=framework:PerformClick)
+[QUEUE] Runnable id=4026531843 enqueued (delay=64ms, ready_at=1000000114ms virtual, queue_depth=2, source=framework:UnsetPressedState)
+[G06-TAP] UP click_posted=1
+[QUEUE] Runnable id=4026531842 dequeued (ready_at=1000000050ms <= now=1000000050ms virtual)
+[UI-EVENT] event=CLICK view_object=20 view_class=Landroid/widget/Button; listener=10 listener_class=Lcom/chessclock/android/ChessClock$1;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock$1;.onClick bytecode_size=28
+[METHOD-IN] Lcom/chessclock/android/ChessClock$1;.onClick (bytecode_size=28)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$100 bytecode_size=4
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$100 (bytecode_size=4)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.performHapticFeedback bytecode_size=6
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.performHapticFeedback (bytecode_size=6)
+[REC-MISS] Landroid/widget/Button;.performHapticFeedback caller=Lcom/chessclock/android/ChessClock;.performHapticFeedback
+[REC-MISS] Landroid/view/View;.performHapticFeedback caller=Lcom/chessclock/android/ChessClock;.performHapticFeedback
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$200 bytecode_size=4
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$200 (bytecode_size=4)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.P1Click bytecode_size=248
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.P1Click (bytecode_size=248)
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080003 search_root=10
+[EXP088-B-VS] FOUND view_id=21
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080006 search_root=10
+[EXP088-B-VS] FOUND view_id=27
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080004 search_root=10
+[EXP088-B-VS] FOUND view_id=22
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080007 search_root=10
+[EXP088-B-VS] FOUND view_id=28
+[SGET] class=Lcom/chessclock/android/ChessClock; method=P1Click pc=42 field=Lcom/chessclock/android/ChessClock;.FISCHER obj_id=0
+[SGET] class=Lcom/chessclock/android/ChessClock; method=P1Click pc=118 field=Lcom/chessclock/android/ChessClock;.BRONSTEIN obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.setClock bytecode_size=9
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.setClock (bytecode_size=9)
+[M3-19-RANGE] setClock op=118 caller=Lcom/chessclock/android/ChessClock;.setClock recv_obj=7 recv_val_cls=Lcom/chessclock/android/ChessClock; recv_heap_cls=Lcom/chessclock/android/ChessClock; static_cls=Lcom/chessclock/android/ChessClock; runtime_pick=
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.setClock bytecode_size=71
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.setClock (bytecode_size=71)
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=110 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=5 class=Lcom/chessclock/android/ChessClock;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.formatTime bytecode_size=173
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.formatTime (bytecode_size=173)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=formatTime pc=118 field=Lcom/chessclock/android/ChessClock;.SHOW_DECISECONDS_THRESHOLD value=10
+[EXP093-APUT] aput-object v7→arr[v5] idx_v6 arr_type=7 arr_obj=51 src_type=7 idx=0
+[EXP093-APUT] aput-object v7→arr[v5] idx_v6 arr_type=7 arr_obj=51 src_type=7 idx=1
+[EXP093-STRFMT] String.format("0:%02d.%d", n=2) → "0:00.0"
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/chessclock/android/ChessClock;.setClock
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=109 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=5 class=Lcom/chessclock/android/ChessClock;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.formatTime bytecode_size=173
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.formatTime (bytecode_size=173)
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=55 src_type=7 idx=0
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=55 src_type=7 idx=1
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=55 src_type=7 idx=2
+[EXP093-STRFMT] String.format("%d:%02d:%02d", n=3) → "10:00:00"
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lcom/chessclock/android/ChessClock;.setClock
+[EXP091-SETTEXT] view_id=21 class=Landroid/view/View; arg_kind=5 text="10:00:00"
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.toMillis bytecode_size=64
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.toMillis (bytecode_size=64)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=toMillis pc=0 field=Lcom/chessclock/android/ChessClock;.HOURS obj_id=0
+[M3-19-RANGE] setClock op=118 caller=Lcom/chessclock/android/ChessClock;.P1Click recv_obj=7 recv_val_cls=Lcom/chessclock/android/ChessClock; recv_heap_cls=Lcom/chessclock/android/ChessClock; static_cls=Lcom/chessclock/android/ChessClock; runtime_pick=
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.setClock bytecode_size=71
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.setClock (bytecode_size=71)
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=110 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=4 class=Lcom/chessclock/android/ChessClock;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.formatTime bytecode_size=173
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.formatTime (bytecode_size=173)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=formatTime pc=118 field=Lcom/chessclock/android/ChessClock;.SHOW_DECISECONDS_THRESHOLD value=10
+[EXP093-APUT] aput-object v7→arr[v5] idx_v6 arr_type=7 arr_obj=59 src_type=7 idx=0
+[EXP093-APUT] aput-object v7→arr[v5] idx_v6 arr_type=7 arr_obj=59 src_type=7 idx=1
+[EXP093-STRFMT] String.format("0:%02d.%d", n=2) → "0:00.0"
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/chessclock/android/ChessClock;.setClock
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=109 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=4 class=Lcom/chessclock/android/ChessClock;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.formatTime bytecode_size=173
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.formatTime (bytecode_size=173)
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=63 src_type=7 idx=0
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=63 src_type=7 idx=1
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=63 src_type=7 idx=2
+[EXP093-STRFMT] String.format("%d:%02d:%02d", n=3) → "10:00:00"
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lcom/chessclock/android/ChessClock;.setClock
+[EXP091-SETTEXT] view_id=27 class=Landroid/view/View; arg_kind=5 text="10:00:00"
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.color bytecode_size=10
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.color (bytecode_size=10)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/chessclock/android/ChessClock;.color
+[RES] getColor resid=0x0 -> 0xff000000 (M3-COLOR-UNRESOLVED)
+[REC-MISS] Landroid/widget/TextView;.setTextColor caller=Lcom/chessclock/android/ChessClock;.P1Click
+[M3-SETTEXTCOLOR] view_id=27 unresolved-default black - style color 0xff000000 retained
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.color bytecode_size=10
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.color (bytecode_size=10)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/chessclock/android/ChessClock;.color
+[RES] getColor resid=0x0 -> 0xff000000 (M3-COLOR-UNRESOLVED)
+[REC-MISS] Landroid/widget/TextView;.setTextColor caller=Lcom/chessclock/android/ChessClock;.P1Click
+[M3-SETTEXTCOLOR] view_id=21 unresolved-default black - style color 0xff000000 retained
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.color bytecode_size=10
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.color (bytecode_size=10)
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/Activity;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lcom/chessclock/android/ChessClock;.color
+[RES] getColor resid=0x0 -> 0xff000000 (M3-COLOR-UNRESOLVED)
+[REC-MISS] Landroid/view/View;.setBackgroundColor caller=Lcom/chessclock/android/ChessClock;.P1Click
+[EXP095-BG] view=28 color=0xff000000
+[REC-MISS] Landroid/view/View;.setVisibility caller=Lcom/chessclock/android/ChessClock;.P1Click
+[REC-MISS] Landroid/view/View;.setVisibility caller=Lcom/chessclock/android/ChessClock;.P1Click
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080009 search_root=10
+[EXP088-B-VS] FOUND view_id=30
+[REC-MISS] Landroid/widget/Button;.setBackgroundResource caller=Lcom/chessclock/android/ChessClock;.P1Click
+[EXP067-SETBGRES] view_id=30 resid=0x7f020003
+[REC-MISS] Landroid/os/Handler;.removeCallbacks caller=Lcom/chessclock/android/ChessClock;.P1Click
+[QUEUE] removeCallbacks(runnable=14) removed 0 entries
+[REC-MISS] Landroid/os/Handler;.removeCallbacks caller=Lcom/chessclock/android/ChessClock;.P1Click
+[QUEUE] removeCallbacks(runnable=15) removed 0 entries
+[SGET] class=Lcom/chessclock/android/ChessClock; method=P1Click pc=228 field=Lcom/chessclock/android/ChessClock;.TICK_LENGTH value=100
+[REC-MISS] Landroid/os/Handler;.postDelayed caller=Lcom/chessclock/android/ChessClock;.P1Click
+[QUEUE] Runnable id=15 enqueued (delay=100ms, ready_at=1000000150ms virtual, queue_depth=2)
+[UI-EVENT] event=CLICK result=DISPATCHED listener=Lcom/chessclock/android/ChessClock$1;
+[G06-TOKEN] {"callback":"PerformClick","click_dispatched":true,"target_view_id":20,"virtual_ms":1000000050}
+[QUEUE] Runnable id=4026531843 dequeued (ready_at=1000000114ms <= now=1000000120ms virtual)
+[G06-TOKEN] {"callback":"UnsetPressedState","state_changes":["setPressed(false)"],"target_view_id":20,"virtual_ms":1000000120}
+[ApkParser] Found EOCD at offset 124200
+[ApkParser] Central Directory: 19 entries at offset 122880
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=19 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=21 class=Landroid/widget/TextView; text="10:00:00" children=0 depth=3 pos=(11,339) size=(1058x276)
+[EXP092-RENDER] node=22 class=Landroid/view/View; text="" children=0 depth=3 pos=(11,339) size=(1058x0)
+[EXP092-RENDER] node=23 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=24 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=25 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=26 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=27 class=Landroid/widget/TextView; text="10:00:00" children=0 depth=3 pos=(11,1305) size=(1058x276)
+[EXP092-RENDER] node=28 class=Landroid/view/View; text="" children=0 depth=3 pos=(11,1581) size=(1058x13)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,960) size=(0x0)
+[EXP092-RENDER] node=30 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(1080,960) size=(0x0)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[G06-TAP] done: gestures=1 total_diff_px=13754 dir=/home/z/my-project/logs/cc_dbg5/frames
+[QUEUE] Runnable id=15 dequeued (ready_at=1000000150ms <= now=1000000420ms virtual)
+[EXP090-DRAIN] Invoking Runnable id=15 class=Lcom/chessclock/android/ChessClock$8;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock$8;.run bytecode_size=303
+[METHOD-IN] Lcom/chessclock/android/ChessClock$8;.run (bytecode_size=303)
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080002 search_root=10
+[EXP088-B-VS] FOUND view_id=20
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080005 search_root=10
+[EXP088-B-VS] FOUND view_id=26
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080003 search_root=10
+[EXP088-B-VS] FOUND view_id=21
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080006 search_root=10
+[EXP088-B-VS] FOUND view_id=27
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$800 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$800 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$700 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$700 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$700 pc=0 field=Lcom/chessclock/android/ChessClock;.BRONSTEIN obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$900 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$900 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$902 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$902 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1200 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1200 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1400 bytecode_size=5
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1400 (bytecode_size=5)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.toMillis bytecode_size=64
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.toMillis (bytecode_size=64)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=toMillis pc=0 field=Lcom/chessclock/android/ChessClock;.HOURS obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1002 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1002 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2302 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2302 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1100 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1100 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$1100 pc=0 field=Lcom/chessclock/android/ChessClock;.TICK_LENGTH value=100
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2302 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2302 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1600 bytecode_size=4
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1600 (bytecode_size=4)
+[M3-19-RANGE] setClock op=118 caller=Lcom/chessclock/android/ChessClock;.access$1600 recv_obj=7 recv_val_cls=Lcom/chessclock/android/ChessClock; recv_heap_cls=Lcom/chessclock/android/ChessClock; static_cls=Lcom/chessclock/android/ChessClock; runtime_pick=
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.setClock bytecode_size=71
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.setClock (bytecode_size=71)
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=110 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=3 class=Lcom/chessclock/android/ChessClock;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.formatTime bytecode_size=173
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.formatTime (bytecode_size=173)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=formatTime pc=118 field=Lcom/chessclock/android/ChessClock;.SHOW_DECISECONDS_THRESHOLD value=10
+[EXP093-APUT] aput-object v7→arr[v5] idx_v6 arr_type=7 arr_obj=67 src_type=7 idx=0
+[EXP093-APUT] aput-object v7→arr[v5] idx_v6 arr_type=7 arr_obj=67 src_type=7 idx=1
+[EXP093-STRFMT] String.format("0:%02d.%d", n=2) → "0:00.0"
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/chessclock/android/ChessClock;.setClock
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=109 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=3 class=Lcom/chessclock/android/ChessClock;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.formatTime bytecode_size=173
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.formatTime (bytecode_size=173)
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=71 src_type=7 idx=0
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=71 src_type=7 idx=1
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=71 src_type=7 idx=2
+[EXP093-STRFMT] String.format("%d:%02d:%02d", n=3) → "9:59:59"
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lcom/chessclock/android/ChessClock;.setClock
+[EXP091-SETTEXT] view_id=27 class=Landroid/view/View; arg_kind=5 text="9:59:59"
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1700 bytecode_size=5
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1700 (bytecode_size=5)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.outOfTime bytecode_size=31
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.outOfTime (bytecode_size=31)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=outOfTime pc=6 field=Lcom/chessclock/android/ChessClock;.BRONSTEIN obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2200 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2200 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1100 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1100 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$1100 pc=0 field=Lcom/chessclock/android/ChessClock;.TICK_LENGTH value=100
+[REC-MISS] Landroid/os/Handler;.postDelayed caller=Lcom/chessclock/android/ChessClock$8;.run
+[QUEUE] Runnable id=15 enqueued (delay=100ms, ready_at=1000000520ms virtual, queue_depth=1)
+[EXP090-DRAIN] Runnable id=15 invoked
+[ApkParser] Found EOCD at offset 124200
+[ApkParser] Central Directory: 19 entries at offset 122880
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=19 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=21 class=Landroid/widget/TextView; text="10:00:00" children=0 depth=3 pos=(11,339) size=(1058x276)
+[EXP092-RENDER] node=22 class=Landroid/view/View; text="" children=0 depth=3 pos=(11,339) size=(1058x0)
+[EXP092-RENDER] node=23 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=24 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=25 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=26 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=27 class=Landroid/widget/TextView; text="9:59:59" children=0 depth=3 pos=(86,1305) size=(908x276)
+[EXP092-RENDER] node=28 class=Landroid/view/View; text="" children=0 depth=3 pos=(86,1581) size=(908x13)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,960) size=(0x0)
+[EXP092-RENDER] node=30 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(1080,960) size=(0x0)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=1, diff_px=0
+[QUEUE] Runnable id=15 dequeued (ready_at=1000000520ms <= now=1000000720ms virtual)
+[EXP090-DRAIN] Invoking Runnable id=15 class=Lcom/chessclock/android/ChessClock$8;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock$8;.run bytecode_size=303
+[METHOD-IN] Lcom/chessclock/android/ChessClock$8;.run (bytecode_size=303)
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080002 search_root=10
+[EXP088-B-VS] FOUND view_id=20
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080005 search_root=10
+[EXP088-B-VS] FOUND view_id=26
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080003 search_root=10
+[EXP088-B-VS] FOUND view_id=21
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080006 search_root=10
+[EXP088-B-VS] FOUND view_id=27
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$800 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$800 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$700 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$700 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$700 pc=0 field=Lcom/chessclock/android/ChessClock;.BRONSTEIN obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$900 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$900 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1100 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1100 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$1100 pc=0 field=Lcom/chessclock/android/ChessClock;.TICK_LENGTH value=100
+[REC-MISS] Ljava/lang/Math;.max caller=Lcom/chessclock/android/ChessClock$8;.run
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1002 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1002 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2302 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2302 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1100 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1100 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$1100 pc=0 field=Lcom/chessclock/android/ChessClock;.TICK_LENGTH value=100
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2302 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2302 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1600 bytecode_size=4
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1600 (bytecode_size=4)
+[M3-19-RANGE] setClock op=118 caller=Lcom/chessclock/android/ChessClock;.access$1600 recv_obj=7 recv_val_cls=Lcom/chessclock/android/ChessClock; recv_heap_cls=Lcom/chessclock/android/ChessClock; static_cls=Lcom/chessclock/android/ChessClock; runtime_pick=
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.setClock bytecode_size=71
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.setClock (bytecode_size=71)
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=110 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=3 class=Lcom/chessclock/android/ChessClock;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/chessclock/android/ChessClock;.setClock
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=109 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=3 class=Lcom/chessclock/android/ChessClock;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lcom/chessclock/android/ChessClock;.setClock
+[EXP091-SETTEXT] view_id=27 class=Landroid/view/View; arg_kind=5 text="null"
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1700 bytecode_size=5
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1700 (bytecode_size=5)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.outOfTime bytecode_size=31
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.outOfTime (bytecode_size=31)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=outOfTime pc=6 field=Lcom/chessclock/android/ChessClock;.BRONSTEIN obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2200 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2200 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1100 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1100 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$1100 pc=0 field=Lcom/chessclock/android/ChessClock;.TICK_LENGTH value=100
+[REC-MISS] Landroid/os/Handler;.postDelayed caller=Lcom/chessclock/android/ChessClock$8;.run
+[QUEUE] Runnable id=15 enqueued (delay=100ms, ready_at=1000000820ms virtual, queue_depth=1)
+[EXP090-DRAIN] Runnable id=15 invoked
+[ApkParser] Found EOCD at offset 124200
+[ApkParser] Central Directory: 19 entries at offset 122880
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=19 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=21 class=Landroid/widget/TextView; text="10:00:00" children=0 depth=3 pos=(11,339) size=(1058x276)
+[EXP092-RENDER] node=22 class=Landroid/view/View; text="" children=0 depth=3 pos=(11,339) size=(1058x0)
+[EXP092-RENDER] node=23 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=24 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=25 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=26 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=27 class=Landroid/widget/TextView; text="null" children=0 depth=3 pos=(326,1305) size=(428x276)
+[EXP092-RENDER] node=28 class=Landroid/view/View; text="" children=0 depth=3 pos=(326,1581) size=(428x13)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,960) size=(0x0)
+[EXP092-RENDER] node=30 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(1080,960) size=(0x0)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=1, diff_px=0
+[QUEUE] Runnable id=15 dequeued (ready_at=1000000820ms <= now=1000001020ms virtual)
+[EXP090-DRAIN] Invoking Runnable id=15 class=Lcom/chessclock/android/ChessClock$8;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock$8;.run bytecode_size=303
+[METHOD-IN] Lcom/chessclock/android/ChessClock$8;.run (bytecode_size=303)
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080002 search_root=10
+[EXP088-B-VS] FOUND view_id=20
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080005 search_root=10
+[EXP088-B-VS] FOUND view_id=26
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080003 search_root=10
+[EXP088-B-VS] FOUND view_id=21
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080006 search_root=10
+[EXP088-B-VS] FOUND view_id=27
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$800 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$800 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$700 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$700 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$700 pc=0 field=Lcom/chessclock/android/ChessClock;.BRONSTEIN obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$900 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$900 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1100 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1100 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$1100 pc=0 field=Lcom/chessclock/android/ChessClock;.TICK_LENGTH value=100
+[REC-MISS] Ljava/lang/Math;.max caller=Lcom/chessclock/android/ChessClock$8;.run
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1002 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1002 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2302 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2302 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1100 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1100 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2302 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2302 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1600 bytecode_size=4
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1600 (bytecode_size=4)
+[M3-19-RANGE] setClock op=118 caller=Lcom/chessclock/android/ChessClock;.access$1600 recv_obj=7 recv_val_cls=Lcom/chessclock/android/ChessClock; recv_heap_cls=Lcom/chessclock/android/ChessClock; static_cls=Lcom/chessclock/android/ChessClock; runtime_pick=
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.setClock bytecode_size=71
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.setClock (bytecode_size=71)
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=110 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=3 class=Lcom/chessclock/android/ChessClock;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/chessclock/android/ChessClock;.setClock
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=109 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[M3-19-TRY] formatTime entered try_recursive_invoke depth=3 class=Lcom/chessclock/android/ChessClock;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lcom/chessclock/android/ChessClock;.setClock
+[EXP091-SETTEXT] view_id=27 class=Landroid/view/View; arg_kind=5 text="null"
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1700 bytecode_size=5
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1700 (bytecode_size=5)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.outOfTime bytecode_size=31
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.outOfTime (bytecode_size=31)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=outOfTime pc=6 field=Lcom/chessclock/android/ChessClock;.BRONSTEIN obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2200 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2200 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1100 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1100 (bytecode_size=3)
+[REC-MISS] Landroid/os/Handler;.postDelayed caller=Lcom/chessclock/android/ChessClock$8;.run
+[QUEUE] Runnable id=15 enqueued (delay=100ms, ready_at=1000001120ms virtual, queue_depth=1)
+[EXP090-DRAIN] Runnable id=15 invoked
+[ApkParser] Found EOCD at offset 124200
+[ApkParser] Central Directory: 19 entries at offset 122880
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=19 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=21 class=Landroid/widget/TextView; text="10:00:00" children=0 depth=3 pos=(11,339) size=(1058x276)
+[EXP092-RENDER] node=22 class=Landroid/view/View; text="" children=0 depth=3 pos=(11,339) size=(1058x0)
+[EXP092-RENDER] node=23 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=24 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=25 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=26 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=27 class=Landroid/widget/TextView; text="null" children=0 depth=3 pos=(326,1305) size=(428x276)
+[EXP092-RENDER] node=28 class=Landroid/view/View; text="" children=0 depth=3 pos=(326,1581) size=(428x13)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,960) size=(0x0)
+[EXP092-RENDER] node=30 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(1080,960) size=(0x0)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=1, diff_px=0
+[FRAME-SEQ] done: runnables_fired=3 frames=4 dir=/home/z/my-project/logs/cc_dbg5/frames

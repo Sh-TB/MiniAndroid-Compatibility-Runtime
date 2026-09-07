@@ -1,0 +1,1068 @@
+{
+  "apk_name": "com.chessclock.android_29.apk",
+  "main_class": "Lcom/chessclock/android/ChessClock;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Handler;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/DialogFactory;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock$1;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock$2;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock$3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock$4;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock$7;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock$8;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "requestWindowFeature",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "getWindow",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293",
+        "p4294967294"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "addFlags",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/preference/PreferenceManager;",
+      "invocation_type": "virtual",
+      "method": "getDefaultSharedPreferences",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967277",
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#21",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967277",
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#27",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "getResources",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v3",
+        "p4294967295"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getColor",
+      "return_value": "-16777216",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "color",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v2"
+      ],
+      "class": "Landroid/widget/TextView;",
+      "invocation_type": "virtual",
+      "method": "setTextColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "getResources",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v3",
+        "p4294967295"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getColor",
+      "return_value": "-16777216",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "color",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967277",
+        "v2"
+      ],
+      "class": "Landroid/widget/TextView;",
+      "invocation_type": "virtual",
+      "method": "setTextColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967277",
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#22",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967277",
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#28",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v13",
+        "v2"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setVisibility",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v14",
+        "v2"
+      ],
+      "class": "Landroid/view/View;",
+      "invocation_type": "virtual",
+      "method": "setVisibility",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getBoolean",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967277",
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967277",
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#26",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967277",
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#30",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967277",
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#29",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "v2"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setHapticFeedbackEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "v2"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setHapticFeedbackEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967277",
+        "v2"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setHapticFeedbackEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v15",
+        "v2"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setHapticFeedbackEnabled",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getBoolean",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "getResources",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v3",
+        "p4294967295"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getColor",
+      "return_value": "-16777216",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "color",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "v2"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setBackgroundColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "getResources",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v3",
+        "p4294967295"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getColor",
+      "return_value": "-16777216",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "color",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "v2"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setBackgroundColor",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getBoolean",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getBoolean",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/preference/PreferenceManager;",
+      "invocation_type": "virtual",
+      "method": "getDefaultSharedPreferences",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "parseInt",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "edit",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "invocation_type": "virtual",
+      "method": "putString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "invocation_type": "virtual",
+      "method": "commit",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "getIntPref",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/preference/PreferenceManager;",
+      "invocation_type": "virtual",
+      "method": "getDefaultSharedPreferences",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "parseInt",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "edit",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "invocation_type": "virtual",
+      "method": "putString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "invocation_type": "virtual",
+      "method": "commit",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "getIntPref",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/preference/PreferenceManager;",
+      "invocation_type": "virtual",
+      "method": "getDefaultSharedPreferences",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "parseInt",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "edit",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "invocation_type": "virtual",
+      "method": "putString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "invocation_type": "virtual",
+      "method": "commit",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "getIntPref",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "getString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v4"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences;",
+      "invocation_type": "virtual",
+      "method": "edit",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "invocation_type": "virtual",
+      "method": "putString",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/SharedPreferences$Editor;",
+      "invocation_type": "virtual",
+      "method": "commit",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/net/Uri;",
+      "invocation_type": "virtual",
+      "method": "parse",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "getBaseContext",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/media/RingtoneManager;",
+      "invocation_type": "virtual",
+      "method": "getRingtone",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "initRingtone",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "initTime",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "p4294967293"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "toMillis",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "initTime",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "p4294967293"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "toMillis",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v4"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v5",
+        "p4294967293"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "toMillis",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v10",
+        "v2"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v11",
+        "v2"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967277",
+        "v2"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v15",
+        "v2"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/String;",
+      "invocation_type": "virtual",
+      "method": "format",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "formatTime",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/String;",
+      "invocation_type": "virtual",
+      "method": "format",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "formatTime",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "p4294967295"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#38",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "p4294967292"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#38",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"10:00:00\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p4294967294"
+      ],
+      "class": "Landroid/widget/TextView;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "setClock",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/String;",
+      "invocation_type": "virtual",
+      "method": "format",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "formatTime",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Integer;",
+      "invocation_type": "virtual",
+      "method": "valueOf",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/String;",
+      "invocation_type": "virtual",
+      "method": "format",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "formatTime",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "p4294967295"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#46",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "p4294967292"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#46",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"10:00:00\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p1",
+        "p4294967294"
+      ],
+      "class": "Landroid/widget/TextView;",
+      "invocation_type": "virtual",
+      "method": "setText",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "setClock",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lcom/chessclock/android/ChessClock;",
+      "invocation_type": "virtual",
+      "method": "setUpGame",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-07T05:02:31Z",
+  "total_api_calls": 134
+}

@@ -3855,89 +3855,51 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
-    // EXP-058: Generic guard — if the same (class, method) was called
-    // more than 10 times, skip it. Catches infinite loops.
-    // Exception: addFragmentToStack needs more calls (recursive 2-arg → 3-arg pattern).
-    {
-        static thread_local std::map<std::string, int> call_counts;
-        std::string key = class_descriptor + "." + method_name;
-        call_counts[key]++;
-        int threshold = 10;
-        // CHAR-PROBE campaign (tictactoe_golden discovery): NEVER throttle
-        // compiler-generated synthetic accessor trampolines. ECJ compiles
-        // every private-field read/write from an inner class into static
-        // access$N(...) methods of 2-3 instructions; after 11 calls the
-        // throttle stubbed them mid-game and every subsequent outer-field
-        // read silently returned null (status showed "null WINS", the turn
-        // flip froze, clicks 4..9 became no-ops). These methods are tiny,
-        // loop-free, and semantically REQUIRED — the same law as setText:
-        // not an infinite-loop risk.
-        if (method_name.rfind("access$", 0) == 0) {
-            threshold = 1 << 30;   // synthetic accessors: never throttle
-        }
-        // EXP-060: Allow more calls for Fragment lifecycle methods that
-        // are legitimately called multiple times (once per Fragment instance).
-        // NOTE: <init> is NOT included here because constructor loops are
-        // common (e.g. DrawerLayoutContainer calls super which triggers
-        // another allocation). Keeping <init> at threshold=10 prevents
-        // these loops from running forever.
-        if (method_name == "addFragmentToStack" ||
-            method_name == "presentFragment" ||
-            method_name == "onFragmentCreate" ||
-            method_name == "createView" ||
-            method_name == "onResume" ||
-            method_name == "setParentLayout" ||
-            method_name == "attachView" ||
-            method_name == "onCreateView" ||
-            method_name == "onBecomeFullyVisible" ||
-            method_name == "onPause" ||
-            method_name == "onStop" ||
-            method_name == "onDestroy" ||
-            // EXP-093: Critical View/String methods must NOT be throttled at 10.
-            // setText is called once per TextView — with 6+ views per screen,
-            // 10 is way too low. These are NOT infinite-loop risks.
-            method_name == "setText" ||
-            method_name == "getText" ||
-            method_name == "toString" ||
-            method_name == "append" ||
-            method_name == "setVisibility" ||
-            method_name == "setOrientation" ||
-            method_name == "setGravity" ||
-            method_name == "setTypeface" ||
-            method_name == "setTextSize" ||
-            method_name == "setPadding" ||
-            method_name == "setLayoutParams" ||
-            method_name == "addView" ||
-            method_name == "setHint" ||
-            method_name == "setEnabled" ||
-            method_name == "setClickable" ||
-            method_name == "setFocusable" ||
-            method_name == "requestFocus" ||
-            method_name == "setBackgroundColor" ||
-            method_name == "setBackground" ||
-            method_name == "setImageResource" ||
-            method_name == "setOnFocusChangeListener" ||
-            // EXP-098: dp() is called frequently for view sizing; must
-            // not be throttled (RLottieDrawable construction depends on it).
-            method_name == "dp" ||
-            method_name == "setAnimation") {
-            threshold = 1000;
-        }
-        // EXP-063: getString is called many times (100+) for each UI string.
-        // The default 10-call threshold stubs it after 10 calls, preventing
-        // resource resolution for later strings.
-        if (method_name == "getString" ||
-            method_name == "getResourceEntryName") {
-            threshold = 500;
-        }
-        if (call_counts[key] > threshold) {
-            log("⏭️ STUB-ONLY: " + key + " — skipping (called " +
-                std::to_string(call_counts[key]) + " times)");
-            call_counts[key]--;
-            recursion_depth_--;
-            return false;
-        }
+    // EXP-058 Generic guard → M3 FIX-M3-009 (§19 ACTIVE-CYCLE LAW).
+    //
+    // The old guard counted LIFETIME invocations of each (class, method) and
+    // silently stubbed the method after 10 calls (plus ad-hoc exceptions for
+    // access$, setText, getString, ... — every exception was evidence of the
+    // same design flaw). A lifetime counter is not Android semantics: ART has
+    // no per-method call cap. Real evidence of the corruption it caused:
+    //   * chessclock v29: formatTime exceeded 10 calls during setUpGame +
+    //     initial renders; from timer tick 2 the REAL DEX body was silently
+    //     replaced by bridge_to_api → ActivityShadow.dispatch → the clock
+    //     label computed "null" forever (F-TIMER-COMPUTE).
+    //   * tictactoe (CHAR-PROBE): access$ trampolines stubbed mid-game after
+    //     11 calls — every outer-field read returned null ("null WINS").
+    //
+    // The universal law: a loop guard may only fire on a GENUINE CYCLE — the
+    // same (class, method) invoked AGAIN while an earlier frame of it is
+    // still active on the call stack. Legitimate repeated invocations from
+    // disjoint frames (timer ticks, list bindings, per-view setup) are not
+    // cycles and must execute their real DEX. Infinite loops that deepen the
+    // stack are still caught: self-recursion and mutual recursion both
+    // re-enter an active key (now stubbed immediately, at depth, with a
+    // visible diagnostic), and MAX_RECURSION_DEPTH remains the backstop.
+    // NOTE: function-scope declarations — the guard must live until EVERY
+    // return path below has executed (a block-scoped guard would unregister
+    // the key at the end of its own braces).
+    static thread_local std::map<std::string, int> m3_call_counts;  // diagnostics only
+    const std::string m3_active_key = class_descriptor + "." + method_name;
+    m3_call_counts[m3_active_key]++;
+    struct ActiveKeyGuard {
+        std::set<std::string>& set;
+        const std::string& key;
+        bool armed = false;
+        ~ActiveKeyGuard() { if (armed) set.erase(key); }
+    } m3_active_key_guard{active_invoke_keys_, m3_active_key, false};
+    if (active_invoke_keys_.count(m3_active_key) > 0) {
+        std::cerr << "[M3-19-CYCLE] " << m3_active_key
+                  << " re-entered while active on the call stack (depth="
+                  << recursion_depth_ << ") — active-cycle stub"
+                  << ", lifetime_calls=" << m3_call_counts[m3_active_key]
+                  << std::endl;
+        recursion_depth_--;
+        return false;
     }
+    active_invoke_keys_.insert(m3_active_key);
+    m3_active_key_guard.armed = true;
 
     // EXP-045 Phase 2: TransactionInactiveError — credentials exception that
     // loops because its superclass constructor (Exception.<init>) returns
@@ -6464,13 +6426,55 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
 
                 trace.opcode_name = "invoke-*/range";
 
+                // ────────────────────────────────────────────────────────────
+                // M3 FIX-M3-008 (§19 HEAP CLASS IDENTITY LAW):
+                // For invoke-virtual/range and invoke-interface/range the
+                // receiver's RUNTIME class recorded on the heap object is the
+                // dispatch authority (AOSP Object.getClass() semantics) — the
+                // static declaring class from method_ids[] is only a fallback.
+                //
+                // Evidence (chessclock v29, 12-frame timer sequence): tick 1
+                // reached ChessClock.formatTime as real DEX and produced
+                // "9:59:59"; from tick 2 ChessClock$8.run called formatTime
+                // via 3rc sites whose method_ids entry declares
+                // Landroid/app/Activity;.formatTime — the range handler
+                // dispatched on that STATIC class, missed the DEX lookup
+                // (framework class), fell to ActivityShadow.dispatch and the
+                // clock label computed "null". The 35c path already had this
+                // law (EXP-059 polymorphism fix); the 3rc path did not.
+                //
+                // invoke-direct (non-virtual: <init>/private) and invoke-super
+                // (resolves at the CURRENT class's superclass, NOT the runtime
+                // type) keep declaring-class dispatch per AOSP.
+                // ────────────────────────────────────────────────────────────
+                const uint8_t range_op = instr & 0xFF;
+                const bool range_virtual_like =
+                    range_op == static_cast<uint8_t>(Opcode::INVOKE_VIRTUAL_RANGE) ||
+                    range_op == static_cast<uint8_t>(Opcode::INVOKE_INTERFACE_RANGE);
+                std::string range_runtime_class;
+                if (range_virtual_like && !args.empty() &&
+                    args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+                    if (auto* range_heap_obj = heap_.get(args[0].object_id)) {
+                        range_runtime_class = range_heap_obj->class_descriptor;
+                    }
+                }
+
                 // Try recursive invoke
                 DalvikValue return_val = DalvikValue::make_void();
                 ApiCallTrace::Status status = ApiCallTrace::Status::STUBBED;
 
                 bool recursively_invoked = false;
                 if (config_.enable_api_bridge) {
-                    if (try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
+                    // §19: runtime class first for virtual/interface dispatch
+                    if (!range_runtime_class.empty() && range_runtime_class != class_name &&
+                        try_recursive_invoke(range_runtime_class, method_name,
+                                             args, return_val, result)) {
+                        last_invoke_return_ = return_val;
+                        recursively_invoked = true;
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                    }
+                    if (!recursively_invoked &&
+                        try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
                         recursively_invoked = true;
                         status = ApiCallTrace::Status::IMPLEMENTED;
                     }

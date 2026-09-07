@@ -1,0 +1,630 @@
+{
+  "allocations": [
+    {
+      "at_pc": "0x0006",
+      "object_id": 8,
+      "opcode": "new-instance",
+      "sequence": 3,
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "at_pc": "0x000d",
+      "object_id": 9,
+      "opcode": "new-instance",
+      "sequence": 6,
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "at_pc": "0x003a",
+      "object_id": 10,
+      "opcode": "new-instance",
+      "sequence": 38,
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "at_pc": "0x0041",
+      "object_id": 11,
+      "opcode": "new-instance",
+      "sequence": 4,
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "at_pc": "0x0048",
+      "object_id": 12,
+      "opcode": "new-instance",
+      "sequence": 4,
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "at_pc": "0x004f",
+      "object_id": 13,
+      "opcode": "new-instance",
+      "sequence": 4,
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "at_pc": "0x0056",
+      "object_id": 14,
+      "opcode": "new-instance",
+      "sequence": 4,
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "at_pc": "0x005d",
+      "object_id": 15,
+      "opcode": "new-instance",
+      "sequence": 4,
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "at_pc": "0x0028",
+      "object_id": 38,
+      "opcode": "new-instance",
+      "sequence": 52,
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "at_pc": "0x0028",
+      "object_id": 46,
+      "opcode": "new-instance",
+      "sequence": 52,
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "apk_name": "com.chessclock.android_29.apk",
+  "objects": [
+    {
+      "class_descriptor": "Landroidx/arch/core/executor/ArchTaskExecutor;",
+      "creation_sequence": 0,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 1,
+      "readable_class": "androidx.arch.core.executor.ArchTaskExecutor",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Thread;",
+      "creation_sequence": 1,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 2,
+      "readable_class": "java.lang.Thread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/os/Looper;",
+      "creation_sequence": 2,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 3,
+      "readable_class": "android.os.Looper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/os/MessageQueue;",
+      "creation_sequence": 3,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 4,
+      "readable_class": "android.os.MessageQueue",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/os/Handler;",
+      "creation_sequence": 4,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 5,
+      "readable_class": "android.os.Handler",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/app/Application;",
+      "creation_sequence": 5,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 6,
+      "readable_class": "android.app.Application",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Lcom/chessclock/android/ChessClock;",
+      "creation_sequence": 6,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 28,
+      "initialized": true,
+      "object_id": 7,
+      "readable_class": "com.chessclock.android.ChessClock",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/os/Handler;",
+      "creation_sequence": 7,
+      "creator_frame_id": 1,
+      "creator_pc": 6,
+      "field_count": 0,
+      "initialized": true,
+      "object_id": 8,
+      "readable_class": "android.os.Handler",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Lcom/chessclock/android/DialogFactory;",
+      "creation_sequence": 8,
+      "creator_frame_id": 1,
+      "creator_pc": 13,
+      "field_count": 0,
+      "initialized": true,
+      "object_id": 9,
+      "readable_class": "com.chessclock.android.DialogFactory",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Lcom/chessclock/android/ChessClock$1;",
+      "creation_sequence": 9,
+      "creator_frame_id": 1,
+      "creator_pc": 58,
+      "field_count": 1,
+      "initialized": true,
+      "object_id": 10,
+      "readable_class": "com.chessclock.android.ChessClock$1",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Lcom/chessclock/android/ChessClock$2;",
+      "creation_sequence": 10,
+      "creator_frame_id": 1,
+      "creator_pc": 65,
+      "field_count": 1,
+      "initialized": true,
+      "object_id": 11,
+      "readable_class": "com.chessclock.android.ChessClock$2",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Lcom/chessclock/android/ChessClock$3;",
+      "creation_sequence": 11,
+      "creator_frame_id": 1,
+      "creator_pc": 72,
+      "field_count": 1,
+      "initialized": true,
+      "object_id": 12,
+      "readable_class": "com.chessclock.android.ChessClock$3",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Lcom/chessclock/android/ChessClock$4;",
+      "creation_sequence": 12,
+      "creator_frame_id": 1,
+      "creator_pc": 79,
+      "field_count": 1,
+      "initialized": true,
+      "object_id": 13,
+      "readable_class": "com.chessclock.android.ChessClock$4",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Lcom/chessclock/android/ChessClock$7;",
+      "creation_sequence": 13,
+      "creator_frame_id": 1,
+      "creator_pc": 86,
+      "field_count": 1,
+      "initialized": true,
+      "object_id": 14,
+      "readable_class": "com.chessclock.android.ChessClock$7",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Lcom/chessclock/android/ChessClock$8;",
+      "creation_sequence": 14,
+      "creator_frame_id": 1,
+      "creator_pc": 93,
+      "field_count": 1,
+      "initialized": true,
+      "object_id": 15,
+      "readable_class": "com.chessclock.android.ChessClock$8",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/RelativeLayout;",
+      "creation_sequence": 15,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 16,
+      "readable_class": "android.widget.RelativeLayout",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/LinearLayout;",
+      "creation_sequence": 16,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 17,
+      "readable_class": "android.widget.LinearLayout",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/RelativeLayout;",
+      "creation_sequence": 17,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 18,
+      "readable_class": "android.widget.RelativeLayout",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/LinearLayout;",
+      "creation_sequence": 18,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 19,
+      "readable_class": "android.widget.LinearLayout",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/Button;",
+      "creation_sequence": 19,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 20,
+      "readable_class": "android.widget.Button",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/TextView;",
+      "creation_sequence": 20,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 21,
+      "readable_class": "android.widget.TextView",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/view/View;",
+      "creation_sequence": 21,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 22,
+      "readable_class": "android.view.View",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/RelativeLayout;",
+      "creation_sequence": 22,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 23,
+      "readable_class": "android.widget.RelativeLayout",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/RelativeLayout;",
+      "creation_sequence": 23,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 24,
+      "readable_class": "android.widget.RelativeLayout",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/LinearLayout;",
+      "creation_sequence": 24,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 25,
+      "readable_class": "android.widget.LinearLayout",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/Button;",
+      "creation_sequence": 25,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 26,
+      "readable_class": "android.widget.Button",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/TextView;",
+      "creation_sequence": 26,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 27,
+      "readable_class": "android.widget.TextView",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/view/View;",
+      "creation_sequence": 27,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 28,
+      "readable_class": "android.view.View",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/Button;",
+      "creation_sequence": 28,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 29,
+      "readable_class": "android.widget.Button",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/widget/Button;",
+      "creation_sequence": 29,
+      "creator_frame_id": 0,
+      "creator_pc": 0,
+      "field_count": 0,
+      "initialized": false,
+      "object_id": 30,
+      "readable_class": "android.widget.Button",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/NumberFormatException;",
+      "creation_sequence": 30,
+      "creator_frame_id": 0,
+      "creator_pc": 12,
+      "field_count": 1,
+      "initialized": true,
+      "object_id": 31,
+      "readable_class": "java.lang.NumberFormatException",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Landroid/content/SharedPreferences$Editor;",
+      "creation_sequence": 31,
+      "creator_frame_id": 16,
+      "creator_pc": 18,
+      "field_count": 4,
+      "initialized": false,
+      "object_id": 32,
+      "readable_class": "android.content.SharedPreferences$Editor",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/NumberFormatException;",
+      "creation_sequence": 32,
+      "creator_frame_id": 0,
+      "creator_pc": 12,
+      "field_count": 1,
+      "initialized": true,
+      "object_id": 33,
+      "readable_class": "java.lang.NumberFormatException",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/NumberFormatException;",
+      "creation_sequence": 33,
+      "creator_frame_id": 0,
+      "creator_pc": 12,
+      "field_count": 1,
+      "initialized": true,
+      "object_id": 34,
+      "readable_class": "java.lang.NumberFormatException",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Larray;",
+      "creation_sequence": 34,
+      "creator_frame_id": 0,
+      "creator_pc": 127,
+      "field_count": 4,
+      "initialized": false,
+      "object_id": 35,
+      "readable_class": "array",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Integer;",
+      "creation_sequence": 35,
+      "creator_frame_id": 0,
+      "creator_pc": 130,
+      "field_count": 1,
+      "initialized": false,
+      "object_id": 36,
+      "readable_class": "java.lang.Integer",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Integer;",
+      "creation_sequence": 36,
+      "creator_frame_id": 0,
+      "creator_pc": 137,
+      "field_count": 1,
+      "initialized": false,
+      "object_id": 37,
+      "readable_class": "java.lang.Integer",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/StringBuilder;",
+      "creation_sequence": 37,
+      "creator_frame_id": 25,
+      "creator_pc": 40,
+      "field_count": 1,
+      "initialized": true,
+      "object_id": 38,
+      "readable_class": "java.lang.StringBuilder",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Larray;",
+      "creation_sequence": 38,
+      "creator_frame_id": 0,
+      "creator_pc": 60,
+      "field_count": 5,
+      "initialized": false,
+      "object_id": 39,
+      "readable_class": "array",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Integer;",
+      "creation_sequence": 39,
+      "creator_frame_id": 0,
+      "creator_pc": 63,
+      "field_count": 1,
+      "initialized": false,
+      "object_id": 40,
+      "readable_class": "java.lang.Integer",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Integer;",
+      "creation_sequence": 40,
+      "creator_frame_id": 0,
+      "creator_pc": 70,
+      "field_count": 1,
+      "initialized": false,
+      "object_id": 41,
+      "readable_class": "java.lang.Integer",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Integer;",
+      "creation_sequence": 41,
+      "creator_frame_id": 0,
+      "creator_pc": 77,
+      "field_count": 1,
+      "initialized": false,
+      "object_id": 42,
+      "readable_class": "java.lang.Integer",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Larray;",
+      "creation_sequence": 42,
+      "creator_frame_id": 0,
+      "creator_pc": 127,
+      "field_count": 4,
+      "initialized": false,
+      "object_id": 43,
+      "readable_class": "array",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Integer;",
+      "creation_sequence": 43,
+      "creator_frame_id": 0,
+      "creator_pc": 130,
+      "field_count": 1,
+      "initialized": false,
+      "object_id": 44,
+      "readable_class": "java.lang.Integer",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Integer;",
+      "creation_sequence": 44,
+      "creator_frame_id": 0,
+      "creator_pc": 137,
+      "field_count": 1,
+      "initialized": false,
+      "object_id": 45,
+      "readable_class": "java.lang.Integer",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/StringBuilder;",
+      "creation_sequence": 45,
+      "creator_frame_id": 28,
+      "creator_pc": 40,
+      "field_count": 1,
+      "initialized": true,
+      "object_id": 46,
+      "readable_class": "java.lang.StringBuilder",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Larray;",
+      "creation_sequence": 46,
+      "creator_frame_id": 0,
+      "creator_pc": 60,
+      "field_count": 5,
+      "initialized": false,
+      "object_id": 47,
+      "readable_class": "array",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Integer;",
+      "creation_sequence": 47,
+      "creator_frame_id": 0,
+      "creator_pc": 63,
+      "field_count": 1,
+      "initialized": false,
+      "object_id": 48,
+      "readable_class": "java.lang.Integer",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Integer;",
+      "creation_sequence": 48,
+      "creator_frame_id": 0,
+      "creator_pc": 70,
+      "field_count": 1,
+      "initialized": false,
+      "object_id": 49,
+      "readable_class": "java.lang.Integer",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class_descriptor": "Ljava/lang/Integer;",
+      "creation_sequence": 49,
+      "creator_frame_id": 0,
+      "creator_pc": 77,
+      "field_count": 1,
+      "initialized": false,
+      "object_id": 50,
+      "readable_class": "java.lang.Integer",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-07T05:00:03Z",
+  "total_allocations": 10,
+  "total_objects": 50
+}

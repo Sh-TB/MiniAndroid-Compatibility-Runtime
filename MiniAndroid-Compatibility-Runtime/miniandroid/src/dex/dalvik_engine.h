@@ -1385,6 +1385,18 @@ public:
     // — within the default 8MB stack limit.
     static constexpr uint32_t MAX_RECURSION_DEPTH = 80;
 
+    // M3 FIX-M3-009 (§19 ACTIVE-CYCLE LAW): keys of (class, method) pairs
+    // currently ACTIVE somewhere on the interpreter call stack. A key already
+    // present here means the new invoke is a genuine cycle (infinite
+    // recursion) and may be stubbed. Legitimate repeated calls (timer ticks
+    // re-invoking formatTime 10x/second for minutes) are NOT cycles and must
+    // never be stubbed — AOSP/ART has no per-method lifetime call cap; only
+    // stack depth is bounded. This replaces the EXP-058 process-lifetime
+    // call counter, which silently corrupted app semantics after 10 calls
+    // (evidence: chessclock v29 clock label "null" from tick 2; tictactoe
+    // CHAR-PROBE access$ throttle "null WINS" mid-game).
+    std::set<std::string> active_invoke_keys_;
+
     // EXP-051: Public singleton accessor so the shadow registry can
     // share the engine's singleton cache (which guarantees that
     // getResources(), getMainLooper(), etc. all return the same heap

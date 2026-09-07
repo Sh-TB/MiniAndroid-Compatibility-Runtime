@@ -1,0 +1,113 @@
+[QUEUE] Runnable id=15 dequeued (ready_at=1000000150ms <= now=1000000420ms virtual)
+[EXP090-DRAIN] Invoking Runnable id=15 class=Lcom/chessclock/android/ChessClock$8;
+[RET-BEFORE] Lcom/chessclock/android/ChessClock$8;.run bytecode_size=303
+[METHOD-IN] Lcom/chessclock/android/ChessClock$8;.run (bytecode_size=303)
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080002 search_root=10
+[EXP088-B-VS] FOUND view_id=20
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080005 search_root=10
+[EXP088-B-VS] FOUND view_id=26
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080003 search_root=10
+[EXP088-B-VS] FOUND view_id=21
+[EXP088-B-ENTER] bridge_to_api: Lcom/chessclock/android/ChessClock;.findViewById args=2 shadow=YES
+[EXP088-B-VS] findViewById: target=0x7f080006 search_root=10
+[EXP088-B-VS] FOUND view_id=27
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$800 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$800 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$700 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$700 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$700 pc=0 field=Lcom/chessclock/android/ChessClock;.BRONSTEIN obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$900 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$900 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$902 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$902 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1200 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1200 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1400 bytecode_size=5
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1400 (bytecode_size=5)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.toMillis bytecode_size=64
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.toMillis (bytecode_size=64)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=toMillis pc=0 field=Lcom/chessclock/android/ChessClock;.HOURS obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1002 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1002 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2302 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2302 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1100 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1100 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$1100 pc=0 field=Lcom/chessclock/android/ChessClock;.TICK_LENGTH value=100
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2302 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2302 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1600 bytecode_size=4
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1600 (bytecode_size=4)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.setClock bytecode_size=71
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.setClock (bytecode_size=71)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.formatTime bytecode_size=173
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.formatTime (bytecode_size=173)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=formatTime pc=118 field=Lcom/chessclock/android/ChessClock;.SHOW_DECISECONDS_THRESHOLD value=10
+[EXP093-APUT] aput-object v7→arr[v5] idx_v6 arr_type=7 arr_obj=67 src_type=7 idx=0
+[EXP093-APUT] aput-object v7→arr[v5] idx_v6 arr_type=7 arr_obj=67 src_type=7 idx=1
+[EXP093-STRFMT] String.format("0:%02d.%d", n=2) → "0:00.0"
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/chessclock/android/ChessClock;.setClock
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.formatTime bytecode_size=173
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.formatTime (bytecode_size=173)
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=71 src_type=7 idx=0
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=71 src_type=7 idx=1
+[EXP093-APUT] aput-object v8→arr[v6] idx_v7 arr_type=7 arr_obj=71 src_type=7 idx=2
+[EXP093-STRFMT] String.format("%d:%02d:%02d", n=3) → "9:59:59"
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lcom/chessclock/android/ChessClock;.setClock
+[EXP091-SETTEXT] view_id=27 class=Landroid/view/View; arg_kind=5 text="9:59:59"
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1700 bytecode_size=5
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1700 (bytecode_size=5)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.outOfTime bytecode_size=31
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.outOfTime (bytecode_size=31)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=outOfTime pc=6 field=Lcom/chessclock/android/ChessClock;.BRONSTEIN obj_id=0
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2200 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2200 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1100 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1100 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$1100 pc=0 field=Lcom/chessclock/android/ChessClock;.TICK_LENGTH value=100
+[REC-MISS] Landroid/os/Handler;.postDelayed caller=Lcom/chessclock/android/ChessClock$8;.run
+[QUEUE] Runnable id=15 enqueued (delay=100ms, ready_at=1000000520ms virtual, queue_depth=1)
+[EXP090-DRAIN] Runnable id=15 invoked
+[ApkParser] Found EOCD at offset 124200
+[ApkParser] Central Directory: 19 entries at offset 122880
+[EXP092-RENDER] node=16 class=Landroid/widget/RelativeLayout; text="" children=3 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/LinearLayout; text="" children=3 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=19 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=20 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,0) size=(1080x954)
+[EXP092-RENDER] node=21 class=Landroid/widget/TextView; text="10:00:00" children=0 depth=3 pos=(11,339) size=(1058x276)
+[EXP092-RENDER] node=22 class=Landroid/view/View; text="" children=0 depth=3 pos=(11,339) size=(1058x0)
+[EXP092-RENDER] node=23 class=Landroid/widget/RelativeLayout; text="" children=0 depth=2 pos=(0,954) size=(1080x13)
+[EXP092-RENDER] node=24 class=Landroid/widget/RelativeLayout; text="" children=3 depth=2 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=25 class=Landroid/widget/LinearLayout; text="" children=1 depth=3 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=26 class=Landroid/widget/Button; text="" children=0 depth=4 pos=(0,967) size=(1080x953)
+[EXP092-RENDER] node=27 class=Landroid/widget/TextView; text="9:59:59" children=0 depth=3 pos=(86,1305) size=(908x276)
+[EXP092-RENDER] node=28 class=Landroid/view/View; text="" children=0 depth=3 pos=(86,1581) size=(908x13)
+[EXP092-RENDER] node=29 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(0,960) size=(0x0)
+[EXP092-RENDER] node=30 class=Landroid/widget/Button; text="" children=0 depth=1 pos=(1080,960) size=(0x0)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=1, diff_px=0

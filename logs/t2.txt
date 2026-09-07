@@ -1,0 +1,40 @@
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1100 (bytecode_size=3)
+[SGET] class=Lcom/chessclock/android/ChessClock; method=access$1100 pc=0 field=Lcom/chessclock/android/ChessClock;.TICK_LENGTH value=100
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2302 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2302 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1000 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1000 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1600 bytecode_size=4
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1600 (bytecode_size=4)
+[M3-19-RANGE] setClock op=118 caller=Lcom/chessclock/android/ChessClock;.access$1600 recv_obj=7 recv_val_cls=Lcom/chessclock/android/ChessClock; recv_heap_cls=Lcom/chessclock/android/ChessClock; static_cls=Lcom/chessclock/android/ChessClock; runtime_pick=
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.setClock bytecode_size=71
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.setClock (bytecode_size=71)
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=110 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lcom/chessclock/android/ChessClock;.setClock
+[M3-19-DIRECT] formatTime caller=Lcom/chessclock/android/ChessClock;.setClock method_idx=109 dex=0 static_cls=Lcom/chessclock/android/ChessClock; recv_obj=7 recv_heap_cls=Lcom/chessclock/android/ChessClock;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=formatTime class=Landroid/app/Activity;
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lcom/chessclock/android/ChessClock;.setClock
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lcom/chessclock/android/ChessClock;.setClock
+[EXP091-SETTEXT] view_id=27 class=Landroid/view/View; arg_kind=5 text="null"
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$2300 bytecode_size=3
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$2300 (bytecode_size=3)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.access$1700 bytecode_size=5
+[METHOD-IN] Lcom/chessclock/android/ChessClock;.access$1700 (bytecode_size=5)
+[RET-BEFORE] Lcom/chessclock/android/ChessClock;.outOfTime bytecode_size=31

@@ -1,0 +1,272 @@
+{
+  "frame_count_requested": 12,
+  "frame_delay_ms": 300,
+  "frames": [
+    {
+      "event": "launch (no interaction)",
+      "file": "frame_000.png",
+      "index": 0,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_001.png",
+      "index": 1,
+      "looper_virtual_ms": 1000000420,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "runnables_fired": 1,
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "9:59:59",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_002.png",
+      "index": 2,
+      "looper_virtual_ms": 1000000720,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "runnables_fired": 1,
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "null",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_003.png",
+      "index": 3,
+      "looper_virtual_ms": 1000001020,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "runnables_fired": 1,
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "null",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_004.png",
+      "index": 4,
+      "looper_virtual_ms": 1000001320,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "runnables_fired": 1,
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "null",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_005.png",
+      "index": 5,
+      "looper_virtual_ms": 1000001620,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "runnables_fired": 1,
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "null",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_006.png",
+      "index": 6,
+      "looper_virtual_ms": 1000001920,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "runnables_fired": 1,
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "null",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_007.png",
+      "index": 7,
+      "looper_virtual_ms": 1000002220,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "runnables_fired": 1,
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "null",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_008.png",
+      "index": 8,
+      "looper_virtual_ms": 1000002520,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "runnables_fired": 1,
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "null",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_009.png",
+      "index": 9,
+      "looper_virtual_ms": 1000002820,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "runnables_fired": 1,
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "null",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_010.png",
+      "index": 10,
+      "looper_virtual_ms": 1000003120,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "runnables_fired": 1,
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "null",
+          "view_id": 27
+        }
+      ]
+    },
+    {
+      "changed_pixels_vs_previous": 0,
+      "event": "timer (virtual +300ms)",
+      "file": "frame_011.png",
+      "index": 11,
+      "looper_virtual_ms": 1000003420,
+      "png_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "runnables_fired": 1,
+      "sha256": "7dcc63c67fb720f61c9f8aa8f84e65f2afdf76af951f82f162e64d402b35b808",
+      "visible_texts": [
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "10:00:00",
+          "view_id": 21
+        },
+        {
+          "class": "Landroid/widget/TextView;",
+          "text": "null",
+          "view_id": 27
+        }
+      ]
+    }
+  ],
+  "runnables_fired_total": 11,
+  "screen": {
+    "height": 1920,
+    "width": 1080
+  }
+}
