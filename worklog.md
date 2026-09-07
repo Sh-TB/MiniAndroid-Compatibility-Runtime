@@ -641,3 +641,94 @@ Stage Summary:
   F-ROOM-CHAIN (named, evidence-anchored, not hacked).
 - Next: F-ROOM-CHAIN (stack-walk OOB law + Room path), F-ARGS (chessclock
   color), §3 ViewShadow ancestry migration, corpus +5.
+
+---
+Task ID: M3-C5 (MASTER CAMPAIGN 3 — cluster 5: F-ROOM-CHAIN P0 closure)
+Agent: Super Z (main agent)
+Task: PHASE 1 F-ROOM-CHAIN / microtimer timer closure — trace the full
+START→TimerControl→Room→Alarm→expiresMs→Long→elapsedRealtime→postDelayed
+chain and fix at semantic boundaries; baseline + regression.
+
+Work Log:
+- PHASE 0 baseline: HEAD 9f831abb pushed (origin synced, tree clean);
+  battery re-run; corpus APKs re-located at /tmp/my-project/apk_cache;
+  aapt2 restored from /tmp/my-project/tools/android_build/bt/android-14/
+  (container path drift — fixture stages were rc=2/127 until restored).
+- FORENSICS (all static evidence via new scripts/mt_dis2.py, mt_class_list.py
+  — correct DEX decoder: proto_ids 12-byte, virtual-method index restarts):
+  * La/e;->h decoded = R8-inlined Kotlin Intrinsics null-check: walks
+    Thread.getStackTrace()[2..] comparing className=="La.e" (skip loop),
+    builds "Parameter specified as non-null is null: method X.Y parameter N".
+  * RUNTIME trace (MINIANDROID_TRACE_FRAMES env diag added to UC010): walk
+    saw frames [0]=h [1]=Lh/f.s [2..5]=androidx — no "La.e" frame → AIOOBE
+    swallowed by UNIFIED_011.3 uncaught-tail policy → Room init silently died.
+  * THE NULL SOURCES (all fixed at semantic boundary):
+    1. SQLiteOpenHelper shadow MISSING entirely → getWritableDatabase null
+       → Lh/f.s null-check ("sqLiteDatabase").
+    2. Collections.synchronizedMap / newSetFromMap returned null →
+       Database;.<init> "synchronizedMap(mutableMapOf())" + Le/o;.<init>
+       "newSetFromMap(IdentityHashMap())" checks.
+    3. Locale.US static = null → Le/o;.<init> "(this as
+       java.lang.String).toLowerCase(locale)" check ("US must not be null").
+    4. Thread.start()/Executor.execute were void stubs → Room transaction
+       executor runnables never ran → INSERT never reached SQLite.
+    5. R8 interface-dispatch: Lg/f;.h(IJ)V implemented as Le/x;.h(IJ)V —
+       name-based lookup missed → EntityInsertionAdapter.bind params
+       silently dropped → INSERT bound all NULLs → NOT NULL constraint.
+- FIXES (one semantic law each, zero package-specific code):
+  * FIX-M3-012 storage/sqlite_shadow.{h,cpp}: DatabaseShadow (14th canonical
+    shadow) — REAL sqlite3 backend at runtime/data/<pkg>/databases/<name>;
+    SQLiteOpenHelper ctor/open/close/getDatabaseName/setWriteAheadLogging;
+    SQLiteDatabase execSQL/begin/setTransactionSuccessful/endTransaction/
+    inTransaction/isOpen/getVersion/compileStatement/rawQueryWithFactory
+    (materialized cursors)/getPath; SQLiteProgram binds; SQLiteStatement
+    executeInsert/executeUpdateDelete; Cursor full accessor set.
+    onCreate/onUpgrade fire as REAL DEX callbacks (engine consumes
+    pending flags after open dispatch — ART helper-delegate law).
+    HeapAllocator gained array/string field virtuals + DalvikHeapAdapter.
+  * FIX-M3-013 CollectionShadow: java.util.Collections static factories
+    (synchronizedMap→backing map single-thread law; newSetFromMap;
+    singletonList; singleton; emptyList).
+  * FIX-M3-014 Locale constants synthesis in sget-object (US/UK/ROOT/... 22
+    constants, identity-cached, __locale_tag__).
+  * FIX-M3-015 deterministic virtual-thread law: Thread.<init> records
+    target Runnable; Thread.start()/run() → pending inline run drained
+    ENGINE-side via try_recursive_invoke (run-to-completion, real DEX);
+    Executor.execute with proto (Ljava/lang/Runnable;)V runs inline too.
+  * FIX-M3-016 invoke-interface signature dispatch: after name lookups
+    miss, resolve by EXACT descriptor walking the runtime class +
+    superclass chain (R8 renames interface and impl independently;
+    preserves params/return = the stable identity).
+  * Battery harness: -lsqlite3 on ALL test link lines (core now depends on
+    sqlite3 legitimately); shadow invariant test 13→14 canonical shadows
+    (24 checks, 0 failures); EXT-01 fixtures re-frozen from documented
+    URLs with SHA-256 verification (009b4671... MATCH).
+- RUNTIME PROOF (microtimer v8, fresh sandbox per run):
+  * helper<init> name="app-data" version=1 → real open →
+    [SQLITE-LIFECYCLE] onCreate → REAL DEX callback (Room's
+    "SELECT count(*) FROM sqlite_master" + CREATE TABLE alarm executed
+    for real) → "select * from alarm" cols=4 → typed input → INSERT:
+    binds duration_dec6=1, remaining_dec6=1, id=NULL (AUTOINCREMENT),
+    expires_ms=1000001170 (VIRTUAL clock + duration — non-zero, FIXES
+    the "Alarm.expiresMs collapses to zero" symptom) → INSERT SUCCEEDED
+    (no more NOT NULL rejection).
+  * EXC-PROPAGATE NPE count in the microtimer run: 3 (before) → 0 (after).
+  * REMAINING (precise blocker for the visual tick loop): after a
+    successful insert, the ▶-press start/pause branch does not yet reach
+    Handler.postDelayed tick scheduling (Ll/e wrapper) and the new timer
+    row is not re-bound into the rendered frames. Next step: trace the
+    post-insert branch of the ▶ case (loadAlarms → adapter → Ll/e.post).
+- REGRESSION: BATTERY GATE ALL PASS (59/59) at the final HEAD — including
+  semantic law batteries (14+25+57+14 checks), resource laws (48+42+18),
+  layout laws (24+23+37), G04/G06/G07/G08 goldens + 3-run determinism,
+  §6 shadow invariant (24 checks), EXT-01/02 typographic + interaction
+  goldens (9+12 checks), density matrix, M3 ARSC style law (17), and the
+  live corpus runs (simplestopwatch/gmdice/microtimer all SUCCESS).
+
+Stage Summary:
+- F-ROOM-CHAIN root causes 1–5 CLOSED at semantic boundaries; Room
+  databases are now REAL (sqlite3) with REAL DEX lifecycle callbacks;
+  deterministic executor/thread laws replace silent runnable drops;
+  R8 interface dispatch is signature-correct. 59/59 battery green.
+- Next: microtimer tick visual loop (post-insert branch), then F-ARGS
+  (SECUSO), then PHASE 3+ (shadow ancestry, geometry, image pipeline).

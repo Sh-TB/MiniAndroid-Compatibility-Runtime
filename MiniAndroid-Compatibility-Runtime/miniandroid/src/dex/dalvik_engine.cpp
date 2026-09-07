@@ -24,6 +24,7 @@
 #include "../framework/canvas_shadow.h"
 #include "../framework/heap_adapter.h"
 #include "../framework/view_ancestry.h"  // G12 FIX-G12-001: AOSP framework ancestry law
+#include "../storage/sqlite_shadow.h"    // M3 F-ROOM-CHAIN: SQLite family shadow
 #include "../resources/resource_runtime.h"  // G10 FIX-G10-002: early classifier wiring
 #include <chrono>
 #include <algorithm>
@@ -9440,6 +9441,45 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                 result_value = DalvikValue::make_object(enum_id,
                                                         field_res.class_descriptor);
                 static_field_storage_[static_key] = result_value;
+            } else if (field_res.class_descriptor == "Ljava/util/Locale;") {
+                // M3 F-ROOM-CHAIN: java.util.Locale constant synthesis.
+                // microtimer v8 Room init reads Locale.US inside the R8-inlined
+                // Kotlin Intrinsics path (Le/o;.<init> — "(this as
+                // java.lang.String).toLowerCase(locale)" expression check); a
+                // NULL Locale.US produced "US must not be null" NPEs that the
+                // uncaught-tail compatibility policy swallowed, breaking the
+                // Room open chain. AOSP law: Locale.* constants are non-null
+                // static objects; materialize them (cached per static_key so
+                // identity comparisons hold) with __locale_tag__ carrying the
+                // AOSP tag for String-case/Locale-sensitive bridges.
+                static const std::map<std::string, std::string> kLocaleConsts = {
+                    {"CANADA", "en_CA"}, {"CANADA_FRENCH", "fr_CA"},
+                    {"CHINA", "zh_CN"}, {"CHINESE", "zh"},
+                    {"ENGLISH", "en"}, {"FRANCE", "fr_FR"},
+                    {"FRENCH", "fr"}, {"GERMAN", "de"},
+                    {"GERMANY", "de_DE"}, {"ITALIAN", "it"},
+                    {"ITALY", "it_IT"}, {"JAPAN", "ja_JP"},
+                    {"JAPANESE", "ja"}, {"KOREA", "ko_KR"},
+                    {"KOREAN", "ko"}, {"PRC", "zh_CN"},
+                    {"ROOT", ""}, {"SIMPLIFIED_CHINESE", "zh_CN"},
+                    {"TAIWAN", "zh_TW"}, {"TRADITIONAL_CHINESE", "zh_TW"},
+                    {"UK", "en_GB"}, {"US", "en_US"}};
+                auto lit = kLocaleConsts.find(field_res.field_name);
+                if (lit != kLocaleConsts.end()) {
+                    uint32_t loc_id = heap_.allocate("Ljava/util/Locale;", pc, 0);
+                    heap_.set_object_field(loc_id, "__locale_tag__",
+                                           DalvikValue::make_string(lit->second, 0));
+                    heap_.set_object_field(loc_id, "__locale_name__",
+                                           DalvikValue::make_string(field_res.field_name, 0));
+                    result_value = DalvikValue::make_object(loc_id,
+                                                            "Ljava/util/Locale;");
+                    static_field_storage_[static_key] = result_value;
+                    std::cerr << "[LOCALE-CONST] synthesized Locale."
+                              << field_res.field_name << " tag=\"" << lit->second
+                              << "\" oid=" << loc_id << std::endl;
+                } else {
+                    static_field_storage_[static_key] = result_value;
+                }
             } else {
                 static_field_storage_[static_key] = result_value;
             }
@@ -10533,6 +10573,65 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
                     trace.invoked_method = heap_obj->class_descriptor + "." + method_name;
                     pc_ = pc + 3;
                     return true;
+                }
+                // ────────────────────────────────────────────────────────────
+                // M3 F-ROOM-CHAIN (R8 interface-dispatch law): R8 renames the
+                // interface method and the implementation method
+                // INDEPENDENTLY (e.g. interface Lg/h;->X(IJ)V is implemented
+                // as Le/x;->h(IJ)V). A NAME lookup on the runtime class then
+                // misses and the call silently degrades to a void stub —
+                // exactly how Room's EntityInsertionAdapter.bind lost every
+                // parameter bind (insert → NOT NULL constraint failed on
+                // microtimer's alarm table). DEX dispatch law: renaming
+                // preserves parameter/return types, so when the name lookup
+                // misses, resolve by EXACT signature (descriptor) inside the
+                // receiver's runtime class and dispatch THAT method.
+                // ────────────────────────────────────────────────────────────
+                const std::string iface_proto =
+                    dex_report_ ? resolve_method_proto_for_dex(method_idx,
+                                                               current_dex_index_)
+                                : std::string("<unknown>");
+                if (iface_proto != "<unknown>") {
+                    // Walk the receiver's class + superclass chain (DEX
+                    // virtual dispatch law: inherited implementations answer
+                    // interface calls; R8 renames per class, so the signature
+                    // is the only stable identity).
+                    std::string walk_cls = heap_obj->class_descriptor;
+                    for (int hop = 0; hop < 8 && !walk_cls.empty(); ++hop) {
+                        bool cls_found = false;
+                        for (const auto& cls : dex_report_->classes) {
+                            if (cls.name != walk_cls) continue;
+                            cls_found = true;
+                            bool sig_found = false;
+                            for (const auto& mi : cls.all_methods()) {
+                                if (mi.code_offset == 0 || mi.is_abstract) continue;
+                                if (mi.descriptor != iface_proto) continue;
+                                sig_found = true;
+                                if (try_recursive_invoke(walk_cls,
+                                                         mi.name, args, return_val,
+                                                         result)) {
+                                    last_invoke_return_ = return_val;
+                                    trace.invoked_method =
+                                        walk_cls + "." + mi.name +
+                                        " [sig-dispatch " + iface_proto + "]";
+                                    std::cerr << "[INTERFACE-SIG] "
+                                              << walk_cls << "."
+                                              << mi.name << iface_proto
+                                              << " (interface " << class_name << "."
+                                              << method_name << ") → REAL DEX dispatched"
+                                              << std::endl;
+                                    pc_ = pc + 3;
+                                    return true;
+                                }
+                            }
+                            if (sig_found) break;
+                            break;  // found the class def; stop scanning classes
+                        }
+                        auto sup_it = class_to_superclass_.find(walk_cls);
+                        if (sup_it == class_to_superclass_.end()) break;
+                        walk_cls = sup_it->second;
+                        if (walk_cls == "Ljava/lang/Object;") break;
+                    }
                 }
             }
         }
@@ -13090,6 +13189,131 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         if (try_shadow_dispatch(class_name, method, args, result, status)) {
+            // M3 F-ROOM-CHAIN: SQLiteOpenHelper.getWritableDatabase /
+            // getReadableDatabase must fire the app override onCreate /
+            // onUpgrade AFTER the database object exists (ART law: the
+            // helper delegates to its subclass during open; Room's generated
+            // Database_Impl creates its tables inside onCreate via REAL
+            // execSQL). Shadows have no interpreter access, so the shadow
+            // only records pending flags — the ENGINE consumes them here and
+            // performs the virtual DEX callback via try_recursive_invoke.
+            // NOTE: the declared class at the call site can be the APP
+            // subclass (dispatch reached the shadow through the superclass
+            // retry pass), so the trigger is method+pending-flag based,
+            // never class-string based. Unknown oids simply have no pending
+            // flag → consume_* returns false → no-op.
+            if ((method == "getWritableDatabase" ||
+                 method == "getReadableDatabase") &&
+                shadow_registry_ != nullptr && !args.empty() &&
+                args[0].type == DalvikType::OBJECT_REF &&
+                result.type == DalvikType::OBJECT_REF) {
+                auto* db_shadow =
+                    shadow_registry_->find_as<storage::DatabaseShadow>();
+                if (db_shadow) {
+                    uint32_t helper_oid = args[0].object_id;
+                    int64_t old_v = 0, new_v = 0;
+                    if (db_shadow->consume_pending_create(helper_oid)) {
+                        DalvikValue cb_ret;
+                        DalvikExecutionResult cb_res;
+                        std::vector<DalvikValue> cb_args{args[0], result};
+                        bool fired = try_recursive_invoke(
+                            args[0].class_desc, "onCreate", cb_args, cb_ret,
+                            cb_res, "(Landroid/database/sqlite/SQLiteDatabase;)V");
+                        std::cerr << "[SQLITE-LIFECYCLE] onCreate -> "
+                                  << (fired ? "REAL DEX callback executed"
+                                            : "no app override (framework default)")
+                                  << " on " << args[0].class_desc << std::endl;
+                    } else if (db_shadow->consume_pending_upgrade(helper_oid,
+                                                                  old_v, new_v)) {
+                        DalvikValue cb_ret;
+                        DalvikExecutionResult cb_res;
+                        DalvikValue ov, nv;
+                        ov.type = DalvikType::INT32; ov.int_val = (int32_t)old_v;
+                        nv.type = DalvikType::INT32; nv.int_val = (int32_t)new_v;
+                        std::vector<DalvikValue> cb_args{args[0], result, ov, nv};
+                        bool fired = try_recursive_invoke(
+                            args[0].class_desc, "onUpgrade", cb_args, cb_ret,
+                            cb_res,
+                            "(Landroid/database/sqlite/SQLiteDatabase;II)V");
+                        std::cerr << "[SQLITE-LIFECYCLE] onUpgrade " << old_v
+                                  << " -> " << new_v << " : "
+                                  << (fired ? "REAL DEX callback executed"
+                                            : "no app override")
+                                  << std::endl;
+                    }
+                    db_shadow->notify_lifecycle_callbacks_done(helper_oid);
+                }
+            }
+            // M3 F-THREAD-TICK: deterministic virtual-thread law. After a
+            // Thread.start()/run() dispatch that queued a pending inline run,
+            // the ENGINE invokes the target's run() — the APK's REAL DEX — to
+            // completion right here (single deterministic thread; the
+            // "background worker finishes before the next main-frame
+            // boundary" observable order). This is what lets Room's
+            // newThread+start transaction executor actually execute its
+            // transaction on a runtime that has no real threads.
+            if (class_name == "Ljava/lang/Thread;" &&
+                (method == "start" || method == "run") &&
+                shadow_registry_ != nullptr) {
+                if (auto* ts = shadow_registry_->find_as<framework::ThreadShadow>()) {
+                    uint32_t t_oid = 0, r_oid = 0;
+                    while (ts->consume_pending_start(t_oid, r_oid)) {
+                        // Resolve the runnable's RUNTIME class from the heap
+                        // (lambda/interface impls live in their own classes).
+                        std::string rcls = "Ljava/lang/Object;";
+                        if (heap_.has_object(r_oid)) {
+                            const auto* robj = heap_.get(r_oid);
+                            if (robj && !robj->class_descriptor.empty())
+                                rcls = robj->class_descriptor;
+                        }
+                        DalvikValue self = DalvikValue::make_object(r_oid, rcls);
+                        DalvikValue run_ret;
+                        DalvikExecutionResult run_res;
+                        std::vector<DalvikValue> run_args{self};
+                        bool ran = try_recursive_invoke(
+                            rcls, "run", run_args, run_ret, run_res, "()V");
+                        std::cerr << "[THREAD-START] drained runnable_oid="
+                                  << r_oid << " cls=" << rcls << " → "
+                                  << (ran ? "REAL DEX run() executed"
+                                          : "no run() found (no-op)")
+                                  << std::endl;
+                    }
+                }
+            }
+            // M3 F-THREAD-TICK: deterministic executor law. Any bridge call
+            // whose DEX prototype is exactly (Ljava/lang/Runnable;)V named
+            // `execute` is an Executor.submit shape (Room transaction
+            // executor, ThreadPoolExecutor, app executor interfaces). On the
+            // single-thread deterministic runtime the task runs to completion
+            // inline — real DEX, no fake callback, no wall-clock.
+            if (method == "execute" && !args.empty() &&
+                args[0].type == DalvikType::OBJECT_REF &&
+                resolve_method_proto_for_dex(method_idx_hint,
+                                             current_dex_index_) ==
+                    "(Ljava/lang/Runnable;)V") {
+                uint32_t r_oid = args[0].object_id;
+                std::string rcls = args[0].class_desc;
+                if (r_oid && heap_.has_object(r_oid)) {
+                    const auto* robj = heap_.get(r_oid);
+                    if (robj && !robj->class_descriptor.empty())
+                        rcls = robj->class_descriptor;
+                }
+                if (rcls.empty()) rcls = "Ljava/lang/Object;";
+                DalvikValue self = DalvikValue::make_object(r_oid, rcls);
+                DalvikValue run_ret;
+                DalvikExecutionResult run_res;
+                std::vector<DalvikValue> run_args{self};
+                bool ran = try_recursive_invoke(rcls, "run", run_args,
+                                                run_ret, run_res, "()V");
+                std::cerr << "[EXECUTOR] execute(Runnable) oid=" << r_oid
+                          << " cls=" << rcls << " → "
+                          << (ran ? "REAL DEX run() executed inline"
+                                  : "no run() found (no-op)")
+                          << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
             // EXP-071: Diagnostic — log when shadow dispatch catches HashMap calls.
             if (class_name.find("HashMap") != std::string::npos) {
                 if (current_method_ == "setCountry") {
@@ -16325,6 +16549,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         std::cerr << "[UC010-STACKTRACE] Thread.getStackTrace -> " << N
                   << " real frames (top=" << (N ? frames[0].first : "-") << ")"
                   << std::endl;
+        // M3 F-ROOM-CHAIN diagnostic: full frame list when env-gated. Lets
+        // forensics see exactly which frames a Kotlin Intrinsics-style walk
+        // sees (La/e;.h skips "La.e" frames then indexes — OOB means every
+        // frame above the walk start was the Intrinsics class itself).
+        if (std::getenv("MINIANDROID_TRACE_FRAMES")) {
+            for (size_t fi = 0; fi < N; fi++) {
+                std::cerr << "[UC010-FRAME] [" << fi << "] "
+                          << frames[fi].first << "->" << frames[fi].second
+                          << std::endl;
+            }
+        }
         return true;
     }
 
