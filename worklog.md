@@ -523,3 +523,62 @@ Stage Summary:
 - Next frontier: heap class identity law → F-TIMER-COMPUTE; synthetic stack
   boundaries → microtimer; §3 ViewShadow ancestry migration; SECUSO
   color-state-list; corpus +5; interaction tier ≥8.
+
+---
+Task ID: M3-C3 (MASTER CAMPAIGN 3 — session 3: F-TIMER closure)
+Agent: Super Z (main agent)
+Task: Continue M3 from d9625153 — §1 baseline re-capture, §19 F-TIMER-COMPUTE/
+F-TIMER-STACK closure, §15 API family, regression gates, evidence.
+
+Work Log:
+- §1 baseline re-captured at d9625153 (clean tree, origin c0f178a7): battery
+  59/59 ALL PASS, corpus 20/20 SHA-verified ZERO drift, 8 golden files hashed,
+  toolchain verified (g++ 14.2.0, make — cmake absent). GitHub push BLOCKED
+  (no gh CLI/token/credential helper — probed). MASTER3_BASELINE_MATRIX.md
+  committed (54c0deef).
+- §19 F-TIMER-COMPUTE root-caused with staged forensics (35c/3rc/direct/try):
+  NOT dispatch identity at all — the EXP-058 generic loop guard is a
+  PROCESS-LIFETIME call counter that silently stubs any (class,method) after
+  10 invocations. chessclock formatTime exceeded 10 calls during setUpGame;
+  from tick 2 the real DEX body was replaced by bridge → ActivityShadow →
+  "null" label. Same family as the tictactoe access$ CHAR-PROBE bug.
+- FIX-M3-008 (fef1cb19): 3rc invoke-virtual/interface-range now dispatch on
+  the receiver's RUNTIME heap class first (EXP-059 parity); direct/super-range
+  keep declaring-class (AOSP).
+- FIX-M3-009 (fef1cb19): ACTIVE-CYCLE LAW — loop guard may only fire when the
+  same (class,method) re-enters while active on the call stack (RAII
+  active-key set + visible [M3-19-CYCLE] diagnostic). Lifetime counter
+  removed; MAX_RECURSION_DEPTH stays the backstop. AOSP/ART has no per-method
+  lifetime call cap.
+- Evidence: chessclock --tap 540,480 --frames 30 → label decrements EXACTLY
+  every 10 ticks (9:59:59 → 9:59:58 → 9:59:57; TICK_LENGTH=100ms math), 30
+  consecutive real-DEX ticks, zero "null". 3-run PNG-sequence determinism
+  PROVEN (identical across 3 runs).
+- Corpus re-run (97812cc0): 16/20 byte-identical (zero regression); secuso_todo
+  CRASH(rc=-9) → SUCCESS (94.53% nonbg, 16 views — inflateColorStateList was
+  itself a throttle victim); gmdice +0.2%; microtimer label now computes.
+- FIX-M3-010 (82dd045f): Integer unsigned/bit family — toUnsignedString,
+  toBinaryString, toHexString, toOctalString, numberOfLeading/TrailingZeros,
+  bitCount, rotateLeft/Right, highest/lowestOneBit, compareUnsigned,
+  parseUnsignedInt, signum, min/max/sum (microtimer Lk/a;.toString chain).
+- FIX-M3-011 (82dd045f): Throwable.getStackTrace()/fillInStackTrace()/
+  getStackTraceDepth() real-frames law (parity with Thread.getStackTrace,
+  CAMPAIGN 010 R14) — microtimer La/e;.m Kotlin-Intrinsics caller discovery
+  now materializes 3 real frames ([M3-19-THROWTRACE]); F-TIMER-STACK AIOOBE
+  GONE.
+- F-THREAD-TICK (NEW, honestly blocked): microtimer countdown ticks via a
+  background Executor/ThreadFactory (La/a;.execute, La/c;.newThread) —
+  outside the G07 Handler/Looper virtual-time law. Named, not hacked.
+- Battery 59/59 ALL PASS after EACH law commit (fef1cb19, 82dd045f); goldens
+  unchanged.
+
+Stage Summary:
+- Commits: 54c0deef, fef1cb19, 97812cc0, 82dd045f (+ 4 pre-session docs at
+  d9625153). Local main = 82dd045f, 15 commits ahead of origin c0f178a7;
+  push BLOCKED pending token (payload ready: scripts/post_m3_comments.py).
+- F-TIMER-COMPUTE: CLOSED (runtime-proven + 3-run determinism).
+- F-TIMER-STACK: CLOSED (real frames materialized).
+- secuso_todo: CRASH → SUCCESS (unblocked by the same law).
+- Remaining frontier: F-THREAD-TICK (executor virtualization), F-ARGS
+  (chessclock color(int) resid=0), §3 ViewShadow ancestry migration,
+  §20 corpus +5, §21 interaction tier ≥8, GitHub evidence A–J (token).
