@@ -9171,6 +9171,15 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
     if (obj_ref.type == DalvikType::OBJECT_REF) {
         // Look up object field from heap
         if (heap_.has_object(obj_ref.object_id)) {
+            if (field_trace_active(field_res.field_name.c_str(),
+                                   (current_class_ + "." + current_method_).c_str())) {
+                DalvikValue tgt = get_register(obj_reg);
+                std::cerr << "[FIELD-TRACE] get-obj " << current_class_ << "."
+                          << current_method_ << " "
+                          << field_res.class_descriptor << "." << field_res.field_name
+                          << " obj#" << (tgt.type == DalvikType::OBJECT_REF ? tgt.object_id : 0)
+                          << std::endl;
+            }
             auto field_val = heap_.get_object_field(obj_ref.object_id, field_res.field_name);
             if (field_val.has_value()) {
                 result_value = field_val.value();
@@ -9412,6 +9421,15 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
         heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
+        if (field_trace_active(field_res.field_name.c_str(),
+                               (current_class_ + "." + current_method_).c_str())) {
+            std::cerr << "[FIELD-TRACE] put-obj " << current_class_ << "."
+                      << current_method_ << " "
+                      << field_res.class_descriptor << "." << field_res.field_name
+                      << " obj#" << (obj_ref.type == DalvikType::OBJECT_REF ? obj_ref.object_id : 0)
+                      << " value=" << dalvik_value_to_string(src_val) << std::endl;
+        }
+
     }
     // EXP-042 Phase 2: never return false; just advance pc_.
     
