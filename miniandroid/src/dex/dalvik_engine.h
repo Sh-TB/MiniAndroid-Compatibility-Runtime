@@ -1447,6 +1447,14 @@ public:
     bool class_chain_defines_method(const std::string& class_desc,
                                     const std::string& method) const;
 
+    // M3 F-005 FIX-A: true when the ancestry reaches a framework family
+    // whose onMeasure CONTENT semantics the runtime implements itself
+    // (TextView/Button/ImageView/…). Such nodes take the content measure;
+    // the AOSP View.getDefaultSize fallback (aosp_default_measure) must
+    // stay FALSE for them (microtimer row buttons measured 1080x0 when
+    // the flag misfired).
+    bool runtime_content_measure_class(const std::string& class_desc) const;
+
     // EXP-051: Attach a shadow registry. The engine does NOT own the
     // registry — it's owned by ApplicationRuntime so the runtime can
     // also drain the HandlerShadow queue and read IntentShadow state.

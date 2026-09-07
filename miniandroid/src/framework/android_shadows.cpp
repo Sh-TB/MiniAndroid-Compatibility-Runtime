@@ -608,10 +608,15 @@ CallResult LooperShadow::dispatch(const CallContext& ctx) {
                 return CallResult::handled_long(now * kNanosPerMs);
             }
             static thread_local uint64_t sc_log = 0;
+            // M3-CLOCK-2 (AG diagnostic): also print the HandlerShadow
+            // instance id so clock-authority divergence (multiple shadow
+            // instances) becomes visible in the evidence trail. Bounded:
+            // diagnostics must never flood a full-corpus run.
             if (sc_log < 24) {
                 sc_log++;
                 std::cerr << "[M3-CLOCK] SystemClock." << m << " -> " << now
-                          << "ms virtual" << std::endl;
+                          << "ms virtual hs=" << (const void*)registry_
+                          << std::endl;
             }
             return CallResult::handled_long(now);
         }
@@ -737,6 +742,13 @@ size_t HandlerShadow::remove_by_token(uint32_t token_id) {
         }
     }
     return removed;
+}
+
+bool HandlerShadow::has_due_at(int64_t now_ms) const {
+    // M3 F-ROOM-CHAIN: read-only twin of drain_ready's due test.
+    for (const auto& q : queue_)
+        if (q.ready_at_ms <= now_ms) return true;
+    return false;
 }
 
 void HandlerShadow::settle() {
@@ -1847,6 +1859,35 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "getText") {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_string(n ? n->text : "");
+    }
+    // M3 F-005 FIX-B (AG, 2026-09-08): View.setForeground(Drawable) —
+    // AOSP View.java mForeground: the foreground drawable draws OVER the
+    // content, measured at the drawable's intrinsic size for wrap views
+    // (ViewGroup measure uses foreground + background + padding minimums).
+    // Microtimer row buttons carry their icons as foreground drawables —
+    // without capture the buttons measured 0-tall and stayed invisible.
+    if (m == "setForeground") {
+        auto* n = get_or_create_node(ctx.receiver_id,
+                                     ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        if (ctx.args.size() >= 1) {
+            const auto& a = ctx.args[0];
+            if (a.kind == CallContext::Arg::Kind::OBJECT && a.object_id != 0) {
+                // Drawable heap object (M3 FIX-B getDrawable): resolve path.
+                std::string p;
+                if (heap_->get_object_string_field(a.object_id, "path", p) &&
+                    !p.empty()) {
+                    n->fg_drawable_path = p;
+                    std::cerr << "[M3-FOREGROUND] view_id=" << ctx.receiver_id
+                              << " setForeground path=" << p << std::endl;
+                }
+            } else if (a.kind == CallContext::Arg::Kind::NULL_REF ||
+                       (a.kind == CallContext::Arg::Kind::OBJECT &&
+                        a.object_id == 0)) {
+                // AOSP setForeground(null) clears the drawable.
+                n->fg_drawable_path.clear();
+            }
+        }
+        return CallResult::handled_void();
     }
     if (m == "setBackgroundColor" || m == "setBackground" ||
         m == "setBackgroundResource" || m == "setBackgroundDrawable" ||

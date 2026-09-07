@@ -351,6 +351,15 @@ public:
     void advance_virtual(int64_t delta_ms);  // step the clock forward
     int64_t virtual_now_ms() const { return virtual_now_ms_; }
 
+    // M3 F-ROOM-CHAIN (AG, 2026-09-08): due-probe for the drain loops.
+    // AOSP law: MessageQueue.next() re-evaluates `when` against the Looper
+    // clock between dispatch rounds. A runnable that re-posts with
+    // delay=0 at the SAME virtual timestamp is due again immediately —
+    // the probe lets the caller (drain_quiescent) model the looper
+    // iteration cost (1ms virtual quantum) instead of spinning forever
+    // on a frozen clock.
+    bool has_due_at(int64_t now_ms) const;
+
     // EXP-088 Phase F: Remove all queued Runnables matching the given
     // runnable_id. Returns the number removed.
     //
@@ -852,6 +861,10 @@ public:
         bool text_bold = false;
         bool text_italic = false;
         std::string bg_drawable_path;    // APK entry path of background drawable
+        std::string fg_drawable_path;    // M3 F-005 FIX-B: foreground drawable
+                                         // (View.setForeground — AOSP View.java
+                                         // mForeground) — measured like src and
+                                         // drawn over the content each frame.
         std::string src_drawable_path;   // APK entry path of ImageView src
         std::string onClick_handler;     // android:onClick method name (real DEX callback)
         int layout_weight = 0;           // LinearLayout weight

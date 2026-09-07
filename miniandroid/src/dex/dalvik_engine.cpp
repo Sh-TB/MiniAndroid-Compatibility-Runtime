@@ -834,6 +834,50 @@ bool DalvikExecutionEngine::class_chain_defines_method(
     return false;
 }
 
+// M3 F-005 FIX-A (AG, 2026-09-08): AOSP law — TextView/Button/… OVERRIDE
+// onMeasure with content semantics; an INSTANCE of these families measures
+// content, never the raw View.getDefaultSize fallback. The prior bool
+// answer conflated "the runtime models this family's content" (Button)
+// with "the chain is a plain View descendant" (custom views) — both
+// returned false, and the flag sites inverted false into
+// aosp_default_measure=true, so every PROGRAMMATIC empty Button measured
+// getDefaultSize(AT_MOST) = specSize (microtimer row buttons 1080x0,
+// FINDING-005). Returns true when the ancestry reaches a runtime
+// content-measure family — those nodes take the CONTENT measure and
+// aosp_default_measure stays false at the flag sites.
+bool DalvikExecutionEngine::runtime_content_measure_class(
+    const std::string& class_desc) const {
+    static const std::set<std::string> content_measure_classes = {
+        "Landroid/widget/TextView;", "Landroid/widget/EditText;",
+        "Landroid/widget/Button;", "Landroid/widget/CheckBox;",
+        "Landroid/widget/RadioButton;", "Landroid/widget/ImageView;",
+        "Landroid/widget/ProgressBar;",
+        "Landroidx/appcompat/widget/AppCompatTextView;",
+        "Landroidx/appcompat/widget/AppCompatEditText;",
+        "Landroidx/appcompat/widget/AppCompatButton;",
+        "Landroidx/appcompat/widget/AppCompatImageView;",
+        "Landroidx/appcompat/widget/AppCompatCheckBox;",
+    };
+    std::string cur = class_desc;
+    int guard = 0;
+    while (!cur.empty() && guard++ < 16) {
+        if (content_measure_classes.count(cur)) return true;
+        auto cit = class_info_index_.find(cur);
+        if (cit != class_info_index_.end() && dex_report_) return false;
+        if (cur == "Landroid/view/View;" || cur == "Landroid/view/SurfaceView;")
+            return false;
+        auto sup_it = class_to_superclass_.find(cur);
+        if (sup_it == class_to_superclass_.end()) {
+            // Unknown ancestor (framework class outside the seeded table):
+            // conservative TRUE (content model — the runtime's own content
+            // measure remains the safer default for unresolvable chains).
+            return true;
+        }
+        cur = sup_it->second;
+    }
+    return false;
+}
+
 std::string DalvikExecutionEngine::resolve_method_name_for_dex(
     uint32_t method_idx, uint32_t dex_index) const {
 
@@ -4872,7 +4916,11 @@ bool DalvikExecutionEngine::run_custom_view_constructor(
             auto* node = view_shadow->find_node(view_object_id);
             bool overrides = class_chain_defines_method(cls, "onMeasure");
             if (node) {
-                node->aosp_default_measure = !overrides;
+                // M3 F-005 FIX-A: framework content families (Button/
+                // TextView/…) are content-measured by the runtime itself —
+                // the getDefaultSize fallback must NOT fire for them.
+                node->aosp_default_measure =
+                    !overrides && !runtime_content_measure_class(cls);
                 node->overrides_on_measure = overrides;
             }
             static thread_local uint64_t dm_log = 0;
@@ -5773,6 +5821,46 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                       << " opcode=0x" << std::hex << (int)(bytecode_[pc_] & 0xFF) << std::dec
                       << std::endl;
         }
+
+        // M3 METHOD-TRACE (AG diagnostic, 2026-09-08): env-gated, bounded,
+        // per-instruction trace of ONE matched method. Syntax:
+        //   MINIANDROID_METHOD_TRACE=<class-substr>|<method-substr>
+        // Prints pc, opcode word, and every initialized register's value
+        // BEFORE the instruction executes. Bounded by a 4000-line budget so
+        // a full-corpus run can never flood. Law: diagnostics must never
+        // change semantics — this is read-only (pure get_register reads).
+        {
+            uint16_t mt_word = bytecode_[pc_];
+            static thread_local const char* mt_filter =
+                std::getenv("MINIANDROID_METHOD_TRACE");
+            static thread_local uint32_t mt_budget = 4000;
+            if (mt_filter && mt_budget > 0) {
+                std::string f(mt_filter);
+                auto bar = f.find('|');
+                std::string fcls = (bar == std::string::npos) ? f : f.substr(0, bar);
+                std::string fmth = (bar == std::string::npos) ? "" : f.substr(bar + 1);
+                if (current_class_.find(fcls) != std::string::npos &&
+                    (fmth.empty() || current_method_ == fmth)) {
+                    mt_budget--;
+                    std::cerr << "[METHOD-TRACE] " << current_class_ << "."
+                              << current_method_ << " pc=" << pc_
+                              << " word=0x" << std::hex << mt_word << std::dec;
+                    if (current_registers_) {
+                        uint32_t n = current_registers_->get_size();
+                        if (n > 20) n = 20;
+                        for (uint32_t r = 0; r < n; r++) {
+                            DalvikValue rv = current_registers_->read_v(
+                                static_cast<uint8_t>(r));
+                            if (rv.type == DalvikType::UNINITIALIZED) continue;
+                            std::cerr << " v" << r << "="
+                                      << dalvik_value_to_string(rv);
+                        }
+                    }
+                    std::cerr << std::endl;
+                }
+            }
+        }
+
         
         auto start = Clock::now();
         
@@ -10299,7 +10387,10 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
                 const std::string& cls = !args[0].class_desc.empty()
                                              ? args[0].class_desc : class_name;
                 bool overrides = class_chain_defines_method(cls, "onMeasure");
-                node->aosp_default_measure = !overrides;
+                // M3 F-005 FIX-A: content families never take the
+                // getDefaultSize fallback (see the constructor-time site).
+                node->aosp_default_measure =
+                    !overrides && !runtime_content_measure_class(cls);
             }
         }
     }
@@ -12164,7 +12255,7 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     static const bool m3sd = std::getenv("MINIANDROID_M3_SHADOW_DIAG") != nullptr;
     if (m3sd && method.find("setText") != std::string::npos) {
         static thread_local uint64_t sd_log = 0;
-        if (sd_log < 24) {
+        if (sd_log < 200) {
             sd_log++;
             fprintf(stderr,
                     "[M3-SHADOW] %s.%s pass1 handled=%d class=%s recv=%u/%s "
@@ -14253,26 +14344,83 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // Real drawable decoding (bitmap loading) is a future EXP. For now, return the
     // drawable's resource name so the renderer can look up the asset path.
     if (method == "getDrawable" &&
-        class_name.find("Resources") != std::string::npos) {
-        int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
-        auto it = field_name_by_resid_.find(resid);
-        std::string name = (it != field_name_by_resid_.end()) ? it->second : "";
+        (class_name.find("Resources") != std::string::npos ||
+         class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        // M3 F-005 FIX-B: Context.getDrawable(resid) delegates to
+        // Resources.getDrawable (AOSP Context.java law) — the app called
+        // the Activity form (Activity extends ContextThemeWrapper), which
+        // likewise delegates to its Resources.
+        // Receiver-first args: args[0] = this (Context/Resources),
+        // args[1] = the resid int.
+        int32_t resid = args.size() >= 2 &&
+                                (args[1].type == DalvikType::INT32 ||
+                                 args[1].type == DalvikType::BOOLEAN ||
+                                 args[1].type == DalvikType::CHAR)
+                            ? args[1].int_val
+                            : (args.size() >= 1 ? args[0].int_val : 0);
+        // M3 F-005 FIX-B: DIRECT resid → drawable resolution — the G04
+        // FIND-G04-AUDIT-006 law (canonical select_file chain, cached in
+        // resource_drawable_path_by_resid_). The R-field-name indirection
+        // fails for every app whose R$drawable statics were not parsed
+        // (R8-inlined const resource ids never pass through <clinit>).
         std::string path;
-        if (!name.empty()) {
-            auto pit = resource_drawable_paths_.find(name);
-            if (pit != resource_drawable_paths_.end()) {
-                path = pit->second;
+        {
+            auto& rt = resources::ResourceRuntime::instance();
+            auto by_resid = resource_drawable_path_by_resid_.find(
+                static_cast<uint32_t>(resid));
+            if (by_resid != resource_drawable_path_by_resid_.end()) {
+                path = by_resid->second;
+            } else if (rt.loaded() || rt.ensure_loaded(apk_path_)) {
+                // APK entry names from the parsed APK cache (no re-read).
+                std::vector<std::string> entries;
+                for (const auto& e : rt.apk().list_entries_cached())
+                    entries.push_back(e.name);
+                auto sel = rt.arsc().select_file(
+                    static_cast<uint32_t>(resid), entries,
+                    resources::device_config());
+                if (sel) {
+                    path = sel->path;
+                    resource_drawable_path_by_resid_[static_cast<uint32_t>(resid)] =
+                        sel->path;
+                    resource_drawable_density_by_resid_[static_cast<uint32_t>(resid)] =
+                        sel->selected_density();
+                }
             }
+        }
+        std::string name;
+        {
+            auto nit = field_name_by_resid_.find(resid);
+            if (nit != field_name_by_resid_.end()) name = nit->second;
         }
         std::cerr << "[RES] getDrawable resid=0x" << std::hex << resid << std::dec
                   << " name=" << name
                   << " path=" << (path.empty() ? "<none>" : path)
                   << std::endl;
-        // Return null for now (drawable object creation is a future EXP).
-        // The renderer can look up resource_drawable_paths_ via the resource name
-        // if the View's setImageResource was called.
         status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_null();
+        if (path.empty()) {
+            // AOSP Resources.getDrawable: null only when the resource is
+            // not found. Keep the documented stub for missing entries.
+            result = DalvikValue::make_null();
+            return true;
+        }
+        // M3 F-005 FIX-B (AG, 2026-09-08): return a REAL Drawable heap
+        // object carrying the resolved APK path. AOSP law: getDrawable
+        // returns a non-null drawable for a valid resource id; the silent
+        // null stub broke View.setForeground(icon) for every programmatic
+        // view (FORGOTTEN-017; microtimer row buttons measured 0-tall
+        // because their icon — the only content — was null).
+        uint32_t dw = heap_.allocate("Landroid/graphics/drawable/Drawable;", 0, 0);
+        DalvikValue dv;
+        dv.type = DalvikType::INT32;
+        dv.int_val = resid;
+        heap_.set_object_field(dw, "resid", dv);
+        DalvikValue pv;
+        pv.type = DalvikType::STRING_REF;
+        pv.string_val = path;
+        pv.ref_id = 0;
+        heap_.set_object_field(dw, "path", pv);
+        result = DalvikValue::make_object(dw, "Landroid/graphics/drawable/Drawable;");
         return true;
     }
 
@@ -15963,6 +16111,71 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 result = DalvikValue::make_double(d_parse);
                 std::cerr << "[PARSE] Double.parseDouble(\"" << s_parse << "\") → " << d_parse << std::endl;
             }
+        }
+        return true;
+    }
+
+    // M3 F-008(a) FIX (AG, 2026-09-08): String.subSequence(I,I) — the
+    // silent-null stub that corrupted every real-app countdown label
+    // (microtimer Le/b.b → Lk/a.toString zero-pad path: len >= 2 →
+    // subSequence(0,2) → NULL → StringBuilder.append(null) → "00:01:null").
+    // OpenJDK law (String.subSequence): "An invocation of this method of
+    // the form str.subSequence(begin, end) behaves in exactly the same way
+    // as the invocation str.substring(begin, end)." Returns CharSequence —
+    // the runtime represents CharSequence results as string values.
+    if (class_name == "Ljava/lang/String;" && method == "subSequence" &&
+        args.size() >= 3) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        std::string s_seq;
+        if (args[0].type == DalvikType::STRING_REF) s_seq = args[0].string_val;
+        else if (args[0].type == DalvikType::NULL_REF) {
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           "subSequence on null", "STR-BRIDGE");
+            return true;
+        }
+        int32_t begin_seq = (args[1].type == DalvikType::INT32) ? args[1].int_val : 0;
+        int32_t end_seq = static_cast<int32_t>(s_seq.size());
+        if (args[2].type == DalvikType::INT32) end_seq = args[2].int_val;
+        // OpenJDK bounds: begin<0 || end>len || begin>end → SIOOBE.
+        if (begin_seq < 0 || end_seq < 0 ||
+            end_seq > static_cast<int32_t>(s_seq.size()) || begin_seq > end_seq) {
+            throw_deferred("Ljava/lang/StringIndexOutOfBoundsException;",
+                           "length=" + std::to_string(s_seq.size()) +
+                           "; begin=" + std::to_string(begin_seq) +
+                           "; end=" + std::to_string(end_seq),
+                           "STR-BRIDGE");
+            return true;
+        }
+        result = DalvikValue::make_string(s_seq.substr(begin_seq, end_seq - begin_seq), 0);
+        std::cerr << "[STR] subSequence(" << begin_seq << "," << end_seq
+                  << ") of \"" << s_seq.substr(0, 40) << "\" -> \""
+                  << result.string_val.substr(0, 40) << "\"" << std::endl;
+        return true;
+    }
+
+    // M3 F-008(a-2) FIX (AG, 2026-09-08): Object.toString() / String.toString()
+    // — R8 cast-elision rewrites StringBuilder.toString() (and identity
+    // string returns) to `Ljava/lang/Object;.toString()` at the call site.
+    // The bridge had NO handler → silent null → poisoned the enclosing
+    // method's return (microtimer Le/b.b zero-pad path: return-object
+    // carried null → caller appended "null" → "00:01:null" labels).
+    // OpenJDK law:
+    //   * String.toString(): "This object (which is already a string!)
+    //     is itself returned."
+    //   * Object.toString(): getClass().getName() + "@" +
+    //     Integer.toHexString(hashCode()).
+    if ((class_name == "Ljava/lang/String;" || class_name == "Ljava/lang/Object;") &&
+        method == "toString") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
+            // String receiver: returns `this` — the string itself.
+            result = args[0];
+        } else if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            // Object receiver without a DEX body: OpenJDK identity form.
+            result = DalvikValue::make_string(
+                args[0].class_desc + "@" + std::to_string(args[0].object_id), 0);
+        } else {
+            result = DalvikValue::make_string("null", 0);
         }
         return true;
     }

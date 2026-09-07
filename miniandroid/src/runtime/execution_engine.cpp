@@ -2118,6 +2118,52 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 }
                             }
 
+                            // M3 F-005 FIX-B (AG, 2026-09-08): draw the View's
+                            // FOREGROUND drawable (View.setForeground — AOSP
+                            // View.java mForeground). Gravity law: the captured
+                            // foregroundGravity positions the layer (microtimer
+                            // row buttons set 17 = Gravity.CENTER); CENTER
+                            // centers the intrinsic-size image inside the view
+                            // bounds without scaling (AOSP gravity resolution).
+                            if (!node->fg_drawable_path.empty()) {
+                                auto fg_data =
+                                    apk_parser_.extract_entry_cached(node->fg_drawable_path);
+                                if (fg_data.size() >= 4) {
+                                    renderer::DecodedImage fgd;
+                                    bool fg_attempted = false;
+                                    if (fg_data[0] == 0x89 && fg_data[1] == 0x50 &&
+                                        fg_data[2] == 0x4E && fg_data[3] == 0x47) {
+                                        fg_attempted = true;
+                                        fgd = renderer::PNGDecoder::decode(fg_data);
+                                    } else if (fg_data[0] == 0xFF && fg_data[1] == 0xD8 &&
+                                               fg_data[2] == 0xFF) {
+                                        fg_attempted = true;
+                                        fgd = renderer::JPEGDecoder::decode(fg_data);
+                                    } else if (fg_data[0] == 'R' && fg_data[1] == 'I' &&
+                                               fg_data[2] == 'F' && fg_data[3] == 'F' &&
+                                               fg_data.size() >= 12 &&
+                                               fg_data[8] == 'W' && fg_data[9] == 'E' &&
+                                               fg_data[10] == 'B' && fg_data[11] == 'P') {
+                                        fg_attempted = true;
+                                        fgd = renderer::WebPDecoder::decode(fg_data);
+                                    }
+                                    if (fg_attempted && fgd.ok && !fgd.rgba.empty()) {
+                                        // density-scaled intrinsic, centered.
+                                        const float dscale =
+                                            node->src_density ? (float)node->src_density / 160.0f
+                                                              : 1.0f;
+                                        int dw = (int)std::lround(fgd.width / dscale);
+                                        int dh = (int)std::lround(fgd.height / dscale);
+                                        dw = std::min(dw, w);
+                                        dh = std::min(dh, h);
+                                        const int fx = left + (w - dw) / 2;
+                                        const int fy = top + (h - dh) / 2;
+                                        canvas.draw_image(fgd.rgba.data(), fgd.width,
+                                                          fgd.height, fx, fy, dw, dh);
+                                    }
+                                }
+                            }
+
                             // EXP-098 (CM-027): RLottie animation decode + draw.
                             if (is_image_view) {
                                 auto* mut_node = const_cast<framework::ViewShadow::ViewNode*>(node);
@@ -3968,6 +4014,22 @@ bool ExecutionEngine::stage_tap(ExecutionResult& result,
                                           {"entry", id}});
             }
             for (uint32_t id : due) invoke_handler_runnable(id);
+            // M3 F-ROOM-CHAIN (AG, 2026-09-08): looper-iteration time cost.
+            // AOSP law: MessageQueue.next() re-evaluates the head's `when`
+            // against the Looper clock between dispatch rounds, and the
+            // wall clock advances at least by the dispatch cost. On the
+            // frozen virtual clock a runnable that self-reposts with
+            // delay=0 at the same timestamp (microtimer's sub-second
+            // alignment law: delay = (expires - now) % 1000 == 0) would
+            // re-queue due-at-now FOREVER — the observed 64-iteration
+            // "re-post storm" cap. Deterministic model: when the queue
+            // still holds entries due at the CURRENT instant after a
+            // dispatch round, advance the virtual clock by 1ms so the
+            // next round observes a strictly later Looper time. This
+            // mirrors real ART (clock >= dispatch cost) with zero
+            // nondeterminism: the quantum is fixed, never wall-clock.
+            if (handler_shadow->has_due_at(handler_shadow->virtual_now_ms()))
+                handler_shadow->advance_virtual(1);
         }
         std::cerr << "[G06-TAP] drain loop hit iteration cap (hostile "
                      "re-post storm bounded)" << std::endl;
