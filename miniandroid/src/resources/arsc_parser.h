@@ -111,6 +111,12 @@ struct ArscEntry {
     bool has_config = false;       // true once raw config bytes were present
     ResValue   value;              // best value (for complex: first item)
     bool       is_complex = false;
+    // M3 FIX-M3-003b: the style bag's ResTable_map_entry parent (style
+    // inheritance) — kept SEPARATE from `value` because `value` is
+    // overwritten with complex_items[0] for compat, which previously
+    // DESTROYED the parent reference and broke every style-parent walk
+    // (bag_value + apply_style chain). AOSP ResTable_map_entry.parent.
+    uint32_t   bag_parent = 0;     // 0 = no parent
     std::vector<uint32_t> complex_keys;           // VISUAL-CAMPAIGN G49: ResTable_map name keys
     std::vector<ResValue> complex_items;  // for arrays/attrs
 };
