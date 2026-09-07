@@ -804,6 +804,20 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
                 pi->action = a.string_val;
             }
         }
+        // MASTER-2 FIX-INTENT-001: Intent(Context, Class) — arg 1 is a
+        // Class object whose descriptor IS the component class (AOSP
+        // Intent(Context, Class) = setClass(ctx, cls)). Without this the
+        // constructor left the component unset and the G08 launch drained
+        // to ACTIVITY_NOT_FOUND (unote addNote → NoteEdit).
+        if (ctx.args.size() >= 2) {
+            const auto& c = ctx.args[1];
+            if (c.kind == CallContext::Arg::Kind::OBJECT &&
+                c.object_class.size() > 1 && c.object_class.front() == 'L' &&
+                c.object_class.back() == ';' &&
+                c.object_class.rfind("Ljava/lang/Class;", 0) != 0) {
+                pi->component_class = c.object_class;
+            }
+        }
         return CallResult::handled_void();
     }
     auto pi = get_or_create_intent(ctx.receiver_id);
