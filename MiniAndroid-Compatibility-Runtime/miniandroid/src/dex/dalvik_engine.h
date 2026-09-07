@@ -1996,6 +1996,12 @@ private:
     // /new-instance on the class).
     std::set<std::string> initialized_classes_;
 
+    // M3 FIX-M3-012 (§14 reflection identity): Package object identity —
+    // one heap object per dotted package name, so Class.getPackage() is
+    // referentially stable across calls (AOSP packages are classloader-
+    // scoped singletons) and Package.getName() reads the stored name.
+    std::map<std::string, uint32_t> package_object_ids_;
+
     // EXP-053: Ensure a class is initialized before accessing its static
     // fields. If the class has a <clinit> method and has not been marked
     // initialized, execute <clinit> recursively, then mark it.
