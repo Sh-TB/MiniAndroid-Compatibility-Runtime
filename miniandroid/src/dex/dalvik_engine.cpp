@@ -332,7 +332,13 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
     // before the render-time re-measure corrected it).
     {
         auto& rt = resources::ResourceRuntime::instance();
-        rt.inflater().set_is_a([this](const std::string& c, const std::string& a) {
+        // M3 FIX-M3-001: register at the ResourceRuntime (process-wide
+        // Factory law), NOT on the lazy default inflater instance —
+        // ensure_loaded() recreates the inflater and the per-instance
+        // hook was silently wiped (the classifier fell back to substring
+        // matching for the AUTHORITATIVE window measure while the render
+        // pass re-asserted the DEX classifier — cross-pass divergence).
+        rt.set_is_a([this](const std::string& c, const std::string& a) {
             return is_subclass_of(c, a);
         });
     }
@@ -535,6 +541,16 @@ bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
     const std::string want =
         framework::normalize_class_desc(ancestor_desc);
     std::string current = framework::normalize_class_desc(class_desc);
+    // M3-DIAG (temporary): trace app-class container classification
+    // queries to expose cross-pass state divergence.
+    static const bool m3_diag = std::getenv("MINIANDROID_M3_ANCESTRY_DIAG") != nullptr;
+    std::string m3_path;
+    if (m3_diag && current.find('/') != std::string::npos &&
+        current.find("Landroid/") != 0 && current.find("Ljava/") != 0 &&
+        current.find("Landroidx/") != 0 && current.find("Lkotlin/") != 0 &&
+        current.find("Lcom/google/") != 0) {
+        m3_path = current;
+    }
     if (current == want) return true;
     std::unordered_set<std::string> visited;  // cycle protection
     for (int i = 0; i < 50; ++i) {  // max depth 50 to prevent infinite loops
@@ -553,6 +569,12 @@ bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
         } else {
             auto it = class_to_superclass_.find(current);
             if (it == class_to_superclass_.end()) {
+                if (!m3_path.empty())
+                    fprintf(stderr,
+                            "[M3-ANCESTRY] query=%s want=%s MISSING-IN-MAP "
+                            "map=%zu this=%p FALLBACK framework_is_subclass\n",
+                            m3_path.c_str(), want.c_str(),
+                            class_to_superclass_.size(), (const void*)this);
                 // Unknown in BOTH layers: fall back to the framework walk
                 // for the original descriptor (covers multi-hop app->
                 // framework chains where the app entry point itself is
@@ -560,9 +582,23 @@ bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
                 return framework::framework_is_subclass(current, want);
             }
             current = it->second;
+            if (!m3_path.empty())
+                m3_path += " -> " + current;
         }
-        if (current == want) return true;
-        if (current.empty() || current == "Ljava/lang/Object;") return false;
+        if (current == want) {
+            if (!m3_path.empty())
+                fprintf(stderr, "[M3-ANCESTRY] query=%s want=%s TRUE "
+                                "this=%p\n", m3_path.c_str(), want.c_str(),
+                        (const void*)this);
+            return true;
+        }
+        if (current.empty() || current == "Ljava/lang/Object;") {
+            if (!m3_path.empty())
+                fprintf(stderr, "[M3-ANCESTRY] query=%s want=%s FALSE "
+                                "this=%p\n", m3_path.c_str(), want.c_str(),
+                        (const void*)this);
+            return false;
+        }
     }
     return false;
 }
