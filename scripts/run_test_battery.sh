@@ -506,6 +506,47 @@ else
     gate "G08 navigation golden (17 law checks)" 1
 fi
 
+# M3 §6/§13: style-bag layout law — aapt2-built fixture whose buttons take
+# geometry ONLY from the style= bag + parent chain (the headingcalculator
+# keypad shape). Guards: (a) ARSC ResTable_map 12-byte stride + bag_parent
+# chain (unit test on the real fixture ARSC); (b) inflate-layer compiled-
+# reference style resolution; (c) AOSP precedence (direct layout_weight
+# beats the style bag); (d) FIX-M3-004 match-parent remeasure (row = full
+# remaining height after the header).
+M3_FIX_SRC="$MA/tests/fixtures/m3_style_weight"
+rm -rf /tmp/battery_m3sw; mkdir -p /tmp/battery_m3sw
+if cached "M3 style geometry golden (6 law checks)"; then
+    skip "M3 fixture build (aapt2+ECJ+D8)"
+    skip "M3 ARSC style law (17 checks)"
+    skip "M3 style geometry golden (6 law checks)"
+elif [ -d "$M3_FIX_SRC" ]; then
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
+        "$M3_FIX_SRC" /tmp/battery_m3sw/m3_style_weight.apk \
+        > /tmp/battery_m3sw/build.log 2>&1
+    gate "M3 fixture build (aapt2+ECJ+D8)" $?
+    (cd "$MA" && unzip -o -q /tmp/battery_m3sw/m3_style_weight.apk \
+        resources.arsc -d /tmp/battery_m3sw) \
+        && g++ -std=c++17 -w -g -O1 -Isrc -Ithird_party/nlohmann_json/include \
+            -o build/m3_arsc_style_law_test tests/m3_arsc_style_law_test.cpp \
+            build/apk/*.o build/dex/*.o build/runtime/*.o build/diagnostics/*.o \
+            build/resources/*.o build/renderer/*.o build/fonts/*.o \
+            build/framework/*.o build/api/*.o build/storage/*.o \
+            -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi \
+            -lpng -lpthread > /tmp/battery_m3sw/link.log 2>&1
+    gate "link m3_arsc_style_law_test" $?
+    ./build/m3_arsc_style_law_test /tmp/battery_m3sw/resources.arsc \
+        > /tmp/battery_m3sw/law.log 2>&1
+    gate "M3 ARSC style law (17 checks)" $?
+    U007_LAYOUT_DEBUG=2 ./build/miniandroid run /tmp/battery_m3sw/m3_style_weight.apk \
+        -o /tmp/battery_m3sw/run > /tmp/battery_m3sw/run.log 2>&1
+    gate "M3 fixture run" $?
+    python3 "$REPOSCRIPTS/m3_style_geometry_check.py" \
+        /tmp/battery_m3sw/run.log > /tmp/battery_m3sw/geometry.log 2>&1
+    gate "M3 style geometry golden (6 law checks)" $?
+else
+    gate "M3 style geometry golden (6 law checks)" 1
+fi
+
 # corpus regression: real external APKs must still boot and render
 if cached "corpus run dubrowgn.microtimer_8"; then
     skip "corpus fetch (hash-verified)"
