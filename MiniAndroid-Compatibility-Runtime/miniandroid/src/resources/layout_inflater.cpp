@@ -1949,6 +1949,23 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 content_w = std::max(content_w, (int)std::lround(48 * metrics_.density));
                 content_h = std::max(content_h, (int)std::lround(48 * metrics_.density));
             }
+            // M3 F-005 FIX-B (AG, 2026-09-08): View foreground intrinsic —
+            // AOSP View.java measure law: a view's wrap size includes its
+            // foreground drawable's intrinsic minimum (getForeground ->
+            // mForeground.getWidth/Height feed getSuggestedMinimumWidth).
+            // Microtimer row buttons carry ONLY a foreground icon: without
+            // this they measured 0x0 and stayed invisible (FINDING-005).
+            if (!n->fg_drawable_path.empty()) {
+                if (image_intrinsic_size(n->fg_drawable_path, n->src_density,
+                                         &iw, &ih)) {
+                    content_w = std::max(content_w, iw);
+                    content_h = std::max(content_h, ih);
+                } else {
+                    // AOSP default-drawable fallback: 48dp minimum.
+                    content_w = std::max(content_w, (int)std::lround(48 * metrics_.density));
+                    content_h = std::max(content_h, (int)std::lround(48 * metrics_.density));
+                }
+            }
             if (n->class_desc.find("EditText") != std::string::npos &&
                 content_h < (int)std::lround(40 * metrics_.density))
                 content_h = (int)std::lround(40 * metrics_.density);
