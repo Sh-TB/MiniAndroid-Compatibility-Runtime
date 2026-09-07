@@ -1,0 +1,910 @@
+[
+  {
+    "apk": "headingcalculator",
+    "rel": "download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
+    "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.28,
+      "screenshot_sha256": "8a6ce425137015076ee70ba7e88af1fbd3f2a03861a2204121f489938c240a6c"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.29,
+      "screenshot_sha256": "8a6ce425137015076ee70ba7e88af1fbd3f2a03861a2204121f489938c240a6c"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 135,
+      "zero_sized": 36
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        225,
+        225,
+        225
+      ],
+      "nonbg_pct": 82.5085,
+      "content_bbox": [
+        3,
+        18,
+        1076,
+        1916
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[EXP092-COPY] framebuffer_ has 2047124 non-white pixels"
+    }
+  },
+  {
+    "apk": "microtimer",
+    "rel": "download/exp076_corpus/dubrowgn.microtimer_8.apk",
+    "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 29.37,
+      "screenshot_sha256": "69c8524f3e5e7696e7d2421b99a593f4af9089a47099c439ff16703c2e0c9ec8"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 28.3,
+      "screenshot_sha256": "69c8524f3e5e7696e7d2421b99a593f4af9089a47099c439ff16703c2e0c9ec8"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 52,
+      "zero_sized": 2
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "nonbg_pct": 50.2008,
+      "content_bbox": [
+        0,
+        948,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[G08-LAUNCH] FAILED: no component (implicit intent)"
+    }
+  },
+  {
+    "apk": "billthefarmer_notes",
+    "rel": "download/exp073_real_apps/org.billthefarmer.notes_139.apk",
+    "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.33,
+      "screenshot_sha256": "06ba8026b670b15201ab977781a86c47ff43b16b911fd1ad0f548c114dd97d40"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.32,
+      "screenshot_sha256": "06ba8026b670b15201ab977781a86c47ff43b16b911fd1ad0f548c114dd97d40"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 16,
+      "zero_sized": 0
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        153,
+        153,
+        153
+      ],
+      "nonbg_pct": 99.8859,
+      "content_bbox": [
+        0,
+        1,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[EXP092-COPY] framebuffer_ has 18242 non-white pixels"
+    }
+  },
+  {
+    "apk": "muellerma_stopwatch",
+    "rel": "download/exp076_corpus/com.github.muellerma.stopwatch_6.apk",
+    "sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
+    "base": {
+      "rc": 1,
+      "status": "PARTIAL",
+      "seconds": 0.39,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "rerun": {
+      "rc": 1,
+      "status": "PARTIAL",
+      "seconds": 0.4,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "PARTIAL"
+    },
+    "view_tree": {
+      "present": false
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        0,
+        0,
+        0
+      ],
+      "nonbg_pct": 98.8681,
+      "content_bbox": [
+        0,
+        0,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "PARTIAL"
+      ],
+      "exception_mentions": 18,
+      "last_line": "[ApkParser] Central Directory: 333 entries at offset 716800"
+    }
+  },
+  {
+    "apk": "simplestopwatch",
+    "rel": "download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+    "sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.24,
+      "screenshot_sha256": "fa499f8110eeaadaf69229065ea491791026d43557bf048ec36eb8430612f18f"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.24,
+      "screenshot_sha256": "fa499f8110eeaadaf69229065ea491791026d43557bf048ec36eb8430612f18f"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 22,
+      "zero_sized": 3
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        216,
+        216,
+        216
+      ],
+      "nonbg_pct": 99.8604,
+      "content_bbox": [
+        0,
+        1,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[EXP092-COPY] framebuffer_ has 2065788 non-white pixels"
+    }
+  },
+  {
+    "apk": "gmdice",
+    "rel": "download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+    "sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.22,
+      "screenshot_sha256": "559375a77433b6152a73078819528cbf5d6763b60ecc38ad075356ef9d57648e"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.21,
+      "screenshot_sha256": "559375a77433b6152a73078819528cbf5d6763b60ecc38ad075356ef9d57648e"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 20,
+      "zero_sized": 1
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        153,
+        153,
+        153
+      ],
+      "nonbg_pct": 24.6074,
+      "content_bbox": [
+        0,
+        778,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[EXP092-COPY] framebuffer_ has 1744539 non-white pixels"
+    }
+  },
+  {
+    "apk": "unote",
+    "rel": "download/exp076_corpus/app.varlorg.unote_30.apk",
+    "sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.41,
+      "screenshot_sha256": "7b30d52201bb22ac8467cc9c8257f23b60f169c8406f39cdfe0ad8fe48355971"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.21,
+      "screenshot_sha256": "7b30d52201bb22ac8467cc9c8257f23b60f169c8406f39cdfe0ad8fe48355971"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 28,
+      "zero_sized": 2
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        225,
+        225,
+        225
+      ],
+      "nonbg_pct": 91.9512,
+      "content_bbox": [
+        0,
+        0,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[EXP092-COPY] framebuffer_ has 236520 non-white pixels"
+    }
+  },
+  {
+    "apk": "chessclock",
+    "rel": "download/exp073_real_apps/com.chessclock.android_29.apk",
+    "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.24,
+      "screenshot_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.24,
+      "screenshot_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 30,
+      "zero_sized": 9
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        0,
+        0,
+        0
+      ],
+      "nonbg_pct": 0.6771,
+      "content_bbox": [
+        0,
+        954,
+        1079,
+        966
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[G08-LAUNCH] launched Lcom/chessclock/android/Prefs; (stack depth now 1, B view root 0)"
+    }
+  },
+  {
+    "apk": "tictactoe",
+    "rel": "download/tictactoe.apk",
+    "sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.07,
+      "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.0,
+      "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 2,
+      "zero_sized": 2
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "nonbg_pct": 0.0,
+      "content_bbox": null
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 25,
+      "last_line": "[EXP092-COPY] framebuffer_ has 0 non-white pixels"
+    }
+  },
+  {
+    "apk": "openlauncher",
+    "rel": "download/exp076_corpus/com.benny.openlauncher_39.apk",
+    "sha256": "b3320463a7a1ed46c52464bae83a97317d062b1e2097bd1885cdf265f2089f89",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 2.45,
+      "screenshot_sha256": "a49fd6c72d5707a2d057e113a972eb4d5d906f2dcc653ef97ecd56c0ab637c0b"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 2.48,
+      "screenshot_sha256": "a49fd6c72d5707a2d057e113a972eb4d5d906f2dcc653ef97ecd56c0ab637c0b"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 22,
+      "zero_sized": 2
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        216,
+        216,
+        216
+      ],
+      "nonbg_pct": 99.8554,
+      "content_bbox": [
+        1,
+        1,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 41,
+      "last_line": "[G08-RESTORE] previous activity restored: Lcom/benny/openlauncher/activity/OnBoardActivity;"
+    }
+  },
+  {
+    "apk": "dooz",
+    "rel": "download/exp076_corpus/io.github.yamin8000.dooz_18.apk",
+    "sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.09,
+      "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.03,
+      "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 2,
+      "zero_sized": 2
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        255,
+        255,
+        255
+      ],
+      "nonbg_pct": 0.0,
+      "content_bbox": null
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[EXP092-COPY] framebuffer_ has 0 non-white pixels"
+    }
+  },
+  {
+    "apk": "bgclock",
+    "rel": "download/exp076_corpus/nl.hansdezwart.bgclock_2.apk",
+    "sha256": "72c140b0083ef273bc6452a7f1006e1e2dc4c64c61f8bcc90d082c3f6d1f9dee",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.76,
+      "screenshot_sha256": "2f85dd74aa54e46304537868822071f12e4411e1dc8e41c2f354ba9dff076edb"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.81,
+      "screenshot_sha256": "2f85dd74aa54e46304537868822071f12e4411e1dc8e41c2f354ba9dff076edb"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 2,
+      "zero_sized": 0
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        51,
+        46,
+        43
+      ],
+      "nonbg_pct": 0.0,
+      "content_bbox": null
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 27,
+      "last_line": "[EXP092-COPY] framebuffer_ has 2073600 non-white pixels"
+    }
+  },
+  {
+    "apk": "simplekeyboard",
+    "rel": "download/exp076_corpus/rkr.simplekeyboard.inputmethod_145.apk",
+    "sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.19,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.19,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": false
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        0,
+        0,
+        0
+      ],
+      "nonbg_pct": 98.8681,
+      "content_bbox": [
+        0,
+        0,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[ApkParser] Central Directory: 486 entries at offset 634880"
+    }
+  },
+  {
+    "apk": "kiss",
+    "rel": "download/g04_corpus/fr.neamar.kiss_224.apk",
+    "sha256": "da6ab0b1219ad3b5ee573698523fb15d60a918083e0843f94a03c1b12e1098c9",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 67.97,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 51.78,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 15,
+      "zero_sized": 5
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        0,
+        0,
+        0
+      ],
+      "nonbg_pct": 98.8681,
+      "content_bbox": [
+        0,
+        0,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 6,
+      "last_line": "[ApkParser] Central Directory: 493 entries at offset 2174976"
+    }
+  },
+  {
+    "apk": "bouncy",
+    "rel": "download/master_campaign/com.dozingcatsoftware.bouncy_43.apk",
+    "sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.04,
+      "screenshot_sha256": "072ff17874b74846c623b98d0540a4442f8bbc1ec05f6b738ce5ffa50866e1e7"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.06,
+      "screenshot_sha256": "072ff17874b74846c623b98d0540a4442f8bbc1ec05f6b738ce5ffa50866e1e7"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 62,
+      "zero_sized": 6
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        225,
+        225,
+        225
+      ],
+      "nonbg_pct": 83.4255,
+      "content_bbox": [
+        0,
+        147,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 5,
+      "last_line": "[EXP092-COPY] framebuffer_ has 2073600 non-white pixels"
+    }
+  },
+  {
+    "apk": "scope",
+    "rel": "download/master_campaign/org.billthefarmer.scope_140.apk",
+    "sha256": "0e34439ce43bfd47d039ab91a7056051e0cf94c03948eb97236d7d2648ea17de",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.2,
+      "screenshot_sha256": "ff60bf23dccf5f5b794e2c9fa1122bcd15a2937b5b4746d626c2d92b4a963ac3"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.2,
+      "screenshot_sha256": "ff60bf23dccf5f5b794e2c9fa1122bcd15a2937b5b4746d626c2d92b4a963ac3"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 10,
+      "zero_sized": 0
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        216,
+        216,
+        216
+      ],
+      "nonbg_pct": 99.7686,
+      "content_bbox": [
+        0,
+        1,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[EXP092-COPY] framebuffer_ has 2008800 non-white pixels"
+    }
+  },
+  {
+    "apk": "survivalmanual",
+    "rel": "download/master_campaign/org.ligi.survivalmanual_500.apk",
+    "sha256": "6dbc943ce56b34a531fb7e0d6b668f980544389db40da0de7ca440f9f0ba3174",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 3.34,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 3.32,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": false
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        0,
+        0,
+        0
+      ],
+      "nonbg_pct": 98.8681,
+      "content_bbox": [
+        0,
+        0,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 169,
+      "last_line": "[ARSC-VALUES] drawable paths resolved via canonical resolver: 36/125"
+    }
+  },
+  {
+    "apk": "coffee",
+    "rel": "download/master_campaign/com.github.muellerma.coffee_47.apk",
+    "sha256": "ae4688fe48e751517e7a1d56aed27bff10b87daac0d7e28993fb193a7dc8f223",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.34,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.4,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": false
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        0,
+        0,
+        0
+      ],
+      "nonbg_pct": 98.8681,
+      "content_bbox": [
+        0,
+        0,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 103,
+      "last_line": "[ApkParser] Central Directory: 840 entries at offset 2740224"
+    }
+  },
+  {
+    "apk": "diary",
+    "rel": "download/master_campaign/org.billthefarmer.diary_1105.apk",
+    "sha256": "979e8cd8702ab5c0440c2cd094de0d6bdf109632857002966e62af5e9add93ef",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.71,
+      "screenshot_sha256": "1605eb994b8ff3de3629ca1de01f51e12994896be3eee8f97a9a81c7dfea97bc"
+    },
+    "rerun": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.72,
+      "screenshot_sha256": "1605eb994b8ff3de3629ca1de01f51e12994896be3eee8f97a9a81c7dfea97bc"
+    },
+    "deterministic_2x": true,
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 19,
+      "zero_sized": 1
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        91,
+        91,
+        91
+      ],
+      "nonbg_pct": 99.8843,
+      "content_bbox": [
+        0,
+        0,
+        1079,
+        1919
+      ]
+    },
+    "signals": {
+      "status": [
+        "SUCCESS"
+      ],
+      "exception_mentions": 0,
+      "last_line": "[EXP092-COPY] framebuffer_ has 2029440 non-white pixels"
+    }
+  }
+]
