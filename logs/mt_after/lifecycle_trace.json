@@ -1,0 +1,35 @@
+{
+  "activity": "Ldubrowgn/microtimer/MainActivity;",
+  "activity_launch": {
+    "callbacks": [],
+    "component": "",
+    "error": "ACTIVITY_NOT_FOUND: implicit intent (no component)",
+    "launched": false
+  },
+  "apk": "miniandroid/download/exp076_corpus/dubrowgn.microtimer_8.apk",
+  "final_state": "RESUMED",
+  "finish_cascade": null,
+  "transitions": [
+    {
+      "from": "PROCESS_CREATED",
+      "reason": "Activity.onCreate() executed via DEX interpreter (ActivityThread.performLaunchActivity law)",
+      "success": true,
+      "to": "ACTIVITY_CREATED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "ACTIVITY_CREATED",
+      "reason": "Activity.onStart() dispatched via DEX engine (framework stub answered — super-class law; record state advances regardless)",
+      "success": true,
+      "to": "STARTED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "STARTED",
+      "reason": "Activity.onResume() dispatched via DEX engine (handleResumeActivity law)",
+      "success": true,
+      "to": "RESUMED",
+      "virtual_ms": 1000000000
+    }
+  ]
+}

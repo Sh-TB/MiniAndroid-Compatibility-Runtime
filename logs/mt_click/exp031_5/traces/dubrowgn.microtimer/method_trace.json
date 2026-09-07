@@ -1,0 +1,2123 @@
+{
+  "apk_name": "dubrowgn.microtimer_8.apk",
+  "main_class": "Ldubrowgn/microtimer/MainActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/a;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Looper;",
+      "invocation_type": "virtual",
+      "method": "getMainLooper",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/os/Handler;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "d",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/Context;",
+      "invocation_type": "virtual",
+      "method": "getApplicationContext",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "g",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lt/a;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lt/c;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lt/a;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lt/c;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lt/b;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271"
+      ],
+      "class": "Lt/c;",
+      "invocation_type": "virtual",
+      "method": "iterator",
+      "return_value": "Lt/b;#12",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lt/b;",
+      "invocation_type": "virtual",
+      "method": "hasNext",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Lt/b;",
+      "invocation_type": "virtual",
+      "method": "b",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "charAt",
+      "return_value": "<???>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Character;",
+      "invocation_type": "virtual",
+      "method": "isWhitespace",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Character;",
+      "invocation_type": "virtual",
+      "method": "isSpaceChar",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "k",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayList;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashMap;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Le/y;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/LinkedHashSet;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/a;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Le/a;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Le/a;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v2"
+      ],
+      "class": "Landroid/app/Application;",
+      "invocation_type": "virtual",
+      "method": "getSystemService",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "h",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "h",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/d;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "h",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "h",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Le/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Class;",
+      "invocation_type": "virtual",
+      "method": "getPackage",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/NullPointerException;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Ljava/lang/NullPointerException;",
+      "invocation_type": "virtual",
+      "method": "getStackTrace",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Arrays;",
+      "invocation_type": "virtual",
+      "method": "copyOfRange",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "p4294967290"
+      ],
+      "class": "Ljava/lang/NullPointerException;",
+      "invocation_type": "virtual",
+      "method": "setStackTrace",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "m",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "e",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Class;",
+      "invocation_type": "virtual",
+      "method": "getCanonicalName",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/NullPointerException;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Ljava/lang/NullPointerException;",
+      "invocation_type": "virtual",
+      "method": "getStackTrace",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Arrays;",
+      "invocation_type": "virtual",
+      "method": "copyOfRange",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "p4294967290"
+      ],
+      "class": "Ljava/lang/NullPointerException;",
+      "invocation_type": "virtual",
+      "method": "setStackTrace",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "m",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "e",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p4294967295"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "concat",
+      "return_value": "\"fullPackage must not be null\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/NullPointerException;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Ljava/lang/NullPointerException;",
+      "invocation_type": "virtual",
+      "method": "getStackTrace",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Arrays;",
+      "invocation_type": "virtual",
+      "method": "copyOfRange",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "p4294967290"
+      ],
+      "class": "Ljava/lang/NullPointerException;",
+      "invocation_type": "virtual",
+      "method": "setStackTrace",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "m",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "g",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "length",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4",
+        "v5"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "replace",
+      "return_value": "\"\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "g",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v5"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "concat",
+      "return_value": "\"_Impl\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "length",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Class;",
+      "invocation_type": "virtual",
+      "method": "getClassLoader",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Class;",
+      "invocation_type": "virtual",
+      "method": "forName",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/NullPointerException;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Ljava/lang/NullPointerException;",
+      "invocation_type": "virtual",
+      "method": "getStackTrace",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Arrays;",
+      "invocation_type": "virtual",
+      "method": "copyOfRange",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "p4294967290"
+      ],
+      "class": "Ljava/lang/NullPointerException;",
+      "invocation_type": "virtual",
+      "method": "setStackTrace",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "m",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v4"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getDeclaredConstructor",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v4"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "newInstance",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getClass",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "f",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ln/j;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "j",
+      "return_value": "Ln/j;#29",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/BitSet;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ln/g;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/List;",
+      "invocation_type": "virtual",
+      "method": "size",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "currentThread",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967292"
+      ],
+      "class": "Ljava/lang/Thread;",
+      "invocation_type": "virtual",
+      "method": "getStackTrace",
+      "return_value": "Larray;#33",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967293"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ljava/lang/StackTraceElement;",
+      "invocation_type": "virtual",
+      "method": "getClassName",
+      "return_value": "\"a.e\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ljava/lang/StackTraceElement;",
+      "invocation_type": "virtual",
+      "method": "getClassName",
+      "return_value": "\"a.e\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ljava/lang/StackTraceElement;",
+      "invocation_type": "virtual",
+      "method": "getClassName",
+      "return_value": "\"dubrowgn.microtimer.db.Database\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ljava/lang/StackTraceElement;",
+      "invocation_type": "virtual",
+      "method": "getClassName",
+      "return_value": "\"dubrowgn.microtimer.MainActivity\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967293"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "equals",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "h",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ln/h;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v7"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "g",
+      "return_value": "Ln/h;#38",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v2"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#39",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v2"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#39",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"lateinit property internalOpenHelper has not been initialized\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm/c;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Lm/c;",
+      "invocation_type": "virtual",
+      "method": "getStackTrace",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Arrays;",
+      "invocation_type": "virtual",
+      "method": "copyOfRange",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "p4294967290"
+      ],
+      "class": "Lm/c;",
+      "invocation_type": "virtual",
+      "method": "setStackTrace",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "m",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "n",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "h",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "isInstance",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ldubrowgn/microtimer/db/Database;",
+      "invocation_type": "virtual",
+      "method": "o",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v2"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#41",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v2"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#41",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"lateinit property internalOpenHelper has not been initialized\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm/c;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Lm/c;",
+      "invocation_type": "virtual",
+      "method": "getStackTrace",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Arrays;",
+      "invocation_type": "virtual",
+      "method": "copyOfRange",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "p4294967290"
+      ],
+      "class": "Lm/c;",
+      "invocation_type": "virtual",
+      "method": "setStackTrace",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "m",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "n",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "h",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "isInstance",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ldubrowgn/microtimer/db/Database;",
+      "invocation_type": "virtual",
+      "method": "o",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v2"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#43",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v2"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#43",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"lateinit property internalOpenHelper has not been initialized\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm/c;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Lm/c;",
+      "invocation_type": "virtual",
+      "method": "getStackTrace",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Arrays;",
+      "invocation_type": "virtual",
+      "method": "copyOfRange",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "p4294967290"
+      ],
+      "class": "Lm/c;",
+      "invocation_type": "virtual",
+      "method": "setStackTrace",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "m",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "n",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "h",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lg/e;",
+      "invocation_type": "virtual",
+      "method": "setWriteAheadLoggingEnabled",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "h",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/ArrayDeque;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ln/i;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "k",
+      "return_value": "Ln/i;#46",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/BitSet;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/List;",
+      "invocation_type": "virtual",
+      "method": "size",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "a",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/Context;",
+      "invocation_type": "virtual",
+      "method": "getPackageName",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "p4294967271"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#48",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"package:dubrowgn.microtimer\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/net/Uri;",
+      "invocation_type": "virtual",
+      "method": "parse",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "v4"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "checkSelfPermission",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "d",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "v4"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSystemService",
+      "return_value": "Landroid/os/PowerManager;#49",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/Context;",
+      "invocation_type": "virtual",
+      "method": "getPackageName",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v4",
+        "v5"
+      ],
+      "class": "Landroid/os/PowerManager;",
+      "invocation_type": "virtual",
+      "method": "isIgnoringBatteryOptimizations",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "d",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/Intent;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "v4"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "startActivity",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "v4"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSystemService",
+      "return_value": "Landroid/app/AlarmManager;#51",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0"
+      ],
+      "class": "Landroid/app/AlarmManager;",
+      "invocation_type": "virtual",
+      "method": "canScheduleExactAlarms",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/b;",
+      "invocation_type": "virtual",
+      "method": "a",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "d",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/Intent;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "v4"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "startActivity",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "v3"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSystemService",
+      "return_value": "Landroid/app/NotificationManager;#53",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3"
+      ],
+      "class": "Landroid/app/NotificationManager;",
+      "invocation_type": "virtual",
+      "method": "canUseFullScreenIntent",
+      "return_value": "false",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "d",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/content/Intent;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "v3"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "startActivity",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSystemService",
+      "return_value": "Landroid/app/NotificationManager;#53",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/NotificationChannel;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v3",
+        "v4"
+      ],
+      "class": "Landroid/app/NotificationChannel;",
+      "invocation_type": "virtual",
+      "method": "setDescription",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/app/NotificationManager;",
+      "invocation_type": "virtual",
+      "method": "createNotificationChannel",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#58",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "g",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#62",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "g",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#83",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#70",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#71",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#72",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#74",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#75",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#76",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#78",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#79",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#80",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#82",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#67",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/ImageButton;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#61",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/ImageButton;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/view/View;#84",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lk/d;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "v3"
+      ],
+      "class": "Landroid/widget/Button;",
+      "invocation_type": "virtual",
+      "method": "setOnClickListener",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "v15"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setShowWhenLocked",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "v15"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setTurnScreenOn",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967272",
+        "p4294967271"
+      ],
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSystemService",
+      "return_value": "Landroid/app/KeyguardManager;#99",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "f",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967271",
+        "p4294967272",
+        "v3"
+      ],
+      "class": "Landroid/app/KeyguardManager;",
+      "invocation_type": "virtual",
+      "method": "requestDismissKeyguard",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967295"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "d",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ldubrowgn/microtimer/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "c",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v2"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#100",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v2"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#100",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"lateinit property alarmDao has not been initialized\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lm/c;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967290"
+      ],
+      "class": "<unknown>",
+      "invocation_type": "virtual",
+      "method": "getName",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6"
+      ],
+      "class": "Lm/c;",
+      "invocation_type": "virtual",
+      "method": "getStackTrace",
+      "return_value": "null",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/util/Arrays;",
+      "invocation_type": "virtual",
+      "method": "copyOfRange",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v6",
+        "p4294967290"
+      ],
+      "class": "Lm/c;",
+      "invocation_type": "virtual",
+      "method": "setStackTrace",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "m",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "La/e;",
+      "invocation_type": "virtual",
+      "method": "n",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-09-07T05:48:36Z",
+  "total_api_calls": 254
+}

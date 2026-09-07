@@ -1,0 +1,122 @@
+{
+  "clickable_views": 14,
+  "frame1_sha_note": "screenshot.png (already written by stage_capture_output)",
+  "per_view": [
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lk/d;",
+      "state_changed": false,
+      "view_id": 100
+    },
+    {
+      "changed_px": 45147,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lk/d;",
+      "screenshot": "click_frame_1.png",
+      "state_changed": true,
+      "view_id": 99
+    },
+    {
+      "changed_px": 45147,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lk/d;",
+      "screenshot": "click_frame_2.png",
+      "state_changed": true,
+      "view_id": 98
+    },
+    {
+      "changed_px": 45149,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lk/d;",
+      "screenshot": "click_frame_3.png",
+      "state_changed": true,
+      "view_id": 96
+    },
+    {
+      "changed_px": 43666,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lk/d;",
+      "screenshot": "click_frame_4.png",
+      "state_changed": true,
+      "view_id": 95
+    },
+    {
+      "changed_px": 43765,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lk/d;",
+      "screenshot": "click_frame_5.png",
+      "state_changed": true,
+      "view_id": 94
+    },
+    {
+      "changed_px": 41472,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lk/d;",
+      "state_changed": true,
+      "view_id": 92
+    },
+    {
+      "changed_px": 41571,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lk/d;",
+      "state_changed": true,
+      "view_id": 91
+    },
+    {
+      "changed_px": 38915,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lk/d;",
+      "state_changed": true,
+      "view_id": 90
+    },
+    {
+      "changed_px": 38915,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lk/d;",
+      "state_changed": true,
+      "view_id": 88
+    },
+    {
+      "changed_px": 38915,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lk/d;",
+      "state_changed": true,
+      "view_id": 87
+    },
+    {
+      "changed_px": 38915,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lk/d;",
+      "state_changed": true,
+      "view_id": 86
+    }
+  ],
+  "views_changed_second_frame": 11,
+  "views_probed": 12,
+  "xml_onclick_views": 0
+}
