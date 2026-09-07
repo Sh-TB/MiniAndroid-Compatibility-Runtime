@@ -6,7 +6,7 @@
     "rc": 0,
     "status": "SUCCESS",
     "seconds": 0.24,
-    "screenshot_sha256": "4f32761409cba594532f621e5148e7a98dec838e3ebb00efb17947f87a05aeaa"
+    "screenshot_sha256": "775ada3fd2efe2dc63c3e6ffccea522acf8f228b31f31c595c0cefdd50f97e62"
   },
   "trace": {
     "status": "SUCCESS"
@@ -14,7 +14,7 @@
   "view_tree": {
     "present": true,
     "views": 30,
-    "zero_sized": 18
+    "zero_sized": 10
   },
   "pixel": {
     "w": 1080,
@@ -27,9 +27,9 @@
     "nonbg_pct": 2.7077,
     "content_bbox": [
       0,
-      718,
+      380,
       1079,
-      1866
+      1527
     ]
   }
 }

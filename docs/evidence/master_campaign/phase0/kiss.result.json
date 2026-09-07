@@ -3,9 +3,9 @@
   "rel": "download/g04_corpus/fr.neamar.kiss_224.apk",
   "sha256": "da6ab0b1219ad3b5ee573698523fb15d60a918083e0843f94a03c1b12e1098c9",
   "base": {
-    "rc": 1,
-    "status": "PARTIAL",
-    "seconds": 65.8,
+    "rc": 0,
+    "status": "SUCCESS",
+    "seconds": 66.12,
     "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
   },
   "trace": {
@@ -14,7 +14,7 @@
   "view_tree": {
     "present": true,
     "views": 15,
-    "zero_sized": 1
+    "zero_sized": 5
   },
   "pixel": {
     "w": 1080,

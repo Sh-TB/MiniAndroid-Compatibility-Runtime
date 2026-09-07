@@ -875,20 +875,40 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         else if (n == "clickable") a.clickable = (raw == "true") || at.value.is_reference();
         else if (n == "enabled") node.enabled = raw != "false";
         else if (n == "lines") a.num_lines = atoi(raw.c_str());
-        else if (n == "singleLine") a.single_line = raw == "true";
+        else if (n == "singleLine") a.single_line = at.value.is_bool() ? at.value.data != 0 : raw == "true";
         else if (n == "elevation") a.elevation_px = parse_dim_attr(&at, stats);
         // layout_* relative positioning params (RelativeLayout) — recorded, best-effort
-        else if (n == "layout_alignParentBottom") { if (raw == "true") a.layout_gravity |= 0x50; }
-        else if (n == "layout_alignParentTop") { if (raw == "true") a.layout_gravity |= 0x30; }
-        else if (n == "layout_centerHorizontal") { if (raw == "true") a.layout_gravity |= 0x1; }
-        else if (n == "layout_centerInParent") { if (raw == "true") a.layout_gravity |= 0x11; }
-        else if (n == "layout_centerVertical") { if (raw == "true") a.layout_gravity |= 0x10; }
+        // MASTER-2 FIX-MEASURE-002b (compiled-boolean law): layout booleans
+        // in release-minified AXML carry NO raw string (value type 0x12,
+        // data 0/1) — raw=="true" never matched, silently dropping
+        // alignParentTop/Bottom/center* (scope v140: every custom view's
+        // cgrav stayed 0xffffffff). The boolean is the TYPED value; the raw
+        // string is only a fallback for aapt-opt-compiled sources.
+        // MASTER-2 FIX-MEASURE-002c (sentinel-OR law): a.layout_gravity's
+        // "absent" sentinel is -1; `-1 | bit` stays -1, so alignParent*/
+        // center* bits were DEAD on every node without an explicit
+        // android:layout_gravity (scope v140 cgrav stayed 0xffffffff).
+        // Accumulate from 0 when the sentinel is unset.
+        #define RL_GRAVITY_OR(bit) a.layout_gravity = (a.layout_gravity >= 0 ? a.layout_gravity : 0) | (bit)
+        else if (n == "layout_alignParentBottom") { bool b = at.value.is_bool() ? at.value.data != 0 : raw == "true"; if (b) { a.rel_align_parent_bottom = true; RL_GRAVITY_OR(0x50); } }
+        else if (n == "layout_alignParentTop") { bool b = at.value.is_bool() ? at.value.data != 0 : raw == "true"; if (b) { a.rel_align_parent_top = true; RL_GRAVITY_OR(0x30); } }
+        else if (n == "layout_centerHorizontal") { bool b = at.value.is_bool() ? at.value.data != 0 : raw == "true"; if (b) { a.rel_center_horizontal = true; RL_GRAVITY_OR(0x1); } }
+        else if (n == "layout_centerInParent") { bool b = at.value.is_bool() ? at.value.data != 0 : raw == "true"; if (b) { a.rel_center_in_parent = true; RL_GRAVITY_OR(0x11); } }
+        else if (n == "layout_centerVertical") { bool b = at.value.is_bool() ? at.value.data != 0 : raw == "true"; if (b) { a.rel_center_vertical = true; RL_GRAVITY_OR(0x10); } }
         // FIX-2c: RelativeLayout sibling-dependency rules. The referenced id
         // name (from "@id/name" / "@+id/name") is resolved later, at layout
         // time, against the inflated sibling set (AOSP applies rules against
         // the dependency graph, not raw ids).
+        // MASTER-2 FIX-MEASURE-002: the name resolver is shared by the
+        // position family AND the ALIGN_* family (the previous alignLeft/
+        // alignRight branch had no compiled-reference fallback, so rules
+        // like layout_alignLeft="@id/scope" — value type 0x03, no raw
+        // string — resolved to EMPTY and were silently dropped; ground
+        // truth org.billthefarmer.scope v140 res/v9.xml XScale).
         else if (n == "layout_below" || n == "layout_above" ||
-                 n == "layout_toRightOf" || n == "layout_toLeftOf") {
+                 n == "layout_toRightOf" || n == "layout_toLeftOf" ||
+                 n == "layout_alignLeft" || n == "layout_alignRight" ||
+                 n == "layout_alignTop" || n == "layout_alignBottom") {
             std::string nm = parse_ref(raw).name;
             // Strip a leading "+" (android:id=@+id/name convention).
             if (!nm.empty() && nm[0] == '+') nm.erase(nm.begin());
@@ -903,10 +923,22 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             if (n == "layout_below") a.rel_below = nm;
             else if (n == "layout_above") a.rel_above = nm;
             else if (n == "layout_toRightOf") a.rel_right_of = nm;
-            else a.rel_left_of = nm;
+            else if (n == "layout_toLeftOf") a.rel_left_of = nm;
+            // ALIGN_* edge alignment — own fields, NOT aliases of the
+            // position family (AOSP RelativeLayout.ALIGN_LEFT sets mLeft to
+            // the anchor's left EDGE; toLeftOf sets mRight BEFORE the
+            // anchor's left edge).
+            else if (n == "layout_alignLeft") a.rel_align_left = nm;
+            else if (n == "layout_alignRight") a.rel_align_right = nm;
+            else if (n == "layout_alignTop") a.rel_align_top = nm;
+            else a.rel_align_bottom = nm;
         }
-        else if (n == "layout_alignLeft") { /* align with sibling's left edge */ auto r = parse_ref(raw); std::string nm = r.name; if (!nm.empty() && nm[0]=='+') nm.erase(nm.begin()); a.rel_left_of = nm; }
-        else if (n == "layout_alignRight") { auto r = parse_ref(raw); std::string nm = r.name; if (!nm.empty() && nm[0]=='+') nm.erase(nm.begin()); a.rel_right_of = nm; }
+        // MASTER-2 FIX-MEASURE-002: alignParentLeft/Right had NO parsing at
+        // all (only Top/Bottom mapped into layout_gravity bits) — scope's
+        // YScale/Unit (alignParentLeft) and Scope/XScale (alignParentRight)
+        // lost those anchors.
+        else if (n == "layout_alignParentLeft") { a.rel_align_parent_left = at.value.is_bool() ? at.value.data != 0 : raw == "true"; }
+        else if (n == "layout_alignParentRight") { a.rel_align_parent_right = at.value.is_bool() ? at.value.data != 0 : raw == "true"; }
     }
 
     // Apply to node
@@ -961,6 +993,18 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.rel_above_name = a.rel_above;
     node.rel_right_of_name = a.rel_right_of;
     node.rel_left_of_name = a.rel_left_of;
+    // MASTER-2 FIX-MEASURE-002: ALIGN_* family + alignParentLeft/Right
+    node.rel_align_left_name = a.rel_align_left;
+    node.rel_align_right_name = a.rel_align_right;
+    node.rel_align_top_name = a.rel_align_top;
+    node.rel_align_bottom_name = a.rel_align_bottom;
+    node.rel_align_parent_left = a.rel_align_parent_left;
+    node.rel_align_parent_right = a.rel_align_parent_right;
+    node.rel_align_parent_top = a.rel_align_parent_top;
+    node.rel_align_parent_bottom = a.rel_align_parent_bottom;
+    node.rel_center_in_parent = a.rel_center_in_parent;
+    node.rel_center_horizontal = a.rel_center_horizontal;
+    node.rel_center_vertical = a.rel_center_vertical;
     if (a.bg_color != 0) { node.bg_color = a.bg_color; node.bg_from_xml = true; }
     if (!a.bg_drawable.empty()) {
         node.bg_drawable_path = a.bg_drawable; node.bg_from_xml = true;
@@ -1230,7 +1274,283 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         // HORIZONTAL. ViewNode keeps -1 as the "unset" evidence value; the
         // layout law consumes unset as horizontal at every decision point.
         const bool horiz_ll = n->orientation != 1;
-        for (size_t i = 0; i < n->children.size(); i++) {
+        // ===================================================================
+        // MASTER-2 FIX-MEASURE-002 (§13): AOSP RelativeLayout measure law.
+        // (RelativeLayout.java, android-15.0.0_r1 onMeasure). Previously RL
+        // children were measured in declaration order with plain
+        // ViewGroup.getChildMeasureSpec specs — a wrap_content child
+        // anchored to siblings (below=/toRightOf=/alignParentRight=...)
+        // measured at FULL available size regardless of its anchors, and
+        // unparsed rules (alignLeft/alignTop/alignBottom/
+        // alignParentLeft/alignParentRight) left whole constraint families
+        // missing. Evidence: org.billthefarmer.scope v140 res/v9.xml —
+        // Scope (wrap×wrap, toRightOf=yscale, above=xscale,
+        // alignParentTop+Right) and Unit measured 0x0/1080x1920 where AOSP
+        // resolves Scope to EXACTLY(1035)xEXACTLY(1860) and Unit to
+        // EXACTLY(45)xEXACTLY(60) at 1080x1920.
+        //
+        // AOSP structure implemented here:
+        //   1. two dependency-sorted passes (horizontal, vertical) —
+        //      anchors measured + positioned before their dependents;
+        //   2. applyHorizontalSizeRules / applyVerticalSizeRules — resolve
+        //      the child's mLeft/mRight/mTop/mBottom from sibling anchors
+        //      (+ their margins) or parent edges;
+        //   3. getChildMeasureSpec — constraint-aware spec derivation
+        //      (both edges fixed → EXACTLY(end-start); explicit size →
+        //      EXACTLY(min(maxAvailable, size)); match_parent →
+        //      EXACTLY(maxAvailable); wrap → AT_MOST(maxAvailable));
+        //   4. positionChildHorizontal/Vertical — cache the remaining edge
+        //      from the measured size at MEASURE time (AOSP onLayout only
+        //      replays these cached edges).
+        // Hostile deviation (documented): AOSP throws
+        // "IllegalStateException: circular dependency in RelativeLayout";
+        // the runtime falls back to declaration order + diagnostic so the
+        // hostile battery's no-crash law holds.
+        // ===================================================================
+        const bool is_rl_container =
+            container && is_a(n->class_desc, "Landroid/widget/RelativeLayout;");
+        int content_w = 0, content_h = 0;
+        bool rl_edges_aggregated = false;
+        if (is_rl_container) {
+            const int NOT_SET = INT_MIN;
+            struct Edge { int l = NOT_SET, r = NOT_SET, t = NOT_SET, b = NOT_SET; };
+            std::map<uint32_t, Edge> edges;
+
+            auto name_to_id = [&](const std::string& nm) -> uint32_t {
+                if (nm.empty()) return 0;
+                for (uint32_t cid : n->children) {
+                    auto* cn = views->find_node(cid);
+                    if (cn && cn->visibility != 8 && cn->android_id_name == nm)
+                        return cid;
+                }
+                return 0;
+            };
+
+            // Kahn topological sort over one axis' anchor rules (AOSP
+            // DependencyGraph.getSortedViews). Self-dependency ignored
+            // (AOSP da3003 law); cycle → declaration order + diagnostic.
+            auto topo = [&](auto&& deps_of) -> std::vector<size_t> {
+                const size_t N = n->children.size();
+                std::vector<size_t> indeg(N, 0), order;
+                std::vector<std::vector<size_t>> adj(N);
+                for (size_t i = 0; i < N; i++)
+                    for (uint32_t dep : deps_of(i)) {
+                        if (!dep) continue;
+                        for (size_t j = 0; j < N; j++)
+                            if (j != i && n->children[j] == dep) {
+                                adj[j].push_back(i);
+                                indeg[i]++;
+                            }
+                    }
+                std::vector<size_t> ready;
+                for (size_t i = 0; i < N; i++)
+                    if (!indeg[i]) ready.push_back(i);
+                while (!ready.empty()) {
+                    size_t u = ready.back(); ready.pop_back();
+                    order.push_back(u);
+                    for (size_t v : adj[u])
+                        if (--indeg[v] == 0) ready.push_back(v);
+                }
+                if (order.size() != N) {
+                    if (getenv("U007_LAYOUT_DEBUG"))
+                        fprintf(stderr, "[U007-LAYOUT] RelativeLayout circular "
+                                        "dependency — declaration order fallback\n");
+                    order.resize(N);
+                    for (size_t i = 0; i < N; i++) order[i] = i;
+                }
+                return order;
+            };
+            auto horiz_deps = [&](size_t i) -> std::vector<uint32_t> {
+                auto* cn = views->find_node(n->children[i]);
+                if (!cn) return {};
+                return {name_to_id(cn->rel_right_of_name),
+                        name_to_id(cn->rel_left_of_name),
+                        name_to_id(cn->rel_align_left_name),
+                        name_to_id(cn->rel_align_right_name)};
+            };
+            auto vert_deps = [&](size_t i) -> std::vector<uint32_t> {
+                auto* cn = views->find_node(n->children[i]);
+                if (!cn) return {};
+                return {name_to_id(cn->rel_below_name),
+                        name_to_id(cn->rel_above_name),
+                        name_to_id(cn->rel_align_top_name),
+                        name_to_id(cn->rel_align_bottom_name)};
+            };
+
+            // AOSP getChildMeasureSpec (RelativeLayout constraint law).
+            auto rl_child_spec = [&](int start, int end, int childSize,
+                                     int startMargin, int endMargin,
+                                     int startPad, int endPad,
+                                     int mySize) -> Spec {
+                const bool isUnspec = mySize < 0;
+                if (isUnspec) {
+                    if (start != NOT_SET && end != NOT_SET)
+                        return {std::max(0, end - start), M_EXACTLY};
+                    if (childSize >= 0) return {childSize, M_EXACTLY};
+                    return {0, M_UNSPEC};
+                }
+                const int ts = start == NOT_SET ? startPad + startMargin : start;
+                const int te = end == NOT_SET ? mySize - endPad - endMargin : end;
+                const int maxAvail = te - ts;
+                if (start != NOT_SET && end != NOT_SET)
+                    return {std::max(0, maxAvail), M_EXACTLY};
+                if (childSize >= 0)
+                    return {maxAvail >= 0 ? std::min(maxAvail, childSize)
+                                          : childSize,
+                            M_EXACTLY};
+                if (childSize == -1) return {std::max(0, maxAvail), M_EXACTLY};
+                // WRAP_CONTENT and unknown sentinels.
+                if (maxAvail >= 0) return {maxAvail, M_AT_MOST};
+                return {0, M_UNSPEC};
+            };
+
+            const int myWidth = sw.mode == M_UNSPEC ? -1 : sw.size;
+            const int myHeight = sh.mode == M_UNSPEC ? -1 : sh.size;
+            const int cg_default = n->child_gravity >= 0 ? n->child_gravity : 0;
+
+            // ---- horizontal pass (sorted) ----
+            for (size_t i : topo(horiz_deps)) {
+                auto* cn = views->find_node(n->children[i]);
+                if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
+                Edge& e = edges[n->children[i]];
+                // applyHorizontalSizeRules (anchor margins included, AOSP).
+                if (uint32_t a = name_to_id(cn->rel_left_of_name)) {
+                    auto* an = views->find_node(a);
+                    if (an) e.r = edges[a].l - (an->lp_margin_left + cn->lp_margin_right);
+                }
+                if (uint32_t a = name_to_id(cn->rel_right_of_name)) {
+                    auto* an = views->find_node(a);
+                    if (an) e.l = edges[a].r + (an->lp_margin_right + cn->lp_margin_left);
+                }
+                if (uint32_t a = name_to_id(cn->rel_align_left_name)) {
+                    auto* an = views->find_node(a);
+                    if (an) e.l = edges[a].l + cn->lp_margin_left;
+                }
+                if (uint32_t a = name_to_id(cn->rel_align_right_name)) {
+                    auto* an = views->find_node(a);
+                    if (an) e.r = edges[a].r - cn->lp_margin_right;
+                }
+                if (cn->rel_align_parent_left)
+                    e.l = n->padding_left + cn->lp_margin_left;
+                if (cn->rel_align_parent_right)
+                    e.r = myWidth - n->padding_right - cn->lp_margin_right;
+
+                const Spec wspec = rl_child_spec(e.l, e.r, cn->lp_width,
+                                                 cn->lp_margin_left,
+                                                 cn->lp_margin_right,
+                                                 n->padding_left,
+                                                 n->padding_right, myWidth);
+                // measureChildHorizontal height law (modern targets:
+                // mAllowBrokenMeasureSpecs=false,
+                // mMeasureVerticalWithPaddingMargin=false).
+                Spec hspec;
+                if (myHeight < 0) {
+                    if (cn->lp_height >= 0) hspec = {cn->lp_height, M_EXACTLY};
+                    else hspec = {0, M_UNSPEC};
+                } else if (cn->lp_height == -1) {
+                    hspec = {std::max(0, myHeight), M_EXACTLY};
+                } else {
+                    hspec = {std::max(0, myHeight), M_AT_MOST};
+                }
+                auto sz = measure(n->children[i], wspec, hspec, depth + 1);
+                child_sizes[i] = sz;
+                // positionChildHorizontal — cache edges from measured width.
+                if (e.l == NOT_SET && e.r != NOT_SET) {
+                    e.l = e.r - sz.first;
+                } else if (e.l != NOT_SET && e.r == NOT_SET) {
+                    e.r = e.l + sz.first;
+                } else if (e.l == NOT_SET && e.r == NOT_SET) {
+                    if ((cn->rel_center_in_parent || cn->rel_center_horizontal) &&
+                        myWidth >= 0 && sw.mode != M_EXACTLY) {
+                        // centerHorizontal law (wrap RL → positionAtEdge).
+                        e.l = (myWidth - sz.first) / 2;
+                        e.r = e.l + sz.first;
+                    } else {
+                        e.l = n->padding_left + cn->lp_margin_left;
+                        e.r = e.l + sz.first;
+                    }
+                }
+                // FIX-MEASURE-002e: cache for the onLayout replay.
+                cn->rl_cached_left = e.l;
+                cn->rl_cached_right = e.r;
+                cn->rl_edges_valid = true;
+            }
+
+            // ---- vertical pass (sorted) ----
+            for (size_t i : topo(vert_deps)) {
+                auto* cn = views->find_node(n->children[i]);
+                if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
+                Edge& e = edges[n->children[i]];
+                // applyVerticalSizeRules.
+                if (uint32_t a = name_to_id(cn->rel_above_name)) {
+                    auto* an = views->find_node(a);
+                    if (an) e.b = edges[a].t - (an->lp_margin_top + cn->lp_margin_bottom);
+                }
+                if (uint32_t a = name_to_id(cn->rel_below_name)) {
+                    auto* an = views->find_node(a);
+                    if (an) e.t = edges[a].b + (an->lp_margin_bottom + cn->lp_margin_top);
+                }
+                if (uint32_t a = name_to_id(cn->rel_align_top_name)) {
+                    auto* an = views->find_node(a);
+                    if (an) e.t = edges[a].t + cn->lp_margin_top;
+                }
+                if (uint32_t a = name_to_id(cn->rel_align_bottom_name)) {
+                    auto* an = views->find_node(a);
+                    if (an) e.b = edges[a].b - cn->lp_margin_bottom;
+                }
+                // MASTER-2 FIX-MEASURE-002d: explicit RL rule booleans
+                // (the legacy gravity-bit masks overlap — 0x50 & 0x30 =
+                // 0x10 — and cannot encode RL rules unambiguously).
+                if (cn->rel_align_parent_top)
+                    e.t = n->padding_top + cn->lp_margin_top;
+                if (cn->rel_align_parent_bottom)
+                    e.b = myHeight - n->padding_bottom - cn->lp_margin_bottom;
+
+                const Spec wspec = rl_child_spec(e.l, e.r, cn->lp_width,
+                                                 cn->lp_margin_left,
+                                                 cn->lp_margin_right,
+                                                 n->padding_left,
+                                                 n->padding_right, myWidth);
+                const Spec hspec = rl_child_spec(e.t, e.b, cn->lp_height,
+                                                 cn->lp_margin_top,
+                                                 cn->lp_margin_bottom,
+                                                 n->padding_top,
+                                                 n->padding_bottom, myHeight);
+                auto sz = measure(n->children[i], wspec, hspec, depth + 1);
+                child_sizes[i] = sz;
+                // positionChildVertical — cache edges from measured height.
+                if (e.t == NOT_SET && e.b != NOT_SET) {
+                    e.t = e.b - sz.second;
+                } else if (e.t != NOT_SET && e.b == NOT_SET) {
+                    e.b = e.t + sz.second;
+                } else if (e.t == NOT_SET && e.b == NOT_SET) {
+                    if ((cn->rel_center_in_parent || cn->rel_center_vertical) &&
+                        myHeight >= 0 && sh.mode != M_EXACTLY) {
+                        e.t = (myHeight - sz.second) / 2;
+                        e.b = e.t + sz.second;
+                    } else {
+                        e.t = n->padding_top + cn->lp_margin_top;
+                        e.b = e.t + sz.second;
+                    }
+                }
+                // FIX-MEASURE-002e: cache for the onLayout replay.
+                cn->rl_cached_top = e.t;
+                cn->rl_cached_bottom = e.b;
+            }
+
+            // AOSP wrap-RL content: max extents over resolved EDGES (not
+            // child content sizes), margins included.
+            content_w = 0; content_h = 0;
+            for (size_t i = 0; i < n->children.size(); i++) {
+                auto* cn = views->find_node(n->children[i]);
+                if (!cn || cn->visibility == 8) continue;
+                const Edge& e = edges[n->children[i]];
+                if (e.r != INT_MIN) content_w = std::max(content_w, e.r + cn->lp_margin_right);
+                if (e.b != INT_MIN) content_h = std::max(content_h, e.b + cn->lp_margin_bottom);
+            }
+            (void)cg_default;
+            rl_edges_aggregated = true;
+        } else for (size_t i = 0; i < n->children.size(); i++) {
             auto* cn = views->find_node(n->children[i]);
             if (!cn) { child_sizes[i] = {0, 0}; continue; }
             int cw_ = cn->lp_width  == INT_MIN ? -2 : cn->lp_width;
@@ -1255,7 +1575,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             child_sizes[i] = measure(n->children[i], csw, csh, depth + 1);
         }
 
-        int content_w = 0, content_h = 0;
+        if (!rl_edges_aggregated) {
         if (!container) {
             // ---- leaf: real text/image content size ----
             const std::string& t = !n->text.empty() ? n->text : n->hint;
@@ -1375,6 +1695,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 }
             }
         }
+        } // !rl_edges_aggregated (RL content came from resolved edges)
 
         // 2) resolve own lp against the incoming spec (resolveSizeAndState).
         // G04 §8 FIX (caught by the law battery): the spec size INCLUDES the
@@ -1746,6 +2067,21 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 std::map<uint32_t, Box> boxes;
                 for (uint32_t cid : kids) {
                     auto* cn = views->find_node(cid);
+                    // MASTER-2 FIX-MEASURE-002e (AOSP onLayout replay law):
+                    // RelativeLayout.onLayout replays the edges cached at
+                    // MEASURE time — it never recomputes from measured
+                    // sizes. Prefer the cached edges when the measure pass
+                    // resolved them; the legacy fixed-point below stays as
+                    // fallback for children without cached edges
+                    // (programmatic addView paths).
+                    if (cn && cn->rl_edges_valid) {
+                        const int bx = cl + cn->rl_cached_left - n->padding_left;
+                        const int by = ct + cn->rl_cached_top - n->padding_top;
+                        const int bw = std::max(0, cn->rl_cached_right - cn->rl_cached_left);
+                        const int bh = std::max(0, cn->rl_cached_bottom - cn->rl_cached_top);
+                        boxes[cid] = {bx, by, bw, bh, true};
+                        continue;
+                    }
                     int w = cn->lp_width >= 0 ? cn->lp_width
                           : (cn->lp_width == -1 ? cw : cn->measured_width);
                     int h = cn->lp_height >= 0 ? cn->lp_height
@@ -1761,7 +2097,13 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         Box& b = boxes[cid];
                         int vg = cn->child_gravity >= 0 ? cn->child_gravity
                                                        : n->container_gravity;
+                        (void)vg;
                         // ── vertical ──
+                        // MASTER-2 FIX-MEASURE-002d: explicit RL rule
+                        // booleans (overlapping legacy masks misrouted
+                        // alignParentTop into the alignParentBottom branch).
+                        // ALIGN_TOP/ALIGN_BOTTOM edge alignment added —
+                        // AOSP RelativeLayout.applyVerticalSizeRules.
                         int y = b.y;
                         if (!cn->rel_below_name.empty()) {
                             if (uint32_t bid = name_to_id(cn->rel_below_name)) {
@@ -1771,12 +2113,20 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                             if (uint32_t bid = name_to_id(cn->rel_above_name)) {
                                 y = boxes[bid].y - b.h - cn->lp_margin_bottom;
                             }
-                        } else if (vg & 0x50) {           // alignParentBottom
+                        } else if (!cn->rel_align_top_name.empty()) {
+                            if (uint32_t bid = name_to_id(cn->rel_align_top_name)) {
+                                y = boxes[bid].y + cn->lp_margin_top;
+                            }
+                        } else if (!cn->rel_align_bottom_name.empty()) {
+                            if (uint32_t bid = name_to_id(cn->rel_align_bottom_name)) {
+                                y = boxes[bid].y + boxes[bid].h - b.h - cn->lp_margin_bottom;
+                            }
+                        } else if (cn->rel_align_parent_bottom) {
                             y = ct + ch - b.h - cn->lp_margin_bottom;
-                        } else if (vg & 0x10) {           // centerVertical
+                        } else if (cn->rel_center_in_parent || cn->rel_center_vertical) {
                             y = ct + (ch - b.h) / 2;
-                        } else if (pass == 0) {           // default: flow top
-                            y = ct;
+                        } else if (cn->rel_align_parent_top || pass == 0) {
+                            y = ct;              // alignParentTop / flow top
                         }
                         if (y != b.y || b.done) {
                             b.y = y;
@@ -1792,12 +2142,20 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                             if (uint32_t lid = name_to_id(cn->rel_left_of_name)) {
                                 x = boxes[lid].x - b.w - cn->lp_margin_right;
                             }
-                        } else if (vg & 0x1) {            // centerHorizontal
+                        } else if (!cn->rel_align_left_name.empty()) {
+                            if (uint32_t lid = name_to_id(cn->rel_align_left_name)) {
+                                x = boxes[lid].x + cn->lp_margin_left;
+                            }
+                        } else if (!cn->rel_align_right_name.empty()) {
+                            if (uint32_t rid = name_to_id(cn->rel_align_right_name)) {
+                                x = boxes[rid].x + boxes[rid].w - b.w - cn->lp_margin_right;
+                            }
+                        } else if (cn->rel_center_in_parent || cn->rel_center_horizontal) {
                             x = cl + (cw - b.w) / 2;
-                        } else if ((vg & 0x7) == 0x5) {   // alignParentRight
+                        } else if (cn->rel_align_parent_right) {
                             x = cl + cw - b.w - cn->lp_margin_right;
-                        } else if (pass == 0) {
-                            x = cl;
+                        } else if (cn->rel_align_parent_left || pass == 0) {
+                            x = cl;              // alignParentLeft / flow left
                         }
                         if (x != b.x || b.done) {
                             b.x = x;

@@ -5,8 +5,8 @@
   "base": {
     "rc": 0,
     "status": "SUCCESS",
-    "seconds": 0.19,
-    "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
+    "seconds": 0.2,
+    "screenshot_sha256": "ff60bf23dccf5f5b794e2c9fa1122bcd15a2937b5b4746d626c2d92b4a963ac3"
   },
   "trace": {
     "status": "SUCCESS"
@@ -14,17 +14,22 @@
   "view_tree": {
     "present": true,
     "views": 10,
-    "zero_sized": 8
+    "zero_sized": 0
   },
   "pixel": {
     "w": 1080,
     "h": 1920,
     "bg": [
-      255,
-      255,
-      255
+      216,
+      216,
+      216
     ],
-    "nonbg_pct": 0.0,
-    "content_bbox": null
+    "nonbg_pct": 99.7686,
+    "content_bbox": [
+      0,
+      1,
+      1079,
+      1919
+    ]
   }
 }
