@@ -11933,6 +11933,25 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
 
     // Pass 1: try with the declared class_name.
     auto cr = shadow_registry_->dispatch(build_ctx(class_name));
+    // M3-DIAG (temporary): why do tick-path setText calls miss the shadow?
+    static const bool m3sd = std::getenv("MINIANDROID_M3_SHADOW_DIAG") != nullptr;
+    if (m3sd && method.find("setText") != std::string::npos) {
+        static thread_local uint64_t sd_log = 0;
+        if (sd_log < 24) {
+            sd_log++;
+            fprintf(stderr,
+                    "[M3-SHADOW] %s.%s pass1 handled=%d class=%s recv=%u/%s "
+                    "args=%zu arg0=%d\n",
+                    class_name.c_str(), method.c_str(), (int)cr.handled,
+                    class_name.c_str(),
+                    (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                        ? args[0].object_id : 0u,
+                    (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                        ? args[0].class_desc.c_str() : "-",
+                    args.size(),
+                    args.empty() ? -1 : (int)args[0].type);
+        }
+    }
     // EXP-071 Phase 8 debug — log dispatch attempts for runOnUIThread.
     if (method == "runOnUIThread" || method == "executeOnUIThread") {
         std::cerr << "[EXP071-SHADOW-DISPATCH] pass1 class_name=" << class_name
@@ -13817,26 +13836,47 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // EXP-067: Resources.getColor(int, Theme) → int (real resolution)
-    // Looks up the color via field_name_by_resid_ → resource_color_values_.
-    // Falls back to default black only if the color is not found.
+    // M3 FIX-M3-007 (§13 ARSC-first law): resolve the color DIRECTLY through
+    // the canonical ARSC resolver (any resid, any package, config-selected)
+    // — the previous field_name_by_resid_ → resource_color_values_ name map
+    // only covered pre-seeded R constants and silently fell back to black
+    // for everything else (chessclock: every setTextColor became black,
+    // hiding labels on the recolored panels). The name-map path stays as a
+    // fallback for values the ARSC cannot answer.
     if (method == "getColor" &&
         class_name.find("Resources") != std::string::npos) {
         int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
+        // M3 FIX-M3-007b: unresolved colors keep the historical black default
+        // for GENERIC consumers (zero collateral visual deltas); the
+        // setTextColor consumer recognizes "black from an unresolved lookup"
+        // via the resolution flag below and retains the style color instead
+        // of painting a known-bogus value (documented deviation, §25).
         int32_t color_val = 0xFF000000;  // default black
         bool resolved = false;
-        auto it = field_name_by_resid_.find(resid);
-        if (it != field_name_by_resid_.end()) {
-            const std::string& name = it->second;
-            auto cit = resource_color_values_.find(name);
-            if (cit != resource_color_values_.end()) {
-                color_val = cit->second;
-                resolved = true;
+        {
+            auto& rt = resources::ResourceRuntime::instance();
+            if (rt.loaded()) {
+                auto v = rt.arsc().resolve_value((uint32_t)resid);
+                if (v && (v->is_color() || v->is_int())) {
+                    color_val = (int32_t)v->data;
+                    resolved = true;
+                }
+            }
+        }
+        if (!resolved) {
+            auto it = field_name_by_resid_.find(resid);
+            if (it != field_name_by_resid_.end()) {
+                const std::string& name = it->second;
+                auto cit = resource_color_values_.find(name);
+                if (cit != resource_color_values_.end()) {
+                    color_val = cit->second;
+                    resolved = true;
+                }
             }
         }
         std::cerr << "[RES] getColor resid=0x" << std::hex << resid << std::dec
-                  << " name=" << (it != field_name_by_resid_.end() ? it->second : "<unknown>")
-                  << " → 0x" << std::hex << (color_val & 0xFFFFFFFF) << std::dec
-                  << (resolved ? "" : " (default black — not resolved)")
+                  << " -> 0x" << std::hex << (color_val & 0xFFFFFFFF) << std::dec
+                  << (resolved ? "" : " (M3-COLOR-UNRESOLVED)")
                   << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_int(color_val);
@@ -14165,6 +14205,33 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // pure arithmetic the interpreter reaches via the bridge when the class
     // is not in the APK DEX. Universal java.lang semantics, no app specifics.
     // ────────────────────────────────────────────────────────────────────────
+    // M3 FIX-M3-006 (§15): java.lang.Integer static math — same law family.
+    // Evidence: microtimer v8 MainActivity.d → Integer.remainderUnsigned
+    // (timer-tick display chain) reached the bridge and was dropped.
+    if (class_name == "Ljava/lang/Integer;" && args.size() >= 1) {
+        auto as_uint = [](const DalvikValue& v) -> uint32_t {
+            return v.type == DalvikType::INT32 ? (uint32_t)v.int_val : 0u;
+        };
+        if (method == "remainderUnsigned" && args.size() >= 2) {
+            uint32_t a = as_uint(args[0]), b = as_uint(args[1]);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(
+                b == 0 ? 0 : (int32_t)(a % b));  // AOSP: div by zero → 0 unsigned remainder semantics guarded upstream
+            return true;
+        }
+        if (method == "divideUnsigned" && args.size() >= 2) {
+            uint32_t a = as_uint(args[0]), b = as_uint(args[1]);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(b == 0 ? 0 : (int32_t)(a / b));
+            return true;
+        }
+        if (method == "compare" && args.size() >= 2) {
+            int32_t a = args[0].int_val, b = args[1].int_val;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(a < b ? -1 : (a > b ? 1 : 0));
+            return true;
+        }
+    }
     if (class_name == "Ljava/lang/Math;" && args.size() >= 1) {
         auto num = [](const DalvikValue& v) -> double {
             switch (v.type) {
@@ -15829,14 +15896,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // Legacy Activity/TextView pattern matchers (kept from pre-EXP-042)
+    // M3 FIX-M3-005: REMOVED the legacy "TextView + *setText*" no-op stub
+    // (pre-EXP-042 relic). It matched by SUBSTRING ("setTextColor".contains(
+    // "setText") → true) and swallowed TextView.setText/setTextColor/
+    // setTextSize as fake-IMPLEMENTED voids whenever the shadow pass missed,
+    // silently discarding app state mutations (chessclock tick-path
+    // setTextColor/setClock setText reached this stub and vanished). View
+    // state mutators must flow to try_shadow_dispatch → ViewShadow, or fail
+    // HONESTLY — never be reported as implemented no-ops.
     // ────────────────────────────────────────────────────────────────────────
-    if (class_name.find("TextView") != std::string::npos &&
-        method.find("setText") != std::string::npos) {
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_void();
-        return true;
-    }
 
     // EXP-075: Removed the hardcoded setContentView bypass.
     // Previously this returned true without calling any shadow, which
