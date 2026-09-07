@@ -1575,6 +1575,105 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             child_sizes[i] = measure(n->children[i], csw, csh, depth + 1);
         }
 
+        // ===================================================================
+        // MASTER-2 FIX-MEASURE-004 (§16): AOSP LinearLayout weight re-
+        // distribution happens INSIDE onMeasure (measureVertical
+        // L985-1045 / measureHorizontal) — EVERY measure pass must produce
+        // the weighted share, because a later measure-only pass (renderer,
+        // re-layout) would otherwise reset 0dp+weight children to their
+        // first-pass EXACTLY(0) size. Evidence: headingcalculator v1 —
+        // weight=1000 button rows measured EXACTLY(480) in the layout-
+        // phase weight pass, then a renderer measure pass reset them to
+        // 1080x0 (SPEC trace: depth=3 EXACTLY(0) with no re-measure
+        // afterwards). The layout-phase weight law stays: it recomputes
+        // the same shares for positioning (idempotent).
+        // ===================================================================
+        if (!is_rl_container && container &&
+            is_a(n->class_desc, "Landroid/widget/LinearLayout;") &&
+            !is_a(n->class_desc, "Landroid/widget/TableLayout;") &&
+            !is_a(n->class_desc, "Landroid/widget/TableRow;")) {
+            const bool main_horiz = n->orientation != 1;   // FIX-G10-001
+            const Spec& mspec = main_horiz ? sw : sh;
+            const Spec& cspec = main_horiz ? sh : sw;
+            if (mspec.mode != M_UNSPEC) {
+                const int mpad = main_horiz ? hpad : vpad;
+                const int cpad = main_horiz ? vpad : hpad;
+                std::vector<size_t> vis;
+                for (size_t i = 0; i < n->children.size(); i++) {
+                    auto* cn = views->find_node(n->children[i]);
+                    if (cn && cn->visibility != 8) vis.push_back(i);
+                }
+                int total_length = 0;
+                float weight_total = 0.0f;
+                bool has_weight = false;
+                for (size_t i : vis) {
+                    auto* cn = views->find_node(n->children[i]);
+                    const int m = main_horiz
+                                      ? cn->lp_margin_left + cn->lp_margin_right
+                                      : cn->lp_margin_top + cn->lp_margin_bottom;
+                    const int lp_main = main_horiz ? cn->lp_width : cn->lp_height;
+                    if (cn->layout_weight > 0) {
+                        has_weight = true;
+                        weight_total += cn->layout_weight / 1000.0f;
+                        if (lp_main != 0)
+                            total_length += (lp_main >= 0 ? lp_main
+                                                          : cn->measured_width) + m;
+                        else
+                            total_length += m;
+                    } else {
+                        total_length += (lp_main >= 0 ? lp_main
+                                                      : (main_horiz ? cn->measured_width
+                                                                    : cn->measured_height)) + m;
+                    }
+                }
+                if (has_weight && weight_total > 0.0f) {
+                    int excess = mspec.size - mpad - total_length;
+                    float rws = (n->weight_sum_valid && n->weight_sum > 0.0f)
+                                    ? n->weight_sum : weight_total;
+                    for (size_t i : vis) {
+                        auto* cn = views->find_node(n->children[i]);
+                        if (cn->layout_weight <= 0) continue;
+                        const float wgt = cn->layout_weight / 1000.0f;
+                        int share = 0;
+                        if (rws > 0.0f) {
+                            share = (int)(wgt * (float)excess / rws);
+                            excess -= share;
+                            rws -= wgt;
+                        }
+                        const int lp_main = main_horiz ? cn->lp_width
+                                                       : cn->lp_height;
+                        const int base = lp_main == 0 ? 0
+                                       : (lp_main >= 0 ? lp_main
+                                                       : (main_horiz ? cn->measured_width
+                                                                     : cn->measured_height));
+                        const int final_main = std::max(0, base + share);
+                        // Cross-axis spec law: the weighted re-measure uses
+                        // the SAME cross spec the first pass used (AOSP
+                        // measureChildBeforeLayout passes the container's
+                        // own spec through getChildMeasureSpec) — for a
+                        // wrap/match cross child that is child_spec's
+                        // mode-preserving law, NOT EXACTLY(available).
+                        // FIX-MEASURE-004b: EXACTLY(available) inflated
+                        // match-height buttons inside a wrap-height row to
+                        // the full 1920 (unote buttons row covered the
+                        // whole screen after the measure-phase weight law).
+                        const int lp_cross = main_horiz ? cn->lp_height
+                                                        : cn->lp_width;
+                        const int cm = main_horiz
+                                           ? cn->lp_margin_top + cn->lp_margin_bottom
+                                           : cn->lp_margin_left + cn->lp_margin_right;
+                        const Spec main_s{std::max(0, final_main), M_EXACTLY};
+                        const Spec cross_s = child_spec(cspec, cm, lp_cross);
+                        child_sizes[i] = main_horiz
+                                             ? measure(n->children[i], main_s,
+                                                       cross_s, depth + 1)
+                                             : measure(n->children[i], cross_s,
+                                                       main_s, depth + 1);
+                    }
+                }
+            }
+        }
+
         if (!rl_edges_aggregated) {
         if (!container) {
             // ---- leaf: real text/image content size ----
@@ -1709,8 +1808,22 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         int lph = n->lp_height == INT_MIN ? -2 : n->lp_height;
         int total_content_w = content_w + hpad;
         int total_content_h = content_h + vpad;
-        int final_w = lpw >= 0 ? lpw : resolve_final(total_content_w, sw);
-        int final_h = lph >= 0 ? lph : resolve_final(total_content_h, sh);
+        // MASTER-2 FIX-MEASURE-003 (AOSP resolveSizeAndState law): an
+        // EXACTLY spec is the PARENT'S COMMAND and ALWAYS wins — the view's
+        // own lp never enters its own resolve (LinearLayout's weight re-
+        // measure constructs the spec directly via
+        // makeMeasureSpec(share, EXACTLY), so a 0dp+weight child resolves
+        // to its WEIGHT SHARE, not back to lp=0). The previous
+        // `lph >= 0 ? lph : …` shortcut re-applied the XML 0dp on top of
+        // the share: headingcalculator's weight=1000 button rows measured
+        // EXACTLY(480) then collapsed to 0 (SPEC-OUT evidence: content=
+        // 296x123 -> 1080x0 under EXACTLY(480)). The lp shortcut is kept
+        // ONLY for non-EXACTLY specs (conservative: fixed-lp children
+        // measured through paths whose spec does not encode the lp).
+        int final_w = (lpw >= 0 && sw.mode != M_EXACTLY)
+                          ? lpw : resolve_final(total_content_w, sw);
+        int final_h = (lph >= 0 && sh.mode != M_EXACTLY)
+                          ? lph : resolve_final(total_content_h, sh);
         // EXACTLY spec wins for match_parent too (already EXACTLY from
         // child_spec); explicit lp never shrinks below the spec EXACTLY size
         // when larger (AOSP chooses the child's explicit size).
@@ -1727,27 +1840,49 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
     };
 
     // Root fills the screen (EXACTLY), per AOSP window measure.
-    auto root_size = measure(root_id,
-                             {metrics_.screen_width, M_EXACTLY},
-                             {metrics_.screen_height, M_EXACTLY}, 0);
-    (void)root_size;
+    // Root spec: the window hands the content root EXACTLY(screen); the
+    // root's OWN lp then shapes its spec per ViewGroup.getChildMeasureSpec
+    // (explicit px → EXACTLY(lp); match_parent → EXACTLY(screen);
+    // wrap_content → AT_MOST(screen)). MASTER-2 FIX-MEASURE-003 companion:
+    // with resolve now spec-pure under EXACTLY, the root's explicit lp
+    // must be encoded HERE (a 0-height root measures 0, not the window
+    // size — g10 law test [13]).
+    std::pair<int,int> root_size_first;
+    {
+        auto* rn = views->find_node(root_id);
+        Mode rwm = M_EXACTLY, rhm = M_EXACTLY;
+        int rws = metrics_.screen_width, rhs = metrics_.screen_height;
+        if (rn) {
+            const int lpw = rn->lp_width  == INT_MIN ? -2 : rn->lp_width;
+            const int lph = rn->lp_height == INT_MIN ? -2 : rn->lp_height;
+            if (lpw >= 0) rws = lpw;
+            else if (lpw == -2) rwm = M_AT_MOST;
+            if (lph >= 0) rhs = lph;
+            else if (lph == -2) rhm = M_AT_MOST;
+        }
+        root_size_first = measure(root_id, {rws, rwm}, {rhs, rhm}, 0);
+    }
+    (void)root_size_first;
 
     // Full per-view geometry evidence (task §3 log format). Gated by env to
     // keep normal runs quiet; U007_LAYOUT_DEBUG=2 also dumps every node.
     if (getenv("U007_LAYOUT_DEBUG")) {
         fprintf(stderr, "[U007-LAYOUT] root measured %dx%d\n",
-                root_size.first, root_size.second);
+                root_size_first.first, root_size_first.second);
         std::function<void(uint32_t, int)> dump = [&](uint32_t vid, int depth) {
             auto* n = views->find_node(vid);
             if (!n) return;
             fprintf(stderr,
                 "[U007-LAYOUT] %*sview %u %s id_name=%s lp=%d/%d weight=%d "
-                "orient=%d measured=%dx%d text_size=%.1f lines=%d below='%s' above='%s' "
+                "orient=%d measured=%dx%d at=(%d,%d) vis=%d clickable=%d "
+                "text_size=%.1f lines=%d below='%s' above='%s' "
                 "right_of='%s' left_of='%s' cgrav=0x%x text='%s'\n",
                 depth * 2, "", vid, n->class_desc.c_str(),
                 n->android_id_name.c_str(), n->lp_width, n->lp_height,
                 n->layout_weight, n->orientation, n->measured_width,
                 n->measured_height,
+                n->measured_left, n->measured_top, n->visibility,
+                (int)(n->clickable || !n->onClick_handler.empty()),
                 n->text_size_px, n->num_lines,
                 n->rel_below_name.c_str(), n->rel_above_name.c_str(),
                 n->rel_right_of_name.c_str(), n->rel_left_of_name.c_str(),
@@ -1762,7 +1897,7 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
     // ---- layout (top-down): assign geometry ----
     struct Task { uint32_t id; int left, top, width, height; };
     std::vector<Task> stack;
-    stack.push_back({root_id, 0, 0, root_size.first, root_size.second});
+    stack.push_back({root_id, 0, 0, root_size_first.first, root_size_first.second});
     while (!stack.empty()) {
         Task t = stack.back(); stack.pop_back();
         auto* n = views->find_node(t.id);
@@ -2044,6 +2179,18 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     // re-measure — record the final main size on the node so
                     // evidence/dumps see post-weight measured dims.
                     cn->measured_height = h;
+                    // MASTER-2 §22 diagnostic (U007_LAYOUT_DEBUG=4): vertical
+                    // stacking contract per child.
+                    if (getenv("U007_LAYOUT_DEBUG") &&
+                        std::string(getenv("U007_LAYOUT_DEBUG")) == "4") {
+                        fprintf(stderr,
+                                "[VSTACK] parent=%u %s kid=%u %s y=%d h=%d "
+                                "lp=%d/%d measured=%dx%d kids=%zu\n",
+                                t.id, n->class_desc.c_str(), cid,
+                                cn->class_desc.c_str(), y, h, cn->lp_width,
+                                cn->lp_height, cn->measured_width,
+                                cn->measured_height, kids.size());
+                    }
                     stack.push_back({cid, x, y, w, h});
                     y += h + cn->lp_margin_bottom;
                 }
