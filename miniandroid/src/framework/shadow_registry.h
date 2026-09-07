@@ -152,6 +152,26 @@ public:
                                       int32_t& out) {
         return false;
     }
+    // M3 F-ROOM-CHAIN: String[] element access for shadows
+    // (SQLiteDatabase.rawQueryWithFactory selectionArgs reads,
+    //  Cursor.getColumnNames materialization).
+    virtual bool get_object_array_length(uint32_t object_id, int32_t& out) {
+        (void)object_id; (void)out; return false;
+    }
+    virtual bool get_object_array_string_element(uint32_t object_id, size_t index,
+                                                 std::string& out) {
+        (void)object_id; (void)index; (void)out; return false;
+    }
+    virtual bool set_object_string_field(uint32_t object_id,
+                                         const std::string& field_name,
+                                         const std::string& value) {
+        (void)object_id; (void)field_name; (void)value; return false;
+    }
+    virtual bool set_object_int_field(uint32_t object_id,
+                                      const std::string& field_name,
+                                      int32_t value) {
+        (void)object_id; (void)field_name; (void)value; return false;
+    }
 };
 
 // Forward-declare so Shadow can hold a back-pointer to the registry.

@@ -945,6 +945,18 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                                   << " class=" << node->class_desc
                                   << " listener_id=" << node->click_listener_id
                                   << std::endl;
+                        // M3 F-ROOM-CHAIN diagnostic: geometry + text so the
+                        // timer-start tap can target the REAL button center
+                        // through the canonical --tap hit-test pipeline.
+                        if (std::getenv("MINIANDROID_DUMP_CLICKABLES")) {
+                            std::cerr << "[CLICKABLE] id=" << vid
+                                      << " cls=" << node->class_desc
+                                      << " x=" << node->x << " y=" << node->y
+                                      << " w=" << node->width
+                                      << " h=" << node->height
+                                      << " text=\"" << node->text << "\""
+                                      << std::endl;
+                        }
                     }
                 }
                 // EXP-100 (UNIFIED_002 §9): audit the CANDIDATE ENUMERATION —

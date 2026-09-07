@@ -86,8 +86,8 @@ int main() {
     {
         ShadowRegistry reg;
         register_platform_shadows(reg);
-        check(reg.stats().shadow_count == 13,
-              "register_platform_shadows registers exactly 13 shadows");
+        check(reg.stats().shadow_count == 14,
+              "register_platform_shadows registers exactly 14 shadows (13 + M3 DatabaseShadow)");
     }
 
     printf("== §6 INV-3: deterministic ownership (register → find identity) ==\n");
@@ -148,8 +148,8 @@ int main() {
         check(reduced.find_as<ThreadShadow>() != nullptr &&
                   reduced.find_as<LooperShadow>() != nullptr,
               "canonical registration completes a reduced registry");
-        check(reduced.stats().shadow_count == 15,
-              "count law: 13 canonical + 2 pre-registered = 15 visible");
+        check(reduced.stats().shadow_count == 16,
+              "count law: 14 canonical + 2 pre-registered = 16 visible (M3 DatabaseShadow)");
     }
 
     printf("§6 shadow registry invariant battery: %d checks, %d failures\n",

@@ -21,7 +21,7 @@ INCLUDES = -Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isr
 # libwebp — Google reference WebP decoder (used by AOSP Skia / BitmapFactory)
 # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
 # rlottie  — Samsung reference Lottie renderer (Telegram uses it directly)
-LIBS = -lz -ljpeg -lstdc++ -lm -lpthread
+LIBS = -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3  # M3 F-ROOM-CHAIN: real SQLite backend
 ifeq ($(MINIANDROID_HAVE_WEBP),1)
 LIBS += -lwebp -lwebpdemux
 endif
