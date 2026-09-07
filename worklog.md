@@ -493,3 +493,33 @@ Stage Summary:
 - kiss PARTIAL(rc=1) → SUCCESS(5/5); scope blank → real app-measured render.
 - Honest blockers remain: scope Scope/Unit hook gap, G07 timer-tick labels,
   bouncy field draw coverage, §29 shells, Telegram freeze-blocked.
+
+---
+Task ID: M3-C1+C2 (MASTER CAMPAIGN 3 session summary)
+Agent: Super Z (main agent)
+Task: MASTER-3 §1-§2 baseline+frontier; §6/§7 cross-pass geometry + weight
+law; §13 resource law; §9 event loop; §15 API coverage; §26 regression gates.
+
+Work Log:
+- Baseline at c0f178a7 (origin verified, clean tree): env restored from
+  scratch, 22 frozen APKs SHA-verified, 52-stage battery ALL PASS.
+- 20-APK frontier matrix: 12 real-content / 4 partial / 3 blank / 1 timeout,
+  all 2x-deterministic; zero drift vs MASTER-2.
+- 9 law commits: 83f1a04d (ARSC stride+bag_parent), 5d8303e4 (style-bag
+  layout params + parent chain), 1df3b263 (ancestry hook lifecycle +
+  match-parent remeasure), 2f91c63f (spec margins/padding + convergence
+  memo), 008573bd (17-check ARSC law test + fixture), 1aff4b97 (55-stage
+  harness), 32d38b53 (setText stub removal, setTextColor, Integer math,
+  ARSC-first getColor), 97876119+916174fc (worklogs).
+- headingcalculator 6.71%→82.51% (3x byte-identical); 19/20 corpus APKs
+  pixel-identical; battery ALL PASS at every boundary; goldens unchanged.
+- §9 scheduling path proven (chessclock 11 consecutive real-DEX ticks);
+  3 named blockers: F-TIMER-COMPUTE, F-ARGS, F-TIMER-STACK.
+- BLOCKED: GitHub push+publication — sandbox reset lost /home/z/.gh_token;
+  poster prepared at scripts/post_m3_comments.py (Rule 0.23 honesty).
+
+Stage Summary:
+- 10 commits on local main (c0f178a7 → 32d38b53 + docs), push pending token.
+- Next frontier: heap class identity law → F-TIMER-COMPUTE; synthetic stack
+  boundaries → microtimer; §3 ViewShadow ancestry migration; SECUSO
+  color-state-list; corpus +5; interaction tier ≥8.
