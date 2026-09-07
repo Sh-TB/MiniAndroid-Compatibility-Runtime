@@ -202,6 +202,13 @@ private:
         std::string style_name;   // resolved style for evidence
         // FIX-2c: RelativeLayout sibling-dependency rules (referenced id names)
         std::string rel_below, rel_above, rel_right_of, rel_left_of;
+        // MASTER-2 FIX-MEASURE-002: ALIGN_* edge-alignment family (distinct
+        // semantics from toLeftOf/toRightOf) + alignParentLeft/Right flags.
+        std::string rel_align_left, rel_align_right, rel_align_top, rel_align_bottom;
+        bool rel_align_parent_left = false, rel_align_parent_right = false;
+        bool rel_align_parent_top = false, rel_align_parent_bottom = false;
+        bool rel_center_in_parent = false, rel_center_horizontal = false;
+        bool rel_center_vertical = false;
         // applied style values
         bool from_style_text_size = false;
         uint32_t style_text_color = 0;

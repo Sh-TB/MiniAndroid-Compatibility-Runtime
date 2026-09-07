@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
-  "generated": "2026-08-30",
+  "generated": "2026-09-07 (OpenLauncher SHA arbitration: b7900f56… → b3320463…, source-URL-verified)",
   "campaign": "UNIFIED_011",
   "zero_apk_policy": "repository, releases, and handoff ZIPs contain ZERO .apk/.aab; this registry + scripts/download_test_apks.py is the only APK access path",
   "external_cache": "MINIANDROID_APK_CACHE env or <two levels above repo>/apk_cache",
@@ -69,12 +69,14 @@
       "source_url": "https://f-droid.org/packages/com.benny.openlauncher/",
       "download_url": "https://f-droid.org/repo/com.benny.openlauncher_39.apk",
       "license": "NOT RECORDED — see source_url",
-      "sha256": "b7900f56ccbe4768701c6e664aca578091ad8d0aa4245d766a3d24b56766e743",
-      "size_bytes": 3457024,
+      "sha256": "b3320463a7a1ed46c52464bae83a97317d062b1e2097bd1885cdf265f2089f89",
+      "size_bytes": 6140320,
       "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
       "test_purpose": "exp076_corpus",
-      "status": "PARTIAL / registry-only (fetch to re-test)",
-      "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
+      "status": "FROZEN — SHA arbitrated against source URL (see arbitration)",
+      "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)",
+      "sha256_previous_record": "b7900f56ccbe4768701c6e664aca578091ad8d0aa4245d766a3d24b56766e743",
+      "arbitration": "2026-09-07 MASTER campaign §2: recorded URL https://f-droid.org/repo/com.benny.openlauncher_39.apk serves b3320463… (re-fetched, same SHA); previous registry record b7900f56… was STALE, not artifact drift. On-disk artifact verified GENUINE against source URL. Matrix uses b3320463…"
     },
     {
       "name": "Dooz (TicTacToe variant)",

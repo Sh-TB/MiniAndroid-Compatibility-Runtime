@@ -4698,3 +4698,40 @@ Queued (diagnosed, not patched): scope Scope/Unit onMeasure hook dispatch
 gap; chessclock/microtimer timer-tick layer (G07); bouncy field draw
 coverage; battery script should be committed; ViewShadow user-class
 catch-all should migrate to semantic ancestry (F2 debt recorded).
+
+---
+Task ID: MASTER-2 (Full-Stack Real APK Compatibility, Wave 2)
+Agent: Super Z (main agent)
+Task: §1-§5 baseline/corpus/matrix/forensics; §13 measurement cluster close.
+
+Work Log:
+- Baseline 40988007 (origin b343b969, clean, 1 ahead = phase0 refresh commit):
+  52/52 battery ALL PASS before any change; g++ 14.2.0, aapt2 2.20-14304508.
+- Corpus: 16 APKs SHA-verified. OpenLauncher registry record STALE (b7900f56…)
+  vs source URL (serves b3320463… twice) — arbitrated, registry corrected;
+  Telegram BLOCKED-ON-FREEZE re-confirmed (HTML file, no substitute).
+- Phase-0 matrix at HEAD: matches wave-1 post-fix state exactly (zero drift).
+- Cluster M (scope Scope/Unit 0x0) root cause chains:
+  (M1) class_chain_defines_method returned TRUE at Landroid/view/View; —
+       framework-owned onMeasure counted as an APP override →
+       aosp_default_measure=false blocked the getDefaultSize law (FIX-MEASURE-001).
+  (M2) RL rules alignLeft/alignTop/alignBottom had no parsing; compiled
+       booleans (type 0x12, no raw string) never matched raw=="true";
+       layout_gravity sentinel -1 swallowed |= bits; 0x50&0x30=0x10 mask
+       overlap misrouted alignParentTop (FIX-MEASURE-002a-d).
+  (M3) RL children measured in declaration order with generic specs — no
+       dependency sort, no anchor-constrained specs (FIX-MEASURE-002: AOSP
+       RelativeLayout.onMeasure — two dependency-sorted passes,
+       applyHorizontal/VerticalSizeRules, getChildMeasureSpec,
+       positionChild* edge caching; getChildMeasureSpec law faithful incl.
+       both-edges→EXACTLY(end-start)).
+  (M4) RL onLayout now REPLAYS measure-time cached edges (AOSP law) —
+       YScale measures 1x45 (app bytecode: min(w,h)/24 x min) yet is laid
+       out 0,0→45,1860 via alignParentTop+alignBottom anchors.
+- Evidence: scope DEX ground truth (YScale/XScale define onMeasure; Scope/
+  Unit do not); res/v9.xml AXML ground truth; [DEX-MEASURE] contract
+  diagnostics. scope 4.22%→99.77% (3× ff60bf23…); unote 9.11%→91.95%
+  LAWFUL (alignParentBottom now executes; 3× 7b30d522…); all other 14 APKs
+  pixel-identical. Battery 52/52 ALL PASS after cluster; goldens unchanged.
+- Next: interaction expansion (§20 ≥5 APKs), timer cluster (§19), class
+  system audit (§5/§6), corpus +4 (§23).

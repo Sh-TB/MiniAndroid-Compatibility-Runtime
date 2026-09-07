@@ -5,7 +5,7 @@
   "base": {
     "rc": 0,
     "status": "SUCCESS",
-    "seconds": 28.31,
+    "seconds": 28.26,
     "screenshot_sha256": "0c90e96036d45aac509c0deec199260214b67fb732a3cfa2dca6dc699def161f"
   },
   "trace": {
@@ -14,7 +14,7 @@
   "view_tree": {
     "present": true,
     "views": 52,
-    "zero_sized": 7
+    "zero_sized": 6
   },
   "pixel": {
     "w": 1080,

@@ -1,12 +1,47 @@
 [
   {
+    "apk": "headingcalculator",
+    "rel": "download/exp073_real_apps/org.debian.eugen.headingcalculator_1.apk",
+    "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.25,
+      "screenshot_sha256": "0f933ff814f45bca08c851703bb3b1e643a64da332f9fd6febbab11efc950daa"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 135,
+      "zero_sized": 84
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        225,
+        225,
+        225
+      ],
+      "nonbg_pct": 6.7101,
+      "content_bbox": [
+        0,
+        8,
+        343,
+        1720
+      ]
+    }
+  },
+  {
     "apk": "microtimer",
     "rel": "download/exp076_corpus/dubrowgn.microtimer_8.apk",
     "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
     "base": {
       "rc": 0,
       "status": "SUCCESS",
-      "seconds": 28.31,
+      "seconds": 28.26,
       "screenshot_sha256": "0c90e96036d45aac509c0deec199260214b67fb732a3cfa2dca6dc699def161f"
     },
     "trace": {
@@ -15,7 +50,7 @@
     "view_tree": {
       "present": true,
       "views": 52,
-      "zero_sized": 7
+      "zero_sized": 6
     },
     "pixel": {
       "w": 1080,
@@ -35,6 +70,179 @@
     }
   },
   {
+    "apk": "billthefarmer_notes",
+    "rel": "download/exp073_real_apps/org.billthefarmer.notes_139.apk",
+    "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.34,
+      "screenshot_sha256": "06ba8026b670b15201ab977781a86c47ff43b16b911fd1ad0f548c114dd97d40"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 16,
+      "zero_sized": 0
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        153,
+        153,
+        153
+      ],
+      "nonbg_pct": 99.8859,
+      "content_bbox": [
+        0,
+        1,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
+    "apk": "muellerma_stopwatch",
+    "rel": "download/exp076_corpus/com.github.muellerma.stopwatch_6.apk",
+    "sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
+    "base": {
+      "rc": 1,
+      "status": "PARTIAL",
+      "seconds": 0.45,
+      "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
+    },
+    "trace": {
+      "status": "PARTIAL"
+    },
+    "view_tree": {
+      "present": false
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        0,
+        0,
+        0
+      ],
+      "nonbg_pct": 98.8681,
+      "content_bbox": [
+        0,
+        0,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
+    "apk": "simplestopwatch",
+    "rel": "download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk",
+    "sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.24,
+      "screenshot_sha256": "ed1dfc8981c5ac7a670dd207c834e8fb4d9b16bd509c62e625435af23c8da9aa"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 22,
+      "zero_sized": 11
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        0,
+        0,
+        0
+      ],
+      "nonbg_pct": 4.0509,
+      "content_bbox": [
+        0,
+        1815,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
+    "apk": "gmdice",
+    "rel": "download/exp073_real_apps/de.duenndns.gmdice_8.apk",
+    "sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.22,
+      "screenshot_sha256": "db0f4c4b9dca867acf3946a886a179d2555862e1f17bc5828e525f65f5c1b9ff"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 20,
+      "zero_sized": 1
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        153,
+        153,
+        153
+      ],
+      "nonbg_pct": 24.6074,
+      "content_bbox": [
+        0,
+        778,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
+    "apk": "unote",
+    "rel": "download/exp076_corpus/app.varlorg.unote_30.apk",
+    "sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.21,
+      "screenshot_sha256": "7b30d52201bb22ac8467cc9c8257f23b60f169c8406f39cdfe0ad8fe48355971"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 28,
+      "zero_sized": 2
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        225,
+        225,
+        225
+      ],
+      "nonbg_pct": 91.9512,
+      "content_bbox": [
+        0,
+        0,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
     "apk": "chessclock",
     "rel": "download/exp073_real_apps/com.chessclock.android_29.apk",
     "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
@@ -42,7 +250,7 @@
       "rc": 0,
       "status": "SUCCESS",
       "seconds": 0.24,
-      "screenshot_sha256": "4f32761409cba594532f621e5148e7a98dec838e3ebb00efb17947f87a05aeaa"
+      "screenshot_sha256": "775ada3fd2efe2dc63c3e6ffccea522acf8f228b31f31c595c0cefdd50f97e62"
     },
     "trace": {
       "status": "SUCCESS"
@@ -50,7 +258,7 @@
     "view_tree": {
       "present": true,
       "views": 30,
-      "zero_sized": 18
+      "zero_sized": 10
     },
     "pixel": {
       "w": 1080,
@@ -63,9 +271,9 @@
       "nonbg_pct": 2.7077,
       "content_bbox": [
         0,
-        718,
+        380,
         1079,
-        1866
+        1527
       ]
     }
   },
@@ -76,7 +284,7 @@
     "base": {
       "rc": 0,
       "status": "SUCCESS",
-      "seconds": 1.11,
+      "seconds": 1.16,
       "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093"
     },
     "trace": {
@@ -106,7 +314,7 @@
     "base": {
       "rc": 0,
       "status": "SUCCESS",
-      "seconds": 1.71,
+      "seconds": 1.77,
       "screenshot_sha256": "a49fd6c72d5707a2d057e113a972eb4d5d906f2dcc653ef97ecd56c0ab637c0b"
     },
     "trace": {
@@ -115,7 +323,7 @@
     "view_tree": {
       "present": true,
       "views": 20,
-      "zero_sized": 4
+      "zero_sized": 2
     },
     "pixel": {
       "w": 1080,
@@ -141,7 +349,7 @@
     "base": {
       "rc": 0,
       "status": "SUCCESS",
-      "seconds": 1.14,
+      "seconds": 1.25,
       "screenshot_sha256": "e33e6e751b8c4a4aae5f2e143a5544bea0e3519b1ca87bcc8338ed8c5fb39a5f"
     },
     "trace": {
@@ -176,7 +384,7 @@
     "base": {
       "rc": 0,
       "status": "SUCCESS",
-      "seconds": 0.83,
+      "seconds": 0.82,
       "screenshot_sha256": "2f85dd74aa54e46304537868822071f12e4411e1dc8e41c2f354ba9dff076edb"
     },
     "trace": {
@@ -237,9 +445,9 @@
     "rel": "download/g04_corpus/fr.neamar.kiss_224.apk",
     "sha256": "da6ab0b1219ad3b5ee573698523fb15d60a918083e0843f94a03c1b12e1098c9",
     "base": {
-      "rc": 1,
-      "status": "PARTIAL",
-      "seconds": 65.8,
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 66.12,
       "screenshot_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3"
     },
     "trace": {
@@ -248,7 +456,7 @@
     "view_tree": {
       "present": true,
       "views": 15,
-      "zero_sized": 1
+      "zero_sized": 5
     },
     "pixel": {
       "w": 1080,
@@ -262,6 +470,76 @@
       "content_bbox": [
         0,
         0,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
+    "apk": "bouncy",
+    "rel": "download/master_campaign/com.dozingcatsoftware.bouncy_43.apk",
+    "sha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 1.08,
+      "screenshot_sha256": "072ff17874b74846c623b98d0540a4442f8bbc1ec05f6b738ce5ffa50866e1e7"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 62,
+      "zero_sized": 54
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        225,
+        225,
+        225
+      ],
+      "nonbg_pct": 83.4255,
+      "content_bbox": [
+        0,
+        147,
+        1079,
+        1919
+      ]
+    }
+  },
+  {
+    "apk": "scope",
+    "rel": "download/master_campaign/org.billthefarmer.scope_140.apk",
+    "sha256": "0e34439ce43bfd47d039ab91a7056051e0cf94c03948eb97236d7d2648ea17de",
+    "base": {
+      "rc": 0,
+      "status": "SUCCESS",
+      "seconds": 0.2,
+      "screenshot_sha256": "ff60bf23dccf5f5b794e2c9fa1122bcd15a2937b5b4746d626c2d92b4a963ac3"
+    },
+    "trace": {
+      "status": "SUCCESS"
+    },
+    "view_tree": {
+      "present": true,
+      "views": 10,
+      "zero_sized": 0
+    },
+    "pixel": {
+      "w": 1080,
+      "h": 1920,
+      "bg": [
+        216,
+        216,
+        216
+      ],
+      "nonbg_pct": 99.7686,
+      "content_bbox": [
+        0,
+        1,
         1079,
         1919
       ]
