@@ -44,6 +44,16 @@ bool ResourceRuntime::ensure_loaded(const std::string& apk_path) {
     // MASTER CAMPAIGN FIX (F10): same Factory law for the real-DEX
     // onMeasure hook.
     apply_custom_view_measure_hook();
+    // M3 FIX-M3-001 (§7 cross-pass geometry law): re-apply the DEX
+    // superclass classifier too. apply_is_a() existed but was never wired
+    // into ensure_loaded — the recreated inflater silently fell back to
+    // substring classification, so the AUTHORITATIVE window measure ran
+    // with a different ancestry law than the render pass
+    // (headingcalculator: CalculatorDisplay extends LinearLayout measured
+    // 1080x1920 via View-default in the window pass vs 1080x158 via the
+    // inherited container law in the render pass — the cross-pass
+    // oscillation root cause). One classification law for EVERY pass.
+    apply_is_a();
     loaded_ = true;
     std::cerr << "[U007-RES] ResourceRuntime loaded: " << apk_path
               << " named_ids=" << arsc_.stats().named_ids
