@@ -149,6 +149,64 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     uint32_t obj_id = ctx.receiver_id;
 
+    // ────────────────────────────────────────────────────────────────────────
+    // M3 F-ROOM-CHAIN: java.util.Collections static factories.
+    //
+    // microtimer v8 (R8): Room's generated Database.<init> checks
+    // `Collections.synchronizedMap(mutableMapOf())` and Le/o.<init> checks
+    // `Collections.newSetFromMap(IdentityHashMap())` with R8-inlined Kotlin
+    // Intrinsics (La/e;.h). Both previously returned NULL → NPE → swallowed
+    // by the uncaught-tail compatibility policy → Room init chain silently
+    // broken → Alarm.expiresMs never persisted → timer could not tick.
+    //
+    // Java laws implemented here:
+    //  * synchronizedMap(m)   — returns a wrapper Map delegating to m. On the
+    //    single-threaded deterministic runtime the wrapper's OBSERVABLE Map
+    //    behavior is identical to the backing map (synchronization is a
+    //    no-op concept), so returning m itself preserves every observable
+    //    semantic. Documented deviation: wrapper identity/monitor.
+    //  * newSetFromMap(m)     — per OpenJDK the map must be EMPTY and becomes
+    //    exclusively owned by the returned Set; the returned object behaves
+    //    as a Set (add/contains/size/iterator). Modeled as a HashSet-backed
+    //    CollectionState (same observable Set semantics).
+    //  * singletonList(e)     — immutable 1-element list (SingletonList).
+    //  * singleton(e)         — immutable 1-element set.
+    //  * emptyList()          — immutable empty list.
+    // ────────────────────────────────────────────────────────────────────────
+    if (ctx.class_name == "Ljava/util/Collections;" && !ctx.has_receiver) {
+        if (m == "synchronizedMap") {
+            std::cerr << "[COLLECTIONS] synchronizedMap → backing map (single-thread law)"
+                      << std::endl;
+            return CallResult::handled_object(ctx.arg_as_object(0, 0),
+                                              "Ljava/util/Map;");
+        }
+        if (m == "newSetFromMap") {
+            uint32_t set_id = heap_->allocate("Ljava/util/HashSet;");
+            get_or_create(set_id, /*is_map=*/false);
+            std::cerr << "[COLLECTIONS] newSetFromMap → set oid=" << set_id
+                      << std::endl;
+            return CallResult::handled_object(set_id, "Ljava/util/HashSet;");
+        }
+        if (m == "singletonList") {
+            uint32_t list_id = heap_->allocate("Ljava/util/Collections$SingletonList;");
+            auto* st = get_or_create(list_id, /*is_map=*/false);
+            st->elements.push_back(ctx.arg_as_object(0, 0));
+            return CallResult::handled_object(list_id,
+                                              "Ljava/util/Collections$SingletonList;");
+        }
+        if (m == "singleton") {
+            uint32_t set_id = heap_->allocate("Ljava/util/Collections$SingletonList;");
+            auto* st = get_or_create(set_id, /*is_map=*/false);
+            st->elements.push_back(ctx.arg_as_object(0, 0));
+            return CallResult::handled_object(set_id, "Ljava/util/Set;");
+        }
+        if (m == "emptyList") {
+            uint32_t list_id = heap_->allocate("Ljava/util/ArrayList;");
+            get_or_create(list_id, /*is_map=*/false);
+            return CallResult::handled_object(list_id, "Ljava/util/List;");
+        }
+    }
+
     // EXP-056: Do not handle calls on null objects (object_id=0).
     // When a method returns null (e.g., getFragmentStack returns null
     // because the field was never initialized), calling isEmpty() on
@@ -432,6 +490,19 @@ CallResult ArchTaskExecutorShadow::dispatch(const CallContext& ctx) {
 // ─────────────────────────────────────────────────────────────────────────
 CallResult ThreadShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
+    // M3 F-THREAD-TICK: record the thread's target Runnable at construction
+    // (overloads: (Runnable), (Runnable,String), (ThreadGroup,Runnable,String)
+    // [,long] — the Runnable is the FIRST OBJECT_REF arg after `this`).
+    if (m == "<init>" && ctx.has_receiver) {
+        for (size_t i = 0; i < ctx.args.size(); i++) {
+            const auto& a = ctx.args[i];
+            if (a.kind == CallContext::Arg::Kind::OBJECT && a.object_id != 0) {
+                record_target(ctx.receiver_id, a.object_id);
+                break;
+            }
+        }
+        return CallResult::handled_void();
+    }
     if (m == "currentThread") {
         // MASTER-TRIAGE: cap-limited identity evidence (Looper.getThread vs
         // Thread.currentThread object ids) — the androidx main-thread law
@@ -462,7 +533,27 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
     if (m == "isAlive")      return CallResult::handled_bool(true);
     if (m == "isDaemon")     return CallResult::handled_bool(false);
     if (m == "isInterrupted")return CallResult::handled_bool(false);
-    if (m == "interrupt" || m == "join" || m == "start" || m == "run" ||
+    if (m == "start" || m == "run") {
+        // M3 F-THREAD-TICK: deterministic inline execution. If this thread has
+        // a recorded target Runnable, queue a pending inline run for the
+        // ENGINE to drain immediately after this dispatch (run-to-completion
+        // virtual-thread law). Without a recorded target this is a no-op
+        // thread (framework bookkeeping object).
+        auto it = runnables_.find(ctx.receiver_id);
+        if (it != runnables_.end()) {
+            pending_starts_.emplace_back(ctx.receiver_id, it->second);
+            static thread_local uint64_t start_log = 0;
+            if (start_log < 12) {
+                start_log++;
+                std::cerr << "[THREAD-START] thread_oid=" << ctx.receiver_id
+                          << " runnable_oid=" << it->second
+                          << " → pending inline run (deterministic law)"
+                          << std::endl;
+            }
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "interrupt" || m == "join" ||
         m == "setDaemon" || m == "setName" || m == "setPriority" ||
         m == "sleep" || m == "yield" || m == "holdsLock" ||
         m == "getContextClassLoader" || m == "setContextClassLoader" ||

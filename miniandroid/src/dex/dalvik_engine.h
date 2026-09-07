@@ -20,6 +20,7 @@
 #include "../api/android_stubs.h"
 #include "../resources/arsc_parser.h"   // GOLDEN-03: canonical resolver hook
 #include "../resources/res_config.h"    // G04 §4: device_config() (inTargetDensity)
+#include "../storage/sqlite_shadow.h"   // M3 F-ROOM-CHAIN: databases dir wiring
 // EXP-051: Shadow registry forward-declarations.
 namespace miniandroid { namespace framework {
 class ShadowRegistry;
@@ -1188,6 +1189,14 @@ public:
     // EXP-093/F011: Manifest-derived package identity
     void set_package_info(const std::string& pkg, int vcode, const std::string& vname) {
         package_name_ = pkg; version_code_ = vcode; version_name_ = vname;
+        // M3 F-ROOM-CHAIN: aim the SQLite shadow at this app's databases dir
+        // (sandbox law: <root>/<package>/databases/<name> — mirrors
+        // /data/data/<pkg>/databases on a device; per-run sandbox => the
+        // harness controls the initial DB state for deterministic goldens).
+        if (!pkg.empty()) {
+            storage::DatabaseShadow::set_databases_dir(
+                "runtime/data/" + pkg + "/databases");
+        }
     }
 
     // EXP-038 (BLOCKER-033): Build class→DEX index map from DexReport.

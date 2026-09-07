@@ -82,6 +82,42 @@ public:
         return false;
     }
 
+    // M3 F-ROOM-CHAIN: String[] element reads for shadows
+    // (SQLiteDatabase.rawQueryWithFactory selectionArgs).
+    bool get_object_array_length(uint32_t object_id, int32_t& out) override {
+        return get_object_int_field(object_id, "__array_length__", out);
+    }
+    bool get_object_array_string_element(uint32_t object_id, size_t index,
+                                         std::string& out) override {
+        if (!heap_) return false;
+        auto v = heap_->get_object_field(
+            object_id, "array[" + std::to_string(index) + "]");
+        if (!v) return false;
+        if (v->type == dalvik::DalvikType::STRING_REF) { out = v->string_val; return true; }
+        return false;
+    }
+    // M3 F-ROOM-CHAIN: string field writes for shadows
+    // (Cursor.getColumnNames String[] materialization).
+    bool set_object_string_field(uint32_t object_id, const std::string& field_name,
+                                 const std::string& value) override {
+        if (!heap_) return false;
+        dalvik::DalvikValue v;
+        v.type = dalvik::DalvikType::STRING_REF;
+        v.string_val = value;
+        v.ref_id = 0;
+        heap_->set_object_field(object_id, field_name, v);
+        return true;
+    }
+    bool set_object_int_field(uint32_t object_id, const std::string& field_name,
+                              int32_t value) override {
+        if (!heap_) return false;
+        dalvik::DalvikValue v;
+        v.type = dalvik::DalvikType::INT32;
+        v.int_val = value;
+        heap_->set_object_field(object_id, field_name, v);
+        return true;
+    }
+
 private:
     dalvik::DalvikHeap* heap_;
     dalvik::DalvikExecutionEngine* engine_;

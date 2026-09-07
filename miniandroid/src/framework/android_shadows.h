@@ -136,8 +136,33 @@ public:
     // Public mutator: allows the LooperShadow to bind to the same id.
     void set_main_thread_id(uint32_t id) { main_thread_id_ = id; }
 
+    // ── M3 F-THREAD-TICK: deterministic virtual-thread law ────────────────
+    // Thread.<init>(Runnable[, ...]) records the thread's target Runnable.
+    // Thread.start() (or run()) marks a pending inline execution; the ENGINE
+    // consumes the pending start right after the dispatch and invokes the
+    // target's run() to completion on the virtual main thread (single
+    // deterministic thread — no wall-clock, no real concurrency, same
+    // observable order as a background worker that finishes before the next
+    // main-frame boundary). Never a fake callback: the run() body is the
+    // APK's REAL DEX bytecode.
+    void record_target(uint32_t thread_oid, uint32_t runnable_oid) {
+        if (thread_oid && runnable_oid) runnables_[thread_oid] = runnable_oid;
+    }
+    bool has_pending_starts() const { return !pending_starts_.empty(); }
+    // Pops one pending (thread, runnable) pair. Returns false when drained.
+    bool consume_pending_start(uint32_t& thread_oid, uint32_t& runnable_oid) {
+        if (pending_starts_.empty()) return false;
+        auto front = pending_starts_.front();
+        pending_starts_.erase(pending_starts_.begin());
+        thread_oid = front.first;
+        runnable_oid = front.second;
+        return true;
+    }
+
 private:
     uint32_t main_thread_id_ = 0;
+    std::map<uint32_t, uint32_t> runnables_;              // thread → target
+    std::vector<std::pair<uint32_t, uint32_t>> pending_starts_;
 };
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -1146,6 +1171,7 @@ public:
                class_name == "Ljava/util/HashSet;" ||
                class_name == "Ljava/util/Set;" ||
                class_name == "Ljava/util/Arrays$ArrayList;" ||
+               class_name == "Ljava/util/Collections;" ||  // M3 F-ROOM-CHAIN: static factories
                class_name == "Ljava/util/Collections$UnmodifiableRandomAccessList;" ||
                class_name == "Ljava/util/Collections$SingletonList;" ||
                class_name == "Ljava/util/Iterator;" ||

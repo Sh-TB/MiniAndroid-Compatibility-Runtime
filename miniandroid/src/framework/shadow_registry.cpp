@@ -7,6 +7,7 @@
 #include "dialog_shadow.h"
 #include "canvas_shadow.h"
 #include "clipboard_shadow.h"
+#include "../storage/sqlite_shadow.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -181,6 +182,10 @@ void register_platform_shadows(ShadowRegistry& reg) {
     reg.register_shadow<HandlerShadow>();
     reg.register_shadow<ActivityShadow>();
     reg.register_shadow<IntentShadow>();
+    // M3 F-ROOM-CHAIN: SQLite family (REAL sqlite3 backend). Exact-class
+    // claims only; registered before ViewShadow so the catch-all view
+    // path can never capture framework database descriptors.
+    reg.register_shadow<storage::DatabaseShadow>();
     reg.register_shadow<ViewShadow>();
     reg.register_shadow<DialogShadow>();
     reg.register_shadow<ArrayAdapterShadow>();
