@@ -4996,6 +4996,42 @@ bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id) {
         return dok;
     }
     if (node->click_listener_id == 0) {
+        // MASTER-2 FIX-INPUT-001 (AOSP DeclaredOnClickListener law):
+        // android:onClick="handler" makes View's constructor register a
+        // DeclaredOnClickListener that resolves handler(View) on the
+        // hosting Activity AT CLICK TIME (View.java
+        // getListenerInfo().mOnClickListener). The precise tap path only
+        // knew programmatic listeners, so XML-driven buttons were
+        // tap-dead: unote addNote/search/quit reported
+        // [EXP060-CLICK] has no OnClickListener despite being
+        // clickable on a real device. Same resolution law as the
+        // click-test probe (U0113-XMLCLICK): host = current Activity
+        // instance + class; p0 = this (Activity), p1 = the clicked View.
+        if (!node->onClick_handler.empty()) {
+            uint32_t activity_this_id = 0;
+            std::string activity_class;
+            if (auto* act = shadow_registry_->find_as<framework::ActivityShadow>()) {
+                activity_this_id = act->current_activity_id();
+                activity_class = act->current_activity_class();
+            }
+            std::vector<DalvikValue> handler_args;
+            if (activity_this_id != 0) {
+                handler_args.push_back(DalvikValue::make_object(
+                    activity_this_id, activity_class));
+            }
+            handler_args.push_back(DalvikValue::make_object(
+                view_object_id, node->class_desc));
+            DalvikValue xret = DalvikValue::make_void();
+            DalvikExecutionResult xres;
+            bool xok = try_recursive_invoke(activity_class,
+                                            node->onClick_handler,
+                                            handler_args, xret, xres);
+            std::cerr << "[UI-EVENT] event=XML_CLICK handler="
+                      << node->onClick_handler << " view=" << view_object_id
+                      << " result=" << (xok ? "DISPATCHED" : "FAILED")
+                      << std::endl;
+            return xok;
+        }
         std::cerr << "[EXP060-CLICK] view_id=" << view_object_id
                   << " class=" << node->class_desc
                   << " has no OnClickListener" << std::endl;
@@ -11762,8 +11798,19 @@ static framework::CallContext::Arg dalvik_value_to_arg(const DalvikValue& v) {
         case DalvikType::NULL_REF:
             a.kind = CallContext::Arg::Kind::NULL_REF;
             break;
+        case DalvikType::CLASS_REF:
+            // MASTER-2 FIX-INTENT-001 (AOSP Intent(Context, Class) law):
+            // const-class materializes a Class object whose descriptor is
+            // the component identity. Folding CLASS_REF to NULL dropped the
+            // descriptor, so Intent(Context, NoteEdit.class) left the
+            // component UNSET and startActivity reported ACTIVITY_NOT_FOUND
+            // (unote addNote). Carry the descriptor on the arg.
+            a.kind = CallContext::Arg::Kind::OBJECT;
+            a.object_id = v.ref_id;
+            a.object_class = v.class_desc;
+            break;
         default:
-            // VOID_, UNINITIALIZED, REGISTER_UNSET, CLASS_REF.
+            // VOID_, UNINITIALIZED, REGISTER_UNSET.
             // Default to NULL_REF (treated as null object) which is
             // safe for most call sites.
             a.kind = CallContext::Arg::Kind::NULL_REF;
