@@ -4826,3 +4826,51 @@ Stage Summary:
   package-specific code.
 - Next: §9 event-loop closure (chessclock/microtimer), §3 ViewShadow
   catch-all, §13 SECUSO, §20 corpus +5, §21 tier-2 ≥8.
+
+---
+Task ID: M3-C2 (MASTER CAMPAIGN 3 — cluster 2: event loop §9 + API law §15)
+Agent: Super Z (main agent)
+Task: §9 timer/event-loop closure (chessclock/microtimer); §15 API coverage
+gaps exposed by the timer path.
+
+Work Log:
+- §9 scheduling path PROVEN end-to-end on chessclock (real tap 540,480 from
+  live-view-geometry): DOWN/UP → PerformClick (one-queue law) → app onClick
+  (real DEX) → Handler.postDelayed (100ms) → advance_virtual/drain_ready →
+  app tick Runnable ChessClock$8.run (303 bytes real DEX) → self-reschedules
+  → fired=1 across 11 consecutive virtual frames; tick-1 state mutation
+  captured (setText "9:59:59") with frame SHA change.
+- Blockers named (not hacked):
+  * F-TIMER-COMPUTE: from tick 2 the clock label computes "null" — the app's
+    formatTime dispatch resolves to ActivityShadow (heap receiver class
+    identity: MainActivity/ChessClock instance records the FRAMEWORK ancestor
+    instead of the app class) — reusable prerequisite: constructor-time heap
+    class identity law.
+  * F-ARGS: ChessClock.color(int) reaches Resources.getColor with resid=0 —
+    app-method int parameter lost across the app→framework bridge for this
+    shape (R$color statics are seeded 8/8; constant folded at call sites).
+  * F-TIMER-STACK: microtimer obfuscated timing helper La/e;.h walks
+    Thread.getStackTrace and indexes frame[2]; synthetic stack returns 2
+    frames (no shadow-dispatch boundary frames) → AIOOBE corrupts the click
+    handler → no timer scheduled. Reusable prerequisite: synthetic stack
+    must include shadow-dispatch boundary frames.
+- FIX-M3-005 (32d38b53): removed the pre-EXP-042 "TextView+*setText*"
+  substring stub (swallowed setText/setTextColor/setTextSize as
+  fake-IMPLEMENTED voids when the shadow missed).
+- FIX-M3-005b: ViewShadow.setTextColor(int/CSL) capture; unresolved-default
+  black does not clobber resolved style colors (documented deviation §25).
+- FIX-M3-006: Integer.remainderUnsigned/divideUnsigned/compare (microtimer
+  display chain).
+- FIX-M3-007/007b: Resources.getColor ARSC-first (canonical resolver) with
+  name-map fallback; unresolved → documented black default.
+- Regression: 55-stage battery ALL PASS at 32d38b53; base-render deltas
+  localized+explained (chessclock two label groups' tone #212121→#000000,
+  gmdice dialog color, both from getColor ARSC-first resolution; chessclock
+  base nonbg 2.7077% bbox unchanged).
+
+Stage Summary:
+- §9 target MET for the scheduling law (real timer → real DEX → real queue
+  → state mutation → subsequent frames), with the multi-tick compute chain
+  honestly BLOCKED on F-TIMER-COMPUTE/F-ARGS/F-TIMER-STACK.
+- Next: heap class identity law (unlocks F-TIMER-COMPUTE + formatTime
+  family), synthetic stack boundaries (unlocks microtimer), then §3/§13/§20.
