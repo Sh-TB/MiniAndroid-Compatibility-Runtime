@@ -193,3 +193,135 @@ Priority: P0 foundational/multi-APK · P1 families/visual closure · P2 breadth 
 - GATE P toolchain reproducibility: PASS (FINDING-001/002 fixes)
 - GATE Q diagnostics: PASS (MINIANDROID_FIELD_TRACE / MINIANDROID_WIDE_DIAG /
   m3_disasm.py / m3_invoke_inventory.py / DUMP_CLICKABLES in tap mode pending)
+
+---
+
+# FORGOTTEN-NNN — END-OF-CAMPAIGN "WHAT DID WE MISS?" PASS
+
+Independent audit performed after the forensic closure work. Each item is
+evidence-grounded (runtime traces, static scans, or battery behavior from this
+session). These are items the campaign plan did NOT explicitly list.
+
+## FORGOTTEN-001
+- What: 33 bare `catch (...)` blocks in runtime code (gap-hunter scan) — every
+  swallowed exception must carry a diagnostic category per the F-exception law.
+- Why it matters: silent exception swallowing is the #1 false-pass generator.
+- Priority: P1. Action: classify each catch site (ART artifact vs app exception
+  vs unsupported), tag with EXC-PROPAGATE categories. Test: exception battery.
+- Status: RESEARCHED (scan only).
+
+## FORGOTTEN-002
+- What: 17 STUBBED-status shadow methods (dalvik_engine.cpp) lack per-method
+  demand evidence; the battery does not fail on STUBBED returns.
+- Why it matters: FINDING-007 proved a silent stub (Math.ceil) breaks real apps.
+- Priority: P1. Action: inventory STUBBED methods × real-corpus demand; convert
+  the demanded ones to implementations, the rest to loud diagnostics.
+- Status: RESEARCHED.
+
+## FORGOTTEN-003
+- What: TextWatcher callback dispatch unimplemented (dalvik_engine.cpp:5544).
+- Why it matters: text-field UIs (notes/diary family) depend on it.
+- Priority: P2. Status: RESEARCHED.
+
+## FORGOTTEN-004
+- What: onRequestPermissionsResult never dispatched (execution_engine.cpp TODO).
+- Why it matters: permission-flow apps (KISS, survival manual family) stall.
+- Priority: P2. Status: RESEARCHED.
+
+## FORGOTTEN-005
+- What: packed-switch payload with non-zero first_key (negative/large keys)
+  untested; hostile AXML/ARSC fuzz corpus absent from the battery as a gate.
+- Priority: P2. Action: hostile-input gate (GATE C extension).
+- Status: RESEARCHED.
+
+## FORGOTTEN-006
+- What: the clickable dump runs only in non-interactive mode — tap-mode runs
+  (the forensic mainline!) cannot dump the live hit-test targets.
+- Why it matters: this session had to reconstruct button geometry manually.
+- Priority: P2 (diagnostics). Action: move the dump into the tap driver.
+- Status: RESEARCHED (observed twice this session).
+
+## FORGOTTEN-007
+- What: `Math.random()`/`Random` determinism law undefined (no seeded PRNG law
+  documented) — a latent nondeterminism source for visual goldens.
+- Priority: P1 (determinism gate). Status: RESEARCHED.
+
+## FORGOTTEN-008
+- What: `HashMap` iteration order — the runtime must fix an iteration law
+  (insertion-order is observable in R8 Kotlin apps using LinkedHashMap
+  semantics; HashSet/HashMap order leaks into screenshots via list UIs).
+- Priority: P1. Status: RESEARCHED (Database_Impl.j used HashSet this session).
+
+## FORGOTTEN-009
+- What: Thread.getStackTrace frame-count law (FIX-M3-011 gave 3 frames for one
+  app) — the "one app's expectation" must be re-derived as a general law
+  (shadow-dispatch boundary frames), else the next stack-walking app breaks.
+- Priority: P2. Status: RESEARCHED.
+
+## FORGOTTEN-010
+- What: SQLite journal/WAL files appear in the sandbox dir (app-data only this
+  session) — determinism gate must define semantic vs binary DB determinism
+  (task brief §L) before goldens depend on DB-derived renders.
+- Priority: P2. Status: RESEARCHED.
+
+## FORGOTTEN-011
+- What: `G06-TAP` gesture queue replays taps at fixed virtual offsets — tap
+  timestamps are not part of the determinism contract documentation; two runs
+  with different tap counts reuse stale tokens (token base 0xF0000000 counter
+  not reset per run — observed runnables 4026531841+ identical across runs).
+- Priority: P3. Status: RESEARCHED.
+
+## FORGOTTEN-012
+- What: the `--tap` hit-test uses the live view geometry, but FINDING-005/006
+  mean off-screen views silently eat taps intended for dynamic rows — a
+  "tap landed on nothing" diagnostic (target=0 path) is missing.
+- Priority: P2 (diagnostics). Status: RESEARCHED.
+
+## FORGOTTEN-013
+- What: aapt2 version pinning has no checksum gate in bootstrap_toolchain.sh
+  (the fetch is verified by version string only).
+- Priority: P3. Action: add the jar SHA-256 to the script.
+- Status: RESEARCHED.
+
+## FORGOTTEN-014
+- What: battery stage IDs are positional strings, not stable IDs — the AF gate
+  ("every test has a stable ID") is partially met; `cached` gates can mask a
+  stage that silently stops running.
+- Priority: P2. Status: RESEARCHED.
+
+## FORGOTTEN-015
+- What: Room `@Query` UPDATE/DELETE paths (GATE H beyond CREATE/INSERT) — the
+  corpus demanded CREATE/INSERT/SELECT this session; UPDATE/DELETE (Le/f.d
+  EntityDeleteAdapter) execute but have no dedicated law test.
+- Priority: P1. Status: RESEARCHED (demand-observed, test missing).
+
+## FORGOTTEN-016
+- What: `ColorStateList.valueOf(int)` used by K/g row buttons (background/foreground
+  tint) — resolves to a constant CSL; the tint pipeline for programmatic rows is
+  untested visually (ties to PHASE 7).
+- Priority: P2. Status: RESEARCHED.
+
+## FORGOTTEN-017
+- What: foreground drawables (`setForeground` + `Context.getDrawable(resid)`) on
+  the row buttons — the drawable pipeline must resolve icon resources for
+  programmatic views, not just XML android:src (PHASE 6 gap).
+- Priority: P1. Status: RESEARCHED (K/g buttons render 1080x0 partly because of
+  icon measurement).
+
+## FORGOTTEN-018
+- What: `View.setForegroundGravity(17)` — gravity constant honored in the
+  renderer for foreground layers? untested.
+- Priority: P3. Status: RESEARCHED.
+
+## FORGOTTEN-019
+- What: the interpreter's `last_invoke_return_` is a single slot — a wide move-
+  result-wide after an intervening recursive dispatch (shadow callback firing a
+  DEX call) would clobber it. The token-law fix made recursive dispatch more
+  likely (run() drains re-enter the interpreter). Needs a return-value stack.
+- Priority: P1 (correctness under nesting). Status: RESEARCHED.
+
+## FORGOTTEN-020
+- What: Kotlin `Intrinsics.checkNotNullParameter` (La/e.h) runs 96+ times per
+  microtimer session — each is a real DEX call with string allocs; a fast-path
+  law (validate + trace once) would cut runtime cost without semantics change.
+- Priority: P3 (performance). Status: RESEARCHED.
