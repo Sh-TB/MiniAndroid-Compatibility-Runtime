@@ -14212,6 +14212,161 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // M3 FIX-M3-006 (§15): java.lang.Integer static math — same law family.
     // Evidence: microtimer v8 MainActivity.d → Integer.remainderUnsigned
     // (timer-tick display chain) reached the bridge and was dropped.
+    //
+    // M3 FIX-M3-010 (§15 java.lang unsigned/bit family): R8-compiled timer/
+    // formatter code uses the full unsigned family — divideUnsigned,
+    // remainderUnsigned, compareUnsigned, toUnsignedString(II)/(I),
+    // toBinaryString, toHexString, toOctalString, numberOfLeadingZeros,
+    // numberOfTrailingZeros, bitCount, rotateLeft/Right, highest/lowestOneBit,
+    // parseUnsignedInt, signum, min/max, sum/max/min products. These are pure
+    // java.lang semantics (OpenJDK Integer.java) — no app specifics.
+    // Evidence: microtimer v8 obfuscated formatter Lk/a;.toString +
+    // Le/b;.b reach toUnsignedString; the label computed "200null:…".
+    if (class_name == "Ljava/lang/Integer;") {
+        auto as_u32 = [](const DalvikValue& v) -> uint32_t {
+            return v.type == DalvikType::INT32 ? (uint32_t)v.int_val : 0u;
+        };
+        auto u32_to_string_radix = [](uint32_t val, int radix) -> std::string {
+            if (radix < 2 || radix > 36) radix = 10;
+            if (val == 0) return "0";
+            const char* digits = "0123456789abcdefghijklmnopqrstuvwxyz";
+            char buf[33]; int pos = 33;
+            while (val != 0) {
+                buf[--pos] = digits[val % (uint32_t)radix];
+                val /= (uint32_t)radix;
+            }
+            return std::string(buf + pos, 33 - pos);
+        };
+        if (method == "toUnsignedString" && args.size() >= 1) {
+            uint32_t val = as_u32(args[0]);
+            int radix = (args.size() >= 2 && args[1].type == DalvikType::INT32)
+                            ? args[1].int_val : 10;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(u32_to_string_radix(val, radix), 0);
+            return true;
+        }
+        if (method == "toBinaryString" && args.size() >= 1) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(u32_to_string_radix(as_u32(args[0]), 2), 0);
+            return true;
+        }
+        if (method == "toHexString" && args.size() >= 1) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(u32_to_string_radix(as_u32(args[0]), 16), 0);
+            return true;
+        }
+        if (method == "toOctalString" && args.size() >= 1) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(u32_to_string_radix(as_u32(args[0]), 8), 0);
+            return true;
+        }
+        if (method == "numberOfLeadingZeros" && args.size() >= 1) {
+            uint32_t v = as_u32(args[0]);
+            int n = v == 0 ? 32 : 0;
+            while (v != 0 && n < 64) { v <<= 1; n++; }
+            // standard: count via shifts
+            n = 0;
+            if (v == 0) n = 32;
+            else { while ((v & 0x80000000u) == 0) { v <<= 1; n++; } }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(n);
+            return true;
+        }
+        if (method == "numberOfTrailingZeros" && args.size() >= 1) {
+            uint32_t v = as_u32(args[0]);
+            int n = 0;
+            if (v == 0) n = 32;
+            else { while ((v & 1u) == 0) { v >>= 1; n++; } }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(n);
+            return true;
+        }
+        if (method == "bitCount" && args.size() >= 1) {
+            uint32_t v = as_u32(args[0]);
+            int n = 0;
+            while (v) { n += (int)(v & 1u); v >>= 1; }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(n);
+            return true;
+        }
+        if ((method == "rotateLeft" || method == "rotateRight") && args.size() >= 2) {
+            uint32_t v = as_u32(args[0]);
+            int d = args[1].type == DalvikType::INT32 ? args[1].int_val & 31 : 0;
+            uint32_t r = method == "rotateLeft"
+                             ? (uint32_t)((v << d) | (v >> ((32 - d) & 31)))
+                             : (uint32_t)((v >> d) | (v << ((32 - d) & 31)));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int((int32_t)r);
+            return true;
+        }
+        if ((method == "highestOneBit" || method == "lowestOneBit") && args.size() >= 1) {
+            uint32_t v = as_u32(args[0]);
+            uint32_t r = 0;
+            if (method == "highestOneBit") {
+                while (v) { r = v & ~(v >> 1); v >>= 1; }
+                // simpler: keep top bit
+                r = 0; v = as_u32(args[0]);
+                if (v) { int b = 0; while (v) { v >>= 1; b++; } r = 1u << (b - 1); }
+            } else {
+                r = v & (uint32_t)(-(int32_t)v);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int((int32_t)r);
+            return true;
+        }
+        if (method == "compareUnsigned" && args.size() >= 2) {
+            uint32_t a = as_u32(args[0]), b = as_u32(args[1]);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(a < b ? -1 : (a > b ? 1 : 0));
+            return true;
+        }
+        if (method == "parseUnsignedInt" && args.size() >= 1 &&
+            args[0].type == DalvikType::STRING_REF) {
+            int radix = (args.size() >= 2 && args[1].type == DalvikType::INT32)
+                            ? args[1].int_val : 10;
+            const std::string& s = args[0].string_val;
+            uint64_t acc = 0; bool ok = !s.empty();
+            for (char c : s) {
+                int d;
+                if (c >= '0' && c <= '9') d = c - '0';
+                else if (c >= 'a' && c <= 'z') d = c - 'a' + 10;
+                else if (c >= 'A' && c <= 'Z') d = c - 'A' + 10;
+                else { ok = false; break; }
+                if (d >= radix) { ok = false; break; }
+                acc = acc * (uint64_t)radix + (uint64_t)d;
+                if (acc > 0xFFFFFFFFull) { ok = false; break; }
+            }
+            if (ok) {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int((int32_t)(uint32_t)acc);
+                return true;
+            }
+            // NumberFormatException semantics: throw path is not modeled on
+            // the bridge; return 0 with a visible diagnostic (§25 deviation).
+            std::cerr << "[M3-15-INT] parseUnsignedInt(\"" << s
+                      << "\") invalid — returning 0 (bridge deviation)" << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(0);
+            return true;
+        }
+        if (method == "signum" && args.size() >= 1) {
+            int32_t v = args[0].type == DalvikType::INT32 ? args[0].int_val : 0;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(v > 0 ? 1 : (v < 0 ? -1 : 0));
+            return true;
+        }
+        if ((method == "min" || method == "max" || method == "sum") &&
+            args.size() >= 2) {
+            int32_t a = args[0].type == DalvikType::INT32 ? args[0].int_val : 0;
+            int32_t b = args[1].type == DalvikType::INT32 ? args[1].int_val : 0;
+            int32_t r = method == "min" ? (a < b ? a : b)
+                      : method == "max" ? (a > b ? a : b)
+                                        : (int32_t)((uint32_t)a + (uint32_t)b);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(r);
+            return true;
+        }
+    }
     if (class_name == "Ljava/lang/Integer;" && args.size() >= 1) {
         auto as_uint = [](const DalvikValue& v) -> uint32_t {
             return v.type == DalvikType::INT32 ? (uint32_t)v.int_val : 0u;
@@ -15774,6 +15929,75 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_string(val, 0);
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // M3 FIX-M3-011 (§19 THROWABLE STACK LAW): Throwable.getStackTrace() —
+    // the INSTANCE form on caught exception objects. R8-obfuscated libraries
+    // discover their caller by throwing/catching an exception and walking
+    // frames[2] (microtimer v8 La/e;.m: NullPointerException.getStackTrace →
+    // frames[2].getClassName). The previous bridge dropped the call → empty
+    // trace → ArrayIndexOutOfBoundsException corrupted the click handler →
+    // no timer could ever be scheduled (F-TIMER-STACK).
+    //
+    // Law: same as the Thread.getStackTrace real-frames law (CAMPAIGN 010
+    // R14) — materialize the ACTIVE interpreter call stack, top-first. Java
+    // semantics place the throw site at [0]; the engine's active stack is the
+    // faithful superset of that snapshot for caller-discovery uses.
+    // Also: fillInStackTrace() returns the receiver (chainable, OpenJDK),
+    // getStackTraceDepth() returns N.
+    // ────────────────────────────────────────────────────────────────────────
+    if ((method == "getStackTrace" || method == "fillInStackTrace" ||
+         method == "getStackTraceDepth") &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        (class_name.find("Throwable") != std::string::npos ||
+         class_name.find("Exception") != std::string::npos ||
+         class_name.find("Error") != std::string::npos)) {
+        if (method == "fillInStackTrace") {
+            result = args[0];  // OpenJDK: returns this
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        auto frames = call_stack_.snapshot_top_first();
+        const size_t N = std::min<size_t>(frames.size(), 64);
+        if (method == "getStackTraceDepth") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int((int)N);
+            return true;
+        }
+        uint32_t arr_id = heap_.allocate("Larray;", pc_,
+                                        call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        heap_.set_object_field(arr_id, "__array_length__", DalvikValue::make_int((int)N));
+        for (size_t i = 0; i < N; i++) {
+            uint32_t ste = heap_.allocate("Ljava/lang/StackTraceElement;", pc_,
+                                          call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            std::string raw = frames[i].first;
+            std::string dotted = raw;
+            if (!dotted.empty() && dotted.front() == 'L') dotted.erase(0, 1);
+            if (!dotted.empty() && dotted.back() == ';') dotted.pop_back();
+            std::replace(dotted.begin(), dotted.end(), '/', '.');
+            heap_.set_object_field(ste, "__class_name__",
+                                   DalvikValue::make_string(dotted, 0));
+            heap_.set_object_field(ste, "__method_name__",
+                                   DalvikValue::make_string(frames[i].second, 0));
+            DalvikValue v;
+            v.type = DalvikType::OBJECT_REF;
+            v.object_id = ste;
+            v.class_desc = "Ljava/lang/StackTraceElement;";
+            heap_.set_object_field(arr_id, "array[" + std::to_string(i) + "]", v);
+        }
+        DalvikValue arr;
+        arr.type = DalvikType::OBJECT_REF;
+        arr.object_id = arr_id;
+        arr.class_desc = "Larray;";
+        arr.int_val = (int)N;
+        result = arr;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        std::cerr << "[M3-19-THROWTRACE] " << class_name
+                  << ".getStackTrace() -> " << N
+                  << " real frames (top=" << (N ? frames[0].first : "-") << ")"
+                  << std::endl;
         return true;
     }
 
