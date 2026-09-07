@@ -1605,6 +1605,39 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_void();
     }
+    // M3 FIX-M3-005b (§8/§15): TextView.setTextColor(int) — AOSP sets the
+    // text color state on the view; the renderer must pick it up on the next
+    // frame (timer-driven clocks recolor the active player every tick).
+    // Previously this call fell through the shadow (no handler) into the
+    // legacy substring stub and was discarded.
+    if (m == "setTextColor") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::INT) {
+            const uint32_t c = (uint32_t)ctx.args[0].int_val;
+            // M3 FIX-M3-007b: the engine's UNRESOLVED getColor default is
+            // 0xFF000000 — indistinguishable from a genuine black. When the
+            // node already carries a resolved style color, a bare-black
+            // runtime value is treated as the unresolved default and NOT
+            // applied (documented deviation; a real device always resolves).
+            if (c == 0xFF000000u && n->text_color != 0) {
+                std::cerr << "[M3-SETTEXTCOLOR] view_id=" << ctx.receiver_id
+                          << " unresolved-default black - style color 0x"
+                          << std::hex << n->text_color << std::dec
+                          << " retained"
+                          << std::endl;
+                return CallResult::handled_void();
+            }
+            n->text_color = c;
+            std::cerr << "[M3-SETTEXTCOLOR] view_id=" << ctx.receiver_id
+                      << " color=0x" << std::hex << n->text_color << std::dec
+                      << std::endl;
+        } else if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+            // ColorStateList variant: capture the heap object for the
+            // renderer's state-list law (default color = the CSL default).
+            n->text_color_state_object = ctx.args[0].object_id;
+        }
+        return CallResult::handled_void();
+    }
     // EXP-065: Capture setHint / setHintText — EditText hint text is
     // important for the Login UI (e.g., "Phone number" appears as a hint).
     // Previously setHintText was stubbed at the engine level; now it's
