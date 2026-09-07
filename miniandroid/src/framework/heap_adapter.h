@@ -108,6 +108,18 @@ public:
         heap_->set_object_field(object_id, field_name, v);
         return true;
     }
+
+    // M3 F-005 FIX-B: string field reads for shadows
+    // (View.setForeground resolving the Drawable's resource path).
+    bool get_object_string_field(uint32_t object_id,
+                                 const std::string& field_name,
+                                 std::string& out) override {
+        if (!heap_) return false;
+        auto v = heap_->get_object_field(object_id, field_name);
+        if (!v) return false;
+        if (v->type == dalvik::DalvikType::STRING_REF) { out = v->string_val; return true; }
+        return false;
+    }
     bool set_object_int_field(uint32_t object_id, const std::string& field_name,
                               int32_t value) override {
         if (!heap_) return false;
