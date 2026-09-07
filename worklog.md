@@ -582,3 +582,62 @@ Stage Summary:
 - Remaining frontier: F-THREAD-TICK (executor virtualization), F-ARGS
   (chessclock color(int) resid=0), §3 ViewShadow ancestry migration,
   §20 corpus +5, §21 interaction tier ≥8, GitHub evidence A–J (token).
+
+---
+Task ID: M3-S4 (MASTER CAMPAIGN 3 — session 4: publish + F-THREAD-TICK forensics + reflection laws)
+Agent: Super Z (main agent)
+Task: User supplied the GitHub token: publish ALL unpushed commits and pending
+evidence comments; then continue MASTER CAMPAIGN 3 from current HEAD
+(PHASE 1 F-THREAD-TICK first).
+
+Work Log:
+- Token verified (repo Sh-TB/MiniAndroid-Compatibility-Runtime, push permission).
+- PUSHED 17 commits c0f178a7..24356b22 (local main == origin/main).
+- POSTED 3 pending evidence comments (scripts/post_m3_comments.py) + 1
+  session-3 closeout comment → 4 DIRECT URLs recorded in
+  scripts/comment_urls.json; +1 session-4 comment (below). All published.
+- PHASE 1 forensics (evidence-first, real DEX + master source):
+  * microtimer v8 decompiled semantics: START = foreground-icon Button in the
+    last keypad row (node 100 family), Clear = right ImageButton (view 83),
+    Backspace = left (77); digit taps route Lk/d.onClick → onDigit →
+    RoTimeControl.setValue.
+  * F-THREAD-TICK premise CORRECTED: the app tick law is
+    tickHandler.postDelayed({tick(tc)}, alarm.id, deltaMs) on the MAIN looper
+    (G07 law, self-rescheduling). The Executor/ThreadFactory/Thread.sleep in
+    the DEX is Room's internal worker, not the tick path.
+  * Click-path runtime evidence: btnStart → createTimer → Lm/c;
+    (UninitializedPropertyAccessException, sanitizeStackTrace via La/e;.m)
+    thrown at alarmDao.create — lateinit never assigned because initDb()
+    died: Class.getPackage() returned null → Intrinsics NPE (compat
+    swallowed) → fullPackage "" → Database_Impl lookup broken.
+- LAWS IMPLEMENTED (commit c4cfe6ab):
+  * FIX-M3-012: Class.getPackage → per-name Package object;
+    Package.getName; Class.getCanonicalName/getSimpleName (dotted law).
+  * FIX-M3-012b: Class.forName (DEX-index resolution, CNFE law);
+    getDeclaredConstructor; Constructor.newInstance (allocates + runs real
+    DEX <init>); Object.getClass (runtime-class CLASS_REF identity).
+    Evidence: Database_Impl resolved + constructed; run exceptions 3 → 0.
+  * FIX-M3-013: StringBuilder(int capacity) → buffer only, never content.
+    (Old bug: content became "2" → padStart(2,'0') poisoned → label
+    "200:200:201"; after fix "00:00:01" byte-exact.)
+  * FIX-M3-014: SystemClock.elapsedRealtime/uptimeMillis/currentTimeMillis
+    read the G07 virtual clock (one clock, one authority); sleep advances it.
+- Validation: battery 59/59 ALL PASS; corpus re-run microtimer/chessclock/
+  secuso_todo byte-identical to committed baseline; 16/20 unchanged; det2x ✓.
+- NAMED NEW BLOCKER (F-ROOM-CHAIN): tick reschedule still short-circuited —
+  Intrinsics stack-walk aget-oob (La/e;.h pc=34, index==length on our
+  materialized stack array) + compat-swallowed NPEs in Room transaction path
+  (Lh/f;.u) leave Alarm.expiresMs/remaining broken at first tick (expired →
+  Vibration.start instead of postDelayed countdown).
+- Forensics tools committed: scripts/mt_dex_disasm.py, scripts/mt_callers.py
+  (lead tools; runtime trace remains the evidence authority).
+- Final push state: origin/main == bb61749e, tree clean, 0 unpushed.
+
+Stage Summary:
+- Closed: publication backlog (ALL commits + ALL pending comments now on
+  GitHub with DIRECT URLs).
+- Laws closed: M3-012/012b/013/014 — regression-clean (59/59, zero drift).
+- F-THREAD-TICK: premise corrected (main-looper postDelayed); superseded by
+  F-ROOM-CHAIN (named, evidence-anchored, not hacked).
+- Next: F-ROOM-CHAIN (stack-walk OOB law + Room path), F-ARGS (chessclock
+  color), §3 ViewShadow ancestry migration, corpus +5.
