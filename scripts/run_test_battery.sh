@@ -297,6 +297,25 @@ gate "encoded_value AOSP law (expect 18)" $?
 tail -1 /tmp/battery_ev.out
 fi
 
+# MASTER-2 §6: shadow registry architectural invariant (one canonical
+# ownership model — a second/reduced registry must be detectable, never
+# silently accepted).
+if cached "link shadow_registry_invariant_test"; then
+    skip "link shadow_registry_invariant_test"
+    skip "§6 shadow registry invariant (expect 24)"
+else
+g++ -std=c++17 -w -g -O1 -Isrc -o build/shadow_registry_invariant_test \
+    tests/shadow_registry_invariant_test.cpp build/apk/*.o build/dex/*.o \
+    build/runtime/*.o build/diagnostics/*.o build/resources/*.o \
+    build/renderer/*.o build/fonts/*.o build/framework/*.o build/api/*.o \
+    build/storage/*.o -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz \
+    -lfribidi -lpng -lpthread > /tmp/battery_sri.log 2>&1
+gate "link shadow_registry_invariant_test" $?
+./build/shadow_registry_invariant_test > /tmp/battery_sri.out 2>&1
+gate "§6 shadow registry invariant (expect 24)" $?
+tail -1 /tmp/battery_sri.out
+fi
+
 # goldens
 if cached "helloworld_golden (§28)"; then skip "helloworld_golden (§28)"; else
 bash tests/fixtures/helloworld_golden/validate_helloworld_golden.sh build/miniandroid \
