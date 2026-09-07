@@ -785,3 +785,22 @@ Stage Summary:
 - PUBLISH BLOCKED — TOKEN ABSENT: /home/z/.gh_token lost in container reset;
   push + Issue #8 evidence comments deferred until token is restored.
   (Commit 3ea265be holds all work locally; zero fabricated URLs.)
+
+---
+Task ID: M3-C3 closeout (session 6)
+Agent: Super Z (main agent)
+Work Log:
+- Committed 3ea265be (FINDING-004 Handler token law + FINDING-007 Math surface +
+  FINDING-001/002 bootstrap scripts + diagnostics) — battery 59/59 before commit.
+- Battery re-run after the iget-object/iput-object trace extension: 59/59 ALL PASS.
+- Committed d86184fc (FINDINGS_REGISTRY.md FINDING-001..008 + GATE scorecard +
+  trace extension) + FORGOTTEN-001..020 written into the registry.
+- PUBLISH BLOCKED — TOKEN ABSENT for both commits (token lost in container reset);
+  zero URLs fabricated per the standing hard rule.
+
+Stage Summary:
+- Local HEAD: d86184fc (2 commits ahead of origin/main 0b6f85bb).
+- P0 F-ROOM-CHAIN: Room/INSERT/SELECT + token postDelayed + Math.ceil + tick drain
+  + label mutation all RUNTIME-PROVEN; FINDING-008 (row label null seconds +
+  missing per-tick row re-render) is the precise residual to GATE F.
+- 8 numbered findings + 20 forgotten-items registered, all evidence-grounded.
