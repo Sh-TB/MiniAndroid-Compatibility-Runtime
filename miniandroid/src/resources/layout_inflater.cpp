@@ -2,6 +2,8 @@
  * UNIFIED_007 — Real Layout Inflater implementation.
  */
 #include "layout_inflater.h"
+#include <unordered_set>
+
 #include "../fonts/text_shaper.h"
 #include "../renderer/software_renderer.h"  // G04 §8: header-only image size probe
 #include "res_config.h"                     // G04 §4: device density law
@@ -442,6 +444,21 @@ uint32_t LayoutInflater::resolve_id_attr(const AxmlAttribute* attr, InflateStats
 // (textAppearance attr data=0x01030042) and the 22sp→58px G46 runtime law.
 static constexpr uint32_t ATTR_TEXT_SIZE  = 0x01010095;
 static constexpr uint32_t ATTR_TEXT_COLOR = 0x01010098;
+// M3 FIX-M3-002 (style-bag layout params — AOSP obtainStyledAttributes
+// precedence law): the element's `style=` reference participates in
+// layout_* attribute resolution on real Android (LayoutInflater derives
+// LayoutParams through obtainStyledAttributes, whose resolution chain is
+// [direct XML attr] > [style= bag] > [defStyleAttr/theme]). Ground truth:
+// org.debian.eugen.headingcalculator v1 res/layout/calculator_keypad.xml —
+// every <Button> carries NO layout_width/height/weight but references
+// style/keypad_button whose bag holds layout_width=0dp, layout_height=-1
+// (match), layout_margin=1dp, layout_weight=1 — a real device renders a
+// full-width weighted keypad; ignoring the bag collapsed every button to
+// wrap_content 66x123 (keypad filled 1/3 of the row).
+static constexpr uint32_t ATTR_LAYOUT_WIDTH  = 0x010100f4;
+static constexpr uint32_t ATTR_LAYOUT_HEIGHT = 0x010100f5;
+static constexpr uint32_t ATTR_LAYOUT_MARGIN = 0x010100f6;
+static constexpr uint32_t ATTR_LAYOUT_WEIGHT = 0x01010181;
 static constexpr uint32_t FRAMEWORK_STYLE_TEXTAPPEARANCE_LARGE = 0x01030042;
 static constexpr float    TEXTAPPEARANCE_LARGE_SP = 22.0f;
 
@@ -461,6 +478,46 @@ bool LayoutInflater::apply_style_item(Attrs& a, uint32_t attr_key,
         auto rv = arsc_.resolve_value(v.ref_id);
         if (!rv) return false;
         v = *rv;
+    }
+    // M3 FIX-M3-002: layout_* keys from the style bag. First-writer wins
+    // within the style chain (the element's own style beats its parent
+    // style — the apply_style walk applies nearest bags first).
+    if (attr_key == ATTR_LAYOUT_WIDTH || attr_key == ATTR_LAYOUT_HEIGHT) {
+        const bool width_key = attr_key == ATTR_LAYOUT_WIDTH;
+        int& slot = width_key ? a.style_layout_width : a.style_layout_height;
+        if (slot != INT_MIN) return false;             // first-writer wins
+        {
+            static const bool m3dbg = std::getenv("MINIANDROID_M3_STYLE_DIAG") != nullptr;
+            if (m3dbg)
+                fprintf(stderr, "[M3-STYLE] key=0x%x probe type=%d data=%d ref=%d\n",
+                        attr_key, (int)v.type, (int)v.data, (int)item.is_reference());
+        }
+        if (!v.is_dimension() && !v.is_int()) return false;
+        int px;
+        if (v.is_dimension())
+            px = complex_to_dimension_pixel_size(v.data, density_context());
+        else px = (int)v.data;                          // -1 match / -2 wrap / raw px
+        slot = px;
+        return true;
+    }
+    if (attr_key == ATTR_LAYOUT_MARGIN) {
+        if (a.style_margin_all != INT_MIN) return false;
+        if (!v.is_dimension() && !v.is_int()) return false;
+        a.style_margin_all = v.is_dimension()
+                                 ? complex_to_dimension_pixel_size(v.data, density_context())
+                                 : (int)v.data;
+        return true;
+    }
+    if (attr_key == ATTR_LAYOUT_WEIGHT) {
+        if (a.style_layout_weight >= 0) return false;  // first-writer wins
+        float f;
+        if (v.type == DataType::FLOAT) {
+            memcpy(&f, &v.data, 4);
+        } else if (v.is_int()) {
+            f = (float)v.data;   // aapt2 may store 1.0 as INT 1
+        } else return false;
+        a.style_layout_weight = (int)std::lround(f * 1000.0f);
+        return true;
     }
     if (attr_key == ATTR_TEXT_SIZE) {
         if (a.from_style_text_size) return false;      // first-writer wins
@@ -493,8 +550,45 @@ void LayoutInflater::apply_style(framework::ViewShadow::ViewNode& node, Attrs& a
     // dimension as textSize / any color as textColor regardless of which
     // attribute they actually carried.
     for (size_t i = 0; i < e->complex_keys.size() && i < e->complex_items.size(); ++i) {
+        static const bool m3dbg = std::getenv("MINIANDROID_M3_STYLE_DIAG") != nullptr;
+        if (m3dbg && !e->complex_keys.empty() && i < 12)
+            fprintf(stderr, "[M3-BAG] style=0x%x key[%zu]=0x%x type=%d\n",
+                    style_resid, i, e->complex_keys[i],
+                    (int)e->complex_items[i].type);
         if (apply_style_item(a, e->complex_keys[i], e->complex_items[i], stats)) {
             stats.styles_applied++;
+        }
+    }
+    // M3 FIX-M3-002 (AOSP style parent-chain law): attributes resolve
+    // through the style's ResTable_map_entry parent chain — a child style
+    // (keypad_button_digit) inherits its parent's bag (keypad_button:
+    // textColor, layout_width/height/weight/margin). Previously only the
+    // own keys were consulted, so parent-supplied attributes were silently
+    // dropped. Nearest-bag-first (the loop above already consumed the
+    // child's own keys — first-writer-wins inside apply_style_item keeps
+    // child > parent precedence). Bounded + cycle-safe like bag_value.
+    uint32_t cur = style_resid;
+    int hops = 0;
+    std::unordered_set<uint32_t> visited{style_resid};
+    while (hops++ < 8) {
+        auto pr = arsc_.resolve(cur);
+        if (!pr) break;
+        const ArscEntry* pe = pr->best();
+        if (!pe || !pe->is_complex) break;
+        // M3 FIX-M3-003b: parent lives in bag_parent now (entry.value is
+        // overwritten with complex_items[0] for single-value compat).
+        uint32_t parent = pe->bag_parent;
+        if (parent == 0 || parent == cur || visited.count(parent)) break;
+        visited.insert(parent);
+        cur = parent;
+        auto pa = arsc_.resolve(cur);
+        if (!pa) break;
+        const ArscEntry* pae = pa->best();
+        if (!pae || !pae->is_complex) break;
+        for (size_t i = 0; i < pae->complex_keys.size() && i < pae->complex_items.size(); ++i) {
+            if (apply_style_item(a, pae->complex_keys[i], pae->complex_items[i], stats)) {
+                stats.styles_applied++;
+            }
         }
     }
 }
@@ -711,11 +805,11 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
 
         if (n == "layout_width") a.layout_width = resolve_size_or_match(&at, stats), a.width_set = true;
         else if (n == "layout_height") a.layout_height = resolve_size_or_match(&at, stats), a.height_set = true;
-        else if (n == "layout_margin") { a.ml = a.mt = a.mr = a.mb = parse_dim_attr(&at, stats); }
-        else if (n == "layout_marginLeft") a.ml = parse_dim_attr(&at, stats);
-        else if (n == "layout_marginTop") a.mt = parse_dim_attr(&at, stats);
-        else if (n == "layout_marginRight") a.mr = parse_dim_attr(&at, stats);
-        else if (n == "layout_marginBottom") a.mb = parse_dim_attr(&at, stats);
+        else if (n == "layout_margin") { a.ml = a.mt = a.mr = a.mb = parse_dim_attr(&at, stats); a.margin_set = true; }
+        else if (n == "layout_marginLeft") a.ml = parse_dim_attr(&at, stats), a.margin_set = true;
+        else if (n == "layout_marginTop") a.mt = parse_dim_attr(&at, stats), a.margin_set = true;
+        else if (n == "layout_marginRight") a.mr = parse_dim_attr(&at, stats), a.margin_set = true;
+        else if (n == "layout_marginBottom") a.mb = parse_dim_attr(&at, stats), a.margin_set = true;
         else if (n == "padding") a.padding_all = parse_dim_attr(&at, stats);
         else if (n == "paddingLeft") a.pl = parse_dim_attr(&at, stats);
         else if (n == "paddingTop") a.pt = parse_dim_attr(&at, stats);
@@ -734,6 +828,7 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             else a.layout_gravity = gravity_bits(raw);
         }
         else if (n == "layout_weight") {
+            a.weight_set = true;   // M3 FIX-M3-002: direct attr beats style bag
             if (at.value.type == DataType::FLOAT) {
                 // float bits
                 float f; memcpy(&f, &at.value.data, 4);
@@ -984,6 +1079,21 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.lp_margin_left = a.ml; node.lp_margin_top = a.mt;
     node.lp_margin_right = a.mr; node.lp_margin_bottom = a.mb;
     node.lp_width = a.layout_width; node.lp_height = a.layout_height;
+    // M3 FIX-M3-002: style-bag layout params — AOSP obtainStyledAttributes
+    // precedence: the direct XML attribute wins; when the XML is silent the
+    // style= bag (and its parent chain) supplies layout_width/height/weight/
+    // margin. Ground truth: headingcalculator keypad_button (0dp + weight 1
+    // + match_height from the style bag, no direct layout attrs in XML).
+    if (!a.width_set && a.style_layout_width != INT_MIN)
+        node.lp_width = a.style_layout_width;
+    if (!a.height_set && a.style_layout_height != INT_MIN)
+        node.lp_height = a.style_layout_height;
+    if (!a.weight_set && a.style_layout_weight >= 0)
+        node.layout_weight = a.style_layout_weight;
+    if (!a.margin_set && a.style_margin_all != INT_MIN) {
+        node.lp_margin_left = node.lp_margin_right =
+        node.lp_margin_top = node.lp_margin_bottom = a.style_margin_all;
+    }
     node.visibility = a.visibility;
     node.clickable = a.clickable || !a.onClick.empty();
     node.num_lines = a.num_lines;
@@ -1665,6 +1775,74 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         const Spec main_s{std::max(0, final_main), M_EXACTLY};
                         const Spec cross_s = child_spec(cspec, cm, lp_cross);
                         child_sizes[i] = main_horiz
+                                             ? measure(n->children[i], main_s,
+                                                       cross_s, depth + 1)
+                                             : measure(n->children[i], cross_s,
+                                                       main_s, depth + 1);
+                    }
+                }
+            }
+        }
+
+        // ===================================================================
+        // M3 FIX-M3-004 (§4/§6 — AOSP LinearLayout match-parent second-pass
+        // remeasure, LinearLayout.java measureVertical/measureHorizontal
+        // "Remeasure the match-parent children" block): a MATCH_PARENT
+        // child is FIRST measured with the parent's full spec size, then
+        // REMEASURED against the space LEFT by the non-match siblings —
+        // EXACTLY(specSize - usedByOthers) when the container spec is
+        // exact/at-most. Without the second pass a [wrap header, match
+        // body] vertical pair gives the body the FULL parent height and
+        // the pair overflows (headingcalculator: keypad measured
+        // EXACTLY(1920) next to a 158px display → keypad rows pitched
+        // 480px and the bottom rows fell off-screen; the AOSP result is
+        // EXACTLY(1762) → rows share the remainder). This is a
+        // measurement-semantics law (not layout-time geometry): every
+        // later pass recomputes the same share.
+        // ===================================================================
+        if (!is_rl_container && container &&
+            is_a(n->class_desc, "Landroid/widget/LinearLayout;") &&
+            !is_a(n->class_desc, "Landroid/widget/TableLayout;") &&
+            !is_a(n->class_desc, "Landroid/widget/TableRow;")) {
+            const bool main_horiz2 = n->orientation != 1;   // FIX-G10-001
+            const Spec& mspec2 = main_horiz2 ? sw : sh;
+            if (mspec2.mode != M_UNSPEC) {
+                const int mpad2 = main_horiz2 ? hpad : vpad;
+                // 1) used = main-axis size consumed by NON-match children
+                //    (final values after the weight pass above).
+                int used = 0;
+                bool has_match = false;
+                std::vector<size_t> match_idx;
+                for (size_t i = 0; i < n->children.size(); i++) {
+                    auto* cn = views->find_node(n->children[i]);
+                    if (!cn || cn->visibility == 8) continue;
+                    const int lp_main = main_horiz2 ? cn->lp_width : cn->lp_height;
+                    const int m = main_horiz2
+                                      ? cn->lp_margin_left + cn->lp_margin_right
+                                      : cn->lp_margin_top + cn->lp_margin_bottom;
+                    if (lp_main == -1) {
+                        has_match = true;
+                        match_idx.push_back(i);
+                    } else {
+                        used += (main_horiz2 ? child_sizes[i].first
+                                             : child_sizes[i].second) + m;
+                    }
+                }
+                // 2) remeasure every match-parent child with the remainder.
+                if (has_match) {
+                    const int remaining =
+                        std::max(0, mspec2.size - mpad2 - used);
+                    const Spec& cspec2 = main_horiz2 ? sh : sw;
+                    for (size_t i : match_idx) {
+                        auto* cn = views->find_node(n->children[i]);
+                        const int lp_cross = main_horiz2 ? cn->lp_height
+                                                        : cn->lp_width;
+                        const int cm = main_horiz2
+                                           ? cn->lp_margin_top + cn->lp_margin_bottom
+                                           : cn->lp_margin_left + cn->lp_margin_right;
+                        const Spec main_s{remaining, M_EXACTLY};
+                        const Spec cross_s = child_spec(cspec2, cm, lp_cross);
+                        child_sizes[i] = main_horiz2
                                              ? measure(n->children[i], main_s,
                                                        cross_s, depth + 1)
                                              : measure(n->children[i], cross_s,
