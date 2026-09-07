@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- M3 FIX-M3-002/003 law fixture: layout params supplied ONLY through the
+     style= bag (and its parent chain) — the headingcalculator keypad shape.
+     Direct layout_* attributes are deliberately absent from every button so
+     the ONLY path to their geometry is the style-bag law. -->
+<resources>
+    <style name="M3KeypadButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:textColor">#FF202020</item>
+    </style>
+    <style name="M3KeypadDigit" parent="M3KeypadButton">
+        <item name="android:textSize">20sp</item>
+    </style>
+</resources>

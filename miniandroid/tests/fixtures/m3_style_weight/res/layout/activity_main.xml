@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFFFF">
+
+    <!-- wrap_content header: the match-parent row below must measure to the
+         REMAINING height (FIX-M3-004 second-pass remeasure law). -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:text="HEADER"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- All three buttons take geometry from the style bag ONLY.
+             btn_direct overrides the weight DIRECTLY — the direct attribute
+             must beat the style bag (AOSP obtainStyledAttributes law). -->
+        <Button
+            android:id="@+id/btn_digit_a"
+            style="@style/M3KeypadDigit"
+            android:text="7" />
+
+        <Button
+            android:id="@+id/btn_digit_b"
+            style="@style/M3KeypadDigit"
+            android:text="8" />
+
+        <Button
+            android:id="@+id/btn_direct"
+            style="@style/M3KeypadButton"
+            android:layout_weight="2"
+            android:text="X" />
+    </LinearLayout>
+</LinearLayout>
