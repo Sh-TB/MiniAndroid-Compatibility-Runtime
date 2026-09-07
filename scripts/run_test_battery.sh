@@ -185,6 +185,41 @@ gate "LinearLayout/MeasureSpec law (expect 24)" $?
 tail -1 /tmp/battery_lllaw.out
 fi
 
+# G10: measurement/layout law battery (orientation default, superclass-chain
+# classification, gravity axis-field equality, hostile geometry safety)
+if cached "link g10_layout_law_test"; then
+    skip "link g10_layout_law_test"; skip "G10 measurement/layout law (expect 23)"
+else
+g++ -std=c++17 -w -g -O1 -Isrc -o build/g10_layout_law_test \
+    tests/g10_layout_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread \
+    > /tmp/battery_g10law.log 2>&1
+gate "link g10_layout_law_test" $?
+./build/g10_layout_law_test > /tmp/battery_g10law.out 2>&1
+gate "G10 measurement/layout law (expect 23)" $?
+tail -1 /tmp/battery_g10law.out
+fi
+
+# G11: real-DEX constructor + custom-hierarchy law battery (descriptor gate,
+# LayoutInflater Factory law, from/inflate hostile dispatch, addView
+# single-mount + cycle hostile laws)
+if cached "link g11_ctor_law_test"; then
+    skip "link g11_ctor_law_test"; skip "G11 ctor/Factory/addView law (expect 37)"
+else
+g++ -std=c++17 -w -g -O1 -Isrc -o build/g11_ctor_law_test \
+    tests/g11_ctor_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread \
+    > /tmp/battery_g11law.log 2>&1
+gate "link g11_ctor_law_test" $?
+./build/g11_ctor_law_test > /tmp/battery_g11law.out 2>&1
+gate "G11 ctor/Factory/addView law (expect 37)" $?
+tail -1 /tmp/battery_g11law.out
+fi
+
 # G04/G05 §16: hostile drawable/image/layout safety battery
 if cached "G04 hostile safety (expect 24)"; then
     skip "link g04_hostile_test"; skip "G04 hostile safety (expect 24)"
@@ -260,6 +295,25 @@ gate "link encoded_value_law_test" $?
 ./build/encoded_value_law_test > /tmp/battery_ev.out 2>&1
 gate "encoded_value AOSP law (expect 18)" $?
 tail -1 /tmp/battery_ev.out
+fi
+
+# MASTER-2 §6: shadow registry architectural invariant (one canonical
+# ownership model — a second/reduced registry must be detectable, never
+# silently accepted).
+if cached "link shadow_registry_invariant_test"; then
+    skip "link shadow_registry_invariant_test"
+    skip "§6 shadow registry invariant (expect 24)"
+else
+g++ -std=c++17 -w -g -O1 -Isrc -o build/shadow_registry_invariant_test \
+    tests/shadow_registry_invariant_test.cpp build/apk/*.o build/dex/*.o \
+    build/runtime/*.o build/diagnostics/*.o build/resources/*.o \
+    build/renderer/*.o build/fonts/*.o build/framework/*.o build/api/*.o \
+    build/storage/*.o -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz \
+    -lfribidi -lpng -lpthread > /tmp/battery_sri.log 2>&1
+gate "link shadow_registry_invariant_test" $?
+./build/shadow_registry_invariant_test > /tmp/battery_sri.out 2>&1
+gate "§6 shadow registry invariant (expect 24)" $?
+tail -1 /tmp/battery_sri.out
 fi
 
 # goldens
