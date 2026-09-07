@@ -1,0 +1,1251 @@
+[*] Analyzing DEX from: miniandroid/download/exp076_corpus/dubrowgn.microtimer_8.apk
+
+=== DEX Analysis Report ===
+
+DEX Version: 039
+Strings: 1162
+Types: 337
+Prototypes: 343
+Fields: 347
+Methods: 1122
+Classes: 143
+
+--- Classes ---
+
+Class: La/a;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - execute(Ljava/lang/Runnable;)V
+
+Class: La/c;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>()V [constructor]
+    - newThread(Ljava/lang/Runnable;)Ljava/lang/Thread;
+
+Class: La/d;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - a(ILjava/lang/String;)V [static]
+
+Class: La/e;
+  Extends: Ljava/lang/Object;
+  Methods (17):
+    - <clinit>()V [constructor] [static]
+    - a(Ljava/lang/Object;Ljava/lang/Object;)Z [static]
+    - b(I)[Ljava/lang/Object; [static]
+    - c(Lo/b;)Lo/b; [static]
+    - d(Lo/i;)Lo/i; [static]
+    - e(Ljava/lang/Object;)V [static]
+    - f(Ljava/lang/Object;Ljava/lang/String;)V [static]
+    - g(Ljava/lang/Object;Ljava/lang/String;)V [static]
+    - h(Ljava/lang/Object;Ljava/lang/String;)V [static]
+    - i(Ljava/io/Closeable;Ljava/lang/Throwable;)V [static]
+    - j(Landroid/database/Cursor;Ljava/lang/String;)I [static]
+    - k(C)Z [static]
+    - l([Ljava/lang/Object;II)V [static]
+    - m(Ljava/lang/RuntimeException;)V [static]
+    - n(Ljava/lang/String;)V [static]
+    - o(Ljava/util/Collection;)[Ljava/lang/Object; [static]
+    - p(Ljava/util/Collection;[Ljava/lang/Object;)[Ljava/lang/Object; [static]
+
+Class: Landroidx/annotation/Keep;
+  Extends: Ljava/lang/Object;
+
+Class: Landroidx/core/app/CoreComponentFactory;
+  Extends: Landroid/app/AppComponentFactory;
+  Methods (6):
+    - <init>()V [constructor]
+    - instantiateActivity(Ljava/lang/ClassLoader;Ljava/lang/String;Landroid/content/Intent;)Landroid/app/Activity;
+    - instantiateApplication(Ljava/lang/ClassLoader;Ljava/lang/String;)Landroid/app/Application;
+    - instantiateProvider(Ljava/lang/ClassLoader;Ljava/lang/String;)Landroid/content/ContentProvider;
+    - instantiateReceiver(Ljava/lang/ClassLoader;Ljava/lang/String;Landroid/content/Intent;)Landroid/content/BroadcastReceiver;
+    - instantiateService(Ljava/lang/ClassLoader;Ljava/lang/String;Landroid/content/Intent;)Landroid/app/Service;
+
+Class: Landroidx/core/app/RemoteActionCompatParcelizer;
+  Extends: Ljava/lang/Object;
+  Methods (3):
+    - <init>()V [constructor]
+    - read(Lj/b;)Landroidx/core/app/RemoteActionCompat; [static]
+    - write(Landroidx/core/app/RemoteActionCompat;Lj/b;)V [static]
+
+Class: Landroidx/core/graphics/drawable/IconCompatParcelizer;
+  Extends: Ljava/lang/Object;
+  Methods (3):
+    - <init>()V [constructor]
+    - read(Lj/b;)Landroidx/core/graphics/drawable/IconCompat; [static]
+    - write(Landroidx/core/graphics/drawable/IconCompat;Lj/b;)V [static]
+
+Class: Landroidx/lifecycle/CompositeGeneratedAdaptersObserver;
+  Extends: Ljava/lang/Object;
+
+Class: Landroidx/lifecycle/FullLifecycleObserverAdapter;
+  Extends: Ljava/lang/Object;
+
+Class: Landroidx/lifecycle/Lifecycling$1;
+  Extends: Ljava/lang/Object;
+
+Class: Landroidx/lifecycle/ReflectiveGenericLifecycleObserver;
+  Extends: Ljava/lang/Object;
+
+Class: Landroidx/lifecycle/SingleGeneratedAdapterObserver;
+  Extends: Ljava/lang/Object;
+
+Class: Landroidx/room/MultiInstanceInvalidationService;
+  Extends: Landroid/app/Service;
+  Methods (2):
+    - <init>()V [constructor]
+    - onBind(Landroid/content/Intent;)Landroid/os/IBinder;
+
+Class: Landroidx/versionedparcelable/ParcelImpl;
+  Extends: Ljava/lang/Object;
+  Methods (4):
+    - <clinit>()V [constructor] [static]
+    - <init>(Landroid/os/Parcel;)V [constructor]
+    - describeContents()I
+    - writeToParcel(Landroid/os/Parcel;I)V
+
+Class: Lb/b;
+  Extends: Ljava/lang/Object;
+  Methods (7):
+    - <init>(Ljava/lang/Object;Le/m;)V [constructor]
+    - equals(Ljava/lang/Object;)Z
+    - getKey()Ljava/lang/Object;
+    - getValue()Ljava/lang/Object;
+    - hashCode()I
+    - setValue(Ljava/lang/Object;)Ljava/lang/Object;
+    - toString()Ljava/lang/String;
+
+Class: Lb/c;
+  Extends: Ljava/lang/Object;
+  Methods (3):
+    - <init>(Lb/b;Lb/b;)V [constructor]
+    - hasNext()Z
+    - next()Ljava/lang/Object;
+
+Class: Lb/d;
+  Extends: Ljava/lang/Object;
+  Methods (6):
+    - <init>()V [constructor]
+    - a(Le/q;)Ljava/lang/Object;
+    - equals(Ljava/lang/Object;)Z
+    - hashCode()I
+    - iterator()Ljava/util/Iterator;
+    - toString()Ljava/lang/String;
+
+Class: Lc/a;
+  Extends: Ljava/lang/Object;
+  Methods (5):
+    - <init>(Lc/b;)V [constructor]
+    - c(Ljava/util/Set;Ljava/lang/Object;)Z [static]
+    - a(II)Ljava/lang/Object;
+    - b(I)V
+    - d(I[Ljava/lang/Object;)[Ljava/lang/Object;
+
+Class: Lc/b;
+  Extends: Ljava/lang/Object;
+  Methods (34):
+    - <init>()V [constructor]
+    - b([III)I [static]
+    - g([I[Ljava/lang/Object;I)V [static]
+    - a(I)V
+    - c()V
+    - clear()V
+    - containsKey(Ljava/lang/Object;)Z
+    - containsValue(Ljava/lang/Object;)Z
+    - d(Ljava/lang/Object;)Z
+    - e(Ljava/lang/Object;)Z
+    - entrySet()Ljava/util/Set;
+    - equals(Ljava/lang/Object;)Z
+    - f(Ljava/lang/Object;)Z
+    - get(Ljava/lang/Object;)Ljava/lang/Object;
+    - h(Ljava/lang/Object;)Ljava/lang/Object;
+    - hashCode()I
+    - i()I
+    - isEmpty()Z
+    - j(ILjava/lang/Object;)I
+    - k(Ljava/lang/Object;)I
+    - keySet()Ljava/util/Set;
+    - l()I
+    - m(Ljava/lang/Object;)I
+    - n()Z
+    - o(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    - p(Ljava/lang/Object;)Ljava/lang/Object;
+    - put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    - putAll(Ljava/util/Map;)V
+    - q(I)Ljava/lang/Object;
+    - r()Ljava/lang/String;
+    - remove(Ljava/lang/Object;)Ljava/lang/Object;
+    - size()I
+    - toString()Ljava/lang/String;
+    - values()Ljava/util/Collection;
+
+Class: Lc/c;
+  Extends: Ljava/lang/Object;
+  Methods (4):
+    - <init>(Lc/a;I)V [constructor]
+    - hasNext()Z
+    - next()Ljava/lang/Object;
+    - remove()V
+
+Class: Lc/d;
+  Extends: Ljava/lang/Object;
+  Methods (16):
+    - <init>(Lc/a;I)V [constructor]
+    - add(Ljava/lang/Object;)Z
+    - addAll(Ljava/util/Collection;)Z
+    - clear()V
+    - contains(Ljava/lang/Object;)Z
+    - containsAll(Ljava/util/Collection;)Z
+    - equals(Ljava/lang/Object;)Z
+    - hashCode()I
+    - isEmpty()Z
+    - iterator()Ljava/util/Iterator;
+    - remove(Ljava/lang/Object;)Z
+    - removeAll(Ljava/util/Collection;)Z
+    - retainAll(Ljava/util/Collection;)Z
+    - size()I
+    - toArray()[Ljava/lang/Object;
+    - toArray([Ljava/lang/Object;)[Ljava/lang/Object;
+
+Class: Lc/e;
+  Extends: Ljava/lang/Object;
+  Methods (10):
+    - <init>(Lc/a;)V [constructor]
+    - equals(Ljava/lang/Object;)Z
+    - getKey()Ljava/lang/Object;
+    - getValue()Ljava/lang/Object;
+    - hasNext()Z
+    - hashCode()I
+    - next()Ljava/lang/Object;
+    - remove()V
+    - setValue(Ljava/lang/Object;)Ljava/lang/Object;
+    - toString()Ljava/lang/String;
+
+Class: Lc/f;
+  Extends: Ljava/lang/Object;
+  Methods (14):
+    - <init>(Lc/a;)V [constructor]
+    - add(Ljava/lang/Object;)Z
+    - addAll(Ljava/util/Collection;)Z
+    - clear()V
+    - contains(Ljava/lang/Object;)Z
+    - containsAll(Ljava/util/Collection;)Z
+    - isEmpty()Z
+    - iterator()Ljava/util/Iterator;
+    - remove(Ljava/lang/Object;)Z
+    - removeAll(Ljava/util/Collection;)Z
+    - retainAll(Ljava/util/Collection;)Z
+    - size()I
+    - toArray()[Ljava/lang/Object;
+    - toArray([Ljava/lang/Object;)[Ljava/lang/Object;
+
+Class: Ld/a;
+  Extends: Ljava/lang/Object;
+  Methods (4):
+    - a(Ljava/lang/Object;)I [static]
+    - b(Ljava/lang/Object;)Ljava/lang/String; [static]
+    - c(Ljava/lang/Object;)I [static]
+    - d(Ljava/lang/Object;)Landroid/net/Uri; [static]
+
+Class: Ldubrowgn/microtimer/AlarmReceiver;
+  Extends: Landroid/content/BroadcastReceiver;
+  Methods (2):
+    - <init>()V [constructor]
+    - onReceive(Landroid/content/Context;Landroid/content/Intent;)V
+
+Class: Ldubrowgn/microtimer/MainActivity;
+  Extends: Landroid/app/Activity;
+  Methods (10):
+    - <init>()V [constructor]
+    - c(Ljava/lang/String;)V [static]
+    - a(Ll/a;)Lk/g;
+    - b(Ll/a;)Landroid/app/PendingIntent;
+    - d(I)V
+    - e(Lk/g;)V
+    - onCreate(Landroid/os/Bundle;)V
+    - onDestroy()V
+    - onPause()V
+    - onResume()V
+
+Class: Ldubrowgn/microtimer/RoTimeControl;
+  Extends: Landroid/widget/FrameLayout;
+  Methods (4):
+    - <init>(Landroid/content/Context;)V [constructor]
+    - <init>(Landroid/content/Context;Landroid/util/AttributeSet;)V [constructor]
+    - a()V
+    - b(Lk/a;)V
+
+Class: Ldubrowgn/microtimer/db/Database;
+  Extends: Ljava/lang/Object;
+  Methods (16):
+    - <init>()V [constructor]
+    - o(Ljava/lang/Class;Lg/e;)Ljava/lang/Object; [static]
+    - a()Ll/d;
+    - b()V
+    - c()V
+    - d()V
+    - e()Le/o;
+    - f(Le/d;)Lg/e;
+    - g(Ljava/util/LinkedHashMap;)Ljava/util/List;
+    - h()Lg/e;
+    - i()Ljava/util/concurrent/Executor;
+    - j()Ljava/util/Set;
+    - k()Ljava/util/Map;
+    - l()V
+    - m()V
+    - n(Lg/g;Landroid/os/CancellationSignal;)Landroid/database/Cursor;
+
+Class: Le/d;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(Landroid/content/Context;Ljava/lang/String;Le/a;Le/y;Ljava/util/ArrayList;ZILjava/util/concurrent/Executor;Ljava/util/concurrent/Executor;ZLjava/util/LinkedHashSet;Ljava/util/ArrayList;Ljava/util/ArrayList;)V [constructor]
+    - a(II)Z
+
+Class: Le/e0;
+  Extends: Ljava/lang/Object;
+  Methods (4):
+    - <init>(Ldubrowgn/microtimer/db/Database;)V [constructor]
+    - a()Lg/h;
+    - b()Ljava/lang/String;
+    - c(Lg/h;)V
+
+Class: Le/e;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - q()Lg/e;
+
+Class: Le/h;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <clinit>()V [constructor] [static]
+    - c([Ljava/lang/String;)V
+
+Class: Le/j;
+  Extends: Ljava/lang/Object;
+  Methods (3):
+    - <clinit>()V [constructor] [static]
+    - a(I[Ljava/lang/String;)V
+    - b(Le/h;Ljava/lang/String;)I
+
+Class: Le/k;
+  Extends: Ljava/lang/Object;
+  Methods (3):
+    - <clinit>()V [constructor] [static]
+    - a(Ljava/lang/Object;)V [static]
+    - b(I)I [static]
+
+Class: Le/l;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(I)V [constructor]
+    - a()[I
+
+Class: Le/m;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(Le/q;[I[Ljava/lang/String;)V [constructor]
+    - a(Ljava/util/Set;)V
+
+Class: Le/n;
+  Extends: Ljava/lang/Object;
+  Methods (3):
+    - <init>(Le/o;)V [constructor]
+    - a()Lo/i;
+    - run()V
+
+Class: Le/o;
+  Extends: Ljava/lang/Object;
+  Methods (6):
+    - <clinit>()V [constructor] [static]
+    - <init>(Ldubrowgn/microtimer/db/Database;Ljava/util/HashMap;Ljava/util/HashMap;[Ljava/lang/String;)V [constructor]
+    - a(Le/q;)V
+    - b()Z
+    - c(Lg/b;I)V
+    - d(Lg/b;)V
+
+Class: Le/p;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(Le/u;I)V [constructor]
+    - run()V
+
+Class: Le/q;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(Le/u;[Ljava/lang/String;)V [constructor]
+    - a(Ljava/util/Set;)V
+
+Class: Le/r;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(Ljava/lang/Object;Ljava/lang/Object;I)V [constructor]
+    - run()V
+
+Class: Le/t;
+  Extends: Ljava/lang/Object;
+  Methods (3):
+    - <init>(Le/u;)V [constructor]
+    - onServiceConnected(Landroid/content/ComponentName;Landroid/os/IBinder;)V
+    - onServiceDisconnected(Landroid/content/ComponentName;)V
+
+Class: Le/u;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - <init>(Landroid/content/Context;Ljava/lang/String;Landroid/content/Intent;Le/o;Ljava/util/concurrent/Executor;)V [constructor]
+
+Class: Le/w;
+  Extends: Landroid/os/RemoteCallbackList;
+  Methods (2):
+    - <init>(Landroidx/room/MultiInstanceInvalidationService;)V [constructor]
+    - onCallbackDied(Landroid/os/IInterface;Ljava/lang/Object;)V
+
+Class: Le/y;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>()V [constructor]
+    - <init>(I)V [constructor]
+
+Class: Le/z;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - <init>(ZLjava/lang/String;)V [constructor]
+
+Class: Lf/a;
+  Extends: Ljava/lang/Object;
+  Methods (4):
+    - <init>(Ljava/lang/String;Ljava/lang/String;ZILjava/lang/String;I)V [constructor]
+    - equals(Ljava/lang/Object;)Z
+    - hashCode()I
+    - toString()Ljava/lang/String;
+
+Class: Lf/b;
+  Extends: Ljava/lang/Object;
+  Methods (4):
+    - <init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/ArrayList;Ljava/util/ArrayList;)V [constructor]
+    - equals(Ljava/lang/Object;)Z
+    - hashCode()I
+    - toString()Ljava/lang/String;
+
+Class: Lf/c;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(IILjava/lang/String;Ljava/lang/String;)V [constructor]
+    - compareTo(Ljava/lang/Object;)I
+
+Class: Lf/d;
+  Extends: Ljava/lang/Object;
+  Methods (4):
+    - <init>(Ljava/lang/String;ZLjava/util/List;Ljava/util/List;)V [constructor]
+    - equals(Ljava/lang/Object;)Z
+    - hashCode()I
+    - toString()Ljava/lang/String;
+
+Class: Lf/e;
+  Extends: Ljava/lang/Object;
+  Methods (4):
+    - <init>(Ljava/util/Map;Ljava/util/AbstractSet;Ljava/util/AbstractSet;)V [constructor]
+    - equals(Ljava/lang/Object;)Z
+    - hashCode()I
+    - toString()Ljava/lang/String;
+
+Class: Lg/b;
+  Extends: Ljava/lang/Object;
+  Methods (13):
+    - a(Lg/g;Landroid/os/CancellationSignal;)Landroid/database/Cursor;
+    - b()V
+    - c(Ljava/lang/String;)V
+    - d()V
+    - f()V
+    - i()Ljava/lang/String;
+    - j(Lg/g;)Landroid/database/Cursor;
+    - k()V
+    - m()Z
+    - n()Z
+    - o()Ljava/util/List;
+    - r(Ljava/lang/String;)Lg/h;
+    - t()Z
+
+Class: Lg/c;
+  Extends: Ljava/lang/Object;
+  Methods (7):
+    - <init>(I)V [constructor]
+    - a(Ljava/lang/String;)V [static]
+    - b(Lh/c;)V
+    - c(Lh/c;)V
+    - d(Lh/c;II)V
+    - e(Lh/c;)V
+    - f(Lh/c;II)V
+
+Class: Lg/d;
+  Extends: Ljava/lang/Object;
+
+Class: Lg/e;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - e()Lg/b;
+    - setWriteAheadLoggingEnabled(Z)V
+
+Class: Lg/f;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - h(IJ)V
+    - l(I)V
+
+Class: Lg/g;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - q()Ljava/lang/String;
+    - s(Le/x;)V
+
+Class: Lh/a;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(ILjava/lang/Object;)V [constructor]
+    - newCursor(Landroid/database/sqlite/SQLiteDatabase;Landroid/database/sqlite/SQLiteCursorDriver;Ljava/lang/String;Landroid/database/sqlite/SQLiteQuery;)Landroid/database/Cursor;
+
+Class: Lh/d;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(Lg/c;Le/y;)V [constructor]
+    - onCorruption(Landroid/database/sqlite/SQLiteDatabase;)V
+
+Class: Lh/e;
+  Extends: Ljava/lang/RuntimeException;
+  Methods (2):
+    - <init>(ILjava/lang/Throwable;)V [constructor]
+    - getCause()Ljava/lang/Throwable;
+
+Class: Lh/f;
+  Extends: Landroid/database/sqlite/SQLiteOpenHelper;
+  Methods (11):
+    - <init>(Landroid/content/Context;Ljava/lang/String;Le/y;Lg/c;Z)V [constructor]
+    - close()V
+    - onConfigure(Landroid/database/sqlite/SQLiteDatabase;)V
+    - onCreate(Landroid/database/sqlite/SQLiteDatabase;)V
+    - onDowngrade(Landroid/database/sqlite/SQLiteDatabase;II)V
+    - onOpen(Landroid/database/sqlite/SQLiteDatabase;)V
+    - onUpgrade(Landroid/database/sqlite/SQLiteDatabase;II)V
+    - q(Z)Lg/b;
+    - s(Landroid/database/sqlite/SQLiteDatabase;)Lh/c;
+    - u(Z)Landroid/database/sqlite/SQLiteDatabase;
+    - v(Z)Landroid/database/sqlite/SQLiteDatabase;
+
+Class: Li/a;
+  Extends: Ljava/lang/Object;
+  Methods (4):
+    - <clinit>()V [constructor] [static]
+    - <init>(Ljava/lang/String;Ljava/io/File;Z)V [constructor]
+    - a(Z)V
+    - b()V
+
+Class: Lj/a;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - createFromParcel(Landroid/os/Parcel;)Ljava/lang/Object;
+    - newArray(I)[Ljava/lang/Object;
+
+Class: Lj/b;
+  Extends: Ljava/lang/Object;
+  Methods (11):
+    - <init>(Lc/b;Lc/b;Lc/b;)V [constructor]
+    - a()Lj/c;
+    - b(Ljava/lang/Class;)Ljava/lang/Class;
+    - c(Ljava/lang/String;)Ljava/lang/reflect/Method;
+    - d(Ljava/lang/Class;)Ljava/lang/reflect/Method;
+    - e(I)Z
+    - f(II)I
+    - g(Landroid/os/Parcelable;I)Landroid/os/Parcelable;
+    - h()Lj/d;
+    - i(I)V
+    - j(Lj/d;)V
+
+Class: Lj/d;
+  Extends: Ljava/lang/Object;
+
+Class: Lk/a;
+  Extends: Ljava/lang/Object;
+  Methods (3):
+    - <init>(I)V [constructor]
+    - a()I
+    - toString()Ljava/lang/String;
+
+Class: Lk/b;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - a(Landroid/app/AlarmManager;)Z [static]
+
+Class: Lk/c;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(Ldubrowgn/microtimer/MainActivity;Lk/g;I)V [constructor]
+    - run()V
+
+Class: Lk/d;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(Ldubrowgn/microtimer/MainActivity;I)V [constructor]
+    - onClick(Landroid/view/View;)V
+
+Class: Lk/f;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(Lk/g;I)V [constructor]
+    - onClick(Landroid/view/View;)V
+
+Class: Lk/g;
+  Extends: Landroid/widget/LinearLayout;
+  Methods (9):
+    - <init>(Landroid/content/Context;Ll/a;)V [constructor]
+    - a()V
+    - getAlarm()Ll/a;
+    - getOnDelete()Lr/a;
+    - getOnPause()Lr/a;
+    - getOnResume()Lr/a;
+    - setOnDelete(Lr/a;)V
+    - setOnPause(Lr/a;)V
+    - setOnResume(Lr/a;)V
+
+Class: Lk/h;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <clinit>()V [constructor] [static]
+    - a(Landroid/content/Context;)V [static]
+
+Class: Ll/a;
+  Extends: Ljava/lang/Object;
+  Methods (5):
+    - <init>(Lk/a;)V [constructor]
+    - a()V
+    - equals(Ljava/lang/Object;)Z
+    - hashCode()I
+    - toString()Ljava/lang/String;
+
+Class: Ll/d;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - <init>(Ldubrowgn/microtimer/db/Database;)V [constructor]
+
+Class: Ll/e;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(Ldubrowgn/microtimer/db/Database_Impl;)V [constructor]
+    - a(Lh/c;)Le/z; [static]
+
+Class: Lm/a;
+  Extends: Ljava/lang/Object;
+  Methods (3):
+    - <init>(Le/d0;)V [constructor]
+    - a()Ljava/lang/Object;
+    - toString()Ljava/lang/String;
+
+Class: Lm/b;
+  Extends: Ljava/lang/Object;
+  Methods (5):
+    - <init>(I)V [constructor]
+    - compareTo(Ljava/lang/Object;)I
+    - equals(Ljava/lang/Object;)Z
+    - hashCode()I
+    - toString()Ljava/lang/String;
+
+Class: Lm/c;
+  Extends: Ljava/lang/RuntimeException;
+
+Class: Lm/d;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <clinit>()V [constructor] [static]
+    - toString()Ljava/lang/String;
+
+Class: Ln/a;
+  Extends: Ljava/util/AbstractList;
+  Methods (3):
+    - <init>()V [constructor]
+    - remove(I)Ljava/lang/Object;
+    - size()I
+
+Class: Ln/b;
+  Extends: Ljava/util/AbstractSet;
+  Methods (3):
+    - <init>()V [constructor]
+    - a()I
+    - size()I
+
+Class: Ln/g;
+  Extends: Ljava/lang/Object;
+  Methods (10):
+    - <clinit>()V [constructor] [static]
+    - add(Ljava/lang/Object;)V
+    - hasNext()Z
+    - hasPrevious()Z
+    - next()Ljava/lang/Object;
+    - nextIndex()I
+    - previous()Ljava/lang/Object;
+    - previousIndex()I
+    - remove()V
+    - set(Ljava/lang/Object;)V
+
+Class: Ln/h;
+  Extends: Ljava/lang/Object;
+  Methods (27):
+    - <clinit>()V [constructor] [static]
+    - add(ILjava/lang/Object;)V
+    - add(Ljava/lang/Object;)Z
+    - addAll(ILjava/util/Collection;)Z
+    - addAll(Ljava/util/Collection;)Z
+    - clear()V
+    - contains(Ljava/lang/Object;)Z
+    - containsAll(Ljava/util/Collection;)Z
+    - equals(Ljava/lang/Object;)Z
+    - get(I)Ljava/lang/Object;
+    - hashCode()I
+    - indexOf(Ljava/lang/Object;)I
+    - isEmpty()Z
+    - iterator()Ljava/util/Iterator;
+    - lastIndexOf(Ljava/lang/Object;)I
+    - listIterator()Ljava/util/ListIterator;
+    - listIterator(I)Ljava/util/ListIterator;
+    - remove(I)Ljava/lang/Object;
+    - remove(Ljava/lang/Object;)Z
+    - removeAll(Ljava/util/Collection;)Z
+    - retainAll(Ljava/util/Collection;)Z
+    - set(ILjava/lang/Object;)Ljava/lang/Object;
+    - size()I
+    - subList(II)Ljava/util/List;
+    - toArray()[Ljava/lang/Object;
+    - toArray([Ljava/lang/Object;)[Ljava/lang/Object;
+    - toString()Ljava/lang/String;
+
+Class: Ln/i;
+  Extends: Ljava/lang/Object;
+  Methods (16):
+    - <clinit>()V [constructor] [static]
+    - clear()V
+    - containsKey(Ljava/lang/Object;)Z
+    - containsValue(Ljava/lang/Object;)Z
+    - entrySet()Ljava/util/Set;
+    - equals(Ljava/lang/Object;)Z
+    - get(Ljava/lang/Object;)Ljava/lang/Object;
+    - hashCode()I
+    - isEmpty()Z
+    - keySet()Ljava/util/Set;
+    - put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    - putAll(Ljava/util/Map;)V
+    - remove(Ljava/lang/Object;)Ljava/lang/Object;
+    - size()I
+    - toString()Ljava/lang/String;
+    - values()Ljava/util/Collection;
+
+Class: Ln/j;
+  Extends: Ljava/lang/Object;
+  Methods (17):
+    - <clinit>()V [constructor] [static]
+    - add(Ljava/lang/Object;)Z
+    - addAll(Ljava/util/Collection;)Z
+    - clear()V
+    - contains(Ljava/lang/Object;)Z
+    - containsAll(Ljava/util/Collection;)Z
+    - equals(Ljava/lang/Object;)Z
+    - hashCode()I
+    - isEmpty()Z
+    - iterator()Ljava/util/Iterator;
+    - remove(Ljava/lang/Object;)Z
+    - removeAll(Ljava/util/Collection;)Z
+    - retainAll(Ljava/util/Collection;)Z
+    - size()I
+    - toArray()[Ljava/lang/Object;
+    - toArray([Ljava/lang/Object;)[Ljava/lang/Object;
+    - toString()Ljava/lang/String;
+
+Class: Lo/a;
+  Extends: Ljava/lang/Object;
+  Methods (11):
+    - <init>(Lo/b;I)V [constructor]
+    - a()V
+    - add(Ljava/lang/Object;)V
+    - hasNext()Z
+    - hasPrevious()Z
+    - next()Ljava/lang/Object;
+    - nextIndex()I
+    - previous()Ljava/lang/Object;
+    - previousIndex()I
+    - remove()V
+    - set(Ljava/lang/Object;)V
+
+Class: Lo/d;
+  Extends: Ljava/lang/Object;
+  Methods (7):
+    - <init>(Lo/f;I)V [constructor]
+    - equals(Ljava/lang/Object;)Z
+    - getKey()Ljava/lang/Object;
+    - getValue()Ljava/lang/Object;
+    - hashCode()I
+    - setValue(Ljava/lang/Object;)Ljava/lang/Object;
+    - toString()Ljava/lang/String;
+
+Class: Lo/e;
+  Extends: Ljava/lang/Object;
+  Methods (5):
+    - <init>(Lo/f;)V [constructor]
+    - a()V
+    - b()V
+    - hasNext()Z
+    - remove()V
+
+Class: Lo/f;
+  Extends: Ljava/lang/Object;
+  Methods (27):
+    - <clinit>()V [constructor] [static]
+    - <init>()V [constructor]
+    - <init>(I)V [constructor]
+    - a(Ljava/lang/Object;)I
+    - b()V
+    - c(Ljava/util/Collection;)Z
+    - clear()V
+    - containsKey(Ljava/lang/Object;)Z
+    - containsValue(Ljava/lang/Object;)Z
+    - d(Ljava/util/Map$Entry;)Z
+    - e(I)V
+    - entrySet()Ljava/util/Set;
+    - equals(Ljava/lang/Object;)Z
+    - f(Ljava/lang/Object;)I
+    - g(Ljava/lang/Object;)I
+    - get(Ljava/lang/Object;)Ljava/lang/Object;
+    - h(I)V
+    - hashCode()I
+    - i(I)V
+    - isEmpty()Z
+    - keySet()Ljava/util/Set;
+    - put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    - putAll(Ljava/util/Map;)V
+    - remove(Ljava/lang/Object;)Ljava/lang/Object;
+    - size()I
+    - toString()Ljava/lang/String;
+    - values()Ljava/util/Collection;
+
+Class: Lo/h;
+  Extends: Ljava/util/AbstractCollection;
+  Methods (11):
+    - <init>(Lo/f;)V [constructor]
+    - add(Ljava/lang/Object;)Z
+    - addAll(Ljava/util/Collection;)Z
+    - clear()V
+    - contains(Ljava/lang/Object;)Z
+    - isEmpty()Z
+    - iterator()Ljava/util/Iterator;
+    - remove(Ljava/lang/Object;)Z
+    - removeAll(Ljava/util/Collection;)Z
+    - retainAll(Ljava/util/Collection;)Z
+    - size()I
+
+Class: Lp/a;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - <clinit>()V [constructor] [static]
+
+Class: Lq/a;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - <clinit>()V [constructor] [static]
+
+Class: Lr/a;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - a()Ljava/lang/Object;
+
+Class: Ls/a;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - toString()Ljava/lang/String;
+
+Class: Ls/b;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - <clinit>()V [constructor] [static]
+
+Class: Ls/c;
+  Extends: Ljava/lang/Object;
+
+Class: Lt/a;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - <init>(III)V [constructor]
+    - iterator()Ljava/util/Iterator;
+
+Class: Lt/b;
+  Extends: Ljava/lang/Object;
+  Methods (7):
+    - <init>(III)V [constructor]
+    - a()Ljava/lang/Object;
+    - b()I
+    - c()V
+    - hasNext()Z
+    - next()Ljava/lang/Object;
+    - remove()V
+
+Class: La/b;
+  Extends: La/e;
+  Methods (2):
+    - <clinit>()V [constructor] [static]
+    - <init>()V [constructor]
+
+Class: La/f;
+  Extends: La/e;
+  Methods (1):
+    - <init>()V [constructor]
+
+Class: Landroid/support/v4/app/RemoteActionCompatParcelizer;
+  Extends: Landroidx/core/app/RemoteActionCompatParcelizer;
+  Methods (3):
+    - <init>()V [constructor]
+    - read(Lj/b;)Landroidx/core/app/RemoteActionCompat; [static]
+    - write(Landroidx/core/app/RemoteActionCompat;Lj/b;)V [static]
+
+Class: Landroid/support/v4/graphics/drawable/IconCompatParcelizer;
+  Extends: Landroidx/core/graphics/drawable/IconCompatParcelizer;
+  Methods (3):
+    - <init>()V [constructor]
+    - read(Lj/b;)Landroidx/core/graphics/drawable/IconCompat; [static]
+    - write(Landroidx/core/graphics/drawable/IconCompat;Lj/b;)V [static]
+
+Class: Landroidx/core/app/RemoteActionCompat;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - <init>()V [constructor]
+
+Class: Landroidx/versionedparcelable/CustomVersionedParcelable;
+  Extends: Ljava/lang/Object;
+  Methods (1):
+    - <init>()V [constructor]
+
+Class: Lb/a;
+  Extends: Lb/c;
+
+Class: Ldubrowgn/microtimer/db/Database_Impl;
+  Extends: Ldubrowgn/microtimer/db/Database;
+  Methods (7):
+    - <init>()V [constructor]
+    - a()Ll/d;
+    - e()Le/o;
+    - f(Le/d;)Lg/e;
+    - g(Ljava/util/LinkedHashMap;)Ljava/util/List;
+    - j()Ljava/util/Set;
+    - k()Ljava/util/Map;
+
+Class: Le/a0;
+  Extends: Lg/c;
+  Methods (7):
+    - <init>(Le/d;Ll/e;)V [constructor]
+    - b(Lh/c;)V
+    - c(Lh/c;)V
+    - d(Lh/c;II)V
+    - e(Lh/c;)V
+    - f(Lh/c;II)V
+    - g(Lh/c;)V
+
+Class: Le/a;
+  Extends: Ljava/lang/Object;
+  Methods (5):
+    - <clinit>()V [constructor] [static]
+    - a(Ljava/lang/String;Ljava/lang/String;)Z [static]
+    - b(Ljava/lang/Integer;)Lk/a; [static]
+    - c(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String; [static]
+    - d(Le/y;Landroid/database/sqlite/SQLiteDatabase;)Lh/c; [static]
+
+Class: Le/b0;
+  Extends: Ljava/lang/Object;
+  Methods (9):
+    - <clinit>()V [constructor] [static]
+    - <init>()V [constructor]
+    - close()V
+    - h(IJ)V
+    - l(I)V
+    - q()Ljava/lang/String;
+    - s(Le/x;)V
+    - u()V
+    - v()V
+
+Class: Le/b;
+  Extends: Ls/a;
+  Methods (3):
+    - <clinit>()V [constructor] [static]
+    - <init>(I)V [constructor]
+    - b(Ljava/lang/Object;)Ljava/lang/Object;
+
+Class: Le/c0;
+  Extends: Ljava/lang/Object;
+
+Class: Le/c;
+  Extends: Ljava/lang/Object;
+
+Class: Le/d0;
+  Extends: Ls/a;
+  Methods (2):
+    - <init>(ILjava/lang/Object;)V [constructor]
+    - a()Ljava/lang/Object;
+
+Class: Le/f;
+  Extends: Le/e0;
+  Methods (2):
+    - <init>(Ldubrowgn/microtimer/db/Database;)V [constructor]
+    - d(Ljava/lang/Object;)V
+
+Class: Le/g;
+  Extends: Ljava/lang/Object;
+  Methods (3):
+    - <init>(Landroid/os/IBinder;)V [constructor]
+    - asBinder()Landroid/os/IBinder;
+    - c([Ljava/lang/String;)V
+
+Class: Le/i;
+  Extends: Ljava/lang/Object;
+  Methods (4):
+    - <init>(Landroid/os/IBinder;)V [constructor]
+    - a(I[Ljava/lang/String;)V
+    - asBinder()Landroid/os/IBinder;
+    - b(Le/h;Ljava/lang/String;)I
+
+Class: Le/s;
+  Extends: Landroid/os/Binder;
+  Methods (5):
+    - <init>(Le/u;)V [constructor]
+    - asBinder()Landroid/os/IBinder;
+    - c([Ljava/lang/String;)V
+    - d(ILandroid/os/Parcel;Landroid/os/Parcel;I)Z
+    - onTransact(ILandroid/os/Parcel;Landroid/os/Parcel;I)Z
+
+Class: Le/v;
+  Extends: Landroid/os/Binder;
+  Methods (6):
+    - <init>(Landroidx/room/MultiInstanceInvalidationService;)V [constructor]
+    - a(I[Ljava/lang/String;)V
+    - asBinder()Landroid/os/IBinder;
+    - b(Le/h;Ljava/lang/String;)I
+    - d(ILandroid/os/Parcel;Landroid/os/Parcel;I)Z
+    - onTransact(ILandroid/os/Parcel;Landroid/os/Parcel;I)Z
+
+Class: Le/x;
+  Extends: Ljava/lang/Object;
+  Methods (8):
+    - <init>(Landroid/database/sqlite/SQLiteProgram;)V [constructor]
+    - close()V
+    - h(IJ)V
+    - l(I)V
+    - q(I[B)V
+    - s(ID)V
+    - u(ILjava/lang/String;)V
+    - v(ILjava/lang/Object;)V
+
+Class: Lg/a;
+  Extends: Ljava/lang/Object;
+  Methods (3):
+    - <init>(Ljava/lang/String;)V [constructor]
+    - q()Ljava/lang/String;
+    - s(Le/x;)V
+
+Class: Lg/h;
+  Extends: Ljava/lang/Object;
+  Methods (2):
+    - g()J
+    - p()I
+
+Class: Lh/b;
+  Extends: Ls/a;
+  Methods (1):
+    - <init>(Lg/g;)V [constructor]
+
+Class: Lh/c;
+  Extends: Ljava/lang/Object;
+  Methods (17):
+    - <clinit>()V [constructor] [static]
+    - <init>(Landroid/database/sqlite/SQLiteDatabase;)V [constructor]
+    - a(Lg/g;Landroid/os/CancellationSignal;)Landroid/database/Cursor;
+    - b()V
+    - c(Ljava/lang/String;)V
+    - close()V
+    - d()V
+    - f()V
+    - i()Ljava/lang/String;
+    - j(Lg/g;)Landroid/database/Cursor;
+    - k()V
+    - m()Z
+    - n()Z
+    - o()Ljava/util/List;
+    - q(Ljava/lang/String;)Landroid/database/Cursor;
+    - r(Ljava/lang/String;)Lg/h;
+    - t()Z
+
+Class: Lh/g;
+  Extends: Ljava/lang/Object;
+  Methods (5):
+    - <init>(Landroid/content/Context;Ljava/lang/String;Lg/c;ZZ)V [constructor]
+    - close()V
+    - e()Lg/b;
+    - q()Lh/f;
+    - setWriteAheadLoggingEnabled(Z)V
+
+Class: Lj/c;
+  Extends: Lj/b;
+  Methods (5):
+    - <init>(Landroid/os/Parcel;)V [constructor]
+    - <init>(Landroid/os/Parcel;IILjava/lang/String;Lc/b;Lc/b;Lc/b;)V [constructor]
+    - a()Lj/c;
+    - e(I)Z
+    - i(I)V
+
+Class: Lk/e;
+  Extends: Ls/a;
+  Methods (3):
+    - <init>(Ldubrowgn/microtimer/MainActivity;Lk/g;Ll/a;I)V [constructor]
+    - a()Ljava/lang/Object;
+    - b()V
+
+Class: Ll/b;
+  Extends: Le/e0;
+  Methods (3):
+    - <init>(Ll/d;Ldubrowgn/microtimer/db/Database;I)V [constructor]
+    - b()Ljava/lang/String;
+    - d(Lg/h;Ljava/lang/Object;)V
+
+Class: Ln/c;
+  Extends: La/e;
+  Methods (3):
+    - q(Ljava/util/List;)I [static]
+    - r([Ljava/lang/Object;[Ljava/lang/Object;III)V [static]
+    - s([Ljava/lang/Object;)Ljava/lang/String; [static]
+
+Class: Lo/b;
+  Extends: Ln/a;
+  Methods (35):
+    - <clinit>()V [constructor] [static]
+    - <init>()V [constructor]
+    - <init>(I)V [constructor]
+    - <init>([Ljava/lang/Object;IIZLo/b;Lo/b;)V [constructor]
+    - a(Lo/b;)I [static]
+    - add(ILjava/lang/Object;)V
+    - add(Ljava/lang/Object;)Z
+    - addAll(ILjava/util/Collection;)Z
+    - addAll(Ljava/util/Collection;)Z
+    - b(ILjava/util/Collection;I)V
+    - c(ILjava/lang/Object;)V
+    - clear()V
+    - d()V
+    - e()V
+    - equals(Ljava/lang/Object;)Z
+    - f(II)V
+    - g(I)Ljava/lang/Object;
+    - get(I)Ljava/lang/Object;
+    - h(II)V
+    - hashCode()I
+    - i(IILjava/util/Collection;Z)I
+    - indexOf(Ljava/lang/Object;)I
+    - isEmpty()Z
+    - iterator()Ljava/util/Iterator;
+    - lastIndexOf(Ljava/lang/Object;)I
+    - listIterator()Ljava/util/ListIterator;
+    - listIterator(I)Ljava/util/ListIterator;
+    - remove(Ljava/lang/Object;)Z
+    - removeAll(Ljava/util/Collection;)Z
+    - retainAll(Ljava/util/Collection;)Z
+    - set(ILjava/lang/Object;)Ljava/lang/Object;
+    - subList(II)Ljava/util/List;
+    - toArray()[Ljava/lang/Object;
+    - toArray([Ljava/lang/Object;)[Ljava/lang/Object;
+    - toString()Ljava/lang/String;
+
+Class: Lo/c;
+  Extends: Lo/e;
+  Methods (2):
+    - <init>(Lo/f;I)V [constructor]
+    - next()Ljava/lang/Object;
+
+Class: Lo/g;
+  Extends: Ln/b;
+  Methods (14):
+    - <init>(Lo/f;I)V [constructor]
+    - a()I
+    - add(Ljava/lang/Object;)Z
+    - addAll(Ljava/util/Collection;)Z
+    - b(Ljava/lang/Object;)Z
+    - c(Ljava/lang/Object;)Z
+    - clear()V
+    - contains(Ljava/lang/Object;)Z
+    - containsAll(Ljava/util/Collection;)Z
+    - isEmpty()Z
+    - iterator()Ljava/util/Iterator;
+    - remove(Ljava/lang/Object;)Z
+    - removeAll(Ljava/util/Collection;)Z
+    - retainAll(Ljava/util/Collection;)Z
+
+Class: Lo/i;
+  Extends: Ln/b;
+  Methods (13):
+    - <clinit>()V [constructor] [static]
+    - <init>()V [constructor]
+    - <init>(Lo/f;)V [constructor]
+    - a()I
+    - add(Ljava/lang/Object;)Z
+    - addAll(Ljava/util/Collection;)Z
+    - clear()V
+    - contains(Ljava/lang/Object;)Z
+    - isEmpty()Z
+    - iterator()Ljava/util/Iterator;
+    - remove(Ljava/lang/Object;)Z
+    - removeAll(Ljava/util/Collection;)Z
+    - retainAll(Ljava/util/Collection;)Z
+
+Class: Lt/c;
+  Extends: Lt/a;
+  Methods (6):
+    - <clinit>()V [constructor] [static]
+    - <init>(II)V [constructor]
+    - equals(Ljava/lang/Object;)Z
+    - hashCode()I
+    - isEmpty()Z
+    - toString()Ljava/lang/String;
+
+Class: Landroidx/core/graphics/drawable/IconCompat;
+  Extends: Landroidx/versionedparcelable/CustomVersionedParcelable;
+  Methods (3):
+    - <clinit>()V [constructor] [static]
+    - <init>()V [constructor]
+    - toString()Ljava/lang/String;
+
+Class: Lh/h;
+  Extends: Le/x;
+  Methods (3):
+    - <init>(Landroid/database/sqlite/SQLiteStatement;)V [constructor]
+    - g()J
+    - p()I
+
+Class: Ll/c;
+  Extends: Le/f;
+  Methods (3):
+    - <init>(Ll/d;Ldubrowgn/microtimer/db/Database;I)V [constructor]
+    - b()Ljava/lang/String;
+    - e(Lg/h;Ll/a;)V
+
+Class: Ln/d;
+  Extends: Ln/c;
+
+Class: Lu/a;
+  Extends: Ln/c;
+
+Class: Ln/e;
+  Extends: Ln/d;
+
+Class: Lu/b;
+  Extends: Lu/a;
+
+Class: Ln/f;
+  Extends: Ln/e;
+  Methods (1):
+    - t(Ljava/util/Collection;)Ljava/util/List; [static]
+
+Class: Lu/c;
+  Extends: Lu/b;
+  Methods (3):
+    - t(Ljava/lang/String;Ljava/lang/String;)Z [static]
+    - u(Ljava/lang/String;Ljava/lang/String;)Z [static]
+    - v(Ljava/lang/String;Ljava/lang/String;)Z [static]
+
