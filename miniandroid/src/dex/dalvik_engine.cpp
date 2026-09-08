@@ -1726,17 +1726,35 @@ bool DalvikExecutionEngine::execute_method_internal(
     // at boot and killed the app before the Activity inflated).
     if (method_name == "<clinit>") {
         const std::string norm = framework::normalize_class_desc(class_name);
-        if (norm.rfind("Landroid/", 0) == 0 ||
+        // M3 FINDING-013 (provenance law): mirror of the
+        // ensure_class_initialized fix. The old blanket library-namespace
+        // skip made ensure_class_initialized's real <clinit> invocation a
+        // silent no-op ("result=OK" with zero sput writes — the i$b enum
+        // stayed null and dooz's Lifecycle collapsed). LAW: only classes
+        // ABSENT from the app DexReport are runtime stubs whose statics
+        // are shadow-owned; app-bundled androidx/kotlin/j$/com.google
+        // bytecode runs its own <clinit>. Landroid/* is an unconditional
+        // skip (G12 parent-delegation — app-bundled platform copies must
+        // never execute).
+        bool clinit_in_app_dex =
+            class_info_index_.find(class_name) != class_info_index_.end() ||
+            class_info_index_.find(norm) != class_info_index_.end();
+        bool is_platform_ns = (norm.rfind("Landroid/", 0) == 0);
+        bool is_library_ns =
             norm.rfind("Landroidx/", 0) == 0 ||
             norm.rfind("Ljava/", 0) == 0 ||
             norm.rfind("Lkotlin/", 0) == 0 ||
             norm.rfind("Lkotlinx/", 0) == 0 ||
             norm.rfind("Lcom/google/", 0) == 0 ||
-            norm.rfind("Lj$/", 0) == 0) {
+            norm.rfind("Lj$/", 0) == 0;
+        if (is_platform_ns || (is_library_ns && !clinit_in_app_dex)) {
             initialized_classes_.insert(norm);
             initialized_classes_.insert(class_name);
             std::cerr << "[G12-ACF] framework-namespace <clinit> skipped "
-                      << "(parent-delegation): " << class_name << std::endl;
+                      << "(parent-delegation): " << class_name
+                      << (is_platform_ns ? " [platform-ns]"
+                                         : " [stub — not in app dex]")
+                      << std::endl;
             halted_ = false;
             return true;  // initialized; bytecode not executed
         }
@@ -1961,20 +1979,49 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
     }
     // Framework classes — skip <clinit> (they're stubbed).
     // The shadow registry / bridge_to_api handles their static fields.
-    // EXP-053: expanded to include androidx/* (these are framework-style
-    // libraries that we don't have full bytecode semantics for; their
-    // R classes are auto-generated and would need Resource table parsing
-    // to populate correctly).
-    if (normalized.rfind("Landroid/", 0) == 0 ||
-        normalized.rfind("Landroidx/", 0) == 0 ||
-        normalized.rfind("Ljava/", 0) == 0 ||
-        normalized.rfind("Lkotlin/", 0) == 0 ||
-        normalized.rfind("Lkotlinx/", 0) == 0 ||
-        normalized.rfind("Lcom/google/", 0) == 0 ||
-        normalized.rfind("Lj$/", 0) == 0) {
-        initialized_classes_.insert(normalized);
-        initialized_classes_.insert(class_descriptor);
-        return true;
+    //
+    // M3 FINDING-013 (provenance law, 2026-09-08): the OLD blanket skip of
+    // Landroidx/ Lkotlin/ Lkotlinx/ Lcom/google/ Lj$/ was a NAMESPACE-based
+    // decision. In a real R8-built APK those namespaces are APP-BUNDLED
+    // REAL bytecode (androidx is a library shipped inside the APK — it is
+    // NOT platform stubs). Consequence: every androidx enum/static read
+    // via sget returned null — dooz's LifecycleRegistry.addObserver read
+    // Lifecycle.State.DESTROYED/INITIALIZED as null, handed the null to
+    // Kotlin Intrinsics.throwNpe, whose Thread.getStackTrace() skip-walk
+    // then ran off the end of the synthetic trace array (aget AIOOBE),
+    // and the swallowed exception cascade ended in the
+    // "android:support:activity-result" IAE + a 100% white frame.
+    // LAW (AOSP ClassLinker::EnsureInitialized): initialization is decided
+    // by WHERE THE BYTECODE LIVES, not by package name — a class present
+    // in the app DexReport runs its own <clinit>; only classes ABSENT from
+    // it (resolved to runtime stubs/shadows) skip <clinit>.
+    // Landroid/* stays an unconditional skip: app-bundled platform-namespace
+    // copies must never shadow framework semantics (G12 parent-delegation
+    // law, FIND-G09-ACF-001).
+    {
+        bool in_app_dex = class_info_index_.find(class_descriptor) !=
+                              class_info_index_.end() ||
+                          class_info_index_.find(normalized) !=
+                              class_info_index_.end();
+        if (!in_app_dex &&
+            (normalized.rfind("Landroid/", 0) == 0 ||
+             normalized.rfind("Landroidx/", 0) == 0 ||
+             normalized.rfind("Ljava/", 0) == 0 ||
+             normalized.rfind("Lkotlin/", 0) == 0 ||
+             normalized.rfind("Lkotlinx/", 0) == 0 ||
+             normalized.rfind("Lcom/google/", 0) == 0 ||
+             normalized.rfind("Lj$/", 0) == 0)) {
+            initialized_classes_.insert(normalized);
+            initialized_classes_.insert(class_descriptor);
+            return true;
+        }
+        if (normalized.rfind("Landroid/", 0) == 0) {
+            // Platform namespace is never initialized from app bytecode,
+            // even when an app-bundled copy exists in the DexReport.
+            initialized_classes_.insert(normalized);
+            initialized_classes_.insert(class_descriptor);
+            return true;
+        }
     }
     // DEMO-CLINIT (2026-09-04): run <clinit> for EVERY application class,
     // not only org.telegram/*. Per AOSP jvm.cc ClassLinker::EnsureInitialized
@@ -2112,6 +2159,8 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
         std::cerr << "[CLASS_INIT] class=" << class_descriptor
                   << " method=<clinit>"
                   << " result=" << (ok ? "OK" : "FAILED")
+                  << " engine=" << (const void*)this
+                  << " storage_size=" << static_field_storage_.size()
                   << std::endl;
         break;
     }
@@ -9685,6 +9734,36 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                     static_field_storage_[static_key] = result_value;
                 }
             } else {
+                // M3 FINDING-013 miss-probe: print the missing key and the
+                // presence of ANY same-class keys in storage — a clinit that
+                // ran but whose writes are invisible here means the two
+                // paths disagree on the storage KEY (or engine instance).
+                static thread_local uint64_t sget_miss_probe = 0;
+                if (sget_miss_probe < 24) {
+                    sget_miss_probe++;
+                    size_t same_class = 0;
+                    std::string sample;
+                    for (const auto& [k, v] : static_field_storage_) {
+                        if (k.rfind(field_res.class_descriptor + ".", 0) == 0) {
+                            same_class++;
+                            if (sample.empty()) sample = k;
+                        }
+                    }
+                    std::cerr << "[SGET-MISS] key=" << static_key
+                              << " storage_size=" << static_field_storage_.size()
+                              << " same_class_keys=" << same_class
+                              << " engine=" << (const void*)this
+                              << (sample.empty() ? "" : " first=" + sample)
+                              << std::endl;
+                    // Where did a write with THIS field name land?
+                    for (const auto& [k, v] : static_field_storage_) {
+                        if (k.find("." + field_res.field_name) !=
+                            std::string::npos) {
+                            std::cerr << "[SGET-MISS]   landed: " << k
+                                      << std::endl;
+                        }
+                    }
+                }
                 static_field_storage_[static_key] = result_value;
             }
         }
@@ -9752,6 +9831,18 @@ bool DalvikExecutionEngine::execute_sput_object(uint32_t pc, InstructionTrace& t
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
         static_field_storage_[static_key] = src_val;
+    } else {
+        // M3 FINDING-013 diag: an UNRESOLVED sput-object silently vanishes —
+        // exactly the invisible-state-loss class that cost dooz its
+        // Lifecycle.State enum. Cap-limited visibility, semantics unchanged.
+        static thread_local uint64_t sput_miss_count = 0;
+        if (sput_miss_count < 40) {
+            sput_miss_count++;
+            std::cerr << "[SPUT-UNRESOLVED] field_idx=" << field_idx
+                      << " src_class=" << src_val.class_desc
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
     }
     
     trace.operands.push_back({"v" + std::to_string(src_reg), "source"});
@@ -14845,6 +14936,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // Constructor object bound to the referent class. The parameter
         // list rides in the (possibly null/empty) Class[] argument; the
         // deterministic subset records "()V" for the no-arg lookup.
+        // M3 FINDING-013 companion (Class.getName law): OpenJDK
+        // Class.getName() returns the DOTTED binary name ("M1.i" for
+        // LM1/i;). Kotlin Intrinsics.throwNpe compares this against
+        // StackTraceElement.getClassName() of the active frames to skip
+        // its own frames during the NPE-message stack walk — REC-MISS
+        // (null) here made the walk loop to aget OOB (the dooz AIOOBE
+        // storm). Handles the same receiver identity as forName above.
+        if (method == "getName" && !dotted.empty()) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(dotted, 0);
+            return true;
+        }
         if (method == "getDeclaredConstructor" && !dotted.empty()) {
             uint32_t ctor_id = heap_.allocate(
                 "Ljava/lang/reflect/Constructor;", pc_,
@@ -17037,6 +17140,28 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 std::cerr << "[UC010-FRAME] [" << fi << "] "
                           << frames[fi].first << "->" << frames[fi].second
                           << std::endl;
+            }
+            // FINDING-013 readback probe: does each element's stored field
+            // survive heap round-trip? Divergence here means the element
+            // object or its field write is aliasing (dooz AIOOBE walk).
+            for (size_t fi = 0; fi < N; fi++) {
+                auto arr_el_opt = heap_.get_object_field(
+                    arr_id, "array[" + std::to_string(fi) + "]");
+                if (!arr_el_opt.has_value() ||
+                    arr_el_opt->type != DalvikType::OBJECT_REF) {
+                    std::cerr << "[UC010-READBACK] [" << fi
+                              << "] NOT AN OBJECT\n";
+                    continue;
+                }
+                DalvikValue arr_el = *arr_el_opt;
+                auto f = heap_.get_object_field(arr_el.object_id,
+                                                "__class_name__");
+                std::cerr << "[UC010-READBACK] [" << fi << "] oid="
+                          << arr_el.object_id << " class="
+                          << (f.has_value() && f->type == DalvikType::STRING_REF
+                                  ? f->string_val
+                                  : std::string("<none>"))
+                          << "\n";
             }
         }
         return true;
