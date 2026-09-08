@@ -8,11 +8,14 @@
 #include "canvas_shadow.h"
 #include "clipboard_shadow.h"
 #include "locks_shadow.h"
+#include "atomic_shadow.h"
+#include "executor_shadow.h"
 #include "pending_intent_shadow.h"
 #include "../storage/sqlite_shadow.h"
 
 #include <algorithm>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 
 namespace miniandroid { namespace framework {
@@ -191,6 +194,20 @@ void register_platform_shadows(ShadowRegistry& reg) {
     // evidence: microtimer Room insert path (Kotlin Intrinsics null-check
     // on readLock() result) under the F-016 real-unwind law.
     reg.register_shadow<LocksShadow>();
+    // M3 F-020 ROOT FIX: java.util.concurrent.atomic family
+    // (AtomicReference/AtomicInteger/AtomicLong/AtomicBoolean + subclasses).
+    // Exact prefix claim, registered before ViewShadow so the catch-all
+    // view path can never capture atomic descriptors. Root-gap evidence:
+    // dooz Compose snapshot chain — AtomicReference.<init>(globalSnapshot)
+    // missed every shadow, the bridge's view-parent retry routed the ctor
+    // to ViewShadow (phantom view node, dropped value), get() returned
+    // null, SnapshotKt.currentSnapshot() was null, and the fail-soft
+    // null-receiver iget manufactured snapshot id 0 → Compose readError
+    // ISE at setContent (dooz PARTIAL).
+    reg.register_shadow<AtomicShadow>();
+    // M3 §4 EXECUTOR/EXECUTORS CLOSURE: executor family on the deterministic
+    // virtual scheduler (one MessageQueue law). Exact-class claims only.
+    reg.register_shadow<ExecutorShadow>();
     // M3 F-018 ROOT FIX: android.app intent-sender + alarm scheduling
     // family (PendingIntent.get* AMS record law, AlarmManager cancel/
     // exact-alarm capability law). Exact-class claims only; registered

@@ -107,10 +107,10 @@ if [ "$RESUME" -eq 0 ] || [ "${1:-}" != "--skip-build" ]; then
 fi
 
 # semantic battery binaries (relinked against current objects)
-if cached "semantic pass3 bridge (expect 57)"; then
+if cached "semantic pass3 bridge (expect 66)"; then
     skip "link semantic_long_cmp_conv_test"; skip "semantic long/cmp/conv (expect 14)"
     skip "link semantic_switch_parse_neg_test"; skip "semantic switch parse-neg (expect 25)"
-    skip "link semantic_pass3_bridge_test"; skip "semantic pass3 bridge (expect 57)"
+    skip "link semantic_pass3_bridge_test"; skip "semantic pass3 bridge (expect 66)"
 else
 for t in semantic_long_cmp_conv_test semantic_switch_parse_neg_test semantic_pass3_bridge_test; do
     g++ -std=c++17 -w -g -O2 -Isrc -Ithird_party/nlohmann_json/include -o "build/$t" \
@@ -127,7 +127,7 @@ gate "semantic long/cmp/conv (expect 14)" $?
 ./build/semantic_switch_parse_neg_test > /tmp/battery_swpn.out 2>&1
 gate "semantic switch parse-neg (expect 25)" $?
 ./build/semantic_pass3_bridge_test > /tmp/battery_p3b.out 2>&1
-gate "semantic pass3 bridge (expect 57)" $?
+gate "semantic pass3 bridge (expect 66)" $?
 tail -1 /tmp/battery_lcc.out /tmp/battery_swpn.out /tmp/battery_p3b.out 2>/dev/null | grep RESULT
 fi
 
@@ -795,6 +795,37 @@ if [ -f "$F016_APK" ]; then
 else
     gate "F-016 default-mode honesty (unwind+PARTIAL+crash.log)" 1
     gate "F-016 strict-mode process death (CRASH + dispatch refused)" 1
+fi
+
+# ── M3 F-020: Compose snapshot-family primitive laws (micro reproducer) ──
+# The fixture exercises the four runtime laws the dooz Compose chain
+# demanded (AtomicReference ctor-value identity = the global-snapshot law,
+# AtomicInteger arithmetic = write counters, Enum.compareTo ordinal sign =
+# the isAtLeast shape, CAS value law) plus the F-021 getLayoutInflater
+# window-singleton law, and renders the verdicts as five pixel bands
+# (green=pass/red=fail) — §10: visual proof, not just rc.
+F020_FIX_SRC="$MA/tests/fixtures/f020_snapshot"
+rm -rf /tmp/battery_f020; mkdir -p /tmp/battery_f020
+if cached "F-020 snapshot-law fixture build (ECJ+D8)"; then
+    skip "F-020 snapshot-law fixture build (ECJ+D8)"
+    skip "F-020 snapshot-law pixel golden (5 bands)"
+elif [ -d "$F020_FIX_SRC" ]; then
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
+        "$F020_FIX_SRC" /tmp/battery_f020/f020_snapshot.apk \
+        > /tmp/battery_f020/build.log 2>&1
+    gate "F-020 snapshot-law fixture build (ECJ+D8)" $?
+    (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f020/f020_snapshot.apk \
+        -o /tmp/battery_f020/out > /tmp/battery_f020/run.log 2>&1)
+    gate "F-020 snapshot-law fixture run (rc=0 SUCCESS)" $?
+    rc=0
+    grep -q "Status: SUCCESS" /tmp/battery_f020/run.log || rc=1
+    python3 "$REPOSCRIPTS/f020_pixel_golden.py" /tmp/battery_f020/out/screenshot.ppm \
+        > /tmp/battery_f020/pixel.log 2>&1 || rc=1
+    gate "F-020 snapshot-law pixel golden (5 bands)" $rc
+    tail -1 /tmp/battery_f020/pixel.log
+else
+    gate "F-020 snapshot-law fixture build (ECJ+D8)" 1
+    gate "F-020 snapshot-law pixel golden (5 bands)" 1
 fi
 
 echo "──────────────────────────────────────────────"
