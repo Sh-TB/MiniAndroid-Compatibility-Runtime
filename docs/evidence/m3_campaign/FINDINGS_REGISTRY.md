@@ -762,24 +762,31 @@ session). These are items the campaign plan did NOT explicitly list.
 - Static evidence: Le/b;.b is a packed-switch display adapter whose param
   (v8) is the checked "obj"; the cursor-load loop maps rows → Ll/a →
   MainActivity.a → adapter
-- Runtime evidence: [REC-MISS] Landroid/database/sqlite/SQLiteDatabase;
-  .rawQueryWithFactory caller=Lh/c;.j (the Room factory-cursor call did
-  not reach DatabaseShadow → legacy cursor fallback); Ll/a;.<init> ×4 for
-  a 1-row read (extra iteration → one null entity); frames + row counts
-  remain byte-identical/correct (A≡C, B≡D, 92 frames each)
-- Root cause (root-located, fix pending): the Room rawQueryWithFactory
-  path misses DatabaseShadow on the second-open support wrapper (null
-  receiver class of defect, cf. F-017 probes) and the run falls back to
-  the legacy cursor emulation, whose read at an invalid position returns
-  silent nulls (Family-AP violation) instead of the Android
-  CursorIndexOutOfBounds law; the null entity poisons the display chain
+- Runtime evidence: the shadow DID serve the getAll query on the second
+  run ([SQLITE-SHADOW] rawQuery rows=1 cols=4 sql="select * from alarm"
+  immediately after a first-pass [REC-MISS] rawQueryWithFactory
+  caller=Lh/c;.j diagnostic — the miss is first-pass-only; a later
+  dispatch pass claimed it); Ll/a;.<init> ×4 for a 1-row read; the last
+  Le/b;.b display-adapter call received a NULL parameter and the Kotlin
+  Intrinsics check (La/e;.h→.g) threw; frames + row counts remain
+  byte-identical/correct (A≡C, B≡D, 92 frames each)
+- Root cause (localized to the second-run entity→adapter chain, exact
+  null producer pending one instrumented run): the cursor→entity mapping
+  produces/propagates one null into the display adapter chain on the
+  second-run read path (first-run path is clean). Candidate sites:
+  the Room converter's column reads on the re-opened wrapper, or the
+  adapter's caller passing an unmapped entry. Cursor law hardening is
+  STILL required: DatabaseShadow getters at an invalid position fall
+  through to not_handled → silent null (Family-AP violation) instead of
+  the Android CursorIndexOutOfBoundsException law
 - Law: android.database.Cursor getters on an invalid position throw
-  CursorIndexOutOfBoundsException (never silent null); rawQueryWithFactory
-  must deliver the factory-built cursor through the same REAL sqlite
-  backend as rawQuery
-- Minimal fix: route rawQueryWithFactory through DatabaseShadow's cursor
-  factory (same DbState as rawQuery) + invalid-position getters throw the
-  Android exception (loud, classified)
+  CursorIndexOutOfBoundsException (never silent null); every element
+  passed to a Kotlin non-null display adapter must be the mapped entity
+  or the mapping itself fails loudly
+- Minimal fix: (1) instrument Le/b;.b's caller arg (one bounded probe
+  run) to pin the null producer; (2) harden DatabaseShadow cursor
+  getters: invalid position → loud classified throw; (3) fix the pinned
+  producer (entity mapping or wrapper re-open path)
 - Test: F-012 golden B/D legs must return rc=0 with unchanged frame
   determinism; add a 2-run read-back law test on the f016/microtimer pair
 - Status: OBSERVED — ROOT-LOCATED (blocks the F-012 stage's rc law only;
