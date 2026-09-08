@@ -689,14 +689,101 @@ session). These are items the campaign plan did NOT explicitly list.
 - Root cause: per-invoke swallowing (no app-boundary law): an exception that
   unwinds PAST the outermost APP frame must fail the run (ART process-death
   law); exceptions caught INSIDE app code must keep propagating normally
-- Proposed design (not yet implemented — needs a full-corpus compat pass):
-  top-of-app-stack unwind → CRASH status + crash.log entry + nonzero rc;
-  keep the current per-frame handler search untouched
+- IMPLEMENTED (session 10, commit 1ab35251 lineage): real Dalvik mid-stack
+  unwind for handler-less frames (exception stays in flight; [EXC-UNWIND]
+  forensic records), APP-BOUNDARY escape law (count + bounded log +
+  crash.log [EXC-UNCAUGHT-TOP] entries), default mode = PARTIAL_SUCCESS +
+  nonzero rc (honesty), MINIANDROID_EXC_STRICT=1 = CRASH + CRASH-latch
+  refusing further DEX dispatch (onStart/onResume refused). F-016 fixture
+  (f016_exception_honesty, aapt2-linked) proves the 3-deep chain
+  onCreate→chainA→chainB→chainC(throw) with the app's own bytecode.
+- Battery stages added: "F-016 fixture APK build", "F-016 default-mode
+  honesty (unwind+PARTIAL+crash.log)", "F-016 strict-mode process death
+  (CRASH + dispatch refused)".
 - Law: ART Throwable propagation — uncaught on the main thread kills the
   process; a compatibility runtime that hides this misclassifies real
   failures as SUCCESS (violates the six-failure-class taxonomy)
-- Status: RESEARCHED (design recorded; implementation deferred to avoid a
-  blind semantics flip without corpus-wide evidence)
+- Status: REGRESSION-VERIFIED (stages in the battery; full-corpus guard
+  via corpus run stages)
+- Priority: P1
+- Commit: 1ab35251 (impl) + this session's battery commit
+- GitHub evidence: Issue #9
+
+## FINDING-017
+- Subsystem: DEX EXECUTION (active-cycle loop-guard identity law) +
+  CONCURRENCY (java.util.concurrent.locks shadow family — Family L)
+- Trigger: F-016 real-unwind law exposed what FRAME-2 masked in microtimer:
+  (a) the Room insert path died with a Kotlin Intrinsics NPE because
+  ReentrantReadWriteLock.readLock() had NO shadow (unresolved virtual →
+  silent null); (b) with (a) fixed, the click-path DB open STILL died
+  because the active-cycle guard keyed "(class, method)" only — Room's
+  FIVE Lm/a (Kotlin SynchronizedLazyImpl) instances share the key
+  "Lm/a;.a", so a legit lazy call nested under an active lazy frame of a
+  DIFFERENT instance was stubbed null ([M3-19-CYCLE] depth=9), the null
+  receiver cascaded through Lh/g→Lh/f→SQLiteOpenHelper (arg0_type=8 at
+  bridge, instrumented), and the Intrinsics checks threw NPEs
+- APK: dubrowgn.microtimer (R8, Room, Kotlin)
+- Static evidence: Lm/a = SynchronizedLazyImpl (UNINITIALIZED sentinel
+  Le/a;.a, monitor on this); m3_disasm of Lh/g;.q/.e, Lh/f;.q/.v/.u,
+  Le/o;.d ("readWriteLock.readLock()" Intrinsics check)
+- Runtime evidence: [LOCKS] readLock rwl=51 → obj=198 (identity held);
+  [F017-INVOKE] probes showing r0_type=8 receivers; F-012 golden
+  divergence (row=0 under real unwind, row=1 under masked FRAME-2)
+- Root cause: (a) missing Family-L shadow family; (b) active-cycle key
+  lacked receiver identity — Java/Kotlin re-entrancy (monitors, lazy) is
+  PER-OBJECT; different instances calling the same method in nested
+  frames is not a cycle
+- Law: (a) ReentrantReadWriteLock.readLock()/writeLock() return the SAME
+  non-null lock objects; lock/unlock are per-object reentrant;
+  DETERMINISTICALLY SERIALIZED semantics (roadmap family L vocabulary).
+  (b) Loop guards may only fire on genuine per-object cycles (ART has no
+  per-method cap)
+- Fix: (a) new LocksShadow (ReentrantReadWriteLock/ReadLock/WriteLock/
+  ReentrantLock: lock/unlock/tryLock/holdCount introspection; newCondition
+  = explicit loud UNSUPPORTED); (b) active-cycle key gains
+  "#<receiver_oid>" for instance methods
+- Tests: F-012 golden microtimer 3-tap → SUCCESS + exactly 1 alarm row
+  (previously row=0); full battery re-run
+- Status: REGRESSION-VERIFIED
+- Priority: P0 (unlocked Room+Kotlin+R8 click-path persistence)
+- Commit: (this session)
+- GitHub evidence: Issue #9
+
+## FINDING-018
+- Subsystem: PERSISTENCE (Cursor law) + JAVA CORE (Family E) — second-run
+  read path
+- Trigger: after F-016/F-017, the F-012 golden's second-run legs (B/D:
+  run again on an EXISTING data-root) honestly report PARTIAL: during the
+  alarm-list reload, Le/b;.b (R8 display adapter) received a NULL
+  parameter and the Kotlin Intrinsics check (La/e;.h→.g) threw; the app's
+  own catch-all rethrew → APP BOUNDARY (F-016 honesty) → nonzero rc.
+  First-run legs (A/C) are SUCCESS with exactly the expected row count.
+- APK: dubrowgn.microtimer (second run on existing Room DB)
+- Static evidence: Le/b;.b is a packed-switch display adapter whose param
+  (v8) is the checked "obj"; the cursor-load loop maps rows → Ll/a →
+  MainActivity.a → adapter
+- Runtime evidence: [REC-MISS] Landroid/database/sqlite/SQLiteDatabase;
+  .rawQueryWithFactory caller=Lh/c;.j (the Room factory-cursor call did
+  not reach DatabaseShadow → legacy cursor fallback); Ll/a;.<init> ×4 for
+  a 1-row read (extra iteration → one null entity); frames + row counts
+  remain byte-identical/correct (A≡C, B≡D, 92 frames each)
+- Root cause (root-located, fix pending): the Room rawQueryWithFactory
+  path misses DatabaseShadow on the second-open support wrapper (null
+  receiver class of defect, cf. F-017 probes) and the run falls back to
+  the legacy cursor emulation, whose read at an invalid position returns
+  silent nulls (Family-AP violation) instead of the Android
+  CursorIndexOutOfBounds law; the null entity poisons the display chain
+- Law: android.database.Cursor getters on an invalid position throw
+  CursorIndexOutOfBoundsException (never silent null); rawQueryWithFactory
+  must deliver the factory-built cursor through the same REAL sqlite
+  backend as rawQuery
+- Minimal fix: route rawQueryWithFactory through DatabaseShadow's cursor
+  factory (same DbState as rawQuery) + invalid-position getters throw the
+  Android exception (loud, classified)
+- Test: F-012 golden B/D legs must return rc=0 with unchanged frame
+  determinism; add a 2-run read-back law test on the f016/microtimer pair
+- Status: OBSERVED — ROOT-LOCATED (blocks the F-012 stage's rc law only;
+  the persistence + determinism laws of the golden PASS)
 - Priority: P1
 - Commit: n/a (registered)
-- GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
+- GitHub evidence: Issue #9

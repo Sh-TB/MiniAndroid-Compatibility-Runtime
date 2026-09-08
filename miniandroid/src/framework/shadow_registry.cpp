@@ -7,6 +7,7 @@
 #include "dialog_shadow.h"
 #include "canvas_shadow.h"
 #include "clipboard_shadow.h"
+#include "locks_shadow.h"
 #include "../storage/sqlite_shadow.h"
 
 #include <algorithm>
@@ -182,6 +183,13 @@ void register_platform_shadows(ShadowRegistry& reg) {
     reg.register_shadow<HandlerShadow>();
     reg.register_shadow<ActivityShadow>();
     reg.register_shadow<IntentShadow>();
+    // M3 FAMILY-L ROOT FIX: java.util.concurrent.locks family
+    // (ReentrantReadWriteLock/ReadLock/WriteLock/ReentrantLock). Exact-class
+    // claims only; registered with the other subsystem shadows so the
+    // catch-all view path can never capture lock descriptors. Root-gap
+    // evidence: microtimer Room insert path (Kotlin Intrinsics null-check
+    // on readLock() result) under the F-016 real-unwind law.
+    reg.register_shadow<LocksShadow>();
     // M3 F-ROOM-CHAIN: SQLite family (REAL sqlite3 backend). Exact-class
     // claims only; registered before ViewShadow so the catch-all view
     // path can never capture framework database descriptors.

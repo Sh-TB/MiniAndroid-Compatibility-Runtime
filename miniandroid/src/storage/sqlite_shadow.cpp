@@ -239,6 +239,15 @@ framework::CallResult DatabaseShadow::helper_dispatch(const framework::CallConte
     }
     if (m == "getWritableDatabase" || m == "getReadableDatabase") {
         if (!ctx.has_receiver) return framework::CallResult::not_handled();
+        // M3 FAMILY-L/F-016 forensics: a helper miss here silently became a
+        // null return, which the Kotlin Intrinsics path (La/e;.g) turns into
+        // an NPE — the origin of the F-012 golden divergence. Make the miss
+        // LOUD (roadmap family AP: no silent stubs).
+        if (!helper_of(this_oid)) {
+            std::cerr << "[SQLITE-SHADOW][HELPER-MISS] " << m
+                      << " oid=" << this_oid << " receiver=" << ctx.receiver_class
+                      << " known_helpers=" << helpers_.size() << std::endl;
+        }
         return open_helper_database(this_oid, ctx.receiver_class);
     }
     if (m == "getDatabaseName") {
