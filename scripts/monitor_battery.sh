@@ -4,7 +4,7 @@
 #  * battery process state every 2s (state, RSS, child pids)
 #  * unexpected battery exit time + last log line
 LOG=/tmp/monitor.log
-BLOG=/tmp/battery_final_s12.log
+BLOG=/tmp/battery_final_d26fbafd.log
 : > "$LOG"
 for s in TERM HUP INT QUIT; do
     trap "echo \"$(date +%T) monitor got SIG$s\" >> $LOG; exit 99" $s

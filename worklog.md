@@ -112,3 +112,22 @@ Stage Summary:
 - F-020 CLOSED at primitive-law level; dooz advanced PARTIAL→SUCCESS but stays BOUNDARY (blank) pending F-023 (Compose attach/composition battle).
 - Independent Compose APK proof deferred with F-023 (belongs to the Compose host frontier).
 - NEXT: §3 3A InputStream EOF law + 3B Enum.compareTo verification; §4 Executor audit; §5 Room; §6 forgotten audit; §7 cross-APK; §15 report.
+
+---
+Task ID: M3-S12-3
+Agent: Super Z (session 12 — §3/§4/§5/§6/§7/§15 closure)
+Task: Java Core (EOF/Enum), Executor closure, Room/SQLite deep closure, forgotten audit, cross-APK, final report.
+
+Work Log:
+- §3A F-024: f024_eof_law fixture (7 laws: empty/one-byte/0xFF=255/sticky-EOF/bulk-count/drain-terminates/close) — ALL 7 GREEN, 3-run byte-identical 32b8a456, battery stages. Corpus leg NOT_REQUIRED_BY_CORPUS (no corpus APK reads streams).
+- §3B Enum.compareTo: VERIFIED at HEAD (ordinal-sign bridge from 9fe2d773 + f020 fixture law3 + battery).
+- §4 F-025: f020_executor fixture exposed DOUBLE-RUN (executedCount=9). [EXECUTOR-GUARD-DIAG] probe → static-local C++ init-once bug (guard froze on first call's class_name=Executors). Fix: drop static. Fixture corrected to the drain law (warmup+reset was racy/inline-encoded). 4-band golden, 0 inline executions, 3-run byte-identical 30c4696f. Second-order: F-012 microtimer legs rows 1→2 intact.
+- §5 F-026+F-027: f026_room_sql_law fixture exposed (a) bare SQLiteDatabase.rawQuery had NO handler → fail-soft null cursor (probe proved db_dispatch saw correct STRING kinds; only rawQueryWithFactory existed) → raw_query_common shared law; (b) String.contentEquals answered api_dispatcher's ALWAYS-FALSE stub (§8 fail-wrong-law) → real comparison at both engine sites (sb_value law). DB-on-disk evidence proved SQLite/txn layer was already correct. ALL 7 GREEN, 3-run byte-identical (harness data-root bug found and fixed by F-012's per-run hermetic law). unote = second independent persistence cross-APK (notes.db v2 end-to-end).
+- §6: 16-item reconciliation written to registry (no deletions; Room UPDATE/DELETE split: SQLite layer VERIFIED, Room adapter @Update/@Delete DETECTED_NOT_EXERCISED).
+- §15: FINAL FULL FRESH BATTERY at frozen HEAD d26fbafd: 76/76 ALL PASS (resume=0).
+
+Stage Summary:
+- Session 12 commits: e9304898 (F-022 law fix), 948e104d (F-024/F-025), d26fbafd (F-026/F-027 + audits). ALL UNPUSHED (no GitHub credentials in container — remote still 61fd7f17).
+- Battery: 64 (session-11 end) → 76 stages, ALL PASS.
+- Findings: F-020 VERIFIED (primitives) | F-022 FIXED | F-023 ROOT-LOCATED (Compose host frontier) | F-024/F-025/F-026/F-027 FIXED+REGRESSION-VERIFIED.
+- Next battle: F-023 (attach gate exists at dispatch_view_attached, env-gated; composition then windowToken locals NPE M1/i.f; then measure/layout/draw) — the Compose host chain.
