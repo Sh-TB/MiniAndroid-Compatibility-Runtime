@@ -45,18 +45,18 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         Executor ex = Executors.newFixedThreadPool(2);
-        // Identity law: a second factory call returns a DIFFERENT executor,
-        // but execute() on the FIRST one is the object we hold.
+        // Identity law: the factory product is a live executor object whose
+        // execute() is the object we hold.
         identityHeld = ex != null;
+        // Queue law (F-025 corrected): three submits, FIFO, drained at the
+        // settle point — AFTER onCreate returns, BEFORE the first draw.
+        // (The earlier warmup+reset pattern encoded the inline-execution
+        // law and is racy on any real Android thread pool; the drain law
+        // is the deterministic contract: submit 1,2,4 → run in that order.)
         ex.execute(task(1, false));
         ex.execute(task(2, false));
         ex.execute(task(4, true));     // FIFO: sum=7, markRan runs LAST
         ranAfterSubmit = false;        // set true only if run() executed
-        executedCount = 0;
-        fifoSum = 0;
-        ex.execute(task(1, false));
-        ex.execute(task(2, false));
-        ex.execute(task(4, true));
 
         setContentView(new ProbeView(this));
     }
