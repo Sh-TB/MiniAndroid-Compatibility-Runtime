@@ -131,3 +131,20 @@ Stage Summary:
 - Battery: 64 (session-11 end) → 76 stages, ALL PASS.
 - Findings: F-020 VERIFIED (primitives) | F-022 FIXED | F-023 ROOT-LOCATED (Compose host frontier) | F-024/F-025/F-026/F-027 FIXED+REGRESSION-VERIFIED.
 - Next battle: F-023 (attach gate exists at dispatch_view_attached, env-gated; composition then windowToken locals NPE M1/i.f; then measure/layout/draw) — the Compose host chain.
+---
+Task ID: M3-S13-1
+Agent: Super Z (session 13 — F-023 Compose host frontier, dooz first-frame battle)
+Task: OBJECTIVES 1-4 + battery — reproduce M1/i.f NPE, map AndroidX contract, implement generic laws, regression.
+
+Work Log:
+- Ground truth: HEAD 7dc70e9c clean; binary current (make no-op); dooz repro rc=0 but ComposeView children=0, fb 0/2073600 non-white (blank). Blocker requires MINIANDROID_DISPATCH_ATTACH=1.
+- OBJ-1 REPRODUCED: attach → ensureCompositionCreated → NPE at M1/i.f pc=99 (Kotlin Intrinsics.checkNotNullParameter) → unwind y1/j.getValue (SynchronizedLazyImpl) → AbstractComposeView.c catch-all → uncaught at MainActivity.onCreate → APP BOUNDARY, PARTIAL.
+- OBJ-2/3: full obfuscated class map decoded (scripts/f023_disasm.py written — parameterized DEX disassembler): C1/* = kotlin.coroutines (f=CoroutineContext, f$a=Element, f$b=Key, a=AbstractCoroutineContextElement, b=CombinedContext, g=plus-fold-lambda, h=EmptyCoroutineContext), W1/y = runtime element base, ui/platform/J = AndroidUiDispatcher (extends W1/y), K = AndroidUiFrameClock (implements F/b0=MonotonicFrameClock), y1/j = SynchronizedLazyImpl holding AndroidUiDispatcher.MonotonicFrameClock. AndroidX contract verified against dooz's bundled Compose (MonotonicFrameClock companion-Key default getter law).
+- 9 generic laws implemented (see commit 5488eba0): default-interface-method dispatch; invoke-interface is-static flag restore; exact-descriptor overload; ctor-chain cycle-guard exemption; setContentView parent-link; getDecorView decor-root chain; getParent real-type; is_subclass_of interface closure; TimeUnit enum+conversions; array clone. Every fix is app-agnostic (no dooz/package special-casing).
+- Layered blocker peeling (each fix exposed next): NPEgetKey → M3-19-CYCLE stub on CombinedContext.get → ViewTreeLifecycleOwner not found (ISE) → keep-alive 0 IAE → CoroutineStart switch-map OOB → CancellableContinuationImpl context NPE → composition now runs 1.13M log lines deep (Material3 init) → current: SnapshotKt readError (P/l.q "Reading a state that was created after the snapshot was taken...") — snapshot record-vs-reader id consistency, NEXT probe: global snapshot P/j.m id (stored 0 via M3-LONG-PUT, valid for global) vs B0/l ThreadSnapshotTable thread-key (Thread.currentThread().getId bridged) and reader P/g.d() field wiring.
+- Battery hygiene: run_test_battery.sh test-link lines lacked -lsqlite3 (F-026 symbols; env gap) — 13 lines fixed. FULL BATTERY: ALL PASS, 54 stages, 0 FAIL, resume=0 at 5488eba0.
+- Commit 5488eba0 (code+script+disassembler+root-cause doc F023_ROOT_CAUSE.md). PUSH BLOCKED (no credentials, as before).
+
+Stage Summary:
+- 9 reusable laws landed; dooz composition advanced ~7 blocker layers deep; battery green.
+- NEXT: §2 snapshot readError law (OBJ-4 continuation) → OBJ-5 micro-APK reproducers → OBJ-6/7 first frame + tap→recompose pixel proof → P2 independent Compose APK.
