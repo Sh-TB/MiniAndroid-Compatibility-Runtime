@@ -21,6 +21,7 @@
 #include "../resources/arsc_parser.h"   // GOLDEN-03: canonical resolver hook
 #include "../resources/res_config.h"    // G04 §4: device_config() (inTargetDensity)
 #include "../storage/sqlite_shadow.h"   // M3 F-ROOM-CHAIN: databases dir wiring
+#include "../storage/data_root.h"       // M3 FINDING-012: app-data root law
 // EXP-051: Shadow registry forward-declarations.
 namespace miniandroid { namespace framework {
 class ShadowRegistry;
@@ -28,6 +29,7 @@ class HeapAllocator;
 }}
 #include <string>
 #include <vector>
+#include <filesystem>
 #include <map>
 #include <unordered_map>
 #include <stack>
@@ -1194,8 +1196,14 @@ public:
         // /data/data/<pkg>/databases on a device; per-run sandbox => the
         // harness controls the initial DB state for deterministic goldens).
         if (!pkg.empty()) {
+            // M3 FINDING-012: the sandbox ROOT obeys the process-wide
+            // app-data root (default runtime/data, overridable via
+            // --data-root / MINIANDROID_DATA_ROOT) — the engine must not
+            // hardcode the CWD-relative literal anymore.
             storage::DatabaseShadow::set_databases_dir(
-                "runtime/data/" + pkg + "/databases");
+                (std::filesystem::path(Storage::app_data_root()) / pkg /
+                 "databases")
+                    .string());
         }
     }
 

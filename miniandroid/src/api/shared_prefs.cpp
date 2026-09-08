@@ -20,6 +20,7 @@
  */
 
 #include "shared_prefs.h"
+#include "../storage/data_root.h"
 #include <iostream>
 #include <algorithm>
 #include <cstring>
@@ -1037,7 +1038,8 @@ std::shared_ptr<SharedPreferences> createForTelegram(
 std::vector<std::string> listPreferences(const std::string& package_name) {
     std::vector<std::string> result;
     
-    fs::path prefs_dir = fs::path("runtime/data") / package_name / "shared_prefs";
+    // M3 FINDING-012: root must follow the process-wide app-data root law.
+    fs::path prefs_dir = fs::path(Storage::app_data_root()) / package_name / "shared_prefs";
     
     if (!fs::exists(prefs_dir)) {
         return result;
@@ -1056,7 +1058,8 @@ std::vector<std::string> listPreferences(const std::string& package_name) {
 size_t deleteAllPreferences(const std::string& package_name) {
     size_t count = 0;
     
-    fs::path prefs_dir = fs::path("runtime/data") / package_name / "shared_prefs";
+    // M3 FINDING-012: root must follow the process-wide app-data root law.
+    fs::path prefs_dir = fs::path(Storage::app_data_root()) / package_name / "shared_prefs";
     
     if (!fs::exists(prefs_dir)) {
         return 0;

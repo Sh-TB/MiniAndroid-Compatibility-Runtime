@@ -14,6 +14,8 @@
 #include "dex_parser.h"
 #include "mutf8.h"
 #include "../api/android_stubs.h"
+#include "../storage/data_root.h"
+#include <filesystem>
 #include "../diagnostics/mem_probe.h"
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
 #include "../jni/jni_bridge.h"
@@ -13856,7 +13858,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         heap_.set_object_field(obj_id, "prefs_name", name_val);
 
         // Try to load existing XML file
-        std::string prefs_dir = "runtime/data/org.telegram.messenger/shared_prefs";
+        std::string prefs_dir = (std::filesystem::path(Storage::app_data_root()) /
+                               "org.telegram.messenger" / "shared_prefs").string();
         std::string prefs_file = prefs_dir + "/" + prefs_name + ".xml";
         std::ifstream infile(prefs_file);
         if (infile.is_open()) {
@@ -14067,7 +14070,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         prefs_name = name_val.string_val;
                     }
                     // Write to XML
-                    std::string prefs_dir = "runtime/data/org.telegram.messenger/shared_prefs";
+                    std::string prefs_dir = (std::filesystem::path(Storage::app_data_root()) /
+                               "org.telegram.messenger" / "shared_prefs").string();
                     // Create directory
                     std::string mkdir_cmd = "mkdir -p " + prefs_dir;
                     system(mkdir_cmd.c_str());

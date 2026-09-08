@@ -566,7 +566,10 @@ for rel in "exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk" \
     name=$(basename "$rel" .apk)
     if [ -f "$CORPUS_DIR/$rel" ]; then
         out="/tmp/battery_corpus_$name"; rm -rf "$out"; mkdir -p "$out"
+        # M3 FINDING-012: hermetic per-run app-data root — a corpus run
+        # must never read/write a previous run's Room/SQLite state.
         ./build/miniandroid run "$CORPUS_DIR/$rel" -o "$out" \
+            --data-root "$out/data_root" \
             > "$out/run.log" 2>&1
         rc=$?
         grep -q "Status: SUCCESS" "$out/run.log" && [ -f "$out/screenshot.png" ] && rc=0 || rc=1
@@ -575,6 +578,61 @@ for rel in "exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk" \
         gate "corpus run $name" 1
     fi
 done
+fi
+
+# M3 FINDING-012: app-data-root law golden — persistence replay + fresh-state
+# determinism on a REAL APK (microtimer, Room/SQLite-backed).
+#   Pair 1: run A (fresh root) → exactly 1 alarm row
+#           run B (SAME root)   → exactly 2 rows; frame_000 visually gains
+#                                 the persisted timer row (expired render)
+#   Pair 2: runs C,D repeat the protocol on an independent fresh root
+# LAW 1 (durable persistence): B's first frame renders A's committed state
+#          (Android /data/data law — install state survives process death).
+# LAW 2 (byte determinism): frames(A)≡frames(C) AND frames(B)≡frames(D)
+#          byte-for-byte — identical initial state ⇒ identical execution.
+F012_APK="$MA/download/exp076_corpus/dubrowgn.microtimer_8.apk"
+[ -f "$F012_APK" ] || F012_APK=/tmp/my-project/apk_cache/microtimer.apk
+f012_rows() {
+    python3 - "$1" <<'PYEOF'
+import sqlite3, sys
+try:
+    c = sqlite3.connect(sys.argv[1] + "/dubrowgn.microtimer/databases/app-data")
+    print(c.execute("SELECT COUNT(*) FROM alarm").fetchone()[0])
+except Exception:
+    print("0")
+PYEOF
+}
+if [ ! -f "$F012_APK" ]; then
+    gate "M3 F-012 persistence+fresh-state determinism golden" 1
+else
+    PAIR1=/tmp/battery_f012_p1; PAIR2=/tmp/battery_f012_p2
+    rm -rf "$PAIR1" "$PAIR2"; mkdir -p "$PAIR1" "$PAIR2"
+    TAPS=(--tap 540,1605 --tap 540,1185 --tap 900,1815)
+    rc=0   # shell rc convention: 0 = pass (gate law)
+    ./build/miniandroid run "$F012_APK" -o "$PAIR1/A" --data-root "$PAIR1/root" \
+        "${TAPS[@]}" > "$PAIR1/A.log" 2>&1 || rc=1
+    [ "$(f012_rows "$PAIR1/root")" = "1" ] || rc=1
+    ./build/miniandroid run "$F012_APK" -o "$PAIR1/B" --data-root "$PAIR1/root" \
+        "${TAPS[@]}" > "$PAIR1/B.log" 2>&1 || rc=1
+    [ "$(f012_rows "$PAIR1/root")" = "2" ] || rc=1
+    ./build/miniandroid run "$F012_APK" -o "$PAIR2/C" --data-root "$PAIR2/root" \
+        "${TAPS[@]}" > "$PAIR2/C.log" 2>&1 || rc=1
+    [ "$(f012_rows "$PAIR2/root")" = "1" ] || rc=1
+    ./build/miniandroid run "$F012_APK" -o "$PAIR2/D" --data-root "$PAIR2/root" \
+        "${TAPS[@]}" > "$PAIR2/D.log" 2>&1 || rc=1
+    [ "$(f012_rows "$PAIR2/root")" = "2" ] || rc=1
+    # LAW 1: stateful frame_000 must differ from fresh frame_000 (persisted
+    # row visibly present) — in BOTH independent pairs.
+    cmp -s "$PAIR1/A/frames/frame_000.png" "$PAIR1/B/frames/frame_000.png" && rc=1
+    cmp -s "$PAIR2/C/frames/frame_000.png" "$PAIR2/D/frames/frame_000.png" && rc=1
+    # LAW 2: byte determinism frame-for-frame across the independent pairs.
+    for f in $(ls "$PAIR1/A/frames" | grep '\.png$'); do
+        cmp -s "$PAIR1/A/frames/$f" "$PAIR2/C/frames/$f" || rc=1
+        cmp -s "$PAIR1/B/frames/$f" "$PAIR2/D/frames/$f" || rc=1
+    done
+    nA=$(ls "$PAIR1/A/frames" | grep -c '\.png$'); nC=$(ls "$PAIR2/C/frames" | grep -c '\.png$')
+    { [ "$nA" = "$nC" ] && [ "$nA" -ge 90 ]; } || rc=1
+    gate "M3 F-012 persistence+fresh-state determinism golden" $rc
 fi
 
 echo "──────────────────────────────────────────────"

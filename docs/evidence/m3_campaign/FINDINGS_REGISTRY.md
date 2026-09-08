@@ -491,3 +491,49 @@ session). These are items the campaign plan did NOT explicitly list.
   microtimer session — each is a real DEX call with string allocs; a fast-path
   law (validate + trace once) would cut runtime cost without semantics change.
 - Priority: P3 (performance). Status: RESEARCHED.
+
+## FINDING-012
+- Subsystem: STORAGE / DETERMINISM GATE (app-data root anchoring, P0)
+- Trigger: independent re-verification of the session-7 microtimer 3-run
+  byte-determinism claim at HEAD e27fe846 FAILED — 3 runs from the same CWD
+  produced 3 different frame sets (frame_000 white-dominant vs blue-dominant)
+- APK: dubrowgn.microtimer_8 (Room/SQLite-backed); ANY persistence-using app
+  (unote, notes, chessclock) shares the exposure
+- Static evidence: the app-data root was the CWD-relative literal
+  "runtime/data" in FOUR places — DatabaseShadow::databases_dir_ default,
+  DalvikExecutionEngine::set_package_info ("runtime/data/"+pkg+"/databases"),
+  shared_prefs.cpp listPreferences/deleteAllPreferences, and the Telegram
+  prefs paths in dalvik_engine.cpp; set_databases_dir had NO caller
+- Runtime evidence: [SQLITE-SHADOW] opened db path=runtime/data/... shared by
+  every run from $MA; after 3 tap-runs the Room `alarm` table held exactly
+  3 rows (one INSERT leaked per run); run 2 loaded run 1's row and rendered a
+  DIFFERENT first frame. Session-7's byte-identical runs were an ACCIDENT of
+  launching from a different CWD (per-CWD implicit isolation), not a protocol
+  guarantee — the determinism evidence chain had a hidden precondition.
+- Root cause: app private storage anchored to the invoking shell's CWD with
+  no per-invocation override; determinism protocol had no data-state control
+- Law: AOSP Context/Environment — /data/data/<pkg>/ is anchored to the DEVICE
+  INSTANCE, never to the CWD; determinism gate law — identical INITIAL STATE
+  (incl. storage) is a precondition of byte-identical replay, and durable
+  persistence across process death is itself testable Android behavior
+- Fix: src/storage/data_root.{h,cpp} — ONE process-wide app-data root
+  (default "runtime/data", back-compat), set via --data-root <dir> or
+  MINIANDROID_DATA_ROOT; forwards to DatabaseShadow; ALL four consumers now
+  derive from Storage::app_data_root(); battery corpus runs are hermetic
+- Tests: NEW battery stage "M3 F-012 persistence+fresh-state determinism
+  golden": pair A(fresh root, 3 taps, alarm rows=1) → B(SAME root, rows=2)
+  vs independent pair C,D — LAW 1 durable persistence: B.frame_000 renders
+  A's committed row (blue row + red expired label 00:00:00 visually
+  confirmed); LAW 2 byte determinism: frames(A)≡frames(C), frames(B)≡frames(D)
+  92/92 frames both pairs
+- Runtime proof: microtimer 3-tap countdown 00:00:78→00:00:02 per-second
+  mutation re-verified at e27fe846+fix; 86 unique frames / 92 saved
+  (mutation-keyed saving law intact)
+- Visual proof: /tmp persisted-row crop (frame_000 stateful: row + red
+  expired label); label strip 78→60→40→20→02
+- Regression result: battery 60/60 ALL PASS (59 prior + 1 new golden);
+  zero comparator weakened; corpus runs now hermetic
+- Status: REGRESSION-VERIFIED
+- Priority: P0 (determinism gate unsound for every persistence-bearing APK)
+- Commit: (this commit)
+- GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT

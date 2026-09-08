@@ -10,6 +10,8 @@
 #include <vector>
 #include <fstream>
 #include <filesystem>
+#include <cstdlib>
+#include <cstring>
 
 #include "runtime/execution_engine.h"
 #include "apk/apk_parser.h"
@@ -49,7 +51,9 @@ void print_usage(const char* program_name) {
     std::cout << "  --tap <x>,<y>         Canonical tap gesture (DOWN/UP law pipeline) after the first frame\n";
     std::cout << "                         (hit test -> 500ms timeout -> onLongClick; consumed\n";
     std::cout << "                          long press suppresses the UP click — AOSP law)\n";
-    std::cout << "  --execution-mode <mode> Execution mode: legacy | real-dalvik (default: real-dalvik)\n\n";
+    std::cout << "  --execution-mode <mode> Execution mode: legacy | real-dalvik (default: real-dalvik)\n";
+    std::cout << "  --data-root <dir>       App private storage root (Android /data/data analog).\n";
+    std::cout << "                          Determinism/persistence drivers MUST set this per run.\n\n";
     std::cout << "Examples:\n";
     std::cout << "  " << program_name << " analyze HelloWorld.apk\n";
     std::cout << "  " << program_name << " run -o ./output HelloWorld.apk\n";
@@ -196,10 +200,21 @@ int cmd_dex(const std::string& apk_path, bool verbose) {
     return 0;
 }
 
+#include "storage/data_root.h"
+
 int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config) {
     std::cout << "[*] Running APK: " << apk_path << std::endl;
     std::cout << "[*] Output directory: " << config.output_directory << std::endl;
     
+    // M3 FINDING-012: apply the app-data root law BEFORE any storage
+    // consumer initializes. Precedence: --data-root > MINIANDROID_DATA_ROOT
+    // > process default ("runtime/data", CWD-relative, back-compat).
+    if (!config.data_root.empty()) {
+        Storage::set_app_data_root(config.data_root);
+    } else if (const char* env_root = std::getenv("MINIANDROID_DATA_ROOT");
+               env_root && *env_root) {
+        Storage::set_app_data_root(env_root);
+    }
     runtime::ExecutionEngine engine;
     // EXP-086 Phase 7 (B4 FIX): Set up ShadowRegistry so Handler/Looper
     // dispatch is wired up. Without this, Handler.post() calls during
@@ -375,6 +390,19 @@ int main(int argc, char* argv[]) {
         } else if (arg == "--frame-delay" && i + 1 < argc) {
             config.frame_delay_ms = std::stoi(argv[++i]);
             std::cout << "[*] frame delay: " << config.frame_delay_ms << "ms virtual\n";
+        } else if ((arg == "--data-root" || arg.rfind("--data-root=", 0) == 0) ) {
+            // M3 FINDING-012: per-invocation app private storage root.
+            std::string root;
+            if (arg.rfind("--data-root=", 0) == 0) {
+                root = arg.substr(strlen("--data-root="));
+            } else if (i + 1 < argc) {
+                root = argv[++i];
+            }
+            if (root.empty()) {
+                std::cerr << "[ERROR] --data-root expects a directory\n";
+                return 1;
+            }
+            config.data_root = root;
         } else if (arg.find("--execution-mode") == 0) {
             // EXP-031: Parse execution mode
             std::string mode_str;
