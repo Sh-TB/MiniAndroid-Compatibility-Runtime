@@ -16333,6 +16333,47 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // M3 F-026b: String.contentEquals(CharSequence) — REAL comparison law.
+    // ROOT CAUSE this replaces: api_dispatcher's ClassResolver stub answered
+    // "always false" (§8 fail-wrong-law stub class). Law (OpenJDK
+    // String.contentEquals): true iff this string's char sequence equals the
+    // CharSequence's contents. StringBuilder/StringBuffer store their
+    // accumulated chars in the heap field "sb_value" (EXP-094 law); a
+    // String argument is a direct STRING_REF comparison. null argument →
+    // false? No — AOSP throws NullPointerException for null; the engine's
+    // null law here is the fail-soft false (documented deviation, loud
+    // diagnostic).
+    if (class_name == "Ljava/lang/String;" && method == "contentEquals") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        bool eq = false;
+        if (args.size() >= 2 && args[0].type == DalvikType::STRING_REF) {
+            const std::string& self = args[0].string_val;
+            if (args[1].type == DalvikType::STRING_REF) {
+                eq = (self == args[1].string_val);
+            } else if (args[1].type == DalvikType::OBJECT_REF &&
+                       heap_.has_object(args[1].object_id)) {
+                auto fv = heap_.get_object_field(args[1].object_id, "sb_value");
+                if (fv.has_value() && fv->type == DalvikType::STRING_REF)
+                    eq = (self == fv->string_val);
+                else {
+                    // Non-StringBuilder CharSequence (e.g. a String wrapped
+                    // as an object): fall back to the heap string if the
+                    // object carries one, else honestly false + diagnostic.
+                    auto sv = heap_.get_object_field(args[1].object_id, "value");
+                    if (sv.has_value() && sv->type == DalvikType::STRING_REF)
+                        eq = (self == sv->string_val);
+                    else
+                        std::cerr << "[STRING-LAW] contentEquals: receiver "
+                                  << args[1].class_desc
+                                  << " has no readable char sequence — false"
+                                  << std::endl;
+                }
+            }
+        }
+        result = DalvikValue::make_bool(eq);
+        return true;
+    }
+
     // ────────────────────────────────────────────────────────────────────────
     // EXP-071 Phase 6: String.toUpperCase() → String
     //
@@ -17734,6 +17775,32 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             args[0].type == DalvikType::STRING_REF &&
             args[1].type == DalvikType::STRING_REF) {
             eq = (args[0].string_val == args[1].string_val);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(eq);
+        return true;
+    }
+
+    // M3 F-026b: String.contentEquals(CharSequence) — same law as the
+    // first-site handler above (this site serves the alternate bridge path;
+    // both must agree or dispatch order decides the answer).
+    if (class_name == "Ljava/lang/String;" && method == "contentEquals") {
+        bool eq = false;
+        if (args.size() >= 2 && args[0].type == DalvikType::STRING_REF) {
+            const std::string& self = args[0].string_val;
+            if (args[1].type == DalvikType::STRING_REF) {
+                eq = (self == args[1].string_val);
+            } else if (args[1].type == DalvikType::OBJECT_REF &&
+                       heap_.has_object(args[1].object_id)) {
+                auto fv = heap_.get_object_field(args[1].object_id, "sb_value");
+                if (fv.has_value() && fv->type == DalvikType::STRING_REF)
+                    eq = (self == fv->string_val);
+                else {
+                    auto sv = heap_.get_object_field(args[1].object_id, "value");
+                    if (sv.has_value() && sv->type == DalvikType::STRING_REF)
+                        eq = (self == sv->string_val);
+                }
+            }
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_bool(eq);
