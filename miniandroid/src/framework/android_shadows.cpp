@@ -1160,6 +1160,41 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         if (!ctx.args.empty()) {
             if (ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
                 content_view_id_ = ctx.args[0].object_id;
+                // ────────────────────────────────────────────────────────
+                // F-023 (AOSP PhoneWindow.setContentView parent-link law):
+                // Activity.setContentView(view) installs the view under the
+                // window's content parent — in AOSP the DecorView's content
+                // FrameLayout. The activity itself participates in the view
+                // hierarchy (it IS a View / ContextThemeWrapper host whose
+                // shadow node carries the ViewTree* owner tags set by
+                // ComponentActivity.onCreate). Without a parent edge,
+                // ViewTreeLifecycleOwner.get(composeView) walks
+                // view.getParent() and stops at the compose root → null →
+                // WindowRecomposer_androidKt throws
+                // "ViewTreeLifecycleOwner not found from <view>" and every
+                // Compose app dies before its first frame (dooz M1/i.f
+                // follow-up ISE at R0.a pc=178).
+                // Generic law: setContentView(View) creates the
+                // activity-as-view node (if absent) and links the content
+                // view beneath it. Idempotent + cycle-safe via add_child.
+                // ────────────────────────────────────────────────────────
+                if (registry_ && content_view_id_ != 0 && ctx.receiver_id != 0 &&
+                    ctx.receiver_id != content_view_id_) {
+                    auto* view_shadow = registry_->find_as<ViewShadow>();
+                    if (view_shadow) {
+                        if (!view_shadow->find_node(ctx.receiver_id)) {
+                            view_shadow->get_or_create_node(
+                                ctx.receiver_id, "Landroid/view/View;");
+                        }
+                        if (view_shadow->add_child(ctx.receiver_id,
+                                                   content_view_id_)) {
+                            std::cerr << "[F023-PARENTLINK] setContentView(View) content view="
+                                      << content_view_id_
+                                      << " linked under activity view="
+                                      << ctx.receiver_id << std::endl;
+                        }
+                    }
+                }
                 // GENERIC (tictactoe_golden campaign): programmatic View trees
                 // get the SAME real measure/layout pass as XML-inflated trees.
                 // AOSP: setContentView(View) attaches the view to the window
@@ -1665,8 +1700,23 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "getParent") {
         const auto* n = find_node(ctx.receiver_id);
+        if (std::getenv("MINIANDROID_TAG_TRACE")) {
+            std::cerr << "[TAG-TRACE] getParent view=" << ctx.receiver_id
+                      << " found=" << (n ? 1 : 0)
+                      << " parent=" << (n ? n->parent_id : 0)
+                      << std::endl;
+        }
         if (!n || n->parent_id == 0) return CallResult::handled_null();
-        return CallResult::handled_object(n->parent_id, "Landroid/view/ViewParent;");
+        // F-023 (AOSP View.getParent type law): the static return type is
+        // ViewParent, but the RUNTIME object is always a ViewGroup (a View
+        // subclass). Callers do `parent as? View` (Kotlin) or check-cast —
+        // returning the interface type as the runtime class breaks that
+        // cast and the ViewTree* owner parent-walk dead-ends.
+        // Return the parent node's REAL class descriptor.
+        const auto* pn = find_node(n->parent_id);
+        std::string pcls = (pn && !pn->class_desc.empty())
+                               ? pn->class_desc : "Landroid/view/View;";
+        return CallResult::handled_object(n->parent_id, pcls);
     }
     if (m == "addView" || m == "addViewInLayout") {
         uint32_t child = ctx.arg_as_object(0, 0);
@@ -1779,18 +1829,38 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         } else {
             n->default_tag = tv;
         }
+        if (std::getenv("MINIANDROID_TAG_TRACE")) {
+            std::cerr << "[TAG-TRACE] setTag view=" << ctx.receiver_id
+                      << " class=" << (ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class)
+                      << " argc=" << ctx.args.size()
+                      << " key=" << (ctx.args.size() >= 2 ? ctx.arg_as_int(0) : -1)
+                      << " kind=" << (int)tv.kind
+                      << " obj=" << tv.object_id
+                      << std::endl;
+        }
         return CallResult::handled_void();
     }
     if (m == "getTag") {
         const auto* n = find_node(ctx.receiver_id);
-        if (!n) return CallResult::handled_null();
         const ViewNode::TagValue* tv = nullptr;
-        if (ctx.args.size() >= 1) {
-            auto it = n->keyed_tags.find(ctx.arg_as_int(0));
-            if (it != n->keyed_tags.end()) tv = &it->second;
-        } else {
-            tv = &n->default_tag;
+        if (n) {
+            if (ctx.args.size() >= 1) {
+                auto it = n->keyed_tags.find(ctx.arg_as_int(0));
+                if (it != n->keyed_tags.end()) tv = &it->second;
+            } else {
+                tv = &n->default_tag;
+            }
         }
+        if (std::getenv("MINIANDROID_TAG_TRACE")) {
+            std::cerr << "[TAG-TRACE] getTag view=" << ctx.receiver_id
+                      << " class=" << (ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class)
+                      << " argc=" << ctx.args.size()
+                      << " key=" << (ctx.args.size() >= 1 ? ctx.arg_as_int(0) : -1)
+                      << " hit=" << (tv && tv->kind != ViewNode::TagValue::NONE ? 1 : 0)
+                      << " parent=" << (n ? n->parent_id : 0)
+                      << std::endl;
+        }
+        if (!n) return CallResult::handled_null();
         if (!tv || tv->kind == ViewNode::TagValue::NONE)
             return CallResult::handled_null();
         if (tv->kind == ViewNode::TagValue::OBJECT)
