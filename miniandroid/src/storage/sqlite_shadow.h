@@ -110,6 +110,12 @@ private:
     framework::CallResult stmt_dispatch(const framework::CallContext& ctx);
     framework::CallResult cursor_dispatch(const framework::CallContext& ctx);
 
+    // Shared query materialization for rawQuery / rawQueryWithFactory
+    // (F-026: bare rawQuery(String,String[]) previously had NO handler —
+    // the fail-soft bridge turned every scalar read into a null cursor).
+    framework::CallResult raw_query_common(sqlite3* raw, const std::string& sql,
+                                           uint32_t bind_array_oid);
+
     // Shared open path for getWritableDatabase/getReadableDatabase.
     framework::CallResult open_helper_database(uint32_t helper_oid,
                                                const std::string& helper_class);

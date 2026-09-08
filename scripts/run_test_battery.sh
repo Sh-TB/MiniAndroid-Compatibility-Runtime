@@ -890,6 +890,38 @@ else
     gate "F-025 executor pixel golden (4 bands)" 1
 fi
 
+# ── M3 §5 F-026+F-027: Room/SQLite persistence law family (micro reproducer) ──
+# INSERT-order/UPDATE/DELETE/txn-commit/txn-rollback/cursor-typed+isNull/
+# reopen — 7 bands. Guards two defect classes: F-026 (bare rawQuery had NO
+# handler → fail-soft null cursor on every scalar read) and F-027
+# (String.contentEquals answered the api_dispatcher always-false stub —
+# §8 fail-wrong-law class).
+F026_FIX_SRC="$MA/tests/fixtures/f026_room_sql_law"
+rm -rf /tmp/battery_f026sql; mkdir -p /tmp/battery_f026sql
+if cached "F-026+F-027 Room/SQLite law fixture build (ECJ+D8)"; then
+    skip "F-026+F-027 Room/SQLite law fixture build (ECJ+D8)"
+    skip "F-026+F-027 Room/SQLite pixel golden (7 bands)"
+elif [ -d "$F026_FIX_SRC" ]; then
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
+        "$F026_FIX_SRC" /tmp/battery_f026sql/f026_room_sql_law.apk \
+        > /tmp/battery_f026sql/build.log 2>&1
+    gate "F-026+F-027 Room/SQLite law fixture build (ECJ+D8)" $?
+    (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f026sql/f026_room_sql_law.apk \
+        -o /tmp/battery_f026sql/out --data-root /tmp/battery_f026sql/data \
+        > /tmp/battery_f026sql/run.log 2>&1)
+    gate "F-026+F-027 Room/SQLite law fixture run (rc=0 SUCCESS)" $?
+    rc=0
+    grep -q "Status: SUCCESS" /tmp/battery_f026sql/run.log || rc=1
+    grep -q "SQLITE-SHADOW. rawQuery rows=" /tmp/battery_f026sql/run.log || rc=1
+    python3 "$REPOSCRIPTS/f026_pixel_golden.py" /tmp/battery_f026sql/out/screenshot.ppm \
+        > /tmp/battery_f026sql/pixel.log 2>&1 || rc=1
+    gate "F-026+F-027 Room/SQLite pixel golden (7 bands)" $rc
+    tail -1 /tmp/battery_f026sql/pixel.log
+else
+    gate "F-026+F-027 Room/SQLite law fixture build (ECJ+D8)" 1
+    gate "F-026+F-027 Room/SQLite pixel golden (7 bands)" 1
+fi
+
 echo "──────────────────────────────────────────────"
 for r in "${RESULTS[@]}"; do printf '%s\n' "$r"; done
 if [ $FAIL -eq 0 ]; then

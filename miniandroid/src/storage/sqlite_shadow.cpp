@@ -47,7 +47,7 @@ std::vector<std::string> DatabaseShadow::implemented_methods() const {
         "execSQL", "beginTransaction", "beginTransactionNonExclusive",
         "setTransactionSuccessful", "endTransaction", "inTransaction",
         "isOpen", "getPath", "getVersion", "compileStatement",
-        "rawQueryWithFactory", "setMaxSqlCacheSize",
+        "rawQueryWithFactory", "rawQuery", "setMaxSqlCacheSize",
         "bindLong", "bindString", "bindNull", "bindDouble",
         "executeInsert", "executeUpdateDelete", "execute",
         "getCount", "getColumnCount", "getColumnIndex", "getColumnNames",
@@ -394,23 +394,51 @@ framework::CallResult DatabaseShadow::db_dispatch(const framework::CallContext& 
         ctx.args[1].kind == framework::CallContext::Arg::Kind::STRING) {
         // (factory, sql, selectionArgs[], editTable[, cancellationSignal])
         if (!raw) return framework::CallResult::not_handled();
-        const std::string& sql = ctx.args[1].string_val;
+        uint32_t bind_arr = (ctx.args[2].kind == framework::CallContext::Arg::Kind::OBJECT)
+                                ? ctx.args[2].object_id : 0;
+        return raw_query_common(raw, ctx.args[1].string_val, bind_arr);
+    }
+    // F-026: bare SQLiteDatabase.rawQuery(String sql, String[] selectionArgs)
+    // — the plain query entry point every hand-rolled helper/DAO (and most
+    // non-Room persistence code) uses. Law (AOSP SQLiteDatabase.rawQuery):
+    // sql at position 0 (after the receiver), selectionArgs bound 1-based in
+    // order, null array = no bindings; returns a live Cursor positioned
+    // BEFORE first; an invalid sql surfaces SQLiteException (here: loud
+    // stderr diagnostic + not_handled, matching the execSQL deviation note).
+    if (m == "rawQuery" && ctx.args.size() >= 1 &&
+        ctx.args[0].kind == framework::CallContext::Arg::Kind::STRING) {
+        if (!raw) return framework::CallResult::not_handled();
+        uint32_t bind_arr = 0;
+        if (ctx.args.size() >= 2 &&
+            ctx.args[1].kind == framework::CallContext::Arg::Kind::OBJECT)
+            bind_arr = ctx.args[1].object_id;
+        return raw_query_common(raw, ctx.args[0].string_val, bind_arr);
+    }
+    if (m == "close") {
+        close_db(db_oid);
+        return framework::CallResult::handled_void();
+    }
+    return framework::CallResult::not_handled();
+}
+
+framework::CallResult DatabaseShadow::raw_query_common(
+    sqlite3* raw, const std::string& sql, uint32_t bind_array_oid) {
+    {
         sqlite3_stmt* ps = nullptr;
         int rc = sqlite3_prepare_v2(raw, sql.c_str(), -1, &ps, nullptr);
         if (rc != SQLITE_OK) {
             std::cerr << "[SQLITE-SHADOW] rawQuery rc=" << rc << " err="
-                      << sqlite3_errmsg(raw) << " sql=\"" << sql << "\"" << std::endl;
+                      << sqlite3_errmsg(raw) << " sql=\"" << sql << "\""
+                      << std::endl;
             return framework::CallResult::not_handled();
         }
         // Bind selectionArgs (1-based).
-        if (ctx.args.size() >= 3 &&
-            ctx.args[2].kind == framework::CallContext::Arg::Kind::OBJECT) {
-            uint32_t arr_oid = ctx.args[2].object_id;
+        if (bind_array_oid != 0) {
             int32_t n = 0;
-            heap_->get_object_array_length(arr_oid, n);
+            heap_->get_object_array_length(bind_array_oid, n);
             for (int64_t i = 0; i < n; i++) {
                 std::string sv;
-                if (heap_->get_object_array_string_element(arr_oid, (size_t)i, sv)) {
+                if (heap_->get_object_array_string_element(bind_array_oid, (size_t)i, sv)) {
                     sqlite3_bind_text(ps, (int)(i + 1), sv.c_str(), -1,
                                       SQLITE_TRANSIENT);
                 } else {
@@ -451,11 +479,6 @@ framework::CallResult DatabaseShadow::db_dispatch(const framework::CallContext& 
         return framework::CallResult::handled_object(
             cur_oid, "Landroid/database/sqlite/SQLiteCursor;");
     }
-    if (m == "close") {
-        close_db(db_oid);
-        return framework::CallResult::handled_void();
-    }
-    return framework::CallResult::not_handled();
 }
 
 framework::CallResult DatabaseShadow::stmt_dispatch(const framework::CallContext& ctx) {
