@@ -37,6 +37,7 @@
 #include <cassert>
 #include <cctype>    // EXP-071 Phase 6: std::toupper/std::tolower for String.toUpperCase/toLowerCase
 #include <unordered_set>
+#include <set>            // F-023: default-interface-method dispatch visited set
 
 namespace miniandroid {
 namespace dalvik {
@@ -599,6 +600,47 @@ bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
     }
     if (current == want) return true;
     std::unordered_set<std::string> visited;  // cycle protection
+    // ────────────────────────────────────────────────────────────────────
+    // F-023 (DEX type-closure law — implements hierarchy): instance-of and
+    // castability must consider the INTERFACE closure of the class, not
+    // just the extends chain. A class C is an instance of interface I when
+    // I is reachable through: C's direct interfaces, the interfaces of
+    // every superclass, and the super-interfaces of those (transitive).
+    // Evidence (dooz): ViewTreeLifecycleOwner.get stored the owner tag
+    // (obj#8 = MainActivity) on the decor view; the walker lambda rejected
+    // it because `tag as? LifecycleOwner` compiled to
+    // instance-of tag, Landroidx/lifecycle/o; and the extends-only walk
+    // returned FALSE (MainActivity → AppCompatActivity → … →
+    // ComponentActivity IMPLEMENTS LifecycleOwner) → get() returned null →
+    // WindowRecomposer_androidKt ISE "ViewTreeLifecycleOwner not found" →
+    // Compose composition died before the first frame.
+    // Framework-interface closure (android/* interfaces not parsed from the
+    // APK dex) is out of scope here: the queried ancestor in real paths is
+    // an app-bundled (androidx) type present in dex_report_.
+    // ────────────────────────────────────────────────────────────────────
+    auto interface_closure_contains = [&](const std::string& cls) -> bool {
+        if (!dex_report_ || want.empty()) return false;
+        std::vector<std::string> ifq;
+        std::unordered_set<std::string> ifv;
+        auto collect = [&](const std::string& c) {
+            for (const auto& cd : dex_report_->classes) {
+                if (cd.name != c) continue;
+                for (const auto& ifc : cd.interfaces) {
+                    if (!ifc.empty() && ifv.insert(ifc).second) {
+                        ifq.push_back(framework::normalize_class_desc(ifc));
+                    }
+                }
+                break;  // found the class def
+            }
+        };
+        collect(cls);
+        for (size_t qi = 0; qi < ifq.size() && qi < 128; ++qi) {
+            if (ifq[qi] == want) return true;
+            collect(ifq[qi]);
+        }
+        return false;
+    };
+    if (interface_closure_contains(current)) return true;
     for (int i = 0; i < 50; ++i) {  // max depth 50 to prevent infinite loops
         if (visited.count(current)) return false;  // cycle
         visited.insert(current);
@@ -638,6 +680,10 @@ bool DalvikExecutionEngine::is_subclass_of(const std::string& class_desc,
                         (const void*)this);
             return true;
         }
+        // F-023: the current superclass may itself carry the interface
+        // (e.g. androidx.activity.ComponentActivity implements
+        // LifecycleOwner while MainActivity declares none directly).
+        if (interface_closure_contains(current)) return true;
         if (current.empty() || current == "Ljava/lang/Object;") {
             if (!m3_path.empty())
                 fprintf(stderr, "[M3-ANCESTRY] query=%s want=%s FALSE "
@@ -4094,13 +4140,30 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         ~ActiveKeyGuard() { if (armed) set.erase(key); }
     } m3_active_key_guard{active_invoke_keys_, m3_active_key, false};
     if (active_invoke_keys_.count(m3_active_key) > 0) {
-        std::cerr << "[M3-19-CYCLE] " << m3_active_key
-                  << " re-entered while active on the call stack (depth="
-                  << recursion_depth_ << ") — active-cycle stub"
-                  << ", lifetime_calls=" << m3_call_counts[m3_active_key]
-                  << std::endl;
-        recursion_depth_--;
-        return false;
+        // ────────────────────────────────────────────────────────────────
+        // F-023 (ctor-chain exemption): <init> re-entry on the SAME
+        // receiver is constructor DELEGATION (this(...) / overloaded ctor
+        // chains) — legal Java/Kotlin with compile-time-bounded depth
+        // (a constructor delegates to exactly one other constructor and
+        // DEX verification forbids ctor cycles). Stubbing it silently
+        // skipped the delegating ctor's field stores:
+        // kotlinx.coroutines CancellableContinuationImpl
+        // E1/c.<init>(C1/d) delegates to E1/c.<init>(C1/d, C1/f) which
+        // stores the CoroutineContext field — the stub left the field
+        // null and getContext() NPE'd, killing Compose composition
+        // (dooz M1/i.f chain, suspendCancellableCoroutineReusable).
+        // Constructors therefore NEVER hit the active-cycle stub;
+        // MAX_RECURSION_DEPTH remains the backstop.
+        // ────────────────────────────────────────────────────────────────
+        if (method_name != "<init>") {
+            std::cerr << "[M3-19-CYCLE] " << m3_active_key
+                      << " re-entered while active on the call stack (depth="
+                      << recursion_depth_ << ") — active-cycle stub"
+                      << ", lifetime_calls=" << m3_call_counts[m3_active_key]
+                      << std::endl;
+            recursion_depth_--;
+            return false;
+        }
     }
     active_invoke_keys_.insert(m3_active_key);
     m3_active_key_guard.armed = true;
@@ -4355,6 +4418,33 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     size_t arg_count = args.size();
 
     for (const auto& method : all_methods) {
+        if (class_descriptor == "LE1/c;" && method_name == "<init>" &&
+            std::getenv("MINIANDROID_E1_DIAG")) {
+            std::cerr << "[E1-SEL] cand " << method.name << method.descriptor
+                      << " bc=" << method.bytecode.size()
+                      << " want=" << method_descriptor
+                      << " eq=" << (method.descriptor == method_descriptor)
+                      << std::endl;
+        }
+        // ────────────────────────────────────────────────────────────────
+        // F-023 (exact-descriptor overload law): when the call site
+        // supplies the exact method descriptor, it is the AUTHORITY.
+        // R8-minified classes routinely carry same-name overloads (e.g.
+        // CancellableContinuationImpl ctors <init>(LC1/d;)V and
+        // <init>(LC1/d;LC1/f;)V). Arity heuristics ("instance alt" =
+        // arg_count-1) can grab the WRONG overload; executing the wrong
+        // ctor silently skipped the context-field store (E1/c.j) and
+        // kotlinx.coroutines NPE'd inside getContext
+        // (dooz M1/i.f chain — suspendCancellableCoroutineReusable).
+        // Fast path: exact name + descriptor match wins immediately.
+        // Native methods were already dispatched above; skip empty bodies.
+        // ────────────────────────────────────────────────────────────────
+        if (!method_descriptor.empty() && method.name == method_name &&
+            method.descriptor == method_descriptor &&
+            !method.bytecode.empty()) {
+            best_match = method;
+            break;
+        }
         // EXP-080: D8 renames lambda methods during compilation.
         // method_ids[] may resolve to 'lambda$createView$1' but the
         // ClassInfo has the D8-renamed name '$r8$lambda$8Miu...'.
@@ -10616,6 +10706,10 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
                       << " args=" << args.size()
                       << std::endl;
         }
+        if (class_name == "LE1/c;" && std::getenv("MINIANDROID_E1_DIAG")) {
+            std::cerr << "[E1-DIAG] inner direct: desc=" << method_desc_081
+                      << " args=" << args.size() << std::endl;
+        }
         if (try_recursive_invoke(class_name, method_name, args, return_val, result, method_desc_081)) { last_invoke_return_ = return_val;
             recursively_invoked = true;
             status = ApiCallTrace::Status::IMPLEMENTED;
@@ -10998,6 +11092,29 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // Similar to other invokes but for interface dispatch
     if (pc + 2 >= bytecode_.size()) return false;
 
+    // ────────────────────────────────────────────────────────────────────
+    // F-023 (EXP-071 Phase 7 completion — invoke-interface INSTANCE law):
+    // execute_invoke_static/virtual/direct each SAVE + RESET + RESTORE
+    // current_invoke_is_static_ at their boundary. invoke-interface is an
+    // INSTANCE call form but was forgotten, so any ancestor window that had
+    // left the flag true (e.g. a static-dispatched entry frame) leaked into
+    // try_recursive_invoke's M3-19/F-017 active-cycle key construction —
+    // the receiver's #object_id suffix was skipped for ALL
+    // interface-dispatched methods. Same-class re-entrancy across different
+    // instances (CombinedContext.get recursing over a CoroutineContext
+    // chain) then collided into ONE key and was stubbed null mid-fold; the
+    // null fed kotlin.coroutines plus → CombinedContext.<init>
+    // checkNotNullParameter → the NPE that killed Compose composition
+    // before the first frame (dooz M1/i.f).
+    // Scope-guard restore covers every return path below.
+    // ────────────────────────────────────────────────────────────────────
+    const bool saved_is_static = current_invoke_is_static_;
+    current_invoke_is_static_ = false;
+    struct IsStaticRestore {
+        bool& flag; bool saved;
+        ~IsStaticRestore() { flag = saved; }
+    } is_static_restore{current_invoke_is_static_, saved_is_static};
+
     uint16_t instr = bytecode_[pc];
     // EXP-045: Only push argc registers (from 35c format: high nibble of high byte)
     uint8_t argc = (instr >> 12) & 0xF;
@@ -11116,6 +11233,93 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
                         if (sup_it == class_to_superclass_.end()) break;
                         walk_cls = sup_it->second;
                         if (walk_cls == "Ljava/lang/Object;") break;
+                    }
+
+                    // ────────────────────────────────────────────────────
+                    // F-023 (DEX DEFAULT-INTERFACE-METHOD DISPATCH LAW):
+                    // The class-extends walk above cannot see methods that
+                    // live ON an interface with code (DEX default methods).
+                    // Real-world case (every Compose app): the receiver
+                    // androidx.compose.ui.platform.AndroidUiFrameClock (K)
+                    // extends Object and only IMPLEMENTS
+                    // MonotonicFrameClock (F/b0), whose getKey() is a
+                    // default interface method returning the companion Key.
+                    // kotlin.coroutines CoroutineContext.plus folds elements
+                    // and calls element.getKey() — if that lands on the
+                    // fail-soft bridge it returns null and
+                    // Intrinsics.checkNotNullParameter(key) NPEs inside
+                    // CoroutineContext.get, killing composition before the
+                    // first frame.
+                    //
+                    // Art resolution law: invoke-interface consults the
+                    // receiver's interface table — every transitively
+                    // implemented interface, including default methods.
+                    // Generic implementation: collect the implements-set of
+                    // each class in the receiver's extends chain, close it
+                    // over super-interfaces (bounded), then dispatch the
+                    // method matching the EXACT descriptor with code.
+                    // ────────────────────────────────────────────────────
+                    if (iface_proto != "<unknown>") {
+                        // 1. Receiver extends-chain (bounded).
+                        std::vector<std::string> cls_chain;
+                        std::string c = heap_obj->class_descriptor;
+                        for (int hop = 0; hop < 12 && !c.empty() &&
+                                          c != "Ljava/lang/Object;"; ++hop) {
+                            cls_chain.push_back(c);
+                            auto it = class_to_superclass_.find(c);
+                            if (it == class_to_superclass_.end()) break;
+                            c = it->second;
+                        }
+                        // 2. Implements-set with transitive super-interfaces.
+                        std::vector<std::string> ifq;
+                        std::set<std::string> visited;
+                        auto enqueue_ifaces = [&](const std::string& cls) {
+                            for (const auto& cd : dex_report_->classes) {
+                                if (cd.name != cls) continue;
+                                for (const auto& ifc : cd.interfaces) {
+                                    if (!ifc.empty() && visited.insert(ifc).second) {
+                                        ifq.push_back(ifc);
+                                    }
+                                }
+                                break;  // found the class def
+                            }
+                        };
+                        for (const auto& cc : cls_chain) enqueue_ifaces(cc);
+                        for (size_t qi = 0;
+                             qi < ifq.size() && qi < 64; ++qi) {
+                            enqueue_ifaces(ifq[qi]);  // super-interfaces
+                        }
+                        // 3. Dispatch a default method with the exact
+                        //    descriptor (code, non-abstract).
+                        for (const auto& ifc : ifq) {
+                            for (const auto& cd : dex_report_->classes) {
+                                if (cd.name != ifc) continue;
+                                for (const auto& mi : cd.all_methods()) {
+                                    if (mi.code_offset == 0 || mi.is_abstract)
+                                        continue;
+                                    if (mi.descriptor != iface_proto) continue;
+                                    if (try_recursive_invoke(ifc, mi.name, args,
+                                                             return_val,
+                                                             result)) {
+                                        last_invoke_return_ = return_val;
+                                        trace.invoked_method =
+                                            ifc + "." + mi.name +
+                                            " [default-method " + iface_proto +
+                                            "]";
+                                        std::cerr << "[INTERFACE-DEFAULT] "
+                                                  << ifc << "." << mi.name
+                                                  << iface_proto
+                                                  << " (interface " << class_name
+                                                  << "." << method_name
+                                                  << ") → REAL DEX dispatched"
+                                                  << std::endl;
+                                        pc_ = pc + 3;
+                                        return true;
+                                    }
+                                }
+                                break;  // found the interface def
+                            }
+                        }
                     }
                 }
             }
@@ -12362,6 +12566,19 @@ static int framework_enum_ordinal(const std::string& class_desc,
         {"Landroid/view/View$Visibility;.VISIBLE", 0},
         {"Landroid/view/View$Visibility;.INVISIBLE", 1},
         {"Landroid/view/View$Visibility;.GONE", 2},
+        // F-023: java.util.concurrent.TimeUnit (AOSP declaration order).
+        // kotlinx.coroutines Dispatchers.Default init (CoroutineScheduler)
+        // reads TimeUnit.SECONDS and converts keep-alive via toNanos; a
+        // NULL constant + bridged-to-zero conversion produced
+        // "Idle worker keep alive time 0 must be positive" IAE and killed
+        // Compose composition (dooz M1/i.f chain).
+        {"Ljava/util/concurrent/TimeUnit;.NANOS", 0},
+        {"Ljava/util/concurrent/TimeUnit;.MICROSECONDS", 1},
+        {"Ljava/util/concurrent/TimeUnit;.MILLISECONDS", 2},
+        {"Ljava/util/concurrent/TimeUnit;.SECONDS", 3},
+        {"Ljava/util/concurrent/TimeUnit;.MINUTES", 4},
+        {"Ljava/util/concurrent/TimeUnit;.HOURS", 5},
+        {"Ljava/util/concurrent/TimeUnit;.DAYS", 6},
         // android.text.TextUtils$TruncateAt
         {"Landroid/text/TextUtils$TruncateAt;.START", 0},
         {"Landroid/text/TextUtils$TruncateAt;.MIDDLE", 1},
@@ -14513,8 +14730,200 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         class_name.find("Window") != std::string::npos) {
         result = get_or_create_singleton("Landroid/view/View;");
         status = ApiCallTrace::Status::IMPLEMENTED;
+        // ────────────────────────────────────────────────────────────────────
+        // F-023 (AOSP window view-tree law): the DecorView is the ROOT of the
+        // window's view hierarchy — Activity.setContentView installs the
+        // content view INSIDE it (DecorView → content parent → view). The
+        // runtime models the activity as a view node carrying the
+        // ViewTree* owner tags and the content view beneath it, so the
+        // decor singleton must sit ABOVE the activity node for
+        // ViewTreeLifecycleOwner.get(view) parent-walks to reach the tags.
+        // Real-world impact: Compose's WindowRecomposerFactory walks
+        // view.getParent() from the ComposeView up to the owner tags; with
+        // a disconnected decor the walk dead-ends → "ViewTreeLifecycleOwner
+        // not found from <view>" ISE → Compose never composes (dooz M1/i.f
+        // follow-up). Idempotent + cycle-safe via ViewShadow::add_child.
+        // ────────────────────────────────────────────────────────────────────
+        if (result.type == DalvikType::OBJECT_REF && result.object_id != 0 &&
+            shadow_registry_) {
+            if (auto* act = shadow_registry_->find_as<framework::ActivityShadow>()) {
+                uint32_t act_view = act->current_activity_id();
+                uint32_t decor_view = result.object_id;
+                if (act_view != 0 && act_view != decor_view) {
+                    if (auto* vs = shadow_registry_->find_as<framework::ViewShadow>()) {
+                        if (!vs->find_node(decor_view)) {
+                            vs->get_or_create_node(decor_view, "Landroid/view/View;");
+                        }
+                        if (!vs->find_node(act_view)) {
+                            vs->get_or_create_node(act_view, "Landroid/view/View;");
+                        }
+                        if (vs->add_child(decor_view, act_view)) {
+                            std::cerr << "[F023-PARENTLINK] getDecorView: activity view="
+                                      << act_view << " linked under decor view="
+                                      << decor_view << std::endl;
+                        }
+                    }
+                }
+            }
+        }
         return true;
     }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P1.3c — Array clone (F-023 array-copy law)
+    // `clone()` on a heap array must return a fresh array of the SAME class
+    // and length with all elements copied (AOSP Object.clone() semantics
+    // for arrays). Real-world impact: Kotlin enum values() is compiled as
+    // `$VALUES.clone()`; without this the copy degraded to a length-1
+    // array, so `new int[E.values().length]` switch maps OOB'd
+    // (dooz W1/E$a.<clinit> — kotlinx.coroutines CoroutineStart).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "clone" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0 &&
+        heap_.has_object(args[0].object_id)) {
+        const std::string& recv_cls = args[0].class_desc;
+        bool is_array = !recv_cls.empty() && recv_cls[0] == '[';
+        if (!is_array) {
+            auto lenf = heap_.get_object_field(args[0].object_id,
+                                               "__array_length__");
+            is_array = lenf.has_value();
+        }
+        if (is_array) {
+            uint32_t src_id = args[0].object_id;
+            auto lf = heap_.get_object_field(src_id, "__array_length__");
+            int32_t len = 0;
+            if (lf && lf->type == DalvikType::INT32) len = lf->int_val;
+            uint32_t copy_id = heap_.allocate(recv_cls.empty() ? "Larray;"
+                                                               : recv_cls,
+                                              pc_, 0);
+            heap_.set_object_field(copy_id, "__array_length__",
+                                   DalvikValue::make_int(len));
+            for (int32_t i = 0; i < len; ++i) {
+                auto el = heap_.get_object_field(
+                    src_id, "array[" + std::to_string(i) + "]");
+                if (el) {
+                    heap_.set_object_field(
+                        copy_id, "array[" + std::to_string(i) + "]", *el);
+                }
+            }
+            result = DalvikValue::make_object(
+                copy_id, recv_cls.empty() ? "Larray;" : recv_cls);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // P1.3b — TimeUnit conversions (F-023 duration law)
+    // java.util.concurrent.TimeUnit.toNanos/toMillis/toSeconds/toMinutes/
+    // toHours/toDays/convert — AOSP semantics: convert the source duration
+    // to nanos via the receiver unit's multiplier, then scale to the target
+    // unit (saturating at Long extremes like AOSP's overflow handling).
+    // Real-world impact: kotlinx.coroutines Dispatchers.Default
+    // (CoroutineScheduler) computes idle-worker keep-alive via
+    // TimeUnit.SECONDS.toNanos(...); a bridged-to-zero result tripped
+    // "Idle worker keep alive time 0 must be positive" IAE and killed
+    // Compose composition (dooz M1/i.f chain).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("TimeUnit") != std::string::npos) {
+        static const long long kToNanos[] = {
+            1LL,                 // NANOS
+            1000LL,              // MICROSECONDS
+            1000000LL,           // MILLISECONDS
+            1000000000LL,        // SECONDS
+            60000000000LL,       // MINUTES
+            3600000000000LL,     // HOURS
+            86400000000000LL     // DAYS
+        };
+        auto unit_index = [&](const DalvikValue& v) -> int {
+            std::string name;
+            if (v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&
+                heap_.has_object(v.object_id)) {
+                auto nf = heap_.get_object_field(v.object_id, "enum_name");
+                if (nf && nf->type == DalvikType::STRING_REF) name = nf->string_val;
+            }
+            if (name == "NANOS") return 0;
+            if (name == "MICROSECONDS") return 1;
+            if (name == "MILLISECONDS") return 2;
+            if (name == "SECONDS") return 3;
+            if (name == "MINUTES") return 4;
+            if (name == "HOURS") return 5;
+            if (name == "DAYS") return 6;
+            return -1;
+        };
+        auto saturating_mul = [](long long a, long long b) -> long long {
+            if (a == 0 || b == 0) return 0;
+            __int128 p = (__int128)a * (__int128)b;
+            const __int128 kMax = (__int128)INT64_MAX;
+            const __int128 kMin = (__int128)INT64_MIN;
+            if (p > kMax) return INT64_MAX;
+            if (p < kMin) return INT64_MIN;
+            return (long long)p;
+        };
+        long long src_nanos_mult = 1LL;
+        int uidx = -1;
+        if (!args.empty()) uidx = unit_index(args[0]);
+        if (uidx < 0) uidx = 3;  // defensive: treat unknown as SECONDS
+        src_nanos_mult = kToNanos[uidx];
+
+        long long src_val = args.size() >= 2 ? args[1].long_val : 0LL;
+        if (args.size() < 2 || (args[1].type != DalvikType::INT64 &&
+                                args[1].type != DalvikType::INT32)) {
+            src_val = 0;  // only wide durations are meaningful here
+        }
+
+        long long out = 0;
+        if (method == "toNanos") {
+            out = saturating_mul(src_val, src_nanos_mult);
+        } else if (method == "toMicros") {
+            out = (src_nanos_mult >= 1000LL)
+                      ? saturating_mul(src_val, src_nanos_mult / 1000LL)
+                      : saturating_mul(src_val, src_nanos_mult) / 1000LL;
+        } else if (method == "toMillis") {
+            out = (src_nanos_mult >= 1000000LL)
+                      ? saturating_mul(src_val, src_nanos_mult / 1000000LL)
+                      : saturating_mul(src_val, src_nanos_mult) / 1000000LL;
+        } else if (method == "toSeconds") {
+            out = (src_nanos_mult >= 1000000000LL)
+                      ? saturating_mul(src_val, src_nanos_mult / 1000000000LL)
+                      : saturating_mul(src_val, src_nanos_mult) / 1000000000LL;
+        } else if (method == "toMinutes") {
+            out = (src_nanos_mult >= 60000000000LL)
+                      ? saturating_mul(src_val, src_nanos_mult / 60000000000LL)
+                      : saturating_mul(src_val, src_nanos_mult) / 60000000000LL;
+        } else if (method == "toHours") {
+            out = (src_nanos_mult >= 3600000000000LL)
+                      ? saturating_mul(src_val, src_nanos_mult / 3600000000000LL)
+                      : saturating_mul(src_val, src_nanos_mult) / 3600000000000LL;
+        } else if (method == "toDays") {
+            out = (src_nanos_mult >= 86400000000000LL)
+                      ? saturating_mul(src_val, src_nanos_mult / 86400000000000LL)
+                      : saturating_mul(src_val, src_nanos_mult) / 86400000000000LL;
+        } else if (method == "convert") {
+            // convert(long sourceDuration, TimeUnit sourceUnit) — receiver
+            // unit is the TARGET granularity; args[2] is the source unit.
+            long long src_mult = src_nanos_mult;   // args[0] = receiver = target
+            long long in_nanos = saturating_mul(src_val, src_mult);
+            long long out_mult = src_mult;
+            if (args.size() >= 3) {
+                int sidx = unit_index(args[2]);
+                if (sidx >= 0) src_mult = kToNanos[sidx];
+            } else if (args.size() >= 2 && unit_index(args[1]) >= 0) {
+                // Some call shapes pass (unit, duration) — defensive.
+                int sidx = unit_index(args[1]);
+                src_mult = kToNanos[sidx];
+            }
+            in_nanos = saturating_mul(src_val, src_mult);
+            out = out_mult ? in_nanos / out_mult : 0;
+        } else {
+            // Not a TimeUnit conversion — leave to later handlers.
+            goto timeunit_not_handled;
+        }
+        result = DalvikValue::make_long(out);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    timeunit_not_handled:;
 
     // ────────────────────────────────────────────────────────────────────────
     // P1.4 — Resources.getIdentifier(String, String, String) → int (not found)
