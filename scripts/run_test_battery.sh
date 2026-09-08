@@ -60,12 +60,20 @@ gate() {  # gate <name> <rc>
     if [ "$2" -eq 0 ]; then
         RESULTS+=("PASS  $1")
         printf '  [%d] PASS  %s\n' "$STAGE" "$1"
-        [ "$RESUME" -eq 1 ] && echo "$1" > "$STATE/$(printf '%02d' $STAGE).pass"
+        if [ "$RESUME" -eq 1 ]; then echo "$1" > "$STATE/$(printf '%02d' $STAGE).pass"; fi
     else
         FAIL=1
         RESULTS+=("FAIL  $1 (rc=$2)")
         printf '  [%d] FAIL  %s (rc=%s)\n' "$STAGE" "$1" "$2"
     fi
+    # TOOL-FINDING FIX (MASTER-3 session 11, §24 class): gate() is invoked
+    # as a plain command while stages toggle `set -e`. With RESUME=0 the
+    # old tail `[ "$RESUME" -eq 1 ] && echo ...` evaluated FALSE and became
+    # the function's return value — so the FIRST gate() under an active
+    # `set -e` (stage 63, F-016 default) aborted the ENTIRE battery before
+    # stage 64 (F-016 strict-mode). Every fresh run silently executed only
+    # 63 of 64 stages. gate() must NEVER propagate a nonzero status.
+    return 0
 }
 
 cached() {  # cached <name> -> rc 0 if stage already PASSED at this HEAD
