@@ -832,3 +832,48 @@ session). These are items the campaign plan did NOT explicitly list.
 - Priority: P0 (measurement integrity)
 - Commit: (this commit)
 - GitHub evidence: Issue #9
+
+## FINDING-020 (dooz root-located — supersedes the "Compose blank render" and SavedStateHandlesProvider hypotheses)
+- Subsystem: COMPOSE BOUNDARY (androidx.compose.runtime snapshot state law)
+- Trigger: dooz v? (io.github.yamin8000.dooz, sha256 d81292cd…) honestly
+  reports PARTIAL at HEAD 65c010f2: MainActivity.onCreate receives an
+  uncaught ISE; under the F-016 APP-BOUNDARY law rc≠0 and the window
+  renders the windowBackground only (blank).
+- Forensic proof (F-016 unwind forensics + bounded DEX probe):
+  * Unwind chain: MainActivity.onCreate (pc=0x38) →
+    androidx.compose.ui.platform.ComposeView.setContent (pc=5) →
+    LF/V0;.setValue (mutableStateOf write, pc=2) → LP/l;.i (snapshot
+    state read path, pc=0x2a) → ISE thrown at LP/l;.q (pc=11).
+  * DEX ground truth: LP/l;.q const-string =
+    "Reading a state that was created after the snapshot was taken or in
+    a snapshot that has not yet been applied" — Compose
+    SnapshotKt.readError, thrown when a MutableState's record id is
+    newer than the reading snapshot's id threshold.
+  * Thread-identity inputs checked: Thread.currentThread (main oid,
+    stable), Thread.getId (constant MAIN_THREAD_TID) — identity law
+    holds; the failure is the snapshot id sequencing itself.
+  * A SECOND ISE site (Lj1/a;.b pc=100, after SGET
+    androidx.lifecycle.i$b.STARTED → Enum.compareTo bridge fallback)
+    is the same snapshot/lifecycle family; Enum.compareTo has NO
+    shadow today and returns the int-typed default (0) — recorded as a
+    latent demand, not the primary blocker.
+- Root cause: the runtime does not implement Compose's snapshot id
+  sequencing law (global snapshot counter, per-snapshot read thresholds,
+  record ids on snapshot state objects) at the depth Compose's own
+  bundled DEX expects; state created during onCreate-side initialization
+  is read under a snapshot whose id precedes the creation.
+- Law (AOSP/AndroidX androidx.compose.runtime.snapshots): a state object
+  is readable in snapshot S iff state.resultRecord >= S.readThreshold;
+  otherwise SnapshotKt.readError throws ISE. Writes take
+  Snapshot.current; composition runs under an active snapshot with
+  proper apply/notify ordering.
+- Classification: DOCUMENTED COMPOSE BOUNDARY — the app's own bundled
+  Compose bytecode executes genuinely and its own precondition fires.
+  NOT SavedStateHandlesProvider (retired: no SavedState runtime call
+  fails), NOT ViewTree/Tag/Attach (those were F-013/014/015's chain,
+  already fixed). Closing this requires a Compose snapshot-semantics
+  campaign (Tier-2), not a generic framework fix.
+- Status: ROOT-LOCATED — DOCUMENTED BOUNDARY
+- Priority: P2 (Compose renderer family)
+- Commit: (this commit)
+- GitHub evidence: Issue #9

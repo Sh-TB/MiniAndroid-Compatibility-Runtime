@@ -89,8 +89,9 @@
    "size_bytes": 1749880,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp076_corpus",
-   "status": "BLOCKED \u2014 Compose blank render (pre-existing)",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)"
+   "status": "ROOT-LOCATED \u2014 COMPOSE SNAPSHOT BOUNDARY (F-020): ISE from SnapshotKt.readError at LP/l;.q (setContent\u2192mutableStateOf write chain proven via F-016 unwind forensics). SavedStateHandlesProvider hypothesis retired. Tier-2 Compose campaign required.",
+   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)",
+   "last_proven_head": "65c010f2"
   },
   {
    "name": "BGClock (Hans de Zwart)",
