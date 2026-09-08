@@ -877,3 +877,143 @@ session). These are items the campaign plan did NOT explicitly list.
 - Priority: P2 (Compose renderer family)
 - Commit: (this commit)
 - GitHub evidence: Issue #9
+
+## FINDING-020 — STATUS UPDATE (session 12, HEAD 9fe2d773+e9304898)
+- The three root defects under the dooz readError symptom were FIXED by the
+  interrupted session (verified fresh at HEAD, battery 67/67):
+  1. AtomicShadow family (java.util.concurrent.atomic/*) — AtomicReference
+     ctor dropped its argument via the ViewShadow catch-all retry; now an
+     exact-prefix claim registered before ViewShadow, ctor direct-invocation
+     law (<init> never routes through the runtime-class retry).
+  2. ART vtable most-derived-override law — invoke_virtual now walks the
+     receiver's superclass chain (first level declaring the method wins);
+     MutableSnapshot.s(I) override beats base Snapshot.s(I).
+  3. Enum.compareTo bridge shadow — ordinal-sign law (this.ordinal -
+     other.ordinal), replaces the int-default 0.
+- Micro reproducer: fixtures/f020_snapshot (5 laws, 5 visual bands, pixel
+  golden 5 green) — battery stages "F-020 snapshot-law fixture build/run/
+  pixel golden" ALL PASS.
+- dooz at HEAD: PARTIAL → SUCCESS (rc=0), lifecycle CREATE→STARTED→RESUMED,
+  3-run byte-identical frames. The readError ISE inside setContent is gone.
+- Status: REGRESSION-VERIFIED (snapshot primitive laws; fixture + battery).
+- Remaining dooz gap is a DIFFERENT layer — re-registered as FINDING-023.
+
+## FINDING-023 (dooz blank frame root-located — Compose composition deferred on the view-attach protocol)
+- Subsystem: WINDOW/VIEW ATTACH PROTOCOL (androidx AbstractComposeView
+  setContent deferral law)
+- Trigger: dooz v18 at HEAD 9fe2d773+e9304898: Status SUCCESS, lifecycle
+  RESUMED, but framebuffer is 100% white (0/2073600 non-white pixels),
+  3-run deterministic. Not counted as a proven interactive APK (§7/§10).
+- Forensic proof (REC-MISS ranking at the exact stop layer):
+  * ComposeView IS created and attached to the window tree as node=115
+    (ComposeView, depth=0, size 1080x1920) — children=0.
+  * [REC-MISS] Landroid/view/View;.isAttachedToWindow
+    caller=Landroidx/compose/ui/platform/ComposeView;.setContent
+  * [REC-MISS] Landroid/view/View;.addOnAttachStateChangeListener
+    caller=Landroidx/compose/ui/platform/AbstractComposeView;.<init>
+  * AndroidX law (AbstractComposeView.setContent): composition is DEFERRED
+    until the view is attached — isAttachedToWindow false (fail-soft
+    default) → content lambda queued on addOnAttachStateChangeListener;
+    the runtime never dispatches view-attach events, so the queued lambda
+    never runs → slot table never populated → 0 child nodes → blank.
+- Root cause: the view-attach lifecycle protocol (isAttachedToWindow state
+  + addOnAttachStateChangeListener + onAttachedToWindow/onDetachedFromWindow
+  dispatch at window setContentView/attach time) is not implemented; the
+  fail-soft default (false) silently parks Compose composition forever.
+- Law (AOSP android.view.View): a View is attached iff its parent chain is
+  attached and the window dispatched attach; attach listeners fire after
+  onAttachedToWindow, in dispatch order, on every attach/detach transition.
+- Classification: ROOT-LOCATED, next frontier of the Compose host chain
+  (after attach: composition/slot-table/recomposer, then measure/layout/
+  draw). This is a Tier-2 campaign, not a single generic fix — but the
+  attach-protocol law itself is generic (benefits every attach-deferring
+  View subclass).
+- Status: ROOT-LOCATED — BOUNDARY (next battle P0)
+- Priority: P1 (blocks all real Compose APKs' render chain)
+- Commit: (this commit)
+- GitHub evidence: Issue #9
+
+## FINDING-021 (Activity.getLayoutInflater window-inflater law — back-registered from the interrupted session's work)
+- Subsystem: ACTIVITY / WINDOW (LayoutInflater service identity law)
+- Root cause (pre-fix): Activity.getLayoutInflater had no shadow path; the
+  ViewBinding/root-inflate chains demanded a non-null window inflater.
+- Law (AOSP android.app.Activity): getLayoutInflater() returns the PhoneWindow's
+  LayoutInflater (mLayoutInflater, from the Window) — never null, window-scoped
+  singleton semantics per activity.
+- Fix (verified at HEAD): android_shadows.cpp Activity "n" (minified
+  getLayoutInflater) returns the window inflater — no app-specific code.
+- Proof: f020_snapshot fixture law5 (getLayoutInflater() != null band green,
+  pixel golden ALL 5); battery stage "F-020 snapshot-law pixel golden".
+- Status: IMPLEMENTED + REGRESSION-VERIFIED (fixture visual)
+- Priority: P2
+- Commit: 9fe2d773 (implementation), e9304898 (registry backfill)
+
+## FINDING-022 (battery tool integrity — commit 9fe2d773 froze a half-edited §6 invariant count law)
+- Subsystem: MEASUREMENT INTEGRITY (F-019 family — battery tool law)
+- Trigger: fresh battery re-verification at HEAD 9fe2d773 (session 12):
+  stage "§6 shadow registry invariant" FAILed although the interrupted
+  session's log recorded PASS at the same tree content.
+- Root cause: commit 9fe2d773 registers TWO shadows (AtomicShadow +
+  ExecutorShadow → canonical 18) but edited the invariant count law for
+  only ONE (17/19). The PASS log predates the ExecutorShadow registration
+  line; the interrupted session never re-verified the final frozen state.
+- Fix: count law 17→18 / 19→20 (both new shadows named). Focused: 24
+  checks 0 failures. Full fresh battery at HEAD+fix: ALL PASS.
+- Lesson (§0 law): a commit's internal consistency must be re-verified at
+  the frozen HEAD — logs generated mid-session do not attest the commit.
+- Status: FIXED (commit e9304898)
+- Priority: P1 (measurement integrity)
+- Commit: e9304898
+
+## FINDING-024 (InputStream EOF law family — §3A closure; proof-added at HEAD)
+- Subsystem: JAVA CORE / IO (java.io.InputStream read contract)
+- Prior state: bridge reads REAL asset bytes with the EOF contract
+  (K-34 pass) — but the law was never proven by a real-APK fixture; the
+  exoplayer2 Util.toByteArray demand (§27) was deferred pending proof.
+- Law (libcore/ojluni java.io.InputStream): read() ∈ 0..255, -1 at EOF;
+  EOF sticky; read(b,off,len) → count filled, -1 at EOF; available() →
+  remaining; close() → subsequent reads observe EOF (runtime-documented
+  divergence: AOSP throws IOException on read-after-close; the runtime's
+  honest documented law is closed = EOF — recorded, not silently stubbed).
+- Proof (this session, HEAD 9fe2d773+): fixtures/f024_eof_law real-APK —
+  7 laws × visual bands (empty/one-byte/0xFF-as-255/sticky-EOF/bulk-count/
+  drain-loop-terminates/close-law) — PIXEL GOLDEN ALL 7 GREEN; 3-run
+  byte-identical (sha 32b8a456…); permanent battery stages (build/run/
+  golden). Corpus leg: no APK in the CURRENT corpus executes stream reads
+  at runtime (demand source exoplayer2 APK is outside the corpus set) —
+  classified NOT_EXERCISED_BY_CURRENT_CORPUS, demand stays documented.
+- Status: REGRESSION-VERIFIED (micro-APK visual + battery)
+- Priority: P1 (Java core closure §3A)
+- Commit: (this commit)
+
+## FINDING-025 (§4 Executor double-run — static-local ownership guard froze on its first call)
+- Subsystem: DEX ENGINE / EXECUTOR OWNERSHIP (bridge_to_api executor-family
+  execute() ownership law)
+- Trigger: f020_executor micro fixture at HEAD 9fe2d773 — ExecutorShadow
+  enqueues 3 tasks (drain runs them once) AND the bridge's inline law ALSO
+  ran each task inline: executedCount=9 instead of 3, fifoSum=21 instead
+  of 7 (laws 2/3 RED).
+- Root cause (instrumented with a bounded [EXECUTOR-GUARD-DIAG] probe):
+  the executor-family guard was declared `static const bool f020_executor_
+  family = (class_name == …)` — a C++ FUNCTION-LOCAL STATIC initializes
+  exactly once, on the FIRST call (class_name = Executors — not a family
+  member), and every later call reused the frozen `false`. The ownership
+  guard was dead-on-arrival; the interrupted session never re-verified it
+  because no battery stage existed for the executor fixture.
+- Law (ISO C++ [stmt.dcl]/4 + the runtime's own ownership law): a static
+  local's initializer runs once; per-call predicates must not be static.
+  Executor-family execute() is owned by ExecutorShadow (enqueue on the one
+  MessageQueue, FIFO drain at the settle point); the inline law serves
+  only non-family receivers (Room's Thread-based transaction executor).
+- Fix: drop `static` (per-call const). Also corrected the fixture: the
+  warmup+reset pattern encoded the inline law and is racy on any real
+  thread pool; the deterministic contract is submit 1,2,4 → FIFO drain →
+  count==3, sum==7, ran-after-onCreate (a double-run still fails: 9≠3).
+- Proof: fixture ALL 4 BANDS GREEN; 0 inline executions for family
+  receivers; 3-run byte-identical (sha 30c4696f…); second-order §13
+  re-verification — F-012 microtimer A/B legs rows 1→2 intact (Room's
+  Thread-executor inline path preserved); battery stages "F-025 executor
+  fixture build/run/pixel golden" ALL PASS (battery 73/73).
+- Status: FIXED + REGRESSION-VERIFIED (fixture visual + battery + F-012)
+- Priority: P1 (§4 Executor closure blocker)
+- Commit: (this commit)

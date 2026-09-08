@@ -828,6 +828,68 @@ else
     gate "F-020 snapshot-law pixel golden (5 bands)" 1
 fi
 
+# ── M3 F-024: InputStream EOF law family (micro reproducer) ──
+# The §3A closure law: read() returns 0..255, -1 at EOF (sticky), bulk
+# read returns the count filled; 0xFF is DATA (255) — proven against four
+# deterministic assets (empty/one-byte/0xFF/11-byte) with a 7-band visual
+# verdict. Guards the historical defect class: fail-soft read()==0 spin
+# and signed-byte EOF confusion.
+F024_FIX_SRC="$MA/tests/fixtures/f024_eof_law"
+rm -rf /tmp/battery_f024; mkdir -p /tmp/battery_f024
+if cached "F-024 EOF-law fixture build (ECJ+D8)"; then
+    skip "F-024 EOF-law fixture build (ECJ+D8)"
+    skip "F-024 EOF-law pixel golden (7 bands)"
+elif [ -d "$F024_FIX_SRC" ]; then
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
+        "$F024_FIX_SRC" /tmp/battery_f024/f024_eof_law.apk \
+        > /tmp/battery_f024/build.log 2>&1
+    gate "F-024 EOF-law fixture build (ECJ+D8)" $?
+    (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f024/f024_eof_law.apk \
+        -o /tmp/battery_f024/out > /tmp/battery_f024/run.log 2>&1)
+    gate "F-024 EOF-law fixture run (rc=0 SUCCESS)" $?
+    rc=0
+    grep -q "Status: SUCCESS" /tmp/battery_f024/run.log || rc=1
+    python3 "$REPOSCRIPTS/f024_pixel_golden.py" /tmp/battery_f024/out/screenshot.ppm \
+        > /tmp/battery_f024/pixel.log 2>&1 || rc=1
+    gate "F-024 EOF-law pixel golden (7 bands)" $rc
+    tail -1 /tmp/battery_f024/pixel.log
+else
+    gate "F-024 EOF-law fixture build (ECJ+D8)" 1
+    gate "F-024 EOF-law pixel golden (7 bands)" 1
+fi
+
+# ── M3 §4 F-025: Executor/Executors closure (micro reproducer) ──
+# The queue law: Executors.newFixedThreadPool → execute(Runnable)×3 →
+# FIFO drain at the settle point (count==3, sum==7, ran-after-onCreate).
+# Guards the double-run defect class (F-025: static-local guard froze
+# false → every task ran twice, executedCount=9) and the enqueue-vs-inline
+# ownership law (ExecutorShadow owns executor-family execute()).
+F026_FIX_SRC="$MA/tests/fixtures/f020_executor"
+rm -rf /tmp/battery_f026; mkdir -p /tmp/battery_f026
+if cached "F-025 executor fixture build (ECJ+D8)"; then
+    skip "F-025 executor fixture build (ECJ+D8)"
+    skip "F-025 executor pixel golden (4 bands)"
+elif [ -d "$F026_FIX_SRC" ]; then
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
+        "$F026_FIX_SRC" /tmp/battery_f026/f020_executor.apk \
+        > /tmp/battery_f026/build.log 2>&1
+    gate "F-025 executor fixture build (ECJ+D8)" $?
+    (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f026/f020_executor.apk \
+        -o /tmp/battery_f026/out > /tmp/battery_f026/run.log 2>&1)
+    gate "F-025 executor fixture run (rc=0 SUCCESS)" $?
+    rc=0
+    grep -q "Status: SUCCESS" /tmp/battery_f026/run.log || rc=1
+    # ownership law: ZERO inline executions for executor-family receivers
+    grep -q "REAL DEX run() executed inline" /tmp/battery_f026/run.log && rc=1
+    python3 "$REPOSCRIPTS/f020_executor_pixel_golden.py" /tmp/battery_f026/out/screenshot.ppm \
+        > /tmp/battery_f026/pixel.log 2>&1 || rc=1
+    gate "F-025 executor pixel golden (4 bands)" $rc
+    tail -1 /tmp/battery_f026/pixel.log
+else
+    gate "F-025 executor fixture build (ECJ+D8)" 1
+    gate "F-025 executor pixel golden (4 bands)" 1
+fi
+
 echo "──────────────────────────────────────────────"
 for r in "${RESULTS[@]}"; do printf '%s\n' "$r"; done
 if [ $FAIL -eq 0 ]; then

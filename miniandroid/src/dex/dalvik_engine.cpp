@@ -13810,7 +13810,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // instead of 3). Only Thread-based transaction executors (Room's
             // newThread+start path, non-executor receiver classes) keep the
             // inline-run behavior.
-            static const bool f020_executor_family =
+            // M3 §4 FIX (F-025): this MUST NOT be a function-local `static` —
+            // a static local initializes exactly once (first call's
+            // class_name, here Executors) and every later call reuses the
+            // frozen value, so the guard was permanently false and the
+            // inline law double-ran every enqueued task (executedCount=9).
+            const bool f020_executor_family =
                 class_name == "Ljava/util/concurrent/ThreadPoolExecutor;" ||
                 class_name == "Ljava/util/concurrent/ScheduledThreadPoolExecutor;" ||
                 class_name == "Ljava/util/concurrent/AbstractExecutorService;" ||
