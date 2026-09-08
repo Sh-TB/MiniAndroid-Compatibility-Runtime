@@ -444,6 +444,35 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
         
         info.access_flags = class_def.access_flags;
         
+        // ====================================================================
+        // F-023 (DEX DEFAULT-INTERFACE-METHOD DISPATCH LAW): parse the
+        // implements-set. class_def.interfaces_off points at a type_list:
+        //   type_list { u4 size; type_item[size] { u2 type_idx } }
+        // The engine's invoke-interface resolver needs this set to find
+        // DEFAULT interface methods (methods with code ON an interface).
+        // Real-world impact: androidx.compose.runtime.MonotonicFrameClock
+        // provides `getKey()` as a default method on the interface while
+        // its implementors (R8-merged) do not redeclare it — without this
+        // set, CoroutineContext assembly in every Compose app NPEs.
+        // ====================================================================
+        if (class_def.interfaces_off != 0 &&
+            class_def.interfaces_off + 4 <= current_size_) {
+            uint32_t if_size = 0;
+            std::memcpy(&if_size, data + class_def.interfaces_off, sizeof(if_size));
+            if (if_size > 0 && if_size < 0x10000u &&
+                class_def.interfaces_off + 4 + (uint64_t)if_size * 2 <= current_size_) {
+                for (uint32_t k = 0; k < if_size; ++k) {
+                    uint16_t type_idx = 0;
+                    std::memcpy(&type_idx,
+                                data + class_def.interfaces_off + 4 + (size_t)k * 2,
+                                sizeof(type_idx));
+                    if (type_idx < report.header.type_ids_size) {
+                        info.interfaces.push_back(get_type(type_idx));
+                    }
+                }
+            }
+        }
+        
         // Parse class data (fields and methods)
         if (class_def.class_data_off != 0 && class_def.class_data_off < current_size_) {
             log("  → Parsing class_data at 0x" + std::to_string(class_def.class_data_off));
