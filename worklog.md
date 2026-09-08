@@ -79,3 +79,88 @@ Stage Summary:
 - FINAL_HEAD d69310b3; battery 64/64 (binary unchanged since 65c010f2 build; docs-only commits after).
 - Findings: F-018 REGRESSION-VERIFIED; F-019 tool-fix VERIFIED; F-020 ROOT-LOCATED boundary; FORGOTTEN-021 (Enum.compareTo latent demand) noted in F-020 entry.
 - Issue #9 update + final report next.
+
+---
+Task ID: M3-S12-1
+Agent: Super Z (main coder session 12 — GROUND TRUTH + F-020 completion)
+Task: §1 Ground Truth First (battery re-verification at current HEAD), then §2 F-020 completion.
+
+Work Log:
+- START_HEAD 9fe2d773 (unpushed UUID commit from interrupted session, dated 2026-09-08 17:06Z); origin/main 61fd7f17; tree clean. The UUID commit contains substantial F-020 work: AtomicShadow (atomic family, 227 lines), ExecutorShadow (§4, 122 lines), dalvik_engine vtable most-derived-override law + ctor direct-invocation law + executor ownership guard, fixtures f020_snapshot/f020_executor, battery stages (64→67).
+- Fresh battery re-verification attempt 1 (nohup): SILENTLY KILLED during GATE H run3 (RSS=24MB, not OOM — cgroup oom_kill=0). Attempt 2 (setsid): killed during resource_trace link. Forensic monitor (scripts/monitor_battery.sh) captured state every 2s; attempt 3 COMPLETED — kills are intermittent/external (harness-level, mechanism unresolved; no OOM, no ulimit). Monitor approach works.
+- BATTERY v3 result: 66/67 + FAIL §6 shadow registry invariant. ROOT: commit 9fe2d773 is internally inconsistent — shadow_registry.cpp registers TWO new shadows (AtomicShadow + ExecutorShadow = 18 canonical) but the test law was only updated for one (17/19). Yesterday's "PASS" log predates the ExecutorShadow registration line. Interrupted session froze a half-edited law — caught by fresh re-verification exactly as §0 mandates.
+- FIX: invariant law 17→18 / 19→20 (both shadows named). Focused test: 24 checks, 0 failures. FULL FRESH BATTERY v4: 67/67 ALL PASS at 9fe2d773+fix (resume=0 header verified).
+- Commit e9304898 (law fix + monitor script). PUSH BLOCKED: no GitHub credentials in this container (/home/z/.gh_token absent, no gh auth) — commits safe locally; recorded as §11 environment boundary, not fake success.
+
+Stage Summary:
+- Ground truth restored: battery 67/67 ALL PASS, all stages genuinely executing at current HEAD.
+- NEW TOOL FINDING (F-022 candidate): commit 9fe2d773 test-law under-count (registration=2 shadows, law updated for 1) — fixed in e9304898.
+- NEXT: §2 F-020 completion — dooz re-run at current HEAD + independent Compose APK; then 3A/3B, Executor audit, Room, forgotten audit, cross-APK, final report.
+
+---
+Task ID: M3-S12-2
+Agent: Super Z (session 12 — §2 F-020 completion)
+Task: dooz re-run at current HEAD; F-020 status reconciliation; next-layer root location.
+
+Work Log:
+- dooz at HEAD: SUCCESS rc=0 (was PARTIAL ISE), lifecycle CREATE→STARTED→RESUMED, 3-run byte-identical (sha 31ddd4d5…). readError ISE eliminated by the three F-020 fixes.
+- §10 honesty: frame is 100% WHITE (0/2073600 non-white px) — NOT counted as visual proof.
+- Next layer root-located precisely: AbstractComposeView.setContent defers composition until view attach; runtime REC-MISSes View.isAttachedToWindow (→false) + addOnAttachStateChangeListener; composition parked forever → ComposeView node=115 children=0 → blank. Registered F-023 (ROOT-LOCATED, P1, next battle).
+- F-020 updated to REGRESSION-VERIFIED (snapshot primitive laws: AtomicShadow family + vtable most-derived-override + Enum.compareTo; fixture 5-band visual golden; battery 67/67).
+
+Stage Summary:
+- F-020 CLOSED at primitive-law level; dooz advanced PARTIAL→SUCCESS but stays BOUNDARY (blank) pending F-023 (Compose attach/composition battle).
+- Independent Compose APK proof deferred with F-023 (belongs to the Compose host frontier).
+- NEXT: §3 3A InputStream EOF law + 3B Enum.compareTo verification; §4 Executor audit; §5 Room; §6 forgotten audit; §7 cross-APK; §15 report.
+
+---
+Task ID: M3-S12-3
+Agent: Super Z (session 12 — §3/§4/§5/§6/§7/§15 closure)
+Task: Java Core (EOF/Enum), Executor closure, Room/SQLite deep closure, forgotten audit, cross-APK, final report.
+
+Work Log:
+- §3A F-024: f024_eof_law fixture (7 laws: empty/one-byte/0xFF=255/sticky-EOF/bulk-count/drain-terminates/close) — ALL 7 GREEN, 3-run byte-identical 32b8a456, battery stages. Corpus leg NOT_REQUIRED_BY_CORPUS (no corpus APK reads streams).
+- §3B Enum.compareTo: VERIFIED at HEAD (ordinal-sign bridge from 9fe2d773 + f020 fixture law3 + battery).
+- §4 F-025: f020_executor fixture exposed DOUBLE-RUN (executedCount=9). [EXECUTOR-GUARD-DIAG] probe → static-local C++ init-once bug (guard froze on first call's class_name=Executors). Fix: drop static. Fixture corrected to the drain law (warmup+reset was racy/inline-encoded). 4-band golden, 0 inline executions, 3-run byte-identical 30c4696f. Second-order: F-012 microtimer legs rows 1→2 intact.
+- §5 F-026+F-027: f026_room_sql_law fixture exposed (a) bare SQLiteDatabase.rawQuery had NO handler → fail-soft null cursor (probe proved db_dispatch saw correct STRING kinds; only rawQueryWithFactory existed) → raw_query_common shared law; (b) String.contentEquals answered api_dispatcher's ALWAYS-FALSE stub (§8 fail-wrong-law) → real comparison at both engine sites (sb_value law). DB-on-disk evidence proved SQLite/txn layer was already correct. ALL 7 GREEN, 3-run byte-identical (harness data-root bug found and fixed by F-012's per-run hermetic law). unote = second independent persistence cross-APK (notes.db v2 end-to-end).
+- §6: 16-item reconciliation written to registry (no deletions; Room UPDATE/DELETE split: SQLite layer VERIFIED, Room adapter @Update/@Delete DETECTED_NOT_EXERCISED).
+- §15: FINAL FULL FRESH BATTERY at frozen HEAD d26fbafd: 76/76 ALL PASS (resume=0).
+
+Stage Summary:
+- Session 12 commits: e9304898 (F-022 law fix), 948e104d (F-024/F-025), d26fbafd (F-026/F-027 + audits). ALL UNPUSHED (no GitHub credentials in container — remote still 61fd7f17).
+- Battery: 64 (session-11 end) → 76 stages, ALL PASS.
+- Findings: F-020 VERIFIED (primitives) | F-022 FIXED | F-023 ROOT-LOCATED (Compose host frontier) | F-024/F-025/F-026/F-027 FIXED+REGRESSION-VERIFIED.
+- Next battle: F-023 (attach gate exists at dispatch_view_attached, env-gated; composition then windowToken locals NPE M1/i.f; then measure/layout/draw) — the Compose host chain.
+---
+Task ID: M3-S13-1
+Agent: Super Z (session 13 — F-023 Compose host frontier, dooz first-frame battle)
+Task: OBJECTIVES 1-4 + battery — reproduce M1/i.f NPE, map AndroidX contract, implement generic laws, regression.
+
+Work Log:
+- Ground truth: HEAD 7dc70e9c clean; binary current (make no-op); dooz repro rc=0 but ComposeView children=0, fb 0/2073600 non-white (blank). Blocker requires MINIANDROID_DISPATCH_ATTACH=1.
+- OBJ-1 REPRODUCED: attach → ensureCompositionCreated → NPE at M1/i.f pc=99 (Kotlin Intrinsics.checkNotNullParameter) → unwind y1/j.getValue (SynchronizedLazyImpl) → AbstractComposeView.c catch-all → uncaught at MainActivity.onCreate → APP BOUNDARY, PARTIAL.
+- OBJ-2/3: full obfuscated class map decoded (scripts/f023_disasm.py written — parameterized DEX disassembler): C1/* = kotlin.coroutines (f=CoroutineContext, f$a=Element, f$b=Key, a=AbstractCoroutineContextElement, b=CombinedContext, g=plus-fold-lambda, h=EmptyCoroutineContext), W1/y = runtime element base, ui/platform/J = AndroidUiDispatcher (extends W1/y), K = AndroidUiFrameClock (implements F/b0=MonotonicFrameClock), y1/j = SynchronizedLazyImpl holding AndroidUiDispatcher.MonotonicFrameClock. AndroidX contract verified against dooz's bundled Compose (MonotonicFrameClock companion-Key default getter law).
+- 9 generic laws implemented (see commit 5488eba0): default-interface-method dispatch; invoke-interface is-static flag restore; exact-descriptor overload; ctor-chain cycle-guard exemption; setContentView parent-link; getDecorView decor-root chain; getParent real-type; is_subclass_of interface closure; TimeUnit enum+conversions; array clone. Every fix is app-agnostic (no dooz/package special-casing).
+- Layered blocker peeling (each fix exposed next): NPEgetKey → M3-19-CYCLE stub on CombinedContext.get → ViewTreeLifecycleOwner not found (ISE) → keep-alive 0 IAE → CoroutineStart switch-map OOB → CancellableContinuationImpl context NPE → composition now runs 1.13M log lines deep (Material3 init) → current: SnapshotKt readError (P/l.q "Reading a state that was created after the snapshot was taken...") — snapshot record-vs-reader id consistency, NEXT probe: global snapshot P/j.m id (stored 0 via M3-LONG-PUT, valid for global) vs B0/l ThreadSnapshotTable thread-key (Thread.currentThread().getId bridged) and reader P/g.d() field wiring.
+- Battery hygiene: run_test_battery.sh test-link lines lacked -lsqlite3 (F-026 symbols; env gap) — 13 lines fixed. FULL BATTERY: ALL PASS, 54 stages, 0 FAIL, resume=0 at 5488eba0.
+- Commit 5488eba0 (code+script+disassembler+root-cause doc F023_ROOT_CAUSE.md). PUSH BLOCKED (no credentials, as before).
+
+Stage Summary:
+- 9 reusable laws landed; dooz composition advanced ~7 blocker layers deep; battery green.
+- NEXT: §2 snapshot readError law (OBJ-4 continuation) → OBJ-5 micro-APK reproducers → OBJ-6/7 first frame + tap→recompose pixel proof → P2 independent Compose APK.
+---
+Task ID: M3-S13-2
+Agent: Super Z (session 13 — layers 11-12 + law 10 + regression)
+Task: Continue F-023 layer peeling (SnapshotKt readError probe, Material3 G0/b ISE), law 10, fresh battery.
+
+Work Log:
+- Layer 11 (SnapshotKt readError): P/j.m global snapshot id stored 0 via (JJI[I)V ctor — VALID for global; P/g = per-thread snapshot cell (id + snapshot), P/l.j() = B0/l ThreadSnapshotTable.get(Thread.currentThread().getId()) with global-AtomicReference fallback. Reads succeeded earlier in the run (P/l.r completed at log 326560) — the failing read needs record-vs-reader id tracing. PROBE BANKED, not fixed this session.
+- Layer 12 (Material3 G0/b.<clinit> ISE "You should only apply non-linear scaling to font scales > 1"): fixed by LAW 10 — AOSP Configuration.setToDefaults fontScale=1.0f (synthesized Configuration singleton lacked fontScale; check saw 0.0).
+- Post-law-10 re-probe: G0/b clinit STILL throws — WIDE-DIAG cmpl-float operands b=-1.017e9 c=1.06535e9; 1.06535e9 == the INT bits of 1.0f converted NUMERICALLY — a FLOAT invoke arg was bit-aliased through the int channel in CYCLE-E build_invoke_args (float_param preservation law = NEXT generic fix, precisely diagnosed).
+- FRESH FULL BATTERY at feac1619: ALL PASS, 54 stages, 0 FAIL, resume=0 (10 laws regression-proven).
+- Commits: 5488eba0 (laws 1-9 + battery link hygiene), feac1619 (law 10). PUSH BLOCKED (no credentials).
+
+Stage Summary:
+- 10 generic laws landed, battery green at both commit HEADs.
+- DOOZ VISUAL MILESTONE NOT COMPLETE — framebuffer still 0 non-white px (honest status); composition reaches Material3 internals (12 layers peeled from the original M1/i.f NPE).
+- NEXT (priority order): (a) CYCLE-E float-arg preservation law (G0/b layer, exact diagnosis banked), (b) SnapshotKt readError id consistency, (c) continue peeling to first frame → OBJ-5 micro-APKs → OBJ-6/7 pixel+tap proof → P2 independent Compose APK.
