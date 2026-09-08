@@ -1057,3 +1057,56 @@ session). These are items the campaign plan did NOT explicitly list.
 - Status: FIXED + REGRESSION-VERIFIED (fixture L1/L6 + battery)
 - Priority: P1 (§8 audit hit — fail-wrong-law stub eliminated)
 - Commit: (this commit)
+
+## §6 FORGOTTEN-ITEMS RECONCILIATION (session 12, HEAD d26fbafd)
+Status vocabulary: FIXED / VERIFIED / IMPLEMENTED_NOT_EXERCISED /
+DETECTED_NOT_EXERCISED / ROOT_LOCATED / BLOCKED / BOUNDARY /
+NOT_REQUIRED_BY_CORPUS. Nothing deleted; same-root merges noted.
+- TextWatcher: DETECTED_NOT_EXERCISED (dispatch TODO at
+  dalvik_engine.cpp:5780; no corpus APK registers a watcher at HEAD)
+- onRequestPermissionsResult: DETECTED_NOT_EXERCISED (controlled-testing
+  hook at dalvik_engine.cpp:14199; TODO dispatch; no corpus demand)
+- packed-switch non-0 first_key: VERIFIED (engine key-first_key offset law
+  + semantic_switch_parse_neg_test, 25 checks, in battery)
+- tap-mode clickable dump: VERIFIED (EXP088 phase-B clickable dump in every
+  click run — e.g. dooz "clickables: 0")
+- stack-frame-count law: VERIFIED ([M3-19-THROWTRACE] 12 real frames,
+  F-016 unwind evidence)
+- SQLite WAL determinism: BOUNDARY (wal_requested recorded, journal mode
+  pinned default for byte-determinism; documented in setWriteAheadLoggingEnabled)
+- tap-landed-on-nothing diagnostics: VERIFIED (click_test_report + loud
+  "No views with click listeners found")
+- stable stage IDs: VERIFIED (battery stage names stable; 76 stages)
+- ColorStateList tint pipeline: VERIFIED (state_list.cpp + GATE H white-
+  glyph-on-blue tint law, IoU 0.959/0.997)
+- foreground drawable pipeline: IMPLEMENTED_NOT_EXERCISED (support in
+  ViewShadow/state_list; no dedicated golden at HEAD)
+- foregroundGravity: IMPLEMENTED_NOT_EXERCISED (layer positioning law,
+  execution_engine.cpp:2188; exercised only via microtimer corpus run)
+- Intrinsics fast-path: VERIFIED (F-017 chain — Intrinsics NPE family
+  handled; microtimer + F-012 green at HEAD)
+- Enum.compareTo: VERIFIED (F-020 ordinal-sign bridge + f020 fixture law3
+  + battery)
+- InputStream EOF law: VERIFIED (F-024, 7-band fixture + battery; corpus
+  leg = NOT_REQUIRED_BY_CORPUS — no current-corpus APK reads streams)
+- Executor/Executors: VERIFIED (F-025 queue law + ownership guard;
+  second-order cross-APK: microtimer Executors demand + F-012 intact)
+- Room UPDATE/DELETE: SPLIT — SQLite/Cursor layer VERIFIED (F-026 fixture:
+  UPDATE affected-count, DELETE count, txn commit/rollback, isNull, ORDER
+  BY determinism, reopen); Room-GENERATED-ADAPTER @Update/@Delete path
+  DETECTED_NOT_EXERCISED (no corpus APK issues a Room update/delete at
+  HEAD; microtimer covers INSERT/reopen only)
+
+## §7 CROSS-APK STATE (session 12)
+- microtimer (dubrowgn.microtimer_8, sha in registry): F-012 A/B legs
+  re-verified post-F-025/F-026/F-027 (rows 1→2) — INSERT/reopen cross-proof.
+- unote (app.varlorg.unote_30): second independent persistence APK —
+  helper notes.db v2 → open → onCreate → "SELECT * FROM table_notes ORDER
+  BY Date_creation DESC" rows=0 (fresh-empty law); real UI (toolbar +
+  action bar) + clicks (probed=4 changed=2); lifecycle RESUMED. VERIFIED.
+- simplekeyboard (rkr.simplekeyboard.inputmethod_145): SUCCESS/RESUMED at
+  HEAD (IME surface; rendering re-confirmed).
+- dooz: SUCCESS + RESUMED + 3-run deterministic BLANK — F-023 boundary
+  (Compose attach/composition chain), not counted as visual proof (§7 rule).
+- ChessClock (prior session): postDelayed countdown + 3-run — async law
+  cross-proof (Handler family; NOT an Executor-family proof).

@@ -11,9 +11,9 @@
   "base": {
     "rc": 0,
     "status": "SUCCESS",
-    "seconds": 0.2,
+    "seconds": 0.21,
     "has_screenshot": true,
-    "screenshot_sha256": "14d72ce76769ab2be0d589545644272b36c12a14da0ab85b611bef44e0060590",
+    "screenshot_sha256": "7b30d52201bb22ac8467cc9c8257f23b60f169c8406f39cdfe0ad8fe48355971",
     "log_path": "/tmp/g09_runs/app.varlorg.unote/base/console.log"
   },
   "click_run_status": true,
@@ -45,7 +45,7 @@
         "kind": "xml_onClick",
         "dispatched": true,
         "state_changed": true,
-        "changed_px": 2114
+        "changed_px": 2011
       },
       {
         "class": "Landroid/widget/Button;",
@@ -53,7 +53,7 @@
         "kind": "xml_onClick",
         "dispatched": true,
         "state_changed": true,
-        "changed_px": 2114
+        "changed_px": 2011
       }
     ]
   },
@@ -83,7 +83,11 @@
   "g08": {
     "startActivity_in_dex_trace": true,
     "startActivityForResult_in_dex_trace": false,
-    "intent_apis_seen": [],
+    "intent_apis_seen": [
+      "getStringExtra",
+      "getIntExtra",
+      "getIntent"
+    ],
     "second_activity_instantiated": null,
     "activity_not_found": false
   }
