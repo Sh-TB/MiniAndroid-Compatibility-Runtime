@@ -10186,7 +10186,45 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
                 last_invoke_return_ = return_val;
             }
         }
-        if (!tried_runtime_type) {
+        // M3 F-020 ROOT FIX (§ ART vtable law — most-derived override):
+        // after the runtime type misses, ART walks the RECEIVER's class
+        // hierarchy IN ORDER (LP/a → LP/b → LP/g): the first level that
+        // declares the method wins. The previous code jumped straight to
+        // the STATIC declaring class, skipping intermediate overrides —
+        // so Snapshot.s(I) (setWriteCount, overridden by MutableSnapshot
+        // LP/b to store the count) executed the base LP/g.s which always
+        // throws "Updating write count is not supported" → dooz ISE inside
+        // setValue. Walk the chain via class_to_superclass_ (C013 map),
+        // stopping at the declaring class; the declaring-class fallback
+        // below remains the last resort for receivers whose hierarchy is
+        // unknown (pure framework receivers).
+        if (!recursively_invoked && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            runtime_type != "<unknown>" && runtime_type != declaring_class) {
+            std::string f020_cur = runtime_type;
+            int f020_guard = 0;
+            while (!f020_cur.empty() && f020_guard++ < 12 &&
+                   f020_cur != declaring_class &&
+                   f020_cur != "Ljava/lang/Object;") {
+                auto sup_it = class_to_superclass_.find(f020_cur);
+                if (sup_it == class_to_superclass_.end()) break;
+                const std::string& sup = sup_it->second;
+                if (sup.empty() || sup == f020_cur) break;
+                f020_cur = sup;
+                if (f020_cur == "Ljava/lang/Object;") break;
+                if (try_recursive_invoke(f020_cur, method_name_from_dex,
+                                         args, return_val, result)) {
+                    recursively_invoked = true;
+                    api_status = ApiCallTrace::Status::IMPLEMENTED;
+                    last_invoke_return_ = return_val;
+                    break;
+                }
+            }
+        }
+        if (!tried_runtime_type && !recursively_invoked) {
+            // M3 F-020: also gate on !recursively_invoked — a successful
+            // hierarchy-walk dispatch above (most-derived override law)
+            // must not be overwritten by the static declaring-class body.
             // Use declaring_class from method_ids[] for lookup
             if (try_recursive_invoke(declaring_class, method_name_from_dex,
                                      args, return_val, result)) {
@@ -12533,6 +12571,16 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     }
 
     // Pass 2: try with args[0].class_desc (runtime class of `this`).
+    // M3 F-020 ROOT FIX (F2 law extension): constructors are DIRECT
+    // invocation targets resolved on the DECLARING class (ART ClassLinker:
+    // no virtual constructor dispatch). The runtime-class retry is a
+    // virtual-dispatch emulation — it must never route <init>/<clinit>,
+    // or an app-named subclass of a framework class (R8 minted
+    // `LF/d; extends AtomicInteger`) gets claimed by ViewShadow's
+    // user-class catch-all and the real constructor argument is dropped.
+    if (method == "<init>" || method == "<clinit>") {
+        return false;
+    }
     if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
         !args[0].class_desc.empty() && args[0].class_desc != class_name) {
         cr = shadow_registry_->dispatch(build_ctx(args[0].class_desc));
@@ -13600,6 +13648,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
     // EXP-053: Trace interface dispatch.
+
     if (class_name.find("$-CC;") != std::string::npos ||
         class_name.find("INavigationLayout") != std::string::npos) {
         // Only log unique (class, method) pairs to avoid spam.
@@ -13708,6 +13757,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // boundary" observable order). This is what lets Room's
             // newThread+start transaction executor actually execute its
             // transaction on a runtime that has no real threads.
+            //
+            // M3 §4 EXECUTOR OWNERSHIP GUARD: ExecutorShadow OWNS the
+            // executor-family execute() law (enqueue on the one MessageQueue,
+            // run at the drain point). This inline law must only serve the
+            // Thread-based transaction executor path (Room: newThread+start,
+            // runtime class is a Thread/Runnable wrapper, NOT an executor
+            // family class) — otherwise every executor task runs twice
+            // (enqueue drain + inline), which the f020_executor fixture
+            // exposed as executedCount=9 instead of 3.
             if (class_name == "Ljava/lang/Thread;" &&
                 (method == "start" || method == "run") &&
                 shadow_registry_ != nullptr) {
@@ -13742,13 +13800,42 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // executor, ThreadPoolExecutor, app executor interfaces). On the
             // single-thread deterministic runtime the task runs to completion
             // inline — real DEX, no fake callback, no wall-clock.
+            //
+            // M3 §4 EXECUTOR OWNERSHIP GUARD: ExecutorShadow (registered
+            // before ViewShadow) OWNS the executor-family execute() law —
+            // enqueue on the one MessageQueue, run at the drain point. When
+            // the claimed receiver is an executor-family class, the queue
+            // law wins and this inline law must NOT also run (the f020_
+            // executor fixture exposed the double-run: executedCount=9
+            // instead of 3). Only Thread-based transaction executors (Room's
+            // newThread+start path, non-executor receiver classes) keep the
+            // inline-run behavior.
+            static const bool f020_executor_family =
+                class_name == "Ljava/util/concurrent/ThreadPoolExecutor;" ||
+                class_name == "Ljava/util/concurrent/ScheduledThreadPoolExecutor;" ||
+                class_name == "Ljava/util/concurrent/AbstractExecutorService;" ||
+                class_name == "Ljava/util/concurrent/Executor;" ||
+                class_name == "Ljava/util/concurrent/ExecutorService;";
             if (method == "execute" && !args.empty() &&
                 args[0].type == DalvikType::OBJECT_REF &&
+                !f020_executor_family &&
                 resolve_method_proto_for_dex(method_idx_hint,
                                              current_dex_index_) ==
                     "(Ljava/lang/Runnable;)V") {
-                uint32_t r_oid = args[0].object_id;
-                std::string rcls = args[0].class_desc;
+                // M3 §4 FIX (receiver-shift law): bridge args for an
+                // INSTANCE execute() call carry args[0]=receiver(executor),
+                // args[1]=the Runnable. The previous code read args[0] as
+                // the task — resolving run() against ThreadPoolExecutor and
+                // silently no-op-ing every task ("no run() found").
+                // Room's original path passed a bare static-shape call where
+                // args[0] WAS the task, so keep that shape as fallback.
+                uint32_t r_oid = 0;
+                if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+                    r_oid = args[1].object_id;
+                } else if (args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF) {
+                    r_oid = args[0].object_id;
+                }
+                std::string rcls;
                 if (r_oid && heap_.has_object(r_oid)) {
                     const auto* robj = heap_.get(r_oid);
                     if (robj && !robj->class_descriptor.empty())
@@ -13792,6 +13879,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // is a subclass of View (which we can't check without a class
         // hierarchy), trying the View class as a fallback will catch
         // setOnClickListener, setText, addView, etc.
+        //
+        // M3 F-020 ROOT FIX (§9 GENERICITY — ancestry law for parent-class
+        // retry): the retry substitutes a PARENT class into shadow dispatch.
+        // That is only lawful when the RECEIVER actually descends from that
+        // parent (ART virtual dispatch resolves through the receiver's
+        // vtable — a substitute class can only answer when there is a real
+        // is-a relationship). Without the check, ANY unhandled instance call
+        // on an unrelated object (java.util.concurrent.atomic.AtomicReference
+        // ctors from Compose's snapshot system, WeakHashMap, …) was claimed
+        // by ViewShadow's View.<init>/catch-all, which minted a phantom view
+        // node and DROPPED the real arguments (the constructor's initial
+        // value vanished → Compose global snapshot = null → readError ISE).
+        // Law: walk the receiver's runtime superclass chain via
+        // class_to_superclass_; the retry fires only when the chain reaches
+        // a View-family ancestor. Framework-prefixed classes with no View
+        // ancestor (Ljava/*, Landroidx/*, …) never match.
         static const std::vector<std::string> view_parents = {
             "Landroid/view/View;",
             "Landroid/view/ViewGroup;",
@@ -13800,9 +13903,42 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             "Landroid/widget/Button;",
             "Landroid/widget/EditText;",
         };
-        for (const auto& parent : view_parents) {
-            if (try_shadow_dispatch(parent, method, args, result, status)) {
-                return true;
+        // Determine the receiver's runtime class (args[0] for instance calls).
+        std::string f020_recv_class;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            !args[0].class_desc.empty()) {
+            f020_recv_class = args[0].class_desc;
+        } else if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            if (auto* f020_obj = heap_.get(args[0].object_id)) {
+                f020_recv_class = f020_obj->class_descriptor;
+            }
+        }
+        bool f020_view_ancestry = false;
+        {
+            std::string cur = f020_recv_class;
+            int guard = 0;
+            while (!cur.empty() && guard++ < 12) {
+                if (cur == "Landroid/view/View;" ||
+                    cur == "Landroid/view/ViewGroup;" ||
+                    cur == "Landroid/widget/TextView;" ||
+                    cur == "Landroid/widget/ImageView;" ||
+                    cur == "Landroid/widget/Button;" ||
+                    cur == "Landroid/widget/EditText;") {
+                    f020_view_ancestry = true;
+                    break;
+                }
+                auto sup_it = class_to_superclass_.find(cur);
+                if (sup_it == class_to_superclass_.end()) break;
+                const std::string& sup = sup_it->second;
+                if (sup.empty() || sup == cur) break;
+                cur = sup;
+            }
+        }
+        if (f020_view_ancestry) {
+            for (const auto& parent : view_parents) {
+                if (try_shadow_dispatch(parent, method, args, result, status)) {
+                    return true;
+                }
             }
         }
     }
@@ -14941,6 +15077,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // IS the default implementation (AOSP View.java onMeasure →
     // setMeasuredDimension(getDefaultSize(suggestedMinimumWidth, widthMeasureSpec), …);
     // getDefaultSize: AT_MOST/EXACTLY → specSize, UNSPECIFIED → suggested).
+
     // A custom override that calls super.onMeasure gets exactly this. The
     // suggested minimum is mMinWidth + padding — 0 for the corpus views.
     // Writes through the ViewShadow node (same channel as
@@ -15194,6 +15331,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 try_recursive_invoke(target, "<init>", ctor_args,
                                      ctor_result, ctor_exec);
                 status = ApiCallTrace::Status::IMPLEMENTED;
+
                 result = DalvikValue::make_object(obj_id, target);
                 std::cerr << "[M3-REFLECT] Constructor.newInstance -> "
                           << target << " (obj=" << obj_id << ")" << std::endl;
@@ -15538,6 +15676,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "MATH-FLOORDIV-I");
                     result = DalvikValue::make_int(0);
                     status = ApiCallTrace::Status::IMPLEMENTED;
+
                     return true;
                 }
                 int32_t q = a / b;
@@ -16137,6 +16276,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             auto cr = shadow_registry_->dispatch(ctx);
             if (cr.handled && cr.ret_kind == framework::CallResult::RetKind::STRING) {
                 int32_t len = static_cast<int32_t>(cr.string_val.size());
+
                 std::cerr << "[EXP071-LENGTH] view_id=" << args[0].object_id
                           << " text=\"" << cr.string_val.substr(0, 40) << "\""
                           << " length=" << len << std::endl;
@@ -16543,6 +16683,95 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                       << (swapped ? "true (swapped)" : "false (expect mismatch)")
                       << std::endl;
             return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // M3 F-020 / §3B ENUM LAW (AG, 2026-09-08): java.lang.Enum core.
+    //
+    // Root-gap evidence (dooz v18, after the AtomicShadow + vtable fixes
+    // unblocked the Compose snapshot chain): SavedStateRegistryController
+    // .performRestore checks
+    //   lifecycle.currentState.isAtLeast(STARTED)
+    // and Lifecycle.State.isAtLeast compiles to
+    //   Enum.compareTo(this, other) >= 0.
+    // The bridge had NO Enum handler: compareTo returned the int default 0,
+    // so isAtLeast(STARTED) was TRUE for INITIALIZED (0 >= 0) and the real
+    // androidx guard threw "performRestore cannot be called when owner is
+    // INITIALIZED" inside ComponentActivity.onCreate. With the true ordinal
+    // difference (-1 < 0 → isAtLeast false) the restore path proceeds
+    // exactly as on ART.
+    //
+    // Java laws transferred (libcore/ojluni java.lang.Enum):
+    //   * Enum.<init>(String name, int ordinal) records the name and the
+    //     ordinal on the instance (heap fields "enum_name"/"ordinal" —
+    //     the SAME convention the CYCLE-E framework-enum synthesis uses,
+    //     so synthesized and DEX-created constants are indistinguishable).
+    //   * compareTo(other) returns this.ordinal - other.ordinal (the sign
+    //     is the Comparable contract; exact difference is the OpenJDK
+    //     implementation for non-natural-order subclasses).
+    //   * ordinal() → stored ordinal; name()/toString() → stored name
+    //     (Enum.toString() is final-delegated to name()).
+    //   * equals is object identity (==) for the single-instance enum law —
+    //     already the engine's object-compare behavior; no handler needed.
+    // Generic: every app-defined and framework enum shares this path; no
+    // app-specific naming.
+    // Fixture: tests/semantic_pass3_bridge_test.cpp (group ENUM-F020).
+    //
+    // Dispatch note: invoke-virtual reaches the bridge with the RECEIVER's
+    // runtime class (e.g. the app enum Landroidx/lifecycle/i$b;), not the
+    // declaring class. The law is therefore receiver-based: an object is an
+    // enum instance iff its ancestry reaches Ljava/lang/Enum; — equivalently
+    // (and cheaper) iff it carries the engine's universal "ordinal" field,
+    // which BOTH the DEX-created Enum.<init> law below and the CYCLE-E
+    // framework-enum synthesis write. Receiver-carried ordinal = enum law.
+    {
+        auto enum_self = [&]() -> const DalvikValue* {
+            if (args.empty() || args[0].type != DalvikType::OBJECT_REF) return nullptr;
+            if (class_name == "Ljava/lang/Enum;") return &args[0];
+            auto ord = heap_.get_object_field(args[0].object_id, "ordinal");
+            static thread_local DalvikValue enum_self_val;
+            if (ord.has_value()) { enum_self_val = args[0]; return &enum_self_val; }
+            return nullptr;
+        };
+        if (const DalvikValue* enum_recv = enum_self()) {
+            (void)enum_recv;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (method == "<init>") {
+                // args: [receiver, name(String), ordinal(int)]
+                if (args.size() >= 3 && args[0].type == DalvikType::OBJECT_REF) {
+                    heap_.set_object_field(args[0].object_id, "enum_name", args[1]);
+                    heap_.set_object_field(args[0].object_id, "ordinal", args[2]);
+                }
+                result = DalvikValue::make_void();
+                return true;
+            }
+            if (method == "compareTo" && args.size() >= 2) {
+                auto self_ord = heap_.get_object_field(args[0].object_id, "ordinal");
+                auto other_ord = heap_.get_object_field(args[1].object_id, "ordinal");
+                int32_t a = self_ord.has_value() ? self_ord->int_val : 0;
+                int32_t b = other_ord.has_value() ? other_ord->int_val : 0;
+                result = DalvikValue::make_int(a - b);
+                return true;
+            }
+            if (method == "ordinal" && !args.empty()) {
+                auto self_ord = heap_.get_object_field(args[0].object_id, "ordinal");
+                result = DalvikValue::make_int(self_ord.has_value() ? self_ord->int_val : 0);
+                return true;
+            }
+            if ((method == "name" || method == "toString") && !args.empty()) {
+                auto nm = heap_.get_object_field(args[0].object_id, "enum_name");
+                if (nm.has_value() && nm->type == DalvikType::STRING_REF) {
+                    result = DalvikValue::make_string(nm->string_val, 0);
+                } else {
+                    // Unnamed enum instance — fall back to the identity form
+                    // so message builders never read uninitialized memory.
+                    result = DalvikValue::make_string(
+                        args[0].class_desc + "@" + std::to_string(args[0].object_id), 0);
+                }
+                return true;
+            }
+            status = ApiCallTrace::Status::STUBBED;
         }
     }
 

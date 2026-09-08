@@ -1295,6 +1295,22 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_null();
     }
+    // M3 F-021 ROOT FIX (AOSP LayoutInflater singleton law): Activity
+    // .getLayoutInflater() returns the window's LayoutInflater — the SAME
+    // object LayoutInflater.from(activity) returns (PhoneWindow owns one
+    // inflater per window). The previous behavior: no handler → silent null
+    // → every ViewBinding-generated bind(inflater, root) chain NPE'd at
+    // Kotlin Intrinsics (root-locus: Fossify Notes 13 SplashActivity →
+    // LC0/z.<init> → getLayoutInflater().inflate(...) → null root).
+    // Return the shared LayoutInflater heap object; inflate() on it is
+    // dispatched by LayoutInflaterShadow (same identity as from()).
+    if (m == "getLayoutInflater") {
+        if (heap_) {
+            uint32_t id = heap_->get_or_create("Landroid/view/LayoutInflater;");
+            return CallResult::handled_object(id, "Landroid/view/LayoutInflater;");
+        }
+        return CallResult::handled_null();
+    }
     if (m == "getResources" || m == "getPackageManager" || m == "getPackageName" ||
         m == "getClassLoader" || m == "getFilesDir" || m == "getCacheDir" ||
         m == "getSharedPreferences" || m == "getWindow" || m == "getWindowManager" ||

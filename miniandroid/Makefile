@@ -50,7 +50,7 @@ RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp
 FONTS_SOURCES = $(SRCDIR)/fonts/text_shaper.cpp
 # EXP-084: framework and storage sources are required for linkage
 # G06: touch_dispatcher = canonical input pipeline; state_list = StateListDrawable law
-FRAMEWORK_SOURCES = $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp $(SRCDIR)/framework/dialog_shadow.cpp $(SRCDIR)/framework/clipboard_shadow.cpp $(SRCDIR)/framework/canvas_shadow.cpp $(SRCDIR)/framework/touch_dispatcher.cpp $(SRCDIR)/framework/state_list.cpp $(SRCDIR)/framework/lifecycle_controller.cpp $(SRCDIR)/framework/locks_shadow.cpp $(SRCDIR)/framework/pending_intent_shadow.cpp
+FRAMEWORK_SOURCES = $(SRCDIR)/framework/executor_shadow.cpp $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp $(SRCDIR)/framework/dialog_shadow.cpp $(SRCDIR)/framework/clipboard_shadow.cpp $(SRCDIR)/framework/canvas_shadow.cpp $(SRCDIR)/framework/touch_dispatcher.cpp $(SRCDIR)/framework/state_list.cpp $(SRCDIR)/framework/lifecycle_controller.cpp $(SRCDIR)/framework/locks_shadow.cpp $(SRCDIR)/framework/atomic_shadow.cpp $(SRCDIR)/framework/pending_intent_shadow.cpp
 API_SOURCES = $(SRCDIR)/api/application_context.cpp $(SRCDIR)/api/shared_prefs.cpp
 STORAGE_SOURCES = $(wildcard $(SRCDIR)/storage/*.cpp)
 
