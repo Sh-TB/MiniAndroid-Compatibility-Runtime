@@ -41,3 +41,22 @@ Stage Summary:
 - HEAD: a8655a04, remote synced; battery 63/64 (single honest F-018-blocked stage).
 - Issue #9 is now a factual status document: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/9 (+ evidence comment 5584332212).
 - OPEN FRONTS (priority): F-018 (pin null producer with one probe run + cursor invalid-position law hardening) → unlocks F-012 rc-law → 64/64; dooz SavedStateHandlesProvider (M2); Room UPDATE/DELETE tests; Math.random + HashMap order laws; native inventory.
+
+---
+Task ID: M3-S11-1
+Agent: Super Z (main coder session 11 — MASTER-3 GRAND FORENSIC + BASE CLOSURE)
+Task: P0-A HEAD truth + baseline; then forensic campaign per priority order (P0-B dispatch audit, P0-C async, P0-D cross-check, P0-E storage closure).
+
+Work Log:
+- P0-A: HEAD 4f0c9e1b = origin/main (remote-tracking ref was stale; ls-remote confirmed synced; 4 prior session commits were ALREADY on GitHub). Tree CLEAN. Toolchain present (aapt2 2.20-14304508). Registry: 16 APKs recorded.
+- BASELINE battery at 4f0c9e1b: 63 gates visible + 1 honest FAIL (F-012 rc-law, F-018-blocked) — but see F-019: fresh runs were silently truncating after stage 63.
+- F-018 ROOT PINNED (instrumented B leg + bounded DEX probe): MainActivity.b pc=46 PendingIntent.getBroadcast had NO shadow → dispatch fallback chain → silent NULL → Kotlin Intrinsics "getBroadcast(...) must not be null" NPE (La/e;.g pc=17) uncaught at onCreate → F-016 APP-BOUNDARY → PARTIAL. Prior entity→adapter hypothesis DISPROVEN (shadow served rows=1). Full DEX call-graph ground truth mapped: onResume→b→cancel; onPause→setExactAndAllowWhileIdle; Lk/b;.a→canScheduleExactAlarms; AlarmReceiver.onReceive→getActivity.
+- FIX: new framework/PendingIntentShadow family (PendingIntent + AlarmManager): AMS IntentSenderRecord non-null + identity-cache law (kind|rc|intent-oid|flags), cancel law, setExact* recorded-void loud boundary, send() loud boundary, canScheduleExactAlarms manifest-derived (USE_EXACT_ALARM/SCHEDULE_EXACT_ALARM ⇒ true) plumbed at both manifest-parse sites. Zero app-specific code.
+- F-019 TOOL FINDING (§24): battery gate() returned nonzero (RESUME=0 && tail) under set -e (F-016 stages toggle set -e) → every FRESH battery silently died after stage 63; strict stage never executed in fresh runs. Fixed (explicit return 0). 
+- VERIFICATION: F-012 protocol A/B/C/D ALL SUCCESS; rows 1→2; LAW1 A≠B/C≠D; LAW2 A≡C/B≡D (92 frames byte-identical). FULL BATTERY 64/64 ALL PASS — first fresh-run completion of the strict stage. §6 invariant law 17→18. Registry: F-018 REGRESSION-VERIFIED, F-019 FIXED.
+- Commit 0bd53bf1 pushed: https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/commit/0bd53bf1fee3f23a32bc3e916f4ee70a4ef8da28
+
+Stage Summary:
+- HEAD: 0bd53bf1, remote synced, battery 64/64 (all stages genuinely executing).
+- F-012 UNBLOCKED → 64/64. F-018 closed. Measurement integrity restored (F-019).
+- Next: P0-B generic dispatch audit (§3 try_recursive_invoke inventory, §4 return families, §27 zero-special-case), then P0-C async closure.
