@@ -641,3 +641,261 @@ Stage Summary:
   F-ROOM-CHAIN (named, evidence-anchored, not hacked).
 - Next: F-ROOM-CHAIN (stack-walk OOB law + Room path), F-ARGS (chessclock
   color), §3 ViewShadow ancestry migration, corpus +5.
+
+---
+Task ID: M3-C5 (MASTER CAMPAIGN 3 — cluster 5: F-ROOM-CHAIN P0 closure)
+Agent: Super Z (main agent)
+Task: PHASE 1 F-ROOM-CHAIN / microtimer timer closure — trace the full
+START→TimerControl→Room→Alarm→expiresMs→Long→elapsedRealtime→postDelayed
+chain and fix at semantic boundaries; baseline + regression.
+
+Work Log:
+- PHASE 0 baseline: HEAD 9f831abb pushed (origin synced, tree clean);
+  battery re-run; corpus APKs re-located at /tmp/my-project/apk_cache;
+  aapt2 restored from /tmp/my-project/tools/android_build/bt/android-14/
+  (container path drift — fixture stages were rc=2/127 until restored).
+- FORENSICS (all static evidence via new scripts/mt_dis2.py, mt_class_list.py
+  — correct DEX decoder: proto_ids 12-byte, virtual-method index restarts):
+  * La/e;->h decoded = R8-inlined Kotlin Intrinsics null-check: walks
+    Thread.getStackTrace()[2..] comparing className=="La.e" (skip loop),
+    builds "Parameter specified as non-null is null: method X.Y parameter N".
+  * RUNTIME trace (MINIANDROID_TRACE_FRAMES env diag added to UC010): walk
+    saw frames [0]=h [1]=Lh/f.s [2..5]=androidx — no "La.e" frame → AIOOBE
+    swallowed by UNIFIED_011.3 uncaught-tail policy → Room init silently died.
+  * THE NULL SOURCES (all fixed at semantic boundary):
+    1. SQLiteOpenHelper shadow MISSING entirely → getWritableDatabase null
+       → Lh/f.s null-check ("sqLiteDatabase").
+    2. Collections.synchronizedMap / newSetFromMap returned null →
+       Database;.<init> "synchronizedMap(mutableMapOf())" + Le/o;.<init>
+       "newSetFromMap(IdentityHashMap())" checks.
+    3. Locale.US static = null → Le/o;.<init> "(this as
+       java.lang.String).toLowerCase(locale)" check ("US must not be null").
+    4. Thread.start()/Executor.execute were void stubs → Room transaction
+       executor runnables never ran → INSERT never reached SQLite.
+    5. R8 interface-dispatch: Lg/f;.h(IJ)V implemented as Le/x;.h(IJ)V —
+       name-based lookup missed → EntityInsertionAdapter.bind params
+       silently dropped → INSERT bound all NULLs → NOT NULL constraint.
+- FIXES (one semantic law each, zero package-specific code):
+  * FIX-M3-012 storage/sqlite_shadow.{h,cpp}: DatabaseShadow (14th canonical
+    shadow) — REAL sqlite3 backend at runtime/data/<pkg>/databases/<name>;
+    SQLiteOpenHelper ctor/open/close/getDatabaseName/setWriteAheadLogging;
+    SQLiteDatabase execSQL/begin/setTransactionSuccessful/endTransaction/
+    inTransaction/isOpen/getVersion/compileStatement/rawQueryWithFactory
+    (materialized cursors)/getPath; SQLiteProgram binds; SQLiteStatement
+    executeInsert/executeUpdateDelete; Cursor full accessor set.
+    onCreate/onUpgrade fire as REAL DEX callbacks (engine consumes
+    pending flags after open dispatch — ART helper-delegate law).
+    HeapAllocator gained array/string field virtuals + DalvikHeapAdapter.
+  * FIX-M3-013 CollectionShadow: java.util.Collections static factories
+    (synchronizedMap→backing map single-thread law; newSetFromMap;
+    singletonList; singleton; emptyList).
+  * FIX-M3-014 Locale constants synthesis in sget-object (US/UK/ROOT/... 22
+    constants, identity-cached, __locale_tag__).
+  * FIX-M3-015 deterministic virtual-thread law: Thread.<init> records
+    target Runnable; Thread.start()/run() → pending inline run drained
+    ENGINE-side via try_recursive_invoke (run-to-completion, real DEX);
+    Executor.execute with proto (Ljava/lang/Runnable;)V runs inline too.
+  * FIX-M3-016 invoke-interface signature dispatch: after name lookups
+    miss, resolve by EXACT descriptor walking the runtime class +
+    superclass chain (R8 renames interface and impl independently;
+    preserves params/return = the stable identity).
+  * Battery harness: -lsqlite3 on ALL test link lines (core now depends on
+    sqlite3 legitimately); shadow invariant test 13→14 canonical shadows
+    (24 checks, 0 failures); EXT-01 fixtures re-frozen from documented
+    URLs with SHA-256 verification (009b4671... MATCH).
+- RUNTIME PROOF (microtimer v8, fresh sandbox per run):
+  * helper<init> name="app-data" version=1 → real open →
+    [SQLITE-LIFECYCLE] onCreate → REAL DEX callback (Room's
+    "SELECT count(*) FROM sqlite_master" + CREATE TABLE alarm executed
+    for real) → "select * from alarm" cols=4 → typed input → INSERT:
+    binds duration_dec6=1, remaining_dec6=1, id=NULL (AUTOINCREMENT),
+    expires_ms=1000001170 (VIRTUAL clock + duration — non-zero, FIXES
+    the "Alarm.expiresMs collapses to zero" symptom) → INSERT SUCCEEDED
+    (no more NOT NULL rejection).
+  * EXC-PROPAGATE NPE count in the microtimer run: 3 (before) → 0 (after).
+  * REMAINING (precise blocker for the visual tick loop): after a
+    successful insert, the ▶-press start/pause branch does not yet reach
+    Handler.postDelayed tick scheduling (Ll/e wrapper) and the new timer
+    row is not re-bound into the rendered frames. Next step: trace the
+    post-insert branch of the ▶ case (loadAlarms → adapter → Ll/e.post).
+- REGRESSION: BATTERY GATE ALL PASS (59/59) at the final HEAD — including
+  semantic law batteries (14+25+57+14 checks), resource laws (48+42+18),
+  layout laws (24+23+37), G04/G06/G07/G08 goldens + 3-run determinism,
+  §6 shadow invariant (24 checks), EXT-01/02 typographic + interaction
+  goldens (9+12 checks), density matrix, M3 ARSC style law (17), and the
+  live corpus runs (simplestopwatch/gmdice/microtimer all SUCCESS).
+
+Stage Summary:
+- F-ROOM-CHAIN root causes 1–5 CLOSED at semantic boundaries; Room
+  databases are now REAL (sqlite3) with REAL DEX lifecycle callbacks;
+  deterministic executor/thread laws replace silent runnable drops;
+  R8 interface dispatch is signature-correct. 59/59 battery green.
+- Next: microtimer tick visual loop (post-insert branch), then F-ARGS
+  (SECUSO), then PHASE 3+ (shadow ancestry, geometry, image pipeline).
+
+---
+Task ID: M3-C3 (MASTER-3 OPEN-ENDED FORENSIC — session 6)
+Agent: Super Z (main agent)
+Task: Open-ended forensic/compatibility closure campaign. Baseline recovery, then
+exhaustive frontier mapping with FINDING-NNN registry, no finding quota.
+
+Work Log:
+- PHASE 0 baseline: rebuilt binary from HEAD 0b6f85bb (container reset wiped build/).
+  FINDING-001: aapt2 missing → restored from documented Google Maven URL
+  (2.20-14304508) + wrote scripts/bootstrap_toolchain.sh (AE gate).
+  FINDING-002: master_campaign APK cache unreproducible → wrote
+  scripts/fetch_master_campaign.py (registry_additions.json frozen SHA-256s).
+  Restored HelloWorldSelfAware fixture (SHA 009b4671…cc41 MATCH).
+  Battery: 59/59 ALL PASS — baseline established.
+- Diagnostics rebuilt (RULE 2): wrote scripts/m3_disasm.py (spec-conformant
+  Dalvik disassembler). Validated against live AOSP instruction-formats page +
+  androguard: 35c = Ag|op, BBBB@index, FEDC@regs; per-sub-list method_idx delta
+  chains reset; payload pseudo-instructions consumed; 22b/22c nibble laws.
+  Cross-validation: 28/30 methods fully agree (2 = payload label cosmetics).
+  scripts/m3_invoke_inventory.py: invoked-class inventory.
+- DEX interpreter audit: runtime opcode constant table (168 entries) verified
+  against the authoritative dalvik-bytecode spec — zero value mismatches.
+- PHASE 1 F-ROOM-CHAIN forensics (microtimer v8):
+  * Mapped the REAL button law: R8-merged Lk/d.onClick + packed-switch
+    payload — tags 0/2=digits, 4=backspace, 6=clear, 7=createTimer(▶),
+    8/10/12=digits. Buttons: id=121 blank key = ▶ createTimer.
+  * Scheduling law: app uses Handler.postDelayed(Runnable, Object token, long)
+    — the HIDDEN token overload — + removeCallbacksAndMessages(token).
+  * FINDING-004 (P0): HandlerShadow read args[1].long_val as delay on the
+    token form (garbage), delay never scheduled. FIXED: token-aware
+    enqueue_tokened + identity-based remove_by_token (AOSP law).
+  * FINDING-007 (P0): Math.ceil ABSENT from the Math shadow → silent 0.0
+    default zeroed MicroTimer's remaining (Ll/a.a→MainActivity.e) → label
+    00:00:00, schedule branch dead. FIXED: full Math surface (ceil/floor/
+    sqrt/pow/round/floorDiv/floorMod/trig/…, saturated round law).
+  * RUNTIME PROOF: INSERT expires_ms=1000082410 (= elapsed + 82*1000 exact);
+    label 00:01:22 → 00:00:01 mutating across frames; token=378 posts drain
+    via Lk/c runnables; sub-second alignment delay=930ms posts appear.
+  * REMAINING (next session): tick re-post delay law (68× delay=0 spins —
+    (expires-now)%1000 alignment vs Lk/a.c interval), row label "null"
+    formatting after finish branch, off-screen row geometry (Button
+    (wrap,match) rendered 1080x0 — view_renderer horizontal LL law).
+- REGRESSION: battery 59/59 ALL PASS at commit 3ea265be (zero regressions).
+
+Stage Summary:
+- Two P0-class semantic roots closed (Handler token law, Math surface);
+  7 findings registered (FINDING-001..007 incl. diagnostics infrastructure);
+  spec-conformant disassembler + 2 env-gated value tracers added as reusable
+  campaign diagnostics.
+- PUBLISH BLOCKED — TOKEN ABSENT: /home/z/.gh_token lost in container reset;
+  push + Issue #8 evidence comments deferred until token is restored.
+  (Commit 3ea265be holds all work locally; zero fabricated URLs.)
+
+---
+Task ID: M3-C3 closeout (session 6)
+Agent: Super Z (main agent)
+Work Log:
+- Committed 3ea265be (FINDING-004 Handler token law + FINDING-007 Math surface +
+  FINDING-001/002 bootstrap scripts + diagnostics) — battery 59/59 before commit.
+- Battery re-run after the iget-object/iput-object trace extension: 59/59 ALL PASS.
+- Committed d86184fc (FINDINGS_REGISTRY.md FINDING-001..008 + GATE scorecard +
+  trace extension) + FORGOTTEN-001..020 written into the registry.
+- PUBLISH BLOCKED — TOKEN ABSENT for both commits (token lost in container reset);
+  zero URLs fabricated per the standing hard rule.
+
+Stage Summary:
+- Local HEAD: d86184fc (2 commits ahead of origin/main 0b6f85bb).
+- P0 F-ROOM-CHAIN: Room/INSERT/SELECT + token postDelayed + Math.ceil + tick drain
+  + label mutation all RUNTIME-PROVEN; FINDING-008 (row label null seconds +
+  missing per-tick row re-render) is the precise residual to GATE F.
+- 8 numbered findings + 20 forgotten-items registered, all evidence-grounded.
+
+---
+Task ID: M3-C4 (MASTER-3 OPEN-ENDED — session 7)
+Agent: Super Z (main agent)
+Task: Baseline re-establishment after container reset; independent verification of
+a0d71c15's F-008/F-005 claims; open-ended P0/P1 closure campaign continuation.
+
+Work Log:
+- PHASE 0 baseline: START_HEAD=a0d71c15 (tree clean), REMOTE_HEAD=0b6f85bb (5 unpushed
+  by session end), TOKEN ABSENT → PUBLISH BLOCKED (no fabricated URLs).
+  Battery at a0d71c15 initially 42/59: aapt2 wiped + EXT fixture missing (container
+  reset) — restored via FINDING-001/002 scripts (bootstrap_toolchain.sh;
+  HelloWorldSelfAware APK+PNG re-fetched, SHA 009b4671…cc41 MATCH) → 59/59 ALL PASS.
+  Corpus cache survived (/tmp/my-project/apk_cache, microtimer SHA 79c6f730… verified).
+- AUDIT of a0d71c15 claims (rule: never trust commit messages): fresh 3-tap microtimer
+  run (8,2,▶ @ buttons 116/108/121) showed F-005 fixed (row Lk/g (0,0) 1080x126,
+  126x126 buttons — F-006 off-screen first frame GONE too) and F-008(a) fixed (no
+  "null" texts) BUT the countdown ran exactly ONE tick: [QUEUE] Runnable 410
+  enqueued delay=999ms ready_at=1000001290 then STRANDED — drain_quiescent's
+  `if(drain_ready()==0) return;` treats "nothing due NOW" as quiescence; real ART
+  quiescence is an EMPTY queue (MessageQueue.next polls nativePollOnce(head.when-now)).
+  → FINDING-009 (P0). Frame capture existed only at gesture stages → FINDING-010 (P0).
+- Static law: MainActivity.e tail (0x015d-0x016a) re-posts every tick via
+  postDelayed(new Lk/c, token, (now-expires)%1000) — the chain is app-side alive;
+  the runtime dropped it. Disassembly via scripts/m3_disasm.py (some wide-register
+  decode artifacts in 366-word methods — structure/invoke targets readable).
+- FIX (commit 8cd76a17): HandlerShadow::next_ready_ms() + drain fast-forward branch
+  (n==0 && queue non-empty → advance_virtual(next_ready-now) → re-loop);
+  §18 storm law refined (storm = consecutive low-progress dispatch rounds <2ms,
+  cap 64; absolute 512-round bound); FINDING-010 mutation-keyed tick frames
+  (re-render after each dispatch round; save IFF framebuffer changed vs last saved;
+  last_saved_fb synced at every save site).
+- RESULT: microtimer 3-tap run = 92 frames (was 7): countdown 00:00:82→00:00:00
+  per-second visible, finish branch renders the app's red expired state, zero
+  "null" texts; 3 independent runs BYTE-IDENTICAL (aggregate PNG SHA
+  2a425979ef7d32bf2acf); created row geometry sane from the FIRST frame.
+- REGRESSION: battery initially 2 fails after the drain-law change (G06 frame-index
+  shift; G07 "Ticks: 1 frozen" check). Analysis: G06 behavior law intact (tick
+  frames shifted indices) — comparator made stream-law-true (restored-blue must
+  appear AND persist to final frame). G07's old check ENCODED the FINDING-009 bug
+  (real ART dispatches pending Handler messages after onDestroy — the classic
+  leak); replaced by the finite-chain law (Ticks exactly 1→2→3 in order, no 4+,
+  CSRPHD in final frame) — STRONGER, not weaker. Battery → 59/59 ALL PASS.
+- Registry: FINDING-008→VISUALLY-PROVEN, 005/006→TESTED (cross-APK open), 009/010→
+  VISUALLY-PROVEN+REGRESSION-VERIFIED; session-7 GATE scorecard added — GATE F
+  PASS FULLY CLOSED (13-gate matrix: A,B,C,D,E,F,G,J,K,L,M PASS; H,I PARTIAL).
+
+Stage Summary:
+- GATE F (timer visual) CLOSED end-to-end on a real external APK with byte-level
+  determinism. Commit 8cd76a17 (local; 5 commits pending push, token absent).
+- Next highest-value fronts: GATE H (real-APK image pipeline golden, PARTIAL),
+  GATE I (2nd-APK shape golden), FORGOTTEN-002/015/019 (P1), F-ARGS SECUSO.
+
+---
+Task ID: M3-C4 continuation (session 7, part 2 — GATE H opening)
+Agent: Super Z (main agent)
+Work Log:
+- Post-closure continuation into GATE H/GATE K breadth: probed image-bearing
+  corpus APKs. dooz = 100% WHITE despite SUCCESS; bouncy 2 color buckets;
+  unote renders skeleton (list legitimately empty). dooz chosen as the
+  AndroidX frontier subject.
+- dooz forensics: 10-exception unwind cascade rooted at
+  androidx/savedstate/a.d (registerSavedStateProvider) IAE "key already
+  registered". METHOD-TRACE (savedstate/a|d) captured the keys: the SAME key
+  'androidx.lifecycle.internal.SavedStateHandlesProvider' registered twice
+  (+ 'android:support:activity-result'). First registration via savedstate/a.b
+  (performAttach); second via the REFLECTIVE lifecycle path
+  (ReflectiveGenericLifecycleObserver → c.a invokeCallbacks).
+- View tag law audit: ZERO setTag/getTag implementation runtime-wide (the
+  FINDING-007 silent-stub class; androidx ViewTree* owner cache rides it).
+  → FINDING-011 registered (P0, whole AndroidX family).
+- FIX LANDED: ViewShadow keyed-tag law (mTag + mKeyedTags, identity-preserving
+  OBJECT round-trip, null-never-throws) — battery 59/59; [TAG-PROBE]×11
+  bridge entries verified; microtimer 3-run agg SHA unchanged
+  (2a425979ef7d32bf2acf — zero observable drift, exactly correct for a new
+  API surface).
+- OPEN: dooz STILL white with tags landed — the second attach is NOT (only)
+  tag-driven; the reflective ON_CREATE path re-registers regardless. Next
+  session: identify the real lazy-init guard (candidates: ViewTree owner
+  receiver identity across set/get, ViewModelProvider cache, lifecycle event
+  dispatch count), plus dooz is a JETPACK COMPOSE app (ComposeView receiver
+  observed) — the Compose runtime surface is the broader frontier.
+- Bounded diagnostics planted for next session: [TAG-PROBE] (bridge entry),
+  [TAG-BRIDGE] (fall-through; currently never reached — an EXP-051 shadow
+  dispatch handles View methods earlier via try_shadow_dispatch pass-1).
+- Commit 5bbca4e9 (local). PUBLISH BLOCKED — TOKEN ABSENT (6 commits pending:
+  3ea265be, d86184fc, c59a9552, a0d71c15, 8cd76a17, 5bbca4e9).
+
+Stage Summary:
+- GATE F CLOSED (byte-level determinism, finish branch rendered, zero null).
+- FINDING-009/010 closed; 005/006 TESTED; 011 registered with partial fix.
+- Battery 59/59 at commit 5bbca4e9; two comparators strengthened to
+  stream-law checks (not weakened).
+- Next session queue: dooz second-attach driver (P0, AndroidX family gate),
+  then GATE H image golden, FORGOTTEN-019 return-slot stack, F-ARGS SECUSO.
