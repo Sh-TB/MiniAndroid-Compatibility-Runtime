@@ -104,10 +104,13 @@ Priority: P0 foundational/multi-APK · P1 families/visual closure · P2 breadth 
 - Fix candidate: view_renderer.cpp layout_children_linear Pass-1 width resolution for
   (lp_width==-2, lp_height==-1) children
 - Reusable scope: any app building rows programmatically (lists, custom rows)
-- Tests: needs fixture + microtimer row geometry
-- Status: OBSERVED (root cause localized, fix pending)
+- Tests: battery LinearLayout/MeasureSpec law (24) + G10 (23) + G11 (37) + M3
+  style geometry golden; microtimer created-row geometry
+- Status: TESTED (fix landed in a0d71c15; session-7 visual proof: created row
+  renders Lk/g (0,0) 1080x126 with 126x126 buttons — no 1080x0 anywhere in the
+  92-frame stream). CROSS-APK extension (2nd programmatic-row APK) open.
 - Priority: P1
-- Commit: —
+- Commit: a0d71c15
 - GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
 
 ## FINDING-006
@@ -121,9 +124,13 @@ Priority: P0 foundational/multi-APK · P1 families/visual closure · P2 breadth 
   propagates (cross-pass invariant gap, PHASE 4 family)
 - Law: cross-pass geometry invariant (MEASURE→LAYOUT→DRAW)
 - Fix candidate: dynamic-addView invalidation hook
-- Status: OBSERVED
+- Session-7 evidence: the created timer row's FIRST render dump (mt_fin_a line
+  13647) shows Lk/g pos=(0,0) size=1080x126 — the off-screen first frame
+  (x=1080) is GONE at the fixed HEAD; 92/92 frames have sane geometry.
+- Status: TESTED (symptom absent at HEAD a0d71c15+session-7 work; re-open if
+  another addView path reproduces it)
 - Priority: P2
-- Commit: —
+- Commit: a0d71c15
 - GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
 
 ## FINDING-007
@@ -179,9 +186,87 @@ Priority: P0 foundational/multi-APK · P1 families/visual closure · P2 breadth 
   arg dump; (b) re-render invalidation for subtree setText under FINDING-005 fix
 - Reusable scope: every countdown/timer UI
 - Tests: GATE F tick count + 3-run determinism once closed
-- Status: OBSERVED
-- Priority: P0 (blocks GATE F visual closure)
-- Commit: —
+- Status: VISUALLY-PROVEN (session 7). (a) fixed in a0d71c15 — String.subSequence
+  + Object.toString/String.toString laws; session-7 scan: ZERO "null" texts in
+  92 frames × 3 runs. (b) closed by FINDING-009/010 — per-second tick frames
+  00:00:82→00:00:00 visible, finish branch red expired state rendered.
+  3-run aggregate PNG SHA 2a425979ef7d32bf2acf identical; battery 59/59.
+- Priority: P0 (CLOSED — GATE F evidence complete)
+- Commit: a0d71c15 (+ session-7 drain-law commit)
+- GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
+
+## FINDING-009
+- Subsystem: HANDLER / LOOPER (deterministic drain termination law, P0)
+- Trigger: microtimer countdown stops after ONE tick in tap mode; tick re-post
+  (Runnable 410, delay=999ms, ready_at=1000001290) stranded in the queue forever
+- APK: dubrowgn.microtimer_8 (same path drives every countdown/animation UI)
+- Static evidence: MainActivity.e tail (0x015d-0x016a) — every tick re-posts via
+  Handler.postDelayed(new Lk/c, token, (now-expires)%1000); AOSP MessageQueue.next()
+  polls nativePollOnce(timeout = head.when - now) — the looper NEVER exits while
+  messages are pending; it sleeps until the head's `when`
+- Runtime evidence (fresh 3-tap run @ a0d71c15, /tmp/mt_r1): [QUEUE] Runnable id=410
+  enqueued (delay=999ms, ready_at=1000001290ms, token=365) → next dequeue is a
+  gesture token @ now=1000000361 → drain returns; tick 410 never dispatched;
+  label set once per tick = "00:00:82", no per-second mutation
+- Root cause: drain_quiescent's `if (drain_ready()==0) return;` treats "nothing due
+  NOW" as quiescence. Real ART quiescence = queue EMPTY; a non-empty queue with a
+  future head means the looper sleeps (poll timeout), then dispatches. The 1ms
+  quantum added for the delay=0 spin (F-008b) cannot bridge a 999ms gap — 64-cap
+  exhausts 64× before the tick becomes due, and even without the cap the drain
+  returns before advancing.
+- Law: AOSP MessageQueue.next — when the head message's `when` is in the future,
+  nextPollTimeoutMillis = head.when - now; the loop does not terminate; dispatch
+  happens when the clock reaches `when`. Deterministic model: advance the virtual
+  clock to the earliest ready_at (exact, zero wall-clock), bounded by the existing
+  §18 hostile-storm iteration cap.
+- Fix candidate: HandlerShadow::next_ready_ms() (read-only min-peek) + drain loop
+  fast-forward branch (n==0 && queue non-empty → advance_virtual(next_ready-now)
+  → re-loop) + per-tick frame capture: after each dispatch round, if the
+  framebuffer changed vs the last saved frame, save a tick frame (GATE F visual
+  per-second mutation proof; deterministic — fixed quanta, fixed tap schedule).
+- Reusable scope: every timer/animation UI (countdowns, stopwatches, marquee,
+  progress bars) — anything that schedules future work from a tick
+- Tests: microtimer 3-run determinism; per-tick label mutation visible in frames;
+  battery 59/59 (G06/G07/G08 tap determinism goldens must not regress)
+- Status: VISUALLY-PROVEN + REGRESSION-VERIFIED (session 7). Evidence: [QUEUE]
+  Runnable 410 delay=999ms now dispatched via poll-timeout fast-forward;
+  countdown 00:00:82→00:00:00 across 84 mutating frames; finish branch reached
+  (red expired state, queue drains empty, clean return). 3×92 frames
+  byte-identical (agg SHA 2a425979ef7d32bf2acf). Battery 59/59 after the G06/G07
+  comparators were made stream-law-true (the old "Ticks: 1" frozen check encoded
+  THIS bug — stranded future messages).
+- Priority: P0 (CLOSED)
+- Commit: session-7 (drain fast-forward + next_ready_ms)
+- GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
+
+## FINDING-010
+- Subsystem: VISUAL GATE (tick frame evidence missing from the tap pipeline)
+- Trigger: even with ticks flowing, the frames manifest only captures gesture
+  stages (DOWN pressed / post-gesture) — a per-second label mutation between
+  gesture events has no frame, so GATE F "visible countdown" cannot be proven
+- APK: dubrowgn.microtimer_8 (family: stopwatch, chessclock, bgclock)
+- Static evidence: stage_tap saves frames only at fixed gesture points
+  (execution_engine.cpp: DOWN @+20ms, post-drain); drain_quiescent never renders
+- Runtime evidence: /tmp/mt_r1 manifest — 7 frames, all gesture-stage; drains
+  list shows queue activity with zero corresponding frames
+- Root cause: frame capture is keyed to gesture stages, not to framebuffer
+  mutations during queue drains
+- Law: GATE F law — a tick that mutates the label MUST be observable as a
+  framebuffer change (the "TextView mutation → redraw" law); visual goldens
+  require the mutating frames to EXIST, be deterministic, and hash-stable
+- Fix candidate: after each dispatch round inside drain_quiescent, re-render and
+  save an intermediate frame iff the framebuffer differs from the last saved
+  frame (event="tick", virtual_ms recorded) — mutation-keyed, zero false frames
+  when nothing changes
+- Reusable scope: every future interaction golden (animation frames for free)
+- Tests: microtimer run shows N≥60 tick frames with byte-identical SHAs across
+  3 independent runs
+- Status: VISUALLY-PROVEN (session 7): 84 mutation-keyed tick frames in the
+  microtimer run (per-second label mutation), G06 gains 2 drain-mutation frames
+  (PerformClick applied, then UnsetPressedState restored), G07 gains Ticks:2/3
+  frames proving the finite chain law stream-level. 3-run byte-identical.
+- Priority: P0 (CLOSED)
+- Commit: session-7
 - GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
 
 ## GATE SCORECARD (session 6 end)
@@ -193,6 +278,32 @@ Priority: P0 foundational/multi-APK · P1 families/visual closure · P2 breadth 
 - GATE P toolchain reproducibility: PASS (FINDING-001/002 fixes)
 - GATE Q diagnostics: PASS (MINIANDROID_FIELD_TRACE / MINIANDROID_WIDE_DIAG /
   m3_disasm.py / m3_invoke_inventory.py / DUMP_CLICKABLES in tap mode pending)
+
+## GATE SCORECARD (session 7 — current)
+- Session-7 baseline: container reset wiped aapt2 + EXT fixture; restored via
+  FINDING-001/002 scripts (SHA-verified); battery 59/59 re-established at a0d71c15.
+- GATE A build: PASS (59/59 battery incl. all fixture builds)
+- GATE B regression: PASS 59/59 (post drain-law change; G06/G07 comparators
+  upgraded to stream-law checks — old G07 "Ticks: 1" frozen-state check encoded
+  the FINDING-009 bug, replaced by the finite-chain law 1→2→3 + no overflow)
+- GATE C DEX: PASS (semantic + opcode law batteries unchanged green)
+- GATE D resources: PASS (48+42+18+17 checks)
+- GATE E layout: PASS (24+23+37 law checks + M3 style geometry 6)
+- GATE F micro-timer: **PASS — FULLY CLOSED**: INSERT/Room/DEX ✓; token
+  postDelayed ✓; tick chain flows (FINDING-009 poll-timeout law) ✓; countdown
+  00:00:82→00:00:00 per-second visible (FINDING-010 mutation-keyed frames) ✓;
+  finish branch red expired state ✓; zero "null" texts (FINDING-008a) ✓;
+  row geometry sane from the FIRST frame (FINDING-005/006) ✓;
+  3-run byte-identical (agg SHA 2a425979ef7d32bf2acf) ✓
+- GATE G interaction: PASS (G06 21/21 + EXT-02 12 checks)
+- GATE H image: PARTIAL (density matrix ✓; real-APK image golden still open)
+- GATE I shape: PARTIAL (M3 style fixture ✓; 2nd-APK shape golden open)
+- GATE J activity: PASS (G07 16/16 + G08 17/17)
+- GATE K corpus: PASS (simplestopwatch/gmdice/microtimer SUCCESS; 25-corpus
+  matrix still not exhaustive)
+- GATE L determinism: PASS (3-run byte-identical at every golden)
+- GATE M reproducibility: PASS (bootstrap + frozen-SHA corpus restore,
+  re-executed this session after a real container reset)
 
 ---
 
