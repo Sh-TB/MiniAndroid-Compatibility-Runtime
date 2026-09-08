@@ -148,3 +148,19 @@ Work Log:
 Stage Summary:
 - 9 reusable laws landed; dooz composition advanced ~7 blocker layers deep; battery green.
 - NEXT: §2 snapshot readError law (OBJ-4 continuation) → OBJ-5 micro-APK reproducers → OBJ-6/7 first frame + tap→recompose pixel proof → P2 independent Compose APK.
+---
+Task ID: M3-S13-2
+Agent: Super Z (session 13 — layers 11-12 + law 10 + regression)
+Task: Continue F-023 layer peeling (SnapshotKt readError probe, Material3 G0/b ISE), law 10, fresh battery.
+
+Work Log:
+- Layer 11 (SnapshotKt readError): P/j.m global snapshot id stored 0 via (JJI[I)V ctor — VALID for global; P/g = per-thread snapshot cell (id + snapshot), P/l.j() = B0/l ThreadSnapshotTable.get(Thread.currentThread().getId()) with global-AtomicReference fallback. Reads succeeded earlier in the run (P/l.r completed at log 326560) — the failing read needs record-vs-reader id tracing. PROBE BANKED, not fixed this session.
+- Layer 12 (Material3 G0/b.<clinit> ISE "You should only apply non-linear scaling to font scales > 1"): fixed by LAW 10 — AOSP Configuration.setToDefaults fontScale=1.0f (synthesized Configuration singleton lacked fontScale; check saw 0.0).
+- Post-law-10 re-probe: G0/b clinit STILL throws — WIDE-DIAG cmpl-float operands b=-1.017e9 c=1.06535e9; 1.06535e9 == the INT bits of 1.0f converted NUMERICALLY — a FLOAT invoke arg was bit-aliased through the int channel in CYCLE-E build_invoke_args (float_param preservation law = NEXT generic fix, precisely diagnosed).
+- FRESH FULL BATTERY at feac1619: ALL PASS, 54 stages, 0 FAIL, resume=0 (10 laws regression-proven).
+- Commits: 5488eba0 (laws 1-9 + battery link hygiene), feac1619 (law 10). PUSH BLOCKED (no credentials).
+
+Stage Summary:
+- 10 generic laws landed, battery green at both commit HEADs.
+- DOOZ VISUAL MILESTONE NOT COMPLETE — framebuffer still 0 non-white px (honest status); composition reaches Material3 internals (12 layers peeled from the original M1/i.f NPE).
+- NEXT (priority order): (a) CYCLE-E float-arg preservation law (G0/b layer, exact diagnosis banked), (b) SnapshotKt readError id consistency, (c) continue peeling to first frame → OBJ-5 micro-APKs → OBJ-6/7 pixel+tap proof → P2 independent Compose APK.
