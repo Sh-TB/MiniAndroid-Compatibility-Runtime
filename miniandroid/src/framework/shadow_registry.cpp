@@ -8,6 +8,7 @@
 #include "canvas_shadow.h"
 #include "clipboard_shadow.h"
 #include "locks_shadow.h"
+#include "pending_intent_shadow.h"
 #include "../storage/sqlite_shadow.h"
 
 #include <algorithm>
@@ -190,6 +191,15 @@ void register_platform_shadows(ShadowRegistry& reg) {
     // evidence: microtimer Room insert path (Kotlin Intrinsics null-check
     // on readLock() result) under the F-016 real-unwind law.
     reg.register_shadow<LocksShadow>();
+    // M3 F-018 ROOT FIX: android.app intent-sender + alarm scheduling
+    // family (PendingIntent.get* AMS record law, AlarmManager cancel/
+    // exact-alarm capability law). Exact-class claims only; registered
+    // before ViewShadow so the catch-all view path can never capture
+    // framework alarm descriptors. Root-gap evidence: microtimer second-
+    // run path (F-012 rc-law) — no PendingIntent factory existed, the
+    // unresolved static call silently returned null, and the Kotlin
+    // Intrinsics null-check threw NPE at MainActivity.onCreate.
+    reg.register_shadow<PendingIntentShadow>();
     // M3 F-ROOM-CHAIN: SQLite family (REAL sqlite3 backend). Exact-class
     // claims only; registered before ViewShadow so the catch-all view
     // path can never capture framework database descriptors.

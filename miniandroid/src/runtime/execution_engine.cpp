@@ -15,6 +15,7 @@
 // EXP-086 Phase 7 (B4 FIX): HandlerShadow for Runnable queue drain
 #include "../framework/android_shadows.h"
 #include "../framework/dialog_shadow.h"
+#include "../framework/pending_intent_shadow.h"
 #include "../framework/canvas_shadow.h"
 // EXP-087 Phase 3 (B2 FIX): DalvikHeapAdapter for shadow heap access
 #include "../framework/heap_adapter.h"
@@ -356,6 +357,25 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             result.apk_info.package_name,
             result.apk_info.version_code,
             result.apk_info.version_name);
+        // M3 F-018: EXACT-ALARM CAPABILITY LAW (AOSP API 31+) — derived
+        // from the RUNNING APK's manifest permission list, never
+        // hardcoded per-app. MiniAndroid INSTALL-TIME GRANT identity:
+        // manifest-declared special permissions are granted, so
+        // USE_EXACT_ALARM (auto-granted on 33+) or SCHEDULE_EXACT_ALARM
+        // ⇒ canScheduleExactAlarms() == true.
+        if (shadow_registry_ != nullptr) {
+            auto* pi_shadow =
+                shadow_registry_->find_as<framework::PendingIntentShadow>();
+            if (pi_shadow) {
+                const auto& perms = result.apk_info.permissions;
+                bool exact_capable =
+                    std::find(perms.begin(), perms.end(),
+                              "android.permission.USE_EXACT_ALARM") != perms.end() ||
+                    std::find(perms.begin(), perms.end(),
+                              "android.permission.SCHEDULE_EXACT_ALARM") != perms.end();
+                pi_shadow->set_manifest_exact_alarm_capable(exact_capable);
+            }
+        }
         // FIX-4 (generic app fonts): register font files the app ships in
         // its own assets/ (any package, any name — AOSP Typeface family
         // model). The TextShaper resolves FACE_APP to these faces and falls

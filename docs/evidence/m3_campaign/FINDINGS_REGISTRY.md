@@ -750,47 +750,85 @@ session). These are items the campaign plan did NOT explicitly list.
 - GitHub evidence: Issue #9
 
 ## FINDING-018
-- Subsystem: PERSISTENCE (Cursor law) + JAVA CORE (Family E) — second-run
-  read path
-- Trigger: after F-016/F-017, the F-012 golden's second-run legs (B/D:
-  run again on an EXISTING data-root) honestly report PARTIAL: during the
-  alarm-list reload, Le/b;.b (R8 display adapter) received a NULL
-  parameter and the Kotlin Intrinsics check (La/e;.h→.g) threw; the app's
-  own catch-all rethrew → APP BOUNDARY (F-016 honesty) → nonzero rc.
-  First-run legs (A/C) are SUCCESS with exactly the expected row count.
+- Subsystem: ANDROID FRAMEWORK (android.app intent-sender + alarm
+  scheduling family) — PendingIntent / AlarmManager shadow absence
+- Trigger: the F-012 golden's second-run legs (B/D: run again on an
+  EXISTING data-root) honestly report PARTIAL: MainActivity.onCreate
+  received an uncaught NullPointerException and the runtime applied the
+  F-016 APP-BOUNDARY law → nonzero rc. First-run legs (A/C) are SUCCESS.
 - APK: dubrowgn.microtimer (second run on existing Room DB)
-- Static evidence: Le/b;.b is a packed-switch display adapter whose param
-  (v8) is the checked "obj"; the cursor-load loop maps rows → Ll/a →
-  MainActivity.a → adapter
-- Runtime evidence: the shadow DID serve the getAll query on the second
-  run ([SQLITE-SHADOW] rawQuery rows=1 cols=4 sql="select * from alarm"
-  immediately after a first-pass [REC-MISS] rawQueryWithFactory
-  caller=Lh/c;.j diagnostic — the miss is first-pass-only; a later
-  dispatch pass claimed it); Ll/a;.<init> ×4 for a 1-row read; the last
-  Le/b;.b display-adapter call received a NULL parameter and the Kotlin
-  Intrinsics check (La/e;.h→.g) threw; frames + row counts remain
-  byte-identical/correct (A≡C, B≡D, 92 frames each)
-- Root cause (localized to the second-run entity→adapter chain, exact
-  null producer pending one instrumented run): the cursor→entity mapping
-  produces/propagates one null into the display adapter chain on the
-  second-run read path (first-run path is clean). Candidate sites:
-  the Room converter's column reads on the re-opened wrapper, or the
-  adapter's caller passing an unmapped entry. Cursor law hardening is
-  STILL required: DatabaseShadow getters at an invalid position fall
-  through to not_handled → silent null (Family-AP violation) instead of
-  the Android CursorIndexOutOfBoundsException law
-- Law: android.database.Cursor getters on an invalid position throw
-  CursorIndexOutOfBoundsException (never silent null); every element
-  passed to a Kotlin non-null display adapter must be the mapped entity
-  or the mapping itself fails loudly
-- Minimal fix: (1) instrument Le/b;.b's caller arg (one bounded probe
-  run) to pin the null producer; (2) harden DatabaseShadow cursor
-  getters: invalid position → loud classified throw; (3) fix the pinned
-  producer (entity mapping or wrapper re-open path)
-- Test: F-012 golden B/D legs must return rc=0 with unchanged frame
-  determinism; add a 2-run read-back law test on the f016/microtimer pair
-- Status: OBSERVED — ROOT-LOCATED (blocks the F-012 stage's rc law only;
-  the persistence + determinism laws of the golden PASS)
-- Priority: P1
-- Commit: n/a (registered)
+- Static evidence (bounded DEX probe, m3_dex_probe class): MainActivity.b
+  pc=46 invoke-static Landroid/app/PendingIntent;.getBroadcast, pc=50
+  const-string "getBroadcast(...)", pc=52 invoke-static La/e;.g (Kotlin
+  Intrinsics.checkNotNullExpressionValue throw helper);
+  MainActivity.onResume pc=54 calls b then pc=58
+  AlarmManager.cancel(PI); MainActivity.onPause pc=123
+  AlarmManager.setExactAndAllowWhileIdle; Lk/b;.a pc=0
+  AlarmManager.canScheduleExactAlarms; AlarmReceiver.onReceive pc=80
+  PendingIntent.getActivity
+- Runtime evidence (instrumented B leg at HEAD 4f0c9e1b): [REC-MISS]
+  Landroid/app/PendingIntent;.getBroadcast caller=MainActivity.b →
+  [EXP088-B-DISPATCH] MainActivity/Activity fallback chain ×8 → silent
+  NULL → [STR] concat("getBroadcast(...)", " must not be null") → NPE in
+  La/e;.g pc=17, no handler → APP-BOUNDARY unwind → PARTIAL. The EARLIER
+  hypothesis (entity→adapter null) is DISPROVEN: the shadow served the
+  getAll row (rows=1) and the cursor→entity mapping completed; the null
+  producer was the missing PendingIntent factory. Cursor reads (isNull
+  REC-MISS lines) were answered by DatabaseShadow and did not corrupt
+  the read.
+- Law (AOSP frameworks/base): PendingIntent.getBroadcast/getActivity/
+  getService/getForegroundService delegate to AMS.getIntentSender — they
+  return a live IntentSenderRecord or throw SecurityException, NEVER
+  null on the success path; equal (type,requestCode,intent,flags) → the
+  SAME object (target-identity equality). AlarmManager.cancel removes
+  the matching record (unknown senders ignored, void). API 31+
+  canScheduleExactAlarms() derives from manifest: USE_EXACT_ALARM
+  (auto-granted 33+) or SCHEDULE_EXACT_ALARM granted ⇒ true.
+  MiniAndroid INSTALL-TIME GRANT identity: declared ⇒ granted.
+- Minimal fix: new framework/PendingIntentShadow family (exact-class
+  claims Landroid/app/PendingIntent; + Landroid/app/AlarmManager;): AMS
+  record law with identity cache keyed (kind|requestCode|intent-oid|
+  flags) mirrored onto heap fields; cancel record law; setExact* family
+  = recorded void with LOUD documented boundary (alarms do not fire
+  in-run); send() loud boundary (not demanded); canScheduleExactAlarms
+  derived from the RUNNING APK's manifest permissions (plumbed in
+  execution_engine stage_load_apk + application_runtime manifest parse —
+  no app-specific code).
+- Guard: §6 shadow registry invariant count law 17→18 (16 canonical + 2
+  pre-registered); battery tool-finding fix (see FINDING-019) so the
+  strict stage actually executes in fresh runs
+- Test: F-012 golden full protocol A/B/C/D at HEAD+fix: all four legs
+  Status: SUCCESS; rows 1→2 per root; LAW1 persistence frames A≠B, C≠D;
+  LAW2 byte determinism A≡C, B≡D (92 frames each, byte-identical);
+  full battery 64/64 ALL PASS (first fresh-run completion of the strict
+  stage)
+- Status: REGRESSION-VERIFIED
+- Priority: P0 (was P1 — promoted: it was the only red battery stage)
+- Commit: (this commit)
+- GitHub evidence: Issue #9
+
+## FINDING-019 (TOOL FINDING — §24 diagnostic-infrastructure class)
+- Subsystem: scripts/run_test_battery.sh — the campaign's own gate
+- Trigger: fresh (non-resume) battery runs silently terminated after
+  stage 63 (F-016 default-mode) without executing stage 64 (F-016
+  strict-mode) and without printing a verdict; --resume runs completed.
+- Root cause: gate() ended with `[ "$RESUME" -eq 1 ] && echo ...`; with
+  RESUME=0 that compound command returns 1, becoming gate()'s return
+  value. The F-016 stages enable `set -e` (set +e/-e bracket their
+  binary runs), so the first gate() call under active set -e — a PASSing
+  stage 63 — aborted the whole script. Every fresh run executed only
+  63 of 64 stages; the strict-mode process-death law was silently
+  skipped in every non-resume battery since the stage was added.
+- Law: a gate/reporting function invoked as a plain command under set -e
+  must never propagate a nonzero status (test-harness law; mirrors §24
+  "no internal tool trusted with plausibly wrong output")
+- Minimal fix: explicit `return 0` at gate() end + resume checkpoint
+  moved behind an if; strict stage now executes in fresh runs
+- Evidence: bash -x trace showed script death between gate's printf and
+  stage 64; standalone strict-stage run passes all laws (rc=1 CRASH +
+  latch refusals). Post-fix fresh battery: 64/64 ALL PASS, verdict
+  printed, rc=0.
+- Status: FIXED + REGRESSION-VERIFIED (64/64 fresh run)
+- Priority: P0 (measurement integrity)
+- Commit: (this commit)
 - GitHub evidence: Issue #9
