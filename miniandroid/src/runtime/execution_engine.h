@@ -120,6 +120,14 @@ struct ExecutionConfig {
     // Legacy simulation settings (only used in LEGACY mode)
     bool simulate_lifecycle = true;
     std::string simulated_text = "";  // Empty = try to extract from APK
+
+    // M3 FINDING-012: per-invocation app-data root (Android's
+    // /data/data/<pkg> analog). Empty = keep the process default
+    // ("runtime/data", CWD-relative, back-compat) or the
+    // MINIANDROID_DATA_ROOT env override. Drivers that need hermetic or
+    // stateful-replay control (determinism gates, persistence goldens,
+    // battery corpus runs) MUST set this explicitly per run.
+    std::string data_root = "";
 };
 
 // Final result of execution
