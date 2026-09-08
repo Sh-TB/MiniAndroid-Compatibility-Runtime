@@ -18736,6 +18736,18 @@ DalvikValue DalvikExecutionEngine::get_or_create_singleton(const std::string& cl
         orientation.type = DalvikType::INT32;
         orientation.int_val = 1;  // ORIENTATION_PORTRAIT
         heap_.set_object_field(obj_id, "orientation", orientation);
+        // F-023 (AOSP Configuration.setToDefaults law): fontScale defaults
+        // to 1.0f on a fresh Configuration. Material3's non-linear font
+        // scaling path check()s "fontScale > 1" when the app opts into
+        // non-linear scaling — with an unset (0.0) fontScale the check
+        // throws "You should only apply non-linear scaling to font scales
+        // > 1" during the FIRST composition (dooz M1/i.f chain, Material3
+        // Typography init). Real devices report the user's fontScale
+        // (default 1.0 = no scaling).
+        DalvikValue font_scale;
+        font_scale.type = DalvikType::FLOAT32;
+        font_scale.float_val = 1.0f;  // AOSP Configuration.setToDefaults()
+        heap_.set_object_field(obj_id, "fontScale", font_scale);
     } else if (class_desc == "Ljava/io/File;") {
         DalvikValue path;
         path.type = DalvikType::STRING_REF;
