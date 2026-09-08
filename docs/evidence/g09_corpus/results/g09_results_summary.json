@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "package": "io.github.yamin8000.dooz",
+    "status": "SUCCESS",
+    "screenshot": true,
+    "lifecycle_final": "RESUMED",
+    "probed": 0,
+    "changed": 0
+  }
+]
