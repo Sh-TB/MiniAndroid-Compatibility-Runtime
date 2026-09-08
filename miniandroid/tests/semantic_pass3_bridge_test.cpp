@@ -12,6 +12,9 @@
 // produces a DIFFERENT observable result.
 
 #include "../src/dex/dalvik_engine.h"
+#include "../src/framework/shadow_registry.h"
+#include "../src/framework/locks_shadow.h"
+#include "../src/framework/atomic_shadow.h"
 
 #include <cctype>
 #include <cmath>
@@ -315,7 +318,8 @@ static bool expect_str_ids(DalvikExecutionEngine& e, const char* name,
     }
     std::string got = ret->return_value->string_val;
     bool ok = (got == expected);
-    record(name, ok, "expected \"" + expected + "\", got \"" + got + "\"");
+    record(name, ok, "expected \"" + expected + "\", got \"" + got + "\" (type=" +
+           std::to_string(static_cast<int>(ret->return_value->type)) + ")");
     return ok;
 }
 // Object-returning case: PASS iff a non-null object ref came back.
@@ -569,7 +573,191 @@ static void group_xml(DalvikExecutionEngine& e) {
     }
 }
 
-// ═══════════════════ GROUP AR: AtomicReference ═══════════════════
+// ═══════════════════ GROUP F020: snapshot-family primitives ═══════════════════
+// M3 F-020 focused law tests (group ATOMIC-F020 + ENUM-F020 in the bridge):
+// the runtime primitives Compose's snapshot system relies on. This group
+// REGISTERS the platform shadow registry on the engine (the atomic family
+// lives in AtomicShadow, not the K-36 fallback) and therefore runs LAST so
+// earlier groups keep their no-registry dispatch shape.
+static void group_f020(DalvikExecutionEngine& e) {
+    std::cout << "\n[GROUP F020] Atomic ctor-value law + Enum ordinal law\n";
+    miniandroid::framework::ShadowRegistry registry;
+    miniandroid::framework::register_platform_shadows(registry);
+    e.set_shadow_registry(&registry);
+
+    const std::string AR = "Ljava/util/concurrent/atomic/AtomicReference;";
+    const std::string AI = "Ljava/util/concurrent/atomic/AtomicInteger;";
+    const std::string AB = "Ljava/util/concurrent/atomic/AtomicBoolean;";
+    const std::string EN = "Ljava/lang/Enum;";
+    const std::string E0 = "Ltest/f020enum;";
+
+    {   // F1 (the dooz snapshot law): AtomicReference.<init>(payload) then
+        //     get() must return the SAME payload — the constructor argument
+        //     may never be dropped (F-020 root gap: the view-parent retry
+        //     routed this ctor to ViewShadow, which minted a phantom view
+        //     node and dropped the global snapshot value).
+        MethodIds mid;
+        uint16_t m_init = mid.add(AR, "<init>");
+        uint16_t m_get  = mid.add(AR, "get");
+        uint16_t t_ar   = mid.type_idx(AR);
+        uint16_t s_pay  = mid.string_idx("global-snapshot-payload");
+        std::vector<uint16_t> c;
+        emit_21c(c, opc::NEW_INSTANCE, 0, t_ar);
+        emit_21c(c, opc::CONST_STRING, 1, s_pay);
+        emit_invoke(c, opc::INVOKE_DIRECT, 2, {0, 1}, m_init);
+        call_virtual(c, m_get, {0}, 2, opc::MOVE_RESULT_OBJECT);
+        emit_move_result(c, 2, opc::RETURN_OBJECT);
+        expect_str_ids(e, "f020_atomic_ref_ctor_value_survives_get", c, mid,
+                       "global-snapshot-payload");
+    }
+    {   // F2: getAndSet returns the OLD reference (cell identity law)
+        MethodIds mid;
+        uint16_t m_init = mid.add(AR, "<init>");
+        uint16_t m_gas  = mid.add(AR, "getAndSet");
+        uint16_t t_ar   = mid.type_idx(AR);
+        uint16_t s_v1   = mid.string_idx("old-payload");
+        uint16_t s_v2   = mid.string_idx("new-payload");
+        std::vector<uint16_t> c;
+        emit_21c(c, opc::NEW_INSTANCE, 0, t_ar);
+        emit_21c(c, opc::CONST_STRING, 1, s_v1);
+        emit_invoke(c, opc::INVOKE_DIRECT, 2, {0, 1}, m_init);
+        emit_21c(c, opc::CONST_STRING, 2, s_v2);
+        call_virtual(c, m_gas, {0, 2}, 3, opc::MOVE_RESULT_OBJECT);
+        emit_move_result(c, 3, opc::RETURN_OBJECT);
+        expect_str_ids(e, "f020_atomic_ref_getandset_returns_old", c, mid,
+                       "old-payload");
+    }
+    {   // F3: after getAndSet the cell holds the NEW payload
+        MethodIds mid;
+        uint16_t m_init = mid.add(AR, "<init>");
+        uint16_t m_gas  = mid.add(AR, "getAndSet");
+        uint16_t m_get  = mid.add(AR, "get");
+        uint16_t t_ar   = mid.type_idx(AR);
+        uint16_t s_v1   = mid.string_idx("old-payload");
+        uint16_t s_v2   = mid.string_idx("new-payload");
+        std::vector<uint16_t> c;
+        emit_21c(c, opc::NEW_INSTANCE, 0, t_ar);
+        emit_21c(c, opc::CONST_STRING, 1, s_v1);
+        emit_invoke(c, opc::INVOKE_DIRECT, 2, {0, 1}, m_init);
+        emit_21c(c, opc::CONST_STRING, 2, s_v2);
+        call_virtual(c, m_gas, {0, 2}, 3, opc::MOVE_RESULT_OBJECT);
+        call_virtual(c, m_get, {0}, 3, opc::MOVE_RESULT_OBJECT);
+        emit_move_result(c, 3, opc::RETURN_OBJECT);
+        expect_str_ids(e, "f020_atomic_ref_get_after_getandset", c, mid,
+                       "new-payload");
+    }
+    {   // F4: AtomicInteger prefix/postfix arithmetic law
+        //     init(5); incrementAndGet → 6; addAndGet(10) → 16; sum = 22
+        MethodIds mid;
+        uint16_t m_init = mid.add(AI, "<init>");
+        uint16_t m_inc  = mid.add(AI, "incrementAndGet");
+        uint16_t m_add  = mid.add(AI, "addAndGet");
+        uint16_t t_ai   = mid.type_idx(AI);
+        std::vector<uint16_t> c;
+        emit_21c(c, opc::NEW_INSTANCE, 0, t_ai);
+        emit_const(c, 1, 5);
+        emit_invoke(c, opc::INVOKE_DIRECT, 2, {0, 1}, m_init);
+        call_virtual(c, m_inc, {0}, 2, opc::MOVE_RESULT);
+        emit_const(c, 1, 10);
+        call_virtual(c, m_add, {0, 1}, 3, opc::MOVE_RESULT);
+        emit_23x(c, opc::ADD_INT, 3, 2, 3);
+        emit_move_result(c, 3, opc::RETURN);
+        expect_num_ids(e, "f020_atomic_int_increment_add_chain", c, "()I", mid, 22.0);
+    }
+    {   // F5: getAndIncrement returns the OLD value; get() sees the new one
+        //     init(9); getAndIncrement → 9; get → 10; sum = 19
+        MethodIds mid;
+        uint16_t m_init = mid.add(AI, "<init>");
+        uint16_t m_gai  = mid.add(AI, "getAndIncrement");
+        uint16_t m_get  = mid.add(AI, "get");
+        uint16_t t_ai   = mid.type_idx(AI);
+        std::vector<uint16_t> c;
+        emit_21c(c, opc::NEW_INSTANCE, 0, t_ai);
+        emit_const(c, 1, 9);
+        emit_invoke(c, opc::INVOKE_DIRECT, 2, {0, 1}, m_init);
+        call_virtual(c, m_gai, {0}, 2, opc::MOVE_RESULT);
+        call_virtual(c, m_get, {0}, 3, opc::MOVE_RESULT);
+        emit_23x(c, opc::ADD_INT, 2, 2, 3);
+        emit_move_result(c, 2, opc::RETURN);
+        expect_num_ids(e, "f020_atomic_int_getandincrement_old", c, "()I", mid, 19.0);
+    }
+    {   // F6: AtomicBoolean CAS value law — CAS(true, false) swaps → true
+        MethodIds mid;
+        uint16_t m_init = mid.add(AB, "<init>");
+        uint16_t m_cas  = mid.add(AB, "compareAndSet");
+        uint16_t t_ab   = mid.type_idx(AB);
+        std::vector<uint16_t> c;
+        emit_21c(c, opc::NEW_INSTANCE, 0, t_ab);
+        emit_const(c, 1, 1);
+        emit_invoke(c, opc::INVOKE_DIRECT, 2, {0, 1}, m_init);
+        emit_const(c, 1, 1);
+        emit_const(c, 2, 0);
+        call_virtual(c, m_cas, {0, 1, 2}, 3, opc::MOVE_RESULT);
+        emit_move_result(c, 3, opc::RETURN);
+        expect_num_ids(e, "f020_atomic_bool_cas_swaps", c, "()I", mid, 1.0);
+    }
+    {   // F7 (the dooz isAtLeast law): Enum.compareTo ordinal difference —
+        //     compareTo(A[0], B[1]) = -1 (INITIALIZED vs STARTED shape)
+        MethodIds mid;
+        uint16_t m_init = mid.add(EN, "<init>");
+        uint16_t m_cmp  = mid.add(EN, "compareTo");
+        uint16_t t_e    = mid.type_idx(E0);
+        uint16_t s_a    = mid.string_idx("INITIALIZED");
+        uint16_t s_b    = mid.string_idx("STARTED");
+        std::vector<uint16_t> c;
+        emit_21c(c, opc::NEW_INSTANCE, 0, t_e);
+        emit_21c(c, opc::NEW_INSTANCE, 1, t_e);
+        emit_21c(c, opc::CONST_STRING, 2, s_a);
+        emit_const(c, 3, 0);
+        emit_invoke(c, opc::INVOKE_DIRECT, 3, {0, 2, 3}, m_init);
+        emit_21c(c, opc::CONST_STRING, 2, s_b);
+        emit_const(c, 3, 1);
+        emit_invoke(c, opc::INVOKE_DIRECT, 3, {1, 2, 3}, m_init);
+        call_virtual(c, m_cmp, {0, 1}, 4, opc::MOVE_RESULT);
+        emit_move_result(c, 4, opc::RETURN);
+        expect_num_ids(e, "f020_enum_compareto_ordinal_sign", c, "()I", mid, -1.0);
+    }
+    {   // F8: compareTo reverse (+1) and self (0) — sum 1; the sign is the
+        //     Comparable contract, exact difference the OpenJDK law
+        MethodIds mid;
+        uint16_t m_init = mid.add(EN, "<init>");
+        uint16_t m_cmp  = mid.add(EN, "compareTo");
+        uint16_t t_e    = mid.type_idx(E0);
+        uint16_t s_a    = mid.string_idx("A");
+        uint16_t s_b    = mid.string_idx("B");
+        std::vector<uint16_t> c;
+        emit_21c(c, opc::NEW_INSTANCE, 0, t_e);
+        emit_21c(c, opc::NEW_INSTANCE, 1, t_e);
+        emit_21c(c, opc::CONST_STRING, 2, s_a);
+        emit_const(c, 3, 0);
+        emit_invoke(c, opc::INVOKE_DIRECT, 3, {0, 2, 3}, m_init);
+        emit_21c(c, opc::CONST_STRING, 2, s_b);
+        emit_const(c, 3, 1);
+        emit_invoke(c, opc::INVOKE_DIRECT, 3, {1, 2, 3}, m_init);
+        call_virtual(c, m_cmp, {1, 0}, 4, opc::MOVE_RESULT);   // B vs A → +1
+        call_virtual(c, m_cmp, {0, 0}, 5, opc::MOVE_RESULT);   // A vs A → 0
+        emit_23x(c, opc::ADD_INT, 4, 4, 5);
+        emit_move_result(c, 4, opc::RETURN);
+        expect_num_ids(e, "f020_enum_compareto_reverse_and_self", c, "()I", mid, 1.0);
+    }
+    {   // F9: name() returns the stored enum name (Enum.toString delegates)
+        MethodIds mid;
+        uint16_t m_init = mid.add(EN, "<init>");
+        uint16_t m_name = mid.add(EN, "name");
+        uint16_t t_e    = mid.type_idx(E0);
+        uint16_t s_a    = mid.string_idx("STARTED");
+        std::vector<uint16_t> c;
+        emit_21c(c, opc::NEW_INSTANCE, 0, t_e);
+        emit_21c(c, opc::CONST_STRING, 2, s_a);
+        emit_const(c, 3, 1);
+        emit_invoke(c, opc::INVOKE_DIRECT, 3, {0, 2, 3}, m_init);
+        call_virtual(c, m_name, {0}, 4, opc::MOVE_RESULT_OBJECT);
+        emit_move_result(c, 4, opc::RETURN_OBJECT);
+        expect_str_ids(e, "f020_enum_name_returns_stored_name", c, mid, "STARTED");
+    }
+}
+
+
 static void group_atomic(DalvikExecutionEngine& e) {
     std::cout << "\n[GROUP AR] AtomicReference — CAS identity/null semantics\n";
     const std::string AR = "Ljava/util/concurrent/atomic/AtomicReference;";
@@ -1308,6 +1496,7 @@ int main(int argc, char** argv) {
     if (only.empty() || only == "sw") group_switch(engine);
     if (only.empty() || only == "ps") group_parse(engine);
     if (only.empty() || only == "wd") group_winedroid(engine);
+    if (only.empty() || only == "f020") group_f020(engine);
     std::cout << "\nRESULT: " << g_pass << " passed, " << g_fail << " failed"
               << (g_skip ? (" (" + std::to_string(g_skip) + " skipped-recorded)") : "")
               << "\n";
