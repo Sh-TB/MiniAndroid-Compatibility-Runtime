@@ -1137,6 +1137,14 @@ struct DalvikExecutionResult {
     };
     FinalStatus final_status = FinalStatus::COMPLETED_SUCCESS;
     std::string halt_reason;
+
+    // M3 FINDING-016 (exception-honesty law, ROADMAP family G): exceptions
+    // that unwound past a frame with NO handler. ART law: an exception that
+    // escapes the outermost app frame kills the process. Default mode
+    // records + reports (run can never report plain SUCCESS); strict mode
+    // (MINIANDROID_EXC_STRICT=1) halts the DEX dispatch (CRASH).
+    size_t uncaught_in_flight_count = 0;
+    std::vector<std::string> uncaught_in_flight_log;
     
     // Statistics
     uint64_t total_instructions_executed = 0;
@@ -1362,6 +1370,16 @@ public:
     CallStack& get_call_stack() { return call_stack_; }
     DalvikHeap& get_heap() { return heap_; }
     std::string get_last_error() const { return last_error_; }
+    // M3 FINDING-016: exception-honesty accessors (read by the runtime
+    // engine's final status mapping — a run with in-flight uncaught app
+    // exceptions must never report plain SUCCESS).
+    size_t uncaught_in_flight_count() const { return uncaught_in_flight_count_; }
+    const std::vector<std::string>& uncaught_in_flight_log() const { return uncaught_in_flight_log_; }
+    // M3 FINDING-016 strict mode (ART process-death law): true when an
+    // uncaught exception escaped the outermost app frame under
+    // MINIANDROID_EXC_STRICT=1; the run must be reported CRASH.
+    bool strict_uncaught_crash() const { return strict_uncaught_crash_; }
+    const std::string& strict_crash_reason() const { return strict_crash_reason_; }
     
     // Configuration
     struct Config {
@@ -1858,6 +1876,16 @@ public:
     bool lifecycle_from_dex_ = false;
     bool halted_on_return_ = false;
     std::string halt_reason_;
+    // M3 FINDING-016: exception-honesty state. uncaught_in_flight_count_
+    // counts every handler-less frame unwind; uncaught_in_flight_log_ is a
+    // bounded (32-entry) record; exc_strict_ enables the ART process-death
+    // law (MINIANDROID_EXC_STRICT=1); strict_uncaught_crash_ latches a
+    // strict-mode app-boundary escape for the whole run.
+    size_t uncaught_in_flight_count_ = 0;
+    std::vector<std::string> uncaught_in_flight_log_;
+    bool exc_strict_ = false;
+    bool strict_uncaught_crash_ = false;
+    std::string strict_crash_reason_;
     std::string last_error_;
     // EXP-042 Phase 1: Per-frame loop detection. Reset in execute_method_internal().
     std::map<uint32_t, uint32_t> pc_visit_count_;

@@ -1105,6 +1105,17 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
 ) {
     verbose_ = verbose;
 
+    // M3 FINDING-016: per-run reset of the exception-honesty state + the
+    // strict-mode env read (ART process-death law gate).
+    uncaught_in_flight_count_ = 0;
+    uncaught_in_flight_log_.clear();
+    strict_uncaught_crash_ = false;
+    strict_crash_reason_.clear();
+    {
+        const char* es = std::getenv("MINIANDROID_EXC_STRICT");
+        exc_strict_ = (es != nullptr && es[0] == '1');
+    }
+
     // EXP-042 Phase 1: Gate debug cerr lines behind verbose. Previously these
     // always printed, generating enormous log volume during long runs (100 M
     // instructions × several cerr lines per recursive call = GB of stderr).
@@ -1641,7 +1652,18 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
     auto end_time = Clock::now();
     result.total_execution_ms = std::chrono::duration<double, std::milli>(end_time - start_time).count();
     result.final_registers = call_stack_.empty() ? json::object() : call_stack_.top().registers.dump();
-    
+
+    // M3 FINDING-016: surface the exception-honesty state on the result.
+    // Default mode: count + bounded log (runtime engine downgrades plain
+    // SUCCESS to PARTIAL_SUCCESS and records crash.log entries). Strict
+    // mode: an app-boundary escape is the ART process-death law — CRASH.
+    result.uncaught_in_flight_count = uncaught_in_flight_count_;
+    result.uncaught_in_flight_log = uncaught_in_flight_log_;
+    if (exc_strict_ && strict_uncaught_crash_) {
+        result.final_status = DalvikExecutionResult::FinalStatus::CRASH_EXCEPTION;
+        result.halt_reason = strict_crash_reason_;
+    }
+
     log("Execution completed in " + std::to_string(result.total_execution_ms) + "ms");
     log("Instructions executed: " + std::to_string(result.total_instructions_executed));
     
@@ -2497,6 +2519,16 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         std::cerr << std::endl;
     }
     if (!dex_report_) return false;
+
+    // M3 FINDING-016 (strict mode): an exception already escaped the app
+    // boundary — ART process death. No further DEX dispatch (the equivalent
+    // of the process being gone: queued runnables, lifecycle callbacks and
+    // shadow→DEX callbacks must not execute).
+    if (exc_strict_ && strict_uncaught_crash_) {
+        std::cerr << "[EXC-UNCAUGHT-TOP] strict CRASH latch active — DEX dispatch "
+                  << declaring_class << "." << method_name << " refused" << std::endl;
+        return false;
+    }
 
     // EXP-040: Recursion depth protection
     if (recursion_depth_ >= MAX_RECURSION_DEPTH) {
@@ -4738,29 +4770,91 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 frame_unwind_exception_valid_ = saved_unwind_valid;
                 frame_unwind_exception_ = saved_unwind_exc;
             } else {
+                // M3 FINDING-016 (exception-honesty law, ROADMAP family G):
+                // no handler at THIS frame either. Real Dalvik unwinds this
+                // frame too — the exception stays in flight for the next
+                // outer invoke site; past the outermost app frame the
+                // process dies (ART). The previous FRAME-2 policy stopped
+                // propagation at the first handler-less frame ("caller
+                // continues with a null return"), which both deviated from
+                // the law mid-stack AND hid real failures behind SUCCESS.
+                //
+                // The artifact-exception concern that motivated FRAME-2
+                // (Telegram LruCache IAE from engine-local metrics) is a
+                // RUNTIME-SEMANTICS defect class per the six-failure
+                // taxonomy: it must be loud and classified, never a license
+                // to corrupt global exception semantics.
+                const bool top_of_stack = (recursion_depth_ <= 1);
+                if (!top_of_stack) {
+                    // Mid-stack handler-less frame: normal Dalvik unwind.
+                    // Forensic record ONLY — the ART honesty metric counts
+                    // app-BOUNDARY escapes, not propagation steps (an
+                    // exception unwinding several frames and then caught by
+                    // an outer catch-all is the APP'S OWN error handling,
+                    // e.g. microtimer's Database NPE → MainActivity catch).
+                    if (uncaught_in_flight_log_.size() < 32) {
+                        std::ostringstream el;
+                        el << "[EXC-UNWIND] " << unwind_desc
+                           << " unwound " << current_class_ << "."
+                           << current_method_ << " invoke_pc=" << to_hex(pc_)
+                           << " depth=" << recursion_depth_;
+                        uncaught_in_flight_log_.push_back(el.str());
+                    }
+                    // Keep the exception in flight: the next outer invoke
+                    // site repeats the handler search (real call-stack
+                    // propagation), and unwind THIS frame like the THROW
+                    // path does (halted_on_return_ breaks the caller's
+                    // fetch loop at the post-instruction check).
+                    frame_unwind_exception_valid_ = true;
+                    frame_unwind_exception_ = unwind_exc;
+                    halted_on_return_ = true;
+                    recursion_depth_--;
+                    return true;
+                }
+                // APP BOUNDARY: no DEX frame remains to search — THIS is
+                // where ART kills the process. Counted + logged + statused.
+                ++uncaught_in_flight_count_;
+                if (uncaught_in_flight_log_.size() < 32) {
+                    std::ostringstream el;
+                    el << "[EXC-UNCAUGHT-TOP] " << unwind_desc
+                       << " escaped the app boundary at " << current_class_ << "."
+                       << current_method_ << " invoke_pc=" << to_hex(pc_)
+                       << " depth=" << recursion_depth_ << " [APP-BOUNDARY]";
+                    uncaught_in_flight_log_.push_back(el.str());
+                }
                 std::cerr << "[EXC-PROPAGATE] " << unwind_desc
                           << " uncaught at caller " << current_class_ << "."
                           << current_method_
                           << " invoke_pc=" << pc_
-                          << " → caller continues after invoke (compatibility)"
+                          << (top_of_stack
+                                  ? (exc_strict_
+                                         ? " → APP BOUNDARY + strict: CRASH (ART process-death law)"
+                                         : " → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)")
+                                  : " → unwind continues (Dalvik law)")
                           << std::endl;
-                // UNIFIED_011.3 FRAME-2 (§18): if NO frame catches the
-                // exception, the caller CONTINUES with a null return instead
-                // of halting the whole call chain.
-                //
-                // Policy (regression-proven): full unwind-to-top is real
-                // Dalvik behavior, but this engine raises ARTIFACT
-                // exceptions (e.g. Telegram LruCache "maxSize <= 0" IAE —
-                // real Android never throws there; the size computes to 0
-                // from engine-local display metrics). Full propagation let
-                // that artifact escape through LaunchActivity.onCreate and
-                // killed the deterministic Telegram golden (eb16ab5c
-                // regression). Caught-type semantics stay REAL (typed +
-                // catch-all matching across frames — see the
-                // unified0113_typed_catch fixture); only the uncaught tail
-                // degrades to the EXP-071-style compatibility continue.
-                frame_unwind_exception_valid_ = false;
-                frame_unwind_exception_ = DalvikValue::make_null();
+                if (!top_of_stack) {
+                    // Keep the exception in flight: the next outer invoke
+                    // site repeats the handler search (real call-stack
+                    // propagation), and unwind THIS frame like the THROW
+                    // path does (halted_on_return_ breaks the caller's
+                    // fetch loop at the post-instruction check).
+                    frame_unwind_exception_valid_ = true;
+                    frame_unwind_exception_ = unwind_exc;
+                    halted_on_return_ = true;
+                    recursion_depth_--;
+                    return true;
+                }
+                // APP BOUNDARY: no DEX frame remains to search.
+                if (exc_strict_) {
+                    // ART process-death law (strict mode): latch the crash
+                    // for the rest of the run — no further DEX dispatch.
+                    strict_uncaught_crash_ = true;
+                    strict_crash_reason_ = "UNCAUGHT-EXCEPTION:" + unwind_desc +
+                            " escaped " + current_class_ + "." + current_method_;
+                    halted_ = true;
+                }
+                frame_unwind_exception_valid_ = saved_unwind_valid;
+                frame_unwind_exception_ = saved_unwind_exc;
                 return_val = DalvikValue::make_null();
                 recursion_depth_--;
                 return true;

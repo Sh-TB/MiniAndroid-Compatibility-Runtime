@@ -148,6 +148,43 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
         result.status = ExecutionStatus::PARTIAL_SUCCESS;
         result.status_message = "Partial execution completed";
     }
+
+    // =======================================================================
+    // M3 FINDING-016: EXCEPTION-HONESTY LAW (final status mapping)
+    // A run whose app bytecode left exceptions in flight past EVERY frame
+    // must never report plain SUCCESS. ART law: uncaught past the outermost
+    // app frame = process death. Compatibility-continue mode keeps the run
+    // alive for deterministic goldens, but the status is downgraded to
+    // PARTIAL_SUCCESS, the exceptions are recorded in crash.log, and
+    // MINIANDROID_EXC_STRICT=1 reports the run as CRASH (nonzero rc).
+    // (Placed AFTER the final-status determination above — that block
+    // overwrites status_message unconditionally.)
+    // =======================================================================
+    {
+        const size_t uncaught_n = dalvik_engine_.uncaught_in_flight_count();
+        if (uncaught_n > 0) {
+            if (dalvik_engine_.strict_uncaught_crash()) {
+                // ART process-death law (strict mode): the process is gone.
+                result.status = ExecutionStatus::CRASH;
+                result.status_message =
+                    "ART process-death law: " +
+                    dalvik_engine_.strict_crash_reason() +
+                    " (strict mode — MINIANDROID_EXC_STRICT=1)";
+            } else {
+                if (result.status == ExecutionStatus::SUCCESS) {
+                    result.status = ExecutionStatus::PARTIAL_SUCCESS;
+                }
+                result.status_message +=
+                    " [F-016 exception-honesty: " + std::to_string(uncaught_n) +
+                    " uncaught in-flight exception(s) past all app frames — "
+                    "ART process-death law; compatibility-continue mode "
+                    "(MINIANDROID_EXC_STRICT=1 fails the run); see crash.log]";
+            }
+            trace_engine_.warning("ExecutionEngine", "f016_exception_honesty",
+                                  "⚠️ " + std::to_string(uncaught_n) +
+                                  " uncaught in-flight exception(s) — status adjusted");
+        }
+    }
     
     // Copy metrics
     result.metrics = trace_engine_.get_metrics();
@@ -649,6 +686,13 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             result.apk_info.main_activity_full,  // EXP-086 P1: pass manifest-provided activity class
             config.verbose_logging
         );
+
+        // M3 FINDING-016: record the in-flight uncaught exceptions into the
+        // TraceEngine NOW (before stage_generate_reports writes crash.log —
+        // the final status mapping runs too late for report inclusion).
+        for (const auto& entry : dalvik_engine_.uncaught_in_flight_log()) {
+            trace_engine_.record_error("EXC-UNCAUGHT-TOP", entry);
+        }
 
         // EXP-086 Phase 7 (B4 FIX): Drain the Handler/Looper queue after
         // onCreate execution. Without this, Handler.post() callbacks
