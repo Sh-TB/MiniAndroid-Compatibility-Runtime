@@ -3998,42 +3998,15 @@ bool ExecutionEngine::stage_tap(ExecutionResult& result,
         return arr;
     };
 
-    // Bounded drain-until-quiescent at a fixed virtual instant: fires every
-    // due queue entry (framework tokens AND app Runnables, FIFO by (when,
-    // seq)); newly enqueued due entries drain in the same instant, capped
-    // (hostile re-post storms cannot loop forever — §18 safety law).
-    auto drain_quiescent = [&](nlohmann::json* drain_log) {
-        for (int iter = 0; iter < 64; ++iter) {
-            std::vector<uint32_t> due;
-            size_t n = handler_shadow->drain_ready(&due);
-            if (n == 0) return;
-            if (drain_log) {
-                for (uint32_t id : due)
-                    drain_log->push_back({{"virtual_ms",
-                                           handler_shadow->virtual_now_ms()},
-                                          {"entry", id}});
-            }
-            for (uint32_t id : due) invoke_handler_runnable(id);
-            // M3 F-ROOM-CHAIN (AG, 2026-09-08): looper-iteration time cost.
-            // AOSP law: MessageQueue.next() re-evaluates the head's `when`
-            // against the Looper clock between dispatch rounds, and the
-            // wall clock advances at least by the dispatch cost. On the
-            // frozen virtual clock a runnable that self-reposts with
-            // delay=0 at the same timestamp (microtimer's sub-second
-            // alignment law: delay = (expires - now) % 1000 == 0) would
-            // re-queue due-at-now FOREVER — the observed 64-iteration
-            // "re-post storm" cap. Deterministic model: when the queue
-            // still holds entries due at the CURRENT instant after a
-            // dispatch round, advance the virtual clock by 1ms so the
-            // next round observes a strictly later Looper time. This
-            // mirrors real ART (clock >= dispatch cost) with zero
-            // nondeterminism: the quantum is fixed, never wall-clock.
-            if (handler_shadow->has_due_at(handler_shadow->virtual_now_ms()))
-                handler_shadow->advance_virtual(1);
-        }
-        std::cerr << "[G06-TAP] drain loop hit iteration cap (hostile "
-                     "re-post storm bounded)" << std::endl;
-    };
+    // Bounded drain-until-quiescent on the deterministic virtual clock.
+    // M3 FINDING-009: the lambda body lives AFTER the frame-capture state
+    // declarations below (it now saves tick frames and needs manifest /
+    // frames_dir / frame_index / last_saved_fb in scope). See the second
+    // definition — this site kept only for the historical comment.
+    //
+    // Fires every due queue entry (framework tokens AND app Runnables, FIFO
+    // by (when, seq)); newly enqueued due entries drain in the same instant,
+    // capped (hostile re-post storms cannot loop forever — §18 safety law).
 
     nlohmann::json manifest;
     manifest["gesture"] = "TAP";
@@ -4068,6 +4041,126 @@ bool ExecutionEngine::stage_tap(ExecutionResult& result,
     int frame_index = 1;  // frame_000 = launch, captured above
     size_t total_diff = 0;
     nlohmann::json all_drains = nlohmann::json::array();
+    // M3 FINDING-010: mutation-keyed tick frames — the frame content at the
+    // moment of the most recent SAVE (launch, gesture, or tick). Compared
+    // after every dispatch round inside the drain; a tick that mutated the
+    // tree emits exactly one frame, deterministically.
+    std::vector<uint8_t> last_saved_fb = framebuffer_;
+
+    // ── drain_quiescent (M3 FINDING-009/010) ─────────────────────────────
+    // Bounded drain-until-QUIESCENT on the deterministic virtual clock.
+    // AOSP law (MessageQueue.next): the main Looper NEVER exits while
+    // messages are pending — when the head's `when` is in the future it
+    // sleeps nativePollOnce(head.when - now) and dispatches when the clock
+    // reaches `when`. The previous `if (drain_ready()==0) return;` treated
+    // "nothing due NOW" as quiescence and stranded every future-scheduled
+    // tick (microtimer's re-post delay=999ms never fired → one-tick
+    // countdown). Quiescence is queue EMPTY.
+    //
+    // §18 storm law, refined (FINDING-009): the hostile signature is MANY
+    // DISPATCH ROUNDS WITH NEGLIGIBLE VIRTUAL PROGRESS (delay=0 re-post
+    // storms — <2ms between dispatches). The storm budget therefore counts
+    // CONSECUTIVE low-progress dispatch rounds only; a dispatch that
+    // advances the clock ≥2ms (a countdown tick: ~1000ms per round) resets
+    // it. A second absolute bound (512 dispatch rounds per drain call)
+    // deterministically terminates pathological forever-chains. Both
+    // bounds are fixed constants — zero wall-clock input.
+    auto drain_quiescent = [&](nlohmann::json* drain_log) {
+        int storm_rounds = 0;                       // consecutive low-progress dispatches
+        static constexpr int kStormCap = 64;        // §18 hostile-storm bound
+        static constexpr int kTotalRoundCap = 512;  // absolute per-drain bound
+        int total_rounds = 0;
+        int64_t last_dispatch_when = handler_shadow->virtual_now_ms();
+        while (total_rounds < kTotalRoundCap) {
+            std::vector<uint32_t> due;
+            size_t n = handler_shadow->drain_ready(&due);
+            if (n == 0) {
+                // FINDING-009: poll-timeout fast-forward. Quiescence is an
+                // EMPTY queue, not a future-dated head.
+                if (handler_shadow->queue_size() == 0) return;
+                int64_t next_ready = handler_shadow->next_ready_ms();
+                int64_t now = handler_shadow->virtual_now_ms();
+                if (next_ready <= now) return;  // defensive: nothing advanceable
+                handler_shadow->advance_virtual(next_ready - now);
+                if (drain_log)
+                    drain_log->push_back({{"event", "poll-timeout fast-forward"},
+                                          {"advanced_to_virtual_ms", next_ready},
+                                          {"delta_ms", next_ready - now}});
+                continue;
+            }
+            ++total_rounds;
+            int64_t now = handler_shadow->virtual_now_ms();
+            if (now - last_dispatch_when < 2) {
+                if (++storm_rounds > kStormCap) {
+                    std::cerr << "[G06-TAP] drain loop hit iteration cap "
+                                 "(hostile re-post storm bounded)"
+                              << std::endl;
+                    return;
+                }
+            } else {
+                storm_rounds = 0;
+            }
+            last_dispatch_when = now;
+            if (drain_log) {
+                for (uint32_t id : due)
+                    drain_log->push_back({{"virtual_ms", now},
+                                          {"entry", id}});
+            }
+            for (uint32_t id : due) invoke_handler_runnable(id);
+            // FINDING-010: tick-frame capture — the redraw evidence law.
+            // A tick that mutated the view tree MUST be observable as a
+            // framebuffer change; save exactly one frame per mutation,
+            // keyed to the content (not the clock), so runs without visible
+            // ticks save nothing extra.
+            stage_render_frame(result, config);
+            if (framebuffer_.size() == last_saved_fb.size() &&
+                framebuffer_ != last_saved_fb) {
+                size_t tdiff = 0;
+                for (size_t i = 0; i < framebuffer_.size(); i += 4) {
+                    if (framebuffer_[i] != last_saved_fb[i] ||
+                        framebuffer_[i + 1] != last_saved_fb[i + 1] ||
+                        framebuffer_[i + 2] != last_saved_fb[i + 2]) {
+                        tdiff++;
+                    }
+                }
+                std::string tick_png;
+                char tname[32];
+                snprintf(tname, sizeof tname, "frame_%03d.png", frame_index);
+                save_frame(frames_dir + "/" + tname, &tick_png);
+                nlohmann::json tf;
+                tf["index"] = frame_index;
+                tf["file"] = tname;
+                tf["event"] = "queue drain: framebuffer mutated (tick)";
+                tf["virtual_ms"] = handler_shadow->virtual_now_ms();
+                tf["changed_pixels_vs_previous"] = tdiff;
+                tf["sha256"] = sha256_hex(framebuffer_);
+                tf["png_sha256"] = tick_png;
+                tf["visible_texts"] = collect_texts();
+                manifest["frames"].push_back(tf);
+                frame_index++;
+                last_saved_fb = framebuffer_;
+            }
+            // M3 F-ROOM-CHAIN (AG, 2026-09-08): looper-iteration time cost.
+            // AOSP law: MessageQueue.next() re-evaluates the head's `when`
+            // against the Looper clock between dispatch rounds, and the
+            // wall clock advances at least by the dispatch cost. On the
+            // frozen virtual clock a runnable that self-reposts with
+            // delay=0 at the same timestamp (microtimer's sub-second
+            // alignment law: delay = (expires - now) % 1000 == 0) would
+            // re-queue due-at-now FOREVER — the observed 64-iteration
+            // "re-post storm" cap. Deterministic model: when the queue
+            // still holds entries due at the CURRENT instant after a
+            // dispatch round, advance the virtual clock by 1ms so the
+            // next round observes a strictly later Looper time. This
+            // mirrors real ART (clock >= dispatch cost) with zero
+            // nondeterminism: the quantum is fixed, never wall-clock.
+            if (handler_shadow->has_due_at(handler_shadow->virtual_now_ms()))
+                handler_shadow->advance_virtual(1);
+        }
+        std::cerr << "[G06-TAP] drain loop hit total-round cap (" <<
+                     kTotalRoundCap << " dispatch rounds — pathological "
+                     "forever-chain bounded)" << std::endl;
+    };
 
     for (const auto& [px, py] : config.tap_sequence) {
         // ── t0: ACTION_DOWN ──────────────────────────────────────────────
@@ -4105,6 +4198,7 @@ bool ExecutionEngine::stage_tap(ExecutionResult& result,
             f["visible_texts"] = collect_texts();
             manifest["frames"].push_back(f);
             frame_index++;
+            last_saved_fb = framebuffer_;
         }
 
         // ── t0+50ms: ACTION_UP → queue PerformClick + UnsetPressedState ──
@@ -4167,6 +4261,7 @@ bool ExecutionEngine::stage_tap(ExecutionResult& result,
         manifest["frames"].push_back(f);
         frame_index++;
         prev = framebuffer_;
+        last_saved_fb = framebuffer_;
         // A launched activity owns the window: subsequent gestures hit ITS
         // tree (the content view root switched at the launch boundary).
         root_id = activity_shadow->content_view_id();

@@ -360,6 +360,15 @@ public:
     // on a frozen clock.
     bool has_due_at(int64_t now_ms) const;
 
+    // M3 FINDING-009: AOSP MessageQueue.next() poll-timeout law.
+    // When the head message's `when` is in the future the looper does NOT
+    // exit — it sleeps nativePollOnce(head.when - now) and dispatches when
+    // the clock reaches `when`. The deterministic drain therefore needs a
+    // read-only peek at the EARLIEST ready_at in the queue (the sorted head
+    // `when`) to fast-forward the virtual clock by exactly that delta.
+    // Returns INT64_MAX when the queue is empty (no poll timeout possible).
+    int64_t next_ready_ms() const;
+
     // EXP-088 Phase F: Remove all queued Runnables matching the given
     // runnable_id. Returns the number removed.
     //

@@ -11,6 +11,7 @@
 #include <chrono>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <queue>
 #include <sstream>
 #include <utility>
@@ -749,6 +750,18 @@ bool HandlerShadow::has_due_at(int64_t now_ms) const {
     for (const auto& q : queue_)
         if (q.ready_at_ms <= now_ms) return true;
     return false;
+}
+
+int64_t HandlerShadow::next_ready_ms() const {
+    // M3 FINDING-009: earliest `when` in the queue — the poll-timeout
+    // target of AOSP MessageQueue.next(). The drain loop fast-forwards the
+    // deterministic virtual clock by exactly (next_ready - now) when no
+    // entry is due at the current instant, mirroring
+    // nativePollOnce(nextPollTimeoutMillis) with zero wall-clock input.
+    int64_t best = std::numeric_limits<int64_t>::max();
+    for (const auto& q : queue_)
+        if (q.ready_at_ms < best) best = q.ready_at_ms;
+    return best;
 }
 
 void HandlerShadow::settle() {
