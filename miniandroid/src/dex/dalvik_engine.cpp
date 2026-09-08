@@ -1812,8 +1812,14 @@ bool DalvikExecutionEngine::execute_method_internal(
     // EXP-043 Phase 1: raised from 200 to 5000 to capture the full path
     // to the Intrinsics loop blocker.
     // EXP-053: raised to 100000 to capture <clinit> paths.
+    // §24 TOOL-HYGIENE (MASTER-3 session 11): this is now ENV-GATED —
+    // 100k unconditional stderr lines per run buried real signals
+    // ([EXC-PROPAGATE], [SQLITE-SHADOW]) and slowed every run. Gate:
+    // MINIANDROID_METHOD_TRACE=1 restores the old verbosity.
+    static thread_local const bool method_trace_on =
+        std::getenv("MINIANDROID_METHOD_TRACE") != nullptr;
     static thread_local uint64_t method_entry_count = 0;
-    if (method_entry_count < 100000) {
+    if (method_trace_on && method_entry_count < 100000) {
         std::cerr << "[METHOD-IN] " << class_name << "." << method_name
                   << " (bytecode_size=" << bytecode.size() << ")" << std::endl;
         method_entry_count++;
@@ -1867,8 +1873,11 @@ bool DalvikExecutionEngine::execute_method_internal(
         }
     }
 
-    // EXP-063: Trace getString parameter passing
-    if (class_name.find("LocaleController") != std::string::npos &&
+    // EXP-063: Trace getString parameter passing (§24: env-gated —
+    // MINIANDROID_APP_TRACE=1).
+    static thread_local const bool app_trace_on =
+        std::getenv("MINIANDROID_APP_TRACE") != nullptr;
+    if (app_trace_on && class_name.find("LocaleController") != std::string::npos &&
         method_name == "getString") {
         std::cerr << "[EXP063-GETSTRING] entering"
                   << " regs=" << registers_size << " ins=" << ins_size
@@ -2438,6 +2447,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     DalvikExecutionResult& result,
     const std::string& method_descriptor
 ) {
+    // §24 diagnostic gates (MASTER-3 session 11): per-function declarations
+    // (static thread_local locals are not shared across functions).
+    static thread_local const bool app_trace_on =
+        std::getenv("MINIANDROID_APP_TRACE") != nullptr;
+    static thread_local const bool method_trace_on =
+        std::getenv("MINIANDROID_METHOD_TRACE") != nullptr;
     // EXP-055: Debug — log EVERY entry to try_recursive_invoke (first 20 only).
     static thread_local uint64_t entry_log_count = 0;
     if (entry_log_count < 20) {
@@ -2459,8 +2474,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                       << " depth=" << recursion_depth_ << std::endl;
         }
     }
-    // EXP-061: Debug — trace SlideView specifically
-    if (declaring_class.find("SlideView") != std::string::npos) {
+    // EXP-061: Debug — trace SlideView specifically (§24: env-gated —
+    // MINIANDROID_APP_TRACE=1).
+    if (app_trace_on && declaring_class.find("SlideView") != std::string::npos) {
         std::cerr << "[EXP061-TRY] try_recursive_invoke called for "
                   << declaring_class << "." << method_name
                   << " args=" << args.size()
@@ -2477,7 +2493,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // Each trace is guarded by exact method_name AND a class-name
     // substring check so it only fires on the relevant invocation.
     // Args are accessed only after explicit bounds checks.
-    if (method_name == "setPage" && declaring_class.find("LoginActivity") != std::string::npos) {
+    // (§24: env-gated — MINIANDROID_APP_TRACE=1.)
+    if (app_trace_on && method_name == "setPage" && declaring_class.find("LoginActivity") != std::string::npos) {
         std::cerr << "[EXP092-SETPAGE] class=" << declaring_class
                   << " args_count=" << args.size()
                   << " pc=0x" << std::hex << pc_ << std::dec
@@ -2492,7 +2509,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
         std::cerr << std::endl;
     }
-    if (method_name == "fillNextCodeParams") {
+    if (app_trace_on && method_name == "fillNextCodeParams") {
         std::cerr << "[EXP092-FILLNEXTCODE] class=" << declaring_class
                   << " args_count=" << args.size()
                   << " pc=0x" << std::hex << pc_ << std::dec
@@ -4162,8 +4179,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
     // EXP-045 Phase 3: Log NPE callers to identify which null parameters
     // are causing performance degradation. Only log first 50 NPE callers.
+    // (§24: env-gated — MINIANDROID_APP_TRACE=1.)
     static thread_local uint64_t npe_caller_count = 0;
-    if (class_descriptor.find("Intrinsics") != std::string::npos &&
+    if (app_trace_on &&
+        class_descriptor.find("Intrinsics") != std::string::npos &&
         (method_name == "checkNotNullParameter" || method_name == "checkNotNullExpressionValue") &&
         npe_caller_count < 50) {
         std::cerr << "[NPE-CALLER] " << method_name << " called from "
@@ -4175,9 +4194,11 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     auto class_it = class_info_index_.find(class_descriptor);
     if (class_it == class_info_index_.end()) {
         // EXP-061: Debug — log when SlideView or other View base classes are not found.
-        if (class_descriptor.find("SlideView") != std::string::npos ||
+        // (§24: env-gated — MINIANDROID_APP_TRACE=1.)
+        if (app_trace_on &&
+            (class_descriptor.find("SlideView") != std::string::npos ||
             class_descriptor.find("FrameLayout") != std::string::npos ||
-            class_descriptor.find("LinearLayout") != std::string::npos) {
+            class_descriptor.find("LinearLayout") != std::string::npos)) {
             std::cerr << "[EXP061-NOTFOUND] class_descriptor=" << class_descriptor
                       << " method=" << method_name
                       << " (class not in index)"
@@ -4212,7 +4233,9 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     const dex::ClassInfo& cls_ref = dex_report_->classes[class_it->second];
 
     // EXP-078: Debug — trace LoginActivity method search
-    if (class_descriptor.find("LoginActivity") != std::string::npos || class_descriptor.find("BaseFragment") != std::string::npos &&
+    // (§24: env-gated — MINIANDROID_APP_TRACE=1.)
+    if (app_trace_on &&
+        (class_descriptor.find("LoginActivity") != std::string::npos || class_descriptor.find("BaseFragment") != std::string::npos) &&
         (method_name == "onFragmentCreate" || method_name == "createView" || method_name == "onNextPressed" || method_name == "onDoneButtonPressed")) {
         auto all_methods_check = cls_ref.all_methods();
         std::cerr << "[EXP078-DEBUG] " << class_descriptor << "." << method_name
@@ -4685,10 +4708,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // EXP-058: Debug — log register sizes for addFragmentToStack.
         // EXP-060: Also log for setParentLayout and presentFragment.
         // EXP-063: Also log for getString.
-        if (method.name.find("addFragmentToStack") != std::string::npos ||
+        // (§24: env-gated — MINIANDROID_APP_TRACE=1.)
+        if (app_trace_on &&
+            (method.name.find("addFragmentToStack") != std::string::npos ||
             method.name == "setParentLayout" ||
             method.name == "presentFragment" ||
-            method.name == "getString") {
+            method.name == "getString")) {
             std::cerr << "[EXP058-REGS] " << cls_ref.name << "." << method.name
                       << " method.regs=" << method.registers_size
                       << " method.ins=" << method.ins_size
@@ -4708,10 +4733,13 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             }
         }
 
-        // EXP-055: Debug log before execute_method_internal.
-        std::cerr << "[RET-BEFORE] " << cls_ref.name << "." << method.name
-                  << " bytecode_size=" << method.bytecode.size()
-                  << std::endl;
+        // EXP-055: Debug log before execute_method_internal (§24:
+        // env-gated — MINIANDROID_METHOD_TRACE=1).
+        if (method_trace_on) {
+            std::cerr << "[RET-BEFORE] " << cls_ref.name << "." << method.name
+                      << " bytecode_size=" << method.bytecode.size()
+                      << std::endl;
+        }
 
         execute_method_internal(
             cls_ref.name,
