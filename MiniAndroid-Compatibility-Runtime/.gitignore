@@ -107,3 +107,4 @@ miniandroid/run/demo_timer_evidence/
 
 # stray runtime data written by corpus runs at the repository root
 /runtime/
+.build_*/
