@@ -7,12 +7,18 @@
 #   RUN A (--tap 540,178 on btn_tap, enabled, state-list background):
 #     frame_000  launch: btn_tap bbox = #2196F3 blue, counter "Taps: 0"
 #     frame_001  mid-press: btn_tap bbox = #FF5252 RED (pressed visible)
-#     frame_002  post-click: btn_tap blue again, counter text changed
-#                (real DEX onClick mutated the app state), pressed cleared
+#     post-drain frames (M3 FINDING-010 tick frames — the frame stream now
+#                also captures mutations DURING the queue drain):
+#       the drain may emit intermediate frames (e.g. PerformClick applied
+#       while still pressed, then UnsetPressedState restoring blue).
+#       LAW (index-robust): SOME frame after the press shows the button
+#       restored to #2196F3, and the FINAL frame must show it restored —
+#       press is transient (64ms law); the counter must read "Taps: 1" in
+#       the final state (real DEX onClick mutated the app state).
 #     manifest   DOWN consumed + setPressed(true); UP click_posted;
 #                PerformClick dispatched (real DEX); UnsetPressedState at +64
 #   RUN B (--tap 540,430 on btn_disabled):
-#     all 3 frames byte-identical (disabled law: consumes, never responds)
+#     all frames byte-identical (disabled law: consumes, never responds)
 #   DETERMINISM: RUN A executed 3× — frame SHAs byte-identical (checked by
 #     the battery script over the 3 output dirs).
 #
@@ -125,19 +131,36 @@ def main():
 
     w, h, p0 = frame_pixels(run_a, "frame_000.png")
     _, _, p1 = frame_pixels(run_a, "frame_001.png")
-    _, _, p2 = frame_pixels(run_a, "frame_002.png")
 
     blue0 = count_color(p0, w, h, BLUE, BTN_TAP)
     red1 = count_color(p1, w, h, RED, BTN_TAP)
-    blue2 = count_color(p2, w, h, BLUE, BTN_TAP)
     red0 = count_color(p0, w, h, RED, BTN_TAP)
     check(blue0 > BTN_AREA * 0.9 and red0 == 0,
           "frame_000: btn_tap is selector default #2196F3 (unpressed)")
     check(red1 > BTN_AREA * 0.9,
           "frame_001: pressed state VISIBLE — #FF5252 fills the button "
           "(StateListDrawable re-pick law)")
-    check(blue2 > BTN_AREA * 0.9,
-          "frame_002: UnsetPressedState restored #2196F3 (64ms law)")
+
+    # M3 FINDING-010: the drain emits mutation-keyed tick frames between the
+    # press and the post-gesture frame. The 64ms UnsetPressedState law is
+    # stream-level: the restored #2196F3 state must APPEAR after the press
+    # and PERSIST to the final frame (press is transient).
+    frame_names = [f["file"] for f in m["frames"]]
+    restored_at = None
+    blue_final = 0
+    for idx, fname in enumerate(frame_names):
+        _, _, pf = frame_pixels(run_a, fname)
+        bf = count_color(pf, w, h, BLUE, BTN_TAP)
+        rf = count_color(pf, w, h, RED, BTN_TAP)
+        if idx >= 2 and restored_at is None and bf > BTN_AREA * 0.9 and rf == 0:
+            restored_at = idx
+        blue_final = bf if idx == len(frame_names) - 1 else blue_final
+    check(restored_at is not None,
+          "a post-press frame restores #2196F3 (UnsetPressedState 64ms law; "
+          f"first restored frame index={restored_at})")
+    check(blue_final > BTN_AREA * 0.9,
+          "final frame: btn_tap still #2196F3 (pressed state transient — "
+          "no sticky press law)")
 
     evs = {e["action"]: e for e in m["events"]}
     down, up = evs.get("ACTION_DOWN", {}), evs.get("ACTION_UP", {})
@@ -165,14 +188,16 @@ def main():
           "tap window: UP within +50ms virtual (< TAP_TIMEOUT-scale tap)")
 
     texts0 = {t["text"] for t in m["frames"][0].get("visible_texts", [])}
-    texts2 = {t["text"] for t in m["frames"][2].get("visible_texts", [])}
+    final_texts = {t["text"]
+                   for t in m["frames"][-1].get("visible_texts", [])}
     check("Taps: 0" in texts0, "launch state: counter at 0")
-    check("Taps: 1" in texts2,
-          "post-click state: counter incremented by the app's own DEX "
+    check("Taps: 1" in final_texts,
+          "final state: counter incremented by the app's own DEX "
           "onClick (state mutation)")
 
     print("── RUN B: tap on btn_disabled (disabled law) ──")
     mb = json.loads((Path(run_b) / "frames" / "manifest.json").read_text())
+    frame_names_b = [f["file"] for f in mb["frames"]]
     evs_b = {e["action"]: e for e in mb["events"]}
     db, ub = evs_b.get("ACTION_DOWN", {}), evs_b.get("ACTION_UP", {})
     check(db.get("consumed") is True and db.get("disabled_law") is True,
@@ -185,11 +210,15 @@ def main():
           "ZERO pixels changed: disabled tap is visually inert")
 
     _, _, b0 = frame_pixels(run_b, "frame_000.png")
-    _, _, b1 = frame_pixels(run_b, "frame_001.png")
-    _, _, b2 = frame_pixels(run_b, "frame_002.png")
-    check(b0 == b1 == b2,
+    _, _, blast = frame_pixels(run_b, frame_names_b[-1])
+    identical = True
+    for fname in frame_names_b[1:]:
+        _, _, bf = frame_pixels(run_b, fname)
+        if bf != b0:
+            identical = False
+    check(identical and b0 == blast,
           "all disabled-run frames byte-identical (no response law)")
-    g1 = count_color(b1, w, h, GREY, BTN_DISABLED)
+    g1 = count_color(blast, w, h, GREY, BTN_DISABLED)
     check(g1 > (BTN_DISABLED[2] - BTN_DISABLED[0]) *
           (BTN_DISABLED[3] - BTN_DISABLED[1]) * 0.9,
           "disabled button still draws its static #9E9E9E background "

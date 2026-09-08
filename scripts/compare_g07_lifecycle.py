@@ -4,9 +4,22 @@
 # RUN A (--tap 540,400 on btn_finish):
 #   frame_000 texts contain "CSR"  — onCreate→onStart→onResume ran through
 #                                    REAL DEX (the app's own mark() writes)
-#   frame_002 texts contain "CSRPHD" — the finish cascade (onPause → onStop
+#   FINAL frame texts contain "CSRPHD" — the finish cascade (onPause → onStop
 #                                    → onDestroy) ran through REAL DEX at
 #                                    the frame boundary
+#                                    (M3 FINDING-010: the drain now emits
+#                                    mutation-keyed tick frames, so the
+#                                    post-finish frame index is stream-
+#                                    dependent — the law is checked on the
+#                                    FINAL frame, not a fixed index.)
+#   TICK CHAIN LAW (finite repost chain, real-ART):
+#     pending Handler messages legitimately fire after onDestroy (the
+#     classic Android Handler-leak semantics — Lint: "Handler should be
+#     static"); the fixture's chain is self-limiting at 3, so the stream
+#     must show Ticks 1→2→3 in order and "Ticks: 4" in NO frame. The old
+#     check ("Ticks: 1" frozen in the post-finish frame) encoded the old
+#     runtime's stranded-future-message bug (FINDING-009) — messages that
+#     real ART WOULD have dispatched.
 #   manifest.finish_cascade: 3 callbacks, all dispatched with instructions>0
 #   lifecycle_trace.json: full machine PROCESS_CREATED → … → DESTROYED in
 #   the exact AOSP order
@@ -47,17 +60,40 @@ def main():
 
     print("── RUN A: tap FINISH → lifecycle cascade at frame boundary ──")
     m = json.loads((Path(run_a) / "frames" / "manifest.json").read_text())
-    t0, t2 = texts_of(m["frames"][0]), texts_of(m["frames"][2])
+    t0 = texts_of(m["frames"][0])
+    tfin = texts_of(m["frames"][-1])
     check("CSR" in t0,
           "boot lifecycle visible: onCreate+onStart+onResume executed via "
           "real DEX (app's own mark() output)")
     check("Ticks: 1" in t0,
           "postDelayed runnable fired at the idle-settle boundary "
           "(main-thread dispatch)")
-    check("CSRPHD" in t2,
+    check("CSRPHD" in tfin,
           "post-finish state: onPause+onStop+onDestroy executed via real "
-          "DEX — the app's own text records the full machine")
-    check("Ticks: 1" in t2, "tick chain correctly stopped at 3 (finite)")
+          "DEX — the app's own text records the full machine (final frame)")
+    # M3 FINDING-009/010: finite repost chain law, stream-level. The tick
+    # counter must reach exactly 3, in order, across the frame stream, and
+    # never exceed 3 — the self-limit holds even though pending messages
+    # fire after onDestroy (real-ART leak semantics).
+    tick_seq = []
+    seen = set()
+    overflow = False
+    for f in m["frames"]:
+        for t in f.get("visible_texts", []):
+            txt = t.get("text", "")
+            if txt.startswith("Ticks: "):
+                n = txt.split(": ", 1)[1]
+                if n == "4" or (len(n) >= 2) or (n.isdigit() and int(n) > 3):
+                    overflow = True
+                if n not in seen:
+                    seen.add(n)
+                    tick_seq.append(n)
+    check(tick_seq == ["1", "2", "3"],
+          f"tick chain finite: Ticks advanced exactly 1→2→3 in order "
+          f"(observed {tick_seq})")
+    check(not overflow,
+          "tick chain correctly stopped at 3 (no Ticks: 4+ anywhere in "
+          "the frame stream)")
 
     fc = m.get("finish_cascade")
     check(fc is not None, "finish() cascade consumed at the frame boundary")
