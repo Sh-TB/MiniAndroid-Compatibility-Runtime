@@ -805,6 +805,26 @@ public:
         // EXP-060: Listener storage — the heap object_id of the
         // OnClickListener (or 0 if none). When dispatchClick is called
         // the runtime invokes listener.onClick(this_view) via try_recursive_invoke.
+        // ── M3 FINDING-011: AOSP View tag law (View.java mTag/mKeyedTags) ──
+        // androidx ViewTree* helpers (ViewTreeLifecycleOwner,
+        // ViewTreeViewModelStoreOwner, SavedStateHandleSupport) cache their
+        // per-view owner objects via View.setTag(R.id.view_tree_*, owner)
+        // and retrieve them with View.getTag(R.id.*) — the keyed-tag call is
+        // their "is the owner already installed?" dedupe contract. A silent
+        // no-op here re-creates the owner on EVERY access (observed: dooz
+        // registers SavedStateHandlesProvider twice → its own
+        // IllegalArgumentException → 10-exception cascade → white screen).
+        // Values preserve heap object identity (androidx check-casts the
+        // retrieved tag and invokes methods on it).
+        struct TagValue {
+            enum Kind { NONE = 0, OBJECT = 1, STRING = 2, INT = 3 } kind = NONE;
+            uint32_t object_id = 0;
+            std::string object_class;  // runtime class of a tagged object
+            std::string string_val;    // STRING-kind payload
+            int32_t int_val = 0;       // INT-kind payload
+        };
+        TagValue default_tag;                        // View.setTag(Object) / getTag()
+        std::map<int32_t, TagValue> keyed_tags;      // View.setTag(int, Object) / getTag(int)
         uint32_t click_listener_id = 0;
         std::string click_listener_class;  // DEX descriptor of the listener class
         uint32_t long_click_listener_id = 0;
@@ -1005,6 +1025,9 @@ public:
                 "setLayoutParams", "getLayoutParams",
                 "measure", "layout", "draw",
                 "requestLayout", "invalidate",
+                // M3 FINDING-011: AOSP View tag law (mTag + mKeyedTags) —
+                // the androidx ViewTree* owner-cache backbone.
+                "setTag", "getTag",
                 // EXP-060: Listener registration + click dispatch.
                 "setOnClickListener",
                 "setOnLongClickListener",

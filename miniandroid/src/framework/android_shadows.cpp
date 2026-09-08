@@ -1727,6 +1727,65 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         n->enabled = ctx.arg_as_bool(0, true);
         return CallResult::handled_void();
     }
+    // ── M3 FINDING-011: AOSP View tag law (View.java mTag + mKeyedTags) ──
+    // setTag(Object) → mTag; setTag(int key, Object) → mKeyedTags (SparseArray).
+    // getTag() / getTag(int): absent value → null (AOSP returns null, never
+    // throws). Tag values keep heap object identity: androidx retrieves the
+    // owner and invokes methods on it, so OBJECT-kind tags round-trip the
+    // object_id + runtime class verbatim.
+    if (m == "setTag") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        ViewNode::TagValue tv;
+        if (!ctx.args.empty()) {
+            const auto& a = ctx.args[ctx.args.size() - 1];  // LAST arg = the tag
+            switch (a.kind) {
+                case CallContext::Arg::Kind::OBJECT:
+                    tv.kind = ViewNode::TagValue::OBJECT;
+                    tv.object_id = a.object_id;
+                    tv.object_class = a.object_class;
+                    break;
+                case CallContext::Arg::Kind::STRING:
+                    tv.kind = ViewNode::TagValue::STRING;
+                    tv.string_val = a.string_val;
+                    break;
+                case CallContext::Arg::Kind::INT:
+                    tv.kind = ViewNode::TagValue::INT;
+                    tv.int_val = a.int_val;
+                    break;
+                default:
+                    break;  // NULL_REF / numeric tag → NONE (AOSP stores null)
+            }
+        }
+        if (ctx.args.size() >= 2) {
+            // AOSP signature disambiguation: setTag(int key, Object tag).
+            // (setTag(Object) has exactly 1 arg.)
+            n->keyed_tags[ctx.arg_as_int(0)] = tv;
+        } else {
+            n->default_tag = tv;
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "getTag") {
+        const auto* n = find_node(ctx.receiver_id);
+        if (!n) return CallResult::handled_null();
+        const ViewNode::TagValue* tv = nullptr;
+        if (ctx.args.size() >= 1) {
+            auto it = n->keyed_tags.find(ctx.arg_as_int(0));
+            if (it != n->keyed_tags.end()) tv = &it->second;
+        } else {
+            tv = &n->default_tag;
+        }
+        if (!tv || tv->kind == ViewNode::TagValue::NONE)
+            return CallResult::handled_null();
+        if (tv->kind == ViewNode::TagValue::OBJECT)
+            return CallResult::handled_object(tv->object_id,
+                                              tv->object_class.empty()
+                                                  ? "Ljava/lang/Object;"
+                                                  : tv->object_class);
+        if (tv->kind == ViewNode::TagValue::STRING)
+            return CallResult::handled_string(tv->string_val);
+        return CallResult::handled_int(tv->int_val);
+    }
     if (m == "isEnabled") {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_bool(n ? n->enabled : true);
