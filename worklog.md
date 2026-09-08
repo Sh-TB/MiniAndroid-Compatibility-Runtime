@@ -60,3 +60,22 @@ Stage Summary:
 - HEAD: 0bd53bf1, remote synced, battery 64/64 (all stages genuinely executing).
 - F-012 UNBLOCKED → 64/64. F-018 closed. Measurement integrity restored (F-019).
 - Next: P0-B generic dispatch audit (§3 try_recursive_invoke inventory, §4 return families, §27 zero-special-case), then P0-C async closure.
+
+---
+Task ID: M3-S11-2
+Agent: Super Z (main coder session 11 — continuation: P0-B/P0-C/P0-D/P1-C)
+Task: §3/§4/§24/§27 dispatch+diagnostic audit; §8 async closure audit; §9 cross-APK verification; §18 dooz re-classification.
+
+Work Log:
+- §24 GATING: [METHOD-IN] (100k cap, unconditional) + [RET-BEFORE] (uncapped) + 9 fixture-keyed traces env-gated (MINIANDROID_METHOD_TRACE / MINIANDROID_APP_TRACE). No validator depended on them (verified). Log noise ~5×000→bounded; evidence-grade signals visible.
+- §27 CLASSIFICATION (recorded, not rewritten): LocaleController.formatString intercept, RLottieImageView.setAnimation link, BaseFragment/SpringAnimation/DynamicAnimation short-circuits = FIXTURE-SPECIFIC; exoplayer2 Util.toByteArray = real gap is InputStream EOF law (documented, demand deferred).
+- §4 return families: nested-invoke save/restore verified sound (saved_last_invoke_return + frame_unwind_exception isolation + current_result_ save) — no single-slot clobber. §4.4 provenance: per-DEX current_dex_index_ set from class_to_dex_index_.
+- §8 AUDIT: A) no hidden lifetime throttles (FIX-M3-009 law intact); B) active-cycle guard carries receiver oid (F-017b verified at dalvik_engine.cpp:4046+); C) virtual clock single-owner (HandlerShadow::virtual_now_ms; advance_virtual clamps negative → monotonic; settle/next_ready_ms fast-forward); D) Executor demand = microtimer only (Executor.execute + Executors.newFixedThreadPool) — DETECTED-IN-DEX NOT EXERCISED, latent boundary documented, not fake-implemented.
+- §9 P0-D: ChessClock v29 fetched hash-verified (5ca6f2c5) → run SUCCESS → tap-driven countdown 10:00→9:59 (postDelayed + virtual clock) → 3-run byte determinism 8/8. CROSS-APK VERIFIED. muellerma Stopwatch: NO <activity> in manifest → Tile-app boundary (§18/§19 classified). BGClock: root node WebView → WEBVIEW boundary. Third independent async APK = battery-proven simplestopwatch.
+- §18 P1-C dooz re-run at 65c010f2: PARTIAL. F-016 unwind forensics + DEX probe: ISE = Compose SnapshotKt.readError ("Reading a state that was created after the snapshot…") at LP/l;.q pc=11 via setContent→mutableStateOf chain. SavedStateHandlesProvider hypothesis RETIRED. Thread-identity inputs verified. Registered F-020 (DOCUMENTED COMPOSE BOUNDARY, Tier-2). Latent demand: Enum.compareTo shadow (int fallback 0).
+- Commits: 0bd53bf1 (F-018+F-019), 65c010f2 (§24/§27), da480859 (P0-D registry), d69310b3 (F-020). ALL PUSHED.
+
+Stage Summary:
+- FINAL_HEAD d69310b3; battery 64/64 (binary unchanged since 65c010f2 build; docs-only commits after).
+- Findings: F-018 REGRESSION-VERIFIED; F-019 tool-fix VERIFIED; F-020 ROOT-LOCATED boundary; FORGOTTEN-021 (Enum.compareTo latent demand) noted in F-020 entry.
+- Issue #9 update + final report next.
