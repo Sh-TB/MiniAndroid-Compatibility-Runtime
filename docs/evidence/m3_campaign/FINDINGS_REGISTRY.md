@@ -1017,3 +1017,43 @@ session). These are items the campaign plan did NOT explicitly list.
 - Status: FIXED + REGRESSION-VERIFIED (fixture visual + battery + F-012)
 - Priority: P1 (§4 Executor closure blocker)
 - Commit: (this commit)
+
+## FINDING-026 (§5 — bare SQLiteDatabase.rawQuery(String,String[]) had NO handler)
+- Subsystem: STORAGE / SQLITE SHADOW (Cursor production law)
+- Trigger: f026_room_sql_law fixture at HEAD 948e104d — L1/L6 red: every
+  scalar read returned -999; [F026-PROBE] bounded probe proved db_dispatch
+  SAW rawQuery with correct STRING arg kinds, but only rawQueryWithFactory
+  existed — bare rawQuery fell through to the fail-soft bridge and the
+  "cursor" was null (moveToFirst() false, silent, every read poisoned).
+- Five-class attribution: SQLITE semantics CLEAN (execSQL/txn/UPDATE/
+  DELETE all correct — the DB file on disk held exactly the committed
+  state), Cursor semantics MISSING (rawQuery handler absent), Room adapter
+  N/A (fixture is hand-rolled kapt-shape; Room-generated chain covered by
+  microtimer F-012), runtime object fields N/A, app-specific N/A.
+- Law (AOSP SQLiteDatabase.rawQuery): sql at position 0 (after receiver),
+  selectionArgs bound 1-based in order, null array = no bindings, returns
+  live Cursor positioned before first.
+- Fix: raw_query_common() shared materialization; rawQuery joins
+  rawQueryWithFactory (same cursor law). "rawQuery" added to
+  implemented_methods.
+- Status: FIXED + REGRESSION-VERIFIED (7-band fixture + battery)
+- Priority: P1 (§5 closure blocker)
+- Commit: (this commit)
+
+## FINDING-027 (§5/§8 — String.contentEquals answered the ALWAYS-FALSE stub)
+- Subsystem: JAVA CORE / STRING LAW (api_dispatcher ClassResolver stub)
+- Trigger: same fixture — L1 red with rows=3 proven correct: the walk built
+  "ABC" but "ABC".contentEquals(sb) returned false.
+- Root cause: api_dispatcher.cpp:100 `equals || contentEquals → ok("false")`
+  — a §8 fail-wrong-law stub: a comparison API that always answers false
+  is not a neutral placeholder, it poisons every caller's branch. (The
+  engine-level String.equals was already real; contentEquals was not.)
+- Law (OpenJDK String.contentEquals(CharSequence)): true iff this string's
+  char sequence equals cs's contents. StringBuilder/StringBuffer expose
+  their accumulated chars via the heap field "sb_value" (EXP-094 law).
+- Fix: REAL contentEquals at both engine bridge sites (STRING_REF direct
+  compare; OBJECT_REF reads sb_value, falls back to "value"; unreadable
+  CharSequence → loud [STRING-LAW] diagnostic + false, documented).
+- Status: FIXED + REGRESSION-VERIFIED (fixture L1/L6 + battery)
+- Priority: P1 (§8 audit hit — fail-wrong-law stub eliminated)
+- Commit: (this commit)
