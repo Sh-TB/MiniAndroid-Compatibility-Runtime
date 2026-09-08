@@ -1,0 +1,147 @@
+── run_test_battery @ 61fd7f17 (resume=0) ──
+  [1] PASS  build (make -j)
+  [2] PASS  build (make resource_trace)
+  [3] PASS  link semantic_long_cmp_conv_test
+  [4] PASS  link semantic_switch_parse_neg_test
+  [5] PASS  link semantic_pass3_bridge_test
+  [6] PASS  semantic long/cmp/conv (expect 14)
+  [7] PASS  semantic switch parse-neg (expect 25)
+  [8] PASS  semantic pass3 bridge (expect 57)
+  [9] PASS  link mutf8_test
+  [10] PASS  mutf8 string-pool battery (expect 14)
+RESULT: 14 passed, 0 failed
+  [11] PASS  link resource_config_selection_test
+  [12] PASS  resource-config selection law (expect 48)
+RESULT: 48 passed, 0 failed
+  [13] PASS  link resource_core_law_test
+  [14] PASS  resource core law (expect 42)
+RESULT: 42 passed, 0 failed
+  [15] PASS  link resource_hostile_test
+  [16] PASS  resource hostile safety (expect 18)
+RESULT: 18 passed, 0 failed
+  [17] PASS  link linear_layout_law_test
+  [18] PASS  LinearLayout/MeasureSpec law (expect 24)
+RESULT: 24 checks, 0 failures
+  [19] PASS  link g10_layout_law_test
+  [20] PASS  G10 measurement/layout law (expect 23)
+G10 law battery: 23 checks, 0 failures
+  [21] PASS  link g11_ctor_law_test
+  [22] PASS  G11 ctor/Factory/addView law (expect 37)
+G11 ctor law battery: 37 checks, 0 failures
+  [23] PASS  link g04_hostile_test
+  [24] PASS  G04 hostile safety (expect 24)
+RESULT: 24 checks, 0 failures
+  [25] PASS  link input_pipeline_law_test
+  [26] PASS  G06 input pipeline law (expect 45)
+INPUT PIPELINE LAW: ALL PASS
+  [27] PASS  link lifecycle_law_test
+  [28] PASS  G07 lifecycle law (expect 25)
+LIFECYCLE LAW: ALL PASS
+  [29] PASS  link g06g08_hostile_test
+  [30] PASS  G06-G08 hostile safety (expect 16)
+G06-G08 HOSTILE: ALL PASS
+  [31] PASS  link encoded_value_law_test
+  [32] PASS  encoded_value AOSP law (expect 18)
+RESULT: 18 passed, 0 failed
+  [33] PASS  link shadow_registry_invariant_test
+  [34] PASS  §6 shadow registry invariant (expect 24)
+§6 shadow registry invariant battery: 24 checks, 0 failures
+  [35] PASS  helloworld_golden (§28)
+HELLOWORLD-GOLDEN VALIDATION: ALL PASS (26 checks)
+  [36] PASS  tictactoe_golden (§29 interaction + determinism)
+TICTACTOE-GOLDEN VALIDATION: ALL PASS (8 checks)
+  [37] FAIL  EXT-01 typography golden (9 static checks) (rc=1)
+  (fixture missing: /home/z/corpus/external_hello/HelloWorldSelfAware-1.1.0-android.apk — fetch per docs/evidence/EXTERNAL_FIXTURE_HELLOWORLDSELFAWARE.md)
+  [38] FAIL  EXT-02 interaction golden (12 static checks) (rc=1)
+  (fixture missing: /home/z/corpus/external_hello/HelloWorldSelfAware-1.1.0-android.apk)
+  [39] PASS  density-matrix oracle (G04 §4)
+DENSITY MATRIX: ALL PASS
+  [40] PASS  G06 fixture build (aapt2+ECJ+D8)
+  [41] PASS  G06 interaction golden (21 law checks)
+  [42] PASS  G06 tap 3-run determinism (frame SHAs identical)
+  [43] PASS  G07 fixture build (aapt2+ECJ+D8)
+  [44] PASS  G07 lifecycle golden (16 machine checks)
+  [45] PASS  G07 finish-cascade 3-run determinism (frame SHAs identical)
+  [46] PASS  G08 fixture build (aapt2+ECJ+D8)
+  [47] PASS  G08 navigation golden (17 law checks)
+  [48] PASS  G08 navigation 3-run determinism (frame SHAs identical)
+  [49] PASS  M3 fixture build (aapt2+ECJ+D8)
+  [50] PASS  link m3_arsc_style_law_test
+  [51] PASS  M3 ARSC style law (17 checks)
+  [52] PASS  M3 fixture run
+  [53] PASS  M3 style geometry golden (6 law checks)
+  [54] PASS  corpus fetch (hash-verified)
+  [55] PASS  corpus run omegacentauri.mobi.simplestopwatch_26
+  [56] PASS  corpus run de.duenndns.gmdice_8
+  [57] PASS  corpus run dubrowgn.microtimer_8
+  [58] PASS  M3 F-012 persistence+fresh-state determinism golden
+[GATE-H] settings: white=5060 colors=173 IoU=0.959
+[GATE-H] menu: white=3388 colors=17 IoU=0.997
+  [59] PASS  GATE H real-APK image pipeline golden
+  [60] PASS  F-016 fixture APK build (aapt2+ECJ+D8)
+  [61] PASS  F-016 default-mode honesty (unwind+PARTIAL+crash.log)
+  [62] PASS  F-016 strict-mode process death (CRASH + dispatch refused)
+──────────────────────────────────────────────
+PASS  build (make -j)
+PASS  build (make resource_trace)
+PASS  link semantic_long_cmp_conv_test
+PASS  link semantic_switch_parse_neg_test
+PASS  link semantic_pass3_bridge_test
+PASS  semantic long/cmp/conv (expect 14)
+PASS  semantic switch parse-neg (expect 25)
+PASS  semantic pass3 bridge (expect 57)
+PASS  link mutf8_test
+PASS  mutf8 string-pool battery (expect 14)
+PASS  link resource_config_selection_test
+PASS  resource-config selection law (expect 48)
+PASS  link resource_core_law_test
+PASS  resource core law (expect 42)
+PASS  link resource_hostile_test
+PASS  resource hostile safety (expect 18)
+PASS  link linear_layout_law_test
+PASS  LinearLayout/MeasureSpec law (expect 24)
+PASS  link g10_layout_law_test
+PASS  G10 measurement/layout law (expect 23)
+PASS  link g11_ctor_law_test
+PASS  G11 ctor/Factory/addView law (expect 37)
+PASS  link g04_hostile_test
+PASS  G04 hostile safety (expect 24)
+PASS  link input_pipeline_law_test
+PASS  G06 input pipeline law (expect 45)
+PASS  link lifecycle_law_test
+PASS  G07 lifecycle law (expect 25)
+PASS  link g06g08_hostile_test
+PASS  G06-G08 hostile safety (expect 16)
+PASS  link encoded_value_law_test
+PASS  encoded_value AOSP law (expect 18)
+PASS  link shadow_registry_invariant_test
+PASS  §6 shadow registry invariant (expect 24)
+PASS  helloworld_golden (§28)
+PASS  tictactoe_golden (§29 interaction + determinism)
+FAIL  EXT-01 typography golden (9 static checks) (rc=1)
+FAIL  EXT-02 interaction golden (12 static checks) (rc=1)
+PASS  density-matrix oracle (G04 §4)
+PASS  G06 fixture build (aapt2+ECJ+D8)
+PASS  G06 interaction golden (21 law checks)
+PASS  G06 tap 3-run determinism (frame SHAs identical)
+PASS  G07 fixture build (aapt2+ECJ+D8)
+PASS  G07 lifecycle golden (16 machine checks)
+PASS  G07 finish-cascade 3-run determinism (frame SHAs identical)
+PASS  G08 fixture build (aapt2+ECJ+D8)
+PASS  G08 navigation golden (17 law checks)
+PASS  G08 navigation 3-run determinism (frame SHAs identical)
+PASS  M3 fixture build (aapt2+ECJ+D8)
+PASS  link m3_arsc_style_law_test
+PASS  M3 ARSC style law (17 checks)
+PASS  M3 fixture run
+PASS  M3 style geometry golden (6 law checks)
+PASS  corpus fetch (hash-verified)
+PASS  corpus run omegacentauri.mobi.simplestopwatch_26
+PASS  corpus run de.duenndns.gmdice_8
+PASS  corpus run dubrowgn.microtimer_8
+PASS  M3 F-012 persistence+fresh-state determinism golden
+PASS  GATE H real-APK image pipeline golden
+PASS  F-016 fixture APK build (aapt2+ECJ+D8)
+PASS  F-016 default-mode honesty (unwind+PARTIAL+crash.log)
+PASS  F-016 strict-mode process death (CRASH + dispatch refused)
+BATTERY GATE: FAILURES PRESENT (62 stages)
