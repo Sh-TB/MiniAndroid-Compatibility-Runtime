@@ -79,3 +79,36 @@ Stage Summary:
 - FINAL_HEAD d69310b3; battery 64/64 (binary unchanged since 65c010f2 build; docs-only commits after).
 - Findings: F-018 REGRESSION-VERIFIED; F-019 tool-fix VERIFIED; F-020 ROOT-LOCATED boundary; FORGOTTEN-021 (Enum.compareTo latent demand) noted in F-020 entry.
 - Issue #9 update + final report next.
+
+---
+Task ID: M3-S12-1
+Agent: Super Z (main coder session 12 — GROUND TRUTH + F-020 completion)
+Task: §1 Ground Truth First (battery re-verification at current HEAD), then §2 F-020 completion.
+
+Work Log:
+- START_HEAD 9fe2d773 (unpushed UUID commit from interrupted session, dated 2026-09-08 17:06Z); origin/main 61fd7f17; tree clean. The UUID commit contains substantial F-020 work: AtomicShadow (atomic family, 227 lines), ExecutorShadow (§4, 122 lines), dalvik_engine vtable most-derived-override law + ctor direct-invocation law + executor ownership guard, fixtures f020_snapshot/f020_executor, battery stages (64→67).
+- Fresh battery re-verification attempt 1 (nohup): SILENTLY KILLED during GATE H run3 (RSS=24MB, not OOM — cgroup oom_kill=0). Attempt 2 (setsid): killed during resource_trace link. Forensic monitor (scripts/monitor_battery.sh) captured state every 2s; attempt 3 COMPLETED — kills are intermittent/external (harness-level, mechanism unresolved; no OOM, no ulimit). Monitor approach works.
+- BATTERY v3 result: 66/67 + FAIL §6 shadow registry invariant. ROOT: commit 9fe2d773 is internally inconsistent — shadow_registry.cpp registers TWO new shadows (AtomicShadow + ExecutorShadow = 18 canonical) but the test law was only updated for one (17/19). Yesterday's "PASS" log predates the ExecutorShadow registration line. Interrupted session froze a half-edited law — caught by fresh re-verification exactly as §0 mandates.
+- FIX: invariant law 17→18 / 19→20 (both shadows named). Focused test: 24 checks, 0 failures. FULL FRESH BATTERY v4: 67/67 ALL PASS at 9fe2d773+fix (resume=0 header verified).
+- Commit e9304898 (law fix + monitor script). PUSH BLOCKED: no GitHub credentials in this container (/home/z/.gh_token absent, no gh auth) — commits safe locally; recorded as §11 environment boundary, not fake success.
+
+Stage Summary:
+- Ground truth restored: battery 67/67 ALL PASS, all stages genuinely executing at current HEAD.
+- NEW TOOL FINDING (F-022 candidate): commit 9fe2d773 test-law under-count (registration=2 shadows, law updated for 1) — fixed in e9304898.
+- NEXT: §2 F-020 completion — dooz re-run at current HEAD + independent Compose APK; then 3A/3B, Executor audit, Room, forgotten audit, cross-APK, final report.
+
+---
+Task ID: M3-S12-2
+Agent: Super Z (session 12 — §2 F-020 completion)
+Task: dooz re-run at current HEAD; F-020 status reconciliation; next-layer root location.
+
+Work Log:
+- dooz at HEAD: SUCCESS rc=0 (was PARTIAL ISE), lifecycle CREATE→STARTED→RESUMED, 3-run byte-identical (sha 31ddd4d5…). readError ISE eliminated by the three F-020 fixes.
+- §10 honesty: frame is 100% WHITE (0/2073600 non-white px) — NOT counted as visual proof.
+- Next layer root-located precisely: AbstractComposeView.setContent defers composition until view attach; runtime REC-MISSes View.isAttachedToWindow (→false) + addOnAttachStateChangeListener; composition parked forever → ComposeView node=115 children=0 → blank. Registered F-023 (ROOT-LOCATED, P1, next battle).
+- F-020 updated to REGRESSION-VERIFIED (snapshot primitive laws: AtomicShadow family + vtable most-derived-override + Enum.compareTo; fixture 5-band visual golden; battery 67/67).
+
+Stage Summary:
+- F-020 CLOSED at primitive-law level; dooz advanced PARTIAL→SUCCESS but stays BOUNDARY (blank) pending F-023 (Compose attach/composition battle).
+- Independent Compose APK proof deferred with F-023 (belongs to the Compose host frontier).
+- NEXT: §3 3A InputStream EOF law + 3B Enum.compareTo verification; §4 Executor audit; §5 Room; §6 forgotten audit; §7 cross-APK; §15 report.
