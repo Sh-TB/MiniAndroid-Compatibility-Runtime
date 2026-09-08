@@ -279,6 +279,61 @@ Priority: P0 foundational/multi-APK · P1 families/visual closure · P2 breadth 
 - GATE Q diagnostics: PASS (MINIANDROID_FIELD_TRACE / MINIANDROID_WIDE_DIAG /
   m3_disasm.py / m3_invoke_inventory.py / DUMP_CLICKABLES in tap mode pending)
 
+## FINDING-011
+- Subsystem: VIEW / ANDROIDX (keyed View tags — the ViewTree* backbone, P0)
+- Trigger: dooz (AndroidX game, 1.7MB) boots SUCCESS but renders a 100% WHITE
+  frame; unote/bouncy render skeleton/flat screens — every modern AndroidX app
+  double-initializes its ViewTree owners
+- APK: ir.yamin8000.dooz1 (androidx + lifecycle-viewmodel-savedstate); the family
+  (droidify, openlauncher, tinymusicplayer, bouncy) shares the pattern
+- Static evidence: androidx ViewTreeViewModelStoreOwner/ViewTreeLifecycleOwner/
+  SavedStateHandleSupport cache their per-owner state via
+  View.setTag(R.id.view_tree_*, owner) + View.getTag(R.id.*) — the AOSP keyed-tag
+  law (View.java mKeyedTags SparseArray). grep: ViewShadow has NO tag field; the
+  runtime has ZERO setTag/getTag implementation — the call silently no-ops
+  (the FINDING-007 silent-stub class).
+- Runtime evidence (dooz run + MINIANDROID_METHOD_TRACE="savedstate/a|d"):
+  SavedStateRegistry.registerSavedStateProvider is invoked THREE times:
+    (1) key="androidx.lifecycle.internal.SavedStateHandlesProvider" — OK (entry
+        created),
+    (2) key="android:support:activity-result" — OK,
+    (3) key="androidx.lifecycle.internal.SavedStateHandlesProvider" AGAIN —
+        g/b.c lookup finds entry (1) with a non-null provider → the app's own
+        IAE("SavedStateProvider with the given key is already registered") →
+        no handler in androidx/savedstate/a.d → 10-exception unwind cascade →
+        empty window.
+  The double registration is the SECOND lazy-init of SavedStateHandleSupport:
+  with tags lost, androidx cannot see that the owner is already installed and
+  re-creates it (real Android: the tagged cache makes the second access a no-op).
+- Root cause: missing View keyed-tag API (setTag(I,Ljava/lang/Object;)V /
+  getTag(I)Ljava/lang/Object; / setTag(Ljava/lang/Object;)V / getTag()) —
+  androidx's owner-cache contract silently degrades.
+- Law: AOSP View.java — mTag (default) + mKeyedTags SparseArray<Integer,Object>;
+  getTag(key) with no value = null; values are object references with preserved
+  identity (androidx check-casts and calls methods on the retrieved owner).
+- Fix candidate: ViewShadow node storage {default_tag; keyed_tags map<int,tag>}
+  with object-identity round-trip; dispatch for the 4 methods; silent-no-op
+  eliminated (loud IMPLEMENTED status).
+- Fix STATUS (session 7): TAG LAW LANDED (ViewShadow setTag/getTag both forms,
+  identity-preserving; [TAG-PROBE]×11 bridge entries fire; battery 59/59). BUT
+  dooz STILL renders white with the SAME double registration — the dedupe driver
+  for the SavedStateHandlesProvider re-register is NOT (only) the View tag:
+  the second registration arrives via the REFLECTIVE lifecycle path
+  (ReflectiveGenericLifecycleObserver → c.a invokeCallbacks) while the first
+  came via savedstate/a.b (performAttach/restore). The tag round-trip itself is
+  implemented; the androidx lazy-init guard that should prevent the second
+  attach is still unidentified (candidates: ViewTree owner getTag receiver
+  identity, ViewModelProvider caching, ON_CREATE double dispatch — probes
+  planted: [TAG-PROBE]/[TAG-BRIDGE] bounded diagnostics kept for next session).
+- Reusable scope: EVERY androidx.library app (the dominant modern APK family)
+- Tests: dooz boots past the savedstate IAE (EXCEPTION count 10→0) and renders
+  non-white; battery 59/59; 3-run determinism on the new dooz frame
+- Status: OBSERVED — PARTIAL FIX LANDED (tag law implemented+battery-verified;
+  dooz closure BLOCKED on identifying the real second-attach driver)
+- Priority: P0 (gates the whole AndroidX corpus family; GATE K breadth)
+- Commit: session-7 (tag law); investigation open
+- GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
+
 ## GATE SCORECARD (session 7 — current)
 - Session-7 baseline: container reset wiped aapt2 + EXT fixture; restored via
   FINDING-001/002 scripts (SHA-verified); battery 59/59 re-established at a0d71c15.
