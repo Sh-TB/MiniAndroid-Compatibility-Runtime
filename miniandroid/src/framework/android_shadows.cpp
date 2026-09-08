@@ -2043,10 +2043,25 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         return CallResult::not_handled();
     }
     if (m == "equals") {
+        // M3 FINDING-013 companion (receiver-domain law, EXP-094 CM-018
+        // class): identity-equals claimed for ANY receiver that reached
+        // ViewShadow. Two STRING CONSTANTS both carry heap id 0 →
+        // 0 == 0 → "androidx.lifecycle.p".equals("M1.i") == TRUE →
+        // Kotlin Intrinsics.throwNpe's stack-walk never matched its exit
+        // condition → aget AIOOBE at trace end → swallowed cascade →
+        // dooz white screen. Law: ViewShadow answers equals/hashCode only
+        // for receivers that are REAL view nodes (Object.equals is
+        // identity everywhere else, handled by the engine's lawful path).
+        const ViewNode* n =
+            (ctx.receiver_id != 0) ? find_node(ctx.receiver_id) : nullptr;
+        if (n == nullptr) return CallResult::not_handled();
         uint32_t other = ctx.arg_as_object(0, 0);
         return CallResult::handled_bool(other == ctx.receiver_id);
     }
     if (m == "hashCode") {
+        const ViewNode* n =
+            (ctx.receiver_id != 0) ? find_node(ctx.receiver_id) : nullptr;
+        if (n == nullptr) return CallResult::not_handled();
         return CallResult::handled_int(static_cast<int32_t>(ctx.receiver_id));
     }
     return CallResult::not_handled();

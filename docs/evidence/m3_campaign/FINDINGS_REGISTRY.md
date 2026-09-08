@@ -537,3 +537,94 @@ session). These are items the campaign plan did NOT explicitly list.
 - Priority: P0 (determinism gate unsound for every persistence-bearing APK)
 - Commit: (this commit)
 - GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
+
+## FINDING-013
+- Subsystem: DEX / CLASS LINKING (app-bundled library clinit provenance, P0)
+- Trigger: dooz (AndroidX/Compose, 1.7MB) exception cascade at HEAD e27fe846+
+  53e474e7: LifecycleRegistry.addObserver read Lifecycle.State.DESTROYED/
+  INITIALIZED as NULL → Kotlin Intrinsics.throwNpe → stack-walk AIOOBE →
+  "android:support:activity-result" IAE → 10-exception unwind → white frame
+- APK: io.github.yamin8000.dooz_18 (androidx+lifecycle+savedstate real
+  bytecode bundled by R8); family = EVERY R8-built AndroidX/Kotlin app
+- Static evidence: TWO independent namespace-based skips — (1)
+  DalvikExecutionEngine::ensure_class_initialized skipped <clinit> for
+  Landroidx/ Lkotlin/ Lkotlinx/ Lcom/google/ Lj$/ wholesale; (2)
+  execute_method_internal (the "<clinit> choke point") had the SAME skip —
+  ensure_class_initialized's invocation returned "result=OK" with ZERO sput
+  writes ([SGET-MISS] key=Landroidx/lifecycle/i$b;.INITIALIZED
+  same_class_keys=0 engine=same-instance proved the writes never landed)
+- Runtime evidence: after fix, [CLASS_INIT] runs real androidx clinits
+  (18+), i$b enum constants materialize (miss lines gone), Lifecycle
+  registers observers, savedstate double-registration IAE gone, dooz
+  reaches ComposeView.setContent with a 1080x1920 node
+- Root cause: NAMESPACE-based init decision (package prefix) where the law
+  demands PROVENANCE-based (where the bytecode lives)
+- Law: AOSP ClassLinker::EnsureInitialized — initialization runs the
+  class's OWN bytecode on first active use; "framework" means RESOLVED FROM
+  BOOT CLASSPATH, not "package named androidx". App-bundled androidx IS
+  application bytecode. Landroid/* remains an unconditional skip (G12
+  parent-delegation, FIND-G09-ACF-001: muellerma stopwatch bundled
+  AppComponentFactory must never shadow platform semantics)
+- Fix: provenance rule in BOTH choke points (ensure_class_initialized +
+  execute_method_internal): class present in class_info_index_ → run its
+  real <clinit>; absent → stub skip. Landroid/* always skipped.
+- Tests: battery 60/60 (G12 stopwatch fixture still skips; microtimer F-012
+  golden byte-identical); unote cross-check SUCCESS unchanged
+- Remaining dooz white: androidx.compose.runtime Snapshot-state machinery
+  (P/l.q readError ISE) — Compose architecture boundary (documented, not a
+  runtime defect class)
+- Status: REGRESSION-VERIFIED
+- Priority: P0
+- Commit: (this commit)
+- GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
+
+## FINDING-014
+- Subsystem: JAVA CORE / REFLECTION (Class.getName, P1)
+- Trigger: same dooz cascade — Intrinsics.throwNpe stack walk compared
+  Class.getName() against StackTraceElement.getClassName(); the Class
+  side was an unhandled call ([REC-MISS] Ljava/lang/Class;.getName) →
+  the walk's exit predicate never behaved lawfully
+- APK: dooz; any Kotlin app whose Intrinsics NPE path executes (96+/run in
+  microtimer alone)
+- Static evidence: dalvik_engine's Ljava/lang/Class; bridge implemented
+  forName/getDeclaredConstructor/getCanonicalName/getSimpleName but NOT
+  getName — the single most fundamental reflective accessor
+- Runtime evidence: after fix v2="M1.i" (dotted, OpenJDK law) in the live
+  METHOD-TRACE; the walk's skip-loop now compares real values
+- Root cause: missing API on the reflection surface
+- Law: OpenJDK Class.getName() returns the dotted binary name
+  ("M1.i" for LM1/i;)
+- Fix: Class.getName handler in the Ljava/lang/Class; bridge
+- Tests: battery 60/60; dooz walk trace
+- Status: IMPLEMENTED / TESTED
+- Priority: P1
+- Commit: (this commit)
+- GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
+
+## FINDING-015
+- Subsystem: SHADOW DISPATCH / JAVA CORE (receiver-domain law, P0)
+- Trigger: METHOD-TRACE of the Intrinsics walk showed
+  String.equals("androidx.lifecycle.p", "M1.i") → TRUE — two different
+  string constants compared equal
+- APK: dooz (walk livelock); ANY app comparing distinct string constants
+  via equals where no StringShadow claims the call
+- Static evidence: ViewShadow::dispatch answered equals/hashCode for ANY
+  receiver reaching it: handled_bool(arg_as_object(0,0) == ctx.receiver_id)
+  — two string CONSTANTS both carry heap id 0 → 0==0 → TRUE. The sibling
+  toString already carried the EXP-094 (CM-018) registered-view-node guard;
+  equals/hashCode never received it
+- Runtime evidence: after the receiver-domain guard (answer only for
+  registered View nodes), dooz AIOOBE count 7→0, walk terminates, i$b
+  equality behaves; battery 60/60
+- Root cause: shadow answering OUTSIDE its receiver domain — identity
+  semantics forged for arbitrary objects
+- Law: Object.equals is IDENTITY by default, but a shadow may only claim
+  receivers within its own domain; anything else must fall through to the
+  engine's lawful handler
+- Fix: ViewShadow equals/hashCode domain guard (find_node(receiver) null →
+  not_handled)
+- Tests: battery 60/60; dooz exception count
+- Status: REGRESSION-VERIFIED
+- Priority: P0
+- Commit: (this commit)
+- GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
