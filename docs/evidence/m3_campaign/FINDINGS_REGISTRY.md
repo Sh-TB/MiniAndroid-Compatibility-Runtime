@@ -484,7 +484,16 @@ session). These are items the campaign plan did NOT explicitly list.
   result-wide after an intervening recursive dispatch (shadow callback firing a
   DEX call) would clobber it. The token-law fix made recursive dispatch more
   likely (run() drains re-enter the interpreter). Needs a return-value stack.
-- Priority: P1 (correctness under nesting). Status: RESEARCHED.
+- Priority: P1 (correctness under nesting). Status UPDATE (session 8,
+  HEAD 0e8b96cc): AUDITED — the single-slot hazard is contained by the
+  save/re-assign discipline: try_recursive_invoke saves/restores the outer
+  pending return, and BOTH invoke completion paths (recursive 6660/bridge
+  6666) re-assign last_invoke_return_ = return_val AFTER the nested run, so
+  a move-result always reads the immediately-preceding invoke's value. The
+  audited live chains (microtimer Room INSERT via SQLite onCreate callback,
+  F-012 persistence replay, wide expires math) all cross the window without
+  corruption; battery 61/61. Downgraded to a watch-item: no reproducible
+  clobber remains; revisit only with a concrete failing trace.
 
 ## FORGOTTEN-020
 - What: Kotlin `Intrinsics.checkNotNullParameter` (La/e.h) runs 96+ times per
@@ -627,4 +636,67 @@ session). These are items the campaign plan did NOT explicitly list.
 - Status: REGRESSION-VERIFIED
 - Priority: P0
 - Commit: (this commit)
+- GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
+
+---
+
+# SESSION-8 GATE SCORECARD (HEAD 0e8b96cc, battery 61/61)
+
+- GATE A build: PASS (61/61 incl. all fixture builds; aapt2 bootstrap
+  re-executed after another real container reset)
+- GATE B regression: PASS 61/61 (two new goldens added — F-012 persistence
+  replay and GATE H image golden; zero comparators weakened)
+- GATE C DEX: PASS (+ FINDING-013 provenance clinit law — app-bundled
+  library statics now initialize; FORGOTTEN-019 audit: invoke-return
+  save/re-assign discipline verified against the live chains)
+- GATE D resources: PASS
+- GATE E layout: PASS
+- GATE F micro-timer: PASS — RE-VERIFIED INDEPENDENTLY at e27fe846: the
+  session-7 3-run byte-determinism claim did NOT survive a same-CWD replay
+  (FINDING-012: CWD-relative shared DB leaked state across runs); with the
+  data-root law the identical protocol is now byte-identical BY CONSTRUCTION
+  (92/92 frames × 2 independent pairs) and the countdown re-verified
+  00:00:78→00:00:02 per-second mutation
+- GATE G interaction: PASS
+- GATE H image: **PASS — FULLY CLOSED**: real-APK golden on simplestopwatch
+  action-bar icons (settings.png gear + menu.png): decode→density-select→
+  scale→tint→draw verified structurally against the SOURCE PNG alpha masks —
+  bbox-aligned IoU 0.959 / 0.997 (threshold 0.85), tint + glyph presence
+  checks, 3-run byte-identical frames
+- GATE I shape: PARTIAL (M3 style fixture ✓; 2nd-APK shape golden open)
+- GATE J activity: PASS
+- GATE K corpus: PASS (5 corpus APKs exercised per-run hermetic)
+- GATE L determinism: PASS — STRENGTHENED: persistence-bearing determinism
+  now protocol-guaranteed (fresh data root per run) AND a new POSITIVE law
+  added: durable Room state replays byte-identically across process
+  restarts (F-012 golden pairs)
+- GATE M reproducibility: PASS (third real container reset this campaign;
+  toolchain + corpus + EXT fixtures all restored from documented
+  hash-verifiable sources)
+
+## FINDING-016
+- Subsystem: EXCEPTION / DIAGNOSTIC HONESTY (uncaught-exception swallowing, P1)
+- Trigger: dooz run reports "Status: SUCCESS ✅" with 8 in-flight exceptions
+  ([EXC-PROPAGATE] ... "uncaught at caller X → caller continues after invoke
+  (compatibility)") — ComponentActivity.onCreate continued half-initialized
+  after an IllegalStateException; on real ART the process would die visibly
+- APK: dooz (observed); the policy is global (UNIFIED_011.3 FRAME-2)
+- Static evidence: the §18 propagation searches each frame's try table and
+  — finding NO handler at ANY level — deliberately continues the caller
+  with a null return instead of failing the run
+- Runtime evidence: dooz 8 swallowed exceptions; microtimer F-ROOM-CHAIN
+  history records the same mechanism masking the AIOOBE
+- Root cause: per-invoke swallowing (no app-boundary law): an exception that
+  unwinds PAST the outermost APP frame must fail the run (ART process-death
+  law); exceptions caught INSIDE app code must keep propagating normally
+- Proposed design (not yet implemented — needs a full-corpus compat pass):
+  top-of-app-stack unwind → CRASH status + crash.log entry + nonzero rc;
+  keep the current per-frame handler search untouched
+- Law: ART Throwable propagation — uncaught on the main thread kills the
+  process; a compatibility runtime that hides this misclassifies real
+  failures as SUCCESS (violates the six-failure-class taxonomy)
+- Status: RESEARCHED (design recorded; implementation deferred to avoid a
+  blind semantics flip without corpus-wide evidence)
+- Priority: P1
+- Commit: n/a (registered)
 - GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
