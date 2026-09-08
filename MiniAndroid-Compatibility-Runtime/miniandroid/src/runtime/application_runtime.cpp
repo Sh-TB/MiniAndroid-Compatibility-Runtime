@@ -26,6 +26,7 @@
 // EXP-051: Android framework shadow registry.
 #include "framework/shadow_registry.h"
 #include "framework/android_shadows.h"
+#include "framework/pending_intent_shadow.h"
 #include "framework/dialog_shadow.h"
 #include "framework/clipboard_shadow.h"
 #include "framework/canvas_shadow.h"
@@ -568,6 +569,25 @@ bool ApplicationRuntime::resolve_manifest() {
         }
         
         manifest_info_ = std::make_unique<ManifestInfo>(manifest_info);
+
+        // M3 F-018: EXACT-ALARM CAPABILITY LAW (AOSP API 31+) — derived
+        // from the parsed manifest permission list (INSTALL-TIME GRANT
+        // identity: declared ⇒ granted). Mirrors the stage_load_apk
+        // plumbing so both the ApplicationRuntime path and the cmd_run
+        // ExecutionEngine path resolve the capability identically.
+        if (shadow_registry_) {
+            auto* pi_shadow =
+                shadow_registry_->find_as<framework::PendingIntentShadow>();
+            if (pi_shadow) {
+                const auto& perms = manifest_info.permissions;
+                bool exact_capable =
+                    std::find(perms.begin(), perms.end(),
+                              "android.permission.USE_EXACT_ALARM") != perms.end() ||
+                    std::find(perms.begin(), perms.end(),
+                              "android.permission.SCHEDULE_EXACT_ALARM") != perms.end();
+                pi_shadow->set_manifest_exact_alarm_capable(exact_capable);
+            }
+        }
         
         auto end = std::chrono::steady_clock::now();
         double duration = std::chrono::duration<double, std::milli>(end - start).count();

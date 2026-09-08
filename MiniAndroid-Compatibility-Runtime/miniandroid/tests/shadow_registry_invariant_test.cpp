@@ -31,6 +31,7 @@
 #include "../src/framework/canvas_shadow.h"
 #include "../src/framework/clipboard_shadow.h"
 #include "../src/framework/dialog_shadow.h"
+#include "../src/framework/pending_intent_shadow.h"
 
 #include <cstdio>
 
@@ -86,8 +87,8 @@ int main() {
     {
         ShadowRegistry reg;
         register_platform_shadows(reg);
-        check(reg.stats().shadow_count == 15,
-              "register_platform_shadows registers exactly 15 shadows (14 + M3 F-017 LocksShadow)");
+        check(reg.stats().shadow_count == 16,
+              "register_platform_shadows registers exactly 16 shadows (15 + M3 F-018 PendingIntentShadow)");
     }
 
     printf("== §6 INV-3: deterministic ownership (register → find identity) ==\n");
@@ -148,8 +149,8 @@ int main() {
         check(reduced.find_as<ThreadShadow>() != nullptr &&
                   reduced.find_as<LooperShadow>() != nullptr,
               "canonical registration completes a reduced registry");
-        check(reduced.stats().shadow_count == 17,
-              "count law: 15 canonical + 2 pre-registered = 17 visible (M3 F-017 LocksShadow)");
+        check(reduced.stats().shadow_count == 18,
+              "count law: 16 canonical + 2 pre-registered = 18 visible (M3 F-018 PendingIntentShadow)");
     }
 
     printf("§6 shadow registry invariant battery: %d checks, %d failures\n",
