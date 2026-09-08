@@ -9977,6 +9977,17 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         // runtime_type is unknown — this lets us route framework calls like
         // android.app.Activity.onCreate to the API stub layer.
         std::string api_class = (runtime_type != "<unknown>") ? runtime_type : declaring_class;
+        // M3 FINDING-011 diag (bounded): does the View tag bridge entry fire?
+        if (method_name_from_dex == "setTag" || method_name_from_dex == "getTag") {
+            static thread_local uint64_t tag_entry = 0;
+            if (tag_entry < 16) {
+                tag_entry++;
+                std::cerr << "[TAG-ENTRY] bridge_to_api " << api_class << "."
+                          << method_name_from_dex << " argc=" << args.size()
+                          << " caller=" << current_class_ << "." << current_method_
+                          << std::endl;
+            }
+        }
         bridge_to_api(api_class, method_name_from_dex, args, return_val, api_status, method_idx); last_invoke_return_ = return_val;
     }
 
@@ -12640,6 +12651,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status,
                                           uint32_t method_idx_hint) {
+    // M3 FINDING-011 diagnostics (bounded): function-entry probe.
+    if ((method == "setTag" || method == "getTag")) {
+        static thread_local uint64_t tag_probe = 0;
+        if (tag_probe < 16) {
+            tag_probe++;
+            std::cerr << "[TAG-PROBE] bridge_to_api entered " << class_name
+                      << "." << method << " argc=" << args.size() << std::endl;
+        }
+    }
     // MASTER-TRIAGE: cap-limited evidence for the androidx main-thread
     // identity chain (which layer answers Thread/Looper, with what value).
     if ((method == "currentThread" || method == "getThread" ||
@@ -17491,6 +17511,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         std::cerr << "[EXP088-B-FALLBACK] Reached shadow registry fallback for "
                   << class_name << "." << method
                   << " shadow=" << (shadow_registry_ ? "YES" : "NO") << std::endl;
+    }
+    // M3 FINDING-011 diagnostics (bounded): which class/receiver does the
+    // View tag bridge see? The androidx ViewTree* owner-cache contract rides
+    // setTag/getTag; a routing miss here silently degrades every modern
+    // AndroidX app.
+    if ((method == "setTag" || method == "getTag") && shadow_registry_ != nullptr) {
+        static thread_local uint64_t tag_diag = 0;
+        if (tag_diag < 16) {
+            tag_diag++;
+            std::cerr << "[TAG-BRIDGE] " << class_name << "." << method
+                      << " argc=" << args.size()
+                      << " recv=" << (args.empty() ? "-" : args[0].class_desc)
+                      << " caller=" << current_class_ << "." << current_method_
+                      << std::endl;
+        }
     }
     if (shadow_registry_ != nullptr) {
         framework::CallContext ctx;
