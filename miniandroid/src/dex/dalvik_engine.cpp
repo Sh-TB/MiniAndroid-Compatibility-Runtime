@@ -4051,8 +4051,24 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // NOTE: function-scope declarations — the guard must live until EVERY
     // return path below has executed (a block-scoped guard would unregister
     // the key at the end of its own braces).
+    //
+    // M3 F-017 (active-cycle key identity law): the key MUST carry the
+    // receiver's object identity for instance methods. Java/Kotlin
+    // re-entrancy (monitors, Kotlin SynchronizedLazyImpl) is PER-OBJECT —
+    // two different instances of the same class calling the same method in
+    // nested frames is NOT a cycle. Evidence: microtimer (R8) has FIVE
+    // Lm/a (SynchronizedLazyImpl) instances sharing one
+    // "Lm/a;.a" key — the click-path lazy lookup collided with a still-
+    // active initializer frame of a DIFFERENT instance, got stubbed null,
+    // and the null receiver cascaded into the SQLiteOpenHelper open chain
+    // (La/e; Kotlin Intrinsics NPEs) — masked for weeks by the FRAME-2
+    // caller-continue policy, exposed by the F-016 real-unwind law.
     static thread_local std::map<std::string, int> m3_call_counts;  // diagnostics only
-    const std::string m3_active_key = class_descriptor + "." + method_name;
+    std::string m3_active_key = class_descriptor + "." + method_name;
+    if (!current_invoke_is_static_ && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        m3_active_key += "#" + std::to_string(args[0].object_id);
+    }
     m3_call_counts[m3_active_key]++;
     struct ActiveKeyGuard {
         std::set<std::string>& set;

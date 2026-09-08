@@ -703,6 +703,92 @@ PYEOF2
     gate "GATE H real-APK image pipeline golden" $rc
 fi
 
+# M3 FINDING-016: exception-honesty law battery (ROADMAP family G).
+# Subject: f016_exception_honesty — REAL DEX bytecode throws an uncaught
+# IllegalStateException through a three-deep call chain
+# (onCreate → chainA → chainB → chainC(throws)); no app frame catches.
+# LAW 1 (Dalvik unwind): every handler-less frame unwinds — mid-stack
+#          [EXC-UNWIND] records for chainA AND chainB must exist and the
+#          throw must be the app's own bytecode (message F016-UNCAUGHT).
+# LAW 2 (honesty, default mode): the run must NOT report plain SUCCESS —
+#          status downgrades to PARTIAL with the in-flight count in the
+#          status message, crash.log carries an [EXC-UNCAUGHT-TOP]
+#          APP-BOUNDARY entry, and the CLI exit code is nonzero.
+# LAW 3 (ART process death, MINIANDROID_EXC_STRICT=1): status CRASH,
+#          "ART process-death law" in the message, and the strict CRASH
+#          latch REFUSES further DEX dispatch (onStart/onResume refused).
+# LAW 4 (pre-throw state): "F016 armed" text is set BEFORE the throw —
+#          the rendered frame must show it (state-before-death visible).
+F016_FIXTURE="$MA/tests/fixtures/f016_exception_honesty"
+F016_APK="$F016_FIXTURE/f016_exception_honesty.apk"
+if cached "F-016 fixture APK build (aapt2+ECJ+D8)"; then
+    skip "F-016 fixture APK build (aapt2+ECJ+D8)"
+else
+    if bash "$REPOSCRIPTS/build_fixture_apk.sh" "$F016_FIXTURE" "$F016_APK" \
+        > /tmp/battery_f016_build.log 2>&1; then
+        gate "F-016 fixture APK build (aapt2+ECJ+D8)" 0
+    else
+        gate "F-016 fixture APK build (aapt2+ECJ+D8)" 1
+    fi
+fi
+if [ -f "$F016_APK" ]; then
+    # Stage: default-mode honesty (LAWS 1+2+4).
+    if cached "F-016 default-mode honesty (unwind+PARTIAL+crash.log)"; then
+        skip "F-016 default-mode honesty (unwind+PARTIAL+crash.log)"
+    else
+        F016_OUT=/tmp/battery_f016_default; rm -rf "$F016_OUT"; mkdir -p "$F016_OUT"
+        rc=0
+        set +e
+        ./build/miniandroid run "$F016_APK" -o "$F016_OUT" \
+            > "$F016_OUT/run.log" 2>&1
+        run_rc=$?
+        set -e
+        # LAW 2a: nonzero CLI rc (honest failure)…
+        [ "$run_rc" -ne 0 ] || rc=1
+        # LAW 2b: …with PARTIAL (not SUCCESS, not CRASH) status + count text.
+        grep -q "Status: PARTIAL SUCCESS" "$F016_OUT/run.log" || rc=1
+        grep -q "F-016 exception-honesty: 1 uncaught in-flight exception" \
+            "$F016_OUT/run.log" || rc=1
+        # LAW 1: real app bytecode (throw message in DEX traces) + mid-stack
+        # unwind records in crash.log.
+        CRASHLOG="$F016_OUT/crash.log"
+        [ -f "$CRASHLOG" ] || CRASHLOG="$MA/run/crash.log"
+        grep -rq "F016-UNCAUGHT" "$F016_OUT" || rc=1
+        grep -q "unwound .*MainActivity;.chainB" "$CRASHLOG" || rc=1
+        grep -q "unwound .*MainActivity;.chainA" "$CRASHLOG" || rc=1
+        grep -q "\[EXC-UNCAUGHT-TOP\].*APP-BOUNDARY" "$CRASHLOG" || rc=1
+        # LAW 4: pre-throw visual state observable (the rendered screenshot
+        # carries the "F016 armed" state — state-before-death visible).
+        [ -f "$F016_OUT/screenshot.png" ] || rc=1
+        gate "F-016 default-mode honesty (unwind+PARTIAL+crash.log)" $rc
+    fi
+    # Stage: strict-mode ART process-death law (LAW 3).
+    if cached "F-016 strict-mode process death (CRASH + dispatch refused)"; then
+        skip "F-016 strict-mode process death (CRASH + dispatch refused)"
+    else
+        F016_OUTS=/tmp/battery_f016_strict; rm -rf "$F016_OUTS"; mkdir -p "$F016_OUTS"
+        rc=0
+        set +e
+        MINIANDROID_EXC_STRICT=1 ./build/miniandroid run "$F016_APK" -o "$F016_OUTS" \
+            > "$F016_OUTS/run.log" 2>&1
+        run_rc=$?
+        set -e
+        [ "$run_rc" -ne 0 ] || rc=1
+        grep -q "Status: CRASH" "$F016_OUTS/run.log" || rc=1
+        grep -q "ART process-death law" "$F016_OUTS/run.log" || rc=1
+        grep -q "APP BOUNDARY + strict: CRASH" "$F016_OUTS/run.log" || rc=1
+        # The CRASH latch must refuse subsequent lifecycle DEX dispatch.
+        grep -q "strict CRASH latch active — DEX dispatch .*onStart refused" \
+            "$F016_OUTS/run.log" || rc=1
+        grep -q "strict CRASH latch active — DEX dispatch .*onResume refused" \
+            "$F016_OUTS/run.log" || rc=1
+        gate "F-016 strict-mode process death (CRASH + dispatch refused)" $rc
+    fi
+else
+    gate "F-016 default-mode honesty (unwind+PARTIAL+crash.log)" 1
+    gate "F-016 strict-mode process death (CRASH + dispatch refused)" 1
+fi
+
 echo "──────────────────────────────────────────────"
 for r in "${RESULTS[@]}"; do printf '%s\n' "$r"; done
 if [ $FAIL -eq 0 ]; then
