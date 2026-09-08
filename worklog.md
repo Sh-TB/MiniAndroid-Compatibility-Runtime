@@ -804,3 +804,98 @@ Stage Summary:
   + label mutation all RUNTIME-PROVEN; FINDING-008 (row label null seconds +
   missing per-tick row re-render) is the precise residual to GATE F.
 - 8 numbered findings + 20 forgotten-items registered, all evidence-grounded.
+
+---
+Task ID: M3-C4 (MASTER-3 OPEN-ENDED — session 7)
+Agent: Super Z (main agent)
+Task: Baseline re-establishment after container reset; independent verification of
+a0d71c15's F-008/F-005 claims; open-ended P0/P1 closure campaign continuation.
+
+Work Log:
+- PHASE 0 baseline: START_HEAD=a0d71c15 (tree clean), REMOTE_HEAD=0b6f85bb (5 unpushed
+  by session end), TOKEN ABSENT → PUBLISH BLOCKED (no fabricated URLs).
+  Battery at a0d71c15 initially 42/59: aapt2 wiped + EXT fixture missing (container
+  reset) — restored via FINDING-001/002 scripts (bootstrap_toolchain.sh;
+  HelloWorldSelfAware APK+PNG re-fetched, SHA 009b4671…cc41 MATCH) → 59/59 ALL PASS.
+  Corpus cache survived (/tmp/my-project/apk_cache, microtimer SHA 79c6f730… verified).
+- AUDIT of a0d71c15 claims (rule: never trust commit messages): fresh 3-tap microtimer
+  run (8,2,▶ @ buttons 116/108/121) showed F-005 fixed (row Lk/g (0,0) 1080x126,
+  126x126 buttons — F-006 off-screen first frame GONE too) and F-008(a) fixed (no
+  "null" texts) BUT the countdown ran exactly ONE tick: [QUEUE] Runnable 410
+  enqueued delay=999ms ready_at=1000001290 then STRANDED — drain_quiescent's
+  `if(drain_ready()==0) return;` treats "nothing due NOW" as quiescence; real ART
+  quiescence is an EMPTY queue (MessageQueue.next polls nativePollOnce(head.when-now)).
+  → FINDING-009 (P0). Frame capture existed only at gesture stages → FINDING-010 (P0).
+- Static law: MainActivity.e tail (0x015d-0x016a) re-posts every tick via
+  postDelayed(new Lk/c, token, (now-expires)%1000) — the chain is app-side alive;
+  the runtime dropped it. Disassembly via scripts/m3_disasm.py (some wide-register
+  decode artifacts in 366-word methods — structure/invoke targets readable).
+- FIX (commit 8cd76a17): HandlerShadow::next_ready_ms() + drain fast-forward branch
+  (n==0 && queue non-empty → advance_virtual(next_ready-now) → re-loop);
+  §18 storm law refined (storm = consecutive low-progress dispatch rounds <2ms,
+  cap 64; absolute 512-round bound); FINDING-010 mutation-keyed tick frames
+  (re-render after each dispatch round; save IFF framebuffer changed vs last saved;
+  last_saved_fb synced at every save site).
+- RESULT: microtimer 3-tap run = 92 frames (was 7): countdown 00:00:82→00:00:00
+  per-second visible, finish branch renders the app's red expired state, zero
+  "null" texts; 3 independent runs BYTE-IDENTICAL (aggregate PNG SHA
+  2a425979ef7d32bf2acf); created row geometry sane from the FIRST frame.
+- REGRESSION: battery initially 2 fails after the drain-law change (G06 frame-index
+  shift; G07 "Ticks: 1 frozen" check). Analysis: G06 behavior law intact (tick
+  frames shifted indices) — comparator made stream-law-true (restored-blue must
+  appear AND persist to final frame). G07's old check ENCODED the FINDING-009 bug
+  (real ART dispatches pending Handler messages after onDestroy — the classic
+  leak); replaced by the finite-chain law (Ticks exactly 1→2→3 in order, no 4+,
+  CSRPHD in final frame) — STRONGER, not weaker. Battery → 59/59 ALL PASS.
+- Registry: FINDING-008→VISUALLY-PROVEN, 005/006→TESTED (cross-APK open), 009/010→
+  VISUALLY-PROVEN+REGRESSION-VERIFIED; session-7 GATE scorecard added — GATE F
+  PASS FULLY CLOSED (13-gate matrix: A,B,C,D,E,F,G,J,K,L,M PASS; H,I PARTIAL).
+
+Stage Summary:
+- GATE F (timer visual) CLOSED end-to-end on a real external APK with byte-level
+  determinism. Commit 8cd76a17 (local; 5 commits pending push, token absent).
+- Next highest-value fronts: GATE H (real-APK image pipeline golden, PARTIAL),
+  GATE I (2nd-APK shape golden), FORGOTTEN-002/015/019 (P1), F-ARGS SECUSO.
+
+---
+Task ID: M3-C4 continuation (session 7, part 2 — GATE H opening)
+Agent: Super Z (main agent)
+Work Log:
+- Post-closure continuation into GATE H/GATE K breadth: probed image-bearing
+  corpus APKs. dooz = 100% WHITE despite SUCCESS; bouncy 2 color buckets;
+  unote renders skeleton (list legitimately empty). dooz chosen as the
+  AndroidX frontier subject.
+- dooz forensics: 10-exception unwind cascade rooted at
+  androidx/savedstate/a.d (registerSavedStateProvider) IAE "key already
+  registered". METHOD-TRACE (savedstate/a|d) captured the keys: the SAME key
+  'androidx.lifecycle.internal.SavedStateHandlesProvider' registered twice
+  (+ 'android:support:activity-result'). First registration via savedstate/a.b
+  (performAttach); second via the REFLECTIVE lifecycle path
+  (ReflectiveGenericLifecycleObserver → c.a invokeCallbacks).
+- View tag law audit: ZERO setTag/getTag implementation runtime-wide (the
+  FINDING-007 silent-stub class; androidx ViewTree* owner cache rides it).
+  → FINDING-011 registered (P0, whole AndroidX family).
+- FIX LANDED: ViewShadow keyed-tag law (mTag + mKeyedTags, identity-preserving
+  OBJECT round-trip, null-never-throws) — battery 59/59; [TAG-PROBE]×11
+  bridge entries verified; microtimer 3-run agg SHA unchanged
+  (2a425979ef7d32bf2acf — zero observable drift, exactly correct for a new
+  API surface).
+- OPEN: dooz STILL white with tags landed — the second attach is NOT (only)
+  tag-driven; the reflective ON_CREATE path re-registers regardless. Next
+  session: identify the real lazy-init guard (candidates: ViewTree owner
+  receiver identity across set/get, ViewModelProvider cache, lifecycle event
+  dispatch count), plus dooz is a JETPACK COMPOSE app (ComposeView receiver
+  observed) — the Compose runtime surface is the broader frontier.
+- Bounded diagnostics planted for next session: [TAG-PROBE] (bridge entry),
+  [TAG-BRIDGE] (fall-through; currently never reached — an EXP-051 shadow
+  dispatch handles View methods earlier via try_shadow_dispatch pass-1).
+- Commit 5bbca4e9 (local). PUBLISH BLOCKED — TOKEN ABSENT (6 commits pending:
+  3ea265be, d86184fc, c59a9552, a0d71c15, 8cd76a17, 5bbca4e9).
+
+Stage Summary:
+- GATE F CLOSED (byte-level determinism, finish branch rendered, zero null).
+- FINDING-009/010 closed; 005/006 TESTED; 011 registered with partial fix.
+- Battery 59/59 at commit 5bbca4e9; two comparators strengthened to
+  stream-law checks (not weakened).
+- Next session queue: dooz second-attach driver (P0, AndroidX family gate),
+  then GATE H image golden, FORGOTTEN-019 return-slot stack, F-ARGS SECUSO.
