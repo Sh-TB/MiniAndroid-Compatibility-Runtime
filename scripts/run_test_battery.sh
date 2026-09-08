@@ -635,6 +635,74 @@ else
     gate "M3 F-012 persistence+fresh-state determinism golden" $rc
 fi
 
+# GATE H (M3 FINDING-016): real-APK image pipeline visual golden.
+# Subject: omegacentauri simplestopwatch — its action bar renders TWO real
+# PNG resources (settings.png gear, menu.png list icon) through the full
+# runtime pipeline: ARSC density selection → PNG decode → BitmapFactory
+# inDensity→inTargetDensity scale → tint → ImageButton draw.
+# LAW 1 (decode+tint): each ImageButton crop must contain the blue button
+#          background AND a white glyph (>= 1000 white px, > 8 distinct
+#          colors — a flat fill or a failed decode has neither).
+# LAW 2 (structural fidelity): the rendered glyph mask must agree with the
+#          SOURCE PNG's alpha mask (bbox-aligned IoU >= 0.85; measured
+#          0.959 settings / 0.997 menu at freeze).
+# LAW 3 (determinism): 3 independent runs produce byte-identical frames.
+GATEH_APK="$MA/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk"
+if [ ! -f "$GATEH_APK" ]; then
+    gate "GATE H real-APK image pipeline golden" 1
+else
+    GH=/tmp/battery_gateh; rm -rf "$GH"; mkdir -p "$GH/ext"
+    unzip -o -q "$GATEH_APK" "res/drawable-xhdpi-v4/settings.png" \
+        "res/drawable-xhdpi-v4/menu.png" -d "$GH/ext" 2>/dev/null
+    rc=0
+    for i in 1 2 3; do
+        ./build/miniandroid run "$GATEH_APK" -o "$GH/run$i" \
+            --data-root "$GH/data$i" > "$GH/run$i.log" 2>&1 || rc=1
+    done
+    cmp -s "$GH/run1/screenshot.png" "$GH/run2/screenshot.png" || rc=1
+    cmp -s "$GH/run1/screenshot.png" "$GH/run3/screenshot.png" || rc=1
+    python3 - "$GH" <<'PYEOF2' || rc=1
+import sys
+from PIL import Image
+import numpy as np
+gh = sys.argv[1]
+im = Image.open(gh + "/run1/screenshot.png").convert("RGB")
+assert im.size == (1080, 1920)
+CROPS = {"settings": (854, 1815, 959, 1920), "menu": (975, 1815, 1080, 1920)}
+def bbox(m):
+    ys, xs = np.where(m)
+    if len(xs) == 0: return None
+    return xs.min(), ys.min(), xs.max(), ys.max()
+def glyph_white(crop):
+    a = np.array(crop)
+    return (a[:,:,0]>200)&(a[:,:,1]>200)&(a[:,:,2]>200)
+def glyph_alpha(src):
+    return np.array(Image.open(src).convert("RGBA"))[:,:,3] > 128
+for name, (x0,y0,x1,y1) in CROPS.items():
+    crop = im.crop((x0,y0,x1,y1))
+    a = np.array(crop)
+    ncol = len(set(map(tuple, a.reshape(-1,3))))
+    white = int(glyph_white(crop).sum())
+    blue = int(((a[:,:,0]==111)&(a[:,:,1]==168)&(a[:,:,2]==220)).sum())
+    assert white >= 1000, f"{name}: white={white}"
+    assert ncol > 8, f"{name}: colors={ncol}"
+    assert blue > 3000, f"{name}: blue={blue}"
+    src = f"{gh}/ext/res/drawable-xhdpi-v4/{name}.png"
+    sm, rm = glyph_alpha(src), glyph_white(crop)
+    sb, rb = bbox(sm), bbox(rm)
+    assert sb and rb, f"{name}: empty mask"
+    sc = sm[sb[1]:sb[3]+1, sb[0]:sb[2]+1]
+    rc_ = rm[rb[1]:rb[3]+1, rb[0]:rb[2]+1]
+    G = 48
+    si = np.array(Image.fromarray((sc*255).astype(np.uint8)).resize((G,G), Image.NEAREST))>127
+    ri = np.array(Image.fromarray((rc_*255).astype(np.uint8)).resize((G,G), Image.NEAREST))>127
+    iou = (si&ri).sum()/(si|ri).sum()
+    print(f"[GATE-H] {name}: white={white} colors={ncol} IoU={iou:.3f}")
+    assert iou >= 0.85, f"{name}: IoU={iou:.3f} < 0.85"
+PYEOF2
+    gate "GATE H real-APK image pipeline golden" $rc
+fi
+
 echo "──────────────────────────────────────────────"
 for r in "${RESULTS[@]}"; do printf '%s\n' "$r"; done
 if [ $FAIL -eq 0 ]; then
