@@ -4936,3 +4936,81 @@ Stage Summary:
   needs the same register-tag forensics used for F-030/F-035.
 - Battery 82/82 ALL PASS at commit 6d88661a. dooz run reports remain rc=124
   (honest timeout); framebuffer 0 non-white — no visual claim made.
+
+---
+Task ID: M6-S15-1
+Agent: Super Z (session 15 — MASTER CAMPAIGN 3 global root audit + Lh/u frontier)
+Task: Verify HEAD 87d57c5f claim, read forensic report completely, publish all
+  old pushes (user instruction), audit root families, solve the live
+  Lh/u;.a frontier, prove laws, run battery, commit+push.
+
+Work Log:
+- HEAD TRUTH: local HEAD = d358a0c9 (NOT the brief's 87d57c5f — that is a
+  local ancestor 4 commits back; M5 advanced past it). Remote main =
+  61fd7f17 (the forensic report's claim — correct for the remote at session
+  start). Tree clean. Toolchain + corpus restored (aapt2 8.13.2-14304508,
+  dooz d81292cd EXACT).
+- PUBLISH DEBT CLEARED: all 18 unpushed commits (61fd7f17..d358a0c9) pushed
+  to origin/main via GIT_ASKPASS credential (token held at /home/z/.gh_token
+  600, never in repo/logs/history); ls-remote verified d358a0c9 on remote.
+- Forensic report read COMPLETELY (828 lines) and cross-referenced: report's
+  public-HEAD claim verified; "SnapshotKt.readError frontier" = STALE
+  (eliminated by M4/M5); "implement Snapshot v0 next" = REJECTED_CLAIM as
+  stated; report knowledge retained as radar.
+- FRONTIER GROUND TRUTH (androguard, m3_disasm /2addr operand rendering
+  flagged reversed): dooz Lh/u = androidx.collection ScatterMap-family table
+  (metadata long[] 8-byte control windows, 0x80 EMPTY/0xFF DELETED, H2 tags,
+  SWAR broadcast/zero-detect, EMPTY-exit test w&(~w<<6)&0x8080..80, legal
+  overlapping wide pairs relying on low-6-bits shift masking). Live spin:
+  LF/F$b;.o → Lh/u;.a → LM1/i;.a(Object,Object)Z ×38,179 (Objects.equals).
+- F-040 Arrays.fill family law (bridge_to_api): OpenJDK fill + rangeCheck
+  (IAE from>to; AIOOBE from<0, to>len) for all primitives + Object, 2-arg
+  and 4-arg; value DalvikValue stored VERBATIM (wide/ref tags round-trip);
+  null array → deferred NPE. Root: Kotlin ArraysKt.fill(metadata, 0, size,
+  0x8080808080808080) compiles to Ljava/util/Arrays;.fill([JIIJ)V — the
+  handler was missing → fail-soft no-op → all-zero metadata → probe could
+  never observe EMPTY → infinite spin. dooz rc 124→1 (spin GONE).
+- F-041 encoded_catch_handler size law (TWO sites: throw dispatch +
+  find_catch_handler_for_pc): negative sleb size ⇒ |size| typed pairs +
+  catch-all (spec); old code used -(size+1) → dropped one typed pair per
+  negative-size handler and mis-read the catch-all addr (fixture IAE
+  handler `7f 14 6a d9 03` = typed(20)→0x6a + catch-all @0x1d9, decoded as
+  catch-all @0x14 = mid-instruction garbage jump). Exposed by the f040
+  fixture; androguard used as the authority.
+- F-042 VALUE_LONG static-default law: parse_static_values truncated
+  encoded long defaults via (int32_t) cast; materialization always made
+  INT32. Fixed: parser keeps 64 bits; J-descriptor statics materialize as
+  INT64 (make_long). Proven by F040-DIAG: fill value arg 0x80808080 →
+  0x8080808080808080.
+- F-043 Double/Float IEEE bit-conversion law (bridge_to_api):
+  doubleTo(Raw)LongBits, longBitsToDouble, floatTo(Raw)IntBits,
+  intBitsToFloat with NaN canonicalization for the non-Raw variants
+  (OpenJDK Double.java/Float.java); was REC-MISS → null → 0.
+- MICRO-PROOF: tests/fixtures/f040_arrays_fill (ECJ+D8 real DEX; 7 bands:
+  dooz metadata init, rangeCheck IAE/AIOOBE, int fills, Object null/identity
+  fill, byte/short/char/bool family, float/double + raw-bits round-trip
+  0x4018000000000000, SWAR probe-readback simulation) + scripts/
+  f040_pixel_golden.py + battery stage (F-040 build/run/golden, 82→85
+  stages). VERDICT: 7/7 bands GREEN; 3-run byte-identical (b3610c68…).
+- DOOZ AFTER M6 LAWS: rc=124→1; dependency-table insert COMMITS (tag byte +
+  sentinel mirror + elements[]/hashes[] stores execute); derived value
+  computes; AndroidComposeView$c (owners) constructs. NEW BLOCKER
+  (F-044 candidate, root-located): Compose SnapshotObserver read observer
+  LP/v$c;.o fires with observer.i == null — the observation block is
+  created by LP/v$a;.a (conditional-observation scope) which never ran in
+  the trace; real Compose registers the observer scoped to the block
+  lifetime. NEXT: map scope pairing from dooz Compose DEX ground truth,
+  implement the proven law (scope-entry or observer-null tolerance).
+  Framebuffer remains 0 non-white — NO visual claim.
+- Docs: docs/ROOT_LAW_GLOBAL_AUDIT.md (all families A–Z + report-claim
+  reconciliation), docs/ROOT_LAW_IMPLEMENTATION_ROADMAP.md,
+  docs/ROOT_LAW_IMPACT_REPORT.md (L vs U metric split).
+
+Stage Summary:
+- 4 generic laws landed+proven this session: F-040, F-041, F-042, F-043.
+- Publish debt cleared (18 commits); remote synced at session start.
+- dooz blocker layers peeled this session: scatter-map spin (F-040/F-042),
+  exception-dispatch corruption (F-041), bits-bridge gap (F-043).
+- Battery: 85 stages (82 + f040 build/run/golden) — full fresh run in
+  logs/battery_m6_full.log at the pre-commit tree identical to the M6
+  commit content.
