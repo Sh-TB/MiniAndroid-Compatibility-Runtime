@@ -859,6 +859,19 @@ CallResult HandlerShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
 
     if (ctx.class_name == "Landroid/os/Handler;") {
+        // M4 F-029a — Handler.createAsync(Looper) hidden static API.
+        // AndroidX HandlerCompat.createAsync (X1/h in dooz's R8 graph)
+        // reflects exactly this method on API >= 28 to build the main
+        // async Handler for the Recomposer's effect dispatcher. AOSP law
+        // (Handler.java): createAsync(looper) returns a Handler bound to
+        // the given looper with asynchronous-message semantics. The engine
+        // runs one deterministic main Looper, so the singleton main
+        // Handler IS the createAsync result (identity preserved across
+        // calls — the androidx clinit caches it anyway).
+        if (m == "createAsync") {
+            return CallResult::handled_object(main_handler_id_,
+                                              "Landroid/os/Handler;");
+        }
         if (m == "<init>") {
             // Handler() and Handler(Looper) and Handler(Callback) — no-op,
             // the heap object already exists (allocated by new-instance).

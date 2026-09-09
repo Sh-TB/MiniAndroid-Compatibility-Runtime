@@ -292,7 +292,9 @@ public:
     std::vector<std::string> implemented_methods() const override {
         return {"post", "postDelayed", "postAtFrontOfQueue",
                 "removeCallbacks", "removeCallbacksAndMessages",
-                "getLooper", "sendEmptyMessage", "sendMessage"};
+                "getLooper", "sendEmptyMessage", "sendMessage",
+                // M4 F-029a: hidden static API surfaced by HandlerCompat
+                "createAsync"};
     }
     std::vector<std::string> stubbed_methods() const override {
         return {"obtainMessage", "sendMessageDelayed", "sendMessageAtTime"};
@@ -399,6 +401,13 @@ private:
     std::deque<QueuedRunnable> queue_;
     uint32_t next_seq_ = 0;
     int64_t virtual_now_ms_ = 0;   // deterministic Looper time (ms)
+
+public:
+    // M4 F-029b: the main Handler singleton id (bound at init via
+    // heap get_or_create). View.getHandler() law uses the same singleton:
+    // an attached view's handler is the ViewRootImpl handler, which on a
+    // single-main-thread runtime is exactly this Handler.
+    uint32_t main_handler_id() const { return main_handler_id_; }
 };
 
 // ─────────────────────────────────────────────────────────────────────────
