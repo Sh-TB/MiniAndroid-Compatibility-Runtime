@@ -986,6 +986,37 @@ else
     gate "F-030 zero-law pixel golden (7 bands)" 1
 fi
 
+# ── F-040/F-041/F-042/F-043 (MASTER-6): Arrays.fill family + catch-handler
+# size law + VALUE_LONG static-default law + Double/Float bits law.
+# Real-APK evidence: dooz Compose DerivedSnapshotState dependency table —
+# Lh/u;.a probe spun forever on all-zero scatter-map metadata (fill was a
+# silent no-op); the micro-proof's typed-catch + wide-static laws peel the
+# second-order defect chain exposed while proving the first.
+F040_FIX_SRC="$MA/tests/fixtures/f040_arrays_fill"
+rm -rf /tmp/battery_f040; mkdir -p /tmp/battery_f040
+if cached "F-040 arrays-fill fixture build (ECJ+D8)"; then
+    skip "F-040 arrays-fill fixture build (ECJ+D8)"
+    skip "F-040 arrays-fill fixture run (rc=0 SUCCESS)"
+    skip "F-040 arrays-fill pixel golden (7 bands)"
+elif [ -d "$F040_FIX_SRC" ]; then
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
+        "$F040_FIX_SRC" /tmp/battery_f040/f040_arrays_fill.apk \
+        > /tmp/battery_f040/build.log 2>&1
+    gate "F-040 arrays-fill fixture build (ECJ+D8)" $?
+    (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f040/f040_arrays_fill.apk \
+        -o /tmp/battery_f040/out > /tmp/battery_f040/run.log 2>&1)
+    gate "F-040 arrays-fill fixture run (rc=0 SUCCESS)" $?
+    rc=0
+    grep -q "Status: SUCCESS" /tmp/battery_f040/run.log || rc=1
+    python3 "$REPOSCRIPTS/f040_pixel_golden.py" /tmp/battery_f040/out/screenshot.ppm \
+        > /tmp/battery_f040/pixel.log 2>&1 || rc=1
+    gate "F-040 arrays-fill pixel golden (7 bands)" $rc
+    tail -1 /tmp/battery_f040/pixel.log
+else
+    gate "F-040 arrays-fill fixture build (ECJ+D8)" 1
+    gate "F-040 arrays-fill pixel golden (7 bands)" 1
+fi
+
 echo "──────────────────────────────────────────────"
 for r in "${RESULTS[@]}"; do printf '%s\n' "$r"; done
 if [ $FAIL -eq 0 ]; then
