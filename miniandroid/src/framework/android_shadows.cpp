@@ -1699,7 +1699,25 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     if (m == "<init>") {
         // View(Context), View(Context, AttributeSet), View(Context, AttributeSet, int)
         // Allocate a fresh node bound to this receiver.
-        get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        // F-031 (MASTER-5 §B) — AOSP View.mContext law: View.<init> stores
+        // its FIRST Context argument and getContext() returns it for the
+        // lifetime of the view (AOSP View.java: mContext = context in every
+        // ctor; `public final Context getContext() { return mContext; }`).
+        // The EXP-071 capture block below this point was DEAD CODE — the
+        // early return here shadowed it, so context_object_id was never
+        // stored and getContext() returned null for every View. First
+        // real-APK hit: dooz Compose chain — ComposeView.getContext -> null
+        // -> AndroidComposeView built with null context ->
+        // Context.getSystemService NPE inside
+        // AndroidComposeViewAccessibilityDelegateCompat.<init> ->
+        // composition killed before any content node existed.
+        if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+            uint32_t ctx_id = ctx.args[0].object_id;
+            if (ctx_id != 0 && ctx_id != ctx.receiver_id) {
+                n->context_object_id = ctx_id;
+            }
+        }
         return CallResult::handled_void();
     }
     if (m == "setId") {
@@ -1914,6 +1932,13 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // We store the context_object_id when the View constructor is called with a Context arg.
     if (m == "getContext") {
         const auto* n = find_node(ctx.receiver_id);
+        if (std::getenv("MINIANDROID_CTX_DIAG")) {
+            std::cerr << "[CTX-GET] recv=obj#" << ctx.receiver_id
+                      << " cls=" << ctx.receiver_class
+                      << " node=" << (n ? "YES" : "NO")
+                      << " ctx_id=" << (n ? n->context_object_id : 0)
+                      << " caller_thread_ok" << std::endl;
+        }
         if (n && n->context_object_id != 0) {
             return CallResult::handled_object(n->context_object_id, "Landroid/content/Context;");
         }
@@ -1923,8 +1948,17 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // EXP-071: View constructor — capture Context argument.
     // When a View subclass <init>(Context, ...) is called, the first arg is the Context
     // (usually the Activity). We store it so getContext() can return it later.
-    if (m == "<init>" && ctx.args.size() >= 1 &&
+    // EXP-071 NOTE (F-031 merge): the View.<init> Context capture now lives
+    // in the FIRST <init> handler above (this dispatch returns there for
+    // every <init>; the old duplicate block here was unreachable dead code).
+    if (false && m == "<init>" && ctx.args.size() >= 1 &&
         ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+        if (std::getenv("MINIANDROID_CTX_DIAG")) {
+            std::cerr << "[CTX-CAP] recv=obj#" << ctx.receiver_id
+                      << " cls=" << (ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class)
+                      << " ctx_arg=obj#" << ctx.args[0].object_id
+                      << " (" << ctx.args[0].object_class << ")" << std::endl;
+        }
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         // Check if the first arg looks like a Context/Activity (it usually is)
         uint32_t ctx_id = ctx.args[0].object_id;

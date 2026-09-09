@@ -953,6 +953,39 @@ else
     gate "F-028 float-law pixel golden (7 bands)" 1
 fi
 
+# ── M5 F-030 — ZERO-IS-NULL-AT-REFERENCE-USE LAW (real-toolchain fixture).
+# The law: const/4 #0 loads the POLYMORPHIC zero word — int 0 in a
+# primitive context, the NULL reference in a reference context (ART
+# verifier `Zero` reg-type). An INT32(0) argument must be re-typed as
+# null when the callee's declared param is a reference. Guards the
+# tagged-union bit-alias defect class first hit by real APK coroutine
+# scheduler machinery (dooz LY1/b;.D passes const/4 #0 as the Segment
+# cell CAS `expected`; identity CAS refused INT-vs-null and the
+# state machine livelocked 99,803+ AtomicReferenceArray.get calls).
+F030_FIX_SRC="$MA/tests/fixtures/f030_zero_law"
+rm -rf /tmp/battery_f030; mkdir -p /tmp/battery_f030
+if cached "F-030 zero-law fixture build (ECJ+D8)"; then
+    skip "F-030 zero-law fixture build (ECJ+D8)"
+    skip "F-030 zero-law pixel golden (7 bands)"
+elif [ -d "$F030_FIX_SRC" ]; then
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
+        "$F030_FIX_SRC" /tmp/battery_f030/f030_zero_law.apk \
+        > /tmp/battery_f030/build.log 2>&1
+    gate "F-030 zero-law fixture build (ECJ+D8)" $?
+    (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f030/f030_zero_law.apk \
+        -o /tmp/battery_f030/out > /tmp/battery_f030/run.log 2>&1)
+    gate "F-030 zero-law fixture run (rc=0 SUCCESS)" $?
+    rc=0
+    grep -q "Status: SUCCESS" /tmp/battery_f030/run.log || rc=1
+    python3 "$REPOSCRIPTS/f030_pixel_golden.py" /tmp/battery_f030/out/screenshot.ppm \
+        > /tmp/battery_f030/pixel.log 2>&1 || rc=1
+    gate "F-030 zero-law pixel golden (7 bands)" $rc
+    tail -1 /tmp/battery_f030/pixel.log
+else
+    gate "F-030 zero-law fixture build (ECJ+D8)" 1
+    gate "F-030 zero-law pixel golden (7 bands)" 1
+fi
+
 echo "──────────────────────────────────────────────"
 for r in "${RESULTS[@]}"; do printf '%s\n' "$r"; done
 if [ $FAIL -eq 0 ]; then
