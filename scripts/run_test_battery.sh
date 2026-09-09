@@ -922,6 +922,37 @@ else
     gate "F-026+F-027 Room/SQLite pixel golden (7 bands)" 1
 fi
 
+# ── M3 F-028: untyped-register conversion law (micro reproducer) ──
+# The law: Dalvik registers are UNTYPED slots; the opcode defines the
+# source interpretation. const/high16 float bits (INT32-tagged 0x42E60000)
+# must read as 115.0f through float-to-int / float cmp / float arith —
+# NOT as the numeric int word 1120702464. Guards the bit-alias defect
+# class first hit by real APK Material3 (dooz LG0/b.<clinit> ISE "You
+# should only apply non-linear scaling to font scales > 1").
+F028_FIX_SRC="$MA/tests/fixtures/f028_float_law"
+rm -rf /tmp/battery_f028; mkdir -p /tmp/battery_f028
+if cached "F-028 float-law fixture build (ECJ+D8)"; then
+    skip "F-028 float-law fixture build (ECJ+D8)"
+    skip "F-028 float-law pixel golden (7 bands)"
+elif [ -d "$F028_FIX_SRC" ]; then
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
+        "$F028_FIX_SRC" /tmp/battery_f028/f028_float_law.apk \
+        > /tmp/battery_f028/build.log 2>&1
+    gate "F-028 float-law fixture build (ECJ+D8)" $?
+    (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f028/f028_float_law.apk \
+        -o /tmp/battery_f028/out > /tmp/battery_f028/run.log 2>&1)
+    gate "F-028 float-law fixture run (rc=0 SUCCESS)" $?
+    rc=0
+    grep -q "Status: SUCCESS" /tmp/battery_f028/run.log || rc=1
+    python3 "$REPOSCRIPTS/f028_pixel_golden.py" /tmp/battery_f028/out/screenshot.ppm \
+        > /tmp/battery_f028/pixel.log 2>&1 || rc=1
+    gate "F-028 float-law pixel golden (7 bands)" $rc
+    tail -1 /tmp/battery_f028/pixel.log
+else
+    gate "F-028 float-law fixture build (ECJ+D8)" 1
+    gate "F-028 float-law pixel golden (7 bands)" 1
+fi
+
 echo "──────────────────────────────────────────────"
 for r in "${RESULTS[@]}"; do printf '%s\n' "$r"; done
 if [ $FAIL -eq 0 ]; then

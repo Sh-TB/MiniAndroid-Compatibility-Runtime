@@ -72,7 +72,9 @@ public:
                 "incrementAndGet", "getAndIncrement",
                 "decrementAndGet", "getAndDecrement",
                 // conversions Kotlin code calls on boxers
-                "intValue", "longValue", "booleanValue"};
+                "intValue", "longValue", "booleanValue",
+                // M4 F-028d: Atomic*FieldUpdater family
+                "newUpdater"};
     }
     std::vector<std::string> stubbed_methods() const override {
         return {"getAndUpdate", "updateAndGet", "accumulateAndGet",
@@ -92,6 +94,13 @@ private:
         int64_t num = 0;
     };
     std::map<uint32_t, AtomicCell> cells_;
+
+    // M4 F-028d — field-updater descriptors keyed by the heap id of the
+    // allocated Atomic*FieldUpdater object. The value is the TARGET FIELD
+    // NAME captured from newUpdater(tclass, vclass, fieldName); access
+    // goes through the HeapAllocator typed-field hooks (real heap fields,
+    // real object identity).
+    std::map<uint32_t, std::string> updaters_;
 };
 
 }} // namespace miniandroid::framework
