@@ -13513,6 +13513,198 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     log("  API BRIDGE: " + class_name + "." + method);
 
     // ────────────────────────────────────────────────────────────────────────
+    // M4 F-029 — CORE REFLECTION LAW (java.lang.reflect plumbing).
+    // AndroidX/coroutines compat shims reflect into framework classes at
+    // <clinit> time. First real-APK hit (dooz): HandlerCompat.createAsync
+    // (R8: X1/h) does Looper.class.getDeclaredMethod("createAsync", ...)
+    // + Method.invoke on API >= 28 to mint the main async Handler. With no
+    // reflection the Method/invoke results read null and the shim's own
+    // Intrinsics null-check (M1/i.d) threw NPE inside <clinit>, killing
+    // composition before any UI existed.
+    // Laws (AOSP java.lang.reflect, generic — no app-specific names):
+    //   * Class.getDeclaredMethod/getMethod(name, Class[]) → Method record
+    //     object carrying (__reflect_class, __reflect_name). Real ART
+    //     resolves or throws NoSuchMethodException; the bridge cannot
+    //     validate arbitrary framework bodies, so a record is minted for
+    //     any name — an invoke failure then yields null, which is no worse
+    //     than the pre-law state and lets the shim's own fallback run.
+    //   * Class.getDeclaredConstructor(Class[]) → Constructor record.
+    //   * Method.invoke(receiver, Object[]) → dispatch the reflected
+    //     identity back through this bridge (recursive bridge_to_api),
+    //     receiver-shifted. Static targets get a leading null receiver so
+    //     the bridge's shift convention sees (null, params...).
+    //   * Constructor.newInstance(Object[]) → allocate the reflected class
+    //     + <init> dispatch, return the object.
+    //   * Varargs arrays expand via the heap "array[i]"/"__array_length__"
+    //     convention (same storage filled-new-array uses).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/Class;" &&
+        (method == "getDeclaredMethod" || method == "getMethod" ||
+         method == "getDeclaredConstructor" || method == "getConstructor")) {
+        // args: [0]=receiver Class, [1]=name String, [2]=Class[] params
+        std::string reflected = args.empty() ? "" : args[0].class_desc;
+        if (reflected.empty() && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+            // Class materialized as a plain object: its class_desc carries
+            // the descriptor identity.
+            reflected = args[0].class_desc;
+        }
+        std::string name = args.size() > 1 ? args[1].string_val : "";
+        const bool is_ctor = method == "getDeclaredConstructor" ||
+                             method == "getConstructor";
+        std::string rec_cls = is_ctor ? "Ljava/lang/reflect/Constructor;"
+                                      : "Ljava/lang/reflect/Method;";
+        uint32_t rec = heap_.allocate(rec_cls, pc_, 0);
+        // Both field spellings: "class_desc" is the FIX-M3-012b law the
+        // Constructor.newInstance shim reads; "__reflect_*" carries the
+        // Method identity for F-029 invoke. Dual-store keeps both laws live.
+        heap_.set_object_field(rec, "__reflect_class",
+                               DalvikValue::make_string(reflected, 0));
+        heap_.set_object_field(rec, "__reflect_name",
+                               DalvikValue::make_string(name, 0));
+        heap_.set_object_field(rec, "class_desc",
+                               DalvikValue::make_string(reflected, 0));
+        result = DalvikValue::make_object(rec, rec_cls);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/lang/reflect/Method;" && method == "invoke") {
+        // args: [0]=Method receiver, [1]=target receiver (null for static),
+        // [2]=Object[] params (may be absent for no-arg).
+        result = DalvikValue::make_null();
+        if (args.empty() || args[0].type != DalvikType::OBJECT_REF) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        auto cls_f = heap_.get_object_field(args[0].object_id, "__reflect_class");
+        auto name_f = heap_.get_object_field(args[0].object_id, "__reflect_name");
+        if (!cls_f.has_value() || !name_f.has_value()) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        std::string rcls = cls_f->string_val;
+        std::string rname = name_f->string_val;
+        std::vector<DalvikValue> call_args;
+        // Receiver slot: null for static targets (bridge shifts args[0]).
+        call_args.push_back(args.size() > 1
+                                ? args[1]
+                                : DalvikValue::make_null());
+        if (args.size() > 2 && args[2].type == DalvikType::OBJECT_REF &&
+            args[2].object_id != 0) {
+            auto len_f = heap_.get_object_field(args[2].object_id,
+                                                "__array_length__");
+            int n = len_f.has_value() ? len_f->int_val : 0;
+            for (int i = 0; i < n; i++) {
+                auto el = heap_.get_object_field(
+                    args[2].object_id, "array[" + std::to_string(i) + "]");
+                call_args.push_back(el.has_value() ? *el
+                                                   : DalvikValue::make_null());
+            }
+        }
+        DalvikValue out;
+        ApiCallTrace::Status st2 = ApiCallTrace::Status::STUBBED;
+        if (!rcls.empty() && !rname.empty() &&
+            bridge_to_api(rcls, rname, call_args, out, st2, 0)) {
+            result = out;
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Ljava/lang/reflect/Constructor;" &&
+        method == "newInstance") {
+        // args: [0]=Constructor receiver, [1]=Object[] ctor params.
+        // Identity fields: FIX-M3-012b law stores "class_desc"; F-029
+        // records carry "__reflect_class". Either binds the target class.
+        result = DalvikValue::make_null();
+        if (args.empty() || args[0].type != DalvikType::OBJECT_REF) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        std::string rcls;
+        auto cdesc = heap_.get_object_field(args[0].object_id, "class_desc");
+        if (cdesc.has_value() && cdesc->type == DalvikType::STRING_REF)
+            rcls = cdesc->string_val;
+        if (rcls.empty()) {
+            auto cls_f = heap_.get_object_field(args[0].object_id,
+                                                "__reflect_class");
+            if (cls_f.has_value()) rcls = cls_f->string_val;
+        }
+        if (rcls.empty()) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // FIX-M3-012b law (preserved): run the REAL <init> DEX body when
+        // the class defines one (Room Database_Impl). Bridge <init> only
+        // when the class has no DEX body.
+        auto cit = class_info_index_.find(rcls);
+        if (cit != class_info_index_.end()) {
+            uint32_t obj_id = heap_.allocate(rcls, pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            std::vector<DalvikValue> ctor_args;
+            ctor_args.push_back(DalvikValue::make_object(obj_id, rcls));
+            if (args.size() > 1 && args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0) {
+                auto len_f = heap_.get_object_field(args[1].object_id,
+                                                    "__array_length__");
+                int n = len_f.has_value() ? len_f->int_val : 0;
+                for (int i = 0; i < n; i++) {
+                    auto el = heap_.get_object_field(
+                        args[1].object_id, "array[" + std::to_string(i) + "]");
+                    ctor_args.push_back(el.has_value()
+                                            ? *el
+                                            : DalvikValue::make_null());
+                }
+            }
+            DalvikValue ctor_result;
+            DalvikExecutionResult ctor_exec;
+            try_recursive_invoke(rcls, "<init>", ctor_args,
+                                 ctor_result, ctor_exec);
+            result = DalvikValue::make_object(obj_id, rcls);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // No DEX body: allocate + bridge <init> (framework classes).
+        uint32_t obj = heap_.allocate(rcls, pc_, 0);
+        std::vector<DalvikValue> call_args;
+        call_args.push_back(DalvikValue::make_object(obj, rcls));
+        if (args.size() > 1 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0) {
+            auto len_f = heap_.get_object_field(args[1].object_id,
+                                                "__array_length__");
+            int n = len_f.has_value() ? len_f->int_val : 0;
+            for (int i = 0; i < n; i++) {
+                auto el = heap_.get_object_field(
+                    args[1].object_id, "array[" + std::to_string(i) + "]");
+                call_args.push_back(el.has_value() ? *el
+                                                   : DalvikValue::make_null());
+            }
+        }
+        DalvikValue out;
+        ApiCallTrace::Status st2 = ApiCallTrace::Status::STUBBED;
+        if (bridge_to_api(rcls, "<init>", call_args, out, st2, 0)) {
+            result = out;
+        } else {
+            result = DalvikValue::make_object(obj, rcls);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // M4 F-029b — View.getHandler() law. AOSP View.getHandler returns the
+    // handler of the ViewRootImpl this view is attached to — on this
+    // single-main-thread runtime that is the main Handler singleton. Real
+    // demand: AbstractComposeView (WindowRecomposer attach chain) calls
+    // getHandler() while resolving the window recomposer; null here NPEs
+    // the composition attach.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "getHandler" && class_name.find("View") != std::string::npos) {
+        result = get_or_create_singleton("Landroid/os/Handler;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // GENERIC COMPATIBILITY (campaign §"complete runnable APK"): programmatic
     // LayoutParams constructors.
     //

@@ -74,7 +74,9 @@ public:
                 // conversions Kotlin code calls on boxers
                 "intValue", "longValue", "booleanValue",
                 // M4 F-028d: Atomic*FieldUpdater family
-                "newUpdater"};
+                "newUpdater",
+                // M4 F-028h: AtomicReferenceArray family
+                "length"};
     }
     std::vector<std::string> stubbed_methods() const override {
         return {"getAndUpdate", "updateAndGet", "accumulateAndGet",
@@ -101,6 +103,30 @@ private:
     // goes through the HeapAllocator typed-field hooks (real heap fields,
     // real object identity).
     std::map<uint32_t, std::string> updaters_;
+
+    // M4 F-028h — AtomicReferenceArray cell grid, keyed by the heap id of
+    // the array object. Java/AOSP law (libcore/ojluni
+    // AtomicReferenceArray): elementwise access with REFERENCE identity
+    // semantics (get/set/getAndSet/compareAndSet/lazySet), length fixed
+    // by the <init>(I) constructor. ROOT GAP this closes: kotlinx.coroutines
+    // internal SegmentedQueue/Segment (the lock-free work queue under
+    // Dispatchers.Default used by Compose's Recomposer) stores its slot
+    // elements in an AtomicReferenceArray; with no engine implementation
+    // the enqueue's set() was silently dropped and the dequeue's get()
+    // always returned null, so the consumer spin loop (Segment cell
+    // await) never observed progress — dooz livelocked at
+    // Lb2/n;.d (629k+ null reads) right after the Material3 init layer.
+    // Determinism: single-threaded engine, CAS succeeds iff the identity
+    // law holds; OOB access logs and returns null (the engine's
+    // bridge layer has no AIOOBE plumbing — honest soft law, logged).
+    struct ArrayCell {
+        enum class Kind { EMPTY, REF, STR, NUM } kind = Kind::EMPTY;
+        uint32_t ref_id = 0;
+        std::string ref_cls;
+        std::string ref_str;
+        int64_t num = 0;
+    };
+    std::map<uint32_t, std::vector<ArrayCell>> arrays_;
 };
 
 }} // namespace miniandroid::framework
