@@ -183,3 +183,39 @@ Work Log:
 Stage Summary:
 - F-028 law implemented + fixture + golden + stage; pending: baseline battery -> commit -> fresh battery -> dooz re-run -> Phase C runs.
 - Battery resume state: /tmp/g09_battery_state (HEAD b3fa7b36).
+---
+Task ID: M4-S14-2
+Agent: Super Z (session 14 continuation — F-028 proof, F-028h, F-029, DOOZ frontier peel)
+Task: Prove F-028, peel DOOZ blockers to the next honest frontier, keep battery green, reconcile regressions.
+
+Work Log:
+- State recovery: HEAD e2e91928 (UUID auto-commit) contained unproven F-028 family code (CONV/CMP/ARITH raw-bits reinterpretation + F-028d Atomic*FieldUpdater + F-028f VALUE_FLOAT/DOUBLE encoded defaults). Binary missing; apk_cache and /home/z/corpus wiped by container restart; dooz_f028 "SUCCESS" report was generator-gossip (screenshot byte-identical to blank 10351B baselines, 0 non-white).
+- Rebuilt aapt2 (Google Maven 8.13.2-14304508, fixed FORMAT_SIZE '21i'=3 in exp059_disasm.py); re-fetched dooz (d81292cd EXACT pin) + HelloWorldSelfAware (009b4671 EXACT pin) + reference screenshot.
+- F-028 PROVEN: micro fixture f028_float_law 7/7 bands GREEN on real ECJ+D8 DEX (const/high16 -> float-to-int band = the dooz key pattern). Battery ALL PASS.
+- DOOZ post-F-028: fontScale ISE GONE, Snapshot readError GONE. New frontier: livelock at kotlinx.coroutines SegmentedQueue/Segment (b2/m.c -> m.d -> n.d), state pinned 0x40000000, 629,783 AtomicLongFieldUpdater.get + 629,769 AtomicReferenceArray.get, 1 set (lost). AtomicReferenceArray had NO engine handler at all.
+- F-028h FIX: AtomicReferenceArray family in AtomicShadow (get/set/getAndSet/CAS/lazySet, identity law, ctor length). Initially unreachable — dispatch() early guard rejected the class; guard extended. Evidence chain: ARR-CAS diag cell(k=0) expect(k=0)->FAIL (correct AOSP law: fresh cell reads null, Integer != null).
+- Post-F-028h: run COMPLETES (report generated, 0 errors) but 0 non-white pixels. Next layer: HandlerCompat.createAsync (X1/h) reflection chain — Class.getDeclaredMethod + Method.invoke REC-MISS -> null -> Intrinsics NPE at M1/i.d; AbstractComposeView.f getHandler REC-MISS.
+- F-029 FIX (dalvik_engine bridge): reflection core (getDeclaredMethod/getMethod/getDeclaredConstructor/getConstructor -> records; Method.invoke -> recursive bridge_to_api with heap array[i] varargs; Constructor.newInstance -> REAL DEX <init> via try_recursive_invoke when DEX body exists), F-029a Handler.createAsync -> main Handler singleton, F-029b View.getHandler -> main Handler.
+- REGRESSION CAUGHT AND FIXED: F-029 v1 intercepted the legacy FIX-M3-012b Constructor.newInstance law (read __reflect_class, skipped DEX ctor) -> microtimer Room Database_Impl path broke (5 uncaught NPE/Lm/c past app boundary, PARTIAL). Reconciled: dual field spellings + real DEX <init> preserved. microtimer back to rc=0 SUCCESS.
+- FINAL BATTERY: 79/79 ALL PASS at 8de5382b (includes F-028 fixture stages + EXT-01/02 restored externals).
+- COMMIT 8de5382b (unpushed, no credentials). DOOZ current frontier: LY1/j Segment CAS-retry spin (EventLoop/DelayedTask queue) — honest wait-for-other-thread; needs single-threaded dispatcher-pump law = STOP-2 subsystem (deferred per PHASE I).
+
+Stage Summary:
+- 3 generic laws landed and regression-proven: F-028 (untyped registers), F-028h (AtomicReferenceArray), F-029 (reflection core + HandlerCompat + getHandler).
+- DOOZ peeled 3 blocker layers this session: Material3 ISE -> SegmentedQueue livelock -> reflection NPE -> now deep in coroutine scheduler (composition constructs past Material3 + Recomposer creation).
+- Battery 79/79. Next: dispatcher-pump law (dedicated session) OR Phase C sweep spotlight.
+---
+Task ID: M4-S14-3
+Agent: Super Z (session 14 — Phase B/C/D/E/J closure)
+Task: Real APK sweep, TTT historical audit verdict, final report.
+
+Work Log:
+- Re-fetched com.emmanuelmess.tictactoe_3 (760fe5ac EXACT registry pin); ran at HEAD: rc=0 SUCCESS, 0 non-white px — T3/BLANK PRESERVED (libGDX GLSurfaceView boundary), matches G09 historical record exactly.
+- tictactoe_golden: battery §29 PASS; artifacts audited (frames_manifest.json 9/9 listener clicks, 2741-px frame deltas; board PNGs 2.02M non-white). VERDICT: PARTIALLY VERIFIED — VERIFIED-PRESERVED (fixture), UNVERIFIED-BY-DESIGN (real APK, never claimed).
+- Sweep pixel evidence: microtimer 50.2% nonwhite + F-012 PASS (T8), simplestopwatch 110,185 px, gmdice 1,744,539 px (84%), HelloWorldSelfAware 99.1% + EXT-01/02 goldens (T7), dooz 0 px at scheduler frontier (3 layers peeled this session).
+- Telegram/WhatsApp/Signal re-fetch did not complete (CDN unreachable); acquisition hashes recorded previously; no C-level claims fabricated.
+- MASTER4_FINAL_REPORT.md committed (8de5382b + report commit): fixes ledger, 7-APK T-matrix, Phase B verdict, blocker ranking (#1 dispatcher pump), next spotlight.
+
+Stage Summary:
+- Campaign deliverables complete: HEAD 8de5382b, battery 79/79, three generic laws landed+proven, TTT verdict honest, cross-APK matrix at pixel evidence level.
+- Next session spotlight: dispatcher-pump law (dooz first-frame).
