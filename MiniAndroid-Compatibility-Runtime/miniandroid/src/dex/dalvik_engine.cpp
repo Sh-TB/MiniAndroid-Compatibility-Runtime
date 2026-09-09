@@ -14460,7 +14460,151 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 std::cerr << std::endl;
             }
         }
-        if (try_shadow_dispatch(class_name, method, args, result, status)) {
+    // ────────────────────────────────────────────────────────────────────────
+    // F-036 (MASTER-5 §F) — java.util.Arrays.asList + List.iterator law.
+    // AOSP/OpenJDK: Arrays.asList(T... a) returns a fixed-size List
+    // (java.util.Arrays$ArrayList) backed by the argument array, and
+    // List.iterator() returns an Iterator whose hasNext/next walk the
+    // elements in order. The engine's List shadow had no iterator law and
+    // Arrays.asList was unhandled, so the composition's element sequence
+    // (dooz LF/j;.e: Arrays.asList(new b2/o[]{...}).iterator()) received
+    // null and Intrinsics.checkNotNullParameter threw NPE, killing
+    // MainActivity.onCreate. Elements use the SAME "array[N]" /
+    // "__array_length__" heap convention as the ArrayList bridge and the
+    // aget/aput paths; the iterator position rides "__iterator_pos__".
+    if (class_name == "Ljava/util/Arrays;" && method == "asList" &&
+        args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF) {
+        uint32_t src_id = args[0].object_id;
+        int32_t n = 0;
+        auto lenf = heap_.get_object_field(src_id, "__array_length__");
+        if (lenf.has_value() && lenf->type == DalvikType::INT32) n = lenf->int_val;
+        if (n <= 0) {
+            // vararg-less / empty call — also accept int_val as a fallback
+            // (NEW_ARRAY stores the size there too).
+            n = args[0].int_val > 0 ? args[0].int_val : 0;
+        }
+        uint32_t list_id = heap_.allocate("Ljava/util/Arrays$ArrayList;", pc_, 0);
+        heap_.set_object_field(list_id, "__array_length__",
+                               DalvikValue::make_int(n));
+        for (int32_t i = 0; i < n; ++i) {
+            auto elem = heap_.get_object_field(
+                src_id, "array[" + std::to_string(i) + "]");
+            if (elem.has_value()) {
+                heap_.set_object_field(
+                    list_id, "array[" + std::to_string(i) + "]", *elem);
+            }
+        }
+        heap_.set_object_field(list_id, "__iterator_pos__",
+                               DalvikValue::make_int(0));
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_object(list_id, "Ljava/util/Arrays$ArrayList;");
+        return true;
+    }
+    // F-039 (MASTER-5 §G) — java.util.Collections singleton/empty law.
+    // AOSP/OpenJDK: Collections.singletonList(x) returns a non-null List
+    // of exactly one element; emptyList() a non-null empty List. kotlin
+    // listOf()/emptyList() compile down to these and the compiler inserts
+    // Intrinsics.checkNotNullExpressionValue(result, "singletonList(...)
+    // must not be null") — an unbridged singletonList returned null and
+    // threw NPE at the dooz composition (R8 z1/k.c = CollectionsKt.
+    // listOf). Heap-fields-backed ("array[N]" + "__array_length__") so
+    // the F-036 iterator law serves them with zero new machinery.
+    if (class_name == "Ljava/util/Collections;" &&
+        (method == "singletonList" || method == "emptyList" ||
+         method == "unmodifiableList")) {
+        uint32_t list_id = heap_.allocate("Ljava/util/Collections$SingletonList;", pc_, 0);
+        int32_t n = 0;
+        if (method == "singletonList" && args.size() >= 1) {
+            heap_.set_object_field(list_id, "array[0]", args[0]);
+            n = 1;
+        } else if (method == "unmodifiableList" && args.size() >= 1 &&
+                   args[0].type == DalvikType::OBJECT_REF) {
+            // AOSP: an unmodifiable view delegates iteration — return the
+            // backing list itself (single-threaded engine: same observable
+            // ordering; the immutability guard is not observable here).
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = args[0];
+            return true;
+        }
+        heap_.set_object_field(list_id, "__array_length__",
+                               DalvikValue::make_int(n));
+        heap_.set_object_field(list_id, "__iterator_pos__",
+                               DalvikValue::make_int(0));
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_object(list_id, "Ljava/util/Collections$SingletonList;");
+        return true;
+    }
+    if ((class_name == "Ljava/util/ArrayList;" ||
+         class_name.find("ArrayList") != std::string::npos ||
+         class_name.find("List;") != std::string::npos ||
+         class_name.find("Iterator;") != std::string::npos ||
+         class_name.find("Iterable;") != std::string::npos) &&
+        method != "<init>" &&
+        // F-036 scope law: the engine-side iterator answers ONLY when the
+        // receiver object actually carries the heap-fields backing store
+        // ("__array_length__" + "array[N]" — the Arrays.asList product and
+        // ArrayList.add convention). Anything else (shadow-side collection
+        // state, StreamCorrupted objects) falls through to the shadows.
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        heap_.get_object_field(args[0].object_id, "__array_length__").has_value()) {
+        // F-036 scope note: invoke-interface call sites declare
+        // Ljava/util/Iterator; (hasNext/next) and Ljava/lang/Iterable;
+        // (iterator) even when the runtime object is the Arrays$ArrayList
+        // product above, so the iterator law must answer those declared
+        // classes too.
+        if (method == "<init>") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "iterator") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            heap_.set_object_field(this_id, "__iterator_pos__",
+                                   DalvikValue::make_int(0));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            // Self-as-iterator (house pattern, cf. CollectionShadow): the
+            // runtime type stays the list, so the hasNext/next dispatch
+            // below answers the following invokes.
+            result = DalvikValue::make_object(this_id, "Ljava/util/Iterator;");
+            return true;
+        }
+        if (method == "hasNext") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            int32_t pos = 0, sz = 0;
+            auto pf = heap_.get_object_field(this_id, "__iterator_pos__");
+            if (pf.has_value() && pf->type == DalvikType::INT32) pos = pf->int_val;
+            auto lf = heap_.get_object_field(this_id, "__array_length__");
+            if (lf.has_value() && lf->type == DalvikType::INT32) sz = lf->int_val;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(pos < sz);
+            return true;
+        }
+        if (method == "next") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            int32_t pos = 0, sz = 0;
+            auto pf = heap_.get_object_field(this_id, "__iterator_pos__");
+            if (pf.has_value() && pf->type == DalvikType::INT32) pos = pf->int_val;
+            auto lf = heap_.get_object_field(this_id, "__array_length__");
+            if (lf.has_value() && lf->type == DalvikType::INT32) sz = lf->int_val;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (pos < sz) {
+                auto elem = heap_.get_object_field(
+                    this_id, "array[" + std::to_string(pos) + "]");
+                heap_.set_object_field(this_id, "__iterator_pos__",
+                                       DalvikValue::make_int(pos + 1));
+                if (elem.has_value()) {
+                    result = *elem;
+                    return true;
+                }
+                result = DalvikValue::make_null();
+                return true;
+            }
+            throw_deferred("Ljava/util/NoSuchElementException;",
+                           "List iterator exhausted", "LIST-ITER");
+            return true;
+        }
+    }
+    if (try_shadow_dispatch(class_name, method, args, result, status)) {
             // M3 F-ROOM-CHAIN: SQLiteOpenHelper.getWritableDatabase /
             // getReadableDatabase must fire the app override onCreate /
             // onUpgrade AFTER the database object exists (ART law: the
@@ -16899,19 +17043,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // EXP-071 Phase 6: ArrayList — basic operations.
-    // ArrayList is also an Android framework class. We stub add/get/size.
-    // Uses the SAME "array[idx]" / "__array_length__" convention as
-    // ARRAY_GET_CASE / ARRAY_PUT_CASE so aget-object on an ArrayList's
-    // backing array works correctly.
+    // EXP-071 Phase 6: ArrayList — basic operations (post-shadow fallbacks).
+    // NOTE (F-036 relocation): the iterator-family law now lives BEFORE the
+    // shadow dispatch (guarded on the heap-fields backing store); the
+    // add/get/size/isEmpty/clear fallbacks stay here and restore their
+    // class gate — without it these method names matched EVERY class.
     if (class_name == "Ljava/util/ArrayList;" ||
         class_name.find("ArrayList") != std::string::npos ||
         class_name.find("List;") != std::string::npos) {
-        if (method == "<init>") {
-            status = ApiCallTrace::Status::IMPLEMENTED;
-            result = DalvikValue::make_void();
-            return true;
-        }
         if (method == "add" && args.size() >= 2) {
             uint32_t this_id = args[0].object_id;
             auto* obj = heap_.get(this_id);
