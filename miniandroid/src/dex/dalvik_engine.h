@@ -1779,6 +1779,13 @@ public:
     
     // Register access helpers
     void set_register(uint8_t reg, const DalvikValue& value);
+    // F-028b (M4 §A1) WIDE-PAIR SLOT LAW: ART stores a wide (J/D) value in
+    // TWO consecutive registers — vReg holds the value, vReg+1 holds the
+    // high 32-bit word of its bit pattern. The tagged-union register file
+    // keeps the full value in vReg; the shadow slot must still be filled
+    // so raw register-window reads (range-invoke passthrough, unresolvable
+    // protos) observe ART's slot layout instead of stale/garbage words.
+    void set_wide_pair(uint8_t reg, const DalvikValue& value);
     DalvikValue get_register(uint8_t reg) const;
     std::string register_name(uint8_t reg) const;
     
