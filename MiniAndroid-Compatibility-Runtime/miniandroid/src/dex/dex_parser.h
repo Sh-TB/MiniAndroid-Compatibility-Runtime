@@ -210,6 +210,14 @@ struct FieldInfo {
     int64_t default_int_value = 0;
     std::string default_string_value;
     bool default_value_is_string = false;
+    // F-028f (M4 §A1): VALUE_FLOAT / VALUE_DOUBLE defaults from the
+    // encoded_array_item. d8 bakes `static float X = 115.0f` into this
+    // section; the old parser walked past the bits (FIND-REUSE-DEX-004)
+    // so every float/double static read 0.0f. Bits are stored right-
+    // zero-extended exactly as the encoded_value walker produces them.
+    bool default_value_has_float_bits = false;
+    int64_t default_float_bits = 0;
+    uint8_t default_float_width = 0;  // 4 (VALUE_FLOAT) or 8 (VALUE_DOUBLE)
 };
 
 // Parsed class information

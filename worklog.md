@@ -164,3 +164,22 @@ Stage Summary:
 - 10 generic laws landed, battery green at both commit HEADs.
 - DOOZ VISUAL MILESTONE NOT COMPLETE — framebuffer still 0 non-white px (honest status); composition reaches Material3 internals (12 layers peeled from the original M1/i.f NPE).
 - NEXT (priority order): (a) CYCLE-E float-arg preservation law (G0/b layer, exact diagnosis banked), (b) SnapshotKt readError id consistency, (c) continue peeling to first frame → OBJ-5 micro-APKs → OBJ-6/7 pixel+tap proof → P2 independent Compose APK.
+
+---
+Task ID: M4-S14-1
+Agent: Super Z (session 14 — MASTER-4 lighthouse campaign, Phase 0/A1/B/C)
+Task: Phase 0 ground truth; A1 float untyped-register law; Phase B TTT forensic audit; Phase C APK acquisition.
+
+Work Log:
+- Phase 0: HEAD f60634e4 verified clean at session start; build fresh; external fixtures re-fetched and hash-verified (dooz d81292cd EXACT registry match; HelloWorldSelfAware 009b4671 EXACT doc match; microtimer/simplestopwatch/gmdice fetched from pinned F-Droid URLs).
+- DOOZ reproduced at HEAD: PARTIAL, fb 0/2073600 non-white, ISE at LG0/b;.<clinit> pc=172 (fontScale check) propagating via LP/l;.q — matches the banked session-13 frontier.
+- Harness note: session artifacts (diag scripts + dooz run outputs) were auto-committed externally as UUID commit b3fa7b36 at 03:51Z (no runtime source changes; exp059_disasm.py APK-path constant only). Battery baseline therefore valid for f60634e4 content.
+- A1 ROOT CAUSE (code-level + DEX-disasm proof): LG0/b.<clinit> builds int keys via `const/high16 v6,#0x42e6; float-to-int v6,v6` (115.0f bits INT32-tagged) then `h/B.e(key,table)`; `d(3)` returns j[3] which must be an int key. Runtime CONST_HIGH16 stores INT32-tagged raw bits; CONV_SRC_F32 numeric-converted them (1120702464 instead of 115) — the untyped-register violation. Same alias in CONV_SRC_I32/F32/F64, CMP_FLOATING_CASE (float branch), ARITH_23X_FLOAT_CASE, ARITH_WIDE_2ADDR FLOAT32 branch. build_invoke_args already correct (CM-019 F-param law). Field/array paths preserve bits+tag (verified sget/sput).
+- FIX F-028 (generic, no app special-casing): dalvik_raw_bits32() file-scope helper + all listed sites now reinterpret slot raw bits per opcode source type; WIDE-DIAG probes added (env-gated). dalvik_engine.o compiles clean; NOT yet linked (baseline battery isolation).
+- MICRO-LAW fixture f028_float_law (7 bands: dooz key pattern, int-to-float, dooz arithmetic chain, round-toward-zero, NaN/saturate, static/virtual/interface-default float identity, storage roundtrip) + scripts/f028_pixel_golden.py + battery stage appended (54->57 stages).
+- Phase B: TICTACTOE historical claim = tictactoe_golden FIXTURE APK (com.miniandroid.tictactoegolden, View-based, ECJ+D8), introduced de5f370e 2026-09-05, artifacts present (frames_manifest.json, board PNGs). REAL com.emmanuelmess.tictactoe_3 re-fetched, sha 760fe5ac EXACT G09 record match (historical: T3/BLANK, libGDX/GLSurfaceView boundary).
+- Phase C: Telegram 73MB sha f5e11927 (recorded), Signal 8.25.2 official website build sha 82a2cb99 VERIFIED vs updates.signal.org/latest.json, WhatsApp 144MB official CDN sha 56c3717b (recorded).
+
+Stage Summary:
+- F-028 law implemented + fixture + golden + stage; pending: baseline battery -> commit -> fresh battery -> dooz re-run -> Phase C runs.
+- Battery resume state: /tmp/g09_battery_state (HEAD b3fa7b36).

@@ -7,7 +7,7 @@ method in any DEX file inside the Telegram APK.
 """
 import zipfile, struct, sys, os
 
-APK = '/home/z/my-project/apk_cache/corpus/dooz.apk'
+APK = '/tmp/f028test/f028.apk'
 
 # AOSP-standard format → size (in 16-bit code units)
 FORMAT_SIZE = {
