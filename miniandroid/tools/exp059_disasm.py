@@ -7,12 +7,12 @@ method in any DEX file inside the Telegram APK.
 """
 import zipfile, struct, sys, os
 
-APK = '/tmp/f028test/f028.apk'
+APK = '/home/z/my-project/apk_cache/corpus/dooz.apk'
 
 # AOSP-standard format → size (in 16-bit code units)
 FORMAT_SIZE = {
     '10x': 1, '10t': 1, '11x': 1, '11n': 1, '12x': 1,
-    '20t': 2, '21s': 2, '21h': 2, '21c': 2, '21t': 2, '22x': 2,
+    '20t': 2, '21s': 2, '21h': 2, '21c': 2, '21t': 2, '22x': 2, '21i': 3,
     '22b': 2, '22s': 2, '22c': 2, '22t': 2, '23x': 2,
     '30t': 3, '31i': 3, '31t': 3, '31c': 3, '32x': 3,
     '35c': 3, '3rc': 3, '3rms': 3,
