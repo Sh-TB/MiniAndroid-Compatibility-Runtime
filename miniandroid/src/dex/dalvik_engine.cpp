@@ -1873,6 +1873,26 @@ bool DalvikExecutionEngine::execute_method_internal(
     // halt messages and traces can identify the method that halted.
     current_class_ = class_name;
     current_method_ = method_name;
+    // M5 scheduler-frontier diagnostic: dump incoming args of the Segment
+    // CAS-retry method (LY1/j;.j) to expose caller-side register tags.
+    // Env-gated (MINIANDROID_J_ENTRY=1), capped; forensics only.
+    if (std::getenv("MINIANDROID_J_ENTRY") && class_name == "LY1/j;" &&
+        method_name == "j") {
+        static thread_local uint64_t j_entry_n = 0;
+        if (j_entry_n < 8) {
+            ++j_entry_n;
+            std::cerr << "[J-ENTRY] call#" << j_entry_n << " args(" << args.size()
+                      << "):";
+            for (const auto& a : args) {
+                std::cerr << " {t=" << (int)a.type;
+                if (a.type == DalvikType::INT32) std::cerr << " i=" << a.int_val;
+                else if (a.type == DalvikType::OBJECT_REF) std::cerr << " obj=" << a.object_id << " cls=" << a.class_desc;
+                else if (a.is_null) std::cerr << " NULL";
+                std::cerr << "}";
+            }
+            std::cerr << std::endl;
+        }
+    }
     // CHAR-PROBE campaign: keep the descriptor for signature-aware return
     // typing in execute_return (see current_method_descriptor_ declaration).
     current_method_descriptor_ = descriptor;
@@ -12727,7 +12747,30 @@ static std::vector<DalvikValue> build_invoke_args(
         } else {
             if (idx >= raw.size()) break;   // malformed call — keep what we have
             DalvikValue v = raw[idx];
-            if (pt == "F" && v.type == DalvikType::INT32) {
+            if ((pt[0] == 'L' || pt[0] == '[') &&
+                v.type == DalvikType::INT32 && v.int_val == 0) {
+                // F-030 (MASTER-5 §A) — ZERO-IS-NULL-AT-REFERENCE-USE LAW.
+                // Dalvik registers are untyped 32-bit slots (F-028 law);
+                // `const/4 vX, #0` loads the POLYMORPHIC zero word, which
+                // is an int 0 in a primitive context and the NULL REFERENCE
+                // in a reference context. ART's verifier materializes this
+                // as the `Zero` reg-type, convertible to ANY reference type
+                // (art/runtime/verifier/reg types: Zero -> any ref). The
+                // tagged-union engine must therefore re-type an INT32(0)
+                // argument as null when the callee's declared param type is
+                // a reference (L...; or [...). Without this law the null
+                // crosses the invoke boundary tagged INT32(0) and every
+                // identity-sensitive consumer (AtomicReferenceArray CAS,
+                // == compares) sees boxed-int-0 instead of null — the
+                // first real-APK hit: dooz LY1/b;.D passes const/4 #0 as
+                // the `expected` state of Segment cell CAS (LY1/j;.j) and
+                // the lock-free state machine spins forever because the
+                // CAS can never match (correct F-028h identity law: null
+                // is not boxed Integer 0). No app special-casing: every
+                // real DEX that passes const/4 null into object params
+                // benefits (the standard Kotlin/Java `null` idiom).
+                args.push_back(DalvikValue::make_null());
+            } else if (pt == "F" && v.type == DalvikType::INT32) {
                 // EXP-095 CM-019 law: float params arrive as raw bits.
                 float f; int32_t bits = v.int_val;
                 std::memcpy(&f, &bits, sizeof(f));
@@ -13511,6 +13554,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     log("  API BRIDGE: " + class_name + "." + method);
+
+    // M5 scheduler-frontier diagnostic: identify the DEX caller of every
+    // AtomicReferenceArray.compareAndSet/get bridge. Env-gated
+    // (MINIANDROID_CAS_CALLER=1) and cap-limited; pure forensics, no
+    // behavior change.
+    if (std::getenv("MINIANDROID_CAS_CALLER") && class_name == "Ljava/util/concurrent/atomic/AtomicReferenceArray;") {
+        static thread_local uint64_t cas_caller_n = 0;
+        if (cas_caller_n < 6000) {
+            ++cas_caller_n;
+            std::cerr << "[CAS-CALLER] " << method << " caller="
+                      << current_class_ << "." << current_method_
+                      << std::endl;
+        }
+    }
 
     // ────────────────────────────────────────────────────────────────────────
     // M4 F-029 — CORE REFLECTION LAW (java.lang.reflect plumbing).
@@ -15751,6 +15808,46 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
 
+        // F-033 (MASTER-5 §D) — AOSP Context.getSystemService(Class) law:
+        // Context.getSystemService(Class<T>) ==
+        //     getSystemService(getSystemServiceName(serviceClass))
+        // (AOSP Context.java: the Class overload delegates through the
+        // SystemServiceRegistry class→name table). Compose's autofill
+        // helper (R8: LS/d) locates the AutofillManager exactly this way;
+        // with the Class overload unhandled the lookup returned null and
+        // the helper threw ISE "Autofill service could not be located.",
+        // killing the dooz composition. Class→name entries below mirror
+        // the string service_map entries (same registry, two views).
+        if (service_name.empty() && args.size() >= 2 &&
+            args[1].type == DalvikType::CLASS_REF) {
+            static const std::map<std::string, std::string> service_class_map = {
+                {"Landroid/view/WindowManager;",                       "window"},
+                {"Landroid/view/LayoutInflater;",                     "layout_inflater"},
+                {"Landroid/app/ActivityManager;",                     "activity"},
+                {"Landroid/view/inputmethod/InputMethodManager;",    "input_method"},
+                {"Landroid/app/NotificationManager;",                 "notification"},
+                {"Landroid/app/AlarmManager;",                        "alarm"},
+                {"Landroid/media/AudioManager;",                      "audio"},
+                {"Landroid/content/ClipboardManager;",                "clipboard"},
+                {"Landroid/net/ConnectivityManager;",                 "connectivity"},
+                {"Landroid/app/UiModeManager;",                       "uimode"},
+                {"Landroid/app/SearchManager;",                       "search"},
+                {"Landroid/app/KeyguardManager;",                     "keyguard"},
+                {"Landroid/location/LocationManager;",                "location"},
+                {"Landroid/accounts/AccountManager;",                 "account"},
+                {"Landroid/os/PowerManager;",                         "power"},
+                {"Landroid/os/Vibrator;",                             "vibrator"},
+                {"Landroid/hardware/SensorManager;",                  "sensor"},
+                {"Landroid/hardware/display/DisplayManager;",         "display"},
+                {"Landroid/view/accessibility/AccessibilityManager;", "accessibility"},
+                {"Landroid/view/autofill/AutofillManager;",           "autofill"},
+            };
+            auto cit = service_class_map.find(args[1].class_desc);
+            if (cit != service_class_map.end()) {
+                service_name = cit->second;
+            }
+        }
+
         // Service name → service class descriptor mapping
         static const std::map<std::string, std::string> service_map = {
             {"window",         "Landroid/view/WindowManager;"},
@@ -15771,6 +15868,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             {"vibrator",       "Landroid/os/Vibrator;"},
             {"sensor",         "Landroid/hardware/SensorManager;"},
             {"display",        "Landroid/hardware/display/DisplayManager;"},
+            // F-032 (MASTER-5 §C) — AOSP Context.java service registry law:
+            // every KNOWN service constant must resolve to a non-null
+            // manager object (AOSP SystemServiceRegistry registers one
+            // factory per service name; getSystemService never returns null
+            // for them — null is only for UNKNOWN names). First real-APK
+            // hit: dooz Compose accessibility chain —
+            // AndroidComposeViewAccessibilityDelegateCompat$inner.<init>
+            // calls context.getSystemService(ACCESSIBILITY_SERVICE) and the
+            // Kotlin !! (Intrinsics.checkNotNullExpressionValue) threw NPE,
+            // killing the composition before any content node existed.
+            {"accessibility",  "Landroid/view/accessibility/AccessibilityManager;"},
+            {"autofill",       "Landroid/view/autofill/AutofillManager;"},
         };
 
         auto it = service_map.find(service_name);
