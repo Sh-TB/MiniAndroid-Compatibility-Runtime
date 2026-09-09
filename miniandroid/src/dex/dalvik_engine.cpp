@@ -7358,6 +7358,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     else if (op == "and") result_val.int_val = b_val & c_val; \
                     else if (op == "or")  result_val.int_val = b_val | c_val; \
                     else if (op == "xor") result_val.int_val = b_val ^ c_val; \
+                    else if (op == "shl") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint32_t>(b_val) << (c_val & 0x1f))); \
+                    else if (op == "shr") result_val.int_val = b_val >> (c_val & 0x1f); \
+                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (c_val & 0x1f)); \
                     set_register(vAA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ = pc_ + 2; \
@@ -7372,6 +7375,23 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             ARITH_23X_CASE(AND_INT, "and-int", "and")
             ARITH_23X_CASE(OR_INT,  "or-int",  "or")
             ARITH_23X_CASE(XOR_INT, "xor-int", "xor")
+            // F-035 (MASTER-5 §E) — the 23x SHIFT family (shl/shr/ushr-int,
+            // opcodes 0x98-0x9a) was missing from the dispatcher: the cases
+            // fell to the unimplemented path, which advances the PC and
+            // leaves the DESTINATION register holding its previous value.
+            // Dalvik/AOSP law: shifts take the count from the low 5 bits
+            // (mask 0x1f) — shr is arithmetic, ushr is logical (uint32).
+            // First real-APK hit: dooz hash-table resize (kotlin buildSet
+            // internals, R8 Lh/x.c) computes its probe mask as
+            // `-1 >>> numberOfLeadingZeros(cap)`; with ushr-int unhandled
+            // the mask kept the stale register content (32) instead of 7,
+            // violating the resize invariant that probe & mask stays
+            // inside the presence-bit array and throwing
+            // ArrayIndexOutOfBoundsException (len=5, idx=5) — the
+            // exception that killed the dooz composition at setContent.
+            ARITH_23X_CASE(SHL_INT, "shl-int", "shl")
+            ARITH_23X_CASE(SHR_INT, "shr-int", "shr")
+            ARITH_23X_CASE(USHR_INT, "ushr-int", "ushr")
             #undef ARITH_23X_CASE
 
             // EXP-038 (BLOCKER-028): Arithmetic lit8 (22b format: AA|op BB|CC)
@@ -16386,13 +16406,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
         if (method == "numberOfLeadingZeros" && args.size() >= 1) {
+            // F-035b (MASTER-5 §E): the previous implementation ran a
+            // DESTRUCTIVE pre-loop that shifted v left until it became 0,
+            // so the final check always saw v==0 and returned 32 for every
+            // input. AOSP law: numberOfLeadingZeros(x) = 32 for x==0,
+            // else the count of zero bits above the highest set bit
+            // (31 - bitLength). First real-APK hit: dooz hash-table resize
+            // mask computation (`-1 >>> numberOfLeadingZeros(cap)`) — the
+            // constant 32 result flowed straight into the probe mask.
             uint32_t v = as_u32(args[0]);
-            int n = v == 0 ? 32 : 0;
-            while (v != 0 && n < 64) { v <<= 1; n++; }
-            // standard: count via shifts
-            n = 0;
-            if (v == 0) n = 32;
-            else { while ((v & 0x80000000u) == 0) { v <<= 1; n++; } }
+            int n = 32;
+            if (v != 0) {
+                n = 0;
+                while ((v & 0x80000000u) == 0) { v <<= 1; n++; }
+            }
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_int(n);
             return true;
