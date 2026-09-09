@@ -2334,6 +2334,15 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
                 std::memcpy(&fv.float_val, &fbits, sizeof(fbits));
             }
             static_field_storage_[static_key] = fv;
+        } else if (field.type == "J") {
+            // F-042 (MASTER-6 §C) — VALUE_LONG static-default law: a static
+            // long field's default materializes as a FULL 64-bit INT64
+            // value; the declared descriptor (J) decides the width, not the
+            // encoded-value size nibble. Previously every long static
+            // default was truncated to INT32 (the dooz/fixture ScatterMap
+            // EMPTY marker 0x8080808080808080 read back 0x80808080).
+            static_field_storage_[static_key] =
+                DalvikValue::make_long(field.default_int_value);
         } else {
             static_field_storage_[static_key] = DalvikValue::make_int(
                 static_cast<int32_t>(field.default_int_value));
@@ -8422,7 +8431,20 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
 
                             size_t p = handler_abs;
                             int32_t size = read_sleb(p);
-                            int32_t n_pairs = (size >= 0) ? size : -(size + 1);
+                            // F-041 (MASTER-6 §B) — encoded_catch_handler size law.
+                            // Per the DEX spec, `size` is NEGATIVE ONLY to mark
+                            // catch-all presence; the number of typed pairs is
+                            // |size| (NOT -(size+1)). The old formula dropped one
+                            // typed pair for every negative-size handler and
+                            // shifted the stream, so the catch-all addr read
+                            // consumed a typed pair's type_idx (e.g. the fixture
+                            // IAE handler `7f 14 6a d9 03` decoded as 0 typed +
+                            // catch-all @0x14 instead of typed(20)->0x6a +
+                            // catch-all @0x1d9) — the dispatcher jumped to
+                            // garbage mid-instruction addresses. Affects every
+                            // real app whose typed catch shares a handler entry
+                            // with a catch-all (the common R8/ECJ shape).
+                            int32_t n_pairs = (size >= 0) ? size : -size;
                             // UNIFIED_011.3 TYPED-CATCH (§18): type-match each
                             // typed handler against the thrown exception class
                             // (shared semantics with find_catch_handler_for_pc).
@@ -8956,7 +8978,9 @@ bool DalvikExecutionEngine::find_catch_handler_for_pc(
 
         size_t p = handler_abs;
         int32_t size = read_sleb(p);
-        int32_t n_pairs = (size >= 0) ? size : -(size + 1);
+        // F-041: |size| typed pairs for negative size (DEX spec) — see the
+        // twin fix at the throw-dispatch site above for the full rationale.
+        int32_t n_pairs = (size >= 0) ? size : -size;
         // UNIFIED_011.3 TYPED-CATCH: resolve each handler's type descriptor
         // via the CURRENT method's DEX (type_ids are per-DEX, EXP-058) and
         // type-match against the thrown exception.
@@ -14532,6 +14556,172 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                DalvikValue::make_int(0));
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_object(list_id, "Ljava/util/Collections$SingletonList;");
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-040 (MASTER-6 §A) — java.util.Arrays.fill family law.
+    // OpenJDK/AOSP (ojluni src/main/java/java/util/Arrays.java): fill(value)
+    // assigns `val` to EVERY element a[fromIndex..toIndex) — the same
+    // reference/bits per element, reference identity preserved for Object
+    // arrays; the 4-arg range variant runs rangeCheck first:
+    //   fromIndex > toIndex  → IllegalArgumentException
+    //   fromIndex < 0        → ArrayIndexOutOfBoundsException
+    //   toIndex > a.length   → ArrayIndexOutOfBoundsException
+    // Kotlin stdlib compiles its hash-table metadata initialization
+    // (ArraysKt.fill(metadata, 0, size, ScatterMap.Empty=0x8080808080808080L))
+    // down to `Ljava/util/Arrays;.fill([J I I J)V`. With no handler, that
+    // fill was a silent no-op, so freshly-allocated scatter-map metadata
+    // stayed all-zero and the SWAR probe loop (findKey) could never observe
+    // an EMPTY (0x80) control byte — the live DOOZ Compose
+    // DerivedSnapshotState dependency-table spin at Lh/u;.a (LF/F$b;.o).
+    // Overloads covered (all primitives + Object, 2-arg and 4-arg range):
+    //   fill([X X)V and fill([X II X)V for X in Z B C S I J F D + Object.
+    // Element stores reuse the heap "array[N]" convention (aget/aput read
+    // it), and the value DalvikValue is stored VERBATIM so wide (J/D) and
+    // reference (incl. null) component types round-trip with their tag.
+    if (class_name == "Ljava/util/Arrays;" && method == "fill" &&
+        (args.size() == 2 || args.size() == 4)) {
+        // F-040 WIDE-DIAG (env-gated): expose the packed arg tags for the
+        // wide-value overloads (the fill([J I I J)V dooz shape).
+        if (std::getenv("MINIANDROID_F040_DIAG")) {
+            static thread_local uint64_t f040_diag = 0;
+            if (f040_diag < 24) {
+                f040_diag++;
+                std::cerr << "[F040-DIAG] fill argc=" << args.size();
+                for (size_t di = 0; di < args.size(); ++di) {
+                    std::cerr << " a" << di << ":t" << static_cast<int>(args[di].type);
+                    if (args[di].type == DalvikType::INT64)
+                        std::cerr << "(0x" << std::hex << args[di].long_val << std::dec << ")";
+                    else if (args[di].type == DalvikType::FLOAT32)
+                        std::cerr << "(" << args[di].float_val << ")";
+                    else if (args[di].type == DalvikType::INT32)
+                        std::cerr << "(" << args[di].int_val << ")";
+                }
+                std::cerr << std::endl;
+            }
+        }
+        // OpenJDK law: a null array must NPE, not fail-soft.
+        if (args[0].type != DalvikType::OBJECT_REF) {
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           "null array in java.util.Arrays.fill", "f040-fill-null");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        uint32_t arr_id = args[0].object_id;
+        int32_t n = 0;
+        auto lenf = heap_.get_object_field(arr_id, "__array_length__");
+        if (lenf.has_value() && lenf->type == DalvikType::INT32) n = lenf->int_val;
+        if (n <= 0) n = args[0].int_val > 0 ? args[0].int_val : 0;
+        int32_t from = 0, to = n;
+        const DalvikValue* value = nullptr;
+        if (args.size() == 4) {
+            from = dalvik_int_value(args[1]);
+            to = dalvik_int_value(args[2]);
+            value = &args[3];
+        } else {
+            value = &args[1];
+        }
+        // OpenJDK rangeCheck law — mirrored exactly.
+        if (from > to) {
+            throw_deferred("Ljava/lang/IllegalArgumentException;",
+                           "fromIndex(" + std::to_string(from) + ") > toIndex(" +
+                               std::to_string(to) + ")",
+                           "f040-fill-range");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        if (from < 0) {
+            throw_deferred("Ljava/lang/ArrayIndexOutOfBoundsException;",
+                           "Array index out of range: " + std::to_string(from),
+                           "f040-fill-from");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        if (to > n) {
+            throw_deferred("Ljava/lang/ArrayIndexOutOfBoundsException;",
+                           "Array index out of range: " + std::to_string(to),
+                           "f040-fill-to");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        for (int32_t i = from; i < to; ++i) {
+            heap_.set_object_field(arr_id, "array[" + std::to_string(i) + "]",
+                                   *value);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_null();  // void
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-043 (MASTER-6 §C) — java.lang.Double/Float IEEE bit-conversion law.
+    // OpenJDK (Double.java/Float.java): doubleToRawLongBits returns the
+    // IEEE-754 bit pattern AS-IS; doubleToLongBits canonicalizes all NaNs
+    // to 0x7ff8000000000000; longBitsToDouble / intBitsToFloat are the
+    // exact inverses; floatToIntBits/floatToRawIntBits return the 32-bit
+    // pattern in an int (NaN canonicalized for the non-Raw variant).
+    // These bridge the float/double and long/int register worlds —
+    // bit-manipulation code (hashing, serialization, SWAR tables) uses
+    // them everywhere; MiniAndroid answered REC-MISS → null → 0.
+    // The wide arg arrives FLOAT64/FLOAT32-tagged (F-028b wide-pair law).
+    if (class_name == "Ljava/lang/Double;" && args.size() >= 1 &&
+        (method == "doubleToLongBits" || method == "doubleToRawLongBits")) {
+        double d = 0.0;
+        if (args[0].type == DalvikType::FLOAT64) d = args[0].double_val;
+        else if (args[0].type == DalvikType::INT64) {
+            std::memcpy(&d, &args[0].long_val, sizeof(d));
+        }
+        int64_t bits;
+        std::memcpy(&bits, &d, sizeof(bits));
+        if (method == "doubleToLongBits" &&
+            (bits & 0x7ff0000000000000LL) == 0x7ff0000000000000LL &&
+            (bits & 0x000fffffffffffffLL) != 0) {
+            bits = 0x7ff8000000000000LL;  // canonical NaN
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_long(bits);
+        return true;
+    }
+    if (class_name == "Ljava/lang/Double;" && method == "longBitsToDouble" &&
+        args.size() >= 1) {
+        int64_t bits = (args[0].type == DalvikType::INT64)
+                           ? args[0].long_val
+                           : static_cast<int64_t>(args[0].int_val);
+        double d;
+        std::memcpy(&d, &bits, sizeof(d));
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_double(d);
+        return true;
+    }
+    if (class_name == "Ljava/lang/Float;" && args.size() >= 1 &&
+        (method == "floatToIntBits" || method == "floatToRawIntBits")) {
+        float f = 0.0f;
+        if (args[0].type == DalvikType::FLOAT32) f = args[0].float_val;
+        else if (args[0].type == DalvikType::INT32) {
+            std::memcpy(&f, &args[0].int_val, sizeof(f));
+        }
+        uint32_t bits;
+        std::memcpy(&bits, &f, sizeof(bits));
+        if (method == "floatToIntBits" &&
+            (bits & 0x7f800000u) == 0x7f800000u && (bits & 0x007fffffu) != 0) {
+            bits = 0x7fc00000u;  // canonical NaN
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(static_cast<int32_t>(bits));
+        return true;
+    }
+    if (class_name == "Ljava/lang/Float;" && method == "intBitsToFloat" &&
+        args.size() >= 1) {
+        uint32_t bits = (args[0].type == DalvikType::INT32)
+                            ? static_cast<uint32_t>(args[0].int_val)
+                            : static_cast<uint32_t>(args[0].long_val);
+        float f;
+        std::memcpy(&f, &bits, sizeof(f));
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_float(f);
         return true;
     }
     if ((class_name == "Ljava/util/ArrayList;" ||
