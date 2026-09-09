@@ -21,6 +21,19 @@ CallResult AtomicShadow::dispatch(const CallContext& ctx) {
     const std::string& m = ctx.method;
     const uint32_t recv = ctx.has_receiver ? ctx.receiver_id : 0;
 
+    // M4-F028h probe (env-gated): prove reachability of every dispatch.
+    if (std::getenv("MINIANDROID_ATOMIC_DIAG")) {
+        static thread_local uint64_t entry_log_n = 0;
+        if (entry_log_n < 60) {
+            ++entry_log_n;
+            std::cerr << "[ATOMIC-DIAG] DISPATCH " << cls << "." << m
+                      << " has_recv=" << ctx.has_receiver
+                      << " recv=obj#" << recv
+                      << " nargs=" << ctx.args.size()
+                      << std::endl;
+        }
+    }
+
     const bool is_ref  = cls == "Ljava/util/concurrent/atomic/AtomicReference;";
     const bool is_int  = cls == "Ljava/util/concurrent/atomic/AtomicInteger;";
     const bool is_long = cls == "Ljava/util/concurrent/atomic/AtomicLong;";
@@ -29,8 +42,12 @@ CallResult AtomicShadow::dispatch(const CallContext& ctx) {
     const bool is_ref_upd  = cls == "Ljava/util/concurrent/atomic/AtomicReferenceFieldUpdater;";
     const bool is_long_upd = cls == "Ljava/util/concurrent/atomic/AtomicLongFieldUpdater;";
     const bool is_int_upd  = cls == "Ljava/util/concurrent/atomic/AtomicIntegerFieldUpdater;";
+    // M4 F-028h — AtomicReferenceArray (SegmentedQueue cell grid law).
+    const bool is_ref_array =
+        cls == "Ljava/util/concurrent/atomic/AtomicReferenceArray;";
     if (!is_ref && !is_int && !is_long && !is_bool &&
-        !is_ref_upd && !is_long_upd && !is_int_upd) return CallResult::not_handled();
+        !is_ref_upd && !is_long_upd && !is_int_upd && !is_ref_array)
+        return CallResult::not_handled();
 
     // ── Atomic*FieldUpdater family (M4 F-028d) ─────────────────────────
     // Java/AOSP law (libcore/ojluni): newUpdater(tclass, vclass, fieldName)
@@ -41,6 +58,27 @@ CallResult AtomicShadow::dispatch(const CallContext& ctx) {
     // The engine is single-threaded/deterministic: CAS succeeds exactly
     // when the read value matches.
     if (is_ref_upd || is_long_upd || is_int_upd) {
+        // M4-F028g diag (env-gated): updater path forensics.
+        if (std::getenv("MINIANDROID_ATOMIC_DIAG")) {
+            static thread_local uint64_t upd_log_n = 0;
+            if (upd_log_n < 300) {
+                ++upd_log_n;
+                std::cerr << "[ATOMIC-DIAG] UPD " << cls << "." << m
+                          << " recv=obj#" << recv
+                          << " has_recv=" << ctx.has_receiver
+                          << " nargs=" << ctx.args.size();
+                for (size_t i = 0; i < ctx.args.size() && i < 4; ++i) {
+                    int k = (int)ctx.args[i].kind;
+                    std::cerr << " a" << i << "=k" << k;
+                    if (ctx.args[i].kind == CallContext::Arg::Kind::OBJECT)
+                        std::cerr << "(obj#" << ctx.args[i].object_id << ")";
+                }
+                auto itu = updaters_.find(recv);
+                std::cerr << " bound="
+                          << (itu != updaters_.end() ? itu->second : std::string("NONE"))
+                          << std::endl;
+            }
+        }
         auto arg_long = [&](size_t i) -> int64_t {
             if (i >= ctx.args.size()) return 0;
             if (ctx.args[i].kind == CallContext::Arg::Kind::LONG)
@@ -69,13 +107,25 @@ CallResult AtomicShadow::dispatch(const CallContext& ctx) {
             if (oid != 0) updaters_[oid] = field_name;
             return CallResult::handled_object(oid, cls);
         }
-        if (!ctx.has_receiver) return CallResult::not_handled();
+        if (!ctx.has_receiver) {
+            if (std::getenv("MINIANDROID_ATOMIC_DIAG"))
+                std::cerr << "[ATOMIC-DIAG] UPD-BAIL no-receiver " << cls << "." << m << std::endl;
+            return CallResult::not_handled();
+        }
         const std::string& fname = updater_field(recv);
-        if (fname.empty()) return CallResult::not_handled();
+        if (fname.empty()) {
+            if (std::getenv("MINIANDROID_ATOMIC_DIAG"))
+                std::cerr << "[ATOMIC-DIAG] UPD-BAIL unbound recv=obj#" << recv
+                          << " " << cls << "." << m << std::endl;
+            return CallResult::not_handled();
+        }
         // target = first argument
         if (ctx.args.empty() ||
-            ctx.args[0].kind != CallContext::Arg::Kind::OBJECT)
+            ctx.args[0].kind != CallContext::Arg::Kind::OBJECT) {
+            if (std::getenv("MINIANDROID_ATOMIC_DIAG"))
+                std::cerr << "[ATOMIC-DIAG] UPD-BAIL bad-target " << cls << "." << m << std::endl;
             return CallResult::not_handled();
+        }
         const uint32_t target = ctx.args[0].object_id;
         if (is_ref_upd) {
             // reference updater: identity law
@@ -148,7 +198,22 @@ CallResult AtomicShadow::dispatch(const CallContext& ctx) {
             else heap_->set_object_int_field(target, fname,
                                              static_cast<int32_t>(v));
         };
-        if (m == "get") return CallResult::handled_long(num_read());
+        if (m == "get") {
+            // M4-F028g diag (env-gated): long-updater get forensics —
+            // SegmentedQueue state machine progress tracing (b2/n _state).
+            if (std::getenv("MINIANDROID_ATOMIC_DIAG")) {
+                static thread_local uint64_t get_log_n = 0;
+                if (get_log_n < 400) {
+                    ++get_log_n;
+                    int64_t gv = num_read();
+                    std::cerr << "[ATOMIC-DIAG] GET " << cls << " target=obj#"
+                              << target << " field=" << fname
+                              << " -> " << gv << " (0x" << std::hex << gv
+                              << std::dec << ")" << std::endl;
+                }
+            }
+            return CallResult::handled_long(num_read());
+        }
         if (m == "set" || m == "lazySet") {
             num_write(is_long_upd ? arg_long(1)
                                   : static_cast<int64_t>(ctx.arg_as_int(1)));
@@ -227,6 +292,190 @@ CallResult AtomicShadow::dispatch(const CallContext& ctx) {
             return ctx.args[i].long_val;
         return static_cast<int64_t>(ctx.arg_as_int(i));
     };
+
+    // ── AtomicReferenceArray family (M4 F-028h) ─────────────────────────
+    // Java/AOSP law (libcore/ojluni AtomicReferenceArray): elementwise
+    // get/set/getAndSet/compareAndSet/lazySet over a fixed-length grid of
+    // reference slots. Reference identity law (== ; null matches null);
+    // numeric cells (some producers store boxed/int markers) compare by
+    // value. The engine is single-threaded: CAS succeeds exactly when the
+    // read value matches. NOTE: is_ref_array is declared at the top guard.
+    if (is_ref_array) {
+        auto arg_num_of = [](const CallContext::Arg& a) -> int64_t {
+            if (a.kind == CallContext::Arg::Kind::LONG) return a.long_val;
+            if (a.kind == CallContext::Arg::Kind::INT) return a.int_val;
+            if (a.kind == CallContext::Arg::Kind::BOOL) return a.bool_val ? 1 : 0;
+            if (a.kind == CallContext::Arg::Kind::FLOAT) return (int64_t)a.float_val;
+            if (a.kind == CallContext::Arg::Kind::DOUBLE) return (int64_t)a.double_val;
+            return 0;
+        };
+        auto arr_len = [&](uint32_t oid) -> size_t {
+            auto it = arrays_.find(oid);
+            return it != arrays_.end() ? it->second.size() : 0;
+        };
+        auto arr_cell = [&](uint32_t oid, size_t idx) -> ArrayCell* {
+            auto it = arrays_.find(oid);
+            if (it == arrays_.end()) return nullptr;
+            if (idx >= it->second.size()) return nullptr;
+            return &it->second[idx];
+        };
+        auto arr_grow = [&](uint32_t oid, size_t n) -> std::vector<ArrayCell>& {
+            std::vector<ArrayCell>& v = arrays_[oid];
+            if (v.size() < n) v.resize(n);
+            return v;
+        };
+        auto arr_store = [&](ArrayCell& cell, const CallContext::Arg& a) {
+            if (a.kind == CallContext::Arg::Kind::OBJECT) {
+                cell.kind = ArrayCell::Kind::REF;
+                cell.ref_id = a.object_id;
+                cell.ref_cls = a.object_class;
+                cell.ref_str = a.string_val;
+            } else if (a.kind == CallContext::Arg::Kind::STRING) {
+                cell.kind = ArrayCell::Kind::STR;
+                cell.ref_id = 0;
+                cell.ref_cls.clear();
+                cell.ref_str = a.string_val;
+            } else if (a.kind == CallContext::Arg::Kind::NULL_REF) {
+                cell.kind = ArrayCell::Kind::EMPTY;
+                cell.ref_id = 0;
+                cell.ref_cls.clear();
+                cell.ref_str.clear();
+                cell.num = 0;
+            } else {
+                cell.kind = ArrayCell::Kind::NUM;
+                cell.num = arg_num_of(a);
+            }
+        };
+        auto arr_load = [&](const ArrayCell& cell) -> CallResult {
+            switch (cell.kind) {
+                case ArrayCell::Kind::REF:
+                    if (cell.ref_id != 0)
+                        return CallResult::handled_object(cell.ref_id,
+                                                          cell.ref_cls);
+                    return CallResult::handled_null();
+                case ArrayCell::Kind::STR:
+                    return CallResult::handled_string(cell.ref_str);
+                case ArrayCell::Kind::NUM:
+                    return CallResult::handled_long(cell.num);
+                case ArrayCell::Kind::EMPTY:
+                default:
+                    return CallResult::handled_null();
+            }
+        };
+
+        if (m == "<init>") {
+            // <init>(I): fixed length. <init>([Ljava/lang/Object;): copy
+            // ctor — the bridge materializes source arrays as objects; the
+            // copy law needs elementwise heap array reads that no real-APK
+            // hit has required yet, so adopt length-only (logged, honest).
+            int64_t n = ctx.args.empty() ? 0 : arg_num_of(ctx.args[0]);
+            if (n < 0) n = 0;
+            arrays_[recv].assign(static_cast<size_t>(n), ArrayCell{});
+            return CallResult::handled_void();
+        }
+        if (!ctx.has_receiver) return CallResult::not_handled();
+        if (m == "length") return CallResult::handled_int((int)arr_len(recv));
+        // instance accessors: args[0] = index
+        if (ctx.args.empty()) return CallResult::not_handled();
+        const int64_t idx64 = arg_num(0);
+        if (idx64 < 0) {
+            if (std::getenv("MINIANDROID_ATOMIC_DIAG"))
+                std::cerr << "[ATOMIC-DIAG] ARR-OOB " << cls << "." << m
+                          << " idx=" << idx64 << " len=" << arr_len(recv)
+                          << std::endl;
+            return CallResult::handled_null();
+        }
+        const size_t idx = static_cast<size_t>(idx64);
+        if (m == "get") {
+            ArrayCell* c = arr_cell(recv, idx);
+            if (!c) {
+                if (std::getenv("MINIANDROID_ATOMIC_DIAG"))
+                    std::cerr << "[ATOMIC-DIAG] ARR-OOB get idx=" << idx
+                              << " len=" << arr_len(recv) << std::endl;
+                return CallResult::handled_null();
+            }
+            if (std::getenv("MINIANDROID_ATOMIC_DIAG")) {
+                static thread_local uint64_t arr_log_n = 0;
+                if (arr_log_n < 200) {
+                    ++arr_log_n;
+                    std::cerr << "[ATOMIC-DIAG] ARR get arr=obj#" << recv
+                              << " idx=" << idx << " kind="
+                              << (int)c->kind
+                              << " ref=" << c->ref_id << std::endl;
+                }
+            }
+            return arr_load(*c);
+        }
+        if (m == "set" || m == "lazySet") {
+            ArrayCell& c = arr_grow(recv, idx + 1)[idx];
+            arr_store(c, ctx.args.size() > 1
+                             ? ctx.args[1]
+                             : CallContext::Arg{});
+            return CallResult::handled_void();
+        }
+        if (m == "getAndSet") {
+            std::vector<ArrayCell>& v = arr_grow(recv, idx + 1);
+            ArrayCell old = v[idx];
+            arr_store(v[idx], ctx.args.size() > 1
+                                  ? ctx.args[1]
+                                  : CallContext::Arg{});
+            return arr_load(old);
+        }
+        if (m == "compareAndSet" || m == "weakCompareAndSet") {
+            std::vector<ArrayCell>& v = arr_grow(recv, idx + 1);
+            ArrayCell& c = v[idx];
+            const CallContext::Arg& expect =
+                ctx.args.size() > 1 ? ctx.args[1] : CallContext::Arg{};
+            const CallContext::Arg& upd =
+                ctx.args.size() > 2 ? ctx.args[2] : CallContext::Arg{};
+            bool matched;
+            if (expect.kind == CallContext::Arg::Kind::OBJECT ||
+                expect.kind == CallContext::Arg::Kind::STRING ||
+                expect.kind == CallContext::Arg::Kind::NULL_REF) {
+                bool e_null = expect.kind == CallContext::Arg::Kind::NULL_REF;
+                bool e_str = expect.kind == CallContext::Arg::Kind::STRING;
+                bool c_null = c.kind != ArrayCell::Kind::REF &&
+                              c.kind != ArrayCell::Kind::STR;
+                if (e_null)
+                    matched = c_null;
+                else if (e_str)
+                    matched = c.kind == ArrayCell::Kind::STR &&
+                              c.ref_str == expect.string_val;
+                else {
+                    bool u_str = upd.kind == CallContext::Arg::Kind::STRING;
+                    matched = c.kind == (u_str ? ArrayCell::Kind::STR
+                                               : ArrayCell::Kind::REF) &&
+                              c.ref_id == expect.object_id &&
+                              (!u_str || c.ref_str == expect.string_val) &&
+                              c.ref_cls == expect.object_class;
+                    // Identity law ignores the recorded class when the id
+                    // matches (same object): compare ids first.
+                    if (!matched && !u_str)
+                        matched = c.kind == ArrayCell::Kind::REF &&
+                                  c.ref_id == expect.object_id;
+                }
+            } else {
+                int64_t ev = arg_num_of(expect);
+                matched = c.kind == ArrayCell::Kind::NUM && c.num == ev;
+            }
+            if (matched) arr_store(c, upd);
+            if (std::getenv("MINIANDROID_ATOMIC_DIAG")) {
+                static thread_local uint64_t cas_arr_n = 0;
+                if (cas_arr_n < 150) {
+                    ++cas_arr_n;
+                    std::cerr << "[ATOMIC-DIAG] ARR-CAS arr=obj#" << recv
+                              << " idx=" << idx
+                              << " cell(k=" << (int)c.kind
+                              << " ref=" << c.ref_id << " num=" << c.num << ")"
+                              << " expect(k=" << (int)expect.kind << ")"
+                              << " -> " << (matched ? "SWAP" : "FAIL")
+                              << std::endl;
+                }
+            }
+            return CallResult::handled_bool(matched);
+        }
+        return CallResult::not_handled();
+    }
 
     // ── constructors ────────────────────────────────────────────────────
     if (m == "<init>") {
