@@ -588,6 +588,11 @@ bool DexParser::parse_static_values(const uint8_t* data, uint32_t offset, ClassI
         if (v.has_int) {           // BYTE/SHORT/CHAR/INT/LONG (law-typed)
             field.has_default_value = true;
             field.default_int_value = (int32_t)v.int_val;
+        } else if (v.has_float_bits) {  // F-028f: VALUE_FLOAT / VALUE_DOUBLE
+            field.has_default_value = true;
+            field.default_value_has_float_bits = true;
+            field.default_float_bits = v.float_bits;
+            field.default_float_width = v.float_width;
         } else if (v.is_string) {  // VALUE_STRING
             field.has_default_value = true;
             field.default_value_is_string = true;
@@ -598,9 +603,8 @@ bool DexParser::parse_static_values(const uint8_t* data, uint32_t offset, ClassI
         } else if (v.is_null) {    // VALUE_NULL
             field.has_default_value = true;
         }
-        // FLOAT/DOUBLE bits and index values (TYPE/FIELD/METHOD/ENUM/...)
-        // are walked past correctly; their default storage remains a
-        // recorded completeness gap (FIND-REUSE-DEX-004, impact LOW).
+        // Index values (TYPE/FIELD/METHOD/ENUM/...) remain walked-past
+        // (FIND-REUSE-DEX-004 reduced scope: float/double now stored).
     }
     // EXP-062: Post-parse trace
     if (info.name.find("R$") != std::string::npos) {

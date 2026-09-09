@@ -131,6 +131,35 @@ static inline int32_t dalvik_int_value(const DalvikValue& v) {
     }
 }
 
+// F-028 (MASTER-4 §A1) — UNTYPED-REGISTER CONVERSION LAW, raw-bits view.
+// Dalvik registers are UNTYPED storage slots; the OPCODE — not a runtime
+// value tag — defines the source interpretation. This helper exposes the
+// slot's raw 32-bit word (low half for wide values) so the conversion and
+// float-comparison/arithmetic sites can reinterpret it per the opcode's
+// source type, exactly as ART does on raw 32-bit slots. First real-APK
+// hit: Material3 LG0/b.<clinit> (dooz) built FontScaleConverter table
+// keys via const/high16 float bits + float-to-int and threw ISE "You
+// should only apply non-linear scaling to font scales > 1".
+static inline uint32_t dalvik_raw_bits32(const DalvikValue& v) {
+    switch (v.type) {
+        case DalvikType::FLOAT32: {
+            uint32_t b; std::memcpy(&b, &v.float_val, sizeof(b));
+            return b;
+        }
+        case DalvikType::INT64:
+            return static_cast<uint32_t>(v.long_val);   // low slot
+        case DalvikType::FLOAT64: {
+            uint64_t w; std::memcpy(&w, &v.double_val, sizeof(w));
+            return static_cast<uint32_t>(w);            // low slot
+        }
+        default:
+            // INT32/CHAR/BOOLEAN/BYTE/SHORT carry the value in int_val;
+            // refs are a DEX verify error — expose the stored int word
+            // like ART would.
+            return static_cast<uint32_t>(v.int_val);
+    }
+}
+
 // ============================================================================
 // DalvikValue Serialization
 // ============================================================================
@@ -1893,9 +1922,66 @@ bool DalvikExecutionEngine::execute_method_internal(
     frame.outs_size = outs_size;
     frame.registers.initialize(registers_size, ins_size);
     
-    // Load arguments into parameter registers
-    for (size_t i = 0; i < args.size() && i < ins_size; ++i) {
-        frame.registers.write_p(static_cast<uint8_t>(i), args[i]);
+    // Load arguments into parameter registers.
+    //
+    // F-028c (M4 §A1) — PARAMETER REGISTER LAYOUT LAW: ART maps parameters
+    // to the ins-region per the method proto; every J/D param occupies TWO
+    // consecutive registers (value + high-word shadow), all others ONE.
+    // The old loop wrote one register per arg, so after the first wide
+    // param every later parameter landed early — a delegated
+    // <init>(DDDDD) → <init>(DDDDDDD) chain in real Compose code
+    // (dooz TransferFunction, LY/p;) read param 3 into param 2's slot and
+    // zeros into the tail, tripping "transfer function must be increasing".
+    // Layout authority = the method descriptor (parse_proto_param_types).
+    {
+        const std::vector<std::string> ptypes =
+            parse_proto_param_types(descriptor);
+        // args[] is RECEIVER-INCLUSIVE for instance calls while ptypes[]
+        // lists declared params only. DEX verification guarantees
+        // argc == declared_params (+1 for the receiver), so the shapes
+        // below are exhaustive for well-formed calls; anything else falls
+        // back to the legacy 1:1 layout.
+        if (!ptypes.empty() &&
+            (args.size() == ptypes.size() ||
+             args.size() == ptypes.size() + 1)) {
+            size_t ai = 0;
+            uint8_t slot = 0;
+            if (args.size() == ptypes.size() + 1) {
+                // instance call: the receiver occupies slot 0
+                frame.registers.write_p(0, args[0]);
+                ai = 1;
+                slot = 1;
+            }
+            for (size_t ti = 0; ti < ptypes.size() && ai < args.size();
+                 ++ti, ++ai) {
+                frame.registers.write_p(slot, args[ai]);
+                const std::string& t = ptypes[ti];
+                if (t == "J" || t == "D") {
+                    // Fill the shadow slot with the high 32-bit word so
+                    // raw window reads observe ART's two-slot layout.
+                    uint64_t bits = 0;
+                    if (args[ai].type == DalvikType::INT64) {
+                        bits = static_cast<uint64_t>(args[ai].long_val);
+                    } else if (args[ai].type == DalvikType::FLOAT64) {
+                        std::memcpy(&bits, &args[ai].double_val, sizeof(bits));
+                    }
+                    DalvikValue shadow;
+                    shadow.type = DalvikType::INT32;
+                    shadow.int_val =
+                        static_cast<int32_t>(static_cast<uint32_t>(bits >> 32));
+                    frame.registers.write_p(
+                        static_cast<uint8_t>(slot + 1), shadow);
+                    slot = static_cast<uint8_t>(slot + 2);
+                } else {
+                    slot = static_cast<uint8_t>(slot + 1);
+                }
+            }
+        } else {
+            // Proto unresolvable → legacy 1:1 fallback layout.
+            for (size_t i = 0; i < args.size() && i < ins_size; ++i) {
+                frame.registers.write_p(static_cast<uint8_t>(i), args[i]);
+            }
+        }
     }
 
     // EXP-062: Debug — trace parameter loading for PhoneView.<init>
@@ -2211,6 +2297,23 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
         if (field.default_value_is_string) {
             DalvikValue sv = DalvikValue::make_string(field.default_string_value, 0);
             static_field_storage_[static_key] = sv;
+        } else if (field.default_value_has_float_bits) {
+            // F-028f: VALUE_FLOAT (right-zero-extended to 32 bits) and
+            // VALUE_DOUBLE (right-zero-extended to 64 bits). The float
+            // case keeps the width-nibble padding law: the stored value is
+            // the low 32 bits reinterpreted as IEEE-754.
+            DalvikValue fv;
+            if (field.default_float_width == 8) {
+                fv.type = DalvikType::FLOAT64;
+                int64_t bits = field.default_float_bits;
+                std::memcpy(&fv.double_val, &bits, sizeof(bits));
+            } else {
+                fv.type = DalvikType::FLOAT32;
+                uint32_t fbits = static_cast<uint32_t>(
+                    static_cast<uint64_t>(field.default_float_bits) & 0xffffffffu);
+                std::memcpy(&fv.float_val, &fbits, sizeof(fbits));
+            }
+            static_field_storage_[static_key] = fv;
         } else {
             static_field_storage_[static_key] = DalvikValue::make_int(
                 static_cast<int32_t>(field.default_int_value));
@@ -2499,6 +2602,52 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         std::getenv("MINIANDROID_APP_TRACE") != nullptr;
     static thread_local const bool method_trace_on =
         std::getenv("MINIANDROID_METHOD_TRACE") != nullptr;
+    // M4-F028 diagnostic (env-gated): print the RAW argument values
+    // (type tag + bit view + numeric view) for any method whose declaring
+    // class contains the MINIANDROID_ARG_TRACE substring. Evidence-only —
+    // no behavior change. Used to trace e.g. wide/double invoke-arg
+    // packing into androidx TransferFunction-style validators.
+    {
+        static thread_local const bool arg_trace_on =
+            std::getenv("MINIANDROID_ARG_TRACE") != nullptr;
+        if (arg_trace_on &&
+            declaring_class.find(std::getenv("MINIANDROID_ARG_TRACE"))
+                != std::string::npos) {
+            std::cerr << "[ARG-TRACE] " << declaring_class << "."
+                      << method_name << " " << method_descriptor
+                      << " caller=" << current_class_ << "." << current_method_
+                      << " args=" << args.size() << std::endl;
+            for (size_t ai = 0; ai < args.size(); ++ai) {
+                const DalvikValue& a = args[ai];
+                std::cerr << "   p" << ai << " tag=" << static_cast<int>(a.type);
+                switch (a.type) {
+                    case DalvikType::INT64:
+                        std::cerr << " J=" << a.long_val << " bits=0x" << std::hex
+                                  << static_cast<uint64_t>(a.long_val) << std::dec;
+                        break;
+                    case DalvikType::FLOAT64: {
+                        std::cerr << " D=" << a.double_val;
+                        uint64_t w; std::memcpy(&w, &a.double_val, 8);
+                        std::cerr << " bits=0x" << std::hex << w << std::dec;
+                        break;
+                    }
+                    case DalvikType::FLOAT32:
+                        std::cerr << " F=" << a.float_val;
+                        break;
+                    case DalvikType::INT32:
+                        std::cerr << " I=" << a.int_val;
+                        break;
+                    case DalvikType::OBJECT_REF:
+                        std::cerr << " obj=" << a.object_id << " " << a.class_desc;
+                        break;
+                    default:
+                        std::cerr << " raw-int=" << a.int_val;
+                        break;
+                }
+                std::cerr << std::endl;
+            }
+        }
+    }
     // EXP-055: Debug — log EVERY entry to try_recursive_invoke (first 20 only).
     static thread_local uint64_t entry_log_count = 0;
     if (entry_log_count < 20) {
@@ -6247,7 +6396,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 if (val.type != DalvikType::INT64 && val.type != DalvikType::FLOAT64) {
                     val = DalvikValue::make_long(static_cast<int64_t>(static_cast<uint32_t>(val.int_val)));
                 }
-                set_register(dest, val);
+                // F-028b: fill the vDest+1 shadow slot (ART two-slot layout)
+                set_wide_pair(dest, val);
                 trace.opcode_name = "move-wide";
                 pc_ += 1;
                 break;
@@ -7377,6 +7527,27 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             //   int→byte sign-extend low 8 · int→char zero-extend low 16 ·
             //   int→short sign-extend low 16
             // Regression fixture: tests/semantic_long_cmp_conv_test.cpp
+            // F-028 (MASTER-4 §A1) — UNTYPED-REGISTER CONVERSION LAW.
+            // Dalvik registers are UNTYPED 32-bit (32-bit family) / 64-bit
+            // (wide family) storage slots; the OPCODE — not a runtime value
+            // tag — defines the source interpretation. ART materializes this
+            // with raw slots; MiniAndroid's tagged-union must emulate it by
+            // taking the slot's RAW BITS and reinterpreting them per the
+            // opcode's source type:
+            //   int-to-*   : slot bits -> int32   -> numeric convert
+            //   float-to-* : slot bits -> float32 -> numeric convert
+            //   long-to-*  : slot bits -> int64   -> numeric convert
+            //   double-to-*: slot bits -> float64 -> numeric convert
+            // The pre-law implementation numeric-converted a FLOAT32-tagged
+            // register's float VALUE in int-to-* (yielding 0 for every real
+            // float) and bit-aliased raw float BITS in float-to-* when the
+            // producer was const/high16 (INT32-tagged 0x42E60000 instead of
+            // 115.0f -> float-to-int read 1120702464 instead of 115). The
+            // first real-APK hit: Material3 LG0/b.<clinit> (dooz) built its
+            // FontScaleConverter table keys through exactly that pattern and
+            // threw ISE "You should only apply non-linear scaling to font
+            // scales > 1". No app special-casing: every real DEX that mixes
+            // const/high16 float literals with float ops benefits.
             #define CONV_SRC_I32(opcode, op_name, DST_KIND, STORE_EXPR) \
                 case Opcode::opcode: { \
                     uint16_t instr = bytecode_[pc_]; \
@@ -7395,9 +7566,15 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     uint8_t vB = (instr >> 12) & 0xF; \
                     DalvikValue val = get_register(vB); \
                     DalvikValue out; out.type = DST_KIND; \
-                    int32_t s = (val.type == DalvikType::INT32) ? val.int_val \
-                              : (val.type == DalvikType::INT64 ? static_cast<int32_t>(val.long_val) : 0); \
+                    /* F-028 law: slot bits reinterpreted AS int32 (source type) */ \
+                    int32_t s = static_cast<int32_t>(dalvik_raw_bits32(val)); \
                     STORE_EXPR; \
+                    if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                        std::cerr << "[WIDE-DIAG] conv " << op_name << " @" << current_class_ << "." \
+                                  << current_method_ << " v" << (int)vB << "(tag=" << (int)val.type \
+                                  << " bits=0x" << std::hex << dalvik_raw_bits32(val) << std::dec \
+                                  << ") -> " << out.int_val << std::endl; \
+                    } \
                     set_register(vA, out); \
                     trace.opcode_name = op_name; \
                     pc_ += 1; \
@@ -7410,8 +7587,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     uint8_t vB = (instr >> 12) & 0xF; /* src  = bits 12-15 (12x B|A|op) */ \
                     DalvikValue val = get_register(vB); \
                     DalvikValue out; out.type = DST_KIND; \
+                    /* F-028 law: wide slot bits reinterpreted AS int64 */ \
                     int64_t s = (val.type == DalvikType::INT64) ? val.long_val \
-                              : (val.type == DalvikType::INT32 ? static_cast<int64_t>(val.int_val) : 0); \
+                              : (val.type == DalvikType::FLOAT64 ? [&]{ int64_t b; std::memcpy(&b, &val.double_val, 8); return b; }() \
+                              : (val.type == DalvikType::INT32 ? static_cast<int64_t>(val.int_val) : 0)); \
                     STORE_EXPR; \
                     if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
                         std::cerr << "[WIDE-DIAG] conv " << op_name << " @" << current_class_ << "." \
@@ -7430,9 +7609,18 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     uint8_t vB = (instr >> 12) & 0xF; /* src  = bits 12-15 (12x B|A|op) */ \
                     DalvikValue val = get_register(vB); \
                     DalvikValue out; out.type = DST_KIND; \
-                    float s = (val.type == DalvikType::FLOAT32) ? val.float_val \
-                            : (val.type == DalvikType::INT32 ? static_cast<float>(val.int_val) : 0.0f); \
+                    /* F-028 law: slot bits reinterpreted AS float32 (source type). \
+                     * This is the law that fixes const/high16 float literals: \
+                     * 0x3F800000 tagged INT32 must read as 1.0f, not 1.065e9f. */ \
+                    uint32_t f28bits = dalvik_raw_bits32(val); \
+                    float s; std::memcpy(&s, &f28bits, sizeof(s)); \
                     STORE_EXPR; \
+                    if (std::getenv("MINIANDROID_WIDE_DIAG")) { \
+                        std::cerr << "[WIDE-DIAG] conv " << op_name << " @" << current_class_ << "." \
+                                  << current_method_ << " v" << (int)vB << "(tag=" << (int)val.type \
+                                  << " bits=0x" << std::hex << f28bits << std::dec \
+                                  << " f=" << s << ") -> " << out.int_val << std::endl; \
+                    } \
                     set_register(vA, out); \
                     trace.opcode_name = op_name; \
                     pc_ += 1; \
@@ -7445,6 +7633,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     uint8_t vB = (instr >> 12) & 0xF; /* src  = bits 12-15 (12x B|A|op) */ \
                     DalvikValue val = get_register(vB); \
                     DalvikValue out; out.type = DST_KIND; \
+                    /* F-028 law: wide slot bits reinterpreted AS float64 */ \
                     double s = (val.type == DalvikType::FLOAT64) ? val.double_val \
                              : (val.type == DalvikType::INT64 ? bits_l2d(val.long_val) : 0.0); \
                     STORE_EXPR; \
@@ -7572,8 +7761,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue c = get_register(vCC); \
                     DalvikValue result_val; \
                     result_val.type = DalvikType::FLOAT32; \
-                    float bf = (b.type == DalvikType::FLOAT32) ? b.float_val : (float)b.int_val; \
-                    float cf = (c.type == DalvikType::FLOAT32) ? c.float_val : (float)c.int_val; \
+                    float bf, cf; \
+                    /* F-028 law: slots reinterpreted AS float32 (see conv block) */ \
+                    uint32_t ab28 = dalvik_raw_bits32(b); std::memcpy(&bf, &ab28, 4); \
+                    uint32_t cb28 = dalvik_raw_bits32(c); std::memcpy(&cf, &cb28, 4); \
                     if (op == "add") result_val.float_val = bf + cf; \
                     else if (op == "sub") result_val.float_val = bf - cf; \
                     else if (op == "mul") result_val.float_val = bf * cf; \
@@ -7643,8 +7834,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue c = get_register(vCC); \
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT32; \
-                    long double bv, cv; \
+                    long double bv, cv; float bv32 = 0.0f, cv32 = 0.0f; \
                     if (IS_DOUBLE) { \
+                        /* F-028 law: wide slots reinterpreted AS float64 */ \
                         bv = (b.type == DalvikType::FLOAT64) ? (long double)b.double_val \
                            : (b.type == DalvikType::INT64 ? (long double)bits_l2d(b.long_val) \
                            : (b.type == DalvikType::FLOAT32 ? (long double)b.float_val \
@@ -7654,10 +7846,14 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                            : (c.type == DalvikType::FLOAT32 ? (long double)c.float_val \
                            : (c.type == DalvikType::INT32 ? (long double)c.int_val : 0.0L))); \
                     } else { \
-                        bv = (b.type == DalvikType::FLOAT32) ? (long double)b.float_val \
-                           : (b.type == DalvikType::INT32 ? (long double)b.int_val : 0.0L); \
-                        cv = (c.type == DalvikType::FLOAT32) ? (long double)c.float_val \
-                           : (c.type == DalvikType::INT32 ? (long double)c.int_val : 0.0L); \
+                        /* F-028 law: slots reinterpreted AS float32 — an \
+                         * INT32-tagged register holding const/high16 float \
+                         * bits (e.g. 0x3F800000 == 1.0f) must compare as that \
+                         * float, not as its numeric int word (1.065e9f). */ \
+                        uint32_t bb = dalvik_raw_bits32(b); std::memcpy(&bv32, &bb, 4); \
+                        uint32_t cb = dalvik_raw_bits32(c); std::memcpy(&cv32, &cb, 4); \
+                        bv = (long double)bv32; \
+                        cv = (long double)cv32; \
                     } \
                     bool cmp_nan = (bv != bv) || (cv != cv); \
                     result_val.int_val = cmp_nan ? (NAN_RESULT) : ((bv < cv) ? -1 : (bv > cv) ? 1 : 0); \
@@ -8300,7 +8496,15 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 uint8_t dest = (bytecode_[pc_] >> 8) & 0xFF;
                 uint16_t src = bytecode_[pc_ + 1];
                 DalvikValue val = get_register(static_cast<uint8_t>(src));
-                set_register(dest, val);
+                // F-028b: wide values occupy TWO slots (vDest, vDest+1) —
+                // fill the shadow with the high 32-bit word (ART layout).
+                // The missing shadow left range-invoke wide-arg merges
+                // reading (0<<32)|low32 — every delegated double param
+                // arrived as ~1e-315 garbage (dooz TransferFunction IAE).
+                if (val.type != DalvikType::INT64 && val.type != DalvikType::FLOAT64) {
+                    val = DalvikValue::make_long(static_cast<int64_t>(static_cast<uint32_t>(val.int_val)));
+                }
+                set_wide_pair(dest, val);
                 trace.opcode_name = "move-wide/from16";
                 pc_ += 2;
                 break;
@@ -8318,10 +8522,20 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             }
             // const-wide/32 (21i: AA|op BBBB, 2 code units)
             case Opcode::CONST_WIDE_32: {
-                if (pc_ + 1 >= bytecode_.size()) return false;
+                // F-028e (M4 §A1) FIX: 31i format = AA|op BBBB FFFF — the
+                // 32-bit literal spans TWO units (LE). The previous handler
+                // read ONE unit (sign-extended int16) and advanced by 2, so
+                // (a) every value ≥ 0x8000 arrived sign-mangled and (b) the
+                // pc landed INSIDE the literal's high word — opcode 0xff
+                // "unimplemented" in real DEX (first hit: dooz
+                // androidx.compose Lb2/n;.a snapshot CAS loop spun forever
+                // on 0x3fff = the high half of 0x3FFFFFFF).
+                if (pc_ + 2 >= bytecode_.size()) return false;
                 uint16_t instr = bytecode_[pc_];
                 uint8_t vAA = (instr >> 8) & 0xFF;
-                int32_t val = static_cast<int32_t>(bytecode_[pc_ + 1]);
+                int32_t val = static_cast<int32_t>(
+                    static_cast<uint32_t>(bytecode_[pc_ + 1]) |
+                    (static_cast<uint32_t>(bytecode_[pc_ + 2]) << 16));
                 DalvikValue dv;
                 dv.type = DalvikType::INT64;
                 // EXP-071 Phase 8: For INT64 values, write to long_val (not int_val).
@@ -8330,9 +8544,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 // which broke the wide-arg merge in execute_invoke_static
                 // (because the merge reads long_val for INT64 types).
                 dv.long_val = val;
-                set_register(vAA, dv);
+                // F-028b: fill the vAA+1 shadow slot (ART two-slot layout)
+                set_wide_pair(vAA, dv);
                 trace.opcode_name = "const-wide/32";
-                pc_ += 2;
+                pc_ += 3;
                 break;
             }
             // iget-short / iput-short — now handled by the consolidated
@@ -8405,6 +8620,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue b = get_register(vB); \
                     DalvikValue result_val; \
                     result_val.type = op_type; \
+                    float af = 0.0f, bf = 0.0f; /* F-028: bit views */ \
                     if (op_type == DalvikType::INT64) { \
                         /* IMPORTANT (RESULT_001): full 64-bit computation via */ \
                         /* long_val — int_val only aliases the low 32 union bits. */ \
@@ -8435,8 +8651,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                       << (int)vB << "(J=" << bv << ") -> " << result_val.long_val << std::endl; \
                         } \
                     } else if (op_type == DalvikType::FLOAT32) { \
-                        float af = (a.type == DalvikType::FLOAT32) ? a.float_val : (float)a.int_val; \
-                        float bf = (b.type == DalvikType::FLOAT32) ? b.float_val : (float)b.int_val; \
+                        /* F-028 law: slots reinterpreted AS float32 */ \
+                        uint32_t a28b = dalvik_raw_bits32(a); std::memcpy(&af, &a28b, 4); \
+                        uint32_t b28b = dalvik_raw_bits32(b); std::memcpy(&bf, &b28b, 4); \
                         if (std::string(op) == "add") result_val.float_val = af + bf; \
                         else if (std::string(op) == "sub") result_val.float_val = af - bf; \
                         else if (std::string(op) == "mul") result_val.float_val = af * bf; \
@@ -8491,7 +8708,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 // NOT int_val (32-bit). The previous bug left long_val with
                 // garbage, breaking wide-arg merging in execute_invoke_static.
                 DalvikValue dv; dv.type = DalvikType::INT64; dv.long_val = val;
-                set_register(vAA, dv);
+                // F-028b: fill the vAA+1 shadow slot (ART two-slot layout)
+                set_wide_pair(vAA, dv);
                 trace.opcode_name = "const-wide/16";
                 pc_ += 2;
                 break;
@@ -8503,7 +8721,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 uint16_t val = bytecode_[pc_ + 1];
                 // EXP-071 Phase 8: write to long_val for INT64 type.
                 DalvikValue dv; dv.type = DalvikType::INT64; dv.long_val = static_cast<int64_t>(val) << 48;
-                set_register(vAA, dv);
+                // F-028b: fill the vAA+1 shadow slot (ART two-slot layout)
+                set_wide_pair(vAA, dv);
                 trace.opcode_name = "const-wide/high16";
                 pc_ += 2;
                 break;
@@ -8516,7 +8735,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 for (int i = 0; i < 4; i++) val |= static_cast<uint64_t>(bytecode_[pc_ + 1 + i]) << (i * 16);
                 // EXP-071 Phase 8: write to long_val for INT64 type.
                 DalvikValue dv; dv.type = DalvikType::INT64; dv.long_val = static_cast<int64_t>(val);
-                set_register(vAA, dv);
+                // F-028b: fill the vAA+1 shadow slot (ART two-slot layout)
+                set_wide_pair(vAA, dv);
                 trace.opcode_name = "const-wide";
                 pc_ += 5;
                 break;
@@ -12325,7 +12545,32 @@ void DalvikExecutionEngine::handle_unimplemented(uint16_t opcode, uint32_t pc,
     trace.status = InstructionTrace::Status::UNIMPLEMENTED;
     trace.error_message = "Unimplemented opcode: 0x" + to_hex16(opcode);
     
-    log("  UNIMPLEMENTED: 0x" + to_hex16(opcode) + " at " + to_hex(pc));
+    log("  UNIMPLEMENTED: 0x" + to_hex16(opcode) + " at " + to_hex(pc)
+        + " in " + current_class_ + "." + current_method_);
+    // M4-F028 diag: dump the raw code units around the bad pc — evidence
+    // for walk-alignment forensics (a pc landing inside a literal means an
+    // earlier instruction size or branch was decoded wrong). Throttled per
+    // (class, method, pc) so loops can't flood the log.
+    {
+        static thread_local std::string last_unimpl_site;
+        std::string site = current_class_ + "." + current_method_ + "@" +
+                           to_hex(pc);
+        if (site != last_unimpl_site) {
+            last_unimpl_site = site;
+            std::string dump;
+            uint32_t lo = (pc >= 4) ? pc - 4 : 0;
+            uint32_t hi = (pc + 6 <= bytecode_.size()) ? pc + 6
+                                                       : (uint32_t)bytecode_.size();
+            for (uint32_t u = lo; u < hi; ++u) {
+                char buf[16];
+                std::snprintf(buf, sizeof(buf), "%04x ", bytecode_[u] & 0xffff);
+                dump += (u == pc) ? std::string("[") + buf + "]"
+                                  : std::string(" ") + buf;
+            }
+            std::cerr << "[UNIMPL-DIAG] " << site
+                      << " units[pc-4..pc+5]: " << dump << std::endl;
+        }
+    }
     
     if (config_.stop_on_unimplemented) {
         halted_ = true;
@@ -12344,6 +12589,28 @@ void DalvikExecutionEngine::set_register(uint8_t reg, const DalvikValue& value) 
         current_registers_->write_v(reg, value);
         current_registers_->set_pc(pc_);
     }
+}
+
+// F-028b (M4 §A1) — WIDE-PAIR SLOT LAW implementation. Writes the full
+// wide value into vReg and the high 32 bits of its bit pattern into the
+// vReg+1 shadow slot (INT32-tagged), exactly mirroring ART's physical
+// two-slot layout. Bounds-safe: write_v ignores out-of-range registers.
+void DalvikExecutionEngine::set_wide_pair(uint8_t reg, const DalvikValue& value) {
+    if (!current_registers_) return;
+    current_registers_->write_v(reg, value);
+    current_registers_->set_pc(pc_);
+    uint64_t bits = 0;
+    if (value.type == DalvikType::INT64) {
+        bits = static_cast<uint64_t>(value.long_val);
+    } else if (value.type == DalvikType::FLOAT64) {
+        std::memcpy(&bits, &value.double_val, sizeof(bits));
+    } else {
+        return; // not a wide value — no shadow to fill
+    }
+    DalvikValue shadow;
+    shadow.type = DalvikType::INT32;
+    shadow.int_val = static_cast<int32_t>(static_cast<uint32_t>(bits >> 32));
+    current_registers_->write_v(static_cast<uint8_t>(reg + 1), shadow);
 }
 
 DalvikValue DalvikExecutionEngine::get_register(uint8_t reg) const {
@@ -12430,6 +12697,20 @@ static std::vector<DalvikValue> build_invoke_args(
                     args.push_back(DalvikValue::make_double(d));
                 } else {
                     args.push_back(lo);
+                }
+            } else if (lo.type == DalvikType::FLOAT64) {
+                // F-028b wide-pair law: a FLOAT64-tagged slot already holds
+                // the FULL 64-bit value (the tagged-union model keeps the
+                // whole wide in one register). Reinterpret its bits per the
+                // param type instead of union-aliasing int_val (the low 32
+                // bits) against the possibly-unwritten shadow register —
+                // the defect that turned every delegated double param into
+                // a ~1e-315 denormal (dooz TransferFunction IAE).
+                if (pt == "D") {
+                    args.push_back(lo);
+                } else {
+                    int64_t bits; std::memcpy(&bits, &lo.double_val, sizeof(bits));
+                    args.push_back(DalvikValue::make_long(bits));
                 }
             } else {
                 int64_t combined = (static_cast<int64_t>(hi.int_val) << 32) |

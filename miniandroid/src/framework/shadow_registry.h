@@ -179,6 +179,42 @@ public:
                                       int32_t value) {
         (void)object_id; (void)field_name; (void)value; return false;
     }
+    // M4 F-028d — ATOMIC FIELD UPDATER LAW: typed heap field access for
+    // the java.util.concurrent.atomic.Atomic*FieldUpdater family. ART
+    // field updaters read/write the TARGET object's field via Unsafe;
+    // MiniAndroid's heap is name-keyed so the updater shadow goes straight
+    // through. Reference fields carry (object_id, class_desc); a null
+    // write passes value_oid=0 / value_is_string=false / empty strings.
+    // STRING_REF-typed stored fields surface as out_is_string + payload
+    // (updaters over string fields are rare but legal).
+    virtual bool get_object_ref_field(uint32_t object_id,
+                                      const std::string& field_name,
+                                      uint32_t& out_oid,
+                                      std::string& out_class,
+                                      std::string& out_string,
+                                      bool& out_is_string) {
+        (void)object_id; (void)field_name; (void)out_oid; (void)out_class;
+        (void)out_string; (void)out_is_string; return false;
+    }
+    virtual bool set_object_ref_field(uint32_t object_id,
+                                      const std::string& field_name,
+                                      uint32_t value_oid,
+                                      const std::string& value_class,
+                                      const std::string& value_string,
+                                      bool value_is_string) {
+        (void)object_id; (void)field_name; (void)value_oid; (void)value_class;
+        (void)value_string; (void)value_is_string; return false;
+    }
+    virtual bool get_object_long_field(uint32_t object_id,
+                                       const std::string& field_name,
+                                       int64_t& out) {
+        (void)object_id; (void)field_name; (void)out; return false;
+    }
+    virtual bool set_object_long_field(uint32_t object_id,
+                                       const std::string& field_name,
+                                       int64_t value) {
+        (void)object_id; (void)field_name; (void)value; return false;
+    }
 };
 
 // Forward-declare so Shadow can hold a back-pointer to the registry.
