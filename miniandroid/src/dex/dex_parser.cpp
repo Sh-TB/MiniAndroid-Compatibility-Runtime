@@ -587,7 +587,13 @@ bool DexParser::parse_static_values(const uint8_t* data, uint32_t offset, ClassI
 
         if (v.has_int) {           // BYTE/SHORT/CHAR/INT/LONG (law-typed)
             field.has_default_value = true;
-            field.default_int_value = (int32_t)v.int_val;
+            // F-042 (MASTER-6 §C): keep the FULL 64-bit value. VALUE_LONG
+            // static defaults (e.g. `static long MARKER = 0x8080808080808080L`
+            // — the ScatterMap EMPTY constant shape) were truncated to 32
+            // bits here, so every sget-wide read back a half-word and the
+            // wide value never survived the invoke boundary. The field's
+            // declared descriptor decides the width at materialization.
+            field.default_int_value = v.int_val;
         } else if (v.has_float_bits) {  // F-028f: VALUE_FLOAT / VALUE_DOUBLE
             field.has_default_value = true;
             field.default_value_has_float_bits = true;
