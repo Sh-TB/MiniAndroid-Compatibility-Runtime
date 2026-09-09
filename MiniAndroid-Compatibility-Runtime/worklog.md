@@ -4874,3 +4874,65 @@ Stage Summary:
   honestly BLOCKED on F-TIMER-COMPUTE/F-ARGS/F-TIMER-STACK.
 - Next: heap class identity law (unlocks F-TIMER-COMPUTE + formatTime
   family), synthetic stack boundaries (unlocks microtimer), then §3/§13/§20.
+
+---
+Task ID: M5 (MASTER-5 — report-driven continuation: F-028h/DOOZ frontier)
+Agent: Super Z (main agent)
+Task: Read MiniAndroid_Forensic_Upstream_Mining_F028h_DOOZ_2026-09-09.md completely,
+  reconcile report state vs current HEAD, continue from the deepest VERIFIED
+  runtime frontier (PRIORITY 0: reconstruct the DOOZ scheduler failure), fix
+  smallest generic laws, micro-proof, regression, real APK.
+
+Work Log:
+- Report HEAD (public 61fd7f1 + FINDING-020) verified as a LOCAL ANCESTOR; local
+  main was 9+ commits ahead (M3 session-12/13 + M4 F-028/F-028h/F-029 landed,
+  79-stage battery). Report's "current frontier = SnapshotKt.readError" was
+  STALE: M4 had already peeled fontScale ISE + SegmentedQueue livelock +
+  reflection NPE; the real frontier was the coroutine scheduler CAS spin.
+- Environment forensics: container restart wiped aapt2 + corpus caches.
+  Restored deterministically via scripts/bootstrap_toolchain.sh (aapt2
+  2.20-14304508 exact pin), fetch_corpus.py (hash-verified), HelloWorld APK +
+  reference screenshot from documented pin URLs (sha 009b4671 exact), rebuilt
+  resource_trace. Battery 79/79 ALL PASS restored BEFORE any code change.
+- DOOZ frontier reconstruction (evidence chain): rc=124 timeout; spin = LY1/j;.j
+  Segment CAS-retry over AtomicReferenceArray (state slots 2i+1), caller
+  LY1/b;.D passing const/4 #0 as the `expected` Object param. DEX ground truth
+  via androguard cross-validation (exp059 find_method insns_off convention
+  documented; raw code-item headers re-derived at 0x11b86c).
+- F-030 ZERO-IS-NULL-AT-REFERENCE-USE law (build_invoke_args): const/4 #0
+  re-typed as null for reference-typed params (ART verifier Zero reg-type).
+  Micro-proof f030_zero_law fixture (ECJ+D8 real DEX) 7/7 bands GREEN; battery
+  stage added (82 stages). The dooz scheduler spin vanished (rc 124 -> rc=1).
+- F-031 View.mContext law: EXP-071 Context capture was DEAD CODE (early-return
+  <init> handler shadowed it) — capture merged into the live handler.
+- F-032/F-033 service registry: ACCESSIBILITY_SERVICE entry + Class-based
+  getSystemService(Class) delegation (AOSP Context.java/System ServiceRegistry).
+- F-035 23x int-shift opcodes (shl/shr/ushr-int 0x98-0x9a were missing ->
+  stale-register defect) + Integer.numberOfLeadingZeros destructive pre-loop
+  (always returned 32). Root of the Lh/u aget AIOOBE (len=5 idx=5).
+- F-036 Collections iterator law: Arrays.asList product + List iterator
+  hasNext/next reading the receiver's ACTUAL backing store (heap-fields guard),
+  interface-declared dispatch (Iterator;/Iterable;), placed BEFORE shadow
+  dispatch (CollectionShadow state-store conflict resolved).
+- F-039 Collections singletonList/emptyList/unmodifiableList law.
+- REGRESSION CAUGHT + FIXED: relocation left ArrayList add/get/size fallbacks
+  without their class gate + one missing brace -> F-028/F-030 goldens white;
+  restored; battery 82/82 ALL PASS.
+
+Stage Summary:
+- 7 generic laws landed (F-030, F-031, F-032, F-033, F-035, F-035b, F-036,
+  F-039), each upstream-evidenced (ART verifier Zero law, AOSP View.mContext,
+  AOSP Context service registry, Dalvik shift masking, OpenJDK
+  Collections/Arrays contracts). Zero app special-casing; every fix keyed to
+  semantic families reachable by any real APK.
+- dooz blocker layers peeled this session: scheduler CAS spin (F-030),
+  getContext NPE chain (F-031/F-032/F-033), hash-set mask AIOOBE (F-035),
+  MainDispatcherLoader ISE (F-036/F-039). Composition now constructs the view
+  tree + service layer + dispatcher machinery.
+- REMAINING dooz frontier (next spotlight): Lh/r;.c hash-set insert/retry loop
+  spins — probe window terminates per iteration but the INSERT never commits
+  (the key is never written into values[]), so the caller re-probes forever.
+  The insertion commit path (byte-marker writes 0x80/0xFF + values[idx] store)
+  needs the same register-tag forensics used for F-030/F-035.
+- Battery 82/82 ALL PASS at commit 6d88661a. dooz run reports remain rc=124
+  (honest timeout); framebuffer 0 non-white — no visual claim made.
