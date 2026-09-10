@@ -11,16 +11,23 @@
 
 | Field | Value |
 |---|---|
-| **HEAD** | post-`5a139afd` (F-044/F-045 commit; see `docs/ROOT_LAW_GLOBAL_AUDIT.md` for the exact hash after push) |
+| **HEAD** | M8 commit (F-050 family; see `docs/ROOT_DISCOVERY_INDEX.md` for the exact hash after push) |
 | **DATE** | 2026-09-10 |
-| **BATTERY** | 88 stages — ALL PASS required at every push (semantic battery + goldens + fixtures F-028/F-030/F-040/F-044 + externals) |
-| **REAL APK** | 12-app open-source corpus + lighthouse dooz `d81292cd…` (SHA-pinned) — see the compatibility matrix below |
-| **CURRENT FRONTIER** | Compose first-frame pump (Recomposer frame → measure/layout/draw via AndroidUiDispatcher/MonotonicFrameClock delayed dispatch) — root-located, PENDING |
-| **PROVEN ROOTS** | F-028, F-028h, F-029, F-030, F-031..F-033, F-035, F-036, F-039, F-040, F-041, F-042, F-043, **F-044 (new)**, **F-045 (new)** |
-| **IMPACT** | dooz rc 1→0; app-boundary NPE eliminated; `onAttachedToWindow` executes to its last DEX instruction; Compose dispatch machinery (AndroidUiDispatcher + frame-clock chain) now executes |
-| **KNOWN LIMITATIONS** | dooz framebuffer still blank (honest — the first-frame pump is not implemented); no visual success claim |
+| **BATTERY** | **91 stages — ALL PASS** (88 + F-050 build/run/golden) |
+| **REAL APK** | 13-app open-source corpus + lighthouse dooz `d81292cd…` (SHA-pinned) |
+| **PROVEN ROOTS** | F-028, F-028h, F-029, F-030, F-031..F-033, F-035, F-036, F-039, F-040, F-041, F-042, F-043, F-044, F-045, **F-050a (Choreographer frame pump — new)**, **F-050b (Throwable message law — new)**, **F-050c (AtomicLongFieldUpdater getAndIncrement — new)**, **F-050d (Boolean.TRUE/FALSE statics — new)**, **F-050e (registry invariant law — new)** — evidence links in `docs/ROOT_IMPACT_MATRIX.md` |
+| **CURRENT FRONTIER** | Job-active cancellation of the Compose frame await (the Recomposer's withFrameNanos continuation is cancelled via its invokeOnCancellation handler before the pump fires) — root-located, PENDING (M9) |
+| **TicTacToe (real APK)** | rc=0 SUCCESS, 3-run byte-identical — libGDX GLSurfaceView boundary (T3/BLANK, unchanged historical record) |
+| **Telegram** | BLOCKED — official dl serves a 1.2 MB stub installer; the pinned 82 MB v10.14.5 artifact (`193ad551…`) is no longer reachable; fetch correctly rejects (zero-skip law) |
+| **IMPACT (M8)** | 4 blocker layers peeled in the dooz first-frame chain: scheduler state corruption (getAndIncrement decrement bug) → ISE "unexpected close status: -1" → channel-cancel cascade (Boolean.TRUE null) → frame callback never fired (Choreographer family) — all four fixed, micro-proven 7/7 bands + 3-run byte-identical |
+| **KNOWN LIMITATIONS** | dooz framebuffer still 0 non-white (deterministic BLANK, SHA `31ddd4d5…`); Compose tap→recompose unproven; WeakReference + DecorView content-hierarchy roots open |
 
-**DOOZ: EXECUTION FRONTIER ADVANCED — FINAL UI NOT YET PROVEN.**
+**DOOZ HAS ADVANCED THROUGH THE RECOMPOSER / FRAME-CLOCK MACHINERY
+(Choreographer family landed, four scheduler-corruption roots closed),
+BUT THE FINAL COMPOSE FRAME IS STILL NOT PROVEN/RENDERED.**
+
+Do NOT claim Compose success from this README — the framebuffer is blank
+and the statement above is the current verified truth.
 
 ---
 

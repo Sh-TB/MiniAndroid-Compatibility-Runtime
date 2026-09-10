@@ -1049,6 +1049,38 @@ else
     gate "F-044 return-descriptor pixel golden (7 bands)" 1
 fi
 
+# ── F-050 (MASTER-8): Choreographer frame-pump family — AtomicLongField-
+# Updater getAndIncrement law (F-050c), Boolean.TRUE/FALSE static synthesis
+# (F-050d), Throwable message law (F-050b), Choreographer singleton +
+# deterministic vsync pump (F-050a). Real-APK evidence: dooz Recomposer
+# first-frame chain (sendersAndCloseStatus -1 corruption → "unexpected
+# close status" ISE → channel-cancel cascade → blank Compose frame).
+F050_FIX_SRC="$MA/tests/fixtures/f050_frame_pump"
+rm -rf /tmp/battery_f050; mkdir -p /tmp/battery_f050
+if cached "F-050 frame-pump fixture build (ECJ+D8)"; then
+    skip "F-050 frame-pump fixture build (ECJ+D8)"
+    skip "F-050 frame-pump fixture run (rc=0 SUCCESS)"
+    skip "F-050 frame-pump pixel golden (7 bands)"
+elif [ -d "$F050_FIX_SRC" ]; then
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
+        "$F050_FIX_SRC" /tmp/battery_f050/f050_frame_pump.apk \
+        > /tmp/battery_f050/build.log 2>&1
+    gate "F-050 frame-pump fixture build (ECJ+D8)" $?
+    (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f050/f050_frame_pump.apk \
+        -o /tmp/battery_f050/out > /tmp/battery_f050/run.log 2>&1)
+    gate "F-050 frame-pump fixture run (rc=0 SUCCESS)" $?
+    rc=0
+    grep -q "Status: SUCCESS" /tmp/battery_f050/run.log || rc=1
+    python3 "$REPOSCRIPTS/f050_pixel_golden.py" /tmp/battery_f050/out/screenshot.ppm \
+        > /tmp/battery_f050/pixel.log 2>&1 || rc=1
+    gate "F-050 frame-pump pixel golden (7 bands)" $rc
+    tail -1 /tmp/battery_f050/pixel.log
+else
+    gate "F-050 frame-pump fixture build (ECJ+D8)" 1
+    gate "F-050 frame-pump fixture run (rc=0 SUCCESS)" 1
+    gate "F-050 frame-pump pixel golden (7 bands)" 1
+fi
+
 echo "──────────────────────────────────────────────"
 for r in "${RESULTS[@]}"; do printf '%s\n' "$r"; done
 if [ $FAIL -eq 0 ]; then
