@@ -4925,6 +4925,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         std::string saved_halt_reason = halt_reason_;
         auto saved_class = current_class_;
         auto saved_method = current_method_;
+        // F-044 (MASTER CAMPAIGN 4): the per-frame method context is ONLY
+        // complete if EVERY field set at frame entry is saved/restored here.
+        // current_method_descriptor_ (set at entry for the CHAR-PROBE
+        // signature-aware return typing in execute_return) was the one
+        // per-frame field that escaped this discipline: after a callee ran
+        // (e.g. a ")Z" method), the descriptor stayed the CALLEE's, so the
+        // caller's I-return was retyped as a boolean — every int return
+        // value collapsed to 0/1. Live-proven: the Compose derived-state
+        // version hash (LF/F$a.d: 6729) returned as BOOLEAN(1), the
+        // dependency-change compare then always matched, derived state went
+        // permanently stale, and AndroidComposeView.getViewTreeOwners()
+        // read back null → checkNotNull NPE at the dooz app boundary.
+        auto saved_method_descriptor = current_method_descriptor_;
         auto saved_dex_index = current_dex_index_;
         auto saved_pc_visit_count = pc_visit_count_;
         // EXP-052: Save tries state so we can restore it after the recursive
@@ -5039,6 +5052,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         current_registers_ = saved_registers;
         current_class_ = saved_class;
         current_method_ = saved_method;
+        // F-044: restore the per-frame descriptor (see save-site comment).
+        current_method_descriptor_ = saved_method_descriptor;
         current_dex_index_ = saved_dex_index;
         pc_visit_count_ = saved_pc_visit_count;
         current_tries_size_ = saved_tries_size;
@@ -11097,6 +11112,19 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     // EXP-045: Only push argc registers (from 35c format: high nibble of high byte)
     uint8_t argc = (instr >> 12) & 0xF;
 
+    // F-044 DIAG (env-gated): did the version-scan's identityHashCode call
+    // reach the invoke handler at all?
+    {
+        static thread_local const bool f044p = std::getenv("MINIANDROID_F044_DIAG") != nullptr;
+        if (f044p) {
+            std::string mh = resolve_method_name_for_dex(method_idx, current_dex_index_);
+            std::string mc = resolve_method_class_for_dex(method_idx, current_dex_index_);
+            if (mc == "Ljava/lang/System;" && mh == "identityHashCode") {
+                std::cerr << "[F044-DIAG] invoke-static System.identityHashCode reached execute_invoke_static" << std::endl;
+            }
+        }
+    }
+
     // EXP-071 Phase 8: Resolve method name and proto EARLY so we can use them
     // for debug tracing in the wide-merge code below. The original code only
     // resolved method_name AFTER the args were built, which meant our debug
@@ -11730,7 +11758,46 @@ bool DalvikExecutionEngine::execute_return(uint32_t pc, InstructionTrace& trace)
                   << " obj=" << val.object_id
                   << std::endl;
     }
-    
+
+    // F-044 DIAG (env-gated, diagnostic only): the live dooz derived-state
+    // record-validity law (LF/F$a.c watermark/version check) mis-executes —
+    // expose the exact DEX-level return values of the two law methods so the
+    // comparison (record.g vs re-scanned dependency version) can be traced.
+    {
+        static thread_local const bool f044 = std::getenv("MINIANDROID_F044_DIAG") != nullptr;
+        if (f044 && current_class_ == "LF/F$a;" && current_method_ == "d") {
+            std::cerr << "[F044-DIAG] " << current_class_ << "." << current_method_
+                      << "() return type=" << static_cast<int>(val.type)
+                      << " int_val=" << val.int_val
+                      << " obj=" << val.object_id
+                      << std::endl;
+            // One-shot register-file dump at return (capped at 3 dumps):
+            // exposes every register's tag so the stale-tag source is exact.
+            static thread_local uint64_t f044_dumps = 0;
+            if (f044_dumps < 3 && current_registers_) {
+                f044_dumps++;
+                std::cerr << "[F044-DIAG] .d register file:";
+                for (uint8_t ri = 0; ri < 23; ++ri) {
+                    DalvikValue rv = current_registers_->read_v(ri);
+                    if (rv.type == DalvikType::REGISTER_UNSET ||
+                        rv.type == DalvikType::UNINITIALIZED) continue;
+                    std::cerr << " v" << (int)ri << ":t" << static_cast<int>(rv.type)
+                              << "(" << rv.int_val << ")";
+                }
+                std::cerr << std::endl;
+            }
+        }
+        // SnapshotIdSet.contains (LP/j.q) — the record-walk invalidation
+        // gate. A TRUE return on an empty set skips every record and makes
+        // SnapshotKt.readable (P/l.r) return null inside the dependency
+        // version scan while the same readable succeeds from P/l.i.
+        if (f044 && current_class_ == "LP/j;" && current_method_ == "q") {
+            std::cerr << "[F044-DIAG] LP/j.q(contains) -> "
+                      << (val.type == DalvikType::INT32 ? val.int_val : -777)
+                      << std::endl;
+        }
+    }
+
     halted_ = true;
     halted_on_return_ = true;
     
@@ -11755,7 +11822,28 @@ bool DalvikExecutionEngine::execute_return_object(uint32_t pc, InstructionTrace&
     
     // EXP-055: Store the return value (same as execute_return).
     last_invoke_return_ = val;
-    
+
+    // F-044 DIAG (env-gated): the derived-state calculation channel —
+    // AndroidComposeView$o.c (the calculation lambda) → P/g$a.a →
+    // LF/F$b.o → the record.f store. Expose the return VALUE TAG at each
+    // hop: a null that arrives as REGISTER_UNSET instead of a proper
+    // null OBJECT_REF corrupts the derived record's value field
+    // (field-trace showed f stored as <unset>).
+    {
+        static thread_local const bool f044 = std::getenv("MINIANDROID_F044_DIAG") != nullptr;
+        if (f044 && (current_class_ == "LP/g$a;" ||
+                     current_class_ == "LF/F$b;" ||
+                     current_class_ == "Landroidx/compose/ui/platform/AndroidComposeView$o;" ||
+                     current_class_ == "LP/l;" ||
+                     current_class_ == "LF/F;")) {
+            std::cerr << "[F044-DIAG] " << current_class_ << "." << current_method_
+                      << "() return-object type=" << static_cast<int>(val.type)
+                      << " obj=" << val.object_id
+                      << " int_val=" << val.int_val
+                      << std::endl;
+        }
+    }
+
     halted_ = true;
     halted_on_return_ = true;
     
@@ -16265,6 +16353,37 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
          class_name.find("Activity") != std::string::npos)) {
         result = get_or_create_singleton("Ljava/io/File;");
         status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-045 (MASTER CAMPAIGN 4): System.identityHashCode(Object) → int.
+    // OpenJDK ojluni System.java law: returns the same hash code for a
+    // given object for its ENTIRE lifetime (the default hashCode —
+    // identity-based), and 0 for null (not an exception). Identity — NOT
+    // equals(): two equal-but-distinct objects hash differently. The old
+    // behavior was a silent REC-MISS → fail-soft int 0 for EVERY object,
+    // which collapsed distinct dependency states to the same version-hash
+    // term in Compose's DerivedSnapshotState scan (any two dependencies
+    // hashed identically — silent-corruption class, §19).
+    // Engine law: identity hash = a deterministic mix of the heap object
+    // id (stable for the object's lifetime; deterministic across runs —
+    // the runtime's reproducibility law), 0 for null.
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "identityHashCode" &&
+        class_name.find("System") != std::string::npos) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        uint32_t oid = 0;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            oid = args[0].object_id;
+        }
+        // Fibonacci-hashing (2654435761 = 2^32/φ) spreads sequential heap
+        // ids across the int range; 0 (null) hashes to 0 per OpenJDK.
+        uint32_t h = oid == 0 ? 0u : oid * 2654435761u;
+        DalvikValue v;
+        v.type = DalvikType::INT32;
+        v.int_val = static_cast<int32_t>(h);
+        result = v;
         return true;
     }
 
