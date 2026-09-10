@@ -1017,6 +1017,38 @@ else
     gate "F-040 arrays-fill pixel golden (7 bands)" 1
 fi
 
+# ── F-044 (MASTER CAMPAIGN 4): per-frame return-descriptor law.
+# The dooz Compose DerivedSnapshotState version hash (6729) returned as
+# BOOLEAN(1) because current_method_descriptor_ leaked across recursive
+# frames; the dependency-change compare matched 1==1 forever, derived
+# state went permanently stale, getViewTreeOwners() read null → the
+# checkNotNull NPE that killed dooz at the app boundary.
+F044_FIX_SRC="$MA/tests/fixtures/f044_return_descriptor_law"
+rm -rf /tmp/battery_f044; mkdir -p /tmp/battery_f044
+if cached "F-044 return-descriptor fixture build (ECJ+D8)"; then
+    skip "F-044 return-descriptor fixture build (ECJ+D8)"
+    skip "F-044 return-descriptor fixture run (rc=0 SUCCESS)"
+    skip "F-044 return-descriptor pixel golden (7 bands)"
+elif [ -d "$F044_FIX_SRC" ]; then
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
+        "$F044_FIX_SRC" /tmp/battery_f044/f044_return_descriptor_law.apk \
+        > /tmp/battery_f044/build.log 2>&1
+    gate "F-044 return-descriptor fixture build (ECJ+D8)" $?
+    (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f044/f044_return_descriptor_law.apk \
+        -o /tmp/battery_f044/out > /tmp/battery_f044/run.log 2>&1)
+    gate "F-044 return-descriptor fixture run (rc=0 SUCCESS)" $?
+    rc=0
+    grep -q "Status: SUCCESS" /tmp/battery_f044/run.log || rc=1
+    python3 "$REPOSCRIPTS/f044_pixel_golden.py" /tmp/battery_f044/out/screenshot.ppm \
+        > /tmp/battery_f044/pixel.log 2>&1 || rc=1
+    gate "F-044 return-descriptor pixel golden (7 bands)" $rc
+    tail -1 /tmp/battery_f044/pixel.log
+else
+    gate "F-044 return-descriptor fixture build (ECJ+D8)" 1
+    gate "F-044 return-descriptor fixture run (rc=0 SUCCESS)" 1
+    gate "F-044 return-descriptor pixel golden (7 bands)" 1
+fi
+
 echo "──────────────────────────────────────────────"
 for r in "${RESULTS[@]}"; do printf '%s\n' "$r"; done
 if [ $FAIL -eq 0 ]; then
