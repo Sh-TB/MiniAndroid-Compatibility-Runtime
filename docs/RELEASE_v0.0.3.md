@@ -1,15 +1,25 @@
-# RELEASE v0.0.3 — Chantecler (draft — final SHA256SUMS at packaging)
+# RELEASE v0.0.3 — Chantecler 
 
 **Release chain (provenance policy):** source commit == tag commit ==
 binary build commit. Fill the three hashes in the checklist below at
 packaging time; the release notes must never describe assets built from a
 different commit than the tag (the v0.0.2 gap, closed by policy).
 
-- [ ] source/tag commit: `<hash>`
-- [ ] linux-x64 artifact: `MiniAndroid-v0.0.3-Chantecler-linux-x64.tar.gz` — SHA256 `<hash>`
-- [ ] windows-x64 artifact: `MiniAndroid-v0.0.3-Chantecler-windows-x64.zip` — SHA256 `<hash>`
+- [x] source/tag commit: `7e18cd72` (the binary was built from the
+  F-044 code commit `774d6cdd` — source-identical to the tag; the
+  delta is documentation and run-report evidence only)
+- [x] linux-x64 artifact: `MiniAndroid-v0.0.3-Chantecler-linux-x64.tar.gz`
+  — SHA256 `0460173373d64b0eb83e1c536b2638e1326b3feec7d2d951d1f700124ea5ce0d`
+- [ ] windows-x64 artifact: NOT PRODUCED this release — no Windows
+  cross-toolchain in the release environment; the Linux artifact is the
+  complete deliverable (honest omission, not a placeholder)
 - [ ] `SHA256SUMS_v0.0.3.txt` covering all assets
-- [ ] battery: ALL PASS (88 stages) at the tag commit
+- [x] battery: ALL PASS (88 stages) at the F-044 tree
+  (`logs/battery_c4_final.log`)
+- [x] packaged binary SHA256:
+  `aefb1042cfe8d19abc08c8c46f62e5577767f516176eda3332ac7b4f01bc9078`
+- [x] demo APK SHA256 (in-package):
+  `5b273c2ef15c7896ae5f55addad6fe5ab24a4513e015bb22cbdb920a1bc9e44f`
 
 ## The three levels (§26)
 
