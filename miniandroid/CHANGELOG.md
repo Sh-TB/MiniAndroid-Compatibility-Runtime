@@ -2,6 +2,44 @@
 
 All notable changes to the MiniAndroid Runtime project.
 
+## [v0.0.3] - 2026-09-10 — Chantecler (Compose execution frontier + root-law closure)
+
+### Added
+- **F-044** per-frame return-descriptor law: recursive frames now
+  save/restore `current_method_descriptor_` — an int return can no longer
+  collapse to a boolean under a callee's stale descriptor. Micro-proof
+  `f044_return_descriptor_law` (7 bands, 3-run byte-identical), battery
+  85→88 stages.
+- **F-045** `System.identityHashCode` per OpenJDK law (lifetime-stable
+  identity hash, 0 for null) — was a silent fail-soft 0-for-everything.
+- `docs/ROOT_LAW_COMPLETENESS_MATRIX.md` — family-closure status per root
+  family (root complete ≠ family closed).
+- `docs/ROOT_DISCOVERY_GUIDE.md` + `docs/ROOT_DISCOVERY_EVIDENCE.md` —
+  the root-discovery methodology and the F-044 worked example.
+
+### Fixed
+- dooz Compose lighthouse: rc 1→0; the app-boundary NullPointerException
+  (checkNotNull(getViewTreeOwners())) eliminated; `onAttachedToWindow`
+  executes to its last DEX instruction; AndroidUiDispatcher + frame-clock
+  chain executes post-attach; 3-run deterministic.
+
+### Compatibility
+- Compose derived-state dependency-change detection works (version hashes
+  keep full 32-bit values).
+
+### Evidence
+- Battery 88 stages ALL PASS at the release commit; dooz 3-run
+  byte-identical; before/after metrics in docs/ROOT_LAW_IMPACT_REPORT.md.
+
+### Known limitations
+- dooz framebuffer still blank — the Compose first-frame pump (delayed
+  dispatch via AndroidUiDispatcher/MonotonicFrameClock) is the documented
+  next battle. No visual success claim.
+
+### Not yet proven
+- A visible Compose frame; Compose interaction; independent Compose APK.
+
+
 ## [EXP-037] - 2026-08-14 — Telegram Compatibility Target (Phase 1: Research)
 
 ### 🎯 Mission Change
