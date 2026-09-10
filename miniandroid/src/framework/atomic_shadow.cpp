@@ -127,6 +127,21 @@ CallResult AtomicShadow::dispatch(const CallContext& ctx) {
             return CallResult::not_handled();
         }
         const uint32_t target = ctx.args[0].object_id;
+        // F-050 diag (env-gated): FULL op trace for updater families —
+        // the BufferedChannel sendersAndCloseStatus packed long lost a
+        // write between ops; every op + pre-value pair must be visible.
+        if (std::getenv("MINIANDROID_ATOMIC_DIAG") && !is_ref_upd) {
+            static thread_local uint64_t op_log_n = 0;
+            if (op_log_n < 500) {
+                ++op_log_n;
+                int64_t cur = 0;
+                heap_->get_object_long_field(target, fname, cur);
+                std::cerr << "[ATOMIC-OP] " << cls << "." << m << " obj#"
+                          << target << " field=" << fname
+                          << " pre=0x" << std::hex << cur << std::dec
+                          << " (" << cur << ")" << std::endl;
+            }
+        }
         if (is_ref_upd) {
             // reference updater: identity law
             if (m == "get") {
@@ -266,10 +281,35 @@ CallResult AtomicShadow::dispatch(const CallContext& ctx) {
         }
         if (m == "incrementAndGet" || m == "getAndIncrement" ||
             m == "decrementAndGet" || m == "getAndDecrement") {
+            // F-050c ROOT FIX — getAndIncrement wrote oldv - 1 (a DECREMENT).
+            // The old code dispatched the delta by prefix match:
+            //   m.rfind("increment", 0) == 0
+            // which is TRUE only for "incrementAndGet" — "getAndIncrement"
+            // does NOT start with "increment", so it took the -1 branch.
+            // Live evidence (dooz v18, MINIANDROID_ATOMIC_DIAG): the
+            // Recomposer's BufferedChannel sendersAndCloseStatus packed
+            // long (senders counter | close status << 60) went 0 -> -1 on
+            // the FIRST send's getAndIncrement; (state shr 60).toInt()
+            // then read -1 and kotlinx.coroutines threw
+            // IllegalStateException("unexpected close status: -1") at
+            // BufferedChannel.isClosed, killing the Recomposer await chain
+            // (cancellation → Choreographer.removeFrameCallback → the
+            // first frame never composed → blank framebuffer).
+            // OpenJDK law (AtomicLongFieldUpdater.java / AtomicLong.java):
+            //   getAndIncrement()   { return getAndAdd(1); }  — adds +1,
+            //   incrementAndGet()   { return addAndGet(1); }  — adds +1,
+            //   getAndDecrement()   { return getAndAdd(-1); } — adds -1,
+            //   decrementAndGet()   { return addAndGet(-1); } — adds -1;
+            // getAnd* returns the OLD value, *AndGet returns the NEW one.
+            // Exact-name dispatch (no prefix heuristics) — every method's
+            // delta and return epoch is pinned to the upstream contract.
+            const bool is_increment =
+                (m == "incrementAndGet" || m == "getAndIncrement");
+            const bool want_new =
+                (m == "incrementAndGet" || m == "decrementAndGet");
             int64_t oldv = num_read();
-            int64_t nv = oldv + ((m.rfind("increment", 0) == 0) ? 1 : -1);
+            int64_t nv = oldv + (is_increment ? 1 : -1);
             num_write(nv);
-            bool want_new = (m.rfind("getAnd", 0) != 0);
             if (is_long_upd)
                 return CallResult::handled_long(want_new ? nv : oldv);
             return CallResult::handled_int(

@@ -16,6 +16,7 @@
 #include "../framework/android_shadows.h"
 #include "../framework/dialog_shadow.h"
 #include "../framework/pending_intent_shadow.h"
+#include "../framework/choreographer_shadow.h"
 #include "../framework/canvas_shadow.h"
 // EXP-087 Phase 3 (B2 FIX): DalvikHeapAdapter for shadow heap access
 #include "../framework/heap_adapter.h"
@@ -1367,6 +1368,18 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
         }
     }
     // ===== end UC009-WIRE =====
+
+    // ===== F-050: Choreographer first-frame pump (launch path) =====
+    // AOSP: when the main Looper goes idle the display's vsync fires
+    // Choreographer.doFrame, resuming every withFrameNanos continuation —
+    // THE first-frame law for Compose (Recomposer.applyChanges runs on the
+    // resume; AndroidComposeView then gains children and measure/layout/
+    // draw execute). Without this pump the posted callback sat forever and
+    // the frame stayed blank (dooz 0/2073600 non-white at the F-044/F-045
+    // frontier). Deterministic: virtual frame clock, bounded ticks, the
+    // resumption work drains on the same MessageQueue before the next tick.
+    pump_compose_frames(/*max_frames=*/8);
+    // ===== end F-050 launch pump =====
 
     trace_engine_.info("ExecutionEngine", "stage_execute_application_real_dalvik",
                        "Real Dalvik execution complete");
@@ -3070,6 +3083,81 @@ void ExecutionEngine::invoke_handler_runnable(uint32_t rid) {
     }
 }
 
+// F-050: invoke one posted FrameCallback's REAL DEX doFrame(J)V — the
+// vsync law (AOSP Choreographer.runCallbacks → FrameCallback.doFrame) that
+// resumes Compose's withFrameNanos continuation for the first frame.
+void ExecutionEngine::invoke_choreographer_do_frame(uint32_t callback_id,
+                                                    const std::string& callback_class,
+                                                    int64_t frame_time_nanos) {
+    if (callback_id == 0 || callback_class.empty()) return;
+    auto* cs = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ChoreographerShadow>()
+                   : nullptr;
+    try {
+        auto& heap = dalvik_engine_.get_heap_public();
+        if (!heap.has_object(callback_id)) return;
+        std::cerr << "[CHOREO-DISPATCH] doFrame cb=" << callback_id
+                  << " class=" << callback_class
+                  << " frameTimeNanos=" << frame_time_nanos << std::endl;
+        if (cs) cs->set_in_do_frame(true);
+        miniandroid::dalvik::DalvikValue ret;
+        miniandroid::dalvik::DalvikExecutionResult frame_result;
+        std::vector<miniandroid::dalvik::DalvikValue> args;
+        args.push_back(miniandroid::dalvik::DalvikValue::make_object(callback_id, callback_class));
+        args.push_back(miniandroid::dalvik::DalvikValue::make_long(frame_time_nanos));
+        dalvik_engine_.try_recursive_invoke(callback_class, "doFrame", args, ret, frame_result);
+        if (cs) cs->set_in_do_frame(false);
+        std::cerr << "[CHOREO-DISPATCH] doFrame cb=" << callback_id << " invoked" << std::endl;
+    } catch (const std::exception& e) {
+        if (cs) cs->set_in_do_frame(false);
+        std::cerr << "[CHOREO-DISPATCH] doFrame failed: " << e.what() << std::endl;
+    }
+}
+
+// F-050: bounded launch-frame pump (the first-frame law).
+// AOSP model: the display's vsync arrives when the main Looper is idle;
+// Choreographer runs the CALLBACK_ANIMATION queue at the frame time and
+// every withFrameNanos continuation resumes. The resumed dispatcher posts
+// trampoline work on the SAME main Handler queue (one MessageQueue law),
+// which must drain before the next frame. Deterministic model: virtual
+// frame clock (fixed quantum, zero wall clock) + bounded ticks; the pump
+// stops as soon as no frame callback is pending AND the queue is drained
+// (quiescence), mirroring drain_quiescent's EMPTY-queue law.
+int ExecutionEngine::pump_compose_frames(int max_frames) {
+    auto* registry = dalvik_engine_.get_shadow_registry();
+    auto* cs = registry ? registry->find_as<framework::ChoreographerShadow>() : nullptr;
+    if (!cs) return 0;
+    auto* hs = registry->find_as<framework::HandlerShadow>();
+    int fired_frames = 0;
+    for (int tick = 0; tick < max_frames; ++tick) {
+        if (!cs->has_pending_callbacks()) break;
+        auto due = cs->take_due_callbacks();
+        if (due.empty()) break;
+        ++fired_frames;
+        for (auto& d : due)
+            invoke_choreographer_do_frame(d.callback_id, d.callback_class,
+                                          d.frame_time_nanos);
+        // Drain the resumption work the callbacks posted (bounded rounds —
+        // the same 64-round bound the UC009-WIRE composition drain uses).
+        if (hs) {
+            for (int round = 0; round < 64; ++round) {
+                std::vector<uint32_t> drained;
+                size_t n = hs->drain_ready(&drained);
+                if (n == 0) break;
+                std::cerr << "[CHOREO-PUMP] frame=" << fired_frames
+                          << " drain round=" << round << " runnable(s)=" << n
+                          << std::endl;
+                for (uint32_t rid : drained) invoke_handler_runnable(rid);
+            }
+        }
+    }
+    if (fired_frames > 0) {
+        std::cerr << "[CHOREO-PUMP] " << fired_frames
+                  << " frame(s) fired (bound=" << max_frames << ")" << std::endl;
+    }
+    return fired_frames;
+}
+
 // TIME-DRIVEN FRAME CAPTURE — the Looper-time counterpart of
 // stage_click_sequence. Instead of dispatching clicks, advance the
 // Handler virtual clock one frame_delay per frame and drain whatever
@@ -3157,6 +3245,10 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
     }
 
     int fired_total = 0;
+    // F-050: vsync is the time source for Compose/animation frames — fire
+    // one Choreographer tick per captured frame BEFORE the clock advance
+    // drains, so posted frame callbacks (Recomposer re-posts) step once.
+    pump_compose_frames(/*max_frames=*/1);
     for (int k = 1; k < config.frame_count; ++k) {
         hs->advance_virtual(config.frame_delay_ms);
         std::vector<uint32_t> drained;
@@ -4283,6 +4375,11 @@ bool ExecutionEngine::stage_tap(ExecutionResult& result,
         nlohmann::json unset_drain = nlohmann::json::array();
         drain_quiescent(&unset_drain);
         all_drains.push_back(unset_drain);
+
+        // F-050: a click that mutated Compose state parks the recomposition
+        // at withFrameNanos — pump one vsync tick so the recomposed frame
+        // becomes the post-gesture frame (AOSP tap→vsync→render order).
+        pump_compose_frames(/*max_frames=*/2);
 
         // G07/G08: this tap landed on a frame boundary — a finish() or
         // startActivity() requested by the click callback applies its

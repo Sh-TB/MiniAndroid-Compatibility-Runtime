@@ -2695,7 +2695,21 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                    declaring_class.find("Choreographer") != std::string::npos ||
                    declaring_class.find("MonotonicFrameClock") != std::string::npos)) {
             std::cerr << "[COMPOSE-TRY] " << declaring_class << "." << method_name
-                      << " depth=" << recursion_depth_ << std::endl;
+                      << " depth=" << recursion_depth_;
+            // F-050 diag: raw argument values (bit-level state forensics —
+            // the BufferedChannel sendersAndCloseStatus long packs the close
+            // status into bits 60-63; a corrupted packed state throws ISE
+            // "unexpected close status: N" and kills the Recomposer await).
+            for (size_t ai = 0; ai < args.size() && ai < 4; ++ai) {
+                const auto& a = args[ai];
+                if (a.type == DalvikType::INT64)
+                    std::cerr << " a" << ai << "=0x" << std::hex << a.long_val << std::dec;
+                else if (a.type == DalvikType::INT32)
+                    std::cerr << " a" << ai << "=i" << a.int_val;
+                else if (a.type == DalvikType::OBJECT_REF)
+                    std::cerr << " a" << ai << "=o" << a.object_id;
+            }
+            std::cerr << std::endl;
         }
     }
     // EXP-061: Debug — trace SlideView specifically (§24: env-gated —
@@ -8489,12 +8503,23 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     }
                 }
 
-                // EXP-053: Log the exception event in the required format.
-                std::cerr << "[EXCEPTION] method=" << current_class_ << "."
-                          << current_method_
-                          << " pc=" << pc_
-                          << " exception=" << exc_class
-                          << " try_range=";
+                // EXP-052/053: Log the exception event in the required format.
+                // F-050b: include the exception MESSAGE when the Throwable
+                // message law stored one (OpenJDK detailMessage contract).
+                {
+                    std::string exc_msg;
+                    if (exc.object_id != 0) {
+                        auto mv = heap_.get_object_field(exc.object_id, "message");
+                        if (mv.has_value() && mv->type == DalvikType::STRING_REF)
+                            exc_msg = mv->string_val;
+                    }
+                    std::cerr << "[EXCEPTION] method=" << current_class_ << "."
+                              << current_method_
+                              << " pc=" << pc_
+                              << " exception=" << exc_class;
+                    if (!exc_msg.empty()) std::cerr << " msg=\"" << exc_msg << "\"";
+                    std::cerr << " try_range=";
+                }
                 if (has_try_table && handler_found) {
                     std::cerr << "[" << try_start << "," << try_end << ")";
                 } else if (has_try_table) {
@@ -10220,6 +10245,29 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                                        DalvikValue::make_string(field_res.field_name, 0));
                 result_value = DalvikValue::make_object(enum_id,
                                                         field_res.class_descriptor);
+                static_field_storage_[static_key] = result_value;
+            } else if (field_res.class_descriptor == "Ljava/lang/Boolean;" &&
+                       (field_res.field_name == "TRUE" ||
+                        field_res.field_name == "FALSE")) {
+                // F-050d: java.lang.Boolean static constant synthesis.
+                // OpenJDK law (Boolean.java): public static final Boolean
+                // TRUE = new Boolean(true); FALSE = new Boolean(false); —
+                // and R8 rewrites Boolean.valueOf(true) INTO the sget of
+                // TRUE. Live evidence (dooz v18): the Recomposer's channel
+                // iterator resumed hasNext() with a boxed Boolean; the
+                // resume path hit sget-object Boolean.TRUE, got NULL, the
+                // unboxed result read false, the consume loop exited as if
+                // the channel was exhausted, and cancelConsumed cancelled
+                // the Recomposer's awaitWork channel mid-run — the frame
+                // await never resumed (CancellationException "Channel was
+                // cancelled"). Cached per static_key so identity (===)
+                // comparisons against the canonical singleton hold.
+                const bool bool_val = (field_res.field_name == "TRUE");
+                uint32_t box_id = heap_.allocate("Ljava/lang/Boolean;", pc, 0);
+                heap_.set_object_field(box_id, "value",
+                                       DalvikValue::make_bool(bool_val));
+                result_value = DalvikValue::make_object(box_id,
+                                                        "Ljava/lang/Boolean;");
                 static_field_storage_[static_key] = result_value;
             } else if (field_res.class_descriptor == "Ljava/util/Locale;") {
                 // M3 F-ROOM-CHAIN: java.util.Locale constant synthesis.
@@ -19690,6 +19738,76 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 found = heap_.get_object_field(bundle_id, "bundle:" + key).has_value();
             }
             result = DalvikValue::make_bool(found);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+
+    // F-050b: THROWABLE MESSAGE LAW (OpenJDK Throwable.java).
+    //   * Throwable(String message) and every subclass ctor store the
+    //     string as `detailMessage`; Throwable() stores null.
+    //   * getMessage()/getLocalizedMessage() return detailMessage (null
+    //     when absent) — the SAME field raise_synthetic_exception already
+    //     writes ("message") for runtime-raised exceptions.
+    // Root-gap evidence: dooz's Recomposer await died at kotlinx.coroutines
+    // BufferedChannel.isClosed → error("unexpected close status: N") — the
+    // ISE object was constructed by REAL DEX (Kotlin error()) but the
+    // message string was dropped at the ctor bridge, leaving every
+    // exception log message-blind (the status int needed for bit-level
+    // state forensics was unrecoverable). No app special-casing: this is
+    // the platform Throwable contract used by every real APK.
+    {
+        bool is_throwable_family =
+            (class_name.size() > 10 &&
+             class_name.rfind("Exception;") == class_name.size() - 10) ||
+            (class_name.size() > 6 &&
+             class_name.rfind("Error;") == class_name.size() - 6) ||
+            class_name == "Ljava/lang/Throwable;";
+        if (is_throwable_family && method == "<init>" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+            for (size_t ai = 1; ai < args.size(); ++ai) {
+                if (args[ai].type == DalvikType::STRING_REF) {
+                    heap_.set_object_field(
+                        args[0].object_id, "message",
+                        DalvikValue::make_string(args[ai].string_val,
+                                                 args[0].object_id));
+                    std::cerr << "[THROWABLE-MSG] " << class_name
+                              << " msg=\"" << args[ai].string_val << "\""
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << " pc=" << pc_
+                              << " depth=" << call_stack_.depth()
+                              << std::endl;
+                    // F-050 diag: compact caller chain for cancellation
+                    // forensics (who cancels the Recomposer's channel?).
+                    {
+                        auto chain = call_stack_.snapshot_top_first();
+                        size_t n = chain.size() > 12 ? 12 : chain.size();
+                        for (size_t fi = 0; fi < n; ++fi) {
+                            std::cerr << "[THROWABLE-STACK] #" << fi << " "
+                                      << chain[fi].first << "."
+                                      << chain[fi].second << std::endl;
+                        }
+                    }
+                    result = DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (is_throwable_family &&
+            (method == "getMessage" || method == "getLocalizedMessage")) {
+            std::string msg;
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0) {
+                auto v = heap_.get_object_field(args[0].object_id, "message");
+                if (v.has_value() && v->type == DalvikType::STRING_REF)
+                    msg = v->string_val;
+            }
+            result = msg.empty() ? DalvikValue::make_null()
+                                 : DalvikValue::make_string(msg, 0);
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
