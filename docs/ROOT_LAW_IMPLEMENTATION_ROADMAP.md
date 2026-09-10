@@ -1,4 +1,4 @@
-# ROOT LAW IMPLEMENTATION ROADMAP (MASTER-6 → MASTER CAMPAIGN 4)
+# ROOT LAW IMPLEMENTATION ROADMAP (MASTER-6 → MASTER CAMPAIGN 4 → MASTER CAMPAIGN 3/M8)
 
 Prioritized implementation order. Priority classes per §5 of the campaign
 brief: P0 = fundamental/runtime blocker, P1 = high-value common, P2 = useful
@@ -7,6 +7,33 @@ measurements.
 
 ## Tier P0 — landed and regression-verified (keep protected)
 
+0. **F-050 family (M8/Campaign-3 continuation, 2026-09-10)** — the
+   Choreographer frame-pump battle, four generic roots landed + micro-proven
+   (f050_frame_pump 7/7 bands, 3-run byte-identical) + battery 91/91:
+   - **F-050a** Choreographer shadow family + deterministic vsync pump
+     (getInstance singleton identity; postFrameCallback/removeFrameCallback
+     FIFO schedule; one shared monotonic frame time per tick, fixed
+     16666667 ns quantum, zero wall clock; engine pump drains resumption
+     work on the same MessageQueue). Real-APK evidence: dooz
+     AndroidUiDispatcher/AndroidUiFrameClock registered a J$c frame
+     callback that NOTHING ever fired — 0 doFrame dispatches in a 14.6 MB
+     trace; withFrameNanos parked forever.
+   - **F-050c** AtomicLongFieldUpdater.getAndIncrement wrote oldv-1 (a
+     DECREMENT) via a prefix-match delta bug. OpenJDK law pinned: exact-name
+     dispatch, getAnd* returns OLD, *AndGet returns NEW. Real-APK evidence:
+     dooz Recomposer BufferedChannel.sendersAndCloseStatus went 0 → -1 on
+     the first send → `(state shr 60).toInt()` = -1 → ISE "unexpected close
+     status: -1" (message recovered via F-050b) → cancellation cascade.
+   - **F-050d** Boolean.TRUE/FALSE static synthesis (OpenJDK Boolean.java;
+     R8 rewrites valueOf(true) into the sget; the miss returned NULL, the
+     channel iterator unboxed false, exited as if exhausted, and
+     cancelConsumed cancelled the Recomposer's awaitWork channel →
+     CancellationException "Channel was cancelled").
+   - **F-050b** Throwable message law (OpenJDK Throwable.java): ctor
+     String stores detailMessage, getMessage() returns it. Forensics
+     unlock: every DEX-constructed exception is now message-visible.
+   - **F-050e** §6 shadow registry invariant count law 19 canonical
+     (18 + ChoreographerShadow) / 21 visible with pre-registered pair.
 1. **F-030** zero-is-null-at-reference-use (invoke boundary) — protects
    every coroutine/atomic identity path.
 2. **F-028/F-028h** untyped-register raw-bits + AtomicReferenceArray
@@ -28,15 +55,23 @@ measurements.
 
 ## Tier P0 — next battle (root-located, not yet implemented)
 
-10. **Dispatcher/delayed-task law — the Compose first-frame pump (HIGHEST
-    PRIORITY after Campaign-4).** With F-044 landed, dooz's attach runs to
-    completion and the AndroidUiDispatcher/MonotonicFrameClock machinery
-    (J;.O, J$c runnables, coroutine-context chain) EXECUTES. The remaining
-    blocker is the Recomposer's first frame: delayed dispatch through the
-    frame clock with the virtual clock. The scheduler-discriminator
-    questions (owner, queue, state variable, second actor) must be
-    answered from the live trace first — no pump on faith. Unblocks:
-    Compose measure/layout/draw → the first non-blank Compose frame.
+10. **Job isActive / coroutine-completion law (HIGHEST PRIORITY after
+    M8).** With F-050a/c/d landed, the remaining first-frame blocker is
+    precisely localized: the Recomposer's frame-await continuation is
+    CANCELLED shortly after registration (cancel cascade: LE1/a.y resume →
+    Choreographer.removeFrameCallback via the K$a invokeOnCancellation
+    handler). The doFrame pump never sees a pending callback at the frame
+    boundary. The scheduler-discriminator questions (which Job owns the
+    await, why isActive collapses, which state variable the cancellation
+    reads) must be answered from the live trace first — no job-pump on
+    faith. Unblocks: Compose measure/layout/draw → the first non-blank
+    Compose frame.
+
+## Tier P0 — previous battle (root-located, IMPLEMENTED in M8)
+
+10-bis. *(moved to landed: F-050 family above — the dispatcher/frame-pump
+    law. The pump itself is implemented and micro-proven; the surviving
+    blocker moved to item 10, the Job-active law.)*
 
 ## Tier P1 — high-value, demand-driven
 
