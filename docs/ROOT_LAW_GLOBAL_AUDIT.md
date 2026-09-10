@@ -1,11 +1,13 @@
-# ROOT LAW GLOBAL AUDIT (MASTER-6)
+# ROOT LAW GLOBAL AUDIT (MASTER-6 → MASTER CAMPAIGN 4 update)
 
-**Campaign:** MASTER CAMPAIGN 3 continuation — global root/law inventory audit
-**Baseline HEAD:** `d358a0c9` (verified; the reported `87d57c5f` is a local
-ancestor 4 commits back — the M5 session advanced past it)
-**This document:** every root family from the MASTER-3 campaign brief and the
-forensic report, reconciled against the live tree, with status vocabulary per
-§10 (`RESEARCHED … REJECTED_CLAIM`).
+**Campaign:** MASTER CAMPAIGN 4 — global root closure + impact audit +
+GitHub/release synchronization
+**Baseline HEAD:** `5a139afd` (verified; remote `8cb8851e` — the campaign
+opened with the repo 1 artifacts-commit ahead; F-044/F-045 landed during
+the campaign, commit pending at doc time)
+**This document:** every root family from the MASTER-3/4 campaign briefs
+and the forensic report, reconciled against the live tree, with status
+vocabulary per §10 (`RESEARCHED … REJECTED_CLAIM`).
 
 Evidence precedence: `LIVE EVIDENCE > LOCAL CODE > UPSTREAM SOURCE >
 FORENSIC REPORT CLAIM`.
@@ -28,6 +30,8 @@ FORENSIC REPORT CLAIM`.
 | **F-041** | **encoded_catch_handler negative-size law: negative sleb size ⇒ \|size\| typed pairs + catch-all (was `-(size+1)`)** | X | DEX format spec encoded_catch_handler | **IMPLEMENTED + REGRESSION-VERIFIED (M6)** | **YES (M6)** | **YES — typed catch (IAE) now resolves to the real handler address** | **YES — f040 band L2 (rangeCheck IAE/AIOOBE caught correctly)** | **YES — every typed+catch-all handler entry in real R8/ECJ DEX** | 1 | 5 | 0 | 1 | 1 | 3 | 5 | S | P0 | 5 | keep protected | (this session) |
 | **F-042** | **VALUE_LONG static-default law: encoded long defaults keep full 64 bits; materialize INT64 for `J` descriptors** | B/C | DEX encoded_value; AOSP ValueCoder | **IMPLEMENTED + REGRESSION-VERIFIED (M6)** | **YES (M6)** | **YES — dooz-shape EMPTY marker 0x8080808080808080 round-trips** | **YES — f040 bands L1/L7** | YES | 1 | 4 | 0 | 1 | 1 | 4 | 4 | S | P0 | 5 | keep protected | (this session) |
 | **F-043** | **java.lang.Double/Float IEEE bit-conversion family (doubleTo(Raw)LongBits, longBitsToDouble, floatTo(Raw)IntBits, intBitsToFloat; NaN canonicalization)** | V | OpenJDK Double.java/Float.java | **IMPLEMENTED + REGRESSION-VERIFIED (M6)** | **YES (M6)** | YES | **YES — f040 band L6 (bits round-trip 0x4018000000000000)** | YES | 0 | 2 | 0 | 1 | 1 | 3 | 3 | S | P1 | 5 | keep protected | (this session) |
+| **F-044** | **Per-frame return-descriptor law: `current_method_descriptor_` was set at frame entry but never saved/restored across recursive frames — a caller whose last callee returned boolean executed `return vAA` under the CALLEE's ")Z" descriptor and every int return collapsed to BOOLEAN(0/1)** | A/C/X | Dalvik return model (return opcode + method's own descriptor define interpretation); ART interpreted returns | **IMPLEMENTED + REGRESSION-VERIFIED (CAMPAIGN-4)** | **YES (C4)** | **YES — dooz version hash 6729 returned as BOOLEAN(1) (probe + register-file dump); post-fix rc 1→0, app-boundary NPE eliminated, onAttachedToWindow runs to its last instruction** | **YES — f044_return_descriptor_law 7 bands GREEN, 3-run byte-identical (32b8a456…)** | **YES (dooz 3-run deterministic at the fixed tree)** | 1 | 5 | 0 | 2 | 2 | 5 | 5 | S | P0 | 5 | keep protected | (C4 commit) |
+| **F-045** | **System.identityHashCode(Object): was a silent REC-MISS → 0 for EVERY object; implemented per OpenJDK System.java (lifetime-stable identity hash, 0 for null; engine: Fibonacci-mixed heap id)** | V/D | OpenJDK ojluni System.java; identity (not equals) law | **IMPLEMENTED (CAMPAIGN-4)** | **YES (C4)** | YES (reached in the dooz version scan) | via f044 fixture arithmetic bands | YES (dooz) | 0 | 2 | 0 | 1 | 1 | 3 | 3 | S | P1 | 5 | add a dedicated fixture band on next battery pass | (C4 commit) |
 
 ---
 
@@ -194,25 +198,26 @@ FreeType/HarfBuzz/FriBidi wired into the shaper; text measurement used by
 TextView fixtures. Emoji fallback: `NOT_RELEVANT` (no corpus demand).
 Line-breaking: `RESEARCHED` P3.
 
-### ROOT FAMILY T — Compose — `LIVE_REPRODUCED` (the M6 frontier)
+### ROOT FAMILY T — Compose — `LIVE_REPRODUCED` → `FRONTIER ADVANCED (CAMPAIGN-4)`
 
-Live chain at M6 HEAD (post F-040..F-043): composition constructs, derived
-state dependency table now COMMITS (the Lh/u spin is gone), the derived
-value computes and `AndroidComposeView$c` (owners) constructs. **Current
-blocker (F-044 candidate, root-located this session):** the Compose
-SnapshotObserver read-observer (`LP/v$c;.o`) fires on snapshot reads with
-`observer.i == null` — the observation block is created by `LP/v$a;.a`
-(conditional-observation scope) which never executed in this run. In real
-Compose the observer registration is scoped to the observation block's
-lifetime; the MiniAndroid run registers the global read observer
-(`P/v.d` → `P/l.g` list + `P/l$a.j`) but never enters the scope that
-materializes the block before the derived-state readiness validation
-(`LF/F$a.d`) reads state. NEXT ACTION: map the real
-DerivedSnapshotState/SnapshotObserver scope pairing
-(`P/v$c.o` → `P/v$a.a` → scope end) against the live trace and implement
-the missing scope-entry law (or the observer-null tolerance law, whichever
-the DEX ground truth of dooz's Compose version proves). **This is the
-highest-priority open law.**
+Campaign-4 resolution of the M6 "F-044 candidate": the DEX ground truth of
+dooz's Compose proved the live blocker was NOT the observer-scope pairing
+(the read observer and scope-entry calls all execute as DEX) — it was the
+**per-frame return-descriptor law violation (F-044)**: the derived-state
+version hash (LF/F$a.d, 6729) returned as BOOLEAN(1) because the stale
+`current_method_descriptor_` let the CHAR-PROBE retyping fire under the
+last callee's ")Z". The dependency-change compare therefore matched
+forever, the derived record was permanently stale,
+`getViewTreeOwners()` read the pre-write null, and the Intrinsics
+checkNotNull NPE crossed the app boundary. F-044 (descriptor
+save/restore) + F-045 (identityHashCode law) fixed the family generically:
+dooz now runs `onAttachedToWindow` to its LAST DEX instruction, rc 1→0,
+AndroidUiDispatcher + J$c runnables + frame-clock context chain execute,
+3-run deterministic. **Remaining frontier (PENDING, next battle): the
+first-frame pipeline — Recomposer frame → measure/layout/draw through the
+AndroidUiDispatcher/MonotonicFrameClock delayed dispatch (the scheduler
+pump, root-located per M4/M5 notes; the framebuffer is honestly still
+blank — no visual claim).**
 
 Report-claim reconciliation: the forensic report's "Snapshot readError
 sequencing" frontier is `REJECTED_CLAIM` for the current tree — readError
