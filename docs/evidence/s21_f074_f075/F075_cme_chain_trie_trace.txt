@@ -1,0 +1,37 @@
+F-075 PROOF — polymorphic zero at reference use (run9, MINIANDROID_TRIE_TRACE=1):
+
+[HASH-TRACE] hashCode recv=LM/b; obj=410 caller=LK/d;.get pc=3     ← the GET hashes
+   (the PUT never hashed — proved by MINIANDROID_HASH_TRACE=LM/b: 1 hashCode call total)
+
+[TRIE-TRY] LL/b;.remove depth=15 a0=o648(LL/b;) a1=o458(...)       ← PersistentOrderedSet.remove
+[TRIE-TRY] LK/d;.get depth=16 ... → LK/t;.g → obj#643 (links)      ← links found
+[TRIE-TRY] LK/t;.v depth=16 a0=o645(LK/t;) a1=i1100124197 a2=i0 a3=o458
+[TRIE-RET] LK/t;.v → obj#0 (non-obj/null)                          ← trie EMPTIED (null = correct)
+[TRIE-TRY] LL/b;.<init> depth=16 a0=o658 a1=o410(LM/b;) a2=o410(LM/b;) a3=o647(LK/d;)
+   ↑↑↑ THE BROKEN TRANSITION: first/last reset to the SENTINEL but the map
+       arg is STILL o647 (the UNREBUILT map, size=1) — the EMPTY-map rebuild
+       (`v0_0 = K.d.k`) was skipped.
+
+androguard CFG of LL/b.remove — the guard:
+    K.t v6_1 = v4_0.v(v3_5, 0, p6);      // K/t.v — trie remove
+    if (v4_0 != v6_1) {                  // node !== newNode — IDENTITY compare
+        if (v6_1 != null) v0_0 = new K.d(v6_1, size-1);
+        else v0_0 = K.d.k;               // EMPTY map
+    }
+    return new L.b(v2_7, v4_3, v0_0);
+
+The identity compare answered EQUAL for (OBJECT_REF obj#645, const/4-null):
+Kotlin `return null` inside K/t.v compiles to `const/4 v0, 0; return-object v0`;
+the engine stored INT32(0) and propagated it as the return; move-result-object
+kept the tag; the 22t if-ne fell to the INT fallback where
+dalvik_int_value(OBJECT_REF)=0 vs 0 → EQUAL → the rebuild never ran.
+The set ended (sentinel, sentinel, size-1 map) → the iterator walked the
+sentinel → map.get(sentinel)=null → CME "Hash code of an element (LM/b;@410)
+has changed after it was added to the persistent set." → fatal (caught only
+by run()'s catch) → composition coroutine dead → 0 pixels.
+
+FIX F-075 (ART Zero reg-type law — the zero word IS null in reference context):
+  1. execute_return_object: INT32(0)/VOID → NULL_REF
+  2. execute_move_result_object: INT32(0)/VOID → NULL_REF
+  3. IMPLEMENT_IF_22T: mixed ref-vs-INT32(0) compares by reference identity
+POST-FIX (run10): CME count 1 → 0; EXC-UNCAUGHT 0; no fatal resumes.

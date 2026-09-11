@@ -2758,6 +2758,67 @@ size_t DalvikExecutionEngine::dispatch_activity_lifecycle_callbacks(
     return dispatched;
 }
 
+// F-074 (S21) — ART virtual-dispatch law for engine-level invokes.
+// See dalvik_engine.h for the root-cause evidence chain. Walks the DEX
+// superclass chain and retries try_recursive_invoke on the first ancestor
+// that declares the method with bytecode. The receiver (args[0]) keeps its
+// ORIGINAL object identity — an inherited method executes with the runtime
+// receiver, exactly as ART resolves invokevirtual/interface invokes.
+bool DalvikExecutionEngine::try_recursive_invoke_on_super(
+    const std::string& declaring_class,
+    const std::string& method_name,
+    const std::vector<DalvikValue>& args,
+    DalvikValue& return_val,
+    DalvikExecutionResult& result,
+    const std::string& method_descriptor
+) {
+    if (!dex_report_) return false;
+    // Bounded climb: real chains are shallow (DispatchedContinuation →
+    // DispatchedTask → Task → Object = 3 hops); 16 covers any sane hierarchy
+    // while a corrupted-DEX cycle cannot loop forever.
+    static constexpr int kMaxSuperHops = 16;
+    std::string walk = declaring_class;
+    for (int hop = 0; hop < kMaxSuperHops; ++hop) {
+        auto sup_it = class_to_superclass_.find(walk);
+        if (sup_it == class_to_superclass_.end()) return false;
+        const std::string sup = sup_it->second;  // copy: map may rehash on retry
+        if (sup.empty() || sup == "Ljava/lang/Object;") return false;
+        auto cit = class_info_index_.find(sup);
+        if (cit != class_info_index_.end()) {
+            const dex::ClassInfo& sup_cls = dex_report_->classes[cit->second];
+            for (const auto& m : sup_cls.all_methods()) {
+                if (m.name != method_name || m.bytecode.empty()) continue;
+                std::cerr << "[F074-SUPER-DISPATCH] " << declaring_class << "."
+                          << method_name << " not declared locally → ancestor "
+                          << sup << "." << m.name << m.descriptor
+                          << " (receiver identity preserved)";
+                // S21 forensics: exception-object arguments (handleFatal-
+                // Exception family) carry the thrown Throwable in args —
+                // surface its message so the fatal cause is visible without
+                // a DEX re-disassembly. Read-only; heap lookups only.
+                for (size_t ai = 0; ai < args.size(); ++ai) {
+                    const DalvikValue& a = args[ai];
+                    if (a.type != DalvikType::OBJECT_REF || a.object_id == 0)
+                        continue;
+                    std::cerr << " a" << ai << "=o" << a.object_id;
+                    if (!a.class_desc.empty())
+                        std::cerr << "(" << a.class_desc << ")";
+                    auto mv = heap_.get_object_field(a.object_id, "message");
+                    if (mv.has_value() && mv->type == DalvikType::STRING_REF &&
+                        !mv->string_val.empty())
+                        std::cerr << "=\"" << mv->string_val.substr(0, 120)
+                                  << "\"";
+                }
+                std::cerr << std::endl;
+                return try_recursive_invoke(sup, method_name, args, return_val,
+                                            result, method_descriptor);
+            }
+        }
+        walk = sup;  // method not on this ancestor — keep climbing
+    }
+    return false;
+}
+
 bool DalvikExecutionEngine::try_recursive_invoke(
     const std::string& declaring_class,
     const std::string& method_name,
@@ -2831,6 +2892,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // Composer -> slot-table). Enable with MINIANDROID_TRACE_COMPOSE=1.
     {
         static thread_local const bool tc = std::getenv("MINIANDROID_TRACE_COMPOSE") != nullptr;
+        // S21 trie forensics: kotlinx.collections.immutable PersistentHashMap/
+        // PersistentOrderedSet family (R8: LK/d; LK/t; LK/f; LL/b; LL/c; LN/d;)
+        // — the CME "Hash code of an element has changed" chain. Env-gated,
+        // read-only: print every engine-level entry with raw arg ids.
+        static thread_local const bool trie_trace =
+            std::getenv("MINIANDROID_TRIE_TRACE") != nullptr;
         if (tc && (declaring_class.find("ompos") != std::string::npos ||
                    declaring_class.find("oroutin") != std::string::npos ||
                    declaring_class.find("Choreographer") != std::string::npos ||
@@ -2849,6 +2916,24 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                     std::cerr << " a" << ai << "=i" << a.int_val;
                 else if (a.type == DalvikType::OBJECT_REF)
                     std::cerr << " a" << ai << "=o" << a.object_id;
+            }
+            std::cerr << std::endl;
+        }
+        if (trie_trace &&
+            (declaring_class.rfind("LK/", 0) == 0 ||
+             declaring_class.rfind("LL/", 0) == 0 ||
+             declaring_class.rfind("LN/d", 0) == 0)) {
+            std::cerr << "[TRIE-TRY] " << declaring_class << "." << method_name
+                      << " depth=" << recursion_depth_;
+            for (size_t ai = 0; ai < args.size() && ai < 5; ++ai) {
+                const auto& a = args[ai];
+                if (a.type == DalvikType::INT32 || a.type == DalvikType::BOOLEAN)
+                    std::cerr << " a" << ai << "=i" << a.int_val;
+                else if (a.type == DalvikType::OBJECT_REF)
+                    std::cerr << " a" << ai << "=o" << a.object_id
+                              << "(" << a.class_desc << ")";
+                else
+                    std::cerr << " a" << ai << "=<" << static_cast<int>(a.type) << ">";
             }
             std::cerr << std::endl;
         }
@@ -4624,6 +4709,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                       << std::endl;
         }
         recursion_depth_--;
+        // F-074: the RUNTIME class may be absent from this DEX while an
+        // ancestor in the hierarchy declares the method (multidex/framework
+        // boundary). ART walks the hierarchy before giving up — same law.
+        if (try_recursive_invoke_on_super(class_descriptor, method_name, args,
+                                          return_val, result, method_descriptor))
+            return true;
         return false;  // class not found in DEX, bridge to API
     }
     const dex::ClassInfo& cls_ref = dex_report_->classes[class_it->second];
@@ -5201,6 +5292,23 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // last_invoke_return_. Copy it to return_val BEFORE restoring state.
         return_val = last_invoke_return_;
 
+        // S21 trie forensics: return-value trace for the persistent-set
+        // family — pins which trie operation dropped/kept an entry.
+        {
+            static thread_local const bool trie_trace_ret =
+                std::getenv("MINIANDROID_TRIE_TRACE") != nullptr;
+            if (trie_trace_ret &&
+                (declaring_class.rfind("LK/", 0) == 0 ||
+                 declaring_class.rfind("LL/", 0) == 0 ||
+                 declaring_class.rfind("LN/d", 0) == 0)) {
+                std::cerr << "[TRIE-RET] " << declaring_class << "."
+                          << method_name << " → obj#" << return_val.object_id
+                          << (return_val.type == DalvikType::OBJECT_REF
+                                  ? "" : " (non-obj/null)")
+                          << std::endl;
+            }
+        }
+
         // Restore saved state.
         bytecode_ = saved_bytecode;
         pc_ = saved_pc;
@@ -5388,6 +5496,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
     }
     recursion_depth_--;
+    // F-074: no method match on the exact class. ART virtual-dispatch law:
+    // the most-derived CONCRETE implementation may live on an ancestor
+    // (canonical case: kotlinx.coroutines DispatchedContinuation — no run()
+    // of its own; DispatchedTask.run is the dispatch entrypoint). Walk the
+    // superclass chain before bridging to the API/shadow layer.
+    if (try_recursive_invoke_on_super(class_descriptor, method_name, args,
+                                      return_val, result, method_descriptor))
+        return true;
     return false;  // method not found in DEX, bridge to API
 }
 
@@ -9738,7 +9854,22 @@ bool DalvikExecutionEngine::execute_move_result_object(uint32_t pc, InstructionT
                   << std::endl;
     }
 
-    set_register(dest, last_invoke_return_);
+    // F-075 (S21) — POLYMORPHIC-ZERO-AT-REFERENCE-USE LAW (move side).
+    // move-result-object IS a reference context: the moved value must be a
+    // reference (the preceding invoke's declared return type is L...; or
+    // [...). An INT32(0) here is the polymorphic zero word = the null
+    // reference (ART Zero reg-type); a VOID/unset return is a bridge's
+    // null answer. Without this, identity consumers (if-eq/if-ne against
+    // real objects) mis-compare 0-vs-0 through the int fallback.
+    {
+        DalvikValue rv = last_invoke_return_;
+        if ((rv.type == DalvikType::INT32 && rv.int_val == 0) ||
+            rv.type == DalvikType::VOID_) {
+            rv = DalvikValue::make_null();
+            last_invoke_return_ = rv;
+        }
+        set_register(dest, rv);
+    }
 
     trace.operands.push_back({"v" + std::to_string(dest), last_invoke_return_.to_string()});
     trace.return_value = last_invoke_return_;
@@ -12151,7 +12282,28 @@ bool DalvikExecutionEngine::execute_return_object(uint32_t pc, InstructionTrace&
     uint8_t ret_reg = (instr >> 8) & 0xFF;
     
     DalvikValue val = get_register(ret_reg);
-    
+
+    // F-075 (S21) — POLYMORPHIC-ZERO-AT-REFERENCE-USE LAW (return side).
+    // Dalvik registers are untyped slots (F-028 law); `const/4 vX, #0` loads
+    // the polymorphic zero word — INT32(0) in a primitive context, the NULL
+    // REFERENCE in a reference context (ART verifier Zero reg-type,
+    // convertible to any reference). return-object IS a reference context:
+    // Kotlin `return null` compiles to `const/4 v0, 0; return-object v0`.
+    // The old code propagated INT32(0) as the method's return — every
+    // identity-sensitive consumer (if-ne vs an object, set/map identity
+    // checks) then compared 0-vs-0 through the int fallback and answered
+    // EQUAL for (object, null). First real-APK hit: dooz LL/b.remove
+    // (PersistentOrderedSet) kept the UNREBUILT map after the trie emptied
+    // (`if (node !== newNode)` mis-answered equal), the iterator walked the
+    // sentinel and threw CME "Hash code of an element has changed", which
+    // fatally killed the composition coroutine (S21 0-pixel gate). Same law
+    // family as F-030 (zero-is-null at invoke params).
+    if (val.type == DalvikType::INT32 && val.int_val == 0) {
+        val = DalvikValue::make_null();
+    } else if (val.type == DalvikType::VOID_) {
+        val = DalvikValue::make_null();
+    }
+
     trace.status = InstructionTrace::Status::HALT_RETURN;
     trace.return_value = val;
     trace.operands.push_back({"v" + std::to_string(ret_reg), val.to_string()});
@@ -12941,6 +13093,36 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
         uint32_t b_obj = (b.type == DalvikType::OBJECT_REF) ? b.object_id \
                         : (b.type == DalvikType::CLASS_REF) ? b.ref_id : 0; \
         taken = (a_obj op b_obj); \
+    } else if (a_is_ref || b_is_ref) { \
+        /* F-075 (S21): mixed reference-vs-const/4-zero compare. The zero \
+           word is the null reference in a reference context (ART Zero \
+           reg-type, convertible to any reference). Compare identities: \
+           the zero side answers 0; a NON-zero int against a reference is \
+           a verifier impossibility — answer never-equal (if-eq not taken, \
+           if-ne taken) instead of collapsing the OBJECT_REF side to 0 \
+           through dalvik_int_value. First real-APK hit: dooz LL/b.remove \
+           `if (node !== newNode)` where newNode was a const/4-null return \
+           tagged INT32(0) — the old int path compared 0==0 and skipped \
+           the map rebuild (CME "Hash code of an element has changed"). */ \
+        auto f075_ref_id = [](const DalvikValue& v) -> uint32_t { \
+            if (v.type == DalvikType::OBJECT_REF) return v.object_id; \
+            if (v.type == DalvikType::CLASS_REF)  return static_cast<uint32_t>(v.ref_id); \
+            return 0; /* NULL_REF or the zero word */ \
+        }; \
+        auto f075_is_zero = [](const DalvikValue& v) -> bool { \
+            return v.type == DalvikType::NULL_REF || \
+                   (v.type == DalvikType::INT32 && v.int_val == 0); \
+        }; \
+        bool f075_mixed_zero = (a_is_ref ? f075_is_zero(b) : f075_is_zero(a)); \
+        if (f075_mixed_zero) { \
+            uint32_t a_obj = a_is_ref ? f075_ref_id(a) : 0; \
+            uint32_t b_obj = b_is_ref ? f075_ref_id(b) : 0; \
+            taken = (a_obj op b_obj); \
+        } else { \
+            /* ref vs non-zero int: verifier-impossible — never equal; \
+               (0 op 1) yields ==:false, !=:true for any op token */ \
+            taken = (0 op 1); \
+        } \
     } else { \
         taken = (a_val op b_val); \
     } \
@@ -18572,6 +18754,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         const DalvikValue& recv = args[0];
         int32_t h = 0;
         const std::string& cd = recv.class_desc;
+        // S21 hash-forensics (env-gated, read-only): the kotlinx.collections-
+        // immutable persistent-set iterator aborts composition with CME
+        // "Hash code of an element ... has changed" when map.get(key) misses
+        // after map.put(key). This trace proves whether the SAME heap object
+        // yields the SAME hash across put/get (identity law) or whether two
+        // distinct heap objects circulate for one logical singleton.
+        static thread_local const char* hash_trace_substr =
+            std::getenv("MINIANDROID_HASH_TRACE");
+        static thread_local const bool hash_trace_on =
+            hash_trace_substr != nullptr;
+        if (hash_trace_on && cd.find(hash_trace_substr) != std::string::npos) {
+            std::cerr << "[HASH-TRACE] hashCode recv=" << cd
+                      << " obj=" << recv.object_id
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << " pc=" << pc_ << std::endl;
+        }
         if (cd == "Ljava/lang/Boolean;" || (cd.empty() && recv.type == DalvikType::BOOLEAN)) {
             h = (recv.int_val != 0) ? 1231 : 1237;
         } else if (cd == "Ljava/lang/Long;") {
@@ -18619,6 +18817,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_int(h);
+        if (hash_trace_on && cd.find(hash_trace_substr) != std::string::npos) {
+            std::cerr << "[HASH-TRACE]   → h=" << h << " obj=" << recv.object_id
+                      << std::endl;
+        }
         return true;
     }
 

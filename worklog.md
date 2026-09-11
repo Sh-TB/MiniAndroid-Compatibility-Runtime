@@ -5164,3 +5164,22 @@ Work Log:
 Stage Summary:
 - R-NEW-295 CLOSED as F-071; two new roots DISCOVERED+FIXED+PROVEN (R-NEW-296/F-072, R-NEW-297/F-073). V-F 13 → 16 after registry regen (294 by F-070; 295..297 this session); registry total 295 → 297.
 - NEW FRONTIER (honest): the frame-callback chain — J$c runnable dequeued then CHOREO removeFrameCallback; composition content not yet applied to AndroidComposeView (children=0). Next gate: trace the wrapped-composition setContent/content-compose path from the queued runnables to recomposer job launch; then measure/layout/draw → pixels.
+
+---
+Task ID: S21-MAIN
+Agent: Super Z (session 21 — MASTER CAMPAIGN 3, frame-callback gate)
+Task: S21 — close the real frame-callback gate (dooz cb removed-not-run), full ROOT→PROOF→FIX→MICRO→REGRESSION→IMPACT→NEXT chain, reconcile-first, publish everything.
+
+Work Log:
+- Lineage reconcile: container reset had rewound local HEAD to d358a0c9 (M5); remote main b7d654a5 fetched and fast-forwarded (ls-remote verified). Toolchain re-bootstrapped; dooz APK re-fetched hash-verified (d81292cd).
+- Gate re-interpretation: upstream AndroidUiDispatcher.android.kt + AndroidUiFrameClock.android.kt fetched (androidx-main); J$c.run's removeFrameCallback branch proven LEGAL (toRunOnFrame-empty cleanup) — the gate was upstream, F-070..F-073 untouched.
+- F-074 (R-NEW-298) ROOT: try_recursive_invoke resolved only the exact class; dooz b2/h = DispatchedContinuation (no run() of its own; run() on W1/N DispatchedTask) — the drained continuation silently vanished (0 dispatch records in 306k lines). FIX: try_recursive_invoke_on_super superclass walk at both give-up points, receiver identity preserved, depth-capped. 712 super-dispatches on re-run.
+- F-075 (R-NEW-299) ROOT: Kotlin `return null` (const/4-0 + return-object) propagated INT32(0); LL/b.remove's `if (node !== newNode)` mis-answered EQUAL → EMPTY-map rebuild skipped → set (sentinel, sentinel, size-1 map) → iterator CME "Hash code of an element has changed" → silent composition-coroutine death. Proof chain: HASH-TRACE (put never hashed), TRIE-TRACE (K/t.v→null, ctor got unchanged map), androguard CFG. FIX: ART Zero-reg-type law at return-object, move-result-object, mixed ref-vs-zero 22t compares. CME 1→0, uncaught 0.
+- Micro-proof: tests/fixtures/f074_super_run (real APK) — 6/6 bands GREEN; scripts/f074_pixel_golden.py; battery stage (3 stages) all PASS.
+- Probes: scripts/s21_frame_probe.py (spec-exact; fixed the s17/s20 probe size-table drift — const/4, monitor-*, array-length, throw are 1 unit; filled-new-array 3). Env-gated diagnostics: MINIANDROID_HASH_TRACE, MINIANDROID_TRIE_TRACE, F074 arg forensics.
+- Regression: battery 89/92 (helloworld §28 26 checks PASS; tictactoe §29 8 checks PASS; F-050 family PASS; F-074 3/3). Environmental failures bisect-proven: EXT-01/EXT-02 (missing /home/z/corpus after container reset), GATE H (white=0 reproduces with the S21 fix stashed). dooz 3-run byte-identical 31ddd4d5…, rc=0 ×3, uncaught=0 ×3.
+- Registry: 297→299 roots, V-F 17→19 (worklist + json + ROOT_WORKLOG + ledgers + evidence bundle + S21 report).
+
+Stage Summary:
+- Two generic roots closed with full discipline (F-074/F-075); the "removed-not-run" gate retired as a false lead with upstream proof; the frame-callback chain moved to the NEXT proven frontier: the Recomposer runner's parked await-work resume does not re-dispatch (no J.L, no post #2, pump 0 frames) — that is the first broken transition for S22.
+- Honest metrics: dooz pixels remain 0/2073600; determinism held; zero exceptions through the recomposition dispatch layer for the first time.

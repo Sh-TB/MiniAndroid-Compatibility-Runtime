@@ -1081,6 +1081,39 @@ else
     gate "F-050 frame-pump pixel golden (7 bands)" 1
 fi
 
+# ── F-074/F-075 (S21): engine-level virtual-dispatch walk + polymorphic-
+# zero-at-reference-use laws. Real-APK evidence: dooz DispatchedContinuation
+# (b2/h) has no run() of its own — the drained continuation silently
+# vanished (composition coroutine never resumed); and Kotlin `return null`
+# (const/4-0 + return-object) propagated INT32(0) so LL/b.remove's
+# `node !== newNode` mis-answered equal → CME "Hash code of an element has
+# changed" → fatal. Six verdict bands, green = law holds.
+F074_FIX_SRC="$MA/tests/fixtures/f074_super_run"
+rm -rf /tmp/battery_f074; mkdir -p /tmp/battery_f074
+if cached "F-074 super-run fixture build (ECJ+D8)"; then
+    skip "F-074 super-run fixture build (ECJ+D8)"
+    skip "F-074 super-run fixture run (rc=0 SUCCESS)"
+    skip "F-074 super-run pixel golden (6 bands)"
+elif [ -d "$F074_FIX_SRC" ]; then
+    bash "$REPOSCRIPTS/build_fixture_apk.sh" \
+        "$F074_FIX_SRC" /tmp/battery_f074/f074_super_run.apk \
+        > /tmp/battery_f074/build.log 2>&1
+    gate "F-074 super-run fixture build (ECJ+D8)" $?
+    (cd "$MA" && timeout 120 ./build/miniandroid run /tmp/battery_f074/f074_super_run.apk \
+        -o /tmp/battery_f074/out > /tmp/battery_f074/run.log 2>&1)
+    gate "F-074 super-run fixture run (rc=0 SUCCESS)" $?
+    rc=0
+    grep -q "Status: SUCCESS" /tmp/battery_f074/run.log || rc=1
+    python3 "$REPOSCRIPTS/f074_pixel_golden.py" /tmp/battery_f074/out/screenshot.ppm \
+        > /tmp/battery_f074/pixel.log 2>&1 || rc=1
+    gate "F-074 super-run pixel golden (6 bands)" $rc
+    tail -1 /tmp/battery_f074/pixel.log
+else
+    gate "F-074 super-run fixture build (ECJ+D8)" 1
+    gate "F-074 super-run fixture run (rc=0 SUCCESS)" 1
+    gate "F-074 super-run pixel golden (6 bands)" 1
+fi
+
 echo "──────────────────────────────────────────────"
 for r in "${RESULTS[@]}"; do printf '%s\n' "$r"; done
 if [ $FAIL -eq 0 ]; then

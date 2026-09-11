@@ -1,0 +1,27 @@
+F-074 PROOF — silent drop of DispatchedContinuation (run1 at b7d654a5, MINIANDROID_TRACE_COMPOSE=1):
+
+$ grep -c "b2/h;.run" /tmp/s21_run1.log → 0          (NO dispatch record in 307k lines)
+$ grep -n "b2/h" /tmp/s21_run1.log | grep -vE "DexParser|CLASS_INIT"
+304187:[INTERFACE-SIG] LW1/y;.s(LE1/c;)Lb2/h; → REAL DEX dispatched   ← continuation CREATED
+304194:[QUEUE] Runnable id=687 enqueued (queue_depth=1)               ← posted to Handler
+305698:[UC009-WIRE] Runnable id=687 class=Lb2/h;                      ← drained
+   (no COMPOSE-TRY, no INTERFACE-SIG, no [EXCEPTION] — the run() invoke silently no-oped)
+
+DEX ground truth (s21_frame_probe.py, androguard-corroborated):
+  Lb2/h; super=LW1/N; interfaces=[LE1/d;, LC1/d;]  — NO run() declared
+  LW1/N; super=Ld2/g; ifaces=[] — run ()V acc=0x11 code=Y     ← the entrypoint lives HERE
+  Ld2/g; ifaces=[Ljava/lang/Runnable;]                          ← Task implements Runnable
+
+Upstream law (kotlinx.coroutines DispatchedTask.kt):
+  internal abstract class DispatchedTask<in T>(...) : SchedulerTask() {
+      public final override fun run() { ... resume the delegate continuation ... }
+  }
+  Every DispatchedContinuation dispatches through the SUPERCLASS run().
+  ART law: virtual/interface dispatch resolves on the runtime class,
+  walking to the most-derived concrete implementation.
+
+FIX (try_recursive_invoke_on_super): walks class_to_superclass_ at both
+give-up points (class-not-in-index / method-not-matched), retries on the
+first ancestor declaring the method, receiver identity preserved.
+POST-FIX: [F074-SUPER-DISPATCH] Lb2/h;.run → ancestor LW1/N;.run()V
+(receiver identity preserved) — 712 super-dispatches in the re-run.

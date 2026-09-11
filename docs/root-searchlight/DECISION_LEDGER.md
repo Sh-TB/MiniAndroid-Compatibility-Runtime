@@ -12,3 +12,23 @@
 | D-08 | Tool-output ≠ root-proof; screenshots are evidence not success | L-06 gossip lesson | trust report status (rejected) | pixel-count law | standing | — |
 | D-09 | F-number collision resolution: repo F-053..F-057 (shape/hashCode/Long/fill/duality) keep their IDs; M9-B analysis findings (lifecycle registry, WeakReference, HashMap.values, const-class identity, check-cast proof) registered as R-NEW-279..284 instead of renumbering | prevents evidence-chain breakage; living-map law §17 | renumber M9-B findings as F-058+ (rejected: F-058 already referenced in campaign brief with different content) | ROOT_WORKLIST GROUP G | 2026-09-11 | — |
 | D-10 | 278 roots must flow through shared tooling infrastructure before manual deep-dives (PHASE-0 tooling brief) | 278 independent manual tasks = architectural error (briefs §11/§48) | manual per-root investigation (rejected) | docs/agent-index + tools/verify | 2026-09-11 | — |
+
+## S21 decisions
+- **D-S21-1**: reconcile-first held — the container reset had rewound local
+  HEAD to the M5 era; remote b7d654a5 was fetched and fast-forwarded before
+  any analysis (no re-litigation of F-058..F-073).
+- **D-S21-2**: the S21 gate interpretation ("callback removed-not-run") was
+  refined, not taken as granted: upstream AndroidUiDispatcher source was
+  fetched and the removal branch proven legal. Chasing the removal as the
+  root would have produced a WRONG fix (a dooz-specific frame pump hack).
+- **D-S21-3**: F-074 fix shape = walk at the two try_recursive_invoke give-up
+  points (not a rewrite of invoke resolution) — minimal, general, and
+  receiver-identity-preserving; the interpreter's own invoke path already
+  walked and was left untouched.
+- **D-S21-4**: F-075 fix shape = retype at the three reference-use boundaries
+  (return-object, move-result-object, mixed 22t) instead of changing
+  const/4 semantics globally — primitive zero must stay INT32 in primitive
+  contexts (F-028/F-030 law continuity; the CHAR-PROBE/EXP-093 zero laws
+  are untouched).
+- **D-S21-5**: battery verdict 89/92 recorded honestly: the three failures
+  are bisect-proven environmental, not waved away.
