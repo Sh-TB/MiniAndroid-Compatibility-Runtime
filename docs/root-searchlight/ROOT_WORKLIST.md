@@ -1,8 +1,8 @@
-# ROOT WORKLIST — LIVE SEARCHLIGHT (R-NEW-001..286)
+# ROOT WORKLIST — LIVE SEARCHLIGHT (R-NEW-001..295)
 
-- Baseline: HEAD `580d0a7e` (merged M9+M6/M7/M8 line), battery 91/91 ALL PASS.
+- Baseline: HEAD `e6e480bb` (merged M9+M6/M7/M8 line), battery 91/91 ALL PASS.
 - Scope: R-NEW-001..278 = the 278-root radar from the campaign brief.
-  R-NEW-279..286 = NEW roots discovered during M9 analysis / live runs
+  R-NEW-279..295 = NEW roots discovered during M9/S17/S18 analysis / live runs
   (brief §17: the map is living; 278 is not a ceiling).
 - Honesty law: **UNPROVEN ≠ PASS**. A tick requires evidence (micro-proof,
   real-APK trace, or regression battery band). No root is ticked by name-match.
@@ -12,16 +12,16 @@
 
 | Status | Count |
 |---|---|
-| VERIFIED-FIXED (law landed + proof) | 6 |
+| VERIFIED-FIXED (law landed + proof) | 13 |
 | VERIFIED-CORRECT (implemented + exercised, no dedicated defect) | 45 |
-| PARTIAL (core verified, edges open) | 101 |
-| OBSERVED-FAIL (live failing evidence) | 5 |
+| PARTIAL (core verified, edges open) | 103 |
+| OBSERVED-FAIL (live failing evidence) | 4 |
 | UNPROVEN | 72 |
 | RESEARCHED-NOT-IMPLEMENTED | 16 |
-| NOT-APPLICABLE (subsystem absent by architecture) | 41 |
-| **TOTAL** | **286** |
+| NOT-APPLICABLE (subsystem absent by architecture) | 42 |
+| **TOTAL** | **295** |
 
-Unresolved by priority: {'P0': 3, 'P1': 3, 'P2': 12, 'P3': 75}
+Unresolved by priority: {'P0': 2, 'P1': 4, 'P2': 12, 'P3': 74}
 
 ## FLOODGATES (investigate as clusters, not as 278 independent tasks)
 
@@ -39,7 +39,7 @@ Unresolved by priority: {'P0': 3, 'P1': 3, 'P2': 12, 'P3': 75}
 ## CURRENT FRONTIER
 
 Highest-impact unresolved: **R-NEW-246 first-frame completeness (P0)** —
-dooz renders 0/2073600 non-white at HEAD `580d0a7e`; ComposeView children=0;
+dooz renders 0/2073600 non-white at HEAD `e6e480bb`; ComposeView children=0;
 no exceptions; composition blocked upstream of draw. Suspected causal chain
 (campaign brief §7 + M8 roadmap): lifecycle callback registry (R-NEW-279) →
 WrappedComposition.setContent; plus Job-active cancellation (R-NEW-285) on
@@ -1776,13 +1776,13 @@ no package special-casing).
   - Missing proof: -
   - Next action: on demand
   - Commit: -
-- [!] R-NEW-246 — first-frame completeness
+- [~] R-NEW-246 — first-frame completeness
   - Group: F | Priority: P0 | Floodgate: YES
-  - Status: OBSERVED-FAIL
-  - Evidence: dooz framebuffer 0/2073600 non-white at CMM (honest, 3-run deterministic)
-  - Missing proof: first-frame completeness
-  - Next action: THE frontier: R-NEW-279+285+259
-  - Commit: 0383f19f
+  - Status: PARTIAL
+  - Evidence: S18: dooz onCreate completes rc=0 ZERO uncaught exceptions (run/s18_f069_dooz); with MINIANDROID_DISPATCH_ATTACH=1 ComposeView children=1 (AndroidComposeView node=646, run/s18_f069b_dooz). Frame still 0/2073600 non-white.
+  - Missing proof: MonotonicFrameClock fold (R-NEW-294) + composition render (R-NEW-295)
+  - Next action: close R-NEW-294 then R-NEW-295
+  - Commit: 3093cd48
 - [?] R-NEW-247 — child reuse identity
   - Group: F | Priority: P3 | Floodgate: no
   - Status: UNPROVEN
@@ -2045,15 +2045,69 @@ no package special-casing).
   - Discovered from: execute_check_cast validates and (by code inspection) preserves the register; no dedicated proof that the value is preserved on success and thrown-without-mutation on failure. Add micro band (M9-B finding).
   - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
   - Next action: see discovery note
-- [!] R-NEW-285 — Job-active cancellation of the Compose frame await (LE1/a.y → K$a invokeOnCancellation → removeFrameCallback before pump)
+- [~] R-NEW-285 — Job-active cancellation of the Compose frame await (LE1/a.y → K$a invokeOnCancellation → removeFrameCallback before pump)
   - Group: NEW | Priority: P0 | Floodgate: YES
-  - Status: OBSERVED-FAIL
+  - Status: PARTIAL
   - Discovered from: Root-located at M8 (worklog M8 entry, roadmap item 10): the frame await's cancellation registration removes the Choreographer callback before the pump fires. Requires dispatcher-pump/cancellation-registration law. This is the M8 frontier carried forward.
   - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
   - Next action: see discovery note
-- [!] R-NEW-286 — Window.setDecorFitsSystemWindows REC-MISS
+- [-] R-NEW-286 — Window.setDecorFitsSystemWindows REC-MISS
   - Group: NEW | Priority: P3 | Floodgate: no
-  - Status: OBSERVED-FAIL
+  - Status: NOT-APPLICABLE
   - Discovered from: LIVE-OBSERVED in merged-tree dooz run (run/m9_merge_dooz, 2026-09-11): [REC-MISS] Landroid/view/Window;.setDecorFitsSystemWindows caller=R0/D$a;.a. Fail-soft no-op today; add shadow law (AOSP Window: decor fits flag) on next pass.
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [x] R-NEW-287 — CollectionShadow Map.remove(key) no-op corrupts FastSafeIterableMap
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Discovered from: LIVE: FIELD-TRACE put-obj Lg/b;.i obj#15 value=obj#0 after second Lg/b;.d (double removeObserver) → eldest()!! NPE. FIXED F-063.
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [x] R-NEW-288 — Map view family (keySet/values/entrySet) + Map$Entry.getKey/getValue + putAll + singletonMap null
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Discovered from: LIVE: Kotlin Reflection clinit '<get-values>(...) must not be null' NPE. FIXED F-064 (typed live views).
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [x] R-NEW-289 — iget-object retags stored CLASS_REF to OBJECT_REF{oid=0} pseudo-null
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Discovered from: LIVE: Kotlin T::class.java field round-trip → 'null cannot be cast to non-null type java.lang.Class'. FIXED F-065.
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [x] R-NEW-290 — Collection.toArray()/toArray(T[]) void stub
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Discovered from: LIVE: Arrays.copyOf null-array NPE at y.c pc=45 (toTypedArray idiom). FIXED F-066 (Larray; convention + identity reuse).
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [x] R-NEW-291 — Activity.getApplication() returns null (attached-Application identity)
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Discovered from: LIVE: getViewModelStore ISE 'not yet attached to the Application instance'. FIXED F-067 (EXP093-APP object hooked).
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [x] R-NEW-292 — invoke-interface dispatches declared-interface default before runtime override
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Discovered from: LIVE: throwing Factory.create(Class) default shadowed Lf1/b.b override. FIXED F-068 (runtime-class-first).
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [x] R-NEW-293 — const-class mints fresh identity per evaluation (no stable Class token)
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Discovered from: LIVE: areEqual false → IAE 'No initializer set for given class androidx.lifecycle.A'. FIXED F-069 (tokens + 22t + Object.equals bridge).
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [!] R-NEW-294 — CoroutineContext.get(MonotonicFrameClock.Key) returns null in fold
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: OBSERVED-FAIL
+  - Discovered from: LIVE (run/s18_f069b_dooz): F/d0.a ISE 'A MonotonicFrameClock is not available…' — Recomposer creation fails. Key identity across C1/f$a$a.a areEqual; verify sget F/b0$a.i staleness.
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [!] R-NEW-295 — D.a parent-tag walk NPE after ISE catch-all (Recomposer apply phase)
+  - Group: NEW | Priority: P1 | Floodgate: no
+  - Status: OBSERVED-FAIL
+  - Discovered from: LIVE (run/s18_f069b_dooz): 'null cannot be cast to non-null type android.view.View' at M1/i.d depth=21; getParent walk OK (TAG-TRACE 646→102→8→101) — re-root-cause after R-NEW-294.
   - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
   - Next action: see discovery note

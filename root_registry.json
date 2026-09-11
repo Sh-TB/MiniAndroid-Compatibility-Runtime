@@ -1,21 +1,21 @@
 {
- "baseline_head": "580d0a7e",
+ "baseline_head": "e6e480bb",
  "summary": {
   "total": 295,
   "by_status": {
-   "NOT-APPLICABLE": 42,
-   "OBSERVED-FAIL": 4,
    "PARTIAL": 103,
-   "RESEARCHED-NOT-IMPLEMENTED": 16,
-   "UNPROVEN": 72,
    "VERIFIED-CORRECT": 45,
-   "VERIFIED-FIXED": 13
+   "UNPROVEN": 72,
+   "VERIFIED-FIXED": 13,
+   "OBSERVED-FAIL": 4,
+   "RESEARCHED-NOT-IMPLEMENTED": 16,
+   "NOT-APPLICABLE": 42
   },
   "unresolved_by_priority": {
    "P2": 12,
-   "P3": 75,
-   "P0": 3,
-   "P1": 3
+   "P3": 74,
+   "P0": 2,
+   "P1": 4
   }
  },
  "roots": [
@@ -24,7 +24,7 @@
    "status": "PARTIAL",
    "priority": "P0",
    "fg": true,
-   "evidence": "F-029a Handler.createAsync→main singleton (CM4); virtual-clock single-owner audit (session-11)",
+   "evidence": "F-029a Handler.createAsync\u2192main singleton (CM4); virtual-clock single-owner audit (session-11)",
    "missing": "enqueue order edges, IdleHandler, sync barriers, quit",
    "next": "registry probe MQ-01: enqueue past/now/future + remove-by-identity",
    "commit": "8de5382b"
@@ -174,7 +174,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "F-029 getDeclaredMethod/getMethod/Method.invoke→recursive bridge; regression-caught & reconciled (microtimer Room path)",
+   "evidence": "F-029 getDeclaredMethod/getMethod/Method.invoke\u2192recursive bridge; regression-caught & reconciled (microtimer Room path)",
    "missing": "generic exception wrapping fidelity",
    "next": "keep protected; fixture on next battery pass",
    "commit": "8de5382b"
@@ -186,7 +186,7 @@
    "fg": false,
    "evidence": "F-029 core",
    "missing": "getDeclaredFields/inherited-member walk",
-   "next": "hidden-gap list (audit §H)",
+   "next": "hidden-gap list (audit \u00a7H)",
    "commit": "8de5382b"
   },
   {
@@ -244,7 +244,7 @@
    "status": "VERIFIED-CORRECT",
    "priority": "P2",
    "fg": false,
-   "evidence": "single logical UI-thread engine law (report §K1)",
+   "evidence": "single logical UI-thread engine law (report \u00a7K1)",
    "missing": "-",
    "next": "regression-watch",
    "commit": "-"
@@ -306,7 +306,7 @@
    "fg": false,
    "evidence": "NoClassDefFoundError paths exercised",
    "missing": "error-type matrix",
-   "next": "CONDITIONAL (audit §B)",
+   "next": "CONDITIONAL (audit \u00a7B)",
    "commit": "-"
   },
   {
@@ -356,7 +356,7 @@
    "fg": false,
    "evidence": "density approximation verified (G04)",
    "missing": "locale/qualifier selection",
-   "next": "RESEARCHED P2 (audit §O)",
+   "next": "RESEARCHED P2 (audit \u00a7O)",
    "commit": "-"
   },
   {
@@ -514,7 +514,7 @@
    "status": "RESEARCHED-NOT-IMPLEMENTED",
    "priority": "P3",
    "fg": false,
-   "evidence": "interpreter — ART-specific binding N/A as-is",
+   "evidence": "interpreter \u2014 ART-specific binding N/A as-is",
    "missing": "-",
    "next": "radar retained",
    "commit": "-"
@@ -564,7 +564,7 @@
    "status": "UNPROVEN",
    "priority": "P2",
    "fg": false,
-   "evidence": "packed/sparse payload edge shapes RESEARCHED (audit §A gaps)",
+   "evidence": "packed/sparse payload edge shapes RESEARCHED (audit \u00a7A gaps)",
    "missing": "-",
    "next": "CONDITIONAL",
    "commit": "-"
@@ -754,7 +754,7 @@
    "status": "NOT-APPLICABLE",
    "priority": "P3",
    "fg": false,
-   "evidence": "software renderer architecture — no DisplayList/RenderNode substrate by design",
+   "evidence": "software renderer architecture \u2014 no DisplayList/RenderNode substrate by design",
    "missing": "-",
    "next": "radar retained for HW path",
    "commit": "-"
@@ -805,7 +805,7 @@
    "priority": "P2",
    "fg": false,
    "evidence": "corpus",
-   "missing": "intrinsic→measure law",
+   "missing": "intrinsic\u2192measure law",
    "next": "on demand",
    "commit": "-"
   },
@@ -824,7 +824,7 @@
    "status": "VERIFIED-CORRECT",
    "priority": "P0",
    "fg": true,
-   "evidence": "hello_color END-TO-END: ARSC→layout→drawable→view→draw→pixels; 3-run byte-identical frame 11e0056320d8546d (CM9, merge-verified at CMM)",
+   "evidence": "hello_color END-TO-END: ARSC\u2192layout\u2192drawable\u2192view\u2192draw\u2192pixels; 3-run byte-identical frame 11e0056320d8546d (CM9, merge-verified at CMM)",
    "missing": "-",
    "next": "regression-watch",
    "commit": "96ecc9f4"
@@ -874,7 +874,7 @@
    "status": "PARTIAL",
    "priority": "P2",
    "fg": false,
-   "evidence": "parser bound checks (§N hardening)",
+   "evidence": "parser bound checks (\u00a7N hardening)",
    "missing": "fuzz corpus campaign",
    "next": "tooling class G",
    "commit": "-"
@@ -984,7 +984,7 @@
    "status": "UNPROVEN",
    "priority": "P3",
    "fg": false,
-   "evidence": "IntentFilter matching RESEARCHED (audit §L)",
+   "evidence": "IntentFilter matching RESEARCHED (audit \u00a7L)",
    "missing": "-",
    "next": "on demand",
    "commit": "-"
@@ -1244,7 +1244,7 @@
    "status": "PARTIAL",
    "priority": "P2",
    "fg": false,
-   "evidence": "bound checks in dex_parser.cpp (§N)",
+   "evidence": "bound checks in dex_parser.cpp (\u00a7N)",
    "missing": "hostile DEX corpus",
    "next": "tooling class G",
    "commit": "-"
@@ -2414,7 +2414,7 @@
    "status": "NOT-APPLICABLE",
    "priority": "P3",
    "fg": false,
-   "evidence": "software renderer — no layer type",
+   "evidence": "software renderer \u2014 no layer type",
    "missing": "-",
    "next": "radar retained",
    "commit": "-"
@@ -2474,9 +2474,9 @@
    "status": "PARTIAL",
    "priority": "P0",
    "fg": true,
-   "evidence": "S18 F-063..F-069 chain: dooz onCreate completes rc=0 ZERO uncaught exceptions (run/s18_f069_dooz); with MINIANDROID_DISPATCH_ATTACH=1 ComposeView children=1 (AndroidComposeView node=646). Frame still 0 pixels — MonotonicFrameClock Key fold gate (R-NEW-294) remains.",
-   "missing": "first-frame completeness",
-   "next": "close R-NEW-294 fold-key identity, then D.a parent-tag walk",
+   "evidence": "S18: dooz onCreate completes rc=0 ZERO uncaught exceptions (run/s18_f069_dooz); with MINIANDROID_DISPATCH_ATTACH=1 ComposeView children=1 (AndroidComposeView node=646, run/s18_f069b_dooz). Frame still 0/2073600 non-white.",
+   "missing": "MonotonicFrameClock fold (R-NEW-294) + composition render (R-NEW-295)",
+   "next": "close R-NEW-294 then R-NEW-295",
    "commit": "3093cd48"
   },
   {
@@ -2534,7 +2534,7 @@
    "status": "PARTIAL",
    "priority": "P1",
    "fg": false,
-   "evidence": "touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (§29 battery)",
+   "evidence": "touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (\u00a729 battery)",
    "missing": "ordering matrix",
    "next": "regression-watch",
    "commit": "-"
@@ -2574,8 +2574,8 @@
    "status": "PARTIAL",
    "priority": "P0",
    "fg": true,
-   "evidence": "composition constructs deep into Material3 (1.13M trace lines, M13); state→tree law partial",
-   "missing": "ComposeView children 0→N",
+   "evidence": "composition constructs deep into Material3 (1.13M trace lines, M13); state\u2192tree law partial",
+   "missing": "ComposeView children 0\u2192N",
    "next": "M9 frontier",
    "commit": "96ecc9f4"
   },
@@ -2624,7 +2624,7 @@
    "status": "PARTIAL",
    "priority": "P1",
    "fg": true,
-   "evidence": "frame-clock NOT the symptom-layer root (FALSE-LEAD at lifecycle layer, brief §15); F-050 fixed real pump family (CM8)",
+   "evidence": "frame-clock NOT the symptom-layer root (FALSE-LEAD at lifecycle layer, brief \u00a715); F-050 fixed real pump family (CM8)",
    "missing": "-",
    "next": "with 242",
    "commit": "ad4349a9"
@@ -2724,9 +2724,9 @@
    "status": "PARTIAL",
    "priority": "P2",
    "fg": false,
-   "evidence": "hello_color per-element pixel counts (evidence.json) — early provenance",
+   "evidence": "hello_color per-element pixel counts (evidence.json) \u2014 early provenance",
    "missing": "full provenance chain",
-   "next": "extend tooling (§25 pixel provenance)",
+   "next": "extend tooling (\u00a725 pixel provenance)",
    "commit": "-"
   },
   {
@@ -2804,9 +2804,9 @@
    "status": "PARTIAL",
    "priority": "P0",
    "fg": false,
-   "evidence": "F-058 registry fan-out executes real bytecode (S17); S18: onCreate reached ComponentActivity.getViewModelStore via F-067 — full lifecycle callback chain exception-free (run/s18_f069_dooz).",
-   "missing": "observer-map sync: g/b.i head-entry null during p.i iteration",
-   "next": "frame pixels via R-NEW-294/295 closure",
+   "evidence": "S18: full lifecycle callback chain exception-free across onCreate (getViewModelStore reached via F-067) (run/s18_f069_dooz).",
+   "missing": "frame pixels via R-NEW-294/295 closure",
+   "next": "R-NEW-294",
    "commit": "3093cd48"
   },
   {
@@ -2814,9 +2814,9 @@
    "status": "VERIFIED-FIXED",
    "priority": "P2",
    "fg": false,
-   "evidence": "F-059 live-proof (S17) + S18: WeakReference owner get() verified across full onCreate (no ISE garbage-collected) (run/s18_f069_dooz).",
+   "evidence": "F-059 (S17) + S18: WeakReference owner get() verified across full onCreate \u2014 no ISE garbage-collected (run/s18_f069_dooz).",
    "missing": "-",
-   "next": "-",
+   "next": "regression-watch",
    "commit": "3093cd48"
   },
   {
@@ -2826,7 +2826,7 @@
    "fg": false,
    "evidence": "Known gap (M9-B analysis)",
    "missing": "implementation + proof",
-   "next": "Known gap (M9-B analysis): no collection-view law at HEAD (grep clean); views must reflect the backing map. Compose/AndroidX uses values() on hot paths. No live failure recorded yet — implement with OpenJDK view semantics + micro-fixture when a trace reaches it.",
+   "next": "Known gap (M9-B analysis): no collection-view law at HEAD (grep clean); views must reflect the backing map. Compose/AndroidX uses values() on hot paths. No live failure recorded yet \u2014 implement with OpenJDK view semantics + micro-fixture when a trace reaches it.",
    "commit": "-"
   },
   {
@@ -2844,9 +2844,9 @@
    "status": "UNPROVEN",
    "priority": "P1",
    "fg": false,
-   "evidence": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) — component identity proven via unote",
+   "evidence": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) \u2014 component identity proven via unote",
    "missing": "implementation + proof",
-   "next": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) — component identity proven via unote. Full law (interned identity: two const-class of same type → same heap object, == comparable) not separately proven. Micro-proof pending.",
+   "next": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) \u2014 component identity proven via unote. Full law (interned identity: two const-class of same type \u2192 same heap object, == comparable) not separately proven. Micro-proof pending.",
    "commit": "-"
   },
   {
@@ -2864,9 +2864,9 @@
    "status": "PARTIAL",
    "priority": "P0",
    "fg": false,
-   "evidence": "frame-await cancellation unblocked upstream by F-063..F-069 chain; Recomposer creation now executing (WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer\\$2\\$b in live trace, run/s18_f069b_dooz).",
-   "missing": "implementation + proof",
-   "next": "MonotonicFrameClock fold (R-NEW-294)",
+   "evidence": "S18: Recomposer creation executing (WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b live trace, run/s18_f069b_dooz).",
+   "missing": "MonotonicFrameClock fold (R-NEW-294)",
+   "next": "R-NEW-294",
    "commit": "3093cd48"
   },
   {
@@ -2874,8 +2874,8 @@
    "status": "NOT-APPLICABLE",
    "priority": "P3",
    "fg": false,
-   "evidence": "setDecorFitsSystemWindows unused on this dooz path (Compose host does not reach it before composition; verified live s18 runs).",
-   "missing": "implementation + proof",
+   "evidence": "setDecorFitsSystemWindows unused on this dooz path before composition (verified live s18 runs).",
+   "missing": "-",
    "next": "-",
    "commit": "3093cd48"
   },
@@ -2884,9 +2884,9 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S18 F-063 live-proof: CollectionShadow Map.remove no-op corrupted FastSafeIterableMap (FIELD-TRACE put-obj Lg/b;.i obj#15 value=obj#0 in /tmp/s18_ft2.log); fixed = key-erase + previous-value + absent no-op; battery 91/91.",
+   "evidence": "LIVE: FIELD-TRACE put-obj Lg/b;.i obj#15 value=obj#0 after second Lg/b;.d (double removeObserver) \u2192 eldest()!! NPE. ",
    "missing": "-",
-   "next": "-",
+   "next": "regression-watch",
    "commit": "3093cd48"
   },
   {
@@ -2894,9 +2894,9 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S18 F-064 live-proof: Map view family stubs returned null → Kotlin Reflection clinit '<get-values>' NPE (run/s18_f063_dooz crash); fixed keySet/values/entrySet+Entry.getKey/getValue+putAll+singletonMap; battery 91/91.",
+   "evidence": "LIVE: Kotlin Reflection clinit '<get-values>(...) must not be null' NPE. ",
    "missing": "-",
-   "next": "-",
+   "next": "regression-watch",
    "commit": "3093cd48"
   },
   {
@@ -2904,9 +2904,9 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S18 F-065 live-proof: iget-object retag made stored CLASS_REF OBJECT_REF{oid=0} pseudo-null → Intrinsics 'null cannot be cast to non-null type java.lang.Class' (run/s18_f064_dooz); fixed by CLASS_REF retag exemption.",
+   "evidence": "LIVE: Kotlin T::class.java field round-trip \u2192 'null cannot be cast to non-null type java.lang.Class'. ",
    "missing": "-",
-   "next": "-",
+   "next": "regression-watch",
    "commit": "3093cd48"
   },
   {
@@ -2914,9 +2914,9 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S18 F-066 live-proof: ArrayList.toArray(T[]) void stub → Arrays.copyOf null-array NPE in y.c pc=45 (run/s18_f065_dooz); fixed real toArray incl. identity reuse; battery 91/91.",
+   "evidence": "LIVE: Arrays.copyOf null-array NPE at y.c pc=45 (toTypedArray idiom). ",
    "missing": "-",
-   "next": "-",
+   "next": "regression-watch",
    "commit": "3093cd48"
   },
   {
@@ -2924,9 +2924,9 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S18 F-067 live-proof: getApplication null → ComponentActivity.getViewModelStore ISE 'not yet attached to the Application instance' (run/s18_f066_dooz); fixed via runtime-layer attached-Application identity (EXP093-APP obj + [F067] attach log, run/s18_f067_dooz).",
+   "evidence": "LIVE: getViewModelStore ISE 'not yet attached to the Application instance'. ",
    "missing": "-",
-   "next": "-",
+   "next": "regression-watch",
    "commit": "3093cd48"
   },
   {
@@ -2934,9 +2934,9 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S18 F-068 live-proof: declared-interface-first dispatch executed the throwing ViewModelProvider.Factory default create(Class) instead of Lf1/b.b override (run/s18_f067_dooz UnsupportedOperationException); fixed runtime-class-first ordering; battery 91/91.",
+   "evidence": "LIVE: throwing Factory.create(Class) default shadowed Lf1/b.b override. ",
    "missing": "-",
-   "next": "-",
+   "next": "regression-watch",
    "commit": "3093cd48"
   },
   {
@@ -2944,9 +2944,9 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S18 F-069 live-proof: const-class minted unique ref_ids → areEqual false → IAE 'No initializer set for given class androidx.lifecycle.A' (run/s18_f068_dooz); fixed per-descriptor stable tokens + 22t CLASS_REF compare + Object.equals bridge (F069-EQUALS trace x/y CLASS_REF A equal, run/s18_f069d_dooz); battery 91/91.",
+   "evidence": "LIVE: areEqual false \u2192 IAE 'No initializer set for given class androidx.lifecycle.A'. ",
    "missing": "-",
-   "next": "-",
+   "next": "regression-watch",
    "commit": "3093cd48"
   },
   {
@@ -2954,9 +2954,9 @@
    "status": "OBSERVED-FAIL",
    "priority": "P0",
    "fg": true,
-   "evidence": "LIVE-OBSERVED (run/s18_f069b_dooz, MINIANDROID_DISPATCH_ATTACH=1): CoroutineContext.get(MonotonicFrameClock.Key) returns null in fold (C1/f\\$a\\$a.a areEqual on element keys) → F/d0.a ISE 'A MonotonicFrameClock is not available…' → Recomposer creation fails. Key identity: element key vs requested F/b0\\$a.i static.",
-   "missing": "key-identity law in fold path (sget same static both sides — verify which side is stale)",
-   "next": "trace static F/b0\\$a.i identity across sget sites; fix fold compare; then R-NEW-295",
+   "evidence": "LIVE (run/s18_f069b_dooz): F/d0.a ISE 'A MonotonicFrameClock is not available\u2026' \u2014 Recomposer creation fails. Key identity across C1/f$a$a.a areEqual; verify sget F/b0$a.i staleness.",
+   "missing": "key-identity law",
+   "next": "trace static F/b0$a.i identity; then R-NEW-295",
    "commit": "3093cd48"
   },
   {
@@ -2964,9 +2964,9 @@
    "status": "OBSERVED-FAIL",
    "priority": "P1",
    "fg": true,
-   "evidence": "LIVE-OBSERVED (run/s18_f069b_dooz): D.a (AndroidComposeView composition root) does parent.getParent() as View + getTag(compose_view_saveable_id_tag) — getParent wired (TAG-TRACE 646→102→8→101 OK in f069c) but NPE still thrown at M1/i.d depth=21 inside Recomposer apply phase — check-cast receiver ordering; masked by R-NEW-294 ISE catch-all.",
-   "missing": "root-cause exact null source after R-NEW-294 closes",
-   "next": "re-trace after R-NEW-294",
+   "evidence": "LIVE (run/s18_f069b_dooz): 'null cannot be cast to non-null type android.view.View' at M1/i.d depth=21; getParent walk OK (TAG-TRACE 646\u2192102\u21928\u2192101) \u2014 re-root-cause after R-NEW-294.",
+   "missing": "key-identity law",
+   "next": "trace static F/b0$a.i identity; then R-NEW-295",
    "commit": "3093cd48"
   }
  ]
