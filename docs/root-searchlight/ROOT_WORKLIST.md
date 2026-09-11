@@ -1,4 +1,4 @@
-# ROOT WORKLIST — LIVE SEARCHLIGHT (R-NEW-001..297)
+# ROOT WORKLIST — LIVE SEARCHLIGHT (R-NEW-001..299)
 
 - Baseline: HEAD `7178c890` (merged M9+M6/M7/M8 line), battery 91/91 ALL PASS.
 - Scope: R-NEW-001..278 = the 278-root radar from the campaign brief.
@@ -12,7 +12,7 @@
 
 | Status | Count |
 |---|---|
-| VERIFIED-FIXED (law landed + proof) | 17 |
+| VERIFIED-FIXED (law landed + proof) | 19 |
 | VERIFIED-CORRECT (implemented + exercised, no dedicated defect) | 45 |
 | PARTIAL (core verified, edges open) | 103 |
 | OBSERVED-FAIL (live failing evidence) | 2 |
@@ -2124,4 +2124,16 @@ no assumptions (S20 method: PARAM-TRACE/METHOD-TRACE/ATOMIC-DIAG oracles).
   - Status: VERIFIED-FIXED
   - Discovered from: LIVE: R8 file-level sentinel `val PendingApplyNoModifications = Any()` (class exactly Ljava/lang/Object;) — areEqual(x,x) answered false → composeRuntimeError 'corrupt pendingModifications drain'. FIXED F-073 (base-class identity gate beside F-070's app-DEX and token/null gates).
   - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [x] R-NEW-298 — Engine-level virtual dispatch resolves only the exact class (no superclass walk)
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Discovered from: LIVE S21: dooz drain dispatched `[UC009-WIRE] Runnable id=687 class=Lb2/h;` with ZERO b2/h.run records in the 306k-line log; DEX ground truth (s21_frame_probe.py + androguard oracle): Lb2/h; = kotlinx.coroutines DispatchedContinuation, declares NO run() — the entrypoint is DispatchedTask.run (LW1/N;) on the superclass; upstream law (kotlinx DispatchedTask.kt / ART ClassLinker): virtual dispatch resolves on the runtime class hierarchy. FIXED F-074: try_recursive_invoke_on_super walks class_to_superclass_ (depth-capped, receiver identity preserved) at both give-up points; 712 super-dispatches on the re-run. Micro-proof: f074_super_run 6/6 bands GREEN (super-run/receiver-identity/two-hop/override).
+  - Why not covered by previous radar: the drains previously logged nothing on miss; the S21 gate evidence (removed-not-run) was downstream of this silent drop
+  - Next action: see discovery note
+- [x] R-NEW-299 — Kotlin `return null` (const/4-0 + return-object) propagates INT32(0) instead of the null reference
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Discovered from: LIVE S21 (after F-074): the recomposition chain reached LL/b.remove (PersistentOrderedSet) — HASH-TRACE proved hashCode(elem) fired ONLY from K/d.get (the put never hashed) — TRIE-TRACE pinned K/t.v returning null (trie emptied) while LL/b.<init> received the UNREBUILT map o647 — androguard CFG: `if (node !== newNode)` guarded the EMPTY-map rebuild; F074 arg forensics: the fatal was null, the real defect was the identity compare answering EQUAL for (OBJECT_REF, const/4-null). FIXED F-075: polymorphic-zero-at-reference-use law (ART Zero reg-type) at return-object, move-result-object, and mixed ref-vs-zero 22t compares. dooz re-run: CME 1→0, uncaught 0. Micro-proof: f074_super_run bands L5/L6 GREEN.
+  - Why not covered by previous radar: F-030 covered zero-is-null at INVOKE PARAMS only; the return/move/compare boundaries kept the mis-tagged zero
   - Next action: see discovery note
