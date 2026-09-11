@@ -1411,12 +1411,160 @@ bool ExecutionEngine::stage_execute_application_legacy(ExecutionResult& result, 
     }
     
     result.status = ExecutionStatus::SUCCESS;
-    
+
     trace_engine_.info("ExecutionEngine", "stage_execute_application_legacy",
                        "Legacy simulation complete [HOST_SHORTCUT]");
-    
+
     return true;
 }
+
+// ---------------------------------------------------------------------------
+// F-053 (M9): GradientDrawable <shape> DRAW law.
+//
+// AOSP GradientDrawable.draw(Canvas): (1) fill the shape — mGradientState
+// solid color, or the two-stop linear gradient over mOrientation (the
+// angle→orientation mapping is the AOSP 8-step table, 0°=LEFT_RIGHT,
+// counter-clockwise); (2) stroke the outline INSET by strokeWidth/2 (the
+// path stroke is centered on the bounds edge). Rectangle kinds honor the
+// corner radii (uniform or per-corner, GradientState.mCornerRadii law);
+// oval draws the inscribed ellipse. Pure integer/fixed math per pixel —
+// deterministic across runs (§28).
+// Ring(2)/line(3) kinds and dash strokes are NOT rendered — honest
+// DETECTED-NOT-EXERCISED boundary (returned as false; background falls
+// through to the documented container fallback).
+// ---------------------------------------------------------------------------
+namespace {
+
+uint32_t f053_corner_radius(const framework::ViewShadow::ViewNode& n, int which) {
+    // which: 0=TL, 1=TR, 2=BR, 3=BL — per-corner value or uniform fallback
+    // (AOSP GradientState.mCornerRadii has NO per-corner entry → uniform).
+    float v = -1.0f;
+    switch (which) {
+        case 0: v = n.bg_shape_corner_tl; break;
+        case 1: v = n.bg_shape_corner_tr; break;
+        case 2: v = n.bg_shape_corner_br; break;
+        case 3: v = n.bg_shape_corner_bl; break;
+    }
+    if (v < 0) v = n.bg_shape_corner_radius;
+    return v < 0 ? 0 : (uint32_t)v;
+}
+
+bool f053_pixel_inside(const framework::ViewShadow::ViewNode& n,
+                       int px, int py, int left, int top, int w, int h,
+                       bool for_stroke, uint32_t sw, uint32_t rads[4]) {
+    const int right = left + w - 1, bottom = top + h - 1;
+    if (n.bg_shape_kind == 1) {  // oval — inscribed ellipse (AOSP drawOval law)
+        double cx = left + (w - 1) / 2.0, cy = top + (h - 1) / 2.0;
+        double rx = w / 2.0, ry = h / 2.0;
+        double nx = (px - cx) / rx, ny = (py - cy) / ry;
+        double d = nx * nx + ny * ny;
+        if (!for_stroke) return d <= 1.0;
+        double on = (rx - sw) / rx, oy = (ry - sw) / ry;
+        double din = nx * nx / (on * on) + ny * ny / (oy * oy);
+        return d <= 1.0 && din >= 1.0;
+    }
+    // rectangle (kind 0) — rounded by per-corner radii
+    auto corner_ok = [&](int which, int cx, int cy) {
+        uint32_t r = rads[which];
+        if (r <= 0) return true;
+        double dx = double(px - cx), dy = double(py - cy);
+        double d2 = dx * dx + dy * dy;
+        double rr = double(r);
+        if (!for_stroke) return d2 <= rr * rr;
+        double ri = rr - double(sw);
+        if (ri <= 0) return d2 <= rr * rr;
+        return d2 <= rr * rr && d2 >= ri * ri;
+    };
+    uint32_t rtl = rads[0], rtr = rads[1], rbr = rads[2], rbl = rads[3];
+    if (px < left + (int)rtl && py < top + (int)rtl)
+        return corner_ok(0, left + (int)rtl, top + (int)rtl);
+    if (px > right - (int)rtr && py < top + (int)rtr)
+        return corner_ok(1, right - (int)rtr, top + (int)rtr);
+    if (px > right - (int)rbr && py > bottom - (int)rbr)
+        return corner_ok(2, right - (int)rbr, bottom - (int)rbr);
+    if (px < left + (int)rbl && py > bottom - (int)rbl)
+        return corner_ok(3, left + (int)rbl, bottom - (int)rbl);
+    if (!for_stroke) return true;
+    // straight-edge stroke band: sw pixels inside each edge (centered-stroke
+    // inset law: the visible band starts at the bounds edge)
+    return px < left + (int)sw || px > right - (int)sw ||
+           py < top + (int)sw || py > bottom - (int)sw;
+}
+
+bool f053_draw_shape_background(const framework::ViewShadow::ViewNode& n,
+                                renderer::FrameBuffer& fb,
+                                int left, int top, int w, int h) {
+    if (n.bg_shape_kind == 2 || n.bg_shape_kind == 3) return false;  // ring/line: honest boundary
+    if (w <= 0 || h <= 0) return true;  // nothing to paint, but shape claimed
+    uint32_t rads[4] = {f053_corner_radius(n, 0), f053_corner_radius(n, 1),
+                        f053_corner_radius(n, 2), f053_corner_radius(n, 3)};
+    if (n.bg_shape_kind == 0) {
+        // AOSP law: a corner radius is clamped to min(w,h)/2.
+        uint32_t maxr = (uint32_t)(std::min(w, h) / 2);
+        for (auto& r : rads) r = std::min(r, maxr);
+    }
+    auto to_rgba = [](uint32_t c) {
+        return renderer::RGBA{(uint8_t)((c >> 16) & 0xFF), (uint8_t)((c >> 8) & 0xFF),
+                              (uint8_t)(c & 0xFF), (uint8_t)((c >> 24) & 0xFF)};
+    };
+    auto fill = [&](int px, int py, uint32_t argb) {
+        renderer::RGBA c = to_rgba(argb);
+        if (c.a == 0) return;
+        if (c.a == 255) { fb.set_pixel(px, py, c); return; }
+        renderer::RGBA dst = fb.get_pixel(px, py);
+        uint32_t a = c.a, ia = 255 - a;
+        c.r = (uint8_t)((c.r * a + dst.r * ia) / 255);
+        c.g = (uint8_t)((c.g * a + dst.g * ia) / 255);
+        c.b = (uint8_t)((c.b * a + dst.b * ia) / 255);
+        c.a = 255;
+        fb.set_pixel(px, py, c);
+    };
+
+    // ---- fill: gradient over solid (AOSP: gradient wins when both declared)
+    if (n.bg_shape_has_gradient && n.bg_shape_grad_start != 0 && n.bg_shape_grad_end != 0) {
+        // AOSP 8-step angle→orientation table (GradientDrawable):
+        // 0 LEFT_RIGHT, 45 BL_TR, 90 BOTTOM_TOP, 135 BR_TL,
+        // 180 RIGHT_LEFT, 225 TR_BL, 270 TOP_BOTTOM, 315 TL_BR.
+        static const double ax[8] = {1,  1,  0, -1, -1, -1,  0,  1};
+        static const double ay[8] = {0, -1, -1, -1,  0,  1,  1,  1};
+        int o = ((n.bg_shape_grad_angle / 45) % 8 + 8) % 8;
+        double ux = ax[o], uy = ay[o];
+        double cx = left + (w - 1) / 2.0, cy = top + (h - 1) / 2.0;
+        double half = (std::abs(ux) * (w - 1) + std::abs(uy) * (h - 1)) / 2.0;
+        if (half <= 0) half = 1;
+        for (int py = top; py < top + h; ++py)
+            for (int px = left; px < left + w; ++px) {
+                if (!f053_pixel_inside(n, px, py, left, top, w, h, false, 0, rads)) continue;
+                double t = ((px - cx) * ux + (py - cy) * uy) / half;
+                t = std::min(1.0, std::max(0.0, t));
+                uint32_t s = n.bg_shape_grad_start, e = n.bg_shape_grad_end;
+                uint32_t argb =
+                    (((uint32_t)(((((s >> 24) & 0xFF) * (1 - t)) + (((e >> 24) & 0xFF) * t)))) << 24) |
+                    (((uint32_t)(((((s >> 16) & 0xFF) * (1 - t)) + (((e >> 16) & 0xFF) * t)))) << 16) |
+                    (((uint32_t)(((((s >> 8) & 0xFF) * (1 - t)) + (((e >> 8) & 0xFF) * t)))) << 8) |
+                    0xFF;
+                fill(px, py, argb);
+            }
+    } else if (n.bg_shape_has_solid) {
+        for (int py = top; py < top + h; ++py)
+            for (int px = left; px < left + w; ++px)
+                if (f053_pixel_inside(n, px, py, left, top, w, h, false, 0, rads))
+                    fill(px, py, n.bg_shape_solid);
+    }
+
+    // ---- stroke ring (AOSP: drawn after fill, centered inset law)
+    if (n.bg_shape_has_stroke && n.bg_shape_stroke_width > 0 && n.bg_shape_stroke_color != 0) {
+        uint32_t sw = (uint32_t)std::lround(n.bg_shape_stroke_width);
+        sw = std::max<uint32_t>(1, sw);
+        for (int py = top; py < top + h; ++py)
+            for (int px = left; px < left + w; ++px)
+                if (f053_pixel_inside(n, px, py, left, top, w, h, true, sw, rads))
+                    fill(px, py, n.bg_shape_stroke_color);
+    }
+    return true;
+}
+
+}  // namespace
 
 bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Rendering frame");
@@ -1749,7 +1897,21 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                     if (p.empty() && c != 0) eff_bg_color = c;
                                 }
                             }
-                            if (eff_bg_color != 0) {
+                            // F-053 (M9): GradientDrawable <shape> law. The
+                            // shape XML owns the background UNLESS a DEX
+                            // setBackgroundColor(int) overrode it AFTER
+                            // inflate (AOSP last-writer law: the programmatic
+                            // call swaps View.mBackground entirely; captured
+                            // programmatic writes have bg_from_xml == false).
+                            bool f053_shape_owns =
+                                node->bg_shape_valid &&
+                                !(eff_bg_color != 0 && !node->bg_from_xml);
+                            if (f053_shape_owns) eff_bg_color = 0;
+                            if (f053_shape_owns) {
+                                bool drew_shape = f053_draw_shape_background(
+                                    *node, fb, left, top, w, h);
+                                if (drew_shape) drew_bg = true;
+                            } else if (eff_bg_color != 0) {
                                 // ARGB int → RGBA
                                 uint32_t c = eff_bg_color;
                                 renderer::RGBA rgba{

@@ -108,3 +108,7 @@ miniandroid/run/demo_timer_evidence/
 # stray runtime data written by corpus runs at the repository root
 /runtime/
 .build_*/
+
+# M9 (§41 hygiene): session run/ evidence dirs are external artifacts;
+# curated evidence lives in docs/evidence/hello_color_golden/
+miniandroid/run/m9_*/
