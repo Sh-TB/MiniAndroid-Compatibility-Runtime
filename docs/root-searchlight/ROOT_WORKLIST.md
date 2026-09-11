@@ -1,6 +1,6 @@
 # ROOT WORKLIST — LIVE SEARCHLIGHT (R-NEW-001..286)
 
-- Baseline: HEAD `bcfd4405` (merged M9+M6/M7/M8 line), battery 91/91 ALL PASS.
+- Baseline: HEAD `580d0a7e` (merged M9+M6/M7/M8 line), battery 91/91 ALL PASS.
 - Scope: R-NEW-001..278 = the 278-root radar from the campaign brief.
   R-NEW-279..286 = NEW roots discovered during M9 analysis / live runs
   (brief §17: the map is living; 278 is not a ceiling).
@@ -12,16 +12,16 @@
 
 | Status | Count |
 |---|---|
-| VERIFIED-FIXED (law landed + proof) | 5 |
+| VERIFIED-FIXED (law landed + proof) | 6 |
 | VERIFIED-CORRECT (implemented + exercised, no dedicated defect) | 45 |
-| PARTIAL (core verified, edges open) | 100 |
-| OBSERVED-FAIL (live failing evidence) | 6 |
-| UNPROVEN | 73 |
+| PARTIAL (core verified, edges open) | 101 |
+| OBSERVED-FAIL (live failing evidence) | 5 |
+| UNPROVEN | 72 |
 | RESEARCHED-NOT-IMPLEMENTED | 16 |
 | NOT-APPLICABLE (subsystem absent by architecture) | 41 |
 | **TOTAL** | **286** |
 
-Unresolved by priority: {'P0': 4, 'P1': 3, 'P2': 13, 'P3': 75}
+Unresolved by priority: {'P0': 3, 'P1': 3, 'P2': 12, 'P3': 75}
 
 ## FLOODGATES (investigate as clusters, not as 278 independent tasks)
 
@@ -39,7 +39,7 @@ Unresolved by priority: {'P0': 4, 'P1': 3, 'P2': 13, 'P3': 75}
 ## CURRENT FRONTIER
 
 Highest-impact unresolved: **R-NEW-246 first-frame completeness (P0)** —
-dooz renders 0/2073600 non-white at HEAD `bcfd4405`; ComposeView children=0;
+dooz renders 0/2073600 non-white at HEAD `580d0a7e`; ComposeView children=0;
 no exceptions; composition blocked upstream of draw. Suspected causal chain
 (campaign brief §7 + M8 roadmap): lifecycle callback registry (R-NEW-279) →
 WrappedComposition.setContent; plus Job-active cancellation (R-NEW-285) on
@@ -2009,16 +2009,16 @@ no package special-casing).
   - Commit: -
 
 ### GROUP G — NEW DISCOVERIES (R-NEW-279+; brief §17 living map)
-- [!] R-NEW-279 — Lifecycle callback registry (Activity.registerActivityLifecycleCallbacks storage/dispatch — ReportFragment.injectIfNeededIn chain)
+- [~] R-NEW-279 — Lifecycle callback registry (Activity.registerActivityLifecycleCallbacks storage/dispatch — ReportFragment.injectIfNeededIn chain)
   - Group: NEW | Priority: P0 | Floodgate: YES
-  - Status: OBSERVED-FAIL
-  - Discovered from: SUSPECTED CURRENT DOOZ BLOCKER: M9-B causal analysis (campaign brief §7) places the blank frame at callbacks-not-stored → LifecycleRegistry stays INITIALIZED → WrappedComposition.setContent never runs. Verified gap at HEAD: no engine/shadow handler stores lifecycle callbacks (grep: registerActivityLifecycleCallbacks absent from dispatch layer). Next: DEX-trace ReportFragment.injectIfNeededIn on dooz; implement registry as generic framework law.
+  - Status: PARTIAL
+  - Discovered from: F-058 LANDED (580d0a7e): registry (CopyOnWriteArrayList append/identity-remove) + AOSP pre/post fan-out wired at PreCreated/Created/PostCreated/Started/Resumed. LIVE PROOF: w$c observers registered x2; Started/PostStarted(1121 real ins)/Resumed/PostResumed executed REAL bytecode. Registry chain ALIVE: p.f handleLifecycleEvent → p.g moveToState → p.i sync. NEXT GATE (binary-exact): bare NPE at Intrinsics check of Lg/b;.i (observer-map head) inside p.i sync — observer-map population/mutation laws.
   - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
   - Next action: see discovery note
-- [?] R-NEW-280 — WeakReference referent storage semantics
+- [x] R-NEW-280 — WeakReference referent storage semantics
   - Group: NEW | Priority: P2 | Floodgate: no
-  - Status: UNPROVEN
-  - Discovered from: Known gap (M9-B analysis): no WeakReference shadow at HEAD (grep clean). Kotlin/AndroidX code paths that hold owners weakly would read null. No corpus APK currently exercises it — PRE-278 DISCOVERY, implement on live trace evidence.
+  - Status: VERIFIED-FIXED
+  - Discovered from: F-059 LANDED (580d0a7e) + VERIFIED-FIXED: Reference-family law — Weak/Soft <init> captures referent, get() identity-verbatim, clear(), PhantomReference.get() null. LIVE PROOF: dooz LifecycleRegistry WeakReference<owner> ISE 'LifecycleOwner ... garbage collected' ELIMINATED (was blocking at p.i pc=362); battery ALL PASS 89.
   - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
   - Next action: see discovery note
 - [?] R-NEW-281 — HashMap.values()/keySet()/entrySet() collection-view semantics
