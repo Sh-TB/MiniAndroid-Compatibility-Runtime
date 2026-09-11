@@ -5122,3 +5122,25 @@ Work Log:
 Stage Summary:
 - Remote main = 304321ed. Infrastructure debt root-caused + fixed + verified; repo topology truth recorded (git toplevel = /home/z/my-project; project = tracked subtree MiniAndroid-Compatibility-Runtime/).
 - NEXT: Step 2 — R-NEW-294 MonotonicFrameClock/CoroutineContext fold-key trace on dooz.
+
+---
+Task ID: S19-2
+Agent: Super Z (session 19 — step 2: R-NEW-294 MonotonicFrameClock gate ROOT-CAUSED and CLOSED as F-070)
+Task: "Attack the current gate" — trace the exact CoroutineContext → MonotonicFrameClock chain, prove the root (no assumptions), minimal general fix, micro+real-APK evidence, battery, close.
+
+Work Log:
+- Reproduced live: fresh dooz run at 86ca045c tree (rc=SUCCESS report, 0 errors, 0/2,073,600 non-white pixels). ISE invisible in crash.log — swallowed by LW1/E.invoke catch-all.
+- MINIANDROID_TRACE_COMPOSE live trace: LF/d0;.a throws ISE at pc=19 (depth=12); propagates through WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b.t pc=175 (no try) → caught at LW1/E.invoke pc=65.
+- Built scripts/s19_dex_probe.py (binary-exact DEX walker; bugs found+fixed en route: proto_id field offsets, u2 type_list, class_def u4 layout + interfaces_off@+12, per-list uleb diff reset — re-confirming the S17 law against dex_parser.cpp:791).
+- DEX ground truth: LF/b0;=MonotonicFrameClock (getKey default = sget F/b0$a.i), LF/b0$a;=Key companion, LF/d0;.a = accessor: sget Key → invoke-interface x(meth@0x193) → check-cast LF/b0; → if-eqz→ISE. CRITICAL opcode-table correction: meth@0x193 name 'x' returns LC1/f$a; = Element ⇒ x = CoroutineContext.GET (q = minusKey); 0x38=if-eqz / 0x39=if-nez (I had them swapped; raw-word decode fixed both).
+- Runtime METHOD-TRACE (register-level): F/d0.a pc=0 sget → v0=obj#384; pc=5 move-result → v1=0 (NULL). K.x trace: invoke-static C1/f$a$a.a → move-result → v0=0. Helper trace: getKey() returned obj#384 = key obj#384 (SAME object) → areEqual → 0 → null path. S18 sget-staleness hypothesis DISPROVEN (identity stable).
+- areEqual = LM1/i.a: 0x39 if-nez decode ⇒ first.equals(second) on non-nulls ⇒ the failing call is heap-object Object.equals(obj,obj) on LF/b0$a;.
+- ROOT: execute_invoke_virtual routes bridge_to_api by receiver RUNTIME type (api_class=runtime_type=LF/b0$a;) but F-069's identity-equals handler was gated on class_name=="Ljava/lang/Object;" → missed → STUBBED false. (F069-EQUALS diag: only 2 hits all run — NULL×NULL and the S18 CLASS_REF case.)
+- FIX F-070 (general, no app-specific code): the equals handler now answers OpenJDK reference identity for every instance-call equals reaching the bridge whose receiver is a heap object of an app-DEX-defined class (class_to_superclass_ gate) or a Class-token/null pair; String (content law, later handler) and TextUtils.equals (STATIC, excluded via !current_invoke_is_static_) semantics preserved; reaching the bridge proves no DEX override + no shadow claim (dispatch layers precede).
+- VERIFICATION: rebuild clean; dooz ISE 1→0; dooz 3-run screenshot SHA 31ddd4d5… ×3 (deterministic); full battery ALL PASS (89 stages as defined by the current script — S18 counted 91, stage set evolved; dooz/hello real-APK stages run separately: helloworld_golden §28 PASS on the F-070 binary; dooz runs recorded with evidence bundle evidence/20260911-115914-s19_f070_dooz_fix).
+- Battery kills: 2 external harness kills (stages 42, 59) — resumed per M3-S12 monitor/resume protocol; all stages ultimately executed against the F-070 binary (single build, no rebuild during batteries).
+- NEW FRONTIER (honest): frame still 0/2,073,600 non-white pixels. Composition now reaches the View-cast parent walk: NPE "null cannot be cast to non-null type android.view.View" via LM1/i.d (checkNotNull) — sites LF/l;.R pc=186/198/202, LF/v;.s pc=45/47/125/129, LF/A0;.C pc=126 (R-NEW-295 family, S18-predicted re-cause). Next gate precisely located.
+
+Stage Summary:
+- Remote main = 86ca045c (ls-remote verified). R-NEW-294 CLOSED as F-070 (VERIFIED-FIXED, real-APK evidence). Registry +1 V-F (13→14 expected at next worklist regen).
+- Frontier: R-NEW-295 View-cast NPE (checkNotNull intrinsic family). Commits this session: 304321ed (tooling debt), 76fd96f0 (worklog S19-1), f95b4b1f (F-070), 86ca045c (hygiene).
