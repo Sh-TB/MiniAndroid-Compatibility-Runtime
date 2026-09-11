@@ -1,8 +1,8 @@
-# ROOT WORKLIST — LIVE SEARCHLIGHT (R-NEW-001..295)
+# ROOT WORKLIST — LIVE SEARCHLIGHT (R-NEW-001..297)
 
-- Baseline: HEAD `e6e480bb` (merged M9+M6/M7/M8 line), battery 91/91 ALL PASS.
+- Baseline: HEAD `7178c890` (merged M9+M6/M7/M8 line), battery 91/91 ALL PASS.
 - Scope: R-NEW-001..278 = the 278-root radar from the campaign brief.
-  R-NEW-279..295 = NEW roots discovered during M9/S17/S18 analysis / live runs
+  R-NEW-279..297 = NEW roots discovered during M9/S17..S20 analysis / live runs
   (brief §17: the map is living; 278 is not a ceiling).
 - Honesty law: **UNPROVEN ≠ PASS**. A tick requires evidence (micro-proof,
   real-APK trace, or regression battery band). No root is ticked by name-match.
@@ -12,16 +12,16 @@
 
 | Status | Count |
 |---|---|
-| VERIFIED-FIXED (law landed + proof) | 13 |
+| VERIFIED-FIXED (law landed + proof) | 17 |
 | VERIFIED-CORRECT (implemented + exercised, no dedicated defect) | 45 |
 | PARTIAL (core verified, edges open) | 103 |
-| OBSERVED-FAIL (live failing evidence) | 4 |
+| OBSERVED-FAIL (live failing evidence) | 2 |
 | UNPROVEN | 72 |
 | RESEARCHED-NOT-IMPLEMENTED | 16 |
 | NOT-APPLICABLE (subsystem absent by architecture) | 42 |
-| **TOTAL** | **295** |
+| **TOTAL** | **297** |
 
-Unresolved by priority: {'P0': 2, 'P1': 4, 'P2': 12, 'P3': 74}
+Unresolved by priority: {'P0': 1, 'P1': 3, 'P2': 12, 'P3': 74}
 
 ## FLOODGATES (investigate as clusters, not as 278 independent tasks)
 
@@ -39,13 +39,15 @@ Unresolved by priority: {'P0': 2, 'P1': 4, 'P2': 12, 'P3': 74}
 ## CURRENT FRONTIER
 
 Highest-impact unresolved: **R-NEW-246 first-frame completeness (P0)** —
-dooz renders 0/2073600 non-white at HEAD `e6e480bb`; ComposeView children=0;
-no exceptions; composition blocked upstream of draw. Suspected causal chain
-(campaign brief §7 + M8 roadmap): lifecycle callback registry (R-NEW-279) →
-WrappedComposition.setContent; plus Job-active cancellation (R-NEW-285) on
-the frame await. Next action: DEX-trace ReportFragment.injectIfNeededIn on
-dooz at HEAD; implement callback registry as a GENERIC framework law (§28:
-no package special-casing).
+dooz composition chain now SURVIVES onCreate (rc=0, ZERO uncaught exceptions
+after F-071/F-072/F-073 at `7178c890`; WrappedComposition composed,
+onAttachedToWindow dispatched, queued composition runnables Lb2/h; + J$c
+drained) but the frame is still 0/2073600 non-white — HONEST.
+Next gate (frame-callback chain): the J$c runnable dequeued then
+CHOREO removeFrameCallback; AndroidComposeView children=0 → the wrapped
+composition content is not yet reaching measure/layout/draw. Trace the
+queued-runnable → recomposer job launch path; every claim via live trace,
+no assumptions (S20 method: PARAM-TRACE/METHOD-TRACE/ATOMIC-DIAG oracles).
 
 ## WORKLIST
 
@@ -2099,15 +2101,27 @@ no package special-casing).
   - Discovered from: LIVE: areEqual false → IAE 'No initializer set for given class androidx.lifecycle.A'. FIXED F-069 (tokens + 22t + Object.equals bridge).
   - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
   - Next action: see discovery note
-- [!] R-NEW-294 — CoroutineContext.get(MonotonicFrameClock.Key) returns null in fold
+- [x] R-NEW-294 — CoroutineContext.get(MonotonicFrameClock.Key) returns null in fold
   - Group: NEW | Priority: P0 | Floodgate: YES
-  - Status: OBSERVED-FAIL
+  - Status: VERIFIED-FIXED
   - Discovered from: LIVE (run/s18_f069b_dooz): F/d0.a ISE 'A MonotonicFrameClock is not available…' — Recomposer creation fails. Key identity across C1/f$a$a.a areEqual; verify sget F/b0$a.i staleness.
   - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
   - Next action: see discovery note
-- [!] R-NEW-295 — D.a parent-tag walk NPE after ISE catch-all (Recomposer apply phase)
+- [x] R-NEW-295 — D.a parent-tag walk NPE after ISE catch-all (Recomposer apply phase)
   - Group: NEW | Priority: P1 | Floodgate: no
-  - Status: OBSERVED-FAIL
+  - Status: VERIFIED-FIXED
   - Discovered from: LIVE (run/s18_f069b_dooz): 'null cannot be cast to non-null type android.view.View' at M1/i.d depth=21; getParent walk OK (TAG-TRACE 646→102→8→101) — re-root-cause after R-NEW-294.
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [x] R-NEW-296 — AtomicReference.compareAndSet stores expected instead of update
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Discovered from: LIVE: compose CompositionImpl.recordModificationsOf CAS(null→values) returned true but stored null → drainPendingModificationsLocked read null → ComposeRuntimeError 'concurrently is not supported'. FIXED F-072 (OpenJDK update-value law; upstream 1.5.4 Composition.kt 360/562/640-657 cross-checked; numeric/array/updater families already used arg1/arg2).
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [x] R-NEW-297 — Object.equals false for identity-equal Ljava/lang/Object; receivers
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Discovered from: LIVE: R8 file-level sentinel `val PendingApplyNoModifications = Any()` (class exactly Ljava/lang/Object;) — areEqual(x,x) answered false → composeRuntimeError 'corrupt pendingModifications drain'. FIXED F-073 (base-class identity gate beside F-070's app-DEX and token/null gates).
   - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
   - Next action: see discovery note
