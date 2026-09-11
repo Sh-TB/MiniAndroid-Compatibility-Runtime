@@ -1,0 +1,63 @@
+{
+ "environment": {
+  "commit": "534067c4",
+  "cpu_only": true,
+  "runs": 3
+ },
+ "apk_inspection_dooz": {
+  "A_manual_baseline": {
+   "runs_ms": [
+    24.5,
+    23.8,
+    23.5
+   ],
+   "median_ms": 23.8
+  },
+  "B_tool_cold": {
+   "runs_ms": [
+    69.0,
+    65.7,
+    64.7
+   ],
+   "median_ms": 65.7
+  },
+  "C_tool_cached": {
+   "runs_ms": [
+    40.2,
+    40.2,
+    40.3
+   ],
+   "median_ms": 40.2
+  },
+  "speedup_cached_vs_manual": 0.6
+ },
+ "root_investigation_package_R-NEW-246": {
+  "A_manual_baseline": {
+   "runs_ms": [
+    15.8,
+    14.1,
+    14.2
+   ],
+   "median_ms": 14.2
+  },
+  "B_tool_fastpath": {
+   "runs_ms": [
+    22.7,
+    22.4,
+    22.4
+   ],
+   "median_ms": 22.4
+  },
+  "speedup_vs_manual": 0.6
+ },
+ "screenshot_validation": {
+  "B_tool_probe": {
+   "runs_ms": [
+    955.0,
+    956.1,
+    942.0
+   ],
+   "median_ms": 955.0
+  }
+ }
+}

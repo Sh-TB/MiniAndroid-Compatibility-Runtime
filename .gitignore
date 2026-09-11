@@ -112,3 +112,8 @@ miniandroid/run/demo_timer_evidence/
 # M9 (§41 hygiene): session run/ evidence dirs are external artifacts;
 # curated evidence lives in docs/evidence/hello_color_golden/
 miniandroid/run/m9_*/
+
+# S19: shared APK/DEX/ARSC artifact cache (content-addressed, regenerable via
+# tools/verify/apk_artifacts.py; curated proof artifacts live under docs/ and
+# the repo-root artifacts/ committed in 3ea1ffc3)
+artifacts/
