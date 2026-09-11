@@ -1895,6 +1895,108 @@ bool DalvikExecutionEngine::execute_method_internal(
     current_method_ = method_name;
     // M5 scheduler-frontier diagnostic: dump incoming args of the Segment
     // CAS-retry method (LY1/j;.j) to expose caller-side register tags.
+    // S22 frontier trace (env-gated MINIANDROID_S22_TRACE=1, capped 200,
+    // read-only): every engine entry into the Recomposer runner lambda chain
+    // (LF/F0 loop, LF/E0 recompositionRunner, LF/E0$a scope block) and the
+    // MonotonicFrameClock withFrameNanos sites (LF/b0.u interface, K.u impl,
+    // LF/d0.a accessor). Answers: did the runner body ever start, and did it
+    // ever request a frame?
+    if (std::getenv("MINIANDROID_S22_TRACE")) {
+        static thread_local uint64_t s22_n = 0;
+        if (s22_n < 200) {
+            bool s22_hit = false;
+            if ((class_name == "LF/F0;" || class_name == "LF/E0;" ||
+                 class_name == "LF/E0$a;" || class_name == "LF/b0;" ||
+                 class_name == "Landroidx/compose/ui/platform/K;") &&
+                (method_name == "t" || method_name == "j" || method_name == "u" ||
+                 method_name == "a" || method_name == "o")) {
+                s22_hit = true;
+            }
+            // F-077 probe: TrieNode node-slot accessor K/t.s and the
+            // PersistentHashMap builder putAll (K/f) / merge (K/t.m) chain.
+            if (class_name == "LK/t;" &&
+                (method_name == "s" || method_name == "m" ||
+                 method_name == "<init>")) {
+                static thread_local uint64_t trienode_n = 0;
+                if (trienode_n < 128) {
+                    ++trienode_n;
+                    std::cerr << "[TRIENODE] " << method_name << " recv="
+                              << (args.empty() ? 0 : args[0].object_id) << " args(";
+                    for (size_t ai = 1; ai < args.size() && ai < 5; ++ai) {
+                        const auto& a = args[ai];
+                        if (a.type == DalvikType::OBJECT_REF)
+                            std::cerr << " obj=" << a.object_id;
+                        else if (a.type == DalvikType::INT32)
+                            std::cerr << " i=" << a.int_val;
+                        else
+                            std::cerr << " t" << (int)a.type;
+                    }
+                    std::cerr << ")";
+                    // F-077 state dump: bitmaps (a,b), buffer length, null
+                    // slot census — proves (or refutes) bitmap/buffer
+                    // invariant violation on the receiver node. For <init>
+                    // the node object already exists (heap-allocated before
+                    // the ctor runs), so the same read works after stores.
+                    uint32_t probe_id = 0;
+                    if (method_name == "<init>") {
+                        // the receiver is the NEW-INSTANCE object id = the
+                        // engine's new-instance tracking; args[0] is p0 in
+                        // non-static framing. Use current heap object of the
+                        // receiver register: args[0].
+                        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                            probe_id = args[0].object_id;
+                    } else if (!args.empty() &&
+                               args[0].type == DalvikType::OBJECT_REF) {
+                        probe_id = args[0].object_id;
+                    }
+                    if (probe_id && heap_.has_object(probe_id)) {
+                        auto rd = [&](const char* k) -> std::optional<DalvikValue> {
+                            auto v = heap_.get_object_field(probe_id, k);
+                            if (!v.has_value())
+                                v = heap_.get_object_field(probe_id, std::string("LK/t;.") + k);
+                            return v;
+                        };
+                        auto a_v = rd("a");
+                        auto b_v = rd("b");
+                        auto d_v = rd("d");
+                        auto len_v = d_v.has_value() && d_v->type == DalvikType::OBJECT_REF
+                                         ? heap_.get_object_field(d_v->object_id, "__array_length__")
+                                         : std::optional<DalvikValue>{};
+                        int nulls = -1;
+                        if (len_v.has_value()) {
+                            int L = len_v->int_val;
+                            nulls = 0;
+                            for (int k = 0; k < L; ++k) {
+                                auto e = heap_.get_object_field(
+                                    d_v->object_id, "array[" + std::to_string(k) + "]");
+                                if (!e.has_value() || e->is_null) ++nulls;
+                            }
+                        }
+                        std::cerr << " state{a=" << (a_v.has_value() ? a_v->int_val : -1)
+                                  << " b=" << (b_v.has_value() ? b_v->int_val : -1)
+                                  << " len=" << (len_v.has_value() ? len_v->int_val : -1)
+                                  << " null_slots=" << nulls << "}";
+                    }
+                    std::cerr << std::endl;
+                }
+            }
+            if (s22_hit) {
+                ++s22_n;
+                std::cerr << "[S22] entry#" << s22_n << " " << class_name << "."
+                          << method_name << " args(" << args.size() << "):";
+                for (size_t ai = 0; ai < args.size() && ai < 3; ++ai) {
+                    const auto& a = args[ai];
+                    if (a.type == DalvikType::OBJECT_REF)
+                        std::cerr << " obj=" << a.object_id << "(" << a.class_desc << ")";
+                    else if (a.is_null)
+                        std::cerr << " NULL";
+                    else
+                        std::cerr << " v=" << a.int_val;
+                }
+                std::cerr << std::endl;
+            }
+        }
+    }
     // Env-gated (MINIANDROID_J_ENTRY=1), capped; forensics only.
     if (std::getenv("MINIANDROID_J_ENTRY") && class_name == "LY1/j;" &&
         method_name == "j") {
@@ -4544,11 +4646,45 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // and the null receiver cascaded into the SQLiteOpenHelper open chain
     // (La/e; Kotlin Intrinsics NPEs) — masked for weeks by the FRAME-2
     // caller-continue policy, exposed by the F-016 real-unwind law.
+    //
+    // S22 F-076 (R-NEW-300): the identity law extends to STATIC invocations.
+    // kotlinx.coroutines start helpers are static and STRUCTURALLY
+    // re-entrant: B1/a.B = IntrinsicsKt.startCoroutineUninterceptedOrReturn
+    // and W1/l0.a = CoroutineScope.launch. An OUTER coroutine start is still
+    // active on the stack when an INNER one begins (withContext starts the
+    // runner body; the runner body's coroutineScope starts the loop block;
+    // suspendCancellableCoroutine inside the loop starts yet another). The
+    // (class,method)-only key stubbed the inner start: recompositionRunner's
+    // coroutineScope returned null ≠ COROUTINE_SUSPENDED, E0.t treated the
+    // scope as completed, disposed the apply observer, cleared the runner
+    // job, and returned — the Recomposer runner died before its first
+    // awaitWorkAvailable/withFrameNanos: no frame request #2, no Choreographer
+    // frame, 0 non-white pixels (dooz, env-gated [S22]/[M3-19-CYCLE] trace).
+    // LAW: for statics, key on the identity of the LEADING OBJECT ARGUMENTS
+    // (up to 2) — for coroutine start helpers that is the target
+    // continuation/coroutine, unique per logical coroutine. Same identities
+    // re-entered = genuine same-computation cycle (stub preserved);
+    // different identities = independent nested frames (legal re-entrance,
+    // execute real DEX). MAX_RECURSION_DEPTH remains the backstop for
+    // recursion over fresh argument identities.
     static thread_local std::map<std::string, int> m3_call_counts;  // diagnostics only
     std::string m3_active_key = class_descriptor + "." + method_name;
     if (!current_invoke_is_static_ && !args.empty() &&
         args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
         m3_active_key += "#" + std::to_string(args[0].object_id);
+    } else if (current_invoke_is_static_) {
+        // F-076: statics have no receiver — key on leading object-arg
+        // identities (up to 2). Coroutine start helpers thereby take a
+        // per-coroutine key; same-object re-entry still collides (guard
+        // preserved for genuine cycles).
+        int appended = 0;
+        for (size_t i = 0; i < args.size() && appended < 2; ++i) {
+            if (args[i].type == DalvikType::OBJECT_REF && args[i].object_id != 0 &&
+                !args[i].is_null) {
+                m3_active_key += "#" + std::to_string(args[i].object_id);
+                ++appended;
+            }
+        }
     }
     m3_call_counts[m3_active_key]++;
     struct ActiveKeyGuard {
