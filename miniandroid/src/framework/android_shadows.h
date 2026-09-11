@@ -1313,6 +1313,19 @@ public:
         std::map<std::string, std::string> map_string_entries;  // key → string value
         size_t iterator_position = 0;
         bool is_map = false;
+        // ── F-064 (R-NEW-288): typed elements for keySet()/values()/
+        // entrySet() live views. Views must iterate TYPED elements —
+        // string-typed map values and Map.Entry objects cannot live in
+        // elements (object ids only). kind: 0=none, 1=object, 2=string,
+        // 3=int — mirrors TagValue::Kind semantics.
+        struct ViewElem {
+            uint8_t kind = 0;
+            uint32_t object_id = 0;
+            std::string string_val;
+            int32_t int_val = 0;
+        };
+        std::vector<ViewElem> view_elements;
+        bool is_view = false;
     };
 
     std::string name() const override { return "Collection"; }
@@ -1323,9 +1336,12 @@ public:
                class_name == "Ljava/util/LinkedList;" ||
                class_name == "Ljava/util/List;" ||
                class_name == "Ljava/util/Collection;" ||
+               class_name == "Ljava/util/Iterable;" ||  // F-064: view iteration via interface call site
                class_name == "Ljava/util/CopyOnWriteArrayList;" ||
                class_name == "Ljava/util/HashMap;" ||
+               class_name == "Ljava/util/LinkedHashMap;" ||  // F-064: Kotlin Reflection clinit uses it directly
                class_name == "Ljava/util/Map;" ||
+               class_name == "Ljava/util/Map$Entry;" ||  // F-064: entrySet() elements (getKey/getValue)
                class_name == "Ljava/util/HashSet;" ||
                class_name == "Ljava/util/Set;" ||
                class_name == "Ljava/util/Arrays$ArrayList;" ||
@@ -1337,6 +1353,7 @@ public:
                class_name.find("/ArrayList;") != std::string::npos ||
                class_name.find("/HashMap;") != std::string::npos ||
                class_name.find("/HashSet;") != std::string::npos ||
+               class_name.find("/LinkedHashMap;") != std::string::npos ||
                class_name.find("ConcurrentHashMap") != std::string::npos;
     }
 
@@ -1344,12 +1361,13 @@ public:
 
     std::vector<std::string> implemented_methods() const override {
         return {"add", "get", "size", "isEmpty", "clear", "remove",
-                "contains", "iterator", "hasNext", "next",
+                "contains", "iterator", "hasNext", "next", "toArray",
                 "put", "containsKey", "keySet", "values", "entrySet",
+                "putAll", "getKey", "getValue", "singletonMap",
                 "getIndex", "set"};
     }
     std::vector<std::string> stubbed_methods() const override {
-        return {"subList", "listIterator", "toArray", "sort"};
+        return {"subList", "listIterator", "sort"};
     }
 
     // Get or create CollectionState for a heap object.

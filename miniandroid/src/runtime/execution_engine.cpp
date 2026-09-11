@@ -685,6 +685,14 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     app_class, "onCreate", create_args, app_return, app_result);
                 std::cerr << "[EXP093-APP] onCreate invoked" << std::endl;
 
+                // F-067 (R-NEW-291): record the attached Application instance
+                // so Activity/Service.getApplication() returns the SAME
+                // object (AOSP attach() identity law). The object persists
+                // on the engine heap for the whole run.
+                dalvik_engine_.set_application_object_id(app_obj_id, app_class);
+                std::cerr << "[F067] application attached: obj#" << app_obj_id
+                          << " " << app_class << std::endl;
+
                 // Cache the Application singleton so Activity.getApplication()
                 // can return it later.
                 // TODO: Set the ApplicationLoader.applicationContext or equivalent

@@ -9487,8 +9487,29 @@ bool DalvikExecutionEngine::execute_const_class(uint32_t pc, InstructionTrace& t
     std::string type_desc = "<type:" + std::to_string(type_idx) + ">";
     type_desc = resolve_type_for_dex(type_idx, current_dex_index_);
 
-    uint32_t ref_id = instruction_sequence_;
-    set_register(dest_reg, DalvikValue::make_class(type_desc, ref_id));
+    // ── F-069 (R-NEW-293): const-class STABLE IDENTITY law ───────────────
+    // ART: every evaluation of `X.class` for the same X yields the SAME
+    // java.lang.Class object — identity is observable (== via if-eq,
+    // Intrinsics.areEqual, map keys, LinkedHashMap lookups). The old code
+    // minted a NEW ref_id (instruction_sequence_) per evaluation, so two
+    // const-class of the same descriptor were never reference-equal.
+    // Real-APK hit: dooz SavedStateHandlesVM.create — the viewModelFactory
+    // initializer registered its key under one Class value and the
+    // create(modelClass) lookup compared a DIFFERENT Class value →
+    // Intrinsics.areEqual false → IAE "No initializer set for given class
+    // androidx.lifecycle.A" → first frame died. The token is stable per
+    // descriptor for the whole run (identity), and distinct descriptors
+    // never share a token.
+    uint32_t token = 0;
+    auto tok_it = class_token_ids_.find(type_desc);
+    if (tok_it != class_token_ids_.end()) {
+        token = tok_it->second;
+    } else {
+        token = ++class_token_counter_;
+        class_token_ids_.emplace(type_desc, token);
+    }
+
+    set_register(dest_reg, DalvikValue::make_class(type_desc, token));
 
     trace.operands.push_back({"v" + std::to_string(dest_reg), type_desc});
 
@@ -9974,9 +9995,30 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
             auto field_val = heap_.get_object_field(obj_ref.object_id, field_res.field_name);
             if (field_val.has_value()) {
                 result_value = field_val.value();
-                if (result_value.type != DalvikType::OBJECT_REF && 
+                // ── F-065 (R-NEW-289): const-class FIELD ROUND-TRIP law ────
+                // ART: java.lang.Class instances are real objects with
+                // identity — a Class reference stored with iput-object and
+                // read back with iget-object is the SAME reference, and is
+                // NON-NULL. The engine's Class representation is CLASS_REF
+                // (class_desc = referred type descriptor — the bridge law
+                // FIX-M3-012 serves Class.getName/forName/getPackage on
+                // exactly that form). The old blanket retag below rewrote a
+                // stored CLASS_REF to OBJECT_REF while keeping object_id=0
+                // (make_class stores the token in ref_id, not object_id) —
+                // a pseudo-null by the is-zero law (OBJECT_REF && oid==0).
+                // Every Kotlin `T::class.java` round-trip through a field
+                // then failed Intrinsics.checkNotNull — real-APK hit: dooz
+                // SavedStateHandlesVM creation (y.c → M1/u.a → new
+                // LM1/d(jClass) → LM1/d;.a reads field a → OBJECT_REF{0}
+                // → M1/i.d NPE "null cannot be cast to non-null type
+                // java.lang.Class<...get-java>" → first frame died).
+                // CLASS_REF now round-trips identity-verbatim like
+                // OBJECT_REF/STRING_REF. No app special-casing: every
+                // const-class field round-trip in every APK benefits.
+                if (result_value.type != DalvikType::OBJECT_REF &&
                     result_value.type != DalvikType::NULL_REF &&
-                    result_value.type != DalvikType::STRING_REF) {
+                    result_value.type != DalvikType::STRING_REF &&
+                    result_value.type != DalvikType::CLASS_REF) {
                     result_value.type = DalvikType::OBJECT_REF;
                 }
             }
@@ -10223,12 +10265,12 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
 
     }
     // EXP-042 Phase 2: never return false; just advance pc_.
-    
+
     trace.operands.push_back({"v" + std::to_string(src_reg), "source"});
     trace.operands.push_back({"v" + std::to_string(obj_reg), "target"});
     trace.operands.push_back({"field", field_res.class_descriptor + "." + field_res.field_name});
     trace.operands.push_back({"source", "REAL_DALVIK_INTERPRETER"});
-    
+
     pc_ = pc + 2;
     return true;
 }
@@ -11627,178 +11669,192 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
         class_name = resolve_method_class_for_dex(method_idx, current_dex_index_);
     }
 
-    // EXP-048: Try recursive invoke first (some interface methods have impls)
+    // ── F-068 (R-NEW-292): RUNTIME-CLASS-FIRST interface dispatch law ─────
+    // DEX invoke-interface dispatch: ART resolves the target against the
+    // RECEIVER'S RUNTIME CLASS — the most specific implementation among
+    // the class hierarchy and the interfaces it implements. The declared
+    // interface in the method ref supplies only the SIGNATURE; a default
+    // method body living on the declared interface executes ONLY when the
+    // runtime class does not override it.
+    // The old order tried the DECLARED interface first. For interfaces
+    // WITH default bodies that shadows the receiver's real override:
+    // androidx F$b (ViewModelProvider.Factory, R8) has a default
+    // b(Class, CreationExtras) that delegates to a throwing a(Class)
+    // ("Factory.create(String) is unsupported…"), while the actual
+    // factory Lf1/b (the viewModelFactory{} initializer-lambda SAM)
+    // overrides b(Class, extras). Dooz SavedStateHandlesVM.create went
+    // through the throwing default → UnsupportedOperationException →
+    // MainActivity.onCreate died at invoke_pc=109 → first frame died.
+    // Runtime-first also honors the simple case: abstract interfaces miss
+    // on the runtime class and fall through unchanged.
     DalvikValue return_val = DalvikValue::make_void();
+    // Resolve the receiver's heap object once for the whole dispatch walk.
+    const auto* heap_obj =
+        (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+         heap_.has_object(args[0].object_id))
+            ? heap_.get(args[0].object_id)
+            : nullptr;
+    // ── F-068 (R-NEW-292): RUNTIME-CLASS-FIRST interface dispatch law ─────
+    // DEX invoke-interface dispatch: ART resolves the target against the
+    // RECEIVER'S RUNTIME CLASS — the most specific implementation among
+    // the class hierarchy and the interfaces it implements. The declared
+    // interface in the method ref supplies only the SIGNATURE; a default
+    // method body living on the declared interface executes ONLY when the
+    // runtime class does not override it.
+    // The old order tried the DECLARED interface first. For interfaces
+    // WITH default bodies that shadows the receiver's real override:
+    // androidx F$b (ViewModelProvider.Factory, R8) has a default
+    // b(Class, CreationExtras) that delegates to a throwing a(Class)
+    // ("Factory.create(String) is unsupported…"), while the actual
+    // factory Lf1/b (the viewModelFactory{} initializer-lambda SAM)
+    // overrides b(Class, extras). Dooz SavedStateHandlesVM.create went
+    // through the throwing default → UnsupportedOperationException →
+    // MainActivity.onCreate died at invoke_pc=109 → first frame died.
+    if (heap_obj && !heap_obj->class_descriptor.empty() &&
+        heap_obj->class_descriptor != class_name) {
+        if (try_recursive_invoke(heap_obj->class_descriptor, method_name,
+                                 args, return_val, result)) {
+            last_invoke_return_ = return_val;
+            trace.invoked_method =
+                heap_obj->class_descriptor + "." + method_name;
+            pc_ = pc + 3;
+            return true;
+        }
+    }
+    // Declared-interface dispatch — executes default bodies on the
+    // interface itself (F-023 semantics for non-overridden defaults) and
+    // still catches the historical "interface methods with impls" cases.
     if (try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
         trace.invoked_method = class_name + "." + method_name;
         pc_ = pc + 3;
         return true;
     }
-
-    // EXP-058: Interface dispatch — try the RUNTIME TYPE of the receiver.
-    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
-        uint32_t receiver_id = args[0].object_id;
-        if (heap_.has_object(receiver_id)) {
-            const auto* heap_obj = heap_.get(receiver_id);
-            if (heap_obj && !heap_obj->class_descriptor.empty() &&
-                heap_obj->class_descriptor != class_name) {
-                // Try the concrete class.
-                if (try_recursive_invoke(heap_obj->class_descriptor, method_name,
-                                         args, return_val, result)) {
-                    last_invoke_return_ = return_val;
-                    trace.invoked_method = heap_obj->class_descriptor + "." + method_name;
-                    pc_ = pc + 3;
-                    return true;
+    if (heap_obj) {
+        // ────────────────────────────────────────────────────────────────
+        // M3 F-ROOM-CHAIN (R8 interface-dispatch law): R8 renames the
+        // interface method and the implementation method INDEPENDENTLY
+        // (e.g. interface Lg/h;->X(IJ)V is implemented as Le/x;->h(IJ)V).
+        // A NAME lookup on the runtime class then misses and the call
+        // silently degrades to a void stub — exactly how Room's
+        // EntityInsertionAdapter.bind lost every parameter bind (insert →
+        // NOT NULL constraint failed on microtimer's alarm table). DEX
+        // dispatch law: renaming preserves parameter/return types, so when
+        // the name lookup misses, resolve by EXACT signature (descriptor)
+        // inside the receiver's runtime class and dispatch THAT method.
+        // ────────────────────────────────────────────────────────────────
+        const std::string iface_proto =
+            dex_report_ ? resolve_method_proto_for_dex(method_idx,
+                                                       current_dex_index_)
+                        : std::string("<unknown>");
+        if (iface_proto != "<unknown>") {
+            // Walk the receiver's class + superclass chain (DEX virtual
+            // dispatch law: inherited implementations answer interface
+            // calls; R8 renames per class, so the signature is the only
+            // stable identity).
+            std::string walk_cls = heap_obj->class_descriptor;
+            for (int hop = 0; hop < 8 && !walk_cls.empty(); ++hop) {
+                bool cls_found = false;
+                for (const auto& cls : dex_report_->classes) {
+                    if (cls.name != walk_cls) continue;
+                    cls_found = true;
+                    bool sig_found = false;
+                    for (const auto& mi : cls.all_methods()) {
+                        if (mi.code_offset == 0 || mi.is_abstract) continue;
+                        if (mi.descriptor != iface_proto) continue;
+                        sig_found = true;
+                        if (try_recursive_invoke(walk_cls, mi.name, args,
+                                                 return_val, result)) {
+                            last_invoke_return_ = return_val;
+                            trace.invoked_method =
+                                walk_cls + "." + mi.name +
+                                " [sig-dispatch " + iface_proto + "]";
+                            std::cerr << "[INTERFACE-SIG] " << walk_cls << "."
+                                      << mi.name << iface_proto
+                                      << " (interface " << class_name << "."
+                                      << method_name << ") → REAL DEX dispatched"
+                                      << std::endl;
+                            pc_ = pc + 3;
+                            return true;
+                        }
+                    }
+                    if (sig_found) break;
+                    break;  // found the class def; stop scanning classes
                 }
-                // ────────────────────────────────────────────────────────────
-                // M3 F-ROOM-CHAIN (R8 interface-dispatch law): R8 renames the
-                // interface method and the implementation method
-                // INDEPENDENTLY (e.g. interface Lg/h;->X(IJ)V is implemented
-                // as Le/x;->h(IJ)V). A NAME lookup on the runtime class then
-                // misses and the call silently degrades to a void stub —
-                // exactly how Room's EntityInsertionAdapter.bind lost every
-                // parameter bind (insert → NOT NULL constraint failed on
-                // microtimer's alarm table). DEX dispatch law: renaming
-                // preserves parameter/return types, so when the name lookup
-                // misses, resolve by EXACT signature (descriptor) inside the
-                // receiver's runtime class and dispatch THAT method.
-                // ────────────────────────────────────────────────────────────
-                const std::string iface_proto =
-                    dex_report_ ? resolve_method_proto_for_dex(method_idx,
-                                                               current_dex_index_)
-                                : std::string("<unknown>");
-                if (iface_proto != "<unknown>") {
-                    // Walk the receiver's class + superclass chain (DEX
-                    // virtual dispatch law: inherited implementations answer
-                    // interface calls; R8 renames per class, so the signature
-                    // is the only stable identity).
-                    std::string walk_cls = heap_obj->class_descriptor;
-                    for (int hop = 0; hop < 8 && !walk_cls.empty(); ++hop) {
-                        bool cls_found = false;
-                        for (const auto& cls : dex_report_->classes) {
-                            if (cls.name != walk_cls) continue;
-                            cls_found = true;
-                            bool sig_found = false;
-                            for (const auto& mi : cls.all_methods()) {
-                                if (mi.code_offset == 0 || mi.is_abstract) continue;
-                                if (mi.descriptor != iface_proto) continue;
-                                sig_found = true;
-                                if (try_recursive_invoke(walk_cls,
-                                                         mi.name, args, return_val,
-                                                         result)) {
-                                    last_invoke_return_ = return_val;
-                                    trace.invoked_method =
-                                        walk_cls + "." + mi.name +
-                                        " [sig-dispatch " + iface_proto + "]";
-                                    std::cerr << "[INTERFACE-SIG] "
-                                              << walk_cls << "."
-                                              << mi.name << iface_proto
-                                              << " (interface " << class_name << "."
-                                              << method_name << ") → REAL DEX dispatched"
-                                              << std::endl;
-                                    pc_ = pc + 3;
-                                    return true;
-                                }
-                            }
-                            if (sig_found) break;
-                            break;  // found the class def; stop scanning classes
-                        }
-                        auto sup_it = class_to_superclass_.find(walk_cls);
-                        if (sup_it == class_to_superclass_.end()) break;
-                        walk_cls = sup_it->second;
-                        if (walk_cls == "Ljava/lang/Object;") break;
-                    }
+                auto sup_it = class_to_superclass_.find(walk_cls);
+                if (sup_it == class_to_superclass_.end()) break;
+                walk_cls = sup_it->second;
+                if (walk_cls == "Ljava/lang/Object;") break;
+            }
 
-                    // ────────────────────────────────────────────────────
-                    // F-023 (DEX DEFAULT-INTERFACE-METHOD DISPATCH LAW):
-                    // The class-extends walk above cannot see methods that
-                    // live ON an interface with code (DEX default methods).
-                    // Real-world case (every Compose app): the receiver
-                    // androidx.compose.ui.platform.AndroidUiFrameClock (K)
-                    // extends Object and only IMPLEMENTS
-                    // MonotonicFrameClock (F/b0), whose getKey() is a
-                    // default interface method returning the companion Key.
-                    // kotlin.coroutines CoroutineContext.plus folds elements
-                    // and calls element.getKey() — if that lands on the
-                    // fail-soft bridge it returns null and
-                    // Intrinsics.checkNotNullParameter(key) NPEs inside
-                    // CoroutineContext.get, killing composition before the
-                    // first frame.
-                    //
-                    // Art resolution law: invoke-interface consults the
-                    // receiver's interface table — every transitively
-                    // implemented interface, including default methods.
-                    // Generic implementation: collect the implements-set of
-                    // each class in the receiver's extends chain, close it
-                    // over super-interfaces (bounded), then dispatch the
-                    // method matching the EXACT descriptor with code.
-                    // ────────────────────────────────────────────────────
-                    if (iface_proto != "<unknown>") {
-                        // 1. Receiver extends-chain (bounded).
-                        std::vector<std::string> cls_chain;
-                        std::string c = heap_obj->class_descriptor;
-                        for (int hop = 0; hop < 12 && !c.empty() &&
-                                          c != "Ljava/lang/Object;"; ++hop) {
-                            cls_chain.push_back(c);
-                            auto it = class_to_superclass_.find(c);
-                            if (it == class_to_superclass_.end()) break;
-                            c = it->second;
-                        }
-                        // 2. Implements-set with transitive super-interfaces.
-                        std::vector<std::string> ifq;
-                        std::set<std::string> visited;
-                        auto enqueue_ifaces = [&](const std::string& cls) {
-                            for (const auto& cd : dex_report_->classes) {
-                                if (cd.name != cls) continue;
-                                for (const auto& ifc : cd.interfaces) {
-                                    if (!ifc.empty() && visited.insert(ifc).second) {
-                                        ifq.push_back(ifc);
-                                    }
-                                }
-                                break;  // found the class def
-                            }
-                        };
-                        for (const auto& cc : cls_chain) enqueue_ifaces(cc);
-                        for (size_t qi = 0;
-                             qi < ifq.size() && qi < 64; ++qi) {
-                            enqueue_ifaces(ifq[qi]);  // super-interfaces
-                        }
-                        // 3. Dispatch a default method with the exact
-                        //    descriptor (code, non-abstract).
-                        for (const auto& ifc : ifq) {
-                            for (const auto& cd : dex_report_->classes) {
-                                if (cd.name != ifc) continue;
-                                for (const auto& mi : cd.all_methods()) {
-                                    if (mi.code_offset == 0 || mi.is_abstract)
-                                        continue;
-                                    if (mi.descriptor != iface_proto) continue;
-                                    if (try_recursive_invoke(ifc, mi.name, args,
-                                                             return_val,
-                                                             result)) {
-                                        last_invoke_return_ = return_val;
-                                        trace.invoked_method =
-                                            ifc + "." + mi.name +
-                                            " [default-method " + iface_proto +
-                                            "]";
-                                        std::cerr << "[INTERFACE-DEFAULT] "
-                                                  << ifc << "." << mi.name
-                                                  << iface_proto
-                                                  << " (interface " << class_name
-                                                  << "." << method_name
-                                                  << ") → REAL DEX dispatched"
-                                                  << std::endl;
-                                        pc_ = pc + 3;
-                                        return true;
-                                    }
-                                }
-                                break;  // found the interface def
-                            }
+            // ────────────────────────────────────────────────────────────
+            // F-023 (DEX DEFAULT-INTERFACE-METHOD DISPATCH LAW): the class
+            // extends-walk cannot see methods that live ON an interface
+            // with code (DEX default methods). ART law: invoke-interface
+            // consults every transitively implemented interface of the
+            // receiver, including default methods. Generic: collect the
+            // implements-set of each class in the receiver's extends
+            // chain, close it over super-interfaces (bounded), then
+            // dispatch the method matching the EXACT descriptor with code.
+            // (Real-APK evidence: AndroidUiFrameClock.getKey default —
+            // CoroutineContext.plus NPE before first frame.)
+            // ────────────────────────────────────────────────────────────
+            // 1. Receiver extends-chain (bounded).
+            std::vector<std::string> cls_chain;
+            std::string c = heap_obj->class_descriptor;
+            for (int hop = 0; hop < 12 && !c.empty() &&
+                              c != "Ljava/lang/Object;"; ++hop) {
+                cls_chain.push_back(c);
+                auto it2 = class_to_superclass_.find(c);
+                if (it2 == class_to_superclass_.end()) break;
+                c = it2->second;
+            }
+            // 2. Implements-set with transitive super-interfaces.
+            std::vector<std::string> ifq;
+            std::set<std::string> visited;
+            auto enqueue_ifaces = [&](const std::string& cls) {
+                for (const auto& cd : dex_report_->classes) {
+                    if (cd.name != cls) continue;
+                    for (const auto& ifc : cd.interfaces) {
+                        if (!ifc.empty() && visited.insert(ifc).second) {
+                            ifq.push_back(ifc);
                         }
                     }
+                    break;  // found the class def
+                }
+            };
+            for (const auto& cc : cls_chain) enqueue_ifaces(cc);
+            for (size_t qi = 0; qi < ifq.size() && qi < 64; ++qi) {
+                enqueue_ifaces(ifq[qi]);  // super-interfaces
+            }
+            // 3. Dispatch a default method with the exact descriptor
+            //    (code, non-abstract).
+            for (const auto& ifc : ifq) {
+                for (const auto& cd : dex_report_->classes) {
+                    if (cd.name != ifc) continue;
+                    for (const auto& mi : cd.all_methods()) {
+                        if (mi.code_offset == 0 || mi.is_abstract) continue;
+                        if (mi.descriptor != iface_proto) continue;
+                        if (try_recursive_invoke(ifc, mi.name, args,
+                                                 return_val, result)) {
+                            last_invoke_return_ = return_val;
+                            trace.invoked_method =
+                                ifc + "." + mi.name +
+                                " [default-method " + iface_proto + "]";
+                            std::cerr << "[INTERFACE-DEFAULT] " << ifc << "."
+                                      << mi.name << iface_proto
+                                      << " (interface " << class_name << "."
+                                      << method_name << ") → REAL DEX dispatched"
+                                      << std::endl;
+                            pc_ = pc + 3;
+                            return true;
+                        }
+                    }
+                    break;  // found the interface def
                 }
             }
         }
-    } else if (!args.empty() && method_name == "addFragmentToStack") {
+    }
+    if (!heap_obj && !args.empty() && method_name == "addFragmentToStack") {
         // EXP-058: Debug — why is interface dispatch not working?
         int arg0_type = static_cast<int>(args[0].type);
         uint32_t arg0_obj = args[0].object_id;
@@ -12751,11 +12807,21 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
     int32_t a_val = if22t_int(a); \
     int32_t b_val = if22t_int(b); \
     bool taken = false; \
-    bool a_is_ref = (a.type == DalvikType::OBJECT_REF || a.type == DalvikType::NULL_REF); \
-    bool b_is_ref = (b.type == DalvikType::OBJECT_REF || b.type == DalvikType::NULL_REF); \
+    /* F-069: CLASS_REF participates in reference comparison like
+       OBJECT_REF/NULL_REF — its identity token (stable per descriptor,
+       see execute_const_class) is the compared word. Kotlin/Java compare
+       Class objects with == (Intrinsics.areEqual fast path, map keys,
+       KClass lookups); the old code fell to the int_val path where every
+       CLASS_REF carried int_val=0, so if-eq on two DIFFERENT Class
+       values was TAKEN and if-eq on two SAME-Class values was
+       indistinguishable from any other zero. */ \
+    bool a_is_ref = (a.type == DalvikType::OBJECT_REF || a.type == DalvikType::NULL_REF || a.type == DalvikType::CLASS_REF); \
+    bool b_is_ref = (b.type == DalvikType::OBJECT_REF || b.type == DalvikType::NULL_REF || b.type == DalvikType::CLASS_REF); \
     if (a_is_ref && b_is_ref) { \
-        uint32_t a_obj = (a.type == DalvikType::OBJECT_REF) ? a.object_id : 0; \
-        uint32_t b_obj = (b.type == DalvikType::OBJECT_REF) ? b.object_id : 0; \
+        uint32_t a_obj = (a.type == DalvikType::OBJECT_REF) ? a.object_id \
+                        : (a.type == DalvikType::CLASS_REF) ? a.ref_id : 0; \
+        uint32_t b_obj = (b.type == DalvikType::OBJECT_REF) ? b.object_id \
+                        : (b.type == DalvikType::CLASS_REF) ? b.ref_id : 0; \
         taken = (a_obj op b_obj); \
     } else { \
         taken = (a_val op b_val); \
@@ -15571,6 +15637,47 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // ── F-069: java.lang.Object.equals(Object) reference-identity law ──
+    // OpenJDK: the base equals() compares references. For CLASS_REF
+    // receivers/values the bridge is the only resolution path (no heap
+    // object backs a Class value), and the reference-identity answer is
+    // equality of the referred class descriptor (tokens are per-descriptor
+    // stable — see execute_const_class). Covers Intrinsics.areEqual
+    // fast-path misses where the receiver is a Class value (real-APK hit:
+    // dooz viewModelFactory initializer-key lookup —
+    // "No initializer set for given class androidx.lifecycle.A").
+    if (class_name == "Ljava/lang/Object;" && method == "equals") {
+        static thread_local const bool f069d =
+            std::getenv("MINIANDROID_F069_DIAG") != nullptr;
+        if (f069d && args.size() >= 2) {
+            std::cerr << "[F069-EQUALS] x:type=" << static_cast<int>(args[0].type)
+                      << ":oid=" << args[0].object_id
+                      << ":cls=" << args[0].class_desc
+                      << " y:type=" << static_cast<int>(args[1].type)
+                      << ":oid=" << args[1].object_id
+                      << ":cls=" << args[1].class_desc
+                      << std::endl;
+        }
+        if (args.size() >= 2) {
+            const DalvikValue& x = args[0];
+            const DalvikValue& y = args[1];
+            bool eq = false;
+            if (x.type == DalvikType::CLASS_REF &&
+                y.type == DalvikType::CLASS_REF) {
+                eq = (x.class_desc == y.class_desc);
+            } else if (x.type == DalvikType::OBJECT_REF &&
+                       y.type == DalvikType::OBJECT_REF) {
+                eq = (x.object_id != 0 && x.object_id == y.object_id);
+            } else if (x.type == DalvikType::NULL_REF &&
+                       y.type == DalvikType::NULL_REF) {
+                eq = true;
+            }
+            result = DalvikValue::make_bool(eq);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+
     // ────────────────────────────────────────────────────────────────────────
     // P0.9 — Context.getPackageManager → PackageManager singleton
     // ────────────────────────────────────────────────────────────────────────
@@ -15578,6 +15685,42 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
         result = get_or_create_singleton("Landroid/content/pm/PackageManager;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ── F-067 (R-NEW-291): Activity/Service.getApplication → the attached
+    // Application instance. AOSP law: the Application is created once by
+    // ActivityThread before any activity/service exists and bound to them
+    // during attach(); getApplication() returns that instance (never null
+    // for a launched component). The runtime layer (EXP093-APP path) hooks
+    // the manifest Application object id into the engine; identity is the
+    // contract — androidx ComponentActivity.getViewModelStore() verifies
+    // application != null ("Your activity is not yet attached to the
+    // Application instance…") and the lifecycle-callback registry lives on
+    // the SAME object the app registered itself on.
+    // Real-APK hit: dooz MainActivity.onCreate → ViewModelStore lazy init
+    // → ComponentActivity.e → Activity.getApplication() == null → ISE →
+    // first frame died.
+    if (method == "getApplication" &&
+        (class_name.find("Activity") != std::string::npos ||
+         class_name.find("Service") != std::string::npos)) {
+        if (application_object_id_ != 0 &&
+            heap_.has_object(application_object_id_)) {
+            result = DalvikValue::make_object(
+                application_object_id_,
+                application_class_desc_.empty()
+                    ? "Landroid/app/Application;"
+                    : application_class_desc_);
+        } else {
+            // No manifest Application class ran — allocate the framework
+            // default singleton (android.app.Application fallback).
+            DalvikValue app_singleton =
+                get_or_create_singleton("Landroid/app/Application;");
+            application_object_id_ = app_singleton.object_id;
+            application_class_desc_ = "Landroid/app/Application;";
+            result = app_singleton;
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
