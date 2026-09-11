@@ -1,0 +1,21 @@
+{
+ "head": "bcfd4405",
+ "gate": {
+  "command": "bash scripts/run_test_battery.sh",
+  "stages_at_head": 91,
+  "last_result": "ALL PASS (91/91) at bcfd4405"
+ },
+ "fixtures": {
+  "f024_eof_law": "7 bands",
+  "f028_float_law": "7 bands",
+  "f030_zero_law": "7 bands",
+  "f040_arrays_fill": "7 bands",
+  "f044_return_descriptor": "7 bands",
+  "f050_frame_pump": "7 bands"
+ },
+ "sentinels": {
+  "hello_color": "golden frame 11e0056320d8546d\u2026 (3-run byte-identical)",
+  "dooz": "rc=0, frontier=first-frame (honest blank)",
+  "tictactoe_golden": "9/9 clicks, fixture-only claim law"
+ }
+}

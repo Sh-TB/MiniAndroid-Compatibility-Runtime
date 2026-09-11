@@ -1,0 +1,6 @@
+{
+ "head": "bcfd4405",
+ "link_target": "build/miniandroid",
+ "objects": [],
+ "note": "CMake absent; Makefile object graph is the build graph (reuse-first \u00a768)"
+}
