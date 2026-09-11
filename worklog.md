@@ -5224,3 +5224,21 @@ Work Log:
 Stage Summary:
 - ChessClock real execution + real deterministic screenshot reproduced on current HEAD (byte-exact vs Wave-4); evidence path + SHA registered.
 - No code changed, no root opened/closed; battery and registry untouched. F-077 (dooz TrieNode) remains the standing frontier.
+
+---
+Task ID: MC3-DEMOGIF-2
+Agent: Super Z (main)
+Task: User asked to see the obtained sample image and to re-test the old 'demo proof' GIF (previously incomplete) to verify whether it really improved.
+
+Work Log:
+- Displayed the ChessClock real screenshot (campaign3 evidence) in-chat.
+- Located the old proof: docs/demo/demo_proof.gif (f12af85a…, 2026-09-04, 540x560, 9 real frames) + generator scripts/make_demo_proof.py + fixture demo/validate_demo_proof.sh.
+- Rebuilt demo APK from source (5b273c2ef15c7896…, zero code changes); ran validate_demo_proof.sh on the F-076 binary: VALIDATION_PASS — rc=0 ×2, 9/9 distinct frame hashes, status text advances exactly per DEX law (count=1..9, pos grid, color cycle), deterministic replay = identical SHA256 sequence.
+- Provenance gate vs the COMMITTED 2026-09-04 manifest honestly FAILED (all 9 frames differ) — the demo render changed since Sep 4.
+- Pixel forensics of fresh frames: text now clean stacked lines (old: overlapping glyphs), real Material TAP ME button (old: stretched gray band), box color cycles exact COLORS[] values; BUT box patch pinned 160x160 at (0,132) in ALL frames while declared pos cycles the grid — FrameLayout margins ignored; root LinearLayout MATCH_PARENT wraps to 600x1432 (white margins); button wrap-width. Old build moved the box + filled window → real interaction-visual regression.
+- Registered R-NEW-302 OBSERVED-FAIL P1 (registry 301→302, OBSERVED-FAIL 3→4).
+- Regenerated docs/demo/{demo_proof.gif,demo_frames.png,demo_manifest.json} from the fresh runtime frames (provenance gate 9/9 byte-match); new GIF SHA256 2388c573f2b3f091…; EVIDENCE.md re-test addendum written.
+
+Stage Summary:
+- Honest verdict delivered: demo proof text/button IMPROVED, box-move visual REGRESSED (R-NEW-302 open); interaction state machine + determinism fully intact.
+- Repo demo assets now byte-consistent with the current HEAD render; no runtime code changed.
