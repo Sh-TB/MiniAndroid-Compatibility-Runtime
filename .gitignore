@@ -117,3 +117,5 @@ miniandroid/run/m9_*/
 # tools/verify/apk_artifacts.py; curated proof artifacts live under docs/ and
 # the repo-root artifacts/ committed in 3ea1ffc3)
 artifacts/
+# S19: session probe run dirs follow the m9_* external-artifact law
+miniandroid/run/s19_*/
