@@ -1,9 +1,75 @@
 # MiniAndroid — a from-scratch Android APK Compatibility Runtime
 
-**Current Release:** `v0.0.3 — Chantecler` (Compose execution frontier + root-law closure, 2026-09-10)
-**Previous:** `v0.0.2 — Australorp` (real-APK execution proof, 2026-09-04) · `v0.0.1 — Brahma` (2026-09-03)
-**Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (master, not a fork)
+<p align="center">
+  <img src="docs/assets/miniandroid-silkie-mascot.png" width="132" alt="MiniAndroid mascot — a fluffy Silkie hen (decorative only)">
+</p>
+<p align="center"><sub>Decorative project mascot — a Silkie hen. Not an Android/Google mark; carries no claim.</sub></p>
+
+**Current Release:** `v0.0.5 — Silkie` (Hello Color real-APK execution milestone, 2026-09-12)
+**Previous:** `v0.0.4-Chantecler` (Choreographer frame-pump family F-050) · `v0.0.3 — Chantecler` (Compose frontier + root-law closure) · `v0.0.2 — Australorp` (real-APK execution proof) · `v0.0.1 — Brahma`
+**Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (original project, not a fork)
 **License:** MIT
+
+---
+
+## Verified Real APK Execution
+
+<p align="center">
+  <img src="docs/assets/hello_color_readme_540.png" width="330" alt="Hello Color frame rendered by MiniAndroid's own runtime from a real APK">
+</p>
+
+**Hello Color is now verified as a real APK execution and rendering path in MiniAndroid.**
+The image above is the runtime's own framebuffer capture — not a mockup, not a reference
+image, not a golden used as input.
+
+Provenance chain (forensically verified, three-run deterministic):
+
+```text
+Source → APK (77863f1f…) → DEX → MiniAndroid Dalvik interpreter
+      → Android Activity/View calls → framebuffer (PPM fb9f1df2…)
+      → PNG (11e00563…) — pixel-identical across 3 independent runs
+```
+
+Full forensic record: [`docs/evidence/hello_color_golden/PROVENANCE_FORENSIC.json`](docs/evidence/hello_color_golden/PROVENANCE_FORENSIC.json)
+(execution traces, opcode-level `REAL_DALVIK_INTERPRETER` evidence, framebuffer↔PNG byte
+identity, golden-never-input proof). The README image is a pure Lanczos downscale of the
+real frame — transform + SHA relation in [`docs/assets/DERIVED_IMAGE_PROVENANCE.json`](docs/assets/DERIVED_IMAGE_PROVENANCE.json).
+
+---
+
+## Current Achievements
+
+Only what the committed evidence supports — each row is machine-checkable at this tag:
+
+1. **REAL APK EXECUTION + REAL RUNTIME RENDERING (Hello Color)** — a real aapt2+ECJ+D8-built
+   APK (`77863f1f…`) executes through the first-party DEX interpreter and renders through the
+   first-party software renderer (`PROVENANCE_FORENSIC.json`).
+2. **Deterministic rendering** — three independent runs produce the byte-identical framebuffer
+   (PPM `fb9f1df2…` ×3) and PNG (`11e00563…` ×3); replay determinism holds.
+3. **Real DEX interpreter execution** — opcode-level trace with pc/opcode/return values and
+   `execution_source=REAL_DALVIK_INTERPRETER` (`exp031_5/traces/…/opcode_trace.json`).
+4. **Real Android resource loading** — `setContentView` dispatches with a real resource ID
+   (`2130903040`) resolved from a real binary `resources.arsc`.
+5. **Real View interaction from app bytecode** — `setBackgroundColor`, `setTextColor` ×3,
+   `findViewById` ×4 (real heap objects) are invoked by the app's own DEX, not by the host.
+6. **HelloWorld (golden battery)** — §28 golden battery 26 checks PASS at the F-076 binary;
+   3-run byte-identical (S18 record).
+7. **TicTacToe (real interaction)** — X to move → O to move → **X WINS** across a 10-frame
+   golden with per-frame SHA256 (`docs/evidence/tictactoe_golden/`); §29 interaction +
+   determinism 8 checks PASS at F-076.
+8. **ChessClock (real corpus APK)** — rc=0 ×3 with a real deterministic framebuffer screenshot
+   (1080×1920, 2,073,600/2,073,600 painted pixels, SHA `e4a2d7c9…` ×3 byte-identical;
+   `docs/evidence/campaign3_chessclock_real_screenshot/`).
+9. **Runtime root-fix progress** — **F-074** engine-level superclass-dispatch walk;
+   **F-075** polymorphic zero/null propagation law; **F-076** active-cycle static identity —
+   nested coroutine starts now execute real DEX and the Compose Recomposer runner loop starts
+   (S21/S22 evidence bundles).
+10. **Current open frontier (hidden nowhere)** — **F-077** (Compose initial composition hits a
+    kotlinx TrieNode invariant NPE — the one remaining break before the first Compose frame
+    request) and **R-NEW-302** (FrameLayout margins + root MATCH_PARENT window-fill regression
+    in the demo layout path). MiniAndroid is an actively developed compatibility runtime;
+    compatibility/runtime semantics are still being closed, and every gap above is tracked in
+    `root_registry.json` (302 roots).
 
 ---
 
@@ -11,16 +77,16 @@
 
 | Field | Value |
 |---|---|
-| **HEAD** | M8 commit (F-050 family; see `docs/ROOT_DISCOVERY_INDEX.md` for the exact hash after push) |
-| **DATE** | 2026-09-10 |
-| **BATTERY** | **91 stages — ALL PASS** (88 + F-050 build/run/golden) |
-| **REAL APK** | 13-app open-source corpus + lighthouse dooz `d81292cd…` (SHA-pinned) |
-| **PROVEN ROOTS** | F-028, F-028h, F-029, F-030, F-031..F-033, F-035, F-036, F-039, F-040, F-041, F-042, F-043, F-044, F-045, **F-050a (Choreographer frame pump — new)**, **F-050b (Throwable message law — new)**, **F-050c (AtomicLongFieldUpdater getAndIncrement — new)**, **F-050d (Boolean.TRUE/FALSE statics — new)**, **F-050e (registry invariant law — new)** — evidence links in `docs/ROOT_IMPACT_MATRIX.md` |
-| **CURRENT FRONTIER** | Job-active cancellation of the Compose frame await (the Recomposer's withFrameNanos continuation is cancelled via its invokeOnCancellation handler before the pump fires) — root-located, PENDING (M9) |
-| **TicTacToe (real APK)** | rc=0 SUCCESS, 3-run byte-identical — libGDX GLSurfaceView boundary (T3/BLANK, unchanged historical record) |
+| **HEAD** | `v0.0.5-Silkie` release tag (F-076 binary lineage; exact hash = this tag) |
+| **DATE** | 2026-09-12 |
+| **BATTERY** | **91/92 PASS** at F-076 (§28 helloworld 26 checks, §29 tictactoe 8 checks, F-074 3/3, F-050 — zero regressions; the 1 FAIL is REAL, not environmental: GATE H simplestopwatch glyph-to-framebuffer gap, queued) |
+| **REAL APK** | Hello Color `77863f1f…` (forensic provenance, 3-run deterministic) · ChessClock `5ca6f2c5…` (deterministic frame ×3) · 13-app open-source corpus + lighthouse dooz `d81292cd…` (SHA-pinned) |
+| **PROVEN ROOTS** | F-028, F-028h, F-029, F-030, F-031..F-033, F-035, F-036, F-039..F-045, **F-050a..e (Choreographer frame pump family)**, F-053 (GradientDrawable shapes), F-054..F-057 (hashCode/Long-bits/Arrays.fill/view-node duality), **F-070..F-073 (S20: identity-equals, invoke-range static flag, CAS, Object sentinel)**, **F-074/F-075 (S21: superclass dispatch walk, polymorphic zero law)**, **F-076 (S22: active-cycle static identity — nested coroutine starts)** — evidence links in `docs/ROOT_IMPACT_MATRIX.md` + `docs/root-searchlight/` |
+| **CURRENT FRONTIER** | **F-077** — Compose initial composition NPE (kotlinx TrieNode invariant, `K/t.s` check-cast): the one remaining broken transition before the first Compose frame request; heap-probe evidence live. Plus **R-NEW-302** (demo FrameLayout margins/MATCH_PARENT). Registry: 302 roots, honest status per root |
+| **TicTacToe (fixture golden)** | Real interaction X→O→X WINS, 10-frame golden, 3-run deterministic (§29 PASS). Corpus libGDX `tictactoe.apk` remains a GLSurfaceView boundary (historical T3/BLANK record, unchanged) |
 | **Telegram** | BLOCKED — official dl serves a 1.2 MB stub installer; the pinned 82 MB v10.14.5 artifact (`193ad551…`) is no longer reachable; fetch correctly rejects (zero-skip law) |
-| **IMPACT (M8)** | 4 blocker layers peeled in the dooz first-frame chain: scheduler state corruption (getAndIncrement decrement bug) → ISE "unexpected close status: -1" → channel-cancel cascade (Boolean.TRUE null) → frame callback never fired (Choreographer family) — all four fixed, micro-proven 7/7 bands + 3-run byte-identical |
-| **KNOWN LIMITATIONS** | dooz framebuffer still 0 non-white (deterministic BLANK, SHA `31ddd4d5…`); Compose tap→recompose unproven; WeakReference + DecorView content-hierarchy roots open |
+| **IMPACT (S22)** | F-076 un-stubs legitimate nested coroutine starts (engine active-cycle guard keyed statics by (class,method) only): Recomposer runner while-loop now STARTS, initial composition advances deep into slot-table writes — before F-077's TrieNode break |
+| **KNOWN LIMITATIONS** | dooz/Compose framebuffer still 0 non-white (F-077, deterministic `31ddd4d5…`); R-NEW-302 demo box-position regression (margins ignored); GATE H glyph gap; WeakReference + DecorView content-hierarchy roots open |
 
 **DOOZ HAS ADVANCED THROUGH THE RECOMPOSER / FRAME-CLOCK MACHINERY
 (Choreographer family landed, four scheduler-corruption roots closed),

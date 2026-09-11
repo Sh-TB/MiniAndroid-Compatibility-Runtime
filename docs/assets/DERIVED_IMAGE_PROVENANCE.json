@@ -1,0 +1,9 @@
+{
+ "source_image": "docs/evidence/hello_color_golden/retest_run1_frame.png",
+ "source_sha256": "11e0056320d8546dbb54030fc6d51cbc163e635d47bbbb54899ca1984829e4f8",
+ "source_provenance": "REAL runtime framebuffer capture \u2014 see docs/evidence/hello_color_golden/PROVENANCE_FORENSIC.json (run1 of 3 deterministic runs, REAL APK EXECUTION + REAL RUNTIME RENDERING)",
+ "derived_image": "docs/assets/hello_color_readme_540.png",
+ "derived_sha256": "0b67bf61f57f6302d5ce05bb7478f78ef7c67bc639e79f5b4560e996f56ed3f2",
+ "transform": "Lanczos downscale 1080x1920 -> 540x960 (pure resample; zero pixel edits, zero content changes)",
+ "why": "1080-wide portrait frame is too large for README layout; README needs a smaller rendering of the SAME real pixels"
+}
