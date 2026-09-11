@@ -5259,3 +5259,20 @@ Work Log:
 Stage Summary:
 - Full provenance chain closed honestly: sources → byte-identical APK → 3× real runs → real DEX/View/lifecycle traces → raw framebuffer → PNG == golden. VERDICT: REAL APK EXECUTION + REAL RUNTIME RENDERING.
 - No runtime code changed; no root opened; battery/registry untouched.
+
+---
+Task ID: MC3-RELEASE-4
+Agent: Super Z (main)
+Task: MASTER RELEASE — HELLO COLOR VERIFIED MILESTONE: move the forensically-proven Hello Color milestone to the GitHub front page, publish a real release; no runtime code changes; R-NEW-302 stays open and independent.
+
+Work Log:
+- WAVE 1: retest_run1_frame.png / frame_1080x1920.png verified — both SHA 11e0056320d8546d…, compatible with PROVENANCE_FORENSIC.json (run1 sha + apk 77863f1f…). README image derived by pure Lanczos downscale 1080x1920→540x960 (zero pixel edits): docs/assets/hello_color_readme_540.png SHA 0b67bf61f57f6302…, relation recorded in docs/assets/DERIVED_IMAGE_PROVENANCE.json.
+- WAVE 2: README front page — "## Verified Real APK Execution" with the real frame, transparent non-mockup statement, full chain Source→APK→DEX→interpreter→Activity/View→framebuffer→PNG, links to PROVENANCE_FORENSIC.json + DERIVED_IMAGE_PROVENANCE.json.
+- WAVE 3: "## Current Achievements" — 10 evidence-backed items (Hello Color real execution, determinism ×3, opcode-level REAL_DALVIK_INTERPRETER trace, resources.arsc loading, app-bytecode View calls, HelloWorld §28 26 checks, TicTacToe X→O→X WINS §29, ChessClock deterministic frame e4a2d7c9…×3, F-074/F-075/F-076, open frontier F-077 + R-NEW-302 explicitly NOT hidden). Stale "Latest Verified Progress" table updated to current truth (battery 91/92 with real GATE H FAIL; registry 302; frontier F-077).
+- WAVE 4: original flat-art Silkie hen mascot drawn (transparent bg, no brand marks): docs/assets/miniandroid-silkie-mascot.png SHA 3fae43a8dddb57e5… (decorative-only caption in README).
+- WAVE 5: version chosen from real convention (Brahma→Australorp→Chantecler chicken-breed line): v0.0.5-Silkie (v0.0.4-Chantecler already existed on remote; no overwrite). Release notes: docs/RELEASE_v0.0.5-Silkie.md.
+- WAVE 6: git status/diff clean-check; registry 302/302 CONSISTENT, R-NEW-302 OBSERVED-FAIL kept open; all README-referenced paths verified present; commit 5db6d41b pushed (851a1ec7..5db6d41b), annotated tag v0.0.5-Silkie pushed (30b6fffffa81…), ls-remote verified both; GitHub Release created via API (id 387313105, published, not draft): https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/releases/tag/v0.0.5-Silkie
+- Zero runtime code changed; F-077 and R-NEW-302 untouched.
+
+Stage Summary:
+- Hello Color milestone live on the project front page with a real runtime frame and full provenance linkage; real release v0.0.5-Silkie published with honest Known-Open-Work section.
