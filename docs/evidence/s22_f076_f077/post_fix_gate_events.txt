@@ -1,0 +1,23 @@
+[S22] entry#1 Landroidx/compose/ui/platform/K;.o args(3): obj=389(Landroidx/compose/ui/platform/K;) obj=380(Landroidx/compose/ui/platform/J;) obj=390(LC1/g;)
+[M3-19-CYCLE] LW1/E;.invoke#480 re-entered while active on the call stack (depth=13) — active-cycle stub, lifetime_calls=2
+[QUEUE] Runnable id=388 enqueued (delay=0ms, ready_at=1000000000ms virtual, queue_depth=1)
+[CHOREO] postFrameCallback cb=388 class=Landroidx/compose/ui/platform/J$c; delay=0ms ready_at=1000000000ns pending=1
+[S22] entry#2 LF/E0;.t args(2): obj=657(LF/E0;) obj=137(Ly1/l;)
+[S22] entry#3 LF/E0$a;.t args(2): obj=679(LF/E0$a;) obj=137(Ly1/l;)
+[S22] entry#4 LF/F0;.j args(4): obj=626(LF/F0;) obj=674(Lb2/u;) obj=393(LF/n0;)
+[S22] entry#5 LF/F0;.t args(2): obj=680(LF/F0;) obj=137(Ly1/l;)
+[QUEUE] Runnable id=711 enqueued (delay=0ms, ready_at=1000000000ms virtual, queue_depth=2)
+[S22] entry#6 Landroidx/compose/ui/platform/K;.o args(3): obj=389(Landroidx/compose/ui/platform/K;) obj=77(Ljava/lang/Boolean;) obj=483(LW1/w;)
+[S22] entry#7 Landroidx/compose/ui/platform/K;.o args(3): obj=389(Landroidx/compose/ui/platform/K;) obj=737(Ljava/lang/Integer;) obj=529(Lb2/y$a;)
+[M3-19-CYCLE] LX/y;.a re-entered while active on the call stack (depth=13) — active-cycle stub, lifetime_calls=2
+[M3-19-CYCLE] LX/y;.a re-entered while active on the call stack (depth=13) — active-cycle stub, lifetime_calls=3
+[TRIENODE] m recv=1604 args( obj=1692 i=0 obj=1709 obj=1707) state{a=268435456 b=0 len=2 null_slots=0}
+[M3-19-CYCLE] Landroidx/compose/ui/platform/AndroidComposeView;.getAccessibilityManager#745 re-entered while active on the call stack (depth=26) — active-cycle stub, lifetime_calls=2
+[M3-19-CYCLE] Landroidx/compose/ui/platform/AndroidComposeView;.getClipboardManager#745 re-entered while active on the call stack (depth=26) — active-cycle stub, lifetime_calls=2
+[TRIENODE] s recv=1820 args( i=12) state{a=134676546 b=-2147483648 len=13 null_slots=12}
+[TRIENODE] m recv=1711 args( obj=1820 i=0 obj=1863 obj=1861) state{a=939655730 b=0 len=16 null_slots=12}
+[TRIENODE] s recv=1820 args( i=27) state{a=160401768 b=-2147483646 len=28 null_slots=26}
+[QUEUE] Runnable id=388 dequeued (ready_at=1000000000ms <= now=1000000000ms virtual)
+[QUEUE] Runnable id=711 dequeued (ready_at=1000000000ms <= now=1000000000ms virtual)
+[S22] entry#8 Landroidx/compose/ui/platform/K;.o args(3): obj=389(Landroidx/compose/ui/platform/K;) obj=1945(Lb2/B;) obj=534(Lb2/y$c;)
+[CHOREO] removeFrameCallback cb=388 removed=1
