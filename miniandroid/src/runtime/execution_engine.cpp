@@ -792,7 +792,18 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 // advances unconditionally; the record documents whether real
                 // app bytecode ran.
                 nlohmann::json rec;
+                // ── F-058 (R-NEW-279): AOSP pre/post-start fan-out ─────
+                // Activity.performStart law: onActivityPreStarted → onStart
+                // → onActivityStarted → onActivityPostStarted. The Report-
+                // Fragment inner callback (registered during onCreate via
+                // F-058 registry) drives the LifecycleRegistry to STARTED.
+                dalvik_engine_.dispatch_activity_lifecycle_callbacks(
+                    "onActivityPreStarted", dalvik_result);
                 bool start_ok = dispatch_app_lifecycle("onStart", &rec);
+                dalvik_engine_.dispatch_activity_lifecycle_callbacks(
+                    "onActivityStarted", dalvik_result);
+                dalvik_engine_.dispatch_activity_lifecycle_callbacks(
+                    "onActivityPostStarted", dalvik_result);
                 lifecycle_.transition_to(
                     framework::LifecyclePhase::STARTED,
                     std::string("Activity.onStart() dispatched via DEX "
@@ -801,7 +812,20 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                                   : " (framework stub answered — super-class "
                                     "law; record state advances regardless)"),
                     hs_clock->virtual_now_ms());
+                // ── F-058 (R-NEW-279): AOSP pre/post-resume fan-out ────
+                // Activity.performResume law: onActivityPreResumed →
+                // onResume → onActivityResumed → onActivityPostResumed.
+                // THE Compose first-frame gate: ReportFragment's callback
+                // maps this to LifecycleRegistry.handleLifecycleEvent
+                // (ON_RESUME) — WrappedComposition.setContent awaits ≥
+                // RESUMED before composing (R-NEW-246 causal chain).
+                dalvik_engine_.dispatch_activity_lifecycle_callbacks(
+                    "onActivityPreResumed", dalvik_result);
                 bool resume_ok = dispatch_app_lifecycle("onResume", &rec);
+                dalvik_engine_.dispatch_activity_lifecycle_callbacks(
+                    "onActivityResumed", dalvik_result);
+                dalvik_engine_.dispatch_activity_lifecycle_callbacks(
+                    "onActivityPostResumed", dalvik_result);
                 lifecycle_.transition_to(
                     framework::LifecyclePhase::RESUMED,
                     std::string("Activity.onResume() dispatched via DEX "

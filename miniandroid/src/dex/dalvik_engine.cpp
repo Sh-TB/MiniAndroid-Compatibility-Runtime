@@ -1583,6 +1583,18 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                 std::vector<DalvikValue> entry_args;
                 entry_args.push_back(activity_val);              // p0 = this (Activity)
                 entry_args.push_back(DalvikValue::make_null());  // p1 = Bundle (null)
+                // ── F-058 (R-NEW-279): AOSP pre-create fan-out ─────────
+                // ActivityThread.performLaunchActivity: after newInstance
+                // (the <init> above) and BEFORE onCreate, registered
+                // Application.ActivityLifecycleCallbacks receive
+                // onActivityPreCreated. dooz evidence: this is the hook
+                // whose observer (androidx/lifecycle/v) registers the
+                // ReportFragment inner callback (u$a.a → registerActivity
+                // LifecycleCallbacks) — without it the LifecycleRegistry
+                // never leaves INITIALIZED and WrappedComposition.setContent
+                // never runs (0-pixel first frame).
+                dispatch_activity_lifecycle_callbacks("onActivityPreCreated",
+                                                      result);
                 DalvikValue return_val;  // onCreate returns void
                 try {
                     log("🎯 Invoking onCreate via try_recursive_invoke (manifest class)");
@@ -1603,6 +1615,14 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                 } catch (const std::exception& e) {
                     log("❌ try_recursive_invoke threw: " + std::string(e.what()));
                 }
+                // ── F-058 (R-NEW-279): AOSP post-create fan-out ────────
+                // Activity.performCreate: after onCreate returns,
+                // mApplication.dispatchActivityCreated → onActivityCreated,
+                // then onActivityPostCreated (API 29 pre/post pairing).
+                dispatch_activity_lifecycle_callbacks("onActivityCreated",
+                                                      result);
+                dispatch_activity_lifecycle_callbacks("onActivityPostCreated",
+                                                      result);
                 goto entry_point_search_done;
             }
         }
@@ -2615,6 +2635,77 @@ void DalvikExecutionEngine::run_activity_default_init(const std::string& cls,
     } catch (const std::exception& e) {
         log(std::string("⚠️ activity <init> dispatch skipped: ") + e.what());
     }
+}
+
+// ── F-058 (R-NEW-279): Application.dispatchActivity* fan-out ────────────
+// AOSP ActivityThread law: each activity lifecycle transition is reported
+// to every registered Application.ActivityLifecycleCallbacks, in
+// registration order. The observer receives (this, activity[, bundle]).
+// Signature law (Application$ActivityLifecycleCallbacks, API 34):
+//   onActivityPreCreated(Activity, Bundle) / onActivityCreated(Activity, Bundle)
+//   onActivityPostCreated(Activity, Bundle)
+//   onActivityPreStarted/Started/PostStarted(Activity)
+//   onActivityPreResumed/Resumed/PostResumed(Activity)   [+ Paused/Stopped/
+//   SaveInstanceState(Bundle)/Destroyed pairs]
+// try_recursive_invoke returning false = observer lacks that method =
+// AOSP default no-op — skipped, never an error. Exceptions inside one
+// observer must not starve the others (AOSP dispatches sequentially; an
+// observer throw propagates to the app — here it is recorded and the
+// fan-out continues, the failure-honesty record keeps the evidence).
+size_t DalvikExecutionEngine::dispatch_activity_lifecycle_callbacks(
+    const std::string& event, DalvikExecutionResult& result) {
+    auto* as = shadow_registry_
+                   ? shadow_registry_->find_as<framework::ActivityShadow>()
+                   : nullptr;
+    if (!as) return 0;
+    const auto& cbs = as->lifecycle_callbacks();
+    if (cbs.empty()) return 0;
+    // The event's activity argument is the CURRENT activity (AOSP: the
+    // activity whose lifecycle is transitioning).
+    uint32_t act_id = as->current_activity_id();
+    const std::string& act_cls = as->current_activity_class();
+    if (act_id == 0 || !heap_.has_object(act_id)) return 0;
+    // Bundle argument: non-null only for the Created/SaveInstanceState
+    // families (AOSP passes the saved-state Bundle there, the hot path
+    // (re)launch passes the intent extras bundle; the interpreter's shadow
+    // Bundle answers — a null Bundle is the documented first-launch case).
+    const bool wants_bundle =
+        event == "onActivityPreCreated" || event == "onActivityCreated" ||
+        event == "onActivityPostCreated" ||
+        event == "onActivitySaveInstanceState" ||
+        event == "onActivityPreDestroyed" || event == "onActivityDestroyed" ||
+        event == "onActivityPostDestroyed";
+    size_t dispatched = 0;
+    for (const auto& cb : cbs) {
+        if (!heap_.has_object(cb.oid)) continue;  // GC'd observer — skip
+        std::vector<DalvikValue> args;
+        args.push_back(DalvikValue::make_object(cb.oid, cb.cls));   // p0 = this
+        args.push_back(DalvikValue::make_object(act_id, act_cls));  // p1 = activity
+        if (wants_bundle) args.push_back(DalvikValue::make_null()); // p2 = Bundle
+        DalvikValue ret;
+        size_t before = result.total_instructions_executed;
+        bool ok = false;
+        try {
+            ok = try_recursive_invoke(cb.cls, event, args, ret, result);
+        } catch (const std::exception& e) {
+            std::cerr << "[F058] observer threw during " << event << " obs="
+                      << cb.oid << " cls=" << cb.cls << " err=" << e.what()
+                      << std::endl;
+            continue;
+        }
+        if (ok) {
+            dispatched++;
+            std::cerr << "[F058-DISPATCH] " << event << " -> " << cb.cls
+                      << " obs=" << cb.oid
+                      << " ins=" << (result.total_instructions_executed - before)
+                      << std::endl;
+        }
+    }
+    if (dispatched > 0) {
+        std::cerr << "[F058] " << event << " fan-out: " << dispatched << "/"
+                  << cbs.size() << " observers executed" << std::endl;
+    }
+    return dispatched;
 }
 
 bool DalvikExecutionEngine::try_recursive_invoke(
@@ -10175,6 +10266,20 @@ bool DalvikExecutionEngine::execute_sget(uint32_t pc, InstructionTrace& trace) {
         }
     }
 
+    // ── F-062: capture the APK's compose_view_saveable_id_tag key ──────
+    // Name-based capture (no hardcoded resource id): the androidx
+    // saved-state migration reads this key on EVERY ancestor hop; the
+    // ViewShadow decor-anchor law (getTag) needs the same int to answer
+    // the terminating String at the window root. Evidence: dooz live run
+    // walk 477→102→8→101 dead-ended at the unanchored root and the
+    // `parent as View` unwrap NPE'd mid-composition (0-pixel first frame).
+    if (field_res.resolved &&
+        field_res.field_name == "compose_view_saveable_id_tag" &&
+        result_value.type == DalvikType::INT32 && result_value.int_val != 0) {
+        framework::ViewShadow::record_compose_saveable_id_key(
+            result_value.int_val);
+    }
+
     // EXP-053: Trace every sget (for resource ID investigation).
     // Throttled to first 100 to avoid log explosion.
     // EXP-063: Also trace R$string and R$drawable specifically.
@@ -13744,6 +13849,71 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
     log("  API BRIDGE: " + class_name + "." + method);
 
+    // ── F-059 (R-NEW-280): java.lang.ref reference-family law ──────────
+    // AOSP (libcore/java/lang/ref/Reference.java): Reference<T>.referent is
+    // captured by <init>(T[, ReferenceQueue]); Reference.get() returns it —
+    // cleared only by GC reclamation or clear(). The interpreter heap never
+    // reclaims reachable objects, so the AOSP-conformant answer is the
+    // STORED referent for Weak/Soft references, verbatim (object identity
+    // preserved). PhantomReference.get() is ALWAYS null (AOSP law).
+    // dooz evidence (live run s17_f058_dooz): androidx LifecycleRegistry
+    // (renamed p) holds its owner in a WeakReference; get()=null made it
+    // throw IllegalStateException "LifecycleOwner of this LifecycleRegistry
+    // is already garbage collected. It is too late to change lifecycle
+    // state." during onCreate (pc=362 in p.i) — R-NEW-280 blocking the
+    // R-NEW-279 registry chain at handleLifecycleEvent.
+    // Identity law: the referent round-trips as the SAME heap object id —
+    // androidx compares the owner and calls methods on it afterwards.
+    if (class_name == "Ljava/lang/ref/WeakReference;" ||
+        class_name == "Ljava/lang/ref/SoftReference;" ||
+        class_name == "Ljava/lang/ref/Reference;") {
+        if (method == "<init>") {
+            // invoke-direct {this, referent[, queue]}
+            if (args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0) {
+                DalvikValue referent =
+                    (args[1].type == DalvikType::OBJECT_REF)
+                        ? args[1]
+                        : DalvikValue::make_null();
+                heap_.set_object_field(args[0].object_id, "__referent__",
+                                       referent);
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        } else if (method == "get") {
+            if (args.size() >= 1 &&
+                args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0) {
+                auto ref =
+                    heap_.get_object_field(args[0].object_id, "__referent__");
+                if (ref && ref->type == DalvikType::OBJECT_REF) {
+                    result = *ref;
+                } else {
+                    result = DalvikValue::make_null();
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        } else if (method == "clear") {
+            if (args.size() >= 1 &&
+                args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0) {
+                heap_.set_object_field(args[0].object_id, "__referent__",
+                                       DalvikValue::make_null());
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
+    if (class_name == "Ljava/lang/ref/PhantomReference;" && method == "get") {
+        // AOSP PhantomReference.get(): always null, unconditionally.
+        result = DalvikValue::make_null();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
     // M5 scheduler-frontier diagnostic: identify the DEX caller of every
     // AtomicReferenceArray.compareAndSet/get bridge. Env-gated
     // (MINIANDROID_CAS_CALLER=1) and cap-limited; pure forensics, no
@@ -14733,6 +14903,112 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // Element stores reuse the heap "array[N]" convention (aget/aput read
     // it), and the value DalvikValue is stored VERBATIM so wide (J/D) and
     // reference (incl. null) component types round-trip with their tag.
+    // ────────────────────────────────────────────────────────────────────────
+    // F-060 — java.util.Arrays.copyOf / copyOfRange law (OpenJDK family).
+    // OpenJDK (Arrays.java): copyOf(original, newLength) allocates a NEW
+    // array of newLength, copies min(origLen, newLength) elements verbatim,
+    // pads the tail with the type default. copyOfRange(original, from, to)
+    // allocates (to - from), copies [from, min(to, origLen)), pads when
+    // to > origLen. Null original → NPE; negative newLength →
+    // NegativeArraySizeException; from > origLen → AIOOBE; from > to → IAE.
+    // Element identity: OBJECT elements round-trip as the SAME heap ids
+    // (aliasing semantics of the real Arrays.copyOf).
+    // dooz evidence (live run s17_f059_dooz): kotlin copyOf
+    // (M1/i.h → Arrays.copyOfRange) hit REC-MISS → null → the Kotlin
+    // intrinsic NPE "copyOf(this, newSize) must not be null" killed the
+    // composition chain (R-NEW-051/028 OpenJDK cluster).
+    // Overloads are name-dispatched (all 8 primitive + Object shapes of
+    // copyOf/copyOfRange share one behavior; statics carry no receiver).
+    if (class_name == "Ljava/util/Arrays;" &&
+        (method == "copyOf" || method == "copyOfRange")) {
+        const bool is_range = (method == "copyOfRange");
+        if (args.empty() || args[0].type != DalvikType::OBJECT_REF) {
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           std::string("null array in Arrays.") + method,
+                           "f060-copy-null");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        uint32_t src_id = args[0].object_id;
+        int32_t src_len = 0;
+        auto lenf = heap_.get_object_field(src_id, "__array_length__");
+        if (lenf.has_value() && lenf->type == DalvikType::INT32)
+            src_len = lenf->int_val;
+        if (src_len <= 0 && args[0].int_val > 0) src_len = args[0].int_val;
+        int32_t from = 0, new_len = 0;
+        if (is_range) {
+            // copyOfRange(original, from, to)
+            if (args.size() < 3) {
+                status = ApiCallTrace::Status::STUBBED;
+                result = DalvikValue::make_null();
+                return false;
+            }
+            from = dalvik_int_value(args[1]);
+            int32_t to = dalvik_int_value(args[2]);
+            if (from > to) {
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               std::to_string(from) + " > " + std::to_string(to),
+                               "f060-copy-range-order");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            if (from < 0 || from > src_len) {
+                throw_deferred("Ljava/lang/ArrayIndexOutOfBoundsException;",
+                               "fromIndex " + std::to_string(from) +
+                                   " out of bounds for length " +
+                                   std::to_string(src_len),
+                               "f060-copy-range-from");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            new_len = to - from;
+        } else {
+            // copyOf(original, newLength)
+            if (args.size() < 2) {
+                status = ApiCallTrace::Status::STUBBED;
+                result = DalvikValue::make_null();
+                return false;
+            }
+            new_len = dalvik_int_value(args[1]);
+            if (new_len < 0) {
+                throw_deferred("Ljava/lang/NegativeArraySizeException;",
+                               std::to_string(new_len),
+                               "f060-copy-negsize");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+        }
+        // Allocate the NEW array (heap convention: Larray; + both length
+        // fields + int_val carrier — mirrors the NEW_ARRAY path).
+        uint32_t dst_id = heap_.allocate("Larray;", pc_, 0);
+        DalvikValue dst;
+        dst.type = DalvikType::OBJECT_REF;
+        dst.object_id = dst_id;
+        dst.class_desc = "Larray;";
+        dst.int_val = new_len;
+        heap_.set_object_field(dst_id, "__new_array_length__",
+                               DalvikValue::make_int(new_len));
+        heap_.set_object_field(dst_id, "__array_length__",
+                               DalvikValue::make_int(new_len));
+        // Copy [from, min(from + new_len, src_len)) element-by-element.
+        int32_t copy_end =
+            std::min(from + new_len, src_len);
+        for (int32_t i = from; i < copy_end; ++i) {
+            auto elem = heap_.get_object_field(
+                src_id, "array[" + std::to_string(i) + "]");
+            if (elem.has_value()) {
+                heap_.set_object_field(
+                    dst_id, "array[" + std::to_string(i - from) + "]", *elem);
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = dst;
+        return true;
+    }
     if (class_name == "Ljava/util/Arrays;" && method == "fill" &&
         (args.size() == 2 || args.size() == 4)) {
         // F-040 WIDE-DIAG (env-gated): expose the packed arg tags for the
