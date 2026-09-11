@@ -1,0 +1,7 @@
+S21 GATE (inherited from S20 b7d654a5 — the 6-line evidence):
+[UC009-WIRE] drain round=0 runnable(s)=2
+[UC009-WIRE] Runnable id=687 class=Lb2/h;
+[UC009-WIRE] Runnable id=381 class=Landroidx/compose/ui/platform/J$c;
+[INTERFACE-SIG] LW1/N;.run()V (interface Ljava/lang/Runnable;.run) → REAL DEX dispatched
+[INTERFACE-SIG] LW1/N;.run()V (interface Ljava/lang/Runnable;.run) → REAL DEX dispatched
+[CHOREO] removeFrameCallback cb=381 removed=1
