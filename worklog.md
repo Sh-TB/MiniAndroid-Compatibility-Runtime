@@ -369,3 +369,20 @@ Work Log:
 Stage Summary:
 - All three user tasks of this series COMPLETE and on GitHub (0383f19f, bcfd4405, 3ea1ffc3).
 - NEXT FRONTIER: R-NEW-279 (lifecycle callback registry) via dooz DEX trace at HEAD; then R-NEW-285 dispatcher-pump/cancellation law; runtime-trace aggregation is the next tooling bottleneck.
+
+---
+Task ID: S17-AUDIT-1
+Agent: Super Z (session 17 — honest per-item audit for the user)
+Task: User challenged that the uploaded files (278-root searchlight; ~100-task roadmap) were not fully processed. Produce an honest itemized list of what was done / not done.
+
+Work Log:
+- Read all 8 uploaded files in /home/z/my-project/upload (2 exact duplicate pairs identified).
+- Reconciled counts: searchlight file = 278 roots (R-NEW-001..278; "267" is root #267's title "frame submission"); 8 new roots discovered (279..286) = 286 total. MASTER-ROADMAP v3 = 103 numbered sections / 897 checklist lines; published as Issue #9, all 886 checkboxes audited in session 10 (501 proven).
+- Parsed all 286 entries from docs/root-searchlight/ROOT_WORKLIST.md at HEAD ab97aac3 (= remote main, ls-remote verified).
+- Verified session-16 deliverables on GitHub: 0383f19f (publish debt zero), bcfd4405 (worklist), 3ea1ffc3 (PHASE 0 tooling + honest benchmark), ab97aac3 (worklog docs).
+- Extracted honest "not done" set: 6 OBSERVED-FAIL (R-NEW-025/228/246/279/285/286), 10 P0 PARTIAL (R-NEW-001/061/242/256/259/260 + others), 73 UNPROVEN, 16 RESEARCHED-NOT-IMPLEMENTED.
+- Generated user-facing audit: /home/z/my-project/download/AUDIT_همه_اقلام_وضعیت_واقعی.md (all 286 roots itemized with status+commit, roadmap 103-section status, MAIN CODER 51-section status, tasks A/B/C, verification paths).
+
+Stage Summary:
+- Honest answer delivered: NOTHING was falsely claimed complete. 50/286 verified, 100 partial, 73 unproven, 6 live-failing; frontier R-NEW-246 (dooz first frame) still open — M9 goal NOT closed.
+- Audit file saved to download/. No repo changes this session (audit only).
