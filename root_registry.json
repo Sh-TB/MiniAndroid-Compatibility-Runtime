@@ -1,21 +1,16 @@
 {
- "baseline_head": "7178c890",
+ "baseline_head": "5a2b7d99",
  "summary": {
-  "total": 299,
+  "total": 301,
   "by_status": {
    "PARTIAL": 103,
    "VERIFIED-CORRECT": 45,
    "UNPROVEN": 72,
-   "VERIFIED-FIXED": 17,
-   "OBSERVED-FAIL": 2,
+   "VERIFIED-FIXED": 19,
+   "OBSERVED-FAIL": 3,
    "RESEARCHED-NOT-IMPLEMENTED": 16,
-   "NOT-APPLICABLE": 42
-  },
-  "unresolved_by_priority": {
-   "P2": 12,
-   "P3": 74,
-   "P0": 1,
-   "P1": 3
+   "NOT-APPLICABLE": 42,
+   "IMPLEMENTED": 1
   },
   "verified_fixed": 19
  },
@@ -3009,6 +3004,26 @@
    "missing": "-",
    "next": "regression-watch",
    "commit": "PENDING-S21"
+  },
+  {
+   "id": "R-NEW-300",
+   "status": "IMPLEMENTED",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "S22 [M3-19-CYCLE] LB1/a;.B re-entered (depth=17) stubbed the runner's coroutineScope start; [S22] gate: pre-fix exactly one E0.t entry with ZERO E0$a.t/F0.t/K.u entries; DEX decode (s21_frame_probe + androguard): W1/D.c=coroutineScope tail-calls B1/a.B=startCoroutineUninterceptedOrReturn; W1/l0.e=withContext, W1/l0.a=launch; LF/E0.t=recompositionRunner, LF/E0$a->F/F0.t=the while-loop with awaitWorkAvailable+withFrameNanos. Upstream: kotlinx start helpers are static, depth-bounded, legitimately re-entrant. FIX F-076: active-cycle identity key extended to statics \u2014 leading object-arg ids (up to 2) appended; per-coroutine keys for nested starts, same-identity cycle stub preserved, MAX_RECURSION_DEPTH backstop. IMPACT: post-fix [S22] entry#3 E0$a.t, #4 F0.j, #5 F0.t \u2014 runner loop STARTS; initial composition advances into slot-table writes; dooz now exception-honest (rc=1 at the NEXT root F-077 instead of silent rc=0 death); cycle stubs 8->5; battery 91/92 (only pre-existing GATE H), F-074/F-050/\u00a728/\u00a729 all PASS.",
+   "missing": "micro-fixture with real DEX nested coroutine start (next pass); F-077 (R-NEW-301) blocks the dooz pixel chain downstream",
+   "next": "micro-test + close after F-077 clears the dooz path",
+   "commit": "PENDING-S22"
+  },
+  {
+   "id": "R-NEW-301",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "S22, first root reached AFTER F-076 (runner loop starts): initial composition (b1.k WrappedComposition.setContent -> F/y.b ComposerImpl -> F/l.s0 SlotTable -> K/f.putAll -> K/t.m merge -> K/t.s nodeAt) dies: NPE 'null cannot be cast to non-null type TrieNode' at the check-cast in K/t.s. [TRIENODE] heap probe: builder node o1820 born dataMap=0x08000000 nodeMap=0 len=1 then mutated to a=134676546(6 bits) b=0x80000000(1 bit) len=13 null_slots=12 \u2014 bitmaps claim 7 entries, buffer holds 1 non-null; later a=160401768(13) b=2 bits len=28 null=26 vs claimed 15. kotlinx.collections.immutable invariant: buffer.size == popcount(dataMap)+popcount(nodeMap), node-claimed slots never null. Integer.bitCount/Long.bitCount bridges verified CORRECT \u2014 corruption window narrowed to the mutable-put buffer-fill family K/t.k/l/n/o (index math or aput into the grown buffer).",
+   "missing": "exact instruction in the K/t.k/l/n/o family (probe in place: MINIANDROID_S22_TRACE=1 prints [TRIENODE] ctor/s/m with heap state)",
+   "next": "trace one put() op from N/d$a.put to the slot write",
+   "commit": "PENDING-S22"
   }
  ]
 }

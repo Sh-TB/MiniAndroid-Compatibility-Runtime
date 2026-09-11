@@ -1,0 +1,13 @@
+[THROWABLE-MSG] Ljava/lang/NullPointerException; msg="null cannot be cast to non-null type androidx.compose.runtime.external.kotlinx.collections.immutable.implementations.immutableMap.TrieNode<K of androidx.compose.runtime.external.kotlinx.collections.immutable.implementations.immutableMap.TrieNode, V of androidx.compose.runtime.external.kotlinx.collections.immutable.implementations.immutableMap.TrieNode>" caller=LM1/i;.d pc=5 depth=30
+[THROWABLE-STACK] #0 LM1/i;.d
+[THROWABLE-STACK] #1 LK/t;.s
+[THROWABLE-STACK] #2 LK/t;.m
+[THROWABLE-STACK] #3 LK/f;.putAll
+[THROWABLE-STACK] #4 LF/l;.s0
+[THROWABLE-STACK] #5 LF/y;.b
+[THROWABLE-STACK] #6 Landroidx/compose/ui/platform/V;.a
+[THROWABLE-STACK] #7 Landroidx/compose/ui/platform/D$i;.k
+[THROWABLE-STACK] #8 LN/a;.k
+[THROWABLE-STACK] #9 LF/y;.b
+[THROWABLE-STACK] #10 Landroidx/compose/ui/platform/D;.a
+[THROWABLE-STACK] #11 Landroidx/compose/ui/platform/b1;.k
