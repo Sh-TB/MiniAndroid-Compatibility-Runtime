@@ -1,0 +1,12 @@
+{
+ "run_id": "20260911-105958-s19_infra_smoke",
+ "commit": "534067c416bd33099e4c96f9ade9fa2a45070955",
+ "apk_sha256": null,
+ "status": "OBSERVED",
+ "exit_code": 0,
+ "started_at": "2026-09-11T10:59:58Z",
+ "duration_ms": 4,
+ "command": "bash -c echo smoke-ok; git rev-parse --short HEAD",
+ "tool": "evidence.py/1.0",
+ "env_gates": {}
+}
