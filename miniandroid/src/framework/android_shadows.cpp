@@ -1168,6 +1168,45 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         std::cerr << std::endl;
     }
     // Activity instance methods
+    // ── F-058 (R-NEW-279): ActivityLifecycleCallbacks registration ──────
+    // AOSP Activity.java L1627: registerActivityLifecycleCallbacks(cb)
+    // delegates to getApplication().registerActivityLifecycleCallbacks(cb).
+    // The registry lives on this shadow (process-wide activity hub) — same
+    // AOSP visibility: every activity event fans out to every observer.
+    // dooz evidence (1.0.18 DEX): ComponentActivity ctor chain reaches
+    // registerActivityLifecycleCallbacks twice (LifecycleDispatcher w$c +
+    // ReportFragment v.onActivityPreCreated → u$a.a) — the swallowed calls
+    // were the R-NEW-279 root (LifecycleRegistry stuck INITIALIZED →
+    // WrappedComposition.setContent never ran → 0-pixel first frame).
+    if (m == "registerActivityLifecycleCallbacks") {
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+            ctx.args[0].object_id != 0) {
+            register_lifecycle_callback(ctx.args[0].object_id,
+                                        ctx.args[0].object_class);
+            std::cerr << "[F058-REG] registerActivityLifecycleCallbacks obs="
+                      << ctx.args[0].object_id << " cls="
+                      << ctx.args[0].object_class << " total="
+                      << lifecycle_callback_count() << std::endl;
+        } else {
+            // AOSP: null callback → NullPointerException at the call site;
+            // hostile-input law: record, don't store, keep void result.
+            std::cerr << "[F058-REG] REJECTED null/non-object callback"
+                      << std::endl;
+        }
+        return CallResult::handled_void();
+    }
+    if (m == "unregisterActivityLifecycleCallbacks") {
+        bool removed = false;
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+            removed = unregister_lifecycle_callback(ctx.args[0].object_id);
+        }
+        std::cerr << "[F058-REG] unregisterActivityLifecycleCallbacks obs="
+                  << (ctx.args.empty() ? 0 : ctx.args[0].object_id)
+                  << " removed=" << removed << std::endl;
+        return CallResult::handled_void();
+    }
     if (m == "setContentView") {
         // setContentView(View) or setContentView(int layoutResId).
         if (!ctx.args.empty()) {
@@ -1652,6 +1691,9 @@ CallResult LayoutInflaterShadow::dispatch(const CallContext& ctx) {
     return CallResult::not_handled();
 }
 
+// F-062: APK-captured compose_view_saveable_id_tag key (see header).
+std::atomic<int32_t> ViewShadow::compose_saveable_id_key_{0};
+
 CallResult ViewShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     // View instance methods — receiver_id is the View heap object_id.
@@ -1892,8 +1934,35 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                       << std::endl;
         }
         if (!n) return CallResult::handled_null();
-        if (!tv || tv->kind == ViewNode::TagValue::NONE)
+        if (!tv || tv->kind == ViewNode::TagValue::NONE) {
+            // ── F-062: compose saveable-id anchor law ───────────────────
+            // androidx saved-state migration (compose ui 1.7) walks the
+            // ancestor chain reading R.id.compose_view_saveable_id_tag and
+            // force-unwraps each `parent as View` — on a real device the
+            // walk terminates at the window root because an ancestor
+            // carries the String anchor; a dead-end root (parent == null)
+            // NPEs the migration mid-composition (dooz live evidence:
+            // walk 477→102→8→101 → decor has no anchor → `parent as View`
+            // NPE at the root hop → composition aborted before the first
+            // frame). AOSP-equivalent behavior: the window-root decor
+            // carries a stable String anchor under the saveable-id key.
+            // The KEY is captured name-based from the app's own DEX
+            // (execute_sget* → record_compose_saveable_id_key) — no
+            // hardcoded resource id, no package name, deterministic value
+            // (3-run law): "compose_view".
+            if (n->parent_id == 0 && !ctx.args.empty() &&
+                compose_saveable_id_key() != 0 &&
+                ctx.arg_as_int(0) == compose_saveable_id_key()) {
+                if (std::getenv("MINIANDROID_TAG_TRACE")) {
+                    std::cerr << "[TAG-TRACE] F062 anchor hit view="
+                              << ctx.receiver_id << " key="
+                              << ctx.arg_as_int(0) << " -> \"compose_view\""
+                              << std::endl;
+                }
+                return CallResult::handled_string("compose_view");
+            }
             return CallResult::handled_null();
+        }
         if (tv->kind == ViewNode::TagValue::OBJECT)
             return CallResult::handled_object(tv->object_id,
                                               tv->object_class.empty()
