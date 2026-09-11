@@ -15637,7 +15637,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
-    // ── F-069: java.lang.Object.equals(Object) reference-identity law ──
+    // ── F-069/F-070: java.lang.Object.equals(Object) reference-identity law ──
     // OpenJDK: the base equals() compares references. For CLASS_REF
     // receivers/values the bridge is the only resolution path (no heap
     // object backs a Class value), and the reference-identity answer is
@@ -15646,21 +15646,61 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // fast-path misses where the receiver is a Class value (real-APK hit:
     // dooz viewModelFactory initializer-key lookup —
     // "No initializer set for given class androidx.lifecycle.A").
-    if (class_name == "Ljava/lang/Object;" && method == "equals") {
+    //
+    // F-070 (S19, R-NEW-294): the law must answer for EVERY receiver that
+    // reaches this bridge with the Object.equals descriptor on an instance
+    // call, not only when the call site names Ljava/lang/Object;.
+    // execute_invoke_virtual routes the bridge by the RECEIVER'S RUNTIME
+    // TYPE (api_class = runtime_type), so an R8-compiled Kotlin `==` on any
+    // app class (Intrinsics.areEqual → first.equals(second) — no per-class
+    // override generated) lands here with class_name = that concrete class
+    // and was previously answered STUBBED/false. Reaching this handler
+    // PROVES no DEX equals override exists (invoke-virtual already walked
+    // runtime type → super chain → declaring class) and no shadow claimed
+    // the receiver (try_shadow_dispatch runs earlier in this function), so
+    // OpenJDK identity semantics are exactly right. Framework classes with
+    // value semantics keep their own handlers: Ljava/lang/String; equals is
+    // handled later in this function (content law), TextUtils.equals is a
+    // STATIC call (excluded by the current_invoke_is_static_ gate), and any
+    // receiver whose class is absent from the app-DEX class map falls
+    // through unchanged.
+    // Real-APK hit: dooz Recomposer creation —
+    // LF/d0;.a (MonotonicFrameClock accessor) → context.get(MonotonicFrameClock.Key)
+    // → Element.get helper → Intrinsics.areEqual → Object.equals(obj, obj)
+    // on LF/b0$a; (the Key companion) → bridge answered false →
+    // "A MonotonicFrameClock is not available in this CoroutineContext"
+    // ISE → Recomposer creation failed → first frame 0 pixels.
+    if (method == "equals" && args.size() >= 2 && !current_invoke_is_static_) {
         static thread_local const bool f069d =
             std::getenv("MINIANDROID_F069_DIAG") != nullptr;
-        if (f069d && args.size() >= 2) {
-            std::cerr << "[F069-EQUALS] x:type=" << static_cast<int>(args[0].type)
-                      << ":oid=" << args[0].object_id
-                      << ":cls=" << args[0].class_desc
-                      << " y:type=" << static_cast<int>(args[1].type)
-                      << ":oid=" << args[1].object_id
-                      << ":cls=" << args[1].class_desc
-                      << std::endl;
+        const DalvikValue& x = args[0];
+        const DalvikValue& y = args[1];
+        // Receiver gates: either a heap object of an app-DEX-defined class
+        // (class_to_superclass_ is the DEX class map — framework classes
+        // like String are absent and keep their dedicated handlers), or a
+        // Class-token / null pair answered by the reference laws.
+        bool app_dex_receiver = false;
+        if (x.type == DalvikType::OBJECT_REF && x.object_id != 0 &&
+            heap_.has_object(x.object_id)) {
+            const auto* obj = heap_.get(x.object_id);
+            app_dex_receiver = obj && !obj->class_descriptor.empty() &&
+                               class_to_superclass_.count(obj->class_descriptor) != 0;
         }
-        if (args.size() >= 2) {
-            const DalvikValue& x = args[0];
-            const DalvikValue& y = args[1];
+        bool class_or_null_case =
+            (x.type == DalvikType::CLASS_REF && y.type == DalvikType::CLASS_REF) ||
+            (x.type == DalvikType::NULL_REF && y.type == DalvikType::NULL_REF);
+        if (app_dex_receiver || class_or_null_case) {
+            if (f069d) {
+                std::cerr << "[F069-EQUALS] x:type=" << static_cast<int>(x.type)
+                          << ":oid=" << x.object_id
+                          << ":cls=" << x.class_desc
+                          << " y:type=" << static_cast<int>(y.type)
+                          << ":oid=" << y.object_id
+                          << ":cls=" << y.class_desc
+                          << " recv_cls=" << class_name
+                          << (app_dex_receiver ? " APP-DEX" : " TOKEN/NULL")
+                          << std::endl;
+            }
             bool eq = false;
             if (x.type == DalvikType::CLASS_REF &&
                 y.type == DalvikType::CLASS_REF) {
