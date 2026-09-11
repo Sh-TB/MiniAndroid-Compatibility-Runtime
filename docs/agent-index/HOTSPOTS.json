@@ -1,0 +1,107 @@
+{
+ "head": "bcfd4405",
+ "window": "last 400 commits",
+ "note": "change frequency = risk/attention prior (not a defect list)",
+ "hotspots": [
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/dex/dalvik_engine.cpp",
+   "changes": 50
+  },
+  {
+   "file": "worklog.md",
+   "changes": 29
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/runtime/execution_engine.cpp",
+   "changes": 29
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/framework/android_shadows.h",
+   "changes": 22
+  },
+  {
+   "file": "scripts/run_test_battery.sh",
+   "changes": 22
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/framework/android_shadows.cpp",
+   "changes": 21
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/resources/layout_inflater.cpp",
+   "changes": 20
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/dex/dalvik_engine.h",
+   "changes": 17
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/worklog.md",
+   "changes": 16
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/scripts/run_test_battery.sh",
+   "changes": 16
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/docs/evidence/m3_campaign/FINDINGS_REGISTRY.md",
+   "changes": 14
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/resources/layout_inflater.h",
+   "changes": 13
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/Makefile",
+   "changes": 13
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/resources/arsc_parser.cpp",
+   "changes": 10
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/framework/shadow_registry.cpp",
+   "changes": 8
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/dex/dex_parser.cpp",
+   "changes": 8
+  },
+  {
+   "file": "scripts/comment_urls.json",
+   "changes": 8
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/runtime/execution_engine.h",
+   "changes": 7
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/tests/shadow_registry_invariant_test.cpp",
+   "changes": 7
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/runtime/data/org.telegram.messenger/shared_prefs/default.xml",
+   "changes": 7
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/runtime/application_runtime.cpp",
+   "changes": 7
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/main.cpp",
+   "changes": 7
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/resources/resource_runtime.cpp",
+   "changes": 6
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/resources/arsc_parser.h",
+   "changes": 6
+  },
+  {
+   "file": "MiniAndroid-Compatibility-Runtime/miniandroid/src/resources/resource_runtime.h",
+   "changes": 6
+  }
+ ]
+}

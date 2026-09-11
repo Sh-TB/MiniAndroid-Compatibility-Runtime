@@ -1,0 +1,12 @@
+{
+ "run_id": "20260911-062904-smoke_test",
+ "commit": "bcfd440551cc7ce7ab40d7186542fd3c9b398e72",
+ "apk_sha256": null,
+ "status": "OBSERVED",
+ "exit_code": 0,
+ "started_at": "2026-09-11T06:29:04Z",
+ "duration_ms": 83,
+ "command": "/home/z/my-project/tools/doctor.sh",
+ "tool": "evidence.py/1.0",
+ "env_gates": {}
+}
