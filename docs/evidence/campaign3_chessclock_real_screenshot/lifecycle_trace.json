@@ -1,0 +1,99 @@
+{
+  "activity": "Lcom/chessclock/android/Prefs;",
+  "activity_launch": {
+    "a_class": "Lcom/chessclock/android/ChessClock;",
+    "a_view_root": 16,
+    "b_view_root": 0,
+    "callbacks": [
+      {
+        "class": "Lcom/chessclock/android/ChessClock;",
+        "dispatched": true,
+        "instructions": 79,
+        "method": "onPause"
+      },
+      {
+        "class": "Lcom/chessclock/android/Prefs;",
+        "dispatched": true,
+        "instructions": 21,
+        "method": "onCreate"
+      },
+      {
+        "class": "Lcom/chessclock/android/Prefs;",
+        "dispatched": false,
+        "instructions": 0,
+        "method": "onStart"
+      },
+      {
+        "class": "Lcom/chessclock/android/Prefs;",
+        "dispatched": false,
+        "instructions": 0,
+        "method": "onResume"
+      },
+      {
+        "class": "Lcom/chessclock/android/ChessClock;",
+        "dispatched": false,
+        "instructions": 0,
+        "method": "onStop"
+      }
+    ],
+    "component": "Lcom/chessclock/android/Prefs;",
+    "component_descriptor": "Lcom/chessclock/android/Prefs;",
+    "launched": true,
+    "request_code": -1,
+    "stack_depth_after": 1
+  },
+  "apk": "miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk",
+  "final_state": "RESUMED",
+  "finish_cascade": null,
+  "transitions": [
+    {
+      "from": "PROCESS_CREATED",
+      "reason": "Activity.onCreate() executed via DEX interpreter (ActivityThread.performLaunchActivity law)",
+      "success": true,
+      "to": "ACTIVITY_CREATED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "ACTIVITY_CREATED",
+      "reason": "Activity.onStart() dispatched via DEX engine (framework stub answered — super-class law; record state advances regardless)",
+      "success": true,
+      "to": "STARTED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "STARTED",
+      "reason": "Activity.onResume() dispatched via DEX engine (handleResumeActivity law)",
+      "success": true,
+      "to": "RESUMED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "RESUMED",
+      "reason": "switch: A.onPause (TransactionExecutor law: pause is FIRST)",
+      "success": true,
+      "to": "PAUSED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "PAUSED",
+      "reason": "B.onCreate via DEX (performLaunchActivity law): Lcom/chessclock/android/Prefs;",
+      "success": false,
+      "to": "ACTIVITY_CREATED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "PAUSED",
+      "reason": "B.onStart via DEX: Lcom/chessclock/android/Prefs;",
+      "success": false,
+      "to": "STARTED",
+      "virtual_ms": 1000000000
+    },
+    {
+      "from": "PAUSED",
+      "reason": "B.onResume via DEX (handleResumeActivity law): Lcom/chessclock/android/Prefs;",
+      "success": true,
+      "to": "RESUMED",
+      "virtual_ms": 1000000000
+    }
+  ]
+}
