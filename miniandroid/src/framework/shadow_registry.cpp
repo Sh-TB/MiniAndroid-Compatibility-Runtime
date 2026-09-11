@@ -11,6 +11,7 @@
 #include "atomic_shadow.h"
 #include "executor_shadow.h"
 #include "pending_intent_shadow.h"
+#include "choreographer_shadow.h"
 #include "../storage/sqlite_shadow.h"
 
 #include <algorithm>
@@ -242,6 +243,14 @@ void register_platform_shadows(ShadowRegistry& reg) {
     // unresolved static call silently returned null, and the Kotlin
     // Intrinsics null-check threw NPE at MainActivity.onCreate.
     reg.register_shadow<PendingIntentShadow>();
+    // F-050 ROOT FIX: android.view.Choreographer family (frame-pump law).
+    // Compose's AndroidUiDispatcher/AndroidUiFrameClock park the first
+    // composition at withFrameNanos behind a posted FrameCallback; without
+    // this shadow postFrameCallback silently dropped and doFrame never
+    // fired (dooz AndroidComposeView children=0, blank frame). Exact-class
+    // claim; registered before ViewShadow so the catch-all view path can
+    // never capture the Choreographer descriptor.
+    reg.register_shadow<ChoreographerShadow>();
     // M3 F-ROOM-CHAIN: SQLite family (REAL sqlite3 backend). Exact-class
     // claims only; registered before ViewShadow so the catch-all view
     // path can never capture framework database descriptors.

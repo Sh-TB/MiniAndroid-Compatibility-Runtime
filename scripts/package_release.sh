@@ -36,7 +36,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --version)  VERSION="$2"; shift 2 ;;
     --linux-bin) LINUX_BIN="$2"; shift 2 ;;
-    --win-exe)  WIN_EXE="$2"; shift 2 ;;
+    --win-exe)  WIN_EXE="$2"; WIN_EXE_PROVIDED=1; shift 2 ;;
     --demo-apk) DEMO_APK="$2"; shift 2 ;;
     --out)      OUT="$2"; shift 2 ;;
     *) echo "unknown option: $1" >&2; exit 2 ;;
@@ -52,10 +52,23 @@ echo "[package] staging : fresh directory under $OUT (any previous one is remove
 check_elf() { head -c4 "$1" | grep -q $'\x7fELF'; }
 check_pe()  { head -c2 "$1" | grep -q 'MZ'; }
 
+# M8 (F-050 session): the Windows exe is OPTIONAL (the v0.0.3 precedent:
+# "Windows asset honestly omitted"). When --win-exe is not provided or the
+# file is missing, the Windows tree is skipped and the omission is printed
+# and recorded in SHA256SUMS.txt — never a silent drop.
+HAVE_WIN=1
+if [ -n "${WIN_EXE_PROVIDED:-}" ] && [ ! -f "$WIN_EXE" ]; then
+  { echo "ERROR: --win-exe was provided but missing or not PE: $WIN_EXE" >&2; exit 1; }
+fi
+if [ ! -f "$WIN_EXE" ] || ! head -c2 "$WIN_EXE" | grep -q 'MZ'; then
+  if [ -n "${WIN_EXE_PROVIDED:-}" ]; then
+    { echo "ERROR: --win-exe was provided but missing or not PE: $WIN_EXE" >&2; exit 1; }
+  fi
+  HAVE_WIN=0
+  echo "[package] NOTE: Windows exe not available — Windows asset honestly omitted (v0.0.3 precedent)"
+fi
 [ -f "$LINUX_BIN" ] && check_elf "$LINUX_BIN" \
   || { echo "ERROR: Linux binary missing or not ELF: $LINUX_BIN" >&2; exit 1; }
-[ -f "$WIN_EXE" ] && check_pe "$WIN_EXE" \
-  || { echo "ERROR: Windows exe missing or not PE: $WIN_EXE" >&2; exit 1; }
 [ -f "$DEMO_APK" ] \
   || { echo "ERROR: demo APK missing: $DEMO_APK (run demo/build_demo_apk.sh)" >&2; exit 1; }
 [ -f "scripts/release/run-miniandroid.sh" ] \
@@ -68,7 +81,8 @@ mkdir -p "$STAGE"
 
 LINUX_DIR="$STAGE/MiniAndroid-$VERSION-linux-x64"
 WIN_DIR="$STAGE/MiniAndroid-$VERSION-windows-x64"
-mkdir -p "$LINUX_DIR" "$WIN_DIR"
+mkdir -p "$LINUX_DIR"
+if [ "$HAVE_WIN" = "1" ]; then mkdir -p "$WIN_DIR"; fi
 
 # ---- 2. copy ONLY the intended runtime files -------------------------------
 echo "[package] copying runtime files (explicit list, no tree copies)"
@@ -86,15 +100,19 @@ cp LICENSE "$LINUX_DIR/LICENSE"
 cp "$DEMO_APK" "$LINUX_DIR/miniandroid-demo.apk"
 
 # Windows: no DLLs are bundled by design (the exe imports only UCRT + KERNEL32)
+if [ "$HAVE_WIN" = "1" ]; then
 cp "$WIN_EXE" "$WIN_DIR/MiniAndroid.exe"
 sed "s/__VERSION__/$VERSION/" scripts/release/README-windows.txt > "$WIN_DIR/README.txt"
 cp LICENSE "$WIN_DIR/LICENSE"
 cp "$DEMO_APK" "$WIN_DIR/miniandroid-demo.apk"
+fi
 
 # ---- 3. validate the staging trees ------------------------------------------
 echo "[package] validating staging trees (release-content gate)"
 python3 scripts/validate_release_content.py --platform linux   "$LINUX_DIR"
+if [ "$HAVE_WIN" = "1" ]; then
 python3 scripts/validate_release_content.py --platform windows "$WIN_DIR"
+fi
 
 # ---- 4. create archives ------------------------------------------------------
 echo "[package] creating archives"
@@ -102,6 +120,7 @@ TARGZ="$OUT/MiniAndroid-$VERSION-linux-x64.tar.gz"
 ZIP="$OUT/MiniAndroid-$VERSION-windows-x64.zip"
 rm -f "$TARGZ" "$ZIP"
 tar czf "$TARGZ" -C "$STAGE" "MiniAndroid-$VERSION-linux-x64"
+if [ "$HAVE_WIN" = "1" ]; then
 if command -v zip >/dev/null 2>&1; then
   ( cd "$STAGE" && zip -q -r "$OLDPWD/$ZIP" "MiniAndroid-$VERSION-windows-x64" )
 else
@@ -116,23 +135,33 @@ with zipfile.ZipFile(zout, "w", zipfile.ZIP_DEFLATED) as z:
             z.write(full, os.path.relpath(full, stage))
 PYEOF
 fi
+fi
 
 # ---- 5. validate the ARCHIVES themselves ------------------------------------
 echo "[package] validating final archives (release-content gate)"
 python3 scripts/validate_release_content.py --platform linux   "$TARGZ"
+if [ "$HAVE_WIN" = "1" ]; then
 python3 scripts/validate_release_content.py --platform windows "$ZIP"
+fi
 
 # ---- 6. SHA256 manifest ------------------------------------------------------
 SUMS="$OUT/SHA256SUMS.txt"
 {
-  sha256sum "$TARGZ" "$ZIP" | sed "s|$OUT/||"
+  if [ "$HAVE_WIN" = "1" ]; then
+    sha256sum "$TARGZ" "$ZIP" | sed "s|$OUT/||"
+  else
+    sha256sum "$TARGZ" | sed "s|$OUT/||"
+    echo "(Windows asset honestly omitted — no Windows toolchain in this build env; v0.0.3 precedent)"
+  fi
 } > "$SUMS"
 
 echo
 echo "[package] ================================================================"
 echo "[package] RELEASE PACKAGING: PASS"
 echo "[package]   $TARGZ  ($(du -h "$TARGZ" | cut -f1))"
+if [ "$HAVE_WIN" = "1" ]; then
 echo "[package]   $ZIP  ($(du -h "$ZIP" | cut -f1))"
+fi
 echo "[package]   $SUMS"
 echo "[package] staging tree kept for inspection: $STAGE"
 echo "[package] ================================================================"

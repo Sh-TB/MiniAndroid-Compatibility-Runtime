@@ -4938,6 +4938,106 @@ Stage Summary:
   (honest timeout); framebuffer 0 non-white — no visual claim made.
 
 ---
+Task ID: M6-S15-1
+Agent: Super Z (session 15 — MASTER CAMPAIGN 3 global root audit + Lh/u frontier)
+Task: Verify HEAD 87d57c5f claim, read forensic report completely, publish all
+  old pushes (user instruction), audit root families, solve the live
+  Lh/u;.a frontier, prove laws, run battery, commit+push.
+
+Work Log:
+- HEAD TRUTH: local HEAD = d358a0c9 (NOT the brief's 87d57c5f — that is a
+  local ancestor 4 commits back; M5 advanced past it). Remote main =
+  61fd7f17 (the forensic report's claim — correct for the remote at session
+  start). Tree clean. Toolchain + corpus restored (aapt2 8.13.2-14304508,
+  dooz d81292cd EXACT).
+- PUBLISH DEBT CLEARED: all 18 unpushed commits (61fd7f17..d358a0c9) pushed
+  to origin/main via GIT_ASKPASS credential (token held at /home/z/.gh_token
+  600, never in repo/logs/history); ls-remote verified d358a0c9 on remote.
+- Forensic report read COMPLETELY (828 lines) and cross-referenced: report's
+  public-HEAD claim verified; "SnapshotKt.readError frontier" = STALE
+  (eliminated by M4/M5); "implement Snapshot v0 next" = REJECTED_CLAIM as
+  stated; report knowledge retained as radar.
+- FRONTIER GROUND TRUTH (androguard, m3_disasm /2addr operand rendering
+  flagged reversed): dooz Lh/u = androidx.collection ScatterMap-family table
+  (metadata long[] 8-byte control windows, 0x80 EMPTY/0xFF DELETED, H2 tags,
+  SWAR broadcast/zero-detect, EMPTY-exit test w&(~w<<6)&0x8080..80, legal
+  overlapping wide pairs relying on low-6-bits shift masking). Live spin:
+  LF/F$b;.o → Lh/u;.a → LM1/i;.a(Object,Object)Z ×38,179 (Objects.equals).
+- F-040 Arrays.fill family law (bridge_to_api): OpenJDK fill + rangeCheck
+  (IAE from>to; AIOOBE from<0, to>len) for all primitives + Object, 2-arg
+  and 4-arg; value DalvikValue stored VERBATIM (wide/ref tags round-trip);
+  null array → deferred NPE. Root: Kotlin ArraysKt.fill(metadata, 0, size,
+  0x8080808080808080) compiles to Ljava/util/Arrays;.fill([JIIJ)V — the
+  handler was missing → fail-soft no-op → all-zero metadata → probe could
+  never observe EMPTY → infinite spin. dooz rc 124→1 (spin GONE).
+- F-041 encoded_catch_handler size law (TWO sites: throw dispatch +
+  find_catch_handler_for_pc): negative sleb size ⇒ |size| typed pairs +
+  catch-all (spec); old code used -(size+1) → dropped one typed pair per
+  negative-size handler and mis-read the catch-all addr (fixture IAE
+  handler `7f 14 6a d9 03` = typed(20)→0x6a + catch-all @0x1d9, decoded as
+  catch-all @0x14 = mid-instruction garbage jump). Exposed by the f040
+  fixture; androguard used as the authority.
+- F-042 VALUE_LONG static-default law: parse_static_values truncated
+  encoded long defaults via (int32_t) cast; materialization always made
+  INT32. Fixed: parser keeps 64 bits; J-descriptor statics materialize as
+  INT64 (make_long). Proven by F040-DIAG: fill value arg 0x80808080 →
+  0x8080808080808080.
+- F-043 Double/Float IEEE bit-conversion law (bridge_to_api):
+  doubleTo(Raw)LongBits, longBitsToDouble, floatTo(Raw)IntBits,
+  intBitsToFloat with NaN canonicalization for the non-Raw variants
+  (OpenJDK Double.java/Float.java); was REC-MISS → null → 0.
+- MICRO-PROOF: tests/fixtures/f040_arrays_fill (ECJ+D8 real DEX; 7 bands:
+  dooz metadata init, rangeCheck IAE/AIOOBE, int fills, Object null/identity
+  fill, byte/short/char/bool family, float/double + raw-bits round-trip
+  0x4018000000000000, SWAR probe-readback simulation) + scripts/
+  f040_pixel_golden.py + battery stage (F-040 build/run/golden, 82→85
+  stages). VERDICT: 7/7 bands GREEN; 3-run byte-identical (b3610c68…).
+- DOOZ AFTER M6 LAWS: rc=124→1; dependency-table insert COMMITS (tag byte +
+  sentinel mirror + elements[]/hashes[] stores execute); derived value
+  computes; AndroidComposeView$c (owners) constructs. NEW BLOCKER
+  (F-044 candidate, root-located): Compose SnapshotObserver read observer
+  LP/v$c;.o fires with observer.i == null — the observation block is
+  created by LP/v$a;.a (conditional-observation scope) which never ran in
+  the trace; real Compose registers the observer scoped to the block
+  lifetime. NEXT: map scope pairing from dooz Compose DEX ground truth,
+  implement the proven law (scope-entry or observer-null tolerance).
+  Framebuffer remains 0 non-white — NO visual claim.
+- Docs: docs/ROOT_LAW_GLOBAL_AUDIT.md (all families A–Z + report-claim
+  reconciliation), docs/ROOT_LAW_IMPLEMENTATION_ROADMAP.md,
+  docs/ROOT_LAW_IMPACT_REPORT.md (L vs U metric split).
+
+Stage Summary:
+- 4 generic laws landed+proven this session: F-040, F-041, F-042, F-043.
+- Publish debt cleared (18 commits); remote synced at session start.
+- dooz blocker layers peeled this session: scatter-map spin (F-040/F-042),
+  exception-dispatch corruption (F-041), bits-bridge gap (F-043).
+- Battery: 85 stages (82 + f040 build/run/golden) — full fresh run in
+  logs/battery_m6_full.log at the pre-commit tree identical to the M6
+  commit content.
+
+---
+Task ID: M8-S15-1
+Agent: Super Z (MASTER CAMPAIGN 3 continuation — Choreographer frame-pump battle)
+Task: Continue from CURRENT HEAD truth; hunt the dooz first-frame root chain; reconcile the directive summary's F-046..F-052 claims; push all verified commits; release + issue sync.
+
+Work Log:
+- State reconciliation: local main was 10 commits BEHIND remote (fast-forwarded to 6ff11eb2 = M7 final, battery 88/88, F-040..F-045). The directive summary's "F-046..F-052 fixed / 88/88 / MonotonicFrameClock frontier" matched NO commit at any HEAD — rejected per evidence law; reconciliation table written to docs/ROOT_IMPACT_MATRIX.md.
+- Probe runs at HEAD: dooz deep trace (14.6 MB, rc=0, 0 non-white): AndroidComposeView children=0 size=(0x105); [REC-MISS] Choreographer.getInstance caller=J$a.c; ZERO doFrame dispatches in the whole run.
+- F-050a root-located (DEX ground truth J$a.c/K.u/J$c.doFrame via m3_disasm): Choreographer family absent → frame callback dropped → withFrameNanos parked. Implemented ChoreographerShadow (singleton identity, FIFO postFrameCallback/removeFrameCallback, shared monotonic frame time 16666667ns quantum) + engine pumps at launch/frame-sequence/tap boundaries.
+- F-050b: Throwable detailMessage law (OpenJDK) — the campaign forensics unlock; [EXCEPTION] logs now message-visible.
+- F-050c root-located via the recovered message "unexpected close status: -1": kotlinx.coroutines BufferedChannel close-status encoding fetched from upstream (GitHub code search + raw) — status -1 ⇒ negative packed state; ATOMIC-OP trace: getAndIncrement wrote oldv-1 (prefix-match delta bug). Fixed with exact-name OpenJDK epochs.
+- F-050d root-located via stack capture (snapshot_top_first): J$c.run → J.O → W1/N.run → g0.t → LB0/b.x cancelConsumed → channel.cancel. g0.t disasm: hasNext() resume path sget Boolean.TRUE (R8 valueOf rewrite) → SGET-MISS NULL → false exit → cancel. Synthesized identity-cached Boolean.TRUE/FALSE statics.
+- Regression caught and fixed: §6 shadow-registry invariant 18→19 canonical (F-050e); EXT-01/02 restored HelloWorldSelfAware fixture from pinned v1.1.0 release URL (sha 009b4671 exact).
+- Micro-proof: tests/fixtures/f050_frame_pump (ECJ+D8 real DEX, 7 bands) — 7/7 GREEN, 3-run byte-identical; battery stage appended (88→91).
+- Battery: 91/91 ALL PASS (logs/battery_m8_full.log). dooz 3-run rc=0 byte-identical (deterministic BLANK preserved honestly); tictactoe real APK 3-run rc=0 byte-identical.
+- Telegram: BLOCKED — official dl serves a 1.2 MB stub (480263f8); pinned 82 MB v10.14.5 (193ad551) unreachable; fetch rejects (zero-skip law). Recorded, not skipped.
+- Docs: ROOT_IMPACT_MATRIX / APK_LOADING_IMPACT_MATRIX / ROOT_DISCOVERY_INDEX / COMPATIBILITY_CLOSURE_MATRIX (new) + ROADMAP + README progress banner (Compose success NOT claimed).
+- Git: package_release.sh Windows-asset optional (v0.0.3 precedent); RELEASE_v0.0.4.md; commits ad4349a9 + 2a4ad97f PUSHED (token via credential helper only). Release v0.0.4-Chantecler published (tar.gz + SHA256SUMS). Issues #1..#9 synced with evidence comments.
+- Next frontier root-located: Job-active cancellation of the Compose frame await (LE1/a.y → K$a invokeOnCancellation → removeFrameCallback before the pump fires) — roadmap item 10 (M9).
+
+Stage Summary:
+- 5 root records landed (F-050a/b/c/d/e), each upstream-verified; dooz chain advanced 4 blocker layers; battery 91/91; all debt pushed; release v0.0.4 live; issues synced. The Compose frame is still blank — the frontier statement is the honest truth.
+
 Task ID: M9-S15-1
 Agent: Super Z (session 15 — M9 GLOBAL ROOT HUNT, user mandate: colorful Hello World + playable DOOZ)
 Task: Two mandated deliverables — (1) colorful Hello World with bitmap image + border boxes fully rendered;
