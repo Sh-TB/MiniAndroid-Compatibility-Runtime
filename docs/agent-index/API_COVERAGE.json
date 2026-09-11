@@ -1,0 +1,25 @@
+{
+ "head": "bcfd4405",
+ "registered_shadows": [
+  "ArchTaskExecutorShadow",
+  "CollectionShadow",
+  "ThreadShadow",
+  "LooperShadow",
+  "HandlerShadow",
+  "ActivityShadow",
+  "IntentShadow",
+  "LocksShadow",
+  "AtomicShadow",
+  "ExecutorShadow",
+  "PendingIntentShadow",
+  "ChoreographerShadow",
+  "ViewShadow",
+  "DialogShadow",
+  "ArrayAdapterShadow",
+  "CanvasShadow",
+  "LayoutInflaterShadow",
+  "ClipboardShadow"
+ ],
+ "note": "implemented shadow layer; API_COVERAGE granularity = per-method coverage requires runtime trace (roadmap)",
+ "stub_radar": "tools/verify/verify.py --cluster source"
+}

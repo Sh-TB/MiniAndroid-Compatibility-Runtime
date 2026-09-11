@@ -1,0 +1,145 @@
+{
+ "head": "bcfd4405",
+ "total_roots": 286,
+ "clusters": [
+  {
+   "name": "DEX dispatch",
+   "roots": [
+    "R-NEW-051",
+    "R-NEW-055",
+    "R-NEW-056",
+    "R-NEW-057",
+    "R-NEW-058",
+    "R-NEW-013",
+    "R-NEW-014",
+    "R-NEW-027",
+    "R-NEW-028"
+   ],
+   "shared_prerequisite": "apk-artifacts",
+   "probe": "apk-index"
+  },
+  {
+   "name": "MessageQueue/Looper",
+   "roots": [
+    "R-NEW-001",
+    "R-NEW-002",
+    "R-NEW-003",
+    "R-NEW-040",
+    "R-NEW-063"
+   ],
+   "shared_prerequisite": "source-index",
+   "probe": "apk-index"
+  },
+  {
+   "name": "ClassLoader/DEX resolution",
+   "roots": [
+    "R-NEW-016",
+    "R-NEW-017",
+    "R-NEW-027",
+    "R-NEW-028",
+    "R-NEW-029",
+    "R-NEW-030"
+   ],
+   "shared_prerequisite": "source-index",
+   "probe": "apk-index"
+  },
+  {
+   "name": "Compose first-frame",
+   "roots": [
+    "R-NEW-256",
+    "R-NEW-257",
+    "R-NEW-258",
+    "R-NEW-259",
+    "R-NEW-260",
+    "R-NEW-261",
+    "R-NEW-242",
+    "R-NEW-246",
+    "R-NEW-279",
+    "R-NEW-285"
+   ],
+   "shared_prerequisite": "runtime-trace",
+   "probe": "apk-index"
+  },
+  {
+   "name": "Resource\u2192pixel",
+   "roots": [
+    "R-NEW-065",
+    "R-NEW-066",
+    "R-NEW-067",
+    "R-NEW-068",
+    "R-NEW-069",
+    "R-NEW-070",
+    "R-NEW-071",
+    "R-NEW-072",
+    "R-NEW-073",
+    "R-NEW-074",
+    "R-NEW-075",
+    "R-NEW-076",
+    "R-NEW-077",
+    "R-NEW-078",
+    "R-NEW-079",
+    "R-NEW-080",
+    "R-NEW-081",
+    "R-NEW-082"
+   ],
+   "shared_prerequisite": "apk-artifacts",
+   "probe": "apk-index"
+  },
+  {
+   "name": "Collections/OpenJDK",
+   "roots": [
+    "R-NEW-280",
+    "R-NEW-281",
+    "R-NEW-282",
+    "R-NEW-283",
+    "R-NEW-284"
+   ],
+   "shared_prerequisite": "source-index",
+   "probe": "apk-index"
+  }
+ ],
+ "probe_serving": {
+  "apk-index": [
+   "R-NEW-033",
+   "R-NEW-045",
+   "R-NEW-064",
+   "R-NEW-065",
+   "R-NEW-067",
+   "R-NEW-081",
+   "R-NEW-082",
+   "R-NEW-086",
+   "R-NEW-087",
+   "R-NEW-089",
+   "R-NEW-090",
+   "R-NEW-122",
+   "R-NEW-123",
+   "R-NEW-124",
+   "R-NEW-125",
+   "R-NEW-135",
+   "R-NEW-139",
+   "R-NEW-170"
+  ],
+  "stub-radar": [
+   "R-NEW-164",
+   "R-NEW-165",
+   "R-NEW-172"
+  ],
+  "screenshot-metrics": [
+   "R-NEW-077",
+   "R-NEW-270",
+   "R-NEW-271",
+   "R-NEW-272",
+   "R-NEW-273",
+   "R-NEW-275",
+   "R-NEW-276",
+   "R-NEW-277",
+   "R-NEW-278"
+  ],
+  "symbol-index": [
+   "R-NEW-016",
+   "R-NEW-027",
+   "R-NEW-051",
+   "R-NEW-127"
+  ]
+ }
+}
