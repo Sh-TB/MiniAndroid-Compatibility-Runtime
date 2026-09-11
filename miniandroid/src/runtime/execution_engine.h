@@ -213,6 +213,16 @@ private:
     // UnsetPressedState → drained frame). Frames + touch trace manifest.
     bool stage_tap(ExecutionResult& result, const ExecutionConfig& config);
     void invoke_handler_runnable(uint32_t runnable_id);
+    // F-050: Choreographer frame pump — invoke a posted FrameCallback's
+    // REAL DEX doFrame(J)V at the deterministic virtual frame time (the
+    // vsync law that resumes Compose withFrameNanos continuations).
+    void invoke_choreographer_do_frame(uint32_t callback_id,
+                                       const std::string& callback_class,
+                                       int64_t frame_time_nanos);
+    // F-050: bounded launch-frame pump — fire pending frame callbacks,
+    // drain the resumption work they post (one MessageQueue law), repeat
+    // until quiescent or the deterministic bound. Returns frames fired.
+    int pump_compose_frames(int max_frames);
     // G07 §7: lifecycle state machine + real-DEX lifecycle dispatch.
     bool dispatch_app_lifecycle(const std::string& method,
                                 nlohmann::json* record);
