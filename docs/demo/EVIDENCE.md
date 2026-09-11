@@ -194,3 +194,33 @@ command, screenshot SHA256 compared):
   runs its full `onCreate` (120 method entries) and renders its real view
   tree (LinearLayout + ScrollView + buttons + custom `RoTimeControl` view).
 * Pre-existing `stopwatchmuellerma` PARTIAL status unchanged on both binaries.
+
+## Re-test addendum (2026-09-12, MC3 — HEAD 355cf45a → 5356c7f8)
+
+User-requested re-test of `demo_proof.gif` (previously flagged as incomplete).
+Demo APK rebuilt from source (`5b273c2ef15c7896ae5f55addad6fe5ab24a4513e015bb22cbdb920a1bc9e44f`),
+run with the F-076 binary at clean HEAD, zero code changes:
+
+* `demo/validate_demo_proof.sh` → **VALIDATION_PASS**: rc=0 ×2, 9/9 distinct
+  frame hashes, status text advances exactly per the DEX law
+  (count=1..9, pos grid, color cycle), **deterministic replay: identical
+  SHA256 frame sequence**.
+* `docs/demo/demo_proof.gif` + `demo_frames.png` + `demo_manifest.json`
+  regenerated from the fresh runtime frames; provenance gate 9/9 byte-match.
+  New GIF SHA256: `2388c573f2b3f091cd49077adb4e55926361f9175bb5b465029c95a496561833`.
+
+Honest visual comparison vs the 2026-09-04 GIF:
+
+* IMPROVED: text rendering — title/status are clean stacked readable lines
+  (old build drew overlapping glyph runs); button renders as a real Material
+  button ("TAP ME") instead of a stretched gray band; box color still cycles
+  the exact `COLORS[]` values.
+* REGRESSED (registered as **R-NEW-302**, OBSERVED-FAIL, P1): the box no
+  longer MOVES — solid-color patch fixed at x[0..159] y[132..291] in all 9
+  frames while the declared pos cycles the grid (FrameLayout
+  leftMargin/topMargin ignored at measure/layout); root LinearLayout
+  MATCH_PARENT wraps to 600x1432 instead of filling 1080x1920; button width
+  is wrap-size instead of MATCH_PARENT. The old build moved the box and
+  filled the window; the new build renders text correctly but not the box
+  position. This is a real layout-law gap, kept open until the generic
+  LinearLayout/FrameLayout window-attach fix lands.
