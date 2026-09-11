@@ -1,0 +1,28 @@
+{
+  "task": "MASTER CAMPAIGN 3 — real-screenshot-only request (no code changes, no new roots)",
+  "date": "2026-09-12",
+  "apk": {
+    "name": "ChessClock (com.chessclock.android)",
+    "path": "miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk",
+    "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+    "declared_main_activity": "com.chessclock.android.ChessClock"
+  },
+  "run": {
+    "command": "./miniandroid/build/miniandroid run -o docs/evidence/campaign3_chessclock_real_screenshot miniandroid/download/exp073_real_apps/com.chessclock.android_29.apk",
+    "binary": "miniandroid/build/miniandroid (F-076 build at HEAD 355cf45a, clean tree, zero code modifications)",
+    "execution_mode": "real-dalvik (default path)",
+    "rc": 0,
+    "frames_rendered": 1,
+    "uncaught_exceptions": 0
+  },
+  "screenshot": {
+    "path": "docs/evidence/campaign3_chessclock_real_screenshot/screenshot.png",
+    "resolution": "1080x1920",
+    "total_pixels": 2073600,
+    "nonwhite_pixel_count": 2073600,
+    "sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+    "byte_identical_to_s22_wave4_record": true,
+    "content_honest_description": "Black-themed full-screen frame with one full-width gray horizontal track/divider line at mid-height (~y=905..912); no text glyphs painted. Runtime log shows ChessClock launched, then Prefs activity dispatched onCreate/onStart/onResume on top (ChessClock onStop) — the visible frame is the Prefs black-theme layout; identical byte-for-byte to the deterministic frame recorded in the S22 WAVE 4 evidence (worklog: 'screenshot SHA e4a2d7c90cd2fd26 x3')."
+  },
+  "honesty_note": "Screenshot written by the runtime framebuffer capture; nothing fabricated, no post-processing. The frame is fully painted (100% non-white, near-black theme) but contains no visible clock digits or text in this launch frame."
+}
