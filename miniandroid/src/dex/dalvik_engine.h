@@ -1598,6 +1598,32 @@ public:
         const std::string& method_descriptor = ""
     );
 
+    // F-074 (S21): ART virtual-dispatch law for the ENGINE-LEVEL invoke
+    // entry. try_recursive_invoke resolves the method ONLY on the exact
+    // declaring class; callers (queue drains, click dispatch, frame pump)
+    // pass the RUNTIME class of the receiver. When the entry method is
+    // declared on an ancestor, ART dispatches to the most-derived concrete
+    // implementation up the hierarchy — canonical real-world case:
+    // kotlinx.coroutines DispatchedContinuation (b2/h) has NO run() of its
+    // own; the dispatch entrypoint is DispatchedTask.run (W1/N) on the
+    // superclass. Without this walk the drained runnable silently vanishes
+    // (dooz S21 gate: composition coroutine never resumed → withFrameNanos
+    // never reached → no frame → 0 non-white pixels).
+    //
+    // Walks the DEX superclass chain (class_to_superclass_) and retries
+    // try_recursive_invoke on the first ancestor that declares the method
+    // with bytecode. The ORIGINAL receiver (args[0] object identity) is
+    // preserved — inherited virtual methods execute with the runtime
+    // receiver exactly as ART does. Depth-capped; ends at Object.
+    bool try_recursive_invoke_on_super(
+        const std::string& declaring_class,
+        const std::string& method_name,
+        const std::vector<DalvikValue>& args,
+        DalvikValue& return_val,
+        DalvikExecutionResult& result,
+        const std::string& method_descriptor
+    );
+
     // AOSP ActivityThread.performLaunchActivity fidelity: after allocating
     // the Activity heap object, run the app's DECLARED no-arg <init>()V so
     // instance-field initializers (e.g. `private boolean auto = true;`)

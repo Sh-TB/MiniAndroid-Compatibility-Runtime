@@ -1,7 +1,7 @@
 {
  "baseline_head": "7178c890",
  "summary": {
-  "total": 297,
+  "total": 299,
   "by_status": {
    "PARTIAL": 103,
    "VERIFIED-CORRECT": 45,
@@ -16,7 +16,8 @@
    "P3": 74,
    "P0": 1,
    "P1": 3
-  }
+  },
+  "verified_fixed": 19
  },
  "roots": [
   {
@@ -2988,6 +2989,26 @@
    "missing": "-",
    "next": "regression-watch",
    "commit": "7178c890"
+  },
+  {
+   "id": "R-NEW-298",
+   "status": "VERIFIED-FIXED",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "LIVE S21: dooz drain dispatched UC009-WIRE Runnable id=687 class=Lb2/h; with ZERO b2/h.run records in the 306k-line log; DEX truth (s21_frame_probe.py + androguard): Lb2/h; = kotlinx DispatchedContinuation, NO run() declared \u2014 entrypoint DispatchedTask.run (LW1/N;) on the superclass; upstream law: ART virtual dispatch resolves on the runtime class hierarchy. ",
+   "missing": "-",
+   "next": "regression-watch",
+   "commit": "PENDING-S21"
+  },
+  {
+   "id": "R-NEW-299",
+   "status": "VERIFIED-FIXED",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "LIVE S21 (post F-074): HASH-TRACE proved hashCode(elem) fired only from K/d.get; TRIE-TRACE pinned K/t.v returning null (trie emptied) while LL/b.<init> received the UNREBUILT map; androguard CFG: `if (node !== newNode)` guarded the EMPTY-map rebuild; the identity compare answered EQUAL for (OBJECT_REF, const/4-null). FIXED F-075: polymorphic-zero-at-reference-use law at return-object, move-result-object, mixed 22t compares. dooz: CME 1->0, uncaught 0. ",
+   "missing": "-",
+   "next": "regression-watch",
+   "commit": "PENDING-S21"
   }
  ]
 }

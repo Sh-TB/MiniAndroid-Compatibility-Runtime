@@ -16,3 +16,23 @@
 | F-01 | dooz ComposeView children=0, framebuffer 0/2073600 non-white | R-NEW-246/259/279/285 cluster | run/m9_merge_dooz at 0383f19f (rc=0, no exceptions, lifecycle RESUMED) |
 | F-02 | Window.setDecorFitsSystemWindows REC-MISS | R-NEW-286 | same run log |
 | F-03 | tictactoe real APK (libGDX) T3/BLANK | R-NEW-075 surface boundary | G09 record; honest UNVERIFIED-BY-DESIGN |
+
+## S21 failures & tool drift (evidence-first, never re-mixed)
+- **PROBE-DRIFT (latent, fixed)**: s19/s20 DEX probe lineage carried a wrong
+  opcode-size table (const/4 0x12, monitor-enter/exit 0x1d/0x1e, array-length
+  0x21, throw 0x27 decoded as 2 units; filled-new-array 0x24/0x25 and
+  fill-array-data 0x26 as 2 instead of 3) — any method containing these
+  decoded with SHIFTED linear pcs after the opcode, and 21t/22t branch
+  targets read from the wrong unit. F-070..F-073 conclusions were proven by
+  runtime register traces and androguard cross-checks, so they stand; the
+  s21_frame_probe.py replaces the lineage with a spec-exact table (all
+  structural findings re-verified against the androguard oracle).
+- **GATE H + EXT-01/EXT-02 environmental (container reset)**: GATE H
+  (simplestopwatch settings glyph white=0) reproduces identically with the
+  S21 fix stashed (stash-bisect run recorded in /tmp/gateh_pre.log); EXT-01/
+  EXT-02 require /home/z/corpus/external_hello/* which the container reset
+  wiped. Not S21 regressions. Restore path: re-provision /home/z/corpus.
+- **FALSE LEAD retired**: "callback removed-not-run" — the J$c.run
+  removeFrameCallback branch is upstream-LEGAL (toRunOnFrame empty cleanup,
+  AndroidUiDispatcher.android.kt lines 58-66); the real break was upstream
+  (F-074 silent drop), and the second break (F-075) was upstream of that.
