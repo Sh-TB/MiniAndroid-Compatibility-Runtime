@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  HELLO-COLOR fixture layout — the user-mandated probe artifact:
+  COLORFUL Hello World with an IMAGE (bitmap ImageView) and BORDER
+  boxes (shape drawables with <stroke>). All strings/colors/drawables
+  resolve through resources.arsc + binary AXML; the PNG is decoded from
+  the APK zip and blitted by the renderer's bitmap path.
+
+  Chain exercised:
+    AXML inflate → LinearLayout bg color + gravity →
+    shape drawable (solid/stroke/corners) → TextView textColor×3 →
+    ImageView @drawable PNG decode → measure → layout → draw → pixels.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#0D47A1"
+    android:padding="24dp">
+
+    <!-- BORDER BOX 1 (yellow stroke) with colorful headline -->
+    <LinearLayout
+        android:id="@+id/box_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/box_border_yellow"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/hc_headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hc_headline"
+            android:textSize="34sp"
+            android:textColor="#1565C0"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/hc_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hc_subtitle"
+            android:textSize="15sp"
+            android:textColor="#2E7D32" />
+    </LinearLayout>
+
+    <!-- IMAGE: real PNG bitmap via ImageView -->
+    <ImageView
+        android:id="@+id/hc_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/hello_art" />
+
+    <!-- BORDER BOX 2 (red stroke) with warm text -->
+    <LinearLayout
+        android:id="@+id/box_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/box_border_red"
+        android:padding="14dp">
+
+        <TextView
+            android:id="@+id/hc_footer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hc_footer"
+            android:textSize="13sp"
+            android:textColor="#D84315" />
+    </LinearLayout>
+</LinearLayout>

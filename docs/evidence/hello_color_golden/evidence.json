@@ -1,0 +1,28 @@
+{
+ "fixture": "hello_color (M9 Deliverable 1: colorful Hello World + bitmap image + border boxes)",
+ "apk_sha256": "77863f1f5e865f564282a4a9d51fda1853f49c6bb5e7e38eb7b71d80e4bbd128",
+ "frame_sha256": "11e0056320d8546dbb54030fc6d51cbc163e635d47bbbb54899ca1984829e4f8",
+ "frame_size": [
+  1080,
+  1920
+ ],
+ "sample_step": 2,
+ "nonwhite_sampled": 434228,
+ "element_pixel_counts": {
+  "bg_deep_blue_0D47A1": 330591,
+  "headline_blue_1565C0": 2389,
+  "subtitle_green_2E7D32": 1079,
+  "footer_orange_D84315": 671,
+  "stroke_yellow_FFEB3B": 19013,
+  "stroke_red_FF5252": 17198,
+  "card_cream_FFF8E1": 21567,
+  "art_ring_1A237E": 13671,
+  "art_green_00C853": 12868,
+  "art_lightblue_40C4FF": 13166
+ },
+ "three_run_frame_sha": "11e0056320d8546dbb54030fc6d51cbc163e635d47bbbb54899ca1984829e4f8",
+ "toolchain": "aapt2 (Google Maven 8.13.2-14304508) + ECJ + D8 (r8.jar) + android-34 stubs",
+ "laws": [
+  "F-053 GradientDrawable shape (solid/stroke/corners/gradient) inflate+draw"
+ ]
+}

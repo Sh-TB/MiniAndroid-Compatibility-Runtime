@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Hello Color</string>
+    <string name="hc_headline">Hello, World!</string>
+    <string name="hc_subtitle">color + image + border boxes — real render</string>
+    <string name="hc_footer">MiniAndroid M9 hello-color probe</string>
+</resources>

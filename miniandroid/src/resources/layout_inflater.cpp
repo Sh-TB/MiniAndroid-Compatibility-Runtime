@@ -1127,6 +1127,14 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     if (!a.bg_drawable.empty()) {
         node.bg_drawable_path = a.bg_drawable; node.bg_from_xml = true;
         node.bg_drawable_density = a.bg_drawable_density;   // G04 §4
+        // F-053 (M9): GradientDrawable <shape> law — parse shape XMLs once,
+        // here at inflate time (AOSP GradientDrawable.inflate →
+        // GradientState). Selectors/other XML roots are no-ops (the draw
+        // walk keeps its parse_state_list law).
+        if (a.bg_drawable.size() > 4 &&
+            a.bg_drawable.compare(a.bg_drawable.size() - 4, 4, ".xml") == 0) {
+            apply_shape_background(node, a.bg_drawable, stats);
+        }
     }
     if (!a.src_drawable.empty()) {
         node.src_drawable_path = a.src_drawable;
@@ -1135,6 +1143,120 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     // width/height semantics on node
     node.width = a.layout_width;
     node.height = a.layout_height;
+}
+
+// ---------------------------------------------------------------------------
+// F-053 (M9): GradientDrawable <shape> law — inflate-time parse.
+//
+// AOSP law (frameworks/base/graphics/java/android/graphics/drawable/
+// GradientDrawable.java #inflate → GradientState): the XML root <shape>
+// carries android:shape (rectangle|oval|ring|line); child elements
+//   <solid android:color>            → mSolidColor
+//   <gradient startColor/endColor/angle/centerColor> → gradient state
+//   <corners radius / topLeftRadius / ...>            → corner radii
+//   <stroke width/color/dashWidth/dashGap>            → stroke state
+// Colors accept COLOR_* typed data, @color refs, or raw "#RRGGBB" strings;
+// dimensions go through the ONE canonical TypedValue conversion
+// (parse_dim_attr → complex_to_dimension_pixel_size with the device
+// density context) — no per-caller ad-hoc math.
+// This function is a NO-OP unless the root element is <shape>: selector
+// backgrounds keep the draw-time parse_state_list law (G06 §5).
+// ---------------------------------------------------------------------------
+void LayoutInflater::apply_shape_background(framework::ViewShadow::ViewNode& node,
+                                            const std::string& xml_path,
+                                            InflateStats& stats) {
+    std::vector<uint8_t> xml = apk_.extract_entry_cached(xml_path);
+    if (xml.empty()) xml = apk_.extract_entry(apk_path_, xml_path);
+    if (xml.empty()) {
+        stats.warnings.push_back("shape drawable extract failed: " + xml_path);
+        return;
+    }
+    AxmlParser parser;
+    if (!parser.parse(xml)) {
+        stats.warnings.push_back("shape AXML parse failed: " + xml_path);
+        return;
+    }
+    const AxmlElement& root = parser.root();
+    if (root.name != "shape") return;   // selector / other drawable law untouched
+
+    node.bg_shape_valid = true;
+
+    if (const auto* k = root.attr("shape", "android")) {
+        const std::string s = !k->raw_value.empty() ? k->raw_value : k->value.string_value;
+        // AOSP GradientState shape constants (R.styleable): rectangle=0,
+        // oval=1, ring=2, line=3.
+        if (s == "oval") node.bg_shape_kind = 1;
+        else if (s == "ring") node.bg_shape_kind = 2;
+        else if (s == "line") node.bg_shape_kind = 3;
+        else node.bg_shape_kind = 0;
+    }
+
+    std::function<void(const AxmlElement&)> walk = [&](const AxmlElement& el) {
+        if (el.name == "solid") {
+            uint32_t c = parse_color_attr(el.attr("color", "android"), stats);
+            if (c != 0) {
+                node.bg_shape_has_solid = true;
+                node.bg_shape_solid = c;
+            }
+        } else if (el.name == "stroke") {
+            const AxmlAttribute* w = el.attr("width", "android");
+            if (w) {
+                float px = (float)parse_dim_attr(w, stats);
+                if (px > 0) {
+                    node.bg_shape_has_stroke = true;
+                    node.bg_shape_stroke_width = px;
+                }
+            }
+            uint32_t c = parse_color_attr(el.attr("color", "android"), stats);
+            if (c != 0) {
+                node.bg_shape_has_stroke = true;
+                node.bg_shape_stroke_color = c;
+            }
+            // AOSP dash state (DashPathEffect): recorded honestly, rendered
+            // only when a real fixture demands it (DETECTED-NOT-EXERCISED).
+            const AxmlAttribute* dw = el.attr("dashWidth", "android");
+            const AxmlAttribute* dg = el.attr("dashGap", "android");
+            if (dw || dg) {
+                node.bg_shape_has_dash = true;
+                if (dw) node.bg_shape_dash_width = (float)parse_dim_attr(dw, stats);
+                if (dg) node.bg_shape_dash_gap = (float)parse_dim_attr(dg, stats);
+            }
+        } else if (el.name == "corners") {
+            const AxmlAttribute* r = el.attr("radius", "android");
+            if (r) node.bg_shape_corner_radius = (float)parse_dim_attr(r, stats);
+            // AOSP per-corner radii (GradientState.mCornerRadii): each corner
+            // falls back to the uniform radius when not declared.
+            const struct { const char* name; float* dst; } per[4] = {
+                {"topLeftRadius", &node.bg_shape_corner_tl},
+                {"topRightRadius", &node.bg_shape_corner_tr},
+                {"bottomRightRadius", &node.bg_shape_corner_br},
+                {"bottomLeftRadius", &node.bg_shape_corner_bl},
+            };
+            for (const auto& pc : per) {
+                const AxmlAttribute* a = el.attr(pc.name, "android");
+                if (a) *pc.dst = (float)parse_dim_attr(a, stats);
+            }
+        } else if (el.name == "gradient") {
+            const AxmlAttribute* s = el.attr("startColor", "android");
+            const AxmlAttribute* e = el.attr("endColor", "android");
+            uint32_t sc = parse_color_attr(s, stats);
+            uint32_t ec = parse_color_attr(e, stats);
+            if (s && sc != 0) { node.bg_shape_has_gradient = true; node.bg_shape_grad_start = sc; }
+            if (e && ec != 0) { node.bg_shape_has_gradient = true; node.bg_shape_grad_end = ec; }
+            // AOSP: angle in degrees, must be a multiple of 45 (law enforced
+            // by GradientDrawable#inflate). 0 = left→right, counter-clockwise.
+            if (const auto* ang = el.attr("angle", "android")) {
+                if (ang->value.is_int() || ang->value.type == DataType::INT_DEC ||
+                    ang->value.type == DataType::INT_HEX)
+                    node.bg_shape_grad_angle = (int)(int32_t)ang->value.data;
+                else if (!ang->raw_value.empty())
+                    node.bg_shape_grad_angle = atoi(ang->raw_value.c_str());
+                node.bg_shape_grad_angle = ((node.bg_shape_grad_angle % 360) + 360) % 360;
+            }
+        }
+        for (const auto& ch : el.children) walk(ch);
+    };
+    for (const auto& ch : root.children) walk(ch);
 }
 
 // ---------------------------------------------------------------------------

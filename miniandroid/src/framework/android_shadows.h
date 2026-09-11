@@ -904,6 +904,30 @@ public:
                                          // mForeground) — measured like src and
                                          // drawn over the content each frame.
         std::string src_drawable_path;   // APK entry path of ImageView src
+        // F-053 (M9): GradientDrawable <shape> law — parsed ONCE at inflate
+        // time by the live LayoutInflater from the bg .xml drawable (AOSP
+        // GradientDrawable.inflate → GradientState). The render walk draws
+        // solid/gradient fill + stroke ring with corner radii. Fields that
+        // AOSP parses but no fixture exercises (ring/line kinds, dash) are
+        // recorded honestly and reported DETECTED-NOT-EXERCISED.
+        bool bg_shape_valid = false;     // bg drawable XML root was <shape>
+        int bg_shape_kind = 0;           // AOSP: 0 rectangle, 1 oval, 2 ring, 3 line
+        bool bg_shape_has_solid = false;
+        uint32_t bg_shape_solid = 0;
+        bool bg_shape_has_gradient = false;
+        uint32_t bg_shape_grad_start = 0, bg_shape_grad_end = 0;
+        int bg_shape_grad_angle = 0;     // degrees, AOSP law: multiple of 45
+        float bg_shape_corner_radius = 0.0f;     // px @ device density
+        float bg_shape_corner_tl = -1.0f;        // per-corner override (<0 = unset;
+        float bg_shape_corner_tr = -1.0f;        //  AOSP GradientState cornerRadii)
+        float bg_shape_corner_br = -1.0f;
+        float bg_shape_corner_bl = -1.0f;
+        bool bg_shape_has_stroke = false;
+        float bg_shape_stroke_width = 0.0f;      // px
+        uint32_t bg_shape_stroke_color = 0;
+        bool bg_shape_has_dash = false;          // recorded; NOT rendered (honest
+        float bg_shape_dash_width = 0.0f;        //  DETECTED-NOT-EXERCISED until a
+        float bg_shape_dash_gap = 0.0f;          //  real APK demands it)
         std::string onClick_handler;     // android:onClick method name (real DEX callback)
         int layout_weight = 0;           // LinearLayout weight
         // G04 §9: container weightSum (raw XML value; valid flag distinguishes
