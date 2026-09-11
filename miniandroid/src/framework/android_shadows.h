@@ -1170,6 +1170,8 @@ public:
     // (width, height, gravity, leftMargin, topMargin, rightMargin,
     // bottomMargin) — produced by LayoutHelper.createLinear/createFrame or
     // by the generic *LayoutParams.<init> bridge (programmatic Android UIs).
+    // R-NEW-302: also raises the requestLayout dirty flag (AOSP law —
+    // View.setLayoutParams → requestLayout → performTraversals re-measure).
     void set_layout_params(uint32_t view_id, int w, int h, int gravity,
                            int ml, int mt, int mr, int mb,
                            float weight = 0.0f) {
@@ -1183,7 +1185,17 @@ public:
         n->lp_margin_right = mr;
         n->lp_margin_bottom = mb;
         n->layout_weight = weight;
+        layout_dirty = true;
     }
+
+    // R-NEW-302 FIX (AOSP requestLayout law): ViewGroup/view geometry
+    // mutations raise this flag; the frame renderer re-runs the real
+    // measure/layout pass (LayoutInflater::measure_layout) on the next
+    // stage_render_frame and clears it. AOSP: ViewRootImpl.requestLayout()
+    // schedules performTraversals (measure+layout+draw) — DEX-driven tree
+    // changes (addView/removeView/setLayoutParams) must re-measure before
+    // the next frame or every frame after the first reuses stale geometry.
+    bool layout_dirty = false;
 
     // EXP-095: Store TextView.setGravity (text alignment inside the view).
     void set_text_gravity(uint32_t view_id, int gravity) {

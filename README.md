@@ -43,7 +43,8 @@ Only what the committed evidence supports — each row is machine-checkable at t
 
 1. **REAL APK EXECUTION + REAL RUNTIME RENDERING (Hello Color)** — a real aapt2+ECJ+D8-built
    APK (`77863f1f…`) executes through the first-party DEX interpreter and renders through the
-   first-party software renderer (`PROVENANCE_FORENSIC.json`).
+   first-party software renderer (`PROVENANCE_FORENSIC.json`). Re-verified byte-identical
+   (`11e00563…`) on the R-NEW-302-fixed binary.
 2. **Deterministic rendering** — three independent runs produce the byte-identical framebuffer
    (PPM `fb9f1df2…` ×3) and PNG (`11e00563…` ×3); replay determinism holds.
 3. **Real DEX interpreter execution** — opcode-level trace with pc/opcode/return values and
@@ -53,23 +54,48 @@ Only what the committed evidence supports — each row is machine-checkable at t
 5. **Real View interaction from app bytecode** — `setBackgroundColor`, `setTextColor` ×3,
    `findViewById` ×4 (real heap objects) are invoked by the app's own DEX, not by the host.
 6. **HelloWorld (golden battery)** — §28 golden battery 26 checks PASS at the F-076 binary;
-   3-run byte-identical (S18 record).
+   3-run byte-identical (S18 record). Re-PASS on the MC4 binary (fresh cache).
 7. **TicTacToe (real interaction)** — X to move → O to move → **X WINS** across a 10-frame
    golden with per-frame SHA256 (`docs/evidence/tictactoe_golden/`); §29 interaction +
-   determinism 8 checks PASS at F-076.
+   determinism 8 checks PASS at F-076. Re-PASS on the MC4 binary.
 8. **ChessClock (real corpus APK)** — rc=0 ×3 with a real deterministic framebuffer screenshot
    (1080×1920, 2,073,600/2,073,600 painted pixels, SHA `e4a2d7c9…` ×3 byte-identical;
-   `docs/evidence/campaign3_chessclock_real_screenshot/`).
-9. **Runtime root-fix progress** — **F-074** engine-level superclass-dispatch walk;
-   **F-075** polymorphic zero/null propagation law; **F-076** active-cycle static identity —
-   nested coroutine starts now execute real DEX and the Compose Recomposer runner loop starts
-   (S21/S22 evidence bundles).
-10. **Current open frontier (hidden nowhere)** — **F-077** (Compose initial composition hits a
+   `docs/evidence/campaign3_chessclock_real_screenshot/`). Re-verified byte-identical on the
+   MC4 binary.
+9. **R-NEW-302 FIXED (MC4 self-improvement)** — the demo app's box now MOVES on its declared
+   5×4 grid: three stacked layout-law gaps closed in one pass — (a) FrameLayout child margins
+   + `lp_gravity` were never applied by the measure/layout pass (now the full AOSP
+   `FrameLayout.layoutChildren` law), (b) a programmatic root with UNSET params wrapped to its
+   content (600×1432) instead of filling the window (now MATCH_PARENT per the AOSP
+   `ViewRootImpl` window law), (c) DEX-driven tree mutations never re-measured (now the AOSP
+   `requestLayout` law: mutations raise a dirty flag; the next frame re-runs measure/layout).
+   `demo/validate_demo_proof.sh` VALIDATION_PASS with box pixel position equal to the
+   declared `pos=(x,y)` each frame; zero regressions (fresh-cache battery: §28 + §29 PASS,
+   the only FAIL remains the pre-existing GATE H glyph gap); Hello Color + ChessClock frames
+   byte-identical before/after. Regenerated `docs/demo/{demo_proof.gif,demo_frames.png,
+   demo_manifest.json}`.
+10. **REAL TELEGRAM v12.10.1 executed (MC4 frontier)** — the official 73 MB
+    `org.telegram.messenger.web` 70389 APK (sha256 `f5e11927…`, fetched from
+    telegram.org) parses (`analyze` rc=0: package/version/launcher extracted), LAUNCHES,
+    and paints one full-screen themed frame (2,073,600/2,073,600 px). After the
+    `ActivityManager.getMemoryClass()` fix (eliminated the `LruCache`
+    `IllegalArgumentException("maxSize <= 0")` ×62 kill), the app advances deeper into
+    `LaunchActivity` init and now hits a desugared-streams dispatch gap
+    (**R-NEW-303**, honestly open). Evidence: `docs/evidence/mc4_telegram/`. NOT claimed
+    usable — a frontier record, every statement bound to the committed logs.
+11. **MC4 corpus sweep (13 real APKs, standard path, zero flags)** — 8 exit rc=0 with real
+    rendered frames (gmdice 1.74M px, simplestopwatch 1.94M px, headingcalc 2.05M px with a
+    full blue keypad grid, microtimer 1.04M px keypad, unote UI chrome, dooz/tictactoe_gdx
+    blank at known GL/Compose boundaries, simplekeyboard blank — IME hosting not built yet);
+    5 exit rc=1 with honestly-classified causes (kiss: AppCompat theme resolution gap;
+    openlauncher: Fragment-host attach gap; bgclock: WebViewAssetLoader builder gap;
+    stopwatch2: androidx init; tictactoe_gdx: GLSurfaceView boundary).
+12. **Current open frontier (hidden nowhere)** — **F-077** (Compose initial composition hits a
     kotlinx TrieNode invariant NPE — the one remaining break before the first Compose frame
-    request) and **R-NEW-302** (FrameLayout margins + root MATCH_PARENT window-fill regression
-    in the demo layout path). MiniAndroid is an actively developed compatibility runtime;
+    request), **R-NEW-303** (Telegram desugared-stream builder dispatch), plus the corpus
+    gaps above. MiniAndroid is an actively developed compatibility runtime;
     compatibility/runtime semantics are still being closed, and every gap above is tracked in
-    `root_registry.json` (302 roots).
+    `root_registry.json` (303 roots).
 
 ---
 
@@ -77,16 +103,17 @@ Only what the committed evidence supports — each row is machine-checkable at t
 
 | Field | Value |
 |---|---|
-| **HEAD** | `v0.0.5-Silkie` release tag (F-076 binary lineage; exact hash = this tag) |
+| **HEAD** | MC4 working tree (v0.0.5-Silkie lineage + R-NEW-302 layout-law fix + ActivityManager.getMemoryClass law) |
 | **DATE** | 2026-09-12 |
-| **BATTERY** | **91/92 PASS** at F-076 (§28 helloworld 26 checks, §29 tictactoe 8 checks, F-074 3/3, F-050 — zero regressions; the 1 FAIL is REAL, not environmental: GATE H simplestopwatch glyph-to-framebuffer gap, queued) |
+| **BATTERY** | **fresh-cache run on the MC4 binary: §28 helloworld PASS, §29 tictactoe PASS, fixture pixel goldens PASS — the only FAIL is the REAL, pre-existing GATE H simplestopwatch glyph-to-framebuffer gap (queued). Zero regressions from the R-NEW-302 fix. |
 | **REAL APK** | Hello Color `77863f1f…` (forensic provenance, 3-run deterministic) · ChessClock `5ca6f2c5…` (deterministic frame ×3) · 13-app open-source corpus + lighthouse dooz `d81292cd…` (SHA-pinned) |
 | **PROVEN ROOTS** | F-028, F-028h, F-029, F-030, F-031..F-033, F-035, F-036, F-039..F-045, **F-050a..e (Choreographer frame pump family)**, F-053 (GradientDrawable shapes), F-054..F-057 (hashCode/Long-bits/Arrays.fill/view-node duality), **F-070..F-073 (S20: identity-equals, invoke-range static flag, CAS, Object sentinel)**, **F-074/F-075 (S21: superclass dispatch walk, polymorphic zero law)**, **F-076 (S22: active-cycle static identity — nested coroutine starts)** — evidence links in `docs/ROOT_IMPACT_MATRIX.md` + `docs/root-searchlight/` |
-| **CURRENT FRONTIER** | **F-077** — Compose initial composition NPE (kotlinx TrieNode invariant, `K/t.s` check-cast): the one remaining broken transition before the first Compose frame request; heap-probe evidence live. Plus **R-NEW-302** (demo FrameLayout margins/MATCH_PARENT). Registry: 302 roots, honest status per root |
+| **CURRENT FRONTIER** | **F-077** — Compose initial composition NPE (kotlinx TrieNode invariant, `K/t.s` check-cast): the one remaining broken transition before the first Compose frame request; heap-probe evidence live. Plus **R-NEW-303** (Telegram desugared-streams accept dispatch — real Telegram v12.10.1 advanced past the LruCache kill to this blocker). **R-NEW-302 is FIXED** (layout laws + requestLayout). Registry: 303 roots, honest status per root |
 | **TicTacToe (fixture golden)** | Real interaction X→O→X WINS, 10-frame golden, 3-run deterministic (§29 PASS). Corpus libGDX `tictactoe.apk` remains a GLSurfaceView boundary (historical T3/BLANK record, unchanged) |
-| **Telegram** | BLOCKED — official dl serves a 1.2 MB stub installer; the pinned 82 MB v10.14.5 artifact (`193ad551…`) is no longer reachable; fetch correctly rejects (zero-skip law) |
+| **Telegram** | **REAL APK EXECUTED (frontier)** — official v12.10.1 `org.telegram.messenger.web` 70389 (73 MB, sha256 `f5e11927…`, fetched from telegram.org on 2026-09-11): parse OK, launch OK, one full-screen themed frame painted (2,073,600/2,073,600 px); `ActivityManager.getMemoryClass()` fix eliminated the LruCache `maxSize <= 0` kill (×62); deeper init now blocked by the desugared-streams dispatch gap (R-NEW-303, honestly open). Evidence: `docs/evidence/mc4_telegram/`. NOT claimed usable |
+| **WhatsApp** | NO DIRECT APK EXISTS — whatsapp.com/android 301-redirects to the store pages; there is no official sideloadable artifact to test. Recorded honestly; no fake download attempted |
 | **IMPACT (S22)** | F-076 un-stubs legitimate nested coroutine starts (engine active-cycle guard keyed statics by (class,method) only): Recomposer runner while-loop now STARTS, initial composition advances deep into slot-table writes — before F-077's TrieNode break |
-| **KNOWN LIMITATIONS** | dooz/Compose framebuffer still 0 non-white (F-077, deterministic `31ddd4d5…`); R-NEW-302 demo box-position regression (margins ignored); GATE H glyph gap; WeakReference + DecorView content-hierarchy roots open |
+| **KNOWN LIMITATIONS** | dooz/Compose framebuffer still 0 non-white (F-077, deterministic `31ddd4d5…`); GATE H glyph gap; headingcalc display-row text overlap (open visual gap); kiss AppCompat theme-resolution gap; openlauncher Fragment-host attach gap; bgclock WebViewAssetLoader gap; WeakReference + DecorView content-hierarchy roots open |
 
 **DOOZ HAS ADVANCED THROUGH THE RECOMPOSER / FRAME-CLOCK MACHINERY
 (Choreographer family landed, four scheduler-corruption roots closed),

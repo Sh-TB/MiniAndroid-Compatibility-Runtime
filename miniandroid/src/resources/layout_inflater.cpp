@@ -2231,8 +2231,19 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         Mode rwm = M_EXACTLY, rhm = M_EXACTLY;
         int rws = metrics_.screen_width, rhs = metrics_.screen_height;
         if (rn) {
-            const int lpw = rn->lp_width  == INT_MIN ? -2 : rn->lp_width;
-            const int lph = rn->lp_height == INT_MIN ? -2 : rn->lp_height;
+            // R-NEW-302 FIX (AOSP ViewRootImpl window law): the window ALWAYS
+            // hands the content root MATCH_PARENT params
+            // (ViewRootImpl.setView → root.setLayoutParams(new
+            //  ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))). A
+            // programmatic root created with no LayoutParams carries the
+            // runtime's UNSET sentinel (INT_MIN); AOSP fills that with
+            // MATCH_PARENT — NOT wrap_content. The old mapping (INT_MIN →
+            // -2 wrap) made every programmatic root shrink-wrap to its
+            // content (demo stage rendered 600x1432 inside a 1080x1920
+            // window). Unset now means MATCH_PARENT for the ROOT ONLY
+            // (children keep the wrap fallback in child_spec).
+            const int lpw = rn->lp_width  == INT_MIN ? -1 : rn->lp_width;
+            const int lph = rn->lp_height == INT_MIN ? -1 : rn->lp_height;
             if (lpw >= 0) rws = lpw;
             else if (lpw == -2) rwm = M_AT_MOST;
             if (lph >= 0) rhs = lph;
@@ -2701,8 +2712,30 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                           : (cn->lp_width == -1 ? cw : cn->measured_width);
                     int h = cn->lp_height >= 0 ? cn->lp_height
                           : (cn->lp_height == -1 ? ch : cn->measured_height);
-                    int x = cl, y = ct;
-                    int vg = cn->child_gravity >= 0 ? cn->child_gravity : n->container_gravity;
+                    // R-NEW-302 FIX (AOSP FrameLayout.layoutChildren /
+                    // onLayout law, FrameLayout.java): default placement is
+                    //   childLeft = parentLeft + lp.leftMargin
+                    //   childTop  = parentTop  + lp.topMargin
+                    // and gravity axes offset by the margins:
+                    //   CENTER_H: parentLeft + (parentRight-parentLeft-w)/2
+                    //             + leftMargin - rightMargin
+                    //   RIGHT:    parentRight - w - rightMargin
+                    //   CENTER_V / BOTTOM: symmetric on the vertical axis.
+                    // The old code pinned EVERY child at (parentLeft,
+                    // parentTop) — programmatic margins (the demo stage box,
+                    // FrameLayout.LayoutParams + leftMargin/topMargin via
+                    // addView(view, params)) were silently dropped, and
+                    // lp_gravity (set by setLayoutParams capture) was never
+                    // consulted in this pass.
+                    int x = cl + cn->lp_margin_left;
+                    int y = ct + cn->lp_margin_top;
+                    // Gravity resolution: XML layout_gravity wins, then the
+                    // programmatic lp_gravity captured from real
+                    // LayoutParams objects, then the container's default
+                    // gravity (AOSP mForegroundGravity fallback law).
+                    int vg = cn->child_gravity >= 0 ? cn->child_gravity
+                           : cn->lp_gravity > 0 ? cn->lp_gravity
+                           : n->container_gravity;
                     // G10 FIX-G10-004 (AOSP Gravity axis-field equality law —
                     // same masked-field rule as the LinearLayout fixes):
                     // mask the axis field FIRST, then compare. Raw bit tests
@@ -2713,11 +2746,11 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     // centered instead of bottom-right).
                     if (vg > 0) {
                         const int hf = vg & 0x7;
-                        if (hf == 0x1) x = cl + (cw - w) / 2;
-                        else if (hf == 0x5) x = cl + cw - w;
+                        if (hf == 0x1) x = cl + (cw - w) / 2 + cn->lp_margin_left - cn->lp_margin_right;
+                        else if (hf == 0x5) x = cl + cw - w - cn->lp_margin_right;
                         const int vf = vg & 0x70;
-                        if (vf == 0x10) y = ct + (ch - h) / 2;
-                        else if (vf == 0x50) y = ct + ch - h;
+                        if (vf == 0x10) y = ct + (ch - h) / 2 + cn->lp_margin_top - cn->lp_margin_bottom;
+                        else if (vf == 0x50) y = ct + ch - h - cn->lp_margin_bottom;
                     }
                     if (x + w > t.left + t.width) w = std::max(0, t.left + t.width - x);
                     stack.push_back({cid, x, y, w, h});

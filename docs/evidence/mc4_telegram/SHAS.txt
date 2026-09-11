@@ -1,0 +1,2 @@
+f5e1192725772960cc94b83e54ffd8939f876b2b6e5f21d4a8537eb6fcba50e6  /tmp/Telegram_real.apk
+6da8020bfcb07fb3390b487a7dd97882dc27127b25cf04c300a98cd9aa0ae379  tg_run1_frame.png
