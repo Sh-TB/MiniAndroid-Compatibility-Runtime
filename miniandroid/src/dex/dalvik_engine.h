@@ -1440,6 +1440,26 @@ public:
         return get_or_create_singleton(class_desc);
     }
 
+    // ── F-067 (R-NEW-291): attached-Application identity law ─────────────
+    // AOSP (ActivityThread.handleBindApplication → LoadedApk.makeApplication
+    // → Activity.attach): the Application instance is created BEFORE any
+    // activity exists and attach() binds it to every activity; Activity.
+    // getApplication() returns that instance — NEVER null for a launched
+    // activity. The runtime layer instantiates the manifest Application
+    // class (EXP093-APP path) and records the heap object id here; the
+    // bridge serves getApplication() from it so the app-side identity is
+    // preserved (lifecycle callbacks registered on the App instance
+    // dispatch to the SAME object the framework holds).
+    void set_application_object_id(uint32_t oid, const std::string& cls) {
+        application_object_id_ = oid;
+        application_class_desc_ = cls;
+    }
+    uint32_t application_object_id() const { return application_object_id_; }
+    const std::string& application_class_desc() const {
+        return application_class_desc_;
+    }
+
+
     // EXP-068 + UNIFIED_011.3: Generic class inheritance queries.
     // These walk the DEX superclass chain (class_to_superclass_) to determine
     // if a class inherits from a known Android View type.
@@ -1856,6 +1876,18 @@ public:
     // matching real Android behavior where getResources() always returns the
     // same Resources instance for a given Context.
     std::map<std::string, uint32_t> api_singletons_;
+    // F-067: the attached Application instance (heap object id + class)
+    // recorded by the runtime layer before any activity runs.
+    uint32_t application_object_id_ = 0;
+    std::string application_class_desc_;
+    // F-069 (R-NEW-293): const-class STABLE IDENTITY tokens. ART: every
+    // evaluation of `X.class` for the same X yields the SAME java.lang
+    // Class object (identity is observable via ==, equals, and == on the
+    // Class* inside the VM). The engine models Class values as CLASS_REF
+    // (class_desc = referred descriptor); the token makes two const-class
+    // evaluations of the same descriptor reference-equal.
+    std::map<std::string, uint32_t> class_token_ids_;
+    uint32_t class_token_counter_ = 0;
     
     // EXP-035: VTable Dispatch State
     runtime::VirtualDispatcher vtable_dispatcher_;  // VTable-based method resolution
