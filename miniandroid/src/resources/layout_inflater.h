@@ -228,6 +228,12 @@ private:
                              uint32_t parent_view_id, InflateStats& stats);
     void apply_element_attrs(framework::ViewShadow::ViewNode& node,
                              const AxmlElement& el, Attrs& a, InflateStats& stats);
+    // F-053 (M9): GradientDrawable <shape> law — parse the bg .xml drawable
+    // ONCE at inflate time into the node's bg_shape_* fields (AOSP
+    // GradientDrawable.inflate). No-op when the XML root is not <shape>
+    // (selectors keep the draw-time parse_state_list law).
+    void apply_shape_background(framework::ViewShadow::ViewNode& node,
+                                const std::string& xml_path, InflateStats& stats);
     void apply_style(framework::ViewShadow::ViewNode& node, Attrs& a,
                      uint32_t style_resid, InflateStats& stats);
     void apply_style_by_name(framework::ViewShadow::ViewNode& node, Attrs& a,

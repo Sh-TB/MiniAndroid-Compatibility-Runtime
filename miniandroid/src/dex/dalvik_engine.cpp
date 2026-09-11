@@ -8470,6 +8470,15 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     std::cerr << " handler_addr=" << handler_addr
                               << " catch_type=" << catch_type;
                 }
+                // M9: exception MESSAGE in the trace line — root-hunt
+                // diagnostic (the Kotlin `error(...)`/`check(...)` messages
+                // ARE the app's own failure law; without them every hunt
+                // needs a DEX re-disassembly just to read the reason).
+                if (exc.object_id != 0) {
+                    auto msg = heap_.get_object_field(exc.object_id, "message");
+                    if (msg.has_value() && !msg->string_val.empty())
+                        std::cerr << " msg=\"" << msg->string_val << "\"";
+                }
                 std::cerr << std::endl;
 
                 // EXP-053 + UNIFIED_011.3: if any handler (typed or catch-all)
@@ -14466,6 +14475,68 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // (java.util.Arrays$ArrayList) backed by the argument array, and
     // List.iterator() returns an Iterator whose hasNext/next walk the
     // elements in order. The engine's List shadow had no iterator law and
+    // the composition element sequence reached Intrinsics.checkNotNullParameter
+    // as null — see the F-036/F-039 law at the Collections shadow below.
+    //
+    // F-056 (M9): java.util.Arrays.fill family (OpenJDK Arrays.java).
+    //
+    // Evidence: dooz's packed-hash set (Lh/r;+Lh/u; SWAR structure) requires
+    // every empty slot byte to carry the 0x80 tag — its constructor fills
+    // the packed-hash long[] via Arrays.fill(a, 0x8080808080808080L). With
+    // NO fill law the call fell through, the array stayed zero-initialized,
+    // and the SWAR "empty slot in window" test
+    // (window & (~window << 6) & 0x8080..8080) could never fire — the probe
+    // spun forever (HALT-LOOP at Lh/u;.a PC=0x16), the aborted frame
+    // returned a stale-register garbage index, and the caller's aget threw
+    // "length=7; index=1371075905". The M5 "insert never commits" finding
+    // was this same hole seen from the other side.
+    //
+    // Law (OpenJDK Arrays.java): fill(a, val) sets a[0..len-1] = val;
+    // fill(a, fromIndex, toIndex, val) sets a[fromIndex..toIndex-1] = val
+    // (open upper bound). fromIndex<0 or toIndex>len →
+    // ArrayIndexOutOfBoundsException; fromIndex>toIndex →
+    // IllegalArgumentException (canonical ART messages).
+    if (class_name == "Ljava/util/Arrays;" && method == "fill" && args.size() >= 2) {
+        const DalvikValue& f_arr = args[0];
+        int f_from = 0, f_to = -1;
+        const DalvikValue* f_val = &args[1];
+        if (args.size() >= 4) {
+            f_from = args[1].type == DalvikType::INT32 ? args[1].int_val : 0;
+            f_to = args[2].type == DalvikType::INT32 ? args[2].int_val : -1;
+            f_val = &args[3];
+        }
+        if (f_arr.type == DalvikType::OBJECT_REF && f_arr.object_id != 0) {
+            int f_len = 0;
+            auto f_len_field = heap_.get_object_field(f_arr.object_id, "__array_length__");
+            if (!f_len_field.has_value() || f_len_field->type != DalvikType::INT32)
+                f_len_field = heap_.get_object_field(f_arr.object_id, "__new_array_length__");
+            if (f_len_field.has_value() && f_len_field->type == DalvikType::INT32)
+                f_len = f_len_field->int_val;
+            if (f_len == 0) f_len = f_arr.int_val;   // legacy unknown-length fallback
+            if (f_to < 0) f_to = f_len;              // non-ranged fill
+            if (f_from < 0 || f_to > f_len) {
+                throw_deferred("Ljava/lang/ArrayIndexOutOfBoundsException;",
+                               f_from < 0 ? "Array index out of range: " +
+                                   std::to_string(f_from)
+                               : "Array index out of range: " + std::to_string(f_to),
+                               "F-056-fill");
+                return true;
+            }
+            if (f_from > f_to) {
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "fromIndex(" + std::to_string(f_from) + ") > toIndex(" +
+                                   std::to_string(f_to) + ")",
+                               "F-056-fill");
+                return true;
+            }
+            for (int i = f_from; i < f_to; ++i)
+                heap_.set_object_field(f_arr.object_id, "array[" + std::to_string(i) + "]",
+                                       *f_val);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+
     // Arrays.asList was unhandled, so the composition's element sequence
     // (dooz LF/j;.e: Arrays.asList(new b2/o[]{...}).iterator()) received
     // null and Intrinsics.checkNotNullParameter threw NPE, killing
@@ -16694,6 +16765,104 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
     }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-055 (M9): java.lang.Long bit-method family — the 64-bit mirror of the
+    // Integer law above (OpenJDK Long.java).
+    //
+    // Evidence: dooz's packed-hash probe (SWAR zero-byte scan) calls
+    // Long.numberOfTrailingZeros(flags64). Only the 32-bit Integer block
+    // existed, so the 64-bit call fell through and the caller computed
+    // garbage element indexes (AIOOBE "length=7; index=1371075905" at
+    // LF/F$b;.o pc=25). The Long family MUST be 64-bit: as_u32(args[0])
+    // would silently truncate — that truncation is the exact bug class this
+    // law closes.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/Long;" && args.size() >= 1) {
+        auto as_i64 = [](const DalvikValue& v) -> int64_t {
+            if (v.type == DalvikType::INT64) return v.long_val;
+            if (v.type == DalvikType::INT32) return static_cast<int64_t>(v.int_val);
+            return 0;
+        };
+        auto u64_str = [](uint64_t v, int radix) -> std::string {
+            if (v == 0) return "0";
+            const char* d = "0123456789abcdef";
+            std::string s;
+            while (v) { s.insert(s.begin(), d[v % (unsigned)radix]); v /= (unsigned)radix; }
+            return s;
+        };
+        if (method == "numberOfTrailingZeros" && args.size() >= 1) {
+            uint64_t v = (uint64_t)as_i64(args[0]);
+            int n = 64;
+            if (v != 0) { n = 0; while ((v & 1u) == 0) { v >>= 1; n++; } }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(n);
+            return true;
+        }
+        if (method == "numberOfLeadingZeros" && args.size() >= 1) {
+            uint64_t v = (uint64_t)as_i64(args[0]);
+            int n = 64;
+            if (v != 0) { n = 0; while ((v & 0x8000000000000000ull) == 0) { v <<= 1; n++; } }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(n);
+            return true;
+        }
+        if (method == "bitCount" && args.size() >= 1) {
+            uint64_t v = (uint64_t)as_i64(args[0]);
+            int n = 0;
+            while (v) { n += (int)(v & 1u); v >>= 1; }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(n);
+            return true;
+        }
+        if ((method == "rotateLeft" || method == "rotateRight") && args.size() >= 2) {
+            uint64_t v = (uint64_t)as_i64(args[0]);
+            int d = args[1].type == DalvikType::INT32 ? args[1].int_val & 63 : 0;
+            uint64_t r = (method == "rotateLeft")
+                ? ((v << d) | (v >> ((64 - d) & 63)))
+                : ((v >> d) | (v << ((64 - d) & 63)));
+            if (d == 0) r = v;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_long((int64_t)r);
+            return true;
+        }
+        if (method == "highestOneBit" && args.size() >= 1) {
+            uint64_t v = (uint64_t)as_i64(args[0]);
+            uint64_t r = 0;
+            if (v) { int k = 0; uint64_t t = v;
+                while ((t & 0x8000000000000000ull) == 0) { t <<= 1; k++; }
+                r = 1ull << (63 - k); }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_long((int64_t)r);
+            return true;
+        }
+        if (method == "lowestOneBit" && args.size() >= 1) {
+            int64_t v = as_i64(args[0]);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_long(v & (-v));
+            return true;
+        }
+        if (method == "signum" && args.size() >= 1) {
+            int64_t v = as_i64(args[0]);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(v > 0 ? 1 : (v < 0 ? -1 : 0));
+            return true;
+        }
+        if (method == "toBinaryString" && args.size() >= 1) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(u64_str((uint64_t)as_i64(args[0]), 2), 0);
+            return true;
+        }
+        if (method == "toHexString" && args.size() >= 1) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(u64_str((uint64_t)as_i64(args[0]), 16), 0);
+            return true;
+        }
+        if (method == "toOctalString" && args.size() >= 1) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(u64_str((uint64_t)as_i64(args[0]), 8), 0);
+            return true;
+        }
+    }
     if (class_name == "Ljava/lang/Math;" && args.size() >= 1) {
         auto num = [](const DalvikValue& v) -> double {
             switch (v.type) {
@@ -17467,6 +17636,83 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         } else {
             result = DalvikValue::make_int(0);
         }
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-054 (M9): hashCode family law — the hash-contract surface.
+    //
+    // Evidence: dooz Material3 init spins forever in kotlin.collections
+    // ScatterSet findInSet because EVERY key answered hashCode()==0
+    // (WIDE-DIAG: murmur mix v1=0 v2=0xCC9E2D51 -> 0), so every key collides
+    // at slot 0 and the probe loop never finds an equal element.
+    //
+    // Upstream laws:
+    //   * OpenJDK String.hashCode (String.java L2120): h = 31*h + c over the
+    //     UTF-16 CODE UNITS (supplementary code points contribute their two
+    //     surrogate units). Empty string hashes 0 by definition.
+    //   * OpenJDK/AOSP Object.hashCode contract: distinct integers for
+    //     distinct objects "as far as is reasonably practical", repeatable
+    //     within one JVM lifetime. ART derives it from the object address;
+    //     this runtime derives it from the deterministic heap object id
+    //     through a fixed avalanche mix — satisfies the contract AND the §28
+    //     byte-determinism law (heap ids allocate deterministically).
+    //   * OpenJDK boxed primitives: Integer/Short/Byte/Character → the value;
+    //     Boolean → 1231/1237; Long → (int)(v ^ (v >>> 32)).
+    // The receiver is args[0] (engine virtual-dispatch convention, same as
+    // the String.equals law above).
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "hashCode" && !args.empty()) {
+        const DalvikValue& recv = args[0];
+        int32_t h = 0;
+        const std::string& cd = recv.class_desc;
+        if (cd == "Ljava/lang/Boolean;" || (cd.empty() && recv.type == DalvikType::BOOLEAN)) {
+            h = (recv.int_val != 0) ? 1231 : 1237;
+        } else if (cd == "Ljava/lang/Long;") {
+            uint64_t uv = static_cast<uint64_t>(recv.long_val);
+            h = static_cast<int32_t>(uv ^ (uv >> 32));
+        } else if (cd == "Ljava/lang/Integer;" || cd == "Ljava/lang/Short;" ||
+                   cd == "Ljava/lang/Byte;" || cd == "Ljava/lang/Character;") {
+            h = recv.int_val;
+        } else if (recv.type == DalvikType::STRING_REF) {
+            // OpenJDK String.hashCode over UTF-16 code units.
+            int32_t hh = 0;
+            const std::string& s = recv.string_val;
+            for (size_t i = 0; i < s.size();) {
+                uint32_t cp = static_cast<uint8_t>(s[i]);
+                size_t adv = 1;
+                if (cp < 0x80) { /* 1-byte */ }
+                else if ((cp & 0xE0) == 0xC0 && i + 1 < s.size()) {
+                    cp = ((cp & 0x1F) << 6) | (s[i+1] & 0x3F); adv = 2;
+                } else if ((cp & 0xF0) == 0xE0 && i + 2 < s.size()) {
+                    cp = ((cp & 0x0F) << 12) | ((s[i+1] & 0x3F) << 6) | (s[i+2] & 0x3F); adv = 3;
+                } else if ((cp & 0xF8) == 0xF0 && i + 3 < s.size()) {
+                    cp = ((cp & 0x07) << 18) | ((s[i+1] & 0x3F) << 12) |
+                         ((s[i+2] & 0x3F) << 6) | (s[i+3] & 0x3F); adv = 4;
+                }
+                // code point → UTF-16 units (String.hashCode iterates char[])
+                if (cp >= 0x10000) {
+                    uint32_t v = cp - 0x10000;
+                    uint32_t hi = 0xD800 + (v >> 10), lo = 0xDC00 + (v & 0x3FF);
+                    hh = hh * 31 + static_cast<int32_t>(hi);
+                    hh = hh * 31 + static_cast<int32_t>(lo);
+                } else {
+                    hh = hh * 31 + static_cast<int32_t>(cp);
+                }
+                i += adv;
+            }
+            h = hh;
+        } else if (recv.object_id != 0) {
+            // Identity hash: fixed avalanche mix of the deterministic object
+            // id (ART derives from address; contract-equal, §28-safe).
+            uint32_t x = recv.object_id ^ 0x9E3779B9u;
+            x ^= x >> 16; x *= 0x85EBCA6Bu;
+            x ^= x >> 13; x *= 0xC2B2AE35u;
+            x ^= x >> 16;
+            h = static_cast<int32_t>(x);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(h);
         return true;
     }
 
@@ -18614,6 +18860,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                   << ".getStackTrace() -> " << N
                   << " real frames (top=" << (N ? frames[0].first : "-") << ")"
                   << std::endl;
+        // M9: print the FULL frame chain — the unwind caller alone is not
+        // enough to localize Intrinsics NPEs (the throwing frame's caller IS
+        // the method that passed null; without it every hunt stalls).
+        for (size_t i = 0; i < N && i < 8; ++i)
+            std::cerr << "[M3-19-THROWTRACE]   frame[" << i << "] "
+                      << frames[i].first << "." << frames[i].second
+                      << std::endl;
         return true;
     }
 

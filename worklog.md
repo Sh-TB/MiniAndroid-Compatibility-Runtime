@@ -4936,3 +4936,69 @@ Stage Summary:
   needs the same register-tag forensics used for F-030/F-035.
 - Battery 82/82 ALL PASS at commit 6d88661a. dooz run reports remain rc=124
   (honest timeout); framebuffer 0 non-white — no visual claim made.
+
+---
+Task ID: M9-S15-1
+Agent: Super Z (session 15 — M9 GLOBAL ROOT HUNT, user mandate: colorful Hello World + playable DOOZ)
+Task: Two mandated deliverables — (1) colorful Hello World with bitmap image + border boxes fully rendered;
+(2) DOOZ advanced toward playable — via GENERIC root fixes only (§0). Phase-0 truth first.
+
+Work Log:
+- PHASE 0: HEAD d358a0c9 (M5) clean; corpus re-fetched hash-verified (dooz d81292cd EXACT pin;
+  HelloWorldSelfAware pin 009b4671); aapt2 rebuilt via bootstrap_toolchain.sh. DAX ground truth:
+  dooz (attach gate) rc=1 → AndroidComposeView attach chain; WITHOUT gate rc=0 blank (known).
+- DELIVERABLE 1 (hello_color fixture, real aapt2+ECJ+D8 APK sha 9179bc5f…): vertical LinearLayout
+  #0D47A1 bg + yellow-stroke rounded card (blue headline + green subtitle) + ImageView PNG bitmap
+  (4 color quadrants + diagonal stripes + dark ring, deterministic art generator) + red-stroke
+  rounded card (orange footer). FIRST RUN: text/bg/image rendered; borders + shape solids MISSING.
+- F-053 ROOT (shape drawables): the LIVE render walk (execution_engine) had NO GradientDrawable
+  semantics — non-selector .xml backgrounds silently fell to the GREY_200 container fallback.
+  (real_layout.cpp/view_renderer.cpp shape code is DEAD code — not in the Makefile source lists.)
+  LAW: inflate-time parse of <shape> (solid/stroke width+color/corners uniform+per-corner/gradient
+  startColor+endColor+angle 8-step AOSP orientation table) into new ViewNode bg_shape_* fields;
+  draw law: rounded-rect solid fill (radius clamp min(w,h)/2), oval ellipse, gradient lerp,
+  stroke ring inset per centered-stroke law; programmatic setBackgroundColor overrides shape
+  (AOSP last-writer). Ring/line kinds + dash = honest DETECTED-NOT-EXERCISED.
+  RESULT: all elements render; 3-run byte-identical sha 11e0056320d8546d.
+- DOOZ peel (4 generic roots this session, each DEX-disassembly-proven via new precise
+  minidump_dex.py oracle):
+  * F-054 hashCode family: EVERY key answered hashCode()==0 (WIDE-DIAG: murmur v1=0) → all keys
+    collide at slot 0 → ScatterSet probe never finds → spin (the M5 "insert never commits"
+    frontier). LAW in bridge_to_api: OpenJDK String.hashCode (31*h + UTF-16 code units),
+    identity hash = fixed avalanche mix of deterministic heap object id, boxed
+    Integer/Short/Byte/Character=value, Boolean=1231/1237, Long=v^(v>>>32).
+  * F-055 Long bit-method family: only the 32-bit Integer block existed; Long.numberOfTrailingZeros
+    (dooz SWAR zero-byte scan) fell through → caller computed garbage index (AIOOBE
+    "length=7; index=1371075905" at LF/F$b;.o pc=25). LAW: 64-bit
+    ntz/nlz/bitCount/rotate/highestOneBit/lowestOneBit/signum + toBinary/Hex/OctalString.
+  * F-056 Arrays.fill family: NO fill law anywhere → the packed-hash table constructor
+    (Arrays.fill(a, 0x8080808080808080L)) left the array zeroed → the SWAR empty-slot test
+    (window & (~window<<6) & 0x8080..8080; empty = 0x80-tagged bytes) could never fire → probe
+    spun (HALT-LOOP Lh/u;.a PC=0x16) → aborted frame returned stale-register garbage → aget AIOOBE.
+    This RETIRES the M5 finding as the same hole seen from the other side. LAW: fill(a,val) +
+    fill(a,from,to,val) with canonical bounds exceptions; elements stored via the standard
+    "array[N]" heap convention.
+  * F-057 view-node duality: decor chain decor(100) → activity node(8) → ComposeView(101) —
+    activity object DOUBLES as a view node, but ViewTree* owner-walk calls getTag/getParent on
+    it routed to ActivityShadow (no such methods) → walk dead-ended → owners null →
+    Intrinsics NPE at AndroidComposeView.onAttachedToWindow pc=137 (checkNotNull after
+    getViewTreeOwners). LAW: ShadowRegistry dispatches getParent/getTag to ViewShadow FIRST
+    whenever the receiver has a view node. Parent walk now resolves 101→8→100 (TAG-TRACE).
+- DIAGNOSTIC TOOLS (generic): exception MESSAGE printed in [EXCEPTION] lines (Kotlin error()/check()
+  messages are the app's own failure law); full [M3-19-THROWTRACE] frame chain (localized the
+  Intrinsics NPE to its true caller); scripts/minidump_dex.py — full-opcode precise disassembler
+  (f023_disasm.py had instruction-length drift on wide formats).
+- DOOZ STATUS (honest): the 4 roots above peeled the chain to ONE remaining frontier —
+  Intrinsics NPE at AndroidComposeView.onAttachedToWindow: the checkNotNull(getViewTreeOwners())
+  path at pc=137/153 requires the second owner-set pass (set_viewTreeOwners at pc=96 was skipped
+  when the saved-state owner lookup returned null during the FIRST pass — next probe: why
+  j1/c.a(view) misses the decor tag set by dooz onCreate PC=87-93). Framebuffer still 0 non-white
+  — no visual claim made.
+
+Stage Summary:
+- Deliverable 1 COMPLETE: hello_color renders colorful text + bitmap image + stroke-border boxes
+  end-to-end through real APK/DEX/render pipeline, 3-run byte-identical, fixture sources committed.
+- 4 generic laws landed (F-053..F-057 minus the pending owner-walk tail), zero app special-casing.
+- dooz blocker depth: from "hash-set spin (M5)" to the LAST onAttachedToWindow owner-walk check —
+  4 layers peeled this session with full evidence chains.
+- Battery: see commit message (fresh full run at HEAD after laws).

@@ -117,6 +117,31 @@ CallResult CallResult::not_handled() {
 // ─────────────────────────────────────────────────────────────────────────
 CallResult ShadowRegistry::dispatch(const CallContext& ctx) {
     calls_dispatched_++;
+    // F-057 (M9): view-node duality law.
+    //
+    // The runtime models the DecorView chain as decor → activity node →
+    // content → app views (F023-PARENTLINK): the ACTIVITY object doubles as
+    // a VIEW NODE. Compose's ViewTree* owner walks call View methods
+    // (getTag / getParent) on every hop of that chain; class-based shadow
+    // routing resolved those calls on the ActivityShadow identity and the
+    // walk dead-ended → owners reported null → Intrinsics NPE at
+    // AndroidComposeView.onAttachedToWindow (dooz compose chain).
+    //
+    // AOSP law (PhoneWindow/DecorView): every node of that parent chain IS
+    // a View. The activity-as-node is a modeling duality, so View-methods
+    // on an object that has a ViewShadow node must resolve through the
+    // ViewShadow tree FIRST, regardless of the object's primary identity.
+    if ((ctx.method == "getParent" || ctx.method == "getTag") &&
+        ctx.receiver_id != 0) {
+        for (auto& s : shadows_) {
+            if (s->name() != "ViewShadow") continue;
+            CallResult r = s->dispatch(ctx);
+            if (r.handled) {
+                calls_handled_++;
+                return r;
+            }
+        }
+    }
     for (auto& s : shadows_) {
         if (!s->handles_class(ctx.class_name)) continue;
         CallResult r = s->dispatch(ctx);
