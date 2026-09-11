@@ -5242,3 +5242,20 @@ Work Log:
 Stage Summary:
 - Honest verdict delivered: demo proof text/button IMPROVED, box-move visual REGRESSED (R-NEW-302 open); interaction state machine + determinism fully intact.
 - Repo demo assets now byte-consistent with the current HEAD render; no runtime code changed.
+
+---
+Task ID: MC3-HCPROV-3
+Agent: Super Z (main)
+Task: User directive — no code changes, no new roots; forensically prove hello_color_golden frame provenance: frame_1080x1920.png must be shown to come from REAL execution of hello_color.apk inside MiniAndroid (not a pre-built golden/fixture), 3 runs, golden never an input.
+
+Work Log:
+- Rebuilt the APK from committed fixture sources via scripts/build_fixture_apk.sh → SHA 77863f1f5e865f56… — byte-identical to the committed evidence.json pin (APK reproducibility proven).
+- 3 independent standard-path runs (real-dalvik default, zero extra flags): rc=0 ×3; screenshot.png SHA 11e0056320d8546d… ×3 (== committed golden frame); raw framebuffer screenshot.ppm SHA fb9f1df22debf0b1… ×3; execution logs equivalent modulo timestamps/RSS; crash.log 0 errors ×3.
+- PNG↔framebuffer identity: decoded PNG pixels == PPM raster byte-for-byte (6,220,800 bytes, 1080×1920) — the PNG is the runtime framebuffer's encode, nothing else.
+- DEX execution proof: classes parsed from the APK (MainActivity, R$drawable/id/layout/string/R); real lifecycle dispatch (<init>, onCreate, setContentView resid=2130903040 from binary resources.arsc, onStart, onResume); View API calls FROM app bytecode (LinearLayout.setBackgroundColor, TextView.setTextColor ×3, findViewById ×4 → heap ids 8/10/11/14); opcode_trace.json execution_source=REAL_DALVIK_INTERPRETER, 30 instructions with pc/opcode/return values; method/register/heap traces present.
+- Golden-not-input proof: zero occurrences of hello_color_golden/11e0056/frame_1080 in the runtime BINARY strings and SOURCE; no repo script/tool reads the golden dir; runs were given only the APK path. hello_art.png = app resource (content drawn), golden frame = passive post-hoc comparison artifact.
+- Registered docs/evidence/hello_color_golden/PROVENANCE_FORENSIC.json + retest_run{1,2,3}_frame.png; raw run dirs retained at /home/z/my-project/hc_provenance/run{1,2,3}.
+
+Stage Summary:
+- Full provenance chain closed honestly: sources → byte-identical APK → 3× real runs → real DEX/View/lifecycle traces → raw framebuffer → PNG == golden. VERDICT: REAL APK EXECUTION + REAL RUNTIME RENDERING.
+- No runtime code changed; no root opened; battery/registry untouched.
