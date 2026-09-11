@@ -1,0 +1,5 @@
+[FIELD-TRACE] put-obj Landroidx/compose/ui/platform/b1;.<init> Landroidx/compose/ui/platform/b1;.j obj#1579 value=obj#1439
+[FIELD-TRACE] put-obj Landroidx/compose/ui/platform/b1;.<init> Landroidx/compose/ui/platform/b1;.k obj#1579 value=obj#695
+[FIELD-TRACE] get-obj Landroidx/compose/ui/platform/b1;.k Landroidx/compose/ui/platform/b1;.j obj#1579
+[FIELD-TRACE] get-obj Landroidx/compose/ui/platform/b1;.k Landroidx/compose/ui/platform/WrappedComposition;.i obj#1439
+[FIELD-TRACE] get-obj Landroidx/compose/ui/platform/b1;.k Landroidx/compose/ui/platform/b1;.k obj#1579

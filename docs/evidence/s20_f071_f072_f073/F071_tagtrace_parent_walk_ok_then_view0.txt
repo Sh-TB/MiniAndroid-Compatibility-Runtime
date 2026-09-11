@@ -1,0 +1,12 @@
+[TAG-TRACE] getTag view=101 class=Landroid/view/View; argc=1 key=2131099735 hit=1 parent=0
+[TAG-TRACE] getTag view=725 class=Landroidx/compose/ui/platform/AndroidComposeView; argc=1 key=2131099737 hit=0 parent=102
+[TAG-TRACE] getParent view=725 found=1 parent=102
+[TAG-TRACE] getTag view=102 class=Landroidx/compose/ui/platform/ComposeView; argc=1 key=2131099737 hit=0 parent=8
+[TAG-TRACE] getParent view=102 found=1 parent=8
+[TAG-TRACE] getTag view=8 class=Landroid/view/View; argc=1 key=2131099737 hit=0 parent=101
+[TAG-TRACE] getParent view=8 found=1 parent=101
+[TAG-TRACE] getTag view=101 class=Landroid/view/View; argc=1 key=2131099737 hit=1 parent=0
+[TAG-TRACE] getTag view=725 class=Landroidx/compose/ui/platform/AndroidComposeView; argc=1 key=2131099701 hit=0 parent=102
+[TAG-TRACE] getParent view=725 found=1 parent=102
+[TAG-TRACE] getTag view=102 class=Landroidx/compose/ui/platform/ComposeView; argc=1 key=2131099701 hit=0 parent=8
+[TAG-TRACE] getParent view=0 found=0 parent=0

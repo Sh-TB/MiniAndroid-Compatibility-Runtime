@@ -1,0 +1,2 @@
+[ATOMIC-DIAG] REF compareAndSet recv=obj#1173 cell(k=1 ref=0 str="") nargs=2 a0=k7 a1=k6(obj#1494)
+[ATOMIC-DIAG] REF compareAndSet recv=obj#1173 cell(k=1 ref=1494 str="") nargs=2 a0=k6(obj#1494) a1=k7
