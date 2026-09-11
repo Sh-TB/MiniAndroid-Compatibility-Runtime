@@ -1,0 +1,1 @@
+./build/miniandroid run --execution-mode real-dalvik -o /tmp/s19_evid_dooz download/exp076_corpus/io.github.yamin8000.dooz_18.apk

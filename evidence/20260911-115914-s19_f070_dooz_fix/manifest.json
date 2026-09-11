@@ -1,0 +1,12 @@
+{
+ "run_id": "20260911-115914-s19_f070_dooz_fix",
+ "commit": "76fd96f03c6b1dc654580bed0d5a8ff8b2db2959",
+ "apk_sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
+ "status": "FAILED",
+ "exit_code": 1,
+ "started_at": "2026-09-11T11:59:14Z",
+ "duration_ms": 15308,
+ "command": "./build/miniandroid run --execution-mode real-dalvik -o /tmp/s19_evid_dooz download/exp076_corpus/io.github.yamin8000.dooz_18.apk",
+ "tool": "evidence.py/1.0",
+ "env_gates": {}
+}
