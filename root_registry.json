@@ -1,21 +1,21 @@
 {
- "baseline_head": "e6e480bb",
+ "baseline_head": "7178c890",
  "summary": {
-  "total": 295,
+  "total": 297,
   "by_status": {
    "PARTIAL": 103,
    "VERIFIED-CORRECT": 45,
    "UNPROVEN": 72,
-   "VERIFIED-FIXED": 13,
-   "OBSERVED-FAIL": 4,
+   "VERIFIED-FIXED": 17,
+   "OBSERVED-FAIL": 2,
    "RESEARCHED-NOT-IMPLEMENTED": 16,
    "NOT-APPLICABLE": 42
   },
   "unresolved_by_priority": {
    "P2": 12,
    "P3": 74,
-   "P0": 2,
-   "P1": 4
+   "P0": 1,
+   "P1": 3
   }
  },
  "roots": [
@@ -2951,23 +2951,43 @@
   },
   {
    "id": "R-NEW-294",
-   "status": "OBSERVED-FAIL",
+   "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "LIVE (run/s18_f069b_dooz): F/d0.a ISE 'A MonotonicFrameClock is not available\u2026' \u2014 Recomposer creation fails. Key identity across C1/f$a$a.a areEqual; verify sget F/b0$a.i staleness.",
-   "missing": "key-identity law",
-   "next": "trace static F/b0$a.i identity; then R-NEW-295",
-   "commit": "3093cd48"
+   "evidence": "F-070 (S19): identity-equals law answered for app-DEX receivers; F/d0.a ISE 1\u21920; Recomposer creation proceeds (dooz 3-run 31ddd4d5, battery ALL PASS).",
+   "missing": "-",
+   "next": "regression-watch",
+   "commit": "f95b4b1f"
   },
   {
    "id": "R-NEW-295",
-   "status": "OBSERVED-FAIL",
+   "status": "VERIFIED-FIXED",
    "priority": "P1",
    "fg": true,
-   "evidence": "LIVE (run/s18_f069b_dooz): 'null cannot be cast to non-null type android.view.View' at M1/i.d depth=21; getParent walk OK (TAG-TRACE 646\u2192102\u21928\u2192101) \u2014 re-root-cause after R-NEW-294.",
-   "missing": "key-identity law",
-   "next": "trace static F/b0$a.i identity; then R-NEW-295",
-   "commit": "3093cd48"
+   "evidence": "F-071 (S20): ROOT was NOT the parent walk (TAG-TRACE proved 725\u2192102\u21928\u2192101 intact). The 3rc range-invoke path leaked the enclosing static flag into try_shadow_dispatch \u2192 receiver_id=0 \u2192 getParent null \u2192 checkNotNull NPE. Range ops now set the flag from their own opcode (RAII restore); NPE gone; dooz rc=0 uncaught=0 (run/s20_f073).",
+   "missing": "-",
+   "next": "regression-watch",
+   "commit": "7178c890"
+  },
+  {
+   "id": "R-NEW-296",
+   "status": "VERIFIED-FIXED",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "LIVE: compose CompositionImpl.recordModificationsOf CAS(null\u2192values) returned true but stored null \u2192 drainPendingModificationsLocked read null \u2192 ComposeRuntimeError 'concurrently is not supported'. ",
+   "missing": "-",
+   "next": "regression-watch",
+   "commit": "7178c890"
+  },
+  {
+   "id": "R-NEW-297",
+   "status": "VERIFIED-FIXED",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "LIVE: R8 file-level sentinel `val PendingApplyNoModifications = Any()` (class exactly Ljava/lang/Object;) \u2014 areEqual(x,x) answered false \u2192 composeRuntimeError 'corrupt pendingModifications drain'. ",
+   "missing": "-",
+   "next": "regression-watch",
+   "commit": "7178c890"
   }
  ]
 }
