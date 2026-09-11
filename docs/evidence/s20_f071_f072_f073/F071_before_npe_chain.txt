@@ -1,0 +1,10 @@
+[EXC-PROPAGATE] Ljava/lang/UnsupportedOperationException; caught at caller LZ1/M;.j invoke_pc=22 handler=0x0x13 type=<catch-all>
+[EXCEPTION] method=LZ1/M;.j pc=144 exception=Ljava/lang/UnsupportedOperationException; msg="Operation is not supported for read-only collection" try_range=(no try covering pc) handler=NOT_FOUND msg="Operation is not supported for read-only collection"
+[EXCEPTION] no handler for Ljava/lang/UnsupportedOperationException; in LZ1/M;.j — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/UnsupportedOperationException; caught at caller LB1/a;.B invoke_pc=4 handler=0x0x9 type=<catch-all>
+[EXCEPTION] method=LM1/i;.d pc=17 exception=Ljava/lang/NullPointerException; msg="null cannot be cast to non-null type android.view.View" try_range=(none) handler=NOT_FOUND msg="null cannot be cast to non-null type android.view.View"
+[EXCEPTION] no handler for Ljava/lang/NullPointerException; in LM1/i;.d — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/NullPointerException; caught at caller LF/l;.R invoke_pc=118 handler=0x0x7d type=<catch-all>
+[EXCEPTION] method=LF/l;.R pc=186 exception=Ljava/lang/NullPointerException; msg="null cannot be cast to non-null type android.view.View" try_range=[180,187) handler=FOUND handler_addr=98 catch_type=<catch-all> msg="null cannot be cast to non-null type android.view.View"
+[EXCEPTION] → jumping to catch-all handler at PC=98 catch_type=<catch-all>
+[EXCEPTION] method=LF/l;.R pc=198 exception=Ljava/lang/NullPointerException; msg="null cannot be cast to non-null type android.view.View" try_range=[187,199) handler=FOUND handler_addr=67 catch_type=<catch-all> msg="null cannot be cast to non-null type android.view.View"

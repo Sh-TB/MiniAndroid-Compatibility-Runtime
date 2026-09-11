@@ -5144,3 +5144,23 @@ Work Log:
 Stage Summary:
 - Remote main = 86ca045c (ls-remote verified). R-NEW-294 CLOSED as F-070 (VERIFIED-FIXED, real-APK evidence). Registry +1 V-F (13→14 expected at next worklist regen).
 - Frontier: R-NEW-295 View-cast NPE (checkNotNull intrinsic family). Commits this session: 304321ed (tooling debt), 76fd96f0 (worklog S19-1), f95b4b1f (F-070), 86ca045c (hygiene).
+
+---
+Task ID: S20-MAIN
+Agent: Super Z (session 20 — R-NEW-295 View-cast NPE root-caused and closed as F-071/F-072/F-073)
+Task: "Attack the current gate" — prove the View-cast/parent-tag chain root (no assumptions), generic fixes, micro+real-APK evidence, battery, close, continue.
+
+Work Log:
+- Lineage: local HEAD = remote main = 2e8bdcb6 (ls-remote verified); clean tree; dooz baseline reproduced (rc=1, 1 uncaught View-cast NPE, 0 pixels).
+- DEX ground truth (scripts/s20_dex_probe.py — code_item header parse FIXED: registers_size@+0, ins_size@+2; previous probe read debug_info_off halves): D.a = WrappedComposition.ProvideAndroidCompositionLocals; registers_size=24 ins_size=4, params v20..v23; pc=0x84 invoke-virtual/range View.getParent receiver=v20; pc=0x73 getViewTreeOwners same v20.
+- F-071 (R-NEW-295) ROOT PROVEN — NOT the parent walk: TAG-TRACE shows ViewShadow parent links intact (725→102→8→101); METHOD-TRACE (param window added) shows p0=obj#725 stable at pc=0x84 while the shadow received receiver_id=0. Root: the 3rc range-invoke handler never set current_invoke_is_static_ (35c paths save/reset it per EXP-071 Phase 7) — inside a STATIC composable the leaked TRUE flag made try_shadow_dispatch build ctx with has_receiver=false → receiver lost → getParent null → checkNotNull NPE. Also explains getContext() result <unset> at pc=0x0d. FIX: flag set from the range opcode itself (INVOKE_STATIC_RANGE→true, else false), RAII restore.
+- F-072 (R-NEW-296, discovered after F-071): next throw = LF/r.c composeRuntimeError via LF/v.d monitor-enter → LF/v.D. FIELD-TRACE: b1.k reads b1.j=1439, WC.i=725 correctly; PARAM-TRACE: D.a entered with all 4 args correct → the corruption was the AtomicReference CAS. Root: AtomicReference.compareAndSet stored args[0] (expected) instead of args[1] (update) — the numeric/array/updater families already used arg1/arg2. Upstream law cross-checked against compose-runtime 1.5.4 sources (Composition.kt 360/562/640-657): recordModificationsOf CAS(null→values) then drain must see values; storing expected left it null → "calling recordModificationsOf and applyChanges concurrently is not supported". FIX: store the update (arg1), identity law unchanged.
+- F-073 (R-NEW-297, discovered after F-072): drain then returned obj#1521 non-null but v.D pc=9 areEqual(obj#1521, obj#1521) — SAME object — answered FALSE. INSTANCEOF-DIAG: obj#1521 class = Ljava/lang/Object; exactly — the R8-compiled file-level sentinel `private val PendingApplyNoModifications = Any()`, absent from class_to_superclass_ → F-070's app-DEX gate skipped it → STUBBED false. OpenJDK law: Object.equals IS reference identity; a runtime receiver of class Ljava/lang/Object; cannot override. FIX: base-class gate added beside app-DEX and token/null gates.
+- RESULT: dooz rc=0 ZERO uncaught exceptions through onCreate + WrappedComposition composition + onAttachedToWindow + queued composition runnables (Lb2/h; + J$c) — first time. Frame still 0/2,073,600 non-white (HONEST): composition content has not reached measure/layout/draw; AndroidComposeView children=0.
+- REGRESSION: battery 91/91 ALL PASS; hello_color APK rebuilt byte-identical to golden sha 77863f1f…; 3 runs byte-identical to golden frame 11e0056…; TicTacToe §29 8 checks PASS; dooz 3-run 31ddd4d5… ×3, rc=0 ×3, uncaught=0 ×3.
+- Diagnostics added (env-gated, read-only): MINIANDROID_PARAM_TRACE; METHOD-TRACE param window; MINIANDROID_ATOMIC_DIAG REF lines; MINIANDROID_INSTANCEOF_TRACE. DEX oracles: s20_dex_probe.py, s20_range_probe.py, s20_find_callers.py, s20_try_dump.py.
+- Evidence: miniandroid/evidence/20260911-s20_f071_f072_f073_dooz/ (local, §41 law) + curated docs/evidence/s20_f071_f072_f073/ excerpts + docs/evidence/S20_F071_F072_F073_REPORT.md.
+
+Stage Summary:
+- R-NEW-295 CLOSED as F-071; two new roots DISCOVERED+FIXED+PROVEN (R-NEW-296/F-072, R-NEW-297/F-073). V-F 13 → 16 after registry regen (294 by F-070; 295..297 this session); registry total 295 → 297.
+- NEW FRONTIER (honest): the frame-callback chain — J$c runnable dequeued then CHOREO removeFrameCallback; composition content not yet applied to AndroidComposeView (children=0). Next gate: trace the wrapped-composition setContent/content-compose path from the queued runnables to recomposer job launch; then measure/layout/draw → pixels.
