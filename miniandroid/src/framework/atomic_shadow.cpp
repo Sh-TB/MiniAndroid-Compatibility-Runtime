@@ -583,6 +583,25 @@ CallResult AtomicShadow::dispatch(const CallContext& ctx) {
 
     // ── AtomicReference semantics ───────────────────────────────────────
     if (is_ref) {
+        // F-072 diag (env-gated): plain-reference cell forensics.
+        if (std::getenv("MINIANDROID_ATOMIC_DIAG")) {
+            static thread_local uint64_t ref_log_n = 0;
+            if (ref_log_n < 400) {
+                ++ref_log_n;
+                std::cerr << "[ATOMIC-DIAG] REF " << m << " recv=obj#" << recv
+                          << " cell(k=" << (int)c.kind
+                          << " ref=" << c.ref_id
+                          << " str=\"" << c.ref_str << "\")"
+                          << " nargs=" << ctx.args.size();
+                for (size_t i = 0; i < ctx.args.size() && i < 3; ++i) {
+                    int k = (int)ctx.args[i].kind;
+                    std::cerr << " a" << i << "=k" << k;
+                    if (k == (int)CallContext::Arg::Kind::OBJECT)
+                        std::cerr << "(obj#" << ctx.args[i].object_id << ")";
+                }
+                std::cerr << std::endl;
+            }
+        }
         if (m == "get") return ref_get();
         if (m == "set" || m == "lazySet") {
             ref_set(ctx);
@@ -594,7 +613,23 @@ CallResult AtomicShadow::dispatch(const CallContext& ctx) {
             return old;
         }
         if (m == "compareAndSet" || m == "weakCompareAndSet") {
-            // Reference law: compare by identity (== for objects, value for
+            // F-072 (R-NEW-296) — CAS UPDATE-VALUE LAW (OpenJDK
+            // java.util.concurrent.atomic.AtomicReference.compareAndSet(
+            // expected, update)): arg0 = expected, arg1 = update. On match
+            // the cell must store **arg1**. The previous code stored the
+            // FIRST argument via ref_set(ctx) — for the common CAS(null →
+            // values) idiom it wrote the expected value (null) back,
+            // leaving the reference permanently null after a "successful"
+            // CAS. Real-APK impact (dooz, compose 1.5.x
+            // CompositionImpl.recordModificationsOf): CAS(null → values)
+            // returned true but stored null, so the immediately following
+            // drainPendingModificationsLocked() read null and threw
+            // ComposeRuntimeError "calling recordModificationsOf and
+            // applyChanges concurrently is not supported" — the second
+            // dooz first-frame blocker. The numeric family already
+            // implemented this law (c.num = update); the array and
+            // field-updater families use arg1/arg2 respectively. Identity
+            // law: compare by object identity (== for objects, value for
             // the engine's string model), null matches only null.
             bool matched;
             if (c.ref_id != 0) {
@@ -605,7 +640,24 @@ CallResult AtomicShadow::dispatch(const CallContext& ctx) {
                 matched = ctx.args.empty() ||
                           ctx.args[0].kind == CallContext::Arg::Kind::NULL_REF;
             }
-            if (matched) ref_set(ctx);
+            if (matched) {
+                // Store the UPDATE (arg1) with the same payload-shape law
+                // as ref_set, but addressed at index 1.
+                c.kind = AtomicCell::Kind::REF;
+                if (arg_is_object(1)) {
+                    c.ref_id = ctx.args[1].object_id;
+                    c.ref_cls = ctx.args[1].object_class;
+                    c.ref_str.clear();
+                } else if (arg_is_string(1)) {
+                    c.ref_id = 0;
+                    c.ref_cls.clear();
+                    c.ref_str = ctx.args[1].string_val;
+                } else {
+                    c.ref_id = 0;
+                    c.ref_cls.clear();
+                    c.ref_str.clear();
+                }
+            }
             return CallResult::handled_bool(matched);
         }
         return CallResult::not_handled();
