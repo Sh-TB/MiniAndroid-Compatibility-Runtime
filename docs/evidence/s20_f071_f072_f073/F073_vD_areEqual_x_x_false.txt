@@ -1,0 +1,4 @@
+[METHOD-TRACE] LF/v;.D pc=3 word=0x206e v0=obj#1355 v1=0 v5=obj#1354 p0=obj#1354
+[METHOD-TRACE] LF/v;.D pc=6 word=0x20c v0=obj#1355 v1=0 v5=obj#1354 p0=obj#1354
+[METHOD-TRACE] LF/v;.D pc=7 word=0x362 v0=obj#1355 v1=0 v2=obj#1521 v5=obj#1354 p0=obj#1354
+[METHOD-TRACE] LF/v;.D pc=9 word=0x2071 v0=obj#1355 v1=0 v2=obj#1521 v3=obj#1521 v5=obj#1354 p0=obj#1354

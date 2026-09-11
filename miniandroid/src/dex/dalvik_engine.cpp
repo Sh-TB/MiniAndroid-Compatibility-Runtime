@@ -2024,6 +2024,56 @@ bool DalvikExecutionEngine::execute_method_internal(
         }
     }
 
+    // S20 R-NEW-295 diagnostic: env-gated parameter-slot probe.
+    // MINIANDROID_PARAM_TRACE=<class-substr>|<method-substr> prints, at each
+    // matching method ENTRY, the raw args, proto param types, and a read-back
+    // of the param registers (v[regs-ins .. regs-1]). Read-only — pure
+    // get_register reads; diagnostics must never change semantics (M3 law).
+    {
+        static thread_local const char* pt_filter =
+            std::getenv("MINIANDROID_PARAM_TRACE");
+        static thread_local uint32_t pt_budget = 400;
+        if (pt_filter && pt_budget > 0) {
+            std::string f(pt_filter);
+            auto bar = f.find('|');
+            std::string fcls = (bar == std::string::npos) ? f : f.substr(0, bar);
+            std::string fmth = (bar == std::string::npos) ? "" : f.substr(bar + 1);
+            if (class_name.find(fcls) != std::string::npos &&
+                (fmth.empty() || method_name == fmth)) {
+                pt_budget--;
+                std::cerr << "[PARAM-TRACE] " << class_name << "." << method_name
+                          << " regs=" << registers_size << " ins=" << ins_size
+                          << " args=" << args.size();
+                for (size_t i = 0; i < args.size() && i < 8; ++i) {
+                    std::cerr << " a" << i << "={t=" << static_cast<int>(args[i].type);
+                    if (args[i].type == DalvikType::OBJECT_REF ||
+                        args[i].type == DalvikType::STRING_REF)
+                        std::cerr << " obj=" << args[i].object_id
+                                  << " cls=" << args[i].class_desc;
+                    if (args[i].type == DalvikType::INT32)
+                        std::cerr << " i=" << args[i].int_val;
+                    std::cerr << "}";
+                }
+                std::cerr << std::endl;
+                uint32_t pstart = (registers_size >= ins_size)
+                                      ? registers_size - ins_size : 0;
+                for (uint32_t r = pstart;
+                     r < registers_size && r < pstart + 8; ++r) {
+                    DalvikValue rv = frame.registers.read_v(
+                        static_cast<uint8_t>(r));
+                    std::cerr << "[PARAM-TRACE]   v" << r << "={t="
+                              << static_cast<int>(rv.type);
+                    if (rv.type == DalvikType::OBJECT_REF ||
+                        rv.type == DalvikType::STRING_REF)
+                        std::cerr << " obj=" << rv.object_id;
+                    if (rv.type == DalvikType::INT32)
+                        std::cerr << " i=" << rv.int_val;
+                    std::cerr << "}" << std::endl;
+                }
+            }
+        }
+    }
+
     // EXP-062: Debug — trace parameter loading for PhoneView.<init>
     if (class_name.find("PhoneView") != std::string::npos &&
         method_name == "<init>") {
@@ -6432,6 +6482,19 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                             std::cerr << " v" << r << "="
                                       << dalvik_value_to_string(rv);
                         }
+                        // S20: also print the PARAM window (last ins regs).
+                        // R8 composable frames keep params at vN-ins..vN-1,
+                        // far above the v0..v19 cap — hide nothing.
+                        uint32_t ins_n = current_registers_->get_ins_count();
+                        uint32_t total = current_registers_->get_size();
+                        uint32_t pstart =
+                            (total >= ins_n) ? total - ins_n : 0;
+                        for (uint32_t r = pstart; r < total; ++r) {
+                            DalvikValue rv = current_registers_->read_v(
+                                static_cast<uint8_t>(r));
+                            std::cerr << " p" << (r - pstart) << "="
+                                      << dalvik_value_to_string(rv);
+                        }
                     }
                     std::cerr << std::endl;
                 }
@@ -7092,6 +7155,39 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 uint8_t argc = (instr >> 8) & 0xFF;  // AA = arg count
                 uint16_t method_idx = bytecode_[pc_ + 1];  // BBBB = method index
                 uint16_t first_reg = bytecode_[pc_ + 2];   // CCCC = first register
+
+                // ────────────────────────────────────────────────────────────
+                // F-071 (R-NEW-295) — RANGE-INVOKE SHADOW-DISPATCH STATIC
+                // FLAG LAW. The 35c invoke paths save + reset
+                // current_invoke_is_static_ at their boundary (EXP-071
+                // Phase 7) because try_shadow_dispatch builds the shadow
+                // CallContext from that flag: instance calls place args[0]
+                // into ctx.receiver_id (has_receiver=true); static calls
+                // keep args[0] as the first ctx parameter. The 3rc path
+                // never touched the flag, so a range-invoke executed while
+                // a STATIC method's execute_invoke_static frame was active
+                // (R8-minified Kotlin — every @Composable is static, e.g.
+                // dooz composable Landroidx/compose/ui/platform/D;.a)
+                // dispatched its INSTANCE calls to shadows with
+                // has_receiver=false → receiver_id=0 → ViewShadow.getParent
+                // answered null for a VALID view (obj#725 with parent=102,
+                // proven by MINIANDROID_TAG_TRACE) → Kotlin checkNotNull
+                // NPE "null cannot be cast to non-null type android.view.
+                // View" at D.a pc=0x84 — the dooz first-frame blocker.
+                // General law: the flag must reflect the CURRENT invoke's
+                // opcode, not the caller frame's. INVOKE_STATIC_RANGE →
+                // true; virtual/super/direct/interface-range → false.
+                // Restored on exit, identical to the 35c law.
+                // ────────────────────────────────────────────────────────────
+                const bool saved_range_is_static = current_invoke_is_static_;
+                current_invoke_is_static_ =
+                    (instr & 0xFF) ==
+                    static_cast<uint8_t>(Opcode::INVOKE_STATIC_RANGE);
+                struct RangeStaticFlagRestore {
+                    bool& ref; const bool saved;
+                    ~RangeStaticFlagRestore() { ref = saved; }
+                } range_flag_restore{current_invoke_is_static_,
+                                     saved_range_is_static};
 
                 // Build args from consecutive registers.
                 // EXP-095 (CM-019): SIGNATURE-AWARE arg building — per the
@@ -9777,6 +9873,28 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
         }
     }
     // Also check if null — null instanceof anything is false (already handled by OBJECT_REF check)
+    // F-072 diag (env-gated): interface-closure forensics for collection
+    // checks on the dooz composition path.
+    if (std::getenv("MINIANDROID_INSTANCEOF_TRACE") &&
+        (target_type == "Ljava/util/Set;" || target_type == "[Ljava/lang/Object;")) {
+        static thread_local uint64_t iof_n = 0;
+        if (iof_n < 200) {
+            ++iof_n;
+            std::string oc = (src_val.type == DalvikType::OBJECT_REF)
+                                 ? src_val.class_desc : std::string("-");
+            if (src_val.type == DalvikType::OBJECT_REF && oc.empty() &&
+                heap_.has_object(src_val.object_id)) {
+                oc = heap_.get(src_val.object_id)->class_descriptor;
+            }
+            fprintf(stderr,
+                    "[INSTANCEOF-DIAG] %s.%s pc=%u target=%s obj=obj#%u class=%s "
+                    "is_instance=%s\n",
+                    current_class_.c_str(), current_method_.c_str(), pc,
+                    target_type.c_str(),
+                    src_val.type == DalvikType::OBJECT_REF ? src_val.object_id : 0u,
+                    oc.c_str(), is_instance ? "TRUE" : "FALSE");
+        }
+    }
 
     set_register(dest, DalvikValue::make_bool(is_instance));
 
@@ -15686,10 +15804,35 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             app_dex_receiver = obj && !obj->class_descriptor.empty() &&
                                class_to_superclass_.count(obj->class_descriptor) != 0;
         }
+        // F-073 (S20, R-NEW-296): the BASE-CLASS gate. A heap receiver
+        // whose recorded RUNTIME class is exactly Ljava/lang/Object; can
+        // by definition carry no equals override (OpenJDK
+        // java.lang.Object.equals IS reference identity). R8 compiles
+        // Kotlin file-level sentinel objects (`private val X = Any()`)
+        // into `new-instance Ljava/lang/Object;` — those sentinels are
+        // absent from class_to_superclass_ (not app-DEX classes), so the
+        // F-070 app-DEX gate missed them and the bridge answered
+        // STUBBED/false even for (x, x). Real-APK hit: dooz
+        // CompositionImpl.drainPendingModificationsLocked — the
+        // PendingApplyNoModifications sentinel (obj#1521) compared against
+        // itself via Intrinsics.areEqual → false → composeRuntimeError
+        // "corrupt pendingModifications drain" → MainActivity.onCreate
+        // died → first frame 0 pixels. Reaching this handler still proves
+        // no shadow claimed the receiver; Ljava/lang/Object; has no other
+        // value-semantics handler in this bridge (String keeps its own
+        // content handler and its receivers are never class-tagged
+        // Ljava/lang/Object;).
+        bool base_object_receiver = false;
+        if (x.type == DalvikType::OBJECT_REF && x.object_id != 0 &&
+            heap_.has_object(x.object_id)) {
+            const auto* obj = heap_.get(x.object_id);
+            base_object_receiver =
+                obj && obj->class_descriptor == "Ljava/lang/Object;";
+        }
         bool class_or_null_case =
             (x.type == DalvikType::CLASS_REF && y.type == DalvikType::CLASS_REF) ||
             (x.type == DalvikType::NULL_REF && y.type == DalvikType::NULL_REF);
-        if (app_dex_receiver || class_or_null_case) {
+        if (app_dex_receiver || base_object_receiver || class_or_null_case) {
             if (f069d) {
                 std::cerr << "[F069-EQUALS] x:type=" << static_cast<int>(x.type)
                           << ":oid=" << x.object_id

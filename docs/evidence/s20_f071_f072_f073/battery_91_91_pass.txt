@@ -1,0 +1,5 @@
+  [35] PASS  helloworld_golden (§28)
+  [36] PASS  tictactoe_golden (§29 interaction + determinism)
+PASS  helloworld_golden (§28)
+PASS  tictactoe_golden (§29 interaction + determinism)
+BATTERY GATE: ALL PASS (91 stages)

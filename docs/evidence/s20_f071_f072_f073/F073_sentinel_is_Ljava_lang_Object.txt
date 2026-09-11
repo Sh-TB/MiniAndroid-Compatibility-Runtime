@@ -1,0 +1,3 @@
+[INSTANCEOF-DIAG] Lz1/g;.equals pc=4 target=Ljava/util/Set; obj=obj#641 class=LL/b; is_instance=TRUE
+[INSTANCEOF-DIAG] Lz1/g;.equals pc=4 target=Ljava/util/Set; obj=obj#651 class=LL/b; is_instance=TRUE
+[INSTANCEOF-DIAG] LP/v;.a pc=22 target=Ljava/util/Set; obj=obj#1494 class=LH/b; is_instance=TRUE
