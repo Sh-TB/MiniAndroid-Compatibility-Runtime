@@ -1,0 +1,2883 @@
+{
+ "baseline_head": "0383f19f",
+ "summary": {
+  "total": 286,
+  "by_status": {
+   "PARTIAL": 100,
+   "VERIFIED-CORRECT": 45,
+   "UNPROVEN": 73,
+   "VERIFIED-FIXED": 5,
+   "OBSERVED-FAIL": 6,
+   "RESEARCHED-NOT-IMPLEMENTED": 16,
+   "NOT-APPLICABLE": 41
+  },
+  "unresolved_by_priority": {
+   "P2": 13,
+   "P3": 75,
+   "P0": 4,
+   "P1": 3
+  }
+ },
+ "roots": [
+  {
+   "id": "R-NEW-001",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "fg": "8de5382b",
+   "evidence": true,
+   "missing": "F-029a Handler.createAsync\u2192main singleton (CM4); virtual-clock single-owner audit (session-11)",
+   "next": "enqueue order edges, IdleHandler, sync barriers, quit",
+   "commit": "registry probe MQ-01: enqueue past/now/future + remove-by-identity"
+  },
+  {
+   "id": "R-NEW-002",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": "8de5382b",
+   "evidence": false,
+   "missing": "F-029a (CM4)",
+   "next": "removeCallbacks identity law",
+   "commit": "probe MQ-02"
+  },
+  {
+   "id": "R-NEW-003",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "3ed13292",
+   "evidence": false,
+   "missing": "ChessClock cross-APK virtual-time proof; GATE-proven delayed ordering (Family M)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-004",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": "3ed13292",
+   "evidence": false,
+   "missing": "locks_shadow F-017 (Family Y battery)",
+   "next": "monitor ownership edges",
+   "commit": "probe LK-01"
+  },
+  {
+   "id": "R-NEW-005",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": "3ed13292",
+   "evidence": false,
+   "missing": "locks_shadow F-017",
+   "next": "reacquire ordering",
+   "commit": "probe LK-02"
+  },
+  {
+   "id": "R-NEW-006",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": "3ed13292",
+   "evidence": false,
+   "missing": "locks_shadow F-017",
+   "next": "notifyAll wake order",
+   "commit": "probe LK-03"
+  },
+  {
+   "id": "R-NEW-007",
+   "status": "UNPROVEN",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "no live trace",
+   "next": "interrupt state machine",
+   "commit": "implement on trace evidence"
+  },
+  {
+   "id": "R-NEW-008",
+   "status": "UNPROVEN",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "no live trace",
+   "next": "IE propagation via sleep/wait",
+   "commit": "implement on trace evidence"
+  },
+  {
+   "id": "R-NEW-009",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "5488eba0",
+   "evidence": false,
+   "missing": "corpus+battery; is_subclass_of interface-closure law (CM3)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-010",
+   "status": "UNPROVEN",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "no live ArrayStoreException trace",
+   "next": "covariant store check",
+   "commit": "implement on trace evidence"
+  },
+  {
+   "id": "R-NEW-011",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "3ed13292",
+   "evidence": false,
+   "missing": "EXP-071 read-all-types law",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-012",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "96ecc9f4",
+   "evidence": false,
+   "missing": "EXP-071 + OOB synthetic-exception law; F-055 AIOOBE chain live (CM9)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-013",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "5488eba0",
+   "evidence": false,
+   "missing": "F-017b cycle-guard exemption (CM3); corpus",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-014",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "3ed13292",
+   "evidence": false,
+   "missing": "corpus 16-APK; clinit guard",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-015",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": "8de5382b",
+   "evidence": false,
+   "missing": "F-029 reflection core (CM4)",
+   "next": "initialize/resolve flag matrix",
+   "commit": "extend F-029 fixture"
+  },
+  {
+   "id": "R-NEW-016",
+   "status": "VERIFIED-FIXED",
+   "priority": "P0",
+   "fg": "8de5382b",
+   "evidence": true,
+   "missing": "F-029 getDeclaredMethod/getMethod/Method.invoke\u2192recursive bridge; regression-caught & reconciled (microtimer Room path)",
+   "next": "generic exception wrapping fidelity",
+   "commit": "keep protected; fixture on next battery pass"
+  },
+  {
+   "id": "R-NEW-017",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": "8de5382b",
+   "evidence": false,
+   "missing": "F-029 core",
+   "next": "getDeclaredFields/inherited-member walk",
+   "commit": "hidden-gap list (audit \u00a7H)"
+  },
+  {
+   "id": "R-NEW-018",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no Parcel substrate",
+   "next": "-",
+   "commit": "NOT-APPLICABLE until Parcel law needed"
+  },
+  {
+   "id": "R-NEW-019",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no Parcel substrate",
+   "next": "-",
+   "commit": "same"
+  },
+  {
+   "id": "R-NEW-020",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": "3ed13292",
+   "evidence": false,
+   "missing": "Bundle heap store EXP093 (Intent extras)",
+   "next": "CREATOR envelope law",
+   "commit": "implement on trace evidence"
+  },
+  {
+   "id": "R-NEW-021",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "ViewShadow measure/layout pipeline (G04/G06)",
+   "next": "propagation coalescing law",
+   "commit": "probe UI-01"
+  },
+  {
+   "id": "R-NEW-022",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "invalidate exercised by fixtures",
+   "next": "damage-region law",
+   "commit": "probe UI-02"
+  },
+  {
+   "id": "R-NEW-023",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "single logical UI-thread engine law (report \u00a7K1)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-024",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": "3ed13292",
+   "evidence": false,
+   "missing": "MeasureSpec EXACTLY/AT_MOST fixture; G04 density matrix",
+   "next": "UNSPECIFIED edges",
+   "commit": "extend fixture"
+  },
+  {
+   "id": "R-NEW-025",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "fg": "0383f19f",
+   "evidence": true,
+   "missing": "dooz ComposeView children=0, 0/2073600 non-white (run/m9_merge_dooz at CMM)",
+   "next": "first-frame traversal pipeline",
+   "commit": "M9 frontier: dispatch pump + lifecycle registry (R-NEW-279/285)"
+  },
+  {
+   "id": "R-NEW-026",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "3ed13292",
+   "evidence": false,
+   "missing": "F-032/F-033 getSystemService registry + Class overload (CM5); SharedPreferences cross-APK (unote, microtimer)",
+   "next": "ActivityThread internals",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-027",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "class_resolver; 16-APK corpus (Family B)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-028",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "b03ad3b1",
+   "evidence": false,
+   "missing": "per-list index accumulators re-verified vs dooz class_data (M6)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-029",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "NoClassDefFoundError paths exercised",
+   "next": "error-type matrix",
+   "commit": "CONDITIONAL (audit \u00a7B)"
+  },
+  {
+   "id": "R-NEW-030",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "single-app loader",
+   "next": "isolation semantics",
+   "commit": "CONDITIONAL"
+  },
+  {
+   "id": "R-NEW-031",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "ARSC parser + canonical drawable resolver",
+   "next": "multi-ApkAssets composition",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-032",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no invalidation trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-033",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "96ecc9f4",
+   "evidence": false,
+   "missing": "canonical resolver: hello_color drawable+borders end-to-end (CM9)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-034",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "density approximation verified (G04)",
+   "next": "locale/qualifier selection",
+   "commit": "RESEARCHED P2 (audit \u00a7O)"
+  },
+  {
+   "id": "R-NEW-035",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "layout inflation fixtures",
+   "next": "coercion matrix",
+   "commit": "extend fixture"
+  },
+  {
+   "id": "R-NEW-036",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "layout_inflater.cpp corpus-proven",
+   "next": "Factory/Factory2 chain corners",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-037",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "Bundle heap store (EXP093)",
+   "next": "ClassLoader propagation",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-038",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-039",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-040",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace (RESEARCHED, audit M-family)",
+   "next": "-",
+   "commit": "probe MQ-03"
+  },
+  {
+   "id": "R-NEW-041",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-042",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-043",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-044",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "multi-dex enumeration exercised",
+   "next": "dynamic load APIs",
+   "commit": "CONDITIONAL"
+  },
+  {
+   "id": "R-NEW-045",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "multi-dex enumeration corpus-proven (Family B)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-046",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-047",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "jni_bridge.h boundary classification; classification law: missing .so NEVER a Java-API blocker",
+   "next": "-",
+   "commit": "keep law; implement on demand"
+  },
+  {
+   "id": "R-NEW-048",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same as 047",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-049",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same as 047",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-050",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "interpreter \u2014 ART-specific binding N/A as-is",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-051",
+   "status": "VERIFIED-FIXED",
+   "priority": "P0",
+   "fg": "b03ad3b1",
+   "evidence": false,
+   "missing": "F-041 encoded_catch_handler negative-size law; f040 L2 band; every typed+catch-all entry in real R8/ECJ DEX",
+   "next": "-",
+   "commit": "keep protected"
+  },
+  {
+   "id": "R-NEW-052",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "THROWTRACE frame chains across fixtures",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-053",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "b03ad3b1",
+   "evidence": false,
+   "missing": "typed catch dispatch (f040 L2)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-054",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "Family W filled-new-array corpus",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-055",
+   "status": "UNPROVEN",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "packed/sparse payload edge shapes RESEARCHED (audit \u00a7A gaps)",
+   "next": "-",
+   "commit": "CONDITIONAL"
+  },
+  {
+   "id": "R-NEW-056",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P0",
+   "fg": "3ed13292",
+   "evidence": true,
+   "missing": "CYCLE-E/F-030 proto-guided arg typing; dooz wide-pair SWAR live",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-057",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "dooz range-invokes live",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-058",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P0",
+   "fg": "b03ad3b1",
+   "evidence": true,
+   "missing": "overlapping wide pairs proven live (ushr-long/2addr, shl-long cross-chunk, M6 trace)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-059",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "3ed13292",
+   "evidence": false,
+   "missing": "f030 L5 Integer.valueOf CAS band",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-060",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "b03ad3b1",
+   "evidence": false,
+   "missing": "Family F: LM1/i disassembled ground truth; upstream-null tracing law",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-061",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "fg": "ad4349a9",
+   "evidence": true,
+   "missing": "compose continuation chain executes (AndroidUiDispatcher+J$c runnables, CM8)",
+   "next": "Job-active cancellation (R-NEW-285)",
+   "commit": "M8 roadmap item 10"
+  },
+  {
+   "id": "R-NEW-062",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "partial via 061",
+   "next": "propagation matrix",
+   "commit": "with 061"
+  },
+  {
+   "id": "R-NEW-063",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P0",
+   "fg": "6d88661a",
+   "evidence": true,
+   "missing": "F-036/F-039 MainDispatcherLoader (CM5c) + F-029a HandlerCompat (CM4)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-064",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "ZIP entry semantics exercised; .so selection R",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-065",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "96ecc9f4",
+   "evidence": false,
+   "missing": "hello_color 4-quadrant bitmap art rendered through decodeResource+draw (CM9); png/jpeg/webp decoders linked",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-066",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "density approximation (G04)",
+   "next": "decode density transform",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-067",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "renderer RGB path",
+   "next": "Config matrix",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-068",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": "96ecc9f4",
+   "evidence": false,
+   "missing": "F-053 GradientDrawable shape law (CM9); ColorDrawable verified",
+   "next": "layer-list, inset, rotate",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-069",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "state_list.cpp corpus",
+   "next": "state machine matrix",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-070",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "state_list",
+   "next": "tint law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-071",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-072",
+   "status": "UNPROVEN",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-073",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-074",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "software renderer architecture \u2014 no DisplayList/RenderNode substrate by design",
+   "next": "-",
+   "commit": "radar retained for HW path"
+  },
+  {
+   "id": "R-NEW-075",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no compositor; libGDX boundary = T3/BLANK honest record",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-076",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-077",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "screenshot pipeline + metrics proven across 7 fixture goldens",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-078",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "ImageView corpus",
+   "next": "scaleType geometry matrix",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-079",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "corpus",
+   "next": "intrinsic\u2192measure law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-080",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "corpus",
+   "next": "lifetime law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-081",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P0",
+   "fg": "96ecc9f4",
+   "evidence": true,
+   "missing": "hello_color END-TO-END: ARSC\u2192layout\u2192drawable\u2192view\u2192draw\u2192pixels; 3-run byte-identical frame 11e0056320d8546d (CM9, merge-verified at CMM)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-082",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no split-APK substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-083",
+   "status": "UNPROVEN",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "no signature verification law",
+   "next": "v1/v2 verification",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-084",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no scheme matrix",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-085",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "-",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-086",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "parser bound checks (\u00a7N hardening)",
+   "next": "fuzz corpus campaign",
+   "commit": "tooling class G"
+  },
+  {
+   "id": "R-NEW-087",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "parser hardening",
+   "next": "duplicate-entry law",
+   "commit": "tooling class G"
+  },
+  {
+   "id": "R-NEW-088",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "file_sandbox path containment",
+   "next": "traversal corpus",
+   "commit": "tooling class G"
+  },
+  {
+   "id": "R-NEW-089",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "AXML parser bounds",
+   "next": "hostile corpus",
+   "commit": "tooling class G"
+  },
+  {
+   "id": "R-NEW-090",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "ARSC parser bounds",
+   "next": "hostile corpus",
+   "commit": "tooling class G"
+  },
+  {
+   "id": "R-NEW-091",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "res_id resolution",
+   "next": "confusion corpus",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-092",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "package parse",
+   "next": "isolation law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-093",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "manifest parse feeds PackageManager+F-018",
+   "next": "security attribute matrix",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-094",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "exported parsed, not enforced",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-095",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "explicit intents corpus-proven",
+   "next": "caller identity law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-096",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "single-app runtime; no spoofing surface",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-097",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "IntentFilter matching RESEARCHED (audit \u00a7L)",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-098",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no URI grant substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-099",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no ContentProvider substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-100",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-101",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no Binder substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-102",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no Binder substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-103",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no Binder substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-104",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no Binder substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-105",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no Binder substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-106",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no Binder substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-107",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no permission substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-108",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-109",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "single-UID host process",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-110",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "package identity via manifest",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-111",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "host OS domain",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-112",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "host OS domain",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-113",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no native sandbox substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-114",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "jni_bridge classification",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-115",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-116",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-117",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-118",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no ELF loader",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-119",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-120",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-121",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-122",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "parser-level hardening; interpreter (no verifier by design)",
+   "next": "verifier-equivalent semantics",
+   "commit": "CONDITIONAL"
+  },
+  {
+   "id": "R-NEW-123",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "bound checks in dex_parser.cpp (\u00a7N)",
+   "next": "hostile DEX corpus",
+   "commit": "tooling class G"
+  },
+  {
+   "id": "R-NEW-124",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "index bounds",
+   "next": "confusion corpus",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-125",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "code-item bounds",
+   "next": "adversarial corpus",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-126",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": "b03ad3b1",
+   "evidence": false,
+   "missing": "F-041 hardened the common negative-size shape",
+   "next": "adversarial handler table",
+   "commit": "fuzz band"
+  },
+  {
+   "id": "R-NEW-127",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "interpreter invariants + F-016 honesty protocol",
+   "next": "control-flow fuzz",
+   "commit": "tooling class G"
+  },
+  {
+   "id": "R-NEW-128",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "switch parse-neg battery stage",
+   "next": "payload edge shapes",
+   "commit": "with 055"
+  },
+  {
+   "id": "R-NEW-129",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": "8de5382b",
+   "evidence": false,
+   "missing": "F-029 boundary",
+   "next": "access law matrix",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-130",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no hidden-API enforcement surface",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-131",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "see 030",
+   "next": "-",
+   "commit": "with 030"
+  },
+  {
+   "id": "R-NEW-132",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no dynamic DEX trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-133",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no in-memory DEX trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-134",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "trace engine + code-loading logs",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-135",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "96ecc9f4",
+   "evidence": false,
+   "missing": "dooz = real R8-OBFUSCATED APK executing deep into Material3; obfuscated-symbol forensics via scripts/minidump_dex.py (CM9)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-136",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "synthetic/bridge exercised via dooz",
+   "next": "visibility law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-137",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no metadata parser",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-138",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "dooz lambdas execute (Activity-result chains)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-139",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "R8-shrunk real APKs (dooz) run through the full pipeline",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-140",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no resource-shrunk trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-141",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "reflection reachability via F-029",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-142",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-143",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-144",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no WebView substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-145",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-146",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-147",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-148",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-149",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "file_sandbox + data_root hermetic law (F-012)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-150",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "sandbox boundaries",
+   "next": "external storage law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-151",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no FileProvider trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-152",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "sqlite_shadow sandbox; notes.db v2 end-to-end (unote)",
+   "next": "auth law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-153",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "SharedPreferences cross-APK isolation (unote, microtimer)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-154",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no keystore substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-155",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-156",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no crypto provider",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-157",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no TLS substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-158",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no TLS substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-159",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-160",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no instrumentation substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-161",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no /proc passthrough",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-162",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "thread ids bridged (ThreadSnapshotTable keying, M13 probe)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-163",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no mem-map passthrough",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-164",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "tooling class G planned (PHASE-0 infra)",
+   "next": "-",
+   "commit": "build fuzz probes on infra"
+  },
+  {
+   "id": "R-NEW-165",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "differential harness planned",
+   "next": "-",
+   "commit": "tooling class F"
+  },
+  {
+   "id": "R-NEW-166",
+   "status": "RESEARCHED-NOT-IMPLEMENTED",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "differential harness planned",
+   "next": "-",
+   "commit": "tooling class F"
+  },
+  {
+   "id": "R-NEW-167",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "APP BOUNDARY / PARTIAL classification law in traces",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-168",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "parser-vs-app crash separation in reports",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-169",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no OOM trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-170",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "parser bound checks",
+   "next": "overflow corpus",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-171",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no native parser substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-172",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "umbrella: sandbox+parser hardening+sandboxed storage",
+   "next": "cross-stack audit",
+   "commit": "with tooling G"
+  },
+  {
+   "id": "R-NEW-173",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "FreeType/HarfBuzz/FriBidi shaper wired; TextView fixtures",
+   "next": "measure-vs-draw delta law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-174",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "font metrics used by TextView fixtures",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-175",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "Typeface via FreeType",
+   "next": "identity law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-176",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "FreeType fallback",
+   "next": "fallback chain law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-177",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "HarfBuzz shaping wired",
+   "next": "complex-script corpus",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-178",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "FriBidi wired",
+   "next": "RTL corpus",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-179",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-180",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-181",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-182",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-183",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "TextView wrap in fixtures",
+   "next": "wrap law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-184",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-185",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-186",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "alignment in fixtures",
+   "next": "matrix",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-187",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "G04 density matrix",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-188",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "G04 density matrix",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-189",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "G04",
+   "next": "rounding law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-190",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "window size law partial",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-191",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "touch_dispatcher transforms",
+   "next": "coordinate matrix",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-192",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no scroll trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-193",
+   "status": "UNPROVEN",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "no transform trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-194",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "MeasureSpec fixture (m3_style_weight, G04)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-195",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-196",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "partial via fixtures",
+   "next": "UNSPECIFIED law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-197",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "all layout fixtures",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-198",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "all layout fixtures",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-199",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "layout fixtures",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-200",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "partial",
+   "next": "min-law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-201",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "gravity in fixtures",
+   "next": "matrix",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-202",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-203",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "FriBidi present",
+   "next": "direction law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-204",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "renderer clip",
+   "next": "bounds law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-205",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "renderer clip",
+   "next": "parent law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-206",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "canvas_shadow.cpp",
+   "next": "clip-stack corpus",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-207",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "alpha in renderer",
+   "next": "propagation law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-208",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "C013-LEAFCHK vis flags live (merged dooz run); fixtures",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-209",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-210",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-211",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-212",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-213",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-214",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "png alpha path",
+   "next": "premult law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-215",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-216",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "paint flags partial",
+   "next": "matrix",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-217",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-218",
+   "status": "VERIFIED-FIXED",
+   "priority": "P2",
+   "fg": "96ecc9f4",
+   "evidence": false,
+   "missing": "F-053 linear gradient law (AOSP 8-step orientation table)",
+   "next": "radial/sweep",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-219",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-220",
+   "status": "VERIFIED-FIXED",
+   "priority": "P1",
+   "fg": "96ecc9f4",
+   "evidence": false,
+   "missing": "F-053 shape law: solid/stroke/corners/gradient inflate+draw; setBackgroundColor last-writer law; ring/line/dash DETECTED-NOT-EXERCISED",
+   "next": "ring/line/dash exercise",
+   "commit": "hello_color regression-watch"
+  },
+  {
+   "id": "R-NEW-221",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "Material3 composition constructs (dooz 1.13M-line trace)",
+   "next": "inheritance law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-222",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "m3_style_weight fixture",
+   "next": "precedence matrix",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-223",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "attr resolution corpus",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-224",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "?attr via Material3 paths",
+   "next": "law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-225",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "state_list",
+   "next": "stateful law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-226",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-227",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "state_list",
+   "next": "precedence",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-228",
+   "status": "OBSERVED-FAIL",
+   "priority": "P2",
+   "fg": "0383f19f",
+   "evidence": false,
+   "missing": "LIVE: [REC-MISS] Window.setDecorFitsSystemWindows in run/m9_merge_dooz (CMM)",
+   "next": "shadow law",
+   "commit": "R-NEW-286"
+  },
+  {
+   "id": "R-NEW-229",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-230",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-231",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-232",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-233",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-234",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-235",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "window flags parse",
+   "next": "dim/brightness law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-236",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "draw order in renderer",
+   "next": "Z law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-237",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-238",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-239",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-240",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "software renderer \u2014 no layer type",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-241",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": "ad4349a9",
+   "evidence": false,
+   "missing": "Choreographer pump F-050 (CM8)",
+   "next": "animation clock law",
+   "commit": "with 242"
+  },
+  {
+   "id": "R-NEW-242",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "fg": "ad4349a9",
+   "evidence": true,
+   "missing": "F-050 four frame-pump roots fixed (CM8); 3-run deterministic; frontier = R-NEW-285 Job-active cancellation",
+   "next": "first frame end-to-end",
+   "commit": "M8 roadmap item 10"
+  },
+  {
+   "id": "R-NEW-243",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-244",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-245",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-246",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "fg": "0383f19f",
+   "evidence": true,
+   "missing": "dooz framebuffer 0/2073600 non-white at CMM (honest, 3-run deterministic)",
+   "next": "first-frame completeness",
+   "commit": "THE frontier: R-NEW-279+285+259"
+  },
+  {
+   "id": "R-NEW-247",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no RecyclerView corpus demand",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-248",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-249",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-250",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-251",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "touch_dispatcher transforms",
+   "next": "hit-test law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-252",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (\u00a729 battery)",
+   "next": "ordering matrix",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-253",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "partial",
+   "next": "pressed law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-254",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "tictactoe_golden frames_manifest 9/9 listener clicks, 2741-px frame deltas; EXP088 live probe",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-255",
+   "status": "UNPROVEN",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no trace",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-256",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "fg": "96ecc9f4",
+   "evidence": true,
+   "missing": "composition constructs deep into Material3 (1.13M trace lines, M13); state\u2192tree law partial",
+   "next": "ComposeView children 0\u2192N",
+   "commit": "M9 frontier"
+  },
+  {
+   "id": "R-NEW-257",
+   "status": "VERIFIED-FIXED",
+   "priority": "P1",
+   "fg": "774d6cdd",
+   "evidence": false,
+   "missing": "F-044 derived-state stale root fixed; f044 fixture 7 bands 3-run byte-identical 32b8a456",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-258",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "readError eliminated (F-028/F-030, CM4/CM5); observation plumbing unproven",
+   "next": "observation law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-259",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "fg": false,
+   "evidence": true,
+   "missing": "composition lifecycle partial; suspected registry gap = R-NEW-279",
+   "next": "-",
+   "commit": "M9 frontier"
+  },
+  {
+   "id": "R-NEW-260",
+   "status": "PARTIAL",
+   "priority": "P0",
+   "fg": "96ecc9f4",
+   "evidence": true,
+   "missing": "F-057 view-node duality law (owner-walk resolves via ViewShadow first)",
+   "next": "owner-walk tail",
+   "commit": "hello_color regression-watch"
+  },
+  {
+   "id": "R-NEW-261",
+   "status": "PARTIAL",
+   "priority": "P1",
+   "fg": "ad4349a9",
+   "evidence": true,
+   "missing": "frame-clock NOT the symptom-layer root (FALSE-LEAD at lifecycle layer, brief \u00a715); F-050 fixed real pump family (CM8)",
+   "next": "-",
+   "commit": "with 242"
+  },
+  {
+   "id": "R-NEW-262",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "software renderer",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-263",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-264",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-265",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "same",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-266",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "draw order",
+   "next": "layer law",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-267",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no frame submission substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-268",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no RenderThread",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-269",
+   "status": "NOT-APPLICABLE",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "no Surface buffer substrate",
+   "next": "-",
+   "commit": "radar retained"
+  },
+  {
+   "id": "R-NEW-270",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "screenshot from post-draw framebuffer + metrics law",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-271",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "hello_color per-element pixel counts (evidence.json) \u2014 early provenance",
+   "next": "full provenance chain",
+   "commit": "extend tooling (\u00a725 pixel provenance)"
+  },
+  {
+   "id": "R-NEW-272",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "0383f19f",
+   "evidence": false,
+   "missing": "blank taxonomy applied to dooz: NO_COMPOSITION class (children=0); A-K classification law",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-273",
+   "status": "PARTIAL",
+   "priority": "P3",
+   "fg": false,
+   "evidence": false,
+   "missing": "alpha stats in metrics",
+   "next": "-",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-274",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "whole runtime = deterministic offscreen software rendering",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-275",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": "96ecc9f4",
+   "evidence": false,
+   "missing": "3-run byte-identical law (fixtures + hello_color 11e0056320d8546d)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-276",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P1",
+   "fg": false,
+   "evidence": false,
+   "missing": "battery pixel goldens (7 fixtures)",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-277",
+   "status": "VERIFIED-CORRECT",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "1080x1920 contract in evidence.json",
+   "next": "-",
+   "commit": "regression-watch"
+  },
+  {
+   "id": "R-NEW-278",
+   "status": "PARTIAL",
+   "priority": "P2",
+   "fg": false,
+   "evidence": false,
+   "missing": "renderer RGB format documented",
+   "next": "format matrix",
+   "commit": "on demand"
+  },
+  {
+   "id": "R-NEW-279",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "fg": "-",
+   "evidence": "SUSPECTED CURRENT DOOZ BLOCKER",
+   "missing": "implementation + proof",
+   "next": "SUSPECTED CURRENT DOOZ BLOCKER: M9-B causal analysis (campaign brief \u00a77) places the blank frame at callbacks-not-stored \u2192 LifecycleRegistry stays INITIALIZED \u2192 WrappedComposition.setContent never runs. Verified gap at HEAD: no engine/shadow handler stores lifecycle callbacks (grep: registerActivityLifecycleCallbacks absent from dispatch layer). Next: DEX-trace ReportFragment.injectIfNeededIn on dooz; implement registry as generic framework law.",
+   "commit": "see discovery note"
+  },
+  {
+   "id": "R-NEW-280",
+   "status": "UNPROVEN",
+   "priority": "P2",
+   "fg": "-",
+   "evidence": "Known gap (M9-B analysis)",
+   "missing": "implementation + proof",
+   "next": "Known gap (M9-B analysis): no WeakReference shadow at HEAD (grep clean). Kotlin/AndroidX code paths that hold owners weakly would read null. No corpus APK currently exercises it \u2014 PRE-278 DISCOVERY, implement on live trace evidence.",
+   "commit": "see discovery note"
+  },
+  {
+   "id": "R-NEW-281",
+   "status": "UNPROVEN",
+   "priority": "P1",
+   "fg": "-",
+   "evidence": "Known gap (M9-B analysis)",
+   "missing": "implementation + proof",
+   "next": "Known gap (M9-B analysis): no collection-view law at HEAD (grep clean); views must reflect the backing map. Compose/AndroidX uses values() on hot paths. No live failure recorded yet \u2014 implement with OpenJDK view semantics + micro-fixture when a trace reaches it.",
+   "commit": "see discovery note"
+  },
+  {
+   "id": "R-NEW-282",
+   "status": "UNPROVEN",
+   "priority": "P2",
+   "fg": "-",
+   "evidence": "singletonList/emptyList/unmodifiableList covered by F-039 (3ed13292); singletonMap/unmodifiableMap NOT implemented (grep",
+   "missing": "implementation + proof",
+   "next": "singletonList/emptyList/unmodifiableList covered by F-039 (3ed13292); singletonMap/unmodifiableMap NOT implemented (grep clean). Complete the family from OpenJDK Collections.java.",
+   "commit": "see discovery note"
+  },
+  {
+   "id": "R-NEW-283",
+   "status": "UNPROVEN",
+   "priority": "P1",
+   "fg": "-",
+   "evidence": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) \u2014 component identity proven via unote",
+   "missing": "implementation + proof",
+   "next": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) \u2014 component identity proven via unote. Full law (interned identity: two const-class of same type \u2192 same heap object, == comparable) not separately proven. Micro-proof pending.",
+   "commit": "see discovery note"
+  },
+  {
+   "id": "R-NEW-284",
+   "status": "UNPROVEN",
+   "priority": "P1",
+   "fg": "-",
+   "evidence": "execute_check_cast validates and (by code inspection) preserves the register; no dedicated proof that the value is prese",
+   "missing": "implementation + proof",
+   "next": "execute_check_cast validates and (by code inspection) preserves the register; no dedicated proof that the value is preserved on success and thrown-without-mutation on failure. Add micro band (M9-B finding).",
+   "commit": "see discovery note"
+  },
+  {
+   "id": "R-NEW-285",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "fg": "-",
+   "evidence": "Root-located at M8 (worklog M8 entry, roadmap item 10)",
+   "missing": "implementation + proof",
+   "next": "Root-located at M8 (worklog M8 entry, roadmap item 10): the frame await's cancellation registration removes the Choreographer callback before the pump fires. Requires dispatcher-pump/cancellation-registration law. This is the M8 frontier carried forward.",
+   "commit": "see discovery note"
+  },
+  {
+   "id": "R-NEW-286",
+   "status": "OBSERVED-FAIL",
+   "priority": "P3",
+   "fg": "-",
+   "evidence": "LIVE-OBSERVED in merged-tree dooz run (run/m9_merge_dooz, 2026-09-11)",
+   "missing": "implementation + proof",
+   "next": "LIVE-OBSERVED in merged-tree dooz run (run/m9_merge_dooz, 2026-09-11): [REC-MISS] Landroid/view/Window;.setDecorFitsSystemWindows caller=R0/D$a;.a. Fail-soft no-op today; add shadow law (AOSP Window: decor fits flag) on next pass.",
+   "commit": "see discovery note"
+  }
+ ]
+}
