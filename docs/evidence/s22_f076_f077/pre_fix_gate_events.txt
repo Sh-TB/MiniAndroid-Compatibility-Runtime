@@ -1,0 +1,14 @@
+[M3-19-CYCLE] LW1/E;.invoke#480 re-entered while active on the call stack (depth=13) — active-cycle stub, lifetime_calls=2
+[M3-19-CYCLE] LW1/l0;.a re-entered while active on the call stack (depth=12) — active-cycle stub, lifetime_calls=2
+[M3-19-CYCLE] LB1/a;.B re-entered while active on the call stack (depth=17) — active-cycle stub, lifetime_calls=2
+[QUEUE] Runnable id=684 enqueued (delay=0ms, ready_at=1000000000ms virtual, queue_depth=1)
+[QUEUE] Runnable id=388 enqueued (delay=0ms, ready_at=1000000000ms virtual, queue_depth=2)
+[CHOREO] postFrameCallback cb=388 class=Landroidx/compose/ui/platform/J$c; delay=0ms ready_at=1000000000ns pending=1
+[M3-19-CYCLE] LX/y;.a re-entered while active on the call stack (depth=13) — active-cycle stub, lifetime_calls=2
+[M3-19-CYCLE] LX/y;.a re-entered while active on the call stack (depth=13) — active-cycle stub, lifetime_calls=3
+[M3-19-CYCLE] Landroidx/compose/ui/platform/AndroidComposeView;.getAccessibilityManager#722 re-entered while active on the call stack (depth=26) — active-cycle stub, lifetime_calls=2
+[M3-19-CYCLE] Landroidx/compose/ui/platform/AndroidComposeView;.getClipboardManager#722 re-entered while active on the call stack (depth=26) — active-cycle stub, lifetime_calls=2
+[M3-19-CYCLE] LF/y;.b re-entered while active on the call stack (depth=25) — active-cycle stub, lifetime_calls=2
+[QUEUE] Runnable id=684 dequeued (ready_at=1000000000ms <= now=1000000000ms virtual)
+[QUEUE] Runnable id=388 dequeued (ready_at=1000000000ms <= now=1000000000ms virtual)
+[CHOREO] removeFrameCallback cb=388 removed=1
