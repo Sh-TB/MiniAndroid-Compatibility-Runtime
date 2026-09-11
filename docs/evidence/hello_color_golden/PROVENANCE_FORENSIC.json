@@ -1,0 +1,47 @@
+{
+ "forensic_session": "MC3 hello_color frame-provenance re-test (user directive: no code changes, no new roots)",
+ "date": "2026-09-12",
+ "head_at_test": "ab76a07c (binary = F-076 build, clean tree, zero modifications)",
+ "apk": {
+  "path": "miniandroid/tests/fixtures/hello_color (sources) -> rebuilt via scripts/build_fixture_apk.sh",
+  "rebuilt_sha256": "77863f1f5e865f564282a4a9d51fda1853f49c6bb5e7e38eb7b71d80e4bbd128",
+  "byte_identical_to_committed_evidence_json": true,
+  "package": "com.miniandroid.hellocolor",
+  "entry_activity": "com.miniandroid.hellocolor.MainActivity",
+  "entries": ["AndroidManifest.xml", "res/drawable/box_border_red.xml", "res/drawable/box_border_yellow.xml", "res/drawable/hello_art.png", "res/layout/activity_main.xml", "resources.arsc", "classes.dex"]
+ },
+ "runs": {
+  "command": "./miniandroid/build/miniandroid run <apk> -o <dir>  (standard path, real-dalvik default, NO extra flags, NO golden input)",
+  "run1_screenshot_sha256": "11e0056320d8546dbb54030fc6d51cbc163e635d47bbbb54899ca1984829e4f8",
+  "run2_screenshot_sha256": "11e0056320d8546dbb54030fc6d51cbc163e635d47bbbb54899ca1984829e4f8",
+  "run3_screenshot_sha256": "11e0056320d8546dbb54030fc6d51cbc163e635d47bbbb54899ca1984829e4f8",
+  "raw_framebuffer_ppm_sha256_all3": "fb9f1df22debf0b1456304c61270a0c6a14ae87abfe1dcb4337d09bfff93fef7",
+  "resolution": "1080x1920",
+  "nonwhite_pixel_count_full_res": 1738185,
+  "total_pixels": 2073600,
+  "rc": "0 x3",
+  "execution_logs_equivalent_modulo_timestamps": "run1==run2==run3 (52 hellocolor lines each, SUCCESS, crash.log 0 errors)"
+ },
+ "png_from_framebuffer_proof": "screenshot.png decoded pixels == screenshot.ppm raster byte-for-byte (1080x1920x3 = 6220800 bytes, PIXEL-IDENTICAL via zlib-decode comparison); PPM is the runtime's raw framebuffer dump written BEFORE/alongside PNG encode in the same run dir",
+ "dex_execution_proof": {
+  "classes_parsed_from_apk": ["Lcom/miniandroid/hellocolor/MainActivity;", "Lcom/miniandroid/hellocolor/R$drawable;", "Lcom/miniandroid/hellocolor/R$id;", "Lcom/miniandroid/hellocolor/R$layout;", "Lcom/miniandroid/hellocolor/R$string;", "Lcom/miniandroid/hellocolor/R;"],
+  "lifecycle_dispatched_real_dex": ["MainActivity.<init> (insns=2)", "MainActivity.onCreate (real DEX body)", "MainActivity.setContentView resid=2130903040 (real binary resources.arsc id)", "MainActivity.onStart (DEX engine dispatch)", "MainActivity.onResume"],
+  "view_api_calls_from_app_bytecode": ["LinearLayout.setBackgroundColor", "TextView.setTextColor x3", "findViewById x4 -> real heap objects object_id 8/10/11/14"],
+  "opcode_trace": "exp031_5/traces/com.miniandroid.hellocolor/opcode_trace.json — execution_source=REAL_DALVIK_INTERPRETER, 30 instructions with pc/opcode_hex/return_value (invoke-super, invoke-virtual, const, move-result-object, check-cast, return-void)",
+  "method_trace": "exp031_5/traces/com.miniandroid.hellocolor/method_trace.json — 6 hellocolor-class calls",
+  "register_trace_heap_trace": "present in same traces dir"
+ },
+ "golden_not_input_proof": {
+  "runtime_binary_strings_hello_color_golden/11e0056/frame_1080": "NONE",
+  "runtime_source_refs": "NONE (grep miniandroid/src/ empty)",
+  "repo_scripts_tools_reading_golden_dir": "NONE",
+  "run_command_inputs": "APK path only; docs/evidence/hello_color_golden/ was never passed to any run",
+  "role_of_each_asset": {
+   "docs/evidence/hello_color_golden/frame_1080x1920.png": "PASSIVE comparison artifact only — committed golden; byte-equals the fresh run outputs post-hoc (11e0056...); never an input",
+   "miniandroid/tests/fixtures/hello_color/res/drawable/hello_art.png": "app RESOURCE inside the APK (deterministic art generator scripts/gen_hello_color_art.py); it is content the app DRAWS, not the runtime frame"
+  }
+ },
+ "verdict": "REAL APK EXECUTION + REAL RUNTIME RENDERING — full chain proven: committed sources -> byte-identical APK rebuild (77863f1f...) -> 3x standard-path runs (rc=0) -> real DEX classes/lifecycle/View calls from the APK (opcode trace REAL_DALVIK_INTERPRETER) -> raw framebuffer PPM (fb9f1df2... x3) -> PNG pixel-identical encode (11e0056... x3) == committed golden. Golden used nowhere as input/render source.",
+ "retest_frames_committed": ["retest_run1_frame.png", "retest_run2_frame.png", "retest_run3_frame.png"],
+ "raw_run_dirs": "/home/z/my-project/hc_provenance/run{1,2,3} (logs + ppm + traces retained)"
+}
