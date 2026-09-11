@@ -195,6 +195,27 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             return CallResult::handled_object(list_id,
                                               "Ljava/util/Collections$SingletonList;");
         }
+        // F-064: Collections.singletonMap(k, v) — immutable 1-entry map.
+        // Kotlin Reflection clinit calls it when the class list has exactly
+        // one element; previously unhandled → null → Intrinsics NPE.
+        if (m == "singletonMap") {
+            uint32_t map_id = heap_->allocate("Ljava/util/LinkedHashMap;");
+            auto* st = get_or_create(map_id, /*is_map=*/true);
+            std::string key = ctx.arg_as_string(0);
+            if (key.empty() && !ctx.args.empty() &&
+                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+                key = "obj:" + std::to_string(ctx.args[0].object_id);
+            }
+            if (!ctx.args.empty() && ctx.args.size() >= 2 &&
+                ctx.args[1].kind == CallContext::Arg::Kind::STRING) {
+                st->map_string_entries[key] = ctx.args[1].string_val;
+                st->map_entries.erase(key);
+            } else if (ctx.args.size() >= 2) {
+                st->map_entries[key] = ctx.arg_as_object(1, 0);
+                st->map_string_entries.erase(key);
+            }
+            return CallResult::handled_object(map_id, "Ljava/util/Map;");
+        }
         if (m == "singleton") {
             uint32_t set_id = heap_->allocate("Ljava/util/Collections$SingletonList;");
             auto* st = get_or_create(set_id, /*is_map=*/false);
@@ -322,10 +343,64 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
 
     if (m == "remove") {
         auto* state = get_or_create(obj_id);
+        // ── F-063 (R-NEW-287): java.util.Map.remove(Object key) law ────────
+        // OpenJDK (java.util.Map#remove): removes the mapping for the key
+        // IF PRESENT and returns the previous value (null when absent). A
+        // key that is absent must NOT mutate the map. Previously this
+        // handler treated the key as a LIST index (arg_as_int → -1 for
+        // object keys), so Map.remove was a silent NO-OP and returned void.
+        //
+        // Real-APK failure chain (dooz, androidx.arch.core.internal
+        // FastSafeIterableMap, R8-renamed g/a): remove(key) = super.remove
+        // (linked-list unlink) + mHashMap.remove(key). With the no-op the
+        // stale key stayed in mHashMap; the NEXT removeObserver for the
+        // same observer found the already-unlinked entry via get() →
+        // SafeIterableMap.remove decremented mSize and rewired
+        // mStart/mEnd = null → LifecycleRegistry.sync() (Kotlin isSynced
+        // uses eldest()!!) threw bare NPE → dooz first frame died before
+        // composition. Evidence: /tmp/s18_ft2.log FIELD-TRACE (put-obj
+        // Lg/b;.i obj#15 value=obj#0 after the second Lg/b;.d).
+        //
+        // Key derivation MUST match get/put/containsKey exactly
+        // (string keys verbatim; object keys as "obj:<id>").
+        if (state->is_map) {
+            std::string key = ctx.arg_as_string(0);
+            if (key.empty() && !ctx.args.empty() &&
+                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+                key = "obj:" + std::to_string(ctx.args[0].object_id);
+            }
+            // String entries first — same precedence as get().
+            auto sit = state->map_string_entries.find(key);
+            if (sit != state->map_string_entries.end()) {
+                std::string prev = sit->second;
+                state->map_string_entries.erase(sit);
+                return CallResult::handled_string(prev);
+            }
+            auto it = state->map_entries.find(key);
+            if (it != state->map_entries.end()) {
+                uint32_t prev = it->second;
+                state->map_entries.erase(it);
+                if (prev != 0) {
+                    return CallResult::handled_object(prev,
+                                                       "Ljava/lang/Object;");
+                }
+            }
+            // Absent key: no mutation, return null (OpenJDK law). This is
+            // what makes a double removeObserver() a safe no-op upstream.
+            return CallResult::handled_null();
+        }
+        // List receiver: remove(int index) → removed element (OpenJDK
+        // returns it; previously void was returned — callers that consume
+        // the element got garbage). Out-of-range: no mutation.
         if (ctx.args.size() >= 1) {
             int32_t idx = ctx.arg_as_int(0, -1);
             if (idx >= 0 && (size_t)idx < state->elements.size()) {
+                uint32_t removed = state->elements[idx];
                 state->elements.erase(state->elements.begin() + idx);
+                if (removed != 0) {
+                    return CallResult::handled_object(removed,
+                                                       "Ljava/lang/Object;");
+                }
             }
         }
         return CallResult::handled_void();
@@ -349,11 +424,27 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
 
     if (m == "hasNext") {
         auto* state = get_or_create(obj_id);
+        if (state->is_view) {
+            return CallResult::handled_bool(state->iterator_position <
+                                            state->view_elements.size());
+        }
         return CallResult::handled_bool(state->iterator_position < state->elements.size());
     }
 
     if (m == "next") {
         auto* state = get_or_create(obj_id);
+        if (state->is_view) {
+            if (state->iterator_position < state->view_elements.size()) {
+                const auto& el = state->view_elements[state->iterator_position++];
+                if (el.kind == 2) return CallResult::handled_string(el.string_val);
+                if (el.kind == 3) return CallResult::handled_int(el.int_val);
+                if (el.kind == 1 && el.object_id != 0)
+                    return CallResult::handled_object(el.object_id,
+                                                      "Ljava/lang/Object;");
+                return CallResult::handled_null();
+            }
+            return CallResult::handled_null();
+        }
         if (state->iterator_position < state->elements.size()) {
             uint32_t elem = state->elements[state->iterator_position++];
             if (elem != 0) {
@@ -409,6 +500,182 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_bool(found);
     }
 
+    // ── F-064 (R-NEW-288): Map view family — keySet()/values()/entrySet() ──
+    // OpenJDK (java.util.HashMap): keySet() returns a live Set view of the
+    // keys, values() a Collection view of the values, entrySet() a Set of
+    // Map.Entry. All three MUST return non-null, iterable, size-correct
+    // views. Previously all three fell into the handled_void() stub, so
+    // DEX code read them as NULL → Intrinsics NPE in Kotlin Reflection's
+    // class-proto mapper (LM1/d.<clinit>: `HashMap.values()` checked with
+    // "<get-values>(...) must not be null") → SavedStateHandlesVM creation
+    // died → dooz first frame died. Views are materialized as fresh heap
+    // objects with a typed view_elements list (object/string/int).
+    if (m == "keySet" || m == "values" || m == "entrySet") {
+        auto* src = get_or_create(obj_id, true);
+        const char* view_cls = (m == "values") ? "Ljava/util/ArrayList;"
+                                               : "Ljava/util/HashSet;";
+        uint32_t view_id = heap_->allocate(view_cls);
+        auto* dst = get_or_create(view_id, /*is_map=*/false);
+        dst->is_view = true;
+        dst->iterator_position = 0;
+        auto push_str = [&](const std::string& s) {
+            dst->view_elements.push_back({2, 0, s, 0});
+        };
+        auto push_obj = [&](uint32_t oid) {
+            if (oid != 0) dst->view_elements.push_back({1, oid, "", 0});
+        };
+        auto key_to_elem = [&](const std::string& k) {
+            if (k.rfind("obj:", 0) == 0) {
+                push_obj((uint32_t)std::strtoul(k.c_str() + 4, nullptr, 10));
+            } else if (!k.empty()) {
+                push_str(k);
+            }
+        };
+        if (m == "values") {
+            for (auto& kv : src->map_entries) push_obj(kv.second);
+            for (auto& kv : src->map_string_entries) push_str(kv.second);
+        } else if (m == "keySet") {
+            for (auto& kv : src->map_entries) key_to_elem(kv.first);
+            for (auto& kv : src->map_string_entries) key_to_elem(kv.first);
+        } else {  // entrySet — entries carry key+value via heap ref fields
+            auto mk_entry = [&](const std::string& k, uint32_t v_oid,
+                                const std::string& v_str, bool v_is_str) {
+                std::string k_payload;
+                bool k_is_str = false;
+                uint32_t k_oid = 0;
+                if (k.rfind("obj:", 0) == 0) {
+                    k_oid = (uint32_t)std::strtoul(k.c_str() + 4, nullptr, 10);
+                } else if (!k.empty()) {
+                    k_payload = k;
+                    k_is_str = true;
+                }
+                uint32_t e_id = heap_->allocate("Ljava/util/Map$Entry;");
+                heap_->set_object_ref_field(e_id, "__entry_key__", k_oid,
+                                            "Ljava/lang/Object;", k_payload,
+                                            k_is_str);
+                heap_->set_object_ref_field(e_id, "__entry_val__", v_oid,
+                                            "Ljava/lang/Object;", v_str,
+                                            v_is_str);
+                dst->view_elements.push_back({1, e_id, "", 0});
+            };
+            for (auto& kv : src->map_entries) {
+                mk_entry(kv.first, kv.second, "", false);
+            }
+            for (auto& kv : src->map_string_entries) {
+                mk_entry(kv.first, 0, kv.second, true);
+            }
+        }
+        return CallResult::handled_object(
+            view_id, m == "values" ? "Ljava/util/Collection;"
+                                   : "Ljava/util/Set;");
+    }
+
+    // F-064: Map.putAll(Map) — copy every entry of the source map.
+    if (m == "putAll") {
+        auto* dst = get_or_create(obj_id, true);
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+            auto* src = get_or_create(ctx.args[0].object_id, true);
+            for (auto& kv : src->map_entries)
+                dst->map_entries[kv.first] = kv.second;
+            for (auto& kv : src->map_string_entries)
+                dst->map_string_entries[kv.first] = kv.second;
+        }
+        return CallResult::handled_void();
+    }
+
+    // F-064: Map.Entry.getKey()/getValue() — entries materialized by the
+    // entrySet() law above carry key/value in heap ref fields (objects and
+    // strings both round-trip identity-verbatim).
+    if (m == "getKey" || m == "getValue") {
+        const char* field = (m == "getKey") ? "__entry_key__" : "__entry_val__";
+        uint32_t oid = 0;
+        std::string cls, sval;
+        bool is_str = false;
+        if (heap_->get_object_ref_field(obj_id, field, oid, cls, sval, is_str)) {
+            if (is_str) return CallResult::handled_string(sval);
+            if (oid != 0) return CallResult::handled_object(oid, cls);
+            return CallResult::handled_null();
+        }
+        return CallResult::handled_null();
+    }
+
+    // ── F-066 (R-NEW-290): Collection.toArray() / toArray(T[]) law ──────
+    // OpenJDK (java.util.ArrayList#toArray):
+    //   * toArray()        → a NEW array containing all elements in order.
+    //   * toArray(T[] a)   → if a.length >= size the elements are written
+    //     INTO a (a null-terminator follows size when a is larger) and a
+    //     itself is RETURNED (identity law); otherwise a new array of the
+    //     same length as the list is returned.
+    // Previously toArray fell into the handled_void() stub, so every
+    // caller read NULL — the Kotlin `listOf(...).toTypedArray()` idiom
+    // (ArrayList.toArray(zero-length) → Arrays.copyOf(result, len)) fed
+    // Arrays.copyOf a null array and threw NPE. Real-APK hit: dooz
+    // SavedStateHandlesVM.create (Landroidx/lifecycle/y;.c pc=45) — the
+    // constructor-ref list became null and the first frame died again.
+    // Array heap convention mirrors NEW_ARRAY / F-060 copyOf: "Larray;"
+    // object + "__array_length__" + "array[i]" ref fields.
+    if (m == "toArray") {
+        auto* state = get_or_create(obj_id);
+        size_t n = state->is_view ? state->view_elements.size()
+                                  : state->elements.size();
+        uint32_t dst_id = 0;
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+            ctx.args[0].object_id != 0) {
+            // toArray(T[] a): reuse the caller's array when it fits.
+            int32_t a_len = -1;
+            heap_->get_object_int_field(ctx.args[0].object_id,
+                                        "__array_length__", a_len);
+            if (a_len >= 0 && (size_t)a_len >= n) {
+                dst_id = ctx.args[0].object_id;
+            }
+        }
+        if (dst_id == 0) {
+            dst_id = heap_->allocate("Larray;");
+        }
+        heap_->set_object_int_field(dst_id, "__array_length__", (int32_t)n);
+        heap_->set_object_int_field(dst_id, "__new_array_length__", (int32_t)n);
+        auto put_elem = [&](size_t i, bool is_str, uint32_t oid,
+                            const std::string& s, int32_t iv) {
+            std::string slot = "array[" + std::to_string(i) + "]";
+            if (is_str) {
+                heap_->set_object_ref_field(dst_id, slot, 0,
+                                             "Ljava/lang/String;", s, true);
+            } else if (oid != 0) {
+                heap_->set_object_ref_field(dst_id, slot, oid,
+                                             "Ljava/lang/Object;", "", false);
+            } else {
+                heap_->set_object_int_field(dst_id, slot, iv);
+            }
+        };
+        if (state->is_view) {
+            for (size_t i = 0; i < state->view_elements.size(); ++i) {
+                const auto& el = state->view_elements[i];
+                put_elem(i, el.kind == 2, el.object_id, el.string_val,
+                         el.int_val);
+            }
+        } else {
+            for (size_t i = 0; i < state->elements.size(); ++i) {
+                put_elem(i, false, state->elements[i], "", 0);
+            }
+        }
+        // toArray(T[]) identity: a null terminator follows size in the
+        // larger destination (OpenJDK law) — clear stale tail slots.
+        if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+            ctx.args[0].object_id == dst_id) {
+            int32_t a_len = 0;
+            heap_->get_object_int_field(dst_id, "__array_length__", a_len);
+            for (int32_t i = (int32_t)n; i < a_len; ++i) {
+                heap_->set_object_ref_field(dst_id,
+                                             "array[" + std::to_string(i) + "]",
+                                             0, "Ljava/lang/Object;", "",
+                                             false);
+            }
+        }
+        return CallResult::handled_object(dst_id, "Larray;");
+    }
+
     if (m == "set") {
         // set(index, item) — replace element at index
         auto* state = get_or_create(obj_id);
@@ -423,8 +690,9 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     }
 
     // Generic stubs for less common methods.
+    // (toArray moved to the F-066 real implementation above.)
     if (m == "keySet" || m == "values" || m == "entrySet" ||
-        m == "subList" || m == "listIterator" || m == "toArray" ||
+        m == "subList" || m == "listIterator" ||
         m == "sort" || m == "getIndex") {
         return CallResult::handled_void();
     }
