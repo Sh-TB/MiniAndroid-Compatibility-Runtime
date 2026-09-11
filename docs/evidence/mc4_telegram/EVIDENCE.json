@@ -1,0 +1,34 @@
+{
+ "title": "MC4 — Real Telegram APK execution record (v12.10.1)",
+ "apk": {
+  "source_url": "https://telegram.org/dl/android/apk",
+  "effective_url": "https://cdn4.telesco.pe/file/Telegram.apk (signed CDN link, fetched 2026-09-11)",
+  "sha256": "f5e1192725772960cc94b83e54ffd8939f876b2b6e5f21d4a8537eb6fcba50e6",
+  "size_bytes": 73028244,
+  "package": "org.telegram.messenger.web",
+  "version_name": "12.10.1",
+  "version_code": 70389,
+  "main_activity": "org.telegram.ui.LaunchActivity",
+  "retention": "APK not committed (73 MB); reproducible from the official URL; sha256 pinned above"
+ },
+ "runs": [
+  {
+   "binary": "pre-MC4-memory-fix (F-076 lineage + R-NEW-302 layout fix)",
+   "rc": 1,
+   "frames_rendered": 1,
+   "framebuffer": "2073600/2073600 pixels painted (full-screen themed window)",
+   "frame_sha256": "6da8020bfcb07fb3390b487a7dd97882dc27127b25cf04c300a98cd9aa0ae379",
+   "verdict": "PARSE OK + LAUNCH OK + themed window painted; died in ImageLoader$1.<init> via android.util.LruCache IllegalArgumentException(\"maxSize <= 0\") x62 — root cause ActivityManager.getMemoryClass() unimplemented (fail-soft 0)",
+   "top_uncaught": "IllegalArgumentException maxSize<=0 (62), FragmentManager-not-attached (6)"
+  },
+  {
+   "binary": "post ActivityManager.getMemoryClass()=256 fix",
+   "rc": 124,
+   "rc_note": "timeout at 570s — the app advanced DEEPER into LaunchActivity init (progress, not crash-at-same-point)",
+   "verdict": "ImageLoader LruCache IAE ELIMINATED (0 hits). New frontier blocker: IllegalStateException(\"called wrong accept method\") x191 thrown inside j$/util/stream (desugared java.util.stream builder) reached from MessagesController.getInstance <- ConnectionsManager.getInstance <- LaunchActivity; plus FragmentManager-not-attached x6.",
+   "top_uncaught": "ISE called-wrong-accept-method (191), FragmentManager-not-attached (6)"
+  }
+ ],
+ "classification": "REAL APK FRONTIER — not claimed usable; every claim above is bound to the committed logs",
+ "honest_limits": "Telegram full init is a multi-week frontier (native libs, TLS networking, deep desugared-streams). The runtime honestly reports PARTIAL/timeout status; no success is claimed beyond parse/launch/themed-window paint."
+}
