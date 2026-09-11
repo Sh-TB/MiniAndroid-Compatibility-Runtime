@@ -1,0 +1,2059 @@
+# ROOT WORKLIST — LIVE SEARCHLIGHT (R-NEW-001..286)
+
+- Baseline: HEAD `0383f19f` (merged M9+M6/M7/M8 line), battery 91/91 ALL PASS.
+- Scope: R-NEW-001..278 = the 278-root radar from the campaign brief.
+  R-NEW-279..286 = NEW roots discovered during M9 analysis / live runs
+  (brief §17: the map is living; 278 is not a ceiling).
+- Honesty law: **UNPROVEN ≠ PASS**. A tick requires evidence (micro-proof,
+  real-APK trace, or regression battery band). No root is ticked by name-match.
+- Evidence precedence: LIVE EVIDENCE > LOCAL CODE > UPSTREAM SOURCE > CLAIM.
+
+## SUMMARY (this baseline)
+
+| Status | Count |
+|---|---|
+| VERIFIED-FIXED (law landed + proof) | 5 |
+| VERIFIED-CORRECT (implemented + exercised, no dedicated defect) | 45 |
+| PARTIAL (core verified, edges open) | 100 |
+| OBSERVED-FAIL (live failing evidence) | 6 |
+| UNPROVEN | 73 |
+| RESEARCHED-NOT-IMPLEMENTED | 16 |
+| NOT-APPLICABLE (subsystem absent by architecture) | 41 |
+| **TOTAL** | **286** |
+
+Unresolved by priority: {'P0': 4, 'P1': 3, 'P2': 13, 'P3': 75}
+
+## FLOODGATES (investigate as clusters, not as 278 independent tasks)
+
+1. **DEX dispatch cluster** — R-NEW-051/055/056/057/058 + 013/014/027/028
+   (one interpreter, one law set; F-041/F-056-style fixes cascade here).
+2. **MessageQueue/Handler/Looper cluster** — R-NEW-001/002/003/040 + 063
+   (lifecycle, Compose, Choreographer, timers all depend on it).
+3. **ClassLoader/DEX resolution cluster** — R-NEW-016/017/027/028/029/030.
+4. **Compose first-frame cluster** — R-NEW-256..261 + 242/246 + new
+   R-NEW-279/285 (lifecycle registry → composition → frame pump → pixels).
+5. **Resource→pixel cluster** — R-NEW-065..082 (hello_color = end-to-end proof).
+6. **Collections/OpenJDK cluster** — R-NEW-279..283 registry + F-036/F-039/F-040
+   family law completion.
+
+## CURRENT FRONTIER
+
+Highest-impact unresolved: **R-NEW-246 first-frame completeness (P0)** —
+dooz renders 0/2073600 non-white at HEAD `0383f19f`; ComposeView children=0;
+no exceptions; composition blocked upstream of draw. Suspected causal chain
+(campaign brief §7 + M8 roadmap): lifecycle callback registry (R-NEW-279) →
+WrappedComposition.setContent; plus Job-active cancellation (R-NEW-285) on
+the frame await. Next action: DEX-trace ReportFragment.injectIfNeededIn on
+dooz at HEAD; implement callback registry as a GENERIC framework law (§28:
+no package special-casing).
+
+## WORKLIST
+
+
+### GROUP A — Runtime / Java / Android semantics (R-NEW-001..026)
+- [~] R-NEW-001 — MessageQueue enqueue/dequeue/order/due-time/removal/token/idle/quit
+  - Group: A | Priority: P0 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: True
+  - Missing proof: F-029a Handler.createAsync→main singleton (CM4); virtual-clock single-owner audit (session-11)
+  - Next action: enqueue order edges, IdleHandler, sync barriers, quit
+  - Commit: registry probe MQ-01: enqueue past/now/future + remove-by-identity
+- [~] R-NEW-002 — Handler callback identity/removal
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: F-029a (CM4)
+  - Next action: removeCallbacks identity law
+  - Commit: probe MQ-02
+- [x] R-NEW-003 — Handler uptime time-base
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: ChessClock cross-APK virtual-time proof; GATE-proven delayed ordering (Family M)
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-004 — Object.wait monitor ownership
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: locks_shadow F-017 (Family Y battery)
+  - Next action: monitor ownership edges
+  - Commit: probe LK-01
+- [~] R-NEW-005 — wait release/reacquire semantics
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: locks_shadow F-017
+  - Next action: reacquire ordering
+  - Commit: probe LK-02
+- [~] R-NEW-006 — notify/notifyAll wake/reacquire
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: locks_shadow F-017
+  - Next action: notifyAll wake order
+  - Commit: probe LK-03
+- [?] R-NEW-007 — Thread interrupt state
+  - Group: A | Priority: P2 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no live trace
+  - Next action: interrupt state machine
+  - Commit: implement on trace evidence
+- [?] R-NEW-008 — InterruptedException propagation
+  - Group: A | Priority: P2 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no live trace
+  - Next action: IE propagation via sleep/wait
+  - Commit: implement on trace evidence
+- [x] R-NEW-009 — instance-of superclass/interface/array/null
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: corpus+battery; is_subclass_of interface-closure law (CM3)
+  - Next action: -
+  - Commit: regression-watch
+- [?] R-NEW-010 — array covariance / ArrayStoreException
+  - Group: A | Priority: P2 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no live ArrayStoreException trace
+  - Next action: covariant store check
+  - Commit: implement on trace evidence
+- [x] R-NEW-011 — primitive/reference array distinction
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: EXP-071 read-all-types law
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-012 — aget/aput array typing
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: EXP-071 + OOB synthetic-exception law; F-055 AIOOBE chain live (CM9)
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-013 — class initialization ordering
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: F-017b cycle-guard exemption (CM3); corpus
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-014 — class initialization exactly once
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: corpus 16-APK; clinit guard
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-015 — Class.forName initialize/resolve
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: F-029 reflection core (CM4)
+  - Next action: initialize/resolve flag matrix
+  - Commit: extend F-029 fixture
+- [x] R-NEW-016 — reflection method lookup
+  - Group: A | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Evidence: True
+  - Missing proof: F-029 getDeclaredMethod/getMethod/Method.invoke→recursive bridge; regression-caught & reconciled (microtimer Room path)
+  - Next action: generic exception wrapping fidelity
+  - Commit: keep protected; fixture on next battery pass
+- [~] R-NEW-017 — reflection field lookup/accessibility
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: F-029 core
+  - Next action: getDeclaredFields/inherited-member walk
+  - Commit: hidden-gap list (audit §H)
+- [?] R-NEW-018 — Parcel type-tag symmetry
+  - Group: A | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no Parcel substrate
+  - Next action: -
+  - Commit: NOT-APPLICABLE until Parcel law needed
+- [?] R-NEW-019 — Parcel ClassLoader propagation
+  - Group: A | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no Parcel substrate
+  - Next action: -
+  - Commit: same
+- [~] R-NEW-020 — Parcelable CREATOR
+  - Group: A | Priority: P2 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: Bundle heap store EXP093 (Intent extras)
+  - Next action: CREATOR envelope law
+  - Commit: implement on trace evidence
+- [~] R-NEW-021 — requestLayout propagation
+  - Group: A | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: ViewShadow measure/layout pipeline (G04/G06)
+  - Next action: propagation coalescing law
+  - Commit: probe UI-01
+- [~] R-NEW-022 — invalidate propagation
+  - Group: A | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: invalidate exercised by fixtures
+  - Next action: damage-region law
+  - Commit: probe UI-02
+- [x] R-NEW-023 — UI-thread confinement
+  - Group: A | Priority: P2 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: single logical UI-thread engine law (report §K1)
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-024 — measure/layout state propagation
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: MeasureSpec EXACTLY/AT_MOST fixture; G04 density matrix
+  - Next action: UNSPECIFIED edges
+  - Commit: extend fixture
+- [!] R-NEW-025 — ViewRoot traversal scheduling/coalescing
+  - Group: A | Priority: P0 | Floodgate: YES
+  - Status: OBSERVED-FAIL
+  - Evidence: True
+  - Missing proof: dooz ComposeView children=0, 0/2073600 non-white (run/m9_merge_dooz at CMM)
+  - Next action: first-frame traversal pipeline
+  - Commit: M9 frontier: dispatch pump + lifecycle registry (R-NEW-279/285)
+- [x] R-NEW-026 — Context / LoadedApk / ActivityThread / SharedPreferences init semantics
+  - Group: A | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: F-032/F-033 getSystemService registry + Class overload (CM5); SharedPreferences cross-APK (unote, microtimer)
+  - Next action: ActivityThread internals
+  - Commit: regression-watch
+
+### GROUP B — ART / DEX / Resources / Framework (R-NEW-027..043)
+- [x] R-NEW-027 — DexCache ClassLoader-aware type resolution
+  - Group: B | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: class_resolver; 16-APK corpus (Family B)
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-028 — independent method/field resolution
+  - Group: B | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: per-list index accumulators re-verified vs dooz class_data (M6)
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-029 — class resolution failure conversion
+  - Group: B | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: NoClassDefFoundError paths exercised
+  - Next action: error-type matrix
+  - Commit: CONDITIONAL (audit §B)
+- [~] R-NEW-030 — ClassLoader isolation
+  - Group: B | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: single-app loader
+  - Next action: isolation semantics
+  - Commit: CONDITIONAL
+- [~] R-NEW-031 — AssetManager multi-ApkAssets composition
+  - Group: B | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: ARSC parser + canonical drawable resolver
+  - Next action: multi-ApkAssets composition
+  - Commit: on demand
+- [?] R-NEW-032 — AssetManager cache invalidation
+  - Group: B | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no invalidation trace
+  - Next action: -
+  - Commit: on demand
+- [x] R-NEW-033 — resource reference-chain resolution
+  - Group: B | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: canonical resolver: hello_color drawable+borders end-to-end (CM9)
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-034 — configuration/density/locale/qualifier selection
+  - Group: B | Priority: P1 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: density approximation verified (G04)
+  - Next action: locale/qualifier selection
+  - Commit: RESEARCHED P2 (audit §O)
+- [~] R-NEW-035 — TypedArray type/coercion/recycle
+  - Group: B | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: layout inflation fixtures
+  - Next action: coercion matrix
+  - Commit: extend fixture
+- [~] R-NEW-036 — LayoutInflater Factory/Factory2 chain
+  - Group: B | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: layout_inflater.cpp corpus-proven
+  - Next action: Factory/Factory2 chain corners
+  - Commit: on demand
+- [~] R-NEW-037 — Bundle ClassLoader propagation
+  - Group: B | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: Bundle heap store (EXP093)
+  - Next action: ClassLoader propagation
+  - Commit: on demand
+- [?] R-NEW-038 — ActivityThread package cache
+  - Group: B | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-039 — LoadedApk/resource validity
+  - Group: B | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-040 — MessageQueue IdleHandler
+  - Group: B | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace (RESEARCHED, audit M-family)
+  - Next action: -
+  - Commit: probe MQ-03
+- [?] R-NEW-041 — ViewRoot input event batching
+  - Group: B | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-042 — input lifecycle/finish/recycle/next
+  - Group: B | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-043 — traversal callback cancellation identity/state
+  - Group: B | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+
+### GROUP C — Dynamic Loading / JNI / ELF / APK (R-NEW-044..064)
+- [~] R-NEW-044 — Dynamic DEX loading
+  - Group: C | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: multi-dex enumeration exercised
+  - Next action: dynamic load APIs
+  - Commit: CONDITIONAL
+- [x] R-NEW-045 — Multi-DEX lookup order
+  - Group: C | Priority: P2 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: multi-dex enumeration corpus-proven (Family B)
+  - Next action: -
+  - Commit: regression-watch
+- [?] R-NEW-046 — InMemoryDexClassLoader
+  - Group: C | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [R] R-NEW-047 — native library loading
+  - Group: C | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: jni_bridge.h boundary classification; classification law: missing .so NEVER a Java-API blocker
+  - Next action: -
+  - Commit: keep law; implement on demand
+- [R] R-NEW-048 — JNI_OnLoad/RegisterNatives
+  - Group: C | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: same as 047
+  - Next action: -
+  - Commit: on demand
+- [R] R-NEW-049 — RegisterNatives signature matching
+  - Group: C | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: same as 047
+  - Next action: -
+  - Commit: on demand
+- [R] R-NEW-050 — ArtMethod registration/binding
+  - Group: C | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: interpreter — ART-specific binding N/A as-is
+  - Next action: -
+  - Commit: radar retained
+- [x] R-NEW-051 — DEX exception handler search/unwinding
+  - Group: C | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Evidence: False
+  - Missing proof: F-041 encoded_catch_handler negative-size law; f040 L2 band; every typed+catch-all entry in real R8/ECJ DEX
+  - Next action: -
+  - Commit: keep protected
+- [x] R-NEW-052 — nested-frame exception unwinding
+  - Group: C | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: THROWTRACE frame chains across fixtures
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-053 — move-exception semantics
+  - Group: C | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: typed catch dispatch (f040 L2)
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-054 — filled-new-array result lifetime/identity
+  - Group: C | Priority: P2 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: Family W filled-new-array corpus
+  - Next action: -
+  - Commit: regression-watch
+- [?] R-NEW-055 — switch payload target/alignment
+  - Group: C | Priority: P2 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: packed/sparse payload edge shapes RESEARCHED (audit §A gaps)
+  - Next action: -
+  - Commit: CONDITIONAL
+- [x] R-NEW-056 — invoke-* register packing
+  - Group: C | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: True
+  - Missing proof: CYCLE-E/F-030 proto-guided arg typing; dooz wide-pair SWAR live
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-057 — invoke-range packing
+  - Group: C | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: dooz range-invokes live
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-058 — wide register pair coherence
+  - Group: C | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: True
+  - Missing proof: overlapping wide pairs proven live (ushr-long/2addr, shl-long cross-chunk, M6 trace)
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-059 — boxing/unboxing identity/null
+  - Group: C | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: f030 L5 Integer.valueOf CAS band
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-060 — Kotlin Intrinsics contracts
+  - Group: C | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: Family F: LM1/i disassembled ground truth; upstream-null tracing law
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-061 — Kotlin Continuation completion
+  - Group: C | Priority: P0 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: True
+  - Missing proof: compose continuation chain executes (AndroidUiDispatcher+J$c runnables, CM8)
+  - Next action: Job-active cancellation (R-NEW-285)
+  - Commit: M8 roadmap item 10
+- [~] R-NEW-062 — Continuation exception propagation
+  - Group: C | Priority: P1 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: partial via 061
+  - Next action: propagation matrix
+  - Commit: with 061
+- [x] R-NEW-063 — Dispatchers.Main ↔ Android Looper
+  - Group: C | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: True
+  - Missing proof: F-036/F-039 MainDispatcherLoader (CM5c) + F-029a HandlerCompat (CM4)
+  - Next action: -
+  - Commit: regression-watch
+- [R] R-NEW-064 — native .so ABI/path selection + APK ZIP entry semantics
+  - Group: C | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: ZIP entry semantics exercised; .so selection R
+  - Next action: -
+  - Commit: on demand
+
+### GROUP D — Resource → Pixel (R-NEW-065..082)
+- [x] R-NEW-065 — BitmapFactory.decodeResource
+  - Group: D | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: hello_color 4-quadrant bitmap art rendered through decodeResource+draw (CM9); png/jpeg/webp decoders linked
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-066 — image density transformation
+  - Group: D | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: density approximation (G04)
+  - Next action: decode density transform
+  - Commit: on demand
+- [~] R-NEW-067 — Bitmap.Config/pixel representation
+  - Group: D | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: renderer RGB path
+  - Next action: Config matrix
+  - Commit: on demand
+- [~] R-NEW-068 — Drawable layer
+  - Group: D | Priority: P2 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: F-053 GradientDrawable shape law (CM9); ColorDrawable verified
+  - Next action: layer-list, inset, rotate
+  - Commit: on demand
+- [~] R-NEW-069 — Drawable state machine
+  - Group: D | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: state_list.cpp corpus
+  - Next action: state machine matrix
+  - Commit: on demand
+- [~] R-NEW-070 — ColorStateList/tint
+  - Group: D | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: state_list
+  - Next action: tint law
+  - Commit: on demand
+- [?] R-NEW-071 — NinePatch chunks
+  - Group: D | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-072 — VectorDrawable paths
+  - Group: D | Priority: P2 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-073 — AnimatedDrawable/AnimatedVectorDrawable
+  - Group: D | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [-] R-NEW-074 — DisplayList/RenderNode recording
+  - Group: D | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: software renderer architecture — no DisplayList/RenderNode substrate by design
+  - Next action: -
+  - Commit: radar retained for HW path
+- [-] R-NEW-075 — SurfaceView separate surface
+  - Group: D | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no compositor; libGDX boundary = T3/BLANK honest record
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-076 — SurfaceControl/compositor visibility
+  - Group: D | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: radar retained
+- [x] R-NEW-077 — screenshot capture boundary
+  - Group: D | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: screenshot pipeline + metrics proven across 7 fixture goldens
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-078 — ImageView scaleType geometry
+  - Group: D | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: ImageView corpus
+  - Next action: scaleType geometry matrix
+  - Commit: on demand
+- [~] R-NEW-079 — intrinsic Drawable dimensions → measure
+  - Group: D | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: corpus
+  - Next action: intrinsic→measure law
+  - Commit: on demand
+- [~] R-NEW-080 — Bitmap→Drawable→View lifetime
+  - Group: D | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: corpus
+  - Next action: lifetime law
+  - Commit: on demand
+- [x] R-NEW-081 — resource-to-pixel pipeline
+  - Group: D | Priority: P0 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: True
+  - Missing proof: hello_color END-TO-END: ARSC→layout→drawable→view→draw→pixels; 3-run byte-identical frame 11e0056320d8546d (CM9, merge-verified at CMM)
+  - Next action: -
+  - Commit: regression-watch
+- [-] R-NEW-082 — dynamic APK/split resource namespace
+  - Group: D | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no split-APK substrate
+  - Next action: -
+  - Commit: radar retained
+
+### GROUP E — Security / Reverse Engineering / Robustness (R-NEW-083..172)
+- [?] R-NEW-083 — APK signature verification
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no signature verification law
+  - Next action: v1/v2 verification
+  - Commit: on demand
+- [?] R-NEW-084 — v1/v2/v3/v4 semantics
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no scheme matrix
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-085 — certificate identity
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: -
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-086 — hostile ZIP parser
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: parser bound checks (§N hardening)
+  - Next action: fuzz corpus campaign
+  - Commit: tooling class G
+- [~] R-NEW-087 — duplicate ZIP entries
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: parser hardening
+  - Next action: duplicate-entry law
+  - Commit: tooling class G
+- [~] R-NEW-088 — extraction/path traversal
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: file_sandbox path containment
+  - Next action: traversal corpus
+  - Commit: tooling class G
+- [~] R-NEW-089 — hostile AXML
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: AXML parser bounds
+  - Next action: hostile corpus
+  - Commit: tooling class G
+- [~] R-NEW-090 — hostile ARSC
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: ARSC parser bounds
+  - Next action: hostile corpus
+  - Commit: tooling class G
+- [~] R-NEW-091 — resource ID confusion
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: res_id resolution
+  - Next action: confusion corpus
+  - Commit: on demand
+- [~] R-NEW-092 — package namespace isolation
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: package parse
+  - Next action: isolation law
+  - Commit: on demand
+- [~] R-NEW-093 — manifest security semantics
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: manifest parse feeds PackageManager+F-018
+  - Next action: security attribute matrix
+  - Commit: on demand
+- [?] R-NEW-094 — exported component boundary
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: exported parsed, not enforced
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-095 — Intent caller identity
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: explicit intents corpus-proven
+  - Next action: caller identity law
+  - Commit: on demand
+- [-] R-NEW-096 — Intent spoofing semantics
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: single-app runtime; no spoofing surface
+  - Next action: -
+  - Commit: radar retained
+- [?] R-NEW-097 — Intent resolution ambiguity
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: IntentFilter matching RESEARCHED (audit §L)
+  - Next action: -
+  - Commit: on demand
+- [-] R-NEW-098 — URI permission grants
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no URI grant substrate
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-099 — ContentProvider authority collision
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no ContentProvider substrate
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-100 — ContentProvider caller authorization
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-101 — Binder caller identity
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no Binder substrate
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-102 — confused deputy
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no Binder substrate
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-103 — Binder permission enforcement
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no Binder substrate
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-104 — Binder transaction serialization
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no Binder substrate
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-105 — Binder object identity
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no Binder substrate
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-106 — Binder death/lifetime
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no Binder substrate
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-107 — permission caller identity
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no permission substrate
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-108 — permission inheritance
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-109 — UID isolation
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: single-UID host process
+  - Next action: -
+  - Commit: radar retained
+- [~] R-NEW-110 — process/package identity
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: package identity via manifest
+  - Next action: -
+  - Commit: on demand
+- [-] R-NEW-111 — SELinux boundary
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: host OS domain
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-112 — seccomp/syscall boundary
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: host OS domain
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-113 — native sandboxing
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no native sandbox substrate
+  - Next action: -
+  - Commit: radar retained
+- [R] R-NEW-114 — JNI registration identity
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: jni_bridge classification
+  - Next action: -
+  - Commit: on demand
+- [R] R-NEW-115 — JNI signature confusion
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: on demand
+- [R] R-NEW-116 — JNI local/global/weak lifetime
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: on demand
+- [R] R-NEW-117 — JNI exception propagation
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: on demand
+- [R] R-NEW-118 — hostile ELF parsing
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: no ELF loader
+  - Next action: -
+  - Commit: on demand
+- [R] R-NEW-119 — ELF relocation
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: on demand
+- [R] R-NEW-120 — symbol/version resolution
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: on demand
+- [R] R-NEW-121 — ABI boundary
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-122 — DEX verifier semantics
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: parser-level hardening; interpreter (no verifier by design)
+  - Next action: verifier-equivalent semantics
+  - Commit: CONDITIONAL
+- [~] R-NEW-123 — malformed DEX safe failure
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: bound checks in dex_parser.cpp (§N)
+  - Next action: hostile DEX corpus
+  - Commit: tooling class G
+- [~] R-NEW-124 — DEX index confusion
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: index bounds
+  - Next action: confusion corpus
+  - Commit: on demand
+- [~] R-NEW-125 — code-item boundary validation
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: code-item bounds
+  - Next action: adversarial corpus
+  - Commit: on demand
+- [~] R-NEW-126 — exception-table adversarial semantics
+  - Group: E | Priority: P2 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: F-041 hardened the common negative-size shape
+  - Next action: adversarial handler table
+  - Commit: fuzz band
+- [~] R-NEW-127 — interpreter control-flow integrity
+  - Group: E | Priority: P1 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: interpreter invariants + F-016 honesty protocol
+  - Next action: control-flow fuzz
+  - Commit: tooling class G
+- [~] R-NEW-128 — switch payload validation
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: switch parse-neg battery stage
+  - Next action: payload edge shapes
+  - Commit: with 055
+- [~] R-NEW-129 — reflection security boundary
+  - Group: E | Priority: P3 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: F-029 boundary
+  - Next action: access law matrix
+  - Commit: on demand
+- [-] R-NEW-130 — hidden/private API boundary
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no hidden-API enforcement surface
+  - Next action: -
+  - Commit: radar retained
+- [~] R-NEW-131 — ClassLoader isolation (security view)
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: see 030
+  - Next action: -
+  - Commit: with 030
+- [?] R-NEW-132 — dynamic DEX trust boundary
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no dynamic DEX trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-133 — in-memory DEX security boundary
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no in-memory DEX trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-134 — code-loading observability
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: trace engine + code-loading logs
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-135 — obfuscation vs semantic identity
+  - Group: E | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: dooz = real R8-OBFUSCATED APK executing deep into Material3; obfuscated-symbol forensics via scripts/minidump_dex.py (CM9)
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-136 — synthetic/bridge methods
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: synthetic/bridge exercised via dooz
+  - Next action: visibility law
+  - Commit: on demand
+- [?] R-NEW-137 — Kotlin metadata
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no metadata parser
+  - Next action: -
+  - Commit: on demand
+- [x] R-NEW-138 — compiler-generated lambdas
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: dooz lambdas execute (Activity-result chains)
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-139 — R8 shrinking
+  - Group: E | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: R8-shrunk real APKs (dooz) run through the full pipeline
+  - Next action: -
+  - Commit: regression-watch
+- [?] R-NEW-140 — resource shrinking/obfuscation
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no resource-shrunk trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-141 — reflection reachability
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: reflection reachability via F-029
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-142 — encrypted/generated class names
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-143 — runtime-generated bytecode/Dex
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [-] R-NEW-144 — WebView JS↔Java bridge
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no WebView substrate
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-145 — WebView origin identity
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-146 — WebView file/content access
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-147 — mixed-content semantics
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-148 — WebView SSL/trust semantics
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: radar retained
+- [x] R-NEW-149 — app-private filesystem isolation
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: file_sandbox + data_root hermetic law (F-012)
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-150 — external storage boundary
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: sandbox boundaries
+  - Next action: external storage law
+  - Commit: on demand
+- [?] R-NEW-151 — FileProvider containment
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no FileProvider trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-152 — SQLite/DB authorization
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: sqlite_shadow sandbox; notes.db v2 end-to-end (unote)
+  - Next action: auth law
+  - Commit: on demand
+- [x] R-NEW-153 — SharedPreferences isolation
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: SharedPreferences cross-APK isolation (unote, microtimer)
+  - Next action: -
+  - Commit: regression-watch
+- [-] R-NEW-154 — Keystore boundary
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no keystore substrate
+  - Next action: -
+  - Commit: radar retained
+- [?] R-NEW-155 — secure randomness
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [-] R-NEW-156 — crypto provider identity
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no crypto provider
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-157 — TLS trust-manager boundary
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no TLS substrate
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-158 — hostname verification
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no TLS substrate
+  - Next action: -
+  - Commit: radar retained
+- [?] R-NEW-159 — debugger detection observability
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [-] R-NEW-160 — instrumentation detection
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no instrumentation substrate
+  - Next action: -
+  - Commit: radar retained
+- [?] R-NEW-161 — /proc semantics
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no /proc passthrough
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-162 — process/thread identity
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: thread ids bridged (ThreadSnapshotTable keying, M13 probe)
+  - Next action: -
+  - Commit: regression-watch
+- [-] R-NEW-163 — memory-map observability
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no mem-map passthrough
+  - Next action: -
+  - Commit: radar retained
+- [R] R-NEW-164 — fuzzing boundary for every binary parser
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: tooling class G planned (PHASE-0 infra)
+  - Next action: -
+  - Commit: build fuzz probes on infra
+- [R] R-NEW-165 — differential parsing
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: differential harness planned
+  - Next action: -
+  - Commit: tooling class F
+- [R] R-NEW-166 — Android-vs-MiniAndroid differential execution
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: RESEARCHED-NOT-IMPLEMENTED
+  - Evidence: False
+  - Missing proof: differential harness planned
+  - Next action: -
+  - Commit: tooling class F
+- [~] R-NEW-167 — crash vs unsupported classification
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: APP BOUNDARY / PARTIAL classification law in traces
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-168 — parser crash vs app crash
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: parser-vs-app crash separation in reports
+  - Next action: -
+  - Commit: regression-watch
+- [?] R-NEW-169 — resource-parser OOM boundary
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no OOM trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-170 — DEX parser integer-overflow boundary
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: parser bound checks
+  - Next action: overflow corpus
+  - Commit: on demand
+- [-] R-NEW-171 — native parser memory safety
+  - Group: E | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no native parser substrate
+  - Next action: -
+  - Commit: radar retained
+- [~] R-NEW-172 — security semantics across compatibility stack
+  - Group: E | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: umbrella: sandbox+parser hardening+sandboxed storage
+  - Next action: cross-stack audit
+  - Commit: with tooling G
+
+### GROUP F — UI / Graphics / Pixel (R-NEW-173..278)
+- [~] R-NEW-173 — text measurement vs drawing
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: FreeType/HarfBuzz/FriBidi shaper wired; TextView fixtures
+  - Next action: measure-vs-draw delta law
+  - Commit: on demand
+- [x] R-NEW-174 — font metrics
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: font metrics used by TextView fixtures
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-175 — Typeface identity
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: Typeface via FreeType
+  - Next action: identity law
+  - Commit: on demand
+- [~] R-NEW-176 — font fallback
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: FreeType fallback
+  - Next action: fallback chain law
+  - Commit: on demand
+- [~] R-NEW-177 — complex-script shaping
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: HarfBuzz shaping wired
+  - Next action: complex-script corpus
+  - Commit: on demand
+- [~] R-NEW-178 — RTL/Bidi
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: FriBidi wired
+  - Next action: RTL corpus
+  - Commit: on demand
+- [?] R-NEW-179 — baseline alignment
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-180 — includeFontPadding
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-181 — letter spacing
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-182 — line spacing
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-183 — text wrapping
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: TextView wrap in fixtures
+  - Next action: wrap law
+  - Commit: on demand
+- [?] R-NEW-184 — ellipsize
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-185 — multiline layout
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-186 — text alignment
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: alignment in fixtures
+  - Next action: matrix
+  - Commit: on demand
+- [x] R-NEW-187 — dp→px
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: G04 density matrix
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-188 — sp→px
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: G04 density matrix
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-189 — density rounding
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: G04
+  - Next action: rounding law
+  - Commit: on demand
+- [~] R-NEW-190 — display size vs app size
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: window size law partial
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-191 — screen/window/view/local coordinates
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: touch_dispatcher transforms
+  - Next action: coordinate matrix
+  - Commit: on demand
+- [?] R-NEW-192 — scroll coordinate space
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no scroll trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-193 — nested transforms
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no transform trace
+  - Next action: -
+  - Commit: on demand
+- [x] R-NEW-194 — EXACTLY
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: MeasureSpec fixture (m3_style_weight, G04)
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-195 — AT_MOST
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-196 — UNSPECIFIED
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: partial via fixtures
+  - Next action: UNSPECIFIED law
+  - Commit: on demand
+- [x] R-NEW-197 — wrap_content
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: all layout fixtures
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-198 — match_parent
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: all layout fixtures
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-199 — margin vs padding
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: layout fixtures
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-200 — min width/height
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: partial
+  - Next action: min-law
+  - Commit: on demand
+- [~] R-NEW-201 — gravity
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: gravity in fixtures
+  - Next action: matrix
+  - Commit: on demand
+- [?] R-NEW-202 — baseline alignment ViewGroup
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-203 — layout direction
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: FriBidi present
+  - Next action: direction law
+  - Commit: on demand
+- [~] R-NEW-204 — view bounds clipping
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: renderer clip
+  - Next action: bounds law
+  - Commit: on demand
+- [~] R-NEW-205 — parent clipping
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: renderer clip
+  - Next action: parent law
+  - Commit: on demand
+- [~] R-NEW-206 — Canvas clip stack
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: canvas_shadow.cpp
+  - Next action: clip-stack corpus
+  - Commit: on demand
+- [~] R-NEW-207 — alpha propagation
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: alpha in renderer
+  - Next action: propagation law
+  - Commit: on demand
+- [x] R-NEW-208 — VISIBLE/INVISIBLE/GONE
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: C013-LEAFCHK vis flags live (merged dooz run); fixtures
+  - Next action: -
+  - Commit: regression-watch
+- [?] R-NEW-209 — translation
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-210 — scale
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-211 — rotation
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-212 — pivot
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-213 — color space
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-214 — premultiplied alpha
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: png alpha path
+  - Next action: premult law
+  - Commit: on demand
+- [?] R-NEW-215 — Porter-Duff blending
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-216 — Paint flags
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: paint flags partial
+  - Next action: matrix
+  - Commit: on demand
+- [?] R-NEW-217 — bitmap filtering
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [x] R-NEW-218 — gradients
+  - Group: F | Priority: P2 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Evidence: False
+  - Missing proof: F-053 linear gradient law (AOSP 8-step orientation table)
+  - Next action: radial/sweep
+  - Commit: on demand
+- [?] R-NEW-219 — shader coordinate space
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [x] R-NEW-220 — ColorDrawable/ShapeDrawable
+  - Group: F | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Evidence: False
+  - Missing proof: F-053 shape law: solid/stroke/corners/gradient inflate+draw; setBackgroundColor last-writer law; ring/line/dash DETECTED-NOT-EXERCISED
+  - Next action: ring/line/dash exercise
+  - Commit: hello_color regression-watch
+- [~] R-NEW-221 — theme inheritance
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: Material3 composition constructs (dooz 1.13M-line trace)
+  - Next action: inheritance law
+  - Commit: on demand
+- [~] R-NEW-222 — style precedence
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: m3_style_weight fixture
+  - Next action: precedence matrix
+  - Commit: on demand
+- [~] R-NEW-223 — attribute resolution
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: attr resolution corpus
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-224 — ?attr/foo
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: ?attr via Material3 paths
+  - Next action: law
+  - Commit: on demand
+- [~] R-NEW-225 — stateful ColorStateList
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: state_list
+  - Next action: stateful law
+  - Commit: on demand
+- [?] R-NEW-226 — ripple
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-227 — selector precedence
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: state_list
+  - Next action: precedence
+  - Commit: on demand
+- [!] R-NEW-228 — WindowInsets propagation
+  - Group: F | Priority: P2 | Floodgate: YES
+  - Status: OBSERVED-FAIL
+  - Evidence: False
+  - Missing proof: LIVE: [REC-MISS] Window.setDecorFitsSystemWindows in run/m9_merge_dooz (CMM)
+  - Next action: shadow law
+  - Commit: R-NEW-286
+- [?] R-NEW-229 — Insets consumption
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-230 — status bar overlap
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-231 — navigation bar overlap
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-232 — display cutout
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-233 — IME/keyboard inset
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-234 — window focus
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-235 — window dim/brightness/flags
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: window flags parse
+  - Next action: dim/brightness law
+  - Commit: on demand
+- [~] R-NEW-236 — Z ordering
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: draw order in renderer
+  - Next action: Z law
+  - Commit: on demand
+- [?] R-NEW-237 — elevation
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-238 — translationZ
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-239 — shadows
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [-] R-NEW-240 — layer type
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: software renderer — no layer type
+  - Next action: -
+  - Commit: radar retained
+- [~] R-NEW-241 — animation clock
+  - Group: F | Priority: P2 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: Choreographer pump F-050 (CM8)
+  - Next action: animation clock law
+  - Commit: with 242
+- [~] R-NEW-242 — VSync/frame pacing
+  - Group: F | Priority: P0 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: True
+  - Missing proof: F-050 four frame-pump roots fixed (CM8); 3-run deterministic; frontier = R-NEW-285 Job-active cancellation
+  - Next action: first frame end-to-end
+  - Commit: M8 roadmap item 10
+- [?] R-NEW-243 — animation invalidation
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-244 — animation cancellation
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-245 — transition consistency
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [!] R-NEW-246 — first-frame completeness
+  - Group: F | Priority: P0 | Floodgate: YES
+  - Status: OBSERVED-FAIL
+  - Evidence: True
+  - Missing proof: dooz framebuffer 0/2073600 non-white at CMM (honest, 3-run deterministic)
+  - Next action: first-frame completeness
+  - Commit: THE frontier: R-NEW-279+285+259
+- [?] R-NEW-247 — child reuse identity
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no RecyclerView corpus demand
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-248 — rebind/reset state
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-249 — layout invalidation after data change
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [?] R-NEW-250 — stable item identity
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-251 — hit-test coordinate transforms
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: touch_dispatcher transforms
+  - Next action: hit-test law
+  - Commit: on demand
+- [~] R-NEW-252 — touch dispatch ordering
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (§29 battery)
+  - Next action: ordering matrix
+  - Commit: regression-watch
+- [~] R-NEW-253 — pressed-state propagation
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: partial
+  - Next action: pressed law
+  - Commit: on demand
+- [x] R-NEW-254 — click/long-click
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: tictactoe_golden frames_manifest 9/9 listener clicks, 2741-px frame deltas; EXP088 live probe
+  - Next action: -
+  - Commit: regression-watch
+- [?] R-NEW-255 — touch slop
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: UNPROVEN
+  - Evidence: False
+  - Missing proof: no trace
+  - Next action: -
+  - Commit: on demand
+- [~] R-NEW-256 — Compose state→UI tree
+  - Group: F | Priority: P0 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: True
+  - Missing proof: composition constructs deep into Material3 (1.13M trace lines, M13); state→tree law partial
+  - Next action: ComposeView children 0→N
+  - Commit: M9 frontier
+- [x] R-NEW-257 — recomposition invalidation
+  - Group: F | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-FIXED
+  - Evidence: False
+  - Missing proof: F-044 derived-state stale root fixed; f044 fixture 7 bands 3-run byte-identical 32b8a456
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-258 — snapshot observation
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: readError eliminated (F-028/F-030, CM4/CM5); observation plumbing unproven
+  - Next action: observation law
+  - Commit: on demand
+- [~] R-NEW-259 — composition lifecycle
+  - Group: F | Priority: P0 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: True
+  - Missing proof: composition lifecycle partial; suspected registry gap = R-NEW-279
+  - Next action: -
+  - Commit: M9 frontier
+- [~] R-NEW-260 — ComposeView boundary
+  - Group: F | Priority: P0 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: True
+  - Missing proof: F-057 view-node duality law (owner-walk resolves via ViewShadow first)
+  - Next action: owner-walk tail
+  - Commit: hello_color regression-watch
+- [~] R-NEW-261 — Compose frame-clock dependency
+  - Group: F | Priority: P1 | Floodgate: YES
+  - Status: PARTIAL
+  - Evidence: True
+  - Missing proof: frame-clock NOT the symptom-layer root (FALSE-LEAD at lifecycle layer, brief §15); F-050 fixed real pump family (CM8)
+  - Next action: -
+  - Commit: with 242
+- [-] R-NEW-262 — DisplayList recording
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: software renderer
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-263 — DisplayList invalidation
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-264 — RenderNode properties/content
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-265 — render culling
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: same
+  - Next action: -
+  - Commit: radar retained
+- [~] R-NEW-266 — layer ordering
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: draw order
+  - Next action: layer law
+  - Commit: on demand
+- [-] R-NEW-267 — frame submission
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no frame submission substrate
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-268 — RenderThread synchronization
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no RenderThread
+  - Next action: -
+  - Commit: radar retained
+- [-] R-NEW-269 — Surface buffer lifecycle
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: NOT-APPLICABLE
+  - Evidence: False
+  - Missing proof: no Surface buffer substrate
+  - Next action: -
+  - Commit: radar retained
+- [x] R-NEW-270 — screenshot ≠ onDraw
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: screenshot from post-draw framebuffer + metrics law
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-271 — pixel provenance
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: hello_color per-element pixel counts (evidence.json) — early provenance
+  - Next action: full provenance chain
+  - Commit: extend tooling (§25 pixel provenance)
+- [x] R-NEW-272 — blank screenshot classification
+  - Group: F | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: blank taxonomy applied to dooz: NO_COMPOSITION class (children=0); A-K classification law
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-273 — alpha-zero detection
+  - Group: F | Priority: P3 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: alpha stats in metrics
+  - Next action: -
+  - Commit: on demand
+- [x] R-NEW-274 — off-screen rendering
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: whole runtime = deterministic offscreen software rendering
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-275 — pixel-diff stability
+  - Group: F | Priority: P1 | Floodgate: YES
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: 3-run byte-identical law (fixtures + hello_color 11e0056320d8546d)
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-276 — visual regression
+  - Group: F | Priority: P1 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: battery pixel goldens (7 fixtures)
+  - Next action: -
+  - Commit: regression-watch
+- [x] R-NEW-277 — screenshot resolution contract
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: VERIFIED-CORRECT
+  - Evidence: False
+  - Missing proof: 1080x1920 contract in evidence.json
+  - Next action: -
+  - Commit: regression-watch
+- [~] R-NEW-278 — screenshot color/pixel format
+  - Group: F | Priority: P2 | Floodgate: no
+  - Status: PARTIAL
+  - Evidence: False
+  - Missing proof: renderer RGB format documented
+  - Next action: format matrix
+  - Commit: on demand
+
+### GROUP G — NEW DISCOVERIES (R-NEW-279+; brief §17 living map)
+- [!] R-NEW-279 — Lifecycle callback registry (Activity.registerActivityLifecycleCallbacks storage/dispatch — ReportFragment.injectIfNeededIn chain)
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: OBSERVED-FAIL
+  - Discovered from: SUSPECTED CURRENT DOOZ BLOCKER: M9-B causal analysis (campaign brief §7) places the blank frame at callbacks-not-stored → LifecycleRegistry stays INITIALIZED → WrappedComposition.setContent never runs. Verified gap at HEAD: no engine/shadow handler stores lifecycle callbacks (grep: registerActivityLifecycleCallbacks absent from dispatch layer). Next: DEX-trace ReportFragment.injectIfNeededIn on dooz; implement registry as generic framework law.
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [?] R-NEW-280 — WeakReference referent storage semantics
+  - Group: NEW | Priority: P2 | Floodgate: no
+  - Status: UNPROVEN
+  - Discovered from: Known gap (M9-B analysis): no WeakReference shadow at HEAD (grep clean). Kotlin/AndroidX code paths that hold owners weakly would read null. No corpus APK currently exercises it — PRE-278 DISCOVERY, implement on live trace evidence.
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [?] R-NEW-281 — HashMap.values()/keySet()/entrySet() collection-view semantics
+  - Group: NEW | Priority: P1 | Floodgate: no
+  - Status: UNPROVEN
+  - Discovered from: Known gap (M9-B analysis): no collection-view law at HEAD (grep clean); views must reflect the backing map. Compose/AndroidX uses values() on hot paths. No live failure recorded yet — implement with OpenJDK view semantics + micro-fixture when a trace reaches it.
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [?] R-NEW-282 — Collections.singletonMap/unmodifiable completion
+  - Group: NEW | Priority: P2 | Floodgate: no
+  - Status: UNPROVEN
+  - Discovered from: singletonList/emptyList/unmodifiableList covered by F-039 (3ed13292); singletonMap/unmodifiableMap NOT implemented (grep clean). Complete the family from OpenJDK Collections.java.
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [?] R-NEW-283 — const-class interned Class heap identity
+  - Group: NEW | Priority: P1 | Floodgate: no
+  - Status: UNPROVEN
+  - Discovered from: FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) — component identity proven via unote. Full law (interned identity: two const-class of same type → same heap object, == comparable) not separately proven. Micro-proof pending.
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [?] R-NEW-284 — check-cast object-preservation validation law
+  - Group: NEW | Priority: P1 | Floodgate: no
+  - Status: UNPROVEN
+  - Discovered from: execute_check_cast validates and (by code inspection) preserves the register; no dedicated proof that the value is preserved on success and thrown-without-mutation on failure. Add micro band (M9-B finding).
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [!] R-NEW-285 — Job-active cancellation of the Compose frame await (LE1/a.y → K$a invokeOnCancellation → removeFrameCallback before pump)
+  - Group: NEW | Priority: P0 | Floodgate: YES
+  - Status: OBSERVED-FAIL
+  - Discovered from: Root-located at M8 (worklog M8 entry, roadmap item 10): the frame await's cancellation registration removes the Choreographer callback before the pump fires. Requires dispatcher-pump/cancellation-registration law. This is the M8 frontier carried forward.
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
+- [!] R-NEW-286 — Window.setDecorFitsSystemWindows REC-MISS
+  - Group: NEW | Priority: P3 | Floodgate: no
+  - Status: OBSERVED-FAIL
+  - Discovered from: LIVE-OBSERVED in merged-tree dooz run (run/m9_merge_dooz, 2026-09-11): [REC-MISS] Landroid/view/Window;.setDecorFitsSystemWindows caller=R0/D$a;.a. Fail-soft no-op today; add shadow law (AOSP Window: decor fits flag) on next pass.
+  - Why not covered by previous radar: surfaced by M9 causal analysis / live merged-tree runs
+  - Next action: see discovery note
