@@ -24,6 +24,7 @@
 
 #include <chrono>
 #include <deque>
+#include <atomic>
 #include <map>
 #include <memory>
 #include <string>
@@ -570,6 +571,50 @@ public:
     void push_activity_record(const ActivityRecord& r) {
         stack_.push_back(r);
     }
+
+    // ── F-058 (R-NEW-279): Application.ActivityLifecycleCallbacks registry ──
+    // AOSP law (Application.java, android-14): mActivityLifecycleCallbacks is
+    // a CopyOnWriteArrayList<Application.ActivityLifecycleCallbacks>.
+    // registerActivityLifecycleCallbacks APPENDS (duplicates allowed — AOSP
+    // never dedupes); unregisterActivityLifecycleCallbacks removes BY
+    // IDENTITY (first equal object). Activity.registerActivityLifecycle
+    // Callbacks (Activity.java L1627) DELEGATES to the application — the
+    // registry is process-wide (one per application), so storing it on the
+    // ActivityShadow (the process-wide activity hub) preserves the AOSP
+    // visibility: every activity's lifecycle event fans out to every
+    // registered observer.
+    // Dispatch order law: registration order, per event:
+    //   onActivityPreCreated → onCreate → onActivityCreated →
+    //   onActivityPostCreated  (and the Started/Resumed pairs likewise).
+    // The observer method names are FRAMEWORK-INTERFACE names
+    // (android/app/Application$ActivityLifecycleCallbacks) — R8 cannot
+    // rename them on implementations (verified in dooz 1.0.18 DEX:
+    // androidx/lifecycle/v.onActivityPreCreated keeps its name), so
+    // name-based dispatch is the general law, not a heuristic.
+    struct LifecycleCallbackEntry {
+        uint32_t oid = 0;     // heap object of the observer
+        std::string cls;      // runtime class descriptor of the observer
+    };
+    void register_lifecycle_callback(uint32_t oid, std::string cls) {
+        // CopyOnWriteArrayList.add semantics: append unconditionally.
+        lifecycle_callbacks_.push_back({oid, std::move(cls)});
+    }
+    bool unregister_lifecycle_callback(uint32_t oid) {
+        // AOSP remove: first identity match (ArrayList.indexOf equality).
+        for (auto it = lifecycle_callbacks_.begin();
+             it != lifecycle_callbacks_.end(); ++it) {
+            if (it->oid == oid) {
+                lifecycle_callbacks_.erase(it);
+                return true;
+            }
+        }
+        return false;
+    }
+    const std::vector<LifecycleCallbackEntry>& lifecycle_callbacks() const {
+        return lifecycle_callbacks_;
+    }
+    size_t lifecycle_callback_count() const { return lifecycle_callbacks_.size(); }
+
     // Pop the top record: the popped entry IS the previous activity —
     // restore it as current (the current activity, which is NOT in the
     // stack, is being destroyed by the finish cascade). Returns false when
@@ -639,6 +684,9 @@ private:
     uint32_t current_activity_id_ = 0;
     std::string current_activity_class_;
     uint32_t content_view_id_ = 0;
+    // F-058 (R-NEW-279): Application.ActivityLifecycleCallbacks registry
+    // (CopyOnWriteArrayList semantics — see public accessors above).
+    std::vector<LifecycleCallbackEntry> lifecycle_callbacks_;
     // EXP-074: Layout resource ID from setContentView(int layoutResId).
     int32_t layout_resource_id_ = 0;
     LifecycleState state_ = LifecycleState::NONE;
@@ -713,6 +761,17 @@ public:
 
 class ViewShadow : public Shadow {
 public:
+    // ── F-062: compose saveable-id anchor key ───────────────────────────
+    // The APK's own R.id.compose_view_saveable_id_tag value, captured
+    // NAME-BASED from the app DEX (execute_sget*) — no hardcoded resource
+    // id. Consumed by the getTag decor-anchor law (android_shadows.cpp).
+    static void record_compose_saveable_id_key(int32_t k) {
+        compose_saveable_id_key_.store(k, std::memory_order_relaxed);
+    }
+    static int32_t compose_saveable_id_key() {
+        return compose_saveable_id_key_.load(std::memory_order_relaxed);
+    }
+
     struct ViewNode {
         uint32_t view_id = 0;
         uint32_t parent_id = 0;
@@ -1212,6 +1271,9 @@ public:
 
 private:
     std::map<uint32_t, std::unique_ptr<ViewNode>> nodes_;
+    // F-062: APK-captured compose_view_saveable_id_tag resource id
+    // (set once by the interpreter's sget capture; single-threaded).
+    static std::atomic<int32_t> compose_saveable_id_key_;
 };
 
 // ─────────────────────────────────────────────────────────────────────────

@@ -1588,6 +1588,33 @@ public:
                                    uint32_t activity_obj_id,
                                    DalvikExecutionResult& result);
 
+    // ── F-058 (R-NEW-279): Application.dispatchActivity* fan-out law ────
+    // AOSP (Application.java, android-14): the activity lifecycle dispatch
+    // (ActivityThread → Activity.performCreate/performStart/performResume)
+    // fans EVERY event out to all registered
+    // Application.ActivityLifecycleCallbacks IN REGISTRATION ORDER:
+    //   onActivityPreCreated / onActivityCreated / onActivityPostCreated
+    //   onActivityPreStarted / onActivityStarted / onActivityPostStarted
+    //   onActivityPreResumed / onActivityResumed / onActivityPostResumed
+    // Observer methods are framework-interface names (never R8-renamed —
+    // verified: dooz androidx/lifecycle/v.onActivityPreCreated), so
+    // name-based dispatch is the general law. An observer that does not
+    // implement the event (default no-op in the API-29+ interface) is
+    // skipped silently — try_recursive_invoke returning false is NOT an
+    // error here, mirroring AOSP default-method no-ops.
+    // Returns the number of observers that actually executed the event.
+    // event ∈ {"onActivityPreCreated","onActivityCreated",
+    //          "onActivityPostCreated","onActivityPreStarted",
+    //          "onActivityStarted","onActivityPostStarted",
+    //          "onActivityPreResumed","onActivityResumed",
+    //          "onActivityPostResumed","onActivityPrePaused","onActivityPaused",
+    //          "onActivityPostPaused","onActivityPreStopped","onActivityStopped",
+    //          "onActivityPostStopped","onActivitySaveInstanceState",
+    //          "onActivityPreDestroyed","onActivityDestroyed",
+    //          "onActivityPostDestroyed"}
+    size_t dispatch_activity_lifecycle_callbacks(const std::string& event,
+                                                 DalvikExecutionResult& result);
+
     bool fetch_decode_execute(DalvikExecutionResult& result);
     uint16_t fetch_opcode(uint32_t pc) const;
 
