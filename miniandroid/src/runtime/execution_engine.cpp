@@ -1797,7 +1797,18 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             // no inflater state — measured geometry comes from
                             // the captured LayoutParams path below).
                             auto& rt = resources::ResourceRuntime::instance();
-                            if (rt.loaded()) {
+                            // R-NEW-302 FIX (AOSP requestLayout law): also
+                            // re-measure when the DEX app mutated the view
+                            // tree since the last frame (addView/removeView/
+                            // setLayoutParams raise ViewShadow::layout_dirty).
+                            // The old rt.loaded()-only gate meant programmatic
+                            // trees (no resources.arsc) measured ONCE at
+                            // setContentView and every later frame reused that
+                            // stale geometry — the demo stage box was pinned
+                            // at its first position forever.
+                            const bool vs_dirty =
+                                view_shadow != nullptr && view_shadow->layout_dirty;
+                            if (rt.loaded() || vs_dirty) {
                                 // G10 FIX-G10-002 + G12 FIX-G12-002: the
                                 // DEX-backed superclass classifier is owned
                                 // by the ResourceRuntime (Factory law) and
@@ -1809,6 +1820,11 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                         return dalvik_engine_.is_subclass_of(c, a);
                                     });
                                 rt.inflater().measure_layout(view_shadow, root_id);
+                                // R-NEW-302: traversal done — consume the
+                                // requestLayout flag (AOSP performTraversals
+                                // clears the dirty chain after measure/layout).
+                                if (view_shadow != nullptr)
+                                    view_shadow->layout_dirty = false;
                             }
                         }
                         // CAMPAIGN 013: deferred custom-view placeholders.

@@ -1,0 +1,63 @@
+[EXCEPTION] method=Lorg/telegram/messenger/LruCache;.<init> pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(none) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/LruCache;.<init> — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/ImageLoader;.getInstance pc=24 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/ImageLoader;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/MessagesController;.getInstance pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/MessagesController;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/LruCache;.<init> pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(none) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/LruCache;.<init> — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/ImageLoader;.getInstance pc=24 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/ImageLoader;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/MessagesController;.getInstance pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/MessagesController;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/LruCache;.<init> pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(none) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/LruCache;.<init> — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/ImageLoader;.getInstance pc=24 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/ImageLoader;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/MessagesController;.getInstance pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/MessagesController;.getInstance — unwinding frame (propagate to caller)
+[EXP093-SVC] getSystemService("accessibility") → Landroid/view/accessibility/AccessibilityManager;
+[EXCEPTION] method=Lorg/telegram/messenger/LruCache;.<init> pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(none) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/LruCache;.<init> — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/ImageLoader;.getInstance pc=24 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/ImageLoader;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/MessagesController;.getInstance pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/MessagesController;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/tgnet/ConnectionsManager;.getInstance pc=26 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/tgnet/ConnectionsManager;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/LruCache;.<init> pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(none) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/LruCache;.<init> — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/ImageLoader;.getInstance pc=24 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/ImageLoader;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/MessagesController;.getInstance pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/MessagesController;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/tgnet/ConnectionsManager;.getInstance pc=26 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/tgnet/ConnectionsManager;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/LruCache;.<init> pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(none) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/LruCache;.<init> — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/ImageLoader;.getInstance pc=24 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/ImageLoader;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/MessagesController;.getInstance pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/MessagesController;.getInstance — unwinding frame (propagate to caller)
+[EXP093-SVC] getSystemService("activity") → Landroid/app/ActivityManager;
+[EXCEPTION] method=Lorg/telegram/messenger/LruCache;.<init> pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(none) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/LruCache;.<init> — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/ImageLoader;.getInstance pc=24 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/ImageLoader;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/MessagesController;.getInstance pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/MessagesController;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/LruCache;.<init> pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(none) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/LruCache;.<init> — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/ImageLoader;.getInstance pc=24 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/ImageLoader;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/messenger/MessagesController;.getInstance pc=33 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/messenger/MessagesController;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Lorg/telegram/tgnet/ConnectionsManager;.getInstance pc=26 exception=Ljava/lang/IllegalArgumentException; msg="maxSize <= 0" try_range=(no try covering pc) handler=NOT_FOUND msg="maxSize <= 0"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Lorg/telegram/tgnet/ConnectionsManager;.getInstance — unwinding frame (propagate to caller)
+[EXCEPTION] method=Landroidx/fragment/app/FragmentManager;.ensureExecReady pc=27 exception=Ljava/lang/IllegalStateException; msg="FragmentManager has not been attached to a host." try_range=(none) handler=NOT_FOUND msg="FragmentManager has not been attached to a host."
+[EXCEPTION] no handler for Ljava/lang/IllegalStateException; in Landroidx/fragment/app/FragmentManager;.ensureExecReady — unwinding frame (propagate to caller)
+[EXCEPTION] method=Landroidx/fragment/app/FragmentManager;.ensureExecReady pc=27 exception=Ljava/lang/IllegalStateException; msg="FragmentManager has not been attached to a host." try_range=(none) handler=NOT_FOUND msg="FragmentManager has not been attached to a host."
+[EXCEPTION] no handler for Ljava/lang/IllegalStateException; in Landroidx/fragment/app/FragmentManager;.ensureExecReady — unwinding frame (propagate to caller)
+Status: PARTIAL SUCCESS ⚠️
+Frames Rendered: 1
+Errors: 32

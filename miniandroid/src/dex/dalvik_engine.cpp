@@ -17332,6 +17332,36 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // MC4 (Telegram campaign): ActivityManager memory-class law.
+    // Real Telegram v12.10.1 (org.telegram.messenger.web, 70389) dies in
+    // ImageLoader$1.<init> ← ImageLoader.<init> ← MessagesController.<init>
+    // with IllegalArgumentException("maxSize <= 0") ×62: android.util.LruCache
+    // sizes its cache from ActivityManager.getMemoryClass(), which fell
+    // through to the fail-soft int-0 default (unimplemented API). AOSP
+    // ActivityManagerService.getMemoryClass() returns the app memory class
+    // (device-typical 128–256 MB; this runtime's device profile is a modern
+    // 1080x1920 phone). Deterministic constants — no host probing, keeping
+    // the runtime's replay-determinism law intact.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name.find("ActivityManager") != std::string::npos) {
+        if (method == "getMemoryClass") {
+            result = DalvikValue::make_int(256);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getLargeMemoryClass") {
+            result = DalvikValue::make_int(512);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isLowRamDevice") {
+            result = DalvikValue::make_int(0);  // false — modern device profile
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // P1.7 — Context.getExternalFilesDir → File
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getExternalFilesDir" &&

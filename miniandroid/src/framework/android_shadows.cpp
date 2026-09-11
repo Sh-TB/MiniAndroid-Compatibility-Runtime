@@ -1829,6 +1829,9 @@ bool ViewShadow::add_child(uint32_t parent_id, uint32_t child_id) {
     }
     child->parent_id = parent_id;
     parent->children.push_back(child_id);
+    // R-NEW-302: AOSP addView(View) → requestLayout — the tree changed,
+    // the next frame must re-run measure/layout.
+    layout_dirty = true;
     return true;
 }
 
@@ -1840,6 +1843,8 @@ bool ViewShadow::remove_child(uint32_t parent_id, uint32_t child_id) {
         std::remove(parent->children.begin(), parent->children.end(), child_id),
         parent->children.end());
     if (child->parent_id == parent_id) child->parent_id = 0;
+    // R-NEW-302: AOSP removeView(View) → requestLayout.
+    layout_dirty = true;
     return true;
 }
 
@@ -2083,6 +2088,8 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
             }
             n->children.clear();
         }
+        // R-NEW-302: removeAllViews → requestLayout.
+        layout_dirty = true;
         return CallResult::handled_void();
     }
     if (m == "getChildAt") {

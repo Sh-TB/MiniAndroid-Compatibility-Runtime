@@ -1,267 +1,267 @@
 {
-  "click_count_requested": 8,
-  "clickable_views": 1,
-  "clicks_dispatched": 8,
-  "frames": [
+ "click_count_requested": 8,
+ "clickable_views": 1,
+ "clicks_dispatched": 8,
+ "frames": [
+  {
+   "event": "launch (no interaction)",
+   "file": "frame_000.png",
+   "index": 0,
+   "png_sha256": "2f62ecf1899b833ed2afee627564205cc0ac6c3851f7486c0e76472d424eca5d",
+   "sha256": "811a76a2185b67468f21039fdbe937e27e4ec745bf727df535c799cd7e802783",
+   "visible_texts": [
     {
-      "event": "launch (no interaction)",
-      "file": "frame_000.png",
-      "index": 0,
-      "png_sha256": "2310cd13b2b3778a75e71cf9204c0fb124887650005c07db023af960d6913dc3",
-      "sha256": "310581d15da89dcd58b0e1607e75101f7841fe6d35138b950f09275dcac22cb9",
-      "visible_texts": [
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "Hello MiniAndroid!",
-          "view_id": 8
-        },
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "count=1 pos=(220,370) color=GREEN",
-          "view_id": 9
-        },
-        {
-          "class": "Landroid/widget/Button;",
-          "text": "TAP ME",
-          "view_id": 16
-        }
-      ]
+     "class": "Landroid/widget/TextView;",
+     "text": "Hello MiniAndroid!",
+     "view_id": 8
     },
     {
-      "changed_pixels_vs_previous": 27174,
-      "click_dispatched": true,
-      "click_kind": "listener",
-      "clicked_view_class": "Landroid/widget/Button;",
-      "clicked_view_id": 16,
-      "event": "click",
-      "file": "frame_001.png",
-      "index": 1,
-      "png_sha256": "fa6877d02257b4b0b54ceb1ef6b018f7f0ad943fd1bf70f76b45926f353db615",
-      "sha256": "5ff3f76aa8077b585e1ea556ec918bf98475b706bb302f265977d41e744b8267",
-      "visible_texts": [
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "Hello MiniAndroid!",
-          "view_id": 8
-        },
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "count=2 pos=(400,660) color=BLUE",
-          "view_id": 9
-        },
-        {
-          "class": "Landroid/widget/Button;",
-          "text": "TAP ME",
-          "view_id": 16
-        }
-      ]
+     "class": "Landroid/widget/TextView;",
+     "text": "count=1 pos=(220,370) color=GREEN",
+     "view_id": 9
     },
     {
-      "changed_pixels_vs_previous": 27038,
-      "click_dispatched": true,
-      "click_kind": "listener",
-      "clicked_view_class": "Landroid/widget/Button;",
-      "clicked_view_id": 16,
-      "event": "click",
-      "file": "frame_002.png",
-      "index": 2,
-      "png_sha256": "a5bcb7e158b3c2d27393b4ce1ca615f7683680dd8375571b0d195b9c52c5a964",
-      "sha256": "35738043b6ccdfb3eedef9c060dba55a47cfce58e63a5144a2903880f4b2d0b2",
-      "visible_texts": [
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "Hello MiniAndroid!",
-          "view_id": 8
-        },
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "count=3 pos=(580,950) color=YELLOW",
-          "view_id": 9
-        },
-        {
-          "class": "Landroid/widget/Button;",
-          "text": "TAP ME",
-          "view_id": 16
-        }
-      ]
-    },
-    {
-      "changed_pixels_vs_previous": 27586,
-      "click_dispatched": true,
-      "click_kind": "listener",
-      "clicked_view_class": "Landroid/widget/Button;",
-      "clicked_view_id": 16,
-      "event": "click",
-      "file": "frame_003.png",
-      "index": 3,
-      "png_sha256": "10f03b67ab3cbfece4b317d0a150cebfbc9733f20e09a5dee565df2d0ef41184",
-      "sha256": "fb2ad048962a40af94eef396f4c05b1405b1599d6d7c3b0565020ba14d4af2cc",
-      "visible_texts": [
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "Hello MiniAndroid!",
-          "view_id": 8
-        },
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "count=4 pos=(760,80) color=RED",
-          "view_id": 9
-        },
-        {
-          "class": "Landroid/widget/Button;",
-          "text": "TAP ME",
-          "view_id": 16
-        }
-      ]
-    },
-    {
-      "changed_pixels_vs_previous": 27359,
-      "click_dispatched": true,
-      "click_kind": "listener",
-      "clicked_view_class": "Landroid/widget/Button;",
-      "clicked_view_id": 16,
-      "event": "click",
-      "file": "frame_004.png",
-      "index": 4,
-      "png_sha256": "6ca69c66b90563d68d6d7c947212d22dc625efe583b9fdf9bc2ae7fb888d7a95",
-      "sha256": "fa55f10fbc301be86a67d8f517924dce538eee4da8bc73860bcb727a1c8b3295",
-      "visible_texts": [
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "Hello MiniAndroid!",
-          "view_id": 8
-        },
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "count=5 pos=(40,370) color=GREEN",
-          "view_id": 9
-        },
-        {
-          "class": "Landroid/widget/Button;",
-          "text": "TAP ME",
-          "view_id": 16
-        }
-      ]
-    },
-    {
-      "changed_pixels_vs_previous": 28178,
-      "click_dispatched": true,
-      "click_kind": "listener",
-      "clicked_view_class": "Landroid/widget/Button;",
-      "clicked_view_id": 16,
-      "event": "click",
-      "file": "frame_005.png",
-      "index": 5,
-      "png_sha256": "f4573a05cb392873107de63726a714cbe4a5cadb10c7be31c36a8a850a5cc0ec",
-      "sha256": "072cff15cec4000a97ab6fe634705a54fdd18d45bcefd1dddf135a793af5ae40",
-      "visible_texts": [
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "Hello MiniAndroid!",
-          "view_id": 8
-        },
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "count=6 pos=(220,660) color=BLUE",
-          "view_id": 9
-        },
-        {
-          "class": "Landroid/widget/Button;",
-          "text": "TAP ME",
-          "view_id": 16
-        }
-      ]
-    },
-    {
-      "changed_pixels_vs_previous": 27207,
-      "click_dispatched": true,
-      "click_kind": "listener",
-      "clicked_view_class": "Landroid/widget/Button;",
-      "clicked_view_id": 16,
-      "event": "click",
-      "file": "frame_006.png",
-      "index": 6,
-      "png_sha256": "1a51868e02fbb6a579ae433e31eeabd8d578cfa043ea27e3de4268dc664223cb",
-      "sha256": "7967ab44ca69cbf0b7b9fb92d4994ddd2775681fc6398dc256de5673a7cf4b96",
-      "visible_texts": [
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "Hello MiniAndroid!",
-          "view_id": 8
-        },
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "count=7 pos=(400,950) color=YELLOW",
-          "view_id": 9
-        },
-        {
-          "class": "Landroid/widget/Button;",
-          "text": "TAP ME",
-          "view_id": 16
-        }
-      ]
-    },
-    {
-      "changed_pixels_vs_previous": 27665,
-      "click_dispatched": true,
-      "click_kind": "listener",
-      "clicked_view_class": "Landroid/widget/Button;",
-      "clicked_view_id": 16,
-      "event": "click",
-      "file": "frame_007.png",
-      "index": 7,
-      "png_sha256": "d3c7354487fa0138974a47efed29aec6caf6f844ca8cb78e0951ef9c3e958c63",
-      "sha256": "4ef53e3368b5dbc3942a903d0234ff08d07090021e266433b36c413c243e9ac3",
-      "visible_texts": [
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "Hello MiniAndroid!",
-          "view_id": 8
-        },
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "count=8 pos=(580,80) color=RED",
-          "view_id": 9
-        },
-        {
-          "class": "Landroid/widget/Button;",
-          "text": "TAP ME",
-          "view_id": 16
-        }
-      ]
-    },
-    {
-      "changed_pixels_vs_previous": 27567,
-      "click_dispatched": true,
-      "click_kind": "listener",
-      "clicked_view_class": "Landroid/widget/Button;",
-      "clicked_view_id": 16,
-      "event": "click",
-      "file": "frame_008.png",
-      "index": 8,
-      "png_sha256": "851ceeb56370105c1a3ff201977401981578ad41cdec6219001554197c7d27c6",
-      "sha256": "95a0dd20e83bf4bb5810dcda00cde654feb1f163bb3227fffee2433c8787440c",
-      "visible_texts": [
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "Hello MiniAndroid!",
-          "view_id": 8
-        },
-        {
-          "class": "Landroid/widget/TextView;",
-          "text": "count=9 pos=(760,370) color=GREEN",
-          "view_id": 9
-        },
-        {
-          "class": "Landroid/widget/Button;",
-          "text": "TAP ME",
-          "view_id": 16
-        }
-      ]
+     "class": "Landroid/widget/Button;",
+     "text": "TAP ME",
+     "view_id": 16
     }
-  ],
-  "screen": {
-    "height": 1920,
-    "width": 1080
+   ]
+  },
+  {
+   "changed_pixels_vs_previous": 54608,
+   "click_dispatched": true,
+   "click_kind": "listener",
+   "clicked_view_class": "Landroid/widget/Button;",
+   "clicked_view_id": 16,
+   "event": "click",
+   "file": "frame_001.png",
+   "index": 1,
+   "png_sha256": "c8eb568a75488da1a7bff589d46b59a272aedc45cbd29f0092531e647f0051ce",
+   "sha256": "5fff87e7f5d2b3f93e64c3dd1b8259e972279d18c3e732d99796156b358ac429",
+   "visible_texts": [
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "Hello MiniAndroid!",
+     "view_id": 8
+    },
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "count=2 pos=(400,660) color=BLUE",
+     "view_id": 9
+    },
+    {
+     "class": "Landroid/widget/Button;",
+     "text": "TAP ME",
+     "view_id": 16
+    }
+   ]
+  },
+  {
+   "changed_pixels_vs_previous": 54723,
+   "click_dispatched": true,
+   "click_kind": "listener",
+   "clicked_view_class": "Landroid/widget/Button;",
+   "clicked_view_id": 16,
+   "event": "click",
+   "file": "frame_002.png",
+   "index": 2,
+   "png_sha256": "b6109361091dc5df27298fa3f9b46e8300b0895be8b71db94f636e49b439d2f7",
+   "sha256": "ef0cb777678a841986381415a836d0cab4f70b1288d751aac0363ca8586d8cba",
+   "visible_texts": [
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "Hello MiniAndroid!",
+     "view_id": 8
+    },
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "count=3 pos=(580,950) color=YELLOW",
+     "view_id": 9
+    },
+    {
+     "class": "Landroid/widget/Button;",
+     "text": "TAP ME",
+     "view_id": 16
+    }
+   ]
+  },
+  {
+   "changed_pixels_vs_previous": 56517,
+   "click_dispatched": true,
+   "click_kind": "listener",
+   "clicked_view_class": "Landroid/widget/Button;",
+   "clicked_view_id": 16,
+   "event": "click",
+   "file": "frame_003.png",
+   "index": 3,
+   "png_sha256": "a238734d1472c90d77bd0c3118113f797c93cdfb0ade89e3a92d235ba8cadb55",
+   "sha256": "db674ce320e63f6ac7abc02f9c72fdb7ca7d90b0fbb2a63b9aa90fa9fa6bf942",
+   "visible_texts": [
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "Hello MiniAndroid!",
+     "view_id": 8
+    },
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "count=4 pos=(760,80) color=RED",
+     "view_id": 9
+    },
+    {
+     "class": "Landroid/widget/Button;",
+     "text": "TAP ME",
+     "view_id": 16
+    }
+   ]
+  },
+  {
+   "changed_pixels_vs_previous": 54846,
+   "click_dispatched": true,
+   "click_kind": "listener",
+   "clicked_view_class": "Landroid/widget/Button;",
+   "clicked_view_id": 16,
+   "event": "click",
+   "file": "frame_004.png",
+   "index": 4,
+   "png_sha256": "e4e948fe20525a41c6afc5c968088bc025a3c023c8c8ca6b7651148b1926b54d",
+   "sha256": "7ee95f3c3464b003745600c1860da61787d25fc27b24ce88f19bcb73ac898034",
+   "visible_texts": [
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "Hello MiniAndroid!",
+     "view_id": 8
+    },
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "count=5 pos=(40,370) color=GREEN",
+     "view_id": 9
+    },
+    {
+     "class": "Landroid/widget/Button;",
+     "text": "TAP ME",
+     "view_id": 16
+    }
+   ]
+  },
+  {
+   "changed_pixels_vs_previous": 57175,
+   "click_dispatched": true,
+   "click_kind": "listener",
+   "clicked_view_class": "Landroid/widget/Button;",
+   "clicked_view_id": 16,
+   "event": "click",
+   "file": "frame_005.png",
+   "index": 5,
+   "png_sha256": "069bc90eba8f8581d91fb0963a4038a4ef8d70ecf574c509b689add986a87b31",
+   "sha256": "c7efa871c9a8d7d20e1bed4b6d7bf506aaca7882aab6fa26866c6b6be54d1866",
+   "visible_texts": [
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "Hello MiniAndroid!",
+     "view_id": 8
+    },
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "count=6 pos=(220,660) color=BLUE",
+     "view_id": 9
+    },
+    {
+     "class": "Landroid/widget/Button;",
+     "text": "TAP ME",
+     "view_id": 16
+    }
+   ]
+  },
+  {
+   "changed_pixels_vs_previous": 54893,
+   "click_dispatched": true,
+   "click_kind": "listener",
+   "clicked_view_class": "Landroid/widget/Button;",
+   "clicked_view_id": 16,
+   "event": "click",
+   "file": "frame_006.png",
+   "index": 6,
+   "png_sha256": "3a30b2600cded4e441d6cd90e6dd71af90b549674a441eda945e079aec9e7e4f",
+   "sha256": "f64206860dfddc58a1fb29ff94e48b4c990d175e268cde5e73afcd682f4189d9",
+   "visible_texts": [
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "Hello MiniAndroid!",
+     "view_id": 8
+    },
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "count=7 pos=(400,950) color=YELLOW",
+     "view_id": 9
+    },
+    {
+     "class": "Landroid/widget/Button;",
+     "text": "TAP ME",
+     "view_id": 16
+    }
+   ]
+  },
+  {
+   "changed_pixels_vs_previous": 56595,
+   "click_dispatched": true,
+   "click_kind": "listener",
+   "clicked_view_class": "Landroid/widget/Button;",
+   "clicked_view_id": 16,
+   "event": "click",
+   "file": "frame_007.png",
+   "index": 7,
+   "png_sha256": "ee970126f132d3780ca8a2f5701e21a15ebae6d24799f622e3c1e88ef899fad3",
+   "sha256": "0c4c62bb60f77a1d435c823196315dfc90ba23a77ffefa1a16d94cf1d8c12669",
+   "visible_texts": [
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "Hello MiniAndroid!",
+     "view_id": 8
+    },
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "count=8 pos=(580,80) color=RED",
+     "view_id": 9
+    },
+    {
+     "class": "Landroid/widget/Button;",
+     "text": "TAP ME",
+     "view_id": 16
+    }
+   ]
+  },
+  {
+   "changed_pixels_vs_previous": 56401,
+   "click_dispatched": true,
+   "click_kind": "listener",
+   "clicked_view_class": "Landroid/widget/Button;",
+   "clicked_view_id": 16,
+   "event": "click",
+   "file": "frame_008.png",
+   "index": 8,
+   "png_sha256": "2106e2d5893f0a73bcda0d0945a4efd425ac062a060b1351ccbf13538559ad69",
+   "sha256": "4af80d881cfa6a7ff7e2acb80cb5b00dd4dd883e20dcff2af90391c6e10d58f7",
+   "visible_texts": [
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "Hello MiniAndroid!",
+     "view_id": 8
+    },
+    {
+     "class": "Landroid/widget/TextView;",
+     "text": "count=9 pos=(760,370) color=GREEN",
+     "view_id": 9
+    },
+    {
+     "class": "Landroid/widget/Button;",
+     "text": "TAP ME",
+     "view_id": 16
+    }
+   ]
   }
+ ],
+ "screen": {
+  "height": 1920,
+  "width": 1080
+ }
 }
