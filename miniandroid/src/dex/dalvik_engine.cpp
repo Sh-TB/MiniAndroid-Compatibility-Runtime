@@ -12348,6 +12348,30 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
         // ────────────────────────────────────────────────────────────────
         // F-090i: iface_proto is hoisted above — reuse it here.
         if (!iface_proto.empty()) {
+            // F-091b (R-NEW-324, S25): ART interface-dispatch gate on the
+            // descriptor-only walk below. The walk is ONLY legal when the
+            // declared interface is itself DEX-defined — the R8 case where
+            // interface method and implementation are renamed INDEPENDENTLY
+            // (the descriptor stays the stable identity). For HOST
+            // interfaces (Ljava/util/Iterator;, Ljava/util/Collection;, …)
+            // R8 cannot rename: the name IS the contract and the name-based
+            // dispatch above is authoritative. Descriptor-guessing on a
+            // host interface dispatches an UNRELATED method that merely
+            // shares the proto — dooz proof: Iterator.hasNext() →
+            // z1/i.isEmpty() (first ()Z on the chain) → hasNext()=false
+            // for a NON-EMPTY list → addAll's bulk-copy zero-iterated →
+            // the NavController back stack lost the root-graph entry
+            // (R-NEW-323 IAE).
+            bool f91b_dex_interface = false;
+            if (!class_name.empty() && dex_report_) {
+                for (const auto& f91b_cls : dex_report_->classes) {
+                    if (f91b_cls.name == class_name) {
+                        f91b_dex_interface = true;
+                        break;
+                    }
+                }
+            }
+            if (f91b_dex_interface) {
             // Walk the receiver's class + superclass chain (DEX virtual
             // dispatch law: inherited implementations answer interface
             // calls; R8 renames per class, so the signature is the only
@@ -12386,6 +12410,7 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
                 walk_cls = sup_it->second;
                 if (walk_cls == "Ljava/lang/Object;") break;
             }
+            } // end F-091b DEX-interface gate
 
             // ────────────────────────────────────────────────────────────
             // F-023 (DEX DEFAULT-INTERFACE-METHOD DISPATCH LAW): the class
@@ -16384,6 +16409,200 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             throw_deferred("Ljava/util/NoSuchElementException;",
                            "List iterator exhausted", "LIST-ITER");
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-091 (R-NEW-324, S25): DEX-defined collection iteration protocol.
+    //
+    // ROOT CAUSE (dooz R-NEW-323): R8-minified Kotlin collections
+    // (z1/i = kotlin.collections.ArrayDeque — circular buffer, fields
+    // i=head/j=array/k=size) declare NO iterator()/listIterator() in the
+    // DEX; the calls resolve through the host superclass chain
+    // (java.util.AbstractList). The previous fallback answered with
+    // self-as-iterator plus an EMPTY shadow CollectionState → zero-iterated
+    // copies (addAll) AND zero-iterated back-stack walks
+    // (getBackStackEntry's listIterator) → the root-graph NavBackStackEntry
+    // (id 0) never reached the back stack / was never found → IAE "No
+    // destination with ID 0 is on the NavController's back stack" during
+    // Compose start-destination navigation.
+    //
+    // UPSTREAM LAW (java.util.AbstractList iterator/listIterator
+    // contract): a DEX-defined class inheriting a host List implementation
+    // must expose the FULL iteration protocol over ITS OWN state:
+    //   iterator()      → pos = 0
+    //   listIterator(I) → pos = index
+    //   hasNext = pos < size()      next = get(pos++)
+    //   hasPrevious = pos > 0       previous = get(--pos)
+    //   nextIndex = pos             previousIndex = pos-1
+    // The receiver's own DEX size()/get(I) methods are the authoritative
+    // readers (R8 keeps those names — they implement the host contract:
+    // z1/d.size, z1/i.get).
+    //
+    // GENERIC: no field-layout guessing — the protocol drives the
+    // receiver's REAL DEX size()/get(I) via try_recursive_invoke. Applies
+    // to every R8-minified Kotlin app hitting the ArrayDeque/List family.
+    // Objects already carrying the F-036 backing store (__array_length__)
+    // were answered above and never reach this law. If the receiver's DEX
+    // chain defines neither size() nor get(I), fall through to the shadow
+    // dispatch (previous behavior preserved).
+    // ────────────────────────────────────────────────────────────────────
+    if ((method == "iterator" || method == "listIterator" ||
+         method == "hasNext" || method == "next" ||
+         method == "hasPrevious" || method == "previous" ||
+         method == "nextIndex" || method == "previousIndex") &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0) {
+        uint32_t f91_id = args[0].object_id;
+        const auto* f91_recv = heap_.get(f91_id);
+        std::string f91_cls = f91_recv ? f91_recv->class_descriptor
+                                       : args[0].class_desc;
+        bool f91_dex_defined =
+            f91_recv != nullptr && !f91_cls.empty() && f91_cls[0] == 'L' &&
+            class_info_index_.find(f91_cls) != class_info_index_.end();
+        if (f91_dex_defined) {
+            if (method == "iterator" || method == "listIterator") {
+                int32_t f91_start = 0;
+                if (method == "listIterator" && args.size() >= 2 &&
+                    args[1].type == DalvikType::INT32)
+                    f91_start = args[1].int_val;
+                heap_.set_object_field(f91_id, "__iterator_pos__",
+                                       DalvikValue::make_int(f91_start));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                // Self-as-iterator: the runtime type stays the DEX list,
+                // so the hasNext/next/hasPrevious/previous dispatch below
+                // answers on the same object against its REAL DEX state.
+                result = DalvikValue::make_object(
+                    f91_id, method == "listIterator"
+                                ? "Ljava/util/ListIterator;"
+                                : "Ljava/util/Iterator;");
+                return true;
+            }
+            int32_t f91_pos = 0;
+            auto f91_pf = heap_.get_object_field(f91_id, "__iterator_pos__");
+            if (f91_pf.has_value() && f91_pf->type == DalvikType::INT32)
+                f91_pos = f91_pf->int_val;
+            int32_t f91_size = -1;
+            {
+                std::vector<DalvikValue> cb_args{args[0]};
+                DalvikValue cb_ret;
+                DalvikExecutionResult cb_res;
+                if (try_recursive_invoke(f91_cls, "size", cb_args, cb_ret,
+                                         cb_res, "()I") &&
+                    cb_ret.type == DalvikType::INT32) {
+                    f91_size = cb_ret.int_val;
+                }
+            }
+            if (f91_size >= 0) {
+                if (method == "hasNext") {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(f91_pos < f91_size);
+                    return true;
+                }
+                if (method == "hasPrevious") {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(f91_pos > 0);
+                    return true;
+                }
+                if (method == "nextIndex") {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_int(f91_pos);
+                    return true;
+                }
+                if (method == "previousIndex") {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_int(f91_pos - 1);
+                    return true;
+                }
+                // next() / previous() — both read through the object's
+                // REAL DEX get(I).
+                int32_t f91_read = -1;
+                if (method == "next" && f91_pos < f91_size)
+                    f91_read = f91_pos;
+                else if (method == "previous" && f91_pos > 0)
+                    f91_read = f91_pos - 1;
+                if (f91_read >= 0) {
+                    DalvikValue f91_idx;
+                    f91_idx.type = DalvikType::INT32;
+                    f91_idx.int_val = f91_read;
+                    std::vector<DalvikValue> cb_args{args[0], f91_idx};
+                    DalvikValue cb_ret;
+                    DalvikExecutionResult cb_res;
+                    if (try_recursive_invoke(f91_cls, "get", cb_args, cb_ret,
+                                             cb_res,
+                                             "(I)Ljava/lang/Object;")) {
+                        heap_.set_object_field(
+                            f91_id, "__iterator_pos__",
+                            DalvikValue::make_int(
+                                method == "next" ? f91_pos + 1 : f91_pos - 1));
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        result = cb_ret;
+                        return true;
+                    }
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                throw_deferred("Ljava/util/NoSuchElementException;",
+                               "DEX list iterator exhausted", "F091-ITER");
+                return true;
+            }
+            // size() not resolvable from the DEX chain → fall through to
+            // the shadow dispatch (legacy behavior).
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-093b (R-NEW-326, S25): TypedArray positional reader law.
+    // The F-093 shadow law materializes obtainStyledAttributes(styleable[])
+    // as a theme-backed heap object in the F-036 array convention
+    // ("__array_length__" + "array[N]"). This law answers the AOSP
+    // TypedArray read family positionally: getBoolean(index) = data != 0,
+    // getInt(index) = data, recycle() = void, length() = size. Upstream:
+    // android.content.res.TypedArray (resources.arsc Res_value payload).
+    // Without it the AppCompat gate (windowActionBar) reads false →
+    // ISE "You need to use a Theme.AppCompat theme (or descendant)".
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/res/TypedArray;" &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 &&
+        heap_.get_object_field(args[0].object_id, "__array_length__")
+            .has_value()) {
+        if (method == "recycle") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "length") {
+            int32_t f93_len = 0;
+            if (auto lf = heap_.get_object_field(args[0].object_id,
+                                                 "__array_length__");
+                lf && lf->type == DalvikType::INT32) {
+                f93_len = lf->int_val;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(f93_len);
+            return true;
+        }
+        if ((method == "getBoolean" || method == "getInt" ||
+             method == "getInteger" || method == "getColor" ||
+             method == "getDimensionPixelSize" ||
+             method == "getDimensionPixelOffset" || method == "getLayoutDimension") &&
+            args.size() >= 2 && args[1].type == DalvikType::INT32) {
+            int32_t f93_idx = args[1].int_val;
+            int32_t f93_val = args.size() >= 3 && args[2].type == DalvikType::INT32
+                                  ? args[2].int_val
+                                  : 0;   // AOSP defValue when unset
+            if (auto vf = heap_.get_object_field(
+                    args[0].object_id, "array[" + std::to_string(f93_idx) + "]");
+                vf && vf->type == DalvikType::INT32) {
+                f93_val = vf->int_val;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (method == "getBoolean") {
+                result = DalvikValue::make_bool(f93_val != 0);
+            } else {
+                result = DalvikValue::make_int(f93_val);
+            }
             return true;
         }
     }

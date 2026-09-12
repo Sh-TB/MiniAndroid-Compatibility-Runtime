@@ -1743,6 +1743,82 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_null();
     }
+    // F-092 (R-NEW-325, S25): ComponentActivity.getOnBackInvokedDispatcher()
+    // must return NON-NULL — upstream law (androidx.activity, Kotlin
+    // non-null return + Intrinsics.checkNotNullExpressionValue at the
+    // caller): ComponentActivity.getOnBackInvokedDispatcher() returns
+    // mOnBackPressedDispatcher.onBackInvokedDispatcher, a LAZY-created
+    // proxy that exists on every API level (API<33: inert no-op proxy).
+    // The previous behavior: no shadow handler → null → dooz Compose
+    // Navigation back-press wiring (ComponentActivity$a.a ← OnBackPressed-
+    // Dispatcher.m ← lifecycle observer) threw NPE "activity.getOnBack-
+    // InvokedDispatcher() must not be null" right after the R-NEW-323
+    // back-stack law unblocked start-destination navigation. The returned
+    // placeholder is inert by design: register/unregisterOnBackInvoked-
+    // Callback on it degrade to no-ops (upstream API<33 semantics), which
+    // is exactly the deterministic headless law.
+    if (m == "getOnBackInvokedDispatcher") {
+        if (heap_) {
+            uint32_t id = heap_->get_or_create(
+                "Landroid/window/OnBackInvokedDispatcher;");
+            return CallResult::handled_object(
+                id, "Landroid/window/OnBackInvokedDispatcher;");
+        }
+        return CallResult::handled_null();
+    }
+    // F-093 (R-NEW-326, S25): obtainStyledAttributes(int[] styleable) —
+    // theme-backed TypedArray. Upstream law: ContextThemeWrapper resolves
+    // every styleable attr id against the activity theme chain
+    // (attribute > style bag > parent chain) into a TypedArray; callers
+    // then read getBoolean(index)/getInt(index). The previous behavior:
+    // no handler → stub object → getBoolean answered false →
+    // AppCompatDelegateImpl.createSubDecor threw ISE "You need to use a
+    // Theme.AppCompat theme (or descendant) with this activity." — the
+    // appcompat gate family blocker (dooz #2 STTT MainActivity.onCreate
+    // frontier). Resolution uses the canonical ARSC bag query
+    // (ResourceRuntime::resolve_theme_attr_value). Values are materialized
+    // into the F-036 heap-array convention ("__array_length__" +
+    // "array[N]") so the ENGINE-side TypedArray reader law can answer the
+    // getBoolean/getInt family positionally (AOSP TypedArray contract).
+    if (m == "obtainStyledAttributes") {
+        if (heap_ && !ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+            ctx.args[0].object_id != 0) {
+            uint32_t styleable_id = ctx.args[0].object_id;
+            int32_t n = 0;
+            heap_->get_object_array_length(styleable_id, n);
+            if (n > 0 && n <= 256) {
+                uint32_t ta_id = heap_->get_or_create(
+                    "Landroid/content/res/TypedArray;");
+                heap_->set_object_int_field(ta_id, "__array_length__", n);
+                auto& rt = resources::ResourceRuntime::instance();
+                for (int32_t i = 0; i < n; ++i) {
+                    int32_t attr_id = 0;
+                    heap_->get_object_int_field(
+                        styleable_id, "array[" + std::to_string(i) + "]",
+                        attr_id);
+                    int32_t decoded = 0;
+                    if (attr_id != 0) {
+                        auto v = rt.resolve_theme_attr_value(apk_path_,
+                                                             (uint32_t)attr_id);
+                        if (v) {
+                            // AOSP TypedValue law: booleans decode as
+                            // data!=0; ints/colors pass data through.
+                            decoded = (int32_t)v->data;
+                        }
+                    }
+                    heap_->set_object_int_field(
+                        ta_id, "array[" + std::to_string(i) + "]", decoded);
+                }
+                std::cerr << "[F093-TA] obtainStyledAttributes attrs=" << n
+                          << " theme-backed (apk=" << apk_path_ << ")"
+                          << std::endl;
+                return CallResult::handled_object(
+                    ta_id, "Landroid/content/res/TypedArray;");
+            }
+        }
+        return CallResult::not_handled();
+    }
     if (m == "getResources" || m == "getPackageManager" || m == "getPackageName" ||
         m == "getClassLoader" || m == "getFilesDir" || m == "getCacheDir" ||
         m == "getSharedPreferences" || m == "getWindow" || m == "getWindowManager" ||

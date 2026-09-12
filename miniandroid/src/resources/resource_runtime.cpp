@@ -110,5 +110,68 @@ std::optional<uint32_t> ResourceRuntime::resolve_window_background_argb(
     return color_data_to_argb((uint8_t)v.type, v.data);
 }
 
+// F-093 (R-NEW-326, S25): theme attribute resolution — see resource_runtime.h.
+std::optional<ResValue> ResourceRuntime::resolve_theme_attr_value(
+        const std::string& apk_path, uint32_t attr_key) {
+    static const bool f93_diag = std::getenv("MINIANDROID_F093_DIAG") != nullptr;
+    if (!ensure_loaded(apk_path)) return std::nullopt;
+
+    // 1. Application-level theme from the binary manifest.
+    std::vector<uint8_t> mf = apk_.extract_entry_cached("AndroidManifest.xml");
+    if (mf.empty()) return std::nullopt;
+    apk::ManifestReader mr;
+    apk::ManifestInfo mi = mr.parse(mf);
+    if (mi.application_theme_resid == 0) {
+        // F-094 (R-NEW-327): plain-text manifests carry android:theme as
+        // a reference string ("@style/AppTheme.NoActionBar") — resolve the
+        // style name to a resid through the canonical ARSC find_id.
+        if (!mi.application_theme_ref.empty()) {
+            std::string ref = mi.application_theme_ref;
+            if (ref.rfind("@", 0) == 0) ref.erase(0, 1);
+            // form: "<type>/<name>" (aapt2 also accepts "android:style/…")
+            size_t slash = ref.find('/');
+            std::string type = "style", name = ref;
+            if (slash != std::string::npos) {
+                type = ref.substr(0, slash);
+                name = ref.substr(slash + 1);
+            }
+            if (type.rfind("android:", 0) == 0) type.erase(0, 8);
+            if (auto id = arsc_.find_id(mi.package_name, type, name)) {
+                mi.application_theme_resid = *id;
+                if (f93_diag)
+                    std::cerr << "[F093-DIAG] theme_ref=" 
+                              << mi.application_theme_ref << " → resid 0x"
+                              << std::hex << *id << std::dec << std::endl;
+            }
+        }
+        if (mi.application_theme_resid == 0) {
+            if (f93_diag)
+                std::cerr << "[F093-DIAG] no application_theme_resid in manifest"
+                          << std::endl;
+            return std::nullopt;
+        }
+    }
+    if (f93_diag)
+        std::cerr << "[F093-DIAG] theme_resid=0x" << std::hex
+                  << mi.application_theme_resid << std::dec << " attr=0x"
+                  << std::hex << attr_key << std::dec << std::endl;
+
+    // 2. Attribute-KEY bag query through the canonical resolver —
+    //    ResTable_map key with parent-chain inheritance (cycle-safe).
+    auto v = arsc_.bag_value(mi.application_theme_resid, attr_key,
+                             device_config());
+    if (!v) return std::nullopt;
+
+    // 3. Dereference one reference hop (style item referencing a color /
+    //    bool resource) through the canonical bounded path.
+    ResValue out = *v;
+    if (out.is_reference()) {
+        ResolutionResult r = arsc_.resolve_full(out.ref_id, device_config());
+        if (!r.ok) return out;   // raw reference still meaningful to caller
+        out = *r.value();
+    }
+    return out;
+}
+
 } // namespace resources
 } // namespace miniandroid
