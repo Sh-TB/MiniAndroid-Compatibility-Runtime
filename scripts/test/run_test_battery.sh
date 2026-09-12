@@ -13,7 +13,7 @@
 # Usage: bash scripts/test/run_test_battery.sh [--skip-build]
 set -uo pipefail
 
-REPO="$(cd "$(dirname "$0")/.." && pwd)"
+REPO="$(cd "$(dirname "$0")/../.." && pwd)"
 # Resolves BOTH layouts: the in-repo copy (scripts/ inside
 # MiniAndroid-Compatibility-Runtime) and the legacy sandbox copy
 # (/home/z/my-project/scripts/ next to the repo directory).
