@@ -1,0 +1,16 @@
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=0 word=0x1054 v1=obj#824 p0=obj#824
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=2 word=0x54 v0=obj#1057 v1=obj#824 p0=obj#824
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=4 word=0x55 v0=obj#1064 v1=obj#824 p0=obj#824
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=6 word=0xf v0=1 v1=obj#824 p0=obj#824
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=0 word=0x1054 v1=obj#3101 p0=obj#3101
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=2 word=0x54 v0=obj#3118 v1=obj#3101 p0=obj#3101
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=4 word=0x55 v0=obj#3119 v1=obj#3101 p0=obj#3101
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=6 word=0xf v0=0 v1=obj#3101 p0=obj#3101
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=0 word=0x1054 v1=obj#824 p0=obj#824
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=2 word=0x54 v0=obj#1057 v1=obj#824 p0=obj#824
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=4 word=0x55 v0=obj#1064 v1=obj#824 p0=obj#824
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=6 word=0xf v0=1 v1=obj#824 p0=obj#824
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=0 word=0x1054 v1=obj#3101 p0=obj#3101
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=2 word=0x54 v0=obj#3118 v1=obj#3101 p0=obj#3101
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=4 word=0x55 v0=obj#3119 v1=obj#3101 p0=obj#3101
+[METHOD-TRACE] Landroidx/compose/ui/node/e;.G pc=6 word=0xf v0=0 v1=obj#3101 p0=obj#3101

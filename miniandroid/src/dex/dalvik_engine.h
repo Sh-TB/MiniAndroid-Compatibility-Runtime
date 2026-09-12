@@ -1284,6 +1284,12 @@ public:
     // CAMPAIGN 013: run a custom view's REAL onDraw(Canvas) bytecode.
     int dispatch_custom_view_draw(uint32_t view_object_id);
 
+    // S26 diagnostic (env-gated, read-only): TRUE while a custom-view draw
+    // dispatch window is open (dispatch_custom_view_draw entry→exit). The
+    // method-entry log gates on this to attribute method entries to the
+    // draw phase — evidence for the R-NEW-328 compose draw frontier.
+    bool draw_window_active_ = false;
+
     // MASTER CAMPAIGN FIX (F10 real-DEX onMeasure): execute an app custom
     // View's REAL onMeasure(wSpec, hSpec) bytecode; the setMeasuredDimension
     // shadow dispatch captures the write-back. Returns true when a real
