@@ -9,7 +9,7 @@ import json
 import urllib.request
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[1]
+REPO = Path(__file__).resolve().parents[2]
 TOKEN_FILE = "/home/z/.gh_token"
 ISSUE = 8
 URLS_JSON = REPO / "scripts" / "comment_urls.json"

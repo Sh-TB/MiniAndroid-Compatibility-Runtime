@@ -27,7 +27,7 @@ import sys
 import time
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[1]
+REPO = Path(__file__).resolve().parents[2]
 MA = REPO / "miniandroid"
 BIN = MA / "build" / "miniandroid"
 RESULTS = REPO / "docs" / "evidence" / "g09_corpus" / "results"
