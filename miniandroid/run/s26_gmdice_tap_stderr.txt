@@ -1,0 +1,2232 @@
+[ApkParser] APK validation passed: download/exp073_real_apps/de.duenndns.gmdice_8.apk
+[ApkParser] Found EOCD at offset 63976
+[ApkParser] Central Directory: 39 entries at offset 60456
+[ApkParser] Cached 39 ZIP entries for fast lookup
+[ApkParser] Found 1 DEX files: 
+[ApkParser]   - classes.dex
+[ApkParser] Extracting AndroidManifest.xml...
+[ApkParser] Found EOCD at offset 63976
+[ApkParser] Central Directory: 39 entries at offset 60456
+[ApkParser] APK parsing complete: de.duenndns.gmdice (39 entries)
+[ApkParser] Found EOCD at offset 63976
+[ApkParser] Central Directory: 39 entries at offset 60456
+[DexParser] DEX version: 035
+[DexParser] Parsed 470 strings
+[DexParser] Parsed 103 types
+[DexParser] Parsed 121 prototypes
+[DexParser] Parsed 64 fields
+[DexParser] Parsed 250 method IDs
+[DexParser] === EXP-031.6 CLASS_DEF PARSING ===
+[DexParser] class_defs_size: 23
+[DexParser] class_defs_off: 0x6368
+[DexParser] file_size: 0x26628
+[DexParser] Reading 23 class_defs (32 bytes each)...
+[DexParser] CLASS_DEF[0] @ offset 0x6368:
+[DexParser]   class_idx: 59 (max valid: 103)
+[DexParser]   access_flags: 0x1025
+[DexParser]   superclass_idx: 85
+[DexParser]   class_data_off: 0x25724
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/DiceSet;]
+[DexParser]   → Parsing class_data at 0x25724
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x25724 ===
+[DexParser]   First bytes: 00 03 04 04 0b 00 01 00 01 00 66 81 80 04 cc 38 02 09 e4 38 01 09 88 39 01 09 a4 39 67 01 ac 3b 
+[DexParser]   ULEB128[static_fields_size] @ 0x25724 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x25725 = 3
+[DexParser]   ULEB128[direct_methods_size] @ 0x25726 = 4
+[DexParser]   ULEB128[virtual_methods_size] @ 0x25727 = 4
+[DexParser]   → Header: static=0, instance=3, direct=4, virtual=4
+[DexParser]   ULEB128[if_field_diff] @ 0x25728 = 11
+[DexParser]   ULEB128[if_access_flags] @ 0x25729 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x25730 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x25731 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x25732 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x25733 = 0
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25734 = 102
+[DexParser]   ULEB128[dm_access_flags] @ 0x25735 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x25738 = 7244
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7244 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x23830
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00db 0000 000e 
+[DexParser]   → Direct method[1]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25740 = 2
+[DexParser]   ULEB128[dm_access_flags] @ 0x25741 = 9
+[DexParser]   ULEB128[dm_code_off] @ 0x25742 = 7268
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7268 for getDiceSet ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 0
+[DexParser]   outs_size: 4
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x23835
+[DexParser]   insns_size: 9 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 9 INSTRUCTIONS!
+[DexParser]   First opcodes: 0022 004e 1112 6212 0312 
+[DexParser]   → Direct method[2]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25744 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x25745 = 9
+[DexParser]   ULEB128[dm_code_off] @ 0x25746 = 7304
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7304 for getDiceSet ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 4
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x23840
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 0022 004e 4070 00d1 3210 
+[DexParser]   → Direct method[3]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25748 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x25749 = 9
+[DexParser]   ULEB128[dm_code_off] @ 0x25750 = 7332
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7332 for getDiceSet ===
+[DexParser]   registers_size: 10
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 3
+[DexParser]   debug_info_off: 0x23851
+[DexParser]   insns_size: 108 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 108 INSTRUCTIONS!
+[DexParser]   First opcodes: 2812 1712 051a 001d 206e 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25752 = 103
+[DexParser]   ULEB128[vm_access_flags] @ 0x25753 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25754 = 7596
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7596 for equals ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x23955
+[DexParser]   insns_size: 44 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 44 INSTRUCTIONS!
+[DexParser]   First opcodes: 1112 0212 6533 0003 010f 
+[DexParser]   → Virtual method[1]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25756 = 4
+[DexParser]   ULEB128[vm_access_flags] @ 0x25757 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25758 = 7700
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7700 for hashCode ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x23976
+[DexParser]   insns_size: 13 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 13 INSTRUCTIONS!
+[DexParser]   First opcodes: 2052 000b 00d2 2710 2152 
+[DexParser]   → Virtual method[2]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25760 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x25761 = 1025
+[DexParser]   ULEB128[vm_code_off] @ 0x25763 = 0
+[DexParser]   → Virtual method[3]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25764 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x25765 = 1025
+[DexParser]   ULEB128[vm_code_off] @ 0x25767 = 0
+[DexParser]   → Result: 4 direct methods, 4 virtual methods
+[DexParser] CLASS_DEF[1] @ offset 0x6400:
+[DexParser]   class_idx: 56 (max valid: 103)
+[DexParser]   access_flags: 0x1
+[DexParser]   superclass_idx: 59
+[DexParser]   class_data_off: 0x25768
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/Coin;]
+[DexParser]   → Parsing class_data at 0x25768
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x25768 ===
+[DexParser]   First bytes: 00 00 01 02 59 81 80 04 c0 3c 5a 01 ec 3c 01 01 a4 3d 00 00 01 03 5c 81 80 04 bc 3d 5d 01 e8 3d 
+[DexParser]   ULEB128[static_fields_size] @ 0x25768 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x25769 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x25770 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x25771 = 2
+[DexParser]   → Header: static=0, instance=0, direct=1, virtual=2
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25772 = 89
+[DexParser]   ULEB128[dm_access_flags] @ 0x25773 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x25776 = 7744
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7744 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x23981
+[DexParser]   insns_size: 13 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 13 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 0066 0001 1012 1059 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25778 = 90
+[DexParser]   ULEB128[vm_access_flags] @ 0x25779 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25780 = 7788
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7788 for roll ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x23990
+[DexParser]   insns_size: 20 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 20 INSTRUCTIONS!
+[DexParser]   First opcodes: 2012 206e 00f9 0004 000a 
+[DexParser]   → Virtual method[1]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25782 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x25783 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25784 = 7844
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7844 for toString ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x23999
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 001a 0015 0011 
+[DexParser]   → Result: 1 direct methods, 2 virtual methods
+[DexParser] CLASS_DEF[2] @ offset 0x6432:
+[DexParser]   class_idx: 57 (max valid: 103)
+[DexParser]   access_flags: 0x1
+[DexParser]   superclass_idx: 59
+[DexParser]   class_data_off: 0x25786
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/DSADiceSet;]
+[DexParser]   → Parsing class_data at 0x25786
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x25786 ===
+[DexParser]   First bytes: 00 00 01 03 5c 81 80 04 bc 3d 5d 01 e8 3d 01 01 80 3e 01 01 e0 3e 00 02 01 05 09 00 01 00 60 81 
+[DexParser]   ULEB128[static_fields_size] @ 0x25786 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x25787 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x25788 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x25789 = 3
+[DexParser]   → Header: static=0, instance=0, direct=1, virtual=3
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25790 = 92
+[DexParser]   ULEB128[dm_access_flags] @ 0x25791 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x25794 = 7868
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7868 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24004
+[DexParser]   insns_size: 14 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 14 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 0066 0001 3012 1059 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25796 = 93
+[DexParser]   ULEB128[vm_access_flags] @ 0x25797 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25798 = 7912
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7912 for hashCode ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24013
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 0014 bf40 000f 000f 
+[DexParser]   → Virtual method[1]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25800 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x25801 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25802 = 7936
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x7936 for roll ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24018
+[DexParser]   insns_size: 40 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 40 INSTRUCTIONS!
+[DexParser]   First opcodes: 0222 0057 1070 00e6 0002 
+[DexParser]   → Virtual method[2]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25804 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x25805 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25806 = 8032
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8032 for toString ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24053
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 001a 001d 0011 
+[DexParser]   → Result: 1 direct methods, 3 virtual methods
+[DexParser] CLASS_DEF[3] @ offset 0x6464:
+[DexParser]   class_idx: 58 (max valid: 103)
+[DexParser]   access_flags: 0x1
+[DexParser]   superclass_idx: 85
+[DexParser]   class_data_off: 0x25808
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/DiceCache;]
+[DexParser]   → Parsing class_data at 0x25808
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x25808 ===
+[DexParser]   First bytes: 00 02 01 05 09 00 01 00 60 81 80 04 f8 3e 61 01 90 40 01 01 dc 40 01 01 98 41 01 01 f4 41 01 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x25808 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x25809 = 2
+[DexParser]   ULEB128[direct_methods_size] @ 0x25810 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x25811 = 5
+[DexParser]   → Header: static=0, instance=2, direct=1, virtual=5
+[DexParser]   ULEB128[if_field_diff] @ 0x25812 = 9
+[DexParser]   ULEB128[if_access_flags] @ 0x25813 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x25814 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x25815 = 0
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25816 = 96
+[DexParser]   ULEB128[dm_access_flags] @ 0x25817 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x25820 = 8056
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8056 for <init> ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24058
+[DexParser]   insns_size: 68 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 68 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00db 0002 2359 0009 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25822 = 97
+[DexParser]   ULEB128[vm_access_flags] @ 0x25823 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25824 = 8208
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8208 for add ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24073
+[DexParser]   insns_size: 30 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 30 INSTRUCTIONS!
+[DexParser]   First opcodes: 2054 000a 206e 00f2 0030 
+[DexParser]   → Virtual method[1]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25826 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x25827 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25828 = 8284
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8284 for get ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24084
+[DexParser]   insns_size: 22 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 22 INSTRUCTIONS!
+[DexParser]   First opcodes: 1054 000a 106e 00f3 0000 
+[DexParser]   → Virtual method[2]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25830 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x25831 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25832 = 8344
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8344 for loadFromString ===
+[DexParser]   registers_size: 8
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24093
+[DexParser]   insns_size: 38 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 38 INSTRUCTIONS!
+[DexParser]   First opcodes: 0739 0003 000e 021a 00cf 
+[DexParser]   → Virtual method[3]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25834 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x25835 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25836 = 8436
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8436 for populate ===
+[DexParser]   registers_size: 6
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24119
+[DexParser]   insns_size: 67 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 67 INSTRUCTIONS!
+[DexParser]   First opcodes: 3154 000a 106e 00f0 0001 
+[DexParser]   → Virtual method[4]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25838 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x25839 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25840 = 8588
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8588 for toString ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24155
+[DexParser]   insns_size: 41 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 41 INSTRUCTIONS!
+[DexParser]   First opcodes: 0122 0057 1070 00e6 0001 
+[DexParser]   → Result: 1 direct methods, 5 virtual methods
+[DexParser] CLASS_DEF[4] @ offset 0x6496:
+[DexParser]   class_idx: 60 (max valid: 103)
+[DexParser]   access_flags: 0x1
+[DexParser]   superclass_idx: 59
+[DexParser]   class_data_off: 0x25842
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/FUDGEDiceSet;]
+[DexParser]   → Parsing class_data at 0x25842
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x25842 ===
+[DexParser]   First bytes: 00 00 02 03 6e 81 80 04 f0 43 01 81 80 04 8c 44 70 01 b4 44 01 01 cc 44 01 01 b0 46 00 01 01 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x25842 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x25843 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x25844 = 2
+[DexParser]   ULEB128[virtual_methods_size] @ 0x25845 = 3
+[DexParser]   → Header: static=0, instance=0, direct=2, virtual=3
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25846 = 110
+[DexParser]   ULEB128[dm_access_flags] @ 0x25847 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x25850 = 8688
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8688 for <init> ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24178
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 4012 0112 3070 006f 0102 
+[DexParser]   → Direct method[1]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25852 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x25853 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x25856 = 8716
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8716 for <init> ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24184
+[DexParser]   insns_size: 11 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 11 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 0066 0001 1259 000e 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25858 = 112
+[DexParser]   ULEB128[vm_access_flags] @ 0x25859 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25860 = 8756
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8756 for hashCode ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24197
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 0014 33ec 0099 000f 
+[DexParser]   → Virtual method[1]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25862 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x25863 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25864 = 8780
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x8780 for roll ===
+[DexParser]   registers_size: 12
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24202
+[DexParser]   insns_size: 106 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 106 INSTRUCTIONS!
+[DexParser]   First opcodes: 3512 0812 1712 0222 0057 
+[DexParser]   → Virtual method[2]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25866 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x25867 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25868 = 9008
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9008 for toString ===
+[DexParser]   registers_size: 6
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24259
+[DexParser]   insns_size: 49 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 49 INSTRUCTIONS!
+[DexParser]   First opcodes: 1412 0312 5052 000f 0039 
+[DexParser]   → Result: 2 direct methods, 3 virtual methods
+[DexParser] CLASS_DEF[5] @ offset 0x6528:
+[DexParser]   class_idx: 61 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 85
+[DexParser]   class_data_off: 0x25870
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/GameMasterDice$1;]
+[DexParser]   → Parsing class_data at 0x25870
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x25870 ===
+[DexParser]   First bytes: 00 01 01 01 11 90 20 73 80 80 04 a4 47 74 01 c0 47 00 00 01 01 a7 01 80 80 04 f8 47 a8 01 81 08 
+[DexParser]   ULEB128[static_fields_size] @ 0x25870 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x25871 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x25872 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x25873 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x25874 = 17
+[DexParser]   ULEB128[if_access_flags] @ 0x25875 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25877 = 115
+[DexParser]   ULEB128[dm_access_flags] @ 0x25878 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x25881 = 9124
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9124 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24268
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0011 1070 00db 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25883 = 116
+[DexParser]   ULEB128[vm_access_flags] @ 0x25884 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25885 = 9152
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9152 for onClick ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24276
+[DexParser]   insns_size: 19 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 19 INSTRUCTIONS!
+[DexParser]   First opcodes: 4054 0011 0122 0008 021a 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[6] @ offset 0x6560:
+[DexParser]   class_idx: 69 (max valid: 103)
+[DexParser]   access_flags: 0x1024
+[DexParser]   superclass_idx: 85
+[DexParser]   class_data_off: 0x25887
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/OnDiceChange;]
+[DexParser]   → Parsing class_data at 0x25887
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x25887 ===
+[DexParser]   First bytes: 00 00 01 01 a7 01 80 80 04 f8 47 a8 01 81 08 00 00 01 01 01 12 90 20 75 80 80 04 90 48 76 01 ac 
+[DexParser]   ULEB128[static_fields_size] @ 0x25887 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x25888 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x25889 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x25890 = 1
+[DexParser]   → Header: static=0, instance=0, direct=1, virtual=1
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25891 = 167
+[DexParser]   ULEB128[dm_access_flags] @ 0x25893 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x25896 = 9208
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9208 for <init> ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24289
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00db 0000 000e 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25898 = 168
+[DexParser]   ULEB128[vm_access_flags] @ 0x25900 = 1025
+[DexParser]   ULEB128[vm_code_off] @ 0x25902 = 0
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[7] @ offset 0x6592:
+[DexParser]   class_idx: 62 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 69
+[DexParser]   class_data_off: 0x25903
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/GameMasterDice$2;]
+[DexParser]   → Parsing class_data at 0x25903
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x25903 ===
+[DexParser]   First bytes: 00 01 01 01 12 90 20 75 80 80 04 90 48 76 01 ac 48 00 01 01 01 13 90 20 77 80 80 04 d8 48 78 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x25903 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x25904 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x25905 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x25906 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x25907 = 18
+[DexParser]   ULEB128[if_access_flags] @ 0x25908 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25910 = 117
+[DexParser]   ULEB128[dm_access_flags] @ 0x25911 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x25914 = 9232
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9232 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24295
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0012 1070 00a7 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25916 = 118
+[DexParser]   ULEB128[vm_access_flags] @ 0x25917 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25918 = 9260
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9260 for onDiceChange ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24303
+[DexParser]   insns_size: 13 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 13 INSTRUCTIONS!
+[DexParser]   First opcodes: 3054 0012 3154 0012 1154 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[8] @ offset 0x6624:
+[DexParser]   class_idx: 63 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 69
+[DexParser]   class_data_off: 0x25920
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/GameMasterDice$3;]
+[DexParser]   → Parsing class_data at 0x25920
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x25920 ===
+[DexParser]   First bytes: 00 01 01 01 13 90 20 77 80 80 04 d8 48 78 01 f4 48 00 02 01 01 14 90 20 01 90 20 79 80 80 04 a0 
+[DexParser]   ULEB128[static_fields_size] @ 0x25920 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x25921 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x25922 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x25923 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x25924 = 19
+[DexParser]   ULEB128[if_access_flags] @ 0x25925 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25927 = 119
+[DexParser]   ULEB128[dm_access_flags] @ 0x25928 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x25931 = 9304
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9304 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24312
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0013 1070 00a7 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25933 = 120
+[DexParser]   ULEB128[vm_access_flags] @ 0x25934 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25935 = 9332
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9332 for onDiceChange ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24320
+[DexParser]   insns_size: 13 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 13 INSTRUCTIONS!
+[DexParser]   First opcodes: 3054 0013 3154 0013 1154 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[9] @ offset 0x6656:
+[DexParser]   class_idx: 64 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 69
+[DexParser]   class_data_off: 0x25937
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/GameMasterDice$4;]
+[DexParser]   → Parsing class_data at 0x25937
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x25937 ===
+[DexParser]   First bytes: 00 02 01 01 14 90 20 01 90 20 79 80 80 04 a0 49 7a 01 c0 49 00 03 01 01 16 90 20 01 90 20 01 90 
+[DexParser]   ULEB128[static_fields_size] @ 0x25937 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x25938 = 2
+[DexParser]   ULEB128[direct_methods_size] @ 0x25939 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x25940 = 1
+[DexParser]   → Header: static=0, instance=2, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x25941 = 20
+[DexParser]   ULEB128[if_access_flags] @ 0x25942 = 4112
+[DexParser]   ULEB128[if_field_diff] @ 0x25944 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x25945 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25947 = 121
+[DexParser]   ULEB128[dm_access_flags] @ 0x25948 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x25951 = 9376
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9376 for <init> ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24329
+[DexParser]   insns_size: 8 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 8 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0014 025b 0015 1070 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25953 = 122
+[DexParser]   ULEB128[vm_access_flags] @ 0x25954 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25955 = 9408
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9408 for onDiceChange ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24338
+[DexParser]   insns_size: 37 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 37 INSTRUCTIONS!
+[DexParser]   First opcodes: 3154 0015 106e 006d 0004 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[10] @ offset 0x6688:
+[DexParser]   class_idx: 65 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 85
+[DexParser]   class_data_off: 0x25957
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/GameMasterDice$5;]
+[DexParser]   → Parsing class_data at 0x25957
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x25957 ===
+[DexParser]   First bytes: 00 03 01 01 16 90 20 01 90 20 01 90 20 7b 80 80 04 9c 4a 7c 01 c0 4a 00 05 01 01 19 90 20 01 90 
+[DexParser]   ULEB128[static_fields_size] @ 0x25957 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x25958 = 3
+[DexParser]   ULEB128[direct_methods_size] @ 0x25959 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x25960 = 1
+[DexParser]   → Header: static=0, instance=3, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x25961 = 22
+[DexParser]   ULEB128[if_access_flags] @ 0x25962 = 4112
+[DexParser]   ULEB128[if_field_diff] @ 0x25964 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x25965 = 4112
+[DexParser]   ULEB128[if_field_diff] @ 0x25967 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x25968 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25970 = 123
+[DexParser]   ULEB128[dm_access_flags] @ 0x25971 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x25974 = 9500
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9500 for <init> ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 4
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24358
+[DexParser]   insns_size: 10 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 10 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0016 025b 0017 035b 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x25976 = 124
+[DexParser]   ULEB128[vm_access_flags] @ 0x25977 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x25978 = 9536
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9536 for onClick ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 4
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24368
+[DexParser]   insns_size: 11 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 11 INSTRUCTIONS!
+[DexParser]   First opcodes: 4054 0016 4154 0017 0212 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[11] @ offset 0x6720:
+[DexParser]   class_idx: 66 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 85
+[DexParser]   class_data_off: 0x25980
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/GameMasterDice$6;]
+[DexParser]   → Parsing class_data at 0x25980
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x25980 ===
+[DexParser]   First bytes: 00 05 01 01 19 90 20 01 90 20 01 90 20 01 90 20 01 90 20 7d 80 80 04 e8 4a 7e 01 94 4b 00 04 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x25980 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x25981 = 5
+[DexParser]   ULEB128[direct_methods_size] @ 0x25982 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x25983 = 1
+[DexParser]   → Header: static=0, instance=5, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x25984 = 25
+[DexParser]   ULEB128[if_access_flags] @ 0x25985 = 4112
+[DexParser]   ULEB128[if_field_diff] @ 0x25987 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x25988 = 4112
+[DexParser]   ULEB128[if_field_diff] @ 0x25990 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x25991 = 4112
+[DexParser]   ULEB128[if_field_diff] @ 0x25993 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x25994 = 4112
+[DexParser]   ULEB128[if_field_diff] @ 0x25996 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x25997 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x25999 = 125
+[DexParser]   ULEB128[dm_access_flags] @ 0x26000 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x26003 = 9576
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9576 for <init> ===
+[DexParser]   registers_size: 6
+[DexParser]   ins_size: 6
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24379
+[DexParser]   insns_size: 14 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 14 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0019 025b 001a 035b 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26005 = 126
+[DexParser]   ULEB128[vm_access_flags] @ 0x26006 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26007 = 9620
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9620 for onClick ===
+[DexParser]   registers_size: 9
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24391
+[DexParser]   insns_size: 80 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 80 INSTRUCTIONS!
+[DexParser]   First opcodes: 021a 000a 3312 3323 0065 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[12] @ offset 0x6752:
+[DexParser]   class_idx: 67 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 85
+[DexParser]   class_data_off: 0x26009
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/GameMasterDice$7;]
+[DexParser]   → Parsing class_data at 0x26009
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x26009 ===
+[DexParser]   First bytes: 00 04 01 01 1e 90 20 01 90 20 01 90 20 01 90 20 7f 80 80 04 c4 4c 80 01 01 ec 4c 05 09 03 14 22 
+[DexParser]   ULEB128[static_fields_size] @ 0x26009 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x26010 = 4
+[DexParser]   ULEB128[direct_methods_size] @ 0x26011 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x26012 = 1
+[DexParser]   → Header: static=0, instance=4, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x26013 = 30
+[DexParser]   ULEB128[if_access_flags] @ 0x26014 = 4112
+[DexParser]   ULEB128[if_field_diff] @ 0x26016 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26017 = 4112
+[DexParser]   ULEB128[if_field_diff] @ 0x26019 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26020 = 4112
+[DexParser]   ULEB128[if_field_diff] @ 0x26022 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26023 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26025 = 127
+[DexParser]   ULEB128[dm_access_flags] @ 0x26026 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x26029 = 9796
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9796 for <init> ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 5
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24421
+[DexParser]   insns_size: 12 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 12 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 001e 025b 001f 035b 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26031 = 128
+[DexParser]   ULEB128[vm_access_flags] @ 0x26033 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26034 = 9836
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x9836 for onClick ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24432
+[DexParser]   insns_size: 78 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 78 INSTRUCTIONS!
+[DexParser]   First opcodes: 4154 001f 206e 0032 0061 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[13] @ offset 0x6784:
+[DexParser]   class_idx: 68 (max valid: 103)
+[DexParser]   access_flags: 0x1
+[DexParser]   superclass_idx: 4
+[DexParser]   class_data_off: 0x26036
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/GameMasterDice;]
+[DexParser]   → Parsing class_data at 0x26036
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x26036 ===
+[DexParser]   First bytes: 05 09 03 14 22 18 01 18 01 18 01 0a 09 08 26 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00 02 00 
+[DexParser]   ULEB128[static_fields_size] @ 0x26036 = 5
+[DexParser]   ULEB128[instance_fields_size] @ 0x26037 = 9
+[DexParser]   ULEB128[direct_methods_size] @ 0x26038 = 3
+[DexParser]   ULEB128[virtual_methods_size] @ 0x26039 = 20
+[DexParser]   → Header: static=5, instance=9, direct=3, virtual=20
+[DexParser]   ULEB128[sf_field_diff] @ 0x26040 = 34
+[DexParser]   ULEB128[sf_access_flags] @ 0x26041 = 24
+[DexParser]   ULEB128[sf_field_diff] @ 0x26042 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x26043 = 24
+[DexParser]   ULEB128[sf_field_diff] @ 0x26044 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x26045 = 24
+[DexParser]   ULEB128[sf_field_diff] @ 0x26046 = 1
+[DexParser]   ULEB128[sf_access_flags] @ 0x26047 = 10
+[DexParser]   ULEB128[sf_field_diff] @ 0x26048 = 9
+[DexParser]   ULEB128[sf_access_flags] @ 0x26049 = 8
+[DexParser]   ULEB128[if_field_diff] @ 0x26050 = 38
+[DexParser]   ULEB128[if_access_flags] @ 0x26051 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26052 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26053 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26054 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26055 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26056 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26057 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26058 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26059 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26060 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26061 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26062 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26063 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26064 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26065 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26066 = 2
+[DexParser]   ULEB128[if_access_flags] @ 0x26067 = 0
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26068 = 129
+[DexParser]   ULEB128[dm_access_flags] @ 0x26070 = 65544
+[DexParser]   ULEB128[dm_code_off] @ 0x26073 = 10008
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10008 for <clinit> ===
+[DexParser]   registers_size: 8
+[DexParser]   ins_size: 0
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24454
+[DexParser]   insns_size: 332 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 332 INSTRUCTIONS!
+[DexParser]   First opcodes: 5712 4612 3512 2412 1312 
+[DexParser]   → Direct method[1]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26075 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x26076 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x26079 = 10688
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10688 for <init> ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24475
+[DexParser]   insns_size: 100 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 100 INSTRUCTIONS!
+[DexParser]   First opcodes: 6512 4412 0212 1312 1070 
+[DexParser]   → Direct method[2]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26081 = 2
+[DexParser]   ULEB128[dm_access_flags] @ 0x26082 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x26084 = 10904
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10904 for access$000 ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 0
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24493
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 0062 0025 0011 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26086 = 131
+[DexParser]   ULEB128[vm_access_flags] @ 0x26088 = 0
+[DexParser]   ULEB128[vm_code_off] @ 0x26089 = 10928
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x10928 for aboutDialog ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 1
+[DexParser]   debug_info_off: 0x24498
+[DexParser]   insns_size: 125 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 125 INSTRUCTIONS!
+[DexParser]   First opcodes: 0314 0002 7f04 206e 008e 
+[DexParser]   → Virtual method[1]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26091 = 2
+[DexParser]   ULEB128[vm_access_flags] @ 0x26092 = 0
+[DexParser]   ULEB128[vm_code_off] @ 0x26093 = 11208
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11208 for configKeepScreenOn ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24542
+[DexParser]   insns_size: 32 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 32 INSTRUCTIONS!
+[DexParser]   First opcodes: 0313 0080 4054 002d 011a 
+[DexParser]   → Virtual method[2]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26095 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26096 = 0
+[DexParser]   ULEB128[vm_code_off] @ 0x26097 = 11288
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11288 for configureDice ===
+[DexParser]   registers_size: 16
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 6
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24552
+[DexParser]   insns_size: 126 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 126 INSTRUCTIONS!
+[DexParser]   First opcodes: 001a 0144 206e 008f 000d 
+[DexParser]   → Virtual method[3]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26099 = 12
+[DexParser]   ULEB128[vm_access_flags] @ 0x26100 = 0
+[DexParser]   ULEB128[vm_code_off] @ 0x26101 = 11556
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11556 for loadDicePrefs ===
+[DexParser]   registers_size: 8
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24616
+[DexParser]   insns_size: 75 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 75 INSTRUCTIONS!
+[DexParser]   First opcodes: 0612 7354 002d 041a 00e7 
+[DexParser]   → Virtual method[4]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26103 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26104 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26105 = 11724
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11724 for onClick ===
+[DexParser]   registers_size: 9
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 4
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24651
+[DexParser]   insns_size: 55 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 55 INSTRUCTIONS!
+[DexParser]   First opcodes: 8007 001f 0029 7454 0029 
+[DexParser]   → Virtual method[5]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26107 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26108 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26109 = 11852
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x11852 for onCreate ===
+[DexParser]   registers_size: 8
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24698
+[DexParser]   insns_size: 213 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 213 INSTRUCTIONS!
+[DexParser]   First opcodes: 0514 0001 7f05 0413 0015 
+[DexParser]   → Virtual method[6]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26111 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26112 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26113 = 12296
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x12296 for onCreateOptionsMenu ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24742
+[DexParser]   insns_size: 11 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 11 INSTRUCTIONS!
+[DexParser]   First opcodes: 106e 008a 0002 000c 0115 
+[DexParser]   → Virtual method[7]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26115 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26116 = 4
+[DexParser]   ULEB128[vm_code_off] @ 0x26117 = 12336
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x12336 for onListItemClick ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 6
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24751
+[DexParser]   insns_size: 12 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 12 INSTRUCTIONS!
+[DexParser]   First opcodes: 0062 002e 206e 00af 0040 
+[DexParser]   → Virtual method[8]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26119 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26120 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26121 = 12376
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x12376 for onLongClick ===
+[DexParser]   registers_size: 8
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24766
+[DexParser]   insns_size: 77 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 77 INSTRUCTIONS!
+[DexParser]   First opcodes: 1512 7007 001f 0029 0262 
+[DexParser]   → Virtual method[9]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26123 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26124 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26125 = 12548
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x12548 for onOptionsItemSelected ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24796
+[DexParser]   insns_size: 42 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 42 INSTRUCTIONS!
+[DexParser]   First opcodes: 1012 1072 0029 0004 010a 
+[DexParser]   → Virtual method[10]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26127 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26128 = 4
+[DexParser]   ULEB128[vm_code_off] @ 0x26129 = 12648
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x12648 for onPause ===
+[DexParser]   registers_size: 1
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24816
+[DexParser]   insns_size: 7 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 7 INSTRUCTIONS!
+[DexParser]   First opcodes: 106f 000e 0000 106e 00a5 
+[DexParser]   → Virtual method[11]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26131 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26132 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26133 = 12680
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x12680 for onPrepareOptionsMenu ===
+[DexParser]   registers_size: 6
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24823
+[DexParser]   insns_size: 32 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 32 INSTRUCTIONS!
+[DexParser]   First opcodes: 0112 0214 000d 7f08 2072 
+[DexParser]   → Virtual method[12]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26135 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26136 = 4
+[DexParser]   ULEB128[vm_code_off] @ 0x26137 = 12760
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x12760 for onResume ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24841
+[DexParser]   insns_size: 34 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 34 INSTRUCTIONS!
+[DexParser]   First opcodes: 106f 000f 0003 106e 0092 
+[DexParser]   → Virtual method[13]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26139 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26140 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26141 = 12844
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x12844 for onSaveInstanceState ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24859
+[DexParser]   insns_size: 17 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 17 INSTRUCTIONS!
+[DexParser]   First opcodes: 001a 0184 106e 0089 0002 
+[DexParser]   → Virtual method[14]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26143 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26144 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26145 = 12896
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x12896 for roll ===
+[DexParser]   registers_size: 8
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24868
+[DexParser]   insns_size: 78 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 78 INSTRUCTIONS!
+[DexParser]   First opcodes: 5254 002c 306e 006c 0256 
+[DexParser]   → Virtual method[15]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26147 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26148 = 0
+[DexParser]   ULEB128[vm_code_off] @ 0x26149 = 13068
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13068 for selectDice ===
+[DexParser]   registers_size: 8
+[DexParser]   ins_size: 4
+[DexParser]   outs_size: 5
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24898
+[DexParser]   insns_size: 73 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 73 INSTRUCTIONS!
+[DexParser]   First opcodes: 0022 0028 0114 0009 0109 
+[DexParser]   → Virtual method[16]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26151 = 4
+[DexParser]   ULEB128[vm_access_flags] @ 0x26152 = 0
+[DexParser]   ULEB128[vm_code_off] @ 0x26153 = 13232
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13232 for setupNumPicker ===
+[DexParser]   registers_size: 10
+[DexParser]   ins_size: 6
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24927
+[DexParser]   insns_size: 64 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 64 INSTRUCTIONS!
+[DexParser]   First opcodes: 206e 002b 0065 000c 001f 
+[DexParser]   → Virtual method[17]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26155 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26156 = 0
+[DexParser]   ULEB128[vm_code_off] @ 0x26157 = 13376
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13376 for setupSpinner ===
+[DexParser]   registers_size: 9
+[DexParser]   ins_size: 5
+[DexParser]   outs_size: 4
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24956
+[DexParser]   insns_size: 42 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 42 INSTRUCTIONS!
+[DexParser]   First opcodes: 206e 002b 0065 020c 021f 
+[DexParser]   → Virtual method[18]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26159 = 2
+[DexParser]   ULEB128[vm_access_flags] @ 0x26160 = 0
+[DexParser]   ULEB128[vm_code_off] @ 0x26161 = 13476
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13476 for storeDicePrefs ===
+[DexParser]   registers_size: 6
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x24995
+[DexParser]   insns_size: 65 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 65 INSTRUCTIONS!
+[DexParser]   First opcodes: 0122 0057 1070 00e6 0001 
+[DexParser]   → Virtual method[19]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26163 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26164 = 0
+[DexParser]   ULEB128[vm_code_off] @ 0x26165 = 13624
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13624 for toggleKeepScreenOn ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25024
+[DexParser]   insns_size: 31 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 31 INSTRUCTIONS!
+[DexParser]   First opcodes: 0012 3154 002d 021a 0142 
+[DexParser]   → Result: 3 direct methods, 20 virtual methods
+[DexParser] CLASS_DEF[14] @ offset 0x6816:
+[DexParser]   class_idx: 70 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 85
+[DexParser]   class_data_off: 0x26167
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/RollResult;]
+[DexParser]   → Parsing class_data at 0x26167
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x26167 ===
+[DexParser]   First bytes: 00 02 01 02 30 00 01 00 a9 01 80 80 04 88 6b aa 01 01 a8 6b 01 01 fc 6b 00 00 01 01 ac 01 80 80 
+[DexParser]   ULEB128[static_fields_size] @ 0x26167 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x26168 = 2
+[DexParser]   ULEB128[direct_methods_size] @ 0x26169 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x26170 = 2
+[DexParser]   → Header: static=0, instance=2, direct=1, virtual=2
+[DexParser]   ULEB128[if_field_diff] @ 0x26171 = 48
+[DexParser]   ULEB128[if_access_flags] @ 0x26172 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26173 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26174 = 0
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26175 = 169
+[DexParser]   ULEB128[dm_access_flags] @ 0x26177 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x26180 = 13704
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13704 for <init> ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25038
+[DexParser]   insns_size: 8 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 8 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 00db 0000 015b 0031 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26182 = 170
+[DexParser]   ULEB128[vm_access_flags] @ 0x26184 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26185 = 13736
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13736 for showDetails ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25051
+[DexParser]   insns_size: 34 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 34 INSTRUCTIONS!
+[DexParser]   First opcodes: 0022 0002 2070 0000 0040 
+[DexParser]   → Virtual method[1]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26187 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26188 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26189 = 13820
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13820 for toString ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25064
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 1054 0031 0011 
+[DexParser]   → Result: 1 direct methods, 2 virtual methods
+[DexParser] CLASS_DEF[15] @ offset 0x6848:
+[DexParser]   class_idx: 71 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 40
+[DexParser]   class_data_off: 0x26191
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/RollResultAdapter;]
+[DexParser]   → Parsing class_data at 0x26191
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x26191 ===
+[DexParser]   First bytes: 00 00 01 01 ac 01 80 80 04 94 6c b0 01 01 b4 6c 00 01 01 01 32 90 20 b1 01 80 80 04 ec 6c b2 01 
+[DexParser]   ULEB128[static_fields_size] @ 0x26191 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x26192 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x26193 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x26194 = 1
+[DexParser]   → Header: static=0, instance=0, direct=1, virtual=1
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26195 = 172
+[DexParser]   ULEB128[dm_access_flags] @ 0x26197 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x26200 = 13844
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13844 for <init> ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25070
+[DexParser]   insns_size: 7 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 7 INSTRUCTIONS!
+[DexParser]   First opcodes: 0014 0004 7f03 3070 002e 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26202 = 176
+[DexParser]   ULEB128[vm_access_flags] @ 0x26204 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26205 = 13876
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13876 for getView ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 4
+[DexParser]   outs_size: 4
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25079
+[DexParser]   insns_size: 19 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 19 INSTRUCTIONS!
+[DexParser]   First opcodes: 406f 0033 6543 000c 0107 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[16] @ offset 0x6880:
+[DexParser]   class_idx: 72 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 85
+[DexParser]   class_data_off: 0x26207
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/SignedNumberPicker$1;]
+[DexParser]   → Parsing class_data at 0x26207
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x26207 ===
+[DexParser]   First bytes: 00 01 01 01 32 90 20 b1 01 80 80 04 ec 6c b2 01 01 88 6d 00 01 01 01 33 90 20 b3 01 80 80 04 b0 
+[DexParser]   ULEB128[static_fields_size] @ 0x26207 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x26208 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x26209 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x26210 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x26211 = 50
+[DexParser]   ULEB128[if_access_flags] @ 0x26212 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26214 = 177
+[DexParser]   ULEB128[dm_access_flags] @ 0x26216 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x26219 = 13932
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13932 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25100
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0032 1070 00db 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26221 = 178
+[DexParser]   ULEB128[vm_access_flags] @ 0x26223 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26224 = 13960
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x13960 for format ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25107
+[DexParser]   insns_size: 11 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 11 INSTRUCTIONS!
+[DexParser]   First opcodes: 2154 0032 1152 003b 0091 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[17] @ offset 0x6912:
+[DexParser]   class_idx: 73 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 85
+[DexParser]   class_data_off: 0x26226
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/SignedNumberPicker$2;]
+[DexParser]   → Parsing class_data at 0x26226
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x26226 ===
+[DexParser]   First bytes: 00 01 01 01 33 90 20 b3 01 80 80 04 b0 6d b4 01 01 cc 6d 00 01 01 01 34 90 20 b5 01 80 80 04 a0 
+[DexParser]   ULEB128[static_fields_size] @ 0x26226 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x26227 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x26228 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x26229 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x26230 = 51
+[DexParser]   ULEB128[if_access_flags] @ 0x26231 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26233 = 179
+[DexParser]   ULEB128[dm_access_flags] @ 0x26235 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x26238 = 14000
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14000 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25120
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0033 1070 00db 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26240 = 180
+[DexParser]   ULEB128[vm_access_flags] @ 0x26242 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26243 = 14028
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14028 for onFocusChange ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25127
+[DexParser]   insns_size: 33 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 33 INSTRUCTIONS!
+[DexParser]   First opcodes: 0438 0017 2054 0033 0054 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[18] @ offset 0x6944:
+[DexParser]   class_idx: 74 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 85
+[DexParser]   class_data_off: 0x26245
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/SignedNumberPicker$3;]
+[DexParser]   → Parsing class_data at 0x26245
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x26245 ===
+[DexParser]   First bytes: 00 01 01 01 34 90 20 b5 01 80 80 04 a0 6e b6 01 01 bc 6e 00 02 02 03 35 12 01 90 20 b7 01 80 80 
+[DexParser]   ULEB128[static_fields_size] @ 0x26245 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x26246 = 1
+[DexParser]   ULEB128[direct_methods_size] @ 0x26247 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x26248 = 1
+[DexParser]   → Header: static=0, instance=1, direct=1, virtual=1
+[DexParser]   ULEB128[if_field_diff] @ 0x26249 = 52
+[DexParser]   ULEB128[if_access_flags] @ 0x26250 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26252 = 181
+[DexParser]   ULEB128[dm_access_flags] @ 0x26254 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x26257 = 14112
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14112 for <init> ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25143
+[DexParser]   insns_size: 6 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 6 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0034 1070 00db 0000 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26259 = 182
+[DexParser]   ULEB128[vm_access_flags] @ 0x26261 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26262 = 14140
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14140 for onValueChange ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 4
+[DexParser]   outs_size: 4
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25150
+[DexParser]   insns_size: 22 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 22 INSTRUCTIONS!
+[DexParser]   First opcodes: 3054 0034 1071 00c3 0000 
+[DexParser]   → Result: 1 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[19] @ offset 0x6976:
+[DexParser]   class_idx: 75 (max valid: 103)
+[DexParser]   access_flags: 0x0
+[DexParser]   superclass_idx: 25
+[DexParser]   class_data_off: 0x26264
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/SignedNumberPicker$InputTextFilter;]
+[DexParser]   → Parsing class_data at 0x26264
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x26264 ===
+[DexParser]   First bytes: 00 02 02 03 35 12 01 90 20 b7 01 80 80 04 f8 6e 04 02 ac 70 b8 01 01 e0 70 01 04 d8 72 01 01 f0 
+[DexParser]   ULEB128[static_fields_size] @ 0x26264 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x26265 = 2
+[DexParser]   ULEB128[direct_methods_size] @ 0x26266 = 2
+[DexParser]   ULEB128[virtual_methods_size] @ 0x26267 = 3
+[DexParser]   → Header: static=0, instance=2, direct=2, virtual=3
+[DexParser]   ULEB128[if_field_diff] @ 0x26268 = 53
+[DexParser]   ULEB128[if_access_flags] @ 0x26269 = 18
+[DexParser]   ULEB128[if_field_diff] @ 0x26270 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26271 = 4112
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26273 = 183
+[DexParser]   ULEB128[dm_access_flags] @ 0x26275 = 65536
+[DexParser]   ULEB128[dm_code_off] @ 0x26278 = 14200
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14200 for <init> ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25165
+[DexParser]   insns_size: 81 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 81 INSTRUCTIONS!
+[DexParser]   First opcodes: 125b 0036 1070 0023 0001 
+[DexParser]   → Direct method[1]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26280 = 4
+[DexParser]   ULEB128[dm_access_flags] @ 0x26281 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x26282 = 14380
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14380 for getSelectedPos ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 1
+[DexParser]   debug_info_off: 0x25176
+[DexParser]   insns_size: 11 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 11 INSTRUCTIONS!
+[DexParser]   First opcodes: 1071 00d7 0002 000a 000f 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26284 = 184
+[DexParser]   ULEB128[vm_access_flags] @ 0x26286 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26287 = 14432
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14432 for filter ===
+[DexParser]   registers_size: 12
+[DexParser]   ins_size: 7
+[DexParser]   outs_size: 7
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25187
+[DexParser]   insns_size: 116 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 116 INSTRUCTIONS!
+[DexParser]   First opcodes: 0775 0024 0005 000c 0039 
+[DexParser]   → Virtual method[1]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26289 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26290 = 4
+[DexParser]   ULEB128[vm_code_off] @ 0x26291 = 14680
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14680 for getAcceptedChars ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25247
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 1054 0035 0011 
+[DexParser]   → Virtual method[2]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26293 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26294 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26295 = 14704
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14704 for getInputType ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25253
+[DexParser]   insns_size: 2 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 2 INSTRUCTIONS!
+[DexParser]   First opcodes: 1012 000f 
+[DexParser]   → Result: 2 direct methods, 3 virtual methods
+[DexParser] CLASS_DEF[20] @ offset 0x7008:
+[DexParser]   class_idx: 76 (max valid: 103)
+[DexParser]   access_flags: 0x1537
+[DexParser]   superclass_idx: 85
+[DexParser]   class_data_off: 0x26297
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/SignedNumberPicker$OnTextFocusChangedListener;]
+[DexParser]   → Parsing class_data at 0x26297
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x26297 ===
+[DexParser]   First bytes: 00 00 00 01 bc 01 81 08 00 00 06 0a 09 37 00 01 00 01 00 01 02 01 00 01 00 bd 01 81 80 04 84 73 
+[DexParser]   ULEB128[static_fields_size] @ 0x26297 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x26298 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x26299 = 0
+[DexParser]   ULEB128[virtual_methods_size] @ 0x26300 = 1
+[DexParser]   → Header: static=0, instance=0, direct=0, virtual=1
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26301 = 188
+[DexParser]   ULEB128[vm_access_flags] @ 0x26303 = 1025
+[DexParser]   ULEB128[vm_code_off] @ 0x26305 = 0
+[DexParser]   → Result: 0 direct methods, 1 virtual methods
+[DexParser] CLASS_DEF[21] @ offset 0x7040:
+[DexParser]   class_idx: 77 (max valid: 103)
+[DexParser]   access_flags: 0x1
+[DexParser]   superclass_idx: 47
+[DexParser]   class_data_off: 0x26306
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/SignedNumberPicker;]
+[DexParser]   → Parsing class_data at 0x26306
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x26306 ===
+[DexParser]   First bytes: 00 06 0a 09 37 00 01 00 01 00 01 02 01 00 01 00 bd 01 81 80 04 84 73 01 81 80 04 bc 73 01 81 80 
+[DexParser]   ULEB128[static_fields_size] @ 0x26306 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x26307 = 6
+[DexParser]   ULEB128[direct_methods_size] @ 0x26308 = 10
+[DexParser]   ULEB128[virtual_methods_size] @ 0x26309 = 9
+[DexParser]   → Header: static=0, instance=6, direct=10, virtual=9
+[DexParser]   ULEB128[if_field_diff] @ 0x26310 = 55
+[DexParser]   ULEB128[if_access_flags] @ 0x26311 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26312 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26313 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26314 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26315 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26316 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26317 = 2
+[DexParser]   ULEB128[if_field_diff] @ 0x26318 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26319 = 0
+[DexParser]   ULEB128[if_field_diff] @ 0x26320 = 1
+[DexParser]   ULEB128[if_access_flags] @ 0x26321 = 0
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26322 = 189
+[DexParser]   ULEB128[dm_access_flags] @ 0x26324 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x26327 = 14724
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14724 for <init> ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25259
+[DexParser]   insns_size: 19 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 19 INSTRUCTIONS!
+[DexParser]   First opcodes: 0112 0012 2070 0046 0032 
+[DexParser]   → Direct method[1]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26329 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x26330 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x26333 = 14780
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14780 for <init> ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25281
+[DexParser]   insns_size: 19 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 19 INSTRUCTIONS!
+[DexParser]   First opcodes: 0112 0012 3070 0047 0432 
+[DexParser]   → Direct method[2]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26335 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x26336 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x26339 = 14836
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14836 for <init> ===
+[DexParser]   registers_size: 6
+[DexParser]   ins_size: 4
+[DexParser]   outs_size: 4
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25305
+[DexParser]   insns_size: 19 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 19 INSTRUCTIONS!
+[DexParser]   First opcodes: 0112 0012 4070 0048 5432 
+[DexParser]   → Direct method[3]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26341 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x26342 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x26344 = 14892
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14892 for access$000 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25330
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 2070 00cf 0010 000e 
+[DexParser]   → Direct method[4]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26346 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x26347 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x26349 = 14916
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14916 for access$101 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25339
+[DexParser]   insns_size: 5 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 5 INSTRUCTIONS!
+[DexParser]   First opcodes: 106f 004d 0001 000a 000f 
+[DexParser]   → Direct method[5]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26351 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x26352 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x26354 = 14944
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14944 for access$201 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25346
+[DexParser]   insns_size: 4 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 4 INSTRUCTIONS!
+[DexParser]   First opcodes: 206f 0052 0010 000e 
+[DexParser]   → Direct method[6]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26356 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x26357 = 4104
+[DexParser]   ULEB128[dm_code_off] @ 0x26359 = 14968
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14968 for access$300 ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25355
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 1054 003a 0011 
+[DexParser]   → Direct method[7]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26361 = 5
+[DexParser]   ULEB128[dm_access_flags] @ 0x26362 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x26363 = 14992
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x14992 for init ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25362
+[DexParser]   insns_size: 42 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 42 INSTRUCTIONS!
+[DexParser]   First opcodes: 0022 0048 2070 00b1 0040 
+[DexParser]   → Direct method[8]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26365 = 1
+[DexParser]   ULEB128[dm_access_flags] @ 0x26366 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x26367 = 15092
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15092 for init ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25373
+[DexParser]   insns_size: 9 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 9 INSTRUCTIONS!
+[DexParser]   First opcodes: 2020 002a 0038 0006 021f 
+[DexParser]   → Direct method[9]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26369 = 6
+[DexParser]   ULEB128[dm_access_flags] @ 0x26370 = 2
+[DexParser]   ULEB128[dm_code_off] @ 0x26371 = 15128
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15128 for setValueFromEditText ===
+[DexParser]   registers_size: 5
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 1
+[DexParser]   debug_info_off: 0x25386
+[DexParser]   insns_size: 62 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 62 INSTRUCTIONS!
+[DexParser]   First opcodes: 106e 003c 0004 010c 1071 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26373 = 196
+[DexParser]   ULEB128[vm_access_flags] @ 0x26375 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26376 = 15280
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15280 for addView ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25405
+[DexParser]   insns_size: 7 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 7 INSTRUCTIONS!
+[DexParser]   First opcodes: 206f 0049 0010 2070 00c9 
+[DexParser]   → Virtual method[1]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26378 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26379 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26380 = 15312
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15312 for addView ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 4
+[DexParser]   outs_size: 4
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25414
+[DexParser]   insns_size: 7 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 7 INSTRUCTIONS!
+[DexParser]   First opcodes: 406f 004a 3210 2070 00c9 
+[DexParser]   → Virtual method[2]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26382 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26383 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26384 = 15344
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15344 for addView ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 3
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25427
+[DexParser]   insns_size: 7 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 7 INSTRUCTIONS!
+[DexParser]   First opcodes: 306f 004b 0210 2070 00c9 
+[DexParser]   → Virtual method[3]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26386 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26387 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26388 = 15376
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15376 for getRealValue ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25438
+[DexParser]   insns_size: 21 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 21 INSTRUCTIONS!
+[DexParser]   First opcodes: 2054 003c 106e 003d 0000 
+[DexParser]   → Virtual method[4]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26390 = 3
+[DexParser]   ULEB128[vm_access_flags] @ 0x26391 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26392 = 15436
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15436 for setMaxValue ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25445
+[DexParser]   insns_size: 17 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 17 INSTRUCTIONS!
+[DexParser]   First opcodes: 1052 003b 20b0 003b 0005 
+[DexParser]   → Virtual method[5]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26394 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26395 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26396 = 15488
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15488 for setMinValue ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25456
+[DexParser]   insns_size: 24 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 24 INSTRUCTIONS!
+[DexParser]   First opcodes: 033b 000f 307b 2059 003b 
+[DexParser]   → Virtual method[6]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26398 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26399 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26400 = 15552
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15552 for setOnTextFocusChangedListener ===
+[DexParser]   registers_size: 2
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 0
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25468
+[DexParser]   insns_size: 3 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 3 INSTRUCTIONS!
+[DexParser]   First opcodes: 015b 0039 000e 
+[DexParser]   → Virtual method[7]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26402 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26403 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26404 = 15576
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15576 for setOnValueChangedListener ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25476
+[DexParser]   insns_size: 11 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 11 INSTRUCTIONS!
+[DexParser]   First opcodes: 125b 003a 0022 004a 2070 
+[DexParser]   → Virtual method[8]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26406 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26407 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26408 = 15616
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15616 for setValue ===
+[DexParser]   registers_size: 3
+[DexParser]   ins_size: 2
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25485
+[DexParser]   insns_size: 7 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 7 INSTRUCTIONS!
+[DexParser]   First opcodes: 1052 003b 20b0 206f 0052 
+[DexParser]   → Result: 10 direct methods, 9 virtual methods
+[DexParser] CLASS_DEF[22] @ offset 0x7072:
+[DexParser]   class_idx: 78 (max valid: 103)
+[DexParser]   access_flags: 0x1
+[DexParser]   superclass_idx: 59
+[DexParser]   class_data_off: 0x26410
+[DexParser]   → Resolved name: [Lde/duenndns/gmdice/StandardDiceSet;]
+[DexParser]   → Parsing class_data at 0x26410
+[DexParser]   === EXP-031.6 CLASS_DATA PARSING @ offset=0x26410 ===
+[DexParser]   First bytes: 00 00 01 02 d1 01 81 80 04 a0 7a d2 01 01 c4 7a 01 01 80 7c 00 00 10 00 00 00 00 00 00 00 01 00 
+[DexParser]   ULEB128[static_fields_size] @ 0x26410 = 0
+[DexParser]   ULEB128[instance_fields_size] @ 0x26411 = 0
+[DexParser]   ULEB128[direct_methods_size] @ 0x26412 = 1
+[DexParser]   ULEB128[virtual_methods_size] @ 0x26413 = 2
+[DexParser]   → Header: static=0, instance=0, direct=1, virtual=2
+[DexParser]   → Direct method[0]:
+[DexParser]   ULEB128[dm_method_diff] @ 0x26414 = 209
+[DexParser]   ULEB128[dm_access_flags] @ 0x26416 = 65537
+[DexParser]   ULEB128[dm_code_off] @ 0x26419 = 15648
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15648 for <init> ===
+[DexParser]   registers_size: 4
+[DexParser]   ins_size: 4
+[DexParser]   outs_size: 1
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25493
+[DexParser]   insns_size: 10 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 10 INSTRUCTIONS!
+[DexParser]   First opcodes: 1070 0066 0000 0159 003d 
+[DexParser]   → Virtual method[0]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26421 = 210
+[DexParser]   ULEB128[vm_access_flags] @ 0x26423 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26424 = 15684
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15684 for roll ===
+[DexParser]   registers_size: 12
+[DexParser]   ins_size: 3
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25508
+[DexParser]   insns_size: 86 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 86 INSTRUCTIONS!
+[DexParser]   First opcodes: 1812 0112 0322 0057 1070 
+[DexParser]   → Virtual method[1]:
+[DexParser]   ULEB128[vm_method_diff] @ 0x26426 = 1
+[DexParser]   ULEB128[vm_access_flags] @ 0x26427 = 1
+[DexParser]   ULEB128[vm_code_off] @ 0x26428 = 15872
+[DexParser]   === EXP-031.6 CODE_ITEM @ offset=0x15872 for toString ===
+[DexParser]   registers_size: 7
+[DexParser]   ins_size: 1
+[DexParser]   outs_size: 2
+[DexParser]   tries_size: 0
+[DexParser]   debug_info_off: 0x25560
+[DexParser]   insns_size: 66 ← KEY FIELD!
+[DexParser]   ✅ EXTRACTED 66 INSTRUCTIONS!
+[DexParser]   First opcodes: 2512 1412 0312 6052 003e 
+[DexParser]   → Result: 1 direct methods, 2 virtual methods
+[DexParser] === END CLASS_DEF PARSING ===
+[DexParser] Parsed 23 classes
+[DexParser] DEX parsing complete: 23 classes, 250 methods
+FONT_SOURCE apk=download/exp073_real_apps/de.duenndns.gmdice_8.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 63 entries (23 from APK + 40 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'de.duenndns.gmdice.GameMasterDice'
+[U007-RES] ResourceRuntime loaded: download/exp073_real_apps/de.duenndns.gmdice_8.apk named_ids=73 types=8
+[ARSC-VALUES] apk=download/exp073_real_apps/de.duenndns.gmdice_8.apk strings=19 colors=6 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[EXP093-APP] No custom Application class declared in manifest
+[TRY-ENTRY] Lde/duenndns/gmdice/GameMasterDice;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/ListActivity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/ListActivity;.<init> caller=Lde/duenndns/gmdice/GameMasterDice;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lde/duenndns/gmdice/GameMasterDice;
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.getDiceSet dex_report=YES
+[TRY-ENTRY] Ljava/lang/String;.equals dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DSADiceSet;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.<init> dex_report=YES
+[MEM] method_exit: Lde/duenndns/gmdice/DiceSet;.<init> insns=2 RSS=16 MB
+[EXP093-APUT] aput-object v1→arr[v0] idx_v2 arr_type=7 arr_obj=10 src_type=7 idx=0
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.getDiceSet dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/StandardDiceSet;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.<init> dex_report=YES
+[EXP093-APUT] aput-object v1→arr[v0] idx_v3 arr_type=7 arr_obj=10 src_type=7 idx=1
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.getDiceSet dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/StandardDiceSet;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.<init> dex_report=YES
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=10 src_type=7 idx=2
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.getDiceSet dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/StandardDiceSet;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.<init> dex_report=YES
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=10 src_type=7 idx=3
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceCache;.<init> dex_report=YES
+[TRY-ENTRY] Ljava/util/ArrayList;.<init> dex_report=YES
+[TRY-ENTRY] Lde/duenndns/gmdice/DiceSet;.getDiceSet dex_report=YES
+[TRY-ENTRY] Ljava/lang/String;.equals dex_report=YES
+[TRY-ENTRY] Ljava/lang/String;.split dex_report=YES
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lde/duenndns/gmdice/DiceSet;.getDiceSet
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d2") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[M3-19-CYCLE] Lde/duenndns/gmdice/DiceSet;.getDiceSet re-entered while active on the call stack (depth=4) — active-cycle stub, lifetime_calls=6
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lde/duenndns/gmdice/DiceSet;.getDiceSet
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d6") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[M3-19-CYCLE] Lde/duenndns/gmdice/DiceSet;.getDiceSet re-entered while active on the call stack (depth=4) — active-cycle stub, lifetime_calls=8
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lde/duenndns/gmdice/DiceSet;.getDiceSet
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d6+1") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[M3-19-CYCLE] Lde/duenndns/gmdice/DiceSet;.getDiceSet re-entered while active on the call stack (depth=4) — active-cycle stub, lifetime_calls=10
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lde/duenndns/gmdice/DiceSet;.getDiceSet
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d10") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[M3-19-CYCLE] Lde/duenndns/gmdice/DiceSet;.getDiceSet re-entered while active on the call stack (depth=4) — active-cycle stub, lifetime_calls=12
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lde/duenndns/gmdice/DiceSet;.getDiceSet
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d20") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[M3-19-CYCLE] Lde/duenndns/gmdice/DiceSet;.getDiceSet re-entered while active on the call stack (depth=4) — active-cycle stub, lifetime_calls=14
+[REC-MISS] Ljava/util/Random;.<init> caller=Lde/duenndns/gmdice/GameMasterDice;.<init>
+[U0113-ACTIVITY] activity heap object #7 (Lde/duenndns/gmdice/GameMasterDice;) recorded for handler dispatch
+[REC-MISS] Landroid/app/ListActivity;.onCreate caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/ListActivity;<super>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2130903040
+[U007-INFLATE] setContentView(layoutResId=0x7f030000)
+[TEXTSHAPER] SYSTEM FONT MISSING: DroidSansMono.ttf not found (searched MINIANDROID_FONT_DIR, runtime/data/fonts/, ../runtime/data/fonts/, data/fonts/, miniandroid/runtime/data/fonts/) — family 'monospace' will resolve to the default sans face and REPORT it
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/emoji/NotoColorEmoji.ttf(strike=109) monospace=MISSING
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+[U007-INFLATE] root_id=28 views=10 strings=2 ids=0 unresolved=0
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTitle class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTitle class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setTitle class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/preference/PreferenceManager;.getDefaultSharedPreferences caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getDefaultSharedPreferences class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-ENTER] bridge_to_api: Lde/duenndns/gmdice/GameMasterDice;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2131230721
+[EXP088-B-DBG] findViewById: target=0x7f080001 content_view_id=1c registry=YES
+[EXP088-B] findViewById(0x7f080001) → view_id=33
+[EXP093-APUT] aput-object v1→arr[v2] idx_v0 arr_type=7 arr_obj=38 src_type=7 idx=0
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=33 class=Landroid/widget/Button; listener_id=7
+[REC-MISS] Landroid/widget/Button;.setOnLongClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setTransformationMethod caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.getBackground caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=86 field=Landroid/graphics/PorterDuff$Mode;.MULTIPLY obj_id=39
+[REC-MISS] Landroid/graphics/drawable/Drawable;.setColorFilter caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=91 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[RES] getColor resid=0x0 -> 0xff000000 (M3-COLOR-UNRESOLVED)
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[M3-SETTEXTCOLOR] view_id=33 color=0xff000000
+[EXP088-B-ENTER] bridge_to_api: Lde/duenndns/gmdice/GameMasterDice;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2131230722
+[EXP088-B-DBG] findViewById: target=0x7f080002 content_view_id=1c registry=YES
+[EXP088-B] findViewById(0x7f080002) → view_id=34
+[EXP093-APUT] aput-object v1→arr[v2] idx_v0 arr_type=7 arr_obj=38 src_type=7 idx=1
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=34 class=Landroid/widget/Button; listener_id=7
+[REC-MISS] Landroid/widget/Button;.setOnLongClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setTransformationMethod caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.getBackground caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=86 field=Landroid/graphics/PorterDuff$Mode;.MULTIPLY obj_id=39
+[REC-MISS] Landroid/graphics/drawable/Drawable;.setColorFilter caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=91 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[RES] getColor resid=0x0 -> 0xff000000 (M3-COLOR-UNRESOLVED)
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[M3-SETTEXTCOLOR] view_id=34 color=0xff000000
+[EXP088-B-ENTER] bridge_to_api: Lde/duenndns/gmdice/GameMasterDice;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2131230723
+[EXP088-B-DBG] findViewById: target=0x7f080003 content_view_id=1c registry=YES
+[EXP088-B] findViewById(0x7f080003) → view_id=35
+[EXP093-APUT] aput-object v1→arr[v2] idx_v0 arr_type=7 arr_obj=38 src_type=7 idx=2
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=35 class=Landroid/widget/Button; listener_id=7
+[REC-MISS] Landroid/widget/Button;.setOnLongClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setTransformationMethod caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.getBackground caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=86 field=Landroid/graphics/PorterDuff$Mode;.MULTIPLY obj_id=39
+[REC-MISS] Landroid/graphics/drawable/Drawable;.setColorFilter caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=91 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[RES] getColor resid=0x0 -> 0xff000000 (M3-COLOR-UNRESOLVED)
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[M3-SETTEXTCOLOR] view_id=35 color=0xff000000
+[EXP088-B-ENTER] bridge_to_api: Lde/duenndns/gmdice/GameMasterDice;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2131230724
+[EXP088-B-DBG] findViewById: target=0x7f080004 content_view_id=1c registry=YES
+[EXP088-B] findViewById(0x7f080004) → view_id=36
+[EXP093-APUT] aput-object v1→arr[v2] idx_v0 arr_type=7 arr_obj=38 src_type=7 idx=3
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=36 class=Landroid/widget/Button; listener_id=7
+[REC-MISS] Landroid/widget/Button;.setOnLongClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setTransformationMethod caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.getBackground caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=86 field=Landroid/graphics/PorterDuff$Mode;.MULTIPLY obj_id=39
+[REC-MISS] Landroid/graphics/drawable/Drawable;.setColorFilter caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=91 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[RES] getColor resid=0x0 -> 0xff000000 (M3-COLOR-UNRESOLVED)
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[M3-SETTEXTCOLOR] view_id=36 color=0xff000000
+[EXP088-B-ENTER] bridge_to_api: Lde/duenndns/gmdice/GameMasterDice;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2131230725
+[EXP088-B-DBG] findViewById: target=0x7f080005 content_view_id=1c registry=YES
+[EXP088-B] findViewById(0x7f080005) → view_id=37
+[REC-MISS] Landroid/widget/Button;.setOnClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[EXP060-LISTENER] setOnClickListener view_id=37 class=Landroid/widget/Button; listener_id=7
+[REC-MISS] Landroid/widget/Button;.setOnLongClickListener caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.getBackground caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=145 field=Landroid/graphics/PorterDuff$Mode;.MULTIPLY obj_id=39
+[REC-MISS] Landroid/graphics/drawable/Drawable;.setColorFilter caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=150 field=Landroid/os/Build$VERSION;.SDK_INT value=34
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getResources class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/content/res/Resources;.getColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[RES] getColor resid=0x0 -> 0xff000000 (M3-COLOR-UNRESOLVED)
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[M3-SETTEXTCOLOR] view_id=37 color=0xff000000
+[EXP088-B-ENTER] bridge_to_api: Lde/duenndns/gmdice/GameMasterDice;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/duenndns/gmdice/GameMasterDice; args=1 arg0_kind=0 arg0_int=2131230720
+[EXP088-B-DBG] findViewById: target=0x7f080000 content_view_id=1c registry=YES
+[EXP088-B] findViewById(0x7f080000) → view_id=31
+[CLASS_INIT] class=Lde/duenndns/gmdice/GameMasterDice; method=<clinit> bytecode_size=332
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=40 src_type=7 idx=0
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v1→arr[v0] idx_v3 arr_type=7 arr_obj=40 src_type=7 idx=1
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v1→arr[v0] idx_v4 arr_type=7 arr_obj=40 src_type=7 idx=2
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v1→arr[v0] idx_v5 arr_type=7 arr_obj=40 src_type=7 idx=3
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v1→arr[v0] idx_v6 arr_type=7 arr_obj=40 src_type=7 idx=4
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v1→arr[v0] idx_v7 arr_type=7 arr_obj=40 src_type=7 idx=5
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=40 src_type=7 idx=6
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=40 src_type=7 idx=7
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=40 src_type=7 idx=8
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=40 src_type=7 idx=9
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=51 src_type=5 idx=0
+[EXP093-APUT] aput-object v1→arr[v0] idx_v3 arr_type=7 arr_obj=51 src_type=5 idx=1
+[EXP093-APUT] aput-object v1→arr[v0] idx_v4 arr_type=7 arr_obj=51 src_type=5 idx=2
+[EXP093-APUT] aput-object v1→arr[v0] idx_v5 arr_type=7 arr_obj=51 src_type=5 idx=3
+[EXP093-APUT] aput-object v1→arr[v0] idx_v6 arr_type=7 arr_obj=51 src_type=5 idx=4
+[EXP093-APUT] aput-object v1→arr[v0] idx_v7 arr_type=7 arr_obj=51 src_type=5 idx=5
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=51 src_type=5 idx=6
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=51 src_type=5 idx=7
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=51 src_type=5 idx=8
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=51 src_type=5 idx=9
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=51 src_type=5 idx=10
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=0
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v1→arr[v0] idx_v3 arr_type=7 arr_obj=52 src_type=7 idx=1
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v1→arr[v0] idx_v4 arr_type=7 arr_obj=52 src_type=7 idx=2
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v1→arr[v0] idx_v5 arr_type=7 arr_obj=52 src_type=7 idx=3
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v1→arr[v0] idx_v6 arr_type=7 arr_obj=52 src_type=7 idx=4
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v1→arr[v0] idx_v7 arr_type=7 arr_obj=52 src_type=7 idx=5
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=6
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=7
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=8
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=9
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=10
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=11
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=12
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=13
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=14
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=15
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=16
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=17
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=18
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=19
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/GameMasterDice;.<clinit>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=52 src_type=7 idx=20
+[CLASS_INIT] class=Lde/duenndns/gmdice/GameMasterDice; method=<clinit> result=OK engine=0x7ffd33883228 storage_size=21
+[SGET-MISS] key=Lde/duenndns/gmdice/GameMasterDice;.resultlog storage_size=21 same_class_keys=4 engine=0x7ffd33883228 first=Lde/duenndns/gmdice/GameMasterDice;.SPIN_COUNT
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=177 field=Lde/duenndns/gmdice/GameMasterDice;.resultlog obj_id=0
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getApplicationContext class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/widget/ArrayAdapter;.<init> caller=Lde/duenndns/gmdice/RollResultAdapter;.<init>
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=onCreate pc=192 field=Lde/duenndns/gmdice/GameMasterDice;.resultlog obj_id=74
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setListAdapter class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setListAdapter class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setListAdapter class=Lde/duenndns/gmdice/GameMasterDice;
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lde/duenndns/gmdice/GameMasterDice; runtime_class=Lde/duenndns/gmdice/GameMasterDice;
+[G07-LIFECYCLE] Lde/duenndns/gmdice/GameMasterDice;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lde/duenndns/gmdice/GameMasterDice; runtime_class=Lde/duenndns/gmdice/GameMasterDice;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/ListActivity; runtime_class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/app/ListActivity;.onResume caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/ListActivity;<super>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lde/duenndns/gmdice/GameMasterDice;.loadDicePrefs
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=loadDicePrefs pc=22 field=Lde/duenndns/gmdice/GameMasterDice;.TAG obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lde/duenndns/gmdice/GameMasterDice;.loadDicePrefs
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/duenndns/gmdice/GameMasterDice;.loadDicePrefs
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/duenndns/gmdice/GameMasterDice;.loadDicePrefs
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lde/duenndns/gmdice/GameMasterDice;.loadDicePrefs
+[REC-MISS] Landroid/util/Log;.d caller=Lde/duenndns/gmdice/GameMasterDice;.loadDicePrefs
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lde/duenndns/gmdice/DiceSet;.getDiceSet
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[M3-19-CYCLE] Lde/duenndns/gmdice/DiceSet;.getDiceSet re-entered while active on the call stack (depth=4) — active-cycle stub, lifetime_calls=16
+[EXP093-APUT] aput-object v4→arr[v3] idx_v2 arr_type=7 arr_obj=10 src_type=8 idx=0
+[REC-MISS] Landroid/content/SharedPreferences;.getString caller=Lde/duenndns/gmdice/GameMasterDice;.loadDicePrefs
+[REC-MISS] Landroid/widget/Button;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[EXP091-SETTEXT] view_id=33 class=Landroid/widget/Button; arg_kind=7 text=""
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[EXP093-APUT] aput-object v2→arr[v1] idx_v3 arr_type=7 arr_obj=80 src_type=7 idx=0
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[EXP093-APUT] aput-object v2→arr[v1] idx_v4 arr_type=7 arr_obj=80 src_type=7 idx=1
+[EXP093-STRFMT] String.format("%dd%d", n=2) → "1d20"
+[REC-MISS] Landroid/widget/Button;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[EXP091-SETTEXT] view_id=34 class=Landroid/widget/Button; arg_kind=5 text="1d20"
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[EXP093-APUT] aput-object v2→arr[v1] idx_v3 arr_type=7 arr_obj=83 src_type=7 idx=0
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[EXP093-APUT] aput-object v2→arr[v1] idx_v4 arr_type=7 arr_obj=83 src_type=7 idx=1
+[EXP093-STRFMT] String.format("%dd%d", n=2) → "1d6"
+[REC-MISS] Landroid/widget/Button;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[EXP091-SETTEXT] view_id=35 class=Landroid/widget/Button; arg_kind=5 text="1d6"
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[EXP093-APUT] aput-object v2→arr[v1] idx_v3 arr_type=7 arr_obj=86 src_type=7 idx=0
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[EXP093-APUT] aput-object v2→arr[v1] idx_v4 arr_type=7 arr_obj=86 src_type=7 idx=1
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/duenndns/gmdice/StandardDiceSet;.toString
+[EXP093-APUT] aput-object v2→arr[v1] idx_v5 arr_type=7 arr_obj=86 src_type=7 idx=2
+[EXP093-STRFMT] String.format("%dd%d%+d", n=3) → "1d6+4"
+[REC-MISS] Landroid/widget/Button;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[EXP091-SETTEXT] view_id=36 class=Landroid/widget/Button; arg_kind=5 text="1d6+4"
+[REC-MISS] Landroid/content/SharedPreferences;.getBoolean caller=Lde/duenndns/gmdice/GameMasterDice;.configKeepScreenOn
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getWindow class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/view/Window;.clearFlags caller=Lde/duenndns/gmdice/GameMasterDice;.configKeepScreenOn
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=invalidateOptionsMenu class=Lde/duenndns/gmdice/GameMasterDice;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=invalidateOptionsMenu class=Landroid/app/ListActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=invalidateOptionsMenu class=Lde/duenndns/gmdice/GameMasterDice;
+[G07-LIFECYCLE] Lde/duenndns/gmdice/GameMasterDice;.onResume() dispatched via DEX engine (ok=1, instructions=204)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=23 nodes=11 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/ListView;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/TextView;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/TextView;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.onAttachedToWindow caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[UC009-ATTACH] attach dispatch complete ok=false
+[ApkParser] Found EOCD at offset 63976
+[ApkParser] Central Directory: 39 entries at offset 60456
+[EXP092-RENDER] node=28 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=29 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=31 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=32 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=33 class=Landroid/widget/Button; text="" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=34 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=35 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=36 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=37 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 182628 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 182628 non-white pixels
+[QUEUE] Runnable id=4026531841 enqueued (delay=500ms, ready_at=1000000500ms virtual, queue_depth=1, source=framework:CheckForLongPress)
+[G06-TAP] DOWN (400,1830) target=34 consumed=1
+[ApkParser] Found EOCD at offset 63976
+[ApkParser] Central Directory: 39 entries at offset 60456
+[EXP092-RENDER] node=28 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=29 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x826)
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,826) size=(1080x827)
+[EXP092-RENDER] node=31 class=Landroid/widget/TextView; text="Roll it!" children=0 depth=1 pos=(0,1653) size=(1080x123)
+[EXP092-RENDER] node=32 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=33 class=Landroid/widget/Button; text="" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=34 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=35 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=36 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=37 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 182628 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 182628 non-white pixels
+[QUEUE] Runnable id=4026531841 removed (was at depth=0)
+[QUEUE] Runnable id=4026531842 enqueued (delay=0ms, ready_at=1000000050ms virtual, queue_depth=1, source=framework:PerformClick)
+[QUEUE] Runnable id=4026531843 enqueued (delay=64ms, ready_at=1000000114ms virtual, queue_depth=2, source=framework:UnsetPressedState)
+[G06-TAP] UP click_posted=1
+[QUEUE] Runnable id=4026531842 dequeued (ready_at=1000000050ms <= now=1000000050ms virtual)
+[UI-EVENT] event=CLICK view_object=34 view_class=Landroid/widget/Button; listener=7 listener_class=Lde/duenndns/gmdice/GameMasterDice;
+[REC-MISS] Landroid/widget/Button;.getText caller=Lde/duenndns/gmdice/GameMasterDice;.onClick
+[REC-MISS] Ljava/lang/CharSequence;.toString caller=Lde/duenndns/gmdice/GameMasterDice;.onClick
+[REC-MISS] Ljava/lang/Integer;.parseInt caller=Lde/duenndns/gmdice/DiceSet;.getDiceSet
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d20") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[M3-19-CYCLE] Lde/duenndns/gmdice/DiceSet;.getDiceSet re-entered while active on the call stack (depth=3) — active-cycle stub, lifetime_calls=18
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[EXP091-SETTEXT] view_id=31 class=Landroid/widget/TextView; arg_kind=7 text=""
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=roll pc=43 field=Lde/duenndns/gmdice/GameMasterDice;.TAG obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[REC-MISS] Landroid/util/Log;.d caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[SGET] class=Lde/duenndns/gmdice/GameMasterDice; method=roll pc=67 field=Lde/duenndns/gmdice/GameMasterDice;.resultlog obj_id=74
+[C013-HIER] add dispatched via superclass chain: Lde/duenndns/gmdice/RollResultAdapter; -> Landroid/widget/ArrayAdapter; (declared=Lde/duenndns/gmdice/RollResultAdapter; receiver=Lde/duenndns/gmdice/RollResultAdapter;)
+[UI-EVENT] event=CLICK result=DISPATCHED listener=Lde/duenndns/gmdice/GameMasterDice;
+[G06-TOKEN] {"callback":"PerformClick","click_dispatched":true,"target_view_id":34,"virtual_ms":1000000050}
+[ApkParser] Found EOCD at offset 63976
+[ApkParser] Central Directory: 39 entries at offset 60456
+[EXP092-RENDER] node=28 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=29 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x888)
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,888) size=(1080x888)
+[EXP092-RENDER] node=31 class=Landroid/widget/TextView; text="" children=0 depth=1 pos=(0,1776) size=(1080x0)
+[EXP092-RENDER] node=32 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=33 class=Landroid/widget/Button; text="" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=34 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=35 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=36 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=37 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 174526 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 174526 non-white pixels
+[QUEUE] Runnable id=4026531843 dequeued (ready_at=1000000114ms <= now=1000000114ms virtual)
+[G06-TOKEN] {"callback":"UnsetPressedState","state_changes":["setPressed(false)"],"target_view_id":34,"virtual_ms":1000000114}
+[ApkParser] Found EOCD at offset 63976
+[ApkParser] Central Directory: 39 entries at offset 60456
+[EXP092-RENDER] node=28 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=29 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x888)
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,888) size=(1080x888)
+[EXP092-RENDER] node=31 class=Landroid/widget/TextView; text="" children=0 depth=1 pos=(0,1776) size=(1080x0)
+[EXP092-RENDER] node=32 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=33 class=Landroid/widget/Button; text="" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=34 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=35 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=36 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=37 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 174526 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 174526 non-white pixels
+[ApkParser] Found EOCD at offset 63976
+[ApkParser] Central Directory: 39 entries at offset 60456
+[EXP092-RENDER] node=28 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=29 class=Landroid/widget/ListView; text="" children=0 depth=1 pos=(0,0) size=(1080x888)
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="Push buttons to roll!
+
+Long-press buttons to configure dice." children=0 depth=1 pos=(0,888) size=(1080x888)
+[EXP092-RENDER] node=31 class=Landroid/widget/TextView; text="" children=0 depth=1 pos=(0,1776) size=(1080x0)
+[EXP092-RENDER] node=32 class=Landroid/widget/LinearLayout; text="" children=5 depth=1 pos=(0,1776) size=(1080x144)
+[EXP092-RENDER] node=33 class=Landroid/widget/Button; text="" children=0 depth=2 pos=(0,1776) size=(232x144)
+[EXP092-RENDER] node=34 class=Landroid/widget/Button; text="1d20" children=0 depth=2 pos=(232,1776) size=(232x144)
+[EXP092-RENDER] node=35 class=Landroid/widget/Button; text="1d6" children=0 depth=2 pos=(464,1776) size=(232x144)
+[EXP092-RENDER] node=36 class=Landroid/widget/Button; text="1d6+4" children=0 depth=2 pos=(696,1776) size=(232x144)
+[EXP092-RENDER] node=37 class=Landroid/widget/Button; text="..." children=0 depth=2 pos=(928,1776) size=(152x144)
+[EXP092-COPY] fb has 174526 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 174526 non-white pixels
+[G06-TAP] done: gestures=1 total_diff_px=45913 dir=run/s26_gmdice_tap/frames
