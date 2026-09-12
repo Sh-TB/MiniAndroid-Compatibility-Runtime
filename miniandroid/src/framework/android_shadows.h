@@ -816,6 +816,21 @@ public:
         bool overrides_on_measure = false;
         int dex_measured_w = 0, dex_measured_h = 0;
         bool dex_measure_valid = false;
+        // F-096 (R-NEW-329 root, real-DEX measure+layout lifecycle law):
+        // AOSP View lifecycle dispatches onMeasure/onLayout for EVERY view
+        // — including PROGRAMMATICALLY-CREATED ViewGroup subclasses whose
+        // DEX chain defines the override (e.g. androidx
+        // AndroidComposeView: onMeasure → updateRootConstraints+measureOnly,
+        // onLayout → measureAndLayout → root.place(0,0) → the ENTIRE
+        // compose placement chain). The F10 hook fires only for
+        // inflated-leaf views (overrides_on_measure is captured at the
+        // inflate ctor hook), so programmatic compose views never ran
+        // their placement → every LayoutNode stayed isPlaced=false → 0
+        // canvas ops (the R-NEW-329 frontier). This flag marks the
+        // one-time lifecycle dispatch per node (layout passes are
+        // idempotent for the static-frame runs this runtime models; later
+        // frames reuse the composed result).
+        bool f096_lifecycle_done = false;
         // EXP-067: Image resource ID — set by ImageView.setImageResource(int)
         // The renderer can look up the drawable path via resource_drawable_paths_.
         int32_t image_resource_id = 0;

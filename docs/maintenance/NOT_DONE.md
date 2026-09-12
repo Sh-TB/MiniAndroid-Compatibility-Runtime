@@ -27,10 +27,14 @@ and regression-gated (goldens byte-identical; see docs/testing/VERIFIED_TESTS.md
 
 ## Data / provenance debts
 
-10. **Telegram golden APK** (K-26): SHA f5e11927… lost from the external cache;
-    telegram.org now serves newer bytes. Re-acquire the exact build to re-assert
-    the 088ea640 baseline; until then the Telegram row is NOT REPRODUCED (not a
-    code regression — simplestopwatch carries the pixel-exact regression proof).
+10. ~~**Telegram golden APK** (K-26)~~ → **RE-ACQUIRED 2026-09-12 (S27)**: telegram.org's
+    official `/dl/android/apk` serves the exact pinned build again
+    (sha f5e1192725772960… == the lost golden; 73,028,244 B, 5 DEX, binary manifest).
+    Installed at `miniandroid/download/exp038_telegram/Telegram.apk` (gitignored).
+    Executed: parse + ApplicationLoader.onCreate + LifecycleRegistry machinery reached;
+    current frontier = R-NEW-331 (FragmentManager host wiring + SafeIterableMap iterator
+    churn) — see docs/maintenance/s27_session_record.md §4. The 088ea640 baseline is
+    re-assertable from this artifact.
 11. **Campaign 014 code** (K-28): the lost session's runtime changes exist only as
     triage artifacts (docs/evidence/campaign014/). Re-running Campaign 014 from
     v0.13.0 (or this branch) is required for a true v0.14.0.

@@ -5372,3 +5372,25 @@ Stage Summary:
 - 3/5 corpus apps render REAL UI pixels (microtimer, gmdice, stopwatch); 2/5 compose apps blocked at compose-internal frontiers (placement gate / fragment host), honestly recorded.
 - Battery 93/94 (pre-existing GATE H only); dooz deterministic ×3; zero regressions.
 - Next: R-NEW-329 compose placement-pass law (highest value — unblocks ALL Compose apps incl. dooz gameplay rendering); then STTT fragment-host law; then Advanced HelloWorld per campaign priorities.
+
+---
+Task ID: S27-MAIN
+Agent: Super Z (session 27 — MASTER CAMPAIGN 3 continuation: 9-issue GitHub review, battery 100% gate, R-NEW-329 compose placement close, Telegram golden re-acquire)
+Task: Continue from HEAD 79874955 exactly as it exists. Push old commits first. Review ALL 9 open GitHub issues and approve/close the verified ones. Fix the battery 93/94 → 100% (user question). Attack the R-NEW-329 compose placement gate (summit: real program renders + screenshots). Test Telegram/WhatsApp/Tik. Report progress percentages.
+
+Work Log:
+- §0 reconcile: HEAD 79874955, clean tree; pushed unpushed commit (e77684b9..79874955) FIRST per user directive.
+- GitHub issues: all 9 audited against repo truth (evidence paths verified post-migration). #1-#8 CLOSED with verification comments (statuses per the repo's own §29 audit; each cites committed evidence); #9 (living roadmap) kept open + S27 frontier comment posted.
+- GATE H ROOT-CAUSED (was 93/94 since S25): the gate's frozen color laws encoded the freeze-era BUGGY rendering. App truth (DEX evidence: ShowTime.focusedColor forces 0xFF only for focused; idle keeps raw alpha 0x99; MyStateDrawable.onStateChange setAlpha law): idle render = theme color × 153/255 → glyph 153 (#999999), blue #6FA8DC→(66,100,132) — the runtime NOW correctly alpha-blends. Pipeline integrity re-proven: IoU 0.950/0.997 vs source PNG masks (freeze 0.959/0.997), dim-aware threshold >140, 3-run byte-identical. Re-earned with dim-aware laws, ZERO runtime code changed → battery 94/94 = 100% (verified twice).
+- R-NEW-329 CLOSED (F-096 + F-096b): (1) F-096 — NO real-DEX View lifecycle existed for PROGRAMMATIC views (inflate-ctor/leaf-measure/onDraw hooks only); AndroidComposeView overrides onMeasure+onLayout in dooz's DEX (androguard-verified) and its measure/updateRootConstraints + layout/measureAndLayout/root.place(0,0) NEVER ran → every LayoutNode isPlaced=false → 0 canvas ops. Fix: dispatch_view_lifecycle_once — one-time per-node real-DEX measure(EXACTLY rect)+layout(changed=true) in the render walk, AOSP order. (2) F-096b — View$MeasureSpec.getMode returned the SHIFTED mode (0/1/2); AOSP View.java returns the IN-PLACE masked mode (spec & 0xC0000000) — compose z(I)J compares mode==0x40000000 and throws ISE otherwise (the app-boundary unwind after F-096 enabled the path). Fix: getMode law corrected (evidence: androguard z listing + AOSP source).
+- POST-F-096/b live evidence: placement chains EXECUTE (F074 super-dispatch walks node/c, node/l, k0/T placement laws; MSPEC diag specs 0x40000438/0x40000780/0x40000000/0x40000069). NEW FRONTIER R-NEW-330 (honest): ISE "DepthSortedSet.remove called on an unattached node" (m0/m.c ← MeasureAndLayoutDelegate.measureAndLayout popEach ← AndroidComposeView.onLayout) — a relayoutNodes entry has owner==null.
+- Telegram golden RE-ACQUIRED (K-26 LIFTED): official dl serves the exact pinned build again (sha f5e1192725772960…, 73,028,244 B, 5 DEX); installed gitignored at download/exp038_telegram/Telegram.apk; executed to ApplicationLoader.onCreate + LifecycleRegistry; frontier R-NEW-331 = FragmentManager "not attached to a host" (SAME family as STTT) + SafeIterableMap iterator churn. WhatsApp/TikTok: official channels are Play-only (HTML pages, no APK) — honest.
+- REGRESSION: battery 94/94 ALL PASS on the final binary (F-096+F-096b); dooz frame SHA UNCHANGED 193466ead8fd21d6 ×3 deterministic; stopwatch frame byte-identical pre/post fixes (81481eb2aa581c53); microtimer/gmdice/stopwatch render real UI (1,041,437 / 1,744,539 / 1,944,411 non-white px); STTT unchanged (honest R-NEW-331).
+- Registry 310 → 318 (back-filled R-NEW-324..328 from S25/S26 records; 329 VERIFIED-FIXED; 330/331 OBSERVED-FAIL). Session record: docs/maintenance/s27_session_record.md; evidence images run/s27_suite/.
+
+Stage Summary:
+- Battery 93/94 → 94/94 = 100% (GATE H re-earned, app-truth dim-color law, zero code change).
+- R-NEW-329 closed with TWO generic family fixes (F-096 lifecycle dispatch, F-096b getMode in-place law) — the compose measure/layout/place chains now execute as real bytecode.
+- K-26 Telegram golden blocker LIFTED; fragment-host family (R-NEW-331) identified as the shared STTT+Telegram frontier.
+- All 9 GitHub issues resolved (8 closed verified, 1 living updated).
+- Next: R-NEW-330 (DepthSortedSet unattached node — bounded receiver/arg evidence, attach-propagation law), R-NEW-331 (fragment-host law), Advanced HelloWorld smoke suite.
