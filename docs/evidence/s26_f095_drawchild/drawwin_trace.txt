@@ -1,0 +1,53 @@
+[DRAWWIN-IN] Landroidx/compose/ui/platform/AndroidComposeView;.onDraw (Landroid/graphics/Canvas;)V
+[DRAWWIN-IN] Landroidx/compose/ui/platform/AndroidComposeView;.dispatchDraw (Landroid/graphics/Canvas;)V
+[DRAWWIN-BRIDGE] Landroidx/compose/ui/platform/AndroidComposeView;.isAttachedToWindow argc=1 caller=Landroidx/compose/ui/platform/AndroidComposeView;.dispatchDraw
+[DRAWWIN-IN] Landroidx/compose/ui/platform/AndroidComposeView;.c (Z)V
+[DRAWWIN-IN] LC/n;.b ()Z
+[DRAWWIN-BRIDGE] Lm0/c0;.isEmpty argc=1 caller=LC/n;.b
+[DRAWWIN-BRIDGE] Landroid/os/Trace;.beginSection argc=1 caller=Landroidx/compose/ui/platform/AndroidComposeView;.c
+[DRAWWIN-IN] Landroidx/compose/ui/node/i;.h (Landroidx/compose/ui/platform/AndroidComposeView$k;)Z
+[DRAWWIN-IN] Landroidx/compose/ui/node/e;.F ()Z
+[DRAWWIN-IN] Landroidx/compose/ui/node/e;.G ()Z
+[DRAWWIN-IN] LH/d;.f ()V
+[DRAWWIN-IN] Landroidx/compose/ui/node/i;.a (Z)V
+[DRAWWIN-IN] Lm0/L;.<clinit> ()V
+[DRAWWIN-IN] LM1/i;.f (Ljava/lang/Object;Ljava/lang/String;)V
+[DRAWWIN-BRIDGE] Ljava/util/Arrays;.sort argc=4 caller=Landroidx/compose/ui/node/i;.a
+[DRAWWIN-BRIDGE] Ljava/lang/Math;.max argc=2 caller=Landroidx/compose/ui/node/i;.a
+[DRAWWIN-IN] LH/d;.f ()V
+[DRAWWIN-BRIDGE] Landroid/os/Trace;.endSection argc=0 caller=Landroidx/compose/ui/platform/AndroidComposeView;.c
+[DRAWWIN-BRIDGE] Ljava/util/concurrent/atomic/AtomicReference;.get argc=1 caller=Landroidx/compose/ui/platform/AndroidComposeView;.dispatchDraw
+[DRAWWIN-IN] Landroidx/compose/ui/platform/AndroidComposeView;.getRoot ()Landroidx/compose/ui/node/e;
+[DRAWWIN-IN] Landroidx/compose/ui/node/e;.n (LX/o;)V
+[DRAWWIN-IN] Landroidx/compose/ui/node/l;.M0 (LX/o;)V
+[DRAWWIN-IN] LX/b;.s (FF)V
+[DRAWWIN-BRIDGE] Landroid/graphics/Canvas;.translate argc=3 caller=LX/b;.s
+[DRAWWIN-IN] Landroidx/compose/ui/node/l;.O0 (LX/o;)V
+[DRAWWIN-IN] Landroidx/compose/ui/node/l;.k1 (I)LR/f$c;
+[DRAWWIN-IN] Lm0/D;.h (I)Z
+[DRAWWIN-IN] Landroidx/compose/ui/node/c;.j1 ()LR/f$c;
+[DRAWWIN-IN] Landroidx/compose/ui/node/l;.m1 (Z)LR/f$c;
+[DRAWWIN-IN] Landroidx/compose/ui/node/c;.u1 (LX/o;)V
+[DRAWWIN-IN] Lm0/w;.c (Landroidx/compose/ui/node/e;)Landroidx/compose/ui/node/p;
+[DRAWWIN-IN] Landroidx/compose/ui/node/e;.w ()LH/d;
+[DRAWWIN-IN] LH/d;.f ()V
+[DRAWWIN-IN] Landroidx/compose/ui/node/e;.x ()LH/d;
+[DRAWWIN-IN] Landroidx/compose/ui/node/e;.c0 ()V
+[DRAWWIN-IN] LH/d;.c (ILH/d;)V
+[DRAWWIN-IN] LH/d;.k ()Z
+[DRAWWIN-IN] LH/d;.h (I)V
+[DRAWWIN-IN] Ln/a;.k ([Ljava/lang/Object;[Ljava/lang/Object;III)V
+[DRAWWIN-IN] LM1/i;.f (Ljava/lang/Object;Ljava/lang/String;)V
+[DRAWWIN-IN] LM1/i;.f (Ljava/lang/Object;Ljava/lang/String;)V
+[DRAWWIN-BRIDGE] Ljava/lang/System;.arraycopy argc=5 caller=Ln/a;.k
+[DRAWWIN-IN] LM1/i;.f (Ljava/lang/Object;Ljava/lang/String;)V
+[DRAWWIN-BRIDGE] Ljava/util/Arrays;.sort argc=4 caller=Landroidx/compose/ui/node/e;.w
+[DRAWWIN-IN] Landroidx/compose/ui/node/e;.G ()Z
+[DRAWWIN-IN] Landroidx/compose/ui/platform/AndroidComposeView;.getShowLayoutBounds ()Z
+[DRAWWIN-IN] LX/b;.s (FF)V
+[DRAWWIN-BRIDGE] Landroid/graphics/Canvas;.translate argc=3 caller=LX/b;.s
+[DRAWWIN-BRIDGE] Ljava/util/ArrayList;.isEmpty argc=1 caller=Landroidx/compose/ui/platform/AndroidComposeView;.dispatchDraw
+[DRAWWIN-IN] Landroidx/compose/ui/platform/L0;.<clinit> ()V
+[DRAWWIN-BRIDGE] Landroid/view/ViewOutlineProvider;.<init> argc=1 caller=Landroidx/compose/ui/platform/L0;.<clinit>
+[DRAWWIN-BRIDGE] Ljava/util/ArrayList;.clear argc=1 caller=Landroidx/compose/ui/platform/AndroidComposeView;.dispatchDraw
+[C013-ONDRAW] view=745 class=Landroidx/compose/ui/platform/AndroidComposeView; dispatched=YES ops=0
