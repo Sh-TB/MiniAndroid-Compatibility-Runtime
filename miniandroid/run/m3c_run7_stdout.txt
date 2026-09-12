@@ -1,0 +1,19 @@
+[*] Execution mode: REAL_DALVIK (bytecode interpretation)
+[*] Running APK: download/exp076_corpus/io.github.yamin8000.dooz_18.apk
+[*] Output directory: run/m3c_run7
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 1
+Execution Time: 0ms
+Errors: 0
+Warnings: 0
+
+Screenshot: run/m3c_run7/screenshot.png
+Report: run/m3c_run7/report.md
