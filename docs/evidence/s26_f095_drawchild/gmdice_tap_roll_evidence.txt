@@ -1,0 +1,20 @@
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setTextColor caller=Lde/duenndns/gmdice/GameMasterDice;.onCreate
+[REC-MISS] Landroid/widget/Button;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[REC-MISS] Landroid/widget/Button;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[REC-MISS] Landroid/widget/Button;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[REC-MISS] Landroid/widget/Button;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.onResume
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="Push buttons to roll!
+[G06-TAP] DOWN (400,1830) target=34 consumed=1
+[EXP092-RENDER] node=30 class=Landroid/widget/TextView; text="Push buttons to roll!
+[G06-TAP] UP click_posted=1
+[REC-MISS] Landroid/widget/Button;.getText caller=Lde/duenndns/gmdice/GameMasterDice;.onClick
+[REC-MISS] Ljava/lang/CharSequence;.toString caller=Lde/duenndns/gmdice/GameMasterDice;.onClick
+[REC-MISS] Landroid/widget/TextView;.setText caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/duenndns/gmdice/GameMasterDice;.roll
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/duenndns/gmdice/GameMasterDice;.roll
