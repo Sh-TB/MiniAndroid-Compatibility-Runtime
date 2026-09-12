@@ -1,0 +1,19 @@
+[*] Execution mode: REAL_DALVIK (bytecode interpretation)
+[*] Running APK: download/exp076_corpus/io.github.yamin8000.dooz_18.apk
+[*] Output directory: run/m3c_run5
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 1
+Execution Time: 0ms
+Errors: 0
+Warnings: 1
+
+Screenshot: run/m3c_run5/screenshot.png
+Report: run/m3c_run5/report.md
