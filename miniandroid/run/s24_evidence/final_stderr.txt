@@ -1,0 +1,252 @@
+# TRIMMED TRACE — full 14,952,457-byte stderr reproducible via:
+#   MINIANDROID_DISPATCH_ATTACH=1 MINIANDROID_S24_TRACE=1 MINIANDROID_TAG_TRACE=1 \
+#     ./build/miniandroid run -o run/s24_post_f090i download/exp076_corpus/io.github.yamin8000.dooz_18.apk
+# Kept: all [S24-*] probe lines + [EXC-PROPAGATE]/[EXCEPTION]/[THROWABLE-*] + final 200 lines.
+
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=4596 nodes=3 depth=0
+[UC009-ATTACH-DIAG] ComposeView IS in class index
+[UC009-ATTACH] onAttachedToWindow dispatched view=102 class=Landroidx/compose/ui/platform/ComposeView;
+[THROWABLE-MSG] Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" caller=Landroidx/navigation/c;.e pc=68 depth=49
+[THROWABLE-STACK] #0 Landroidx/navigation/c;.e
+[THROWABLE-STACK] #1 Landroidx/navigation/c;.a
+[THROWABLE-STACK] #2 Landroidx/navigation/c$e;.o
+[THROWABLE-STACK] #3 Landroidx/navigation/c$a;.e
+[THROWABLE-STACK] #4 Landroidx/navigation/compose/e;.d
+[THROWABLE-STACK] #5 Landroidx/navigation/h;.d
+[THROWABLE-STACK] #6 Landroidx/navigation/c;.h
+[THROWABLE-STACK] #7 Landroidx/navigation/compose/p;.a
+[THROWABLE-STACK] #8 Landroidx/navigation/compose/p;.b
+[THROWABLE-STACK] #9 Ln1/u;.k
+[THROWABLE-STACK] #10 LN/a;.k
+[THROWABLE-STACK] #11 LF/y;.a
+[EXCEPTION] method=Landroidx/navigation/c;.e pc=71 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=(none) handler=NOT_FOUND msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Landroidx/navigation/c;.e — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/IllegalArgumentException; caught at caller LF/l;.R invoke_pc=118 handler=0x0x7d type=<catch-all>
+[EXCEPTION] method=LF/l;.R pc=186 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[180,187) handler=FOUND handler_addr=98 catch_type=<catch-all> msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to catch-all handler at PC=98 catch_type=<catch-all>
+[EXCEPTION] method=LF/l;.R pc=198 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[187,199) handler=FOUND handler_addr=67 catch_type=<catch-all> msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to catch-all handler at PC=67 catch_type=<catch-all>
+[EXCEPTION] method=LF/l;.R pc=202 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=(no try covering pc) handler=NOT_FOUND msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in LF/l;.R — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/IllegalArgumentException; caught at caller LF/v;.s invoke_pc=33 handler=0x0x2a type=Ljava/lang/Exception;
+[EXCEPTION] method=LF/v;.s pc=45 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[43,46) handler=FOUND handler_addr=40 catch_type=<catch-all> msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to catch-all handler at PC=40 catch_type=<catch-all>
+[EXCEPTION] method=LF/v;.s pc=47 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[46,48) handler=FOUND handler_addr=38 catch_type=<catch-all> msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to catch-all handler at PC=38 catch_type=<catch-all>
+[EXCEPTION] method=LF/v;.s pc=125 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[115,126) handler=FOUND handler_addr=123 catch_type=Ljava/lang/Exception; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to typed handler at PC=123 catch_type=Ljava/lang/Exception;
+[EXCEPTION] method=LF/v;.s pc=129 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=(no try covering pc) handler=NOT_FOUND msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in LF/v;.s — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/IllegalArgumentException; caught at caller LF/A0;.a invoke_pc=40 handler=0x0x87 type=<catch-all>
+[EXCEPTION] method=LF/A0;.a pc=139 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[136,140) handler=FOUND handler_addr=140 catch_type=<catch-all> msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to catch-all handler at PC=140 catch_type=<catch-all>
+[EXCEPTION] method=LF/A0;.a pc=144 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[141,157) handler=FOUND handler_addr=133 catch_type=Ljava/lang/Exception; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to typed handler at PC=133 catch_type=Ljava/lang/Exception;
+[EXCEPTION] method=LF/A0;.C pc=126 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=(no try covering pc) handler=NOT_FOUND msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in LF/A0;.C — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/IllegalArgumentException; uncaught at caller Lio/github/yamin8000/dooz/content/MainActivity;.onCreate invoke_pc=109 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[UC009-ATTACH] onAttachedToWindow dispatched view=745 class=Landroidx/compose/ui/platform/AndroidComposeView;
+[UC009-ATTACH] attach dispatch complete ok=true
+[C013-ONDRAW] view=745 class=Landroidx/compose/ui/platform/AndroidComposeView; dispatched=YES ops=0
+
+=== TAIL 200 ===
+[RET] Lz1/i;.isEmpty val=0 type=9 obj=0
+[F074-SUPER-DISPATCH] Landroidx/navigation/compose/d$a;.equals not declared locally → ancestor Landroidx/navigation/g;.equals(Ljava/lang/Object;)Z (receiver identity preserved) a0=o2709(Landroidx/navigation/compose/d$a;) a1=o2709(Landroidx/navigation/compose/d$a;)
+[RET] Lz1/i;.isEmpty val=0 type=9 obj=0
+[F074-SUPER-DISPATCH] Lz1/i;.size not declared locally → ancestor Lz1/d;.size()I (receiver identity preserved) a0=o2831(Lz1/i;)
+[F074-SUPER-DISPATCH] Lz1/i;.size not declared locally → ancestor Lz1/d;.size()I (receiver identity preserved) a0=o2831(Lz1/i;)
+[EXP093-APUT] aput-object v4→arr[v0] idx_v1 arr_type=7 arr_obj=2852 src_type=7 idx=1
+[F074-SUPER-DISPATCH] Lz1/i;.size not declared locally → ancestor Lz1/d;.size()I (receiver identity preserved) a0=o2831(Lz1/i;)
+[F074-SUPER-DISPATCH] Lh1/r;.e not declared locally → ancestor Landroidx/navigation/c;.e(I)Landroidx/navigation/b; (receiver identity preserved) a0=o2505(Lh1/r;)
+[RET] Lz1/i;.isEmpty val=0 type=9 obj=0
+[F074-SUPER-DISPATCH] Lz1/i;.size not declared locally → ancestor Lz1/d;.size()I (receiver identity preserved) a0=o2509(Lz1/i;)
+[THROWABLE-MSG] Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" caller=Landroidx/navigation/c;.e pc=68 depth=49
+[THROWABLE-STACK] #0 Landroidx/navigation/c;.e
+[THROWABLE-STACK] #1 Landroidx/navigation/c;.a
+[THROWABLE-STACK] #2 Landroidx/navigation/c$e;.o
+[THROWABLE-STACK] #3 Landroidx/navigation/c$a;.e
+[THROWABLE-STACK] #4 Landroidx/navigation/compose/e;.d
+[THROWABLE-STACK] #5 Landroidx/navigation/h;.d
+[THROWABLE-STACK] #6 Landroidx/navigation/c;.h
+[THROWABLE-STACK] #7 Landroidx/navigation/compose/p;.a
+[THROWABLE-STACK] #8 Landroidx/navigation/compose/p;.b
+[THROWABLE-STACK] #9 Ln1/u;.k
+[THROWABLE-STACK] #10 LN/a;.k
+[THROWABLE-STACK] #11 LF/y;.a
+[EXCEPTION] method=Landroidx/navigation/c;.e pc=71 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=(none) handler=NOT_FOUND msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in Landroidx/navigation/c;.e — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/IllegalArgumentException; caught at caller LF/l;.R invoke_pc=118 handler=0x0x7d type=<catch-all>
+[EXP093-APUT] aput-object v2→arr[v0] idx_v5 arr_type=7 arr_obj=1597 src_type=1 idx=0
+[EXCEPTION] method=LF/l;.R pc=186 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[180,187) handler=FOUND handler_addr=98 catch_type=<catch-all> msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to catch-all handler at PC=98 catch_type=<catch-all>
+[EXCEPTION] method=LF/l;.R pc=198 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[187,199) handler=FOUND handler_addr=67 catch_type=<catch-all> msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to catch-all handler at PC=67 catch_type=<catch-all>
+[EXCEPTION] method=LF/l;.R pc=202 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=(no try covering pc) handler=NOT_FOUND msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in LF/l;.R — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/IllegalArgumentException; caught at caller LF/v;.s invoke_pc=33 handler=0x0x2a type=Ljava/lang/Exception;
+[EXCEPTION] method=LF/v;.s pc=45 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[43,46) handler=FOUND handler_addr=40 catch_type=<catch-all> msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to catch-all handler at PC=40 catch_type=<catch-all>
+[EXCEPTION] method=LF/v;.s pc=47 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[46,48) handler=FOUND handler_addr=38 catch_type=<catch-all> msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to catch-all handler at PC=38 catch_type=<catch-all>
+[EXCEPTION] method=LF/v;.s pc=125 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[115,126) handler=FOUND handler_addr=123 catch_type=Ljava/lang/Exception; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to typed handler at PC=123 catch_type=Ljava/lang/Exception;
+[EXCEPTION] method=LF/v;.s pc=129 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=(no try covering pc) handler=NOT_FOUND msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in LF/v;.s — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/IllegalArgumentException; caught at caller LF/A0;.a invoke_pc=40 handler=0x0x87 type=<catch-all>
+[EXCEPTION] method=LF/A0;.a pc=139 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[136,140) handler=FOUND handler_addr=140 catch_type=<catch-all> msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to catch-all handler at PC=140 catch_type=<catch-all>
+[F074-SUPER-DISPATCH] LP/b;.d not declared locally → ancestor LP/g;.d()I (receiver identity preserved) a0=o1544(LP/b;)
+[F074-SUPER-DISPATCH] LP/b;.d not declared locally → ancestor LP/g;.d()I (receiver identity preserved) a0=o1544(LP/b;)
+[F074-SUPER-DISPATCH] LP/a;.d not declared locally → ancestor LP/g;.d()I (receiver identity preserved) a0=o1547(LP/a;)
+[F074-SUPER-DISPATCH] LP/a;.d not declared locally → ancestor LP/g;.d()I (receiver identity preserved) a0=o1547(LP/a;)
+[F074-SUPER-DISPATCH] LP/a;.e not declared locally → ancestor LP/g;.e()LP/j; (receiver identity preserved) a0=o2881(LP/a;)
+[CLASS_INIT] class=LP/h$b; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=LP/h$b; method=<clinit> result=OK engine=0x7ffca37b4328 storage_size=1045
+[EXCEPTION] method=LF/A0;.a pc=144 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=[141,157) handler=FOUND handler_addr=133 catch_type=Ljava/lang/Exception; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] → jumping to typed handler at PC=133 catch_type=Ljava/lang/Exception;
+[EXCEPTION] method=LF/A0;.C pc=126 exception=Ljava/lang/IllegalArgumentException; msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554" try_range=(no try covering pc) handler=NOT_FOUND msg="No destination with ID 0 is on the NavController's back stack. The current destination is Landroidx/navigation/compose/e$a;@2554"
+[EXCEPTION] no handler for Ljava/lang/IllegalArgumentException; in LF/A0;.C — unwinding frame (propagate to caller)
+[EXC-PROPAGATE] Ljava/lang/IllegalArgumentException; uncaught at caller Lio/github/yamin8000/dooz/content/MainActivity;.onCreate invoke_pc=109 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[UC009-ATTACH] onAttachedToWindow dispatched view=745 class=Landroidx/compose/ui/platform/AndroidComposeView;
+[UC009-ATTACH] attach dispatch complete ok=true
+[QUEUE] Runnable id=388 dequeued (ready_at=1000000000ms <= now=1000000000ms virtual)
+[QUEUE] Runnable id=711 dequeued (ready_at=1000000000ms <= now=1000000000ms virtual)
+[UC009-WIRE] drain round=0 runnable(s)=2
+[UC009-WIRE] Runnable id=388 class=Landroidx/compose/ui/platform/J$c;
+[RET] Lz1/i;.isEmpty val=0 type=9 obj=0
+[RET] Lz1/i;.isEmpty val=0 type=9 obj=0
+[EXP093-APUT] aput-object v3→arr[v0] idx_v1 arr_type=7 arr_obj=625 src_type=1 idx=0
+[F074-SUPER-DISPATCH] Lb2/h;.run not declared locally → ancestor LW1/N;.run()V (receiver identity preserved) a0=o620(Lb2/h;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b$a;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o619(Landroidx/compose/ui/platform/WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b$a;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/J;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o380(Landroidx/compose/ui/platform/J;) a1=o634(LW1/D0;)
+[F074-SUPER-DISPATCH] LW1/u0;.x not declared locally → ancestor LW1/j0;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o614(LW1/u0;) a1=o634(LW1/D0;)
+[F074-SUPER-DISPATCH] LW1/u0;.getKey not declared locally → ancestor LW1/j0;.getKey()LC1/f$b; (receiver identity preserved) a0=o614(LW1/u0;)
+[INTERFACE-DEFAULT] LR/g;.getKey()LC1/f$b; (interface LC1/f$a;.getKey) → REAL DEX dispatched
+[INTERFACE-DEFAULT] LF/b0;.getKey()LC1/f$b; (interface LC1/f$a;.getKey) → REAL DEX dispatched
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b$a;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o619(Landroidx/compose/ui/platform/WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b$a;)
+[F074-SUPER-DISPATCH] Lb2/h;.e not declared locally → ancestor LW1/N;.e(Ljava/lang/Object;)Ljava/lang/Throwable; (receiver identity preserved) a0=o620(Lb2/h;) a1=o137(Ly1/l;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/J;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o380(Landroidx/compose/ui/platform/J;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.x not declared locally → ancestor LW1/j0;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o614(LW1/u0;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.getKey not declared locally → ancestor LW1/j0;.getKey()LC1/f$b; (receiver identity preserved) a0=o614(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.b not declared locally → ancestor LW1/a;.b()Z (receiver identity preserved) a0=o614(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.c0 not declared locally → ancestor LW1/j0;.c0()Ljava/lang/Object; (receiver identity preserved) a0=o614(LW1/u0;)
+[F074-SUPER-DISPATCH] Lb2/h;.f not declared locally → ancestor LW1/N;.f(Ljava/lang/Object;)Ljava/lang/Object; (receiver identity preserved) a0=o620(Lb2/h;) a1=o137(Ly1/l;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b$a;.y not declared locally → ancestor LE1/a;.y(Ljava/lang/Object;)V (receiver identity preserved) a0=o619(Landroidx/compose/ui/platform/WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b$a;) a1=o137(Ly1/l;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b$a;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o619(Landroidx/compose/ui/platform/WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b$a;)
+[F074-SUPER-DISPATCH] LZ1/M;.b not declared locally → ancestor La2/b;.b()La2/d; (receiver identity preserved) a0=o598(LZ1/M;)
+[CLASS_INIT] class=LZ1/O; method=<clinit> bytecode_size=13
+[CLASS_INIT] class=LZ1/O; method=<clinit> result=OK engine=0x7ffca37b4328 storage_size=1046
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=2891 src_type=7 idx=0
+[CLASS_INIT] class=LZ1/N; method=<clinit> bytecode_size=20
+[CLASS_INIT] class=LZ1/N; method=<clinit> result=OK engine=0x7ffca37b4328 storage_size=1048
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/J;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o380(Landroidx/compose/ui/platform/J;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.x not declared locally → ancestor LW1/j0;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o614(LW1/u0;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.getKey not declared locally → ancestor LW1/j0;.getKey()LC1/f$b; (receiver identity preserved) a0=o614(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.b not declared locally → ancestor LW1/a;.b()Z (receiver identity preserved) a0=o614(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.c0 not declared locally → ancestor LW1/j0;.c0()Ljava/lang/Object; (receiver identity preserved) a0=o614(LW1/u0;)
+[F074-SUPER-DISPATCH] Landroidx/compose/runtime/ParcelableSnapshotMutableFloatState;.n not declared locally → ancestor LF/S0;.n(F)V (receiver identity preserved) a0=o401(Landroidx/compose/runtime/ParcelableSnapshotMutableFloatState;)
+[F074-SUPER-DISPATCH] LP/a;.d not declared locally → ancestor LP/g;.d()I (receiver identity preserved) a0=o2881(LP/a;)
+[F074-SUPER-DISPATCH] LP/a;.e not declared locally → ancestor LP/g;.e()LP/j; (receiver identity preserved) a0=o2881(LP/a;)
+[F074-SUPER-DISPATCH] LZ1/M$a;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o2890(LZ1/M$a;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/J;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o380(Landroidx/compose/ui/platform/J;) a1=o382(LC1/e$a;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/J;.s not declared locally → ancestor LW1/y;.s(LE1/c;)Lb2/h; (receiver identity preserved) a0=o380(Landroidx/compose/ui/platform/J;) a1=o2890(LZ1/M$a;)
+[F074-SUPER-DISPATCH] LZ1/M$a;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o2890(LZ1/M$a;)
+[F074-SUPER-DISPATCH] LZ1/M$a;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o2890(LZ1/M$a;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/J;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o380(Landroidx/compose/ui/platform/J;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.x not declared locally → ancestor LW1/j0;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o614(LW1/u0;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.getKey not declared locally → ancestor LW1/j0;.getKey()LC1/f$b; (receiver identity preserved) a0=o614(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.C not declared locally → ancestor LW1/j0;.C(ZZLL1/l;)LW1/P; (receiver identity preserved) a0=o614(LW1/u0;) a3=o2899(LW1/j;)
+[F074-SUPER-DISPATCH] LW1/u0;.c0 not declared locally → ancestor LW1/j0;.c0()Ljava/lang/Object; (receiver identity preserved) a0=o614(LW1/u0;)
+[F074-SUPER-DISPATCH] Lb2/h;.g not declared locally → ancestor LW1/N;.g(Ljava/lang/Throwable;Ljava/lang/Throwable;)V (receiver identity preserved) a0=o620(Lb2/h;)
+[RET] Lz1/i;.isEmpty val=0 type=9 obj=0
+[RET] Lz1/i;.isEmpty val=0 type=9 obj=0
+[EXP093-APUT] aput-object v3→arr[v0] idx_v1 arr_type=7 arr_obj=625 src_type=1 idx=1
+[F074-SUPER-DISPATCH] Lb2/h;.run not declared locally → ancestor LW1/N;.run()V (receiver identity preserved) a0=o736(Lb2/h;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/g0;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o735(Landroidx/compose/ui/platform/g0;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/J;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o380(Landroidx/compose/ui/platform/J;) a1=o634(LW1/D0;)
+[F074-SUPER-DISPATCH] LW1/u0;.x not declared locally → ancestor LW1/j0;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o730(LW1/u0;) a1=o634(LW1/D0;)
+[F074-SUPER-DISPATCH] LW1/u0;.getKey not declared locally → ancestor LW1/j0;.getKey()LC1/f$b; (receiver identity preserved) a0=o730(LW1/u0;)
+[INTERFACE-DEFAULT] LF/b0;.getKey()LC1/f$b; (interface LC1/f$a;.getKey) → REAL DEX dispatched
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/g0;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o735(Landroidx/compose/ui/platform/g0;)
+[F074-SUPER-DISPATCH] Lb2/h;.e not declared locally → ancestor LW1/N;.e(Ljava/lang/Object;)Ljava/lang/Throwable; (receiver identity preserved) a0=o736(Lb2/h;) a1=o137(Ly1/l;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/J;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o380(Landroidx/compose/ui/platform/J;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.x not declared locally → ancestor LW1/j0;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o730(LW1/u0;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.getKey not declared locally → ancestor LW1/j0;.getKey()LC1/f$b; (receiver identity preserved) a0=o730(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.b not declared locally → ancestor LW1/a;.b()Z (receiver identity preserved) a0=o730(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.c0 not declared locally → ancestor LW1/j0;.c0()Ljava/lang/Object; (receiver identity preserved) a0=o730(LW1/u0;)
+[F074-SUPER-DISPATCH] Lb2/h;.f not declared locally → ancestor LW1/N;.f(Ljava/lang/Object;)Ljava/lang/Object; (receiver identity preserved) a0=o736(Lb2/h;) a1=o137(Ly1/l;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/g0;.y not declared locally → ancestor LE1/a;.y(Ljava/lang/Object;)V (receiver identity preserved) a0=o735(Landroidx/compose/ui/platform/g0;) a1=o137(Ly1/l;)
+[F074-SUPER-DISPATCH] LY1/j;.a not declared locally → ancestor Lb2/d;.a()V (receiver identity preserved) a0=o720(LY1/j;)
+[CLASS_INIT] class=Lb2/d; method=<clinit> bytecode_size=21
+[CLASS_INIT] class=Lb2/d; method=<clinit> result=OK engine=0x7ffca37b4328 storage_size=1050
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/g0;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o735(Landroidx/compose/ui/platform/g0;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/J;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o380(Landroidx/compose/ui/platform/J;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.x not declared locally → ancestor LW1/j0;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o730(LW1/u0;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.getKey not declared locally → ancestor LW1/j0;.getKey()LC1/f$b; (receiver identity preserved) a0=o730(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.C not declared locally → ancestor LW1/j0;.C(ZZLL1/l;)LW1/P; (receiver identity preserved) a0=o730(LW1/u0;) a3=o2909(LW1/j;)
+[F074-SUPER-DISPATCH] LW1/u0;.c0 not declared locally → ancestor LW1/j0;.c0()Ljava/lang/Object; (receiver identity preserved) a0=o730(LW1/u0;)
+[F074-SUPER-DISPATCH] Lb2/h;.g not declared locally → ancestor LW1/N;.g(Ljava/lang/Throwable;Ljava/lang/Throwable;)V (receiver identity preserved) a0=o736(Lb2/h;)
+[RET] Lz1/i;.isEmpty val=1 type=9 obj=0
+[RET] Lz1/i;.isEmpty val=1 type=9 obj=0
+[CHOREO] removeFrameCallback cb=388 removed=1
+[UC009-WIRE] Runnable id=711 class=Lb2/h;
+[F074-SUPER-DISPATCH] Lb2/h;.run not declared locally → ancestor LW1/N;.run()V (receiver identity preserved) a0=o711(Lb2/h;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/U0;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o710(Landroidx/compose/ui/platform/U0;)
+[F074-SUPER-DISPATCH] LW1/u0;.o not declared locally → ancestor LW1/j0;.o(Ljava/lang/Object;LL1/p;)Ljava/lang/Object; (receiver identity preserved) a0=o708(LW1/u0;) a1=o2911(Lb2/B;) a2=o534(Lb2/y$c;)
+[F074-SUPER-DISPATCH] LX1/f;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o705(LX1/f;) a1=o634(LW1/D0;)
+[F074-SUPER-DISPATCH] LW1/u0;.x not declared locally → ancestor LW1/j0;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o708(LW1/u0;) a1=o634(LW1/D0;)
+[F074-SUPER-DISPATCH] LW1/u0;.getKey not declared locally → ancestor LW1/j0;.getKey()LC1/f$b; (receiver identity preserved) a0=o708(LW1/u0;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/U0;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o710(Landroidx/compose/ui/platform/U0;)
+[F074-SUPER-DISPATCH] Lb2/h;.e not declared locally → ancestor LW1/N;.e(Ljava/lang/Object;)Ljava/lang/Throwable; (receiver identity preserved) a0=o711(Lb2/h;) a1=o137(Ly1/l;)
+[F074-SUPER-DISPATCH] LX1/f;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o705(LX1/f;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.x not declared locally → ancestor LW1/j0;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o708(LW1/u0;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.getKey not declared locally → ancestor LW1/j0;.getKey()LC1/f$b; (receiver identity preserved) a0=o708(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.b not declared locally → ancestor LW1/a;.b()Z (receiver identity preserved) a0=o708(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.c0 not declared locally → ancestor LW1/j0;.c0()Ljava/lang/Object; (receiver identity preserved) a0=o708(LW1/u0;)
+[F074-SUPER-DISPATCH] Lb2/h;.f not declared locally → ancestor LW1/N;.f(Ljava/lang/Object;)Ljava/lang/Object; (receiver identity preserved) a0=o711(Lb2/h;) a1=o137(Ly1/l;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/U0;.y not declared locally → ancestor LE1/a;.y(Ljava/lang/Object;)V (receiver identity preserved) a0=o710(Landroidx/compose/ui/platform/U0;) a1=o137(Ly1/l;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/platform/U0;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o710(Landroidx/compose/ui/platform/U0;)
+[F074-SUPER-DISPATCH] LZ1/r;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o2915(LZ1/r;)
+[F074-SUPER-DISPATCH] LZ1/M;.b not declared locally → ancestor La2/b;.b()La2/d; (receiver identity preserved) a0=o438(LZ1/M;)
+[EXP093-APUT] aput-object v2→arr[v0] idx_v1 arr_type=7 arr_obj=2919 src_type=7 idx=0
+[F074-SUPER-DISPATCH] LX1/f;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o705(LX1/f;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.x not declared locally → ancestor LW1/j0;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o708(LW1/u0;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.getKey not declared locally → ancestor LW1/j0;.getKey()LC1/f$b; (receiver identity preserved) a0=o708(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.b not declared locally → ancestor LW1/a;.b()Z (receiver identity preserved) a0=o708(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.c0 not declared locally → ancestor LW1/j0;.c0()Ljava/lang/Object; (receiver identity preserved) a0=o708(LW1/u0;)
+[F074-SUPER-DISPATCH] LZ1/M$a;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o2918(LZ1/M$a;)
+[F074-SUPER-DISPATCH] LZ1/q$a;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o2921(LZ1/q$a;)
+[F074-SUPER-DISPATCH] LZ1/M$a;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o2918(LZ1/M$a;)
+[F074-SUPER-DISPATCH] LX1/f;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o705(LX1/f;) a1=o382(LC1/e$a;)
+[F074-SUPER-DISPATCH] LX1/f;.s not declared locally → ancestor LW1/y;.s(LE1/c;)Lb2/h; (receiver identity preserved) a0=o705(LX1/f;) a1=o2918(LZ1/M$a;)
+[F074-SUPER-DISPATCH] LZ1/M$a;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o2918(LZ1/M$a;)
+[F074-SUPER-DISPATCH] LW1/u0;.o not declared locally → ancestor LW1/j0;.o(Ljava/lang/Object;LL1/p;)Ljava/lang/Object; (receiver identity preserved) a0=o708(LW1/u0;) a1=o2926(Ljava/lang/Integer;) a2=o529(Lb2/y$a;)
+[F074-SUPER-DISPATCH] LZ1/M$a;.r not declared locally → ancestor LE1/c;.r()LC1/f; (receiver identity preserved) a0=o2918(LZ1/M$a;)
+[F074-SUPER-DISPATCH] LX1/f;.x not declared locally → ancestor LW1/y;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o705(LX1/f;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.x not declared locally → ancestor LW1/j0;.x(LC1/f$b;)LC1/f$a; (receiver identity preserved) a0=o708(LW1/u0;) a1=o439(LW1/e0$b;)
+[F074-SUPER-DISPATCH] LW1/u0;.getKey not declared locally → ancestor LW1/j0;.getKey()LC1/f$b; (receiver identity preserved) a0=o708(LW1/u0;)
+[F074-SUPER-DISPATCH] LW1/u0;.C not declared locally → ancestor LW1/j0;.C(ZZLL1/l;)LW1/P; (receiver identity preserved) a0=o708(LW1/u0;) a3=o2927(LW1/j;)
+[F074-SUPER-DISPATCH] LW1/u0;.c0 not declared locally → ancestor LW1/j0;.c0()Ljava/lang/Object; (receiver identity preserved) a0=o708(LW1/u0;)
+[F074-SUPER-DISPATCH] Lb2/h;.g not declared locally → ancestor LW1/N;.g(Ljava/lang/Throwable;Ljava/lang/Throwable;)V (receiver identity preserved) a0=o711(Lb2/h;)
+[ApkParser] Found EOCD at offset 1749858
+[ApkParser] Central Directory: 106 entries at offset 1741044
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/101
+[EXP092-RENDER] node=102 class=Landroidx/compose/ui/platform/ComposeView; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[C013-LEAFCHK] Landroidx/compose/ui/platform/ComposeView; children=1 own_content=0 img_resid=0 bg=0x0 vis=0 w=1080 h=1920
+[EXP092-RENDER] node=745 class=Landroidx/compose/ui/platform/AndroidComposeView; text="" children=0 depth=1 pos=(0,0) size=(0x105)
+[C013-LEAFCHK] Landroidx/compose/ui/platform/AndroidComposeView; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=0 h=105
+[UC009-DRAW] AndroidComposeView expanded to ComposeView rect 1080x1920
+[LOGIN-BRANCH] isEmpty called receiver_type=7 receiver_obj=1230 (caller=LC/n;.b)
+[CLASS_INIT] class=Lm0/L; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lm0/L; method=<clinit> result=OK engine=0x7ffca37b4328 storage_size=1052
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/node/c;.M0 not declared locally → ancestor Landroidx/compose/ui/node/l;.M0(LX/o;)V (receiver identity preserved) a0=o847(Landroidx/compose/ui/node/c;) a1=o822(LX/b;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/node/c;.O0 not declared locally → ancestor Landroidx/compose/ui/node/l;.O0(LX/o;)V (receiver identity preserved) a0=o847(Landroidx/compose/ui/node/c;) a1=o822(LX/b;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/node/c;.k1 not declared locally → ancestor Landroidx/compose/ui/node/l;.k1(I)LR/f$c; (receiver identity preserved) a0=o847(Landroidx/compose/ui/node/c;)
+[F074-SUPER-DISPATCH] Landroidx/compose/ui/node/c;.m1 not declared locally → ancestor Landroidx/compose/ui/node/l;.m1(Z)LR/f$c; (receiver identity preserved) a0=o847(Landroidx/compose/ui/node/c;)
+[CLASS_INIT] class=Landroidx/compose/ui/platform/L0; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Landroidx/compose/ui/platform/L0; method=<clinit> result=OK engine=0x7ffca37b4328 storage_size=1053
+[C013-ONDRAW] view=745 class=Landroidx/compose/ui/platform/AndroidComposeView; dispatched=YES ops=0
+[C013-CUSTOMVIEW] inline placeholder: Landroidx/compose/ui/platform/AndroidComposeView; at (0,0 1080x1920)
+[EXP092-COPY] fb has 802 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 802 non-white pixels
