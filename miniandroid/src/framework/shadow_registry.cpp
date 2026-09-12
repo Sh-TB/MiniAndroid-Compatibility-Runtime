@@ -134,8 +134,19 @@ CallResult ShadowRegistry::dispatch(const CallContext& ctx) {
     // ViewShadow tree FIRST, regardless of the object's primary identity.
     if ((ctx.method == "getParent" || ctx.method == "getTag") &&
         ctx.receiver_id != 0) {
+        // F-090c (R-NEW-317) name-law fix: ViewShadow::name() answers "View",
+        // so the old `!= "ViewShadow"` filter SKIPPED the ViewShadow-first
+        // route on every call — dead code since F-057. Owner-tag walks whose
+        // bridge key is an app class (dooz MainActivity receiver →
+        // ViewTreeLifecycleOwner.get) fell through to the EXP-075 Activity
+        // gate (ViewShadow::handles_class rejects "*Activity;") →
+        // ActivityShadow → no tag / no parent → walk dead-ended →
+        // "ViewTreeLifecycleOwner not found" ISE → Compose composition died
+        // before the first frame. Route by the shadow's C++ TYPE (same
+        // identity find_as uses), not by its display name.
         for (auto& s : shadows_) {
-            if (s->name() != "ViewShadow") continue;
+            if (dynamic_cast<framework::ViewShadow*>(s.get()) == nullptr)
+                continue;
             CallResult r = s->dispatch(ctx);
             if (r.handled) {
                 calls_handled_++;
