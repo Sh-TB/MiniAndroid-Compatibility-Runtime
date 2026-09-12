@@ -5952,6 +5952,98 @@ bool DalvikExecutionEngine::dispatch_custom_view_measure(
     return false;
 }
 
+// F-096 (R-NEW-329 root, real-DEX measure+layout lifecycle law):
+// dispatch onMeasure + onLayout as REAL bytecode for a view whose DEX
+// chain defines them — including programmatic views (compose's
+// AndroidComposeView) that the inflate-time F10 hook never sees.
+// AOSP order (View.java): measure → layout. The measure specs are
+// EXACTLY(rect) — the runtime's own measure pass already resolved the
+// final geometry (AOSPMeasureSpec.EXACTLY = 0x40000000 | size); the
+// setMeasuredDimension write-back lands through the SAME shadow dispatch
+// the F10 law uses. onLayout runs (changed=true, l, t, r, b) —
+// AndroidComposeView.onLayout → measureAndLayout() → remeasureAndRelayout
+// → root.place(0,0) → MeasureResult.placeChildren → placeAt →
+// isPlacedByParent/markNodeAndSubtreeAsPlaced (compose 1.6.7
+// MeasureAndLayoutDelegate.kt:523-536 + LayoutNodeLayoutDelegate.kt:684-689).
+// Once per node: static-frame runs compose once; later frames reuse it.
+bool DalvikExecutionEngine::dispatch_view_lifecycle_once(
+    uint32_t view_object_id, int l, int t, int r, int b) {
+    if (!dex_report_ || !shadow_registry_) return false;
+    if (view_object_id == 0) return false;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (!view_shadow) return false;
+    auto* node = view_shadow->find_node(view_object_id);
+    if (!node || node->f096_lifecycle_done) return false;
+    node->f096_lifecycle_done = true;
+
+    std::string cls = node->class_desc;
+    if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < cls.size(); ++i)
+            norm += (cls[i] == '.') ? '/' : cls[i];
+        cls = norm;
+    }
+    if (!class_info_index_.count(cls)) return false;
+
+    bool dispatched_any = false;
+    // 1) onMeasure(II)V — EXACTLY specs from the resolved rect.
+    if (class_chain_defines_method(cls, "onMeasure")) {
+        constexpr int MEASURE_SPEC_EXACTLY = 1 << 30;
+        int spec_w = MEASURE_SPEC_EXACTLY | ((r - l) & 0x3FFFFFFF);
+        int spec_h = MEASURE_SPEC_EXACTLY | ((b - t) & 0x3FFFFFFF);
+        node->dex_measure_valid = false;
+        DalvikValue ret = DalvikValue::make_void();
+        DalvikExecutionResult res;
+        bool ok = try_recursive_invoke(
+            cls, "onMeasure",
+            {DalvikValue::make_object(view_object_id, node->class_desc),
+             DalvikValue::make_int(spec_w), DalvikValue::make_int(spec_h)},
+            ret, res);
+        if (ok) {
+            dispatched_any = true;
+            if (node->dex_measure_valid) {
+                node->measured_width = node->dex_measured_w;
+                node->measured_height = node->dex_measured_h;
+            }
+        }
+    }
+    // 2) onLayout(ZIIII)V — changed=true on the one dispatch.
+    if (class_chain_defines_method(cls, "onLayout")) {
+        DalvikValue ret = DalvikValue::make_void();
+        DalvikExecutionResult res;
+        bool ok = try_recursive_invoke(
+            cls, "onLayout",
+            {DalvikValue::make_object(view_object_id, node->class_desc),
+             DalvikValue::make_bool(true),
+             DalvikValue::make_int(l), DalvikValue::make_int(t),
+             DalvikValue::make_int(r), DalvikValue::make_int(b)},
+            ret, res);
+        if (ok) dispatched_any = true;
+    }
+    // Bounded evidence trace.
+    static thread_local uint64_t f096_log = 0;
+    if (f096_log < 16) {
+        f096_log++;
+        fprintf(stderr,
+                "[F096-LIFECYCLE] %s view=%u rect=(%d,%d %dx%d) dispatched=%s\n",
+                cls.c_str(), view_object_id, l, t, r - l, b - t,
+                dispatched_any ? "YES" : "NO");
+    }
+    return dispatched_any;
+}
+
+bool DalvikExecutionEngine::chain_overrides_method(
+    const std::string& class_desc, const char* method) {
+    std::string cls = class_desc;
+    if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
+        std::string norm = "L";
+        for (size_t i = 1; i < cls.size(); ++i)
+            norm += (cls[i] == '.') ? '/' : cls[i];
+        cls = norm;
+    }
+    return class_chain_defines_method(cls, method);
+}
+
 // EXP-060: Dispatch a synthetic CLICK event on a View.
 //
 // This is the generic event mechanism. The runtime:
@@ -18528,19 +18620,40 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────────
     // MASTER CAMPAIGN FIX (F8/F10 measure laws): View$MeasureSpec statics
     // are PURE BITWISE laws (AOSP View.java MeasureSpec):
-    //   getMode(spec)  = spec >>> 30          (UNSPECIFIED=0, EXACTLY=1, AT_MOST=2)
+    //   getMode(spec)  = spec & MODE_MASK   (MODE_MASK = 0xC0000000 — the
+    //                   mode stays IN PLACE: 0 / 0x40000000(EXACTLY) /
+    //                   0x80000000(AT_MOST); AOSP code compares the result
+    //                   DIRECTLY against the 1<<30-class constants)
     //   getSize(spec)  = spec & MASK_SIZE     (MASK_SIZE = 0x3FFFFFFF)
     //   makeMeasureSpec(size, mode) = (mode << 30) | (size & MASK_SIZE)
-    // Real custom-view onMeasure overrides call these first; without them
-    // every DEX onMeasure computed zeros (evidence: org.billthefarmer.scope
-    // v140 — YScale.onMeasure → getSize×2 → Math.min → setMeasuredDimension(0,0)).
+    // F-096b (S27): the previous getMode answered the SHIFTED mode (0/1/2) —
+    // real Android compares in-place (compose 1.6.7 AndroidComposeView.z:
+    // if-ne mode, 0x40000000 → throw IllegalStateException) so every DEX
+    // onMeasure that used getMode() hit the invalid-mode throw (dooz
+    // AndroidComposeView.onMeasure → z pc=31 ISE → app-boundary unwind).
+    // Evidence: androguard z(I)J listing + AOSP View.java source.
     // ────────────────────────────────────────────────────────────────────────
     if (class_name == "Landroid/view/View$MeasureSpec;" &&
         !args.empty() && args[0].type == DalvikType::INT32) {
         auto spec = [](const DalvikValue& v) -> int32_t { return v.int_val; };
         if (method == "getMode") {
+            // F-096 diag (bounded): the compose placement gate needs the
+            // raw spec→mode evidence. Remove-gate: MINIANDROID_MSPEC_DIAG.
+            static const bool ms_diag =
+                std::getenv("MINIANDROID_MSPEC_DIAG") != nullptr;
+            if (ms_diag) {
+                static thread_local uint64_t ms_log = 0;
+                if (ms_log < 12) {
+                    ms_log++;
+                    fprintf(stderr,
+                            "[MSPEC] getMode(spec=0x%08x) -> mode=%d\n",
+                            (uint32_t)spec(args[0]),
+                            (int32_t)(((uint32_t)spec(args[0])) >> 30));
+                }
+            }
             status = ApiCallTrace::Status::IMPLEMENTED;
-            result = DalvikValue::make_int((int32_t)(((uint32_t)spec(args[0])) >> 30));
+            result = DalvikValue::make_int(
+                (int32_t)((uint32_t)spec(args[0]) & 0xC0000000u));
             return true;
         }
         if (method == "getSize") {

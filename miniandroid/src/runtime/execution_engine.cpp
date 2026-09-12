@@ -1903,6 +1903,25 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                             int bottom = top + h;
                             visited_rects[task.view_id] = {{left, top}, {w, h}};
 
+                            // F-096 (R-NEW-329 root): one-time real-DEX
+                            // measure+layout lifecycle dispatch for views
+                            // whose DEX chain overrides onMeasure/onLayout.
+                            // AOSP View.java: measure → layout BEFORE any
+                            // draw. Programmatic compose views
+                            // (AndroidComposeView) never ran this — the F10
+                            // hook covers inflated leaves only — so the
+                            // compose placement chain (root.place →
+                            // isPlacedByParent) never executed and the draw
+                            // walk skipped every unplaced LayoutNode
+                            // (0 canvas ops). Positions are final here (the
+                            // runtime's own measure/layout pass ran); the
+                            // DEX measure specs are EXACTLY(rect) and
+                            // onLayout carries (changed=true, l,t,r,b).
+                            if (task.view_id != 0) {
+                                dalvik_engine_.dispatch_view_lifecycle_once(
+                                    task.view_id, left, top, right, bottom);
+                            }
+
                             // Draw view background
                             // EXP-095 (CM-020): REAL background colors captured
                             // from setBackgroundColor(int) take priority. Per §17:

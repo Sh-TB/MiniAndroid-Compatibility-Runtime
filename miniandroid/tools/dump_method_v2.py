@@ -2,7 +2,7 @@
 """EXP-051: Dump raw bytes of a specific method's bytecode."""
 import sys, zipfile, struct
 
-apk = '/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp038_telegram/Telegram.apk'
+apk = '/home/z/my-project/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk'
 target_class = sys.argv[1] if len(sys.argv) > 1 else 'Landroidx/lifecycle/LifecycleRegistry;'
 target_method = sys.argv[2] if len(sys.argv) > 2 else 'enforceMainThreadIfNeeded'
 
