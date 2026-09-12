@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  HELLO-SMOKE fixture layout — the Advanced HelloWorld / Compatibility
+  Smoke App (S23 Priority 2). One screen exercises the whole
+  DEX → framework → resources → layout → render → input → state chain:
+
+    LinearLayout root: padding=@dimen (resource-dimension path)
+    TextView title:    text=@string + textColor=@color + textSize=@dimen
+    TextView echo:     plain @string resource lookup
+    FrameLayout box:   fixed height=@dimen, child TextView with
+                       layout_margin=@dimen + layout_gravity=center
+                       (AOSP FrameLayout margins+gravity law, R-NEW-302)
+    TextView counter:  mutated by the click handler (state → render)
+    TextView storage:  SharedPreferences round-trip echo
+    Button:            text=@string, click → state change + requestLayout
+
+  No clocks, no randomness: identical invocations produce byte-identical
+  frames. License: MIT.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/smoke_bg"
+    android:padding="@dimen/smoke_padding">
+
+    <TextView
+        android:id="@+id/smoke_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/smoke_title"
+        android:textSize="@dimen/smoke_title_sp"
+        android:textColor="@color/smoke_accent" />
+
+    <TextView
+        android:id="@+id/smoke_echo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/smoke_resource_echo"
+        android:textColor="#E6E1E5" />
+
+    <FrameLayout
+        android:id="@+id/smoke_box_host"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/smoke_box_height">
+
+        <TextView
+            android:id="@+id/smoke_box"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_margin="@dimen/smoke_box_margin"
+            android:layout_gravity="center"
+            android:background="#1B6E53"
+            android:text="box" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/smoke_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="count=0"
+        android:textColor="#F2B8B5"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/smoke_storage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="pref_at_launch=none"
+        android:textColor="#9CD2B5" />
+
+    <TextView
+        android:id="@+id/smoke_lifecycle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="lifecycle=onCreate"
+        android:textColor="#FFD8A8" />
+
+    <Button
+        android:id="@+id/smoke_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/smoke_button" />
+</LinearLayout>

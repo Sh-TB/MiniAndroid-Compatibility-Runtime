@@ -236,6 +236,20 @@ struct ClassInfo {
     
     // Interface names
     std::vector<std::string> interfaces;
+
+    // F-087 (R-NEW-313): runtime-visible CLASS annotations, parsed from the
+    // DEX annotations_directory_item (class_annotations_off →
+    // annotation_set_item → annotation_item chain). Only RUNTIME visibility
+    // (1) entries are kept — the same law Class.getAnnotation implements:
+    // BUILD (0) and SYSTEM (2) annotations are invisible to reflection.
+    // Each entry: annotation type descriptor (e.g. Landroidx/navigation/l$b;)
+    // → ordered (element name, decoded element value) pairs. Element values
+    // decode for the deterministic subset (string/int/bool/char/byte/short/
+    // long/float/double/type); array/nested-annotation elements are skipped
+    // (not needed by any live consumer).
+    std::vector<std::pair<std::string,
+                          std::vector<std::pair<std::string, std::string>>>>
+        class_annotations;
     
     // Helper methods
     std::vector<MethodInfo> all_methods() const;
