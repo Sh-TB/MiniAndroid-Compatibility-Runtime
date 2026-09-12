@@ -150,6 +150,42 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     uint32_t obj_id = ctx.receiver_id;
 
+    // S24 probe (env-gated, bounded): the Navigator-attach loop zero-iterates
+    // because a Kotlin `toReadOnlyMap(providerMap).values` chain answers
+    // empty; this reveals which collection op breaks the chain.
+    {
+        static thread_local uint64_t s24_coll = 0;
+        if (std::getenv("MINIANDROID_S24_TRACE") != nullptr && s24_coll < 500) {
+            bool interesting =
+                (m == "put" || m == "size" || m == "entrySet" ||
+                 m == "values" || m == "iterator" ||
+                 m == "hasNext" || m == "next" || m == "getKey" ||
+                 m == "getValue") &&
+                (ctx.class_name == "Ljava/util/LinkedHashMap;" ||
+                 ctx.class_name == "Ljava/util/HashMap;" ||
+                 ctx.class_name == "Ljava/util/Map;" ||
+                 ctx.class_name == "Ljava/util/Map$Entry;" ||
+                 ctx.class_name == "Ljava/util/Collection;" ||
+                 ctx.class_name == "Ljava/util/Iterable;" ||
+                 ctx.class_name == "Ljava/util/Set;") &&
+                (obj_id >= 2400 || obj_id == 0);
+            if (interesting) {
+                ++s24_coll;
+                const CollectionState* st = nullptr;
+                auto it = collections_.find(obj_id);
+                if (it != collections_.end()) st = &it->second;
+                size_t n_entries = st ? (st->map_entries.size() +
+                                         st->map_string_entries.size())
+                                      : 0;
+                size_t n_elems =
+                    st ? (st->elements.size() + st->view_elements.size()) : 0;
+                std::cerr << "[S24-COLL] " << ctx.class_name << "." << m
+                          << " obj=" << obj_id << " entries=" << n_entries
+                          << " elems=" << n_elems << std::endl;
+            }
+        }
+    }
+
     // ────────────────────────────────────────────────────────────────────────
     // M3 F-ROOM-CHAIN: java.util.Collections static factories.
     //
@@ -240,11 +276,37 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         return CallResult::not_handled();
     }
 
-    // <init> — no-op, just mark the collection as existing.
+    // <init> — mark the collection as existing.
+    // F-090h (R-NEW-321): the copy-constructor family —
+    // OpenJDK HashMap(Map)/LinkedHashMap(Map)/LinkedHashMap(Map) and
+    // ArrayList(Collection)/HashSet(Collection): the new collection starts
+    // with EVERY entry/element of the source. Kotlin lowers its
+    // `toReadOnlyMap`/`toList`/`toSet` builtins to exactly these
+    // constructors (dooz evidence: z1/A.H = `new LinkedHashMap(source)`);
+    // an empty copy zero-iterated androidx.navigation's Navigator attach
+    // loop → "You cannot access the Navigator's state until the Navigator
+    // is attached" ISE → MainActivity.onCreate died → Compose never
+    // composed. Capacity/int-form constructors remain no-ops.
     if (m == "<init>") {
         bool is_map = (ctx.class_name.find("Map") != std::string::npos ||
                        ctx.class_name.find("Set") != std::string::npos);
-        get_or_create(obj_id, is_map);
+        auto* st = get_or_create(obj_id, is_map);
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+            ctx.args[0].object_id != 0 &&
+            ctx.args[0].object_id != obj_id) {
+            if (is_map) {
+                auto* src = get_or_create(ctx.args[0].object_id, true);
+                for (auto& kv : src->map_entries)
+                    st->map_entries[kv.first] = kv.second;
+                for (auto& kv : src->map_string_entries)
+                    st->map_string_entries[kv.first] = kv.second;
+            } else {
+                auto* src = get_or_create(ctx.args[0].object_id, false);
+                st->elements = src->elements;
+                st->view_elements = src->view_elements;
+            }
+        }
         return CallResult::handled_void();
     }
 

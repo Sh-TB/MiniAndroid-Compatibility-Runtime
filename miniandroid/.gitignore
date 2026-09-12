@@ -1,3 +1,28 @@
 runtime/data/
 run/f023_repro/
 core
+
+# M9 §41 external-artifact law — S24 session run dirs (evidence curated into
+# run/s24_evidence/; raw probe stderrs reproducible via MINIANDROID_S24_TRACE=1)
+run/s24_baseline*
+run/s24_attach1*
+run/s24_probe1*
+run/s24_post_f090/
+run/s24_post_f090_stderr.txt
+run/s24_post_f090_stdout.txt
+run/s24_post_f090c*
+run/s24_post_f090d*
+run/s24_post_f090g*
+run/s24_post_f090h*
+run/s24_post_f090i*
+run/s24_tagtrace*
+run/s24_collprobe*
+run/s24_coll2*
+run/s24_coll3*
+run/s24_paflow*
+run/s24_frame*
+run/s24_tri*
+run/s24_addall*
+run/s24_elist*
+run/s24_navprobe*
+run/s24_det_run*

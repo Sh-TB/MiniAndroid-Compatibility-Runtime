@@ -2934,6 +2934,27 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     DalvikExecutionResult& result,
     const std::string& method_descriptor
 ) {
+    // S24 probe (env-gated, bounded): the addAll NPE — the callee's
+    // elements param read null while the caller passed obj#2831; print
+    // every addAll entry to catch the path that mislaid the arg.
+    if (std::getenv("MINIANDROID_S24_TRACE") != nullptr &&
+        declaring_class == "Lz1/i;" &&
+        (method_name == "addAll" || method_name == "q" || method_name == "r")) {
+        static thread_local uint64_t s24_tri = 0;
+        if (s24_tri < 16) {
+            ++s24_tri;
+            std::cerr << "[S24-TRI] " << declaring_class << "." << method_name
+                      << (method_descriptor.empty() ? "" : method_descriptor)
+                      << " argc=" << args.size()
+                      << " recv=" << (args.empty() ? 0 : args[0].object_id)
+                      << " a1_type="
+                      << (args.size() > 1 ? static_cast<int>(args[1].type)
+                                          : -1)
+                      << " a1_oid="
+                      << (args.size() > 1 ? args[1].object_id : 0)
+                      << std::endl;
+        }
+    }
     // §24 diagnostic gates (MASTER-3 session 11): per-function declarations
     // (static thread_local locals are not shared across functions).
     static thread_local const bool app_trace_on =
@@ -5372,6 +5393,26 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         uint32_t regs_size = method.registers_size ? method.registers_size : 16;
         uint32_t ins_size = method.ins_size ? method.ins_size : static_cast<uint32_t>(args.size());
         uint32_t outs_size = method.outs_size ? method.outs_size : 4;
+
+        // S24 probe: z1/i.addAll received a NON-NULL elements arg from c.a
+        // yet its v3 read null in M1/i.f — a callee frame-setup mismatch.
+        // Print the parsed code_item header for the navigation collection
+        // family to expose the misparse.
+        {
+            static thread_local uint64_t s24_frame = 0;
+            if (std::getenv("MINIANDROID_S24_TRACE") != nullptr &&
+                s24_frame < 24 &&
+                (cls_ref.name == "Lz1/i;" || cls_ref.name == "Lz1/r;")) {
+                ++s24_frame;
+                std::cerr << "[S24-FRAME] " << cls_ref.name << "."
+                          << method.name << method.descriptor
+                          << " regs=" << method.registers_size
+                          << " ins=" << method.ins_size
+                          << " outs=" << method.outs_size
+                          << " args=" << args.size()
+                          << std::endl;
+            }
+        }
 
         // EXP-058: Debug — log register sizes for addFragmentToStack.
         // EXP-060: Also log for setParentLayout and presentFragment.
@@ -10099,6 +10140,38 @@ bool DalvikExecutionEngine::execute_check_cast(uint32_t pc, InstructionTrace& tr
         // Null passes any check-cast
     }
 
+    // F-090 (R-NEW-316): check-cast runtime-identity refinement.
+    // ART law (dalvik bytecodes §check-cast / AOSP CheckCast.cc): the cast
+    // ASSERTS the object is an instance of the target and the register's
+    // static type is refined to the target; the OBJECT is untouched. This
+    // engine carries a per-register class_desc that downstream identity
+    // surfaces (Object.getClass F-088, Class.getAnnotation F-087 receiver,
+    // EXP-059 runtime-type dispatch) read as the value's class. Without
+    // refinement, the Kotlin idiom `map[key] as Navigator` left the register
+    // poisoned with the container's declared type (Ljava/lang/Object; from
+    // Map.get) — dooz addNavigator → nameForNavigator(read @Navigator.Name
+    // off java.lang.Object) → IAE → MainActivity.onCreate died → blank Compose
+    // frame. Refinement rule: the HEAP's runtime class is the identity
+    // authority (EXP-059); use it when known, else refine to the cast target
+    // (the verifier's static type). Optimistic pass retained (no ClassCast-
+    // Exception yet — framework-side interface closure is not fully parsed;
+    // a hard CCE here would wrongly reject valid framework casts).
+    if (val.type == DalvikType::OBJECT_REF && val.object_id != 0) {
+        std::string runtime_desc = val.class_desc;
+        if (heap_.has_object(val.object_id)) {
+            if (const auto* obj = heap_.get(val.object_id);
+                obj && !obj->class_descriptor.empty())
+                runtime_desc = obj->class_descriptor;
+        }
+        std::string refined =
+            !runtime_desc.empty() ? runtime_desc : target_type;
+        if (!refined.empty() && refined != "<unknown>" &&
+            refined != val.class_desc) {
+            val.class_desc = refined;
+            set_register(reg, val);
+        }
+    }
+
     trace.operands.push_back({"v" + std::to_string(reg), target_type});
 
     pc_ = pc + 2;
@@ -10641,6 +10714,32 @@ bool DalvikExecutionEngine::execute_iput_object(uint32_t pc, InstructionTrace& t
                   << std::endl;
     }
 
+    // S24 frontier probe (env-gated, bounded): Navigator.state injection —
+    // the single DEX writer is navigation/compose/p.a (iput l.a). If this
+    // never fires (or fires on a different receiver than the one that later
+    // reads getState()), the Compose NavHost chain dies with "You cannot
+    // access the Navigator's state until the Navigator is attached".
+    if (field_res.resolved && field_res.field_name == "a" &&
+        field_res.class_descriptor == "Landroidx/navigation/l;" &&
+        std::getenv("MINIANDROID_S24_TRACE") != nullptr) {
+        static thread_local uint64_t s24_nav_iput = 0;
+        if (s24_nav_iput < 24) {
+            ++s24_nav_iput;
+            std::cerr << "[S24-NAV-STATE-IPUT] pc=" << pc
+                      << " recv_oid="
+                      << (obj_ref.type == DalvikType::OBJECT_REF
+                              ? obj_ref.object_id : 0)
+                      << " recv_cls=" << obj_ref.class_desc
+                      << " value_oid="
+                      << (src_val.type == DalvikType::OBJECT_REF
+                              ? src_val.object_id : 0)
+                      << " heap_has_recv="
+                      << (obj_ref.type == DalvikType::OBJECT_REF &&
+                          heap_.has_object(obj_ref.object_id) ? 1 : 0)
+                      << std::endl;
+        }
+    }
+
     if (field_res.resolved && obj_ref.type == DalvikType::OBJECT_REF &&
         heap_.has_object(obj_ref.object_id)) {
         heap_.set_object_field(obj_ref.object_id, field_res.field_name, src_val);
@@ -10767,6 +10866,29 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
     DalvikValue result_value;
     result_value.type = DalvikType::NULL_REF;
     result_value.object_id = 0;
+
+    // S24 probe (env-gated, bounded): the Kotlin EmptyList singleton
+    // (z1/t.i) feeds NavController.navigate's List param; a null answer
+    // nulls z1/r.D's receiver and NPEs addAll ("parameter elements").
+    if (field_res.resolved &&
+        field_res.class_descriptor == "Lz1/t;" &&
+        field_res.field_name == "i" &&
+        std::getenv("MINIANDROID_S24_TRACE") != nullptr) {
+        static thread_local uint64_t s24_emptylist = 0;
+        if (s24_emptylist < 12) {
+            ++s24_emptylist;
+            auto probe = static_field_storage_.find("Lz1/t;.i");
+            std::cerr << "[S24-EMPTYLIST] sget-object z1/t.i pc=" << pc
+                      << " storage_hit=" << (probe != static_field_storage_.end())
+                      << " oid="
+                      << (probe != static_field_storage_.end()
+                              ? probe->second.object_id : 0)
+                      << " type="
+                      << (probe != static_field_storage_.end()
+                              ? static_cast<int>(probe->second.type) : -1)
+                      << std::endl;
+        }
+    }
 
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
@@ -11014,6 +11136,20 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     // EXP-035: Now uses VTable dispatch for proper polymorphic method resolution
     if (pc + 2 >= bytecode_.size()) return false;
 
+    // S24 flow probe (env-gated, bounded): trace p.a (NavHost/NavController
+    // R8-merged method) instruction flow — the navigator-attach block
+    // (pc ~1240-1404) never executed its state iput while the graph build
+    // (pc ~2546 c.h) did; this reveals the actual pc path.
+    {
+        static thread_local uint64_t s24_flow = 0;
+        if (std::getenv("MINIANDROID_S24_TRACE") != nullptr &&
+            current_class_ == "Landroidx/navigation/compose/p;" &&
+            s24_flow < 120) {
+            ++s24_flow;
+            std::cerr << "[S24-PA-FLOW] virtual pc=" << pc << std::endl;
+        }
+    }
+
     // EXP-071 Phase 7: Save and reset current_invoke_is_static_ to false
     // for invoke-virtual calls. This ensures try_shadow_dispatch correctly
     // treats args[0] as `this` (instance method, not static).
@@ -11068,12 +11204,23 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     // Without this, literal float args (drawText x/y, drawRect edges,
     // drawCircle radius, drawOval/drawArc rects…) reached shadows and
     // callees as huge raw-bit integers and wide args arrived split.
+    // F-090i (R-NEW-322): the proto is ALSO the callee's exact descriptor —
+    // hoisted so every try_recursive_invoke below passes it (the F-023
+    // exact-descriptor overload law can only fire when the descriptor is
+    // supplied). Live evidence (dooz): c.a invoked the 1-arg
+    // z1/i.addAll(Collection); with no descriptor the arity heuristic
+    // executed the 2-arg addAll(I, Collection) body whose elements
+    // register stayed unwritten → M1/i.f NPE "parameter elements is
+    // null" → NavHost graph build died → Compose never composed.
+    std::string invoke_descriptor_35c;
     if (dex_report_) {
-        const std::string proto_35c =
+        invoke_descriptor_35c =
             resolve_method_proto_for_dex(method_idx, current_dex_index_);
-        if (proto_35c != "<unknown>") {
-            args = build_invoke_args(args, parse_proto_param_types(proto_35c),
+        if (invoke_descriptor_35c != "<unknown>") {
+            args = build_invoke_args(args, parse_proto_param_types(invoke_descriptor_35c),
                                      /*is_static=*/false);
+        } else {
+            invoke_descriptor_35c.clear();
         }
     }
     
@@ -11089,6 +11236,30 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     if (dex_report_) {
         method_name_from_dex = resolve_method_name_for_dex(method_idx, current_dex_index_);
         declaring_class = resolve_method_class_for_dex(method_idx, current_dex_index_);
+    }
+
+    // S24 probe: c.a's addAll receives a null collection — print the arg.
+    if (std::getenv("MINIANDROID_S24_TRACE") != nullptr &&
+        method_name_from_dex == "addAll" &&
+        current_class_ == "Landroidx/navigation/c;") {
+        static thread_local uint64_t s24_addall = 0;
+        if (s24_addall < 8) {
+            ++s24_addall;
+            std::cerr << "[S24-ADDALL] caller pc=" << pc
+                      << " argc=" << args.size()
+                      << " recv_oid="
+                      << (args.empty() ? 0 : args[0].object_id)
+                      << " elements_type="
+                      << (args.size() > 1 ? static_cast<int>(args[1].type)
+                                          : static_cast<int>(args[0].type))
+                      << " elements_oid="
+                      << (args.size() > 1 ? args[1].object_id
+                                          : args[0].object_id)
+                      << " elements_cls="
+                      << (args.size() > 1 ? args[1].class_desc
+                                          : args[0].class_desc)
+                      << std::endl;
+        }
     }
     
     // Get the object reference (first arg is 'this' for virtual calls)
@@ -11193,7 +11364,8 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
             runtime_type != "<unknown>" && runtime_type != declaring_class) {
             // Try the runtime type first — this is the polymorphic dispatch.
             if (try_recursive_invoke(runtime_type, method_name_from_dex,
-                                     args, return_val, result)) {
+                                     args, return_val, result,
+                                     invoke_descriptor_35c)) {
                 recursively_invoked = true;
                 tried_runtime_type = true;
                 api_status = ApiCallTrace::Status::IMPLEMENTED;
@@ -11227,7 +11399,8 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
                 f020_cur = sup;
                 if (f020_cur == "Ljava/lang/Object;") break;
                 if (try_recursive_invoke(f020_cur, method_name_from_dex,
-                                         args, return_val, result)) {
+                                         args, return_val, result,
+                                         invoke_descriptor_35c)) {
                     recursively_invoked = true;
                     api_status = ApiCallTrace::Status::IMPLEMENTED;
                     last_invoke_return_ = return_val;
@@ -11241,7 +11414,8 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
             // must not be overwritten by the static declaring-class body.
             // Use declaring_class from method_ids[] for lookup
             if (try_recursive_invoke(declaring_class, method_name_from_dex,
-                                     args, return_val, result)) {
+                                     args, return_val, result,
+                                     invoke_descriptor_35c)) {
                 recursively_invoked = true;
                 api_status = ApiCallTrace::Status::IMPLEMENTED;
                 // EXP-057: CRITICAL FIX — must update last_invoke_return_ after
@@ -12073,12 +12247,17 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
 
     // CYCLE-E: signature-aware param conversion for invoke-interface (35c).
     // See execute_invoke_virtual for the full rationale.
+    // F-090i (R-NEW-322): hoisted proto — also the callee's exact descriptor
+    // for the F-023 overload law at every DEX dispatch site below.
+    std::string iface_proto;
     if (dex_report_) {
-        const std::string proto_35c =
+        iface_proto =
             resolve_method_proto_for_dex(method_idx, current_dex_index_);
-        if (proto_35c != "<unknown>") {
-            args = build_invoke_args(args, parse_proto_param_types(proto_35c),
+        if (iface_proto != "<unknown>") {
+            args = build_invoke_args(args, parse_proto_param_types(iface_proto),
                                      /*is_static=*/false);
+        } else {
+            iface_proto.clear();
         }
     }
 
@@ -12133,8 +12312,11 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // MainActivity.onCreate died at invoke_pc=109 → first frame died.
     if (heap_obj && !heap_obj->class_descriptor.empty() &&
         heap_obj->class_descriptor != class_name) {
+        // F-090i (R-NEW-322): pass the interface proto as the exact
+        // descriptor so the F-023 overload law resolves same-name
+        // overloads on the runtime class correctly.
         if (try_recursive_invoke(heap_obj->class_descriptor, method_name,
-                                 args, return_val, result)) {
+                                 args, return_val, result, iface_proto)) {
             last_invoke_return_ = return_val;
             trace.invoked_method =
                 heap_obj->class_descriptor + "." + method_name;
@@ -12145,7 +12327,8 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     // Declared-interface dispatch — executes default bodies on the
     // interface itself (F-023 semantics for non-overridden defaults) and
     // still catches the historical "interface methods with impls" cases.
-    if (try_recursive_invoke(class_name, method_name, args, return_val, result)) { last_invoke_return_ = return_val;
+    if (try_recursive_invoke(class_name, method_name, args, return_val, result,
+                             iface_proto)) { last_invoke_return_ = return_val;
         trace.invoked_method = class_name + "." + method_name;
         pc_ = pc + 3;
         return true;
@@ -12163,11 +12346,8 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
         // the name lookup misses, resolve by EXACT signature (descriptor)
         // inside the receiver's runtime class and dispatch THAT method.
         // ────────────────────────────────────────────────────────────────
-        const std::string iface_proto =
-            dex_report_ ? resolve_method_proto_for_dex(method_idx,
-                                                       current_dex_index_)
-                        : std::string("<unknown>");
-        if (iface_proto != "<unknown>") {
+        // F-090i: iface_proto is hoisted above — reuse it here.
+        if (!iface_proto.empty()) {
             // Walk the receiver's class + superclass chain (DEX virtual
             // dispatch law: inherited implementations answer interface
             // calls; R8 renames per class, so the signature is the only
@@ -12256,7 +12436,8 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
                         if (mi.code_offset == 0 || mi.is_abstract) continue;
                         if (mi.descriptor != iface_proto) continue;
                         if (try_recursive_invoke(ifc, mi.name, args,
-                                                 return_val, result)) {
+                                                 return_val, result,
+                                                 iface_proto)) {
                             last_invoke_return_ = return_val;
                             trace.invoked_method =
                                 ifc + "." + mi.name +
@@ -12291,9 +12472,30 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
     }
 
     // EXP-048: Fall through to bridge_to_api for interface methods
+    // F-090d (R-NEW-318): the bridge key must be the RECEIVER'S RUNTIME
+    // class — the same EXP-059 law execute_invoke_virtual already applies.
+    // The declared interface supplies only the SIGNATURE; framework API
+    // handlers are keyed by implementation classes. Live evidence (dooz):
+    // `route.isNotBlank()` compiled to invoke-interface
+    // CharSequence.length()/charAt() on a real String; bridging with
+    // "Ljava/lang/CharSequence;" found no handler → length answered 0 →
+    // isBlank=true → NavDestination.setRoute IAE "Cannot have an empty
+    // route" → MainActivity.onCreate died → Compose never composed.
     ApiCallTrace::Status status = ApiCallTrace::Status::STUBBED;
     if (config_.enable_api_bridge) {
-        bridge_to_api(class_name, method_name, args, return_val, status, method_idx); last_invoke_return_ = return_val;
+        std::string api_cls = class_name;
+        if (heap_obj && !heap_obj->class_descriptor.empty()) {
+            api_cls = heap_obj->class_descriptor;
+        } else if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
+            // String constants ride STRING_REF without a heap object; the
+            // runtime class of any CharSequence-typed constant is String.
+            api_cls = "Ljava/lang/String;";
+        } else if (!args.empty() &&
+                   args[0].type == DalvikType::OBJECT_REF &&
+                   !args[0].class_desc.empty()) {
+            api_cls = args[0].class_desc;
+        }
+        bridge_to_api(api_cls, method_name, args, return_val, status, method_idx); last_invoke_return_ = return_val;
     }
 
     ApiCallTrace api_trace;
@@ -14326,6 +14528,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                       << "." << method << " argc=" << args.size() << std::endl;
         }
     }
+    // S24 frontier probe (env-gated): every getTag/getParent bridge entry —
+    // receiver identity determines the ViewShadow-first routing (F-057).
+    if ((method == "getTag" || method == "getParent") &&
+        std::getenv("MINIANDROID_TAG_TRACE") != nullptr) {
+        static thread_local uint64_t s24_tag = 0;
+        if (s24_tag < 80) {
+            ++s24_tag;
+            std::cerr << "[S24-BRIDGE] " << class_name << "." << method
+                      << " recv_oid="
+                      << (!args.empty() ? args[0].object_id : 0)
+                      << " recv_cls="
+                      << (!args.empty() ? args[0].class_desc : std::string("-"))
+                      << " caller=" << current_class_ << "." << current_method_
+                      << std::endl;
+        }
+    }
     // MASTER-TRIAGE: cap-limited evidence for the androidx main-thread
     // identity chain (which layer answers Thread/Looper, with what value).
     if ((method == "currentThread" || method == "getThread" ||
@@ -15763,6 +15981,68 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_int(static_cast<int32_t>(next_u32()));
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-090g (R-NEW-319) — java.util.UUID.randomUUID()/toString() law.
+    // OpenJDK (UUID.java): randomUUID() answers a version-4, variant-1
+    // (IETF RFC 4122) UUID backed by SecureRandom; toString() is the
+    // 8-4-4-4-12 lowercase hex form. Kotlin null-asserts the result —
+    // with no handler the engine answered null and dooz's log-tag
+    // "randomUUID().toString() must not be null" NPE killed onCreate.
+    // Determinism law (same policy as F-086 ThreadLocalRandom): the bits
+    // come from the fixed-seed xorshift stream, so multi-frame golden runs
+    // stay byte-identical while the API contract (version/variant bits,
+    // uniqueness per call) is preserved.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/util/UUID;" && method == "randomUUID") {
+        auto next64 = []() -> uint64_t {
+            static thread_local uint64_t rng_state = 0x9E3779B97F4A7C15ull;
+            uint64_t x = rng_state;
+            x ^= x << 13; x ^= x >> 7; x ^= x << 17;
+            rng_state = x;
+            return x;
+        };
+        uint64_t msb = next64();
+        uint64_t lsb = next64();
+        // RFC 4122: version 4 in the high 4 bits of time_hi_and_version
+        // (bits 12..15 of msb), variant 10xx in the top two bits of
+        // clock_seq (bits 62..63 of lsb).
+        msb = (msb & 0xFFFF0FFFFFFFFFull) | 0x0000400000000000ull;
+        lsb = (lsb & 0x3FFFFFFFFFFFFFFFull) | 0x8000000000000000ull;
+        char buf[40];
+        std::snprintf(buf, sizeof(buf),
+                      "%08x-%04x-%04x-%04x-%012llx",
+                      static_cast<uint32_t>(msb >> 32),
+                      static_cast<uint32_t>((msb >> 16) & 0xFFFF),
+                      static_cast<uint32_t>(msb & 0xFFFF),
+                      static_cast<uint32_t>(lsb >> 48),
+                      static_cast<unsigned long long>(lsb & 0xFFFFFFFFFFFFull));
+        uint32_t uuid_id = heap_.allocate(
+            "Ljava/util/UUID;", pc_,
+            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        heap_.set_object_field(
+            uuid_id, "uuid_msb", DalvikValue::make_long(
+                                     static_cast<int64_t>(msb)));
+        heap_.set_object_field(
+            uuid_id, "uuid_lsb", DalvikValue::make_long(
+                                     static_cast<int64_t>(lsb)));
+        heap_.set_object_field(
+            uuid_id, "uuid_value",
+            DalvikValue::make_string(std::string(buf), 0));
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_object(uuid_id, "Ljava/util/UUID;");
+        return true;
+    }
+    if (class_name == "Ljava/util/UUID;" && method == "toString" &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+        auto v = heap_.get_object_field(args[0].object_id, "uuid_value");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (v.has_value() && v->type == DalvikType::STRING_REF)
+            result = DalvikValue::make_string(v->string_val, 0);
+        else
+            result = DalvikValue::make_string(
+                "00000000-0000-4000-8000-000000000000", 0);
         return true;
     }
     // ────────────────────────────────────────────────────────────────────────
@@ -18191,10 +18471,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // identifier after the last '.' of the binary name (and after the
         // last '$' for member classes). Used by error strings the app then
         // concats (dooz navigation nameForNavigator ISE path).
+        // F-090b: the receiver desc may arrive DOTTED ("java.lang.Object"
+        // from the Class-token path) — strip the package at the last '.'
+        // too, not only at '/' (previously getSimpleName(Object) answered
+        // "java.lang.Object" instead of "Object" in the dooz IAE message).
         if (method == "getSimpleName" && !dotted.empty()) {
             std::string simple = dotted;
             auto slash = simple.rfind('/');
             if (slash != std::string::npos) simple = simple.substr(slash + 1);
+            auto dot = simple.rfind('.');
+            if (dot != std::string::npos && dot + 1 < simple.size())
+                simple = simple.substr(dot + 1);
             auto dollar = simple.rfind('$');
             if (dollar != std::string::npos &&
                 dollar + 1 < simple.size()) {
@@ -18347,8 +18634,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // NPE from the getSimpleName ISE path). LAW: getClass is a method-name
     // contract on any receiver, not an Object-typed class key.
     if (method == "getClass") {
+        // S24 frontier probe (env-gated, bounded): a getClass whose receiver
+        // runtime class resolves to java.lang.Object on an APP-side call site
+        // is the identity-loss symptom (dooz addNavigator → nameForNavigator
+        // reads @Navigator.Name off the wrong class). Catch the receiver's
+        // heap-recorded descriptor vs the arg-carried one.
+        {
+            static thread_local uint64_t f088_obj_probe = 0;
+            if (std::getenv("MINIANDROID_S24_TRACE") != nullptr &&
+                f088_obj_probe < 40 && !args.empty() &&
+                args[0].type == DalvikType::OBJECT_REF &&
+                args[0].class_desc == "Ljava/lang/Object;") {
+                ++f088_obj_probe;
+                const auto* hp =
+                    args[0].object_id != 0 ? heap_.get(args[0].object_id)
+                                           : nullptr;
+                std::cerr << "[S24-GETCLASS-OBJ] recv_oid="
+                          << args[0].object_id
+                          << " heap_desc="
+                          << (hp ? hp->class_descriptor : std::string("<no-heap-obj>"))
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        }
+        // F-090 (R-NEW-316): the HEAP runtime class is consulted FIRST —
+        // AOSP Object.getClass answers the object's ACTUAL class, not the
+        // register's static type. Registers may carry container declared
+        // types (Map.get → Ljava/lang/Object;) or stale refinement; the
+        // heap record is the identity authority (EXP-059 law).
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            if (const auto* obj = heap_.get(args[0].object_id);
+                obj && !obj->class_descriptor.empty()) {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_class(obj->class_descriptor,
+                                                 instruction_sequence_);
+                return true;
+            }
+        }
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
             !args[0].class_desc.empty()) {
+            // Heap unknown (framework-allocated / stub receiver) — fall back
+            // to the register-carried descriptor.
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_class(args[0].class_desc,
                                              instruction_sequence_);
@@ -18363,18 +18690,6 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 }
             }
             return true;
-        }
-        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
-            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
-            // Receiver object exists but carries no recorded class — use the
-            // heap's own record (same law, one level down).
-            if (const auto* obj = heap_.get(args[0].object_id);
-                obj && !obj->class_descriptor.empty()) {
-                status = ApiCallTrace::Status::IMPLEMENTED;
-                result = DalvikValue::make_class(obj->class_descriptor,
-                                                 instruction_sequence_);
-                return true;
-            }
         }
         // F-088 diagnostics (bounded): a getClass miss means the runtime
         // class identity contract broke upstream (receiver not a heap
@@ -19494,6 +19809,65 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_int(static_cast<int32_t>(args[0].string_val.size()));
         } else {
             result = DalvikValue::make_int(0);
+        }
+        return true;
+    }
+
+    // F-090e (R-NEW-318): String.charAt(int) — OpenJDK String.charAt law:
+    // answers the char at the given index. DEX strings are UTF-8 encoded
+    // (MUTF-8 at rest); decode the code point under the byte index so
+    // non-ASCII text answers the same char a JVM would. Callers:
+    // kotlin text isBlank (U1/j.Q) walks charAt per index — a wrong answer
+    // misclassifies routes as blank (dooz "Cannot have an empty route").
+    if (class_name == "Ljava/lang/String;" && method == "charAt" &&
+        args.size() >= 2 && args[1].type == DalvikType::INT32) {
+        int32_t idx = args[1].int_val;
+        std::string s;
+        if (!args.empty() && args[0].type == DalvikType::STRING_REF)
+            s = args[0].string_val;
+        // Decode UTF-8 code points into a char list, then index.
+        int32_t codept = 0;
+        int32_t cpi = 0;
+        bool in_range = false;
+        for (size_t i = 0; i < s.size();) {
+            unsigned char b0 = static_cast<unsigned char>(s[i]);
+            size_t len = 1;
+            int32_t cp = b0;
+            if ((b0 & 0xE0) == 0xC0 && i + 1 < s.size()) {
+                len = 2;
+                cp = ((b0 & 0x1F) << 6) |
+                     (static_cast<unsigned char>(s[i + 1]) & 0x3F);
+            } else if ((b0 & 0xF0) == 0xE0 && i + 2 < s.size()) {
+                len = 3;
+                cp = ((b0 & 0x0F) << 12) |
+                     ((static_cast<unsigned char>(s[i + 1]) & 0x3F) << 6) |
+                     (static_cast<unsigned char>(s[i + 2]) & 0x3F);
+            } else if ((b0 & 0xF8) == 0xF0 && i + 3 < s.size()) {
+                len = 4;
+                cp = ((b0 & 0x07) << 18) |
+                     ((static_cast<unsigned char>(s[i + 1]) & 0x3F) << 12) |
+                     ((static_cast<unsigned char>(s[i + 2]) & 0x3F) << 6) |
+                     (static_cast<unsigned char>(s[i + 3]) & 0x3F);
+            }
+            if (cpi == idx) { codept = cp; in_range = true; break; }
+            cpi++;
+            i += len;
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        // BMP chars answer directly; supplementary code points answer the
+        // high surrogate (the first DEX char of the pair) — index law of a
+        // JVM String, whose charAt addresses UTF-16 code units.
+        DalvikValue r;
+        r.type = DalvikType::CHAR;
+        if (!in_range) {
+            r.int_val = 0;  // StringIndexOutOfBounds territory — honest 0,
+                            // no fake data (the caller's loop bound is
+                            // length(); OOB here means an upstream bug).
+        } else if (codept >= 0x10000) {
+            codept -= 0x10000;
+            r.int_val = 0xD800 + (codept >> 10);
+        } else {
+            r.int_val = codept;
         }
         return true;
     }
@@ -20689,6 +21063,42 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 return true;
             }
         }
+    }
+
+    // F-090f (R-NEW-318): java.lang.Character.isWhitespace(char) /
+    // isSpaceChar(char) — OpenJDK Character.java laws. Kotlin's
+    // CharSequence?.isNullOrBlank/isBlank lower to
+    // Character.isWhitespace || Character.isSpaceChar per char; without a
+    // handler the blank-check loop misclassified every non-empty route
+    // string as blank (dooz NavDestination.setRoute IAE "Cannot have an
+    // empty route"). Law (ASCII + common Unicode subset, honest bounds):
+    //   isWhitespace: ' ', \t, \n, \x0B, \f, \r, 0x1C-0x1F, and the common
+    //     Unicode spaces (0xA0 NNBSP-adjacent set, 0x2000-0x200A,
+    //     0x2028, 0x2029, 0x202F, 0x205F, 0x3000) EXCLUDING isSpaceChar-only
+    //     chars per spec nuance (0xA0 is SpaceChar, NOT Whitespace, etc.).
+    //   isSpaceChar: 0xA0, 0x1680, 0x2000-0x200A, 0x2028, 0x202F, 0x205F,
+    //     0x3000.
+    if (class_name == "Ljava/lang/Character;" &&
+        (method == "isWhitespace" || method == "isSpaceChar") &&
+        args.size() >= 1) {
+        int32_t c = 0;
+        if (args[0].type == DalvikType::CHAR || args[0].type == DalvikType::INT32)
+            c = args[0].int_val;
+        bool ws = (c == ' ' || c == '\t' || c == '\n' || c == 0x0B ||
+                   c == '\f' || c == '\r' ||
+                   (c >= 0x1C && c <= 0x1F) ||
+                   (c >= 0x1680 && c != 0x00A0 && c != 0x2007 &&
+                    c != 0x202F &&
+                    (c == 0x1680 || (c >= 0x2000 && c <= 0x200A) ||
+                     c == 0x2028 || c == 0x2029 || c == 0x205F ||
+                     c == 0x3000)));
+        bool sc = (c == 0x00A0 || c == 0x1680 ||
+                   (c >= 0x2000 && c <= 0x200A) ||
+                   c == 0x2028 || c == 0x2029 || c == 0x202F ||
+                   c == 0x205F || c == 0x3000);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(method == "isWhitespace" ? ws : sc);
+        return true;
     }
 
     // EXP-093: String.format(String format, Object... args) → String

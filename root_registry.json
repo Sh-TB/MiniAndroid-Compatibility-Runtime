@@ -1,7 +1,7 @@
 {
  "baseline_head": "5a2b7d99",
  "summary": {
-  "total": 302,
+  "total": 310,
   "by_status": {
    "PARTIAL": 103,
    "VERIFIED-CORRECT": 45,
@@ -12,7 +12,8 @@
    "NOT-APPLICABLE": 42,
    "IMPLEMENTED": 1
   },
-  "verified_fixed": 19
+  "verified_fixed": 19,
+  "s24_session": "F-090..F-090i closed R-NEW-316..322; R-NEW-323 open (frontier)"
  },
  "roots": [
   {
@@ -3044,6 +3045,55 @@
    "missing": "Desugared java.util.stream builder state machine: j$ Node/Builder classes track which accept overload (primitive vs boxed) may be invoked; the engine's virtual dispatch (or the builder's boolean guards) mismatches, so the guard throws IllegalStateException('called wrong accept method'). Needs overload-accurate invokevirtual dispatch for (I)V vs (Ljava/lang/Object;)V bridges on j$ stream builders.",
    "next": "Disassemble j$/util/stream/r1 etc. from the Telegram APK, reproduce the accept-dispatch path in a fixture, fix the invoke overload resolution, re-run Telegram (expect deeper init; further missing APIs will surface).",
    "commit": "PENDING-MC4"
+  },
+  {
+   "id": "R-NEW-316",
+   "status": "VERIFIED-FIXED",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "S24 dooz campaign: check-cast was a pure pass-through (no register class_desc refinement, no ClassCastException). Kotlin `map[key] as Navigator` left the register poisoned with the container declared type (Ljava/lang/Object; from Map.get) → Object.getClass answered the wrong class → Class.getAnnotation read @Navigator.Name off java.lang.Object → IAE 'No @Navigator.Name annotation found for java.lang.Object' uncaught at MainActivity.onCreate → rc=1 blank Compose frame. F-090: execute_check_cast refines register class_desc to the HEAP runtime class (EXP-059 identity authority; target type as fallback); getClass bridge consults the heap FIRST (AOSP runtime-class law). Generic: fixes every Map.get → check-cast identity consumer (getAnnotation receivers, dispatch)."
+  },
+  {
+   "id": "R-NEW-317",
+   "status": "VERIFIED-FIXED",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "S24: ShadowRegistry F-057 ViewShadow-first routing for getTag/getParent filtered shadows by name()=='ViewShadow' but ViewShadow::name() answers 'View' — the route was DEAD CODE since F-057. Owner-tag walks whose bridge key was an app class (dooz MainActivity receiver → ViewTreeLifecycleOwner.get) fell through the EXP-075 Activity gate to ActivityShadow → no tag/no parent → ISE 'ViewTreeLifecycleOwner not found' → composition died before first frame. F-090c: route by C++ TYPE (dynamic_cast<ViewShadow*>) instead of display name. DEX upstream: androidx ComponentActivity.i stores owners via ViewTreeLifecycleOwner.set on the decor node; the F-023 parent chain (8 under 101) was correct — only the routing was dead."
+  },
+  {
+   "id": "R-NEW-318",
+   "status": "VERIFIED-FIXED",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "S24: execute_invoke_interface bridged with the DECLARED interface (Ljava/lang/CharSequence;) instead of the receiver's runtime class — CharSequence.length()/charAt() on a real String found no handler → answered 0 → Kotlin route.isNotBlank() misclassified every non-empty route as blank → NavDestination.setRoute IAE 'Cannot have an empty route' (dooz routes 'game'/'settings'/'about') → onCreate died. F-090d: interface bridge key = heap runtime class (STRING_REF constants → String); F-090e: String.charAt(int) with UTF-8 codepoint decode + surrogate law; F-090f: Character.isWhitespace/isSpaceChar laws (OpenJDK set)."
+  },
+  {
+   "id": "R-NEW-319",
+   "status": "VERIFIED-FIXED",
+   "priority": "P1",
+   "fg": true,
+   "evidence": "S24: java.util.UUID had no bridge at all — UUID.randomUUID().toString() answered null → Kotlin null-assert NPE 'randomUUID().toString() must not be null' at MainActivity.onCreate. F-090g: UUID.randomUUID() (version-4/variant-1 per RFC 4122, fixed-seed xorshift stream per the F-086 determinism law) + toString() 8-4-4-4-12 form."
+  },
+  {
+   "id": "R-NEW-320",
+   "status": "VERIFIED-FIXED",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "S24: Navigator.state (l.a) is injected by exactly ONE DEX writer (navigation/compose/p.a iput at pc 1394) inside the NavHost attach loop; the loop zero-iterated because Kotlin toReadOnlyMap (z1/A.G → z1/A.H = new LinkedHashMap(source)) produced an EMPTY copy — CollectionShadow.<init> was a no-op that never copied source entries. ISE 'You cannot access the Navigator's state until the Navigator is attached'. F-090h: copy-constructor family law in CollectionShadow (LinkedHashMap(Map)/ArrayList(Collection) copy every entry/element; capacity forms stay no-op)."
+  },
+  {
+   "id": "R-NEW-322",
+   "status": "VERIFIED-FIXED",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "S24: invoke call sites passed NO method descriptor to try_recursive_invoke, so the F-023 exact-descriptor overload law could never fire; same-name overloads (z1/i addAll(Collection) vs addAll(I,Collection)) were resolved by the arity heuristic and executed the WRONG body — the 2-arg body's elements register stayed unwritten → M1/i.f NPE 'Parameter specified as non-null is null: method z1.i.addAll, parameter elements' despite the caller passing a non-null obj#2831 (proven by [S24-ADDALL]/[S24-TRI] probes). F-090i: hoisted the resolved proto in execute_invoke_virtual (runtime-type try, F-020 walk, declaring-class fallback), execute_invoke_interface (runtime-class, declared-interface, sig-walk, default-method sites) and reused in execute_invoke_direct (method_desc_081 already present). Generic multi-overload dispatch law for every R8'd app."
+  },
+  {
+   "id": "R-NEW-323",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "S24 CURRENT FRONTIER: dooz NavHost graph (route=null → NavGraph.id=0) — NavController restore loop c.h reads entry.j.j.o (parent graph id=0) and calls c.e(0) getBackStackEntry(0); the root GRAPH's own NavBackStackEntry was never pushed (upstream pushes ancestor-graph entries during navigate before destination entries; our engine pushed only the destination entry via c.a ← c$e.o with an EMPTY parent list z1/t.i). IAE 'No destination with ID 0 is on the NavController's back stack. The current destination is e$a@2554' uncaught at MainActivity.onCreate → rc=1. Next root: implement the ancestor-graph-entry-push law (upstream navigate-entry-hierarchy) so c.e(0) finds the graph entry. Evidence: run/s24_post_f090i_stderr.txt lines 306566-306612."
   }
  ]
 }
