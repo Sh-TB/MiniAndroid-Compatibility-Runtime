@@ -37,3 +37,16 @@ high-impact-unresolved / current frontier / next highest-value root.
 - S21: F-074 (engine-level superclass walk) + F-075 (polymorphic zero) closed
   (R-NEW-298/299); the "callback removed-not-run" gate retired as upstream-legal;
   full evidence in docs/evidence/s21_f074_f075/ + docs/evidence/S21_F074_F075_REPORT.md.
+
+## S24 (runtime compatibility campaign — index scope closed)
+- HEAD 39411679: six engine-family roots closed on the dooz Compose path:
+  R-NEW-316 (check-cast identity, F-090), R-NEW-317 (ViewShadow routing name
+  law, F-090c), R-NEW-318 (interface runtime-class bridge + String.charAt +
+  Character.isWhitespace/SpaceChar, F-090d/e/f), R-NEW-319 (java.util.UUID,
+  F-090g), R-NEW-320 (collection copy-constructor family, F-090h), R-NEW-322
+  (exact-descriptor overload law, F-090i). Registry 303→310.
+- Frontier: R-NEW-323 (root-graph back-stack entry, id 0 for routeless
+  NavHost graphs — IAE in the pop/restore walk c.e(0)). Evidence-grade DEX
+  map recorded in worklog S24-MAIN.
+- Battery 91/92 (pre-existing GATE H only); Hello Color + ChessClock goldens
+  byte-identical; dooz deterministic ×3 (rc=1 honest at the frontier).
