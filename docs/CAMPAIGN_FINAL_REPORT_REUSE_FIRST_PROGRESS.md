@@ -2,7 +2,7 @@
 
 Session: 2026-09-05 · Final HEAD: `4d822256` (main) · Base HEAD: `380f654a`
 Prior campaign report (Deep Compatibility, Task 8+9):
-`docs/CAMPAIGN_FINAL_REPORT.md` (preserved unchanged; this file supersedes
+`docs/history/CAMPAIGN_FINAL_REPORT.md` (preserved unchanged; this file supersedes
 it as the newest campaign record).
 
 ## Repository
@@ -30,7 +30,7 @@ Unpushed:     31 local commits (recovered-history line + this campaign);
 | Hello World resource-backed (§36.E) | PASS | 3 display strings in resources.arsc, ABSENT from classes.dex (byte search; permanent gate) |
 | Deterministic replay | PASS | run A vs B byte-identical (both goldens); APK builds byte-deterministic (1980 epochs) |
 | Corpus on current HEAD | PASS | simplestopwatch / gmdice / microtimer exit 0 + screenshots, SHA-verified downloads; gmdice visually verified |
-| Automatic gate | PASS | `scripts/run_test_battery.sh` → 11/11 stages ALL PASS (build, 3 links, 96 semantic, mutf8 10/10, 2 goldens) |
+| Automatic gate | PASS | `scripts/test/run_test_battery.sh` → 11/11 stages ALL PASS (build, 3 links, 96 semantic, mutf8 10/10, 2 goldens) |
 
 APK SHA256 `3cf76fb7…` · DEX SHA256 `039e18ed…` (full §28 record:
 `docs/evidence/GOLDEN_HELLOWORLD.md`).

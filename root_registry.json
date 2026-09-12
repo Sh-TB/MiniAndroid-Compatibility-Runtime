@@ -1360,7 +1360,7 @@
    "status": "VERIFIED-CORRECT",
    "priority": "P1",
    "fg": false,
-   "evidence": "dooz = real R8-OBFUSCATED APK executing deep into Material3; obfuscated-symbol forensics via scripts/minidump_dex.py (CM9)",
+   "evidence": "dooz = real R8-OBFUSCATED APK executing deep into Material3; obfuscated-symbol forensics via scripts/forensic/minidump_dex.py (CM9)",
    "missing": "-",
    "next": "regression-watch",
    "commit": "96ecc9f4"
@@ -2990,7 +2990,7 @@
    "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "LIVE S21: dooz drain dispatched UC009-WIRE Runnable id=687 class=Lb2/h; with ZERO b2/h.run records in the 306k-line log; DEX truth (s21_frame_probe.py + androguard): Lb2/h; = kotlinx DispatchedContinuation, NO run() declared — entrypoint DispatchedTask.run (LW1/N;) on the superclass; upstream law: ART virtual dispatch resolves on the runtime class hierarchy. ",
+   "evidence": "LIVE S21: dooz drain dispatched UC009-WIRE Runnable id=687 class=Lb2/h; with ZERO b2/h.run records in the 306k-line log; DEX truth (scripts/forensic/s21_frame_probe.py + androguard): Lb2/h; = kotlinx DispatchedContinuation, NO run() declared — entrypoint DispatchedTask.run (LW1/N;) on the superclass; upstream law: ART virtual dispatch resolves on the runtime class hierarchy. ",
    "missing": "-",
    "next": "regression-watch",
    "commit": "PENDING-S21"

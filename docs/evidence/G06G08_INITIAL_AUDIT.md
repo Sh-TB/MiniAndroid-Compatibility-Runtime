@@ -43,7 +43,7 @@ from scratch; fixtures re-frozen SHA-exact):
 | ID | Finding | Disposition |
 |---|---|---|
 | FIND-G06AUDIT-001 | `build/resource_trace` is a separate make target; after a clean checkout the battery's density-oracle stage (27) fails on the missing binary until `make resource_trace` runs — an environment/restore gap, not a runtime defect (pixel-law and determinism checks all PASS once built) | NON-BLOCKING — battery hygiene fix queued: battery now builds resource_trace itself |
-| FIND-G06AUDIT-002 | `run_test_battery.sh` used `--skip-build` in the prior session's evidence; rebuild-from-clean now proven green (this audit) | NON-BLOCKING — evidence, no change needed |
+| FIND-G06AUDIT-002 | `scripts/test/run_test_battery.sh` used `--skip-build` in the prior session's evidence; rebuild-from-clean now proven green (this audit) | NON-BLOCKING — evidence, no change needed |
 
 No G01–G05 correctness defects found. None block G06–G08.
 

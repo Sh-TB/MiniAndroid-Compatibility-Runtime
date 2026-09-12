@@ -43,8 +43,8 @@ Inputs:
   /home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp046_baseline.log
 
 Outputs:
-  miniandroid/docs/EXP046_NATIVE_MAP.md
-  miniandroid/docs/EXP046_NATIVE_MAP.json
+  docs/runtime/EXP046_NATIVE_MAP.md
+  docs/runtime/EXP046_NATIVE_MAP.json
 
 No third-party dependencies — only `struct`, `zipfile`, `json`, `re`, `os`,
 `sys`, `collections`, `typing`.

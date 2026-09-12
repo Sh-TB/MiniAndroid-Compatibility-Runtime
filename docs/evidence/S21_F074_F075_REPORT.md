@@ -32,7 +32,7 @@ uiDispatcher.postFrameCallback + invokeOnCancellation).
   own; the entrypoint is DispatchedTask.run (W1/N) on the superclass. The
   drained continuation silently vanished (silent `return false`, line 5391).
 - **PROOF**: runtime trace (0 b2/h.run records; [QUEUE] enqueue + drain
-  present) + DEX (s21_frame_probe.py, androguard oracle) + upstream
+  present) + DEX (scripts/forensic/s21_frame_probe.py, androguard oracle) + upstream
   (DispatchedTask.kt law; ART ClassLinker semantics).
 - **FIX**: `try_recursive_invoke_on_super` — walks class_to_superclass_
   (depth-capped 16, stops at Object) at both give-up points; retries on the
@@ -84,8 +84,8 @@ draw → pixels.
 
 ## 8. Deliverables
 - src/dex/dalvik_engine.{h,cpp}: F-074 walk + F-075 retype laws
-- tests/fixtures/f074_super_run/ + scripts/f074_pixel_golden.py + battery stage
-- scripts/s21_frame_probe.py (spec-exact DEX walker; fixes the s17/s20
+- tests/fixtures/f074_super_run/ + scripts/verify/f074_pixel_golden.py + battery stage
+- scripts/forensic/s21_frame_probe.py (spec-exact DEX walker; fixes the s17/s20
   probe size-table drift recorded in the failure ledger)
 - docs/evidence/s21_f074_f075/{GATE_TRACE_S20,F074_silent_drop_proof,
   F075_cme_chain_trie_trace}.txt
