@@ -49,7 +49,7 @@ False leads preserved: R-NEW-286 flipped NOT-APPLICABLE with live evidence (setD
 - `/home/z/my-project/tools/doctor.sh` — toolchain + registry health, all OK (run this session)
 - Shared APK artifact cache `artifacts/apk/c32f2cf0/` — cache_key = commit + tool_version + apk_sha256 + probe_version; reused by every dooz run this session (manifest sha256 60d35c8d…)
 - Repo indexes: `docs/agent-index/{REPO_MAP.md, SYMBOL_INDEX.json (29k lines), ROOT_GRAPH.json, BUILD_GRAPH.json, TEST_GRAPH.json, HOTSPOTS.json, API_COVERAGE.json}`, `docs/root-searchlight/ROOT_TOOL_MATRIX.md`, `root_registry.json` (machine-readable, 295 entries), failure/decision ledgers in docs/evidence/
-- Regression gate: `scripts/run_test_battery.sh` — **91/91 PASS** at HEAD after all 7 laws
+- Regression gate: `scripts/test/run_test_battery.sh` — **91/91 PASS** at HEAD after all 7 laws
 
 ## 5. BENCHMARK — MEASURED ONLY (no invented numbers)
 

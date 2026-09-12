@@ -25,7 +25,7 @@
   decoded with SHIFTED linear pcs after the opcode, and 21t/22t branch
   targets read from the wrong unit. F-070..F-073 conclusions were proven by
   runtime register traces and androguard cross-checks, so they stand; the
-  s21_frame_probe.py replaces the lineage with a spec-exact table (all
+  scripts/forensic/s21_frame_probe.py replaces the lineage with a spec-exact table (all
   structural findings re-verified against the androguard oracle).
 - **GATE H + EXT-01/EXT-02 environmental (container reset)**: GATE H
   (simplestopwatch settings glyph white=0) reproduces identically with the

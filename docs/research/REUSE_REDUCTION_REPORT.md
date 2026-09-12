@@ -9,7 +9,7 @@ Date: 2026-09-05 · Local HEAD: `9e7c0e9b`
 |---|---|---:|---:|
 | ULEB128 reader ×3 (`dex_parser.cpp::read_dex_string` inline; `dex_parser.cpp` class-data lambda; `dalvik_engine.cpp::read_dex_string_from_raw` inline) + MUTF-8 handling ×0 (absent everywhere) | `src/dex/mutf8.{h,cpp}` — ONE primitive: hardened ULEB128 + MUTF-8 decode + declared-vs-actual cross-check | 2 files lose inline logic (dex_parser.cpp −~50 LOC net, dalvik_engine.cpp −~18 LOC net), 1 new primitive file (+~180 LOC including docs) | ≈ −68 inline LOC, and the primitive is now the single repair point |
 | Semantic-test harness duplication (hazard): battery cases re-declare helpers instead of new standalone harnesses | new WineDroid discriminator cases written INSIDE `semantic_pass3_bridge_test.cpp` reusing its `run_full`/`record`/emit helpers (0 new harness lines) | 0 new files | ≈ −120 LOC prevented (a standalone harness clone was the alternative) |
-| Golden/battery re-validation procedure (was: manual multi-command sequences per campaign, documented differently each time) | `scripts/run_test_battery.sh` — ONE zero-skip gate: build → link → 96 semantic + 7 mutf8 → both goldens | replaces ~8 ad-hoc commands | future campaigns save the re-derivation cost; gate is self-verifying (PASS 0/FAIL 0 impossible) |
+| Golden/battery re-validation procedure (was: manual multi-command sequences per campaign, documented differently each time) | `scripts/test/run_test_battery.sh` — ONE zero-skip gate: build → link → 96 semantic + 7 mutf8 → both goldens | replaces ~8 ad-hoc commands | future campaigns save the re-derivation cost; gate is self-verifying (PASS 0/FAIL 0 impossible) |
 | `report.strings` bypass hazard (battery wrote string pool directly, leaving the real parse path untested — a dead path) | mutf8 battery drives `DexParser::parse_data` (the REAL entry point) | 1 battery fixed | prevents future silent-dead-path findings |
 
 ## §22 maintenance questions, answered for this campaign's feature
@@ -31,7 +31,7 @@ Date: 2026-09-05 · Local HEAD: `9e7c0e9b`
   the BLOCKED-with-reason law.
 - **Law pinning**: the 007/011 discriminators turn two more external
   mechanisms (WineDroid) into machine-checked invariants, so future
-  refactors get caught by `run_test_battery.sh` instead of by the next
+  refactors get caught by `scripts/test/run_test_battery.sh` instead of by the next
   source-study campaign.
 
 ## Anti-over-abstraction note (§11 limit)

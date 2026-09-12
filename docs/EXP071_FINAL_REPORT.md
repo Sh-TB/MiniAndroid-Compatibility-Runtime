@@ -412,7 +412,7 @@ The S12 comment ends with: **CHECKPOINT_M = PROVEN ✅ — CAMPAIGN = COMPLETE**
 
 ## ✅ CHECKPOINT_M = PROVEN
 
-All 19 checkpoint criteria verified from actual artifacts (not from claims). See `docs/EXP071_GIT_HISTORY.md` for the per-criterion verification table.
+All 19 checkpoint criteria verified from actual artifacts (not from claims). See `docs/history/EXP071_GIT_HISTORY.md` for the per-criterion verification table.
 
 **Campaign: COMPLETE.**
 **Next step:** Select the next highest-value generic compatibility feature (see `.agent/state.md` and `.agent/blockers.md`).

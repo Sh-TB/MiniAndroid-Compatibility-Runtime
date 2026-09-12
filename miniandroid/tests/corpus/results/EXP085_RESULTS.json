@@ -100,5 +100,5 @@
     "miniandroid/tests/exp085_phase17_18_telegram.py",
     "miniandroid/tests/exp085_phase19_matrix.py"
   ],
-  "documentation": "miniandroid/docs/EXP085_GENERIC_RUNTIME_VALIDATION.md"
+  "documentation": "docs/runtime/EXP085_GENERIC_RUNTIME_VALIDATION.md"
 }

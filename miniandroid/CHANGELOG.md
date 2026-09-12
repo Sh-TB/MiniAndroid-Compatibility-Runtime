@@ -12,9 +12,9 @@ All notable changes to the MiniAndroid Runtime project.
   85→88 stages.
 - **F-045** `System.identityHashCode` per OpenJDK law (lifetime-stable
   identity hash, 0 for null) — was a silent fail-soft 0-for-everything.
-- `docs/ROOT_LAW_COMPLETENESS_MATRIX.md` — family-closure status per root
+- `docs/research/ROOT_LAW_COMPLETENESS_MATRIX.md` — family-closure status per root
   family (root complete ≠ family closed).
-- `docs/ROOT_DISCOVERY_GUIDE.md` + `docs/ROOT_DISCOVERY_EVIDENCE.md` —
+- `docs/research/ROOT_DISCOVERY_GUIDE.md` + `docs/research/ROOT_DISCOVERY_EVIDENCE.md` —
   the root-discovery methodology and the F-044 worked example.
 
 ### Fixed
@@ -29,7 +29,7 @@ All notable changes to the MiniAndroid Runtime project.
 
 ### Evidence
 - Battery 88 stages ALL PASS at the release commit; dooz 3-run
-  byte-identical; before/after metrics in docs/ROOT_LAW_IMPACT_REPORT.md.
+  byte-identical; before/after metrics in docs/research/ROOT_LAW_IMPACT_REPORT.md.
 
 ### Known limitations
 - dooz framebuffer still blank — the Compose first-frame pump (delayed

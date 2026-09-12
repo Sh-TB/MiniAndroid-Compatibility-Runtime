@@ -8,7 +8,7 @@
    "changes": 50
   },
   {
-   "file": "worklog.md",
+   "file": "docs/maintenance/worklog.md",
    "changes": 29
   },
   {
@@ -20,7 +20,7 @@
    "changes": 22
   },
   {
-   "file": "scripts/run_test_battery.sh",
+   "file": "scripts/test/run_test_battery.sh",
    "changes": 22
   },
   {
@@ -40,7 +40,7 @@
    "changes": 16
   },
   {
-   "file": "MiniAndroid-Compatibility-Runtime/scripts/run_test_battery.sh",
+   "file": "MiniAndroid-Compatibility-Runtime/scripts/test/run_test_battery.sh",
    "changes": 16
   },
   {
@@ -68,7 +68,7 @@
    "changes": 8
   },
   {
-   "file": "scripts/comment_urls.json",
+   "file": "scripts/maintenance/comment_urls.json",
    "changes": 8
   },
   {
