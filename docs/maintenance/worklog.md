@@ -5276,3 +5276,25 @@ Work Log:
 
 Stage Summary:
 - Hello Color milestone live on the project front page with a real runtime frame and full provenance linkage; real release v0.0.5-Silkie published with honest Known-Open-Work section.
+
+---
+Task ID: M6-S15-1
+Agent: Super Z (session 15 — REPOSITORY STRUCTURE REFACTOR, 14-wave migration)
+Task: Full repository structure refactor per user directive (clean root, categorize MDs/scripts/tools/tests, separate examples/demos/evidence, preserve history + evidence, zero runtime changes, validate everything, report).
+
+Work Log:
+- W0 audit: found local checkout STALE (d358a0c9, 174 commits, unrelated lineage) vs canonical origin/main 97411953 (contains all prior work: v0.0.5-Silkie, R-NEW-302 fix, Telegram, registry 302→303). Archived stale lineage as archive/local-main-d358a0c9-stale, checked out canonical tip. All previous session work confirmed committed+pushed.
+- W0 inventory: 1752 tracked files (536 md, 300 png, 297 json, 199 py, 126 cpp); root = 43 files (38 md) + 10 dirs; counted inbound refs per movable file; mapped link graph (battery, scripts, tools, README, docs cross-refs).
+- W1-W8 moves (git mv only, 664 renames): 38 root MDs → docs/{history,releases,testing,compatibility,research,build,development,maintenance,evidence}; campaign-013 family + pass3 trilogy kept as subdirs; docs/campaign014_evidence → docs/evidence/campaign014; evidence/2026* → docs/evidence/s19_smoke; golden/ (legacy exp004/005, no live reader) → docs/history/golden-exp004; demo/ → examples/demo-app; docs/demo → docs/demos; source_forensics → docs/research/source-forensics; recovery → docs/maintenance/recovery; miniandroid/docs (313 files) → docs/runtime wholesale; miniandroid/experiments → docs/history/experiments; miniandroid root handoffs/status → docs/history/runtime-project; DO_NOT_REINVENT+STUB_DEBT → docs/development; TEST_MATRIX → docs/testing; 5 loose .sh → miniandroid/scripts; 47 flat scripts → scripts/{build,test,verify,release,forensic,maintenance}; miniandroid/core (9.85MB committed ELF, generated) removed from tip (history retains, gitignored).
+- W9 repair: bulk two-tier path rewrite (156 files) + hand fixes (battery REPO depth + TOOLS/REPOSCRIPTS + 27 call sites, demo-app scripts repo-root depth, package_release, telegram runner, miniandroid README links, release notes). Restored 6 battery comparators + typography_measure.py from the pre-push sandbox lineage into scripts/verify/ (battery was dependent on an external sandbox dir). Fixed parents[1]→parents[2] in 6 deepened scripts. Anchored over-broad build/ gitignore rule (shadowed scripts/build + docs/build). Reverted one collateral sed corruption (miniandroid/golden path in 2 docs, SHA re-verified).
+- W10/11: docs/README.md navigation index (16 subdirs); README rewritten to 10 canonical sections; detail preserved verbatim in docs/releases/STATUS_MC4_2026-09-12.md.
+- Toolchain: container restart had wiped tools/ binaries; re-fetched at pinned versions via bootstrap + Maven/Google (aapt2 8.13.2-14304508, ECJ 3.33.0, r8 8.13.23, platform-34-ext7_r03); gitignored.
+- W13 validation: clean build OK. FULL BATTERY 94 stages: 93 PASS, 1 FAIL = pre-existing GATE H (identical to pre-migration record) — zero regressions. Hello Color: committed evidence SHA-verified; fresh 3-run re-render byte-identical to golden (11e00563… ×3). ChessClock re-run byte-identical (e4a2d7c9…, pinned APK 5ca6f2c5…). TicTacToe §29 + HelloWorld §28 PASS. Demo proof VALIDATION_PASS (deterministic replay). Link check: no new broken links (pre-existing generation artifacts documented). miniandroid/src diff vs pre-migration HEAD: EMPTY.
+- W14: docs/maintenance/repository-structure-migration.md (before/after trees, full mapping, statistics, honest toolchain-byte note).
+- Commits: 440fc482 (structure+repair), 5067627e (docs cleanup), 9d408bfe (harness validation fixes). Working tree clean.
+
+Stage Summary:
+- Root: 43 tracked files → 4 (README/LICENSE/.gitignore/root_registry.json); top dirs 10 → 7; 536 md now under one indexed docs/ tree; scripts taxonomy complete; examples/demos/evidence separated.
+- History preserved (git mv, 664 renames), no evidence deleted, no secrets, no runtime behavior change (goldens byte-identical).
+- NOTE (protocol): the shared worklog moved from worklog.md → docs/maintenance/worklog.md — append here from now on.
+- Next: push + verify remote; user-facing summary (BEFORE/AFTER, SHA evidence).
