@@ -41,7 +41,7 @@ ARCHITECTURE VALIDATION, VERIFIED (already implemented & evidenced)}.
 | GFX-004 | crosvm (9d4dc5f) / cuttlefish (a1162ca7) | ARCHITECTURE.md; host/guest split | sandbox/process separation patterns | runtime hardening roadmap | docs only | DEFERRED (no sandbox requirement yet) |
 | FONT-002 | fwbase (1cdfff55) | Typeface.createFromAsset L1127 | missing→throw vs corrupt→silent-DEFAULT distinction | font diagnostics | Case-F fixture distinguishing events | QUEUED |
 | TOOL-001 | Apktool (baa603f) | ResChunkPullParser | shared bounded chunk reader | arsc+axml parsers | refactor candidate | DEFERRED (low priority) |
-| TOOL-003 | bundletool (586a43a) | packaging validation flow | fail-fast manifest/resource consistency in fixture builds | build_fixture_apk.sh | lint step in tool | CANDIDATE |
+| TOOL-003 | bundletool (586a43a) | packaging validation flow | fail-fast manifest/resource consistency in fixture builds | scripts/build/build_fixture_apk.sh | lint step in tool | CANDIDATE |
 
 ## Counts
 - Mechanisms discovered and documented this campaign: 34 rows above

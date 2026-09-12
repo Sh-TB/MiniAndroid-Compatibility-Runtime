@@ -35,7 +35,7 @@ PROOF (env-gated, read-only; files in this directory)
      W1/D.c call site; also LW1/l0.a and LW1/E.invoke#480 stubs in the
      UNDISPATCHED launch machinery. post_fix_gate_events.txt vs
      pre_fix_gate_events.txt.
-  2. DEX ground truth (s21_frame_probe.py + androguard):
+  2. DEX ground truth (scripts/forensic/s21_frame_probe.py + androguard):
      - LW1/D.c(L1/p, C1/d) = coroutineScope: new b2/u (ScopeCoroutine) then
        tail-invoke B1/a.B — the stub site.
      - W1/l0.e = withContext → B1/a.B; W1/l0.a = CoroutineScope.launch.

@@ -224,7 +224,7 @@ vendored copy of upstream scrcpy v4.1's README (mirroring is scrcpy's).
 - FUNCTION: complete message reference table, ERROR_HANDLING.md
   "Complete Error Message Reference".
 - WHY IT MATTERS TO MINIANDROID: our probe/runner reports
-  (docs/campaign014_evidence/*/report.md + api_trace.json) already split
+  (docs/evidence/campaign014/*/report.md + api_trace.json) already split
   machine JSON from human report; Android-Dex's per-failure-site message
   table is the same discipline formalized — most directly applicable to the
   runner CLI's failure prints (load fail vs exec fail vs frame-mismatch).

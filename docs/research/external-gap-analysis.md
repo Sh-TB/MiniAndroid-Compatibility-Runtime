@@ -1,7 +1,7 @@
 # External Gap Analysis — what MiniAndroid still lacks, ranked by evidence
 
 Input: source studies in this directory + MiniAndroid's own evidence base
-(AGENT_FINDING_AUDIT.md, CAMPAIGN_FINAL_REPORT.md,
+(docs/research/AGENT_FINDING_AUDIT.md, CAMPAIGN_FINAL_REPORT.md,
 COMPATIBILITY_REFERENCE_MATRIX.md) at HEAD 8233432.
 
 Gaps are ranked by (corpus evidence × pipeline criticality). "No corpus

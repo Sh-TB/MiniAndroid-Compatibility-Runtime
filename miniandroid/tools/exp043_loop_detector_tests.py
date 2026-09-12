@@ -1259,7 +1259,7 @@ def write_report(results: List[Dict]) -> None:
     lines.append("")
     lines.append("## Findings & recommendations")
     lines.append("")
-    lines.append("See `Stage Summary` in `worklog.md` for the roll-up. Key per-scenario findings:")
+    lines.append("See `Stage Summary` in `docs/maintenance/worklog.md` for the roll-up. Key per-scenario findings:")
     lines.append("")
     for r in results:
         lines.append(f"- **{r['id']}** ({r['status']}): {r['finding']}")
@@ -1275,7 +1275,7 @@ def main():
 
     if not os.path.isfile(RUNTIME_BIN):
         print(f"[ERROR] runtime binary not found: {RUNTIME_BIN}")
-        print("        Run miniandroid/build_exp042.sh first.")
+        print("        Run miniandroid/scripts/build_exp042.sh first.")
         sys.exit(2)
 
     results: List[Dict] = []

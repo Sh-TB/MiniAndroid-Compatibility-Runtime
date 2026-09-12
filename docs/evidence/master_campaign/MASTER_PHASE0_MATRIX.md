@@ -2,7 +2,7 @@
 
 Base HEAD: `cc9e67ef` (clean, origin/main in sync — verified via `git ls-remote`).
 Baseline: BATTERY GATE ALL PASS (52 stages) — fresh run at this HEAD before any
-engine change (the battery harness `scripts/run_test_battery.sh` was restored
+engine change (the battery harness `scripts/test/run_test_battery.sh` was restored
 from the sandbox copy; it is still sandbox-only and now also carries the
 campaign's fix commits' state — tracked as a known gap that the harness is not
 in git).

@@ -12,7 +12,7 @@ REPO = os.path.dirname(os.path.dirname(HERE))                # repo root
 
 def _find_aapt2():
     """Resolution chain: MINIAAPT2 env → in-repo tools/aapt2 → bootstrap TOOLS dir → PATH.
-    The toolchain binaries are NOT committed (scripts/bootstrap_toolchain.sh restores them
+    The toolchain binaries are NOT committed (scripts/build/bootstrap_toolchain.sh restores them
     at ${TOOLS:-/home/z/my-project/tools}); this chain is honest about where they live."""
     env = os.environ.get("MINIAAPT2")
     if env and os.path.exists(env):

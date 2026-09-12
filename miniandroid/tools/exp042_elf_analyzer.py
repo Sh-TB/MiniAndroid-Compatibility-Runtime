@@ -28,8 +28,8 @@ Usage:
 Defaults:
     --apk       miniandroid/download/exp038_telegram/Telegram.apk
     --abi       arm64-v8a  (ABI used for the libtmessages.49.so SUMMARY)
-    --out-md    miniandroid/docs/exp042/NATIVE_LIBRARIES.md
-    --out-json  miniandroid/docs/exp042/NATIVE_LIBRARIES.json
+    --out-md    docs/runtime/exp042/NATIVE_LIBRARIES.md
+    --out-json  docs/runtime/exp042/NATIVE_LIBRARIES.json
 """
 
 from __future__ import annotations
@@ -764,9 +764,9 @@ def render_markdown(lib_reports: List[LibReport], summary: Dict[str, Any],
 DEFAULT_APK = "/home/z/my-project/MiniAndroid-Compatibility-Runtime/" \
               "miniandroid/download/exp038_telegram/Telegram.apk"
 DEFAULT_MD = "/home/z/my-project/MiniAndroid-Compatibility-Runtime/" \
-             "miniandroid/docs/exp042/NATIVE_LIBRARIES.md"
+             "docs/runtime/exp042/NATIVE_LIBRARIES.md"
 DEFAULT_JSON = "/home/z/my-project/MiniAndroid-Compatibility-Runtime/" \
-               "miniandroid/docs/exp042/NATIVE_LIBRARIES.json"
+               "docs/runtime/exp042/NATIVE_LIBRARIES.json"
 DEFAULT_ABI = "arm64-v8a"
 
 

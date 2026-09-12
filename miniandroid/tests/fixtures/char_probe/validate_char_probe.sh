@@ -38,7 +38,7 @@ cd "$REPO/miniandroid"
 
 say "── [1] fixture build ─────────────────────────────────────────────"
 APK="$WORK/charprobe.apk"
-if bash "$REPO/scripts/build_fixture_apk.sh" "$FIXTURE" "$APK" > "$WORK/build.log" 2>&1; then
+if bash "$REPO/scripts/build/build_fixture_apk.sh" "$FIXTURE" "$APK" > "$WORK/build.log" 2>&1; then
     pass "build_fixture_apk: ECJ + D8 + package OK"
 else
     fail "build_fixture_apk failed"; cat "$WORK/build.log"; exit 1

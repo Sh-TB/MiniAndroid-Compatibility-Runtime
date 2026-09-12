@@ -23,7 +23,7 @@ pixel-evidence output.
   Campaign 010's verified source (libpng codec, GLES glue, ARSC config
   matching, real stack traces) is now the default build; Campaign 005–010
   knowledge sets and historical modules (audio, fonts, 3D game, codecs,
-  job server) are recovered in-tree. See `MASTER_RECONCILIATION_011_1.md`.
+  job server) are recovered in-tree. See `../docs/history/runtime-project/MASTER_RECONCILIATION_011_1.md`.
 
 ## Proven capabilities (evidence-backed)
 
@@ -102,16 +102,16 @@ The runner reports `APK FOUND / MISSING / SHA MATCH / MISMATCH` for every APK.
 
 rlottie (MIT), libwebp, libjpeg-turbo, libpng, zlib, FreeType, HarfBuzz,
 FriBidi, nlohmann/json (vendored). Details, versions and integration status:
-[`OPEN_SOURCE_MASTER.md`](OPEN_SOURCE_MASTER.md) ·
-policy: [`DO_NOT_REINVENT.md`](DO_NOT_REINVENT.md)
+[`OPEN_SOURCE_MASTER.md`](../docs/history/runtime-project/OPEN_SOURCE_MASTER.md) ·
+policy: [`DO_NOT_REINVENT.md`](../docs/development/DO_NOT_REINVENT.md)
 
 ## Latest release
 
 `UNIFIED_011_CANONICAL` — see
-[`RELEASE_NOTES_UNIFIED_011.md`](RELEASE_NOTES_UNIFIED_011.md),
-[`MASTER_PROJECT_STATE_011.md`](MASTER_PROJECT_STATE_011.md) (state) and
-[`MASTER_HANDOFF_011.md`](MASTER_HANDOFF_011.md) (3-minute onboarding).
-Full history & knowledge: [`MASTER_CHANGELOG_KNOWLEDGE_011.md`](MASTER_CHANGELOG_KNOWLEDGE_011.md).
+[`RELEASE_NOTES_UNIFIED_011.md`](../docs/history/runtime-project/RELEASE_NOTES_UNIFIED_011.md),
+[`MASTER_PROJECT_STATE_011.md`](../docs/history/runtime-project/MASTER_PROJECT_STATE_011.md) (state) and
+[`MASTER_HANDOFF_011.md`](../docs/history/runtime-project/MASTER_HANDOFF_011.md) (3-minute onboarding).
+Full history & knowledge: [`MASTER_CHANGELOG_KNOWLEDGE_011.md`](../docs/history/runtime-project/MASTER_CHANGELOG_KNOWLEDGE_011.md).
 
 ## New here?
 

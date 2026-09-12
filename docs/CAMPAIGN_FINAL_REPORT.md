@@ -1,7 +1,7 @@
 # CAMPAIGN FINAL REPORT — Deep Compatibility Campaign (Task 8 + 9)
 
 > SUPERSEDED-AS-LATEST: the newest campaign report is
-> `docs/CAMPAIGN_FINAL_REPORT_REUSE_FIRST_PROGRESS.md` (2026-09-05).
+> `docs/history/CAMPAIGN_FINAL_REPORT_REUSE_FIRST_PROGRESS.md` (2026-09-05).
 > This file is preserved as the historical record of its own campaign.
 
 Base: sandbox-reset snapshot `0edb52b` → campaign commits `de5f370`,
@@ -13,7 +13,7 @@ counting enforced in every validator.
 
 | Subsystem | Status | Evidence |
 |---|---|---|
-| APK loading | PASS | 13/15 corpus APKs hash-verified + launched (fetch_corpus.py); fixture toolchain ECJ→D8→ZIP |
+| APK loading | PASS | 13/15 corpus APKs hash-verified + launched (scripts/test/fetch_corpus.py); fixture toolchain ECJ→D8→ZIP |
 | DEX execution | PASS | semantic battery 118/118 (14+55+25+5+8+6+5); tictactoe_golden 9/9 real-DEX clicks |
 | Activity lifecycle | PASS | tictactoe_golden onCreate→setContentView→measure→render→click chains |
 | Resource/ARSC | PASS | ARSC-first values (chessclock strings=38 colors=8); baselines green |
@@ -36,7 +36,7 @@ counting enforced in every validator.
 | Telegram | BLOCKED | official download serves 1.2 MB stub vs pinned 82 MB hash; fetch rejects |
 | WineDroid study | COMPLETE (site level) | identity RESOLVED: winedroid.soham.sh — Rust Android userspace compat layer; GPL-3.0; repo private → SITE_DOCS_READ evidence, 13 pages read |
 | Reference matrix | COMPLETE | 15×10 rows; licenses re-verified at HEAD; evidence legend |
-| Agent finding audit | COMPLETE | docs/AGENT_FINDING_AUDIT.md — 118/118 battery, RESULT_012/013 claims obsolete (implemented), all rows evidence-linked |
+| Agent finding audit | COMPLETE | docs/research/AGENT_FINDING_AUDIT.md — 118/118 battery, RESULT_012/013 claims obsolete (implemented), all rows evidence-linked |
 | Git commit | PASS | de5f370 + c7bb9f2 + reference + audit commits |
 | Git push | BLOCKED | sandbox has no remote ("fatal: No configured push destination") — commits clean, fast-forward-ready |
 | Remote verification | BLOCKED | follows push |

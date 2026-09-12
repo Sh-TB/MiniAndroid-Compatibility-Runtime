@@ -4,7 +4,7 @@
 
 # build outputs
 miniandroid/build/
-build/
+/build/
 *.o
 *.d
 
@@ -56,7 +56,7 @@ miniandroid/run/u0113_*/
 # Build trees, toolchains, downloaded dependency sources, staging dirs and
 # generated binaries are NEVER committed. Files that are intentionally
 # released are attached to GitHub Releases as artifacts.
-# `scripts/validate_release_content.py` enforces the same rule on every
+# `scripts/release/validate_release_content.py` enforces the same rule on every
 # release package before it is published.
 # =============================================================================
 
@@ -69,7 +69,7 @@ llvm-mingw*/
 llvm-mingw.tar.xz
 
 # any other cross-build / experiment work trees
-build-*/
+/build-*/
 work/
 
 # compiler + linker byproducts anywhere
@@ -95,13 +95,13 @@ compile_commands.json
 **/hb.tgz
 **/jpeg.zip
 
-# generated release staging (always created fresh by scripts/package_release.sh
-# and validated by scripts/validate_release_content.py before packaging)
+# generated release staging (always created fresh by scripts/release/package_release.sh
+# and validated by scripts/release/validate_release_content.py before packaging)
 release_staging/
 dist/
 release_audit/
 
-# raw demo-run output (the curated, hash-pinned proof is committed under docs/demo/)
+# raw demo-run output (the curated, hash-pinned proof is committed under docs/demos/)
 miniandroid/run/demo_evidence/
 miniandroid/run/demo_timer_evidence/
 
@@ -119,3 +119,15 @@ miniandroid/run/m9_*/
 artifacts/
 # S19: session probe run dirs follow the m9_* external-artifact law
 miniandroid/run/s19_*/
+
+# repository-structure migration: demo app build output + generated runtime binary
+examples/demo-app/build/
+miniandroid/core
+
+# container workspace dirs (local-only, never part of the repository)
+/skills/
+/upload/
+/download/
+/logs/
+/tool-results/
+/MiniAndroid-Compatibility-Runtime/

@@ -1002,7 +1002,7 @@ no assumptions (S20 method: PARAM-TRACE/METHOD-TRACE/ATOMIC-DIAG oracles).
 - [x] R-NEW-135 — obfuscation vs semantic identity
   - Group: E | Priority: P1 | Floodgate: no
   - Status: VERIFIED-CORRECT
-  - Evidence: dooz = real R8-OBFUSCATED APK executing deep into Material3; obfuscated-symbol forensics via scripts/minidump_dex.py (CM9)
+  - Evidence: dooz = real R8-OBFUSCATED APK executing deep into Material3; obfuscated-symbol forensics via scripts/forensic/minidump_dex.py (CM9)
   - Missing proof: -
   - Next action: regression-watch
   - Commit: 96ecc9f4
@@ -2128,7 +2128,7 @@ no assumptions (S20 method: PARAM-TRACE/METHOD-TRACE/ATOMIC-DIAG oracles).
 - [x] R-NEW-298 — Engine-level virtual dispatch resolves only the exact class (no superclass walk)
   - Group: NEW | Priority: P0 | Floodgate: YES
   - Status: VERIFIED-FIXED
-  - Discovered from: LIVE S21: dooz drain dispatched `[UC009-WIRE] Runnable id=687 class=Lb2/h;` with ZERO b2/h.run records in the 306k-line log; DEX ground truth (s21_frame_probe.py + androguard oracle): Lb2/h; = kotlinx.coroutines DispatchedContinuation, declares NO run() — the entrypoint is DispatchedTask.run (LW1/N;) on the superclass; upstream law (kotlinx DispatchedTask.kt / ART ClassLinker): virtual dispatch resolves on the runtime class hierarchy. FIXED F-074: try_recursive_invoke_on_super walks class_to_superclass_ (depth-capped, receiver identity preserved) at both give-up points; 712 super-dispatches on the re-run. Micro-proof: f074_super_run 6/6 bands GREEN (super-run/receiver-identity/two-hop/override).
+  - Discovered from: LIVE S21: dooz drain dispatched `[UC009-WIRE] Runnable id=687 class=Lb2/h;` with ZERO b2/h.run records in the 306k-line log; DEX ground truth (scripts/forensic/s21_frame_probe.py + androguard oracle): Lb2/h; = kotlinx.coroutines DispatchedContinuation, declares NO run() — the entrypoint is DispatchedTask.run (LW1/N;) on the superclass; upstream law (kotlinx DispatchedTask.kt / ART ClassLinker): virtual dispatch resolves on the runtime class hierarchy. FIXED F-074: try_recursive_invoke_on_super walks class_to_superclass_ (depth-capped, receiver identity preserved) at both give-up points; 712 super-dispatches on the re-run. Micro-proof: f074_super_run 6/6 bands GREEN (super-run/receiver-identity/two-hop/override).
   - Why not covered by previous radar: the drains previously logged nothing on miss; the S21 gate evidence (removed-not-run) was downstream of this silent drop
   - Next action: see discovery note
 - [x] R-NEW-299 — Kotlin `return null` (const/4-0 + return-object) propagates INT32(0) instead of the null reference

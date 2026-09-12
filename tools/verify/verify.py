@@ -73,7 +73,7 @@ def fast_path(row):
         "commit": row["commit"],
         "pointers": {
             "worklist": "docs/root-searchlight/ROOT_WORKLIST.md",
-            "law_ledger": "docs/ROOT_LAW_GLOBAL_AUDIT.md",
+            "law_ledger": "docs/research/ROOT_LAW_GLOBAL_AUDIT.md",
             "failure_ledger": "docs/root-searchlight/FAILURE_LEDGER.md",
             "registry": "root_registry.json",
         },

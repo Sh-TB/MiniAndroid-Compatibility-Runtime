@@ -1,7 +1,7 @@
 # ROOT WORKLOG — LIVE
 
 Rule: this file indexes waves; the full evidence-grade session log lives in
-`worklog.md` (repo root). No failure or false lead is ever deleted (§14).
+`docs/maintenance/worklog.md` (repo root). No failure or false lead is ever deleted (§14).
 
 ## WAVE 0 — Searchlight establishment (this baseline)
 
@@ -31,7 +31,7 @@ high-impact-unresolved / current frontier / next highest-value root.
   dooz composition blocker) → then R-NEW-285 Job-active cancellation.
 
 ## Waves (index)
-- S17..S18: see repo worklog.md entries S17-AUDIT-1 .. S18 (F-058..F-069, registry 295).
+- S17..S18: see repo docs/maintenance/worklog.md entries S17-AUDIT-1 .. S18 (F-058..F-069, registry 295).
 - S19: F-070 closed (R-NEW-294); tooling debt fixed (304321ed).
 - S20: F-071/F-072/F-073 closed (R-NEW-295..297); dooz onCreate exception-free.
 - S21: F-074 (engine-level superclass walk) + F-075 (polymorphic zero) closed

@@ -11,7 +11,7 @@ golden instead of remaining corpus-only)
 
 | Field | Value |
 |---|---|
-| Fixture source | `miniandroid/tests/fixtures/helloworld_golden/` (MIT), built by `scripts/build_fixture_apk.sh` (aapt2 8.13.2 Apache-2.0 from Google Maven + ECJ MIT + D8/r8 8.3.37 Apache-2.0 + android-34 stubs Apache-2.0) |
+| Fixture source | `miniandroid/tests/fixtures/helloworld_golden/` (MIT), built by `scripts/build/build_fixture_apk.sh` (aapt2 8.13.2 Apache-2.0 from Google Maven + ECJ MIT + D8/r8 8.3.37 Apache-2.0 + android-34 stubs Apache-2.0) |
 | APK SHA256 (deterministic build) | `3cf76fb7b2cb2c02d608966fe97c4644e4abab90b9f3c550e937ffdb827b4d15` |
 | DEX SHA256 | `039e18ed62cfd76ee0dda83beb1c0ff16e53b9df207fb85b00f3b26655d3a24f` |
 | APK entries | `AndroidManifest.xml` (binary AXML) · `res/layout/activity_main.xml` (binary AXML) · `resources.arsc` · `classes.dex` |
@@ -78,7 +78,7 @@ differ, not because the visual result differs.
 | EXT-AOSP-001 | Container gravity governs children with no layout_gravity | AOSP frameworks/base @ 1cdfff55, LinearLayout.java L1933-1945/L1284/L1466 | children centered at exactly (1080−w)/2 |
 | EXT-AOSP-002 | `setTextSize(float)` == sp × scaledDensity | AOSP TextView.java L4720-4762 | 28sp→73.5px, 14sp→36.75px (density 2.625) |
 | EXT-AAPT2-001 | aapt2 (Google Maven 8.13.2-14304508) replaces a hand-written binary AXML/ARSC generator — REUSE-FIRST win: zero new format-writer LOC in MiniAndroid | aapt2 Apache-2.0; res zip epoch 1980 determinism observed | APK entries + reschain report |
-| EXT-AAPT2-002 | D8 8.3.37 rejects bare class DIRECTORY input; deterministic classes.jar packaging is required | recorded in build_fixture_apk.sh | build log "[3/4] jar entries" |
+| EXT-AAPT2-002 | D8 8.3.37 rejects bare class DIRECTORY input; deterministic classes.jar packaging is required | recorded in scripts/build/build_fixture_apk.sh | build log "[3/4] jar entries" |
 
 ## FIND recorded this session — RESOLVED 2026-09-05
 
@@ -107,5 +107,5 @@ differ, not because the visual result differs.
 - tictactoe_golden: ALL PASS (see TICTACTOE_STATUS.md)
 - semantic battery: 14 + 57 + 25 = 96/96 PASS
 - MUTF-8 battery: 7/7 PASS (FIND-REUSE-001)
-- One-command gate: `scripts/run_test_battery.sh` (battery includes this
+- One-command gate: `scripts/test/run_test_battery.sh` (battery includes this
   golden and rebuilds everything from clean)

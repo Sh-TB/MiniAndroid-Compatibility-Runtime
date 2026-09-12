@@ -49,7 +49,7 @@ Head: `6c352981` (see commit map below).
    [--theme] [--bag key] [--json] [--density/--locale/--sdk]`: id →
    candidates → selected configs → raw value → reference chain → final
    value → apk path. Uses ONLY the canonical resolver.
-10. **Resource matrix (§13)** — `docs/RESOURCE_MATRIX.md`:
+10. **Resource matrix (§13)** — `docs/compatibility/RESOURCE_MATRIX.md`:
     parsed/resolved/consumed/rendered/pixel-verified per type × dimension.
 11. **Hostile safety (§14)** — parser hardening (entryCount offsets bound,
     entries_start range, entry-esize underflow) + 18-check hostile suite:
