@@ -100,6 +100,11 @@ struct ManifestInfo {
     // (attribute 0x01010000, REFERENCE value) — the style whose
     // windowBackground item paints the window behind all content.
     uint32_t application_theme_resid = 0;
+    // F-094 (R-NEW-327): plain-text manifests store android:theme as a
+    // REFERENCE STRING ("@style/AppTheme.NoActionBar") — no binary attr
+    // id exists. The resolver turns the name into a resid through the
+    // ARSC (find_id) when application_theme_resid is 0.
+    std::string application_theme_ref;
     bool has_application = false;
     
     // Raw data access
