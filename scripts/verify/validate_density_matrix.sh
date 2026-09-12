@@ -24,8 +24,8 @@
 #
 # Zero-skip: every check executes; PASS 0 / FAIL 0 is a failure.
 set -uo pipefail
-REPO="$(cd "$(dirname "$0")/.." && pwd)"
-MA="$REPO/MiniAndroid-Compatibility-Runtime/miniandroid"
+REPO="$(cd "$(dirname "$0")/../.." && pwd)"
+MA="$REPO/miniandroid"
 FIX="$MA/tests/fixtures/density_matrix"
 BIN="$MA/build/miniandroid"
 TRACE="$MA/build/resource_trace"

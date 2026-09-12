@@ -183,9 +183,49 @@ first (legacy sandbox fallback kept).
 
 ## Validation (post-migration)
 
-See commit message and the validation section of the session worklog:
-clean build, full regression battery, Hello Color / ChessClock / TicTacToe /
-HelloWorld goldens byte-identical, demo proof validator PASS, markdown link
-check, `git status` clean. No runtime source file was modified
-(`git diff <pre-migration-HEAD> -- miniandroid/src` is empty except the
-removed generated binary).
+Executed at the post-migration HEAD, recorded 2026-09-12:
+
+1. **Clean build** — `make -C miniandroid` compiles and links `build/miniandroid`
+   (warnings only, identical warning set to pre-migration).
+2. **Full regression battery** — `bash scripts/test/run_test_battery.sh`:
+   **94 stages — 93 PASS, 1 FAIL**. The single FAIL is **GATE H** (real-APK
+   image-pipeline golden), the pre-existing honestly-registered
+   glyph-to-framebuffer gap already recorded in the MC4 status — identical to
+   the pre-migration record. Zero refactor regressions. (§28 HelloWorld, §29
+   TicTacToe, EXT-01 9/9, EXT-02 12/12, G04 density oracle 11/11, G06/G07/G08
+   fixture+golden+3-run determinism, F-012/F-020/F-024/F-026/F-028/F-030/
+   F-040/F-044/F-050/F-074 pixel goldens — all PASS.)
+3. **Hello Color golden** — committed evidence SHA-verified unchanged
+   (`retest_run{1,2,3}_frame.png` = `11e00563…` ×3). Fresh 3-run re-render at
+   the post-migration HEAD reproduces the **byte-identical framebuffer** ×3.
+4. **ChessClock golden** — committed `screenshot.png` = `e4a2d7c9…` (unchanged);
+   fresh re-run with the pinned APK (`5ca6f2c5…`) reproduces the **byte-identical
+   screenshot** (`e4a2d7c9…`).
+5. **TicTacToe / HelloWorld** — battery §29 / §28 PASS (3-run deterministic).
+6. **Demo validation** — `examples/demo-app/build_demo_apk.sh` +
+   `examples/demo-app/validate_demo_proof.sh` → **VALIDATION_PASS**
+   (deterministic replay, identical SHA256 sequence).
+7. **Evidence provenance** — all curated evidence under `docs/evidence/` is
+   byte-identical (moves only; spot SHA checks passed).
+8. **README / docs link check** — `scripts/maintenance/check_links.py`: no
+   broken links introduced by the migration (remaining hits are pre-existing
+   generation artifacts, see above).
+9. **Scripts executable check** — every battery-invoked script executed
+   successfully from its new location.
+10. **Git status clean** after commits; 664 renames detected by git (history
+    preserved).
+
+### Toolchain restoration note (honest record)
+
+The container restart had wiped the local toolchain (`tools/aapt2`, `ecj.jar`,
+`r8.jar`, `android-34.jar`). These are intentionally un-committed binaries
+(restored by `scripts/build/bootstrap_toolchain.sh` from pinned upstream
+sources; now explicitly gitignored). They were re-fetched at the pinned
+versions (aapt2 8.13.2-14304508, ECJ 3.33.0, r8 8.13.23,
+platform-34-ext7_r03). A Hello Color APK rebuilt with the restored toolchain
+hashes differently at the container level (`a86c9b4c…` vs the recorded
+`77863f1f…` — toolchain-byte difference, deterministic ×2) while rendering the
+**byte-identical golden framebuffer** (`11e00563…`) — the frame-level golden,
+which is the project's evidence contract, is fully reproduced. No runtime
+source file was modified by this migration
+(`git diff 97411953..HEAD -- miniandroid/src` is empty).

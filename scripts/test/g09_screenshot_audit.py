@@ -9,7 +9,7 @@ from pathlib import Path
 from collections import Counter
 
 WORK = Path("/tmp/g09_runs")
-RESULTS = Path(__file__).resolve().parents[1] / \
+RESULTS = Path(__file__).resolve().parents[2] / \
     "docs/evidence/g09_corpus/results"
 
 

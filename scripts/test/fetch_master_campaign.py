@@ -11,7 +11,7 @@ import sys
 import urllib.request
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[1]
+REPO = Path(__file__).resolve().parents[2]
 REG = REPO / "docs" / "evidence" / "master_campaign" / "registry_additions.json"
 CACHE = REPO / "miniandroid" / "download" / "master_campaign"
 
