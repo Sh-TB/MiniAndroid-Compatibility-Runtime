@@ -1017,6 +1017,18 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
     }
     if (m == "getWidth") return CallResult::handled_int(1080);
     if (m == "getHeight") return CallResult::handled_int(1920);
+    // F-095 (R-NEW-328) software-renderer truth law: the runtime renders
+    // through a software framebuffer — Canvas.isHardwareAccelerated() MUST
+    // answer false. Upstream consumers branch on it: compose 1.6.7
+    // ViewLayer.dispatchDraw clips manually when the canvas is software
+    // (ViewLayer.android.kt: `if (clipPath != null || !canvas.isHardwareAccelerated)`)
+    // and RenderNodeLayer.drawLayer falls back to direct drawBlock drawing
+    // (RenderNodeLayer.android.kt) — the honest answer keeps both on their
+    // correct software path. The default (unhandled → false) already matched,
+    // but answering EXPLICITLY documents the law and guards against a future
+    // default flip silently re-routing compose into the hardware/RenderNode
+    // path we cannot reproduce.
+    if (m == "isHardwareAccelerated") return CallResult::handled_bool(false);
     return CallResult::not_handled();
 }
 

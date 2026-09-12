@@ -2046,6 +2046,17 @@ bool DalvikExecutionEngine::execute_method_internal(
                   << " (bytecode_size=" << bytecode.size() << ")" << std::endl;
         method_entry_count++;
     }
+    // S26 (R-NEW-328 evidence): every DEX method entry INSIDE the custom-view
+    // draw window, env-gated + bounded — shows exactly which methods execute
+    // during the compose draw dispatch and where the pipeline stops.
+    static thread_local const bool drawwin_on =
+        std::getenv("MINIANDROID_DRAW_WINDOW_TRACE") != nullptr;
+    static thread_local uint64_t drawwin_count = 0;
+    if (drawwin_on && draw_window_active_ && drawwin_count < 3000) {
+        std::cerr << "[DRAWWIN-IN] " << class_name << "." << method_name
+                  << " " << descriptor << std::endl;
+        drawwin_count++;
+    }
 
     // EXP-038 (BLOCKER-033): Set current_dex_index_ for per-DEX method resolution.
     // Look up which DEX file this class came from.
@@ -5722,6 +5733,8 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
     }
     uint32_t canvas_obj = heap_.allocate("Landroid/graphics/Canvas;", pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
     canvas_shadow->begin_frame();
+    // S26 diagnostic window (R-NEW-328): attribute method entries to the draw.
+    draw_window_active_ = true;
     std::vector<DalvikValue> args;
     args.push_back(DalvikValue::make_object(view_object_id, cls));
     args.push_back(DalvikValue::make_object(canvas_obj, "Landroid/graphics/Canvas;"));
@@ -5739,6 +5752,7 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
         ok = try_recursive_invoke(cls, "dispatchDraw", args, ret, res);
         ops = ok ? (int)canvas_shadow->ops().size() : 0;
     }
+    draw_window_active_ = false;
     std::cerr << "[C013-ONDRAW] view=" << view_object_id << " class=" << cls
               << " dispatched=" << (ok ? "YES" : "NO") << " ops=" << ops << std::endl;
     return ops;
@@ -14544,6 +14558,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status,
                                           uint32_t method_idx_hint) {
+    // S26 (R-NEW-328 evidence): every bridge (non-DEX dispatch) inside the
+    // custom-view draw window — shows what the draw pipeline asked the
+    // framework for, and which calls silently no-op.
+    {
+        static thread_local const bool drawwin_miss_on =
+            std::getenv("MINIANDROID_DRAW_WINDOW_TRACE") != nullptr;
+        static thread_local uint64_t drawwin_miss_count = 0;
+        if (drawwin_miss_on && draw_window_active_ && drawwin_miss_count < 3000) {
+            std::cerr << "[DRAWWIN-BRIDGE] " << class_name << "." << method
+                      << " argc=" << args.size()
+                      << " caller=" << current_class_ << "." << current_method_
+                      << std::endl;
+            drawwin_miss_count++;
+        }
+    }
     // M3 FINDING-011 diagnostics (bounded): function-entry probe.
     if ((method == "setTag" || method == "getTag")) {
         static thread_local uint64_t tag_probe = 0;
@@ -16606,6 +16635,77 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
     }
+
+    // ── F-095 (R-NEW-328): ViewGroup.drawChild(Canvas, View, drawingTime) ──
+    // the AOSP child-draw dispatch law. Compose's ViewLayer path (compose-ui
+    // 1.6.7, upstream sources): AndroidComposeView.dispatchDraw →
+    // canvasHolder.drawInto { root.draw(composeCanvas) } [LayoutNode.draw
+    // inlined] → ViewLayer.drawLayer → DrawChildContainer.drawChild
+    // (platform/f0.a — DEX) → super.drawChild(nativeCanvas, view, drawingTime)
+    // → framework ViewGroup.drawChild → child.draw(canvas, this, drawingTime)
+    // → View.draw machinery → ViewLayer.dispatchDraw(canvas) →
+    // drawBlock.invoke(canvas) — THE REAL COMPOSE DRAW OPS.
+    // The runtime had NO drawChild law: the bridge silently answered void →
+    // the entire compose ViewLayer draw produced 0 canvas ops → the 802px
+    // placeholder (R-NEW-328 frontier).
+    // LAW: drawChild dispatches the CHILD's real draw — execute the child
+    // DEX class's dispatchDraw (ViewGroup children, AOSP View.draw fallthrough)
+    // or onDraw (leaf views) with the SAME canvas object; ops land in the
+    // ACTIVE canvas-shadow frame (no begin_frame reset — the outer dispatch
+    // owns the frame). Result = AOSP truth: true iff the child was drawn.
+    if (method == "drawChild" && args.size() >= 3 &&
+        args[1].type == DalvikType::OBJECT_REF &&
+        args[2].type == DalvikType::OBJECT_REF &&
+        args[1].object_id != 0 && args[2].object_id != 0 &&
+        heap_.has_object(args[2].object_id)) {
+        uint32_t canvas_id = args[1].object_id;
+        uint32_t child_id = args[2].object_id;
+        std::string child_cls;
+        if (const auto* child_obj = heap_.get(child_id);
+            child_obj && !child_obj->class_descriptor.empty()) {
+            child_cls = child_obj->class_descriptor;
+        }
+        // Normalize dotted descriptors (heap may store Lcom.example.Foo;).
+        if (!child_cls.empty() && child_cls[0] == 'L' &&
+            child_cls.find('.') != std::string::npos) {
+            std::string norm = "L";
+            for (size_t i = 1; i < child_cls.size(); ++i)
+                norm += (child_cls[i] == '.') ? '/' : child_cls[i];
+            child_cls = norm;
+        }
+        bool dispatched = false;
+        if (!child_cls.empty()) {
+            DalvikValue draw_ret = DalvikValue::make_bool(false);
+            DalvikExecutionResult draw_res;
+            std::vector<DalvikValue> draw_args;
+            draw_args.push_back(DalvikValue::make_object(child_id, child_cls));
+            draw_args.push_back(
+                DalvikValue::make_object(canvas_id, "Landroid/graphics/Canvas;"));
+            // AOSP View.draw(canvas, parent, drawingTime) → View.draw(canvas):
+            // ViewGroup subclasses draw content via dispatchDraw(Canvas);
+            // leaf views via onDraw(Canvas).
+            dispatched = try_recursive_invoke(
+                child_cls, "dispatchDraw", draw_args, draw_ret, draw_res);
+            if (!dispatched) {
+                draw_ret = DalvikValue::make_bool(false);
+                dispatched = try_recursive_invoke(
+                    child_cls, "onDraw", draw_args, draw_ret, draw_res);
+            }
+            static thread_local uint64_t f095_log = 0;
+            if (f095_log < 24) {
+                ++f095_log;
+                std::cerr << "[F095-DRAWCHILD] parent=" << class_name
+                          << " child=" << child_id << " cls=" << child_cls
+                          << " canvas=" << canvas_id
+                          << " dispatched=" << (dispatched ? "YES" : "NO")
+                          << std::endl;
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_bool(dispatched);
+        return true;
+    }
+
     if (try_shadow_dispatch(class_name, method, args, result, status)) {
             // M3 F-ROOM-CHAIN: SQLiteOpenHelper.getWritableDatabase /
             // getReadableDatabase must fire the app override onCreate /
