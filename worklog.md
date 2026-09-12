@@ -16,3 +16,19 @@ Stage Summary:
 - Registry 310→315 (4 roots closed, 1 new open frontier).
 - Five generic family fixes; zero regressions.
 - Full evidence: docs/maintenance/worklog.md S25-MAIN.
+
+---
+Task ID: S26-MAIN
+Agent: Super Z (main)
+Task: MASTER CAMPAIGN 3 continuation — push old commits; R-NEW-328 attack; fresh app suite with screenshots; interactive gameplay proof; progress report.
+
+Work Log:
+- Pushed old commits first (user directive): token rotated, main 5f7772d8..2ccd9de8 published, archives 0/0.
+- R-NEW-328 root-caused via compose 1.6.7 upstream sources: missing ViewGroup.drawChild law (ViewLayer draw chain silently no-oped at the framework bridge). F-095 implemented (drawChild → child real-draw dispatch + isHardwareAccelerated=false software-truth). R-NEW-329 registered (compose placement gate: root child fails isPlaced).
+- Fresh suite: microtimer/gmdice/stopwatch REAL UI renders; dooz det ×3; STTT honest frontier.
+- INTERACTIVE PROOF: gmdice tap 1d6 → onClick → roll() → setText → repaint ("Roll it!"), pixel-diff 108,795 sampled.
+- Battery 93/94 (pre-existing GATE H only) — zero regressions. Commits c7d3131a + e77684b9 pushed.
+
+Stage Summary:
+- Registry 315→316; 5 fix families total F-090..F-095; gameplay loop proven end-to-end on gmdice.
+- Next: R-NEW-329 placement pass (unblocks all Compose apps), STTT fragment host, Advanced HelloWorld.

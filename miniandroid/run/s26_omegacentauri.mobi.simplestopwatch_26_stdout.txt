@@ -1,0 +1,18 @@
+[*] Running APK: download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk
+[*] Output directory: run/s26_omegacentauri.mobi.simplestopwatch_26
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 1
+Execution Time: 0ms
+Errors: 0
+Warnings: 0
+
+Screenshot: run/s26_omegacentauri.mobi.simplestopwatch_26/screenshot.png
+Report: run/s26_omegacentauri.mobi.simplestopwatch_26/report.md

@@ -1,0 +1,19 @@
+[*] TAP gesture 1 queued at (400,1830) — frames + touch trace saved to <output>/frames/
+[*] Running APK: download/exp073_real_apps/de.duenndns.gmdice_8.apk
+[*] Output directory: run/s26_gmdice_tap
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 5
+Execution Time: 0ms
+Errors: 0
+Warnings: 0
+
+Screenshot: run/s26_gmdice_tap/screenshot.png
+Report: run/s26_gmdice_tap/report.md
