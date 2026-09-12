@@ -1551,6 +1551,14 @@ public:
     // Built from dex_report_->classes[i].superclass_name.
     // Used by is_subclass_of() for semantic View inheritance resolution.
     std::map<std::string, std::string> class_to_superclass_;
+    // F-087 (R-NEW-313): class descriptor → runtime-visible class annotations
+    // (parsed from the DEX annotations_directory_item by the parser). Backs
+    // Class.getAnnotation / isAnnotationPresent and the annotation-proxy
+    // element dispatch (see bridge_to_api).
+    std::map<std::string,
+             std::vector<std::pair<std::string,
+                                   std::vector<std::pair<std::string, std::string>>>>>
+        class_annotations_;
     // G11 FIX-G11-001: view object ids currently inside
     // run_custom_view_constructor — cyclic constructor/inflate chains
     // re-entering the same view must fail loudly instead of recursing.

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Hello Smoke</string>
+    <string name="smoke_title">Compatibility Smoke</string>
+    <string name="smoke_resource_echo">resource chain: AXML + arsc + @dimen + @color</string>
+    <string name="smoke_button">increment</string>
+    <string name="smoke_api_string">api getString path OK</string>
+</resources>

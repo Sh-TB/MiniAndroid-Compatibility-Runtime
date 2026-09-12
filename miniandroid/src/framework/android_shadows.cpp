@@ -464,6 +464,21 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             if (key.empty() && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
                 key = "obj:" + std::to_string(ctx.args[0].object_id);
             }
+            // F-089 diagnostics (bounded): Map.put visibility for the
+            // navigation registration chain (dooz "composable" frontier).
+            {
+                static thread_local uint64_t f089_put = 0;
+                if (f089_put < 40) {
+                    ++f089_put;
+                    std::cerr << "[F089] shadow put map=" << obj_id
+                              << " key=\"" << key << "\""
+                              << " arg0_kind=" << (int)ctx.args[0].kind
+                              << " arg0_str=\"" << ctx.args[0].string_val << "\""
+                              << " arg0_obj=" << ctx.args[0].object_id
+                              << " arg0_cls=" << ctx.args[0].object_class << " nargs=" << ctx.args.size()
+                              << " recv=" << ctx.class_name << std::endl;
+                }
+            }
             // EXP-071 Phase 7: Check if the value is a STRING or OBJECT.
             // For STRING values, store in map_string_entries.
             // For OBJECT values, store in map_entries.
