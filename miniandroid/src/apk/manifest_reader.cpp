@@ -775,8 +775,13 @@ ManifestInfo ManifestReader::parse_plain_xml(const std::vector<uint8_t>& data) {
             // Application subclass to instantiate. If absent, the default
             // android.app.Application is used.
             result_.application_name = extract_attr("android:name");
+            // F-094 (R-NEW-327): plain-text manifests carry android:theme
+            // as a reference string — capture it so the theme resolver can
+            // turn the style name into a resid through the ARSC.
+            result_.application_theme_ref = extract_attr("android:theme");
             log("Found application: label=" + result_.application_label +
-                " name=" + result_.application_name);
+                " name=" + result_.application_name +
+                " theme=" + result_.application_theme_ref);
             
         } else if (tag_name == "activity") {
             state_stack.push_back(XmlState::ACTIVITY);

@@ -105,6 +105,18 @@ public:
     // (caller falls back to the plain default surface).
     std::optional<uint32_t> resolve_window_background_argb(const std::string& apk_path);
 
+    // F-093 (R-NEW-326, S25): theme attribute resolution through the
+    // APPLICATION theme's style parent chain (ArscParser::bag_value —
+    // ResTable_map key query with cycle-safe parent hops). Upstream law:
+    // ContextThemeWrapper.obtainStyledAttributes(styleable[]) resolves
+    // every attr id against the activity theme (attribute > style bag >
+    // parent chain). Used by the AppCompat theme gate
+    // (AppCompatDelegateImpl.createSubDecor → TypedArray.getBoolean(
+    // windowActionBar)) — without it every AppCompatActivity app throws
+    // ISE "You need to use a Theme.AppCompat theme (or descendant)".
+    std::optional<ResValue> resolve_theme_attr_value(const std::string& apk_path,
+                                                     uint32_t attr_key);
+
     // Evidence dump
     std::string stats_json() const;
 

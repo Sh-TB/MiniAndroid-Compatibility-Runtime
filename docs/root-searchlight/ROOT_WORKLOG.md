@@ -50,3 +50,4 @@ high-impact-unresolved / current frontier / next highest-value root.
   map recorded in worklog S24-MAIN.
 - Battery 91/92 (pre-existing GATE H only); Hello Color + ChessClock goldens
   byte-identical; dooz deterministic ×3 (rc=1 honest at the frontier).
+- S25: F-091/F-091b (DEX-collection iteration protocol + host-interface dispatch gate), F-092 (getOnBackInvokedDispatcher), F-093/F-093b (theme-backed TypedArray + gate), F-094 (plain-text manifest) closed (R-NEW-324..327); frontier R-NEW-328 compose measure/draw 0-ops; registry 310→315; dooz #1 crash-free ×3 past the tutorial/کارتون nav blocker; dooz #2 (UltimateTTT) pushed to fragment-host frontier.
