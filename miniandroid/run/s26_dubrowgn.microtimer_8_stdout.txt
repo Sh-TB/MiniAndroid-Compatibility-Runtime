@@ -1,0 +1,18 @@
+[*] Running APK: download/exp076_corpus/dubrowgn.microtimer_8.apk
+[*] Output directory: run/s26_dubrowgn.microtimer_8
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 1
+Execution Time: 0ms
+Errors: 0
+Warnings: 2
+
+Screenshot: run/s26_dubrowgn.microtimer_8/screenshot.png
+Report: run/s26_dubrowgn.microtimer_8/report.md

@@ -1,0 +1,18 @@
+[*] Running APK: download/exp073_real_apps/de.duenndns.gmdice_8.apk
+[*] Output directory: run/s26_de.duenndns.gmdice_8
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 1
+Execution Time: 0ms
+Errors: 0
+Warnings: 0
+
+Screenshot: run/s26_de.duenndns.gmdice_8/screenshot.png
+Report: run/s26_de.duenndns.gmdice_8/report.md
