@@ -473,6 +473,194 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
             }
         }
         
+        // ====================================================================
+        // F-087 (R-NEW-313): RUNTIME class-annotation parsing.
+        // annotations_directory_item { u4 class_annotations_off;
+        //                              u4 fields_size; u4 annotated_method_size;
+        //                              u4 annotated_params_size; ... }
+        // annotation_set_item { u4 size; u4 offsets[size] } → annotation_item
+        // annotation_item { u1 visibility; encoded_annotation }
+        // encoded_annotation { uleb type_idx; uleb size;
+        //                      { uleb name_idx; encoded_value }[size] }
+        // Only visibility=1 (RUNTIME) is kept: Class.getAnnotation law.
+        // Element decode subset: STRING 0x17, INT 0x04, BOOLEAN 0x1f, CHAR
+        // 0x03, BYTE 0x00, SHORT 0x02, LONG 0x06, FLOAT 0x10, DOUBLE 0x11,
+        // TYPE 0x18 (→ descriptor); everything else (arrays, nested
+        // annotations, enums, fields, methods) is skipped for that element.
+        // ====================================================================
+        if (class_def.annotations_off != 0 &&
+            class_def.annotations_off + 4 <= current_size_) {
+            uint32_t class_ann_off = 0;
+            std::memcpy(&class_ann_off, data + class_def.annotations_off,
+                        sizeof(class_ann_off));
+            if (class_ann_off != 0 &&
+                class_ann_off + 4 <= current_size_) {
+                uint32_t ann_set_size = 0;
+                std::memcpy(&ann_set_size, data + class_ann_off,
+                            sizeof(ann_set_size));
+                // Security law (§N): bound every read against the file end
+                // before any pointer arithmetic.
+                if (ann_set_size > 0 && ann_set_size < 0x1000u &&
+                    class_ann_off + 4 + (uint64_t)ann_set_size * 4 <=
+                        current_size_) {
+                    for (uint32_t k = 0; k < ann_set_size; ++k) {
+                        uint32_t item_off = 0;
+                        std::memcpy(&item_off,
+                                    data + class_ann_off + 4 + (size_t)k * 4,
+                                    sizeof(item_off));
+                        if (item_off == 0 || item_off + 2 > current_size_)
+                            continue;
+                        uint8_t visibility = data[item_off];
+                        if (visibility != 1) continue;  // RUNTIME only
+                        // encoded_annotation at item_off + 1
+                        size_t p = item_off + 1;
+                        uint32_t type_idx = 0, elem_count = 0;
+                        bool ok = true;
+                        type_idx = miniandroid::dex::mutf8::read_uleb128(
+                            data, current_size_, p, ok);
+                        if (!ok) continue;
+                        elem_count = miniandroid::dex::mutf8::read_uleb128(
+                            data, current_size_, p, ok);
+                        if (!ok || elem_count > 32) continue;
+                        std::string ann_type =
+                            (type_idx < report.header.type_ids_size)
+                                ? get_type(type_idx)
+                                : std::string();
+                        if (ann_type.empty()) continue;
+                        std::vector<std::pair<std::string, std::string>>
+                            elements;
+                        bool decode_ok = true;
+                        for (uint32_t e = 0;
+                             e < elem_count && decode_ok; ++e) {
+                            uint32_t name_idx = miniandroid::dex::mutf8::
+                                read_uleb128(data, current_size_, p, ok);
+                            if (!ok) { decode_ok = false; break; }
+                            if (p >= current_size_) { decode_ok = false; break; }
+                            uint8_t hdr_byte = data[p++];
+                            uint8_t value_type = hdr_byte & 0x1F;
+                            uint8_t value_arg = (hdr_byte >> 5) & 0x07;
+                            std::string decoded;
+                            switch (value_type) {
+                                case 0x00:  // BYTE
+                                case 0x02:  // SHORT
+                                case 0x03:  // CHAR
+                                case 0x04:  // INT
+                                case 0x06:  // LONG
+                                case 0x10:  // FLOAT
+                                case 0x11:  // DOUBLE
+                                case 0x15:  // METHOD_TYPE
+                                case 0x16:  // METHOD_HANDLE
+                                case 0x17:  // STRING
+                                case 0x18:  // TYPE
+                                case 0x19:  // FIELD
+                                case 0x1A:  // METHOD
+                                case 0x1B: {  // ENUM
+                                    uint64_t idx = 0;
+                                    for (uint8_t b = 0;
+                                         b <= value_arg && p < current_size_;
+                                         ++b) {
+                                        idx |=
+                                            static_cast<uint64_t>(data[p++])
+                                            << (8 * b);
+                                    }
+                                    if (value_type == 0x17) {
+                                        // STRING: idx → string data
+                                        decoded = get_string(
+                                            static_cast<uint32_t>(idx));
+                                    } else if (value_type == 0x18) {
+                                        decoded =
+                                            (idx < report.header.type_ids_size)
+                                                ? get_type(
+                                                      static_cast<uint32_t>(
+                                                          idx))
+                                                : std::string();
+                                    } else if (value_type == 0x04 ||
+                                               value_type == 0x06 ||
+                                               value_type == 0x02 ||
+                                               value_type == 0x00) {
+                                        // INT/LONG/SHORT/BYTE: signed
+                                        int64_t sv =
+                                            static_cast<int64_t>(idx);
+                                        // sign-extend from width
+                                        int width =
+                                            (value_type == 0x06 ? 8 : 4);
+                                        if (value_type == 0x02) width = 2;
+                                        if (value_type == 0x00) width = 1;
+                                        int shift =
+                                            64 - width * 8;
+                                        // value_arg width may be < natural —
+                                        // sign-extend from actual bytes read.
+                                        uint8_t nbytes = value_arg + 1;
+                                        if (nbytes < 8) {
+                                            shift = 64 - nbytes * 8;
+                                            sv = static_cast<int64_t>(
+                                                     static_cast<uint64_t>(
+                                                         idx)
+                                                     << shift) >>
+                                                 shift;
+                                        }
+                                        decoded = std::to_string(sv);
+                                    } else if (value_type == 0x03) {
+                                        decoded =
+                                            std::to_string(idx);  // char unit
+                                    } else {
+                                        // FLOAT/DOUBLE/METHOD_TYPE/
+                                        // METHOD_HANDLE/FIELD/METHOD/ENUM:
+                                        // raw index, deterministic but
+                                        // opaque — real consumers in the
+                                        // current corpus only need strings.
+                                        decoded = std::to_string(idx);
+                                    }
+                                    break;
+                                }
+                                case 0x1E:  // NULL
+                                    decoded = "";
+                                    break;
+                                case 0x1F:  // BOOLEAN: bit in value_arg
+                                    decoded = value_arg ? "true" : "false";
+                                    break;
+                                case 0x1C: {  // ARRAY: skip payload
+                                    uint32_t arr_size =
+                                        miniandroid::dex::mutf8::read_uleb128(
+                                            data, current_size_, p, ok);
+                                    if (!ok) { decode_ok = false; break; }
+                                    // Skip each element value conservatively:
+                                    // recurse is out of scope — abort decode
+                                    // of this annotation (rare shape).
+                                    decode_ok = arr_size == 0;
+                                    break;
+                                }
+                                case 0x1D:  // NESTED ANNOTATION: unsupported
+                                    decode_ok = false;
+                                    break;
+                                default:
+                                    decode_ok = false;
+                                    break;
+                            }
+                            if (!decode_ok) break;
+                            elements.emplace_back(
+                                get_string(name_idx), decoded);
+                        }
+                        if (decode_ok) {
+                            info.class_annotations.emplace_back(
+                                std::move(ann_type), std::move(elements));
+                            static thread_local uint64_t f087_log = 0;
+                            if (f087_log < 8) {
+                                ++f087_log;
+                                log("  → F-087 runtime annotation " +
+                                    info.class_annotations.back().first +
+                                    " on " + info.name + " (" +
+                                    std::to_string(
+                                        info.class_annotations.back()
+                                            .second.size()) +
+                                    " elements)");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // Parse class data (fields and methods)
         if (class_def.class_data_off != 0 && class_def.class_data_off < current_size_) {
             log("  → Parsing class_data at 0x" + std::to_string(class_def.class_data_off));
