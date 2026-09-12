@@ -1297,6 +1297,22 @@ public:
     bool dispatch_custom_view_measure(uint32_t view_object_id, int wspec,
                                       int hspec, int& out_w, int& out_h);
 
+    // F-096 (R-NEW-329 root): one-time real-DEX measure+layout lifecycle
+    // dispatch for a view whose DEX chain overrides onMeasure/onLayout —
+    // covers PROGRAMMATIC views (compose's AndroidComposeView) that the
+    // inflate-time F10 hook never sees. AOSP order: measure (EXACTLY
+    // specs from the final rect — the runtime's own measure pass already
+    // resolved the geometry) then layout(changed=true, l, t, r, b).
+    // onLayout → AndroidComposeView.measureAndLayout → root.place(0,0)
+    // runs the ENTIRE compose placement chain as real bytecode.
+    bool dispatch_view_lifecycle_once(uint32_t view_object_id,
+                                      int l, int t, int r, int b);
+
+    // Public chain query for the render phase (F-096 call-site logging):
+    // TRUE when the class's DEX chain defines the method.
+    bool chain_overrides_method(const std::string& class_desc,
+                                const char* method);
+
     // ── G11 FIX-G11-001 (AOSP LayoutInflater.createView law) ───────────
     // Execute an app class's REAL View constructor on the DEX interpreter.
     // Called by the LayoutInflater custom-view hook for fully-qualified app

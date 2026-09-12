@@ -32,3 +32,21 @@ Work Log:
 Stage Summary:
 - Registry 315→316; 5 fix families total F-090..F-095; gameplay loop proven end-to-end on gmdice.
 - Next: R-NEW-329 placement pass (unblocks all Compose apps), STTT fragment host, Advanced HelloWorld.
+
+---
+Task ID: S27-MAIN
+Agent: Super Z (main)
+Task: MASTER CAMPAIGN 3 continuation — push old commits; 9 GitHub issues reviewed/closed; battery 93/94 → 100% (GATE H re-earned); R-NEW-329 compose placement closed (F-096 lifecycle dispatch + F-096b getMode in-place law); Telegram golden re-acquired (K-26 lifted); fresh app suite + screenshots; percentage report.
+
+Work Log:
+- Pushed old commits first: e77684b9..79874955 → origin/main, 0/0 archives.
+- GitHub: issues #1-#8 closed with verification comments (evidence verified at HEAD); #9 living roadmap updated with S27 frontier comment.
+- GATE H: root-caused as a stale golden — the app bakes alpha-0x99 dim into unfocused theme colors (focusedColor forces 0xFF only for focused); runtime alpha-blending is CORRECT; IoU 0.950/0.997 re-proven with dim-aware thresholds; battery 94/94 = 100% ×2.
+- R-NEW-329 closed: F-096 real-DEX measure+layout lifecycle for programmatic views (AndroidComposeView.onMeasure/onLayout never ran → placement chain dead) + F-096b MeasureSpec.getMode in-place mask law (compose compares mode==0x40000000; shifted answer hit the ISE arm). Placement chains now execute (live F074/MSPEC evidence).
+- R-NEW-330 registered (DepthSortedSet.remove unattached node — honest open frontier). R-NEW-331 registered (fragment-host family: STTT + Telegram shared).
+- Telegram golden f5e11927… RE-ACQUIRED from the official dl (K-26 lifted); executed to ApplicationLoader.onCreate + LifecycleRegistry; frontier = fragment host. WhatsApp/TikTok Play-only (honest).
+- Regression: 94/94 battery, dooz SHA 193466ead8fd21d6 ×3, stopwatch byte-identical pre/post, 3 View apps render real UI. Registry 310→318.
+
+Stage Summary:
+- 100% battery; compose lifecycle laws landed; K-26 lifted; 8 issues closed; full session record at docs/maintenance/s27_session_record.md.
+- Next: R-NEW-330 attach-propagation law → real dooz frame; R-NEW-331 fragment-host law (STTT+Telegram unblock); Advanced HelloWorld.
