@@ -651,12 +651,24 @@ fi
 # PNG resources (settings.png gear, menu.png list icon) through the full
 # runtime pipeline: ARSC density selection → PNG decode → BitmapFactory
 # inDensity→inTargetDensity scale → tint → ImageButton draw.
-# LAW 1 (decode+tint): each ImageButton crop must contain the blue button
-#          background AND a white glyph (>= 1000 white px, > 8 distinct
-#          colors — a flat fill or a failed decode has neither).
-# LAW 2 (structural fidelity): the rendered glyph mask must agree with the
-#          SOURCE PNG's alpha mask (bbox-aligned IoU >= 0.85; measured
-#          0.959 settings / 0.997 menu at freeze).
+# RE-EARNED 2026-09-12 (S27, app-truth dim-color law): the app bakes an
+# alpha-0x99 dim into its unfocused theme colors (ShowTime.focusedColor
+# forces 0xFF only for the focused state; the idle state keeps the raw
+# color alpha) — the runtime now correctly alpha-blends, so the IDLE
+# render is dimmed ×153/255 vs the freeze-era (alpha-stripped) goldens:
+#   glyph white: 255 × 0.6 = 153      (freeze: 255)
+#   button blue: #6FA8DC × 0.6 = (66,100,132)  (freeze: 111,168,220)
+# Pipeline integrity is UNCHANGED: bbox-aligned IoU measured 0.950 (settings)
+# and 0.997 (menu) == freeze record 0.959/0.997 with a dim-aware mask
+# threshold. Zero runtime code changed for this re-earn.
+# LAW 1 (decode+tint): each ImageButton crop must contain the dimmed blue
+#          button background AND a dimmed white glyph (>= 1000 px above
+#          the 140 dim-aware threshold, > 8 distinct colors — a flat fill
+#          or a failed decode has neither).
+# LAW 2 (structural fidelity): the rendered glyph mask (dim-aware
+#          threshold >140) must agree with the SOURCE PNG's alpha mask
+#          (bbox-aligned IoU >= 0.85; measured 0.950 settings / 0.997 menu
+#          at re-earn; freeze-era bright-threshold record 0.959/0.997).
 # LAW 3 (determinism): 3 independent runs produce byte-identical frames.
 GATEH_APK="$MA/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk"
 if [ ! -f "$GATEH_APK" ]; then
@@ -686,7 +698,10 @@ def bbox(m):
     return xs.min(), ys.min(), xs.max(), ys.max()
 def glyph_white(crop):
     a = np.array(crop)
-    return (a[:,:,0]>200)&(a[:,:,1]>200)&(a[:,:,2]>200)
+    # dim-aware threshold: the app's idle theme color carries alpha 0x99
+    # (153/255) — the white glyph renders at 153; 140 separates it from the
+    # dimmed blue (66,100,132) and the dimmed bar gray (135).
+    return (a[:,:,0]>140)&(a[:,:,1]>140)&(a[:,:,2]>140)
 def glyph_alpha(src):
     return np.array(Image.open(src).convert("RGBA"))[:,:,3] > 128
 for name, (x0,y0,x1,y1) in CROPS.items():
@@ -694,7 +709,7 @@ for name, (x0,y0,x1,y1) in CROPS.items():
     a = np.array(crop)
     ncol = len(set(map(tuple, a.reshape(-1,3))))
     white = int(glyph_white(crop).sum())
-    blue = int(((a[:,:,0]==111)&(a[:,:,1]==168)&(a[:,:,2]==220)).sum())
+    blue = int(((a[:,:,0]==66)&(a[:,:,1]==100)&(a[:,:,2]==132)).sum())
     assert white >= 1000, f"{name}: white={white}"
     assert ncol > 8, f"{name}: colors={ncol}"
     assert blue > 3000, f"{name}: blue={blue}"
