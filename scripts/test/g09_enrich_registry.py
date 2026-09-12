@@ -5,7 +5,7 @@ import json
 from datetime import date
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[1]
+REPO = Path(__file__).resolve().parents[2]
 MA = REPO / "miniandroid"
 REG = REPO / "docs/evidence/g09_corpus/g09_corpus_registry.json"
 APKS_JSON = json.loads((MA / "tests/corpus/apks.json").read_text())

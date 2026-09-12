@@ -131,3 +131,10 @@ miniandroid/core
 /logs/
 /tool-results/
 /MiniAndroid-Compatibility-Runtime/
+
+# toolchain binaries (restored by scripts/build/bootstrap_toolchain.sh — never committed)
+/tools/aapt2/
+/tools/d8/
+/tools/ecj/
+/tools/android-34.jar
+/tools/platform-34-ext*_r0*.zip
