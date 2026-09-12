@@ -1,0 +1,18 @@
+[*] Running APK: download/exp076_corpus/nl.hnogame.tictactoesuperttt_20.apk
+[*] Output directory: run/s26_sttt
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Execution completed successfully [F-016 exception-honesty: 18 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 1
+Execution Time: 0ms
+Errors: 32
+Warnings: 1
+
+Screenshot: run/s26_sttt/screenshot.png
+Report: run/s26_sttt/report.md
