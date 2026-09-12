@@ -391,6 +391,11 @@ void DalvikExecutionEngine::build_class_dex_index(const dex::DexReport& report) 
             class_to_superclass_[cls.name] = cls.superclass_name;
             apk_class_count++;
         }
+        // F-087 (R-NEW-313): index runtime-visible class annotations for
+        // the Class.getAnnotation bridge.
+        if (!cls.class_annotations.empty()) {
+            class_annotations_[cls.name] = cls.class_annotations;
+        }
     }
     std::cerr << "[EXP068] Built class→superclass map: " << class_to_superclass_.size()
               << " entries (" << apk_class_count << " from APK + "
@@ -10849,6 +10854,37 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                 } else {
                     static_field_storage_[static_key] = result_value;
                 }
+            } else if (field_res.class_descriptor == "Ljava/io/File;" &&
+                       (field_res.field_name == "separator" ||
+                        field_res.field_name == "separatorChar" ||
+                        field_res.field_name == "pathSeparator" ||
+                        field_res.field_name == "pathSeparatorChar")) {
+                // F-079 (R-NEW-305): java.io.File path-separator constant law.
+                // OpenJDK/AOSP (ojluni File.java): the four static constants
+                // are initialized from the platform FileSystem:
+                //   separator      = fs.getSeparator()    → "/" on Linux/Android
+                //   separatorChar  = separator.charAt(0)  → '/'
+                //   pathSeparator  = fs.getPathSeparator() → ":" on Linux/Android
+                //   pathSeparatorChar = pathSeparator.charAt(0) → ':'
+                // They are compile-time-stable platform constants — never
+                // null. Live evidence (dooz v18, post F-078): the Kotlin
+                // stdlib FilePathString companion (<clinit> Lg2/m;) reads
+                // File.separator via sget-object; with no seed the SGET
+                // returned null and the companion's Intrinsics null-check
+                // threw NPE "separator must not be null" DURING <clinit> —
+                // the failing class-init killed the Recomposer's first
+                // composition at the F/A0.a unwind.
+                // Cached per static_key (same policy as Locale/Boolean).
+                if (field_res.field_name == "separator") {
+                    result_value = DalvikValue::make_string("/", 0);
+                } else if (field_res.field_name == "pathSeparator") {
+                    result_value = DalvikValue::make_string(":", 0);
+                } else if (field_res.field_name == "separatorChar") {
+                    result_value = DalvikValue::make_char('/');
+                } else {
+                    result_value = DalvikValue::make_char(':');
+                }
+                static_field_storage_[static_key] = result_value;
             } else {
                 // M3 FINDING-013 miss-probe: print the missing key and the
                 // presence of ANY same-class keys in storage — a clinit that
@@ -13776,9 +13812,23 @@ static framework::CallContext::Arg dalvik_value_to_arg(const DalvikValue& v) {
             // descriptor, so Intent(Context, NoteEdit.class) left the
             // component UNSET and startActivity reported ACTIVITY_NOT_FOUND
             // (unote addNote). Carry the descriptor on the arg.
+            // F-089 (R-NEW-315): Class IDENTITY law for key/hash surfaces.
+            // OpenJDK: a Class object is a SINGLETON per class+loader — all
+            // references to X.class are the SAME object and compare
+            // equal. The engine materializes a fresh token per evaluation
+            // (ref_id = instruction sequence), so identity-keyed surfaces
+            // (map caches keyed by Class — androidx.navigation
+            // NavigatorProvider's name cache, WeakHashMap<Class,...>)
+            // collapsed: every lookup missed, and when ref_id collided at
+            // 0 the cache returned the FIRST class's value for EVERY class
+            // (dooz: all navigators cached under the name "navigation" →
+            // getNavigator("composable") → ISE → composition death).
+            // The descriptor IS the deterministic identity: carry it in
+            // string_val so arg_as_string()/key builders use it.
             a.kind = CallContext::Arg::Kind::OBJECT;
             a.object_id = v.ref_id;
             a.object_class = v.class_desc;
+            a.string_val = v.class_desc;
             break;
         default:
             // VOID_, UNINITIALIZED, REGISTER_UNSET.
@@ -14306,6 +14356,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                   << " caller=" << current_class_ << "." << current_method_
                   << " pc=" << pc_
                   << std::endl;
+    }
+    // F-089 diagnostics: Map interface dispatch visibility (navigation
+    // NavigatorProvider registration chain — put(name, navigator) /
+    // get(name) must hit the same backing store).
+    if ((class_name == "Ljava/util/Map;" ||
+         class_name.find("LinkedHashMap") != std::string::npos) &&
+        (method == "put" || method == "get")) {
+        static thread_local uint64_t f089_map = 0;
+        if (f089_map < 40 &&
+            (current_class_.find("navigation/") != std::string::npos ||
+             current_class_.find("yamin8000") != std::string::npos)) {
+            ++f089_map;
+            std::cerr << "[F089-MAP] " << class_name << "." << method
+                      << " caller=" << current_class_ << "." << current_method_
+                      << " pc=" << pc_
+                      << " recv_oid=" << (args.empty() ? 0 : args[0].object_id)
+                      << " key=" << dalvik_value_to_string(args.size() > 1 ? args[1] : DalvikValue{})
+                      << " val=" << dalvik_value_to_string(args.size() > 2 ? args[2] : DalvikValue{})
+                      << std::endl;
+        }
     }
     // EXP-042 Phase 4: Android Framework minimal runtime.
     // Implements REAL Android objects for the P0/P1 APIs that Telegram's
@@ -15385,6 +15455,317 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
     // ────────────────────────────────────────────────────────────────────────
+    // F-087c (R-NEW-313) — annotation-proxy element dispatch.
+    // The getAnnotation bridge (Class bridge above) materializes annotation
+    // instances as heap proxies whose class_desc IS the annotation type and
+    // whose fields carry the elements as "element:<name>". Real Android
+    // generates an annotation implementation class with an accessor per
+    // element; here the accessor's METHOD NAME selects the element field
+    // (e.g. @Navigator.Name.value() → "element:value"). OpenJDK law: the
+    // accessor answers the element's value; unknown element → the real JVM
+    // cannot compile such a call, so a loud diagnostic + null.
+    // ────────────────────────────────────────────────────────────────────────
+    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        auto proxy = heap_.get_object_field(args[0].object_id,
+                                            "__annotation_proxy__");
+        if (proxy.has_value() && proxy->type == DalvikType::STRING_REF) {
+            auto elem = heap_.get_object_field(args[0].object_id,
+                                               "element:" + method);
+            if (elem.has_value()) {
+                result = *elem;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            std::cerr << "[F087c] annotation proxy " << proxy->string_val
+                      << " has no element \"" << method << "\"" << std::endl;
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-078 (R-NEW-304) — java.lang.System.arraycopy law (OpenJDK family).
+    // OpenJDK/AOSP (ojluni System.java; the JVM lowers the Java declaration
+    // to an intrinsic with FIXED semantics — javadoc is the contract):
+    //   1. null src or null dst → NullPointerException;
+    //   2. bounds: each of srcPos, dstPos, length must be >= 0 AND
+    //      srcPos+length <= src.length AND dstPos+length <= dst.length,
+    //      otherwise IndexOutOfBoundsException;
+    //   3. SAME-ARRAY copy (src == dst as OBJECT IDENTITY) → TEMP-COPY
+    //      semantics ("performed as if the source components were first
+    //      copied to a temporary array"): memmove. This is THE contract
+    //      kotlin.collections.copyInto relies on — TrieNode buffer
+    //      insert/remove shift the SAME array by ±1/±2 slots and ArrayList
+    //      does the same for mid-list insert/remove. Without this law every
+    //      shifted copy silently no-oped and the kotlinx.collections.immutable
+    //      persistent-hash-trie builder grew buffers whose node slots stayed
+    //      null while the bitmaps claimed them — nodeAt() then check-cast
+    //      null → NPE "null cannot be cast to non-null type TrieNode" (dooz
+    //      F-077 / R-NEW-301 chain K/f.putAll → K/t.m → K/t.s nodeAt).
+    //      Failure class precedent: F-040 (Arrays.fill silent no-op) and
+    //      F-060 (Arrays.copyOf REC-MISS → null) — same OpenJDK family.
+    //   4. component-type mismatch (primitive[] ↔ Object[]) →
+    //      ArrayStoreException in the real JVM; the heap stores engine
+    //      arrays type-agnostically ("Larray;" convention shared with
+    //      aget/aput, F-040 fill, F-060 copyOf), so the element move below
+    //      is verbatim and this clause is not separately raised here.
+    // Elements are moved through the heap "array[N]" convention and each
+    // DalvikValue is stored VERBATIM (reference identity preserved; wide
+    // values round-trip bit-exact) — the same law F-060 copyOf uses.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/System;" && method == "arraycopy" &&
+        args.size() == 5) {
+        // (1) null law — either argument null → NPE.
+        if (args[0].type != DalvikType::OBJECT_REF || args[0].is_null ||
+            args[2].type != DalvikType::OBJECT_REF || args[2].is_null ||
+            args[0].object_id == 0 || args[2].object_id == 0) {
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           "arraycopy: null array argument",
+                           "f078-arraycopy-null");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        uint32_t src_id = args[0].object_id;
+        uint32_t dst_id = args[2].object_id;
+        auto arr_length = [&](uint32_t id) -> int32_t {
+            auto lenf = heap_.get_object_field(id, "__array_length__");
+            if (lenf.has_value() && lenf->type == DalvikType::INT32)
+                return lenf->int_val;
+            return 0;
+        };
+        int32_t src_len = arr_length(src_id);
+        int32_t dst_len = arr_length(dst_id);
+        int64_t src_pos = dalvik_int_value(args[1]);
+        int64_t dst_pos = dalvik_int_value(args[3]);
+        int64_t length  = dalvik_int_value(args[4]);
+        // (2) bounds law — OpenJDK checks position/length against the two
+        // lengths with 64-bit math (no overflow on hostile values).
+        if (src_pos < 0 || dst_pos < 0 || length < 0 ||
+            src_pos + length > src_len || dst_pos + length > dst_len) {
+            throw_deferred(
+                "Ljava/lang/ArrayIndexOutOfBoundsException;",
+                "arraycopy: last source index " +
+                    std::to_string(src_pos + length) + " out of bounds for " +
+                    std::to_string(length) + " element(s) into length-" +
+                    std::to_string(dst_len) + " array",
+                "f078-arraycopy-oob");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
+            return true;
+        }
+        // (3) temp-copy (memmove) law: snapshot the source range BEFORE any
+        // store when the arrays are the same object. Distinct arrays may
+        // also legally overlap only when identical objects — plain loop is
+        // safe otherwise (different heap objects never share storage).
+        std::vector<DalvikValue> snapshot;
+        const bool same_array = (src_id == dst_id);
+        if (same_array) {
+            snapshot.reserve(static_cast<size_t>(length));
+            for (int64_t i = 0; i < length; ++i) {
+                auto elem = heap_.get_object_field(
+                    src_id, "array[" + std::to_string(src_pos + i) + "]");
+                snapshot.push_back(elem.value_or(DalvikValue::make_null()));
+            }
+        }
+        for (int64_t i = 0; i < length; ++i) {
+            DalvikValue elem;
+            if (same_array) {
+                elem = snapshot[static_cast<size_t>(i)];
+            } else {
+                auto got = heap_.get_object_field(
+                    src_id, "array[" + std::to_string(src_pos + i) + "]");
+                elem = got.value_or(DalvikValue::make_null());
+            }
+            heap_.set_object_field(
+                dst_id, "array[" + std::to_string(dst_pos + i) + "]", elem);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_null();
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-080 (R-NEW-306) — java.lang.System.getProperty law (OpenJDK family).
+    // OpenJDK/AOSP (System.java): getProperty(key) answers the platform
+    // property table; getProperty(key, def) answers `def` when the key is
+    // unset. The PLATFORM TABLE is the contract — a deterministic runtime
+    // carries the standard JVM properties (OpenJDK defaults):
+    //   java.io.tmpdir = /tmp      (desktop/ART temp convention; Kotlin
+    //                              stdlib FilesKt.<clinit> reads it through a
+    //                              Kotlin checkNotNull — a null answer throws
+    //                              NPE "getProperty(\"java.io.tmpdir\") must
+    //                              not be null" DURING class-init, killing
+    //                              the dooz composition chain post F-079 —
+    //                              live stack g2/f.<clinit> ← n1/c.a
+    //                              (Room.databaseBuilder) ← Compose content)
+    //   line.separator = \n, file.separator = /, path.separator = :
+    //   (consistent with F-079 File constants), plus the identity set
+    //   java.vm.name / java.version / os.name / os.arch / os.version.
+    // Unknown keys answer null (the real contract — no silent empty string).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/System;" && method == "getProperty" &&
+        (args.size() == 1 || args.size() == 2)) {
+        static const std::map<std::string, std::string> kSystemProps = {
+            {"java.io.tmpdir", "/tmp"},
+            {"line.separator", "\n"},
+            {"file.separator", "/"},
+            {"path.separator", ":"},
+            {"java.vm.name", "MiniAndroid Compatibility Runtime"},
+            {"java.version", "17"},
+            {"os.name", "Linux"},
+            {"os.arch", "aarch64"},
+            {"os.version", "5.15.0-miniandroid"},
+        };
+        std::string key;
+        bool have_key = false;
+        if (args[0].type == DalvikType::STRING_REF) {
+            key = args[0].string_val;
+            have_key = true;
+        } else if (args[0].type == DalvikType::OBJECT_REF) {
+            // Materialized string objects carry their value in the
+            // __string_value__ heap field (const-string bridge convention).
+            auto kv = heap_.get_object_field(args[0].object_id,
+                                             "__string_value__");
+            if (kv.has_value() && kv->type == DalvikType::STRING_REF) {
+                key = kv->string_val;
+                have_key = true;
+            }
+        }
+        auto pit = have_key ? kSystemProps.find(key) : kSystemProps.end();
+        if (pit != kSystemProps.end()) {
+            result = DalvikValue::make_string(pit->second, 0);
+        } else if (args.size() == 2 && args[1].type == DalvikType::OBJECT_REF &&
+                   !args[1].is_null && args[1].object_id != 0) {
+            // getProperty(key, def): unset key answers the caller's default
+            // verbatim (same string object identity is legal).
+            result = args[1];
+        } else {
+            result = DalvikValue::make_null();
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-081 (R-NEW-307) — java.nio.charset.Charset guaranteed-charset law.
+    // OpenJDK/AOSP (Charset.java): the platform MUST provide six standard
+    // charsets ("Guaranteed available on every implementation of the Java
+    // platform"): US-ASCII, ISO-8859-1, UTF-8, UTF-16BE, UTF-16LE, UTF-16.
+    // kotlin.text.Charsets (U1/a in dooz v18) initializes ALL SIX through
+    // Charset.forName(name)!! during <clinit> — one null answer throws
+    // NPE "forName(...) must not be null" mid-init, and the whole class
+    // graph rooted there (g2/f FilesKt ← Room.databaseBuilder ← the dooz
+    // content lambda) dies at the Recomposer unwind. Charset objects are
+    // heap objects carrying __charset_name__ (canonical name); consumers
+    // (stream readers, String bridges) read the name from that field.
+    // defaultCharset() answers UTF-8 (OpenJDK convention; file.encoding
+    // is UTF-8 on Android by contract).
+    // forName of an unsupported (but legal) name → UnsupportedCharsetException
+    // (the real law; a silent null would break the Kotlin !! contract the
+    // same way this gap did).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/nio/charset/Charset;" &&
+        (method == "forName" || method == "defaultCharset")) {
+        auto make_charset = [&](const std::string& canonical) -> DalvikValue {
+            uint32_t cs_id = heap_.allocate("Ljava/nio/charset/Charset;", pc_, 0);
+            heap_.set_object_field(cs_id, "__charset_name__",
+                                   DalvikValue::make_string(canonical, 0));
+            return DalvikValue::make_object(cs_id,
+                                            "Ljava/nio/charset/Charset;");
+        };
+        if (method == "defaultCharset") {
+            result = make_charset("UTF-8");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        static const std::map<std::string, std::string> kCharsetAliases = {
+            {"UTF-8", "UTF-8"}, {"UTF-16", "UTF-16"},
+            {"UTF-16BE", "UTF-16BE"}, {"UTF-16LE", "UTF-16LE"},
+            {"US-ASCII", "US-ASCII"}, {"ISO-8859-1", "ISO-8859-1"},
+            {"ASCII", "US-ASCII"}, {"8859_1", "ISO-8859-1"},
+            {"utf8", "UTF-8"}, {"utf-8", "UTF-8"}, {"UTF8", "UTF-8"},
+        };
+        std::string want;
+        bool have = false;
+        if (!args.empty() && args[0].type == DalvikType::STRING_REF) {
+            want = args[0].string_val;
+            have = true;
+        }
+        auto cit = have ? kCharsetAliases.find(want) : kCharsetAliases.end();
+        if (cit != kCharsetAliases.end()) {
+            result = make_charset(cit->second);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        throw_deferred("Ljava/nio/charset/UnsupportedCharsetException;",
+                       want.empty() ? "<unknown>" : want,
+                       "f081-charset-unsupported");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_null();
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-086 (R-NEW-312) — ThreadLocalRandom.current() + Random.nextInt law.
+    // OpenJDK (ThreadLocalRandom.java): current() answers the current
+    // thread's Random — NEVER null on a real JVM. Kotlin's Random fallback
+    // (Q1/a in dooz v18) null-asserts it ("current(...) must not be null");
+    // with no handler the bridge answered null and the null-assert killed
+    // the dooz composition chain (CoroutineScheduler Worker init ←
+    // d2/a$b.<init> ← Room.databaseBuilder). The scheduler also draws
+    // work-stealing probe indexes through Random.nextInt() (dooz P1/a.b).
+    // Deterministic law: current() answers a per-engine SINGLETON
+    // ThreadLocalRandom; nextInt()/nextInt(bound) answer a deterministic
+    // xorshift sequence (never Math.random — the reproducibility law
+    // requires run-to-run identical traces).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/util/concurrent/ThreadLocalRandom;" &&
+        method == "current") {
+        result = get_or_create_singleton(
+            "Ljava/util/concurrent/ThreadLocalRandom;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if ((class_name == "Ljava/util/Random;" ||
+         class_name == "Ljava/util/concurrent/ThreadLocalRandom;") &&
+        method == "nextInt" && args.size() >= 1) {
+        // Deterministic xorshift32 seeded per-engine; identical across runs
+        // (provenance law). nextInt(bound) uses the OpenJDK modulo-bias
+        // rejection loop so every bound answers in [0, bound).
+        auto next_u32 = []() -> uint32_t {
+            static thread_local uint32_t rng_state = 0x9E3779B9u;
+            uint32_t x = rng_state;
+            x ^= x << 13; x ^= x >> 17; x ^= x << 5;
+            rng_state = x;
+            return x;
+        };
+        if (args.size() >= 2 && args[1].type == DalvikType::INT32) {
+            int32_t bound = args[1].int_val;
+            if (bound <= 0) {
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "bound must be positive",
+                               "f086-nextint-bound");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(0);
+                return true;
+            }
+            // OpenJDK nextInt(bound): rejection sampling on the power of two.
+            int32_t r = next_u32() & 0x7FFFFFFF;
+            int32_t m = bound - 1;
+            if ((bound & m) == 0) {
+                r = static_cast<int32_t>(
+                    (static_cast<uint32_t>(bound) *
+                     static_cast<uint64_t>(r)) >> 31);
+            } else {
+                for (int32_t u = r; u - (r = u % bound) + m < 0; u = next_u32() & 0x7FFFFFFF) {}
+            }
+            result = DalvikValue::make_int(r);
+        } else {
+            result = DalvikValue::make_int(static_cast<int32_t>(next_u32()));
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
     // F-040 (MASTER-6 §A) — java.util.Arrays.fill family law.
     // OpenJDK/AOSP (ojluni src/main/java/java/util/Arrays.java): fill(value)
     // assigns `val` to EVERY element a[fromIndex..toIndex) — the same
@@ -16111,6 +16492,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             std::getenv("MINIANDROID_F069_DIAG") != nullptr;
         const DalvikValue& x = args[0];
         const DalvikValue& y = args[1];
+        // F-083 (R-NEW-309): String receiver law for Object.equals dispatch.
+        // OpenJDK String.equals(String.java): true iff the argument is a
+        // String with the SAME CHARACTER SEQUENCE. The areEqual intrinsic
+        // (M1/i.a) is real Kotlin DEX that invokes Object.equals with the
+        // receiver's RUNTIME type — a STRING_REF register (const-string or
+        // a synthesized static like File.separator, F-079) reaches this
+        // bridge with receiver type STRING_REF, which no prior gate covered
+        // → fail-soft false → kotlin.io separator dispatch threw
+        // IllegalArgumentException "not a directory separator: /" for the
+        // CORRECT separator string (dooz v18 g2/f ← Room.databaseBuilder).
+        if (x.type == DalvikType::STRING_REF || y.type == DalvikType::STRING_REF) {
+            bool eq = false;
+            if (x.type == DalvikType::STRING_REF &&
+                y.type == DalvikType::STRING_REF) {
+                eq = (x.string_val == y.string_val);
+            } else if (x.type == DalvikType::STRING_REF &&
+                       y.type == DalvikType::OBJECT_REF && y.object_id != 0 &&
+                       heap_.has_object(y.object_id)) {
+                auto yv = heap_.get_object_field(y.object_id, "__string_value__");
+                eq = yv.has_value() && yv->type == DalvikType::STRING_REF &&
+                     (x.string_val == yv->string_val);
+            } else if (y.type == DalvikType::STRING_REF &&
+                       x.type == DalvikType::OBJECT_REF && x.object_id != 0 &&
+                       heap_.has_object(x.object_id)) {
+                auto xv = heap_.get_object_field(x.object_id, "__string_value__");
+                eq = xv.has_value() && xv->type == DalvikType::STRING_REF &&
+                     (y.string_val == xv->string_val);
+            }
+            // STRING_REF vs NULL_REF → false (OpenJDK law); verbatim.
+            result = DalvikValue::make_bool(eq);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         // Receiver gates: either a heap object of an app-DEX-defined class
         // (class_to_superclass_ is the DEX class map — framework classes
         // like String are absent and keep their dedicated handlers), or a
@@ -17708,6 +18122,103 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_string(dotted, 0);
             return true;
         }
+        // F-087 (R-NEW-313): runtime annotation reflection law (OpenJDK
+        // Class.getAnnotation / isAnnotationPresent). The receiver is the
+        // QUERIED class (CLASS_REF); args[1] is the annotation TYPE
+        // (CLASS_REF). A match is the annotation whose parsed DEX type
+        // descriptor equals the requested descriptor; the answer is a heap
+        // PROXY whose class_desc is the annotation type and whose fields
+        // carry the elements as "element:<name>" (string-decoded subset).
+        // Absent annotation → null (the real contract — callers rely on the
+        // null to fall back). Live-APK evidence: androidx.navigation
+        // nameForNavigator (m$a.a) reads @Navigator.Name (l$b) through this
+        // exact chain; the null answer broke the dooz NavHost setup.
+        if ((method == "getAnnotation" || method == "isAnnotationPresent" ||
+             method == "isAnnotation") &&
+            args.size() >= 2) {
+            std::string ann_desc;
+            if (args[1].type == DalvikType::CLASS_REF)
+                ann_desc = args[1].class_desc;
+            {
+                static thread_local uint64_t f087_probe = 0;
+                if (f087_probe < 8) {
+                    ++f087_probe;
+                    std::cerr << "[F087] " << method << " queried class="
+                              << referent_desc << " annotation=" << ann_desc
+                              << " indexed=" << (class_annotations_.count(referent_desc) ? "YES" : "NO")
+                              << " recv_type=" << static_cast<int>(args[0].type)
+                              << " oid=" << args[0].object_id
+                              << " cls=" << args[0].class_desc
+                              << " caller=" << current_class_ << "."
+                              << current_method_
+                             
+                              << std::endl;
+                }
+            }
+            auto ait = class_annotations_.find(referent_desc);
+            const std::pair<
+                std::string,
+                std::vector<std::pair<std::string, std::string>>>* found = nullptr;
+            if (ait != class_annotations_.end()) {
+                for (const auto& a : ait->second) {
+                    if (a.first == ann_desc) { found = &a; break; }
+                }
+            }
+            if (method == "isAnnotationPresent") {
+                result = DalvikValue::make_bool(found != nullptr);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (!found) {
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            uint32_t proxy_id = heap_.allocate(ann_desc, pc_, 0);
+            heap_.set_object_field(
+                proxy_id, "__annotation_proxy__",
+                DalvikValue::make_string(ann_desc, 0));
+            for (const auto& [ename, evalue] : found->second) {
+                heap_.set_object_field(
+                    proxy_id, "element:" + ename,
+                    DalvikValue::make_string(evalue, 0));
+            }
+            result = DalvikValue::make_object(proxy_id, ann_desc);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // F-087b: Class.getSimpleName — OpenJDK law: the simple name is the
+        // identifier after the last '.' of the binary name (and after the
+        // last '$' for member classes). Used by error strings the app then
+        // concats (dooz navigation nameForNavigator ISE path).
+        if (method == "getSimpleName" && !dotted.empty()) {
+            std::string simple = dotted;
+            auto slash = simple.rfind('/');
+            if (slash != std::string::npos) simple = simple.substr(slash + 1);
+            auto dollar = simple.rfind('$');
+            if (dollar != std::string::npos &&
+                dollar + 1 < simple.size()) {
+                simple = simple.substr(dollar + 1);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(simple, 0);
+            return true;
+        }
+        // F-084 (R-NEW-310): Class.getClassLoader law (ART).
+        // OpenJDK allows getClassLoader()==null for bootstrap-loaded
+        // classes, but ART/Android NEVER answers null for an app-visible
+        // class — every class is loaded by a PathClassLoader (InMemory /
+        // PathClassLoader chain). Kotlin stdlib/okio code null-asserts it
+        // ("X::class.java.classLoader must not be null"); a null answer
+        // throws NPE during the dooz composition chain (ResourceFileSystem
+        // class-init ← g2/f FilesKt ← Room.databaseBuilder). Answer a
+        // stable per-engine ClassLoader singleton (identity contract: all
+        // classes in the APK domain share one loader).
+        if (method == "getClassLoader") {
+            result = get_or_create_singleton("Ljava/lang/ClassLoader;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         if (method == "getDeclaredConstructor" && !dotted.empty()) {
             uint32_t ctor_id = heap_.allocate(
                 "Ljava/lang/reflect/Constructor;", pc_,
@@ -17827,13 +18338,59 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // FIX-M3-012b: Object.getClass() — the runtime class identity law: the
     // heap object's runtime class is authoritative (dispatch invariant).
     // The Class object for the receiver's class is materialized as CLASS_REF.
-    if (class_name == "Ljava/lang/Object;" && method == "getClass") {
+    // F-088 (R-NEW-314): the guard was class_name=="Ljava/lang/Object;", but
+    // execute_invoke_virtual bridges with api_class = the RECEIVER'S RUNTIME
+    // class (EXP-059 polymorphism law), so Object.getClass() invoked on any
+    // app object arrived here keyed by that runtime class and silently
+    // answered null — dooz m.a(addNavigator) → navigator.getClass() → null →
+    // nameForNavigator(null) → the whole NavHost chain died (concat(null)
+    // NPE from the getSimpleName ISE path). LAW: getClass is a method-name
+    // contract on any receiver, not an Object-typed class key.
+    if (method == "getClass") {
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
             !args[0].class_desc.empty()) {
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_class(args[0].class_desc,
                                              instruction_sequence_);
+            {
+                static thread_local uint64_t f088_ok = 0;
+                if (f088_ok < 8) {
+                    ++f088_ok;
+                    std::cerr << "[F088] getClass OK: cls="
+                              << args[0].class_desc
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
             return true;
+        }
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            // Receiver object exists but carries no recorded class — use the
+            // heap's own record (same law, one level down).
+            if (const auto* obj = heap_.get(args[0].object_id);
+                obj && !obj->class_descriptor.empty()) {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_class(obj->class_descriptor,
+                                                 instruction_sequence_);
+                return true;
+            }
+        }
+        // F-088 diagnostics (bounded): a getClass miss means the runtime
+        // class identity contract broke upstream (receiver not a heap
+        // object, or a heap object without a recorded class descriptor).
+        {
+            static thread_local uint64_t f088_probe = 0;
+            if (f088_probe < 8) {
+                ++f088_probe;
+                std::cerr << "[F088] getClass miss: recv_type="
+                          << static_cast<int>(args.empty() ? -1
+                                                           : static_cast<int>(args[0].type))
+                          << " oid=" << (args.empty() ? 0 : args[0].object_id)
+                          << " cls=" << (args.empty() ? "" : args[0].class_desc)
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
         }
     }
     if (class_name == "Ljava/lang/Integer;") {
@@ -17999,6 +18556,54 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         auto as_uint = [](const DalvikValue& v) -> uint32_t {
             return v.type == DalvikType::INT32 ? (uint32_t)v.int_val : 0u;
         };
+        // F-085 (R-NEW-311): Integer.toString signed/radix law (OpenJDK
+        // Integer.java). Kotlin stdlib lowers Int.toString(radix) and
+        // UInt.toString(radix) to Integer.toString(this, checkRadix(radix))
+        // / toUnsignedString and Kotlin null-asserts the result — with no
+        // handler the bridge answered null and the null-assert threw NPE
+        // "toString(this, checkRadix(radix)) must not be null" during the
+        // dooz composition (d2/a$b ← Room.databaseBuilder chain).
+        // Laws: toString(i) signed decimal; toString(i, radix) signed with
+        // 2<=radix<=36 (else IAE — the real law, Kotlin checkRadix usually
+        // fires first); toUnsignedString(i, radix) unsigned; toHexString/
+        // toBinaryString/toOctalString unsigned fixed bases.
+        if (method == "toString" || method == "toUnsignedString") {
+            int32_t value = args[0].type == DalvikType::INT32 ? args[0].int_val : 0;
+            int radix = 10;
+            if (args.size() >= 2 && args[1].type == DalvikType::INT32)
+                radix = args[1].int_val;
+            if (radix < 2 || radix > 36) {
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "radix " + std::to_string(radix) + " out of range",
+                               "f085-radix");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            uint32_t mag = method == "toString"
+                               ? static_cast<uint32_t>(value < 0 ? -static_cast<uint32_t>(value) : static_cast<uint32_t>(value))
+                               : as_uint(args[0]);
+            static const char* digits = "0123456789abcdefghijklmnopqrstuvwxyz";
+            std::string out;
+            do { out.insert(out.begin(), digits[mag % radix]); mag /= radix; } while (mag);
+            if (method == "toString" && value < 0) out.insert(out.begin(), '-');
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(out, 0);
+            return true;
+        }
+        if ((method == "toHexString" || method == "toBinaryString" ||
+             method == "toOctalString") && args.size() >= 1) {
+            uint32_t mag = as_uint(args[0]);
+            int radix = method == "toHexString" ? 16
+                      : method == "toBinaryString" ? 2 : 8;
+            static const char* digits = "0123456789abcdef";
+            std::string out;
+            do { out.insert(out.begin(), digits[mag % radix]); mag /= radix; } while (mag);
+            if (out.empty()) out = "0";
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_string(out, 0);
+            return true;
+        }
         if (method == "remainderUnsigned" && args.size() >= 2) {
             uint32_t a = as_uint(args[0]), b = as_uint(args[1]);
             status = ApiCallTrace::Status::IMPLEMENTED;
@@ -18890,6 +19495,137 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         } else {
             result = DalvikValue::make_int(0);
         }
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-082 (R-NEW-308) — String.getBytes(charset) family law.
+    // OpenJDK/AOSP (String.java): getBytes(Charset)/getBytes(String) encode
+    // the string's characters and answer a NEW byte[]; the no-arg getBytes()
+    // uses the platform default charset (UTF-8 on Android by contract).
+    // Kotlin stdlib lowers its String extensions to
+    // "(this as java.lang.String).getBytes(charset)" and Kotlin null-asserts
+    // the result — the engine answered null (no handler), so the Kotlin
+    // checkNotNull threw NPE "…getBytes(charset) must not be null" during
+    // the dooz composition chain (g2/f FilesKt ← Room.databaseBuilder).
+    // Encodings: US-ASCII / ISO-8859-1 / UTF-8 map code points to their
+    // natural bytes; UTF-16 family emits BE/LE units. Unmappable chars are
+    // encoded as '?' for ASCII/Latin-1 (JVM REPLACE convention) and as the
+    // UTF-8 encoding otherwise. Elements ride the heap "array[N]" BYTE
+    // convention (aget-byte reads it back, PASS-3 K-41).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/String;" && method == "getBytes") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        std::string s;
+        std::string charset_name = "UTF-8";
+        if (!args.empty() && args[0].type == DalvikType::STRING_REF)
+            s = args[0].string_val;
+        // args[1] = the Charset object (for the Charset overload) or a
+        // STRING_REF charset name (for the String-name overload).
+        auto read_charset_name = [&](const DalvikValue& v) -> std::string {
+            if (v.type == DalvikType::STRING_REF) return v.string_val;
+            if (v.type == DalvikType::OBJECT_REF && v.object_id != 0) {
+                auto nm = heap_.get_object_field(v.object_id, "__charset_name__");
+                if (nm.has_value() && nm->type == DalvikType::STRING_REF)
+                    return nm->string_val;
+            }
+            return "UTF-8";
+        };
+        if (args.size() >= 2) charset_name = read_charset_name(args[1]);
+        else if (args.size() == 1 && args[0].type == DalvikType::OBJECT_REF)
+            charset_name = read_charset_name(args[0]);  // getBytes(Charset)
+        // (args.size()==1 with a non-string receiver-only arg is getBytes()
+        // on the receiver: keep the UTF-8 default.)
+        std::vector<uint8_t> bytes;
+        auto utf8_len = [](uint32_t cp) -> int {
+            if (cp <= 0x7F) return 1;
+            if (cp <= 0x7FF) return 2;
+            if (cp <= 0xFFFF) return 3;
+            return 4;
+        };
+        // Decode the engine string (UTF-8 host convention) into code points.
+        auto push_encoded = [&](uint32_t cp) {
+            if (charset_name == "UTF-16" || charset_name == "UTF-16LE") {
+                if (cp <= 0xFFFF) {
+                    uint16_t u = static_cast<uint16_t>(cp);
+                    if (charset_name == "UTF-16") {  // BE by convention
+                        bytes.push_back(static_cast<uint8_t>(u >> 8));
+                        bytes.push_back(static_cast<uint8_t>(u & 0xFF));
+                    } else {
+                        bytes.push_back(static_cast<uint8_t>(u & 0xFF));
+                        bytes.push_back(static_cast<uint8_t>(u >> 8));
+                    }
+                } else {
+                    cp -= 0x10000;
+                    uint32_t hi = 0xD800 + (cp >> 10);
+                    uint32_t lo = 0xDC00 + (cp & 0x3FF);
+                    uint16_t pair[2] = {static_cast<uint16_t>(hi),
+                                        static_cast<uint16_t>(lo)};
+                    for (int k = 0; k < 2; ++k) {
+                        if (charset_name == "UTF-16") {
+                            bytes.push_back(static_cast<uint8_t>(pair[k] >> 8));
+                            bytes.push_back(static_cast<uint8_t>(pair[k] & 0xFF));
+                        } else {
+                            bytes.push_back(static_cast<uint8_t>(pair[k] & 0xFF));
+                            bytes.push_back(static_cast<uint8_t>(pair[k] >> 8));
+                        }
+                    }
+                }
+            } else if (charset_name == "US-ASCII") {
+                bytes.push_back(cp <= 0x7F ? static_cast<uint8_t>(cp) : '?');
+            } else if (charset_name == "ISO-8859-1") {
+                bytes.push_back(cp <= 0xFF ? static_cast<uint8_t>(cp) : '?');
+            } else {  // UTF-8 (and any unknown name — UTF-8 default)
+                int n = utf8_len(cp);
+                if (n == 1) bytes.push_back(static_cast<uint8_t>(cp));
+                else if (n == 2) {
+                    bytes.push_back(0xC0 | (cp >> 6));
+                    bytes.push_back(0x80 | (cp & 0x3F));
+                } else if (n == 3) {
+                    bytes.push_back(0xE0 | (cp >> 12));
+                    bytes.push_back(0x80 | ((cp >> 6) & 0x3F));
+                    bytes.push_back(0x80 | (cp & 0x3F));
+                } else {
+                    bytes.push_back(0xF0 | (cp >> 18));
+                    bytes.push_back(0x80 | ((cp >> 12) & 0x3F));
+                    bytes.push_back(0x80 | ((cp >> 6) & 0x3F));
+                    bytes.push_back(0x80 | (cp & 0x3F));
+                }
+            }
+        };
+        for (size_t i = 0; i < s.size();) {
+            unsigned char c = static_cast<unsigned char>(s[i]);
+            uint32_t cp = 0;
+            int extra = 0;
+            if (c < 0x80) { cp = c; extra = 0; }
+            else if ((c & 0xE0) == 0xC0) { cp = c & 0x1F; extra = 1; }
+            else if ((c & 0xF0) == 0xE0) { cp = c & 0x0F; extra = 2; }
+            else if ((c & 0xF8) == 0xF0) { cp = c & 0x07; extra = 3; }
+            else { cp = c; extra = 0; }
+            for (int k = 0; k < extra && i + 1 < s.size(); ++k) {
+                unsigned char cc = static_cast<unsigned char>(s[++i]);
+                cp = (cp << 6) | (cc & 0x3F);
+            }
+            ++i;
+            push_encoded(cp);
+        }
+        int32_t n = static_cast<int32_t>(bytes.size());
+        uint32_t arr_id = heap_.allocate("Larray;", pc_, 0);
+        DalvikValue arr;
+        arr.type = DalvikType::OBJECT_REF;
+        arr.object_id = arr_id;
+        arr.class_desc = "Larray;";
+        arr.int_val = n;
+        heap_.set_object_field(arr_id, "__array_length__",
+                               DalvikValue::make_int(n));
+        heap_.set_object_field(arr_id, "__new_array_length__",
+                               DalvikValue::make_int(n));
+        for (int32_t bi = 0; bi < n; ++bi) {
+            heap_.set_object_field(arr_id, "array[" + std::to_string(bi) + "]",
+                                   DalvikValue::make_byte(
+                                       static_cast<int8_t>(bytes[bi])));
+        }
+        result = arr;
         return true;
     }
 
