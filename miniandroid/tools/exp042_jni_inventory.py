@@ -8,8 +8,8 @@ exp038_telegram/Telegram.apk), parses the Dalvik DEX binary format directly
 (no external deps), finds every Java method that has the ACC_NATIVE bit
 (0x100) set, and writes:
 
-  * miniandroid/docs/exp042/JNI_INVENTORY.md    (markdown table)
-  * miniandroid/docs/exp042/JNI_INVENTORY.json   (machine-readable)
+  * docs/runtime/exp042/JNI_INVENTORY.md    (markdown table)
+  * docs/runtime/exp042/JNI_INVENTORY.json   (machine-readable)
 
 The DEX layout reference used here is the canonical Android source header
 dalvik/libdex/DexFile.h:
@@ -53,7 +53,7 @@ APK_PATH = (
 )
 DOCS_DIR = (
     "/home/z/my-project/MiniAndroid-Compatibility-Runtime/"
-    "miniandroid/docs/exp042"
+    "docs/runtime/exp042"
 )
 MD_PATH = os.path.join(DOCS_DIR, "JNI_INVENTORY.md")
 JSON_PATH = os.path.join(DOCS_DIR, "JNI_INVENTORY.json")

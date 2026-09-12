@@ -25,8 +25,8 @@ Strategy:
      target is a native method, and report them as "potential native calls
      that would have been reached if execution had completed".
   5. Emit:
-        miniandroid/docs/EXP043_JNI_DISTANCE.md
-        miniandroid/docs/EXP043_JNI_DISTANCE.json
+        docs/runtime/EXP043_JNI_DISTANCE.md
+        docs/runtime/EXP043_JNI_DISTANCE.json
 
 No third-party dependencies — only `struct`, `zipfile`, `json`, `re`, `os`,
 `sys`, `collections`, `typing`.
@@ -1468,7 +1468,7 @@ def render_markdown(scan: Dict, log_view: Dict, xref: Dict,
             f"Found **{len(scan['native_loader_init_sites'])}** "
             f"`invoke-static` call sites resolving to "
             f"`Lorg/telegram/messenger/NativeLoader;.init` (which is itself a "
-            f"`native` method — see `miniandroid/docs/exp042/JNI_INVENTORY.md`)."
+            f"`native` method — see `docs/runtime/exp042/JNI_INVENTORY.md`)."
         )
         lines.append("")
         on_path = [s for s in scan['native_loader_init_sites']
@@ -1550,7 +1550,7 @@ def render_markdown(scan: Dict, log_view: Dict, xref: Dict,
         lines.append(
             "**None.** No native method appears in the execution log. "
             "Cross-referenced against the 462-method JNI inventory from "
-            "`miniandroid/docs/exp042/JNI_INVENTORY.md` — zero matches."
+            "`docs/runtime/exp042/JNI_INVENTORY.md` — zero matches."
         )
     else:
         rec = fm['record']
@@ -1783,7 +1783,7 @@ def render_markdown(scan: Dict, log_view: Dict, xref: Dict,
                         f"side effect, invokes `JNI_OnLoad` from the .so "
                         f"file. The full list of `Java_*` exports that "
                         f"become available after this load is in "
-                        f"`miniandroid/docs/exp042/NATIVE_LIBRARIES.md`."
+                        f"`docs/runtime/exp042/NATIVE_LIBRARIES.md`."
                     )
                 else:
                     sym = jni_symbol_for(target_class, target_method)
@@ -1812,7 +1812,7 @@ def render_markdown(scan: Dict, log_view: Dict, xref: Dict,
         lines.append(f"- **JNI export symbol**: `{sym}`")
         lines.append(
             f"- **Library**: `{rec['library']}` "
-            f"(see `miniandroid/docs/exp042/NATIVE_LIBRARIES.md` for the "
+            f"(see `docs/runtime/exp042/NATIVE_LIBRARIES.md` for the "
             f"full export table)"
         )
     lines.append("")

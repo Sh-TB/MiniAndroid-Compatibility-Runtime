@@ -17,7 +17,7 @@ API key: **NONE** · VPS: **NONE** · New mandatory dependencies: **ZERO** (stdl
 | python3 | 3.12.14 + PIL 11.3.0 | tooling + screenshot metrics |
 | git | 2.47.3 | evidence/churn |
 | zip/unzip, objdump/readelf/nm/strings | system | APK/ELF inspection |
-| repo disassemblers | `scripts/minidump_dex.py`, `f023_disasm.py`, `exp059_disasm.py`, `m6_*` | DEX ground-truth forensics (proven in every F-law) |
+| repo disassemblers | `scripts/forensic/minidump_dex.py`, `f023_disasm.py`, `exp059_disasm.py`, `m6_*` | DEX ground-truth forensics (proven in every F-law) |
 | runtime binary | `miniandroid/build/miniandroid` | real-APK execution + screenshot pipeline |
 | sqlite3 | system lib | storage shadow evidence |
 

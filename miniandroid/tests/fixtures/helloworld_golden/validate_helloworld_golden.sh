@@ -48,7 +48,7 @@ cd "$REPO/miniandroid"
 
 say "── [1] fixture build (real toolchain: aapt2 + ECJ + D8) ──────────"
 APK="$WORK/helloworld_golden.apk"
-if bash "$REPO/scripts/build_fixture_apk.sh" "$FIXTURE" "$APK" > "$WORK/build.log" 2>&1; then
+if bash "$REPO/scripts/build/build_fixture_apk.sh" "$FIXTURE" "$APK" > "$WORK/build.log" 2>&1; then
     pass "build_fixture_apk: aapt2 + ECJ + D8 + package OK"
     APK_SHA=$(grep '^SHA256:' "$WORK/build.log" | cut -d' ' -f2)
     [ -n "$APK_SHA" ] && pass "APK SHA256 = $APK_SHA" || fail "APK hash missing"

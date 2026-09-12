@@ -42,7 +42,7 @@ def manual_apk_inspect():
 
 def manual_root_lookup():
     # pre-tooling: agent greps worklog + several docs to assemble the frontier picture
-    for f in ("worklog.md", "docs/ROOT_LAW_GLOBAL_AUDIT.md"):
+    for f in ("docs/maintenance/worklog.md", "docs/research/ROOT_LAW_GLOBAL_AUDIT.md"):
         subprocess.run(["grep", "-n", "first-frame\|frame-pump\|ComposeView", os.path.join(PROJ, f)],
                        capture_output=True)
     subprocess.run(["grep", "-rn", "children=0", os.path.join(PROJ, "miniandroid", "run", "m9_merge_dooz")],

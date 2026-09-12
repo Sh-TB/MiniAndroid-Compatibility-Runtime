@@ -41,7 +41,7 @@ adaptation decision; MiniAndroid is MIT and imports NO GPL code.
 | Droid-VM/DroidVM (HEAD, README fetched Task 9-a) | VM on Android (hypervisor manager) | "Run virtual machine on Android Phones": manages REAL hardware VMs via Qualcomm Gunyah (`/dev/gunyah`), MediaTek GenieZone (`/dev/gzvm`), Linux KVM (`/dev/kvm`); crosvm/QEMU backends, UEFI boot, VirGL/GfxStream GPU, VNC, qcow2 disks, VirtFS 9p sharing; requires root + SD 8 Gen 3/Dimensity 9000+ | ORTHOGONAL — runs Linux/Windows guests ON Android; it is the inverse problem of MiniAndroid (running Android apps ON the host without Android) | none | GPL-3.0 (README License section, fetched and read; LICENSE.txt file itself 404 at HEAD) | No | none | SOURCE_READ (README at HEAD, Task 9-a) | NOT APPLICABLE (orthogonal architecture) |
 | AndroidCSOfficial/android-code-studio (HEAD, README+LICENSE fetched Task 9-a) | On-device Android IDE (AndroidIDE lineage) | Gradle-based Android IDE running ON Android (JDK 11/17, terminal, SDK/NDK manager, Git, AI agent); UI-designer features relevant to resource systems: layout inflater, resource-reference resolution, resource-value auto-complete; "API information for classes and members (since, removed, deprecated)" | MiniAndroid has no API-level coverage tracking (which framework members exist at which SDK level); IDE itself is orthogonal (builds apps, does not run them) | CONCEPT ONLY: the since/removed/deprecated API-index idea could drive MiniAndroid's future framework-shim coverage table; layout-inflater resource auto-complete mirrors our inflater's needs but is IDE-side | **GPL-3.0 (LICENSE fetched and read, Task 9-a; GPLv3 badge) — ORACLE ONLY, zero code import** | No | none | SOURCE_READ (README+LICENSE at HEAD, Task 9-a) | ORACLE ONLY (orthogonal subsystem; concept noted) |
 | AOSP Dalvik specification (dalvik-bytecode) | DEX semantics | DERIVED from MiniAndroid's own verified fixtures: 14/14 long-cmp-conv, 55/55 pass3 bridge, 25/25 switch-parse-neg, 5/5 filled-new-array, 8/8 typed-catch, 6/6 aput-bounds, 5/5 fill-array, return-wide — re-run at this session's HEAD | the §44 RESULT_001/009/010/012/013/016 families re-verified VERIFIED_FIXED this session (see worklog Task 6) | keep fixtures as the regression law | Apache-2.0 (AOSP docs/spec) | Yes (fixtures committed) | tests/semantic_*_test.cpp battery | this session's run log (all green) | DIRECTLY REUSABLE (already the law) |
-| aapt/aapt2 (AOSP) | resource compilation | DERIVED: MiniAndroid fixtures use plain-text manifests + no resource compilation by design; real APKs ship binary AXML+ARSC which our parsers read | no aapt replacement needed | n/a | Apache-2.0 | n/a | fixture builds | build_fixture_apk.sh | NOT APPLICABLE |
+| aapt/aapt2 (AOSP) | resource compilation | DERIVED: MiniAndroid fixtures use plain-text manifests + no resource compilation by design; real APKs ship binary AXML+ARSC which our parsers read | no aapt replacement needed | n/a | Apache-2.0 | n/a | fixture builds | scripts/build/build_fixture_apk.sh | NOT APPLICABLE |
 
 ## Task 9-a addendum outcomes (2026-09-05/06 study)
 
@@ -67,7 +67,7 @@ adaptation decision; MiniAndroid is MIT and imports NO GPL code.
 
 ## Session-adapted outcomes (what this study actually changed in MiniAndroid)
 
-1. `scripts/build_fixture_apk.sh` jar-based class collection (D8 8.3.37
+1. `scripts/build/build_fixture_apk.sh` jar-based class collection (D8 8.3.37
    rejects directories) — engineering lesson analogous to ARSCLib's
    "know the container format" discipline; discovered empirically, not
    copied.

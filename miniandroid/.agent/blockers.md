@@ -10,7 +10,7 @@ Live list of blockers and TODOs. Updated during the EXP-072 cross-app validation
 
 OCR verification gate operational. Anti-false-positive validators operational.
 
-All blockers from the EXP-071 campaign have been resolved. The 16 generic fixes listed in `docs/EXP071_FINAL_REPORT.md` section 4 are complete and verified.
+All blockers from the EXP-071 campaign have been resolved. The 16 generic fixes listed in `docs/history/EXP071_FINAL_REPORT.md` section 4 are complete and verified.
 
 The following items were OPEN during EXP-071 but are now closed:
 

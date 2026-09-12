@@ -6,7 +6,7 @@ Date: 2026-09-05 · Base HEAD: 5810f6e (before campaign commits)
 ## Fixture
 
 - Source: `miniandroid/tests/fixtures/helloworld_golden/` (MIT)
-- Toolchain: ECJ (MIT) + D8/r8 (Apache-2.0) via `scripts/build_fixture_apk.sh`
+- Toolchain: ECJ (MIT) + D8/r8 (Apache-2.0) via `scripts/build/build_fixture_apk.sh`
 - APK SHA256:  `584cda5793fac73e452038ddfc7bb9ccc80984cf322e8871530ea63e16c0f3cd`
 - DEX SHA256:  `702989378d87fb1e193d54db0a607c8f39419cc876070c6671e1f98ec5509756`
 

@@ -7,7 +7,7 @@ $ grep -n "b2/h" /tmp/s21_run1.log | grep -vE "DexParser|CLASS_INIT"
 305698:[UC009-WIRE] Runnable id=687 class=Lb2/h;                      ← drained
    (no COMPOSE-TRY, no INTERFACE-SIG, no [EXCEPTION] — the run() invoke silently no-oped)
 
-DEX ground truth (s21_frame_probe.py, androguard-corroborated):
+DEX ground truth (scripts/forensic/s21_frame_probe.py, androguard-corroborated):
   Lb2/h; super=LW1/N; interfaces=[LE1/d;, LC1/d;]  — NO run() declared
   LW1/N; super=Ld2/g; ifaces=[] — run ()V acc=0x11 code=Y     ← the entrypoint lives HERE
   Ld2/g; ifaces=[Ljava/lang/Runnable;]                          ← Task implements Runnable

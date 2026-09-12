@@ -97,9 +97,9 @@ SHA-256 `142238fd92b69e11d3407526de95cad29bf46e3f4191767d09a24379fbe0bbf2`.
 - tictactoe_golden validator: **8/8 ALL PASS**
 - MUTF-8 battery: **14/14 PASS**
 - semantic: long_cmp 14/14 + switch_neg 25/25 + pass3_bridge 57/57 = **96/96**
-- corpus (external APKs re-fetched by scripts/fetch_corpus.py, hash-verified):
+- corpus (external APKs re-fetched by scripts/test/fetch_corpus.py, hash-verified):
   simplestopwatch / gmdice / microtimer — run status recorded in the
-  battery transcript (see run_test_battery.sh stage [9])
+  battery transcript (see scripts/test/run_test_battery.sh stage [9])
 - font_pipeline_probe @58px: PASS (0 bad glyphs) — committed output
 - build: clean, no new warnings beyond the pre-existing set
 

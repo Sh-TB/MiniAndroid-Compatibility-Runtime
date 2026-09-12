@@ -29,7 +29,7 @@ exactly the fixture-vs-real gap the campaign was launched to expose.
 ```text
 Session-start HEAD: af99f763 (main, clean; 1 unpushed commit — runtime/data
   shared-prefs residue; engine untouched)
-Battery at baseline: 48 stage gates ALL PASS (run_test_battery.sh, now with
+Battery at baseline: 48 stage gates ALL PASS (scripts/test/run_test_battery.sh, now with
   same-HEAD resume checkpoints; foreground execution — the sandbox reaps
   background process groups between tool calls)
 Frozen hashes reproduced BYTE-IDENTICALLY at baseline and again at 98c25ba2:
@@ -290,11 +290,11 @@ shell. Real APK evidence decides.
 ## I. Evidence map (what to re-run from HEAD)
 
 ```bash
-bash scripts/run_test_battery.sh                 # 48-gate regression
-python3 MiniAndroid-Compatibility-Runtime/scripts/g09_corpus_metadata.py …
-python3 MiniAndroid-Compatibility-Runtime/scripts/g09_corpus_runner.py   # base+click runs
-python3 MiniAndroid-Compatibility-Runtime/scripts/g09_screenshot_audit.py
+bash scripts/test/run_test_battery.sh                 # 48-gate regression
+python3 MiniAndroid-Compatibility-Runtime/scripts/test/g09_corpus_metadata.py …
+python3 MiniAndroid-Compatibility-Runtime/scripts/test/g09_corpus_runner.py   # base+click runs
+python3 MiniAndroid-Compatibility-Runtime/scripts/test/g09_screenshot_audit.py
 ```
 Corpus cache: `miniandroid/download/**` (gitignored; restored hash-exactly by
-`scripts/fetch_corpus.py` from `miniandroid/tests/corpus/apks.json` + the
+`scripts/test/fetch_corpus.py` from `miniandroid/tests/corpus/apks.json` + the
 frozen EXT-01/ConnectBot paths recorded in the registry).

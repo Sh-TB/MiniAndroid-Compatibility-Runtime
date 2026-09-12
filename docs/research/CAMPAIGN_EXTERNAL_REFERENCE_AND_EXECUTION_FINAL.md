@@ -110,7 +110,7 @@ is recorded here per §39 (no classifier tampering, no silent skip).
 ## HELLO WORLD — full §28 evidence
 
 - Fixture: miniandroid/tests/fixtures/helloworld_golden/ (MIT), built by
-  scripts/build_fixture_apk.sh (ECJ MIT + D8/r8 Apache-2.0).
+  scripts/build/build_fixture_apk.sh (ECJ MIT + D8/r8 Apache-2.0).
 - APK SHA256:  584cda5793fac73e452038ddfc7bb9ccc80984cf322e8871530ea63e16c0f3cd
 - DEX SHA256:  702989378d87fb1e193d54db0a607c8f39419cc876070c6671e1f98ec5509756
 - Runtime command: `miniandroid/build/miniandroid run <apk> -o <outdir>`

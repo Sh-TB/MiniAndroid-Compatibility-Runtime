@@ -2,7 +2,7 @@
 
 Sources: Apktool `baa603f`, JADX `8f7ea4e`, Bundletool `586a43a`
 (structure + targeted files), plus MiniAndroid's own
-`scripts/build_fixture_apk.sh` lessons (D8 8.3.37 jar-based class
+`scripts/build/build_fixture_apk.sh` lessons (D8 8.3.37 jar-based class
 collection fix from the prior campaign).
 
 ## TOOL-001 — Apktool resource pipeline shape
@@ -43,7 +43,7 @@ collection fix from the prior campaign).
 - Status: NOT APPLICABLE YET (with a fail-fast lesson adopted in spirit).
 
 ## TOOL-004 — Fixture tooling engineering lesson (our own, corroborated)
-`build_fixture_apk.sh` must collect classes via the jar (D8 8.3.37 rejects
+`scripts/build/build_fixture_apk.sh` must collect classes via the jar (D8 8.3.37 rejects
 directories) — discovered empirically in the prior campaign; Apktool's
 `AaptInvoker`/`AaptManager` shows the same "know the container/tool
 version" discipline on the aapt side. The standing Cycle E fixture-tool

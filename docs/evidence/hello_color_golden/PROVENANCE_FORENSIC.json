@@ -3,7 +3,7 @@
  "date": "2026-09-12",
  "head_at_test": "ab76a07c (binary = F-076 build, clean tree, zero modifications)",
  "apk": {
-  "path": "miniandroid/tests/fixtures/hello_color (sources) -> rebuilt via scripts/build_fixture_apk.sh",
+  "path": "miniandroid/tests/fixtures/hello_color (sources) -> rebuilt via scripts/build/build_fixture_apk.sh",
   "rebuilt_sha256": "77863f1f5e865f564282a4a9d51fda1853f49c6bb5e7e38eb7b71d80e4bbd128",
   "byte_identical_to_committed_evidence_json": true,
   "package": "com.miniandroid.hellocolor",
@@ -38,7 +38,7 @@
   "run_command_inputs": "APK path only; docs/evidence/hello_color_golden/ was never passed to any run",
   "role_of_each_asset": {
    "docs/evidence/hello_color_golden/frame_1080x1920.png": "PASSIVE comparison artifact only — committed golden; byte-equals the fresh run outputs post-hoc (11e0056...); never an input",
-   "miniandroid/tests/fixtures/hello_color/res/drawable/hello_art.png": "app RESOURCE inside the APK (deterministic art generator scripts/gen_hello_color_art.py); it is content the app DRAWS, not the runtime frame"
+   "miniandroid/tests/fixtures/hello_color/res/drawable/hello_art.png": "app RESOURCE inside the APK (deterministic art generator scripts/build/gen_hello_color_art.py); it is content the app DRAWS, not the runtime frame"
   }
  },
  "verdict": "REAL APK EXECUTION + REAL RUNTIME RENDERING — full chain proven: committed sources -> byte-identical APK rebuild (77863f1f...) -> 3x standard-path runs (rc=0) -> real DEX classes/lifecycle/View calls from the APK (opcode trace REAL_DALVIK_INTERPRETER) -> raw framebuffer PPM (fb9f1df2... x3) -> PNG pixel-identical encode (11e0056... x3) == committed golden. Golden used nowhere as input/render source.",

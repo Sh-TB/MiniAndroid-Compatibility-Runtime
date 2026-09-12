@@ -126,7 +126,7 @@ device density unification and select_file, are covered by 48/48 config
 
 Auth state: no gh token / credential helper in this sandbox (verified this
 session) → PUSH_BLOCKED and COMMENT_BLOCKED. Payloads prepared, publishing
-blocked honestly; direct URLs will be appended to scripts/comment_urls.json
+blocked honestly; direct URLs will be appended to scripts/maintenance/comment_urls.json
 by the same poster flow used for G31–G48/GOLDEN-01..03 (19 comments already
 published on issue #8, incl. GOLDEN-03 evidence comment 5555733283).
 

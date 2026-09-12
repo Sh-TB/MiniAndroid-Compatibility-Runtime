@@ -14,11 +14,11 @@ Priority: P0 foundational/multi-APK · P1 families/visual closure · P2 breadth 
 - Subsystem: BUILD (toolchain reproducibility, AE gate)
 - Trigger: container reset wiped /home/z/my-project/tools/aapt2 → 17 battery stages rc=2
 - APK: all aapt2-built fixtures (G06/G07/G08/M3 style fixture, density matrix)
-- Static evidence: scripts/build_fixture_apk.sh documents aapt2 8.13.2-14304508 provenance
+- Static evidence: scripts/build/build_fixture_apk.sh documents aapt2 8.13.2-14304508 provenance
 - Runtime evidence: battery FAIL before restore, ALL PASS after
 - Root cause: toolchain not reconstructible from the repo; undocumented manual steps
 - Law: AE — "a fresh container should reconstruct the environment without manual steps"
-- Fix: scripts/bootstrap_toolchain.sh (idempotent, hash-verifiable Google Maven fetch)
+- Fix: scripts/build/bootstrap_toolchain.sh (idempotent, hash-verifiable Google Maven fetch)
 - Reusable scope: all future sessions; fixture builds
 - Tests: battery fixture-build stages
 - Status: REGRESSION-VERIFIED (59/59 after restore)
@@ -30,12 +30,12 @@ Priority: P0 foundational/multi-APK · P1 families/visual closure · P2 breadth 
 - Subsystem: BUILD (corpus cache reproducibility)
 - Trigger: miniandroid/download/ held only 3 of 25 campaign APKs after reset
 - APK: microtimer, chessclock, headingcalculator, KISS, uNote, master_campaign 7
-- Static evidence: fetch_corpus.py covers tests/corpus/apks.json (18) but not the 7
+- Static evidence: scripts/test/fetch_corpus.py covers tests/corpus/apks.json (18) but not the 7
   wave-2 additions (registry_additions.json)
-- Runtime evidence: fetch_master_campaign.py restores all 7 from f-droid frozen URLs
+- Runtime evidence: scripts/test/fetch_master_campaign.py restores all 7 from f-droid frozen URLs
 - Root cause: two registry files, only one had a fetch script
 - Law: zero-skip law §39 companion
-- Fix: scripts/fetch_master_campaign.py (idempotent, SHA-256-verified)
+- Fix: scripts/test/fetch_master_campaign.py (idempotent, SHA-256-verified)
 - Tests: hash verification output (OK per entry)
 - Status: IMPLEMENTED / TESTED
 - Priority: P3
@@ -44,7 +44,7 @@ Priority: P0 foundational/multi-APK · P1 families/visual closure · P2 breadth 
 
 ## FINDING-003
 - Subsystem: DIAGNOSTICS (DEX tooling)
-- Trigger: legacy scripts/dex_method_dump.py emitted only raw hex words; useless for
+- Trigger: legacy scripts/forensic/dex_method_dump.py emitted only raw hex words; useless for
   branch-level forensics; my first rewrite used inverted 35c layout and single-chain
   method_idx accumulation — caught by cross-validation against androguard + the live
   AOSP instruction-formats page + the runtime's own resolution
@@ -55,7 +55,7 @@ Priority: P0 foundational/multi-APK · P1 families/visual closure · P2 breadth 
   Intent.putExtra — register-type consistency settled the law
 - Root cause: N/A (tooling gap, not a runtime bug)
 - Law: dalvik-bytecode + instruction-formats (authoritative pages fetched and parsed)
-- Fix: scripts/m3_disasm.py — spec-conformant disassembler, cross-validated 28/30
+- Fix: scripts/forensic/m3_disasm.py — spec-conformant disassembler, cross-validated 28/30
 - Reusable scope: all future DEX forensics
 - Tests: androguard diff harness (inline), 30-method random sample
 - Status: RUNTIME-PROVEN (tool-level)
@@ -270,14 +270,14 @@ Priority: P0 foundational/multi-APK · P1 families/visual closure · P2 breadth 
 - GitHub evidence: PUBLISH BLOCKED — TOKEN ABSENT
 
 ## GATE SCORECARD (session 6 end)
-- GATE A build: PASS (bootstrap_toolchain.sh; binary builds clean)
+- GATE A build: PASS (scripts/build/bootstrap_toolchain.sh; binary builds clean)
 - GATE B regression: PASS 59/59 (twice: pre-commit 3ea265be and post object-trace)
 - GATE F micro-timer: PARTIAL — INSERT/Room/DEX ✓; token postDelayed ✓; Lk/c ticks
   drain ✓; remaining compute ✓ (Math.ceil law); row label mutation ✓ BUT seconds
   part renders "null" + per-tick re-render missing (FINDING-008) → NOT complete
 - GATE P toolchain reproducibility: PASS (FINDING-001/002 fixes)
 - GATE Q diagnostics: PASS (MINIANDROID_FIELD_TRACE / MINIANDROID_WIDE_DIAG /
-  m3_disasm.py / m3_invoke_inventory.py / DUMP_CLICKABLES in tap mode pending)
+  scripts/forensic/m3_disasm.py / scripts/forensic/m3_invoke_inventory.py / DUMP_CLICKABLES in tap mode pending)
 
 ## FINDING-011
 - Subsystem: VIEW / ANDROIDX (keyed View tags — the ViewTree* backbone, P0)
@@ -444,7 +444,7 @@ session). These are items the campaign plan did NOT explicitly list.
 - Priority: P2 (diagnostics). Status: RESEARCHED.
 
 ## FORGOTTEN-013
-- What: aapt2 version pinning has no checksum gate in bootstrap_toolchain.sh
+- What: aapt2 version pinning has no checksum gate in scripts/build/bootstrap_toolchain.sh
   (the fetch is verified by version string only).
 - Priority: P3. Action: add the jar SHA-256 to the script.
 - Status: RESEARCHED.
@@ -808,7 +808,7 @@ session). These are items the campaign plan did NOT explicitly list.
 - GitHub evidence: Issue #9
 
 ## FINDING-019 (TOOL FINDING — §24 diagnostic-infrastructure class)
-- Subsystem: scripts/run_test_battery.sh — the campaign's own gate
+- Subsystem: scripts/test/run_test_battery.sh — the campaign's own gate
 - Trigger: fresh (non-resume) battery runs silently terminated after
   stage 63 (F-016 default-mode) without executing stage 64 (F-016
   strict-mode) and without printing a verdict; --resume runs completed.

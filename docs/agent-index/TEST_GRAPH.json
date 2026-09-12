@@ -1,7 +1,7 @@
 {
  "head": "bcfd4405",
  "gate": {
-  "command": "bash scripts/run_test_battery.sh",
+  "command": "bash scripts/test/run_test_battery.sh",
   "stages_at_head": 91,
   "last_result": "ALL PASS (91/91) at bcfd4405"
  },

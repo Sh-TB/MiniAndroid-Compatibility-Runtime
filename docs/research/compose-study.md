@@ -7,7 +7,7 @@ Compose internals for their own sake.
 Sources: androidx references in `master_repos.txt` (androidx/compose
 multiplatform, skiko); AOSP frameworks/base RenderNode/RecordingCanvas
 (mirror `1cdfff55`); MiniAndroid compose shadows and dooz evidence from
-prior campaigns (`docs/campaign014_evidence/dooz/`, COMPOSE_REPORT_013.md).
+prior campaigns (`docs/evidence/campaign014/dooz/`, docs/history/campaign-013/COMPOSE_REPORT_013.md).
 
 ## CMP-001 — The only boundary an APK runtime sees
 ComposeView → AndroidComposeView → (ViewTreeLifecycleOwner /

@@ -138,7 +138,7 @@ corpus fetch hash-verified + 3/3 runs
 | ID | APK | SHA-256 | Capability |
 |---|---|---|---|
 | EXT-01 | HelloWorldSelfAware 1.1.0 (Appliberated) | 009b4671…cc41 | typography + long-press goldens |
-| EXT-02..04 | SimpleStopwatch 26 / gmdice 8 / MicroTimer 8 | hash-verified via fetch_corpus.py | boot/render regression |
+| EXT-02..04 | SimpleStopwatch 26 / gmdice 8 / MicroTimer 8 | hash-verified via scripts/test/fetch_corpus.py | boot/render regression |
 | EXT-05 | fr.neamar.kiss 3.26.0 vC 224 | da6ab0b1…98c9 | AppCompat boundary |
 | EXT-06 | org.fossify.notes 1.7.0 vC 13 | 5a56e0e3…bced | NOT APPLICABLE — Compose |
 | EXT-07 | net.gsantner.markor 2.16.1 vC 163 | 3f9f260d…84b9 | classic Views; AppCompat boundary |
@@ -191,7 +191,7 @@ campaign were fixed with regression coverage instead of deferral.
 ## O. GitHub evidence
 
 See the campaign evidence comments on Issue #8 (direct URLs in the final
-message + scripts/comment_urls.json). Every commit pushed to origin/main
+message + scripts/maintenance/comment_urls.json). Every commit pushed to origin/main
 and verified via ls-remote.
 
 ## P. Remaining gaps
