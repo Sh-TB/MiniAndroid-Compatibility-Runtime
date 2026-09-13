@@ -2027,6 +2027,106 @@ bool DalvikExecutionEngine::execute_method_internal(
     current_tries_size_ = tries_size;
     current_tries_data_ = tries_data;
     current_tries_data_size_ = tries_data_size;
+    // S33 (R-NEW-332): depth-band trace — log method entries whose
+    // recursion depth falls in the configured band (env-gated
+    // MINIANDROID_DEPTHBAND=min:max, bounded 500). Exposes the app
+    // composable's execution until its terminal point.
+    {
+        static thread_local const char* band_env =
+            std::getenv("MINIANDROID_DEPTHBAND");
+        if (band_env) {
+            static thread_local int band_min = -1;
+            static thread_local int band_max = -1;
+            if (band_min < 0) {
+                int mn = 0, mx = 0;
+                if (sscanf(band_env, "%d:%d", &mn, &mx) == 2) {
+                    band_min = mn;
+                    band_max = mx;
+                }
+            }
+            if (band_min >= 0 && recursion_depth_ >= band_min &&
+                recursion_depth_ <= band_max &&
+                class_name != "LM1/i;") {
+                static thread_local uint64_t band_logged = 0;
+                if (band_logged < 3000) {
+                    ++band_logged;
+                    std::cerr << "[DEPTHBAND d=" << recursion_depth_ << "] "
+                              << class_name << "." << method_name << " "
+                              << descriptor << std::endl;
+                }
+            }
+        }
+    }
+    // S33 (R-NEW-332): composition-window trace — from the
+    // AbstractComposeView.ensureCompositionCreated entry, log the next 800
+    // method entries (env-gated, bounded) so the app content-lambda invoke
+    // is directly visible in the composition pass.
+    {
+        static thread_local const bool compwin_on =
+            std::getenv("MINIANDROID_COMPWIN_TRACE") != nullptr;
+        if (compwin_on) {
+            static thread_local bool compwin_active = false;
+            static thread_local uint64_t compwin_logged = 0;
+            if (!compwin_active &&
+                class_name == "Landroidx/compose/ui/platform/AbstractComposeView;" &&
+                method_name == "ensureCompositionCreated") {
+                compwin_active = true;
+                std::cerr << "[COMPWIN-OPEN] " << class_name << "."
+                          << method_name << " depth=" << recursion_depth_
+                          << std::endl;
+            }
+            if (compwin_active && compwin_logged < 800) {
+                ++compwin_logged;
+                std::cerr << "[COMPWIN] " << class_name << "." << method_name
+                          << " " << descriptor << " d=" << recursion_depth_
+                          << std::endl;
+                if (compwin_logged == 800)
+                    std::cerr << "[COMPWIN-CLOSE] cap reached" << std::endl;
+            }
+        }
+    }
+    // S33 (R-NEW-332): LayoutNode census — count LayoutNode constructions
+    // and draw dispatches; bounded, env-gated. Distinguishes "composition
+    // created few nodes" from "nodes created but not linked into the tree".
+    {
+        static thread_local const bool census_on =
+            std::getenv("MINIANDROID_NODE_CENSUS") != nullptr;
+        if (census_on) {
+            static thread_local uint64_t ctor_count = 0;
+            static thread_local uint64_t draw_count = 0;
+            static thread_local uint64_t attach_count = 0;
+            if (class_name == "Landroidx/compose/ui/node/e;" &&
+                method_name == "<init>") {
+                ++ctor_count;
+                if (ctor_count <= 12) {
+                    std::cerr << "[NODE-CENSUS] LayoutNode ctor #" << ctor_count
+                              << " " << descriptor << " depth=" << recursion_depth_
+                              << std::endl;
+                }
+            } else if (class_name == "Landroidx/compose/ui/node/e;" &&
+                       method_name == "n") {
+                ++draw_count;
+                if (draw_count <= 8) {
+                    std::cerr << "[NODE-CENSUS] LayoutNode.draw #" << draw_count
+                              << " " << descriptor
+                              << " recv=" << (args.empty() ? 0 : args[0].object_id)
+                              << std::endl;
+                }
+            } else if ((class_name == "Landroidx/compose/ui/node/e;" ||
+                        class_name == "Lk0/T;") &&
+                       (method_name == "attach" || method_name == "x0" ||
+                        method_name == "N0" || method_name == "O0")) {
+                ++attach_count;
+                if (attach_count <= 12) {
+                    std::cerr << "[NODE-CENSUS] link-candidate "
+                              << class_name << "." << method_name
+                              << " #" << attach_count
+                              << " recv=" << (args.empty() ? 0 : args[0].object_id)
+                              << " " << descriptor << std::endl;
+                }
+            }
+        }
+    }
     // EXP-053: Clear pending exception at method entry.
     pending_exception_ = DalvikValue::make_null();
     // EXP-042 Phase 4: Log the first 5000 method entries for diagnostic
@@ -2056,6 +2156,20 @@ bool DalvikExecutionEngine::execute_method_internal(
         std::cerr << "[DRAWWIN-IN] " << class_name << "." << method_name
                   << " " << descriptor << std::endl;
         drawwin_count++;
+    }
+    // S33 (R-NEW-332): method entries inside the F-096 lifecycle dispatch
+    // window (real-DEX onMeasure/onLayout) — shows the measure/layout
+    // traversal the placement pass actually executes.
+    static thread_local const bool lifewin_on =
+        std::getenv("MINIANDROID_LIFEWIN_TRACE") != nullptr;
+    static thread_local uint64_t lifewin_count = 0;
+    if (lifewin_on && lifecycle_window_active_ && lifewin_count < 4000) {
+        std::cerr << "[LIFEWIN-IN] " << class_name << "." << method_name
+                  << " " << descriptor
+                  << " recv=" << (args.empty() ? 0 : args[0].object_id)
+                  << (args.empty() ? "" : args[0].class_desc)
+                  << std::endl;
+        lifewin_count++;
     }
 
     // EXP-038 (BLOCKER-033): Set current_dex_index_ for per-DEX method resolution.
@@ -3076,6 +3190,54 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             }
             std::cerr << std::endl;
         }
+        // ────────────────────────────────────────────────────────────────
+        // R-NEW-330 forensic probe (S28): the DepthSortedSet attach
+        // invariant. Real compose 1.6.7 contract (upstream sources, ui-
+        // android 1.6.7): LayoutNode.detach() invokes owner.onDetach(node)
+        // BEFORE clearing owner, and AndroidComposeView.onDetach calls
+        // measureAndLayoutDelegate.onNodeDetached(node) which removes the
+        // node from relayoutNodes — that cleanup is what keeps the
+        // "nodes in relayoutNodes are always attached" invariant. The
+        // dooz ISE "DepthSortedSet.remove called on an unattached node"
+        // means the chain lost a cleanup somewhere. Read-only bounded
+        // evidence: log every DepthSortedSet-family add/remove entry and
+        // every onNodeDetached/onDetach dispatch with raw node ids so the
+        // unattached node's identity and its attach/detach history can be
+        // reconstructed. Enable with MINIANDROID_R330_TRACE=1.
+        static thread_local const bool r330_trace =
+            std::getenv("MINIANDROID_R330_TRACE") != nullptr;
+        static thread_local uint64_t r330_entries = 0;
+        if (r330_trace && r330_entries < 400) {
+            bool r330_hit = false;
+            // Obfuscated-in-dooz DepthSortedSet (remove fired the ISE);
+            // log every method on its class — the set is small.
+            if (declaring_class == "Lm0/m;" ||
+                // Owner.onDetach cleanup dispatch (AndroidComposeView).
+                method_name == "onNodeDetached" ||
+                (declaring_class ==
+                     "Landroidx/compose/ui/platform/AndroidComposeView;" &&
+                 method_name == "onDetach") ||
+                // LayoutNode detach/attach entry (obfuscated k0/T in dooz).
+                (declaring_class == "Lk0/T;" &&
+                 (method_name == "detach" || method_name == "attach"))) {
+                r330_hit = true;
+                ++r330_entries;
+            }
+            if (r330_hit) {
+                std::cerr << "[R330-TRY] " << declaring_class << "."
+                          << method_name << " depth=" << recursion_depth_;
+                for (size_t ai = 0; ai < args.size() && ai < 3; ++ai) {
+                    const auto& a = args[ai];
+                    if (a.type == DalvikType::OBJECT_REF)
+                        std::cerr << " a" << ai << "=o" << a.object_id
+                                  << "(" << a.class_desc << ")";
+                    else
+                        std::cerr << " a" << ai << "=<" << static_cast<int>(a.type) << ">";
+                }
+                std::cerr << std::endl;
+            }
+        }
+        // ────────────────────────────────────────────────────────────────
     }
     // EXP-061: Debug — trace SlideView specifically (§24: env-gated —
     // MINIANDROID_APP_TRACE=1).
@@ -3920,6 +4082,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         class_descriptor.find("Ljava/util/ArrayList;") == 0 ||
         class_descriptor.find("Ljava/util/AbstractList;") == 0 ||
         class_descriptor.find("Ljava/util/AbstractMap;") == 0 ||
+        // F-097 (R-NEW-330): TreeSet — compose DepthSortedSet wraps one;
+        // without the bridge the silent-default path returned null from
+        // first() and remove(null) threw the misleading unattached-node ISE.
+        class_descriptor.find("Ljava/util/TreeSet;") == 0 ||
         class_descriptor.find("Ljava/lang/String;") == 0 ||
         class_descriptor.find("Landroid/text/TextUtils;") == 0 ||
         class_descriptor.find("Ljava/io/File;") == 0 ||
@@ -4709,6 +4875,56 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     if (!current_invoke_is_static_ && !args.empty() &&
         args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
         m3_active_key += "#" + std::to_string(args[0].object_id);
+        // ────────────────────────────────────────────────────────────────
+        // F-098 (R-NEW-332 placement gate): instance-method identity
+        // refinement — include up to 2 leading OBJECT-ARGUMENT identities
+        // (excluding the receiver), mirroring F-076's statics law.
+        //
+        // SOURCE (upstream Compose 1.6.7):
+        //   OwnerSnapshotObserver.observeLayoutModifierSnapshotReads(node,
+        //   affectsLookahead, block) -> SnapshotObserver.observeReads(
+        //   target, onChanged, block); called from
+        //   LayoutNodeLayoutDelegate.MeasurePassDelegate
+        //   .placeOuterCoordinator's not-yet-placed branch; the block runs
+        //   outerCoordinator.place -> InnerNodeCoordinator.placeAt ->
+        //   measurePassDelegate.onNodePlaced -> markNodeAndSubtreeAsPlaced
+        //   (isPlaced=true). Observations NEST per LayoutNode during the
+        //   placement cascade (child placement executes inside the parent's
+        //   still-open observation), all on the ONE AndroidComposeView
+        //   snapshot-observer singleton.
+        //
+        // OBSERVATION (dooz v18, MINIANDROID_ARG_TRACE=m0/T):
+        //   call#1 executed: m0/T.a(recv=1198, p1=node#824, p2=#1209,
+        //   p3=#1071); call#2 STUBBED: m0/T.a(recv=1198, p1=node#3101,
+        //   p2=#1209, p3=#3126) — "[M3-19-CYCLE] Lm0/T;.a#1198 re-entered
+        //   (depth=16)". Different target node, same receiver — legal
+        //   upstream re-entrancy stubbed -> child's onNodePlaced never ran
+        //   -> isPlaced=false at draw -> InnerNodeCoordinator.performDraw
+        //   skipped every child -> 0 canvas ops (placeholder frame).
+        //
+        // SEMANTIC LAW: visitor/observer/scope dispatch methods take the
+        // TARGET as a payload argument; nesting differs by payload
+        // identity. Same receiver + same payload re-entry is a genuine
+        // cycle (stub preserved); same receiver + different payload is
+        // legal nested dispatch (execute real DEX).
+        //
+        // IMPACT: the entire Compose placement cascade (all Compose apps);
+        // generic visitor/listener dispatch on shared receivers.
+        //
+        // PROOF: dooz [LIFEWIN-ZRET] e.G(3101)=FALSE before the fix;
+        // TRUE + child draw recursion + real canvas ops after.
+        // MAX_RECURSION_DEPTH (80) remains the backstop.
+        // ────────────────────────────────────────────────────────────────
+        {
+            int appended = 0;
+            for (size_t i = 1; i < args.size() && appended < 2; ++i) {
+                if (args[i].type == DalvikType::OBJECT_REF &&
+                    args[i].object_id != 0 && !args[i].is_null) {
+                    m3_active_key += "#" + std::to_string(args[i].object_id);
+                    ++appended;
+                }
+            }
+        }
     } else if (current_invoke_is_static_) {
         // F-076: statics have no receiver — key on leading object-arg
         // identities (up to 2). Coroutine start helpers thereby take a
@@ -5485,6 +5701,62 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // last_invoke_return_. Copy it to return_val BEFORE restoring state.
         return_val = last_invoke_return_;
 
+        // S33 (R-NEW-332 evidence): inside the custom-view draw window, print
+        // the RETURN VALUE of every ()Z method (isPlaced-style predicates)
+        // with the DECLARING class + receiver id, so the draw walk's gating
+        // predicates are directly readable. Also reveals which declaring
+        // class actually serves a receiver-class entry (R8 letter mapping).
+        if (draw_window_active_) {
+            static thread_local uint64_t dwz_count = 0;
+            if (dwz_count < 300 && method.descriptor == "()Z") {
+                ++dwz_count;
+                std::cerr << "[DRAWWIN-ZRET] decl=" << cls_ref.name << "."
+                          << method.name
+                          << " recv=" << (args.empty() ? 0 : args[0].object_id)
+                          << "(" << (args.empty() ? std::string("null")
+                                                  : args[0].class_desc) << ")"
+                          << " ret=" << (return_val.int_val ? "TRUE" : "FALSE")
+                          << std::endl;
+            }
+        }
+        // S33 (R-NEW-332): generic return-value trace — env-gated by
+        // MINIANDROID_RET_TRACE=<class-substring>; prints the resolved
+        // return value (object id/class or NULL) for every invocation
+        // whose DECLARING class contains the substring.
+        {
+            static thread_local const char* ret_trace_env =
+                std::getenv("MINIANDROID_RET_TRACE");
+            if (ret_trace_env && ret_trace_env[0] &&
+                cls_ref.name.find(ret_trace_env) != std::string::npos) {
+                static thread_local uint64_t ret_count = 0;
+                if (ret_count < 200) {
+                    ++ret_count;
+                    std::cerr << "[RET-TRACE] " << cls_ref.name << "."
+                              << method.name << " -> "
+                              << (return_val.is_null
+                                      ? "NULL"
+                                      : (return_val.type == DalvikType::OBJECT_REF
+                                             ? ("obj#" + std::to_string(return_val.object_id) +
+                                                " " + return_val.class_desc)
+                                             : ("prim:" + std::to_string(return_val.int_val))))
+                              << std::endl;
+                }
+            }
+        }
+        if (lifecycle_window_active_) {
+            static thread_local uint64_t lwz_count = 0;
+            if (lwz_count < 300 && method.descriptor == "()Z") {
+                ++lwz_count;
+                std::cerr << "[LIFEWIN-ZRET] decl=" << cls_ref.name << "."
+                          << method.name
+                          << " recv=" << (args.empty() ? 0 : args[0].object_id)
+                          << "(" << (args.empty() ? std::string("null")
+                                                  : args[0].class_desc) << ")"
+                          << " ret=" << (return_val.int_val ? "TRUE" : "FALSE")
+                          << std::endl;
+            }
+        }
+
         // S21 trie forensics: return-value trace for the persistent-set
         // family — pins which trie operation dropped/kept an entry.
         {
@@ -5986,6 +6258,10 @@ bool DalvikExecutionEngine::dispatch_view_lifecycle_once(
     if (!class_info_index_.count(cls)) return false;
 
     bool dispatched_any = false;
+    // S33 (R-NEW-332): open the lifecycle evidence window for the two real-DEX
+    // dispatches below (onMeasure + onLayout).
+    lifecycle_window_active_ = true;
+    std::cerr << "[LIFEWIN-OPEN] " << cls << " view=" << view_object_id << std::endl;
     // 1) onMeasure(II)V — EXACTLY specs from the resolved rect.
     if (class_chain_defines_method(cls, "onMeasure")) {
         constexpr int MEASURE_SPEC_EXACTLY = 1 << 30;
@@ -6020,6 +6296,10 @@ bool DalvikExecutionEngine::dispatch_view_lifecycle_once(
             ret, res);
         if (ok) dispatched_any = true;
     }
+    // S33: close the lifecycle evidence window.
+    std::cerr << "[LIFEWIN-CLOSE] " << cls << " view=" << view_object_id
+              << " dispatched=" << (dispatched_any ? "YES" : "NO") << std::endl;
+    lifecycle_window_active_ = false;
     // Bounded evidence trace.
     static thread_local uint64_t f096_log = 0;
     if (f096_log < 16) {
@@ -14650,6 +14930,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status,
                                           uint32_t method_idx_hint) {
+    // S28 (R-NEW-330 evidence): log TreeSet-family bridge entries to verify
+    // the F-097 dispatch actually reaches the shadow.
+    {
+        static thread_local const bool ts_diag_on =
+            std::getenv("MINIANDROID_R330_TRACE") != nullptr;
+        static thread_local uint64_t ts_diag = 0;
+        if (ts_diag_on && ts_diag < 60 &&
+            (class_name.find("TreeSet") != std::string::npos ||
+             class_name.find("AbstractCollection") != std::string::npos ||
+             class_name.find("AbstractSet") != std::string::npos ||
+             class_name.find("SortedSet") != std::string::npos)) {
+            ++ts_diag;
+            std::cerr << "[F097-BRIDGE] " << class_name << "." << method
+                      << " argc=" << args.size()
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+    }
     // S26 (R-NEW-328 evidence): every bridge (non-DEX dispatch) inside the
     // custom-view draw window — shows what the draw pipeline asked the
     // framework for, and which calls silently no-op.
@@ -19816,6 +20114,250 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
     }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-097 (R-NEW-330 closure): java.util.TreeSet — real set semantics.
+    //
+    //   * Root-gap evidence (S28, dooz + MINIANDROID_R330_TRACE): compose
+    //     1.6.7 DepthSortedSet wraps a java.util.TreeSet (upstream
+    //     DepthSortedSet.kt). TreeSet was NOT modeled — every method fell
+    //     through the framework bypass to bridge_to_api's terminal default,
+    //     so first() silently returned NULL. MeasureAndLayoutDelegate.
+    //     measureAndLayout popEach → pop() → set.first() → remove(null);
+    //     the APK's REAL DEX then ran check(node.isAttached) on a null
+    //     receiver and threw the misleading ISE "DepthSortedSet.remove
+    //     called on an unattached node". The node was never unattached —
+    //     the ARGUMENT was null (a1=<8>=NULL_REF in the R330 probe).
+    //   * Fix: model TreeSet as an ORDERED SET on the heap-fields backing
+    //     store (same store as the HashMap shadow): ts_e_<i> = element at
+    //     insertion index i, ts_in_<elemKey> = insertion index, ts_size =
+    //     element count. Ordering law: compose's TreeSet uses a REAL-DEX
+    //     comparator (depth, hashCode); invoking it from the shadow is not
+    //     yet supported, so the shadow preserves DETERMINISTIC INSERTION
+    //     ORDER as an honest approximation (documented deviation — pop
+    //     order differs from depth order; membership semantics, first()
+    //     non-null, and add/remove/contains truth are exact). The APK's
+    //     own real-DEX invariant checks (check(node.isAttached) inside
+    //     DepthSortedSet.add/remove) continue to execute untouched — the
+    //     shadow invents NO framework-side invariant.
+    //   * Generic family: every real APK that sorts/derives with
+    //     java.util.TreeSet (sorted sets, ordered dedup) hits this same
+    //     shadow; no app special-casing.
+    //   * Dispatch law (S28 evidence): R8 class-merging rewrites compose's
+    //     anonymous TreeSet subclass into an app class (dooz: Lm0/c0
+    //     extends java.util.TreeSet) and calls land with FRAMEWORK
+    //     declaring classes — java/util/TreeSet;.first,
+    //     java/util/AbstractCollection;.add/.remove/.contains/.isEmpty.
+    //     The gate therefore matches (a) framework declaring classes of
+    //     the TreeSet family, and (b) ANY declaring class when the
+    //     receiver's runtime class is a TreeSet subclass (DEX hierarchy
+    //     walk via is_subclass_of). (b) is what actually carries the
+    //     merged-class traffic.
+    {
+        std::string ts_recv_class;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            if (auto* ro = heap_.get(args[0].object_id))
+                ts_recv_class = ro->class_descriptor;
+        }
+        static thread_local const bool ts_diag_on2 =
+            std::getenv("MINIANDROID_R330_TRACE") != nullptr;
+        static thread_local uint64_t ts_diag2 = 0;
+        bool ts_decl_family =
+            class_name.find("TreeSet") != std::string::npos ||
+            class_name.find("AbstractSet") != std::string::npos ||
+            class_name.find("AbstractCollection") != std::string::npos ||
+            class_name.find("SortedSet") != std::string::npos ||
+            class_name.find("NavigableSet") != std::string::npos;
+        bool ts_recv_is_set =
+            !ts_recv_class.empty() &&
+            is_subclass_of(ts_recv_class, "Ljava/util/TreeSet;");
+        if (ts_diag_on2 && ts_diag2 < 40 &&
+            (ts_decl_family || ts_recv_is_set)) {
+            ++ts_diag2;
+            std::cerr << "[F097-GATE] class=" << class_name << "." << method
+                      << " recv=" << ts_recv_class
+                      << " oid=" << (args.empty() ? 0 : args[0].object_id)
+                      << " decl_family=" << ts_decl_family
+                      << " recv_is_set=" << ts_recv_is_set
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+            if (auto* ro2 = heap_.get(args.empty() ? 0 : args[0].object_id)) {
+                int32_t dbg_sz = 0;
+                auto it2 = ro2->fields.find("ts_size");
+                if (it2 != ro2->fields.end()) dbg_sz = it2->second.int_val;
+                bool has_e0 = ro2->fields.count("ts_e_0") > 0;
+                std::cerr << "[F097-GATE]   ts_size=" << dbg_sz
+                          << " ts_e_0=" << (has_e0 ? "YES" : "no")
+                          << " fields=" << ro2->fields.size() << std::endl;
+            }
+        }
+        bool ts_gate = ts_decl_family || ts_recv_is_set;
+        // NOTE: unlike the HashMap post-shadow fallback above, this shadow
+        // must fire regardless of shadow_registry_ state — the receiver is
+        // an R8-merged app-side TreeSet subclass, never a registered shadow
+        // object, and no earlier handler claims TreeSet-family calls.
+        if (ts_gate) {
+            // Only route to the TreeSet store when the receiver truly is a
+            // TreeSet-family object: an AbstractCollection-declared call
+            // with a NON-TreeSet receiver (ArrayList etc.) must NOT be
+            // captured here.
+            bool ts_receiver_is_set =
+                class_name.find("TreeSet") != std::string::npos ||
+                class_name.find("AbstractSet") != std::string::npos ||
+                class_name.find("SortedSet") != std::string::npos ||
+                class_name.find("NavigableSet") != std::string::npos ||
+                (!ts_recv_class.empty() &&
+                 is_subclass_of(ts_recv_class, "Ljava/util/TreeSet;"));
+            if (!ts_receiver_is_set) {
+                // fall through: not ours (e.g. ArrayList receiver declared
+                // via AbstractCollection) — skip the whole TreeSet block by
+                // jumping past it via the enclosing if below.
+                goto ts_not_ours;
+            }
+    {  // handler scope — the gate decision was made above (ts_gate)
+        // Element key law (mirrors the HashMap shadow's key derivation):
+        // OBJECT_REF → obj_<id> (stable per heap object), STRING_REF → the
+        // string itself, otherwise the raw int value.
+        auto ts_elem_key = [](const DalvikValue& v) -> std::string {
+            if (v.type == DalvikType::OBJECT_REF)
+                return "obj_" + std::to_string(v.object_id);
+            if (v.type == DalvikType::STRING_REF)
+                return v.string_val;
+            return std::to_string(v.int_val);
+        };
+
+        if (method == "<init>") {
+            // TreeSet() / TreeSet(comparator) — start empty.
+            if (!args.empty() && args[0].object_id != 0) {
+                heap_.set_object_field(args[0].object_id, "ts_size",
+                                       DalvikValue::make_int(0));
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        // TreeSet.add(e) → boolean (true when newly inserted).
+        if (method == "add" && args.size() >= 2) {
+            uint32_t this_id = args[0].object_id;
+            std::string k = ts_elem_key(args[1]);
+            auto* obj = heap_.get(this_id);
+            bool present =
+                obj && obj->fields.count("ts_in_" + k) > 0;
+            if (present) {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(false);
+                return true;
+            }
+            int32_t sz = 0;
+            if (obj) {
+                auto it = obj->fields.find("ts_size");
+                if (it != obj->fields.end()) sz = it->second.int_val;
+            }
+            heap_.set_object_field(this_id, "ts_e_" + std::to_string(sz),
+                                   args[1]);
+            heap_.set_object_field(this_id, "ts_in_" + k,
+                                   DalvikValue::make_int(sz));
+            heap_.set_object_field(this_id, "ts_size",
+                                   DalvikValue::make_int(sz + 1));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(true);
+            return true;
+        }
+        // TreeSet.remove(o) → boolean. O(1) swap-with-last on the
+        // insertion-order array; the moved element's ts_in index is fixed
+        // up so subsequent removes stay consistent.
+        if (method == "remove" && args.size() >= 2) {
+            uint32_t this_id = args[0].object_id;
+            auto* obj = heap_.get(this_id);
+            std::string k = ts_elem_key(args[1]);
+            if (!obj || obj->fields.count("ts_in_" + k) == 0) {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(false);
+                return true;
+            }
+            int32_t idx = obj->fields["ts_in_" + k].int_val;
+            int32_t last = obj->fields.count("ts_size")
+                               ? obj->fields["ts_size"].int_val - 1
+                               : idx;
+            if (idx != last) {
+                auto moved = obj->fields["ts_e_" + std::to_string(last)];
+                std::string mk = ts_elem_key(moved);
+                heap_.set_object_field(this_id, "ts_e_" + std::to_string(idx),
+                                       moved);
+                heap_.set_object_field(this_id, "ts_in_" + mk,
+                                       DalvikValue::make_int(idx));
+            }
+            heap_.get(this_id)->fields.erase("ts_e_" + std::to_string(last));
+            heap_.get(this_id)->fields.erase("ts_in_" + k);
+            heap_.set_object_field(this_id, "ts_size",
+                                   DalvikValue::make_int(last));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(true);
+            return true;
+        }
+        // TreeSet.first() → min element (insertion-order approximation:
+        // element at index 0). Empty set → null (pop() is only called when
+        // isNotEmpty(); real Java would throw NoSuchElementException, and
+        // returning null surfaces the same caller bug without inventing a
+        // new exception type).
+        if (method == "first") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            auto v = heap_.get_object_field(this_id, "ts_e_0");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (v.has_value())
+                result = *v;
+            else
+                result = DalvikValue::make_null();
+            return true;
+        }
+        // TreeSet.contains(o) → boolean.
+        if (method == "contains" && args.size() >= 2) {
+            uint32_t this_id = args[0].object_id;
+            auto* obj = heap_.get(this_id);
+            bool present =
+                obj && obj->fields.count("ts_in_" + ts_elem_key(args[1])) > 0;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(present);
+            return true;
+        }
+        // TreeSet.size() → int.
+        if (method == "size") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            auto v = heap_.get_object_field(this_id, "ts_size");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_int(v.has_value() ? v->int_val : 0);
+            return true;
+        }
+        // TreeSet.isEmpty() → boolean.
+        if (method == "isEmpty") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            auto v = heap_.get_object_field(this_id, "ts_size");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(!v.has_value() || v->int_val == 0);
+            return true;
+        }
+        // TreeSet.clear() → void.
+        if (method == "clear") {
+            uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+            auto* obj = heap_.get(this_id);
+            if (obj) {
+                std::vector<std::string> drop;
+                for (const auto& f : obj->fields)
+                    if (f.first.rfind("ts_", 0) == 0) drop.push_back(f.first);
+                for (const auto& name : drop) obj->fields.erase(name);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        }  // end of the (false) original-gate shell — handlers above returned
+        }  // end of if (ts_gate)
+    }      // end of the gate-variable scope block
+    ts_not_ours:;
+    // (fall through when the call is TreeSet-adjacent but belongs to
+    //  another collection family — e.g. AbstractCollection.add with an
+    //  ArrayList receiver)
 
     // ────────────────────────────────────────────────────────────────────────
     // EXP-071 Phase 6: ArrayList — basic operations (post-shadow fallbacks).
