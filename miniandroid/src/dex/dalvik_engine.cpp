@@ -6388,6 +6388,114 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                           << std::endl;
             }
         }
+        // S35 patch 2: NavHost identity — who runs p.a, with which
+        // navController/tracker, and which path builds each controller.
+        {
+            static thread_local const bool s35b_on =
+                std::getenv("MINIANDROID_S35_TRACE") != nullptr;
+            if (s35b_on) {
+                static thread_local uint64_t s35b_n = 0;
+                if (s35b_n < 48) {
+                    bool hit = false;
+                    std::string line;
+                    if (cls_ref.name == "Landroidx/navigation/compose/p;" &&
+                        method.name == "a") {
+                        hit = true;
+                        line = " [S35b] p.a nav=o";
+                        line += std::to_string(
+                            (!args.empty() &&
+                             args[0].type == DalvikType::OBJECT_REF)
+                                ? args[0].object_id : 0);
+                        if (!args.empty() &&
+                            args[0].type == DalvikType::OBJECT_REF) {
+                            auto trk = heap_.get_object_field(args[0].object_id,
+                                                              "j");
+                            line += " trk=";
+                            line += (trk.has_value() &&
+                                     trk->type == DalvikType::OBJECT_REF)
+                                        ? ("o" + std::to_string(trk->object_id))
+                                        : std::string("?");
+                        }
+                    } else if (cls_ref.name == "LW1/G;" && method.name == "s") {
+                        hit = true;
+                        line = " [S35b] W1/G.s (rememberNavController) entry";
+                    } else if (cls_ref.name == "Landroidx/navigation/c;" &&
+                               method.name == "<init>") {
+                        hit = true;
+                        line = " [S35b] c.<init>";
+                    }
+                    if (hit) {
+                        auto frames = call_stack_.snapshot_top_first();
+                        for (size_t fi = 0; fi < frames.size() && fi < 3; ++fi)
+                            line += " <" + frames[fi].first + "." +
+                                    frames[fi].second + ">";
+                        ++s35b_n;
+                        std::cerr << line << std::endl;
+                    }
+                }
+            }
+        }
+        // S35 (R-NEW-334): stale-read evidence probe — env-gated
+        // MINIANDROID_S35_TRACE=1, bounded 64 lines. Prints receiver/value
+        // object ids and ArrayList sizes for the visible-entries chain:
+        // LF/w.b entry (tracker), LF/V0.getValue ret (remembered state),
+        // LF/F.getValue ret (derived state), LF/F.m ret (dep compare).
+        {
+            static thread_local const bool s35_on =
+                std::getenv("MINIANDROID_S35_TRACE") != nullptr;
+            if (s35_on) {
+                static thread_local uint64_t s35_n = 0;
+                if (s35_n < 64) {
+                    bool s35_hit = false;
+                    std::string s35_line;
+                    if (cls_ref.name == "LF/w;" && method.name == "b" &&
+                        !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+                        s35_hit = true;
+                        auto jst = heap_.get_object_field(args[0].object_id,
+                                                          "j");
+                        s35_line = " [S35] LF/w.b tracker=o" +
+                                   std::to_string(args[0].object_id) + " j=" +
+                                   (jst.has_value() && jst->type == DalvikType::OBJECT_REF
+                                        ? ("o" + std::to_string(jst->object_id))
+                                        : std::string("?"));
+                    } else if (method.name == "getValue" &&
+                               (cls_ref.name == "LF/V0;" ||
+                                cls_ref.name == "LF/F;") &&
+                               !args.empty() &&
+                               args[0].type == DalvikType::OBJECT_REF &&
+                               return_val.type == DalvikType::OBJECT_REF) {
+                        s35_hit = true;
+                        long sz = -2;
+                        for (const char* fn :
+                             {"size", "__array_length__", "count"}) {
+                            auto mv = heap_.get_object_field(
+                                return_val.object_id, fn);
+                            if (mv.has_value() &&
+                                (mv->type == DalvikType::INT32 ||
+                                 mv->type == DalvikType::INT64)) {
+                                sz = (mv->type == DalvikType::INT32)
+                                         ? mv->int_val
+                                         : (long)mv->long_val;
+                                break;
+                            }
+                        }
+                        s35_line = " [S35] " + cls_ref.name + ".getValue recv=o" +
+                                   std::to_string(args[0].object_id) + " -> o" +
+                                   std::to_string(return_val.object_id) + " sz=" +
+                                   std::to_string(sz);
+                    } else if (cls_ref.name == "LF/F;" && method.name == "m" &&
+                               return_val.type == DalvikType::INT32) {
+                        s35_hit = true;
+                        s35_line = " [S35] LF/F.m (derived dep compare) -> " +
+                                   std::to_string(return_val.int_val);
+                    }
+                    if (s35_hit) {
+                        ++s35_n;
+                        std::cerr << s35_line << std::endl;
+                    }
+                }
+            }
+        }
         // S33 (R-NEW-332): generic return-value trace — env-gated by
         // MINIANDROID_RET_TRACE=<class-substring>; prints the resolved
         // return value (object id/class or NULL) for every invocation

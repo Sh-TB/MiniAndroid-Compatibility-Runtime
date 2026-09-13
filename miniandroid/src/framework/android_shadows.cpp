@@ -186,6 +186,40 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         }
     }
 
+    // S35 (R-NEW-334): collection size truth probe — env-gated
+    // MINIANDROID_S35_TRACE=1, bounded 120. Prints the SHADOW-SIDE element
+    // count for List/Collection size()/iterator() calls, so the heap-side
+    // [S35] probes can be correlated with real element counts (heap fields
+    // cannot see ShadowState::elements).
+    {
+        static thread_local uint64_t s35_coll = 0;
+        if (std::getenv("MINIANDROID_S35_TRACE") != nullptr && s35_coll < 120) {
+            bool interesting =
+                (m == "size" || m == "iterator" || m == "isEmpty") &&
+                (ctx.class_name == "Ljava/util/List;" ||
+                 ctx.class_name == "Ljava/util/ArrayList;" ||
+                 ctx.class_name == "Ljava/util/Collection;" ||
+                 ctx.class_name == "Ljava/lang/Iterable;" ||
+                 ctx.class_name == "Ljava/util/AbstractList;" ||
+                 ctx.class_name ==
+                     "Ljava/util/concurrent/CopyOnWriteArrayList;") &&
+                (obj_id == 2901 || obj_id == 2914 || obj_id == 2919 ||
+                 obj_id == 2990 || obj_id == 3013 || obj_id == 130 ||
+                 obj_id == 2803 || obj_id == 2906 || obj_id > 3013);
+            if (interesting) {
+                ++s35_coll;
+                const CollectionState* st35 = nullptr;
+                auto it35 = collections_.find(obj_id);
+                if (it35 != collections_.end()) st35 = &it35->second;
+                size_t e35 = st35 ? (st35->elements.size() +
+                                     st35->view_elements.size()) : 0;
+                std::cerr << "[S35-COLL] " << ctx.class_name << "." << m
+                          << " obj=" << obj_id << " elems=" << e35
+                          << " caller=" << ctx.descriptor << std::endl;
+            }
+        }
+    }
+
     // ────────────────────────────────────────────────────────────────────────
     // M3 F-ROOM-CHAIN: java.util.Collections static factories.
     //
