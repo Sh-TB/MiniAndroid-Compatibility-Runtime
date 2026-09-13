@@ -3150,6 +3150,20 @@
    "evidence": "S27 (cross-app, honest-open): the Fragment host wiring family. STTT (nl.hnogame.tictactoesuperttt_20): FragmentManager 'not been attached to a host' + AppCompat subDecor theme ISE at h.R repeated (pre-existing S25/S26 frontier, unchanged). REAL Telegram v10.14.5 golden (sha f5e1192725772960 — RE-ACQUIRED 2026-09-12, K-26 BLOCKER LIFTED: official dl serves the exact pinned build again): parse + ApplicationLoader.onCreate + LifecycleRegistry machinery execute; frontier = SAME FragmentManager.ensureExecReady 'FragmentManager has not been attached to a host' ISE + SafeIterableMap$IteratorWithAdditions.next active-cycle churn (18k+ stubs) + MessagesController ISE 'called wrong accept method'. One generic family (fragment host attach law) blocks BOTH apps."
   },
   {
+   "id": "R-NEW-332",
+   "status": "VERIFIED-FIXED",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "S33 (F-098 + F-099): compose draw pipeline produced no Canvas content ops. ROOT was TWO blockers: (1) F-098 — the active-cycle guard instance-key stubbed SnapshotObserver.observeReads on its 2nd NESTED entry (same singleton observer, different target LayoutNode) killing onNodePlaced->markNodeAndSubtreeAsPlaced->isPlaced; law: key = receiver + up to 2 leading object-arg identities (nested per-LayoutNode observation is upstream-legal). (2) F-099 — the compose-owner draw dispatch gate required children.empty(); the shadow tree legitimately gains AndroidViewsHandler children via real DEX addView; law: a non-framework view node whose chain OVERRIDES dispatchDraw gets the real draw dispatch at visit even with children. POST: isPlaced=TRUE at draw, child.draw recursion + ViewLayer path execute. Residual ops=0 = R-NEW-333."
+  },
+  {
+   "id": "R-NEW-333",
+   "status": "OBSERVED-FAIL",
+   "priority": "P0",
+   "fg": true,
+   "evidence": "S34 (narrowed, evidence superseded): content-state pairing was NOT the root — the content lambda n1/u.k RUNS; NavHost p.b builds the graph; builder n1/n.o registers game/settings/about via real DEX; p.a inlined graph-set navigates; c$a.a createBackStackEntry + ComposeNavigator push e.d/c$a.e/h1/t.e + flow setValue all execute; sync collectors deliver lists to the remember states. RESIDUAL = p.a never re-runs -> p.a:0e78 gate stays false -> AnimatedContent never invoked -> game screen n1/q.g never composes -> 1 LayoutNode -> 0 canvas ops. Successor = R-NEW-334."
+  },
+  {
    "id": "R-NEW-334",
    "status": "OBSERVED-FAIL",
    "priority": "P0",
