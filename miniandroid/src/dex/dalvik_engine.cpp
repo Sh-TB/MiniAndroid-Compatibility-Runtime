@@ -2048,7 +2048,7 @@ bool DalvikExecutionEngine::execute_method_internal(
                 recursion_depth_ <= band_max &&
                 class_name != "LM1/i;") {
                 static thread_local uint64_t band_logged = 0;
-                if (band_logged < 3000) {
+                if (band_logged < 9000) {
                     ++band_logged;
                     std::cerr << "[DEPTHBAND d=" << recursion_depth_ << "] "
                               << class_name << "." << method_name << " "
@@ -2085,6 +2085,89 @@ bool DalvikExecutionEngine::execute_method_internal(
             }
         }
     }
+    // S34 (R-NEW-333): compose-view pairing trace — same instance law.
+    {
+        static thread_local const bool cvpari_on =
+            std::getenv("MINIANDROID_CVPARI") != nullptr;
+        if (cvpari_on) {
+            const char* cv1_tag = nullptr;
+            if (class_name == "Landroidx/compose/ui/platform/ComposeView;" &&
+                method_name == "<init>") cv1_tag = "CV1-INIT";
+            else if (class_name == "Landroidx/compose/ui/platform/ComposeView;" &&
+                     method_name == "setContent") cv1_tag = "CV1-SETCONTENT";
+            else if (class_name == "Landroidx/compose/ui/platform/AbstractComposeView;" &&
+                     method_name == "c" && descriptor == "()V") cv1_tag = "CV1-CREATE";
+            else if (class_name == "Landroidx/compose/ui/platform/ComposeView;" &&
+                     method_name == "a" &&
+                     descriptor == "(I LF/i;)V") cv1_tag = "CV1-CONTENT";
+            else if (class_name == "Landroidx/compose/ui/platform/AbstractComposeView;" &&
+                     method_name == "onAttachedToWindow") cv1_tag = "CV1-ATTACH";
+            else if (class_name == "Landroidx/compose/ui/platform/AndroidComposeView;" &&
+                     method_name == "<init>") cv1_tag = "CV1-ACV";
+            else if (class_name == "Landroidx/compose/ui/platform/e1;" &&
+                     method_name == "a") cv1_tag = "CV1-E1A";
+            // [S34-PERTAG] per-tag bounded counters (shared counter was
+            // suppressing late events — Content() runs AFTER startup churn).
+            if (cv1_tag) {
+                static thread_local uint64_t cv1_init_n = 0, cv1_setc_n = 0,
+                    cv1_create_n = 0, cv1_content_n = 0, cv1_attach_n = 0,
+                    cv1_acv_n = 0, cv1_e1a_n = 0;
+                uint64_t* cnt = nullptr;
+                if (cv1_tag[4] == 'I') cnt = &cv1_init_n;
+                else if (cv1_tag[4] == 'S') cnt = &cv1_setc_n;
+                else if (cv1_tag[4] == 'C' && cv1_tag[5] == 'R') cnt = &cv1_create_n;
+                else if (cv1_tag[4] == 'C') cnt = &cv1_content_n;
+                else if (cv1_tag[4] == 'A' && cv1_tag[5] == 'T') cnt = &cv1_attach_n;
+                else if (cv1_tag[4] == 'A') cnt = &cv1_acv_n;
+                else cnt = &cv1_e1a_n;
+                if (*cnt < 80) {
+                    ++*cnt;
+                    std::cerr << "[" << cv1_tag << "] recv="
+                              << (args.empty() ? 0 : args[0].object_id)
+                              << " depth=" << recursion_depth_;
+                    if (args.size() > 1)
+                        std::cerr << " arg1=" << args[1].object_id
+                                  << (args[1].is_null ? " NULL"
+                                      : (args[1].type == DalvikType::OBJECT_REF
+                                             ? (" " + args[1].class_desc) : ""));
+                    if (!call_stack_.empty()) {
+                        const StackFrame& cfr = call_stack_.top();
+                        std::cerr << " caller=" << cfr.class_name << "."
+                                  << cfr.method_name;
+                    }
+                    std::cerr << std::endl;
+                }
+            }
+        }
+    }
+    // S34 (R-NEW-333): content-state write identity — receiver state id +
+    // written value id (bounded, env-gated). Upstream: the app lambda
+    // (ComposableLambdaImpl) and the Content() read must hit ONE state.
+    {
+        static thread_local const bool cvw_on =
+            std::getenv("MINIANDROID_CVPARI") != nullptr;
+        if (cvw_on && class_name == "LF/V0;" &&
+            (method_name == "setValue" || method_name == "getValue")) {
+            static thread_local uint64_t cvw_n = 0;
+            if (cvw_n < 90) {
+                ++cvw_n;
+                std::cerr << "[CV1-STATE-" << (method_name == "setValue" ? "W" : "R")
+                          << "] state=" << (args.empty() ? 0 : args[0].object_id);
+                if (method_name == "setValue" && args.size() > 1)
+                    std::cerr << " val=" << args[1].object_id
+                              << (args[1].is_null ? " NULL"
+                                  : (args[1].type == DalvikType::OBJECT_REF
+                                         ? (" " + args[1].class_desc) : ""));
+                // [S34-CALLER] direct caller frame (callee frame not yet pushed)
+                if (!call_stack_.empty()) {
+                    const StackFrame& cfr = call_stack_.top();
+                    std::cerr << " caller=" << cfr.class_name << "."
+                              << cfr.method_name;
+                }
+                std::cerr << std::endl;
+            }
+        }
+    }
     // S33 (R-NEW-332): LayoutNode census — count LayoutNode constructions
     // and draw dispatches; bounded, env-gated. Distinguishes "composition
     // created few nodes" from "nodes created but not linked into the tree".
@@ -2100,8 +2183,416 @@ bool DalvikExecutionEngine::execute_method_internal(
                 ++ctor_count;
                 if (ctor_count <= 12) {
                     std::cerr << "[NODE-CENSUS] LayoutNode ctor #" << ctor_count
-                              << " " << descriptor << " depth=" << recursion_depth_
+                              << " " << descriptor << " depth=" << recursion_depth_;
+                    // [S34-CTORCALLER] direct caller of the LayoutNode ctor
+                    if (!call_stack_.empty()) {
+                        const StackFrame& cfr = call_stack_.top();
+                        std::cerr << " caller=" << cfr.class_name << "."
+                                  << cfr.method_name;
+                    }
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LF/l;" && method_name == "m" &&
+                       descriptor == "(LL1/a;)V") {
+                // [S34-NODEEMIT] ComposerImpl.m(factory) — node emission count
+                static thread_local uint64_t emit_call_count = 0;
+                ++emit_call_count;
+                if (emit_call_count <= 24) {
+                    std::cerr << "[S34-NODEEMIT] composer.m #" << emit_call_count
+                              << " depth=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 3; ++fi) {
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    }
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LN/a;" && method_name == "a" &&
+                       descriptor == "(Ljava/lang/Object; LF/i; I)Ljava/lang/Object;") {
+                static thread_local uint64_t naa_n = 0;
+                ++naa_n;
+                if (naa_n <= 10) {
+                    std::cerr << "[S34-CHAINLINK] N/a.a #" << naa_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 3; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "Lk0/s;" && method_name == "j") {
+                static thread_local uint64_t ksj_n = 0;
+                ++ksj_n;
+                if (ksj_n <= 10) {
+                    std::cerr << "[S34-CHAINLINK] k0/s.j #" << ksj_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 3; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LN/a;" && method_name == "j" &&
+                       descriptor.size() > 20) {
+                // [S34-CONTENT] content-lambda trampoline entries
+                static thread_local uint64_t naj_n = 0;
+                ++naj_n;
+                if (naj_n <= 14) {
+                    std::cerr << "[S34-CONTENT] LN/a.j #" << naj_n
+                              << " d=" << recursion_depth_ << " " << descriptor;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 4; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LR/f;" && method_name == "a") {
+                // [S34-CONTENT] R/f (content body) method entries
+                static thread_local uint64_t rf_n = 0;
+                ++rf_n;
+                if (rf_n <= 14) {
+                    std::cerr << "[S34-CONTENT] LR/f." << method_name << " #"
+                              << rf_n << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    if (!frames.empty())
+                        std::cerr << " caller=" << frames[0].first << "."
+                                  << frames[0].second;
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LD/b;" && method_name == "f") {
+                // [S34-DIVERGE] LD/b.f trampoline — ran? from where?
+                static thread_local uint64_t dbf_n = 0;
+                ++dbf_n;
+                if (dbf_n <= 12) {
+                    std::cerr << "[S34-DIVERGE] LD/b.f #" << dbf_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 4; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LB0/b;" && method_name == "c") {
+                // [S34-DIVERGE] rememberNavController — caller chain
+                static thread_local uint64_t b0c_n = 0;
+                ++b0c_n;
+                if (b0c_n <= 8) {
+                    std::cerr << "[S34-DIVERGE] LB0/b.c #" << b0c_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 5; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "Lh1/e;" && method_name == "<init>") {
+                // [S34-DIVERGE] NavController ctor — caller chain
+                static thread_local uint64_t nve_n = 0;
+                ++nve_n;
+                if (nve_n <= 8) {
+                    std::cerr << "[S34-DIVERGE] NavController.<init> #" << nve_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 5; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "Lb2/h;" && method_name == "a") {
+                // [S34-CANCEL] cancellation-handler dispatch
+                static thread_local uint64_t cx_n = 0;
+                ++cx_n;
+                if (cx_n <= 12) {
+                    std::cerr << "[S34-CANCEL] b2/h.a #" << cx_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 4; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LW1/u0;" && method_name == "c") {
+                // [S34-CANCEL] JobSupport.cancel(CancellationException)
+                static thread_local uint64_t jc_n = 0;
+                ++jc_n;
+                if (jc_n <= 12) {
+                    std::cerr << "[S34-CANCEL] JobSupport.c #" << jc_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 4; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LB0/b;" && method_name == "P") {
+                // [S34-MODE] resume-mode table lookup returns
+                static thread_local uint64_t mod_n = 0;
+                ++mod_n;
+                if (mod_n <= 20) {
+                    std::cerr << "[S34-MODE] B0/b.P #" << mod_n
+                              << " d=" << recursion_depth_
+                              << " mode-arg=" << (args.size() > 1 ? args[1].int_val : -99)
                               << std::endl;
+                }
+            } else if (class_name == "LW1/N;" && method_name == "run") {
+                // [S34-MODE] ResumeTask.run entries with mode field
+                static thread_local uint64_t nrun_n = 0;
+                ++nrun_n;
+                if (nrun_n <= 20) {
+                    uint32_t rid = args.empty() ? 0 : args[0].object_id;
+                    auto mk = heap_.get_object_field(rid, "k");
+                    std::cerr << "[S34-MODE] W1/N.run #" << nrun_n
+                              << " d=" << recursion_depth_
+                              << " mode=" << (mk ? mk->int_val : -1);
+                    auto frames = call_stack_.snapshot_top_first();
+                    if (!frames.empty())
+                        std::cerr << " caller=" << frames[0].first << "."
+                                  << frames[0].second;
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "Landroidx/compose/ui/platform/WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b;" &&
+                       (method_name == "t" || method_name == "q")) {
+                // [S34-RUNNER] runner body segments (unbounded count, log 30)
+                static thread_local uint64_t run_n = 0;
+                ++run_n;
+                if (run_n <= 30) {
+                    std::cerr << "[S34-RUNNER] $2$b." << method_name << " #" << run_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    if (!frames.empty())
+                        std::cerr << " caller=" << frames[0].first << "."
+                                  << frames[0].second;
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LW1/g;" && method_name == "run") {
+                // [S34-RUNNER] W1/g runnable (withContext machinery)
+                static thread_local uint64_t wgn_n = 0;
+                ++wgn_n;
+                if (wgn_n <= 20) {
+                    std::cerr << "[S34-RUNNER] W1/g.run #" << wgn_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    if (!frames.empty())
+                        std::cerr << " caller=" << frames[0].first << "."
+                                  << frames[0].second;
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "Landroidx/compose/ui/platform/K;" &&
+                       method_name == "u") {
+                // [S34-RUNNER] withFrameNanos impl
+                static thread_local uint64_t ku_n = 0;
+                ++ku_n;
+                if (ku_n <= 10) {
+                    std::cerr << "[S34-RUNNER] K.u (withFrameNanos) #" << ku_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    if (!frames.empty())
+                        std::cerr << " caller=" << frames[0].first << "."
+                                  << frames[0].second;
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "Landroidx/compose/ui/platform/WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2;" &&
+                       method_name == "m") {
+                // [S34-LIFEV] recomposer observer onStateChanged(owner, event)
+                static thread_local uint64_t lev_n = 0;
+                ++lev_n;
+                if (lev_n <= 14) {
+                    std::cerr << "[S34-LIFEV] onStateChanged #" << lev_n
+                              << " d=" << recursion_depth_;
+                    for (size_t ai = 0; ai < args.size() && ai < 3; ++ai)
+                        std::cerr << " a" << ai << "=" << args[ai].object_id
+                                  << (args[ai].is_null ? "(NULL)"
+                                      : (args[ai].type == DalvikType::OBJECT_REF
+                                             ? (" " + args[ai].class_desc) : ""));
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "Landroidx/compose/ui/platform/WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b;" &&
+                       (method_name == "t" || method_name == "k")) {
+                // [S34-LIFEV] recomposer lifecycle observer entries + event arg
+                static thread_local uint64_t lev_n = 0;
+                ++lev_n;
+                if (lev_n <= 14) {
+                    std::cerr << "[S34-LIFEV] observer." << method_name << " #"
+                              << lev_n << " d=" << recursion_depth_;
+                    for (size_t ai = 0; ai < args.size() && ai < 3; ++ai)
+                        std::cerr << " a" << ai << "=" << args[ai].object_id
+                                  << (args[ai].is_null ? "(NULL)"
+                                      : (args[ai].type == DalvikType::OBJECT_REF
+                                             ? (" " + args[ai].class_desc) : ""));
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "Landroidx/compose/ui/platform/J$c;" &&
+                       (method_name == "run" || method_name == "doFrame")) {
+                // [S34-JID] dispatcher-callback identity: outer J id + J.o size
+                static thread_local uint64_t jid_n = 0;
+                ++jid_n;
+                if (jid_n <= 10) {
+                    uint32_t cbid = args.empty() ? 0 : args[0].object_id;
+                    std::cerr << "[S34-JID] J$c." << method_name << " #" << jid_n
+                              << " cb=" << cbid;
+                    auto v = heap_.get_object_field(cbid, "i");
+                    if (v && v->type == DalvikType::OBJECT_REF) {
+                        std::cerr << " outerJ=" << v->object_id;
+                        auto o = heap_.get_object_field(v->object_id, "o");
+                        if (o && o->type == DalvikType::OBJECT_REF)
+                            std::cerr << " J.o-list=" << o->object_id;
+                    }
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "Landroidx/compose/ui/platform/J;" &&
+                       (method_name == "L" || method_name == "O")) {
+                // [S34-UIDISP] AndroidUiDispatcher dispatch (L) / drain (O)
+                static thread_local uint64_t jd_n = 0;
+                ++jd_n;
+                if (jd_n <= 20) {
+                    std::cerr << "[S34-UIDISP] J." << method_name << " #" << jd_n
+                              << " d=" << recursion_depth_ << " recv="
+                              << (args.empty() ? 0 : args[0].object_id);
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 3; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LF/Y;" &&
+                       (method_name == "j" || method_name == "d" || method_name == "l")) {
+                // [S34-EFFECT] LaunchedEffectImpl lifecycle entries
+                static thread_local uint64_t eff_n = 0;
+                ++eff_n;
+                if (eff_n <= 16) {
+                    std::cerr << "[S34-EFFECT] LF/Y." << method_name << " #" << eff_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 3; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LW1/l0;" && method_name == "a") {
+                // [S34-EFFECT] CoroutineScope.launch entry
+                static thread_local uint64_t l0a_n = 0;
+                ++l0a_n;
+                if (l0a_n <= 16) {
+                    std::cerr << "[S34-EFFECT] launch(W1/l0.a) #" << l0a_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 3; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "Landroidx/compose/ui/node/e;" &&
+                       method_name == "e" && descriptor == "(LF/z;)V") {
+                // [S34-MLAW] LayoutNode.measure(constraints) entries
+                static thread_local uint64_t meas_n = 0;
+                ++meas_n;
+                if (meas_n <= 24) {
+                    std::cerr << "[S34-MLAW] LayoutNode.measure #" << meas_n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 4; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LF/l;" && method_name == "k" &&
+                       descriptor == "()Z") {
+                // [S34-SKIPLAW] skipping flag returns — fresh composition
+                // must never skip content groups.
+                static thread_local uint64_t skip_count = 0;
+                ++skip_count;
+                if (skip_count <= 80) {
+                    std::cerr << "[S34-SKIPLAW] LF/l.k #" << skip_count
+                              << " depth=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    if (!frames.empty())
+                        std::cerr << " caller=" << frames[0].first << "."
+                                  << frames[0].second;
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LF/l;" &&
+                       method_name == "j" && descriptor == "()V") {
+                static thread_local uint64_t sn_count = 0;
+                ++sn_count;
+                if (sn_count <= 40)
+                    std::cerr << "[S34-GROUPS] startNode #" << sn_count
+                              << " depth=" << recursion_depth_ << std::endl;
+            } else if (class_name == "LF/l;" &&
+                       method_name == "F" && descriptor == "()V") {
+                static thread_local uint64_t un_count = 0;
+                ++un_count;
+                if (un_count <= 40)
+                    std::cerr << "[S34-GROUPS] useNode #" << un_count
+                              << " depth=" << recursion_depth_ << std::endl;
+            } else if (class_name == "LF/l;" &&
+                       method_name == "m" && descriptor == "(LL1/a;)V") {
+                static thread_local uint64_t cn_count = 0;
+                ++cn_count;
+                if (cn_count <= 40)
+                    std::cerr << "[S34-GROUPS] createNode #" << cn_count
+                              << " depth=" << recursion_depth_ << std::endl;
+            } else if (class_name == "LF/l;" && method_name == "r" &&
+                       descriptor == "()V") {
+                static thread_local uint64_t en_count = 0;
+                ++en_count;
+                if (en_count <= 40)
+                    std::cerr << "[S34-GROUPS] r() #" << en_count
+                              << " depth=" << recursion_depth_ << std::endl;
+            } else if (class_name == "LF/l;") {
+                // [S34-LALL] every ComposerImpl method entry, bounded
+                static thread_local uint64_t lall_count = 0;
+                ++lall_count;
+                if (lall_count <= 2600) {
+                    std::cerr << "[S34-LALL] #" << lall_count << " LF/l."
+                              << method_name << descriptor
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    if (!frames.empty())
+                        std::cerr << " caller=" << frames[0].first << "."
+                                  << frames[0].second;
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "LF/l;" &&
+                       ((method_name == "j" || method_name == "F" ||
+                         method_name == "b" || method_name == "g" ||
+                         method_name == "r" || method_name == "i") &&
+                        descriptor == "()V")) {
+                // [S34-STATEM2] ComposerImpl state machine with field values:
+                // j=startNode, F=useNode, r/b/g/i=group end/skip variants.
+                static thread_local uint64_t statem_count = 0;
+                ++statem_count;
+                if (statem_count <= 150) {
+                    std::cerr << "[S34-STATEM] LF/l." << method_name
+                              << " depth=" << recursion_depth_;
+                    uint32_t recv = args.empty() ? 0 : args[0].object_id;
+                    for (const char* fname : {"O", "q", "x"}) {
+                        auto v = heap_.get_object_field(recv, fname);
+                        if (!v)
+                            v = heap_.get_object_field(
+                                recv, std::string("LF/l;.") + fname);
+                        if (v)
+                            std::cerr << " " << fname << "=" << v->int_val;
+                    }
+                    auto frames = call_stack_.snapshot_top_first();
+                    if (!frames.empty())
+                        std::cerr << " caller=" << frames[0].first << "."
+                                  << frames[0].second;
+                    std::cerr << std::endl;
+                }
+            } else if (class_name == "Landroidx/compose/ui/node/e$a;" &&
+                       method_name == "c") {
+                // [S34-EMITCHAIN] node factory call — top-8 caller frames
+                static thread_local uint64_t emit_count = 0;
+                ++emit_count;
+                if (emit_count <= 6) {
+                    std::cerr << "[S34-EMITCHAIN] LayoutNode factory #" << emit_count
+                              << " depth=" << recursion_depth_ << " chain:";
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 8; ++fi) {
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    }
+                    std::cerr << std::endl;
                 }
             } else if (class_name == "Landroidx/compose/ui/node/e;" &&
                        method_name == "n") {
@@ -5729,7 +6220,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             if (ret_trace_env && ret_trace_env[0] &&
                 cls_ref.name.find(ret_trace_env) != std::string::npos) {
                 static thread_local uint64_t ret_count = 0;
-                if (ret_count < 200) {
+                if (ret_count < 8000) {
                     ++ret_count;
                     std::cerr << "[RET-TRACE] " << cls_ref.name << "."
                               << method.name << " -> "
@@ -14477,6 +14968,22 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                                                 DalvikValue& result,
                                                 ApiCallTrace::Status& status) {
     if (shadow_registry_ == nullptr) return false;
+
+    // [S34-RFC] who cancels the frame callback?
+    if (method == "removeFrameCallback" &&
+        class_name == "Landroid/view/Choreographer;") {
+        static thread_local uint64_t rfc_n = 0;
+        ++rfc_n;
+        if (rfc_n <= 6) {
+            std::cerr << "[S34-RFC] removeFrameCallback #" << rfc_n
+                      << " d=" << recursion_depth_ << " chain:";
+            auto frames = call_stack_.snapshot_top_first();
+            for (size_t fi = 0; fi < frames.size() && fi < 5; ++fi)
+                std::cerr << " <" << frames[fi].first << "."
+                          << frames[fi].second << ">";
+            std::cerr << std::endl;
+        }
+    }
 
     // EXP-071 Phase 8: Generic static-method shadow dispatch fix.
     //
