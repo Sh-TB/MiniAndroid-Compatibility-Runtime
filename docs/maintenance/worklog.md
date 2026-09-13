@@ -5453,3 +5453,18 @@ Stage Summary:
 - User-facing deliverables: APPS_EXECUTION_LEDGER.md on GitHub (main), images compressed, all old pushes published.
 - F-ledger 100% closed — no open F-number remains; ledger law respected (no renumbering).
 - Live frontier stays R-NEW-334 (p.a recompose-scope re-arm) — attack continues next.
+
+---
+Task ID: S35-ATTACK
+Agent: Super Z (session 35 — R-NEW-334 attack: read/write/object-graph evidence ladder)
+
+Work Log:
+- Stale-binary discovery: build/miniandroid (12:14) predated source (15:28) — S34 probes silent. Rebuilt; all probes fire; dooz baseline unchanged 193466ead8fd21d6 x3.
+- Upstream fetches via PAT (links in s35_session_record.md §3): NavHost.kt 2.7.7 (derivedStateOf law at line 853!), SnapshotStateObserver 1.6.7, Snapshot.kt 1.6.7, NavControllerImpl.kt populateVisibleEntries.
+- DEX ground truth: p.a has TWO F/w.b sites (0d80 back-stack tracker t.e=o2811/o2809; 0dd8 visible tracker c.j=o2558/o2557) + derivedStateOf (F/w.d) + lastOrNull + 0e78 gate. ONE p.a run, ONE navController (o2550) — S34 two-NavHost confusion resolved (G.s = generic remember, not rememberNavController).
+- New probes (env MINIANDROID_S35_TRACE, bounded, read-only): S35 heap probes (tracker .j + getValue returns), S35b NavHost identity, S35-COLL shadow element counts (scripts/s35_patch1_stale.py, s35_patch2_navhost.py, s35_string_xref.py tool).
+- DECISIVE: back-stack write o2901 elems=1 OK; visible-entries write o2914 elems=0 — empty at the SOURCE (c.b dispatchOnBackChanged / populateVisibleEntries), NOT a stale read, NOT a scope re-arm failure. Upstream law: visible = backQueue.filter { maxLifecycle >= STARTED } non-NavGraph. Entry lifecycle never advances to STARTED.
+- REGRESSION: dooz x3 193466ead8fd21d6; microtimer c51269309cd14594; gmdice 22f3730f452b562c; stopwatch eb16ab5c68fa9b6c == u011 standard capture (S33 81481eb2 = GATE H dim variant — provenance corrected). ZERO regressions.
+
+Stage Summary:
+- R-NEW-334 narrowed: the break is the NavBackStackEntry lifecycle chain (maxLifecycle never >= STARTED). Registry updated. Next session: attack androidx.lifecycle state machine on the entry + host-lifecycle source.

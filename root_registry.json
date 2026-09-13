@@ -10,7 +10,7 @@
    "R-NEW-331"
   ],
   "last_updated": "S35 2026-09-13",
-  "note": "S35: R-NEW-301 (F-077) closed-by-supersession — dooz composition completes at HEAD; F-ledger 100% resolved (docs/maintenance/F_LEDGER_CLOSURE_S35.md); live frontier = R-NEW-334 (recompose-scope re-arm)."
+  "note": "S35: R-NEW-334 narrowed to the lifecycle-gated visibility law (entry.maxLifecycle never >= STARTED -> populateVisibleEntries empty); F-ledger 100% closed; APPS_EXECUTION_LEDGER published; live frontier = the NavBackStackEntry lifecycle chain."
  },
  "roots": [
   {
@@ -3167,7 +3167,8 @@
    "status": "OBSERVED-FAIL",
    "priority": "P0",
    "fg": true,
-   "evidence": "S34 CURRENT FRONTIER (dooz v18, probes 13-20): the recompose-scope re-arm law. p.a (internal NavHost) reads the F/w.b-synced states at p.a:0e22 (F/f1.getValue -> F/k0 inherited F/V0.getValue) inside its group; the sync collectors later WRITE those states (F/V0.setValue o2919<-o2901 / o2990<-o2914, F074 lines) but p.a never re-runs (F/w.b from p.a exactly 1x per site; the 18 n1/u.k invocations are dominated by skip paths). App-level state invalidation WORKS (18 recompositions from the settings DataStore chain), so the general write->invalidate->recompose loop exists; the p.a scope specifically does not re-arm. Candidate roots: (a) the reads are not RECORDED on p.a's recompose scope (snapshot read-recording law at the 35c invoke-interface LF/f1;->getValue site — currently invisible to probes), (b) the scope identity/derivation for the p.b->p.a group never re-arms after the write. Upstream law: compose 1.6.7 ComposerImpl recordRead + Recomposer ObservingSnapshot + RecomposeScopeImpl invalidate. Fix unlock: AnimatedContent composes the destination content -> n1/q.g game screen -> real LayoutNodes -> first real Dooz frame."
+   "evidence": "S35 NARROWED (supersedes the recompose-scope hypothesis): the p.a scope re-arm machinery is NOT the break — live [S35]/[S35-COLL] probes prove the visible-entries write itself carried an EMPTY list (o2914 elems=0; back-stack write o2901 elems=1 OK; remember o2919->o2901 / o2990->o2914 correct; derived filter o3013 correct on empty input). One navController (o2550, tracker o2558), ONE p.a run, no abort. UPSTREAM LAW (NavControllerImpl.populateVisibleEntries, androidx/navigation): visible = backQueue.filter { e.maxLifecycle >= STARTED } minus NavGraph destinations. dooz's pushed entry's maxLifecycle never reaches STARTED -> empty visible list -> 0e78 gate false -> AnimatedContent never dispatches -> 1 LayoutNode -> 0 canvas ops -> 802px placeholder. NEXT: the androidx.lifecycle state machine on NavBackStackEntry + host-lifecycle source (updateBackStackLifecycle / prepareForTransition / onTransitionComplete chain). Session record: docs/maintenance/s35_session_record.md; probes: MINIANDROID_S35_TRACE=1 ladder, scripts/s35_patch{1,2}*.py",
+   "commit": "S35-R334-NARROWED"
   }
  ]
 }
