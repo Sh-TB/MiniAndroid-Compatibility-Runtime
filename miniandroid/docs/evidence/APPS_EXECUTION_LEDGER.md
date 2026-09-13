@@ -240,3 +240,79 @@ byte-for-byte and any pixel change would falsify results.
 
 No app may be called "loaded/rendered" in any report unless this ledger gains a row
 with: real screenshot + screenshot SHA-256 + APK name/version/SHA-256 + download link.
+
+---
+
+## S35 corpus expansion (2026-09-13) — six new open-source games downloaded, executed, hashed
+
+Shared placeholder note: apps #16–#19 each render the SAME byte-identical empty frame
+(screenshot SHA-256 `eb16ab5c68fa9b6c…` full-frame; ledger copy `07f0933a86a2935c7d2d7dda363b5b37…`)
+— white screen + status bar. Their honest value is the execution STAGE reached, not pixels.
+
+![empty placeholder frame](apps_ledger/s35_placeholder_empty.png)
+
+### 16. TicTacToe (itsfrz) — 🔴 PLACEHOLDER (NPE at app boundary)
+
+| Field | Value |
+|---|---|
+| Screenshot SHA-256 | `eb16ab5c68fa9b6c…` (shared empty frame above) |
+| APK | `com.itsfrz.tictactoe_5.apk` v1.0.5 (vc5) — dooz-variant family |
+| APK SHA-256 | `2a057a9a519acd81dc54af9b3c9f58e40ebd0ce92f949aca65f6c439e8f74d45` (17,726,235 B) |
+| Download | <https://f-droid.org/repo/com.itsfrz.tictactoe_5.apk> |
+| Executes | full parse → app class → `MainActivity.onCreate`; uncaught NPE escapes at the app boundary (uncaught-tail policy, non-fatal) |
+| Verdict | **NOT visually loaded** — frontier: MainActivity init chain |
+
+### 17. RTTT (kirkezz) — 🔴 PLACEHOLDER (CLEAN RUN rc=0, no visual)
+
+| Field | Value |
+|---|---|
+| Screenshot SHA-256 | `eb16ab5c68fa9b6c…` (shared empty frame above) |
+| APK | `org.kirkezz.rttt_3.apk` v1.3 (vc3) — dooz-variant family |
+| APK SHA-256 | `704fa51869ad7ff441edb8831fad7044141d62c4ccce610cfe5117476770a8af` (23,386,246 B) |
+| Download | <https://f-droid.org/repo/org.kirkezz.rttt_3.apk> |
+| Executes | **full lifecycle rc=0 with ZERO uncaught exceptions** — same class as Dooz (Compose+Navigation; the visible-entries frontier applies) |
+| Verdict | runs end-to-end cleanly; game UI not visible yet (R-NEW-334 family) |
+
+### 18. Privacy Friendly Dicer — 🔴 PLACEHOLDER (ISE at Splash boundary)
+
+| Field | Value |
+|---|---|
+| Screenshot SHA-256 | `eb16ab5c68fa9b6c…` (shared empty frame above) |
+| APK | `org.secuso.privacyfriendlydicer_101.apk` v2.0.0 (vc101) — dice family |
+| APK SHA-256 | `f2b4d3f021c3a6207c3c9e75a75fa325b88847bd46b4f99e41e28dc3be8fae7f` (2,901,531 B) |
+| Download | <https://f-droid.org/repo/org.secuso.privacyfriendlydicer_101.apk> |
+| Executes | parse → app init → `SplashActivity.onCreate`; ISE escapes at the app boundary |
+| Verdict | not visually loaded — frontier: Secuso splash chain |
+
+### 19. Antimine (minesweeper) — 🔴 PLACEHOLDER (ISE at MainActivity boundary)
+
+| Field | Value |
+|---|---|
+| Screenshot SHA-256 | `eb16ab5c68fa9b6c…` (shared empty frame above) |
+| APK | `dev.lucanlm.antimine_1706031.apk` v17.6.3 F (vc1706031) |
+| APK SHA-256 | `e7b635b6629bc5b0f59c2700a82079386a90f3a04b39e92e0cf0bb090979e974` (9,417,318 B) |
+| Download | <https://f-droid.org/repo/dev.lucanlm.antimine_1706031.apk> |
+| Executes | parse → `MainActivity.onCreate`; ISE escapes at the app boundary |
+| Verdict | not visually loaded — frontier: antimine init chain |
+
+### 20. Privacy Friendly 2048 — ⚫ NO-VISUAL (execution budget timeout)
+
+| Field | Value |
+|---|---|
+| APK | `org.secuso.privacyfriendly2048_100.apk` v1.4.2 (vc100) |
+| APK SHA-256 | `02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8` (9,294,779 B) |
+| Download | <https://f-droid.org/repo/org.secuso.privacyfriendly2048_100.apk> |
+| Executes | parse OK; interpreter did not reach a frame within the 540 s budget |
+| Verdict | **no screenshot claim** — needs budget/perf work |
+
+### 21. Lexica (word game) — ⚫ NO-VISUAL (execution budget timeout)
+
+| Field | Value |
+|---|---|
+| APK | `com.serwylo.lexica_30018.apk` v3.13.1 (vc30018) |
+| APK SHA-256 | `255d26352ab1247c42736402af15e3ad4ec33951ac385817666a67dcc5c0f858` (14,282,556 B) |
+| Download | <https://f-droid.org/repo/com.serwylo.lexica_30018.apk> |
+| Executes | parse OK; reached `LifecycleRegistry` machinery; no frame within 540 s |
+| Verdict | **no screenshot claim** — needs budget/perf work |
+
+**Archive total: 22 registered APKs (18 executed this ledger's scope; 6 added this session).**

@@ -4,7 +4,7 @@
  "campaign": "UNIFIED_011",
  "zero_apk_policy": "repository, releases, and handoff ZIPs contain ZERO .apk/.aab; this registry + scripts/download_test_apks.py is the only APK access path",
  "external_cache": "MINIANDROID_APK_CACHE env or <two levels above repo>/apk_cache",
- "count": 16,
+ "count": 22,
  "apks": [
   {
    "name": "Telegram v12",
@@ -12,13 +12,13 @@
    "version": "12.10.1 (vc70389, universal)",
    "source_url": "https://telegram.org/android",
    "download_url": "https://telegram.org/dl/android",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "f5e1192725772960cc94b83e54ffd8939f876b2b6e5f21d4a8537eb6fcba50e6",
    "size_bytes": 73028244,
    "architecture": "universal (no native libs observed (lib/ absent))",
    "test_purpose": "exp100_click_chain_audit; u011_test_matrix telegram_v12",
-   "status": "PROVEN \u2014 3/3 runs SHA 06fb40da..., BASELINE_MATCH",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)"
+   "status": "PROVEN — 3/3 runs SHA 06fb40da..., BASELINE_MATCH",
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
   },
   {
    "name": "Telegram",
@@ -32,7 +32,7 @@
    "architecture": "arm64-v8a (v10 registry entry)",
    "test_purpose": "exp038_telegram; exp042_elf_analyzer; exp057_aosp_disasm; exp059_andro_disasm",
    "status": "PROVEN (v10 registry entry; local copy not cached this session)",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)"
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
   },
   {
    "name": "gmdice",
@@ -45,8 +45,8 @@
    "size_bytes": 63998,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp073_real_apps; exp074_real_apk_gate; exp075_real_apk_pipeline",
-   "status": "PROVEN \u2014 real UI inflation 6425c0f6... (UNIFIED_011)",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)"
+   "status": "PROVEN — real UI inflation 6425c0f6... (UNIFIED_011)",
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
   },
   {
    "name": "TicTacToe (emmanuelmess)",
@@ -54,13 +54,13 @@
    "version": "3",
    "source_url": "https://f-droid.org/packages/com.emmanuelmess.tictactoe/",
    "download_url": "https://f-droid.org/repo/com.emmanuelmess.tictactoe_3.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
    "size_bytes": 4474946,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp076_corpus; exp077_tictactoe_adversarial",
    "status": "PARTIAL / registry-only (fetch to re-test)",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)"
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
   },
   {
    "name": "OpenLauncher",
@@ -68,15 +68,15 @@
    "version": "39",
    "source_url": "https://f-droid.org/packages/com.benny.openlauncher/",
    "download_url": "https://f-droid.org/repo/com.benny.openlauncher_39.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "b3320463a7a1ed46c52464bae83a97317d062b1e2097bd1885cdf265f2089f89",
    "size_bytes": 6140320,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp076_corpus",
-   "status": "FROZEN \u2014 SHA arbitrated against source URL (see arbitration)",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)",
+   "status": "FROZEN — SHA arbitrated against source URL (see arbitration)",
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)",
    "sha256_previous_record": "b7900f56ccbe4768701c6e664aca578091ad8d0aa4245d766a3d24b56766e743",
-   "arbitration": "2026-09-07 MASTER campaign \u00a72: recorded URL https://f-droid.org/repo/com.benny.openlauncher_39.apk serves b3320463\u2026 (re-fetched, same SHA); previous registry record b7900f56\u2026 was STALE, not artifact drift. On-disk artifact verified GENUINE against source URL. Matrix uses b3320463\u2026"
+   "arbitration": "2026-09-07 MASTER campaign §2: recorded URL https://f-droid.org/repo/com.benny.openlauncher_39.apk serves b3320463… (re-fetched, same SHA); previous registry record b7900f56… was STALE, not artifact drift. On-disk artifact verified GENUINE against source URL. Matrix uses b3320463…"
   },
   {
    "name": "Dooz (TicTacToe variant)",
@@ -84,13 +84,13 @@
    "version": "18",
    "source_url": "https://f-droid.org/packages/io.github.yamin8000.dooz/",
    "download_url": "https://f-droid.org/repo/io.github.yamin8000.dooz_18.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
    "size_bytes": 1749880,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp076_corpus",
-   "status": "ROOT-LOCATED \u2014 COMPOSE SNAPSHOT BOUNDARY (F-020): ISE from SnapshotKt.readError at LP/l;.q (setContent\u2192mutableStateOf write chain proven via F-016 unwind forensics). SavedStateHandlesProvider hypothesis retired. Tier-2 Compose campaign required.",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)",
+   "status": "ROOT-LOCATED — COMPOSE SNAPSHOT BOUNDARY (F-020): ISE from SnapshotKt.readError at LP/l;.q (setContent→mutableStateOf write chain proven via F-016 unwind forensics). SavedStateHandlesProvider hypothesis retired. Tier-2 Compose campaign required.",
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)",
    "last_proven_head": "65c010f2"
   },
   {
@@ -99,13 +99,13 @@
    "version": "2",
    "source_url": "https://f-droid.org/packages/nl.hansdezwart.bgclock/",
    "download_url": "https://f-droid.org/repo/nl.hansdezwart.bgclock_2.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "72c140b0083ef273bc6452a7f1006e1e2dc4c64c61f8bcc90d082c3f6d1f9dee",
    "size_bytes": 1040099,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp076_corpus; exp077_bgclock",
-   "status": "DOCUMENTED BOUNDARY (M3 P0-D audit): renders Landroid/webkit/WebView as root node \u2014 clock face is HTML/JS content. WEBVIEW BOUNDARY per \u00a719; no in-run web engine. NOT a runtime bug.",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)",
+   "status": "DOCUMENTED BOUNDARY (M3 P0-D audit): renders Landroid/webkit/WebView as root node — clock face is HTML/JS content. WEBVIEW BOUNDARY per §19; no in-run web engine. NOT a runtime bug.",
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)",
    "last_proven_head": "65c010f2"
   },
   {
@@ -114,13 +114,13 @@
    "version": "6",
    "source_url": "https://f-droid.org/packages/com.github.muellerma.stopwatch/",
    "download_url": "https://f-droid.org/repo/com.github.muellerma.stopwatch_6.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
    "size_bytes": 738101,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp076_corpus",
-   "status": "DOCUMENTED BOUNDARY (M3 P0-D audit): manifest declares NO <activity> \u2014 Quick-Settings Tile app (StopwatchTile service + StopwatchService foreground + androidx.startup provider). No launchable Activity for the runtime Activity model. NOT a runtime bug; classified per \u00a718/\u00a719.",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)",
+   "status": "DOCUMENTED BOUNDARY (M3 P0-D audit): manifest declares NO <activity> — Quick-Settings Tile app (StopwatchTile service + StopwatchService foreground + androidx.startup provider). No launchable Activity for the runtime Activity model. NOT a runtime bug; classified per §18/§19.",
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)",
    "last_proven_head": "65c010f2"
   },
   {
@@ -129,13 +129,13 @@
    "version": "145",
    "source_url": "https://f-droid.org/packages/rkr.simplekeyboard.inputmethod/",
    "download_url": "https://f-droid.org/repo/rkr.simplekeyboard.inputmethod_145.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "d83060833dc2bc9705e140b310ba9dea3003b329ea12799a79bf5d7de6e786bd",
    "size_bytes": 662274,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp076_corpus",
    "status": "PARTIAL / registry-only (fetch to re-test)",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)"
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
   },
   {
    "name": "MicroTimer",
@@ -143,13 +143,13 @@
    "version": "8",
    "source_url": "https://f-droid.org/packages/dubrowgn.microtimer/",
    "download_url": "https://f-droid.org/repo/dubrowgn.microtimer_8.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
    "size_bytes": 208895,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp076_corpus",
    "status": "PARTIAL / registry-only (fetch to re-test)",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)"
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
   },
   {
    "name": "uNote",
@@ -157,13 +157,13 @@
    "version": "30",
    "source_url": "https://f-droid.org/packages/app.varlorg.unote/",
    "download_url": "https://f-droid.org/repo/app.varlorg.unote_30.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
    "size_bytes": 163498,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp076_corpus",
    "status": "PARTIAL / registry-only (fetch to re-test)",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)"
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
   },
   {
    "name": "Notes (billthefarmer)",
@@ -171,13 +171,13 @@
    "version": "139",
    "source_url": "https://f-droid.org/packages/org.billthefarmer.notes/",
    "download_url": "https://f-droid.org/repo/org.billthefarmer.notes_139.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "82cf8bc44c16374897665dabcd33e78715e801af48373b45b9c41e85e55e64ef",
    "size_bytes": 216907,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp073_real_apps",
    "status": "PARTIAL / registry-only (fetch to re-test)",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)"
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
   },
   {
    "name": "Simple Stopwatch",
@@ -185,13 +185,13 @@
    "version": "26",
    "source_url": "https://f-droid.org/packages/omegacentauri.mobi.simplestopwatch/",
    "download_url": "https://f-droid.org/repo/omegacentauri.mobi.simplestopwatch_26.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "b3ec1a5ec24ce53bf5c2322eaf79b00c52f021ed7a0ada9d58fae31dcffc83d2",
    "size_bytes": 172399,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp073_real_apps",
-   "status": "PROVEN \u2014 real controls ef334f7c... (UNIFIED_011)",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)"
+   "status": "PROVEN — real controls ef334f7c... (UNIFIED_011)",
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
   },
   {
    "name": "Chess Clock",
@@ -199,13 +199,13 @@
    "version": "29",
    "source_url": "https://f-droid.org/packages/com.chessclock.android/",
    "download_url": "https://f-droid.org/repo/com.chessclock.android_29.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
    "size_bytes": 124222,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp073_real_apps",
-   "status": "PROVEN \u2014 HEAD 65c010f2: run SUCCESS; M3 P0-D async cross-check (tap 540,477 \u2192 postDelayed countdown 10:00\u21929:59 via virtual clock; 3-run byte determinism 8/8 frames identical); hash-verified fetch 5ca6f2c5\u2026",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)",
+   "status": "PROVEN — HEAD 65c010f2: run SUCCESS; M3 P0-D async cross-check (tap 540,477 → postDelayed countdown 10:00→9:59 via virtual clock; 3-run byte determinism 8/8 frames identical); hash-verified fetch 5ca6f2c5…",
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)",
    "last_proven_head": "65c010f2"
   },
   {
@@ -214,13 +214,13 @@
    "version": "1",
    "source_url": "https://f-droid.org/packages/org.debian.eugen.headingcalculator/",
    "download_url": "https://f-droid.org/repo/org.debian.eugen.headingcalculator_1.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "274ec873098eea512e10aa6915d2a832a5a178a65ee7931bc101fe4832983f93",
    "size_bytes": 65417,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp073_real_apps",
    "status": "PARTIAL / registry-only (fetch to re-test)",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)"
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
   },
   {
    "name": "Tiny Music Player",
@@ -228,13 +228,97 @@
    "version": "1.0",
    "source_url": "https://f-droid.org/packages/com.martinmimigames.tinymusicplayer/",
    "download_url": "https://f-droid.org/repo/com.martinmimigames.tinymusicplayer_1.apk",
-   "license": "NOT RECORDED \u2014 see source_url",
+   "license": "NOT RECORDED — see source_url",
    "sha256": "d7bcb24d101b04beb3394b695b24be4e2c3d6ed702f1d0e06bc4dd707f64d86a",
    "size_bytes": 16520,
    "architecture": "universal/no native libs observed (lib/ absent) (java-only corpus app)",
    "test_purpose": "exp037_real_apks; exp031_5_traces",
    "status": "PARTIAL / registry-only (fetch to re-test)",
-   "storage": "EXTERNAL CACHE ONLY \u2014 never inside repo/release/ZIP (\u00a720)"
+   "storage": "EXTERNAL CACHE ONLY — never inside repo/release/ZIP (§20)"
+  },
+  {
+   "name": "TicTacToe (itsfrz)",
+   "package": "com.itsfrz.tictactoe",
+   "version": "1.0.5 (vc5)",
+   "source_url": "https://f-droid.org/en/packages/com.itsfrz.tictactoe",
+   "download_url": "https://f-droid.org/repo/com.itsfrz.tictactoe_5.apk",
+   "license": "Open source (F-Droid)",
+   "sha256": "2a057a9a519acd81dc54af9b3c9f58e40ebd0ce92f949aca65f6c439e8f74d45",
+   "size_bytes": 17726235,
+   "architecture": "universal",
+   "test_purpose": "S35 corpus expansion (dooz variant family)",
+   "status": "RUNS to MainActivity.onCreate; NPE at app boundary (uncaught-tail, non-fatal); empty frame",
+   "storage": "EXTERNAL CACHE ONLY"
+  },
+  {
+   "name": "RTTT (kirkezz)",
+   "package": "org.kirkezz.rttt",
+   "version": "1.3 (vc3)",
+   "source_url": "https://f-droid.org/en/packages/org.kirkezz.rttt",
+   "download_url": "https://f-droid.org/repo/org.kirkezz.rttt_3.apk",
+   "license": "Open source (F-Droid)",
+   "sha256": "704fa51869ad7ff441edb8831fad7044141d62c4ccce610cfe5117476770a8af",
+   "size_bytes": 23386246,
+   "architecture": "universal",
+   "test_purpose": "S35 corpus expansion (dooz variant family)",
+   "status": "SUCCESS rc=0 x1 (clean run!); empty frame (Compose frontier family)",
+   "storage": "EXTERNAL CACHE ONLY"
+  },
+  {
+   "name": "Privacy Friendly Dicer",
+   "package": "org.secuso.privacyfriendlydicer",
+   "version": "2.0.0 (vc101)",
+   "source_url": "https://f-droid.org/en/packages/org.secuso.privacyfriendlydicer",
+   "download_url": "https://f-droid.org/repo/org.secuso.privacyfriendlydicer_101.apk",
+   "license": "GPLv3 (Secuso)",
+   "sha256": "f2b4d3f021c3a6207c3c9e75a75fa325b88847bd46b4f99e41e28dc3be8fae7f",
+   "size_bytes": 2901531,
+   "architecture": "universal",
+   "test_purpose": "S35 corpus expansion (dice family)",
+   "status": "RUNS to SplashActivity.onCreate; ISE at app boundary; empty frame",
+   "storage": "EXTERNAL CACHE ONLY"
+  },
+  {
+   "name": "Antimine",
+   "package": "dev.lucanlm.antimine",
+   "version": "17.6.3 F (vc1706031)",
+   "source_url": "https://f-droid.org/en/packages/dev.lucanlm.antimine",
+   "download_url": "https://f-droid.org/repo/dev.lucanlm.antimine_1706031.apk",
+   "license": "GPLv3 (Lucas Nelm)",
+   "sha256": "e7b635b6629bc5b0f59c2700a82079386a90f3a04b39e92e0cf0bb090979e974",
+   "size_bytes": 9417318,
+   "architecture": "universal",
+   "test_purpose": "S35 corpus expansion (minesweeper)",
+   "status": "RUNS to MainActivity.onCreate; ISE at app boundary; empty frame",
+   "storage": "EXTERNAL CACHE ONLY"
+  },
+  {
+   "name": "Privacy Friendly 2048",
+   "package": "org.secuso.privacyfriendly2048",
+   "version": "1.4.2 (vc100)",
+   "source_url": "https://f-droid.org/en/packages/org.secuso.privacyfriendly2048",
+   "download_url": "https://f-droid.org/repo/org.secuso.privacyfriendly2048_100.apk",
+   "license": "GPLv3 (Secuso)",
+   "sha256": "02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8",
+   "size_bytes": 9294779,
+   "architecture": "universal",
+   "test_purpose": "S35 corpus expansion (2048)",
+   "status": "EXEC BUDGET TIMEOUT (540s, heavy app) — no frame claim",
+   "storage": "EXTERNAL CACHE ONLY"
+  },
+  {
+   "name": "Lexica",
+   "package": "com.serwylo.lexica",
+   "version": "3.13.1 (vc30018)",
+   "source_url": "https://f-droid.org/en/packages/com.serwylo.lexica",
+   "download_url": "https://f-droid.org/repo/com.serwylo.lexica_30018.apk",
+   "license": "GPLv3 (serwylo)",
+   "sha256": "255d26352ab1247c42736402af15e3ad4ec33951ac385817666a67dcc5c0f858",
+   "size_bytes": 14282556,
+   "architecture": "universal",
+   "test_purpose": "S35 corpus expansion (word game)",
+   "status": "EXEC BUDGET TIMEOUT (540s, heavy app) — no frame claim",
+   "storage": "EXTERNAL CACHE ONLY"
   }
  ]
 }
