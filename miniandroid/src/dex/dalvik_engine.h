@@ -1290,6 +1290,12 @@ public:
     // draw phase — evidence for the R-NEW-328 compose draw frontier.
     bool draw_window_active_ = false;
 
+    // S33 diagnostic (env-gated, read-only): TRUE while the F-096 real-DEX
+    // onMeasure/onLayout lifecycle dispatch window is open. Method-entry
+    // and ()Z-return probes attribute entries to the measure/layout phase —
+    // evidence for the R-NEW-332 placement gate (isPlaced at draw time).
+    bool lifecycle_window_active_ = false;
+
     // MASTER CAMPAIGN FIX (F10 real-DEX onMeasure): execute an app custom
     // View's REAL onMeasure(wSpec, hSpec) bytecode; the setMeasuredDimension
     // shadow dispatch captures the write-back. Returns true when a real
