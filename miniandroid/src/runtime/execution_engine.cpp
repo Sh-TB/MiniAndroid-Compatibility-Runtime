@@ -3389,26 +3389,48 @@ int ExecutionEngine::pump_compose_frames(int max_frames) {
     if (!cs) return 0;
     auto* hs = registry->find_as<framework::HandlerShadow>();
     int fired_frames = 0;
+    // [F100-IDLEDRAIN] AOSP MessageQueue idle law: messages dispatch on idle
+    // INDEPENDENT of vsync (the Choreographer frame is only one wake source;
+    // AndroidUiDispatcher.dispatch posts BOTH a handler message and a frame
+    // callback — "whichever comes first"). The handler-side dispatchCallback
+    // drains the trampoline queue and may legally remove the choreographer
+    // callback while dispatcher continuations are still queued; the pump
+    // must therefore drain the queue EVERY tick and keep ticking while
+    // either source has work. Bounded ticks keep reruns byte-deterministic.
+    std::cerr << "[F100-STATE] pump entry: pending_cb=" << cs->has_pending_callbacks()
+              << " queue_size=" << (hs ? hs->queue_size() : 999) << std::endl;
     for (int tick = 0; tick < max_frames; ++tick) {
-        if (!cs->has_pending_callbacks()) break;
-        auto due = cs->take_due_callbacks();
-        if (due.empty()) break;
-        ++fired_frames;
-        for (auto& d : due)
-            invoke_choreographer_do_frame(d.callback_id, d.callback_class,
-                                          d.frame_time_nanos);
-        // Drain the resumption work the callbacks posted (bounded rounds —
-        // the same 64-round bound the UC009-WIRE composition drain uses).
+        bool did_work = false;
+        if (cs->has_pending_callbacks()) {
+            auto due = cs->take_due_callbacks();
+            if (!due.empty()) {
+                ++fired_frames;
+                did_work = true;
+                for (auto& d : due)
+                    invoke_choreographer_do_frame(d.callback_id, d.callback_class,
+                                                  d.frame_time_nanos);
+            }
+        }
+        // Drain the resumption work the callbacks/dispatch posted — ALWAYS,
+        // vsync-independent (one MessageQueue law; the same 64-round bound
+        // the UC009-WIRE composition drain uses).
         if (hs) {
             for (int round = 0; round < 64; ++round) {
                 std::vector<uint32_t> drained;
                 size_t n = hs->drain_ready(&drained);
                 if (n == 0) break;
-                std::cerr << "[CHOREO-PUMP] frame=" << fired_frames
+                did_work = true;
+                std::cerr << "[F100-PUMP] frame=" << fired_frames
                           << " drain round=" << round << " runnable(s)=" << n
                           << std::endl;
                 for (uint32_t rid : drained) invoke_handler_runnable(rid);
             }
+        }
+        if (!did_work) {
+            std::cerr << "[F100-STATE] quiescence at tick=" << tick
+                      << " pending_cb=" << cs->has_pending_callbacks()
+                      << " queue_size=" << (hs ? hs->queue_size() : 999) << std::endl;
+            break;  // quiescence: no vsync, no messages
         }
     }
     if (fired_frames > 0) {

@@ -91,10 +91,10 @@ with zipfile.ZipFile(apk) as z:
             # static fields
             for _ in range(sf): uleb128(f); uleb128(f)
             for _ in range(inf): uleb128(f); uleb128(f)
+            midx = 0
             for _ in range(dm):
-                midx = uleb128(f); acc = uleb128(f); code_off = uleb128(f)
+                midx += uleb128(f); acc = uleb128(f); code_off = uleb128(f)
                 if code_off == 0: continue
-                mi = struct.unpack_from('<I', data, method_ids_off + midx*4)[0] if False else midx
                 # method_id: class_idx(u16) proto_idx(u16) name_idx(u32)
                 m_class, m_proto, m_name = struct.unpack_from('<HHI', data, method_ids_off + midx*8)
                 name = get_string(m_name)
@@ -173,3 +173,75 @@ with zipfile.ZipFile(apk) as z:
                         detail = f" {get_type_desc(tid)}"
                     print(f"  {i:04d}: {name}{detail}")
                     i += size
+                # virtual methods (fresh index sequence)
+                midx = 0
+                for _ in range(vm):
+                    midx += uleb128(f); acc = uleb128(f); code_off = uleb128(f)
+                    if code_off == 0: continue
+                    m_class, m_proto, m_name = struct.unpack_from('<HHI', data, method_ids_off + midx*8)
+                    name = get_string(m_name)
+                    if name != target_method: continue
+                    poff = proto_ids_off + m_proto*12
+                    ret_idx = struct.unpack_from('<I', data, poff+4)[0]
+                    params_off = struct.unpack_from('<I', data, poff+8)[0]
+                    desc = get_type_desc(ret_idx)
+                    plist = []
+                    if params_off:
+                        psz = struct.unpack_from('<I', data, params_off)[0]
+                        for pi in range(psz):
+                            plist.append(get_type_desc(struct.unpack_from('<H', data, params_off+4+pi*2)[0]))
+                    full = '(' + ''.join(plist) + ')' + desc
+                    if desc_prefix and not full.startswith(desc_prefix): continue
+                    print(f"=== {target_class}.{name}{full} code_off=0x{code_off:x} (dex {dex_name}) VIRTUAL")
+                    registers_size, ins_size, outs_size, tries_size, debug_info_off, insns_size = struct.unpack_from('<HHHHII', data, code_off)
+                    print(f"registers={registers_size} ins={ins_size} outs={outs_size} insns={insns_size}")
+                    insns = data[code_off+16 : code_off+16+insns_size*2]
+                    i = 0
+                    units = struct.unpack_from(f'<{insns_size}H', insns, 0) if insns_size else ()
+                    while i < insns_size:
+                        u = units[i]
+                        op = u & 0xff
+                        name = OPS_1.get(op) or OPS_2_12x.get(op) or OPS_2_22x.get(op) or OPS_3_32x.get(op) or OPS_2_21.get(op) or OPS_2_22.get(op) or OPS_2_22c.get(op) or OPS_2_22s.get(op) or OPS_3_35c.get(op)
+                        size = 1
+                        fmt2 = set(OPS_2_12x)|set(OPS_2_21)|set(OPS_2_22)|set(OPS_2_22c)|set(OPS_2_22s)|{0x0d,0x0c,0x0a,0x0b,0x0f,0x10,0x11,0x1d,0x1e,0x21,0x27}
+                        fmt3 = set(OPS_2_22x)|{0x22}
+                        if op in OPS_1: size = 1
+                        elif op in fmt2: size = 2
+                        elif op in fmt3: size = 3
+                        elif op in OPS_3_32x: size = 4
+                        elif op in {0x6e,0x6f,0x70,0x71,0x72}: size = 3
+                        elif op in {0x74,0x75,0x76,0x77,0x78}: size = 4
+                        elif op == 0x00 and (u >> 8) == 0x01:
+                            ident = (u >> 8) & 0xff
+                            if ident == 0x01:
+                                width = struct.unpack_from('<I', insns, (i+1)*2)[0]
+                                size = (width*2) + 4
+                                print(f"  {i:04d}: packed-switch-payload width={width}")
+                                i += size; continue
+                            elif ident == 0x02:
+                                width = struct.unpack_from('<H', insns, (i+1)*2)[0]
+                                size = (width*4) + 2
+                                print(f"  {i:04d}: sparse-switch-payload width={width}")
+                                i += size; continue
+                            else:
+                                size = 2
+                        elif op == 0x1a or op == 0x1b: size = 2 if op==0x1a else 3
+                        elif op in {0x14,0x15,0x16,0x17}: size = 2
+                        elif op in {0x23,0x24,0x25,0x2b,0x2c}: size = 3
+                        else:
+                            size = 2
+                        if name is None: name = f'op_{op:02x}'
+                        detail = ''
+                        if name.startswith('invoke') and size >= 3:
+                            idx = (units[i+1] << 16) | units[i+2] if op < 0x74 else struct.unpack_from('<I', insns, (i+1)*2)[0]
+                            m_class, m_proto, m_name = struct.unpack_from('<HHI', data, method_ids_off + idx*8)
+                            detail = f" {get_type_desc(m_class)}.{get_string(m_name)}"
+                        elif name.startswith(('iget','iput','sget','sput')) and size >= 2:
+                            fid = units[i+1]
+                            f_class, f_type, f_name = struct.unpack_from('<HHI', data, field_ids_off + fid*8)
+                            detail = f" {get_type_desc(f_class)}.{get_string(f_name)}:{get_type_desc(f_type)}"
+                        elif name in ('instance-of','const-class','new-instance','check-cast','new-array') and size >= 2:
+                            tid = units[i+1]
+                            detail = f" {get_type_desc(tid)}"
+                        print(f"  {i:04d}: {name}{detail}")
+                        i += size
