@@ -1,0 +1,167 @@
+[
+ {
+  "ledger": "hellocolor.png",
+  "source": "docs/evidence/hello_color_golden/frame_1080x1920.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 42401,
+  "new_bytes": 42401,
+  "ratio": 1.0,
+  "src_sha256": "11e0056320d8546dbb54030fc6d51cbc163e635d47bbbb54899ca1984829e4f8",
+  "ledger_sha256": "11e0056320d8546dbb54030fc6d51cbc163e635d47bbbb54899ca1984829e4f8"
+ },
+ {
+  "ledger": "helloworld.png",
+  "source": "miniandroid/run/s18_hello_run3/screenshot.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 38104,
+  "new_bytes": 27926,
+  "ratio": 0.733,
+  "src_sha256": "c1370033701bd698868d20bc41b281633c7ea5ea83c390701e1364e40bc111a3",
+  "ledger_sha256": "6c66dfcfefe7b90cfc7b1a026b3e4842893aba7209529a876bd4c83d89f9fe34"
+ },
+ {
+  "ledger": "tictactoe_xwins.png",
+  "source": "docs/evidence/tictactoe_golden/board_x_wins.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 19183,
+  "new_bytes": 9093,
+  "ratio": 0.474,
+  "src_sha256": "284f1c9e47ef2b59530419fa2932a0dadf8df886f39daac34cc38edf24e7049f",
+  "ledger_sha256": "3fc141277cd703fa71b51cfab9d24ef28fa7394c64aee077565bea828fba3bac"
+ },
+ {
+  "ledger": "gmdice.png",
+  "source": "miniandroid/run/s27_suite/gmdice.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 28298,
+  "new_bytes": 23495,
+  "ratio": 0.83,
+  "src_sha256": "22f3730f452b562cea9f90617eb50f26a4b106ee1c4b98c59f54565f0bdebb5a",
+  "ledger_sha256": "36d6b93b89565ad5b14aeb96f78b44c7595a3627aa763331ff4d41856ab47aa7"
+ },
+ {
+  "ledger": "gmdice_after_tap.png",
+  "source": "miniandroid/run/s26_gmdice_tap/frames/frame_003.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 28504,
+  "new_bytes": 22634,
+  "ratio": 0.794,
+  "src_sha256": "484c25941d2f9c77cc20a2cf1e96a1a09d539b22aad68c07f3dc0b232ed5f301",
+  "ledger_sha256": "9547d4b6d41369ea7063cd83c4c809f327f3528fbcd9329b2771bae791503f58"
+ },
+ {
+  "ledger": "microtimer.png",
+  "source": "miniandroid/run/s27_suite/microtimer.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 23913,
+  "new_bytes": 15911,
+  "ratio": 0.665,
+  "src_sha256": "c51269309cd14594b6d6b24dbf940cb5494cd74673b1e391f0c006f0d8dca94a",
+  "ledger_sha256": "f6a623b680cd6c32413c1a982003c925a35db8aa2fbf78f3644390f98afe3893"
+ },
+ {
+  "ledger": "stopwatch.png",
+  "source": "miniandroid/run/s27_suite/stopwatch.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 22019,
+  "new_bytes": 19942,
+  "ratio": 0.906,
+  "src_sha256": "81481eb2aa581c53ddd325e261e23ace4e03819025c2993a7f454cf0568dd205",
+  "ledger_sha256": "d23ce2ef56c3cf94b305b1c433750996e64e8766d4ce9455f4e38c983b878d7d"
+ },
+ {
+  "ledger": "simplestopwatch.png",
+  "source": "miniandroid/run/u011_matrix_recheck/simplestopwatch/screenshot.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 24935,
+  "new_bytes": 17784,
+  "ratio": 0.713,
+  "src_sha256": "97933dbcb993ba0975c93a8dce7924f0cd5cd6b0fd802564391bb95387a6a71f",
+  "ledger_sha256": "90e985bc43fe9ec580c3252891b13677815a1094639e868e29d120b499cfee34"
+ },
+ {
+  "ledger": "chessclock.png",
+  "source": "docs/evidence/campaign3_chessclock_real_screenshot/screenshot.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 6166,
+  "new_bytes": 1640,
+  "ratio": 0.266,
+  "src_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+  "ledger_sha256": "d8a5bbb3e6377ae885435ebd2d08f458d9f2184a8e24729f926e8d0a3216e196"
+ },
+ {
+  "ledger": "unote.png",
+  "source": "miniandroid/run/u011_matrix_recheck/unote/screenshot.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 16665,
+  "new_bytes": 9675,
+  "ratio": 0.581,
+  "src_sha256": "21eb0fd3aed91e78bd1ec3aa7ecba367af2fa1ee65fc663ca7562f90bee6367c",
+  "ledger_sha256": "37a91c23026f48f85c44f5766325d532f6b338ebfa2059fb0dc67a44e1f29d7b"
+ },
+ {
+  "ledger": "headingcalculator.png",
+  "source": "miniandroid/run/master_reconciliation_apks/headingcalculator/screenshot.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 11980,
+  "new_bytes": 10905,
+  "ratio": 0.91,
+  "src_sha256": "7d2a68606ae18d76471c18ee9367e8d8a3579fbef953cb4c730bf3d40415deb6",
+  "ledger_sha256": "6dedf29d26bba71d6edda8adcd52d16beed314b375c714bd54cfa9e93d97c52f"
+ },
+ {
+  "ledger": "simplekeyboard.png",
+  "source": "miniandroid/run/master_reconciliation_apks/simplekeyboard/screenshot.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 10362,
+  "new_bytes": 2885,
+  "ratio": 0.278,
+  "src_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+  "ledger_sha256": "07f0933a86a2935c7d2d7dda363b5b3751120829089574f824edf13957994703"
+ },
+ {
+  "ledger": "dooz_placeholder.png",
+  "source": "miniandroid/run/s27_suite/dooz.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 10802,
+  "new_bytes": 4368,
+  "ratio": 0.404,
+  "src_sha256": "193466ead8fd21d62d208db4b773caaee9f80ab81c360aeba5a48c6134a36a6a",
+  "ledger_sha256": "85b15309b705e0e410c15ecde2ae7a189ce57f0c1557c52f0cd112aaef9bf4ce"
+ },
+ {
+  "ledger": "sttt_partial.png",
+  "source": "miniandroid/run/s26_sttt/screenshot.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 10362,
+  "new_bytes": 2885,
+  "ratio": 0.278,
+  "src_sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+  "ledger_sha256": "07f0933a86a2935c7d2d7dda363b5b3751120829089574f824edf13957994703"
+ },
+ {
+  "ledger": "dooz_s34_placeholder.png",
+  "source": "miniandroid/run/s34_evidence/s34_nsp_screenshot.png",
+  "orig_px": "1080x1920",
+  "new_px": "540x960",
+  "orig_bytes": 10802,
+  "new_bytes": 4368,
+  "ratio": 0.404,
+  "src_sha256": "193466ead8fd21d62d208db4b773caaee9f80ab81c360aeba5a48c6134a36a6a",
+  "ledger_sha256": "85b15309b705e0e410c15ecde2ae7a189ce57f0c1557c52f0cd112aaef9bf4ce"
+ }
+]
