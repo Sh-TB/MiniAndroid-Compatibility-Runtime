@@ -1354,10 +1354,21 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
     // on the attaching tree BEFORE the first draw. For Compose this is THE
     // composition trigger:
     //   AbstractComposeView.onAttachedToWindow -> ensureCompositionCreated()
-    // The hook (dispatch_view_attached, CAMPAIGN 009 §10) existed but was
-    // never invoked from this pipeline — dead code. Env-gated for golden
-    // protection; enable with MINIANDROID_DISPATCH_ATTACH=1.
-    if (std::getenv("MINIANDROID_DISPATCH_ATTACH") != nullptr) {
+    //
+    // F-097 (S28, R-NEW-330): gate LIFTED — attach-before-traversal is now
+    // the DEFAULT, per the AOSP contract above. The S25-era env gate existed
+    // for golden protection; with F-096 (measure/layout dispatch) landed,
+    // the DEX code itself relies on attach having run:
+    // AbstractComposeView.onMeasure → windowRecomposer() throws ISE
+    // "not attached to a window" when attach never ran (evidence: dooz at
+    // 79ac165b). Attach dispatch is deterministic (bounded drain rounds), so
+    // goldens stay byte-stable. Disable for debugging with
+    // MINIANDROID_DISPATCH_ATTACH=0.
+    {
+        const bool attach_disabled =
+            std::getenv("MINIANDROID_DISPATCH_ATTACH") != nullptr &&
+            std::string(std::getenv("MINIANDROID_DISPATCH_ATTACH")) == "0";
+        if (!attach_disabled) {
         std::cerr << "[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)..." << std::endl;
         bool attached = dalvik_engine_.dispatch_view_attached();
         if (attached) {
@@ -1398,7 +1409,8 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 }
             }
         }
-    }
+        }  // end if (!attach_disabled)
+    }  // end UC009-WIRE scope
     // ===== end UC009-WIRE =====
 
     // ===== F-050: Choreographer first-frame pump (launch path) =====
@@ -2163,9 +2175,28 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                                   << w << "x" << h << std::endl;
                                     }
                                 }
-                                if ((!framework_class || compose_view_class) && node->children.empty() &&
+                                // F-099 (R-NEW-332): compose-owner dispatch
+                                // at visit. Upstream AndroidComposeView
+                                // .dispatchDraw (ui-android 1.6.7) draws the
+                                // whole LayoutNode tree regardless of platform
+                                // view children; a non-framework class that
+                                // OVERRIDES dispatchDraw carries its own draw
+                                // dispatch contract (AOSP ViewGroup law), so
+                                // the presence of shadow-tree children (e.g.
+                                // the AndroidViewsHandler attached by real DEX
+                                // addView) must not suppress it. Generic
+                                // override check — no class names hardcoded.
+                                bool dispatchdraw_override =
+                                    dalvik_engine_.chain_overrides_method(
+                                        node->class_desc, "dispatchDraw");
+                                bool f099_owner_gate =
+                                    compose_view_class && dispatchdraw_override &&
+                                    !node->children.empty() &&
                                     !has_own_content && w > 40 && h > 40 &&
-                                    node->visibility == 0) {
+                                    node->visibility == 0;
+                                if (((!framework_class || compose_view_class) && node->children.empty() &&
+                                    !has_own_content && w > 40 && h > 40 &&
+                                    node->visibility == 0) || f099_owner_gate) {
                                     bool drew_real = false;
                                     if (task.view_id != 0 && shadow_registry_) {
                                         if (auto* canvas_shadow =
