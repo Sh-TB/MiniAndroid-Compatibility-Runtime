@@ -5436,3 +5436,20 @@ Stage Summary:
 - R-NEW-333 narrowed to a single verified break; R-NEW-334 registered (recompose-scope invalidation for NavHost visible-entries reads).
 - The compose navigation stack now executes end-to-end as real bytecode — the first session where game/settings/about destinations are registered and the back-stack entry is pushed by real DEX.
 - Next: R-NEW-334 (read-recording/re-arm law at p.a:0e22), then the first real Dooz frame.
+
+---
+Task ID: S35
+Agent: Super Z (session 35 — MASTER CAMPAIGN 3 continuation: user demands = publish old pushes + execution ledger + compress images + close ALL open F-items + attack frontier)
+
+Work Log:
+- Pushed ALL old refs with the provided PAT: main b3409007, archive/local-main-167c27fb, archive/local-main-d358a0c9-stale, archive/origin-main-ad95d928, tags (v0.0.2/alpha already on remote — no force).
+- F-100 provenance question answered from ledgers: F-series = open-ended FINDINGS_REGISTRY (m3_campaign) → M4..S34; census built (scripts/f_census_all.txt): 90 landed / 5 open / 1 superseded / 1 void / 3 never-assigned.
+- Built docs/evidence/APPS_EXECUTION_LEDGER.md (commit 2e525cf4): 18 app rows, each with real screenshot + SHA-256 + APK name/version/SHA + download link, honest grades (6 full-render/gameplay, 4 partial, 1 painted, 2 placeholder incl. DOOZ = NOT visually loaded, 2 no-visual). Zero-APK law preserved.
+- Compressed 15 evidence images 1080x1920 -> 540x960 palette PNG: 297KB -> 211KB (29%); hellocolor kept original (quantize grew it); chessclock 6.2MB PPM confirmed NEVER git-tracked (untracked evidence).
+- F-LEDGER CLOSURE (docs/maintenance/F_LEDGER_CLOSURE_S35.md): F-046 CLOSED current-demand-proven (15 service families live, zero corpus demand gaps S24-S34); F-047 CLOSED verified-correct (bitCount family live ~dalvik_engine.cpp:20400, bit-bridges proven correct in S22 TrieNode probe); F-049 CLOSED covered-by-golden-determinism (F-045 law + byte-deterministic goldens S33->S34); F-051 CLOSED verified-fixed via F-023/F-098/F-099 chain; F-077 CLOSED-BY-SUPERSESSION (dooz rc=0 x5 at HEAD, composition completes past K/t.s; single fixing law not isolated — forensics debt). F-048 superseded/F-050c, F-052 void. F-001..F-100 now 100% resolved.
+- Registry: R-NEW-301 OBSERVED-FAIL -> VERIFIED-FIXED (closed-by-supersession wording), open_frontiers pruned, total 321.
+
+Stage Summary:
+- User-facing deliverables: APPS_EXECUTION_LEDGER.md on GitHub (main), images compressed, all old pushes published.
+- F-ledger 100% closed — no open F-number remains; ledger law respected (no renumbering).
+- Live frontier stays R-NEW-334 (p.a recompose-scope re-arm) — attack continues next.
