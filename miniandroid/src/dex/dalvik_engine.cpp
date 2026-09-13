@@ -2579,6 +2579,123 @@ bool DalvikExecutionEngine::execute_method_internal(
                                   << frames[0].second;
                     std::cerr << std::endl;
                 }
+            } else if (class_name == "LZ1/z;" && method_name == "getValue") {
+                // [S34-LISTSZ] tracker reads with inner list size
+                static thread_local uint64_t tz_n = 0;
+                ++tz_n;
+                if (tz_n <= 24) {
+                    std::cerr << "[S34-LISTSZ] Z1/z.getValue #" << tz_n
+                              << " d=" << recursion_depth_;
+                    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                        std::cerr << " tracker=o" << args[0].object_id;
+                    auto frames = call_stack_.snapshot_top_first();
+                    if (!frames.empty())
+                        std::cerr << " <" << frames[0].first << "."
+                                  << frames[0].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if ((class_name == "Landroidx/navigation/compose/p$r;" &&
+                        method_name == "getValue") ||
+                       (class_name == "LF/w;" && method_name == "d") ||
+                       (class_name == "LF/w;" && method_name == "b") ||
+                       (class_name == "LF/f1;" && method_name == "getValue") ||
+                       (class_name == "Lz1/r;" && method_name == "A") ||
+                       (class_name == "LZ1/z;")) {
+                // [S34-READSIDE] visibleEntries read side
+                static thread_local std::map<std::string, uint64_t> rsd_n;
+                std::string rsd_key = class_name + "." + method_name;
+                uint64_t n = ++rsd_n[rsd_key];
+                if (n <= 20) {
+                    std::cerr << "[S34-READSIDE] " << rsd_key << " #" << n
+                              << " d=" << recursion_depth_;
+                    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                        std::cerr << " recv=o" << args[0].object_id;
+                    auto frames = call_stack_.snapshot_top_first();
+                    if (!frames.empty())
+                        std::cerr << " <" << frames[0].first << "."
+                                  << frames[0].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if ((class_name == "Lh1/t;") ||
+                       (class_name == "Landroidx/navigation/c$a;")) {
+                // [S34-NSPUSH] NavigatorState method dispatches
+                static thread_local std::map<std::string, uint64_t> nsp_n;
+                std::string nsp_key = class_name + "." + method_name;
+                uint64_t n = ++nsp_n[nsp_key];
+                if (n <= 10) {
+                    std::cerr << "[S34-NSPUSH] " << nsp_key << " #" << n
+                              << " d=" << recursion_depth_
+                              << " argc=" << args.size();
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 2; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if ((class_name == "LZ1/M;") &&
+                       (method_name == "getValue" || method_name == "setValue")) {
+                // [S34-FLOW] MutableStateFlow get/set
+                static thread_local uint64_t flw_n = 0;
+                ++flw_n;
+                if (flw_n <= 40) {
+                    std::cerr << "[S34-FLOW] Z1/M." << method_name << " #" << flw_n
+                              << " d=" << recursion_depth_;
+                    if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                        std::cerr << " recv=o" << args[0].object_id;
+                    if (method_name == "setValue" && args.size() > 1 &&
+                        args[1].type == DalvikType::OBJECT_REF)
+                        std::cerr << " val=o" << args[1].object_id;
+                    auto frames = call_stack_.snapshot_top_first();
+                    if (!frames.empty())
+                        std::cerr << " <" << frames[0].first << "."
+                                  << frames[0].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if ((class_name == "Lj/b;" && method_name == "b") ||
+                       (class_name == "Lk/K;") ||
+                       (class_name == "Landroidx/navigation/compose/p$f;" &&
+                        method_name == "g") ||
+                       (class_name == "Landroidx/navigation/compose/p$c;" &&
+                        method_name == "o") ||
+                       (class_name == "Landroidx/navigation/compose/p$p;" &&
+                        method_name == "o") ||
+                       (class_name == "Landroidx/navigation/compose/p$q;" &&
+                        method_name == "o") ||
+                       (class_name == "LF/M;" && method_name == "c")) {
+                // [S34-ACBOUND] AnimatedContent boundary + p lambdas
+                static thread_local std::map<std::string, uint64_t> acb_n;
+                std::string acb_key = class_name + "." + method_name;
+                uint64_t n = ++acb_n[acb_key];
+                if (n <= 8) {
+                    std::cerr << "[S34-ACBOUND] " << acb_key << " #" << n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 3; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
+            } else if ((class_name == "Landroidx/navigation/compose/p$e;" &&
+                        method_name == "g") ||
+                       (class_name == "Landroidx/navigation/compose/l;" &&
+                        method_name == "a") ||
+                       (class_name == "LN/a;" && method_name == "g") ||
+                       (class_name == "Ln1/q;" && method_name == "g") ||
+                       (class_name == "Ln1/s;" && method_name == "g") ||
+                       (class_name == "Ln1/t;" && method_name == "g")) {
+                // [S34-DCHAIN] destination-content invoke chain
+                static thread_local std::map<std::string, uint64_t> dch_n;
+                std::string dch_key = class_name + "." + method_name;
+                uint64_t n = ++dch_n[dch_key];
+                if (n <= 8) {
+                    std::cerr << "[S34-DCHAIN] " << dch_key << " #" << n
+                              << " d=" << recursion_depth_;
+                    auto frames = call_stack_.snapshot_top_first();
+                    for (size_t fi = 0; fi < frames.size() && fi < 4; ++fi)
+                        std::cerr << " <" << frames[fi].first << "."
+                                  << frames[fi].second << ">";
+                    std::cerr << std::endl;
+                }
             } else if (class_name == "Landroidx/compose/ui/node/e$a;" &&
                        method_name == "c") {
                 // [S34-EMITCHAIN] node factory call — top-8 caller frames
@@ -3793,6 +3910,67 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     }
     if (!dex_report_) return false;
 
+    if (declaring_class == "Lz1/r;" && method_name == "A") {
+        static thread_local uint64_t lsz_n = 0;
+        ++lsz_n;
+        if (lsz_n <= 20 && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t lid = args[0].object_id;
+            long sz = -1;
+            for (const char* fn : {"size", "__array_length__", "count"}) {
+                auto mv = heap_.get_object_field(lid, fn);
+                if (mv.has_value() && (mv->type == DalvikType::INT32 ||
+                                       mv->type == DalvikType::INT64)) {
+                    sz = (mv->type == DalvikType::INT32) ? mv->int_val
+                                                         : mv->long_val;
+                    break;
+                }
+            }
+            std::cerr << "[S34-LISTSZ] z1/r.A #" << lsz_n
+                      << " list=o" << lid << " size=" << sz
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+    }
+    if ((declaring_class == "LF/w;" && method_name == "b") ||
+        (declaring_class == "Lz1/r;" && method_name == "A")) {
+        static thread_local uint64_t lm_r = 0;
+        ++lm_r;
+        if (lm_r <= 24) {
+            std::cerr << "[S34-LISTMAP] " << declaring_class << "."
+                      << method_name << " #" << lm_r
+                      << " caller=" << current_class_ << "." << current_method_;
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                std::cerr << " recv=o" << args[0].object_id;
+            if (return_val.type == DalvikType::OBJECT_REF)
+                std::cerr << " ret=o" << return_val.object_id
+                          << (return_val.is_null ? "(NULL)" : "");
+            std::cerr << std::endl;
+        }
+    }
+    if (declaring_class == "Lj/b;" && method_name == "b") {
+        static thread_local uint64_t jbb_n = 0;
+        ++jbb_n;
+        if (jbb_n <= 12) {
+            std::cerr << "[S34-JBB] try_recursive_invoke j/b.b #" << jbb_n
+                      << " depth=" << recursion_depth_
+                      << " argc=" << args.size()
+                      << " dex_desc=" << (method_descriptor.empty() ? "<none>" : method_descriptor)
+                      << " caller=" << current_class_ << "." << current_method_;
+            bool cls_found = class_info_index_.count(declaring_class) > 0;
+            std::cerr << " cls_found=" << (cls_found ? 1 : 0);
+            if (cls_found) {
+                const dex::ClassInfo& ci =
+                    dex_report_->classes[class_info_index_[declaring_class]];
+                for (const auto& m : ci.all_methods()) {
+                    if (m.name == "b")
+                        std::cerr << " [cand " << m.descriptor
+                                  << " bsz=" << m.bytecode.size() << "]";
+                }
+            }
+            std::cerr << std::endl;
+        }
+    }
     // M3 FINDING-016 (strict mode): an exception already escaped the app
     // boundary — ART process death. No further DEX dispatch (the equivalent
     // of the process being gone: queued runnables, lifecycle callbacks and
@@ -8397,6 +8575,27 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     args = build_invoke_args(raw, param_types, is_static_call);
                 }
 
+                {
+                    static thread_local uint64_t rng_n = 0;
+                    std::string rng_cls = dex_report_
+                        ? resolve_method_class_for_dex(method_idx, current_dex_index_)
+                        : std::string("<nodex>");
+                    if (rng_cls == "Lj/b;" || rng_cls == "Lj/i;" || rng_cls == "LC0/b;") {
+                        ++rng_n;
+                        if (rng_n <= 12) {
+                            std::cerr << "[S34-RANGE] " << rng_cls << "."
+                                      << (dex_report_
+                                              ? resolve_method_name_for_dex(method_idx, current_dex_index_)
+                                              : "?")
+                                      << " argc=" << (int)argc
+                                      << " first_reg=" << first_reg
+                                      << " caller=" << current_class_ << "."
+                                      << current_method_
+                                      << " depth=" << recursion_depth_
+                                      << std::endl;
+                        }
+                    }
+                }
                 // Resolve method name
                 std::string method_name = "<range_method:" + std::to_string(method_idx) + ">";
                 std::string class_name = "<range_class>";
@@ -12218,6 +12417,21 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
                   << std::endl;
     }
 
+    // [S34-TSTATE] NavigatorState.createBackStackEntry dispatch forensics
+    if (declaring_class == "Lh1/t;" && method_name_from_dex == "a") {
+        static thread_local uint64_t tstate_n = 0;
+        ++tstate_n;
+        if (tstate_n <= 12) {
+            std::cerr << "[S34-TSTATE] h1/t.a entry #" << tstate_n
+                      << " runtime_type=" << runtime_type
+                      << " recv=o" << (args.empty() ? 0 : args[0].object_id)
+                      << " cls=" << (args.empty() ? "?" : args[0].class_desc);
+            for (size_t ai = 1; ai < args.size() && ai < 3; ++ai)
+                std::cerr << " a" << ai << "=o" << args[ai].object_id
+                          << (args[ai].is_null ? "(NULL)" : "");
+            std::cerr << std::endl;
+        }
+    }
     // EXP-038 (BLOCKER-034): Try recursive DEX method invocation first.
     // If the target method exists in DEX with bytecode, execute it recursively
     // instead of bridging to the API stub layer. This enables real execution
@@ -12306,6 +12520,19 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
         }
     }
 
+    if (declaring_class == "Lh1/t;" && method_name_from_dex == "a") {
+        static thread_local uint64_t tstate_r = 0;
+        ++tstate_r;
+        if (tstate_r <= 12) {
+            std::cerr << "[S34-TSTATE-RES] h1/t.a #" << tstate_r
+                      << " recursively_invoked=" << (recursively_invoked ? 1 : 0)
+                      << " runtime=" << runtime_type
+                      << " status=" << (int)api_status;
+            if (return_val.type == DalvikType::OBJECT_REF)
+                std::cerr << " ret=o" << return_val.object_id;
+            std::cerr << std::endl;
+        }
+    }
     if (!recursively_invoked && config_.enable_api_bridge) {
         // Use declaring_class (the static type from method_ids[]) if
         // runtime_type is unknown — this lets us route framework calls like

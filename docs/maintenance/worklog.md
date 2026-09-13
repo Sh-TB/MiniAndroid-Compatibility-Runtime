@@ -5417,3 +5417,22 @@ Stage Summary:
 - R-NEW-332 root-caused to TWO distinct blockers (cycle-guard stubbing legal nested observations; leaf-only dispatch gate) — both closed with generic family fixes; the residual ops=0 is NOT a draw-pipeline blocker anymore: the tree itself is empty (R-NEW-333 composition frontier).
 - Pixel-exact regression across the 3 View-app corpus (byte-identical SHAs); dooz determinism ×3 unchanged.
 - Next: R-NEW-333 (content-state pairing + async composition), then the first real Dooz frame; then Telegram fragment-host family (R-NEW-331).
+
+---
+Task ID: S34-MAIN
+Agent: Super Z (session 34 — MASTER CAMPAIGN 3 continuation: R-NEW-333 attack, F-100 validated, full root chain mapped, R-NEW-334 registered)
+Task: Continue from S33 HEAD exactly as it exists. Push all old commits. Attack R-NEW-333 (composition content-state pairing; ops=0 residual) until real Canvas ops appear. Peak objective: first real Dooz gameplay screenshot.
+
+Work Log:
+- §0 recovery: found the interrupted S34 workspace (/tmp/my-project — F-100 idle-drain pump + probes 1-12, uncommitted). Verified binary freshness, committed F-100 + probe suite (23ec2dfd) and pushed.
+- R-NEW-333 deep attack (10 probe rounds 13-20, static DEX via androguard + GitHub upstream law navigation-2.7.7 blob 531a3fb1):
+  - MAPPED: content lambda n1/u.k RUNS → NavHost p.b ("game" start) → builder n1/n.o registers game/settings/about destinations → p.a inlined graph-set → navigate → c$a.a createBackStackEntry ✓ → ComposeNavigator push e.d → c$a.e → h1/t.e → flow setValue ✓ → c.b backFlow notify ✓ → sync collectors (Z1/z.c ×4, F/a1.t) deliver lists to remember states (o2919←o2901, o2990←o2914) ✓.
+  - THE ONE REMAINING BREAK: p.a never re-runs (F/w.b from p.a = exactly 1× per site across 3 fresh runs) — the state writes do not re-arm the recompose scope that read them → p.a:0e78 gate (visibleEntries.lastOrNull()!=null) stays false → AnimatedContent (j/b.b, p.a:0fc8) never invoked (S34-RANGE/JBB: the engine never even attempts the call) → p$e.g/l.a/N/a.g/n1/q.g never dispatch (S34-DCHAIN all 0) → 1 LayoutNode total → 0 canvas ops → placeholder.
+  - App-level state invalidation WORKS (18 recompositions from the settings DataStore chain) — the p.a scope specifically does not re-arm (candidate: F/f1.getValue read-recording law — dispatch currently invisible to probes).
+- REGRESSION: dooz ×5 byte-identical 193466ead8fd21d6 (incl. probe binary ×2); microtimer/gmdice/stopwatch ALL byte-match baselines. Zero regressions.
+- PReserved everything: engine probes 13-20, tooling (s34_disasm/xrefs/dexscan), run evidence, s34_session_record.md.
+
+Stage Summary:
+- R-NEW-333 narrowed to a single verified break; R-NEW-334 registered (recompose-scope invalidation for NavHost visible-entries reads).
+- The compose navigation stack now executes end-to-end as real bytecode — the first session where game/settings/about destinations are registered and the back-stack entry is pushed by real DEX.
+- Next: R-NEW-334 (read-recording/re-arm law at p.a:0e22), then the first real Dooz frame.
