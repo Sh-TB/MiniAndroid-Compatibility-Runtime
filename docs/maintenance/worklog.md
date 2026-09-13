@@ -5468,3 +5468,17 @@ Work Log:
 
 Stage Summary:
 - R-NEW-334 narrowed: the break is the NavBackStackEntry lifecycle chain (maxLifecycle never >= STARTED). Registry updated. Next session: attack androidx.lifecycle state machine on the entry + host-lifecycle source.
+
+---
+Task ID: S35-CORPUS
+Agent: Super Z (session 35 — corpus expansion per user directive: dooz variants + dice + word game + more)
+
+Work Log:
+- F-Droid API + search used to pick 6 small open-source games; downloaded to external cache (zero-APK law kept): itsfrz tictactoe vc5 (17.7MB), kirkezz rttt vc3 (23.4MB), secuso pf2048 vc100 (9.3MB), lexica vc30018 (14.3MB), secuso dicer vc101 (2.9MB), antimine vc1706031 (9.4MB). All SHA-256'd.
+- Executed all 6: rttt rc=0 CLEAN; dicer/itsfrz/antimine rc=1 with app-boundary exceptions (Splash/MainActivity init chains — new frontier family); pf2048/lexica = exec-budget TIMEOUT (honest no-visual, heavy apps).
+- Evidence: screenshots (all four visual rows = shared empty frame eb16ab5c), report.md + crash.log per run, compressed ledger images; registry 16->22; ledger rows 16-21 with full SHA + F-Droid links.
+- Pushed: 9186d461 (corpus) + 47b5cf51 (antimine shot). Remote verified.
+
+Stage Summary:
+- Executed-app archive: 18 apps with ledger rows; visual grades: 6 full-render/gameplay, 4 partial, 1 painted, 6 placeholder, 2 no-visual(timeout) + telegram no-visual.
+- Live frontier unchanged: R-NEW-334 narrowed to NavBackStackEntry lifecycle chain (entry.maxLifecycle never >= STARTED).
