@@ -1,17 +1,16 @@
 {
  "baseline_head": "5a2b7d99",
  "summary": {
-  "total_roots": 318,
+  "total_roots": 321,
   "open_frontiers": [
    "R-NEW-228",
-   "R-NEW-301",
    "R-NEW-303",
    "R-NEW-323",
    "R-NEW-330",
    "R-NEW-331"
   ],
-  "last_updated": "S27 2026-09-12",
-  "note": "R-NEW-324..328 back-filled from S25/S26 worklog records (registry JSON debt); 329 closed in S27 (F-096+F-096b); 330/331 new honest frontiers."
+  "last_updated": "S35 2026-09-13",
+  "note": "S35: R-NEW-301 (F-077) closed-by-supersession — dooz composition completes at HEAD; F-ledger 100% resolved (docs/maintenance/F_LEDGER_CLOSURE_S35.md); live frontier = R-NEW-334 (recompose-scope re-arm)."
  },
  "roots": [
   {
@@ -3016,13 +3015,13 @@
   },
   {
    "id": "R-NEW-301",
-   "status": "OBSERVED-FAIL",
+   "status": "VERIFIED-FIXED",
    "priority": "P0",
    "fg": true,
-   "evidence": "S22, first root reached AFTER F-076 (runner loop starts): initial composition (b1.k WrappedComposition.setContent -> F/y.b ComposerImpl -> F/l.s0 SlotTable -> K/f.putAll -> K/t.m merge -> K/t.s nodeAt) dies: NPE 'null cannot be cast to non-null type TrieNode' at the check-cast in K/t.s. [TRIENODE] heap probe: builder node o1820 born dataMap=0x08000000 nodeMap=0 len=1 then mutated to a=134676546(6 bits) b=0x80000000(1 bit) len=13 null_slots=12 — bitmaps claim 7 entries, buffer holds 1 non-null; later a=160401768(13) b=2 bits len=28 null=26 vs claimed 15. kotlinx.collections.immutable invariant: buffer.size == popcount(dataMap)+popcount(nodeMap), node-claimed slots never null. Integer.bitCount/Long.bitCount bridges verified CORRECT — corruption window narrowed to the mutable-put buffer-fill family K/t.k/l/n/o (index math or aput into the grown buffer).",
+   "evidence": "S22, first root reached AFTER F-076 (runner loop starts): initial composition (b1.k WrappedComposition.setContent -> F/y.b ComposerImpl -> F/l.s0 SlotTable -> K/f.putAll -> K/t.m merge -> K/t.s nodeAt) dies: NPE 'null cannot be cast to non-null type TrieNode' at the check-cast in K/t.s. [TRIENODE] heap probe: builder node o1820 born dataMap=0x08000000 nodeMap=0 len=1 then mutated to a=134676546(6 bits) b=0x80000000(1 bit) len=13 null_slots=12 — bitmaps claim 7 entries, buffer holds 1 non-null; later a=160401768(13) b=2 bits len=28 null=26 vs claimed 15. kotlinx.collections.immutable invariant: buffer.size == popcount(dataMap)+popcount(nodeMap), node-claimed slots never null. Integer.bitCount/Long.bitCount bridges verified CORRECT — corruption window narrowed to the mutable-put buffer-fill family K/t.k/l/n/o (index math or aput into the grown buffer). || S35 CLOSURE (closed-by-supersession): symptom GONE at b3409007 — dooz rc=0 x5 deterministic with initial composition completing past the former K/t.s death point (content lambda n1/u.k executes x18, rememberNavController returns, 3 destinations register, full navigation stack executes as real bytecode; S34 record sec.1, probes TSTATE/READSIDE/NSPUSH). The break was eliminated collectively by the F-090..F-100 law chain; the single fixing law was not isolated (forensics debt, MINIANDROID_S22_TRACE=1 probe retained). Closure record: docs/maintenance/F_LEDGER_CLOSURE_S35.md. F-100's twin ledger entry closed same session.",
    "missing": "exact instruction in the K/t.k/l/n/o family (probe in place: MINIANDROID_S22_TRACE=1 prints [TRIENODE] ctor/s/m with heap state)",
    "next": "trace one put() op from N/d$a.put to the slot write",
-   "commit": "PENDING-S22"
+   "commit": "S35-F-LEDGER-CLOSURE"
   },
   {
    "id": "R-NEW-302",
