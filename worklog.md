@@ -121,3 +121,22 @@ Work Log:
 Stage Summary:
 - KEY RESULTS: dooz23 startup pipeline now COMPLETES deterministically (was: never-completing runBlocking + 2 destroyed frames + empty composition). 5 generic runtime laws landed (super-identity, thread self-run, park-drain+yield, Unsafe family closure, honest file metadata). Zero regressions (A/B proven for the 2 suspicious targets).
 - NEXT ROOT: content composition empty (R-NEW-344 core) — probe whether AbstractComposeView.setContent stored the content lambda before ensureCompositionCreated and whether the app composable lambda is invoked during composeInitial; then DataStore theme value round-trip.
+
+---
+Task ID: S41-r2
+Agent: Super Z (main)
+Task: Attack-6 — content composition frontier (R-NEW-344 core) round-2 forensic
+
+Work Log:
+- Probes run_e (FIELD-TRACE Lho;) / run_f (FIELD-TRACE Lc41;) / run_g (RET-TRACE Lxp1;) / run_h (RET-TRACE Lg4;) / run_i (RET-TRACE La72;) / run_j (ATOMIC-DIAG).
+- Lho;.setContent: o=1 stored, holder n read — content lambda PERSISTED (obj#886 into Lc41; obj#894 Lmo1;.c via setValue).
+- Lr;.g (ensureCompositionCreated) mapped from bytecode: builds holder Lx62;(view,owner,wrapper Lom;) and calls La72;.a.
+- La72;.a: created AndroidComposeView Lt4; + addView(parent=ComposeView) and RETURNED holder obj#2812 (Lx62;) — the composition plumbing ran.
+- Lx62;.e (lifecycle ON_CREATE handler) -> Lx62;.f -> Ls7;(flag=8,view,wrapper) -> Lt4;.setOnReadyForComposition — the DEFERRED compose request.
+- Ls7;.i (the deferred invoke) does Looper.myLooper() vs view.getHandler().getLooper() identity check -> View.post(Lk5;) branch (ZERO View.post dispatches in all runs) OR inline compose.
+- Version correction: Dooz master uses compose-bom 2026.06.01 + kotlin 2.4.10 (NOT 1.6.7) — DEX disassembly is the ground truth; fetched 1.6.7 sources are indicative only.
+- Post-frame state (run_j): doFrame cb=973 fired; runnable 1414 (Lrx;) ran an AtomicReference state machine (get/set/getAndSet/CAS on obj#3107) and completed; then true quiescence. No exceptions (0 after R-NEW-346).
+
+Stage Summary:
+- The { Content() } wrapper is still never invoked; the deferred-compose-request chain (Ls7;/Lko;/Lk5;/setOnReadyForComposition) is the exact next frontier, documented in R-NEW-344 next-probe with 4 named probes.
+- No code changes this round (forensic only); registry R-NEW-344 refreshed.
