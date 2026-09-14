@@ -138,3 +138,4 @@ miniandroid/core
 /tools/ecj/
 /tools/android-34.jar
 /tools/platform-34-ext*_r0*.zip
+androguard.db
