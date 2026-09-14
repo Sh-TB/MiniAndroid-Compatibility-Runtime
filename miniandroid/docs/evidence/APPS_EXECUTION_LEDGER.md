@@ -614,3 +614,18 @@ each. Applied retroactively to the whole archive:
    determinism goldens re-run PASS; 2 fails = documented missing-external-fixture
    gap (S37-known, non-code). hello_smoke/scroll_min behavior byte-stable.
 
+
+### S39 dooz23 composition-chain breakthrough — 3 roots root-caused+fixed in one round (commits 472fc4d5, 997e23a1)
+
+| Field | Value |
+|-------|-------|
+| APK | io.github.yamin8000.dooz_23.apk (sha256 in S37 archive row) |
+| Runtime | built from HEAD+Unsafe/StackTrace/AutofillId/pump fixes |
+| Status | ⚙️ FRONTIER-ADVANCED — view tree REAL (ComposeView→AndroidComposeView attached), Recomposer machinery LIVE, content nodes pending (R-NEW-340 residual) |
+| R-NEW-337 | ROOT-CAUSED+FIXED — atomicfu-via-Unsafe law: zero shadows for getDeclaredField/Field/sun.misc.Unsafe → JobSupport offsets 0, state read null → "already complete or completing" ISE killed FIRST composition. Post-fix: 30 offsets, zero ISE. |
+| R-NEW-338 | ROOT-CAUSED+FIXED — Throwable.getStackTrace runtime-class law (R8 names bypassed the Throwable-name guard → copyOfRange(null) NPE). setStackTrace round-trip added. |
+| R-NEW-339 | ROOT-CAUSED+FIXED — View.getAutofillId per-view memoized law + getSystemService dual-layer resolution (AndroidComposeView ctor checkNotNull chain). |
+| R-NEW-340 | PARTIAL-FIX — post-lifecycle frame pump (16 ticks before capture): doFrame fires, resume machinery drains, Recomposer advances to await path. Residual: no re-post after resume. |
+| Evidence | runs /tmp/s38_runs/dooz23_r337(c|fix|r338fix|r339b/c/d/e/f|r340); probes R337-DUAL, INSTANCEOF-DIAG, THROWABLE-STACK-PC, T4PROBE, R339-SVC, CHOREO-PUMP |
+| Regression | hello_smoke + hello_widgets byte-identical renders post-fix |
+
