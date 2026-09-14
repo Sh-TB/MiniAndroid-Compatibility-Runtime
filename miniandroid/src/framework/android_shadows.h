@@ -1181,6 +1181,71 @@ public:
     // EXP-090: Get all nodes for searching by class name
     const std::map<uint32_t, std::unique_ptr<ViewNode>>& all_nodes() const { return nodes_; }
 
+    // ─────────────────────────────────────────────────────────────────────
+    // R-NEW-347 (S42) — AOSP addViewInner child-attach pending queue.
+    //
+    // Oracle: aosp-mirror/platform_frameworks_base, core/java/android/view/
+    // ViewGroup.java, addViewInner() (main branch, fetched S42):
+    //     AttachInfo ai = mAttachInfo;
+    //     if (ai != null &&
+    //         (mGroupFlags & FLAG_PREVENT_DISPATCH_ATTACHED_TO_WINDOW) == 0) {
+    //         ...
+    //         child.dispatchAttachedToWindow(mAttachInfo,
+    //                                        (mViewFlags&VISIBILITY_MASK));
+    //     ...
+    // i.e. adding a child to an ALREADY-ATTACHED parent dispatches the
+    // attach to the child IMMEDIATELY at addView time (View
+    // .dispatchAttachedToWindow first stores the AttachInfo, then invokes
+    // onAttachedToWindow(), then the ViewGroup override recurses into the
+    // child's own subtree).
+    //
+    // Shadows cannot run DEX code, so the ViewShadow only RECORDS the
+    // pending attach here; the ENGINE consumes the record right after the
+    // addView shadow call returns (bridge_to_api pending-consume law —
+    // same shadow-flag/engine-callback split as the Room onCreate /
+    // onUpgrade dispatch and ThreadShadow.consume_pending_start) and
+    // drives the real onAttachedToWindow() DEX chain via
+    // dispatch_attached_subtree_from().
+    //
+    // Real demand (dooz_23, PRIORITY-1): compose BOM 2026.06.01 creates
+    // the AndroidComposeView during the first onMeasure
+    // (ensureCompositionCreated → La72;.a pc=112 addView into the
+    // already-attached ComposeView) and registers a PENDING composition
+    // request via Lt4;.setOnReadyForComposition (field n0). On AOSP the
+    // addView-attach fires AndroidComposeView.onAttachedToWindow(), whose
+    // bytecode (pc 640-662) READS n0 and invokes it — THE composition
+    // start. Without the child-attach dispatch the request is stored and
+    // never consumed: content lambda never runs, first frame renders
+    // blank (R-NEW-344 core).
+    //
+    // AOSP addTransientView applies the same law; the engine covers the
+    // two addView entry points (addView/addViewInLayout) which is where
+    // every framework and app code path adds children.
+    // ─────────────────────────────────────────────────────────────────────
+    void record_pending_child_attach(uint32_t parent_id, uint32_t child_id) {
+        pending_child_attaches_.push_back({parent_id, child_id});
+    }
+    // FIFO consume — returns false when the queue is empty.
+    bool consume_pending_child_attach(uint32_t& parent_id, uint32_t& child_id) {
+        if (pending_child_attaches_.empty()) return false;
+        auto front = pending_child_attaches_.front();
+        parent_id = front.first;
+        child_id  = front.second;
+        pending_child_attaches_.erase(pending_child_attaches_.begin());
+        return true;
+    }
+    bool has_pending_child_attaches() const {
+        return !pending_child_attaches_.empty();
+    }
+
+private:
+    // R-NEW-347 (S42): (parent, child) pairs whose child still needs the
+    // AOSP addViewInner attach dispatch. Filled ONLY when the parent node
+    // was attached_to_window at addView time; drained by the engine in
+    // the same interpreter step (never crosses a frame boundary).
+    std::vector<std::pair<uint32_t, uint32_t>> pending_child_attaches_;
+
+public:
     // Add child to parent (updates both parent's children and child's parent_id).
     bool add_child(uint32_t parent_id, uint32_t child_id);
     bool remove_child(uint32_t parent_id, uint32_t child_id);

@@ -1375,6 +1375,21 @@ public:
     // regression safety). Bounded multi-pass: attach may create new views.
     bool dispatch_view_attached();
 
+    // ─────────────────────────────────────────────────────────────────────
+    // R-NEW-347 (S42) — AOSP attach-on-add law (dispatch side).
+    // Drives the real DEX onAttachedToWindow() chain on the subtree rooted
+    // at root_view_id, mirroring View.dispatchAttachedToWindow() +
+    // ViewGroup.dispatchAttachedToWindow(): mark the node attached FIRST
+    // (AOSP stores mAttachInfo before invoking the callback), then invoke
+    // onAttachedToWindow() via the runtime-class super-chain walk (same
+    // walk law as dispatch_view_attached), then recurse into the node's
+    // recorded children. Consumed from bridge_to_api when the ViewShadow
+    // recorded a pending child-attach (addView into an already-attached
+    // parent — ViewGroup.addViewInner law, see android_shadows.h).
+    // Returns true when at least one DEX onAttachedToWindow dispatched.
+    // ─────────────────────────────────────────────────────────────────────
+    bool dispatch_attached_subtree_from(uint32_t root_view_id);
+
     // EXP-071 Phase 8: Generic Runnable dispatch.
     // Invokes run()V (or run(TLObject, TL_error)V for RequestDelegate) on the
     // heap object identified by runnable_object_id. Used by the event loop
