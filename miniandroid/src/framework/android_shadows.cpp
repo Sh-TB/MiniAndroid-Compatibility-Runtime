@@ -160,15 +160,21 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 (m == "put" || m == "size" || m == "entrySet" ||
                  m == "values" || m == "iterator" ||
                  m == "hasNext" || m == "next" || m == "getKey" ||
-                 m == "getValue") &&
+                 m == "getValue" ||
+                 // [R342-COWSET] lifecycle-registry injection probe
+                 m == "add") &&
                 (ctx.class_name == "Ljava/util/LinkedHashMap;" ||
                  ctx.class_name == "Ljava/util/HashMap;" ||
                  ctx.class_name == "Ljava/util/Map;" ||
                  ctx.class_name == "Ljava/util/Map$Entry;" ||
                  ctx.class_name == "Ljava/util/Collection;" ||
                  ctx.class_name == "Ljava/util/Iterable;" ||
-                 ctx.class_name == "Ljava/util/Set;") &&
-                (obj_id >= 2400 || obj_id == 0);
+                 ctx.class_name == "Ljava/util/Set;" ||
+                 ctx.class_name == "Ljava/util/concurrent/CopyOnWriteArraySet;" ||
+                 ctx.class_name == "Ljava/util/concurrent/CopyOnWriteArrayList;") &&
+                (obj_id >= 2400 || obj_id == 0 ||
+                 // [R342-COWSET] probe: the lifecycle set is allocated early
+                 ctx.class_name.find("CopyOnWrite") != std::string::npos);
             if (interesting) {
                 ++s24_coll;
                 const CollectionState* st = nullptr;
@@ -388,6 +394,14 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         } else if (ctx.args.size() >= 1) {
             // add(item)
             uint32_t item = ctx.arg_as_object(0, 0);
+            // [R342-COWSET] Set semantics: CopyOnWriteArraySet.add is a
+            // no-op returning false when the element is already present
+            // (AOSP: backed by CopyOnWriteArrayList.addIfAbsent).
+            if (ctx.class_name.find("CopyOnWriteArraySet") != std::string::npos) {
+                for (uint32_t e : state->elements) {
+                    if (e == item) return CallResult::handled_bool(false);
+                }
+            }
             state->elements.push_back(item);
         }
         return CallResult::handled_bool(true);
@@ -574,6 +588,14 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         if (state->iterator_position < state->elements.size()) {
             uint32_t elem = state->elements[state->iterator_position++];
             if (elem != 0) {
+                // [R342-COWSET] return the element's REAL runtime class —
+                // "Ljava/lang/Object;" breaks invoke-interface/vtable
+                // dispatch on the returned object (lifecycle observer
+                // dispatch, dooz23 Hilt injection chain).
+                std::string elem_cls;
+                if (heap_ && heap_->get_object_class(elem, elem_cls)) {
+                    return CallResult::handled_object(elem, elem_cls);
+                }
                 return CallResult::handled_object(elem, "Ljava/lang/Object;");
             }
             return CallResult::handled_null();
@@ -1785,6 +1807,16 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_bool(pending_finish_);
     }
     if (m == "getApplicationContext") {
+        // [R341-APPCTX] AOSP identity law — serve the bound manifest
+        // Application object (Hilt type-checks it; dooz23 Lk2;.b evidence).
+        if (heap_ && application_heap_id_ != 0 &&
+            heap_->has_object(application_heap_id_)) {
+            return CallResult::handled_object(
+                application_heap_id_,
+                application_heap_class_.empty()
+                    ? "Landroid/app/Application;"
+                    : application_heap_class_);
+        }
         if (heap_) {
             uint32_t ctx_id = heap_->get_or_create("Landroid/content/Context;");
             return CallResult::handled_object(ctx_id, "Landroid/content/Context;");

@@ -543,6 +543,18 @@ public:
         current_activity_class_ = cls;
         state_ = LifecycleState::CREATED;
     }
+    // ── R-NEW-341 (S40): application identity law ──────────────────────
+    // AOSP: ActivityThread binds ONE Application object per process;
+    // getApplicationContext() and getApplication() must serve THAT object
+    // (Hilt/DI type-check it: instanceof Application → Lxb0;.d() unwrap).
+    // The engine's bind_manifest_application publishes the bound heap
+    // object id + class here so the shadow dispatch path and the engine's
+    // P0.7 path never disagree on identity.
+    void set_application_heap_identity(uint32_t id, const std::string& cls) {
+        application_heap_id_ = id;
+        application_heap_class_ = cls;
+    }
+    uint32_t application_heap_id() const { return application_heap_id_; }
     // UNIFIED_011.3 FRAME-2 (§23): record ONLY the activity's heap object id
     // (no lifecycle-state side effects). Used by execute_apk_with_activity so
     // post-launch probes (click-test android:onClick dispatch) can invoke
@@ -683,6 +695,10 @@ public:
 private:
     uint32_t current_activity_id_ = 0;
     std::string current_activity_class_;
+    // R-NEW-341: the process-wide Application identity (AOSP: exactly one
+    // Application object per process, bound by ActivityThread).
+    uint32_t application_heap_id_ = 0;
+    std::string application_heap_class_;
     uint32_t content_view_id_ = 0;
     // F-058 (R-NEW-279): Application.ActivityLifecycleCallbacks registry
     // (CopyOnWriteArrayList semantics — see public accessors above).
@@ -1375,6 +1391,17 @@ public:
                class_name == "Ljava/util/Map$Entry;" ||  // F-064: entrySet() elements (getKey/getValue)
                class_name == "Ljava/util/HashSet;" ||
                class_name == "Ljava/util/Set;" ||
+               // [R342-COWSET] java.util.concurrent CopyOnWrite family —
+               // dooz23 evidence: MainActivity.<init> registers the Hilt
+               // members-injector (Lae0; = LifecycleEventObserver) into the
+               // androidx lifecycle registry's CopyOnWriteArraySet
+               // (Ljm;.f → Leq;->a .add). A REC-MISS here silently dropped
+               // the injector → deferred field injection never ran →
+               // "lateinit property settings has not been initialized"
+               // killed the Compose resume (Le;.q @944). Also fixes the
+               // missing "concurrent/" segment in the COWAL path.
+               class_name == "Ljava/util/concurrent/CopyOnWriteArrayList;" ||
+               class_name == "Ljava/util/concurrent/CopyOnWriteArraySet;" ||
                class_name == "Ljava/util/Arrays$ArrayList;" ||
                class_name == "Ljava/util/Collections;" ||  // M3 F-ROOM-CHAIN: static factories
                class_name == "Ljava/util/Collections$UnmodifiableRandomAccessList;" ||

@@ -1696,6 +1696,23 @@ public:
                                    uint32_t activity_obj_id,
                                    DalvikExecutionResult& result);
 
+    // ── R-NEW-341 (S40): AOSP handleBindApplication law ─────────────────
+    // The runtime layer hands over the manifest android:name Application
+    // class (normalized descriptor). The engine instantiates it AFTER
+    // dex_report_ is set and secondary-DEX classes are injected (the old
+    // runtime-side instantiation ran with dex_report=NULL and silently
+    // degraded — dooz23 App.onCreate's Dagger component build), runs
+    // <init>/attachBaseContext/onCreate via REAL DEX, records the object
+    // as application_object_id_, and publishes the identity to the
+    // Activity shadow so getApplicationContext()/getApplication() serve
+    // the SAME object (Hilt: Lk2;.b getApplicationContext → instanceof
+    // Application → Lxb0;.d() → Dagger component).
+    void set_application_class_hint(const std::string& desc) {
+        application_class_hint_ = desc;
+    }
+    // Returns the bound object id (0 = nothing bound; caller falls back).
+    uint32_t bind_manifest_application(DalvikExecutionResult& result);
+
     // ── F-058 (R-NEW-279): Application.dispatchActivity* fan-out law ────
     // AOSP (Application.java, android-14): the activity lifecycle dispatch
     // (ActivityThread → Activity.performCreate/performStart/performResume)
@@ -1988,6 +2005,9 @@ public:
     // recorded by the runtime layer before any activity runs.
     uint32_t application_object_id_ = 0;
     std::string application_class_desc_;
+    // R-NEW-341: manifest android:name Application class (normalized
+    // descriptor), handed over by the runtime before execute_apk_with_activity.
+    std::string application_class_hint_;
     // F-069 (R-NEW-293): const-class STABLE IDENTITY tokens. ART: every
     // evaluation of `X.class` for the same X yields the SAME java.lang
     // Class object (identity is observable via ==, equals, and == on the
