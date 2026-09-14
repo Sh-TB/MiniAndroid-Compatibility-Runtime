@@ -570,6 +570,28 @@ bool ViewRenderer::render_png(uint32_t root_id, const std::string& path,
     ViewShadow::ViewNode* root = views_->find_node(root_id);
     if (!root) return false;
     if (root->width <= 0) layout(root_id);
+    // S38/R-NEW-336: env-gated view-tree dump — laid-out bounds + bg + text
+    // of every reachable node, to prove where a container background lands
+    // and which node a post-click setText actually mutated.
+    if (std::getenv("MINIANDROID_VIEWTREE_DUMP") != nullptr) {
+        std::function<void(const ViewShadow::ViewNode*, int)> vtree_rec =
+            [&](const ViewShadow::ViewNode* n, int depth) {
+            for (int i = 0; i < depth; ++i) std::cerr << "  ";
+            std::cerr << "[VTREE] id=" << n->view_id << " " << n->class_desc
+                      << " x=" << n->x << " y=" << n->y
+                      << " w=" << n->width << " h=" << n->height
+                      << " bg=0x" << std::hex << n->bg_color << std::dec
+                      << " lpw=" << n->lp_width << " lph=" << n->lp_height
+                      << " vis=" << n->visibility
+                      << " text=\"" << (n->text.size() > 48 ? n->text.substr(0, 48) : n->text)
+                      << "\"" << std::endl;
+            for (uint32_t cid : n->children) {
+                const ViewShadow::ViewNode* c = views_->find_node(cid);
+                if (c) vtree_rec(c, depth + 1);
+            }
+        };
+        vtree_rec(root, 0);
+    }
     FrameBuffer fb(screen_w_, screen_h_);
     fb.clear(RGBA{255, 255, 255, 255});
     draw_view(*root, fb, window_bg);
