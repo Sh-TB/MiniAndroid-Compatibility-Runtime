@@ -890,11 +890,22 @@ public:
     void push_frame(StackFrame&& frame) {
         frame.frame_id = next_frame_id_++;
         frame.enter_time = Clock::now();
-        
+        // R-NEW-339: record the invoke site pc in the CALLER frame so
+        // THROWABLE-STACK-PC forensics can localize which invoke inside a
+        // big method (e.g. AndroidComposeView.<init>) made the failing call.
+        if (!stack_.empty()) {
+            frame.caller_pc = last_invoke_pc_;
+        }
+
         stack_.push(std::move(frame));
         current_depth_ = stack_.size();
         if (current_depth_ > max_depth_) max_depth_ = current_depth_;
     }
+
+    // R-NEW-339: the engine sets this right before dispatching an invoke;
+    // push_frame() copies it into the new frame's caller_pc.
+    uint32_t last_invoke_pc_ = 0;
+    void set_last_invoke_pc(uint32_t pc) { last_invoke_pc_ = pc; }
     
     StackFrame pop_frame() {
         if (stack_.empty()) return StackFrame{};
@@ -941,6 +952,21 @@ public:
         auto temp = stack_;
         while (!temp.empty()) {
             out.emplace_back(temp.top().class_name, temp.top().method_name);
+            temp.pop();
+        }
+        return out;
+    }
+
+    // R-NEW-339 forensics: frames with caller PC (top-first). For frame i,
+    // caller_pc is the invoke site pc INSIDE frame i+1 (the caller) —
+    // pinpoints which invoke in a big <init> threw.
+    struct FramePc { std::string cls; std::string method; uint32_t caller_pc; };
+    std::vector<FramePc> snapshot_frames_top_first() const {
+        std::vector<FramePc> out;
+        auto temp = stack_;
+        while (!temp.empty()) {
+            out.push_back({temp.top().class_name, temp.top().method_name,
+                           temp.top().caller_pc});
             temp.pop();
         }
         return out;
@@ -1931,6 +1957,26 @@ public:
     // not exist, breaking the entire build since EXP-035.
     std::map<std::string, DalvikValue> static_field_storage_;  // key: "class_descriptor.field_name"
     std::map<std::string, std::shared_ptr<runtime::RuntimeClassInfo>> class_info_cache_;  // cached class metadata
+
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-337: atomicfu-via-Unsafe reflective field-offset registry.
+    //   kotlinx.coroutines (R8/atomicfu-transformed, present in EVERY
+    //   Compose APK) runs its whole volatile-state machinery through
+    //   sun.misc.Unsafe reflection:
+    //     offsets:  theUnsafe.objectFieldOffset(C.getDeclaredField(name))
+    //     reads:    getObjectVolatile(obj, offset)
+    //     writes:   putObjectVolatile / putOrderedObject
+    //     CAS:      compareAndSwapObject/Int/Long(obj, offset, e, u)
+    //   With no shadow, every call was REC-MISS → offsets 0, reads null —
+    //   JobSupport misread its own Active state as "already complete or
+    //   completing" → ISE killed the FIRST Compose composition (dooz v23
+    //   empty-grey-screen root).
+    //   The registry maps (declaring-class, field-name) ↔ positive offset.
+    // ────────────────────────────────────────────────────────────────────
+    std::map<std::pair<std::string, std::string>, int64_t> unsafe_field_offsets_;
+    std::map<int64_t, std::pair<std::string, std::string>> unsafe_offset_to_field_;
+    int64_t unsafe_next_offset_ = 16;   // real Unsafe offsets are 8-aligned, non-zero
+    uint32_t unsafe_singleton_id_ = 0;  // heap id of the "theUnsafe" singleton
 
     // EXP-042 Phase 4: Singleton cache for Android framework objects.
     // Key: class descriptor (e.g. "Landroid/content/res/Resources;").
