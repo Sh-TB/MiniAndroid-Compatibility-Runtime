@@ -2018,10 +2018,39 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
                                 // containers that DON'T fill the entire screen.
                                 bool is_container = node->class_desc.find("Layout") != std::string::npos ||
                                                   node->class_desc.find("ViewGroup") != std::string::npos;
-                                if (is_container && !is_full_screen) {
+                                // R-NEW-336 (S38): AOSP View.java law — a View
+                                // with NO background is TRANSPARENT; the
+                                // ancestor's background shows through. The
+                                // EXP-092 GREY_200 visibility fill must NOT
+                                // mask an ancestor that carries its own
+                                // background (evidence: hello_widgets —
+                                // ScrollView holds #101418, its bg-less
+                                // LinearLayout child was filled GREY_200,
+                                // destroying the #E0E0E0-on-dark contrast the
+                                // app designed; the "blank echo" of the
+                                // original R-NEW-336 report was this Δ1
+                                // contrast casualty, not lost text).
+                                bool ancestor_has_bg = false;
+                                for (uint32_t aid = node->parent_id; aid != 0 && is_container && !is_full_screen;) {
+                                    const auto* an = view_shadow->find_node(aid);
+                                    if (!an) break;
+                                    if (an->bg_color != 0 ||
+                                        !an->bg_drawable_path.empty() ||
+                                        an->bg_shape_valid) {
+                                        ancestor_has_bg = true;
+                                        break;
+                                    }
+                                    aid = an->parent_id;
+                                }
+                                if (is_container && !is_full_screen && !ancestor_has_bg) {
                                     canvas.draw_rect(left, top, right, bottom,
                                                    renderer::Colors::GREY_200);
                                     drew_bg = true;
+                                } else if (is_container && ancestor_has_bg) {
+                                    // AOSP transparent container: nothing to
+                                    // paint here; the ancestor's background
+                                    // already covers these pixels.
+                                    drew_bg = false;
                                 } else if (node->class_desc.find("Button") != std::string::npos) {
                                     canvas.draw_rect(left, top, right, bottom,
                                                    renderer::RGBA{0x6F, 0xA8, 0xDC, 0xFF});

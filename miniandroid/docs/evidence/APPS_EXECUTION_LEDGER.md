@@ -527,3 +527,90 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 **Archive total after S37 wave 3: 40 APKs registered (28 prior + 12 new identities; 2 corpus copies proven byte-duplicates of rows 3/12).**
 Zero-APK law holds.
+
+## S38 evidence-image format law (2026-09-14) — every image now JPG ≤ 100 KB
+
+**Law change (user directive):** all ledger images must be **JPG** (never PNG) and **≤ 100 KB**
+each. Applied retroactively to the whole archive:
+
+- **31 images converted PNG → JPG** (quality 72, quality 60 fallback for the single
+  over-budget file). Old `.png` files removed from git; every ledger reference updated.
+- **Total archive size: 269 KB for 31 images (avg 8.7 KB, max 89 KB = hellocolor.jpg)**
+  — versus 247 KB of PNGs previously + full-size originals. White-empty-frame
+  screenshots that once weighed 7 MB now ship as a few-KB JPGs.
+- Image content is pixel-identical to the committed PNGs (same source screenshots,
+  same SHA-256 provenance as recorded per row above); only the container/quality changed.
+- Regression goldens remain untouched (byte-for-byte battery law unchanged).
+
+### S38 new fixture: hello_widgets — advanced Hello World (6 widget families in one frame)
+
+| Field | Value |
+|---|---|
+| APK | fixture built from this repo (`com.miniandroid.hellowidgets`), source: `tests/fixtures/hello_widgets/` |
+| APK SHA-256 | `461436b1d7282ab2108ac29eb9b1c03b737e12258887fdaf0aac811ccb764185` |
+| Download | built by `scripts/build/build_fixture_apk.sh` (repo itself) |
+| Executes | ScrollView-root inflate → ImageView with real PNG drawable (140dp banner) → EditText → Button with real DEX `setOnClickListener` → TableLayout (3 TableRows) → RelativeLayout (`layout_below`) — the widest View-world coverage of any fixture |
+| Honest gap | see R-NEW-336: the Button's onClick DOES execute real DEX (listener fires, `echo.setText` runs) but the target TextView re-renders blank when living under a ScrollView root — the same chain under a LinearLayout root (hello_smoke) renders fine |
+| Status | 🟡 PARTIAL — richest render yet (1062 unique colors), one open interaction law |
+
+### S38 new fixture: hello_smoke — click-chain reference (LinearLayout root)
+
+| Field | Value |
+|---|---|
+| APK | fixture built from this repo (`com.miniandroid.hellosmoke`), source: `tests/fixtures/hello_smoke/` |
+| Download | built by `scripts/build/build_fixture_apk.sh` (repo itself) |
+| Executes | inflate → `setOnClickListener` (EXP060 listener shadow) → runtime probe-click → real DEX `onClick` → `count.setText(String.valueOf(++n))` → re-render — the canonical proof that app bytecode handles touches |
+| Honest gap | none for this fixture |
+| Status | ✅ GAMEPLAY (click counter increments on screen) |
+
+### S38 wave-4 evidence rows (S38 re-run at 833b67d5+render-fix HEAD)
+
+![Hello Widgets](apps_ledger/hello_widgets.jpg)
+
+**hello_widgets — post-fix FULL-RENDER + GAMEPLAY (click chain visible on screen)**
+
+| Field | Value |
+|---|---|
+| Screenshot SHA-256 | `9f708fb7cad6b5feb0fa6ca640e26def144e2758e9736a9e4ea91271c8df0232` (41 KB JPG) |
+| Frame | dark `#101418` bg · blue title · PNG banner · EditText · ECHO button (probe-clicked, pressed state) · **"echo: (empty)" — the app's own onClick output rendered** · Metric/Value table · relative A/B |
+| APK | rebuild `d3b89184c6bf238e…` (source restored; original registration APK `461436b1…` pre-restore) |
+| Executes | real DEX `setOnClickListener` → runtime probe-click → `getText().toString()` → `"echo: " + typed` → `setText` → re-measure ([VSTACK] id=14 533px→254px proves the post-click string was laid out) → paint |
+| Status | ✅ GAMEPLAY — R-NEW-336 closed ROOT-CAUSED-FIXED (see below) |
+
+![Hello Smoke](apps_ledger/hello_smoke.jpg)
+
+**hello_smoke — click-counter reference (LinearLayout root)**
+
+| Field | Value |
+|---|---|
+| Screenshot SHA-256 | `688b16e80efcebf41f45dacc296132524e3199dccb26eceec95d0c4ade0b71bf` (15 KB JPG) |
+| Status | ✅ GAMEPLAY (unchanged by the R-NEW-336 fix — smoke_bg on root) |
+
+![ScrollMin](apps_ledger/scroll_min.jpg)
+
+**scroll_min — R-NEW-336 minimal repro (did NOT reproduce the blank)**
+
+| Field | Value |
+|---|---|
+| Screenshot SHA-256 | `f410f53426ebb2d3a80c2f54bee92ddeb7558ec06784cacec3412457d9b7d735` (10 KB JPG) |
+| APK SHA-256 | `b9afb40738c4608ef5e3137ebc29119a49f91f5953d29b771638120f61173aa9` |
+| Executes | ScrollView→LinearLayout→TextView+Button, probe-click → `setText("clicked " + n)` → renders (pre-fix faint = same Δ1-contrast family, post-fix unchanged: no bg ancestor keeps the GREY_200 visibility fill) |
+| Verdict | isolated ScrollView-root is INNOCENT — the blank needed the GREY_200 mask over an ancestor bg |
+
+### S38 R-NEW-336 resolution — ROOT-CAUSED + FIXED (AOSP transparent-container law)
+
+**Chain of proof (all reproducible):**
+1. Pre-fix frame forensics: echo glyphs = RGB(224,224,224) — byte-exact `#FFE0E0E0`;
+   behind them RGB(225,225,225) = EXP-092 synthetic GREY_200 container fill. Δ1/channel.
+2. `[U007_LAYOUT_DEBUG=4]` VSTACK: echo (view id=14) measured 533×44 → 254×44 between
+   passes — the post-click string "echo: (empty)" was Laid out from real app state.
+3. Dark band geometry: content bottom 1493+56 padding = 1549 ≈ band start 1560 —
+   the masked region is exactly "below the bg-less LinearLayout", i.e. where the
+   ScrollView's own `#101418` (16,20,24 measured) stayed visible.
+4. Minimal repro `scroll_min` (no ancestor bg) → blank does NOT reproduce.
+5. Fix: execution_engine draw loop — GREY_200 fill is skipped when any ancestor
+   carries bg_color / bg drawable / bg shape (AOSP View.java transparency law).
+6. Regression: fresh full battery 92 stages — ALL pixel + interaction +
+   determinism goldens re-run PASS; 2 fails = documented missing-external-fixture
+   gap (S37-known, non-code). hello_smoke/scroll_min behavior byte-stable.
+
