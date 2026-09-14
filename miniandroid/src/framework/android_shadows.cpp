@@ -2405,6 +2405,38 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_void();
     }
+    // ── R-NEW-339: View.getAutofillId law ──────────────────────────────
+    // AOSP (View.java, API 26+): every View carries a non-null AutofillId
+    // once constructed (assigned in the View ctor; stable per view).
+    // Compose's AndroidComposeView autofill wiring does
+    //   checkNotNull(view.autofillId) (R8: Lob;.b → View.getAutofillId)
+    // while building its AutofillManager holder (Lwd; wrapper field a) —
+    // null here surfaced as ISE "Required value was null." in
+    // Lt4;.<init> and killed the dooz first composition.
+    // Law: lazily create ONE AutofillId heap object per view, memoized on
+    // the view node ("autofill_id" field) — same object on every call.
+    if (m == "getAutofillId") {
+        if (!heap_) return CallResult::handled_null();
+        const auto* n = find_node(ctx.receiver_id);
+        if (n && n->autofill_id_obj != 0 &&
+            heap_->has_object(n->autofill_id_obj)) {
+            return CallResult::handled_object(n->autofill_id_obj,
+                                              "Landroid/view/autofill/AutofillId;");
+        }
+        uint32_t aid = heap_->allocate("Landroid/view/autofill/AutofillId;");
+        if (aid != 0) {
+            // identity field: the id knows its owner view (deterministic,
+            // no randomness — mirrors AOSP ViewID = userId:sequence)
+            heap_->set_object_int_field(
+                aid, "view_id", static_cast<int32_t>(ctx.receiver_id));
+            // memoize on the mutable node lookup (the const* above is for
+            // the fast hit path only)
+            if (ViewShadow::ViewNode* mn = find_node(ctx.receiver_id))
+                mn->autofill_id_obj = aid;
+        }
+        return CallResult::handled_object(
+            aid, "Landroid/view/autofill/AutofillId;");
+    }
     if (m == "getTag") {
         const auto* n = find_node(ctx.receiver_id);
         const ViewNode::TagValue* tv = nullptr;

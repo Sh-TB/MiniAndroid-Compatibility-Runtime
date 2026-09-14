@@ -908,6 +908,10 @@ public:
         };
         TagValue default_tag;                        // View.setTag(Object) / getTag()
         std::map<int32_t, TagValue> keyed_tags;      // View.setTag(int, Object) / getTag(int)
+        // R-NEW-339: memoized per-view AutofillId heap object —
+        // View.getAutofillId() returns the SAME object every call
+        // (AOSP: assigned once in the View ctor, API 26+).
+        uint32_t autofill_id_obj = 0;
         uint32_t click_listener_id = 0;
         std::string click_listener_class;  // DEX descriptor of the listener class
         uint32_t long_click_listener_id = 0;
