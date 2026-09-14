@@ -316,3 +316,22 @@ Shared placeholder note: apps #16–#19 each render the SAME byte-identical empt
 | Verdict | **no screenshot claim** — needs budget/perf work |
 
 **Archive total: 22 registered APKs (18 executed this ledger's scope; 6 added this session).**
+
+---
+
+## S36 corpus wave 2 (2026-09-14) — six new APKs downloaded, hash-pinned, runs queued
+
+Downloaded to the APK cache this session. Each will earn its grade row after its first
+full execution (same law as every row above: no run → no screenshot claim → no grade).
+
+| # | Package | Version | Size (B) | SHA-256 | Download | Status |
+|---|---|---|---:|---|---|---|
+| 22 | `io.github.yamin8000.dooz` | 1.0.23 (vc23) — **newer Dooz variant** | 1,840,400 | `299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b` | <https://f-droid.org/repo/io.github.yamin8000.dooz_23.apk> | DOWNLOADED+HASHED — run pending |
+| 23 | `com.inspiredandroid.braincup` | 3.4.0 (vc158) — puzzle/word games collection | 10,817,984 | `27a5b3a40dd21c2a4c0c9978875bbf343dbf293b80d41497b9e3b4c37a1a5b80` | <https://f-droid.org/repo/com.inspiredandroid.braincup_158.apk> | DOWNLOADED+HASHED — run pending |
+| 24 | `de.tobiasbielefeld.solitaire` | 3.12 (vc69) — open-source Solitaire | 22,271,232 | `6b257d05f222d575639a8b411d90d7d3d39397ec737ee128cea365afc200fa9d` | <https://f-droid.org/repo/de.tobiasbielefeld.solitaire_69.apk> | DOWNLOADED+HASHED — run pending |
+| 25 | `org.secuso.privacyfriendlysudoku` | 3.2.4 (vc19) — Sudoku | 5,192,839 | `c2a582760a33b1c84d9de7247293091aea74832ab2c804337af56e21b3f06ba0` | <https://f-droid.org/repo/org.secuso.privacyfriendlysudoku_19.apk> | DOWNLOADED+HASHED — run pending |
+| 26 | `com.dozingcatsoftware.bouncy` | 1.14.0 (vc39) — physics game | 3,204,888 | `d1cd7e40e84067aa0d663534eb7ebe97d461fcfedeb32bccbe9ac4f3f3d477a0` | <https://f-droid.org/repo/com.dozingcatsoftware.bouncy_39.apk> | DOWNLOADED+HASHED — run pending |
+| 27 | `org.secuso.privacyfriendlymemory` | 1.1.1 (vc8) — memory game | 6,819,062 | `04fa2257526dcab66c9b3716403ffaaa523a75038ae0589d6cc913bfcd837397` | <https://f-droid.org/repo/org.secuso.privacyfriendlymemory_8.apk> | DOWNLOADED+HASHED — run pending |
+
+**Archive total after wave 2: 28 APKs registered (22 fully executed + 6 hash-pinned, runs queued).**
+Zero-APK law holds: names, sizes, SHA-256 hashes and F-Droid links only — no APK binary ever in git.

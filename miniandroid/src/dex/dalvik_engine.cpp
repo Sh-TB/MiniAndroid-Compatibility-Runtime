@@ -6496,6 +6496,358 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 }
             }
         }
+        // S36 (R-NEW-334 narrowed): entry-lifecycle evidence probe — env-gated
+        // MINIANDROID_S36_TRACE=1, bounded 96 lines, read-only.
+        // The upstream law (androidx/navigation NavControllerImpl):
+        //   updateBackStackLifecycle() must lift the topmost backQueue entry to
+        //   maxLifecycle >= STARTED BEFORE populateVisibleEntries() filters
+        //   { e.maxLifecycle.isAtLeast(STARTED) }. S35 proved the visible write
+        //   carried an EMPTY list; these probes pin down WHY at live-DEX level:
+        //   [S36-Q]  c.q  RET (updateBackStackLifecycle) — backQueue (c.g)
+        //            contents + each entry's maxLifecycle (b.s enum_name)
+        //   [S36-N]  c.n  RET (populateVisibleEntries) — returned list size
+        //   [S36-CB] c.b  RET (dispatchOnDestinationChanged) — backQueue size
+        //   [S36-BI] b.i  RET (maxLifecycle setter) — receiver + new state
+        //   [S36-BJ] b.j  RET (updateState) — host (b.l) + max (b.s) states
+        {
+            static thread_local const bool s36_on =
+                std::getenv("MINIANDROID_S36_TRACE") != nullptr;
+            if (s36_on) {
+                static thread_local uint64_t s36_n = 0;
+                if (s36_n < 4096) {
+                    auto enum_name_of = [&](uint32_t oid) -> std::string {
+                        if (oid == 0) return std::string("null");
+                        auto nf = heap_.get_object_field(oid, "enum_name");
+                        if (nf.has_value() &&
+                            nf->type == DalvikType::STRING_REF)
+                            return nf->string_val;
+                        return std::string("?");
+                    };
+                    // dump a z1/i (kotlin ArrayDeque) or ArrayList of entries:
+                    // field l (deque elements array) or array[N] (ArrayList)
+                    auto dump_entry_list = [&](uint32_t list_oid,
+                                               std::string& out) -> void {
+                        if (list_oid == 0 ||
+                            !heap_.has_object(list_oid)) {
+                            out += " <no-list>";
+                            return;
+                        }
+                        int cnt = 0;
+                        auto ksz = heap_.get_object_field(list_oid, "k");
+                        if (ksz.has_value() &&
+                            (ksz->type == DalvikType::INT32 ||
+                             ksz->type == DalvikType::INT64))
+                            cnt = (ksz->type == DalvikType::INT32)
+                                      ? ksz->int_val
+                                      : (int)ksz->long_val;
+                        int alen = -1;
+                        auto lenv = heap_.get_object_field(
+                            list_oid, "__array_length__");
+                        if (lenv.has_value() &&
+                            lenv->type == DalvikType::INT32)
+                            alen = lenv->int_val;
+                        // ArrayList layout: elements inline as array[N]
+                        if (alen >= 0 && cnt == 0) cnt = alen;
+                        out += " n=" + std::to_string(cnt);
+                        // kotlin ArrayDeque layout: elements array is field
+                        // l OR j (R8 field remap), ring-buffer with head i
+                        auto larr = heap_.get_object_field(list_oid, "l");
+                        auto larr_j = heap_.get_object_field(list_oid, "j");
+                        if ((!larr.has_value() ||
+                             larr->type != DalvikType::OBJECT_REF ||
+                             larr->object_id == 0 ||
+                             !heap_.has_object(larr->object_id)) &&
+                            larr_j.has_value() &&
+                            larr_j->type == DalvikType::OBJECT_REF &&
+                            larr_j->object_id != 0 &&
+                            heap_.has_object(larr_j->object_id)) {
+                            larr = larr_j;
+                        }
+                        int shown = 0;
+                        if (larr.has_value() &&
+                            larr->type == DalvikType::OBJECT_REF &&
+                            larr->object_id != 0 &&
+                            heap_.has_object(larr->object_id)) {
+                            auto al = heap_.get_object_field(
+                                larr->object_id, "__array_length__");
+                            int n = (al.has_value() &&
+                                     al->type == DalvikType::INT32)
+                                        ? al->int_val : 0;
+                            for (int idx = 0;
+                                 idx < n && shown < 6 && s36_n + shown < 96;
+                                 ++idx) {
+                                auto ev = heap_.get_object_field(
+                                    larr->object_id,
+                                    "array[" + std::to_string(idx) + "]");
+                                if (!ev.has_value() ||
+                                    ev->type != DalvikType::OBJECT_REF ||
+                                    ev->object_id == 0)
+                                    continue;
+                                uint32_t eoid = ev->object_id;
+                                auto st = heap_.get_object_field(eoid, "s");
+                                std::string stn =
+                                    (st.has_value() &&
+                                     st->type == DalvikType::OBJECT_REF)
+                                        ? enum_name_of(st->object_id)
+                                        : std::string("nostate");
+                                auto idf = heap_.get_object_field(eoid, "n");
+                                std::string eid = "?";
+                                if (idf.has_value() &&
+                                    idf->type == DalvikType::STRING_REF)
+                                    eid = idf->string_val;
+                                // destination id (b.j -> f.o) — the
+                                // updateBackStackLifecycle match key
+                                std::string dst_id = "?";
+                                auto dj = heap_.get_object_field(eoid, "j");
+                                if (dj.has_value() &&
+                                    dj->type == DalvikType::OBJECT_REF &&
+                                    dj->object_id != 0) {
+                                    auto dof = heap_.get_object_field(
+                                        dj->object_id, "o");
+                                    if (dof.has_value() &&
+                                        dof->type == DalvikType::INT32)
+                                        dst_id =
+                                            "o" +
+                                            std::to_string(dj->object_id) +
+                                            "#" +
+                                            std::to_string(dof->int_val);
+                                }
+                                out += " | e" + std::to_string(idx) +
+                                       "=o" + std::to_string(eoid) +
+                                       " id=" + eid + " max=" + stn +
+                                       " dst=" + dst_id;
+                                ++shown;
+                            }
+                        }
+                        // ArrayList layout fallback: inline array[N]
+                        if (shown == 0 && alen > 0) {
+                            for (int idx = 0;
+                                 idx < alen && shown < 6 &&
+                                 s36_n + shown < 96;
+                                 ++idx) {
+                                auto ev = heap_.get_object_field(
+                                    list_oid,
+                                    "array[" + std::to_string(idx) + "]");
+                                if (!ev.has_value() ||
+                                    ev->type != DalvikType::OBJECT_REF ||
+                                    ev->object_id == 0)
+                                    continue;
+                                uint32_t eoid = ev->object_id;
+                                auto st = heap_.get_object_field(eoid, "s");
+                                std::string stn =
+                                    (st.has_value() &&
+                                     st->type == DalvikType::OBJECT_REF)
+                                        ? enum_name_of(st->object_id)
+                                        : std::string("nostate");
+                                out += " | al" + std::to_string(idx) +
+                                       "=o" + std::to_string(eoid) +
+                                       " max=" + stn;
+                                ++shown;
+                            }
+                        }
+                    };
+                    bool s36_hit = false;
+                    std::string s36_line;
+                    if (cls_ref.name == "Landroidx/navigation/c;" &&
+                        method.name == "q") {
+                        s36_hit = true;
+                        s36_line = " [S36-Q] c.q RET";
+                        auto g =
+                            heap_.get_object_field(
+                                args.empty() ? 0 : args[0].object_id, "g");
+                        if (g.has_value() &&
+                            g->type == DalvikType::OBJECT_REF)
+                            dump_entry_list(g->object_id, s36_line);
+                        else
+                            s36_line += " <no-queue>";
+                    } else if (cls_ref.name == "Landroidx/navigation/c;" &&
+                               method.name == "n") {
+                        s36_hit = true;
+                        s36_line = " [S36-N] c.n RET ret=";
+                        if (return_val.type == DalvikType::OBJECT_REF &&
+                            return_val.object_id != 0) {
+                            s36_line += "o" +
+                                        std::to_string(return_val.object_id);
+                            auto lv = heap_.get_object_field(
+                                return_val.object_id, "__array_length__");
+                            int rn = (lv.has_value() &&
+                                      lv->type == DalvikType::INT32)
+                                         ? lv->int_val : -1;
+                            s36_line += " retsz=" + std::to_string(rn);
+                        } else {
+                            s36_line += std::string(
+                                return_val.is_null ? "NULL" : "<none>");
+                        }
+                    } else if (cls_ref.name == "Landroidx/navigation/c;" &&
+                               method.name == "b") {
+                        s36_hit = true;
+                        s36_line = " [S36-CB] c.b RET";
+                        auto g = heap_.get_object_field(
+                            args.empty() ? 0 : args[0].object_id, "g");
+                        if (g.has_value() &&
+                            g->type == DalvikType::OBJECT_REF) {
+                            auto ksz = heap_.get_object_field(
+                                g->object_id, "k");
+                            int cnt = (ksz.has_value() &&
+                                       ksz->type == DalvikType::INT32)
+                                          ? ksz->int_val : -1;
+                            s36_line += " queueN=" + std::to_string(cnt);
+                        }
+                    } else if (cls_ref.name == "Lz1/r;" &&
+                               (method.name == "F" || method.name == "z")) {
+                        // z1/r.F = reversed(AbstractList), z1/r.z = last(List)
+                        // — the first-loop iterables of updateBackStackLifecycle
+                        s36_hit = true;
+                        s36_line = std::string(" [S36-") +
+                                   (method.name == "F" ? "F" : "Z") +
+                                   "] z1/r." + method.name + " RET recv=o" +
+                                   std::to_string(
+                                       args.empty() ? 0 : args[0].object_id);
+                        if (return_val.type == DalvikType::OBJECT_REF &&
+                            return_val.object_id != 0) {
+                            s36_line += " reto=o" +
+                                        std::to_string(return_val.object_id);
+                            auto lv = heap_.get_object_field(
+                                return_val.object_id, "__array_length__");
+                            int rn = (lv.has_value() &&
+                                      lv->type == DalvikType::INT32)
+                                         ? lv->int_val : -1;
+                            s36_line += " rsz=" + std::to_string(rn);
+                            // for F: dump the destination ids in the list
+                            if (method.name == "F" && rn > 0) {
+                                for (int fi = 0;
+                                     fi < rn && fi < 6; ++fi) {
+                                    auto fe = heap_.get_object_field(
+                                        return_val.object_id,
+                                        "array[" + std::to_string(fi) + "]");
+                                    if (fe.has_value() &&
+                                        fe->type == DalvikType::OBJECT_REF &&
+                                        fe->object_id != 0) {
+                                        auto fj = heap_.get_object_field(
+                                            fe->object_id, "j");
+                                        if (fj.has_value() &&
+                                            fj->type == DalvikType::OBJECT_REF &&
+                                            fj->object_id != 0) {
+                                            auto fo = heap_.get_object_field(
+                                                fj->object_id, "o");
+                                            s36_line +=
+                                                " d" + std::to_string(fi) +
+                                                "=o" +
+                                                std::to_string(
+                                                    fe->object_id) +
+                                                "#" +
+                                                (fo.has_value() &&
+                                                 fo->type == DalvikType::INT32
+                                                     ? std::to_string(
+                                                           fo->int_val)
+                                                     : std::string("?"));
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            s36_line += std::string(
+                                return_val.is_null ? " NULL" : " <none>");
+                        }
+                    } else if (cls_ref.name == "Lz1/r;" &&
+                               method.name == "K") {
+                        // z1/r.K = toMutableList(Collection) — the copy that
+                        // updateBackStackLifecycle early-returns on when EMPTY.
+                        s36_hit = true;
+                        s36_line = " [S36-K] z1/r.K RET recv=o" +
+                                   std::to_string(
+                                       args.empty() ? 0 : args[0].object_id);
+                        if (return_val.type == DalvikType::OBJECT_REF &&
+                            return_val.object_id != 0) {
+                            auto lv = heap_.get_object_field(
+                                return_val.object_id, "__array_length__");
+                            int rn = (lv.has_value() &&
+                                      lv->type == DalvikType::INT32)
+                                         ? lv->int_val : -1;
+                            s36_line += " copysz=" + std::to_string(rn);
+                        } else {
+                            s36_line += std::string(
+                                return_val.is_null ? " NULL" : " <none>");
+                        }
+                    } else if (cls_ref.name == "Lz1/i;" &&
+                               (method.name == "isEmpty" ||
+                                method.name == "size" ||
+                                method.name == "get" ||
+                                method.name == "first" ||
+                                method.name == "last" ||
+                                method.name == "iterator")) {
+                        static thread_local uint64_t s36_dq = 0;
+                        if (s36_dq >= 40) goto s36_next;
+                        ++s36_dq;
+                        s36_hit = true;
+                        s36_line = " [S36-DQ] z1/i." + method.name +
+                                   " RET recv=o" +
+                                   std::to_string(
+                                       args.empty() ? 0 : args[0].object_id);
+                        if (method.name == "isEmpty" &&
+                            return_val.type == DalvikType::BOOLEAN)
+                            s36_line += " ret=" +
+                                        std::to_string(return_val.int_val);
+                        if (method.name == "size" &&
+                            return_val.type == DalvikType::INT32)
+                            s36_line += " ret=" +
+                                        std::to_string(return_val.int_val);
+                        if (!args.empty() &&
+                            args[0].type == DalvikType::OBJECT_REF) {
+                            auto ksz = heap_.get_object_field(
+                                args[0].object_id, "k");
+                            if (ksz.has_value() &&
+                                ksz->type == DalvikType::INT32)
+                                s36_line += " livek=" +
+                                            std::to_string(ksz->int_val);
+                        }
+                        if (return_val.type == DalvikType::OBJECT_REF &&
+                            return_val.object_id != 0)
+                            s36_line += " reto=o" +
+                                        std::to_string(return_val.object_id);
+                    } else if (cls_ref.name == "Landroidx/navigation/b;" &&
+                               method.name == "i" && args.size() >= 2) {
+                        s36_hit = true;
+                        s36_line = " [S36-BI] b.i RET recv=o" +
+                                   std::to_string(args[0].object_id) +
+                                   " max->" +
+                                   (args[1].type == DalvikType::OBJECT_REF
+                                        ? enum_name_of(args[1].object_id)
+                                        : std::string("<imm>"));
+                        auto frames = call_stack_.snapshot_top_first();
+                        for (size_t fi = 0;
+                             fi < frames.size() && fi < 2; ++fi)
+                            s36_line +=
+                                " <" + frames[fi].first + "." +
+                                frames[fi].second + ">";
+                    } else if (cls_ref.name == "Landroidx/navigation/b;" &&
+                               method.name == "j" && !args.empty()) {
+                        s36_hit = true;
+                        s36_line = " [S36-BJ] b.j RET recv=o" +
+                                   std::to_string(args[0].object_id);
+                        auto l = heap_.get_object_field(
+                            args[0].object_id, "l");
+                        auto s = heap_.get_object_field(
+                            args[0].object_id, "s");
+                        s36_line += " host=" +
+                            (l.has_value() &&
+                             l->type == DalvikType::OBJECT_REF
+                                 ? enum_name_of(l->object_id)
+                                 : std::string("?"));
+                        s36_line += " max=" +
+                            (s.has_value() &&
+                             s->type == DalvikType::OBJECT_REF
+                                 ? enum_name_of(s->object_id)
+                                 : std::string("?"));
+                    }
+                    s36_next:
+                    if (s36_hit) {
+                        ++s36_n;
+                        std::cerr << s36_line << std::endl;
+                    }
+                }
+            }
+        }
         // S33 (R-NEW-332): generic return-value trace — env-gated by
         // MINIANDROID_RET_TRACE=<class-substring>; prints the resolved
         // return value (object id/class or NULL) for every invocation
@@ -8263,6 +8615,21 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                          * APKs whose array length was never recorded. \
                          */ \
                         if (arr_len > 0) { \
+                            /* S36 (R-NEW-335): bounded AOOB evidence probe — \
+                             * which array object is indexed OOB (class + id + \
+                             * element classes when the store is heap-side). */ \
+                            { \
+                                static thread_local uint64_t s36_oob = 0; \
+                                if (std::getenv("MINIANDROID_S36_TRACE") != nullptr && s36_oob < 8) { \
+                                    ++s36_oob; \
+                                    std::cerr << "[S36-AOOB] arr=o" \
+                                              << (arr_val.type == DalvikType::OBJECT_REF ? arr_val.object_id : 0) \
+                                              << " cls=" << arr_val.class_desc \
+                                              << " len=" << arr_len << " idx=" << idx \
+                                              << " caller=" << current_class_ << "." << current_method_ \
+                                              << std::endl; \
+                                } \
+                            } \
                             /* UNIFIED_014: message aligned to ART canonical \
                              * "length=<len>; index=<idx>" (mirror/array.cc \
                              * ThrowArrayIndexOutOfBoundsException chain). */ \
@@ -8437,6 +8804,18 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     if (arr_on_heap && arr_len > 0) { \
                         /* CONFIRMED array: full AOSP semantics. */ \
                         if (idx < 0 || idx >= arr_len) { \
+                            { \
+                                static thread_local uint64_t s36_oob2 = 0; \
+                                if (std::getenv("MINIANDROID_S36_TRACE") != nullptr && s36_oob2 < 8) { \
+                                    ++s36_oob2; \
+                                    std::cerr << "[S36-AOOB-aput] arr=o" \
+                                              << arr_val.object_id \
+                                              << " cls=" << arr_val.class_desc \
+                                              << " len=" << arr_len << " idx=" << idx \
+                                              << " caller=" << current_class_ << "." << current_method_ \
+                                              << std::endl; \
+                                } \
+                            } \
                             log("⚠️ APUT out of bounds: arr_len=" + std::to_string(arr_len) + \
                                 " idx=" + std::to_string(idx)); \
                             std::string oob_msg = "length=" + std::to_string(arr_len) + \
@@ -17601,6 +17980,144 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         std::memcpy(&f, &bits, sizeof(f));
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_float(f);
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // F-101 (S36, R-NEW-334 ROOT): java.util.ArrayList.<init>(Collection)
+    // constructor law — the copy-constructor must CONSUME the source
+    // collection (JDK contract: elementData = c.toArray(); size = length).
+    //
+    // ROOT CAUSE (dooz R-NEW-334, S36 live probes run/s36_probe2):
+    // kotlin's toMutableList (obfuscated z1/r.K) is exactly
+    //   new-instance ArrayList; invoke-direct ArrayList;-><init>(Collection)
+    // The ctor was UNHANDLED — silently producing an EMPTY ArrayList with no
+    // element store ([S36-K] copysz=-1). Consequence chain, all live-probed:
+    //   c.q (updateBackStackLifecycle) copies backQueue via z1/r.K → EMPTY →
+    //   upstream early-return "if (backStack.isEmpty()) return" → the
+    //   upward-transitions map never fills → NavBackStackEntry.maxLifecycle
+    //   setter b.i NEVER fires ([S36-BI] zero hits) → entries stay
+    //   INITIALIZED ([S36-BJ] host=CREATED→STARTED→RESUMED, max=INITIALIZED)
+    //   → populateVisibleEntries (c.n) filters {max >= STARTED} → EMPTY
+    //   visible list ([S36-N] o2914, the S35 object) → NavHost never
+    //   recomposes → 1 LayoutNode / 0 canvas ops / placeholder frame.
+    // The F-091 iterator protocol itself WORKS ([S36-DQ] z1/i.get ×2 returned
+    // the real entries during c.n's walk) — only the ctor-side copy was dead.
+    //
+    // UPSTREAM LAW (OpenJDK java.util.ArrayList):
+    //   public ArrayList(Collection<? extends E> c) {
+    //       elementData = c.toArray();
+    //       size = elementData.length;
+    //   }
+    // GitHub: https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/ArrayList.java
+    // kotlin toMutableList(Collection):
+    // https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/common/src/kotlin/collections/Collections.kt
+    // Reads go through the source's OWN authoritative protocol — the same
+    // readers the F-091 iterator law uses (size()/get(I) via
+    // try_recursive_invoke against DEX-defined receivers; F-036 backing store
+    // fast path for shadow ArrayLists). No field-layout guessing.
+    // ────────────────────────────────────────────────────────────────────
+    if (method == "<init>" &&
+        (class_name == "Ljava/util/ArrayList;" ||
+         class_name.find("ArrayList") != std::string::npos ||
+         class_name == "Ljava/util/LinkedList;") &&
+        args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
+        args[1].type == DalvikType::OBJECT_REF &&
+        args[1].object_id != 0) {
+        uint32_t f101_arr = args[0].object_id;
+        uint32_t f101_src = args[1].object_id;
+        const auto* f101_sobj = heap_.get(f101_src);
+        std::string f101_scls =
+            f101_sobj ? f101_sobj->class_descriptor : args[1].class_desc;
+        bool f101_dex_src = f101_sobj != nullptr && !f101_scls.empty() &&
+                            f101_scls[0] == 'L' &&
+                            class_info_index_.find(f101_scls) !=
+                                class_info_index_.end();
+        // Source size: F-036 backing store fast path, else real size().
+        int32_t f101_n = -1;
+        auto f101_slen =
+            heap_.get_object_field(f101_src, "__array_length__");
+        if (f101_slen.has_value() && f101_slen->type == DalvikType::INT32)
+            f101_n = f101_slen->int_val;
+        if (f101_n < 0 && f101_dex_src) {
+            std::vector<DalvikValue> cb_args{args[1]};
+            DalvikValue cb_ret;
+            DalvikExecutionResult cb_res;
+            if (try_recursive_invoke(f101_scls, "size", cb_args, cb_ret,
+                                     cb_res, "()I") &&
+                cb_ret.type == DalvikType::INT32)
+                f101_n = cb_ret.int_val;
+        }
+        int32_t f101_copied = 0;
+        std::vector<uint32_t> f101_elem_ids;  // object-id elements for the
+                                              // REGISTRY-side store (the
+                                              // CollectionShadow keeps its
+                                              // own state — see F-101 note
+                                              // at the write-back below)
+        if (f101_n > 0) {
+            for (int32_t f101_i = 0; f101_i < f101_n; ++f101_i) {
+                DalvikValue f101_elem;
+                bool f101_got = false;
+                if (f101_slen.has_value()) {
+                    auto f101_ev = heap_.get_object_field(
+                        f101_src,
+                        "array[" + std::to_string(f101_i) + "]");
+                    if (f101_ev.has_value()) {
+                        f101_elem = *f101_ev;
+                        f101_got = true;
+                    }
+                }
+                if (!f101_got && f101_dex_src) {
+                    DalvikValue f101_idx;
+                    f101_idx.type = DalvikType::INT32;
+                    f101_idx.int_val = f101_i;
+                    std::vector<DalvikValue> gargs{args[1], f101_idx};
+                    DalvikValue gret;
+                    DalvikExecutionResult gres;
+                    if (try_recursive_invoke(f101_scls, "get", gargs, gret,
+                                             gres,
+                                             "(I)Ljava/lang/Object;")) {
+                        f101_elem = gret;
+                        f101_got = true;
+                    }
+                }
+                if (f101_got && !f101_elem.is_null) {
+                    heap_.set_object_field(
+                        f101_arr,
+                        "array[" + std::to_string(f101_copied) + "]",
+                        f101_elem);
+                    if (f101_elem.type == DalvikType::OBJECT_REF &&
+                        f101_elem.object_id != 0)
+                        f101_elem_ids.push_back(f101_elem.object_id);
+                    ++f101_copied;
+                }
+            }
+        }
+        heap_.set_object_field(f101_arr, "__array_length__",
+                               DalvikValue::make_int(f101_copied));
+        // F-101 write-back into the REGISTRY-side store. In registry mode
+        // (shadow_registry_ != nullptr) the engine-side heap fields are
+        // INVISIBLE to the framework collection shadow: ArrayList.isEmpty/
+        // size/get answer from CollectionShadow::CollectionState::elements.
+        // Writing ONLY the heap fields (the first F-101 cut) produced copies
+        // that still answered EMPTY — updateBackStackLifecycle's
+        // "if (backStack.isEmpty()) return" fired anyway. Both stores are
+        // kept coherent here (the 21196 engine-side block is skipped in
+        // registry mode; in non-registry mode the heap fields are the
+        // authoritative store — two parallel modes, one law).
+        if (shadow_registry_ != nullptr && !f101_elem_ids.empty()) {
+            auto* f101_csh =
+                shadow_registry_->find_as<framework::CollectionShadow>();
+            if (f101_csh) {
+                auto* f101_st = f101_csh->get_or_create(f101_arr,
+                                                        /*is_map=*/false);
+                if (f101_st) {
+                    f101_st->elements = f101_elem_ids;
+                    f101_st->is_map = false;
+                }
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
         return true;
     }
     if ((class_name == "Ljava/util/ArrayList;" ||
