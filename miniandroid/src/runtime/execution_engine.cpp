@@ -2921,6 +2921,19 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
 
 bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_capture_output", "Capturing output");
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-340: post-lifecycle frame pump (the last-frame law).
+    // The F-050 launch pump runs BEFORE onCreate's composition finishes —
+    // dooz23's Recomposer posts its Choreographer.FrameCallback
+    // (cb=757, [CHOREO] postFrameCallback) DURING onCreate, after the
+    // launch pump already saw quiescence. Nothing re-pumped, the callback
+    // starved, withFrameNanos never resumed, and the composition produced
+    // zero content nodes (white frame). AOSP: vsync keeps firing while the
+    // app lives — the pump before capture mirrors that final tick so every
+    // posted-but-undispatched callback resumes before the screenshot.
+    // ────────────────────────────────────────────────────────────────────
+    pump_compose_frames(/*max_frames=*/16);
+    trace_engine_.info("ExecutionEngine", "stage_capture_output", "post-lifecycle frame pump done");
     
     if (!config.generate_screenshot) {
         trace_engine_.info("ExecutionEngine", "stage_capture_output", "Screenshot generation disabled");
