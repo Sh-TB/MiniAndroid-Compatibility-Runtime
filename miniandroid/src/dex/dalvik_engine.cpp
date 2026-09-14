@@ -1225,11 +1225,24 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
     // The merged dex_report pointer (dex_report_) was just set above, so
     // this is the earliest point we can call inject_secondary_dex_classes().
     inject_secondary_dex_classes();
+
     DalvikExecutionResult result;
     result.apk_name = apk_path.substr(apk_path.find_last_of("/\\") + 1);
     result.timestamp = get_timestamp();
     result.dex_report = &dex_report;
-    
+
+    // [R341-APP] AOSP handleBindApplication: bind the manifest Application
+    // class RIGHT AFTER DEX infrastructure is ready and BEFORE any activity
+    // work. App.onCreate (Dagger/Hilt component graphs, Koin start, etc.)
+    // now executes with full method_idx resolution and multi-DEX classes.
+    {
+        uint32_t bound_app = bind_manifest_application(result);
+        if (bound_app != 0) {
+            std::cerr << "[R341-APP] bound application obj#" << bound_app
+                      << " (" << application_class_desc_ << ")" << std::endl;
+        }
+    }
+
     auto start_time = Clock::now();
     
     log("Executing APK: " + apk_path);
@@ -1341,15 +1354,31 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                     // and postInitApplication halts at PC=8.
                     //
                     // 1. Create the Application/Context singleton
-                    uint32_t app_ctx_id = heap_.allocate(
-                        "Landroid/app/Application;",
-                        0,  // pc=0 (pre-execution)
-                        0   // frame_id=0 (pre-execution)
-                    );
+                    // [R341-APP] When the AOSP bind law already attached the
+                    // manifest Application class (bind_manifest_application,
+                    // obj identity + real DEX lifecycle), REUSE that object —
+                    // allocating a second plain Landroid/app/Application;
+                    // here would fork the process application identity.
+                    uint32_t app_ctx_id;
+                    std::string app_ctx_desc;
+                    if (application_object_id_ != 0 &&
+                        heap_.has_object(application_object_id_)) {
+                        app_ctx_id = application_object_id_;
+                        app_ctx_desc = application_class_desc_.empty()
+                                           ? "Landroid/app/Application;"
+                                           : application_class_desc_;
+                    } else {
+                        app_ctx_id = heap_.allocate(
+                            "Landroid/app/Application;",
+                            0,  // pc=0 (pre-execution)
+                            0   // frame_id=0 (pre-execution)
+                        );
+                        app_ctx_desc = "Landroid/app/Application;";
+                    }
                     DalvikValue app_ctx_val;
                     app_ctx_val.type = DalvikType::OBJECT_REF;
                     app_ctx_val.object_id = app_ctx_id;
-                    app_ctx_val.class_desc = "Landroid/app/Application;";
+                    app_ctx_val.class_desc = app_ctx_desc;
                     // Store as ApplicationLoader.applicationContext static field
                     static_field_storage_["Lorg/telegram/messenger/ApplicationLoader;.applicationContext"]
                         = app_ctx_val;
@@ -3528,6 +3557,152 @@ void DalvikExecutionEngine::run_activity_default_init(const std::string& cls,
     } catch (const std::exception& e) {
         log(std::string("⚠️ activity <init> dispatch skipped: ") + e.what());
     }
+}
+
+// ── R-NEW-341 (S40): AOSP handleBindApplication law ──────────────────────
+// ActivityThread.handleBindApplication → LoadedApk.makeApplication →
+//   instrumentation.newApplication(appClass) → app.<init>() →
+//   app.attachBaseContext(appContext) → Instrumentation
+//   .callApplicationOnCreate(app) → app.onCreate()
+// ALL of it happens BEFORE any activity instantiation, and the resulting
+// object is THE application identity for the whole process:
+//   - Activity.getApplication() / getApplicationContext() return it,
+//   - DI frameworks type-check it (Hilt: instanceof Application, then
+//     Lxb0;.d() unwrap → Dagger component — dooz23 Lk2;.b evidence).
+// The runtime hands the manifest android:name class via
+// set_application_class_hint(); self-discovery (single DEX class whose
+// direct superclass is Landroid/app/Application;) covers callers that
+// never parsed a manifest. Runs INSIDE execute_apk_with_activity after
+// dex_report_ + secondary-DEX injection, so App.onCreate executes with
+// full DEX infrastructure (the old runtime-side bind ran with
+// dex_report=NULL — [TRY-ENTRY] dex_report=NULL evidence in run r340 —
+// and dooz23's App.onCreate Dagger-component build silently degraded).
+uint32_t DalvikExecutionEngine::bind_manifest_application(
+    DalvikExecutionResult& result) {
+    std::string app_class = application_class_hint_;
+    if (!app_class.empty()) {
+        // Normalize dotted/hint forms to descriptor form.
+        if (app_class[0] != 'L') {
+            std::replace(app_class.begin(), app_class.end(), '.', '/');
+            if (app_class[0] != 'L') app_class = "L" + app_class;
+            if (app_class.back() != ';') app_class += ";";
+        }
+    } else if (dex_report_ != nullptr) {
+        // Self-discovery: exactly one app-bundled Application subclass.
+        size_t hits = 0;
+        for (const auto& cd : dex_report_->classes) {
+            if (cd.superclass_name == "Landroid/app/Application;") {
+                app_class = cd.name;
+                ++hits;
+            }
+        }
+        if (hits > 1) {
+            std::cerr << "[R341-APP] ambiguous Application subclass set ("
+                      << hits << " hits) — refusing to guess" << std::endl;
+            app_class.clear();
+        }
+    }
+    if (app_class.empty()) {
+        // No custom Application class — AOSP default android.app.Application.
+        DalvikValue app_singleton =
+            get_or_create_singleton("Landroid/app/Application;");
+        application_object_id_ = app_singleton.object_id;
+        application_class_desc_ = "Landroid/app/Application;";
+        std::cerr << "[R341-APP] default Application bound: obj#"
+                  << application_object_id_ << std::endl;
+        return application_object_id_;
+    }
+    if (class_to_superclass_.find(app_class) == class_to_superclass_.end()) {
+        std::cerr << "[R341-APP] hint class " << app_class
+                  << " not present in DEX — default Application fallback"
+                  << std::endl;
+        DalvikValue app_singleton =
+            get_or_create_singleton("Landroid/app/Application;");
+        application_object_id_ = app_singleton.object_id;
+        application_class_desc_ = "Landroid/app/Application;";
+        return application_object_id_;
+    }
+
+    uint32_t app_obj_id = heap_.allocate(app_class, 0, 0);
+    if (app_obj_id == 0) {
+        std::cerr << "[R341-APP] heap allocation failed for " << app_class
+                  << std::endl;
+        return 0;
+    }
+    std::cerr << "[R341-APP] instantiating Application " << app_class
+              << " obj#" << app_obj_id << " (post-DEX-inject, AOSP order)"
+              << std::endl;
+
+    application_object_id_ = app_obj_id;
+    application_class_desc_ = app_class;
+
+    // <init>()V — instance-field initializers (dooz App: flag e=false +
+    // Lpc; lazy Dagger-holder construction).
+    try {
+        DalvikValue this_val = DalvikValue::make_object(app_obj_id, app_class);
+        DalvikValue ret;
+        std::vector<DalvikValue> init_args;
+        init_args.push_back(this_val);
+        bool ok = try_recursive_invoke(app_class, "<init>", init_args, ret,
+                                       result, "()V");
+        std::cerr << "[R341-APP] <init> " << (ok ? "OK" : "SKIPPED")
+                  << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "[R341-APP] <init> threw (recorded, bind continues): "
+                  << e.what() << std::endl;
+    }
+    // attachBaseContext(Context) — AOSP binds the app context here. App
+    // classes rarely override it; a REC-MISS is the honest no-op.
+    try {
+        DalvikValue this_val = DalvikValue::make_object(app_obj_id, app_class);
+        DalvikValue ret;
+        std::vector<DalvikValue> attach_args;
+        attach_args.push_back(this_val);
+        attach_args.push_back(DalvikValue::make_null());  // base context
+        try_recursive_invoke(app_class, "attachBaseContext", attach_args, ret,
+                             result);
+    } catch (const std::exception&) {
+        // no-op — not every app class declares it
+    }
+    // onCreate() — the REAL component build runs here (dooz: flag guard +
+    // Lpc;.d() → Dagger SingletonComponent Lps; graph).
+    try {
+        DalvikValue this_val = DalvikValue::make_object(app_obj_id, app_class);
+        DalvikValue ret;
+        std::vector<DalvikValue> create_args;
+        create_args.push_back(this_val);
+        size_t before = result.total_instructions_executed;
+        bool ok = try_recursive_invoke(app_class, "onCreate", create_args, ret,
+                                       result);
+        std::cerr << "[R341-APP] onCreate "
+                  << (ok ? "OK" : "SKIPPED") << " ins="
+                  << (result.total_instructions_executed - before) << std::endl;
+    } catch (const std::exception& e) {
+        // AOSP would kill the process; the engine degrades gracefully and
+        // keeps the evidence honest in the log.
+        std::cerr << "[R341-APP] onCreate threw (recorded, bind continues): "
+                  << e.what() << std::endl;
+    }
+
+    // Telegram contract (EXP-043): ApplicationLoader.applicationContext
+    // static field carries the REAL bound application object now.
+    static_field_storage_["Lorg/telegram/messenger/ApplicationLoader;.applicationContext"] =
+        DalvikValue::make_object(app_obj_id, app_class);
+
+    // Publish the identity to the Activity shadow so the shadow-side
+    // getApplicationContext() serves the SAME object (dual-dispatch law:
+    // engine P0.7 and shadows must never disagree on object identity).
+    if (shadow_registry_ != nullptr) {
+        auto* activity_shadow =
+            shadow_registry_->find_as<framework::ActivityShadow>();
+        if (activity_shadow != nullptr) {
+            activity_shadow->set_application_heap_identity(app_obj_id,
+                                                           app_class);
+            std::cerr << "[R341-APP] identity published to ActivityShadow"
+                      << std::endl;
+        }
+    }
+    return app_obj_id;
 }
 
 // ── F-058 (R-NEW-279): Application.dispatchActivity* fan-out ────────────
@@ -18976,11 +19151,27 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
 
     // P0.7 — Context.getApplicationContext → Context singleton
     // ────────────────────────────────────────────────────────────────────────
+    // [R341-APPCTX] AOSP identity law: getApplicationContext() returns THE
+    // Application instance ActivityThread created (handleBindApplication).
+    // Hilt/DI chains type-check this object: dooz23 Lk2;.b pc=776..880 did
+    // getApplicationContext() → instanceof Application → ContextWrapper
+    // base walk → threw ISE "Could not find an Application in the given
+    // context" when the previous law served a plain Context singleton.
     if (method == "getApplicationContext" &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos ||
-         class_name.find("Application") != std::string::npos)) {
-        result = get_or_create_singleton("Landroid/content/Context;");
+         class_name.find("Application") != std::string::npos ||
+         class_name.find("Application;") != std::string::npos)) {
+        if (application_object_id_ != 0 &&
+            heap_.has_object(application_object_id_)) {
+            result = DalvikValue::make_object(
+                application_object_id_,
+                application_class_desc_.empty()
+                    ? "Landroid/app/Application;"
+                    : application_class_desc_);
+        } else {
+            result = get_or_create_singleton("Landroid/content/Context;");
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -20703,6 +20894,49 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (method == "getName" && !dotted.empty()) {
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_string(dotted, 0);
+            return true;
+        }
+        // ────────────────────────────────────────────────────────────────
+        // R-NEW-343 (S40): java.lang.Class.cast(Object) — AOSP law:
+        // cast(null) → null; castable → the SAME reference; otherwise
+        // ClassCastException. Hilt's component-holder unwrap
+        // (Lpm;.B: "if (obj instanceof Lwb0;) return Ll2;.cast(obj)")
+        // routes EVERY DI resolution through it — dooz23 evidence: the
+        // unimplemented call answered null, so Lns;(null-parent) →
+        // Lls;(null component) → Settings field injected null →
+        // "lateinit property settings has not been initialized" ISE
+        // killed the first composition (runs r341..r353).
+        // ────────────────────────────────────────────────────────────────
+        if (method == "cast" && args.size() >= 2 && !dotted.empty()) {
+            const DalvikValue& cast_arg = args[1];
+            if (cast_arg.type != DalvikType::OBJECT_REF ||
+                cast_arg.object_id == 0) {
+                // AOSP: cast(null) is null. Non-object args also map to null.
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            std::string obj_cls = cast_arg.class_desc;
+            if (obj_cls.empty() && heap_.has_object(cast_arg.object_id)) {
+                obj_cls = heap_.get(cast_arg.object_id)->class_descriptor;
+            }
+            // normalize the target descriptor for the hierarchy walk
+            std::string target_desc = referent_desc;
+            if (is_subclass_of(obj_cls, target_desc)) {
+                result = cast_arg;  // identity: cast returns the SAME reference
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                std::cerr << "[R343-CAST] " << obj_cls << " as " << target_desc
+                          << " obj#" << cast_arg.object_id << " OK"
+                          << std::endl;
+                return true;
+            }
+            // AOSP ClassCastException with the canonical message — thrown
+            // via the deferred-exception machinery (real handler dispatch
+            // or honest frame unwind, never a silent null).
+            std::string cce_msg = obj_cls + " cannot be cast to " + target_desc;
+            std::cerr << "[R343-CAST] CCE: " << cce_msg << std::endl;
+            throw_deferred("Ljava/lang/ClassCastException;", cce_msg, "R343-CAST");
+            status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
         // ────────────────────────────────────────────────────────────────

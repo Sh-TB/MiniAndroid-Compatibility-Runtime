@@ -1240,6 +1240,22 @@ bool ApplicationRuntime::execute_on_create() {
 
         if (config_.verbose) { std::cout << "  Starting DEX execution..." << std::endl; }
 
+        // [R341-APP] hand the manifest Application class to the engine so
+        // bind_manifest_application (AOSP handleBindApplication law) binds
+        // it after DEX injection — the same contract the main runtime path
+        // (runtime/execution_engine.cpp) honors.
+        if (manifest_info_ && !manifest_info_->application_name.empty()) {
+            std::string app_hint = manifest_info_->application_name;
+            if (!app_hint.empty() && app_hint[0] != 'L') {
+                std::replace(app_hint.begin(), app_hint.end(), '.', '/');
+                if (!app_hint.empty() && app_hint[0] != 'L') app_hint = "L" + app_hint;
+                if (!app_hint.empty() && app_hint.back() != ';') app_hint += ";";
+            }
+            dalvik_engine.set_application_class_hint(app_hint);
+            std::cerr << "[EXP093-APP] hint forwarded to engine: "
+                      << app_hint << std::endl;
+        }
+
         auto dalvik_result = dalvik_engine.execute_apk_with_activity(
             apk_path_, *dex_report_, activity_class, false //verbose
         );

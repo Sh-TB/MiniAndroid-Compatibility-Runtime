@@ -140,6 +140,16 @@ public:
     virtual uint32_t get_or_create(const std::string& class_desc) = 0;
     // Test whether an object exists in the heap.
     virtual bool has_object(uint32_t object_id) = 0;
+
+    // [R342-COWSET] Runtime class of a heap object for shadow-returned
+    // elements. next()/get() must return the element's REAL class so
+    // invoke-interface/vtable dispatch finds the DEX implementation
+    // (dooz23: the lifecycle observer yielded as Ljava/lang/Object; was
+    // undispatchable → Hilt field injection never ran → lateinit ISE).
+    virtual bool get_object_class(uint32_t object_id, std::string& out) {
+        (void)object_id; (void)out;
+        return false;
+    }
     // CYCLE-E: generic object field reads for shadows (RectF geometry,
     // synthesized framework enum ordinals).
     virtual bool get_object_float_field(uint32_t object_id,

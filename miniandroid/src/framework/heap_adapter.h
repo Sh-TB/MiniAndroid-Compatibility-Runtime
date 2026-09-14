@@ -52,6 +52,15 @@ public:
         return heap_->has_object(object_id);
     }
 
+    // [R342-COWSET] expose the runtime class of heap objects to shadows.
+    bool get_object_class(uint32_t object_id, std::string& out) override {
+        if (!heap_) return false;
+        auto* o = heap_->get(object_id);
+        if (!o) return false;
+        out = o->class_descriptor;
+        return !out.empty();
+    }
+
     // CYCLE-E: expose heap float fields to shadows (RectF geometry reads).
     bool get_object_float_field(uint32_t object_id,
                                 const std::string& field_name,
