@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/w_bg">
+
+    <LinearLayout
+        android:id="@+id/w_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/w_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/w_title"
+            android:textColor="@color/w_title_c"
+            android:textSize="22sp" />
+
+        <ImageView
+            android:id="@+id/w_image"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/w_banner" />
+
+        <EditText
+            android:id="@+id/w_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="@string/w_hint"
+            android:textColor="@color/w_text_c" />
+
+        <Button
+            android:id="@+id/w_btn_echo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="ECHO" />
+
+        <TextView
+            android:id="@+id/w_echo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/w_echo_default"
+            android:textColor="@color/w_text_c" />
+
+        <TableLayout
+            android:id="@+id/w_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    android:text="@string/w_table_head_l"
+                    android:textColor="@color/w_title_c" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    android:text="@string/w_table_head_r"
+                    android:textColor="@color/w_title_c" />
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    android:text="@string/w_table_row1_l"
+                    android:textColor="@color/w_text_c" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    android:text="@string/w_table_row1_r"
+                    android:textColor="@color/w_text_c" />
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    android:text="@string/w_table_row2_l"
+                    android:textColor="@color/w_text_c" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    android:text="@string/w_table_row2_r"
+                    android:textColor="@color/w_text_c" />
+            </TableRow>
+        </TableLayout>
+
+        <RelativeLayout
+            android:id="@+id/w_rel"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/w_rel_a"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/w_rel_a"
+                android:textColor="@color/w_box_c"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/w_rel_b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/w_rel_a"
+                android:layout_marginTop="10dp"
+                android:text="@string/w_rel_b"
+                android:textColor="@color/w_text_c" />
+        </RelativeLayout>
+    </LinearLayout>
+</ScrollView>

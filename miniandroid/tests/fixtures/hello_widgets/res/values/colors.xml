@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="w_bg">#FF101418</color>
+    <color name="w_title_c">#FF4FC3F7</color>
+    <color name="w_text_c">#FFE0E0E0</color>
+    <color name="w_box_c">#FF1B5E20</color>
+    <color name="w_edit_c">#FF263238</color>
+</resources>
