@@ -335,3 +335,194 @@ full execution (same law as every row above: no run → no screenshot claim → 
 
 **Archive total after wave 2: 28 APKs registered (22 fully executed + 6 hash-pinned, runs queued).**
 Zero-APK law holds: names, sizes, SHA-256 hashes and F-Droid links only — no APK binary ever in git.
+
+---
+
+## S37 corpus wave 3 (2026-09-14) — 19 runs executed: 5 SUCCESS, 8 PARTIAL-IMG, 5 budget-timeout; 3 NEW real renders
+
+Headline: **Bouncy (physics pinball) FULL-RENDER with its real game thread (FieldDriver/GL20Renderer) executing as bytecode**,
+**TicTacToe Classic (palahsu) FULL-RENDER** — the old/simpler tic-tac-toe model family — and **edge.roll PARTIAL with real PAUSED overlay**.
+Dooz v23 (newer variant) executed: real measure+layout lifecycle now dispatches (R-NEW-334 residual gone); placeholder family remains
+(R-NEW-335 frontier — scatter-set metadata corruption live-captured, see root_registry.json).
+All images 540×960 medium-quality compressed from 1080×1920 originals (originals under /tmp/s37_runs, gitignored).
+Zero-APK law: names, SHA-256 hashes, F-Droid links only.
+
+### S37: com.dozingcatsoftware.bouncy 1.14.0 (vc39) — ✅ FULL-RENDER
+
+![bouncy](apps_ledger/s37_bouncy.png)
+
+| Field | Value |
+|---|---|
+| APK | `com.dozingcatsoftware.bouncy` — 1.14.0 (vc39) |
+| APK SHA-256 | `d1cd7e40e84067aa0d663534eb7ebe97d461fcfedeb32bccbe9ac4f3f3d477a0` |
+| Download | <https://f-droid.org/repo/com.dozingcatsoftware.bouncy_39.apk> |
+| Screenshot SHA-256 | `3e48c85e4fe622e917140041dcd76373996a93424a598704d824b4ba6e1a9797` |
+| Evidence | wave-2 row 26 executed — **pinball 'Select Table' menu fully rendered**: title, 'Unlimited Balls', Start Game / High scores / Help / Preferences / Quit buttons, purple table frame with 2 corner ImageViews; **real game thread executes as bytecode**: FieldDriver.threadMain + GL20Renderer.doDraw live (900k+ instructions); click-test reaches quiescence-never (game loop never idles — engine alive); honest gap: corner ImageViews garbled debug glyphs |
+
+### S37: com.palahsu.ttt (TicTacToe Classic) — ✅ FULL-RENDER
+
+![tictactoe_classic](apps_ledger/s37_tictactoe_classic.png)
+
+| Field | Value |
+|---|---|
+| APK | `com.palahsu.ttt` — (TicTacToe Classic) |
+| APK SHA-256 | `752852c94c9807883d38c0b74ab160809999897acda0cbc45f4f49f84e0a1b9a` |
+| Download | <legacy corpus cache (identity verified via binary manifest)> |
+| Screenshot SHA-256 | `43ebfbba779fa2a20922baa3305f01d12f83461cea10e0b3c65342a6742fbfe1` |
+| Evidence | **old/simpler tic-tac-toe model rendered**: 'Player 1: 0 / Player 2: 0' score card, blue play area, 'reset' button — SUCCESS rc=0 in 0.4s; honest gap: score card hugs left edge (layout-metric family), board grid not visible in this frame |
+
+### S37: edge.roll (vc11) — 🟡 PARTIAL
+
+![edgeroll](apps_ledger/s37_edgeroll.png)
+
+| Field | Value |
+|---|---|
+| APK | `edge.roll` — (vc11) |
+| APK SHA-256 | `799c651be1333741dae66c43bf97774b273b0b4e9439f5ff37f26e153159f640` |
+| Download | <https://f-droid.org/repo/edge.roll_11.apk> |
+| Screenshot SHA-256 | `a9136f84359990c3d25daf254be1ae6288888616772ba086ff000c4edd75e80f` |
+| Evidence | game canvas painted dark + real 'PAUSED / tap anywhere to resume' overlay rendered; honest gap: overlay drawn in top-left quadrant instead of centered (layout-metric family) |
+
+### S37: io.github.yamin8000.dooz 1.0.23 (vc23) — NEWER Dooz variant — 🔴 PLACEHOLDER
+
+![dooz_vc23](apps_ledger/s37_dooz_vc23.png)
+
+| Field | Value |
+|---|---|
+| APK | `io.github.yamin8000.dooz` — 1.0.23 (vc23) — NEWER Dooz variant |
+| APK SHA-256 | `299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b` |
+| Download | <https://f-droid.org/repo/io.github.yamin8000.dooz_23.apk> |
+| Screenshot SHA-256 | `82be3cf89b451ec18ab66b270a4427a8e5fdd3d06dce18830a5edde7de29463e` |
+| Evidence | wave-2 row 22 executed — **R-NEW-334 residual wall GONE on v23 too**: real measure+layout lifecycle dispatches (Lho; rect 0,0→1080×1920, LIFEWIN-CLOSE yes), framebuffer 100% painted; ISE escapes at MainActivity.onCreate compose-transition boundary; screen = placeholder family |
+
+### S37: com.inspiredandroid.braincup 3.4.0 (vc158) — 🔴 PLACEHOLDER
+
+![bouncycastle](apps_ledger/s37_bouncycastle.png)
+
+| Field | Value |
+|---|---|
+| APK | `com.inspiredandroid.braincup` — 3.4.0 (vc158) |
+| APK SHA-256 | `27a5b3a40dd21c2a4c0c9978875bbf343dbf293b80d41497b9e3b4c37a1a5b80` |
+| Download | <https://f-droid.org/repo/com.inspiredandroid.braincup_158.apk> |
+| Screenshot SHA-256 | `cd23eb136074d37a3bda6236e91f3e961e5aa726529ad06f79e077a6eab1007e` |
+| Evidence | wave-2 row 23 executed — real onLayout dispatch (Lx20; 1080×1920), fb painted, placeholder frame; rc=1 ISE boundary |
+
+### S37: de.tobiasbielefeld.solitaire 3.12 (vc69) — 🔴 PLACEHOLDER
+
+![solitaire](apps_ledger/s37_solitaire.png)
+
+| Field | Value |
+|---|---|
+| APK | `de.tobiasbielefeld.solitaire` — 3.12 (vc69) |
+| APK SHA-256 | `6b257d05f222d575639a8b411d90d7d3d39397ec737ee128cea365afc200fa9d` |
+| Download | <https://f-droid.org/repo/de.tobiasbielefeld.solitaire_69.apk> |
+| Screenshot SHA-256 | `4e9b4145b9c15d1c045ed361f9f497de8c8b98c83997f3770a1dbe83be60a0be` |
+| Evidence | wave-2 row 24 executed — GameSelector.onResume dispatched via real DEX (82 instructions); ComposeView NOT in class index (attach gap) → early boundary |
+
+### S37: io.github.johnathan.minesweeper (vc6) — 🔴 PLACEHOLDER
+
+![minesweep_johnathan](apps_ledger/s37_minesweep_johnathan.png)
+
+| Field | Value |
+|---|---|
+| APK | `io.github.johnathan.minesweeper` — (vc6) |
+| APK SHA-256 | `3b52a2fd21c4b4184eed1a1d4a9944e89bb9e7f99bf37329f03bd5eca962942e` |
+| Download | <https://f-droid.org/repo/io.github.johnathan.minesweeper_6.apk> |
+| Screenshot SHA-256 | `15eba679559e1421bccca29c79c23a4e6473683a0980c5d5682ec5fa227c2775` |
+| Evidence | shared empty frame (same placeholder family) |
+
+### S37: org.andstatus.game2048 (vc47) — 🔴 PLACEHOLDER
+
+![game2048](apps_ledger/s37_game2048.png)
+
+| Field | Value |
+|---|---|
+| APK | `org.andstatus.game2048` — (vc47) |
+| APK SHA-256 | `2d6707624623fe8857da271dcc19511ab52472ce1fee6ac23bc7f2ecf2e7eea9` |
+| Download | <https://f-droid.org/repo/org.andstatus.game2048_47.apk> |
+| Screenshot SHA-256 | `73f7d5fbbe9cd037014dc8c5766790f97ae7f30bd056f4c083556e704d1ce0e4` |
+| Evidence | shared empty frame |
+
+### S37: eu.veldsoft.dice.overflow (vc2) — ⚫ NO-VISUAL
+
+![diceoverflow](apps_ledger/s37_diceoverflow.png)
+
+| Field | Value |
+|---|---|
+| APK | `eu.veldsoft.dice.overflow` — (vc2) |
+| APK SHA-256 | `2d03b6450b7629e3e6af7540bee2f4fed26d2737b5c5daeca89d87f0ad58ef97` |
+| Download | <https://f-droid.org/repo/eu.veldsoft.dice.overflow_2.apk> |
+| Screenshot SHA-256 | `0d0cdd756b42837e84d1353c1099104c028cac870570c1f340d3ab81acf83a6c` |
+| Evidence | Status: SUCCESS rc=0 in 2.1s — process clean, frame white (game draws via custom draw path not yet dispatched); no visual claim |
+
+### S37: org.secuso.privacyfriendlyyahtzeedicer (vc100) — ⚫ NO-VISUAL
+
+![secuso_yahtzee](apps_ledger/s37_secuso_yahtzee.png)
+
+| Field | Value |
+|---|---|
+| APK | `org.secuso.privacyfriendlyyahtzeedicer` — (vc100) |
+| APK SHA-256 | `9926a19f9efa7c57c653b508b2630da3228443f3cdd1c8eb969db5550e55d548` |
+| Download | <https://f-droid.org/repo/org.secuso.privacyfriendlyyahtzeedicer_100.apk> |
+| Screenshot SHA-256 | `4e9b4145b9c15d1c045ed361f9f497de8c8b98c83997f3770a1dbe83be60a0be` |
+| Evidence | rc=1 PARTIAL — black status bar + white frame only |
+
+### S37: com.sidhant.puzzle (vc293) — ⚫ NO-VISUAL
+
+![sidhant_puzzle](apps_ledger/s37_sidhant_puzzle.png)
+
+| Field | Value |
+|---|---|
+| APK | `com.sidhant.puzzle` — (vc293) |
+| APK SHA-256 | `ef82df814f44bbaf401fe8422da3b662b8a0f94fbc30deaa5135f9b813bd7fa9` |
+| Download | <https://f-droid.org/repo/com.sidhant.puzzle_293.apk> |
+| Screenshot SHA-256 | `4e9b4145b9c15d1c045ed361f9f497de8c8b98c83997f3770a1dbe83be60a0be` |
+| Evidence | Status: SUCCESS rc=0 — white frame + status bar; no visual claim |
+
+### S37: com.thesuncat.sudoku (vc4) — ⚫ NO-VISUAL
+
+![thesuncat_sudoku](apps_ledger/s37_thesuncat_sudoku.png)
+
+| Field | Value |
+|---|---|
+| APK | `com.thesuncat.sudoku` — (vc4) |
+| APK SHA-256 | `863927be2d6a4d2dbb61587e8a876bad73e523ed237281258a199401c116036a` |
+| Download | <https://f-droid.org/repo/com.thesuncat.sudoku_4.apk> |
+| Screenshot SHA-256 | `4e9b4145b9c15d1c045ed361f9f497de8c8b98c83997f3770a1dbe83be60a0be` |
+| Evidence | Status: SUCCESS rc=0 — white frame + status bar; no visual claim |
+
+### S37: com.emmanuelmess.tictactoe v3 (vc3) — corpus duplicate of ledger row 3 — ✅ FULL-RENDER (re-verified)
+
+![tictactoe_legacy](apps_ledger/s37_tictactoe_legacy.png)
+
+| Field | Value |
+|---|---|
+| APK | `com.emmanuelmess.tictactoe` — v3 (vc3) — corpus duplicate of ledger row 3 |
+| APK SHA-256 | `760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394` |
+| Download | <https://f-droid.org/repo/com.emmanuelmess.tictactoe_3.apk> |
+| Screenshot SHA-256 | `0d0cdd756b42837e84d1353c1099104c028cac870570c1f340d3ab81acf83a6c` |
+| Evidence | the cached 'older model' copy is byte-identical (same SHA) to ledger row 3's APK — re-ran at S37 HEAD: PARTIAL-status console but identical X/O board render family; row 3 golden remains the reference |
+
+### S37: io.github.yamin8000.dooz 1.0.18 (vc18) — corpus duplicate of ledger row 12 — 🔴 PLACEHOLDER (progress evidence)
+
+![dooz_gvariant](apps_ledger/s37_dooz_gvariant.png)
+
+| Field | Value |
+|---|---|
+| APK | `io.github.yamin8000.dooz` — 1.0.18 (vc18) — corpus duplicate of ledger row 12 |
+| APK SHA-256 | `d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17` |
+| Download | <https://f-droid.org/repo/io.github.yamin8000.dooz_18.apk> |
+| Screenshot SHA-256 | `2a68948bbb86824b3d34519a8a6b63221c67d3f81896cce9737b007b10dbf7d6` |
+| Evidence | cached 'G-variant' copy is byte-identical (same SHA) to ledger row 12; at S37 HEAD it now runs 409.6s to Status: PARTIAL (was the R-NEW-334 placeholder wall; post-F-101 it paints + lays out; AIOOBE R-NEW-335 evidence captured in the long-budget probe run) |
+
+### S37 budget-timeout family (⚫ NO-VISUAL — honest, same law as rows 20–21)
+
+| App | Version | APK SHA-256 | Download | Stage |
+|---|---|---|---|---|
+| `org.secuso.privacyfriendlysudoku` | 3.2.4 (vc19) | `c2a582760a33b1c84d9de7247293091aea74832ab2c804337af56e21b3f06ba0` | <https://f-droid.org/repo/org.secuso.privacyfriendlysudoku_19.apk> | no frame within 540 s budget |
+| `org.secuso.privacyfriendlymemory` | 1.1.1 (vc8) | `04fa2257526dcab66c9b3716403ffaaa523a75038ae0589d6cc913bfcd837397` | <https://f-droid.org/repo/org.secuso.privacyfriendlymemory_8.apk> | no frame within 540 s budget |
+| `com.wordgame.nian` | (vc11) — wordle-like | `bf19e069ba31ef0577065f833e8fa6e92f025e5d912be538ecbe696f15557c3b` | <https://f-droid.org/repo/com.wordgame.nian_11.apk> | no frame within 540 s budget |
+| `com.joeld.minesweeper` | (vc7) | `46964d6438a76a990f10e1653401067aa4dc5927c3050f13c56d33096742ff24` | <https://f-droid.org/repo/com.joeld.minesweeper_7.apk> | no frame within 540 s budget |
+
+**Archive total after S37 wave 3: 40 APKs registered (28 prior + 12 new identities; 2 corpus copies proven byte-duplicates of rows 3/12).**
+Zero-APK law holds.

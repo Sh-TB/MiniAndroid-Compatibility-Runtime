@@ -71,3 +71,25 @@ Stage Summary:
 - Registry 321→322: R-NEW-334 VERIFIED-FIXED (F-101, dual-store law), R-NEW-335 registered (P0).
 - F-ledger: F-101 landed. The Dooz wall advanced: navigation→lifecycle→compose-transition chain now executes as real bytecode.
 - Next: R-NEW-335 opcode audit (h/r.c search arithmetic); run the 6 queued APKs; Telegram R-NEW-331 fragment host.
+
+---
+Task ID: S37-MAIN
+Agent: Super Z (main)
+Task: MASTER CAMPAIGN 3 continuation — sync local HEAD to origin (S36 remote ahead); corpus wave 3 (user directive: more dooz variants + old simple tictactoe models + dice/wordle/simple games); run wave-2 queued APKs; R-NEW-335 GitHub-first attack; ledger + evidence images; battery; push.
+
+Work Log:
+- Published old pushes: verified main + all archive branches already on origin (ls-remote 0/0); local main fast-forwarded 7a172e7c→c370cc90 (S35/S36 work was pushed from a parallel clone — adopted as the true HEAD, no history rewritten).
+- Toolchain re-bootstrapped after container reset (aapt2 Google Maven, ecj 3.36.0 Maven Central, r8 8.3.37 r8-releases, android-34 Sable) — battery 51/54, only EXT-01/02 + density-matrix fail = lost external_hello fixture (same honest environment gap as S36; zero code regressions).
+- Corpus wave 3 (GitHub/F-Droid mining per user directive): downloaded+SHA-pinned 9 NEW games from the F-Droid index (mined index-v2.json, scripts/test/s37_fdroid_mine.py): johnathan.minesweeper, andstatus.game2048, veldsoft dice.overflow, wordgame.nian (wordle), secuso yahtzeedicer, joeld.minesweeper, edge.roll, sidhant.puzzle, thesuncat.sudoku.
+- S37 batch (scripts/test/s37_batch_run.py): 19 runs — 6 wave-2 queued + 9 wave-3 + 4 legacy tictactoe/dooz corpus variants. Results: 5 SUCCESS, 8 PARTIAL-IMG, 5 budget-timeout (540s), 1 duplicate-pair proven byte-identical (corpus tictactoe=emmanuelmess_3, gvariant/variant=dooz_18 by SHA).
+- NEW REAL RENDERS: Bouncy FULL-RENDER (Select Table menu + real game thread FieldDriver.threadMain/GL20Renderer.doDraw as bytecode — click-test loop never idles = engine alive); TicTacToe Classic (com.palahsu.ttt) FULL-RENDER (Player 1/2 scores + reset — the old/simpler model family); edge.roll PARTIAL (PAUSED overlay + dark canvas).
+- Dooz v23 (newer variant) executed: real measure+layout lifecycle dispatches (Lho; 1080x1920, LIFEWIN-CLOSE), fb painted — R-NEW-334 residual gone on v23; ISE at MainActivity.onCreate transition boundary; placeholder family honest.
+- R-NEW-335 GitHub-first: fetched androidx/androidx androidx-main collection ScatterSet.kt+ScatterMap.kt (upstream/scatter_s37/) — h/r+h/u identity PROVEN by live-DEX constants (MurmurHashC1=0xcc9e2d51, Empty=0x80, Deleted=0xfe, Sentinel=0xff, GroupWidth=8, writeMetadata mirroring observed in a[0]/a[1] byte5=0x69).
+- [S37-HR] probe added (env-gated MINIANDROID_S37_TRACE, MINIANDROID_S37_MAX, bounded, read-only — dalvik_engine.cpp): 106 h/r.c calls captured live — 105 SANE (-7..+7), 1 WILD (-319519149=0xecf48653) with CORRUPT metadata bytes (0xe2/0x7f/0x00 = neither Empty/H2/Sentinel) → ROOT NARROWED to scatter-set metadata corruption in writeMetadata/init (shl-long/or-long variable-shift family cf. F-035) or dual-store divergence; deterministic AIOOBE (length=7; index=319519148) re-reproduced at HEAD.
+- Ledger: S37 section appended (scripts/test/s37_append_ledger.py) — 15 evidence images compressed 1080x1920→540x960 (all ≤8.3KB, most ≤3KB), full SHA-256 for every screenshot+APK, F-Droid links, zero-APK law.
+- Registry 322 roots: R-NEW-335 evidence updated (S37-NARROWED, P0).
+
+Stage Summary:
+- Archive: 28→40 APKs registered (12 new identities; dups proven by hash). 3 NEW real renders incl. first game-thread execution proof (Bouncy).
+- R-NEW-335 narrowed from "wild negative" to "metadata corruption at write/init path" with live-captured corrupt state + upstream law links.
+- Next: (1) unit-probe shl-long/or-long variable-shift vs OpenJDK; (2) dump o5057 registry-shadow at writeMetadata; (3) bouncy click-report via idle-drain pump; (4) Telegram R-NEW-331 fragment host.

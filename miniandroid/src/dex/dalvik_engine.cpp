@@ -6872,6 +6872,92 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 }
             }
         }
+        // S37 (R-NEW-335): scatter-set indexOf evidence probe — env-gated
+        // MINIANDROID_S37_TRACE=1, bounded 64 lines, read-only.
+        // h/r (extends h/u) is compose-runtime's ScatterSet/ScatterMap
+        // storage (obfuscated Dooz build): a=[J occupancy bitset (2 bits
+        // per slot), b=[Object; values, c=[I, d=e=I size/mask family,
+        // f=I. h/r.c(Object)I = find-index: hash-mix the key, mask with d,
+        // probe the bitset word, walk occupied slots, return slot index or
+        // not-int(insertion). S36 recorded a WILD negative return
+        // (-319519149) at LP/v$a;.c feeding aput len=7 (R-NEW-335). This
+        // probe dumps the LIVE receiver storage + return so the op-by-op
+        // semantics can be replayed offline against the correct Dalvik
+        // model.
+        {
+            static thread_local const bool s37_on =
+                std::getenv("MINIANDROID_S37_TRACE") != nullptr;
+            if (s37_on) {
+                static thread_local const uint64_t s37_max = [] {
+                    const char* e = std::getenv("MINIANDROID_S37_MAX");
+                    return e ? (uint64_t)atoll(e) : (uint64_t)64;
+                }();
+                static thread_local uint64_t s37_n = 0;
+                if (cls_ref.name == "Lh/r;" && method.name == "c" &&
+                    args.size() >= 1 && s37_n < s37_max) {
+                    ++s37_n;
+                    std::cerr << " [S37-HR] h/r.c RET recv=o"
+                              << args[0].object_id;
+                    auto ig = [&](const char* f) -> int64_t {
+                        auto v = heap_.get_object_field(args[0].object_id, f);
+                        if (!v.has_value()) return INT64_MIN;
+                        if (v->type == DalvikType::INT32) return v->int_val;
+                        if (v->type == DalvikType::INT64) return v->long_val;
+                        return INT64_MIN;
+                    };
+                    int64_t d = ig("d"), e = ig("e"), f = ig("f");
+                    std::cerr << " d=" << (d == INT64_MIN ? std::string("?")
+                                           : std::to_string(d))
+                              << " e=" << (e == INT64_MIN ? std::string("?")
+                                           : std::to_string(e))
+                              << " f=" << (f == INT64_MIN ? std::string("?")
+                                           : std::to_string(f));
+                    auto dump_arr = [&](const char* fld, bool is_long) {
+                        auto ar = heap_.get_object_field(args[0].object_id, fld);
+                        if (!ar.has_value() ||
+                            ar->type != DalvikType::OBJECT_REF ||
+                            ar->object_id == 0) {
+                            std::cerr << " " << fld << "=<none>";
+                            return;
+                        }
+                        auto al = heap_.get_object_field(ar->object_id,
+                                                         "__array_length__");
+                        int n = (al.has_value() && al->type == DalvikType::INT32)
+                                    ? al->int_val : -1;
+                        std::cerr << " " << fld << "[len=" << n << "]";
+                        for (int i = 0; i < n && i < 3; ++i) {
+                            auto ev = heap_.get_object_field(
+                                ar->object_id,
+                                "array[" + std::to_string(i) + "]");
+                            if (!ev.has_value()) continue;
+                            if (is_long && ev->type == DalvikType::INT64) {
+                                char hx[32];
+                                snprintf(hx, sizeof(hx), "%016llx",
+                                         (unsigned long long)ev->long_val);
+                                std::cerr << " " << hx;
+                            } else if (!is_long &&
+                                       ev->type == DalvikType::OBJECT_REF) {
+                                std::cerr << " o" << ev->object_id;
+                            }
+                        }
+                    };
+                    dump_arr("a", true);
+                    dump_arr("b", false);
+                    if (args.size() >= 2)
+                        std::cerr << " key=o" << args[1].object_id
+                                  << "(" << args[1].class_desc << ")";
+                    if (return_val.type == DalvikType::INT32)
+                        std::cerr << " ret=" << return_val.int_val
+                                  << " hex=0x" << std::hex
+                                  << (uint32_t)return_val.int_val
+                                  << std::dec;
+                    else
+                        std::cerr << " ret=<type#"
+                                  << (int)return_val.type << ">";
+                    std::cerr << std::endl;
+                }
+            }
+        }
         if (lifecycle_window_active_) {
             static thread_local uint64_t lwz_count = 0;
             if (lwz_count < 300 && method.descriptor == "()Z") {
