@@ -79,3 +79,24 @@ Stage Summary:
 - New reusable forensics: R337-DUAL heap dumps, THROWABLE-STACK-PC caller-pc frames, T4PROBE per-ctor invoke trace, INSTANCEOF-DIAG interface-closure dump.
 - Scripts persisted: s39_register_r337.py, s39_disasm_r337.py, s39_register_fixes.py, s39_register_r340.py.
 - Next: trace recomposer post-resume suspension (R-NEW-340 NEXT), corpus wave 4 APKs (budget-timeout retries still pending), ledger dooz23 S39 section, progress report to user.
+
+---
+Task ID: S40
+Agent: Super Z (main)
+Task: Multi-front attack on full execution of Dooz v23 + games (user: "نه یک حمله چندین حمله متفاوت" — not one attack, several different attacks). FRONT-A (dooz23 composition chain) carried it: 3 roots root-caused+FIXED, first clean SUCCESS run ever.
+
+Work Log:
+- FRONT-A evidence chain (androguard disasm + FIELD-TRACE probes, runs r341..r354):
+  (1) R-NEW-341: ISE "Could not find an Application in the given context" — Lv;.n = kotlin check-style thrower; caller Lk2;.b pc=776..880 = Hilt @HiltViewModel factory Application resolution (getApplicationContext -> instanceof Application -> ContextWrapper walk -> throw). Engine served a plain Context singleton. FIX: AOSP handleBindApplication law — bind_manifest_application() runs INSIDE execute_apk_with_activity post-DEX-inject (old runtime EXP093-APP trio ran with dex_report=NULL — [TRY-ENTRY] dex_report=NULL, run r340 — App.onCreate's Dagger build degraded to 80 ins), instantiates manifest App class via real DEX (<init>/attachBaseContext/onCreate), identity published to P0.7 + ActivityShadow + ApplicationLoader.applicationContext; manifest-activity path reuses the bound object.
+  (2) R-NEW-342: CopyOnWriteArraySet.add REC-MISS dropped the Hilt members-injector from the androidx lifecycle registry (Ljm;.onCreate iterates Leq;->a; fast-path Leq;->b==null at <init>). PLUS next() typed elements Ljava/lang/Object; — observer undispatchable. FIX: CollectionShadow handles_class += concurrent/COWSet+COWAL; set semantics for COW sets; HeapAllocator.get_object_class() virtual + DalvikHeapAdapter; next() returns REAL runtime class. Probe proof: [S24-COLL] add obj=165 elems 0->1->2, iterator live, injectors dispatched.
+  (3) R-NEW-343: java.lang.Class.cast() implemented NOWHERE — Lpm;.B (Hilt component-holder unwrap) null-poisoned the DI chain: Lns;.(null) -> Lls;.(null,null) -> Settings provider.get() <unset> -> "lateinit property settings has not been initialized" (Lxl; = UninitializedPropertyAccessException from Lqi0;.S, read site Le;.q @944 = compose resume reading MainActivity.B). FIELD-TRACE forensics: r350 Lpc;.e=obj#14 memoized; r351 Lps;.b=self(obj#14) root law; r352 Lns;.a=<unset> despite valid component = the null came through cast(). FIX: cast law in the Class bridge (null->null; castable via is_subclass_of incl. F-023 interface closure -> SAME reference identity; else throw_deferred CCE).
+  - RESULT: run r354 Status SUCCESS, 0 errors 0 warnings — first clean dooz23 run ever; [R343-CAST] Lps; as Ll2; obj#14 OK; 36MB stderr (3x deeper real execution than pre-S40); App.onCreate -> Lps; Dagger SingletonComponent -> lifecycle-registry injection -> ViewModelProvider.get(DefaultKey:m2) chain all real bytecode.
+  - R-NEW-344 registered (OBSERVED-FAIL, P0): first frame still blank — Recomposer suspends on JobSupport.await (Loj0;.Q, Lcj; continuation on job o1344) without re-posting frame callback; NEXT plan: o1344 final-state dump / completion->resume gap / bounded outer pump.
+- FRONT-B/C/D (wave-4 corpus reruns, tap-attacks, new Dooz variants): deferred to next window — FRONT-A consumed the budget; corpus APKs intact in /tmp/my-project/apk_cache/{s36new,s37new}.
+- Regression gate: hello_widgets nonwhite = 2059104 (EXACT S39 golden match), hello_smoke full-paint stable.
+- Registry 327 -> 331 roots (341/342/343 FIXED, 344 OBSERVED-FAIL). Ledger 12b section added (honest: engine SUCCESS, NOT visually loaded).
+
+Stage Summary:
+- Dooz v23: PLACEHOLDER -> real Hilt/DI/composition execution, 0-error SUCCESS; visual frame pending R-NEW-344.
+- New laws: AOSP bind-application, COW-set + element class identity, Class.cast identity/CCE.
+- Next: R-NEW-344 await-resume attack; wave-4 corpus; tap-attacks on FULL-RENDER games; progress report.
