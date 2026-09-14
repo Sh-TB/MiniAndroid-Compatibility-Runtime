@@ -2241,14 +2241,47 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // setMeasuredDimension). When an app's REAL onMeasure bytecode executes,
     // this dispatch captures the result onto the node so the measure pass
     // can consume it (dex_measured_w/h + dex_measure_valid).
+    // R-NEW-347 (S42): AOSP one-store law — View.setMeasuredDimension sets
+    // mMeasuredWidth/mMeasuredHeight (View.java L18641: setMeasuredDimension
+    // → mMeasuredWidth = measuredWidth) and View.getMeasuredWidth() reads
+    // that same store. The DEX measure chain reads the values back
+    // IMMEDIATELY after the child measure (AbstractComposeView.onMeasure:
+    // child.measure(spec) → child.getMeasuredWidth()), before any later
+    // pass could copy them — so the write-through to measured_* is part of
+    // the same contract, not a convenience.
     if (m == "setMeasuredDimension") {
         auto* n = find_node(ctx.receiver_id);
         if (n && ctx.args.size() >= 2) {
             n->dex_measured_w = ctx.arg_as_int(0);
             n->dex_measured_h = ctx.arg_as_int(1);
             n->dex_measure_valid = true;
+            n->measured_width = n->dex_measured_w;
+            n->measured_height = n->dex_measured_h;
         }
         return CallResult::handled_void();
+    }
+    // R-NEW-347 (S42) — AOSP View.getMeasuredWidth/Height law. AOSP
+    // View.java: getMeasuredWidth() = mMeasuredWidth & MEASURED_SIZE_MASK.
+    // Real demand (dooz_23): AbstractComposeView.onMeasure measures the
+    // AndroidComposeView child then reads child.getMeasuredWidth/Height to
+    // compute its own setMeasuredDimension — the accessors previously had
+    // NO implementation (generic fallback 0), so the compose container
+    // always reported 0x0 regardless of the child's real measure result.
+    if (m == "getMeasuredWidth" || m == "getMeasuredHeight") {
+        const auto* n = find_node(ctx.receiver_id);
+        if (n && n->dex_measure_valid) {
+            // Fresh DEX measure write-back is the authoritative store
+            // (dex_* and measured_* are kept in sync by the write-through
+            // above; read dex_* so a measure that raced a native law still
+            // answers the newest contract value).
+            return CallResult::handled_int(m == "getMeasuredWidth"
+                                               ? n->dex_measured_w
+                                               : n->dex_measured_h);
+        }
+        return CallResult::handled_int(n ? (m == "getMeasuredWidth"
+                                                ? n->measured_width
+                                                : n->measured_height)
+                                         : 0);
     }
 
     // UC009: AOSP View attach state (mAttachInfo != null). Compose's
@@ -2338,6 +2371,33 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                   << std::endl;
         if (child == 0) return CallResult::handled_void();
         add_child(ctx.receiver_id, child);
+        // ─────────────────────────────────────────────────────────────────
+        // R-NEW-347 (S42) — AOSP addViewInner attach law (record side).
+        // AOSP ViewGroup.addViewInner(): when the PARENT is already
+        // attached (mAttachInfo != null and the
+        // FLAG_PREVENT_DISPATCH_ATTACHED_TO_WINDOW guard is clear — the
+        // engine models no group flags, so the guard is always clear),
+        // the child is attached IMMEDIATELY:
+        //     child.dispatchAttachedToWindow(mAttachInfo, visibility);
+        // The shadow cannot invoke DEX code, so it only records the
+        // pending attach; the engine consumes it right after this call
+        // returns (bridge_to_api pending-consume law) and runs the
+        // child's real onAttachedToWindow() chain — see
+        // dispatch_attached_subtree_from() in dalvik_engine.cpp.
+        // Demand: compose 2026.06.01 (dooz_23) addViews the
+        // AndroidComposeView into the already-attached ComposeView during
+        // the first onMeasure; AndroidComposeView.onAttachedToWindow() is
+        // the ONLY consumer of the pending onReadyForComposition request
+        // (Lt4;->n0) — the composition start.
+        // ─────────────────────────────────────────────────────────────────
+        if (auto* pn = find_node(ctx.receiver_id)) {
+            if (pn->attached_to_window) {
+                record_pending_child_attach(ctx.receiver_id, child);
+                std::cerr << "[R347-ATTACH] parent=" << ctx.receiver_id
+                          << " attached -> pending child-attach child="
+                          << child << std::endl;
+            }
+        }
         return CallResult::handled_void();
     }
     if (m == "removeView" || m == "removeViewInLayout") {

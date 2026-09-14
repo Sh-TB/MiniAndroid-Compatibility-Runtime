@@ -1521,7 +1521,27 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
         // through the engine hook (View.measure → onMeasure →
         // setMeasuredDimension). The override is authoritative for its
         // subtree measure; the returned size becomes the content size.
-        if (!is_container_node(n) && n->overrides_on_measure &&
+        //
+        // R-NEW-347 (S42) EXTENSION — containers included. Oracle: AOSP
+        // View.measure() dispatches onMeasure for EVERY View subclass —
+        // nothing restricts the override to leaf views; a ViewGroup that
+        // overrides onMeasure (LinearLayout, GridLayout, Compose's
+        // AndroidComposeView, app custom containers) runs ITS OWN measure
+        // law, including the child negotiation inside that law.
+        // Demand (dooz_23 run_b evidence): AndroidComposeView (Lt4;)
+        // overrides onMeasure and measures the COMPOSE LayoutNode root —
+        // the native container law below sees zero VIEW children (compose
+        // content is not View-backed) and answered 0x0; the F096 stage
+        // re-dispatch then re-ran the DEX onMeasure with the stale
+        // EXACTLY(0x0) specs, pinning compose at zero space. The DEX
+        // override must measure with the INCOMING child specs HERE; the
+        // M3 §7 memo above keeps same-spec re-measures pure (no double
+        // DEX execution within one pass).
+        // Safety: overrides_on_measure is computed ONLY from the APK DEX
+        // (class_chain_defines_method at constructor time), so framework
+        // content families (TextView/Button/...) and DEX containers that
+        // merely INHERIT framework measure behavior keep the native laws.
+        if (n->overrides_on_measure &&
             custom_view_measure_hook_) {
             auto encode = [](const Spec& s) -> int {
                 // Android MeasureSpec encoding: mode in the top 2 bits.
