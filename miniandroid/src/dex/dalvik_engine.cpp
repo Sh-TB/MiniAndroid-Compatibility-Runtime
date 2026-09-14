@@ -8211,6 +8211,12 @@ bool DalvikExecutionEngine::dispatch_view_attached() {
             const auto* node = view_shadow->find_node(id);
             if (node == nullptr || node->class_desc.empty()) { attempted.insert(id); continue; }
             attempted.insert(id);
+            // R-NEW-347 (S42): AOSP attach is one-shot per view. A node
+            // that was already attached by an earlier wave — including the
+            // addViewInner pending-consume law that may fire DURING this
+            // loop's own dispatches — must NOT receive a second
+            // onAttachedToWindow here.
+            if (node->attached_to_window) continue;
             const std::string cls = node->class_desc;
             // AOSP ordering: View.dispatchAttachedToWindow sets mAttachInfo
             // BEFORE invoking onAttachedToWindow. Mirror that here so
@@ -8253,6 +8259,106 @@ bool DalvikExecutionEngine::dispatch_view_attached() {
     }
     std::cerr << "[UC009-ATTACH] attach dispatch complete ok=" << (any_ok ? "true" : "false")
               << std::endl;
+    return any_ok;
+}
+
+// ---------------------------------------------------------------------------
+// R-NEW-347 (S42) — AOSP attach-on-add law (dispatch side).
+//
+// Oracle: aosp-mirror/platform_frameworks_base (main branch, fetched S42):
+//   * ViewGroup.addViewInner(): when the parent is attached
+//     (mAttachInfo != null, FLAG_PREVENT_DISPATCH_ATTACHED_TO_WINDOW
+//     clear) it calls child.dispatchAttachedToWindow(...) IMMEDIATELY,
+//     synchronously inside addView.
+//   * View.dispatchAttachedToWindow(): stores the AttachInfo FIRST, then
+//     invokes onAttachedToWindow().
+//   * ViewGroup.dispatchAttachedToWindow(): after the own callback,
+//     recurses into every child with the same AttachInfo.
+//
+// Demand (evidence run S42 run_a, dooz_23 PRIORITY-1): compose BOM
+// 2026.06.01 creates the AndroidComposeView LAZILY during the first
+// onMeasure (ensureCompositionCreated → La72;.a pc=112 addView into the
+// already-attached ComposeView view=888) and registers the pending
+// composition request via Lt4;.setOnReadyForComposition (field n0).
+// AndroidComposeView.onAttachedToWindow() bytecode pc 640-662 is the ONLY
+// consumer of n0 (iget n0 → if-null skip → invoke-interface i(...) →
+// clear n0) — THE composition start. On the runtime the initial UC009
+// attach wave ran BEFORE the child existed, so without this addView-time
+// dispatch the request was stored and never invoked: the content lambda
+// never ran and the first frame rendered blank (R-NEW-344 core).
+//
+// This method mirrors the three AOSP properties above: mark attached
+// BEFORE the callback, invoke onAttachedToWindow via the runtime-class
+// super-chain walk (same walk law as dispatch_view_attached), recurse
+// into recorded children re-read at dispatch time (the callback may
+// addView more children — each of those ALSO gets its attach via the
+// pending-consume law, and the visited set keeps the walk one-shot).
+// ---------------------------------------------------------------------------
+bool DalvikExecutionEngine::dispatch_attached_subtree_from(uint32_t root_view_id) {
+    if (shadow_registry_ == nullptr) return false;
+    auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+    if (view_shadow == nullptr) return false;
+
+    bool any_ok = false;
+    // AOSP View.dispatchAttachedToWindow() is strictly one-shot per attach
+    // (a view cannot be attached twice without detaching). The visited set
+    // makes that structural and defends against recorded-tree cycles.
+    std::unordered_set<uint32_t> visited;
+    // Iterative DFS: children are re-read when the node is popped because
+    // the just-executed onAttachedToWindow may addView new descendants.
+    std::vector<uint32_t> worklist;
+    worklist.push_back(root_view_id);
+    size_t guard = 0;
+    while (!worklist.empty() && guard++ < 256) {
+        uint32_t id = worklist.back();
+        worklist.pop_back();
+        if (id == 0 || visited.count(id)) continue;
+        visited.insert(id);
+        const auto* node = view_shadow->find_node(id);
+        if (node == nullptr || node->class_desc.empty()) continue;
+        // AOSP one-shot: a node already attached (an earlier attach wave —
+        // UC009 initial tree dispatch or a previous pending-consume) must
+        // NOT receive a second onAttachedToWindow.
+        if (node->attached_to_window) continue;
+        // AOSP ordering: View.dispatchAttachedToWindow stores mAttachInfo
+        // BEFORE invoking onAttachedToWindow, so isAttachedToWindow()
+        // queried inside the dispatched chain returns true.
+        if (auto* mutable_node = view_shadow->find_node(id)) {
+            mutable_node->attached_to_window = true;
+        }
+        // Virtual dispatch from the RUNTIME class, walking up the
+        // superclass chain: AOSP resolves the override nearest the
+        // receiver class; for callbacks inherited from DEX superclasses
+        // the chain walk reproduces that while stopping at framework
+        // superclasses (shadowed, not in the DEX).
+        const std::string cls = node->class_desc;
+        std::vector<DalvikValue> args{DalvikValue::make_object(id, cls)};
+        DalvikValue return_val = DalvikValue::make_void();
+        DalvikExecutionResult result;
+        bool ok = false;
+        std::string walk = cls;
+        for (int hop = 0; hop < 8 && !ok && !walk.empty(); hop++) {
+            ok = try_recursive_invoke(walk, "onAttachedToWindow", args, return_val, result);
+            if (ok) break;
+            auto cit = class_info_index_.find(walk);
+            if (cit == class_info_index_.end()) break;
+            const dex::ClassInfo& ci = dex_report_->classes[cit->second];
+            walk = ci.superclass_name;
+            if (walk.empty() || walk.rfind("Landroid/", 0) == 0 ||
+                walk.rfind("Ljava/", 0) == 0) break;
+        }
+        if (ok) {
+            any_ok = true;
+            std::cerr << "[R347-ATTACH] onAttachedToWindow dispatched view=" << id
+                      << " class=" << cls << std::endl;
+        }
+        // AOSP ViewGroup.dispatchAttachedToWindow(): after the own
+        // callback, recurse into the children. Re-read at dispatch time —
+        // the just-executed callback may have grown the subtree.
+        if (auto* n2 = view_shadow->find_node(id)) {
+            for (uint32_t c : n2->children) worklist.push_back(c);
+        }
+    }
     return any_ok;
 }
 
@@ -13156,6 +13262,25 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
                       << std::endl;
         }
 
+        // R-NEW-347 (S42) diagnostic: where does the DEX-driven
+        // View.measure(wSpec, hSpec) call go? Bounded probe (8 hits) —
+        // remove after the measure chain is proven.
+        if (method_name_from_dex == "measure") {
+            static thread_local uint64_t r347_mprobe = 0;
+            if (r347_mprobe < 8) {
+                ++r347_mprobe;
+                std::cerr << "[R347-MPROBE] invoke-virtual measure"
+                          << " runtime=" << runtime_type
+                          << " declaring=" << declaring_class
+                          << " argc=" << args.size()
+                          << " recv=" << (args.empty() ? 0 : args[0].object_id)
+                          << " a1t=" << (args.size() > 1 ? static_cast<int>(args[1].type) : -1)
+                          << " a2t=" << (args.size() > 2 ? static_cast<int>(args[2].type) : -1)
+                          << " caller=" << current_class_ << "." << current_method_
+                          << std::endl;
+            }
+        }
+
         // EXP-062: Debug — trace v1 in PhoneView.<init> after each invoke-virtual
         // EXP-063: Also trace getResourceEntryName
         if (method_name_from_dex == "getResourceEntryName" && args.size() >= 2) {
@@ -13765,6 +13890,16 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
                 // getDefaultSize fallback (see the constructor-time site).
                 node->aosp_default_measure =
                     !overrides && !runtime_content_measure_class(cls);
+                // R-NEW-347 (S42): programmatic views (new-instance +
+                // invoke-direct — compose's AndroidComposeView from
+                // La72;.a, app-built custom views) must carry the SAME
+                // overrides_on_measure flag the inflate-time constructor
+                // path records (run_custom_view_constructor site). Without
+                // it the F10 real-DEX onMeasure hook never fires for
+                // programmatically-built views and the measure pass
+                // answers from the native content model instead of the
+                // APK's own onMeasure bytecode.
+                node->overrides_on_measure = overrides;
             }
         }
     }
@@ -19058,7 +19193,113 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // ────────────────────────────────────────────────────────────────────────
+    // R-NEW-347 (S42) — AOSP View.measure(I I)V law.
+    // Oracle: AOSP View.java — measure() is FINAL and its contract is
+    //     measure(wSpec, hSpec) { ... onMeasure(wSpec, hSpec); ... }
+    // i.e. the ONLY measurement entry: the onMeasure override (or the
+    // default law) computes the size; setMeasuredDimension writes it back.
+    // Runtime gap: the ViewShadow answered measure() handled_void, so a
+    // DEX-driven child measure NEVER measured the child. Evidence (dooz_23,
+    // compose 2026.06 AbstractComposeView.onMeasure — DEX Lr;.i):
+    //     child = getChildAt(0); if (child == null) { super.onMeasure(..); return; }
+    //     child.measure(makeMeasureSpec(w, mode), makeMeasureSpec(h, mode));
+    //     setMeasuredDimension(child.getMeasuredWidth() + padL + padR,
+    //                          child.getMeasuredHeight() + padT + padB);
+    // with measure() void the AndroidComposeView child stayed unmeasured →
+    // getMeasuredWidth()==0 → the ComposeView (and the whole compose
+    // subtree) pinned at 0x0 → blank frame.
+    // Law: dispatch the receiver's real onMeasure via the runtime-class
+    // chain walk (DEX override authoritative); when no DEX override
+    // exists, apply the default View.onMeasure law HERE (getDefaultSize)
+    // so framework leaves measure without a DEX body. Both paths write the
+    // AOSP one-store (dex_measured_* + measured_* + valid).
+    // Matching: RECEIVER-BASED (the receiver resolves to a ViewShadow node)
+    // — execute_invoke_virtual hands the bridge the RUNTIME class
+    // (api_class, e.g. Lt4;), so a static class-string match would miss
+    // every DEX-subclassed receiver. A ViewShadow node exists only for
+    // View-family heap objects, which is exactly the AOSP receiver domain
+    // of the final View.measure. (measure() is final in AOSP — no DEX
+    // measure() override can exist; the onMeasure chain walk is the whole
+    // contract.)
+    // ────────────────────────────────────────────────────────────────────────
+    if (method == "measure" &&
+        args.size() >= 3 && args[0].type == DalvikType::OBJECT_REF &&
+        args[1].type == DalvikType::INT32 && args[2].type == DalvikType::INT32 &&
+        dex_report_ != nullptr && shadow_registry_ != nullptr) {
+        uint32_t recv = args[0].object_id;
+        auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
+        if (view_shadow != nullptr && recv != 0) {
+            if (auto* n = view_shadow->find_node(recv)) {
+                n->dex_measure_valid = false;
+                DalvikValue ret = DalvikValue::make_void();
+                DalvikExecutionResult res;
+                // AOSP: measure → onMeasure (runtime-class chain walk; the
+                // walk stops at framework superclasses — no DEX body there).
+                const bool ok = try_recursive_invoke(
+                    n->class_desc, "onMeasure",
+                    {args[0], args[1], args[2]}, ret, res);
+                if (!ok && !n->dex_measure_valid) {
+                    // No DEX onMeasure anywhere in the chain → the default
+                    // View.onMeasure law applies (getDefaultSize: AT_MOST/
+                    // EXACTLY → specSize, UNSPECIFIED → suggested min = 0).
+                    auto spec_size = [](int32_t s) -> int32_t {
+                        return s & 0x3FFFFFFF;
+                    };
+                    auto spec_mode = [](int32_t s) -> int32_t {
+                        return (int32_t)(((uint32_t)s) >> 30);
+                    };
+                    auto default_size = [&](int32_t s) -> int32_t {
+                        int32_t mm = spec_mode(s);
+                        return (mm == 1 || mm == 2) ? spec_size(s) : 0;
+                    };
+                    n->dex_measured_w = default_size(args[1].int_val);
+                    n->dex_measured_h = default_size(args[2].int_val);
+                    n->dex_measure_valid = true;
+                    n->measured_width = n->dex_measured_w;
+                    n->measured_height = n->dex_measured_h;
+                }
+                static thread_local uint64_t r347_measure_log = 0;
+                if (r347_measure_log < 16) {
+                    ++r347_measure_log;
+                    std::cerr << "[R347-MEASURE] view=" << recv
+                              << " class=" << n->class_desc
+                              << " dex_onmeasure=" << (ok ? "YES" : "NO")
+                              << " -> " << n->measured_width << "x"
+                              << n->measured_height << std::endl;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;  // measured — never fall through to silent void
+            }
+        }
+    }
+
     if (try_shadow_dispatch(class_name, method, args, result, status)) {
+            // ────────────────────────────────────────────────────────────
+            // R-NEW-347 (S42) — AOSP addViewInner child-attach law
+            // (consume side). The ViewShadow recorded pending child
+            // attaches for addView calls whose parent was ALREADY
+            // attached; the engine — the only layer that can run DEX
+            // code — now dispatches the real onAttachedToWindow() chain
+            // on the added subtree, in the SAME interpreter step (AOSP
+            // performs the attach synchronously inside addViewInner).
+            // Same shadow-flag / engine-callback pattern as the Room
+            // onCreate / onUpgrade dispatch below and
+            // ThreadShadow.consume_pending_start.
+            // ────────────────────────────────────────────────────────────
+            if (method == "addView" || method == "addViewInLayout") {
+                if (shadow_registry_ != nullptr) {
+                    if (auto* vs =
+                            shadow_registry_->find_as<framework::ViewShadow>()) {
+                        uint32_t attach_parent = 0, attach_child = 0;
+                        while (vs->consume_pending_child_attach(
+                                   attach_parent, attach_child)) {
+                            dispatch_attached_subtree_from(attach_child);
+                        }
+                    }
+                }
+            }
             // M3 F-ROOM-CHAIN: SQLiteOpenHelper.getWritableDatabase /
             // getReadableDatabase must fire the app override onCreate /
             // onUpgrade AFTER the database object exists (ART law: the
@@ -20966,6 +21207,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 n->dex_measured_w = default_size(args[1].int_val);
                 n->dex_measured_h = default_size(args[2].int_val);
                 n->dex_measure_valid = true;
+                // R-NEW-347 (S42): AOSP one-store write-through — the
+                // default View.onMeasure sets mMeasuredWidth/Height
+                // (View.java onMeasure → setMeasuredDimension); the same
+                // values must answer getMeasuredWidth/Height and drive the
+                // renderer without waiting for a later copy pass.
+                n->measured_width = n->dex_measured_w;
+                n->measured_height = n->dex_measured_h;
             }
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
@@ -22550,6 +22798,102 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // R-NEW-347 (S42) — java.io.File constructor path-assembly law.
+    // Oracle: OpenJDK java.io/File.java (AOSP libcore identical):
+    //   File(String pathname)             → path = pathname
+    //   File(String parent, String child) → parent + sep + child (empty
+    //                                        forms degrade exactly like
+    //                                        OpenJDK: empty parent → child,
+    //                                        empty child → parent)
+    //   File(File parent, String child)   → parent.path + sep + child
+    // The assembled path is stored in the object's "path" string field —
+    // the SAME store the R-NEW-346 metadata law and the R-NEW-347
+    // name-component law consume (their longest-string-field read stays
+    // backward-compatible with any previously captured path).
+    // Real demand (dooz_23): DataStore's dataStoreFile chain builds
+    // File(filesDir, "preferences_pb"); the stub previously stored NOTHING
+    // → the name-component law saw an empty path → the extension slice
+    // threw StringIndexOutOfBoundsException (uncaught → composition pass
+    // unwind → empty compose root → blank frame).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/io/File;" && method == "<init>") {
+        auto path_field_of = [&](uint32_t oid) -> std::string {
+            std::string best;
+            if (oid != 0 && heap_.has_object(oid)) {
+                const auto& fobj = heap_.all_objects().at(oid);
+                for (const auto& [fname, fval] : fobj.fields) {
+                    if (fval.type == DalvikType::STRING_REF &&
+                        fval.string_val.size() > best.size()) {
+                        best = fval.string_val;
+                    }
+                }
+            }
+            return best;
+        };
+        std::string assembled;
+        const bool two_arg =
+            args.size() >= 3 && args[1].type == DalvikType::STRING_REF;
+        if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF &&
+            args.size() < 3) {
+            // File(String pathname)
+            assembled = args[1].string_val;
+        } else if (two_arg && args[2].type == DalvikType::STRING_REF) {
+            // File(String parent, String child)
+            const std::string& parent = args[1].string_val;
+            const std::string& child = args[2].string_val;
+            if (parent.empty()) assembled = child;
+            else if (child.empty()) assembled = parent;
+            else assembled = parent + "/" + child;
+        } else if (args.size() >= 3 && args[1].type == DalvikType::OBJECT_REF &&
+                   args[2].type == DalvikType::STRING_REF) {
+            // File(File parent, String child)
+            const std::string parent = path_field_of(args[1].object_id);
+            const std::string& child = args[2].string_val;
+            if (parent.empty()) assembled = child;
+            else if (child.empty()) assembled = parent;
+            else assembled = parent + "/" + child;
+        } else if (args.size() >= 3 &&
+                   args[1].type == DalvikType::NULL_REF &&
+                   args[2].type == DalvikType::STRING_REF) {
+            // File(null, child) — OpenJDK File(File parent, String child):
+            // `if (parent != null) { ... } else { this.path =
+            //  fs.normalize(child); }` — a null parent degrades to the
+            // plain-path form verbatim.
+            // Evidence (dooz_23 run_k): Lvx0;.a invoked File(null,
+            // "datastore/settings.preferences_pb") — the parent state was
+            // still null; the law must not answer an empty path.
+            assembled = args[2].string_val;
+        } else if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+            // File(File) copy form — copy the parent's path.
+            assembled = path_field_of(args[1].object_id);
+        }
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            heap_.has_object(args[0].object_id)) {
+            if (auto* fobj = heap_.get(args[0].object_id)) {
+                fobj->fields["path"] = DalvikValue::make_string(assembled, 0);
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        static thread_local uint64_t r347_fctor_log = 0;
+        if (r347_fctor_log < 12) {
+            ++r347_fctor_log;
+            std::cerr << "[R347-FILE-CTOR] argc=" << args.size()
+                      << " path=\"" << assembled << "\""
+                      << " caller=" << current_class_ << "." << current_method_;
+            for (size_t ai = 1; ai < args.size() && ai < 4; ++ai) {
+                std::cerr << " a" << ai << "t=" << static_cast<int>(args[ai].type);
+                if (args[ai].type == DalvikType::STRING_REF)
+                    std::cerr << "(\"" << args[ai].string_val << "\")";
+                else if (args[ai].type == DalvikType::OBJECT_REF)
+                    std::cerr << "(o" << args[ai].object_id << ")";
+            }
+            std::cerr << std::endl;
+        }
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // EXP-043 Phase 3: File.<init> — store path, return void
     // ────────────────────────────────────────────────────────────────────────
     if (class_name == "Ljava/io/File;" && method == "<init>") {
@@ -23374,6 +23718,107 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // R-NEW-347 (S42) — java.io.File name-component law.
+    // Oracle: OpenJDK java.io/File.java (fs.getPath-family; AOSP libcore
+    // identical):
+    //   * getName(): the last path segment after the separator
+    //     ("dir/file.ext" → "file.ext"; "file" → "file"; "" → "").
+    //   * getPath(): the path as constructed.
+    //   * getParent(): the path minus the last separator segment; null when
+    //     no separator (or the separator is the whole root).
+    //   * getParentFile(): File(parent) — fresh heap object sharing the
+    //     same path convention (R-NEW-346 law reads the longest string
+    //     field as the path; store under "path" for symmetric reads).
+    //   * isAbsolute(): path starts with the separator.
+    //   * getAbsolutePath(): absolute paths verbatim; relative paths
+    //     resolved against the app-data root (same resolution the R-NEW-346
+    //     metadata law uses — one canonical root, no per-app divergence).
+    // Real demand (dooz_23 S42): DataStore's file-name lambda (Lg8;.a —
+    // "preferences_pb" constant + lastIndexOf('.')/substring in the same
+    // block) reads a File state and calls getName() before slicing the
+    // extension. getName() had NO implementation → null → v1.length() /
+    // substring on null → UNCAUGHT NullPointerException
+    // ("STR-BRIDGE (deferred) ... Lg8;.a → uncaught (deferred frame unwind
+    // + propagate)") killed the composition pass mid-flight → the compose
+    // root stayed empty → 0x0 measure → blank frame.
+    // The path is read exactly like the R-NEW-346 metadata law: the
+    // receiver's longest STRING_REF field (constructed by the generic
+    // <init> argument capture).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/io/File;" &&
+        (method == "getName" || method == "getPath" || method == "getParent" ||
+         method == "getParentFile" || method == "isAbsolute" ||
+         method == "getAbsolutePath")) {
+        std::string fpath;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            heap_.has_object(args[0].object_id)) {
+            const auto& fobj = heap_.all_objects().at(args[0].object_id);
+            for (const auto& [fname, fval] : fobj.fields) {
+                if (fval.type == DalvikType::STRING_REF &&
+                    fval.string_val.size() > fpath.size()) {
+                    fpath = fval.string_val;  // longest string field = path
+                }
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (method == "getName") {
+            // OpenJDK: name = substring after the last separator; no
+            // separator → the whole path ("" stays "").
+            const size_t slash = fpath.find_last_of('/');
+            result = DalvikValue::make_string(
+                slash == std::string::npos ? fpath : fpath.substr(slash + 1), 0);
+        } else if (method == "getPath") {
+            result = DalvikValue::make_string(fpath, 0);
+        } else if (method == "getParent" || method == "getParentFile") {
+            // OpenJDK: null when the path has no parent (no separator, or
+            // the only separator is the leading root character).
+            const size_t slash = fpath.find_last_of('/');
+            if (slash == std::string::npos || slash == 0) {
+                result = DalvikValue::make_null();
+            } else {
+                const std::string parent = fpath.substr(0, slash);
+                if (method == "getParent") {
+                    result = DalvikValue::make_string(parent, 0);
+                } else {
+                    const uint32_t fid = heap_.allocate("Ljava/io/File;", pc_, 0);
+                    if (auto* fobj = heap_.get(fid)) {
+                        fobj->fields["path"] =
+                            DalvikValue::make_string(parent, 0);
+                    }
+                    result = DalvikValue::make_object(fid, "Ljava/io/File;");
+                }
+            }
+        } else if (method == "isAbsolute") {
+            result = DalvikValue::make_bool(!fpath.empty() && fpath[0] == '/');
+        } else {  // getAbsolutePath
+            if (!fpath.empty() && fpath[0] == '/') {
+                result = DalvikValue::make_string(fpath, 0);
+            } else {
+                result = DalvikValue::make_string(
+                    (std::filesystem::path(Storage::app_data_root()) / fpath)
+                        .string(),
+                    0);
+            }
+        }
+        static thread_local uint64_t r347_file_log = 0;
+        if (r347_file_log < 12) {
+            ++r347_file_log;
+            std::cerr << "[R347-FILE] " << method << " path=\"" << fpath
+                      << "\" -> "
+                      << (result.type == DalvikType::STRING_REF
+                              ? ("\"" + result.string_val + "\"")
+                              : (result.type == DalvikType::NULL_REF
+                                     ? std::string("null")
+                                     : (result.type == DalvikType::OBJECT_REF
+                                            ? ("File o" +
+                                              std::to_string(result.object_id))
+                                            : std::string("<bool>"))))
+                      << std::endl;
+        }
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // EXP-043 Phase 3: File.exists → boolean (true, pretend file exists)
     // ────────────────────────────────────────────────────────────────────────
     if (class_name == "Ljava/io/File;" &&
@@ -24089,6 +24534,63 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_string(s_concat + other_concat, 0);
         std::cerr << "[STR] concat(\"" << s_concat.substr(0, 32) << "\", \""
                   << other_concat.substr(0, 32) << "\")" << std::endl;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // R-NEW-347 (S42) — String.lastIndexOf(int) / lastIndexOf(int, int) law.
+    // Oracle: OpenJDK String.lastIndexOf(int ch, int fromIndex):
+    //   * search BACKWARD for the character, from fromIndex INCLUSIVE;
+    //   * fromIndex < 0          → returns -1 immediately (nothing at or
+    //     before a negative index — this is what makes the extension-slice
+    //     idiom `lastIndexOf('.', len-1)` degrade to "no match" for short
+    //     strings);
+    //   * fromIndex >= length    → search from length-1 (clamped);
+    //   * not found              → -1.
+    //   lastIndexOf(int ch) == lastIndexOf(ch, length-1).
+    // Real demand (dooz_23): DataStore's file-name lambda (Lg8;.a) slices
+    // the extension with `lastIndexOf('.', len-1)`; with NO law the call
+    // answered garbage ≠ -1, the caller took the match branch and
+    // substring(1, 0) threw StringIndexOutOfBoundsException (uncaught →
+    // composition unwind). OpenJDK-exact bounds make the idiom degrade the
+    // way the JVM degrades it.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/String;" && method == "lastIndexOf" &&
+        args.size() >= 2) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        std::string s_li;
+        if (args[0].type == DalvikType::STRING_REF) s_li = args[0].string_val;
+        else if (args[0].type == DalvikType::NULL_REF) {
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           "lastIndexOf on null", "STR-BRIDGE");
+            return true;
+        }
+        const int32_t ch_li = (args[1].type == DalvikType::INT32)
+                                  ? args[1].int_val : -1;
+        // fromIndex: 2-arg form uses args[2]; 1-arg form = length-1.
+        int32_t from_li = static_cast<int32_t>(s_li.size()) - 1;
+        if (args.size() >= 3 && args[2].type == DalvikType::INT32)
+            from_li = args[2].int_val;
+        int32_t found = -1;
+        if (from_li >= 0 && !s_li.empty()) {
+            if (from_li > static_cast<int32_t>(s_li.size()) - 1)
+                from_li = static_cast<int32_t>(s_li.size()) - 1;
+            for (int32_t i = from_li; i >= 0; --i) {
+                if (static_cast<unsigned char>(s_li[static_cast<size_t>(i)]) ==
+                    static_cast<uint32_t>(ch_li)) {
+                    found = i;
+                    break;
+                }
+            }
+        }
+        result = DalvikValue::make_int(found);
+        static thread_local uint64_t r347_lilo_log = 0;
+        if (r347_lilo_log < 8) {
+            ++r347_lilo_log;
+            std::cerr << "[R347-LILO] lastIndexOf(" << ch_li << ", "
+                      << from_li << ") of \"" << s_li.substr(0, 32)
+                      << "\" -> " << found << std::endl;
+        }
         return true;
     }
 
