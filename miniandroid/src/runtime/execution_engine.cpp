@@ -615,17 +615,21 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
 
     try {
         // ===================================================================
-        // EXP-093/F005: Application lifecycle — instantiate and call onCreate
-        // BEFORE Activity.onCreate, per AOSP contract.
+        // EXP-093/F005 + R-NEW-341 (S40): Application lifecycle — AOSP
+        // handleBindApplication contract. The class is only NORMALIZED here;
+        // the actual instantiation + <init> + attachBaseContext + onCreate
+        // run INSIDE DalvikExecutionEngine::execute_apk_with_activity (after
+        // dex_report_ is set and secondary-DEX classes are injected).
         //
-        // AOSP flow: ActivityThread.handleBindApplication →
-        //   instrumentation.newApplication(Class) →
-        //   app.attachBaseContext(context) →
-        //   app.onCreate()
-        //
-        // If the manifest declares android:name="org.example.MyApp",
-        // we instantiate MyApp, call attachBaseContext, then onCreate.
-        // If no android:name, use the default android.app.Application.
+        // WHY THE MOVE (dooz23 evidence, run r340): this block previously
+        // invoked the trio via try_recursive_invoke BEFORE the engine had
+        // dex_report_ ([TRY-ENTRY] ... dex_report=NULL in the run log), so
+        // App.onCreate's Dagger component build (Lpc;.d → Lps;) silently
+        // degraded, and the Hilt ViewModel factory then threw
+        // "Could not find an Application in the given context" — killing the
+        // first composition. Instantiating after DEX infrastructure is ready
+        // is both the fix and the AOSP order (bind happens inside the same
+        // runtime phase as the activity launch, before it).
         // ===================================================================
         if (!result.apk_info.application_name.empty()) {
             std::string app_class = result.apk_info.application_name;
@@ -636,71 +640,9 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 if (app_class.back() != ';') app_class += ";";
             }
             std::cerr << "[EXP093-APP] Manifest declares Application class: "
-                      << app_class << std::endl;
-
-            // Try to instantiate the Application class via DEX execution.
-            // new-instance → invoke-direct <init>(Context) → attachBaseContext → onCreate
-            miniandroid::dalvik::DalvikValue app_return;
-            miniandroid::dalvik::DalvikExecutionResult app_result;
-
-            // Step 1: new-instance
-            uint32_t app_obj_id = dalvik_engine_.get_heap_public().allocate(
-                app_class, 0, 0);
-            if (app_obj_id != 0) {
-                std::cerr << "[EXP093-APP] Allocated Application object: obj_id="
-                          << app_obj_id << std::endl;
-
-                // Step 2: Call <init>(Context) — the constructor
-                std::vector<miniandroid::dalvik::DalvikValue> init_args;
-                init_args.push_back(
-                    miniandroid::dalvik::DalvikValue::make_object(app_obj_id, app_class));
-                // Pass the application context as the Context arg.
-                // For now, use the same context singleton (obj_id=2).
-                miniandroid::dalvik::DalvikValue ctx_val;
-                ctx_val.type = miniandroid::dalvik::DalvikType::OBJECT_REF;
-                ctx_val.object_id = 2;
-                ctx_val.class_desc = "Landroid/content/Context;";
-                init_args.push_back(ctx_val);
-
-                dalvik_engine_.try_recursive_invoke(
-                    app_class, "<init>", init_args, app_return, app_result);
-                std::cerr << "[EXP093-APP] <init> invoked" << std::endl;
-
-                // Step 3: Call attachBaseContext(Context)
-                // This is a protected method on Application/ContextWrapper.
-                // We invoke it via the DEX if available, otherwise skip.
-                std::vector<miniandroid::dalvik::DalvikValue> attach_args;
-                attach_args.push_back(
-                    miniandroid::dalvik::DalvikValue::make_object(app_obj_id, app_class));
-                attach_args.push_back(ctx_val);
-                dalvik_engine_.try_recursive_invoke(
-                    app_class, "attachBaseContext", attach_args, app_return, app_result);
-                std::cerr << "[EXP093-APP] attachBaseContext invoked" << std::endl;
-
-                // Step 4: Call onCreate()
-                std::vector<miniandroid::dalvik::DalvikValue> create_args;
-                create_args.push_back(
-                    miniandroid::dalvik::DalvikValue::make_object(app_obj_id, app_class));
-                dalvik_engine_.try_recursive_invoke(
-                    app_class, "onCreate", create_args, app_return, app_result);
-                std::cerr << "[EXP093-APP] onCreate invoked" << std::endl;
-
-                // F-067 (R-NEW-291): record the attached Application instance
-                // so Activity/Service.getApplication() returns the SAME
-                // object (AOSP attach() identity law). The object persists
-                // on the engine heap for the whole run.
-                dalvik_engine_.set_application_object_id(app_obj_id, app_class);
-                std::cerr << "[F067] application attached: obj#" << app_obj_id
-                          << " " << app_class << std::endl;
-
-                // Cache the Application singleton so Activity.getApplication()
-                // can return it later.
-                // TODO: Set the ApplicationLoader.applicationContext or equivalent
-                // singleton field to point to this object.
-            } else {
-                std::cerr << "[EXP093-APP] WARNING: Could not allocate Application object"
-                          << std::endl;
-            }
+                      << app_class << " (engine binds it post-DEX-inject)"
+                      << std::endl;
+            dalvik_engine_.set_application_class_hint(app_class);
         } else {
             std::cerr << "[EXP093-APP] No custom Application class declared in manifest"
                       << std::endl;

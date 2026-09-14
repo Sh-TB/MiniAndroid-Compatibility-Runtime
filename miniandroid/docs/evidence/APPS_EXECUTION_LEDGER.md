@@ -184,6 +184,21 @@ S38 conversion from PNG reported in the S38 section).
 | **The one remaining break** | `p.a` recompose scope never re-arms after state writes (`R-NEW-334`) → game screen composable never dispatches → exactly 1 LayoutNode → 0 canvas ops → white frame + garbled "AndroidComposeView" debug text |
 | Verdict | **NOT visually loaded. Do not trust any "Dooz rendered" claim.** This row exists to keep the claim honest until R-NEW-334 closes |
 
+## 12b. Dooz v23 — S40 composition-chain breakthrough (engine SUCCESS, first frame still blank — honest)
+
+![Dooz v23 S40](apps_ledger/dooz_placeholder.jpg)
+
+| Field | Value |
+|---|---|
+| APK | `io.github.yamin8000.dooz_23.apk` v23 (Hilt DI + Compose) |
+| APK SHA-256 | `sha256: see run /tmp/s40_runs/dooz23_r354` |
+| Run | `/tmp/s40_runs/dooz23_r354` (S40, builds on S39's R-NEW-337/338/339 fixes) |
+| **Report status** | **SUCCESS, 0 errors, 0 warnings — first clean dooz23 run ever** |
+| **S40 root chain (all FIXED, evidence-locked)** | **R-NEW-341**: `getApplicationContext()` served a plain Context singleton — Hilt's Application resolution (`Lk2;.b` pc 776–880) threw ISE. Fix: AOSP `handleBindApplication` law — `bind_manifest_application()` instantiates the manifest Application class (dooz: `io.github.yamin8000.dooz.ui.App`) post-DEX-inject, runs `<init>`/`attachBaseContext`/`onCreate` via REAL DEX (the old runtime-side bind ran with `dex_report=NULL` and silently degraded), identity published to P0.7 + ActivityShadow. **R-NEW-342**: `CopyOnWriteArraySet.add` REC-MISS dropped the Hilt members-injector from the androidx lifecycle registry (`Leq;->a`); plus `next()` returned `Ljava/lang/Object;` so the observer was undispatchable. Fix: COW-set coverage + set semantics + `HeapAllocator.get_object_class()`. **R-NEW-343**: `java.lang.Class.cast()` was implemented NOWHERE — Hilt's component-holder unwrap (`Lpm;.B`) null-poisoned the whole DI chain (`Lns;(null)` → `Lls;(null,null)` → Settings injected `<unset>`). Fix: cast law (null→null, castable→same reference, else deferred CCE). |
+| **What actually executes now (real DEX, opcode-level)** | App.onCreate → Dagger SingletonComponent `Lps;` build (`b=self` root law verified) → Hilt members-injector dispatched through the REAL androidx lifecycle observer set → `getApplication() instanceof Lxb0;` ✓ → `Lpm;.B` unwrap (`Class.cast` OK: `Lps; as Ll2; obj#14`) → ViewModelProvider.get(key `DefaultKey:m2`) machinery → GameViewModel `Lm2;` creation chain — **the entire Hilt DI resolution runs as real bytecode** |
+| **The one remaining break** | R-NEW-344: after the resumed recomposition pass the Recomposer suspends on `JobSupport.await` (`Loj0;.Q`, CancellableContinuation `Lcj;` on job o1344) without re-posting a frame callback — quiescence pending_cb=0 → content nodes 0 → first frame blank (0 nonwhite). 36MB stderr (vs 11MB pre-S40) = the composition machinery now does ~3× real work |
+| Verdict | **Engine SUCCESS + real DI/composition execution; NOT yet visually loaded.** The blank-frame claim stays honest until R-NEW-344 closes |
+
 ## 13. Ultimate Tic-Tac-Toe STTT (Compose + Fragments) — 🔴 PLACEHOLDER (honest)
 
 ![STTT partial](apps_ledger/sttt_partial.jpg)
