@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Hello Widgets</string>
+    <string name="w_title">Hello Widgets — advanced hello world</string>
+    <string name="w_hint">type your name here</string>
+    <string name="w_echo_default">echo: (tap ECHO after typing)</string>
+    <string name="w_table_head_l">Metric</string>
+    <string name="w_table_head_r">Value</string>
+    <string name="w_table_row1_l">widgets</string>
+    <string name="w_table_row1_r">8 kinds</string>
+    <string name="w_table_row2_l">layouts</string>
+    <string name="w_table_row2_r">linear+rel+table</string>
+    <string name="w_rel_a">relative A</string>
+    <string name="w_rel_b">relative B (below A)</string>
+</resources>

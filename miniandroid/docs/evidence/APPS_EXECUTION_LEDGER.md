@@ -7,7 +7,8 @@ repository (§20 zero-APK law) — only names, SHA-256 hashes and download links
 
 **How to verify:** download the APK from the link, check its SHA-256, download the
 screenshot from this folder, compare the hash column. Every image below is 540×960
-medium-quality (compressed from the 1080×1920 originals — originals stay in `run/`).
+medium-quality **JPG** (compressed from the 1080×1920 originals in `run/` — every image ≤100 KB;
+S38 conversion from PNG reported in the S38 section).
 
 ## Grade table
 
@@ -24,7 +25,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 1. Hello Color — ✅ FULL-RENDER (100% painted, golden-verified)
 
-![Hello Color](apps_ledger/hellocolor.png)
+![Hello Color](apps_ledger/hellocolor.jpg)
 
 | Field | Value |
 |---|---|
@@ -37,7 +38,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 2. HelloWorld-SelfAware — ✅ FULL-RENDER (26/26 golden checks)
 
-![HelloWorld](apps_ledger/helloworld.png)
+![HelloWorld](apps_ledger/helloworld.jpg)
 
 | Field | Value |
 |---|---|
@@ -49,7 +50,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 3. TicTacToe (emmanuelmess) — ✅ GAMEPLAY (X→O→X, X WINS on screen)
 
-![TicTacToe X wins](apps_ledger/tictactoe_xwins.png)
+![TicTacToe X wins](apps_ledger/tictactoe_xwins.jpg)
 
 | Field | Value |
 |---|---|
@@ -62,7 +63,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 4. gmdice (Dice) — ✅ GAMEPLAY (tap 1d6 → dice rolls → text changes)
 
-![gmdice](apps_ledger/gmdice.png) ![gmdice after tap](apps_ledger/gmdice_after_tap.png)
+![gmdice](apps_ledger/gmdice.jpg) ![gmdice after tap](apps_ledger/gmdice_after_tap.jpg)
 
 | Field | Value |
 |---|---|
@@ -76,7 +77,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 5. MicroTimer — ✅ FULL-RENDER (+ SQLite persistence across restart)
 
-![MicroTimer](apps_ledger/microtimer.png)
+![MicroTimer](apps_ledger/microtimer.jpg)
 
 | Field | Value |
 |---|---|
@@ -90,7 +91,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 6. Stopwatch (muellerma) — ✅ FULL-RENDER
 
-![Stopwatch](apps_ledger/stopwatch.png)
+![Stopwatch](apps_ledger/stopwatch.jpg)
 
 | Field | Value |
 |---|---|
@@ -104,7 +105,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 7. Simple Stopwatch (omegacentauri) — ✅ FULL-RENDER
 
-![Simple Stopwatch](apps_ledger/simplestopwatch.png)
+![Simple Stopwatch](apps_ledger/simplestopwatch.jpg)
 
 | Field | Value |
 |---|---|
@@ -117,7 +118,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 8. Chess Clock — 🟠 PAINTED (100% painted, deterministic; controls not readable yet)
 
-![Chess Clock](apps_ledger/chessclock.png)
+![Chess Clock](apps_ledger/chessclock.jpg)
 
 | Field | Value |
 |---|---|
@@ -131,7 +132,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 9. uNote — 🟡 PARTIAL (search UI real; notes list empty-on-fresh law)
 
-![uNote](apps_ledger/unote.png)
+![uNote](apps_ledger/unote.jpg)
 
 | Field | Value |
 |---|---|
@@ -144,7 +145,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 10. Heading Calculator — 🟡 PARTIAL (runs; long-string text overlap — known gap)
 
-![Heading Calculator](apps_ledger/headingcalculator.png)
+![Heading Calculator](apps_ledger/headingcalculator.jpg)
 
 | Field | Value |
 |---|---|
@@ -157,7 +158,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 11. Simple Keyboard — 🟡 PARTIAL (IME service RESUMED; surface minimal)
 
-![Simple Keyboard](apps_ledger/simplekeyboard.png)
+![Simple Keyboard](apps_ledger/simplekeyboard.jpg)
 
 | Field | Value |
 |---|---|
@@ -170,7 +171,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 12. Dooz (Compose Tic-Tac-Toe) — 🔴 PLACEHOLDER (HONEST: game UI NOT visible yet)
 
-![Dooz placeholder](apps_ledger/dooz_placeholder.png)
+![Dooz placeholder](apps_ledger/dooz_placeholder.jpg)
 
 | Field | Value |
 |---|---|
@@ -185,7 +186,7 @@ medium-quality (compressed from the 1080×1920 originals — originals stay in `
 
 ## 13. Ultimate Tic-Tac-Toe STTT (Compose + Fragments) — 🔴 PLACEHOLDER (honest)
 
-![STTT partial](apps_ledger/sttt_partial.png)
+![STTT partial](apps_ledger/sttt_partial.jpg)
 
 | Field | Value |
 |---|---|
@@ -249,7 +250,7 @@ Shared placeholder note: apps #16–#19 each render the SAME byte-identical empt
 (screenshot SHA-256 `eb16ab5c68fa9b6c…` full-frame; ledger copy `07f0933a86a2935c7d2d7dda363b5b37…`)
 — white screen + status bar. Their honest value is the execution STAGE reached, not pixels.
 
-![empty placeholder frame](apps_ledger/s35_placeholder_empty.png)
+![empty placeholder frame](apps_ledger/s35_placeholder_empty.jpg)
 
 ### 16. TicTacToe (itsfrz) — 🔴 PLACEHOLDER (NPE at app boundary)
 
@@ -349,7 +350,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: com.dozingcatsoftware.bouncy 1.14.0 (vc39) — ✅ FULL-RENDER
 
-![bouncy](apps_ledger/s37_bouncy.png)
+![bouncy](apps_ledger/s37_bouncy.jpg)
 
 | Field | Value |
 |---|---|
@@ -361,7 +362,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: com.palahsu.ttt (TicTacToe Classic) — ✅ FULL-RENDER
 
-![tictactoe_classic](apps_ledger/s37_tictactoe_classic.png)
+![tictactoe_classic](apps_ledger/s37_tictactoe_classic.jpg)
 
 | Field | Value |
 |---|---|
@@ -373,7 +374,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: edge.roll (vc11) — 🟡 PARTIAL
 
-![edgeroll](apps_ledger/s37_edgeroll.png)
+![edgeroll](apps_ledger/s37_edgeroll.jpg)
 
 | Field | Value |
 |---|---|
@@ -385,7 +386,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: io.github.yamin8000.dooz 1.0.23 (vc23) — NEWER Dooz variant — 🔴 PLACEHOLDER
 
-![dooz_vc23](apps_ledger/s37_dooz_vc23.png)
+![dooz_vc23](apps_ledger/s37_dooz_vc23.jpg)
 
 | Field | Value |
 |---|---|
@@ -397,7 +398,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: com.inspiredandroid.braincup 3.4.0 (vc158) — 🔴 PLACEHOLDER
 
-![bouncycastle](apps_ledger/s37_bouncycastle.png)
+![bouncycastle](apps_ledger/s37_bouncycastle.jpg)
 
 | Field | Value |
 |---|---|
@@ -409,7 +410,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: de.tobiasbielefeld.solitaire 3.12 (vc69) — 🔴 PLACEHOLDER
 
-![solitaire](apps_ledger/s37_solitaire.png)
+![solitaire](apps_ledger/s37_solitaire.jpg)
 
 | Field | Value |
 |---|---|
@@ -421,7 +422,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: io.github.johnathan.minesweeper (vc6) — 🔴 PLACEHOLDER
 
-![minesweep_johnathan](apps_ledger/s37_minesweep_johnathan.png)
+![minesweep_johnathan](apps_ledger/s37_minesweep_johnathan.jpg)
 
 | Field | Value |
 |---|---|
@@ -433,7 +434,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: org.andstatus.game2048 (vc47) — 🔴 PLACEHOLDER
 
-![game2048](apps_ledger/s37_game2048.png)
+![game2048](apps_ledger/s37_game2048.jpg)
 
 | Field | Value |
 |---|---|
@@ -445,7 +446,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: eu.veldsoft.dice.overflow (vc2) — ⚫ NO-VISUAL
 
-![diceoverflow](apps_ledger/s37_diceoverflow.png)
+![diceoverflow](apps_ledger/s37_diceoverflow.jpg)
 
 | Field | Value |
 |---|---|
@@ -457,7 +458,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: org.secuso.privacyfriendlyyahtzeedicer (vc100) — ⚫ NO-VISUAL
 
-![secuso_yahtzee](apps_ledger/s37_secuso_yahtzee.png)
+![secuso_yahtzee](apps_ledger/s37_secuso_yahtzee.jpg)
 
 | Field | Value |
 |---|---|
@@ -469,7 +470,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: com.sidhant.puzzle (vc293) — ⚫ NO-VISUAL
 
-![sidhant_puzzle](apps_ledger/s37_sidhant_puzzle.png)
+![sidhant_puzzle](apps_ledger/s37_sidhant_puzzle.jpg)
 
 | Field | Value |
 |---|---|
@@ -481,7 +482,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: com.thesuncat.sudoku (vc4) — ⚫ NO-VISUAL
 
-![thesuncat_sudoku](apps_ledger/s37_thesuncat_sudoku.png)
+![thesuncat_sudoku](apps_ledger/s37_thesuncat_sudoku.jpg)
 
 | Field | Value |
 |---|---|
@@ -493,7 +494,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: com.emmanuelmess.tictactoe v3 (vc3) — corpus duplicate of ledger row 3 — ✅ FULL-RENDER (re-verified)
 
-![tictactoe_legacy](apps_ledger/s37_tictactoe_legacy.png)
+![tictactoe_legacy](apps_ledger/s37_tictactoe_legacy.jpg)
 
 | Field | Value |
 |---|---|
@@ -505,7 +506,7 @@ Zero-APK law: names, SHA-256 hashes, F-Droid links only.
 
 ### S37: io.github.yamin8000.dooz 1.0.18 (vc18) — corpus duplicate of ledger row 12 — 🔴 PLACEHOLDER (progress evidence)
 
-![dooz_gvariant](apps_ledger/s37_dooz_gvariant.png)
+![dooz_gvariant](apps_ledger/s37_dooz_gvariant.jpg)
 
 | Field | Value |
 |---|---|
