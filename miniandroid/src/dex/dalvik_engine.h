@@ -1950,6 +1950,13 @@ public:
                        const std::vector<DalvikValue>& args, DalvikValue& result,
                        ApiCallTrace::Status& status,
                        uint32_t method_idx_hint = 0xFFFFFFFFu);
+    // R-NEW-345 park-drain law: LockSupport.park* = the deterministic-yield
+    // point. Bounded drain of the cross-queue runnable work (main MessageQueue
+    // runnables, Choreographer due frame callbacks, pending Thread starts) so
+    // a parked coroutine observes work completed by "other threads" — the
+    // serialized-engine counterpart of a real park/unpark handshake.
+    uint64_t drain_park_queues_bounded(const char* reason);
+    void run_thread_start_body(uint32_t thread_oid, uint32_t target_oid);
     // EXP-042 Phase 4: Singleton cache helper for Android framework objects.
     DalvikValue get_or_create_singleton(const std::string& class_desc);
     
@@ -2070,6 +2077,17 @@ public:
     bool lifecycle_from_dex_ = false;
     bool halted_on_return_ = false;
     std::string halt_reason_;
+    // R-NEW-345 parked-thread yield law: set by the LockSupport.park* bridge
+    // when a parked WORKER frame (park reached at drain depth >= 1) drained
+    // zero work — the frame is "suspended" exactly like a real parked thread.
+    // The DEX interpreter loop breaks (graceful frame exit, NOT halted_) and
+    // the flag is cleared at the drain boundary (run_thread_start_body /
+    // drain_park_queues_bounded) so only the parked worker's frame chain
+    // unwinds.
+    bool park_yield_pending_ = false;
+    // R-NEW-345: drain depth of the most recent drain_park_queues_bounded
+    // entry (0 = main-thread context, >= 1 = inside a drained worker run).
+    int park_drain_last_depth_ = 0;
     // M3 FINDING-016: exception-honesty state. uncaught_in_flight_count_
     // counts every handler-less frame unwind; uncaught_in_flight_log_ is a
     // bounded (32-entry) record; exc_strict_ enables the ART process-death

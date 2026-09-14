@@ -100,3 +100,24 @@ Stage Summary:
 - Dooz v23: PLACEHOLDER -> real Hilt/DI/composition execution, 0-error SUCCESS; visual frame pending R-NEW-344.
 - New laws: AOSP bind-application, COW-set + element class identity, Class.cast identity/CCE.
 - Next: R-NEW-344 await-resume attack; wave-4 corpus; tap-attacks on FULL-RENDER games; progress report.
+
+---
+Task ID: S41
+Agent: Super Z (main)
+Task: MULTI-FRONT RUNTIME ATTACK — dooz23 R-NEW-344/R-NEW-345 forensic + generic fixes + cross-app regression
+
+Work Log:
+- Recon: HEAD 676a7c73, 331 roots; wave-4 leftovers cleared; R-NEW-344 (dooz first-frame blank) picked as Attack-1 target.
+- Attack-1 forensic (r354 artifacts + 3 fresh reruns run_a/b/c with env probes): runBlocking { settings.getTheme() } NEVER completed; joinBlocking spin 200k+ lines (Ljf;=BlockingEventLoop, Lhf;=BlockingCoroutine); ended only via 2x HALT-LOOP frame destruction (Lqq0;.a / Lvs0;.O); composition then ran ROOT-ONLY (content lambda produced no nodes). DEX identity map built: Loj0;=JobSupport, Ls;=AbstractCoroutine, Lkp1;=StandaloneCoroutine, Lzh;=CancellableContinuationImpl, Lrx;=DispatchedContinuation, Lh9;=AndroidUiDispatcher.dispatchCallback, Lnl;=CombinedContext, Lc41;=SnapshotMutableStateImpl, Lrd1;.C=mutableStateOf, Ljf;=BlockingEventLoop, Lo30;=EventLoopImplBase, Lh8;=DataStoreImpl.
+- Attack-2 upstream: compose 1.6.7 exact sources (runtime+ui-android from Google Maven) — Recomposer/composeInitial/awaitWorkAvailable/PausableMonotonicFrameClock(pause at create; ON_START resumes via Latch)/AndroidUiDispatcher(event-driven, NOT continuous vsync)/AndroidUiFrameClock; kotlinx JobSupport.awaitInternal bytecode CAS proof; GitHub-first app sources (yamin8000/Dooz master): runBlocking { theme = settings.getTheme() } -> SettingsDataStoreRepository -> DataStoreHelper -> datastore.data.map{}.first().
+- Attack-3 generic fixes (4 laws, zero class hacks): (a) SUPER-DISPATCH IDENTITY — invoke-super passes the CLEAN declaring class to bridge_to_api (the "<super>" marker blocked ALL framework-ancestor super calls from reaching shadows — Worker.start{super.start()} never reached ThreadShadow); (b) THREAD SELF-RUN — ThreadShadow.start with no recorded Runnable queues (thread,thread); the drain executes the subclass's REAL DEX run() (Lsr; workers live); (c) PARK-DRAIN — LockSupport.park/parkNanos/parkUntil = deterministic yield: bounded drain (handler runnables + choreographer doFrame + pending starts, depth<=3), unpark no-op, parked worker frames (depth>=1, zero work) suspend via [PARK-YIELD]; main-thread park never yields; (d) UNSAFE CLOSURE — compareAndSwapLong/getAndAddLong/getAndAddInt/getAndSetObject/getAndSetInt/getAndSetLong over the one heap store (R-NEW-337 law completion).
+- Attack-4: dooz23 x4 independent runs post-fix: FULL startup pipeline completed (<280s, rc=1 SUCCESS), 3x PARK-YIELD, 0 HALT-LOOP, deterministic screenshot SHA 31ddd4d5b8e6d18e across runs. DataStore read reached (13 pre-fix NPEs -> 0 post-R-346-fix). First frame still blank — content composition = next frontier (R-NEW-344 refined).
+- Attack-5: R-NEW-346 root-caused+fixed — HONEST FILE METADATA law (File.exists/isDirectory/canRead/canWrite real fs state via receiver path field, relative under app-data root; was always-true stub -> DataStore first-run read a non-existent file -> parser NPE x13). Post-fix: 0 exceptions.
+- Cross-app regression matrix (s41_regress_matrix.py): gmdice 108922nw SUCCESS, microtimer 65090nw SUCCESS, bouncy 129600nw SUCCESS, unote 14850nw SUCCESS, tictactoe blank-first-frame (battery tictactoe_golden interaction PASS), dooz_18 timeout + stopwatch FAILURE verified PRE-EXISTING via HEAD A/B build (stash->rebuild->run->pop).
+- Battery: 82 stages PASS incl. executor/Room/float/frame-pump/super-run fixtures + tictactoe_golden; EXT-01/02 = pre-existing missing-fixture gap. hello_widgets 2,058,896nw ~= S40 golden 2,059,104 (sampling error).
+- Registry: R-NEW-345 registered (implemented, P0), R-NEW-344 refreshed (refined chain), R-NEW-346 registered in ledger section. Roots: 331 -> 332.
+- Ledger: S41 section appended (full forensic chain + evidence paths + upstream fetches).
+
+Stage Summary:
+- KEY RESULTS: dooz23 startup pipeline now COMPLETES deterministically (was: never-completing runBlocking + 2 destroyed frames + empty composition). 5 generic runtime laws landed (super-identity, thread self-run, park-drain+yield, Unsafe family closure, honest file metadata). Zero regressions (A/B proven for the 2 suspicious targets).
+- NEXT ROOT: content composition empty (R-NEW-344 core) — probe whether AbstractComposeView.setContent stored the content lambda before ensureCompositionCreated and whether the app composable lambda is invoked during composeInitial; then DataStore theme value round-trip.
