@@ -22,6 +22,7 @@
 // EXP-051: Shadow registry integration.
 #include "../framework/shadow_registry.h"
 #include "../framework/android_shadows.h"
+#include "../framework/choreographer_shadow.h"  // R-NEW-345 park-drain: vsync during park
 #include "../framework/dialog_shadow.h"
 #include "../framework/canvas_shadow.h"
 #include "../framework/heap_adapter.h"
@@ -11236,6 +11237,13 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         // pc_visit_count_ is now an instance member, reset in
         // execute_method_internal() at the start of each method. The threshold
         // is config_.loop_visit_threshold (default 50 000).
+        // R-NEW-345 PARK-YIELD: a parked worker's frame chain unwinds here —
+        // graceful frame exit (NOT halted_); the flag persists until the
+        // drain boundary clears it, so every enclosing frame in the parked
+        // chain also exits.
+        if (park_yield_pending_) {
+            break;
+        }
         pc_visit_count_[pc_]++;
         if (pc_visit_count_[pc_] > config_.loop_visit_threshold) {
             // EXP-042 Phase 2: include bytecode size and the actual opcode at
@@ -13508,7 +13516,16 @@ uint8_t arg_count = static_cast<uint8_t>((instr >> 12) & 0xF);
         }
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
-        bridge_to_api(declaring_class + "<super>", method_name,
+        // R-NEW-345 SUPER-DISPATCH IDENTITY LAW: pass the CLEAN declaring
+        // class into the bridge. ART super-dispatch resolves the SAME
+        // receiver/method identity as virtual dispatch; the old "<super>"
+        // marker leaked into dispatch identity, so every framework-ancestor
+        // super call silently missed its shadow — kotlinx scheduler
+        // Worker.start() { super.start() } → Thread.start() never reached
+        // ThreadShadow (no worker ever ran: runBlocking/BlockingCoroutine
+        // spun forever in joinBlocking). Marker kept in the api_trace log
+        // line below only.
+        bridge_to_api(declaring_class, method_name,
                       args, return_val, api_status, method_idx);
         last_invoke_return_ = return_val;
     }
@@ -16534,6 +16551,129 @@ std::string DalvikExecutionEngine::java_format_walk(
     return output;
 }
 
+// R-NEW-345: run one Thread.start() body — the target is either a Runnable
+// object (recorded ctor target: Room transaction executor) or the thread
+// ITSELF (self-run law for Thread subclasses: kotlinx scheduler Worker,
+// Looper threads — they override run() and start with no Runnable). Both
+// paths invoke the receiver's REAL DEX run() — AOSP Thread.start()
+// virtual-dispatch law, no fake callback.
+void DalvikExecutionEngine::run_thread_start_body(uint32_t thread_oid,
+                                                  uint32_t target_oid) {
+    uint32_t run_oid = target_oid ? target_oid : thread_oid;
+    // Resolve the receiver's RUNTIME class from the heap (lambda/interface
+    // impls and Thread subclasses each live in their own classes).
+    std::string rcls = "Ljava/lang/Object;";
+    if (heap_.has_object(run_oid)) {
+        const auto* robj = heap_.get(run_oid);
+        if (robj && !robj->class_descriptor.empty())
+            rcls = robj->class_descriptor;
+    }
+    DalvikValue self = DalvikValue::make_object(run_oid, rcls);
+    DalvikValue run_ret;
+    DalvikExecutionResult run_res;
+    std::vector<DalvikValue> run_args{self};
+    bool ran = try_recursive_invoke(rcls, "run", run_args, run_ret, run_res,
+                                    "()V");
+    if (park_yield_pending_) {
+        park_yield_pending_ = false;  // parked worker frame chain fully unwound
+    }
+    std::cerr << "[THREAD-START] drained oid=" << run_oid << " cls=" << rcls
+              << (target_oid == thread_oid && thread_oid != 0
+                      ? " (self-run law)"
+                      : "")
+              << " → " << (ran ? "REAL DEX run() executed"
+                               : "no run() found (no-op)")
+              << std::endl;
+}
+
+// R-NEW-345: park = deterministic yield point. See the law note at the
+// LockSupport case in bridge_to_api. Bounded rounds; reentrancy-guarded so
+// a park reached THROUGH drained work yields instead of recursing.
+// Returns the work units consumed (0 = global quiescence).
+uint64_t DalvikExecutionEngine::drain_park_queues_bounded(const char* reason) {
+    static thread_local int park_drain_depth = 0;
+    if (park_drain_depth >= 3) return 0;  // nested park: yield only
+    if (!shadow_registry_) return 0;
+    ++park_drain_depth;
+    park_drain_last_depth_ = park_drain_depth;
+    auto* hs = shadow_registry_->find_as<framework::HandlerShadow>();
+    auto* cs = shadow_registry_->find_as<framework::ChoreographerShadow>();
+    auto* ts = shadow_registry_->find_as<framework::ThreadShadow>();
+    static thread_local uint64_t park_log = 0;
+    bool do_log = park_log < 24;
+    uint64_t work_units = 0;
+    for (int round = 0; round < 4; ++round) {
+        bool did_work = false;
+        // 1) main MessageQueue runnables (Executor family + Handler.post +
+        //    dispatcher trampoline all enqueue here — one-queue law).
+        if (hs) {
+            for (int r = 0; r < 16; ++r) {
+                std::vector<uint32_t> drained;
+                if (hs->drain_ready(&drained) == 0) break;
+                did_work = true;
+                for (uint32_t rid : drained) {
+                    // Same routing as ExecutionEngine::invoke_handler_runnable:
+                    // framework tokens ride the touch dispatcher, app runnables
+                    // run their REAL DEX run().
+                    if (rid >= framework::HandlerShadow::kFrameworkTokenBase)
+                        continue;
+                    if (!heap_.has_object(rid)) continue;
+                    std::string rcls = "Ljava/lang/Object;";
+                    if (const auto* robj = heap_.get(rid))
+                        if (!robj->class_descriptor.empty())
+                            rcls = robj->class_descriptor;
+                    DalvikValue ret;
+                    DalvikExecutionResult res;
+                    std::vector<DalvikValue> run_args{
+                        DalvikValue::make_object(rid, rcls)};
+                    try_recursive_invoke(rcls, "run", run_args, ret, res, "()V");
+                }
+                work_units += drained.size();
+            }
+        }
+        // 2) Choreographer due frame callbacks (vsync during park — the
+        // withFrameNanos continuation resume path).
+        if (cs && cs->has_pending_callbacks()) {
+            auto due = cs->take_due_callbacks();
+            for (auto& d : due) {
+                ++work_units;
+                DalvikValue ret;
+                DalvikExecutionResult res;
+                std::vector<DalvikValue> cb_args{
+                    DalvikValue::make_object(d.callback_id, d.callback_class),
+                    DalvikValue::make_long(d.frame_time_nanos)};
+                try_recursive_invoke(d.callback_class, "doFrame", cb_args, ret,
+                                     res);
+            }
+            if (!due.empty()) did_work = true;
+        }
+        // 3) pending Thread starts (worker spawns observed while parked).
+        if (ts) {
+            uint32_t t_oid = 0, r_oid = 0;
+            int started = 0;
+            while (started < 4 && ts->consume_pending_start(t_oid, r_oid)) {
+                ++started;
+                ++work_units;
+                did_work = true;
+                run_thread_start_body(t_oid, r_oid);
+            }
+        }
+        if (!did_work) break;
+    }
+    --park_drain_depth;
+    park_drain_last_depth_ = park_drain_depth;
+    // R-NEW-345: work dispatched through THIS drain that parked mid-way has
+    // unwound by now; clear the yield flag so the caller's loop (main-thread
+    // joinBlocking or the worker loop itself) resumes normally.
+    park_yield_pending_ = false;
+    if (do_log) {
+        ++park_log;
+        std::cerr << "[PARK-DRAIN] " << reason << " depth=" << park_drain_depth
+                  << " work_units=" << work_units << std::endl;
+    }
+    return work_units;
+}
+
 bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           const std::string& method,
                                           const std::vector<DalvikValue>& args,
@@ -16580,6 +16720,80 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             tag_probe++;
             std::cerr << "[TAG-PROBE] bridge_to_api entered " << class_name
                       << "." << method << " argc=" << args.size() << std::endl;
+        }
+    }
+    // R-NEW-345 PARK-DRAIN LAW (generic; kotlinx.coroutines + AOSP semantics).
+    // Root cause: joinBlocking spin — dooz23 runBlocking(BlockingCoroutine +
+    // BlockingEventLoop) never completed because the only yield point
+    // (LockSupport.park*) silently returned void and cross-queue work (main
+    // MessageQueue runnables, Choreographer due frames, pending Thread
+    // starts from worker spawns) never ran. Evidence: r354 200k+ spin lines
+    // (Ljf;=BlockingEventLoop / Lhf;=BlockingCoroutine receivers) ended only
+    // by the HALT-LOOP guard destroying two coroutine frames (Lqq0;.a,
+    // Lvs0;.O); run_a/run_b/run_c never escaped at all.
+    // Upstream law (kotlinx.coroutines LockSupport/Unsafe.park contract +
+    // AOSP MessageQueue): park suspends the thread "until available" — in a
+    // real runtime the parked thread observes work completed by other
+    // threads via unpark. The serialized engine's counterpart: park is the
+    // deterministic yield point at which queued runnable work becomes
+    // observable. This mirrors the ExecutorShadow ownership law ("tasks
+    // execute at the next scheduler drain point") — park is such a drain
+    // point. No class-name special casing: any parker (coroutines, ArrayBlockingQueue
+    // take, FutureTask.get) shares the law.
+    if (class_name == "Ljava/util/concurrent/locks/LockSupport;") {
+        if (method == "park" || method == "parkNanos" || method == "parkUntil") {
+            uint64_t park_work = drain_park_queues_bounded("park");
+            // R-NEW-345 PARKED-WORKER YIELD LAW. A park reached at drain
+            // depth >= 1 is a BACKGROUND WORKER's park (kotlinx scheduler
+            // Worker.run loops park when their queue is empty). With zero
+            // work drained, the real runtime would park the OS thread
+            // indefinitely; the serialized engine's honest counterpart is
+            // to suspend the worker's DEX frame chain at the drain boundary
+            // instead of burning interpreter cycles on a findTask/park spin
+            // (fix_r3 evidence: 2.8M instructions inside Lsr;.run before
+            // any progress). Depth 0 = the MAIN-thread park (joinBlocking)
+            // — never yields: its loop must re-check isCompleted after the
+            // drain ran the pending work.
+            if (park_drain_last_depth_ >= 1 && park_work == 0) {
+                park_yield_pending_ = true;
+                static thread_local uint64_t yield_log = 0;
+                if (yield_log < 24) {
+                    ++yield_log;
+                    std::cerr << "[PARK-YIELD] parked worker frame suspended"
+                              << " (depth=" << park_drain_last_depth_
+                              << ", quiescence) at " << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "unpark" || method == "unparkInternal") {
+            // Serialized engine: there is no suspended host thread to unpark;
+            // the park side observes completion through the drain instead.
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "getBlocker" || method == "getBlockerRaw") {
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // R-NEW-345 THREAD-START SELF-RUN DRAIN (generic law). When a Thread
+    // subclass (kotlinx scheduler Worker, OkHttp/Looper threads — no
+    // Runnable ctor target recorded) starts, ThreadShadow queues a SELF-run
+    // (thread_oid, thread_oid); the drain below invokes the receiver's own
+    // REAL DEX run() body — the AOSP Thread.start() virtual-dispatch law.
+    if (class_name == "Ljava/lang/Thread;" &&
+        (method == "start" || method == "run") && shadow_registry_ != nullptr) {
+        if (auto* ts = shadow_registry_->find_as<framework::ThreadShadow>()) {
+            uint32_t t_oid = 0, r_oid = 0;
+            while (ts->consume_pending_start(t_oid, r_oid)) {
+                run_thread_start_body(t_oid, r_oid);
+            }
         }
     }
     // S24 frontier probe (env-gated): every getTag/getParent bridge entry —
@@ -18923,25 +19137,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 if (auto* ts = shadow_registry_->find_as<framework::ThreadShadow>()) {
                     uint32_t t_oid = 0, r_oid = 0;
                     while (ts->consume_pending_start(t_oid, r_oid)) {
-                        // Resolve the runnable's RUNTIME class from the heap
-                        // (lambda/interface impls live in their own classes).
-                        std::string rcls = "Ljava/lang/Object;";
-                        if (heap_.has_object(r_oid)) {
-                            const auto* robj = heap_.get(r_oid);
-                            if (robj && !robj->class_descriptor.empty())
-                                rcls = robj->class_descriptor;
-                        }
-                        DalvikValue self = DalvikValue::make_object(r_oid, rcls);
-                        DalvikValue run_ret;
-                        DalvikExecutionResult run_res;
-                        std::vector<DalvikValue> run_args{self};
-                        bool ran = try_recursive_invoke(
-                            rcls, "run", run_args, run_ret, run_res, "()V");
-                        std::cerr << "[THREAD-START] drained runnable_oid="
-                                  << r_oid << " cls=" << rcls << " → "
-                                  << (ran ? "REAL DEX run() executed"
-                                          : "no run() found (no-op)")
-                                  << std::endl;
+                        run_thread_start_body(t_oid, r_oid);
                     }
                 }
             }
@@ -21558,6 +21754,142 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 result = DalvikValue::make_void();
                 return true;
             }
+            // R-NEW-345 GET-AND-SET / GET-AND-ADD FAMILY LAW (completes the
+            // R-NEW-337 Unsafe closure). kotlinx.coroutines atomicfu compiles
+            // AtomicLong/AtomicReference counters to DIRECT Unsafe ops; the
+            // EventLoopBase/BlockingCoroutine state machine (useCount/shared
+            // packed long, `_state`) and the internal ConcurrentLinkedQueue
+            // (head/tail unlink) ride getAndAddLong/getAndSetObject/
+            // compareAndSwapLong. Missing ops resolved to silent garbage →
+            // the runBlocking event loop never observed its own enqueued
+            // tasks → joinBlocking spin → HALT-LOOP destroyed two coroutine
+            // frames (dooz r354 evidence: Lqq0;.a / Lvs0;.O @50k iters).
+            if (method == "compareAndSwapLong") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                if (obj == 0 || fname.empty() || args.size() <= 4) {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(false);
+                    return true;
+                }
+                auto cur = heap_.get_object_field(obj, fname);
+                int64_t cur_v = 0;
+                if (cur.has_value()) {
+                    if (cur->type == DalvikType::INT64) cur_v = cur->long_val;
+                    else if (cur->type == DalvikType::INT32)
+                        cur_v = cur->int_val;
+                }
+                int64_t exp_v = args[3].long_val;
+                if (cur_v == exp_v) {
+                    heap_.set_object_field(
+                        obj, fname, DalvikValue::make_long(args[4].long_val));
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(true);
+                    return true;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(false);
+                return true;
+            }
+            if (method == "getAndAddLong") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                auto cur = (obj != 0 && !fname.empty())
+                               ? heap_.get_object_field(obj, fname)
+                               : std::nullopt;
+                int64_t old_v = 0;
+                if (cur.has_value()) {
+                    if (cur->type == DalvikType::INT64) old_v = cur->long_val;
+                    else if (cur->type == DalvikType::INT32)
+                        old_v = cur->int_val;
+                }
+                int64_t delta = args.size() > 3 ? args[3].long_val : 0;
+                if (obj != 0 && !fname.empty())
+                    heap_.set_object_field(
+                        obj, fname, DalvikValue::make_long(old_v + delta));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_long(old_v);
+                return true;
+            }
+            if (method == "getAndAddInt") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                auto cur = (obj != 0 && !fname.empty())
+                               ? heap_.get_object_field(obj, fname)
+                               : std::nullopt;
+                int32_t old_v = 0;
+                if (cur.has_value()) {
+                    if (cur->type == DalvikType::INT32) old_v = cur->int_val;
+                    else if (cur->type == DalvikType::INT64)
+                        old_v = (int32_t)cur->long_val;
+                    else if (cur->type == DalvikType::BOOLEAN)
+                        old_v = cur->bool_val ? 1 : 0;
+                }
+                int32_t delta = args.size() > 3 ? (int32_t)args[3].int_val : 0;
+                if (obj != 0 && !fname.empty())
+                    heap_.set_object_field(
+                        obj, fname,
+                        DalvikValue::make_int((int32_t)(old_v + delta)));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(old_v);
+                return true;
+            }
+            if (method == "getAndSetObject") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                auto cur = (obj != 0 && !fname.empty())
+                               ? heap_.get_object_field(obj, fname)
+                               : std::nullopt;
+                if (obj != 0 && !fname.empty() && args.size() > 3)
+                    heap_.set_object_field(obj, fname, args[3]);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                if (cur.has_value() && cur->type == DalvikType::OBJECT_REF)
+                    result = *cur;
+                else
+                    result = DalvikValue::make_null();
+                return true;
+            }
+            if (method == "getAndSetInt") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                auto cur = (obj != 0 && !fname.empty())
+                               ? heap_.get_object_field(obj, fname)
+                               : std::nullopt;
+                int32_t old_v = 0;
+                if (cur.has_value()) {
+                    if (cur->type == DalvikType::INT32) old_v = cur->int_val;
+                    else if (cur->type == DalvikType::INT64)
+                        old_v = (int32_t)cur->long_val;
+                    else if (cur->type == DalvikType::BOOLEAN)
+                        old_v = cur->bool_val ? 1 : 0;
+                }
+                if (obj != 0 && !fname.empty() && args.size() > 3)
+                    heap_.set_object_field(
+                        obj, fname,
+                        DalvikValue::make_int((int32_t)args[3].int_val));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(old_v);
+                return true;
+            }
+            if (method == "getAndSetLong") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                auto cur = (obj != 0 && !fname.empty())
+                               ? heap_.get_object_field(obj, fname)
+                               : std::nullopt;
+                int64_t old_v = 0;
+                if (cur.has_value()) {
+                    if (cur->type == DalvikType::INT64) old_v = cur->long_val;
+                    else if (cur->type == DalvikType::INT32)
+                        old_v = cur->int_val;
+                }
+                if (obj != 0 && !fname.empty() && args.size() > 3)
+                    heap_.set_object_field(
+                        obj, fname, DalvikValue::make_long(args[3].long_val));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_long(old_v);
+                return true;
+            }
             if (method == "arrayBaseOffset") {
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 result = DalvikValue::make_int(0);
@@ -22985,6 +23317,59 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         heap_.set_object_field(arr_id, "__array_length__", len_val);
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_object(arr_id, "Larray;");
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // R-NEW-346 HONEST FILE METADATA LAW (supersedes the EXP-043 stub).
+    // The old stub answered TRUE for exists()/canRead()/... on EVERY file.
+    // AOSP law: these report REAL filesystem state. Concrete failure (dooz23):
+    // androidx DataStore's first-run guard is `if (!file.exists())
+    // emptyPreferences()`; with exists()==true on a NON-existent preferences
+    // file the actor took the READ path, the parser hit String.substring on
+    // a null (13 deferred NPEs at Lot;.a / Liu;.d, catch-all retry loop), the
+    // theme load failed and runBlocking returned without a value.
+    // Resolution law: the receiver File object's STRING field is the path;
+    // absolute paths are checked as-is; relative paths resolve under the ONE
+    // app-data root (data_root.h law). Unknown/empty path -> not exists
+    // (the honest answer for the stub singletons). create/mkdir LAWS stay
+    // optimistic (they CREATE the record so later exists() turns true).
+    if (class_name == "Ljava/io/File;" &&
+        (method == "exists" || method == "isDirectory" || method == "canRead" ||
+         method == "canWrite")) {
+        std::string fpath;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            heap_.has_object(args[0].object_id)) {
+            const auto& fobj = heap_.all_objects().at(args[0].object_id);
+            for (const auto& [fname, fval] : fobj.fields) {
+                if (fval.type == DalvikType::STRING_REF &&
+                    fval.string_val.size() > fpath.size()) {
+                    fpath = fval.string_val;  // longest string field = the path
+                }
+            }
+        }
+        std::filesystem::path p;
+        if (!fpath.empty()) {
+            if (fpath[0] == '/') {
+                p = fpath;
+            } else {
+                p = std::filesystem::path(Storage::app_data_root()) / fpath;
+            }
+        }
+        std::error_code ec;
+        bool present = !fpath.empty() && std::filesystem::exists(p, ec);
+        bool is_dir = present && std::filesystem::is_directory(p, ec);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (method == "exists") result = DalvikValue::make_bool(present);
+        else if (method == "isDirectory") result = DalvikValue::make_bool(is_dir);
+        else result = DalvikValue::make_bool(present);  // canRead/canWrite
+        static thread_local uint64_t file_meta_log = 0;
+        if (file_meta_log < 16) {
+            ++file_meta_log;
+            std::cerr << "[FILE-META] " << method << " path=\"" << fpath
+                      << "\" -> " << (present ? "EXISTS" : "ABSENT")
+                      << (is_dir ? " (dir)" : "") << std::endl;
+        }
         return true;
     }
 

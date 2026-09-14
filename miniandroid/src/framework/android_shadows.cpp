@@ -982,6 +982,22 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
                           << " → pending inline run (deterministic law)"
                           << std::endl;
             }
+        } else if (ctx.receiver_id != 0) {
+            // R-NEW-345 SELF-RUN LAW (generic): Thread SUBCLASSES (kotlinx
+            // scheduler Worker, LooperThread, OkHttp threads) override run()
+            // and are started with NO Runnable ctor target. AOSP
+            // Thread.start() virtual-dispatches to the receiver's own run();
+            // queue a SELF-run (thread, thread) so the engine drain invokes
+            // the subclass's REAL DEX run() body. No class-name special
+            // casing: every Thread subclass shares the law.
+            pending_starts_.emplace_back(ctx.receiver_id, ctx.receiver_id);
+            static thread_local uint64_t self_log = 0;
+            if (self_log < 12) {
+                self_log++;
+                std::cerr << "[THREAD-START] thread_oid=" << ctx.receiver_id
+                          << " (subclass self-run law) → pending inline run"
+                          << std::endl;
+            }
         }
         return CallResult::handled_void();
     }
