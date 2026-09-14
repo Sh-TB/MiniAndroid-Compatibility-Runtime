@@ -1,3174 +1,3182 @@
 {
- "baseline_head": "5a2b7d99",
- "summary": {
-  "total_roots": 321,
-  "open_frontiers": [
-   "R-NEW-228",
-   "R-NEW-303",
-   "R-NEW-323",
-   "R-NEW-330",
-   "R-NEW-331"
-  ],
-  "last_updated": "S35 2026-09-13",
-  "note": "S35: R-NEW-334 narrowed to the lifecycle-gated visibility law (entry.maxLifecycle never >= STARTED -> populateVisibleEntries empty); F-ledger 100% closed; APPS_EXECUTION_LEDGER published; live frontier = the NavBackStackEntry lifecycle chain."
- },
- "roots": [
-  {
-   "id": "R-NEW-001",
-   "status": "PARTIAL",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "F-029a Handler.createAsync→main singleton (CM4); virtual-clock single-owner audit (session-11)",
-   "missing": "enqueue order edges, IdleHandler, sync barriers, quit",
-   "next": "registry probe MQ-01: enqueue past/now/future + remove-by-identity",
-   "commit": "8de5382b"
-  },
-  {
-   "id": "R-NEW-002",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "F-029a (CM4)",
-   "missing": "removeCallbacks identity law",
-   "next": "probe MQ-02",
-   "commit": "8de5382b"
-  },
-  {
-   "id": "R-NEW-003",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "ChessClock cross-APK virtual-time proof; GATE-proven delayed ordering (Family M)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3ed13292"
-  },
-  {
-   "id": "R-NEW-004",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "locks_shadow F-017 (Family Y battery)",
-   "missing": "monitor ownership edges",
-   "next": "probe LK-01",
-   "commit": "3ed13292"
-  },
-  {
-   "id": "R-NEW-005",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "locks_shadow F-017",
-   "missing": "reacquire ordering",
-   "next": "probe LK-02",
-   "commit": "3ed13292"
-  },
-  {
-   "id": "R-NEW-006",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "locks_shadow F-017",
-   "missing": "notifyAll wake order",
-   "next": "probe LK-03",
-   "commit": "3ed13292"
-  },
-  {
-   "id": "R-NEW-007",
-   "status": "UNPROVEN",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "no live trace",
-   "missing": "interrupt state machine",
-   "next": "implement on trace evidence",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-008",
-   "status": "UNPROVEN",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "no live trace",
-   "missing": "IE propagation via sleep/wait",
-   "next": "implement on trace evidence",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-009",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "corpus+battery; is_subclass_of interface-closure law (CM3)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "5488eba0"
-  },
-  {
-   "id": "R-NEW-010",
-   "status": "UNPROVEN",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "no live ArrayStoreException trace",
-   "missing": "covariant store check",
-   "next": "implement on trace evidence",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-011",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "EXP-071 read-all-types law",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3ed13292"
-  },
-  {
-   "id": "R-NEW-012",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "EXP-071 + OOB synthetic-exception law; F-055 AIOOBE chain live (CM9)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "96ecc9f4"
-  },
-  {
-   "id": "R-NEW-013",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "F-017b cycle-guard exemption (CM3); corpus",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "5488eba0"
-  },
-  {
-   "id": "R-NEW-014",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "corpus 16-APK; clinit guard",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3ed13292"
-  },
-  {
-   "id": "R-NEW-015",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "F-029 reflection core (CM4)",
-   "missing": "initialize/resolve flag matrix",
-   "next": "extend F-029 fixture",
-   "commit": "8de5382b"
-  },
-  {
-   "id": "R-NEW-016",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "F-029 getDeclaredMethod/getMethod/Method.invoke→recursive bridge; regression-caught & reconciled (microtimer Room path)",
-   "missing": "generic exception wrapping fidelity",
-   "next": "keep protected; fixture on next battery pass",
-   "commit": "8de5382b"
-  },
-  {
-   "id": "R-NEW-017",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "F-029 core",
-   "missing": "getDeclaredFields/inherited-member walk",
-   "next": "hidden-gap list (audit §H)",
-   "commit": "8de5382b"
-  },
-  {
-   "id": "R-NEW-018",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no Parcel substrate",
-   "missing": "-",
-   "next": "NOT-APPLICABLE until Parcel law needed",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-019",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no Parcel substrate",
-   "missing": "-",
-   "next": "same",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-020",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "Bundle heap store EXP093 (Intent extras)",
-   "missing": "CREATOR envelope law",
-   "next": "implement on trace evidence",
-   "commit": "3ed13292"
-  },
-  {
-   "id": "R-NEW-021",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "ViewShadow measure/layout pipeline (G04/G06)",
-   "missing": "propagation coalescing law",
-   "next": "probe UI-01",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-022",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "invalidate exercised by fixtures",
-   "missing": "damage-region law",
-   "next": "probe UI-02",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-023",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "single logical UI-thread engine law (report §K1)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-024",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "MeasureSpec EXACTLY/AT_MOST fixture; G04 density matrix",
-   "missing": "UNSPECIFIED edges",
-   "next": "extend fixture",
-   "commit": "3ed13292"
-  },
-  {
-   "id": "R-NEW-025",
-   "status": "OBSERVED-FAIL",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "dooz ComposeView children=0, 0/2073600 non-white (run/m9_merge_dooz at CMM)",
-   "missing": "first-frame traversal pipeline",
-   "next": "M9 frontier: dispatch pump + lifecycle registry (R-NEW-279/285)",
-   "commit": "0383f19f"
-  },
-  {
-   "id": "R-NEW-026",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "F-032/F-033 getSystemService registry + Class overload (CM5); SharedPreferences cross-APK (unote, microtimer)",
-   "missing": "ActivityThread internals",
-   "next": "regression-watch",
-   "commit": "3ed13292"
-  },
-  {
-   "id": "R-NEW-027",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "class_resolver; 16-APK corpus (Family B)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-028",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "per-list index accumulators re-verified vs dooz class_data (M6)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "b03ad3b1"
-  },
-  {
-   "id": "R-NEW-029",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "NoClassDefFoundError paths exercised",
-   "missing": "error-type matrix",
-   "next": "CONDITIONAL (audit §B)",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-030",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "single-app loader",
-   "missing": "isolation semantics",
-   "next": "CONDITIONAL",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-031",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "ARSC parser + canonical drawable resolver",
-   "missing": "multi-ApkAssets composition",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-032",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no invalidation trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-033",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "canonical resolver: hello_color drawable+borders end-to-end (CM9)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "96ecc9f4"
-  },
-  {
-   "id": "R-NEW-034",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "density approximation verified (G04)",
-   "missing": "locale/qualifier selection",
-   "next": "RESEARCHED P2 (audit §O)",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-035",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "layout inflation fixtures",
-   "missing": "coercion matrix",
-   "next": "extend fixture",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-036",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "layout_inflater.cpp corpus-proven",
-   "missing": "Factory/Factory2 chain corners",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-037",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "Bundle heap store (EXP093)",
-   "missing": "ClassLoader propagation",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-038",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-039",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-040",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace (RESEARCHED, audit M-family)",
-   "missing": "-",
-   "next": "probe MQ-03",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-041",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-042",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-043",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-044",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "multi-dex enumeration exercised",
-   "missing": "dynamic load APIs",
-   "next": "CONDITIONAL",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-045",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "multi-dex enumeration corpus-proven (Family B)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-046",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-047",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "jni_bridge.h boundary classification; classification law: missing .so NEVER a Java-API blocker",
-   "missing": "-",
-   "next": "keep law; implement on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-048",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same as 047",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-049",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same as 047",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-050",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "interpreter — ART-specific binding N/A as-is",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-051",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": false,
-   "evidence": "F-041 encoded_catch_handler negative-size law; f040 L2 band; every typed+catch-all entry in real R8/ECJ DEX",
-   "missing": "-",
-   "next": "keep protected",
-   "commit": "b03ad3b1"
-  },
-  {
-   "id": "R-NEW-052",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "THROWTRACE frame chains across fixtures",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-053",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "typed catch dispatch (f040 L2)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "b03ad3b1"
-  },
-  {
-   "id": "R-NEW-054",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "Family W filled-new-array corpus",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-055",
-   "status": "UNPROVEN",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "packed/sparse payload edge shapes RESEARCHED (audit §A gaps)",
-   "missing": "-",
-   "next": "CONDITIONAL",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-056",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "CYCLE-E/F-030 proto-guided arg typing; dooz wide-pair SWAR live",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3ed13292"
-  },
-  {
-   "id": "R-NEW-057",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "dooz range-invokes live",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-058",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "overlapping wide pairs proven live (ushr-long/2addr, shl-long cross-chunk, M6 trace)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "b03ad3b1"
-  },
-  {
-   "id": "R-NEW-059",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "f030 L5 Integer.valueOf CAS band",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3ed13292"
-  },
-  {
-   "id": "R-NEW-060",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "Family F: LM1/i disassembled ground truth; upstream-null tracing law",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "b03ad3b1"
-  },
-  {
-   "id": "R-NEW-061",
-   "status": "PARTIAL",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "compose continuation chain executes (AndroidUiDispatcher+J$c runnables, CM8)",
-   "missing": "Job-active cancellation (R-NEW-285)",
-   "next": "M8 roadmap item 10",
-   "commit": "ad4349a9"
-  },
-  {
-   "id": "R-NEW-062",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "partial via 061",
-   "missing": "propagation matrix",
-   "next": "with 061",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-063",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "F-036/F-039 MainDispatcherLoader (CM5c) + F-029a HandlerCompat (CM4)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "6d88661a"
-  },
-  {
-   "id": "R-NEW-064",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "ZIP entry semantics exercised; .so selection R",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-065",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "hello_color 4-quadrant bitmap art rendered through decodeResource+draw (CM9); png/jpeg/webp decoders linked",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "96ecc9f4"
-  },
-  {
-   "id": "R-NEW-066",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "density approximation (G04)",
-   "missing": "decode density transform",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-067",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "renderer RGB path",
-   "missing": "Config matrix",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-068",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "F-053 GradientDrawable shape law (CM9); ColorDrawable verified",
-   "missing": "layer-list, inset, rotate",
-   "next": "on demand",
-   "commit": "96ecc9f4"
-  },
-  {
-   "id": "R-NEW-069",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "state_list.cpp corpus",
-   "missing": "state machine matrix",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-070",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "state_list",
-   "missing": "tint law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-071",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-072",
-   "status": "UNPROVEN",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-073",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-074",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "software renderer architecture — no DisplayList/RenderNode substrate by design",
-   "missing": "-",
-   "next": "radar retained for HW path",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-075",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no compositor; libGDX boundary = T3/BLANK honest record",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-076",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-077",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "screenshot pipeline + metrics proven across 7 fixture goldens",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-078",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "ImageView corpus",
-   "missing": "scaleType geometry matrix",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-079",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "corpus",
-   "missing": "intrinsic→measure law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-080",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "corpus",
-   "missing": "lifetime law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-081",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "hello_color END-TO-END: ARSC→layout→drawable→view→draw→pixels; 3-run byte-identical frame 11e0056320d8546d (CM9, merge-verified at CMM)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "96ecc9f4"
-  },
-  {
-   "id": "R-NEW-082",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no split-APK substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-083",
-   "status": "UNPROVEN",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "no signature verification law",
-   "missing": "v1/v2 verification",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-084",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no scheme matrix",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-085",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "-",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-086",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "parser bound checks (§N hardening)",
-   "missing": "fuzz corpus campaign",
-   "next": "tooling class G",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-087",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "parser hardening",
-   "missing": "duplicate-entry law",
-   "next": "tooling class G",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-088",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "file_sandbox path containment",
-   "missing": "traversal corpus",
-   "next": "tooling class G",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-089",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "AXML parser bounds",
-   "missing": "hostile corpus",
-   "next": "tooling class G",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-090",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "ARSC parser bounds",
-   "missing": "hostile corpus",
-   "next": "tooling class G",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-091",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "res_id resolution",
-   "missing": "confusion corpus",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-092",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "package parse",
-   "missing": "isolation law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-093",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "manifest parse feeds PackageManager+F-018",
-   "missing": "security attribute matrix",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-094",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "exported parsed, not enforced",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-095",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "explicit intents corpus-proven",
-   "missing": "caller identity law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-096",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "single-app runtime; no spoofing surface",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-097",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "IntentFilter matching RESEARCHED (audit §L)",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-098",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no URI grant substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-099",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no ContentProvider substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-100",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-101",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no Binder substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-102",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no Binder substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-103",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no Binder substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-104",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no Binder substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-105",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no Binder substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-106",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no Binder substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-107",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no permission substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-108",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-109",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "single-UID host process",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-110",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "package identity via manifest",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-111",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "host OS domain",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-112",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "host OS domain",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-113",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no native sandbox substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-114",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "jni_bridge classification",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-115",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-116",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-117",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-118",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no ELF loader",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-119",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-120",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-121",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-122",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "parser-level hardening; interpreter (no verifier by design)",
-   "missing": "verifier-equivalent semantics",
-   "next": "CONDITIONAL",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-123",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "bound checks in dex_parser.cpp (§N)",
-   "missing": "hostile DEX corpus",
-   "next": "tooling class G",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-124",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "index bounds",
-   "missing": "confusion corpus",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-125",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "code-item bounds",
-   "missing": "adversarial corpus",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-126",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "F-041 hardened the common negative-size shape",
-   "missing": "adversarial handler table",
-   "next": "fuzz band",
-   "commit": "b03ad3b1"
-  },
-  {
-   "id": "R-NEW-127",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "interpreter invariants + F-016 honesty protocol",
-   "missing": "control-flow fuzz",
-   "next": "tooling class G",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-128",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "switch parse-neg battery stage",
-   "missing": "payload edge shapes",
-   "next": "with 055",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-129",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "F-029 boundary",
-   "missing": "access law matrix",
-   "next": "on demand",
-   "commit": "8de5382b"
-  },
-  {
-   "id": "R-NEW-130",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no hidden-API enforcement surface",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-131",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "see 030",
-   "missing": "-",
-   "next": "with 030",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-132",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no dynamic DEX trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-133",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no in-memory DEX trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-134",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "trace engine + code-loading logs",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-135",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "dooz = real R8-OBFUSCATED APK executing deep into Material3; obfuscated-symbol forensics via scripts/forensic/minidump_dex.py (CM9)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "96ecc9f4"
-  },
-  {
-   "id": "R-NEW-136",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "synthetic/bridge exercised via dooz",
-   "missing": "visibility law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-137",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no metadata parser",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-138",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "dooz lambdas execute (Activity-result chains)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-139",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "R8-shrunk real APKs (dooz) run through the full pipeline",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-140",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no resource-shrunk trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-141",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "reflection reachability via F-029",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-142",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-143",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-144",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no WebView substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-145",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-146",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-147",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-148",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-149",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "file_sandbox + data_root hermetic law (F-012)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-150",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "sandbox boundaries",
-   "missing": "external storage law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-151",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no FileProvider trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-152",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "sqlite_shadow sandbox; notes.db v2 end-to-end (unote)",
-   "missing": "auth law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-153",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "SharedPreferences cross-APK isolation (unote, microtimer)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-154",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no keystore substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-155",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-156",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no crypto provider",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-157",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no TLS substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-158",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no TLS substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-159",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-160",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no instrumentation substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-161",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no /proc passthrough",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-162",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "thread ids bridged (ThreadSnapshotTable keying, M13 probe)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-163",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no mem-map passthrough",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-164",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "tooling class G planned (PHASE-0 infra)",
-   "missing": "-",
-   "next": "build fuzz probes on infra",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-165",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "differential harness planned",
-   "missing": "-",
-   "next": "tooling class F",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-166",
-   "status": "RESEARCHED-NOT-IMPLEMENTED",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "differential harness planned",
-   "missing": "-",
-   "next": "tooling class F",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-167",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "APP BOUNDARY / PARTIAL classification law in traces",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-168",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "parser-vs-app crash separation in reports",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-169",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no OOM trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-170",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "parser bound checks",
-   "missing": "overflow corpus",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-171",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no native parser substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-172",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "umbrella: sandbox+parser hardening+sandboxed storage",
-   "missing": "cross-stack audit",
-   "next": "with tooling G",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-173",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "FreeType/HarfBuzz/FriBidi shaper wired; TextView fixtures",
-   "missing": "measure-vs-draw delta law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-174",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "font metrics used by TextView fixtures",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-175",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "Typeface via FreeType",
-   "missing": "identity law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-176",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "FreeType fallback",
-   "missing": "fallback chain law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-177",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "HarfBuzz shaping wired",
-   "missing": "complex-script corpus",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-178",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "FriBidi wired",
-   "missing": "RTL corpus",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-179",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-180",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-181",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-182",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-183",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "TextView wrap in fixtures",
-   "missing": "wrap law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-184",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-185",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-186",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "alignment in fixtures",
-   "missing": "matrix",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-187",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "G04 density matrix",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-188",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "G04 density matrix",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-189",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "G04",
-   "missing": "rounding law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-190",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "window size law partial",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-191",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "touch_dispatcher transforms",
-   "missing": "coordinate matrix",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-192",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no scroll trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-193",
-   "status": "UNPROVEN",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "no transform trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-194",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "MeasureSpec fixture (m3_style_weight, G04)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-195",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-196",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "partial via fixtures",
-   "missing": "UNSPECIFIED law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-197",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "all layout fixtures",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-198",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "all layout fixtures",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-199",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "layout fixtures",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-200",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "partial",
-   "missing": "min-law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-201",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "gravity in fixtures",
-   "missing": "matrix",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-202",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-203",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "FriBidi present",
-   "missing": "direction law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-204",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "renderer clip",
-   "missing": "bounds law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-205",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "renderer clip",
-   "missing": "parent law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-206",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "canvas_shadow.cpp",
-   "missing": "clip-stack corpus",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-207",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "alpha in renderer",
-   "missing": "propagation law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-208",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "C013-LEAFCHK vis flags live (merged dooz run); fixtures",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-209",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-210",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-211",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-212",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-213",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-214",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "png alpha path",
-   "missing": "premult law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-215",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-216",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "paint flags partial",
-   "missing": "matrix",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-217",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-218",
-   "status": "VERIFIED-FIXED",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "F-053 linear gradient law (AOSP 8-step orientation table)",
-   "missing": "radial/sweep",
-   "next": "on demand",
-   "commit": "96ecc9f4"
-  },
-  {
-   "id": "R-NEW-219",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-220",
-   "status": "VERIFIED-FIXED",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "F-053 shape law: solid/stroke/corners/gradient inflate+draw; setBackgroundColor last-writer law; ring/line/dash DETECTED-NOT-EXERCISED",
-   "missing": "ring/line/dash exercise",
-   "next": "hello_color regression-watch",
-   "commit": "96ecc9f4"
-  },
-  {
-   "id": "R-NEW-221",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "Material3 composition constructs (dooz 1.13M-line trace)",
-   "missing": "inheritance law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-222",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "m3_style_weight fixture",
-   "missing": "precedence matrix",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-223",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "attr resolution corpus",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-224",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "?attr via Material3 paths",
-   "missing": "law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-225",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "state_list",
-   "missing": "stateful law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-226",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-227",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "state_list",
-   "missing": "precedence",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-228",
-   "status": "OBSERVED-FAIL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "LIVE: [REC-MISS] Window.setDecorFitsSystemWindows in run/m9_merge_dooz (CMM)",
-   "missing": "shadow law",
-   "next": "R-NEW-286",
-   "commit": "0383f19f"
-  },
-  {
-   "id": "R-NEW-229",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-230",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-231",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-232",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-233",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-234",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-235",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "window flags parse",
-   "missing": "dim/brightness law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-236",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "draw order in renderer",
-   "missing": "Z law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-237",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-238",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-239",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-240",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "software renderer — no layer type",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-241",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "Choreographer pump F-050 (CM8)",
-   "missing": "animation clock law",
-   "next": "with 242",
-   "commit": "ad4349a9"
-  },
-  {
-   "id": "R-NEW-242",
-   "status": "PARTIAL",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "F-050 four frame-pump roots fixed (CM8); 3-run deterministic; frontier = R-NEW-285 Job-active cancellation",
-   "missing": "first frame end-to-end",
-   "next": "M8 roadmap item 10",
-   "commit": "ad4349a9"
-  },
-  {
-   "id": "R-NEW-243",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-244",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-245",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-246",
-   "status": "PARTIAL",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S18: dooz onCreate completes rc=0 ZERO uncaught exceptions (run/s18_f069_dooz); with MINIANDROID_DISPATCH_ATTACH=1 ComposeView children=1 (AndroidComposeView node=646, run/s18_f069b_dooz). Frame still 0/2073600 non-white.",
-   "missing": "MonotonicFrameClock fold (R-NEW-294) + composition render (R-NEW-295)",
-   "next": "close R-NEW-294 then R-NEW-295",
-   "commit": "3093cd48"
-  },
-  {
-   "id": "R-NEW-247",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no RecyclerView corpus demand",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-248",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-249",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-250",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-251",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "touch_dispatcher transforms",
-   "missing": "hit-test law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-252",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (§29 battery)",
-   "missing": "ordering matrix",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-253",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "partial",
-   "missing": "pressed law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-254",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "tictactoe_golden frames_manifest 9/9 listener clicks, 2741-px frame deltas; EXP088 live probe",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-255",
-   "status": "UNPROVEN",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no trace",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-256",
-   "status": "PARTIAL",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "composition constructs deep into Material3 (1.13M trace lines, M13); state→tree law partial",
-   "missing": "ComposeView children 0→N",
-   "next": "M9 frontier",
-   "commit": "96ecc9f4"
-  },
-  {
-   "id": "R-NEW-257",
-   "status": "VERIFIED-FIXED",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "F-044 derived-state stale root fixed; f044 fixture 7 bands 3-run byte-identical 32b8a456",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "774d6cdd"
-  },
-  {
-   "id": "R-NEW-258",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "readError eliminated (F-028/F-030, CM4/CM5); observation plumbing unproven",
-   "missing": "observation law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-259",
-   "status": "PARTIAL",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "composition lifecycle partial; suspected registry gap = R-NEW-279",
-   "missing": "-",
-   "next": "M9 frontier",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-260",
-   "status": "PARTIAL",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "F-057 view-node duality law (owner-walk resolves via ViewShadow first)",
-   "missing": "owner-walk tail",
-   "next": "hello_color regression-watch",
-   "commit": "96ecc9f4"
-  },
-  {
-   "id": "R-NEW-261",
-   "status": "PARTIAL",
-   "priority": "P1",
-   "fg": true,
-   "evidence": "frame-clock NOT the symptom-layer root (FALSE-LEAD at lifecycle layer, brief §15); F-050 fixed real pump family (CM8)",
-   "missing": "-",
-   "next": "with 242",
-   "commit": "ad4349a9"
-  },
-  {
-   "id": "R-NEW-262",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "software renderer",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-263",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-264",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-265",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "same",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-266",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "draw order",
-   "missing": "layer law",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-267",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no frame submission substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-268",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no RenderThread",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-269",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "no Surface buffer substrate",
-   "missing": "-",
-   "next": "radar retained",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-270",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "screenshot from post-draw framebuffer + metrics law",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-271",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "hello_color per-element pixel counts (evidence.json) — early provenance",
-   "missing": "full provenance chain",
-   "next": "extend tooling (§25 pixel provenance)",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-272",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "blank taxonomy applied to dooz: NO_COMPOSITION class (children=0); A-K classification law",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "0383f19f"
-  },
-  {
-   "id": "R-NEW-273",
-   "status": "PARTIAL",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "alpha stats in metrics",
-   "missing": "-",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-274",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "whole runtime = deterministic offscreen software rendering",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-275",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "3-run byte-identical law (fixtures + hello_color 11e0056320d8546d)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "96ecc9f4"
-  },
-  {
-   "id": "R-NEW-276",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "battery pixel goldens (7 fixtures)",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-277",
-   "status": "VERIFIED-CORRECT",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "1080x1920 contract in evidence.json",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-278",
-   "status": "PARTIAL",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "renderer RGB format documented",
-   "missing": "format matrix",
-   "next": "on demand",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-279",
-   "status": "PARTIAL",
-   "priority": "P0",
-   "fg": false,
-   "evidence": "S18: full lifecycle callback chain exception-free across onCreate (getViewModelStore reached via F-067) (run/s18_f069_dooz).",
-   "missing": "frame pixels via R-NEW-294/295 closure",
-   "next": "R-NEW-294",
-   "commit": "3093cd48"
-  },
-  {
-   "id": "R-NEW-280",
-   "status": "VERIFIED-FIXED",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "F-059 (S17) + S18: WeakReference owner get() verified across full onCreate — no ISE garbage-collected (run/s18_f069_dooz).",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3093cd48"
-  },
-  {
-   "id": "R-NEW-281",
-   "status": "UNPROVEN",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "Known gap (M9-B analysis)",
-   "missing": "implementation + proof",
-   "next": "Known gap (M9-B analysis): no collection-view law at HEAD (grep clean); views must reflect the backing map. Compose/AndroidX uses values() on hot paths. No live failure recorded yet — implement with OpenJDK view semantics + micro-fixture when a trace reaches it.",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-282",
-   "status": "UNPROVEN",
-   "priority": "P2",
-   "fg": false,
-   "evidence": "singletonList/emptyList/unmodifiableList covered by F-039 (3ed13292); singletonMap/unmodifiableMap NOT implemented (grep",
-   "missing": "implementation + proof",
-   "next": "singletonList/emptyList/unmodifiableList covered by F-039 (3ed13292); singletonMap/unmodifiableMap NOT implemented (grep clean). Complete the family from OpenJDK Collections.java.",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-283",
-   "status": "UNPROVEN",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) — component identity proven via unote",
-   "missing": "implementation + proof",
-   "next": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) — component identity proven via unote. Full law (interned identity: two const-class of same type → same heap object, == comparable) not separately proven. Micro-proof pending.",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-284",
-   "status": "UNPROVEN",
-   "priority": "P1",
-   "fg": false,
-   "evidence": "execute_check_cast validates and (by code inspection) preserves the register; no dedicated proof that the value is prese",
-   "missing": "implementation + proof",
-   "next": "execute_check_cast validates and (by code inspection) preserves the register; no dedicated proof that the value is preserved on success and thrown-without-mutation on failure. Add micro band (M9-B finding).",
-   "commit": "-"
-  },
-  {
-   "id": "R-NEW-285",
-   "status": "PARTIAL",
-   "priority": "P0",
-   "fg": false,
-   "evidence": "S18: Recomposer creation executing (WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b live trace, run/s18_f069b_dooz).",
-   "missing": "MonotonicFrameClock fold (R-NEW-294)",
-   "next": "R-NEW-294",
-   "commit": "3093cd48"
-  },
-  {
-   "id": "R-NEW-286",
-   "status": "NOT-APPLICABLE",
-   "priority": "P3",
-   "fg": false,
-   "evidence": "setDecorFitsSystemWindows unused on this dooz path before composition (verified live s18 runs).",
-   "missing": "-",
-   "next": "-",
-   "commit": "3093cd48"
-  },
-  {
-   "id": "R-NEW-287",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "LIVE: FIELD-TRACE put-obj Lg/b;.i obj#15 value=obj#0 after second Lg/b;.d (double removeObserver) → eldest()!! NPE. ",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3093cd48"
-  },
-  {
-   "id": "R-NEW-288",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "LIVE: Kotlin Reflection clinit '<get-values>(...) must not be null' NPE. ",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3093cd48"
-  },
-  {
-   "id": "R-NEW-289",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "LIVE: Kotlin T::class.java field round-trip → 'null cannot be cast to non-null type java.lang.Class'. ",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3093cd48"
-  },
-  {
-   "id": "R-NEW-290",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "LIVE: Arrays.copyOf null-array NPE at y.c pc=45 (toTypedArray idiom). ",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3093cd48"
-  },
-  {
-   "id": "R-NEW-291",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "LIVE: getViewModelStore ISE 'not yet attached to the Application instance'. ",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3093cd48"
-  },
-  {
-   "id": "R-NEW-292",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "LIVE: throwing Factory.create(Class) default shadowed Lf1/b.b override. ",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3093cd48"
-  },
-  {
-   "id": "R-NEW-293",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "LIVE: areEqual false → IAE 'No initializer set for given class androidx.lifecycle.A'. ",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "3093cd48"
-  },
-  {
-   "id": "R-NEW-294",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "F-070 (S19): identity-equals law answered for app-DEX receivers; F/d0.a ISE 1→0; Recomposer creation proceeds (dooz 3-run 31ddd4d5, battery ALL PASS).",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "f95b4b1f"
-  },
-  {
-   "id": "R-NEW-295",
-   "status": "VERIFIED-FIXED",
-   "priority": "P1",
-   "fg": true,
-   "evidence": "F-071 (S20): ROOT was NOT the parent walk (TAG-TRACE proved 725→102→8→101 intact). The 3rc range-invoke path leaked the enclosing static flag into try_shadow_dispatch → receiver_id=0 → getParent null → checkNotNull NPE. Range ops now set the flag from their own opcode (RAII restore); NPE gone; dooz rc=0 uncaught=0 (run/s20_f073).",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "7178c890"
-  },
-  {
-   "id": "R-NEW-296",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "LIVE: compose CompositionImpl.recordModificationsOf CAS(null→values) returned true but stored null → drainPendingModificationsLocked read null → ComposeRuntimeError 'concurrently is not supported'. ",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "7178c890"
-  },
-  {
-   "id": "R-NEW-297",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "LIVE: R8 file-level sentinel `val PendingApplyNoModifications = Any()` (class exactly Ljava/lang/Object;) — areEqual(x,x) answered false → composeRuntimeError 'corrupt pendingModifications drain'. ",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "7178c890"
-  },
-  {
-   "id": "R-NEW-298",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "LIVE S21: dooz drain dispatched UC009-WIRE Runnable id=687 class=Lb2/h; with ZERO b2/h.run records in the 306k-line log; DEX truth (scripts/forensic/s21_frame_probe.py + androguard): Lb2/h; = kotlinx DispatchedContinuation, NO run() declared — entrypoint DispatchedTask.run (LW1/N;) on the superclass; upstream law: ART virtual dispatch resolves on the runtime class hierarchy. ",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "PENDING-S21"
-  },
-  {
-   "id": "R-NEW-299",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "LIVE S21 (post F-074): HASH-TRACE proved hashCode(elem) fired only from K/d.get; TRIE-TRACE pinned K/t.v returning null (trie emptied) while LL/b.<init> received the UNREBUILT map; androguard CFG: `if (node !== newNode)` guarded the EMPTY-map rebuild; the identity compare answered EQUAL for (OBJECT_REF, const/4-null). FIXED F-075: polymorphic-zero-at-reference-use law at return-object, move-result-object, mixed 22t compares. dooz: CME 1->0, uncaught 0. ",
-   "missing": "-",
-   "next": "regression-watch",
-   "commit": "PENDING-S21"
-  },
-  {
-   "id": "R-NEW-300",
-   "status": "IMPLEMENTED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S22 [M3-19-CYCLE] LB1/a;.B re-entered (depth=17) stubbed the runner's coroutineScope start; [S22] gate: pre-fix exactly one E0.t entry with ZERO E0$a.t/F0.t/K.u entries; DEX decode (s21_frame_probe + androguard): W1/D.c=coroutineScope tail-calls B1/a.B=startCoroutineUninterceptedOrReturn; W1/l0.e=withContext, W1/l0.a=launch; LF/E0.t=recompositionRunner, LF/E0$a->F/F0.t=the while-loop with awaitWorkAvailable+withFrameNanos. Upstream: kotlinx start helpers are static, depth-bounded, legitimately re-entrant. FIX F-076: active-cycle identity key extended to statics — leading object-arg ids (up to 2) appended; per-coroutine keys for nested starts, same-identity cycle stub preserved, MAX_RECURSION_DEPTH backstop. IMPACT: post-fix [S22] entry#3 E0$a.t, #4 F0.j, #5 F0.t — runner loop STARTS; initial composition advances into slot-table writes; dooz now exception-honest (rc=1 at the NEXT root F-077 instead of silent rc=0 death); cycle stubs 8->5; battery 91/92 (only pre-existing GATE H), F-074/F-050/§28/§29 all PASS.",
-   "missing": "micro-fixture with real DEX nested coroutine start (next pass); F-077 (R-NEW-301) blocks the dooz pixel chain downstream",
-   "next": "micro-test + close after F-077 clears the dooz path",
-   "commit": "PENDING-S22"
-  },
-  {
-   "id": "R-NEW-301",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S22, first root reached AFTER F-076 (runner loop starts): initial composition (b1.k WrappedComposition.setContent -> F/y.b ComposerImpl -> F/l.s0 SlotTable -> K/f.putAll -> K/t.m merge -> K/t.s nodeAt) dies: NPE 'null cannot be cast to non-null type TrieNode' at the check-cast in K/t.s. [TRIENODE] heap probe: builder node o1820 born dataMap=0x08000000 nodeMap=0 len=1 then mutated to a=134676546(6 bits) b=0x80000000(1 bit) len=13 null_slots=12 — bitmaps claim 7 entries, buffer holds 1 non-null; later a=160401768(13) b=2 bits len=28 null=26 vs claimed 15. kotlinx.collections.immutable invariant: buffer.size == popcount(dataMap)+popcount(nodeMap), node-claimed slots never null. Integer.bitCount/Long.bitCount bridges verified CORRECT — corruption window narrowed to the mutable-put buffer-fill family K/t.k/l/n/o (index math or aput into the grown buffer). || S35 CLOSURE (closed-by-supersession): symptom GONE at b3409007 — dooz rc=0 x5 deterministic with initial composition completing past the former K/t.s death point (content lambda n1/u.k executes x18, rememberNavController returns, 3 destinations register, full navigation stack executes as real bytecode; S34 record sec.1, probes TSTATE/READSIDE/NSPUSH). The break was eliminated collectively by the F-090..F-100 law chain; the single fixing law was not isolated (forensics debt, MINIANDROID_S22_TRACE=1 probe retained). Closure record: docs/maintenance/F_LEDGER_CLOSURE_S35.md. F-100's twin ledger entry closed same session.",
-   "missing": "exact instruction in the K/t.k/l/n/o family (probe in place: MINIANDROID_S22_TRACE=1 prints [TRIENODE] ctor/s/m with heap state)",
-   "next": "trace one put() op from N/d$a.put to the slot write",
-   "commit": "S35-F-LEDGER-CLOSURE"
-  },
-  {
-   "id": "R-NEW-302",
-   "status": "VERIFIED-FIXED",
-   "priority": "P1",
-   "fg": true,
-   "evidence": "MC4 fix at working-tree binary (layout_inflater.cpp + android_shadows requestLayout law + execution_engine re-measure gate). Root cause was THREE stacked gaps, all fixed: (1) measure_layout FrameLayout/ScrollView branch pinned every child at (parentLeft,parentTop) — lp_margin_left/top never added and lp_gravity never consulted — now full AOSP FrameLayout.layoutChildren law (default parentLeft+leftMargin / parentTop+topMargin; CENTER adds ml-mr; RIGHT/BOTTOM subtract mr/mb); (2) root-spec mapped UNSET(INT_MIN) to wrap_content — now MATCH_PARENT per AOSP ViewRootImpl.setView window law (root fills 1080x1920; demo root measured 600x1432 before); (3) DEX-driven tree mutations never re-measured — the render-time re-measure was gated on rt.loaded() only, so programmatic trees measured ONCE at setContentView and every later frame reused stale measured_* geometry. Added AOSP requestLayout law: ViewShadow::layout_dirty raised by add_child/remove_child/removeAllViews/set_layout_params; stage_render_frame re-runs measure_layout when dirty and clears the flag. VERIFICATION: demo validate_demo_proof.sh VALIDATION_PASS (9/9 distinct frames, deterministic replay identical SHA256 sequence); pixel forensics box now MOVES on the declared 5x4 grid: x 220->402->582->762->42 (+180 law) y 504->792->1086->216->504 (+~290 law), colors cycle exact COLORS[] values; full battery fresh-cache run: helloworld_golden(§28) PASS, tictactoe_golden(§29) PASS, only pre-existing GATE H fail remains (zero regressions); hello_color golden frame 11e0056320d8546d... BYTE-IDENTICAL; chessclock deterministic frame e4a2d7c90cd2fd26... BYTE-IDENTICAL.",
-   "missing": "None for this root. (Separate open visual gaps remain: headingcalc display-row text overlap, simplestopwatch GATE H integer-glyph gap, microtimer display text — distinct roots, not this one.)",
-   "next": "CLOSED. Fix lives in layout_inflater.cpp (FrameLayout margins law + root MATCH_PARENT window law), android_shadows.{h,cpp} (layout_dirty flag on tree mutators), execution_engine.cpp (dirty-gated render-time re-measure).",
-   "commit": "PENDING-MC4"
-  },
-  {
-   "id": "R-NEW-303",
-   "status": "OBSERVED-FAIL",
-   "priority": "P2",
-   "fg": true,
-   "evidence": "MC4 Telegram campaign: real Telegram v12.10.1 (org.telegram.messenger.web 70389, sha256 f5e1192725772960..., official telegram.org APK) — parse OK (analyze rc=0: package/version/launcher extracted), launch OK, ONE frame rendered with the full 1080x1920 themed window painted (2073600/2073600 px). After ActivityManager.getMemoryClass()=256 fix (eliminated LruCache IllegalArgumentException(\"maxSize <= 0\") x62), the app advances deeper and now hits IllegalStateException(\"called wrong accept method\") x191 inside j$/util/stream (desugared java.util.stream Node builder) reached from MessagesController.getInstance <- ConnectionsManager.getInstance <- LaunchActivity; run rc=124 (570s timeout — still executing, deeper than before). Evidence: docs/evidence/mc4_telegram/ (EVIDENCE.json + distilled logs + painted frame).",
-   "missing": "Desugared java.util.stream builder state machine: j$ Node/Builder classes track which accept overload (primitive vs boxed) may be invoked; the engine's virtual dispatch (or the builder's boolean guards) mismatches, so the guard throws IllegalStateException('called wrong accept method'). Needs overload-accurate invokevirtual dispatch for (I)V vs (Ljava/lang/Object;)V bridges on j$ stream builders.",
-   "next": "Disassemble j$/util/stream/r1 etc. from the Telegram APK, reproduce the accept-dispatch path in a fixture, fix the invoke overload resolution, re-run Telegram (expect deeper init; further missing APIs will surface).",
-   "commit": "PENDING-MC4"
-  },
-  {
-   "id": "R-NEW-316",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S24 dooz campaign: check-cast was a pure pass-through (no register class_desc refinement, no ClassCastException). Kotlin `map[key] as Navigator` left the register poisoned with the container declared type (Ljava/lang/Object; from Map.get) → Object.getClass answered the wrong class → Class.getAnnotation read @Navigator.Name off java.lang.Object → IAE 'No @Navigator.Name annotation found for java.lang.Object' uncaught at MainActivity.onCreate → rc=1 blank Compose frame. F-090: execute_check_cast refines register class_desc to the HEAP runtime class (EXP-059 identity authority; target type as fallback); getClass bridge consults the heap FIRST (AOSP runtime-class law). Generic: fixes every Map.get → check-cast identity consumer (getAnnotation receivers, dispatch)."
-  },
-  {
-   "id": "R-NEW-317",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S24: ShadowRegistry F-057 ViewShadow-first routing for getTag/getParent filtered shadows by name()=='ViewShadow' but ViewShadow::name() answers 'View' — the route was DEAD CODE since F-057. Owner-tag walks whose bridge key was an app class (dooz MainActivity receiver → ViewTreeLifecycleOwner.get) fell through the EXP-075 Activity gate to ActivityShadow → no tag/no parent → ISE 'ViewTreeLifecycleOwner not found' → composition died before first frame. F-090c: route by C++ TYPE (dynamic_cast<ViewShadow*>) instead of display name. DEX upstream: androidx ComponentActivity.i stores owners via ViewTreeLifecycleOwner.set on the decor node; the F-023 parent chain (8 under 101) was correct — only the routing was dead."
-  },
-  {
-   "id": "R-NEW-318",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S24: execute_invoke_interface bridged with the DECLARED interface (Ljava/lang/CharSequence;) instead of the receiver's runtime class — CharSequence.length()/charAt() on a real String found no handler → answered 0 → Kotlin route.isNotBlank() misclassified every non-empty route as blank → NavDestination.setRoute IAE 'Cannot have an empty route' (dooz routes 'game'/'settings'/'about') → onCreate died. F-090d: interface bridge key = heap runtime class (STRING_REF constants → String); F-090e: String.charAt(int) with UTF-8 codepoint decode + surrogate law; F-090f: Character.isWhitespace/isSpaceChar laws (OpenJDK set)."
-  },
-  {
-   "id": "R-NEW-319",
-   "status": "VERIFIED-FIXED",
-   "priority": "P1",
-   "fg": true,
-   "evidence": "S24: java.util.UUID had no bridge at all — UUID.randomUUID().toString() answered null → Kotlin null-assert NPE 'randomUUID().toString() must not be null' at MainActivity.onCreate. F-090g: UUID.randomUUID() (version-4/variant-1 per RFC 4122, fixed-seed xorshift stream per the F-086 determinism law) + toString() 8-4-4-4-12 form."
-  },
-  {
-   "id": "R-NEW-320",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S24: Navigator.state (l.a) is injected by exactly ONE DEX writer (navigation/compose/p.a iput at pc 1394) inside the NavHost attach loop; the loop zero-iterated because Kotlin toReadOnlyMap (z1/A.G → z1/A.H = new LinkedHashMap(source)) produced an EMPTY copy — CollectionShadow.<init> was a no-op that never copied source entries. ISE 'You cannot access the Navigator's state until the Navigator is attached'. F-090h: copy-constructor family law in CollectionShadow (LinkedHashMap(Map)/ArrayList(Collection) copy every entry/element; capacity forms stay no-op)."
-  },
-  {
-   "id": "R-NEW-322",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S24: invoke call sites passed NO method descriptor to try_recursive_invoke, so the F-023 exact-descriptor overload law could never fire; same-name overloads (z1/i addAll(Collection) vs addAll(I,Collection)) were resolved by the arity heuristic and executed the WRONG body — the 2-arg body's elements register stayed unwritten → M1/i.f NPE 'Parameter specified as non-null is null: method z1.i.addAll, parameter elements' despite the caller passing a non-null obj#2831 (proven by [S24-ADDALL]/[S24-TRI] probes). F-090i: hoisted the resolved proto in execute_invoke_virtual (runtime-type try, F-020 walk, declaring-class fallback), execute_invoke_interface (runtime-class, declared-interface, sig-walk, default-method sites) and reused in execute_invoke_direct (method_desc_081 already present). Generic multi-overload dispatch law for every R8'd app."
-  },
-  {
-   "id": "R-NEW-323",
-   "status": "OBSERVED-FAIL",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S24 CURRENT FRONTIER: dooz NavHost graph (route=null → NavGraph.id=0) — NavController restore loop c.h reads entry.j.j.o (parent graph id=0) and calls c.e(0) getBackStackEntry(0); the root GRAPH's own NavBackStackEntry was never pushed (upstream pushes ancestor-graph entries during navigate before destination entries; our engine pushed only the destination entry via c.a ← c$e.o with an EMPTY parent list z1/t.i). IAE 'No destination with ID 0 is on the NavController's back stack. The current destination is e$a@2554' uncaught at MainActivity.onCreate → rc=1. Next root: implement the ancestor-graph-entry-push law (upstream navigate-entry-hierarchy) so c.e(0) finds the graph entry. Evidence: run/s24_post_f090i_stderr.txt lines 306566-306612."
-  },
-  {
-   "id": "R-NEW-324",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S25 (F-091+F-091b): dooz died at NavController.addEntryToBackStack link loop (getBackStackEntry(parent.id=0)) because backQueue.addAll(hierarchy) copied NOTHING. Two stacked engine gaps: (a) host-interface dispatch matched Iterator.hasNext() to z1/i.isEmpty()Z by descriptor alone (F-091b gate: declared interface must be DEX-defined); (b) z1/i = minified kotlin.collections.ArrayDeque declares NO iterator()/listIterator() in DEX — implemented the AbstractList bidirectional protocol law (hasNext/next/hasPrevious/previous/nextIndex/previousIndex) driving the receiver's OWN DEX size()/get(I) via try_recursive_invoke (F-091). DEX-collection iteration for every R8-minified Kotlin app."
-  },
-  {
-   "id": "R-NEW-325",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S25 (F-092): dooz NPE 'activity.getOnBackInvokedDispatcher() must not be null' (androidx.activity OnBackPressedDispatcher.m). Upstream law: getOnBackInvokedDispatcher returns a LAZY proxy on every API level (API<33: inert no-op). ActivityShadow law: non-null placeholder Landroid/window/OnBackInvokedDispatcher; register/unregister degrade to no-ops. Every androidx.activity app benefits."
-  },
-  {
-   "id": "R-NEW-326",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S25 (F-093/F-093b): STTT ISE 'You need to use a Theme.AppCompat theme' at AppCompatDelegateImpl.createSubDecor — the runtime had NO obtainStyledAttributes bridge. F-093: ActivityShadow.obtainStyledAttributes(int[]) resolves every styleable attr against the activity theme via the canonical ARSC bag query (parent-chain inheritance + one reference hop) and materializes a theme-backed TypedArray (F-036 heap-array convention); F-093b = engine-side TypedArray positional reader law. Every AppCompatActivity app benefits."
-  },
-  {
-   "id": "R-NEW-327",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S25 (F-094): STTT's AndroidManifest.xml is PLAIN-TEXT XML (not binary AXML) — binary reader returned application_theme_resid=0. Law: capture application_theme_ref in parse_plain_xml; resolve_theme_attr_value falls back to the ref string ('@style/AppTheme.NoActionBar') → ArscParser::find_id → resid. Odd-build plain-text-manifest family."
-  },
-  {
-   "id": "R-NEW-328",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S26 (F-095): dooz compose draw silently no-oped — AndroidComposeView.dispatchDraw → ViewLayer.drawLayer → DrawChildContainer.drawChild → FRAMEWORK ViewGroup.drawChild had NO law → bridge answered void → the ENTIRE compose ViewLayer content draw never executed (0 canvas ops). F-095: (a) ViewGroup.drawChild(Canvas,View,long) law dispatches the CHILD's real draw (dispatchDraw else onDraw) on the SAME canvas; (b) Canvas.isHardwareAccelerated() → false (software-renderer truth; keeps ViewLayer.dispatchDraw + RenderNodeLayer on the correct software paths per upstream 1.6.7). Verified: dooz draw window now reaches LayoutNode.draw → NodeCoordinator.draw → InnerNodeCoordinator.performDraw node-tree walk."
-  },
-  {
-   "id": "R-NEW-329",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S27 (F-096 + F-096b): the compose PLACEMENT gate. ROOT (evidence-grade, static + live): (1) F-096 — the runtime dispatched NO real-DEX View lifecycle for PROGRAMMATIC views: hooks existed for inflate-ctor (G11), leaf onMeasure (F10), onDraw (C013) — but onMeasure/onLayout of androidx AndroidComposeView (created programmatically, overriding BOTH in DEX — verified via androguard: onMeasure(II)V + onLayout(ZIIII)V in dooz classes.dex) never executed → updateRootConstraints/measureOnly + measureAndLayout → root.place(0,0) → placeAt → isPlacedByParent/markNodeAndSubtreeAsPlaced never ran → every LayoutNode isPlaced=false → InnerNodeCoordinator.performDraw skipped all children → 0 canvas ops. F-096: one-time per-node real-DEX lifecycle dispatch (measure EXACTLY(rect) then layout(changed=true,l,t,r,b)) in the render walk, AOSP order. (2) F-096b — View$MeasureSpec.getMode returned the SHIFTED mode (0/1/2); AOSP View.java returns the IN-PLACE masked mode (spec & 0xC0000000: 0/0x40000000/0x80000000) — compose AndroidComposeView.z compares mode == 0x40000000 directly, so the shifted answer hit the else->throw IllegalStateException arm (dooz onMeasure → z pc=31 ISE → app-boundary unwind). POST-FIX: getMode law corrected; dooz compose measure+layout+place chains EXECUTE as real bytecode (F074 super-dispatch walks through node/c, node/l, k0/T placement laws; MSPEC diag evidence); frame SHA UNCHANGED 193466ead8fd21d6 (802px placeholder) — determinism x3 preserved; battery 94/94."
-  },
-  {
-   "id": "R-NEW-330",
-   "status": "OBSERVED-FAIL",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S27 CURRENT FRONTIER (dooz, honest-open): IllegalStateException 'DepthSortedSet.remove called on an unattached node' at m0/m.c (DepthSortedSet.remove, upstream DepthSortedSet.kt:67 check(node.isAttached)) ← i.h (MeasureAndLayoutDelegate.measureAndLayout popEach) ← AndroidComposeView.onLayout. The compose measure/layout/place chains now run (R-NEW-329 closed); measureAndLayout pops a relayoutNodes entry whose LayoutNode.owner == null (attach incomplete for at least one node — nearby trace shows [M3-19-CYCLE] active-cycle stub on m0/T;.a during the same window). NEXT: identify the unattached node (add bounded receiver/arg evidence to the DepthSortedSet.remove dispatch) and close the attach-propagation/active-cycle law."
-  },
-  {
-   "id": "R-NEW-331",
-   "status": "OBSERVED-FAIL",
-   "priority": "P1",
-   "fg": true,
-   "evidence": "S27 (cross-app, honest-open): the Fragment host wiring family. STTT (nl.hnogame.tictactoesuperttt_20): FragmentManager 'not been attached to a host' + AppCompat subDecor theme ISE at h.R repeated (pre-existing S25/S26 frontier, unchanged). REAL Telegram v10.14.5 golden (sha f5e1192725772960 — RE-ACQUIRED 2026-09-12, K-26 BLOCKER LIFTED: official dl serves the exact pinned build again): parse + ApplicationLoader.onCreate + LifecycleRegistry machinery execute; frontier = SAME FragmentManager.ensureExecReady 'FragmentManager has not been attached to a host' ISE + SafeIterableMap$IteratorWithAdditions.next active-cycle churn (18k+ stubs) + MessagesController ISE 'called wrong accept method'. One generic family (fragment host attach law) blocks BOTH apps."
-  },
-  {
-   "id": "R-NEW-332",
-   "status": "VERIFIED-FIXED",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S33 (F-098 + F-099): compose draw pipeline produced no Canvas content ops. ROOT was TWO blockers: (1) F-098 — the active-cycle guard instance-key stubbed SnapshotObserver.observeReads on its 2nd NESTED entry (same singleton observer, different target LayoutNode) killing onNodePlaced->markNodeAndSubtreeAsPlaced->isPlaced; law: key = receiver + up to 2 leading object-arg identities (nested per-LayoutNode observation is upstream-legal). (2) F-099 — the compose-owner draw dispatch gate required children.empty(); the shadow tree legitimately gains AndroidViewsHandler children via real DEX addView; law: a non-framework view node whose chain OVERRIDES dispatchDraw gets the real draw dispatch at visit even with children. POST: isPlaced=TRUE at draw, child.draw recursion + ViewLayer path execute. Residual ops=0 = R-NEW-333."
-  },
-  {
-   "id": "R-NEW-333",
-   "status": "OBSERVED-FAIL",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S34 (narrowed, evidence superseded): content-state pairing was NOT the root — the content lambda n1/u.k RUNS; NavHost p.b builds the graph; builder n1/n.o registers game/settings/about via real DEX; p.a inlined graph-set navigates; c$a.a createBackStackEntry + ComposeNavigator push e.d/c$a.e/h1/t.e + flow setValue all execute; sync collectors deliver lists to the remember states. RESIDUAL = p.a never re-runs -> p.a:0e78 gate stays false -> AnimatedContent never invoked -> game screen n1/q.g never composes -> 1 LayoutNode -> 0 canvas ops. Successor = R-NEW-334."
-  },
-  {
-   "id": "R-NEW-334",
-   "status": "OBSERVED-FAIL",
-   "priority": "P0",
-   "fg": true,
-   "evidence": "S35 NARROWED (supersedes the recompose-scope hypothesis): the p.a scope re-arm machinery is NOT the break — live [S35]/[S35-COLL] probes prove the visible-entries write itself carried an EMPTY list (o2914 elems=0; back-stack write o2901 elems=1 OK; remember o2919->o2901 / o2990->o2914 correct; derived filter o3013 correct on empty input). One navController (o2550, tracker o2558), ONE p.a run, no abort. UPSTREAM LAW (NavControllerImpl.populateVisibleEntries, androidx/navigation): visible = backQueue.filter { e.maxLifecycle >= STARTED } minus NavGraph destinations. dooz's pushed entry's maxLifecycle never reaches STARTED -> empty visible list -> 0e78 gate false -> AnimatedContent never dispatches -> 1 LayoutNode -> 0 canvas ops -> 802px placeholder. NEXT: the androidx.lifecycle state machine on NavBackStackEntry + host-lifecycle source (updateBackStackLifecycle / prepareForTransition / onTransitionComplete chain). Session record: docs/maintenance/s35_session_record.md; probes: MINIANDROID_S35_TRACE=1 ladder, scripts/s35_patch{1,2}*.py",
-   "commit": "S35-R334-NARROWED"
-  }
- ]
+  "baseline_head": "5a2b7d99",
+  "summary": {
+    "total_roots": 321,
+    "open_frontiers": [
+      "R-NEW-228",
+      "R-NEW-303",
+      "R-NEW-323",
+      "R-NEW-330",
+      "R-NEW-331"
+    ],
+    "last_updated": "S35 2026-09-13",
+    "note": "S35: R-NEW-334 narrowed to the lifecycle-gated visibility law (entry.maxLifecycle never >= STARTED -> populateVisibleEntries empty); F-ledger 100% closed; APPS_EXECUTION_LEDGER published; live frontier = the NavBackStackEntry lifecycle chain."
+  },
+  "roots": [
+    {
+      "id": "R-NEW-001",
+      "status": "PARTIAL",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "F-029a Handler.createAsync\u2192main singleton (CM4); virtual-clock single-owner audit (session-11)",
+      "missing": "enqueue order edges, IdleHandler, sync barriers, quit",
+      "next": "registry probe MQ-01: enqueue past/now/future + remove-by-identity",
+      "commit": "8de5382b"
+    },
+    {
+      "id": "R-NEW-002",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "F-029a (CM4)",
+      "missing": "removeCallbacks identity law",
+      "next": "probe MQ-02",
+      "commit": "8de5382b"
+    },
+    {
+      "id": "R-NEW-003",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "ChessClock cross-APK virtual-time proof; GATE-proven delayed ordering (Family M)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3ed13292"
+    },
+    {
+      "id": "R-NEW-004",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "locks_shadow F-017 (Family Y battery)",
+      "missing": "monitor ownership edges",
+      "next": "probe LK-01",
+      "commit": "3ed13292"
+    },
+    {
+      "id": "R-NEW-005",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "locks_shadow F-017",
+      "missing": "reacquire ordering",
+      "next": "probe LK-02",
+      "commit": "3ed13292"
+    },
+    {
+      "id": "R-NEW-006",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "locks_shadow F-017",
+      "missing": "notifyAll wake order",
+      "next": "probe LK-03",
+      "commit": "3ed13292"
+    },
+    {
+      "id": "R-NEW-007",
+      "status": "UNPROVEN",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "no live trace",
+      "missing": "interrupt state machine",
+      "next": "implement on trace evidence",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-008",
+      "status": "UNPROVEN",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "no live trace",
+      "missing": "IE propagation via sleep/wait",
+      "next": "implement on trace evidence",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-009",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "corpus+battery; is_subclass_of interface-closure law (CM3)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "5488eba0"
+    },
+    {
+      "id": "R-NEW-010",
+      "status": "UNPROVEN",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "no live ArrayStoreException trace",
+      "missing": "covariant store check",
+      "next": "implement on trace evidence",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-011",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "EXP-071 read-all-types law",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3ed13292"
+    },
+    {
+      "id": "R-NEW-012",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "EXP-071 + OOB synthetic-exception law; F-055 AIOOBE chain live (CM9)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "96ecc9f4"
+    },
+    {
+      "id": "R-NEW-013",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "F-017b cycle-guard exemption (CM3); corpus",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "5488eba0"
+    },
+    {
+      "id": "R-NEW-014",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "corpus 16-APK; clinit guard",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3ed13292"
+    },
+    {
+      "id": "R-NEW-015",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "F-029 reflection core (CM4)",
+      "missing": "initialize/resolve flag matrix",
+      "next": "extend F-029 fixture",
+      "commit": "8de5382b"
+    },
+    {
+      "id": "R-NEW-016",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "F-029 getDeclaredMethod/getMethod/Method.invoke\u2192recursive bridge; regression-caught & reconciled (microtimer Room path)",
+      "missing": "generic exception wrapping fidelity",
+      "next": "keep protected; fixture on next battery pass",
+      "commit": "8de5382b"
+    },
+    {
+      "id": "R-NEW-017",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "F-029 core",
+      "missing": "getDeclaredFields/inherited-member walk",
+      "next": "hidden-gap list (audit \u00a7H)",
+      "commit": "8de5382b"
+    },
+    {
+      "id": "R-NEW-018",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no Parcel substrate",
+      "missing": "-",
+      "next": "NOT-APPLICABLE until Parcel law needed",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-019",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no Parcel substrate",
+      "missing": "-",
+      "next": "same",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-020",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "Bundle heap store EXP093 (Intent extras)",
+      "missing": "CREATOR envelope law",
+      "next": "implement on trace evidence",
+      "commit": "3ed13292"
+    },
+    {
+      "id": "R-NEW-021",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "ViewShadow measure/layout pipeline (G04/G06)",
+      "missing": "propagation coalescing law",
+      "next": "probe UI-01",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-022",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "invalidate exercised by fixtures",
+      "missing": "damage-region law",
+      "next": "probe UI-02",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-023",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "single logical UI-thread engine law (report \u00a7K1)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-024",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "MeasureSpec EXACTLY/AT_MOST fixture; G04 density matrix",
+      "missing": "UNSPECIFIED edges",
+      "next": "extend fixture",
+      "commit": "3ed13292"
+    },
+    {
+      "id": "R-NEW-025",
+      "status": "OBSERVED-FAIL",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "dooz ComposeView children=0, 0/2073600 non-white (run/m9_merge_dooz at CMM)",
+      "missing": "first-frame traversal pipeline",
+      "next": "M9 frontier: dispatch pump + lifecycle registry (R-NEW-279/285)",
+      "commit": "0383f19f"
+    },
+    {
+      "id": "R-NEW-026",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "F-032/F-033 getSystemService registry + Class overload (CM5); SharedPreferences cross-APK (unote, microtimer)",
+      "missing": "ActivityThread internals",
+      "next": "regression-watch",
+      "commit": "3ed13292"
+    },
+    {
+      "id": "R-NEW-027",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "class_resolver; 16-APK corpus (Family B)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-028",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "per-list index accumulators re-verified vs dooz class_data (M6)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "b03ad3b1"
+    },
+    {
+      "id": "R-NEW-029",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "NoClassDefFoundError paths exercised",
+      "missing": "error-type matrix",
+      "next": "CONDITIONAL (audit \u00a7B)",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-030",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "single-app loader",
+      "missing": "isolation semantics",
+      "next": "CONDITIONAL",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-031",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "ARSC parser + canonical drawable resolver",
+      "missing": "multi-ApkAssets composition",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-032",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no invalidation trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-033",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "canonical resolver: hello_color drawable+borders end-to-end (CM9)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "96ecc9f4"
+    },
+    {
+      "id": "R-NEW-034",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "density approximation verified (G04)",
+      "missing": "locale/qualifier selection",
+      "next": "RESEARCHED P2 (audit \u00a7O)",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-035",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "layout inflation fixtures",
+      "missing": "coercion matrix",
+      "next": "extend fixture",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-036",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "layout_inflater.cpp corpus-proven",
+      "missing": "Factory/Factory2 chain corners",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-037",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "Bundle heap store (EXP093)",
+      "missing": "ClassLoader propagation",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-038",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-039",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-040",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace (RESEARCHED, audit M-family)",
+      "missing": "-",
+      "next": "probe MQ-03",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-041",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-042",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-043",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-044",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "multi-dex enumeration exercised",
+      "missing": "dynamic load APIs",
+      "next": "CONDITIONAL",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-045",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "multi-dex enumeration corpus-proven (Family B)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-046",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-047",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "jni_bridge.h boundary classification; classification law: missing .so NEVER a Java-API blocker",
+      "missing": "-",
+      "next": "keep law; implement on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-048",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same as 047",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-049",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same as 047",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-050",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "interpreter \u2014 ART-specific binding N/A as-is",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-051",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": false,
+      "evidence": "F-041 encoded_catch_handler negative-size law; f040 L2 band; every typed+catch-all entry in real R8/ECJ DEX",
+      "missing": "-",
+      "next": "keep protected",
+      "commit": "b03ad3b1"
+    },
+    {
+      "id": "R-NEW-052",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "THROWTRACE frame chains across fixtures",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-053",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "typed catch dispatch (f040 L2)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "b03ad3b1"
+    },
+    {
+      "id": "R-NEW-054",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "Family W filled-new-array corpus",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-055",
+      "status": "UNPROVEN",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "packed/sparse payload edge shapes RESEARCHED (audit \u00a7A gaps)",
+      "missing": "-",
+      "next": "CONDITIONAL",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-056",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "CYCLE-E/F-030 proto-guided arg typing; dooz wide-pair SWAR live",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3ed13292"
+    },
+    {
+      "id": "R-NEW-057",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "dooz range-invokes live",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-058",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "overlapping wide pairs proven live (ushr-long/2addr, shl-long cross-chunk, M6 trace)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "b03ad3b1"
+    },
+    {
+      "id": "R-NEW-059",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "f030 L5 Integer.valueOf CAS band",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3ed13292"
+    },
+    {
+      "id": "R-NEW-060",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "Family F: LM1/i disassembled ground truth; upstream-null tracing law",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "b03ad3b1"
+    },
+    {
+      "id": "R-NEW-061",
+      "status": "PARTIAL",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "compose continuation chain executes (AndroidUiDispatcher+J$c runnables, CM8)",
+      "missing": "Job-active cancellation (R-NEW-285)",
+      "next": "M8 roadmap item 10",
+      "commit": "ad4349a9"
+    },
+    {
+      "id": "R-NEW-062",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "partial via 061",
+      "missing": "propagation matrix",
+      "next": "with 061",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-063",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "F-036/F-039 MainDispatcherLoader (CM5c) + F-029a HandlerCompat (CM4)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "6d88661a"
+    },
+    {
+      "id": "R-NEW-064",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "ZIP entry semantics exercised; .so selection R",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-065",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "hello_color 4-quadrant bitmap art rendered through decodeResource+draw (CM9); png/jpeg/webp decoders linked",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "96ecc9f4"
+    },
+    {
+      "id": "R-NEW-066",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "density approximation (G04)",
+      "missing": "decode density transform",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-067",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "renderer RGB path",
+      "missing": "Config matrix",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-068",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "F-053 GradientDrawable shape law (CM9); ColorDrawable verified",
+      "missing": "layer-list, inset, rotate",
+      "next": "on demand",
+      "commit": "96ecc9f4"
+    },
+    {
+      "id": "R-NEW-069",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "state_list.cpp corpus",
+      "missing": "state machine matrix",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-070",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "state_list",
+      "missing": "tint law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-071",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-072",
+      "status": "UNPROVEN",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-073",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-074",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "software renderer architecture \u2014 no DisplayList/RenderNode substrate by design",
+      "missing": "-",
+      "next": "radar retained for HW path",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-075",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no compositor; libGDX boundary = T3/BLANK honest record",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-076",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-077",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "screenshot pipeline + metrics proven across 7 fixture goldens",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-078",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "ImageView corpus",
+      "missing": "scaleType geometry matrix",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-079",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "corpus",
+      "missing": "intrinsic\u2192measure law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-080",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "corpus",
+      "missing": "lifetime law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-081",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "hello_color END-TO-END: ARSC\u2192layout\u2192drawable\u2192view\u2192draw\u2192pixels; 3-run byte-identical frame 11e0056320d8546d (CM9, merge-verified at CMM)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "96ecc9f4"
+    },
+    {
+      "id": "R-NEW-082",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no split-APK substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-083",
+      "status": "UNPROVEN",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "no signature verification law",
+      "missing": "v1/v2 verification",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-084",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no scheme matrix",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-085",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "-",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-086",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "parser bound checks (\u00a7N hardening)",
+      "missing": "fuzz corpus campaign",
+      "next": "tooling class G",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-087",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "parser hardening",
+      "missing": "duplicate-entry law",
+      "next": "tooling class G",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-088",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "file_sandbox path containment",
+      "missing": "traversal corpus",
+      "next": "tooling class G",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-089",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "AXML parser bounds",
+      "missing": "hostile corpus",
+      "next": "tooling class G",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-090",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "ARSC parser bounds",
+      "missing": "hostile corpus",
+      "next": "tooling class G",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-091",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "res_id resolution",
+      "missing": "confusion corpus",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-092",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "package parse",
+      "missing": "isolation law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-093",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "manifest parse feeds PackageManager+F-018",
+      "missing": "security attribute matrix",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-094",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "exported parsed, not enforced",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-095",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "explicit intents corpus-proven",
+      "missing": "caller identity law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-096",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "single-app runtime; no spoofing surface",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-097",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "IntentFilter matching RESEARCHED (audit \u00a7L)",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-098",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no URI grant substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-099",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no ContentProvider substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-100",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-101",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no Binder substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-102",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no Binder substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-103",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no Binder substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-104",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no Binder substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-105",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no Binder substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-106",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no Binder substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-107",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no permission substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-108",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-109",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "single-UID host process",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-110",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "package identity via manifest",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-111",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "host OS domain",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-112",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "host OS domain",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-113",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no native sandbox substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-114",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "jni_bridge classification",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-115",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-116",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-117",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-118",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no ELF loader",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-119",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-120",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-121",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-122",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "parser-level hardening; interpreter (no verifier by design)",
+      "missing": "verifier-equivalent semantics",
+      "next": "CONDITIONAL",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-123",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "bound checks in dex_parser.cpp (\u00a7N)",
+      "missing": "hostile DEX corpus",
+      "next": "tooling class G",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-124",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "index bounds",
+      "missing": "confusion corpus",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-125",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "code-item bounds",
+      "missing": "adversarial corpus",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-126",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "F-041 hardened the common negative-size shape",
+      "missing": "adversarial handler table",
+      "next": "fuzz band",
+      "commit": "b03ad3b1"
+    },
+    {
+      "id": "R-NEW-127",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "interpreter invariants + F-016 honesty protocol",
+      "missing": "control-flow fuzz",
+      "next": "tooling class G",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-128",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "switch parse-neg battery stage",
+      "missing": "payload edge shapes",
+      "next": "with 055",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-129",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "F-029 boundary",
+      "missing": "access law matrix",
+      "next": "on demand",
+      "commit": "8de5382b"
+    },
+    {
+      "id": "R-NEW-130",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no hidden-API enforcement surface",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-131",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "see 030",
+      "missing": "-",
+      "next": "with 030",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-132",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no dynamic DEX trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-133",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no in-memory DEX trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-134",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "trace engine + code-loading logs",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-135",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "dooz = real R8-OBFUSCATED APK executing deep into Material3; obfuscated-symbol forensics via scripts/forensic/minidump_dex.py (CM9)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "96ecc9f4"
+    },
+    {
+      "id": "R-NEW-136",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "synthetic/bridge exercised via dooz",
+      "missing": "visibility law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-137",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no metadata parser",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-138",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "dooz lambdas execute (Activity-result chains)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-139",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "R8-shrunk real APKs (dooz) run through the full pipeline",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-140",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no resource-shrunk trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-141",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "reflection reachability via F-029",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-142",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-143",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-144",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no WebView substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-145",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-146",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-147",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-148",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-149",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "file_sandbox + data_root hermetic law (F-012)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-150",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "sandbox boundaries",
+      "missing": "external storage law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-151",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no FileProvider trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-152",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "sqlite_shadow sandbox; notes.db v2 end-to-end (unote)",
+      "missing": "auth law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-153",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "SharedPreferences cross-APK isolation (unote, microtimer)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-154",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no keystore substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-155",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-156",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no crypto provider",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-157",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no TLS substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-158",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no TLS substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-159",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-160",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no instrumentation substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-161",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no /proc passthrough",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-162",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "thread ids bridged (ThreadSnapshotTable keying, M13 probe)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-163",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no mem-map passthrough",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-164",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "tooling class G planned (PHASE-0 infra)",
+      "missing": "-",
+      "next": "build fuzz probes on infra",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-165",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "differential harness planned",
+      "missing": "-",
+      "next": "tooling class F",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-166",
+      "status": "RESEARCHED-NOT-IMPLEMENTED",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "differential harness planned",
+      "missing": "-",
+      "next": "tooling class F",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-167",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "APP BOUNDARY / PARTIAL classification law in traces",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-168",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "parser-vs-app crash separation in reports",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-169",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no OOM trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-170",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "parser bound checks",
+      "missing": "overflow corpus",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-171",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no native parser substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-172",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "umbrella: sandbox+parser hardening+sandboxed storage",
+      "missing": "cross-stack audit",
+      "next": "with tooling G",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-173",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "FreeType/HarfBuzz/FriBidi shaper wired; TextView fixtures",
+      "missing": "measure-vs-draw delta law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-174",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "font metrics used by TextView fixtures",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-175",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "Typeface via FreeType",
+      "missing": "identity law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-176",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "FreeType fallback",
+      "missing": "fallback chain law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-177",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "HarfBuzz shaping wired",
+      "missing": "complex-script corpus",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-178",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "FriBidi wired",
+      "missing": "RTL corpus",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-179",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-180",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-181",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-182",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-183",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "TextView wrap in fixtures",
+      "missing": "wrap law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-184",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-185",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-186",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "alignment in fixtures",
+      "missing": "matrix",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-187",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "G04 density matrix",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-188",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "G04 density matrix",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-189",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "G04",
+      "missing": "rounding law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-190",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "window size law partial",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-191",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "touch_dispatcher transforms",
+      "missing": "coordinate matrix",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-192",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no scroll trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-193",
+      "status": "UNPROVEN",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "no transform trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-194",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "MeasureSpec fixture (m3_style_weight, G04)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-195",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-196",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "partial via fixtures",
+      "missing": "UNSPECIFIED law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-197",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "all layout fixtures",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-198",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "all layout fixtures",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-199",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "layout fixtures",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-200",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "partial",
+      "missing": "min-law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-201",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "gravity in fixtures",
+      "missing": "matrix",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-202",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-203",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "FriBidi present",
+      "missing": "direction law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-204",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "renderer clip",
+      "missing": "bounds law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-205",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "renderer clip",
+      "missing": "parent law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-206",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "canvas_shadow.cpp",
+      "missing": "clip-stack corpus",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-207",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "alpha in renderer",
+      "missing": "propagation law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-208",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "C013-LEAFCHK vis flags live (merged dooz run); fixtures",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-209",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-210",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-211",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-212",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-213",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-214",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "png alpha path",
+      "missing": "premult law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-215",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-216",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "paint flags partial",
+      "missing": "matrix",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-217",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-218",
+      "status": "VERIFIED-FIXED",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "F-053 linear gradient law (AOSP 8-step orientation table)",
+      "missing": "radial/sweep",
+      "next": "on demand",
+      "commit": "96ecc9f4"
+    },
+    {
+      "id": "R-NEW-219",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-220",
+      "status": "VERIFIED-FIXED",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "F-053 shape law: solid/stroke/corners/gradient inflate+draw; setBackgroundColor last-writer law; ring/line/dash DETECTED-NOT-EXERCISED",
+      "missing": "ring/line/dash exercise",
+      "next": "hello_color regression-watch",
+      "commit": "96ecc9f4"
+    },
+    {
+      "id": "R-NEW-221",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "Material3 composition constructs (dooz 1.13M-line trace)",
+      "missing": "inheritance law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-222",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "m3_style_weight fixture",
+      "missing": "precedence matrix",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-223",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "attr resolution corpus",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-224",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "?attr via Material3 paths",
+      "missing": "law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-225",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "state_list",
+      "missing": "stateful law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-226",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-227",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "state_list",
+      "missing": "precedence",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-228",
+      "status": "OBSERVED-FAIL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "LIVE: [REC-MISS] Window.setDecorFitsSystemWindows in run/m9_merge_dooz (CMM)",
+      "missing": "shadow law",
+      "next": "R-NEW-286",
+      "commit": "0383f19f"
+    },
+    {
+      "id": "R-NEW-229",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-230",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-231",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-232",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-233",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-234",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-235",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "window flags parse",
+      "missing": "dim/brightness law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-236",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "draw order in renderer",
+      "missing": "Z law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-237",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-238",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-239",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-240",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "software renderer \u2014 no layer type",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-241",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "Choreographer pump F-050 (CM8)",
+      "missing": "animation clock law",
+      "next": "with 242",
+      "commit": "ad4349a9"
+    },
+    {
+      "id": "R-NEW-242",
+      "status": "PARTIAL",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "F-050 four frame-pump roots fixed (CM8); 3-run deterministic; frontier = R-NEW-285 Job-active cancellation",
+      "missing": "first frame end-to-end",
+      "next": "M8 roadmap item 10",
+      "commit": "ad4349a9"
+    },
+    {
+      "id": "R-NEW-243",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-244",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-245",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-246",
+      "status": "PARTIAL",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S18: dooz onCreate completes rc=0 ZERO uncaught exceptions (run/s18_f069_dooz); with MINIANDROID_DISPATCH_ATTACH=1 ComposeView children=1 (AndroidComposeView node=646, run/s18_f069b_dooz). Frame still 0/2073600 non-white.",
+      "missing": "MonotonicFrameClock fold (R-NEW-294) + composition render (R-NEW-295)",
+      "next": "close R-NEW-294 then R-NEW-295",
+      "commit": "3093cd48"
+    },
+    {
+      "id": "R-NEW-247",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no RecyclerView corpus demand",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-248",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-249",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-250",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-251",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "touch_dispatcher transforms",
+      "missing": "hit-test law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-252",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "touch_dispatcher.cpp; tictactoe_golden 9/9 clicks (\u00a729 battery)",
+      "missing": "ordering matrix",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-253",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "partial",
+      "missing": "pressed law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-254",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "tictactoe_golden frames_manifest 9/9 listener clicks, 2741-px frame deltas; EXP088 live probe",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-255",
+      "status": "UNPROVEN",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no trace",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-256",
+      "status": "PARTIAL",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "composition constructs deep into Material3 (1.13M trace lines, M13); state\u2192tree law partial",
+      "missing": "ComposeView children 0\u2192N",
+      "next": "M9 frontier",
+      "commit": "96ecc9f4"
+    },
+    {
+      "id": "R-NEW-257",
+      "status": "VERIFIED-FIXED",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "F-044 derived-state stale root fixed; f044 fixture 7 bands 3-run byte-identical 32b8a456",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "774d6cdd"
+    },
+    {
+      "id": "R-NEW-258",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "readError eliminated (F-028/F-030, CM4/CM5); observation plumbing unproven",
+      "missing": "observation law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-259",
+      "status": "PARTIAL",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "composition lifecycle partial; suspected registry gap = R-NEW-279",
+      "missing": "-",
+      "next": "M9 frontier",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-260",
+      "status": "PARTIAL",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "F-057 view-node duality law (owner-walk resolves via ViewShadow first)",
+      "missing": "owner-walk tail",
+      "next": "hello_color regression-watch",
+      "commit": "96ecc9f4"
+    },
+    {
+      "id": "R-NEW-261",
+      "status": "PARTIAL",
+      "priority": "P1",
+      "fg": true,
+      "evidence": "frame-clock NOT the symptom-layer root (FALSE-LEAD at lifecycle layer, brief \u00a715); F-050 fixed real pump family (CM8)",
+      "missing": "-",
+      "next": "with 242",
+      "commit": "ad4349a9"
+    },
+    {
+      "id": "R-NEW-262",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "software renderer",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-263",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-264",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-265",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "same",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-266",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "draw order",
+      "missing": "layer law",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-267",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no frame submission substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-268",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no RenderThread",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-269",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "no Surface buffer substrate",
+      "missing": "-",
+      "next": "radar retained",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-270",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "screenshot from post-draw framebuffer + metrics law",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-271",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "hello_color per-element pixel counts (evidence.json) \u2014 early provenance",
+      "missing": "full provenance chain",
+      "next": "extend tooling (\u00a725 pixel provenance)",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-272",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "blank taxonomy applied to dooz: NO_COMPOSITION class (children=0); A-K classification law",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "0383f19f"
+    },
+    {
+      "id": "R-NEW-273",
+      "status": "PARTIAL",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "alpha stats in metrics",
+      "missing": "-",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-274",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "whole runtime = deterministic offscreen software rendering",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-275",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "3-run byte-identical law (fixtures + hello_color 11e0056320d8546d)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "96ecc9f4"
+    },
+    {
+      "id": "R-NEW-276",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "battery pixel goldens (7 fixtures)",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-277",
+      "status": "VERIFIED-CORRECT",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "1080x1920 contract in evidence.json",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-278",
+      "status": "PARTIAL",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "renderer RGB format documented",
+      "missing": "format matrix",
+      "next": "on demand",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-279",
+      "status": "PARTIAL",
+      "priority": "P0",
+      "fg": false,
+      "evidence": "S18: full lifecycle callback chain exception-free across onCreate (getViewModelStore reached via F-067) (run/s18_f069_dooz).",
+      "missing": "frame pixels via R-NEW-294/295 closure",
+      "next": "R-NEW-294",
+      "commit": "3093cd48"
+    },
+    {
+      "id": "R-NEW-280",
+      "status": "VERIFIED-FIXED",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "F-059 (S17) + S18: WeakReference owner get() verified across full onCreate \u2014 no ISE garbage-collected (run/s18_f069_dooz).",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3093cd48"
+    },
+    {
+      "id": "R-NEW-281",
+      "status": "UNPROVEN",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "Known gap (M9-B analysis)",
+      "missing": "implementation + proof",
+      "next": "Known gap (M9-B analysis): no collection-view law at HEAD (grep clean); views must reflect the backing map. Compose/AndroidX uses values() on hot paths. No live failure recorded yet \u2014 implement with OpenJDK view semantics + micro-fixture when a trace reaches it.",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-282",
+      "status": "UNPROVEN",
+      "priority": "P2",
+      "fg": false,
+      "evidence": "singletonList/emptyList/unmodifiableList covered by F-039 (3ed13292); singletonMap/unmodifiableMap NOT implemented (grep",
+      "missing": "implementation + proof",
+      "next": "singletonList/emptyList/unmodifiableList covered by F-039 (3ed13292); singletonMap/unmodifiableMap NOT implemented (grep clean). Complete the family from OpenJDK Collections.java.",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-283",
+      "status": "UNPROVEN",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) \u2014 component identity proven via unote",
+      "missing": "implementation + proof",
+      "next": "FIX-INTENT-001 carries the descriptor on CLASS_REF args (dalvik_engine.cpp ~13167) \u2014 component identity proven via unote. Full law (interned identity: two const-class of same type \u2192 same heap object, == comparable) not separately proven. Micro-proof pending.",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-284",
+      "status": "UNPROVEN",
+      "priority": "P1",
+      "fg": false,
+      "evidence": "execute_check_cast validates and (by code inspection) preserves the register; no dedicated proof that the value is prese",
+      "missing": "implementation + proof",
+      "next": "execute_check_cast validates and (by code inspection) preserves the register; no dedicated proof that the value is preserved on success and thrown-without-mutation on failure. Add micro band (M9-B finding).",
+      "commit": "-"
+    },
+    {
+      "id": "R-NEW-285",
+      "status": "PARTIAL",
+      "priority": "P0",
+      "fg": false,
+      "evidence": "S18: Recomposer creation executing (WindowRecomposer_androidKt$createLifecycleAwareWindowRecomposer$2$b live trace, run/s18_f069b_dooz).",
+      "missing": "MonotonicFrameClock fold (R-NEW-294)",
+      "next": "R-NEW-294",
+      "commit": "3093cd48"
+    },
+    {
+      "id": "R-NEW-286",
+      "status": "NOT-APPLICABLE",
+      "priority": "P3",
+      "fg": false,
+      "evidence": "setDecorFitsSystemWindows unused on this dooz path before composition (verified live s18 runs).",
+      "missing": "-",
+      "next": "-",
+      "commit": "3093cd48"
+    },
+    {
+      "id": "R-NEW-287",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "LIVE: FIELD-TRACE put-obj Lg/b;.i obj#15 value=obj#0 after second Lg/b;.d (double removeObserver) \u2192 eldest()!! NPE. ",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3093cd48"
+    },
+    {
+      "id": "R-NEW-288",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "LIVE: Kotlin Reflection clinit '<get-values>(...) must not be null' NPE. ",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3093cd48"
+    },
+    {
+      "id": "R-NEW-289",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "LIVE: Kotlin T::class.java field round-trip \u2192 'null cannot be cast to non-null type java.lang.Class'. ",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3093cd48"
+    },
+    {
+      "id": "R-NEW-290",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "LIVE: Arrays.copyOf null-array NPE at y.c pc=45 (toTypedArray idiom). ",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3093cd48"
+    },
+    {
+      "id": "R-NEW-291",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "LIVE: getViewModelStore ISE 'not yet attached to the Application instance'. ",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3093cd48"
+    },
+    {
+      "id": "R-NEW-292",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "LIVE: throwing Factory.create(Class) default shadowed Lf1/b.b override. ",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3093cd48"
+    },
+    {
+      "id": "R-NEW-293",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "LIVE: areEqual false \u2192 IAE 'No initializer set for given class androidx.lifecycle.A'. ",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "3093cd48"
+    },
+    {
+      "id": "R-NEW-294",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "F-070 (S19): identity-equals law answered for app-DEX receivers; F/d0.a ISE 1\u21920; Recomposer creation proceeds (dooz 3-run 31ddd4d5, battery ALL PASS).",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "f95b4b1f"
+    },
+    {
+      "id": "R-NEW-295",
+      "status": "VERIFIED-FIXED",
+      "priority": "P1",
+      "fg": true,
+      "evidence": "F-071 (S20): ROOT was NOT the parent walk (TAG-TRACE proved 725\u2192102\u21928\u2192101 intact). The 3rc range-invoke path leaked the enclosing static flag into try_shadow_dispatch \u2192 receiver_id=0 \u2192 getParent null \u2192 checkNotNull NPE. Range ops now set the flag from their own opcode (RAII restore); NPE gone; dooz rc=0 uncaught=0 (run/s20_f073).",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "7178c890"
+    },
+    {
+      "id": "R-NEW-296",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "LIVE: compose CompositionImpl.recordModificationsOf CAS(null\u2192values) returned true but stored null \u2192 drainPendingModificationsLocked read null \u2192 ComposeRuntimeError 'concurrently is not supported'. ",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "7178c890"
+    },
+    {
+      "id": "R-NEW-297",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "LIVE: R8 file-level sentinel `val PendingApplyNoModifications = Any()` (class exactly Ljava/lang/Object;) \u2014 areEqual(x,x) answered false \u2192 composeRuntimeError 'corrupt pendingModifications drain'. ",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "7178c890"
+    },
+    {
+      "id": "R-NEW-298",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "LIVE S21: dooz drain dispatched UC009-WIRE Runnable id=687 class=Lb2/h; with ZERO b2/h.run records in the 306k-line log; DEX truth (scripts/forensic/s21_frame_probe.py + androguard): Lb2/h; = kotlinx DispatchedContinuation, NO run() declared \u2014 entrypoint DispatchedTask.run (LW1/N;) on the superclass; upstream law: ART virtual dispatch resolves on the runtime class hierarchy. ",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "PENDING-S21"
+    },
+    {
+      "id": "R-NEW-299",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "LIVE S21 (post F-074): HASH-TRACE proved hashCode(elem) fired only from K/d.get; TRIE-TRACE pinned K/t.v returning null (trie emptied) while LL/b.<init> received the UNREBUILT map; androguard CFG: `if (node !== newNode)` guarded the EMPTY-map rebuild; the identity compare answered EQUAL for (OBJECT_REF, const/4-null). FIXED F-075: polymorphic-zero-at-reference-use law at return-object, move-result-object, mixed 22t compares. dooz: CME 1->0, uncaught 0. ",
+      "missing": "-",
+      "next": "regression-watch",
+      "commit": "PENDING-S21"
+    },
+    {
+      "id": "R-NEW-300",
+      "status": "IMPLEMENTED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S22 [M3-19-CYCLE] LB1/a;.B re-entered (depth=17) stubbed the runner's coroutineScope start; [S22] gate: pre-fix exactly one E0.t entry with ZERO E0$a.t/F0.t/K.u entries; DEX decode (s21_frame_probe + androguard): W1/D.c=coroutineScope tail-calls B1/a.B=startCoroutineUninterceptedOrReturn; W1/l0.e=withContext, W1/l0.a=launch; LF/E0.t=recompositionRunner, LF/E0$a->F/F0.t=the while-loop with awaitWorkAvailable+withFrameNanos. Upstream: kotlinx start helpers are static, depth-bounded, legitimately re-entrant. FIX F-076: active-cycle identity key extended to statics \u2014 leading object-arg ids (up to 2) appended; per-coroutine keys for nested starts, same-identity cycle stub preserved, MAX_RECURSION_DEPTH backstop. IMPACT: post-fix [S22] entry#3 E0$a.t, #4 F0.j, #5 F0.t \u2014 runner loop STARTS; initial composition advances into slot-table writes; dooz now exception-honest (rc=1 at the NEXT root F-077 instead of silent rc=0 death); cycle stubs 8->5; battery 91/92 (only pre-existing GATE H), F-074/F-050/\u00a728/\u00a729 all PASS.",
+      "missing": "micro-fixture with real DEX nested coroutine start (next pass); F-077 (R-NEW-301) blocks the dooz pixel chain downstream",
+      "next": "micro-test + close after F-077 clears the dooz path",
+      "commit": "PENDING-S22"
+    },
+    {
+      "id": "R-NEW-301",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S22, first root reached AFTER F-076 (runner loop starts): initial composition (b1.k WrappedComposition.setContent -> F/y.b ComposerImpl -> F/l.s0 SlotTable -> K/f.putAll -> K/t.m merge -> K/t.s nodeAt) dies: NPE 'null cannot be cast to non-null type TrieNode' at the check-cast in K/t.s. [TRIENODE] heap probe: builder node o1820 born dataMap=0x08000000 nodeMap=0 len=1 then mutated to a=134676546(6 bits) b=0x80000000(1 bit) len=13 null_slots=12 \u2014 bitmaps claim 7 entries, buffer holds 1 non-null; later a=160401768(13) b=2 bits len=28 null=26 vs claimed 15. kotlinx.collections.immutable invariant: buffer.size == popcount(dataMap)+popcount(nodeMap), node-claimed slots never null. Integer.bitCount/Long.bitCount bridges verified CORRECT \u2014 corruption window narrowed to the mutable-put buffer-fill family K/t.k/l/n/o (index math or aput into the grown buffer). || S35 CLOSURE (closed-by-supersession): symptom GONE at b3409007 \u2014 dooz rc=0 x5 deterministic with initial composition completing past the former K/t.s death point (content lambda n1/u.k executes x18, rememberNavController returns, 3 destinations register, full navigation stack executes as real bytecode; S34 record sec.1, probes TSTATE/READSIDE/NSPUSH). The break was eliminated collectively by the F-090..F-100 law chain; the single fixing law was not isolated (forensics debt, MINIANDROID_S22_TRACE=1 probe retained). Closure record: docs/maintenance/F_LEDGER_CLOSURE_S35.md. F-100's twin ledger entry closed same session.",
+      "missing": "exact instruction in the K/t.k/l/n/o family (probe in place: MINIANDROID_S22_TRACE=1 prints [TRIENODE] ctor/s/m with heap state)",
+      "next": "trace one put() op from N/d$a.put to the slot write",
+      "commit": "S35-F-LEDGER-CLOSURE"
+    },
+    {
+      "id": "R-NEW-302",
+      "status": "VERIFIED-FIXED",
+      "priority": "P1",
+      "fg": true,
+      "evidence": "MC4 fix at working-tree binary (layout_inflater.cpp + android_shadows requestLayout law + execution_engine re-measure gate). Root cause was THREE stacked gaps, all fixed: (1) measure_layout FrameLayout/ScrollView branch pinned every child at (parentLeft,parentTop) \u2014 lp_margin_left/top never added and lp_gravity never consulted \u2014 now full AOSP FrameLayout.layoutChildren law (default parentLeft+leftMargin / parentTop+topMargin; CENTER adds ml-mr; RIGHT/BOTTOM subtract mr/mb); (2) root-spec mapped UNSET(INT_MIN) to wrap_content \u2014 now MATCH_PARENT per AOSP ViewRootImpl.setView window law (root fills 1080x1920; demo root measured 600x1432 before); (3) DEX-driven tree mutations never re-measured \u2014 the render-time re-measure was gated on rt.loaded() only, so programmatic trees measured ONCE at setContentView and every later frame reused stale measured_* geometry. Added AOSP requestLayout law: ViewShadow::layout_dirty raised by add_child/remove_child/removeAllViews/set_layout_params; stage_render_frame re-runs measure_layout when dirty and clears the flag. VERIFICATION: demo validate_demo_proof.sh VALIDATION_PASS (9/9 distinct frames, deterministic replay identical SHA256 sequence); pixel forensics box now MOVES on the declared 5x4 grid: x 220->402->582->762->42 (+180 law) y 504->792->1086->216->504 (+~290 law), colors cycle exact COLORS[] values; full battery fresh-cache run: helloworld_golden(\u00a728) PASS, tictactoe_golden(\u00a729) PASS, only pre-existing GATE H fail remains (zero regressions); hello_color golden frame 11e0056320d8546d... BYTE-IDENTICAL; chessclock deterministic frame e4a2d7c90cd2fd26... BYTE-IDENTICAL.",
+      "missing": "None for this root. (Separate open visual gaps remain: headingcalc display-row text overlap, simplestopwatch GATE H integer-glyph gap, microtimer display text \u2014 distinct roots, not this one.)",
+      "next": "CLOSED. Fix lives in layout_inflater.cpp (FrameLayout margins law + root MATCH_PARENT window law), android_shadows.{h,cpp} (layout_dirty flag on tree mutators), execution_engine.cpp (dirty-gated render-time re-measure).",
+      "commit": "PENDING-MC4"
+    },
+    {
+      "id": "R-NEW-303",
+      "status": "OBSERVED-FAIL",
+      "priority": "P2",
+      "fg": true,
+      "evidence": "MC4 Telegram campaign: real Telegram v12.10.1 (org.telegram.messenger.web 70389, sha256 f5e1192725772960..., official telegram.org APK) \u2014 parse OK (analyze rc=0: package/version/launcher extracted), launch OK, ONE frame rendered with the full 1080x1920 themed window painted (2073600/2073600 px). After ActivityManager.getMemoryClass()=256 fix (eliminated LruCache IllegalArgumentException(\"maxSize <= 0\") x62), the app advances deeper and now hits IllegalStateException(\"called wrong accept method\") x191 inside j$/util/stream (desugared java.util.stream Node builder) reached from MessagesController.getInstance <- ConnectionsManager.getInstance <- LaunchActivity; run rc=124 (570s timeout \u2014 still executing, deeper than before). Evidence: docs/evidence/mc4_telegram/ (EVIDENCE.json + distilled logs + painted frame).",
+      "missing": "Desugared java.util.stream builder state machine: j$ Node/Builder classes track which accept overload (primitive vs boxed) may be invoked; the engine's virtual dispatch (or the builder's boolean guards) mismatches, so the guard throws IllegalStateException('called wrong accept method'). Needs overload-accurate invokevirtual dispatch for (I)V vs (Ljava/lang/Object;)V bridges on j$ stream builders.",
+      "next": "Disassemble j$/util/stream/r1 etc. from the Telegram APK, reproduce the accept-dispatch path in a fixture, fix the invoke overload resolution, re-run Telegram (expect deeper init; further missing APIs will surface).",
+      "commit": "PENDING-MC4"
+    },
+    {
+      "id": "R-NEW-316",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S24 dooz campaign: check-cast was a pure pass-through (no register class_desc refinement, no ClassCastException). Kotlin `map[key] as Navigator` left the register poisoned with the container declared type (Ljava/lang/Object; from Map.get) \u2192 Object.getClass answered the wrong class \u2192 Class.getAnnotation read @Navigator.Name off java.lang.Object \u2192 IAE 'No @Navigator.Name annotation found for java.lang.Object' uncaught at MainActivity.onCreate \u2192 rc=1 blank Compose frame. F-090: execute_check_cast refines register class_desc to the HEAP runtime class (EXP-059 identity authority; target type as fallback); getClass bridge consults the heap FIRST (AOSP runtime-class law). Generic: fixes every Map.get \u2192 check-cast identity consumer (getAnnotation receivers, dispatch)."
+    },
+    {
+      "id": "R-NEW-317",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S24: ShadowRegistry F-057 ViewShadow-first routing for getTag/getParent filtered shadows by name()=='ViewShadow' but ViewShadow::name() answers 'View' \u2014 the route was DEAD CODE since F-057. Owner-tag walks whose bridge key was an app class (dooz MainActivity receiver \u2192 ViewTreeLifecycleOwner.get) fell through the EXP-075 Activity gate to ActivityShadow \u2192 no tag/no parent \u2192 ISE 'ViewTreeLifecycleOwner not found' \u2192 composition died before first frame. F-090c: route by C++ TYPE (dynamic_cast<ViewShadow*>) instead of display name. DEX upstream: androidx ComponentActivity.i stores owners via ViewTreeLifecycleOwner.set on the decor node; the F-023 parent chain (8 under 101) was correct \u2014 only the routing was dead."
+    },
+    {
+      "id": "R-NEW-318",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S24: execute_invoke_interface bridged with the DECLARED interface (Ljava/lang/CharSequence;) instead of the receiver's runtime class \u2014 CharSequence.length()/charAt() on a real String found no handler \u2192 answered 0 \u2192 Kotlin route.isNotBlank() misclassified every non-empty route as blank \u2192 NavDestination.setRoute IAE 'Cannot have an empty route' (dooz routes 'game'/'settings'/'about') \u2192 onCreate died. F-090d: interface bridge key = heap runtime class (STRING_REF constants \u2192 String); F-090e: String.charAt(int) with UTF-8 codepoint decode + surrogate law; F-090f: Character.isWhitespace/isSpaceChar laws (OpenJDK set)."
+    },
+    {
+      "id": "R-NEW-319",
+      "status": "VERIFIED-FIXED",
+      "priority": "P1",
+      "fg": true,
+      "evidence": "S24: java.util.UUID had no bridge at all \u2014 UUID.randomUUID().toString() answered null \u2192 Kotlin null-assert NPE 'randomUUID().toString() must not be null' at MainActivity.onCreate. F-090g: UUID.randomUUID() (version-4/variant-1 per RFC 4122, fixed-seed xorshift stream per the F-086 determinism law) + toString() 8-4-4-4-12 form."
+    },
+    {
+      "id": "R-NEW-320",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S24: Navigator.state (l.a) is injected by exactly ONE DEX writer (navigation/compose/p.a iput at pc 1394) inside the NavHost attach loop; the loop zero-iterated because Kotlin toReadOnlyMap (z1/A.G \u2192 z1/A.H = new LinkedHashMap(source)) produced an EMPTY copy \u2014 CollectionShadow.<init> was a no-op that never copied source entries. ISE 'You cannot access the Navigator's state until the Navigator is attached'. F-090h: copy-constructor family law in CollectionShadow (LinkedHashMap(Map)/ArrayList(Collection) copy every entry/element; capacity forms stay no-op)."
+    },
+    {
+      "id": "R-NEW-322",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S24: invoke call sites passed NO method descriptor to try_recursive_invoke, so the F-023 exact-descriptor overload law could never fire; same-name overloads (z1/i addAll(Collection) vs addAll(I,Collection)) were resolved by the arity heuristic and executed the WRONG body \u2014 the 2-arg body's elements register stayed unwritten \u2192 M1/i.f NPE 'Parameter specified as non-null is null: method z1.i.addAll, parameter elements' despite the caller passing a non-null obj#2831 (proven by [S24-ADDALL]/[S24-TRI] probes). F-090i: hoisted the resolved proto in execute_invoke_virtual (runtime-type try, F-020 walk, declaring-class fallback), execute_invoke_interface (runtime-class, declared-interface, sig-walk, default-method sites) and reused in execute_invoke_direct (method_desc_081 already present). Generic multi-overload dispatch law for every R8'd app."
+    },
+    {
+      "id": "R-NEW-323",
+      "status": "OBSERVED-FAIL",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S24 CURRENT FRONTIER: dooz NavHost graph (route=null \u2192 NavGraph.id=0) \u2014 NavController restore loop c.h reads entry.j.j.o (parent graph id=0) and calls c.e(0) getBackStackEntry(0); the root GRAPH's own NavBackStackEntry was never pushed (upstream pushes ancestor-graph entries during navigate before destination entries; our engine pushed only the destination entry via c.a \u2190 c$e.o with an EMPTY parent list z1/t.i). IAE 'No destination with ID 0 is on the NavController's back stack. The current destination is e$a@2554' uncaught at MainActivity.onCreate \u2192 rc=1. Next root: implement the ancestor-graph-entry-push law (upstream navigate-entry-hierarchy) so c.e(0) finds the graph entry. Evidence: run/s24_post_f090i_stderr.txt lines 306566-306612."
+    },
+    {
+      "id": "R-NEW-324",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S25 (F-091+F-091b): dooz died at NavController.addEntryToBackStack link loop (getBackStackEntry(parent.id=0)) because backQueue.addAll(hierarchy) copied NOTHING. Two stacked engine gaps: (a) host-interface dispatch matched Iterator.hasNext() to z1/i.isEmpty()Z by descriptor alone (F-091b gate: declared interface must be DEX-defined); (b) z1/i = minified kotlin.collections.ArrayDeque declares NO iterator()/listIterator() in DEX \u2014 implemented the AbstractList bidirectional protocol law (hasNext/next/hasPrevious/previous/nextIndex/previousIndex) driving the receiver's OWN DEX size()/get(I) via try_recursive_invoke (F-091). DEX-collection iteration for every R8-minified Kotlin app."
+    },
+    {
+      "id": "R-NEW-325",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S25 (F-092): dooz NPE 'activity.getOnBackInvokedDispatcher() must not be null' (androidx.activity OnBackPressedDispatcher.m). Upstream law: getOnBackInvokedDispatcher returns a LAZY proxy on every API level (API<33: inert no-op). ActivityShadow law: non-null placeholder Landroid/window/OnBackInvokedDispatcher; register/unregister degrade to no-ops. Every androidx.activity app benefits."
+    },
+    {
+      "id": "R-NEW-326",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S25 (F-093/F-093b): STTT ISE 'You need to use a Theme.AppCompat theme' at AppCompatDelegateImpl.createSubDecor \u2014 the runtime had NO obtainStyledAttributes bridge. F-093: ActivityShadow.obtainStyledAttributes(int[]) resolves every styleable attr against the activity theme via the canonical ARSC bag query (parent-chain inheritance + one reference hop) and materializes a theme-backed TypedArray (F-036 heap-array convention); F-093b = engine-side TypedArray positional reader law. Every AppCompatActivity app benefits."
+    },
+    {
+      "id": "R-NEW-327",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S25 (F-094): STTT's AndroidManifest.xml is PLAIN-TEXT XML (not binary AXML) \u2014 binary reader returned application_theme_resid=0. Law: capture application_theme_ref in parse_plain_xml; resolve_theme_attr_value falls back to the ref string ('@style/AppTheme.NoActionBar') \u2192 ArscParser::find_id \u2192 resid. Odd-build plain-text-manifest family."
+    },
+    {
+      "id": "R-NEW-328",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S26 (F-095): dooz compose draw silently no-oped \u2014 AndroidComposeView.dispatchDraw \u2192 ViewLayer.drawLayer \u2192 DrawChildContainer.drawChild \u2192 FRAMEWORK ViewGroup.drawChild had NO law \u2192 bridge answered void \u2192 the ENTIRE compose ViewLayer content draw never executed (0 canvas ops). F-095: (a) ViewGroup.drawChild(Canvas,View,long) law dispatches the CHILD's real draw (dispatchDraw else onDraw) on the SAME canvas; (b) Canvas.isHardwareAccelerated() \u2192 false (software-renderer truth; keeps ViewLayer.dispatchDraw + RenderNodeLayer on the correct software paths per upstream 1.6.7). Verified: dooz draw window now reaches LayoutNode.draw \u2192 NodeCoordinator.draw \u2192 InnerNodeCoordinator.performDraw node-tree walk."
+    },
+    {
+      "id": "R-NEW-329",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S27 (F-096 + F-096b): the compose PLACEMENT gate. ROOT (evidence-grade, static + live): (1) F-096 \u2014 the runtime dispatched NO real-DEX View lifecycle for PROGRAMMATIC views: hooks existed for inflate-ctor (G11), leaf onMeasure (F10), onDraw (C013) \u2014 but onMeasure/onLayout of androidx AndroidComposeView (created programmatically, overriding BOTH in DEX \u2014 verified via androguard: onMeasure(II)V + onLayout(ZIIII)V in dooz classes.dex) never executed \u2192 updateRootConstraints/measureOnly + measureAndLayout \u2192 root.place(0,0) \u2192 placeAt \u2192 isPlacedByParent/markNodeAndSubtreeAsPlaced never ran \u2192 every LayoutNode isPlaced=false \u2192 InnerNodeCoordinator.performDraw skipped all children \u2192 0 canvas ops. F-096: one-time per-node real-DEX lifecycle dispatch (measure EXACTLY(rect) then layout(changed=true,l,t,r,b)) in the render walk, AOSP order. (2) F-096b \u2014 View$MeasureSpec.getMode returned the SHIFTED mode (0/1/2); AOSP View.java returns the IN-PLACE masked mode (spec & 0xC0000000: 0/0x40000000/0x80000000) \u2014 compose AndroidComposeView.z compares mode == 0x40000000 directly, so the shifted answer hit the else->throw IllegalStateException arm (dooz onMeasure \u2192 z pc=31 ISE \u2192 app-boundary unwind). POST-FIX: getMode law corrected; dooz compose measure+layout+place chains EXECUTE as real bytecode (F074 super-dispatch walks through node/c, node/l, k0/T placement laws; MSPEC diag evidence); frame SHA UNCHANGED 193466ead8fd21d6 (802px placeholder) \u2014 determinism x3 preserved; battery 94/94."
+    },
+    {
+      "id": "R-NEW-330",
+      "status": "OBSERVED-FAIL",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S27 CURRENT FRONTIER (dooz, honest-open): IllegalStateException 'DepthSortedSet.remove called on an unattached node' at m0/m.c (DepthSortedSet.remove, upstream DepthSortedSet.kt:67 check(node.isAttached)) \u2190 i.h (MeasureAndLayoutDelegate.measureAndLayout popEach) \u2190 AndroidComposeView.onLayout. The compose measure/layout/place chains now run (R-NEW-329 closed); measureAndLayout pops a relayoutNodes entry whose LayoutNode.owner == null (attach incomplete for at least one node \u2014 nearby trace shows [M3-19-CYCLE] active-cycle stub on m0/T;.a during the same window). NEXT: identify the unattached node (add bounded receiver/arg evidence to the DepthSortedSet.remove dispatch) and close the attach-propagation/active-cycle law."
+    },
+    {
+      "id": "R-NEW-331",
+      "status": "OBSERVED-FAIL",
+      "priority": "P1",
+      "fg": true,
+      "evidence": "S27 (cross-app, honest-open): the Fragment host wiring family. STTT (nl.hnogame.tictactoesuperttt_20): FragmentManager 'not been attached to a host' + AppCompat subDecor theme ISE at h.R repeated (pre-existing S25/S26 frontier, unchanged). REAL Telegram v10.14.5 golden (sha f5e1192725772960 \u2014 RE-ACQUIRED 2026-09-12, K-26 BLOCKER LIFTED: official dl serves the exact pinned build again): parse + ApplicationLoader.onCreate + LifecycleRegistry machinery execute; frontier = SAME FragmentManager.ensureExecReady 'FragmentManager has not been attached to a host' ISE + SafeIterableMap$IteratorWithAdditions.next active-cycle churn (18k+ stubs) + MessagesController ISE 'called wrong accept method'. One generic family (fragment host attach law) blocks BOTH apps."
+    },
+    {
+      "id": "R-NEW-332",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S33 (F-098 + F-099): compose draw pipeline produced no Canvas content ops. ROOT was TWO blockers: (1) F-098 \u2014 the active-cycle guard instance-key stubbed SnapshotObserver.observeReads on its 2nd NESTED entry (same singleton observer, different target LayoutNode) killing onNodePlaced->markNodeAndSubtreeAsPlaced->isPlaced; law: key = receiver + up to 2 leading object-arg identities (nested per-LayoutNode observation is upstream-legal). (2) F-099 \u2014 the compose-owner draw dispatch gate required children.empty(); the shadow tree legitimately gains AndroidViewsHandler children via real DEX addView; law: a non-framework view node whose chain OVERRIDES dispatchDraw gets the real draw dispatch at visit even with children. POST: isPlaced=TRUE at draw, child.draw recursion + ViewLayer path execute. Residual ops=0 = R-NEW-333."
+    },
+    {
+      "id": "R-NEW-333",
+      "status": "OBSERVED-FAIL",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S34 (narrowed, evidence superseded): content-state pairing was NOT the root \u2014 the content lambda n1/u.k RUNS; NavHost p.b builds the graph; builder n1/n.o registers game/settings/about via real DEX; p.a inlined graph-set navigates; c$a.a createBackStackEntry + ComposeNavigator push e.d/c$a.e/h1/t.e + flow setValue all execute; sync collectors deliver lists to the remember states. RESIDUAL = p.a never re-runs -> p.a:0e78 gate stays false -> AnimatedContent never invoked -> game screen n1/q.g never composes -> 1 LayoutNode -> 0 canvas ops. Successor = R-NEW-334."
+    },
+    {
+      "id": "R-NEW-334",
+      "status": "VERIFIED-FIXED",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S36 FIXED (F-101 dual-store ArrayList(Collection) ctor law). Root chain, live-probed (run/s36_probe1..fix8, MINIANDROID_S36_TRACE): (1) kotlin toMutableList z1/r.K = new ArrayList(Collection) \u2014 ctor UNHANDLED \u2192 empty copies \u2192 c.q (updateBackStackLifecycle) upstream early-return on isEmpty \u2192 NavBackStackEntry.maxLifecycle setter b.i NEVER fired ([S36-BI] zero hits) \u2192 entries stayed INITIALIZED while host climbed CREATED\u2192STARTED\u2192RESUMED ([S36-BJ]) \u2192 populateVisibleEntries (c.n) filtered {max>=STARTED} \u2192 EMPTY visible list (o2914, the S35 object) \u2192 NavHost never recomposed. First cut wrote heap array[N] fields only \u2014 STILL empty in registry mode: the framework CollectionShadow answers isEmpty/size/get from its OWN collections_ store (engine heap fields invisible; 21196 block skipped when shadow_registry_!=nullptr). FIX: F-101 copies via the source's authoritative protocol (size()/get(I) try_recursive_invoke \u2014 same readers as F-091) and writes BOTH stores (heap fields + registry CollectionState.elements). POST-FIX LIVE EVIDENCE (run/s36_fix6): [S36-BI] b.i recv=o2878 max->CREATED <c.q<c.b>>; b.i recv=o2855 max->RESUMED <c.q<c.b>>; c$a.b markTransitionComplete path b.i(CREATED) also fires; compose/ui/node/i.h executes (R-NEW-333 residual dead). UPSTREAM LAWS: OpenJDK ArrayList(Collection) elementData=c.toArray(); kotlin toMutableList; github.com/openjdk/jdk + JetBrains/kotlin (links in F-101 header). Regression: battery all-runtime-stages PASS (helloworld 26/26, tictactoe, corpus byte-goldens, GATE H); only EXT-01/02 fail (external reference images /home/z/corpus/external_hello lost in container reset \u2014 pre-existing environment gap, not code).",
+      "commit": "S36-F101"
+    },
+    {
+      "id": "R-NEW-335",
+      "status": "OBSERVED-FAIL",
+      "priority": "P0",
+      "fg": true,
+      "evidence": "S36 NEW FRONTIER (dooz post-F-101): dooz now rc=1 with deterministic ArrayIndexOutOfBoundsException 'length=7; index=319519148' (same value x2 runs) \u2014 aput arr=o5059 cls=Larray; len=7 caller=LP/v$a;.c ([S36-AOOB-aput] probe). Chain: LP/g$a;.a (suspend lambda) <- LP/v$a;.a <- LP/v;.c <- androidx/compose/ui/node/i;.h <- MainActivity.onCreate \u2014 the compose transition/animation machinery NOW EXECUTES (forward progress past the R-NEW-334 wall). LP/v$a.c is a sorted-insert idiom: h/r.c(Object)I binary-search (264 units REAL DEX, h/r fields f:I; h/u fields a=[J b=[Object; c=[I d=e=I) returns -319519149; not-int decodes to +319519148; aput into len=7 array OOB. NEXT: opcode-level audit of h/r.c (b(I)I 60u) binary-search arithmetic under our interpreter \u2014 suspect an int-op mis-execution (shift/cmp family cf. F-035) or size read (h/u.d) vs array length mismatch; the len=7 array + wild index both deterministic (minable).",
+      "commit": "S36-REGISTERED"
+    }
+  ]
 }
