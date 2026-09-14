@@ -644,3 +644,18 @@ each. Applied retroactively to the whole archive:
 | Evidence | runs /tmp/s38_runs/dooz23_r337(c|fix|r338fix|r339b/c/d/e/f|r340); probes R337-DUAL, INSTANCEOF-DIAG, THROWABLE-STACK-PC, T4PROBE, R339-SVC, CHOREO-PUMP |
 | Regression | hello_smoke + hello_widgets byte-identical renders post-fix |
 
+
+
+### S41 runBlocking/BlockingCoroutine livelock closure — R-NEW-345 ROOT-CAUSED+FIXED (4 generic laws), dooz23 startup pipeline completes (2026-09-14)
+
+| Field | Value |
+|-------|-------|
+| APK | io.github.yamin8000.dooz_23.apk (S37 archive hash) |
+| Runtime | HEAD + S41 fixes (binary sha256 `0519abb8…`) |
+| Status | ⚙️ FRONTIER-ADVANCED — startup completes end-to-end, deterministic (3 independent runs, screenshot SHA `31ddd4d5b8e6d18e…`), first frame still blank (content composition = next frontier) |
+| R-NEW-345 | ROOT-CAUSED+FIXED — runBlocking livelock family: (a) SUPER-DISPATCH IDENTITY law (invoke-super passed a `<super>`-suffixed class to the bridge so `Worker.start{super.start()}` never reached ThreadShadow); (b) THREAD SELF-RUN law (Thread subclasses with no Runnable ctor now queue a self-run; the worker's REAL DEX run() executes — kotlinx scheduler `Lsr;` workers live); (c) PARK-DRAIN law (LockSupport.park* = deterministic yield point: bounded drain of main-queue runnables + choreographer due frames + pending starts; parked worker frames at drain depth≥1 with zero work SUSPEND cleanly via [PARK-YIELD] — main-thread joinBlocking park never yields); (d) UNSAFE FAMILY CLOSURE (getAndAddLong/getAndAddInt/getAndSetObject/getAndSetInt/getAndSetLong/compareAndSwapLong — the atomicfu EventLoopBase/CLQ state machines now run). |
+| R-NEW-346 | ROOT-CAUSED+FIXED — HONEST FILE METADATA law: `File.exists()/isDirectory()/canRead()/canWrite()` reported TRUE for everything (EXP-043 stub) → DataStore first-run guard `if(!file.exists()) emptyPreferences()` took the READ path on a non-existent file → parser NPE ×13 ("substring on null"). Now: real fs state via the receiver's path field, relative paths under the ONE app-data root; unknown path → ABSENT (the honest first-run answer). Post-fix: 0 exceptions. |
+| R-NEW-344 | REFINED — the await→resume→frame chain was the DOWNSTREAM face: runBlocking livelock destroyed 2 frames via HALT-LOOP (Lqq0;.a, Lvs0;.O @50k iters) → composeInitial composed a ROOT-ONLY tree (content lambda produced no nodes). Chain evidence: AndroidComposeView Lt4; constructed, ComposerImpl Lxk0; active, content holder Lc41;(SnapshotMutableStateImpl) setValue path mapped from DEX + upstream 1.6.7 sources (Google Maven). Next: content-composition probe. |
+| Evidence | /tmp/s41/: fix_r1…r4 (progressive fix runs), run_a/run_b/run_c (pre-fix forensics: spin + 0 THREAD-START + 0 Lh8; returns), fix_r5/r6/final (determinism ×3), stopwatch_probe+stopwatch_head (A/B: FAILURE pre-exists at HEAD — not a regression) |
+| Upstream sources fetched | compose 1.6.7 runtime+ui-android sources.jar (Google Maven), Recomposer.kt/Composition.kt/PausableMonotonicFrameClock/Latch, AndroidUiDispatcher.android.kt/AndroidUiFrameClock, WindowRecomposer.android.kt, kotlinx JobSupport.awaitInternal bytecode CAS proof, Dooz app sources (github.com/yamin8000/Dooz master) |
+| Regression | battery 82 stages PASS (incl. tictactoe_golden interaction+determinism, executor/Room/float/frame-pump fixtures); hello_widgets nonwhite 2,058,896≈golden 2,059,104 (sampling); EXT-01/02 = pre-existing missing-fixture gap (dir absent — documented S37); stopwatch FAILURE + dooz_18 timeout verified pre-existing via HEAD A/B run |
