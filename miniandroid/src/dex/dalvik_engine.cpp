@@ -2986,6 +2986,9 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
     
     // Push frame onto call stack
+    // R-NEW-339: capture the caller's invoke pc before it is overwritten —
+    // pc_ still holds the invoke site in the CALLER frame here.
+    call_stack_.set_last_invoke_pc(pc_);
     call_stack_.push_frame(std::move(frame));
     current_registers_ = &call_stack_.top().registers;
     pc_ = 0;
@@ -11869,8 +11872,15 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
     // Also check if null — null instanceof anything is false (already handled by OBJECT_REF check)
     // F-072 diag (env-gated): interface-closure forensics for collection
     // checks on the dooz composition path.
+    // R-NEW-337: extend the gate — every instance-of inside Loj0; (JobSupport)
+    // is logged WITH the dex_report_ interface lookup result for the object
+    // class. The d0 pc=0 check (state is Incomplete) returning FALSE on an
+    // Lh20;(Empty) object is the suspected root of the first-composition
+    // ISE "already complete or completing".
     if (std::getenv("MINIANDROID_INSTANCEOF_TRACE") &&
-        (target_type == "Ljava/util/Set;" || target_type == "[Ljava/lang/Object;")) {
+        (current_class_ == "Loj0;" || current_class_ == "Lkp1;" ||
+         target_type == "Ljava/util/Set;" ||
+         target_type == "[Ljava/lang/Object;")) {
         static thread_local uint64_t iof_n = 0;
         if (iof_n < 200) {
             ++iof_n;
@@ -11887,6 +11897,29 @@ bool DalvikExecutionEngine::execute_instance_of(uint32_t pc, InstructionTrace& t
                     target_type.c_str(),
                     src_val.type == DalvikType::OBJECT_REF ? src_val.object_id : 0u,
                     oc.c_str(), is_instance ? "TRUE" : "FALSE");
+            // R-NEW-337 forensics: does dex_report_ actually know this class
+            // and its implements-set? Empty closure / missing class def here
+            // is exactly how `Lh20; instanceof Lmf0;` degrades to false.
+            if (!oc.empty() && dex_report_) {
+                bool found337 = false;
+                for (const auto& cd : dex_report_->classes) {
+                    if (cd.name != oc) continue;
+                    found337 = true;
+                    std::string ifs337;
+                    for (const auto& ifc : cd.interfaces) ifs337 += ifc + " ";
+                    fprintf(stderr,
+                            "[INSTANCEOF-DIAG]   dex_report class=%s FOUND "
+                            "ninterfaces=%zu [%s]\n",
+                            cd.name.c_str(), cd.interfaces.size(),
+                            ifs337.c_str());
+                    break;
+                }
+                if (!found337)
+                    fprintf(stderr,
+                            "[INSTANCEOF-DIAG]   dex_report class=%s "
+                            "MISSING (%zu classes scanned)\n",
+                            oc.c_str(), dex_report_->classes.size());
+            }
         }
     }
 
@@ -13869,6 +13902,22 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
 
     trace.invoked_method = class_name + "." + method_name;
 
+    // R-NEW-339 temp probe: every invoke-static dispatched from
+    // Lt4;.<init> (AndroidComposeView ctor) — trace which call yields a
+    // null/void where an object was expected around the autofill fetch.
+    if (current_class_ == "Lt4;" && current_method_ == "<init>") {
+        static thread_local uint64_t t4probe = 0;
+        if (t4probe < 120) {
+            ++t4probe;
+            std::cerr << "[T4PROBE] invoke-static " << class_name << "."
+                      << method_name << " pc=" << pc
+                      << " ret_type=" << static_cast<int>(return_val.type)
+                      << " ret_oid=" << return_val.object_id
+                      << " ret_cls=" << return_val.class_desc
+                      << std::endl;
+        }
+    }
+
     // EXP-071 Phase 7: Restore the saved static flag.
     current_invoke_is_static_ = saved_is_static;
     pc_ = pc + 3;
@@ -15768,6 +15817,85 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
                                                 DalvikValue& result,
                                                 ApiCallTrace::Status& status) {
     if (shadow_registry_ == nullptr) return false;
+
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-339 companion law: Context.getSystemService(Class) must resolve
+    // in BOTH dispatch layers. The bridge_to_api copy is only reached via
+    // the class-miss fallthrough; when the receiver's runtime class IS in
+    // class_info_index_ (ContextWrapper/ContextThemeWrapper-family or any
+    // app Context subclass) the dex-body lookup fails differently and the
+    // bridge block can be bypassed — the call then answered null, and
+    // Compose's AndroidComposeView ctor checkNotNull
+    // (getSystemService(AutofillManager::class.java)) threw
+    // "Required value was null." on the second fetch (first fetch resolved,
+    // producing exactly ONE [EXP093-SVC] autofill line — the dooz marker).
+    // Same registry, two views — identical to the bridge_to_api block.
+    // ────────────────────────────────────────────────────────────────────
+    if (method == "getSystemService" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        std::string svc_name339;
+        if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
+            svc_name339 = args[1].string_val;
+        } else if (args.size() >= 2 && args[1].type == DalvikType::CLASS_REF) {
+            static const std::map<std::string, std::string> svc_cls339 = {
+                {"Landroid/view/WindowManager;",                       "window"},
+                {"Landroid/view/LayoutInflater;",                     "layout_inflater"},
+                {"Landroid/app/ActivityManager;",                     "activity"},
+                {"Landroid/view/inputmethod/InputMethodManager;",    "input_method"},
+                {"Landroid/app/NotificationManager;",                 "notification"},
+                {"Landroid/app/AlarmManager;",                        "alarm"},
+                {"Landroid/media/AudioManager;",                      "audio"},
+                {"Landroid/content/ClipboardManager;",                "clipboard"},
+                {"Landroid/net/ConnectivityManager;",                 "connectivity"},
+                {"Landroid/app/UiModeManager;",                       "uimode"},
+                {"Landroid/app/SearchManager;",                       "search"},
+                {"Landroid/app/KeyguardManager;",                     "keyguard"},
+                {"Landroid/location/LocationManager;",                "location"},
+                {"Landroid/accounts/AccountManager;",                 "account"},
+                {"Landroid/os/PowerManager;",                         "power"},
+                {"Landroid/os/Vibrator;",                             "vibrator"},
+                {"Landroid/hardware/SensorManager;",                  "sensor"},
+                {"Landroid/hardware/display/DisplayManager;",         "display"},
+                {"Landroid/view/accessibility/AccessibilityManager;", "accessibility"},
+                {"Landroid/view/autofill/AutofillManager;",           "autofill"},
+            };
+            auto cit = svc_cls339.find(args[1].class_desc);
+            if (cit != svc_cls339.end()) svc_name339 = cit->second;
+        }
+        static const std::map<std::string, std::string> svc_map339 = {
+            {"window",         "Landroid/view/WindowManager;"},
+            {"layout_inflater", "Landroid/view/LayoutInflater;"},
+            {"activity",       "Landroid/app/ActivityManager;"},
+            {"input_method",   "Landroid/view/inputmethod/InputMethodManager;"},
+            {"notification",   "Landroid/app/NotificationManager;"},
+            {"alarm",          "Landroid/app/AlarmManager;"},
+            {"audio",          "Landroid/media/AudioManager;"},
+            {"clipboard",      "Landroid/content/ClipboardManager;"},
+            {"connectivity",   "Landroid/net/ConnectivityManager;"},
+            {"uimode",         "Landroid/app/UiModeManager;"},
+            {"search",         "Landroid/app/SearchManager;"},
+            {"keyguard",       "Landroid/app/KeyguardManager;"},
+            {"location",       "Landroid/location/LocationManager;"},
+            {"account",        "Landroid/accounts/AccountManager;"},
+            {"power",          "Landroid/os/PowerManager;"},
+            {"vibrator",       "Landroid/os/Vibrator;"},
+            {"sensor",         "Landroid/hardware/SensorManager;"},
+            {"display",        "Landroid/hardware/display/DisplayManager;"},
+            {"accessibility",  "Landroid/view/accessibility/AccessibilityManager;"},
+            {"autofill",       "Landroid/view/autofill/AutofillManager;"},
+        };
+        auto sit = svc_map339.find(svc_name339);
+        if (sit != svc_map339.end()) {
+            result = get_or_create_singleton(sit->second);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            std::cerr << "[R339-SVC] getSystemService(\"" << svc_name339
+                      << "\") → " << sit->second
+                      << " (shadow layer, caller=" << current_class_ << "."
+                      << current_method_ << ")" << std::endl;
+            return true;
+        }
+    }
 
     // [S34-RFC] who cancels the frame callback?
     if (method == "removeFrameCallback" &&
@@ -20577,6 +20705,96 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             result = DalvikValue::make_string(dotted, 0);
             return true;
         }
+        // ────────────────────────────────────────────────────────────────
+        // R-NEW-337: Class.getDeclaredField(String) — return a heap Field
+        // object carrying (declaring-class, field-name). atomicfu's
+        // transformed <clinit>s call this for EVERY @Volatile field
+        // ("_state$volatile", "_parentHandle$volatile", "theUnsafe", …);
+        // REC-MISS(null) here zeroed all Unsafe offsets and nulled every
+        // volatile read in kotlinx.coroutines. AOSP law: NoSuchField-
+        // Exception for absent fields — but for the atomicfu subset the
+        // field names are compile-time constant and genuinely declared, so
+        // an auto-registered Field object satisfies them deterministically.
+        // ────────────────────────────────────────────────────────────────
+        if (method == "getDeclaredField" && args.size() >= 2 &&
+            args[1].type == DalvikType::STRING_REF && !dotted.empty()) {
+            const std::string& fname = args[1].string_val;
+            uint32_t fid = heap_.allocate("Ljava/lang/reflect/Field;", pc_, 0);
+            heap_.set_object_field(fid, "declaring_class",
+                                   DalvikValue::make_string(referent_desc, 0));
+            heap_.set_object_field(fid, "field_name",
+                                   DalvikValue::make_string(fname, 0));
+            // declared type (best-effort): consult dex_report_ field table
+            std::string ftype = "Ljava/lang/Object;";
+            for (const auto& cd : dex_report_->classes) {
+                if (cd.name != referent_desc) continue;
+                bool hit337 = false;
+                for (const auto& fd : cd.instance_fields) {
+                    if (fd.name == fname) { ftype = fd.type; hit337 = true; break; }
+                }
+                if (!hit337) {
+                    for (const auto& fd : cd.static_fields) {
+                        if (fd.name == fname) { ftype = fd.type; break; }
+                    }
+                }
+                break;
+            }
+            heap_.set_object_field(fid, "field_type",
+                                   DalvikValue::make_string(ftype, 0));
+            std::cerr << "[R337-REFLECT] Class(" << referent_desc
+                      << ").getDeclaredField(\"" << fname
+                      << "\") type=" << ftype << " -> Field obj#" << fid
+                      << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(fid, "Ljava/lang/reflect/Field;");
+            return true;
+        }
+        // R-NEW-337: getDeclaredFields — array of Field objects (used by the
+        // atomicfu fallback scan when getDeclaredField throws). We answer
+        // with the parsed field table; empty/unknown classes yield [].
+        if (method == "getDeclaredFields" && !dotted.empty()) {
+            std::vector<uint32_t> fids;
+            for (const auto& cd : dex_report_->classes) {
+                if (cd.name != referent_desc) continue;
+                auto add337 = [&](const dex::FieldInfo& fd) {
+                    uint32_t fid = heap_.allocate(
+                        "Ljava/lang/reflect/Field;", pc_, 0);
+                    heap_.set_object_field(
+                        fid, "declaring_class",
+                        DalvikValue::make_string(referent_desc, 0));
+                    heap_.set_object_field(
+                        fid, "field_name",
+                        DalvikValue::make_string(fd.name, 0));
+                    heap_.set_object_field(
+                        fid, "field_type",
+                        DalvikValue::make_string(fd.type, 0));
+                    fids.push_back(fid);
+                };
+                for (const auto& fd : cd.instance_fields) add337(fd);
+                for (const auto& fd : cd.static_fields) add337(fd);
+                break;
+            }
+            // [LField; array — elements live as "array[i]" object fields
+            // (the engine-wide array convention used by aget/aput).
+            uint32_t arr_id = heap_.allocate(
+                "[Ljava/lang/reflect/Field;", pc_, 0);
+            heap_.set_object_field(
+                arr_id, "__array_length__",
+                DalvikValue::make_int((int32_t)fids.size()));
+            for (size_t i = 0; i < fids.size(); ++i) {
+                heap_.set_object_field(
+                    arr_id, "array[" + std::to_string(i) + "]",
+                    DalvikValue::make_object(fids[i],
+                                             "Ljava/lang/reflect/Field;"));
+            }
+            std::cerr << "[R337-REFLECT] Class(" << referent_desc
+                      << ").getDeclaredFields() -> " << fids.size()
+                      << " fields arr#" << arr_id << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(arr_id,
+                                              "[Ljava/lang/reflect/Field;");
+            return true;
+        }
         // F-087 (R-NEW-313): runtime annotation reflection law (OpenJDK
         // Class.getAnnotation / isAnnotationPresent). The receiver is the
         // QUERIED class (CLASS_REF); args[1] is the annotation TYPE
@@ -20744,6 +20962,378 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             std::cerr << "[M3-REFLECT] Class.getPackage -> \""
                       << pkg_name << "\" (obj=" << pkg_id << ")" << std::endl;
             return true;
+        }
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-337 FIX LAW: java.lang.reflect.Field + sun.misc.Unsafe.
+    // atomicfu-transformed kotlinx.coroutines (present in EVERY Compose
+    // APK: dooz v23, Telegram, …) implements ALL volatile state via:
+    //   J  off = theUnsafe.objectFieldOffset(C.getDeclaredField(name))
+    //   rd = theUnsafe.getObjectVolatile(obj, off)   / getIntVolatile …
+    //   wr = theUnsafe.putObjectVolatile(obj, off, v)/ putOrderedObject …
+    //   ok = theUnsafe.compareAndSwapObject(obj, off, exp, upd) …
+    // Engine law: the offset registry (unsafe_field_offsets_) maps
+    // (declaring-class, field-name) ↔ positive 8-aligned offset; reads and
+    // writes are served from the SAME engine heap store that iput/iget use,
+    // so Unsafe CAS and plain field ops observe one consistent state.
+    // Evidence chain (dooz v23): offsets were 0, getObjectVolatile → null →
+    // JobSupport read Empty(Active) as obj#0 → `state !is Incomplete` true →
+    // ALREADY_COMPLETING sentinel → ISE on FIRST composition → grey screen.
+    // ────────────────────────────────────────────────────────────────────
+    {
+        // helpers shared by the Field/Unsafe blocks
+        auto offset_for337 = [&](const std::string& cls,
+                                 const std::string& fname) -> int64_t {
+            auto key = std::make_pair(cls, fname);
+            auto it = unsafe_field_offsets_.find(key);
+            if (it != unsafe_field_offsets_.end()) return it->second;
+            int64_t off = unsafe_next_offset_;
+            unsafe_next_offset_ += 8;
+            unsafe_field_offsets_[key] = off;
+            unsafe_offset_to_field_[off] = key;
+            return off;
+        };
+        auto field_name_for337 = [&](int64_t off) -> std::string {
+            auto it = unsafe_offset_to_field_.find(off);
+            return it == unsafe_offset_to_field_.end() ? ""
+                                                       : it->second.second;
+        };
+        auto get_unsafe337 = [&]() -> DalvikValue {
+            if (unsafe_singleton_id_ == 0 ||
+                !heap_.has_object(unsafe_singleton_id_)) {
+                unsafe_singleton_id_ =
+                    heap_.allocate("Lsun/misc/Unsafe;", pc_, 0);
+            }
+            return DalvikValue::make_object(unsafe_singleton_id_,
+                                            "Lsun/misc/Unsafe;");
+        };
+        // Field metadata readers (heap Field objects from getDeclaredField)
+        auto field_meta337 = [&](const DalvikValue& fv,
+                                 const char* key) -> std::string {
+            if (fv.type != DalvikType::OBJECT_REF || fv.object_id == 0)
+                return "";
+            auto v = heap_.get_object_field(fv.object_id, key);
+            if (!v.has_value() || v->type != DalvikType::STRING_REF)
+                return "";
+            return v->string_val;
+        };
+
+        if (class_name == "Ljava/lang/reflect/Field;") {
+            // args[0] = the Field receiver for all instance methods
+            std::string decl337, name337, type337;
+            if (!args.empty()) {
+                decl337 = field_meta337(args[0], "declaring_class");
+                name337 = field_meta337(args[0], "field_name");
+                type337 = field_meta337(args[0], "field_type");
+            }
+            if (method == "getName") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_string(name337, 0);
+                return true;
+            }
+            if (method == "getType") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_class(
+                    type337.empty() ? "Ljava/lang/Object;" : type337,
+                    instruction_sequence_);
+                return true;
+            }
+            if (method == "getDeclaringClass") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_class(
+                    decl337.empty() ? "Ljava/lang/Object;" : decl337,
+                    instruction_sequence_);
+                return true;
+            }
+            if (method == "getModifiers") {
+                // PUBLIC (1) | STATIC (8): the atomicfu subset only asks
+                // isStatic/isPublic on known-public statics (theUnsafe).
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(9);
+                return true;
+            }
+            if (method == "setAccessible" || method == "setAccessible0") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+            if (method == "get") {
+                // args[0]=Field receiver, args[1]=target (null for static)
+                if (decl337 == "Lsun/misc/Unsafe;" && name337 == "theUnsafe") {
+                    DalvikValue u = get_unsafe337();
+                    std::cerr << "[R337-REFLECT] Field.get(theUnsafe) -> "
+                                 "Unsafe obj#" << u.object_id
+                              << std::endl;
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = u;
+                    return true;
+                }
+                if (!args.empty() && args.size() >= 2 &&
+                    args[1].type == DalvikType::OBJECT_REF &&
+                    args[1].object_id != 0 && !name337.empty()) {
+                    auto v = heap_.get_object_field(args[1].object_id,
+                                                    name337);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = v.has_value() ? v.value() : DalvikValue::make_null();
+                    return true;
+                }
+                // static field fetch
+                if (!decl337.empty() && !name337.empty()) {
+                    std::string skey = decl337 + "." + name337;
+                    auto it = static_field_storage_.find(skey);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = it != static_field_storage_.end()
+                                 ? it->second
+                                 : DalvikValue::make_null();
+                    return true;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            if (method == "set" && args.size() >= 3 &&
+                args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0 && !name337.empty()) {
+                heap_.set_object_field(args[1].object_id, name337, args[2]);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+        }
+        if (class_name == "Ljava/lang/reflect/Modifier;" &&
+            method == "isStatic") {
+            // static: args[0] = flags
+            int flags = (!args.empty() &&
+                         (args[0].type == DalvikType::INT32 ||
+                          args[0].type == DalvikType::INT64))
+                            ? (int)args[0].int_val : 0;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool((flags & 8) != 0);
+            return true;
+        }
+        if (class_name == "Ljava/lang/Class;" && method == "isAssignableFrom" &&
+            args.size() >= 2) {
+            // receiver class = args[0] (CLASS_REF law), arg class = args[1]
+            std::string recv_cls337;
+            if (args[0].type == DalvikType::CLASS_REF)
+                recv_cls337 = args[0].class_desc;
+            else if (args[0].type == DalvikType::OBJECT_REF)
+                recv_cls337 = args[0].class_desc;
+            std::string arg_cls;
+            if (args[1].type == DalvikType::CLASS_REF)
+                arg_cls = args[1].class_desc;
+            else if (args[1].type == DalvikType::OBJECT_REF)
+                arg_cls = args[1].class_desc;
+            bool ans = !recv_cls337.empty() && !arg_cls.empty() &&
+                       is_subclass_of(arg_cls, recv_cls337);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(ans);
+            return true;
+        }
+        if (class_name == "Lsun/misc/Unsafe;") {
+            // instance methods: args[0]=theUnsafe singleton, args[1]=target
+            // obj, args[2]=offset (INT64), then expected/update.
+            auto target337 = [&](size_t i) -> uint32_t {
+                return (args.size() > i &&
+                        args[i].type == DalvikType::OBJECT_REF)
+                           ? args[i].object_id
+                           : 0;
+            };
+            auto offset337 = [&](size_t i) -> int64_t {
+                if (args.size() <= i) return 0;
+                if (args[i].type == DalvikType::INT64)
+                    return args[i].long_val;
+                if (args[i].type == DalvikType::INT32)
+                    return (int64_t)args[i].int_val;
+                return 0;
+            };
+            if (method == "getUnsafe" || method == "getUnsafeInstance") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = get_unsafe337();
+                return true;
+            }
+            if (method == "objectFieldOffset" ||
+                method == "objectFieldOffset0") {
+                // args[1] = the Field object
+                std::string cls = field_meta337(
+                    args.size() > 1 ? args[1] : DalvikValue::make_null(),
+                    "declaring_class");
+                std::string fname = field_meta337(
+                    args.size() > 1 ? args[1] : DalvikValue::make_null(),
+                    "field_name");
+                if (cls.empty() || fname.empty()) {
+                    // AOSP law: null Field → NPE (real Unsafe demands a field)
+                    std::cerr << "[R337-UNSAFE] objectFieldOffset INVALID-FIELD"
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                    throw_deferred("Ljava/lang/NullPointerException;",
+                                   "objectFieldOffset(null field)",
+                                   "R337-UNSAFE");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_long(0);
+                    return true;
+                }
+                int64_t off = offset_for337(cls, fname);
+                std::cerr << "[R337-UNSAFE] objectFieldOffset " << cls << "."
+                          << fname << " -> " << off
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_long(off);
+                return true;
+            }
+            if (method == "getObjectVolatile" || method == "getObject" ||
+                method == "getOrderedObject") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                if (obj != 0 && !fname.empty()) {
+                    auto v = heap_.get_object_field(obj, fname);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = v.has_value() ? v.value()
+                                           : DalvikValue::make_null();
+                } else {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_null();
+                }
+                return true;
+            }
+            if (method == "putObjectVolatile" || method == "putObject" ||
+                method == "putOrderedObject") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                if (obj != 0 && !fname.empty() && args.size() > 3)
+                    heap_.set_object_field(obj, fname, args[3]);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+            if (method == "compareAndSwapObject") {
+                // args: [this, obj, off, expected, update]
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                if (obj == 0 || fname.empty()) {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(false);
+                    return true;
+                }
+                auto cur = heap_.get_object_field(obj, fname);
+                uint32_t cur_id =
+                    cur.has_value() &&
+                            cur->type == DalvikType::OBJECT_REF
+                        ? cur->object_id
+                        : 0;
+                uint32_t exp_id =
+                    args.size() > 3 &&
+                            args[3].type == DalvikType::OBJECT_REF
+                        ? args[3].object_id
+                        : 0;
+                if (cur_id == exp_id && args.size() > 4) {
+                    heap_.set_object_field(obj, fname, args[4]);
+                    if (cur_id == 0 && args[4].type == DalvikType::OBJECT_REF &&
+                        args[4].object_id == 0) {
+                        // CAS(null, null) — still a success (state unchanged)
+                    }
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(true);
+                    return true;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(false);
+                return true;
+            }
+            if (method == "getIntVolatile" || method == "getInt") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                auto v = (obj != 0 && !fname.empty())
+                             ? heap_.get_object_field(obj, fname)
+                             : std::nullopt;
+                int32_t iv = 0;
+                if (v.has_value()) {
+                    if (v->type == DalvikType::INT32) iv = v->int_val;
+                    else if (v->type == DalvikType::BOOLEAN) iv = v->bool_val ? 1 : 0;
+                    else if (v->type == DalvikType::INT64) iv = (int32_t)v->long_val;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(iv);
+                return true;
+            }
+            if (method == "putIntVolatile" || method == "putInt" ||
+                method == "putOrderedInt") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                if (obj != 0 && !fname.empty() && args.size() > 3)
+                    heap_.set_object_field(obj, fname,
+                                           DalvikValue::make_int(
+                                               (int32_t)args[3].int_val));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+            if (method == "compareAndSwapInt") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                if (obj == 0 || fname.empty()) {
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(false);
+                    return true;
+                }
+                auto cur = heap_.get_object_field(obj, fname);
+                int32_t cur_i = 0;
+                if (cur.has_value()) {
+                    if (cur->type == DalvikType::INT32) cur_i = cur->int_val;
+                    else if (cur->type == DalvikType::BOOLEAN)
+                        cur_i = cur->bool_val ? 1 : 0;
+                }
+                int32_t exp_i = args.size() > 3 ? (int32_t)args[3].int_val : 0;
+                if (cur_i == exp_i && args.size() > 4) {
+                    heap_.set_object_field(
+                        obj, fname,
+                        DalvikValue::make_int((int32_t)args[4].int_val));
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_bool(true);
+                    return true;
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(false);
+                return true;
+            }
+            if (method == "getLongVolatile" || method == "getLong") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                auto v = (obj != 0 && !fname.empty())
+                             ? heap_.get_object_field(obj, fname)
+                             : std::nullopt;
+                int64_t lv = 0;
+                if (v.has_value() && v->type == DalvikType::INT64)
+                    lv = v->long_val;
+                else if (v.has_value() && v->type == DalvikType::INT32)
+                    lv = v->int_val;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_long(lv);
+                return true;
+            }
+            if (method == "putLongVolatile" || method == "putLong" ||
+                method == "putOrderedLong") {
+                uint32_t obj = target337(1);
+                std::string fname = field_name_for337(offset337(2));
+                if (obj != 0 && !fname.empty() && args.size() > 3)
+                    heap_.set_object_field(
+                        obj, fname, DalvikValue::make_long(args[3].long_val));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+            if (method == "arrayBaseOffset") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(0);
+                return true;
+            }
+            if (method == "arrayIndexScale") {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(1);
+                return true;
+            }
         }
     }
     // Package.getName() — returns the dotted package name stored at
@@ -23649,15 +24239,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // Also: fillInStackTrace() returns the receiver (chainable, OpenJDK),
     // getStackTraceDepth() returns N.
     // ────────────────────────────────────────────────────────────────────────
+    // R-NEW-338: the guard previously demanded the DECLARED class name to
+    // contain Throwable/Exception/Error — but the bridge is entered with the
+    // RUNTIME exception class (R8-obfuscated: Lbd1;, Lwr;, …) whenever a
+    // kotlinx.coroutines sanitizer (Lqi0;.Q) calls getStackTrace() on its
+    // own recovered exception. Guard failed → null answer →
+    // Arrays.copyOfRange(null,…) → NPE "null array in Arrays.copyOfRange"
+    // → Compose composition machinery died. getStackTrace/fillInStackTrace/
+    // getStackTraceDepth/setStackTrace are INHERITED Throwable contract —
+    // dispatch for ANY receiver class (Thread keeps its own real-frames
+    // law below).
     if ((method == "getStackTrace" || method == "fillInStackTrace" ||
-         method == "getStackTraceDepth") &&
+         method == "getStackTraceDepth" || method == "setStackTrace") &&
         !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
-        (class_name.find("Throwable") != std::string::npos ||
-         class_name.find("Exception") != std::string::npos ||
-         class_name.find("Error") != std::string::npos)) {
+        class_name != "Ljava/lang/Thread;") {
         if (method == "fillInStackTrace") {
             result = args[0];  // OpenJDK: returns this
             status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "setStackTrace") {
+            // args[1] = StackTraceElement[] — store verbatim so a later
+            // getStackTrace round-trips the SANITIZED trace (kotlinx.coroutines
+            // stack-trace recovery writes the filtered array back).
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0) {
+                DalvikValue sv;
+                sv.type = DalvikType::OBJECT_REF;
+                sv.object_id = args[1].object_id;
+                sv.class_desc = args[1].class_desc;
+                heap_.set_object_field(args[0].object_id, "stack_trace", sv);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
             return true;
         }
         auto frames = call_stack_.snapshot_top_first();
@@ -23665,6 +24279,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (method == "getStackTraceDepth") {
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_int((int)N);
+            return true;
+        }
+        // R-NEW-338: honor a previously setStackTrace() stored array —
+        // return the STORED sanitized trace instead of the live stack
+        // (kotlinx.coroutines stack-recovery reads back what it wrote).
+        if (auto stored =
+                heap_.get_object_field(args[0].object_id, "stack_trace");
+            stored.has_value() && stored->type == DalvikType::OBJECT_REF &&
+            stored->object_id != 0 && heap_.has_object(stored->object_id)) {
+            DalvikValue sarr;
+            sarr.type = DalvikType::OBJECT_REF;
+            sarr.object_id = stored->object_id;
+            sarr.class_desc = stored->class_desc;
+            auto slen = heap_.get_object_field(stored->object_id,
+                                               "__array_length__");
+            sarr.int_val = slen.has_value() ? slen->int_val : 0;
+            result = sarr;
+            status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
         uint32_t arr_id = heap_.allocate("Larray;", pc_,
@@ -24521,6 +25153,112 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             std::cerr << "[THROWABLE-STACK] #" << fi << " "
                                       << chain[fi].first << "."
                                       << chain[fi].second << std::endl;
+                        }
+                        // R-NEW-339: caller-PC variant — frame i's caller_pc
+                        // is the invoke site inside frame i+1; localizes the
+                        // exact throwing invoke inside big <init>s.
+                        auto chain339 = call_stack_.snapshot_frames_top_first();
+                        size_t n339 = chain339.size() > 12 ? 12 : chain339.size();
+                        for (size_t fi = 0; fi < n339; ++fi) {
+                            std::cerr << "[THROWABLE-STACK-PC] #" << fi << " "
+                                      << chain339[fi].cls << "."
+                                      << chain339[fi].method
+                                      << " caller_pc=" << chain339[fi].caller_pc
+                                      << std::endl;
+                        }
+                    }
+                    // R-NEW-337: JobSupport double-completion forensics.
+                    // kotlinx.coroutines JobSupport.makeCompletingOnce throws
+                    // "Job <cls>@<id> is already complete or completing, but is
+                    // being completed with <cls2>@<id2>" when tryMakeCompleting
+                    // saw an already-completing state. dooz v23 hits this on its
+                    // FIRST composition (R-NEW-337) — the job state must have
+                    // been completed/corrupted before first measure. Decisive
+                    // dump either way: heap fields present => read their
+                    // identity; fields EMPTY + object present => the state
+                    // writes never reached the engine heap (dual-store split,
+                    // R-NEW-335 family); object missing entirely => the job
+                    // lives in a non-heap store.
+                    if (args[ai].string_val.find(
+                            "is already complete or completing") !=
+                        std::string::npos) {
+                        std::cerr << "[R337-DUAL] job-double-complete ISE"
+                                  << std::endl;
+                        const std::string& m337 = args[ai].string_val;
+                        int dumped337 = 0;
+                        for (size_t p337 = m337.find(";@");
+                             p337 != std::string::npos && dumped337 < 2;
+                             p337 = m337.find(";@", p337 + 1)) {
+                            size_t ds337 = p337 + 2, de337 = ds337;
+                            while (de337 < m337.size() &&
+                                   isdigit((unsigned char)m337[de337]))
+                                ++de337;
+                            if (de337 == ds337) continue;
+                            uint32_t oid337 = (uint32_t)strtoul(
+                                m337.substr(ds337, de337 - ds337).c_str(),
+                                nullptr, 10);
+                            ++dumped337;
+                            HeapObject* job337 = heap_.get(oid337);
+                            if (!job337) {
+                                std::cerr << "[R337-DUAL] obj#" << oid337
+                                          << " NOT-IN-HEAP (non-heap store or "
+                                             "dual-store split)"
+                                          << std::endl;
+                                continue;
+                            }
+                            std::cerr << "[R337-DUAL] obj#" << oid337
+                                      << " class=" << job337->class_descriptor
+                                      << " seq=" << job337->creation_sequence
+                                      << " fields=" << job337->fields.size()
+                                      << std::endl;
+                            int fi337 = 0;
+                            for (const auto& kv337 : job337->fields) {
+                                if (fi337++ >= 12) break;
+                                std::cerr << "[R337-DUAL]   ."
+                                          << kv337.first << " = "
+                                          << dalvik_value_to_string(kv337.second)
+                                          << std::endl;
+                                // R-NEW-337 phase 2: chase the state object one
+                                // hop. The class of _state$volatile decides the
+                                // tryMakeCompleting branch: Empty(Active) should
+                                // PROCEED; only Finishing/terminal states may
+                                // yield already-completing. If this class is
+                                // wrong (e.g. an interface dispatch evaluated
+                                // isCompleting against the wrong receiver) the
+                                // instanceof/isCompleting checks misfire.
+                                if (kv337.first == "_state$volatile" &&
+                                    kv337.second.type == DalvikType::OBJECT_REF &&
+                                    kv337.second.object_id != 0) {
+                                    HeapObject* st337 =
+                                        heap_.get(kv337.second.object_id);
+                                    if (!st337) {
+                                        std::cerr
+                                            << "[R337-DUAL]   state obj#"
+                                            << kv337.second.object_id
+                                            << " NOT-IN-HEAP" << std::endl;
+                                        continue;
+                                    }
+                                    std::cerr << "[R337-DUAL]   state obj#"
+                                              << st337->object_id
+                                              << " class="
+                                              << st337->class_descriptor
+                                              << " seq="
+                                              << st337->creation_sequence
+                                              << " fields="
+                                              << st337->fields.size()
+                                              << std::endl;
+                                    int sfi337 = 0;
+                                    for (const auto& skv337 : st337->fields) {
+                                        if (sfi337++ >= 8) break;
+                                        std::cerr
+                                            << "[R337-DUAL]     ."
+                                            << skv337.first << " = "
+                                            << dalvik_value_to_string(
+                                                   skv337.second)
+                                            << std::endl;
+                                    }
+                                }
+                            }
                         }
                     }
                     result = DalvikValue::make_void();
