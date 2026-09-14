@@ -220,6 +220,36 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         }
     }
 
+    // S36 (R-NEW-334): OBJECT-KEY map truth probe — env-gated
+    // MINIANDROID_S36_TRACE=1, bounded 60. Prints the put/get/containsKey
+    // traffic for maps keyed by OBJECTS (the updateBackStackLifecycle
+    // upwardStateTransitions HashMap family), including the derived key and
+    // the HIT/MISS outcome — so the maxLifecycle chain can be pinned live.
+    {
+        static thread_local uint64_t s36_coll = 0;
+        if (std::getenv("MINIANDROID_S36_TRACE") != nullptr && s36_coll < 60) {
+            bool obj_keyed =
+                (m == "put" || m == "get" || m == "containsKey") &&
+                !ctx.args.empty() &&
+                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+                ctx.args[0].object_id != 0;
+            if (obj_keyed) {
+                ++s36_coll;
+                const CollectionState* st36 = get_or_create(obj_id);
+                std::string key36 = "obj:" + std::to_string(ctx.args[0].object_id);
+                bool have36 = st36 ? (st36->map_entries.count(key36) > 0 ||
+                                      st36->map_string_entries.count(key36) > 0)
+                                    : false;
+                std::cerr << "[S36-COLL] " << ctx.class_name << "." << m
+                          << " map=" << obj_id
+                          << " key_obj=" << ctx.args[0].object_id
+                          << " is_map=" << (st36 ? (int)st36->is_map : -1)
+                          << " present=" << (int)have36
+                          << " caller=" << ctx.descriptor << std::endl;
+            }
+        }
+    }
+
     // ────────────────────────────────────────────────────────────────────────
     // M3 F-ROOM-CHAIN: java.util.Collections static factories.
     //

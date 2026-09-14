@@ -50,3 +50,24 @@ Work Log:
 Stage Summary:
 - 100% battery; compose lifecycle laws landed; K-26 lifted; 8 issues closed; full session record at docs/maintenance/s27_session_record.md.
 - Next: R-NEW-330 attach-propagation law → real dooz frame; R-NEW-331 fragment-host law (STTT+Telegram unblock); Advanced HelloWorld.
+
+---
+Task ID: S36-MAIN
+Agent: Super Z (main)
+Task: MASTER CAMPAIGN 3 continuation — publish old pushes; attack R-NEW-334 (NavBackStackEntry maxLifecycle) GitHub-first; corpus wave 2 (6 new APKs); battery; registry/ledger; push.
+
+Work Log:
+- Published old pushes: verified both archive branches already on origin (167c27fb, d358a0c9); fast-forwarded local main 7a172e7c→6375d0bb (remote carried completed S35: F-ledger 100% closure, APPS_EXECUTION_LEDGER, corpus 16→22, R-NEW-334 narrowed). All tags present.
+- GitHub-first research: fetched upstream NavControllerImpl.kt + NavBackStackEntry.kt + NavHost.kt (androidx/androidx @27cf9a7d) — mapped updateBackStackLifecycle/populateVisibleEntries laws; OpenJDK ArrayList(Collection) contract (github.com/openjdk/jdk) documented in F-101 header.
+- DEX ground truth: mapped obfuscated Landroidx/navigation/c; (NavControllerImpl: q=updateBackStackLifecycle, n=populateVisibleEntries, b=dispatchOnDestinationChanged), Landroidx/navigation/b; (NavBackStackEntry: s=maxLifecycle, l=hostLifecycleState, i=setter, j=updateState); raw DEX hierarchy parser (scripts/s36_dexhier.py): z1/i = kotlin ArrayDeque extends z1/d extends java.util.AbstractList.
+- S36 probe ladder (env-gated MINIANDROID_S36_TRACE, read-only): [S36-Q/N/CB/BI/BJ/K/DQ/F/Z] in dalvik_engine.cpp + [S36-COLL] object-key map probe in android_shadows.cpp + [S36-AOOB-aput] array evidence probe. 8 probe runs (run/s36_probe1..fix8).
+- ROOT FOUND (3 layers): (1) z1/r.K toMutableList = new ArrayList(Collection) — ctor UNHANDLED → empty copies → c.q early-return → b.i never fired ([S36-BI] zero) → maxLifecycle INITIALIZED → n() filtered everything → EMPTY visibleEntries. (2) First F-101 cut wrote heap fields only — registry-mode CollectionShadow (own collections_ store) still answered EMPTY. (3) F-101 FINAL: copy via source's own size()/get(I) protocol + write BOTH stores (heap + registry CollectionState.elements).
+- POST-FIX LIVE EVIDENCE (run/s36_fix6): b.i o2878 max->CREATED, o2855 max->RESUMED from c.q<c.b>; c$a.b markTransitionComplete path alive; compose/ui/node/i.h executes — R-NEW-333 residual dead, the app composes into the transition machinery.
+- NEW FRONTIER R-NEW-335: dooz rc=1 deterministic AIOOBE length=7; index=319519148 — aput arr=o5059 caller=LP/v$a;.c; h/r.c(Object)I binary-search (264u real DEX) returns wild negative → not-int → OOB. Suspect int-op mis-execution (F-035 family) — minable.
+- Corpus wave 2: 6 APKs downloaded+hash-pinned to ledger (dooz vc23 NEW VARIANT, braincup, solitaire, sudoku, bouncy, memory game) — archive 22→28, zero-APK law kept.
+- Battery: initial 52 FAILs = missing fixture toolchain (ecj/r8/aapt2 — container reset); restored via scripts/build/bootstrap_toolchain.sh + Maven Central (ecj 3.36.0) + r8-releases (8.3.37) + Sable/android-platforms (android-34). FINAL: all runtime stages PASS (helloworld 26/26, tictactoe, corpus byte-goldens, GATE H, semantic 14/25/66); only EXT-01/02 fail (external reference images never in git, lost in reset — environment gap, honest).
+
+Stage Summary:
+- Registry 321→322: R-NEW-334 VERIFIED-FIXED (F-101, dual-store law), R-NEW-335 registered (P0).
+- F-ledger: F-101 landed. The Dooz wall advanced: navigation→lifecycle→compose-transition chain now executes as real bytecode.
+- Next: R-NEW-335 opcode audit (h/r.c search arithmetic); run the 6 queued APKs; Telegram R-NEW-331 fragment host.
