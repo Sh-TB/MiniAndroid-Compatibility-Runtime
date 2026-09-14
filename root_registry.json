@@ -3224,6 +3224,18 @@
    "severity": "high",
    "commit": "S39-FIX",
    "next": "Frontier advanced: composition machinery survives; content nodes not yet composed (Lt4; children=0, framebuffer white = real draw path pending). Next probe: Recomposer frame pump — does the Choreographer frame callback / MonotonicFrameClock withFrameNanos chain dispatch so composition produces content nodes? (R-NEW-340 candidate.)"
+  },
+  {
+   "id": "R-NEW-340",
+   "status": "PARTIAL-FIX",
+   "priority": "P1",
+   "fg": true,
+   "evidence": "S39 OBSERVED (dooz23 runs r339f/r340): (a) F-050 launch frame pump ran at log:242402 with pending_cb=0 -> quiescence at tick=0; (b) the Recomposer posted its Choreographer.FrameCallback DURING onCreate at log:242620 ([CHOREO] postFrameCallback cb=757 class=Lh9;) — after the pump; (c) no second pump existed -> withFrameNanos never resumed -> zero content nodes (white frame). FIX APPLIED: post-lifecycle pump in stage_capture_output (max_frames=16) -> [CHOREO] doFrame tick fired, runnable id=1231 (Lrx; resume machinery) drained, Recomposer job machinery advanced (Lkp1; o1050/o1316 state reads, .Q(ZLkj0;) await path) — DEEPEST Compose execution yet recorded for dooz23.",
+   "root_cause": "Frame-pump ordering: the only pump ran before onCreate's composition posted its first FrameCallback; AOSP vsync is a continuous process, the runtime pumped once.",
+   "fix": "stage_capture_output now pumps up to 16 frame ticks right before capture (last-frame law). First pump tick fires the posted callback and resumes the Recomposer; residual gap (NEXT): after the resumed recomposition pass, the Recomposer suspends WITHOUT posting another frame callback (no [CHOREO] postFrameCallback after the resume; quiescence at tick=1) — the next suspension is not frame-gated or the re-post path is dropped.",
+   "severity": "high",
+   "commit": "S39-FIX2",
+   "next": "(1) Trace the resumed recomposition pass to its next suspension point: which suspend function does Lkp1;.Q(ZLkj0;) land on after the resume — another withFrameNanos (would re-post) or CancellableContinuation suspended on a Latch/Mutex that never completes? (2) Check AndroidUiDispatcher dispatch semantics: Compose's Recomposer 'runRecomposition' loop re-arms via dispatcher.dispatch — verify [QUEUE] enqueue follows the resume. (3) Candidate fix: bounded outer pump loop (repeat pump while progress, mirroring AOSP continuous vsync) vs fixing the missed re-post at its source."
   }
  ]
 }
