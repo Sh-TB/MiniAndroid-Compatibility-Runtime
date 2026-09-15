@@ -141,6 +141,33 @@ public:
     // Test whether an object exists in the heap.
     virtual bool has_object(uint32_t object_id) = 0;
 
+    // [R-NEW-360 (S45)] Enumerate the FIELD NAMES stored on a heap object.
+    // Shadows can then probe an unknown wrapper-collection's internals
+    // (e.g. an R8-renamed Arrays$ArrayList whose single field references
+    // the backing array) without name-based class special-casing.
+    virtual std::vector<std::string> get_object_field_names(uint32_t object_id) {
+        (void)object_id;
+        return {};
+    }
+
+    // [R-NEW-360 (S45)] Read an OBJECT-REF-valued field of a heap object
+    // (out = referenced object_id). False when the field is absent or not
+    // an object reference.
+    virtual bool get_object_ref_field(uint32_t object_id,
+                                      const std::string& field_name,
+                                      uint32_t& out) {
+        (void)object_id; (void)field_name; (void)out;
+        return false;
+    }
+
+    // [R-NEW-360 (S45)] Read the i-th ELEMENT of an engine-modeled array
+    // object ("array[i]" fields) as an OBJECT_REF (out = object_id).
+    virtual bool get_object_array_ref_element(uint32_t array_id, size_t index,
+                                              uint32_t& out) {
+        (void)array_id; (void)index; (void)out;
+        return false;
+    }
+
     // [R342-COWSET] Runtime class of a heap object for shadow-returned
     // elements. next()/get() must return the element's REAL class so
     // invoke-interface/vtable dispatch finds the DEX implementation

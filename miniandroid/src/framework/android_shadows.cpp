@@ -375,6 +375,76 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 auto* src = get_or_create(ctx.args[0].object_id, false);
                 st->elements = src->elements;
                 st->view_elements = src->view_elements;
+                // ── R-NEW-360 (S45 GAME PLAYABILITY GATE): ARRAY-BACKED
+                // SOURCE COPY LAW ────────────────────────────────────────
+                // OpenJDK ArrayList(Collection c) iterates c's elements —
+                // whatever internal store c uses. kotlin's
+                // `arrayListOf(*array)` / `toList()` lower to
+                // `new ArrayList(Arrays$ArrayList(array))` where the SOURCE
+                // collection's only storage IS the raw array object. R8
+                // renames Arrays$ArrayList (dooz23: Lzc;) so the shadow
+                // cannot claim it by name and its CollectionState stays
+                // empty — the copy-ctor copied ZERO elements and the
+                // downstream `last()` threw NoSuchElementException("List is
+                // empty.") inside NavController.popBackStack, killing the
+                // first composition (dooz23 blank frame, rc=1 face of
+                // R-NEW-344). Generic law: when the source CollectionState
+                // carries no elements, probe the source heap object's fields
+                // for an ARRAY reference ([... with __array_length__] +
+                // array[i] element fields) and copy those elements. This is
+                // name-agnostic — every wrapper-collection family benefits.
+                if (st->elements.empty() && st->view_elements.empty() && heap_) {
+                    std::vector<std::string> fields =
+                        heap_->get_object_field_names(ctx.args[0].object_id);
+                    {
+                        static thread_local uint64_t r360_diag = 0;
+                        if (r360_diag++ < 40) {
+                            std::cerr << "[R360-DIAG] copy-ctor src="
+                                      << ctx.args[0].object_id
+                                      << " class="
+                                      << (ctx.args[0].object_class.empty()
+                                              ? "?"
+                                              : ctx.args[0].object_class)
+                                      << " fields=" << fields.size();
+                            for (size_t di = 0; di < fields.size() && di < 6; ++di)
+                                std::cerr << " \"" << fields[di] << "\"";
+                            std::cerr << std::endl;
+                        }
+                    }
+                    for (const auto& fname : fields) {
+                        // The wrapper's field must reference an ARRAY object
+                        // (engine arrays carry __array_length__).
+                        uint32_t backing_arr = 0;
+                        if (!heap_->get_object_ref_field(ctx.args[0].object_id,
+                                                         fname, backing_arr) ||
+                            backing_arr == 0)
+                            continue;
+                        int32_t alen = -1;
+                        if (!heap_->get_object_array_length(backing_arr, alen) ||
+                            alen < 0 || alen > 4096)
+                            continue;  // sanity bound
+                        bool complete = true;
+                        for (int32_t ai = 0; ai < alen; ++ai) {
+                            uint32_t elem = 0;
+                            if (!heap_->get_object_array_ref_element(
+                                    backing_arr, (size_t)ai, elem) ||
+                                elem == 0) {
+                                complete = false;
+                                break;
+                            }
+                            st->elements.push_back(elem);
+                        }
+                        if (complete && alen > 0) {
+                            std::cerr << "[R360-COPY] ArrayList(Collection) src="
+                                      << ctx.args[0].object_id
+                                      << " via field=\"" << fname
+                                      << "\" arr=" << backing_arr
+                                      << " elems=" << alen << std::endl;
+                            break;
+                        }
+                        st->elements.clear();  // incomplete probe — try next
+                    }
+                }
             }
         }
         return CallResult::handled_void();
@@ -2028,9 +2098,28 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_null();
     }
     if (m == "runOnUiThread") {
-        // Defer to HandlerShadow — return void so the call doesn't
-        // recurse into AndroidUtilities.runOnUIThread (which the engine
-        // might have a stub for already).
+        // ── R-NEW-359 (S45): AOSP Activity.runOnUiThread law ──────────────
+        // AOSP Activity.java:
+        //   public final void runOnUiThread(Runnable action) {
+        //       if (Thread.currentThread() != mUiThread) {
+        //           mHandler.post(action);
+        //       } else { action.run(); }
+        //   }
+        // The engine executes the app deterministically on ONE virtual main
+        // thread, but a shadow dispatch is NOT an inline DEX execution site,
+        // so the runnable must ride the main MessageQueue (the same queue
+        // Handler.post feeds). The old code returned handled_void with the
+        // runnable dropped — every runOnUiThread task silently vanished.
+        if (registry_) {
+            if (auto* hs = registry_->find_as<HandlerShadow>()) {
+                uint32_t r = HandlerShadow::extract_runnable(ctx, 0);
+                if (r != 0) {
+                    hs->enqueue(r, 0, /*cls=*/"Activity.runOnUiThread");
+                    std::cerr << "[R359-UI] runOnUiThread runnable=" << r
+                              << " (enqueued on main queue)" << std::endl;
+                }
+            }
+        }
         return CallResult::handled_void();
     }
     return CallResult::not_handled();
@@ -2847,12 +2936,52 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_void();
     }
+    if (m == "post" || m == "postDelayed" || m == "removeCallbacks") {
+        // ── R-NEW-359 (S45 GAME PLAYABILITY GATE): AOSP View.post law ─────
+        // AOSP View.java (android-34):
+        //   public boolean post(Runnable action) {
+        //       AttachInfo attachInfo = mAttachInfo;
+        //       if (attachInfo != null) return attachInfo.mHandler.post(action);
+        //       getRunQueue().post(action);  // run when attached
+        //       return true;
+        //   }
+        //   postDelayed(action, delayMillis) → mHandler.postDelayed(action, delay)
+        //   removeCallbacks(action)          → mHandler.removeCallbacks(action)
+        // The old shadow silently swallowed the runnable (handled_void) —
+        // the deferred compose-request chain (androidx.compose.ui.window
+        // Ls7;.i posts the composition-start runnable via View.post when
+        // Looper.myLooper() != view.handler.looper) never reached the main
+        // MessageQueue → composeInitial never ran → AndroidComposeView
+        // stayed children=0 0x0 → dooz23 blank frame (R-NEW-344 face).
+        // One MessageQueue law: View.post rides the SAME HandlerShadow
+        // queue as Handler.post (ordering preserved, virtual clock).
+        if (registry_) {
+            if (auto* hs = registry_->find_as<HandlerShadow>()) {
+                uint32_t r = HandlerShadow::extract_runnable(ctx, 0);
+                if (m == "removeCallbacks") {
+                    if (r != 0) hs->remove_callbacks(r);
+                    return CallResult::handled_void();
+                }
+                if (r != 0) {
+                    int64_t delay = (m == "postDelayed" && ctx.args.size() >= 2)
+                                        ? ctx.arg_as_int(1, 0)
+                                        : 0;
+                    hs->enqueue(r, delay, /*cls=*/"View.post");
+                    std::cerr << "[R359-VPOST] View." << m
+                              << " runnable=" << r << " delay=" << delay
+                              << " view=" << ctx.receiver_id << std::endl;
+                    return CallResult::handled_bool(true);
+                }
+            }
+        }
+        // No runnable arg or no HandlerShadow — keep the legacy no-op.
+        return CallResult::handled_void();
+    }
     if (m == "setBackgroundColor" || m == "setBackground" ||
         m == "setBackgroundResource" || m == "setBackgroundDrawable" ||
         m == "setLayoutParams" || m == "getLayoutParams" ||
         m == "measure" || m == "layout" || m == "draw" ||
-        m == "requestLayout" || m == "invalidate" ||
-        m == "post" || m == "postDelayed" || m == "removeCallbacks") {
+        m == "requestLayout" || m == "invalidate") {
         return CallResult::handled_void();
     }
     if (m == "getLayoutParams") {
