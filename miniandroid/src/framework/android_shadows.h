@@ -1238,12 +1238,57 @@ public:
         return !pending_child_attaches_.empty();
     }
 
+    // ─────────────────────────────────────────────────────────────────────
+    // R-NEW-349 (S43): AOSP FIRST-TRAVERSAL ORDERING LAW for
+    // setContentView(View) — attach STRICTLY precedes measure.
+    //
+    // Oracle: AOSP ViewRootImpl.performTraversals — the first traversal
+    // runs host.dispatchAttachedToWindow(mAttachInfo, 0) BEFORE
+    // performMeasure, so on AOSP no measure pass ever observes an
+    // unattached view. Compose relies on that order:
+    // AbstractComposeView.onMeasure → ensureCompositionCreated →
+    // View.windowRecomposer (WindowRecomposer.android.kt:288) opens with
+    // checkPrecondition(isAttachedToWindow); measuring an unattached tree
+    // throws ISE "Cannot locate windowRecomposer; View ... is not attached
+    // to a window" and killed dooz23 MainActivity.onCreate (S43 baseline
+    // evidence, stderr L242810/L242834).
+    //
+    // The shadow (no interpreter access) only RECORDS the
+    // (attach-parent, measure-root) pair; the ENGINE consumes it right
+    // after the setContentView shadow call returns — attach wave via
+    // dispatch_attached_subtree_from, THEN the eager measure_layout that
+    // used to run inline inside the shadow handler (the U007 law).
+    // Same shadow-flag/engine-callback split as the R-NEW-347 addView
+    // attach consume and the Room onCreate/onUpgrade dispatch.
+    // ─────────────────────────────────────────────────────────────────────
+    void record_pending_setcontent_attach_measure(uint32_t parent_id,
+                                                   uint32_t root_id) {
+        pending_setcontent_attach_measure_ = {parent_id, root_id};
+    }
+    // Consumes the pending record — returns false when none is stored.
+    // Second field == 0 marks "no pending setContentView measure".
+    bool consume_pending_setcontent_attach_measure(uint32_t& parent_id,
+                                                    uint32_t& root_id) {
+        if (pending_setcontent_attach_measure_.second == 0) return false;
+        parent_id = pending_setcontent_attach_measure_.first;
+        root_id   = pending_setcontent_attach_measure_.second;
+        pending_setcontent_attach_measure_ = {0, 0};
+        return true;
+    }
+
 private:
     // R-NEW-347 (S42): (parent, child) pairs whose child still needs the
     // AOSP addViewInner attach dispatch. Filled ONLY when the parent node
     // was attached_to_window at addView time; drained by the engine in
     // the same interpreter step (never crosses a frame boundary).
     std::vector<std::pair<uint32_t, uint32_t>> pending_child_attaches_;
+
+    // R-NEW-349 (S43): pending setContentView(View) first-traversal record.
+    // (attach_parent, measure_root); second == 0 means "nothing pending".
+    // Recorded by ActivityShadow.setContentView, consumed by the engine
+    // bridge right after the shadow call returns: attach wave, then the
+    // eager measure_layout (AOSP ViewRootImpl.performTraversals ordering).
+    std::pair<uint32_t, uint32_t> pending_setcontent_attach_measure_{0, 0};
 
 public:
     // Add child to parent (updates both parent's children and child's parent_id).

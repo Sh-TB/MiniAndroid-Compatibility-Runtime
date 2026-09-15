@@ -1,0 +1,22 @@
+{
+  "apps": {
+    "de.duenndns.gmdice_8": {
+      "screenshot_sha256": "22f3730f452b562cea9f90617eb50f26a4b106ee1c4b98c59f54565f0bdebb5a",
+      "nonwhite_1080x1920": null,
+      "derived_540x960_sha256": "36d6b93b89565ad5b14aeb96f78b44c7595a3627aa763331ff4d41856ab47aa7",
+      "size_kb": 22
+    },
+    "app.varlorg.unote_30": {
+      "screenshot_sha256": "7b30d52201bb22ac8467cc9c8257f23b60f169c8406f39cdfe0ad8fe48355971",
+      "nonwhite_1080x1920": null,
+      "derived_540x960_sha256": "eff98aa9e8ee10a15451e33209ad36d5a56cea93bea6d845b5c4fffcd243adda",
+      "size_kb": 17
+    },
+    "com.chessclock.android_29": {
+      "screenshot_sha256": "e4a2d7c90cd2fd26f30ae242b3bda3fd2fba834214c3e64e0ffe04ba1c4882b9",
+      "nonwhite_1080x1920": null,
+      "derived_540x960_sha256": "d8a5bbb3e6377ae885435ebd2d08f458d9f2184a8e24729f926e8d0a3216e196",
+      "size_kb": 1
+    }
+  }
+}
