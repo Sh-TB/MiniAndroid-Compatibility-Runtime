@@ -1,0 +1,10 @@
+[R350-ASSUB] Ly81; asSubclass Lbc0; -> SAME reference
+[R349-ORDER] setContentView(View) deferred attach+measure root=1004 (AOSP first-traversal ordering law)
+[R347-ATTACH] onAttachedToWindow dispatched view=1004 class=Lho;
+[R347-ATTACH] parent=1004 attached -> pending child-attach child=1285
+[R347-ATTACH] onAttachedToWindow dispatched view=1285 class=Lt4;
+[R349-ORDER] setContentView(View) attach wave + measure done, root=1004
+[R337-UNSAFE] objectFieldOffset Ly81;.preferences_ -> 280 caller=Llt0;.w
+[SYNTH-EXC] aput-oob: Ljava/lang/ArrayIndexOutOfBoundsException; (length=1; index=1) method=Llt0;.w pc=953 → uncaught (frame unwind + propagate)
+/tmp/s43_sweep/mt_ab.log:[M3-REFLECT] Class.forName "dubrowgn.microtimer.db.Database_Impl" → Ldubrowgn/microtimer/db/Database_Impl;
+/tmp/s43_sweep/mt7.log:[HALT-LOOP] Infinite loop at PC=0x10a in Ldubrowgn/microtimer/MainActivity;.onCreate (visited 50001 times in this frame, bytecode_size=1725, op_at_pc=0x0x0071).
