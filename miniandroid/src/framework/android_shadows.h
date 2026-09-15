@@ -1299,6 +1299,13 @@ public:
     // Returns 0 if not found.
     uint32_t find_by_android_id(uint32_t root_id, int32_t android_id) const;
 
+    // R-NEW-357 (S44): reverse lookup — the Android resource id VALUE for
+    // the view whose android:id NAME matches (BFS from root). Answers 0
+    // when no node carries that name. Backs
+    // Resources.getIdentifier(name, "id", pkg).
+    int32_t find_android_id_by_name(uint32_t root_id,
+                                    const std::string& name) const;
+
     // EXP-060: Lookup a view by class descriptor (substring match).
     // Used to find the startMessagingButton (a TextView) without knowing
     // its Android view_id. Returns the most-recently-created match.

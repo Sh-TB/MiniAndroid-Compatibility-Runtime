@@ -2159,6 +2159,28 @@ uint32_t ViewShadow::find_by_android_id(uint32_t root_id, int32_t android_id) co
     return 0;
 }
 
+// R-NEW-357 (S44): name -> android resource id VALUE. AOSP
+// Resources.getIdentifier(name, "id", pkg) resolves against the resource
+// tables; our per-run id table is the inflated view tree's android:id
+// names (the inflater records android_id_name per node). BFS from root,
+// first name match answers its android_view_id; 0 = not found (AOSP law).
+int32_t ViewShadow::find_android_id_by_name(uint32_t root_id,
+                                            const std::string& name) const {
+    std::vector<uint32_t> frontier = {root_id};
+    while (!frontier.empty()) {
+        std::vector<uint32_t> next;
+        for (uint32_t id : frontier) {
+            const auto* n = find_node(id);
+            if (!n) continue;
+            if (!name.empty() && n->android_id_name == name)
+                return n->android_view_id;
+            for (uint32_t c : n->children) next.push_back(c);
+        }
+        frontier = std::move(next);
+    }
+    return 0;
+}
+
 // EXP-060: Find the most-recently-created view whose class descriptor
 // contains `substring`. Used to locate the startMessagingButton (a
 // TextView subclass like IntroActivity$4) without knowing its Android

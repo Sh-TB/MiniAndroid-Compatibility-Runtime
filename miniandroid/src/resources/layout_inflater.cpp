@@ -1103,7 +1103,39 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         node.lp_margin_top = node.lp_margin_bottom = a.style_margin_all;
     }
     node.visibility = a.visibility;
-    node.clickable = a.clickable || !a.onClick.empty();
+    // R-NEW-356 (S44) — BUTTON-FAMILY CLICKABLE-DEFAULT LAW (AOSP View
+    // style law): android.widget.Button and its family carry
+    // android:clickable=true in their default platform styles
+    // (core/res/res/values/styles.xml Widget.Material.Button →
+    // <item name="android:clickable">true</item>), so a Button is
+    // clickable even when the app XML sets no android:clickable and the
+    // click listener is attached later in code
+    // (View.setOnClickListener — View.java L5930 setClickable(true)).
+    // The inflater only honored EXPLICIT xml attrs, so every XML Button
+    // of a code-registered-listener game (TicTacToe Classic board cells:
+    // 9 Buttons with findViewById + setOnClickListener in onCreate)
+    // arrived clickable=0, the touch-target law
+    // (CLICKABLE || LONG_CLICKABLE || handler) found no target and
+    // taps bounced with target=0 — the board rendered but was dead.
+    static const char* kClickableByDefault[] = {
+        "Button", "ImageButton", "CheckBox", "RadioButton",
+        "ToggleButton", "CheckedTextView", "CompoundButton",
+    };
+    {
+        const std::string cls = node.class_desc;
+        const size_t dot = cls.rfind('/');
+        const std::string simple =
+            (dot == std::string::npos) ? cls
+                                       : cls.substr(dot + 1,
+                                                    cls.size() - dot - 2);
+        for (const char* k : kClickableByDefault) {
+            if (simple == k) {
+                node.clickable = true;
+                break;
+            }
+        }
+    }
+    node.clickable = node.clickable || a.clickable || !a.onClick.empty();
     node.num_lines = a.num_lines;
     if (!a.onClick.empty()) node.onClick_handler = a.onClick;
     // FIX-2c: relative-layout sibling rules onto the node
