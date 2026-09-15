@@ -30,7 +30,7 @@ except Exception:
     pass
 from androguard.core.dex import DEX
 
-APK = '/tmp/my-project/apk_cache/s36new/io.github.yamin8000.dooz_23.apk'
+APK = '/home/z/my-project/corpus_cache/io.github.yamin8000.dooz_23.apk'
 
 z = zipfile.ZipFile(APK)
 dex_names = [n for n in z.namelist() if n.endswith('.dex')]

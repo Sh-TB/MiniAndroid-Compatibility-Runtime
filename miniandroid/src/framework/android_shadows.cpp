@@ -1696,18 +1696,48 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                 }
                 // GENERIC (tictactoe_golden campaign): programmatic View trees
                 // get the SAME real measure/layout pass as XML-inflated trees.
-                // AOSP: setContentView(View) attaches the view to the window
-                // and runs a full measure/layout — without it the render walk
-                // fell back to its unweighted legacy estimator where
-                // width=0+weight collapses to zero size and weighted rows
-                // render nothing (the board was invisible).
+                // AOSP: setContentView(View) installs the content view; the
+                // FIRST ViewRootImpl.performTraversals then runs
+                //   host.dispatchAttachedToWindow(mAttachInfo, 0)  ← attach
+                //   performMeasure(...)                             ← measure
+                // i.e. ATTACH STRICTLY PRECEDES MEASURE — the measure pass
+                // never sees an unattached tree on AOSP.
+                //
+                // R-NEW-349 (S43) ROOT FIX — ORDERING LAW: this handler used
+                // to run the eager measure_layout INLINE (the U007 law). Since
+                // R-NEW-347/S42 the measure pass dispatches REAL DEX
+                // onMeasure (custom_view_measure_hook_), and Compose's
+                // AbstractComposeView.onMeasure → ensureCompositionCreated →
+                // View.windowRecomposer (WindowRecomposer.android.kt:288)
+                // opens with checkPrecondition(isAttachedToWindow). Measuring
+                // the unattached tree therefore threw
+                //   ISE "Cannot locate windowRecomposer; View Lho;@960 is
+                //        not attached to a window"
+                // out of MainActivity.onCreate (dooz23 S43 baseline stderr
+                // L242810/L242834) — onCreate died before any composition.
+                // FIX: the shadow (which cannot run DEX) RECORDS the
+                // pending (attach-root, measure-root) pair; the ENGINE — the
+                // only layer able to dispatch DEX onAttachedToWindow —
+                // consumes it after this shadow call returns: attach wave
+                // FIRST (dispatch_attached_subtree_from), measure SECOND.
+                // Same shadow-flag/engine-callback split as the R-NEW-347
+                // addView attach consume and the Room onCreate dispatch.
                 if (registry_ && content_view_id_ != 0) {
                     auto* view_shadow = registry_->find_as<ViewShadow>();
                     if (view_shadow) {
-                        auto& rt = resources::ResourceRuntime::instance();
-                        rt.inflater().measure_layout(view_shadow, content_view_id_);
-                        std::cerr << "[U007-MEASURE] setContentView(View) measured programmatic tree root="
-                                  << content_view_id_ << std::endl;
+                        // Attach parent: the node that hosts the content view
+                        // (the activity view node from the F-023 parent-link
+                        // above; falls back to the content root itself when
+                        // no receiver node exists).
+                        const uint32_t attach_parent =
+                            ctx.receiver_id != 0 ? ctx.receiver_id
+                                                 : content_view_id_;
+                        view_shadow->record_pending_setcontent_attach_measure(
+                            attach_parent, content_view_id_);
+                        std::cerr << "[R349-ORDER] setContentView(View) deferred"
+                                  << " attach+measure root=" << content_view_id_
+                                  << " (AOSP first-traversal ordering law)"
+                                  << std::endl;
                     }
                 }
             } else if (ctx.args[0].kind == CallContext::Arg::Kind::INT) {
