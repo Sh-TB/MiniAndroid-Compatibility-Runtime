@@ -13926,7 +13926,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     //   - bridge_to_api → try_shadow_dispatch inside callees sees false (instance)
     bool saved_is_static = current_invoke_is_static_;
     current_invoke_is_static_ = true;
-    
+
     uint16_t instr = bytecode_[pc];
     // EXP-037 Phase B (BLOCKER-015 FIX): 35c format is "AA|op BBBB FEDC"
     //   code[pc+0] = AA|op
@@ -13934,6 +13934,31 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     //   code[pc+2] = FEDC (register list)
     uint16_t method_idx = bytecode_[pc + 1];  // was pc+2
     uint16_t regs_word = bytecode_[pc + 2];    // was pc+1
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-350 probe (S43, env-gated read-only): the 3-arg
+    // Class.forName(String,boolean,ClassLoader) from protobuf's
+    // GeneratedMessageLite.getDefaultInstance produced ZERO bridge logs —
+    // trace every static forName dispatch AT THE INTERPRETER LEVEL (method
+    // idx + resolved name + class) so the exact route (cycle guard /
+    // super-dispatch / bridge miss) becomes visible in one run.
+    // ────────────────────────────────────────────────────────────────────
+    if (dex_report_) {
+        static thread_local const bool r350fn2 =
+            std::getenv("MINIANDROID_R350_TRACE") != nullptr;
+        if (r350fn2) {
+            std::string fn_name =
+                resolve_method_name_for_dex(method_idx, current_dex_index_);
+            if (fn_name == "forName") {
+                std::string fn_cls =
+                    resolve_method_class_for_dex(method_idx, current_dex_index_);
+                std::cerr << "[R350-FN2] static forName dispatch idx="
+                          << method_idx << " class=" << fn_cls
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << " pc_units=" << pc
+                          << std::endl;
+            }
+        }
+    }
 
     // Extract argument registers
     uint8_t regs[5] = {
@@ -14185,6 +14210,141 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     // API bridge
     DalvikValue return_val = DalvikValue::make_void();
     ApiCallTrace::Status status = ApiCallTrace::Status::STUBBED;
+
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-350 (S43) — java.lang.Class.forName OVERLOAD LAW (host-class
+    // dispatch at the interpreter level, BEFORE the recursive-invoke /
+    // bridge layers — same pre-emption pattern as the R-NEW-347
+    // View.measure law, which had to be placed before a silent-void
+    // shadow handler).
+    //
+    // OpenJDK/AOSP law (java.lang.Class, java.lang.ClassLoader):
+    //   forName(String name)
+    //   forName(String name, boolean initialize, ClassLoader loader)
+    //   → resolves `name` against the CALLER'S classloader domain and,
+    //     when initialize=true, RUNS the class <clinit> before returning
+    //     the Class object. Unknown name → ClassNotFoundException.
+    //
+    // Engine mapping: our authoritative classloader domain is the APK DEX
+    // (class_info_index_ over dex_report_->classes); the dotted binary
+    // name maps to the L-descriptor form; make_class returns the CLASS_REF
+    // whose referent_desc every downstream const-class law reads.
+    //
+    // Real demand (dooz23, PRIORITY-1): protobuf-javalite
+    // GeneratedMessageLite.getDefaultInstance(Class) — DEX Lbc0;.d — does
+    //   defaultInstanceMap.get(clazz) == null
+    //   → Class.forName(clazz.getName(), true, clazz.getClassLoader())
+    //   → defaultInstanceMap.get(clazz)   // now registered by <clinit>
+    // The 3-arg call was swallowed BEFORE the bridge (zero bridge logs,
+    // zero CNFE, silent void) so the <clinit> never ran, the second get
+    // stayed null, dynamicMethod(GET_DEFAULT_INSTANCE) answered null and
+    // the bare IllegalStateException killed the DataStore theme read →
+    // RuntimeException "Unable to get message info for y81" →
+    // MainActivity.onCreate died before composition (S43 baseline,
+    // crash.log chain 1; R350-FN2 trace proved interpreter dispatch at
+    // idx=6825 with no bridge arrival).
+    // ────────────────────────────────────────────────────────────────────
+    // ENABLING GATE (S43 evidence-driven): with this law unconditionally
+    // ON, microtimer's Room initDb loop (MainActivity.onCreate re-visited
+    // the SAME forName invoke 50k×, HALT-LOOP guard) starved the run
+    // budget → white frame + battery corpus-stage regression (A/B-proven:
+    // stash→rebuild→run restored microtimer's 1,042,368-nonwhite render;
+    // unstash→re-run reproduced the blank). The dooz23 protobuf chain
+    // REQUIRES the law (UOE → asSubclass chain). Resolution: the law is
+    // DEFAULT-OFF (S42 bridge behavior for every app); evidence runs
+    // enable it explicitly with MINIANDROID_R350_LAW=1. Next-session
+    // root: why microtimer's getGeneratedImplementation retries under
+    // interpreter-level resolution but proceeded under bridge-level.
+    static thread_local const bool r350_law_on =
+        std::getenv("MINIANDROID_R350_LAW") != nullptr;
+    if (r350_law_on && class_name == "Ljava/lang/Class;" &&
+        method_name == "forName") {
+        // R-NEW-350 diagnostic: the 3-arg call's name argument may arrive
+        // in a non-STRING_REF register shape — log every forName arg
+        // vector (env-gated) so the shape is on record.
+        {
+            static thread_local const bool r350shape =
+                std::getenv("MINIANDROID_R350_TRACE") != nullptr;
+            static thread_local uint64_t r350shape_n = 0;
+            if (r350shape && r350shape_n < 40) {
+                ++r350shape_n;
+                std::cerr << "[R350-SHAPE] forName argc=" << args.size();
+                for (size_t si = 0; si < args.size() && si < 3; ++si)
+                    std::cerr << " a" << si << "k" << (int)args[si].type;
+                std::cerr << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        }
+    }
+    if (r350_law_on && class_name == "Ljava/lang/Class;" &&
+        method_name == "forName" &&
+        !args.empty() && args[0].type == DalvikType::STRING_REF) {
+        // dotted binary name → L-descriptor (ordinary classes only; the
+        // deterministic subset documented in FIX-M3-012b).
+        const std::string& want_name = args[0].string_val;
+        std::string want_desc;
+        if (!want_name.empty() && want_name[0] != '[') {
+            bool r350_ordinary = true;
+            for (char c : want_name) {
+                if (!(c == '.' || c == '/' ||
+                      (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+                      (c >= '0' && c <= '9') || c == '_' || c == '$')) {
+                    r350_ordinary = false;
+                    break;
+                }
+            }
+            if (r350_ordinary) {
+                want_desc = want_name;
+                for (char& c : want_desc)
+                    if (c == '.') c = '/';
+                want_desc = "L" + want_desc + ";";
+            }
+        }
+        auto r350_cit =
+            want_desc.empty()
+                ? class_info_index_.end()
+                : class_info_index_.find(want_desc);
+        if (r350_cit == class_info_index_.end()) {
+            // Real law: unknown class → ClassNotFoundException (deferred —
+            // the DEX catch at the call site must observe it).
+            std::cerr << "[R350-FORNAME] \"" << want_name
+                      << "\" → ClassNotFoundException" << std::endl;
+            throw_deferred("Ljava/lang/ClassNotFoundException;",
+                           want_name, "R350-FORNAME");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return_val = DalvikValue::make_null();
+            last_invoke_return_ = return_val;
+            return true;
+        }
+        // initialize flag: 2-arg and 3-arg overloads both carry it in
+        // args[1] (boolean shares the INT32 register slot).
+        const bool r350_init =
+            args.size() >= 2 && args[1].type == DalvikType::INT32 &&
+            args[1].int_val != 0;
+        if (r350_init) {
+            ensure_class_initialized(want_desc);
+        }
+        // The returned Class object rides the invoke return path
+        // (return_val → move-result-object at the call site).
+        return_val = DalvikValue::make_class(want_desc, instruction_sequence_);
+        last_invoke_return_ = return_val;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        // R-NEW-350 log cap: microtimer's Room init calls Class.forName
+        // ~50k times (Database_Impl reflection loop); an unbounded log
+        // line per call turned the law into an I/O bottleneck that
+        // starved the run budget (S43 sweep evidence). Log the first 16
+        // resolutions only — the law itself always executes.
+        {
+            static thread_local uint64_t r350_ok_n = 0;
+            if (r350_ok_n < 16) {
+                ++r350_ok_n;
+                std::cerr << "[R350-FORNAME] \"" << want_name << "\" -> "
+                          << want_desc << " (initialized=" << r350_init
+                          << ")" << std::endl;
+            }
+        }
+        return true;
+    }
 
     // EXP-038 (BLOCKER-034): Try recursive invocation.
     bool recursively_invoked = false;
@@ -16815,6 +16975,28 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status,
                                           uint32_t method_idx_hint) {
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-350 probe (S43, env-gated read-only): forName calls reaching
+    // the BRIDGE — log the arg KINDS so the arg-shape mismatch that skips
+    // the Class.forName branch (STRING_REF requirement) becomes visible.
+    // ────────────────────────────────────────────────────────────────────
+    {
+        static thread_local const bool r350br =
+            std::getenv("MINIANDROID_R350_TRACE") != nullptr;
+        static thread_local uint64_t r350br_n = 0;
+        if (r350br && r350br_n < 80 && method == "forName") {
+            ++r350br_n;
+            std::cerr << "[R350-BR] bridge forName " << class_name
+                      << " argc=" << args.size();
+            for (size_t bi = 0; bi < args.size() && bi < 3; ++bi) {
+                std::cerr << " a" << bi << "k" << (int)args[bi].type;
+                if (args[bi].type == DalvikType::STRING_REF)
+                    std::cerr << "=\"" << args[bi].string_val << "\"";
+            }
+            std::cerr << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+    }
     // S28 (R-NEW-330 evidence): log TreeSet-family bridge entries to verify
     // the F-097 dispatch actually reaches the shadow.
     {
@@ -19300,6 +19482,62 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     }
                 }
             }
+            // ────────────────────────────────────────────────────────────
+            // R-NEW-349 (S43) — AOSP FIRST-TRAVERSAL ORDERING LAW
+            // (consume side). ActivityShadow.setContentView(View) no
+            // longer runs the eager measure inline: it records a pending
+            // (attach-parent, measure-root) pair. The engine — the only
+            // layer able to dispatch DEX — now runs the AOSP
+            // ViewRootImpl.performTraversals first-traversal order:
+            //   (1) dispatch_attached_subtree_from(root) — the attach
+            //       wave: mark attached_to_window BEFORE dispatching
+            //       onAttachedToWindow (AOSP View.dispatchAttachedTo-
+            //       Window stores mAttachInfo first), covering the
+            //       whole content subtree;
+            //   (2) measure_layout(root) — the same eager measure the
+            //       U007 law used to run inline, now observing an
+            //       ATTACHED tree.
+            // Compose proof (dooz23 S43 baseline, stderr L242810/
+            // L242834): measuring the unattached tree dispatched the
+            // real DEX AbstractComposeView.onMeasure →
+            // ensureCompositionCreated → View.windowRecomposer
+            // (WindowRecomposer.android.kt:288
+            // checkPrecondition(isAttachedToWindow)) → ISE "Cannot
+            // locate windowRecomposer; View Lho;@960 is not attached
+            // to a window" → MainActivity.onCreate died before any
+            // composition existed. Attach-first makes
+            // ensureCompositionCreated run from onAttachedToWindow
+            // (the AOSP path) with isAttachedToWindow == true.
+            //
+            // SCOPE NOTE (S43 regression evidence): the pending-child-
+            // attach drain above deliberately stays ADDVIEW-ONLY. An
+            // earlier S43 draft also drained it after setContentView —
+            // that fired DEX onAttachedToWindow for XML-inflated trees
+            // (microtimer RoTimeControl) BEFORE their post-inflate
+            // field setup ran, a Kotlin lateinit ISE escaped onCreate
+            // and the whole app went white (A/B-proven). The R349
+            // attach wave for setContentView(View) starts from the
+            // recorded content root ONLY, one-shot-guarded, and the
+            // XML-inflate INT branch keeps its S42 attach timing.
+            // ────────────────────────────────────────────────────────────
+            if (method == "setContentView" && shadow_registry_ != nullptr) {
+                if (auto* vs =
+                        shadow_registry_->find_as<framework::ViewShadow>()) {
+                    uint32_t sc_parent = 0, sc_root = 0;
+                    if (vs->consume_pending_setcontent_attach_measure(
+                            sc_parent, sc_root)) {
+                        // (1) AOSP first traversal: attach the subtree.
+                        dispatch_attached_subtree_from(sc_root);
+                        // (2) THEN the measure pass (U007 law — the
+                        // render walk needs real measured geometry).
+                        auto& rt = resources::ResourceRuntime::instance();
+                        rt.inflater().measure_layout(vs, sc_root);
+                        std::cerr << "[R349-ORDER] setContentView(View)"
+                                  << " attach wave + measure done, root="
+                                  << sc_root << std::endl;
+                    }
+                }
+            }
             // M3 F-ROOM-CHAIN: SQLiteOpenHelper.getWritableDatabase /
             // getReadableDatabase must fire the app override onCreate /
             // onUpgrade AFTER the database object exists (ART law: the
@@ -21300,6 +21538,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // ClassNotFoundException (real law, not a silent null).
         if (method == "forName" && !args.empty() &&
             args[0].type == DalvikType::STRING_REF) {
+            // ────────────────────────────────────────────────────────────
+            // R-NEW-350 probe (S43, env-gated read-only): dooz23 protobuf
+            // getDefaultInstance path never logged forName("y81",true,ld)
+            // — trace the ENTRY of this branch (arg count + kinds) so a
+            // 3-arg call that never arrives here is distinguishable from
+            // one that arrives with unexpected arg shapes.
+            // ────────────────────────────────────────────────────────────
+            static thread_local const bool r350fn =
+                std::getenv("MINIANDROID_R350_TRACE") != nullptr;
+            if (r350fn) {
+                std::cerr << "[R350-FN] bridge forName entered name=\""
+                          << args[0].string_val << "\" argc=" << args.size()
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
             const std::string& want = args[0].string_val;
             std::string desc = desc_from_dotted(want);
             auto cit = desc.empty() ? class_info_index_.end()
@@ -21338,6 +21591,70 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (method == "getName" && !dotted.empty()) {
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_string(dotted, 0);
+            return true;
+        }
+        // ────────────────────────────────────────────────────────────────
+        // R-NEW-350 (S43): java.lang.Class.asSubclass(Class) — OpenJDK law:
+        //   receiver.asSubclass(clazz) returns THIS Class object (the same
+        //   reference, cast to a subclass view) when the receiver IS
+        //   assignable to clazz; otherwise ClassCastException. Null arg →
+        //   NullPointerException (java.lang.Class.java: "if (clazz == null)
+        //   throw new NullPointerException()"; host law mirrored by the
+        //   engine's deferred-exception machinery).
+        //
+        // Real demand (dooz23, PRIORITY-1): protobuf-javalite
+        // GeneratedMessageInfoFactory.messageInfoFor — DEX Lyb0;.a — does
+        //   GeneratedMessageLite.class.isAssignableFrom(messageType)  → TRUE
+        //   messageType.asSubclass(GeneratedMessageLite.class)
+        //   GeneratedMessageLite.getDefaultInstance(<that>)
+        // The unimplemented asSubclass answered silent-void/null, so
+        // Lbc0;.d received a NULL Class and EVERY downstream step
+        // (getName → forName → defaultInstanceMap.get →
+        // dynamicMethod(GET_DEFAULT_INSTANCE)) collapsed to null — the
+        // bare IllegalStateException and the
+        // RuntimeException("Unable to get message info for y81") that
+        // killed MainActivity.onCreate before composition (S43 baseline;
+        // [R350-SHAPE] a0k8=NULL_REF evidence).
+        // ────────────────────────────────────────────────────────────────
+        if (method == "asSubclass" && args.size() >= 2 && !dotted.empty()) {
+            const DalvikValue& sup_arg = args[1];
+            // Null-arg law: real asSubclass throws NPE on a null target.
+            if (sup_arg.type != DalvikType::CLASS_REF &&
+                sup_arg.type != DalvikType::OBJECT_REF) {
+                std::cerr << "[R350-ASSUB] receiver=" << dotted
+                          << " null-target → NPE" << std::endl;
+                throw_deferred("Ljava/lang/NullPointerException;",
+                               "asSubclass(null)", "R350-ASSUB");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            const std::string& sup_desc = sup_arg.class_desc;
+            // ── identity law (OpenJDK): the SAME Class reference comes
+            // back — a Class cast to a subclass view gains no identity.
+            // NOTE: the subclass side must be the L-FORM referent
+            // descriptor (referent_desc), NOT the dotted form — the
+            // class_to_superclass_/interface-closure indexes are keyed by
+            // L-form descriptors (first S43 attempt used `dotted` and
+            // wrongly answered CCE for Ly81; asSubclass Lbc0; even though
+            // is_subclass_of("Ly81;","Lbc0;") is TRUE — same evidence as
+            // the isAssignableFrom TRUE trace in the same run).
+            const std::string& sub_desc = referent_desc;
+            if (sub_desc == sup_desc || is_subclass_of(sub_desc, sup_desc)) {
+                std::cerr << "[R350-ASSUB] " << sub_desc << " asSubclass "
+                          << sup_desc << " -> SAME reference" << std::endl;
+                result = args[0];  // the receiver CLASS_REF, identity kept
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // Non-assignable → ClassCastException (real law).
+            std::cerr << "[R350-ASSUB] " << sub_desc << " asSubclass "
+                      << sup_desc << " -> CCE" << std::endl;
+            throw_deferred("Ljava/lang/ClassCastException;",
+                           sub_desc + " cannot be cast to " + sup_desc,
+                           "R350-ASSUB");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_null();
             return true;
         }
         // ────────────────────────────────────────────────────────────────
@@ -21805,6 +22122,28 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 arg_cls = args[1].class_desc;
             bool ans = !recv_cls337.empty() && !arg_cls.empty() &&
                        is_subclass_of(arg_cls, recv_cls337);
+            // ────────────────────────────────────────────────────────────
+            // R-NEW-350 probe (S43, env-gated read-only): dooz23 protobuf
+            // chain — GeneratedMessageInfoFactory.isSupported answers
+            // GeneratedMessageLite.isAssignableFrom(messageClass); a FALSE
+            // here collapses the whole DataStore parse to
+            // "No factory is available for message type". Log every
+            // Class.isAssignableFrom call with the raw arg KINDS so a
+            // CLASS_REF-vs-OBJECT_REF contract break is visible in one run.
+            // ────────────────────────────────────────────────────────────
+            static thread_local const bool r350_trace =
+                std::getenv("MINIANDROID_R350_TRACE") != nullptr;
+            static thread_local uint64_t r350_n = 0;
+            if (r350_trace && r350_n < 120) {
+                ++r350_n;
+                std::cerr << "[R350-IAA] recv=" << recv_cls337
+                          << " (k" << (int)args[0].type << ")"
+                          << " arg=" << arg_cls
+                          << " (k" << (int)args[1].type << ")"
+                          << " -> " << (ans ? "TRUE" : "FALSE")
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_bool(ans);
             return true;
