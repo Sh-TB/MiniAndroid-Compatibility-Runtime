@@ -19240,6 +19240,32 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             heap_.get_object_field(f101_src, "__array_length__");
         if (f101_slen.has_value() && f101_slen->type == DalvikType::INT32)
             f101_n = f101_slen->int_val;
+        // ── R-NEW-360 (S45 GAME PLAYABILITY GATE): COLLECTION COPY
+        // ELEMENT-STORE CASCADE ─────────────────────────────────────────
+        // OpenJDK ArrayList(Collection c) = `elementData = c.toArray()`.
+        // kotlin lowers `arrayListOf(*array)` / `toList()` to
+        // `new ArrayList(wrapper)` where the wrapper is an R8-RENAMED
+        // java.util.Arrays$ArrayList (dooz23: Lzc;) or a kotlin
+        // ArrayDeque (dooz23: Lad; — a CIRCULAR buffer: logical element
+        // i lives at (head + i) % capacity, so raw array[i] probing is
+        // WRONG for it). The copy therefore needs a cascade of
+        // element-store contracts, most-authoritative first:
+        //   1. __array_length__ + array[i]  — raw engine array source
+        //      (Arrays.asList product) — dense, direct indexing valid.
+        //   2. size() + get(I) via real DEX — the RandomAccess contract
+        //      (ArrayList family).
+        //   3. iterator() + hasNext()/next() via real DEX — the
+        //      Collection contract proper (handles kotlin ArrayDeque's
+        //      circular indexing through the deque's own iterator
+        //      arithmetic; handles Arrays$ArrayList whose get(I) R8
+        //      pruned — previously produced EMPTY copies →
+        //      NoSuchElementException("List is empty.") in
+        //      NavController.popBackStack → first composition died →
+        //      dooz23 blank frame, the R-NEW-344 rc=1 face).
+        //   4. backing-array field probe — last resort for wrapper
+        //      objects with neither size() nor iterator() (capacity is
+        //      assumed dense — Arrays.asList-like wrappers only).
+        uint32_t f101_read_obj = f101_src;
         if (f101_n < 0 && f101_dex_src) {
             std::vector<DalvikValue> cb_args{args[1]};
             DalvikValue cb_ret;
@@ -19261,7 +19287,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 bool f101_got = false;
                 if (f101_slen.has_value()) {
                     auto f101_ev = heap_.get_object_field(
-                        f101_src,
+                        f101_read_obj,
                         "array[" + std::to_string(f101_i) + "]");
                     if (f101_ev.has_value()) {
                         f101_elem = *f101_ev;
@@ -19291,6 +19317,169 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         f101_elem.object_id != 0)
                         f101_elem_ids.push_back(f101_elem.object_id);
                     ++f101_copied;
+                }
+            }
+            // Contract mismatch guard: the size() answer promised more
+            // elements than the store delivered (a wrapped array whose
+            // capacity ≠ logical size, e.g. kotlin ArrayDeque probed by
+            // capacity). A PARTIAL copy would be a silent data corruption
+            // — restart via the iterator contract instead.
+            if (f101_slen.has_value() && f101_n != f101_copied) {
+                f101_copied = 0;
+                f101_elem_ids.clear();
+            }
+        }
+        // R-NEW-360 step 3: ITERATOR-DRIVEN copy — the Collection contract
+        // proper. Runs when neither the size()+get(I) nor the direct
+        // array contract delivered a complete copy (incl. the restart
+        // guard above).
+        if (f101_copied == 0 && f101_dex_src) {
+            DalvikValue f360_it;
+            DalvikExecutionResult f360_itres;
+            std::vector<DalvikValue> it_args{args[1]};
+            if (try_recursive_invoke(f101_scls, "iterator", it_args,
+                                     f360_it, f360_itres,
+                                     "()Ljava/util/Iterator;") &&
+                f360_it.type == DalvikType::OBJECT_REF &&
+                f360_it.object_id != 0) {
+                std::string f360_itcls = f360_it.class_desc;
+                if (f360_itcls.empty()) {
+                    const auto* f360_itobj = heap_.get(f360_it.object_id);
+                    if (f360_itobj)
+                        f360_itcls = f360_itobj->class_descriptor;
+                }
+                bool f360_dex_it = !f360_itcls.empty() &&
+                                   f360_itcls[0] == 'L' &&
+                                   class_info_index_.find(f360_itcls) !=
+                                       class_info_index_.end();
+                // Iterate — the iterator object may be an engine-modeled
+                // array iterator (heap "array[N]" fields) or a real DEX
+                // class. Bound the loop: a runnaway hasNext() must not
+                // hang the runtime (4096 = the same sanity bound the
+                // backing probe uses).
+                for (int32_t f360_i = 0; f360_i < 4096; ++f360_i) {
+                    bool f360_more = false;
+                    if (f360_dex_it) {
+                        DalvikValue f360_hn;
+                        DalvikExecutionResult f360_hnres;
+                        std::vector<DalvikValue> hn_args{f360_it};
+                        if (try_recursive_invoke(
+                                f360_itcls, "hasNext", hn_args, f360_hn,
+                                f360_hnres, "()Z") &&
+                            f360_hn.type == DalvikType::BOOLEAN)
+                            f360_more = f360_hn.int_val != 0;
+                    } else {
+                        // Engine-modeled iterator: probe the position/
+                        // length fields the F-091 law maintains.
+                        auto f360_pos =
+                            heap_.get_object_field(f360_it.object_id, "pos");
+                        auto f360_len = heap_.get_object_field(
+                            f360_it.object_id, "__array_length__");
+                        if (f360_pos.has_value() &&
+                            f360_pos->type == DalvikType::INT32 &&
+                            f360_len.has_value() &&
+                            f360_len->type == DalvikType::INT32)
+                            f360_more =
+                                f360_pos->int_val < f360_len->int_val;
+                    }
+                    if (!f360_more) break;
+                    DalvikValue f360_elem;
+                    DalvikExecutionResult f360_nres;
+                    bool f360_got = false;
+                    if (f360_dex_it) {
+                        DalvikValue f360_nx;
+                        std::vector<DalvikValue> nx_args{f360_it};
+                        if (try_recursive_invoke(
+                                f360_itcls, "next", nx_args, f360_nx,
+                                f360_nres, "()Ljava/lang/Object;")) {
+                            f360_elem = f360_nx;
+                            f360_got = true;
+                        }
+                    } else {
+                        auto f360_pos =
+                            heap_.get_object_field(f360_it.object_id, "pos");
+                        auto f360_len = heap_.get_object_field(
+                            f360_it.object_id, "__array_length__");
+                        if (f360_pos.has_value() &&
+                            f360_pos->type == DalvikType::INT32 &&
+                            f360_len.has_value() &&
+                            f360_pos->int_val < f360_len->int_val) {
+                            auto f360_ev = heap_.get_object_field(
+                                f360_it.object_id,
+                                "array[" +
+                                    std::to_string(f360_pos->int_val) +
+                                    "]");
+                            if (f360_ev.has_value()) {
+                                f360_elem = *f360_ev;
+                                f360_got = true;
+                                heap_.set_object_field(
+                                    f360_it.object_id, "pos",
+                                    DalvikValue::make_int(
+                                        f360_pos->int_val + 1));
+                            }
+                        }
+                    }
+                    if (f360_got && !f360_elem.is_null) {
+                        heap_.set_object_field(
+                            f101_arr,
+                            "array[" + std::to_string(f101_copied) + "]",
+                            f360_elem);
+                        if (f360_elem.type == DalvikType::OBJECT_REF &&
+                            f360_elem.object_id != 0)
+                            f101_elem_ids.push_back(f360_elem.object_id);
+                        ++f101_copied;
+                    }
+                }
+                if (f101_copied > 0) {
+                    std::cerr << "[R360-COPY] ArrayList(Collection) src="
+                              << f101_src << " (" << f101_scls << ")"
+                              << " via ITERATOR elems=" << f101_copied
+                              << std::endl;
+                }
+            }
+        }
+        // R-NEW-360 step 4: BACKING-ARRAY FIELD PROBE — last resort for
+        // wrapper objects with neither size() nor iterator(): scan the
+        // source's fields for a reference to an ARRAY object (carries
+        // __array_length__) and index it directly. Density assumed
+        // (Arrays.asList-like wrappers only).
+        if (f101_copied == 0 && !f101_slen.has_value() &&
+            f101_sobj != nullptr) {
+            for (const auto& f360_kv : f101_sobj->fields) {
+                const DalvikValue& f360_v = f360_kv.second;
+                if (f360_v.type != DalvikType::OBJECT_REF ||
+                    f360_v.object_id == 0)
+                    continue;
+                auto f360_len = heap_.get_object_field(f360_v.object_id,
+                                                       "__array_length__");
+                if (f360_len.has_value() &&
+                    f360_len->type == DalvikType::INT32 &&
+                    f360_len->int_val >= 0 && f360_len->int_val <= 4096) {
+                    for (int32_t f360_i = 0; f360_i < f360_len->int_val;
+                         ++f360_i) {
+                        auto f360_ev = heap_.get_object_field(
+                            f360_v.object_id,
+                            "array[" + std::to_string(f360_i) + "]");
+                        if (!f360_ev.has_value()) continue;
+                        const DalvikValue& f360_e = *f360_ev;
+                        if (f360_e.is_null) continue;
+                        heap_.set_object_field(
+                            f101_arr,
+                            "array[" + std::to_string(f101_copied) + "]",
+                            f360_e);
+                        if (f360_e.type == DalvikType::OBJECT_REF &&
+                            f360_e.object_id != 0)
+                            f101_elem_ids.push_back(f360_e.object_id);
+                        ++f101_copied;
+                    }
+                    if (f101_copied > 0) {
+                        std::cerr << "[R360-COPY] ArrayList(Collection) src="
+                                  << f101_src << " (" << f101_scls << ")"
+                                  << " backing field=\"" << f360_kv.first
+                                  << "\" arr=" << f360_v.object_id
+                                  << " elems=" << f101_copied << std::endl;
+                    }
+                    break;
                 }
             }
         }

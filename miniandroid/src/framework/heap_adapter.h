@@ -61,6 +61,45 @@ public:
         return !out.empty();
     }
 
+    // [R-NEW-360 (S45)] field-name enumeration for wrapper-collection
+    // probing (see CollectionShadow copy-ctor array-backed source law).
+    std::vector<std::string> get_object_field_names(uint32_t object_id) override {
+        std::vector<std::string> out;
+        if (!heap_) return out;
+        auto* o = heap_->get(object_id);
+        if (!o) return out;
+        for (const auto& kv : o->fields) out.push_back(kv.first);
+        return out;
+    }
+
+    // [R-NEW-360 (S45)] OBJECT-REF field read for shadows.
+    bool get_object_ref_field(uint32_t object_id,
+                              const std::string& field_name,
+                              uint32_t& out) override {
+        if (!heap_) return false;
+        auto v = heap_->get_object_field(object_id, field_name);
+        if (!v) return false;
+        if (v->type == dalvik::DalvikType::OBJECT_REF && v->object_id != 0) {
+            out = v->object_id;
+            return true;
+        }
+        return false;
+    }
+
+    // [R-NEW-360 (S45)] OBJECT-REF array-element read for shadows.
+    bool get_object_array_ref_element(uint32_t array_id, size_t index,
+                                      uint32_t& out) override {
+        if (!heap_) return false;
+        auto v = heap_->get_object_field(
+            array_id, "array[" + std::to_string(index) + "]");
+        if (!v) return false;
+        if (v->type == dalvik::DalvikType::OBJECT_REF && v->object_id != 0) {
+            out = v->object_id;
+            return true;
+        }
+        return false;
+    }
+
     // CYCLE-E: expose heap float fields to shadows (RectF geometry reads).
     bool get_object_float_field(uint32_t object_id,
                                 const std::string& field_name,
