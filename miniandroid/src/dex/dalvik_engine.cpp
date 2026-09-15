@@ -8851,6 +8851,25 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
 
                 // Get array size from vB
                 DalvikValue size_val = get_register(vB);
+                /* S44/R-NEW-351 probe: schema table allocations */
+                if (std::getenv("MINIANDROID_S44_R351") != nullptr &&
+                    current_class_ == "Llt0;" && (pc_ == 353 || pc_ == 379)) {
+                    DalvikValue mi_str = get_register(1); /* v1 = raw MessageInfo string */
+                    std::cerr << "[S44-R351] new-array pc=" << pc_
+                              << " vB=v" << (int)vB
+                              << " type=" << (int)size_val.type
+                              << " raw_int=" << size_val.int_val
+                              << " -> size=" << dalvik_int_value(size_val)
+                              << " | v1str type=" << (int)mi_str.type
+                              << " len=" << mi_str.string_val.size()
+                              << " head=[";
+                    for (size_t ci = 0; ci < mi_str.string_val.size() && ci < 24; ++ci) {
+                        unsigned char c = (unsigned char)mi_str.string_val[ci];
+                        std::cerr << (c >= 32 && c < 127 ? (char)c : '.')
+                                  << "(" << (int)c << ")";
+                    }
+                    std::cerr << "]" << std::endl;
+                }
                 int32_t array_size = dalvik_int_value(size_val);
                 if (array_size < 0) array_size = 0;
 
@@ -9860,6 +9879,22 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     uint8_t vBB = bytecode_[pc_ + 1] & 0xFF; \
                     int8_t lit = static_cast<int8_t>(bytecode_[pc_ + 1] >> 8); \
                     DalvikValue b = get_register(vBB); \
+                    /* S44/R-NEW-351 probe: numEntries size math in the protobuf */ \
+                    /* MessageSchema ctor — v12 must be a sane small INT32.   */ \
+                    if (std::getenv("MINIANDROID_S44_R351") != nullptr && \
+                        current_class_ == "Llt0;" && pc_ == 377) { \
+                        std::cerr << "[S44-R351] mul-int/lit8 pc=377 vBB=v" << (int)vBB \
+                                  << " type=" << (int)b.type \
+                                  << " int_val=" << b.int_val \
+                                  << " obj=" << b.object_id \
+                                  << " cls=" << b.class_desc << std::endl; \
+                        for (int ri = 0; ri < 20; ++ri) { \
+                            DalvikValue rv = get_register(ri); \
+                            std::cerr << "  [S44] v" << ri << " t=" << (int)rv.type \
+                                      << " i=" << rv.int_val \
+                                      << " obj=" << rv.object_id << std::endl; \
+                        } \
+                    } \
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT32; \
                     int32_t b_val = dalvik_int_value(b); \
@@ -14255,6 +14290,65 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     // enable it explicitly with MINIANDROID_R350_LAW=1. Next-session
     // root: why microtimer's getGeneratedImplementation retries under
     // interpreter-level resolution but proceeded under bridge-level.
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-354 (S44) — FRAMEWORK-CLASS REGISTRY LAW (Class.forName
+    // fallthrough to the engine's own framework surface).
+    //
+    // AOSP law (java.lang.Class, java.lang.ClassLoader): forName resolves
+    // against the FULL classpath — the boot classpath (framework classes)
+    // FIRST, then the app classloader. A mini-Android owns a framework
+    // surface; a name absent from the app DEX but present in that surface
+    // must answer a Class object, not a ClassNotFoundException.
+    //
+    // Real demand (dooz23, PRIORITY-1, S44 evidence): compose-ui 1.11.4
+    // AndroidComposeView.onAttachedToWindow (DEX Lt4;, pc 84-198) runs the
+    // AOSP StrictMode block: StrictMode.getVmPolicy → Class.forName(
+    // "android.os.SystemProperties") → getDeclaredMethod("addChangeCallback")
+    // → invoke + setVmPolicy round-trip. On the engine the forName threw a
+    // deferred CNFE, the attach method derailed, the deferred compose
+    // request (Lt4;->n0, stored by setOnReadyForComposition) was never
+    // consumed (pc 640-662), the composition never bootstrapped
+    // (Lf90;.i never dispatched), AndroidComposeView measured 0x0 with
+    // zero children, and the frame stayed blank AFTER R-NEW-353 had
+    // already unblocked the protobuf schema build.
+    //
+    // GENERIC (zero class hacks): the registry holds framework classes the
+    // engine's shadow surface genuinely models. Reflection into them rides
+    // the M4 F-029 record laws: getDeclaredMethod mints a Method record for
+    // any name, invoke dispatches back through the bridge (an unanswered
+    // shadow method yields null — the callback simply never fires, which is
+    // AOSP-exact for a runtime with no property daemon). Registry answers
+    // are deterministic (no app-DEX retry interaction → no R-NEW-352-class
+    // HALT-LOOP risk) so the law is DEFAULT-ON, independent of the
+    // MINIANDROID_R350_LAW gate that guards APP-class resolution.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/Class;" &&
+        method_name == "forName" &&
+        !args.empty() && args[0].type == DalvikType::STRING_REF) {
+        static const char* kFrameworkClasses[] = {
+            "android.os.SystemProperties",
+        };
+        const std::string& fw_name = args[0].string_val;
+        for (const char* fw : kFrameworkClasses) {
+            if (fw_name == fw) {
+                std::string fw_desc = fw;
+                for (char& c : fw_desc)
+                    if (c == '.') c = '/';
+                fw_desc = "L" + fw_desc + ";";
+                std::cerr << "[R354-FORNAME] \"" << fw_name
+                          << "\" -> framework registry " << fw_desc
+                          << std::endl;
+                return_val = DalvikValue::make_class(fw_desc,
+                                                     instruction_sequence_);
+                last_invoke_return_ = return_val;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                // R-NEW-355: pc-advance contract — 35c invoke = 3 units.
+                pc_ = pc + 3;
+                return true;
+            }
+        }
+    }
+
     static thread_local const bool r350_law_on =
         std::getenv("MINIANDROID_R350_LAW") != nullptr;
     if (r350_law_on && class_name == "Ljava/lang/Class;" &&
@@ -14314,6 +14408,15 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
             status = ApiCallTrace::Status::IMPLEMENTED;
             return_val = DalvikValue::make_null();
             last_invoke_return_ = return_val;
+            // R-NEW-355 (S44): INVOKE PC-ADVANCE CONTRACT — every early
+            // return from execute_invoke_static must advance pc_ past the
+            // 35c invoke (3 code units). The missing advance re-executed
+            // the SAME forName invoke forever: the S43 "R-NEW-352 retry
+            // loop" (microtimer 50001 re-visits → HALT-LOOP) and the S44
+            // SystemProperties loop (50001 re-visits → HALT-LOOP) were
+            // THIS contract violation, not app-level retries. The normal
+            // path at the function tail already does pc_ = pc + 3.
+            pc_ = pc + 3;
             return true;
         }
         // initialize flag: 2-arg and 3-arg overloads both carry it in
@@ -14343,6 +14446,9 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
                           << ")" << std::endl;
             }
         }
+        // R-NEW-355: pc-advance contract (see the CNFE exit above) — the
+        // missing advance made every gated forName an in-place spin.
+        pc_ = pc + 3;
         return true;
     }
 
@@ -17329,6 +17435,182 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     //   * Varargs arrays expand via the heap "array[i]"/"__array_length__"
     //     convention (same storage filled-new-array uses).
     // ────────────────────────────────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-357 (S44) — Resources.getIdentifier LAW (dynamic id resolution).
+    // AOSP (Resources.java#getIdentifier): resolves (name, defType) against
+    // the resource tables; answers 0 when unknown. Apps that build UI
+    // programmatically resolve view ids AT RUNTIME — first real demand
+    // (TicTacToe Classic, com.palahsu.ttt): the 3x3 board cells are wired in
+    // onCreate via Resources.getIdentifier("button_ij", "id", pkg) →
+    // findViewById(id) → setOnClickListener. With getIdentifier unhandled
+    // (invoke answered null/0), findViewById(0) matched nothing, all nine
+    // cell listeners were never registered and the rendered-but-dead board
+    // bounced every tap (G06-TAP target hit → PerformClick →
+    // "has no OnClickListener"). Engine mapping: the per-run id table IS
+    // the inflated tree's android:id names → ViewShadow reverse lookup.
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/content/res/Resources;" &&
+        method == "getIdentifier" && args.size() >= 3 &&
+        args[1].type == DalvikType::STRING_REF) {
+        // RECEIVER-SHIFTED convention (this bridge): args[0] = the
+        // Resources receiver object, args[1..3] = (name, defType, pkg).
+        // Evidence (S44, TicTacToe Classic): the pre-existing P1.4 handler
+        // (EXP-052, no id resolution) read args[0] as the name and logged
+        // name="" defType="button_00" — the shift is on record there.
+        const std::string& name = args[1].string_val;
+        const std::string def_type =
+            (args[2].type == DalvikType::STRING_REF) ? args[2].string_val : "";
+        int32_t found_id = 0;
+        if (def_type == "id" && shadow_registry_ != nullptr) {
+            auto* activity_shadow =
+                shadow_registry_->find_as<framework::ActivityShadow>();
+            auto* view_shadow =
+                shadow_registry_->find_as<framework::ViewShadow>();
+            if (activity_shadow != nullptr && view_shadow != nullptr &&
+                activity_shadow->content_view_id() != 0) {
+                found_id = view_shadow->find_android_id_by_name(
+                    activity_shadow->content_view_id(), name);
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(found_id);
+        std::cerr << "[R357-GETID] getIdentifier(\"" << name
+                  << "\", \"" << def_type << "\") -> 0x" << std::hex
+                  << found_id << std::dec << std::endl;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-358 (S44) — java.lang.reflect.Array.newInstance LAW.
+    // AOSP (Array.java): newInstance(componentType, length | dimensions)
+    // creates a new array with the given component type, recursively for
+    // the int[]-dimensions overload. Real demand (TicTacToe Classic
+    // MainActivity.<init>): buttons = (Button[][]) Array.newInstance(
+    // Button.class, new int[]{3,3}) — with the invoke unanswered
+    // (REC-MISS → null) the field stayed null and the FIRST board-cell
+    // listener registration died on aput-null NPE (onCreate pc=79), so
+    // all nine cells stayed listener-less (dead board).
+    // Engine mapping: heap arrays under the "__array_length__" +
+    // "array[i]" convention; nested dims allocate element arrays whose
+    // class_desc carries the DEX array descriptor ([[L...;).
+    // ────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/reflect/Array;" &&
+        method == "newInstance" && args.size() >= 2) {
+        std::string comp_desc;
+        if (args[0].type == DalvikType::CLASS_REF)
+            comp_desc = args[0].class_desc;
+        else if (args[0].type == DalvikType::OBJECT_REF)
+            comp_desc = args[0].class_desc;
+        if (!comp_desc.empty()) {
+            // 1-D: (Class, int length). n-D: (Class, int[] dimensions).
+            std::function<DalvikValue(const std::string&, int)> make_1d =
+                [&](const std::string& elem_desc, int len) -> DalvikValue {
+                uint32_t arr_id = heap_.allocate(
+                    "[L" + elem_desc + ";", pc_, 0);
+                heap_.set_object_field(arr_id, "__array_length__",
+                    DalvikValue::make_int(len < 0 ? 0 : len));
+                heap_.set_object_field(arr_id, "__new_array_length__",
+                    DalvikValue::make_int(len < 0 ? 0 : len));
+                DalvikValue av;
+                av.type = DalvikType::OBJECT_REF;
+                av.object_id = arr_id;
+                av.class_desc = "[L" + elem_desc + ";";
+                av.int_val = len < 0 ? 0 : len;
+                return av;
+            };
+            if (args[1].type == DalvikType::INT32) {
+                std::string elem = comp_desc;
+                // Strip the L...; wrapper for the element descriptor of a
+                // 1-D object array: newInstance(Button.class, 5) answers
+                // Landroid/widget/Button;[ ] — descriptor "[Landroid/...;".
+                uint32_t arr_id = heap_.allocate(
+                    "[L" + elem, pc_, 0);
+                int len = args[1].int_val < 0 ? 0 : args[1].int_val;
+                heap_.set_object_field(arr_id, "__array_length__",
+                    DalvikValue::make_int(len));
+                heap_.set_object_field(arr_id, "__new_array_length__",
+                    DalvikValue::make_int(len));
+                DalvikValue av;
+                av.type = DalvikType::OBJECT_REF;
+                av.object_id = arr_id;
+                av.class_desc = "[L" + elem;
+                av.int_val = len;
+                result = av;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                std::cerr << "[R358-ANEW] newInstance(" << elem
+                          << ", " << len << ") -> obj#" << arr_id
+                          << std::endl;
+                return true;
+            }
+            if (args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0) {
+                auto len_f = heap_.get_object_field(args[1].object_id,
+                                                    "__array_length__");
+                int n = len_f.has_value() ? len_f->int_val : 0;
+                std::vector<int> dims;
+                for (int i = 0; i < n; i++) {
+                    auto el = heap_.get_object_field(
+                        args[1].object_id,
+                        "array[" + std::to_string(i) + "]");
+                    dims.push_back(el.has_value() ? el->int_val : 0);
+                }
+                if (!dims.empty()) {
+                    // Build nested arrays: innermost = comp_desc, wrap.
+                    std::function<DalvikValue(size_t)> build =
+                        [&](size_t di) -> DalvikValue {
+                        int len = dims[di] < 0 ? 0 : dims[di];
+                        if (di + 1 == dims.size()) {
+                            // innermost: element type is the component.
+                            std::string elem = comp_desc;
+                            uint32_t arr_id = heap_.allocate(
+                                "[L" + elem, pc_, 0);
+                            heap_.set_object_field(arr_id,
+                                "__array_length__",
+                                DalvikValue::make_int(len));
+                            heap_.set_object_field(arr_id,
+                                "__new_array_length__",
+                                DalvikValue::make_int(len));
+                            DalvikValue av;
+                            av.type = DalvikType::OBJECT_REF;
+                            av.object_id = arr_id;
+                            av.class_desc = "[L" + elem;
+                            av.int_val = len;
+                            return av;
+                        }
+                        DalvikValue child = build(di + 1);
+                        std::string child_desc = child.class_desc;
+                        uint32_t arr_id = heap_.allocate(
+                            "[" + child_desc, pc_, 0);
+                        heap_.set_object_field(arr_id, "__array_length__",
+                            DalvikValue::make_int(len));
+                        heap_.set_object_field(arr_id,
+                            "__new_array_length__",
+                            DalvikValue::make_int(len));
+                        for (int i = 0; i < len; i++) {
+                            DalvikValue cv = build(di + 1);
+                            heap_.set_object_field(arr_id,
+                                "array[" + std::to_string(i) + "]", cv);
+                        }
+                        DalvikValue av;
+                        av.type = DalvikType::OBJECT_REF;
+                        av.object_id = arr_id;
+                        av.class_desc = "[" + child_desc;
+                        av.int_val = len;
+                        return av;
+                    };
+                    result = build(0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    std::cerr << "[R358-ANEW] newInstance(" << comp_desc
+                              << ", dims=[";
+                    for (size_t di = 0; di < dims.size(); ++di)
+                        std::cerr << dims[di]
+                                  << (di + 1 < dims.size() ? "," : "");
+                    std::cerr << "]) -> obj#" << result.object_id
+                              << " " << result.class_desc << std::endl;
+                    return true;
+                }
+            }
+        }
+    }
     if (class_name == "Ljava/lang/Class;" &&
         (method == "getDeclaredMethod" || method == "getMethod" ||
          method == "getDeclaredConstructor" || method == "getConstructor")) {
@@ -24281,6 +24563,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         } else {
             r.int_val = codept;
         }
+        // R-NEW-353 (S44): RESULT-OUT CONTRACT LAW — bridge_to_api laws must
+        // write their answer to the `result` out-parameter before returning
+        // true. F-090e computed the code point into a LOCAL `r` and dropped
+        // it: last_invoke_return_ kept stale 0 -> protobuf MessageSchema
+        // newSchemaForRawMessageInfo decoded fieldCount=0 from a perfectly
+        // valid 12-char info string -> numEntries=0 -> int[0] table ->
+        // legacy-grow aput AIOOBE (length=1; index=1) -> MainActivity.onCreate
+        // dead -> blank frame. Same contract the StringBuilder charAt law
+        // (line ~17776) already honors: `result = r;`.
+        result = r;
         return true;
     }
 
