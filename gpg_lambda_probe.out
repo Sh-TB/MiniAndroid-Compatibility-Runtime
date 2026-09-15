@@ -1,0 +1,291 @@
+===== classes.dex: 4596 classes =====
+
+[1] METHODS CALLING Landroidx/navigation/m;.a (addNavigator):
+  LB0/b;.g ['Landroid/content/Context;'] -> Lh1/r; (code_off=0x86ecc)
+  LB0/b;.g ['Landroid/content/Context;'] -> Lh1/r; (code_off=0x86ecc)
+  LB0/b;.g ['Landroid/content/Context;'] -> Lh1/r; (code_off=0x86ecc)
+  Landroidx/navigation/c;.<init> ['Landroid/content/Context;'] -> V (code_off=0x172150)
+  Landroidx/navigation/c;.<init> ['Landroid/content/Context;'] -> V (code_off=0x172150)
+
+[2] Landroidx/navigation/m;.b ['Ljava/lang/String;'] -> Landroidx/navigation/l; code=0x174f88
+    @0000 const-string "name"
+    @0004 invoke-static LM1/i;.f ['Ljava/lang/Object;', 'Ljava/lang/String;'] -> V
+    @000a invoke-virtual Ljava/lang/String;.length [] -> I
+    @0010 op=0xa
+    @0012 op=0x3d
+    @0016 iget-object Landroidx/navigation/m;.a:Ljava/util/LinkedHashMap;
+    @001a invoke-virtual Ljava/util/LinkedHashMap;.get ['Ljava/lang/Object;'] -> Ljava/lang/Object;
+    @0020 op=0xc
+    @0022 op=0x1f
+    @0026 if-z v0, +3
+    @002a op=0x11
+    @002c new-instance Ljava/lang/IllegalStateException;
+    @0030 new-instance Ljava/lang/StringBuilder;
+    @0034 const-string "Could not find Navigator with name ""
+    @0038 invoke-direct Ljava/lang/StringBuilder;.<init> ['Ljava/lang/String;'] -> V
+    @003e invoke-virtual Ljava/lang/StringBuilder;.append ['Ljava/lang/String;'] -> Ljava/lang/StringBuilder;
+    @0044 const-string "". You must call NavController.addNavigator() for each navigation type"
+    @0048 invoke-virtual Ljava/lang/StringBuilder;.append ['Ljava/lang/String;'] -> Ljava/lang/StringBuilder;
+    @004e invoke-virtual Ljava/lang/StringBuilder;.toString [] -> Ljava/lang/String;
+    @0054 op=0xc
+    @0056 invoke-direct Ljava/lang/IllegalStateException;.<init> ['Ljava/lang/String;'] -> V
+    @005c op=0x27
+    @005e new-instance Ljava/lang/IllegalArgumentException;
+    @0062 const-string "navigator name cannot be an empty string"
+    @0066 invoke-virtual Ljava/lang/Object;.toString [] -> Ljava/lang/String;
+    @006c op=0xc
+    @006e invoke-direct Ljava/lang/IllegalArgumentException;.<init> ['Ljava/lang/String;'] -> V
+    @0074 op=0x27
+
+[3] CREATOR LB0/b;.g ['Landroid/content/Context;'] -> Lh1/r; (code=0x86ecc)
+    class LB0/b; super=Ljava/lang/Object; interfaces=[]
+    @0000 new-instance Lh1/r;
+    @0004 const-string "context"
+    @0008 invoke-static LM1/i;.f ['Ljava/lang/Object;', 'Ljava/lang/String;'] -> V
+    @000e invoke-direct Landroidx/navigation/c;.<init> ['Landroid/content/Context;'] -> V
+    @0014 iget-object Landroidx/navigation/c;.v:Landroidx/navigation/m;
+    @0018 new-instance Landroidx/navigation/compose/d;
+    @001c invoke-direct Landroidx/navigation/h;.<init> ['Landroidx/navigation/m;'] -> V
+    @0022 invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @0028 iget-object Landroidx/navigation/c;.v:Landroidx/navigation/m;
+    @002c new-instance Landroidx/navigation/compose/e;
+    @0030 invoke-direct Landroidx/navigation/compose/e;.<init> [] -> V
+    @0036 invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @003c iget-object Landroidx/navigation/c;.v:Landroidx/navigation/m;
+    @0040 new-instance Landroidx/navigation/compose/k;
+    @0044 invoke-direct Landroidx/navigation/compose/k;.<init> [] -> V
+    @004a invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @0050 op=0x11
+
+[3] CREATOR LB0/b;.g ['Landroid/content/Context;'] -> Lh1/r; (code=0x86ecc)
+    class LB0/b; super=Ljava/lang/Object; interfaces=[]
+    @0000 new-instance Lh1/r;
+    @0004 const-string "context"
+    @0008 invoke-static LM1/i;.f ['Ljava/lang/Object;', 'Ljava/lang/String;'] -> V
+    @000e invoke-direct Landroidx/navigation/c;.<init> ['Landroid/content/Context;'] -> V
+    @0014 iget-object Landroidx/navigation/c;.v:Landroidx/navigation/m;
+    @0018 new-instance Landroidx/navigation/compose/d;
+    @001c invoke-direct Landroidx/navigation/h;.<init> ['Landroidx/navigation/m;'] -> V
+    @0022 invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @0028 iget-object Landroidx/navigation/c;.v:Landroidx/navigation/m;
+    @002c new-instance Landroidx/navigation/compose/e;
+    @0030 invoke-direct Landroidx/navigation/compose/e;.<init> [] -> V
+    @0036 invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @003c iget-object Landroidx/navigation/c;.v:Landroidx/navigation/m;
+    @0040 new-instance Landroidx/navigation/compose/k;
+    @0044 invoke-direct Landroidx/navigation/compose/k;.<init> [] -> V
+    @004a invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @0050 op=0x11
+
+[3] CREATOR LB0/b;.g ['Landroid/content/Context;'] -> Lh1/r; (code=0x86ecc)
+    class LB0/b; super=Ljava/lang/Object; interfaces=[]
+    @0000 new-instance Lh1/r;
+    @0004 const-string "context"
+    @0008 invoke-static LM1/i;.f ['Ljava/lang/Object;', 'Ljava/lang/String;'] -> V
+    @000e invoke-direct Landroidx/navigation/c;.<init> ['Landroid/content/Context;'] -> V
+    @0014 iget-object Landroidx/navigation/c;.v:Landroidx/navigation/m;
+    @0018 new-instance Landroidx/navigation/compose/d;
+    @001c invoke-direct Landroidx/navigation/h;.<init> ['Landroidx/navigation/m;'] -> V
+    @0022 invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @0028 iget-object Landroidx/navigation/c;.v:Landroidx/navigation/m;
+    @002c new-instance Landroidx/navigation/compose/e;
+    @0030 invoke-direct Landroidx/navigation/compose/e;.<init> [] -> V
+    @0036 invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @003c iget-object Landroidx/navigation/c;.v:Landroidx/navigation/m;
+    @0040 new-instance Landroidx/navigation/compose/k;
+    @0044 invoke-direct Landroidx/navigation/compose/k;.<init> [] -> V
+    @004a invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @0050 op=0x11
+
+[3] CREATOR Landroidx/navigation/c;.<init> ['Landroid/content/Context;'] -> V (code=0x172150)
+    class Landroidx/navigation/c; super=Ljava/lang/Object; interfaces=[]
+    @0000 const-string "context"
+    @0004 invoke-static LM1/i;.f ['Ljava/lang/Object;', 'Ljava/lang/String;'] -> V
+    @000a invoke-direct Ljava/lang/Object;.<init> [] -> V
+    @0010 iput-object Landroidx/navigation/c;.a:Landroid/content/Context;
+    @0014 sget-object Landroidx/navigation/c$c;.j:Landroidx/navigation/c$c;
+    @0018 invoke-static LT1/h;.E ['Ljava/lang/Object;', 'LL1/l;'] -> LT1/e;
+    @001e op=0xc
+    @0020 invoke-interface LT1/e;.iterator [] -> Ljava/util/Iterator;
+    @0026 op=0xc
+    @0028 invoke-interface Ljava/util/Iterator;.hasNext [] -> Z
+    @002e op=0xa
+    @0030 op=0x12
+    @0032 if-z v0, +14
+    @0036 invoke-interface Ljava/util/Iterator;.next [] -> Ljava/lang/Object;
+    @003c op=0xc
+    @003e op=0x7
+    @0040 op=0x1f
+    @0044 op=0x20
+    @0048 if-z v2, +-16
+    @004c op=0x28
+    @0050 op=0x1f
+    @0054 iput-object Landroidx/navigation/c;.b:Landroid/app/Activity;
+    @0058 new-instance Lz1/i;
+    @005c invoke-direct Lz1/i;.<init> [] -> V
+    @0062 iput-object Landroidx/navigation/c;.g:Lz1/i;
+    @0066 sget-object Lz1/t;.i:Lz1/t;
+    @006a invoke-static LZ1/N;.a ['Ljava/lang/Object;'] -> LZ1/M;
+    @0070 op=0xc
+    @0072 iput-object Landroidx/navigation/c;.h:LZ1/M;
+    @0076 new-instance LZ1/z;
+    @007a invoke-direct LZ1/z;.<init> ['LZ1/M;', 'LW1/u0;'] -> V
+    @0080 invoke-static LZ1/N;.a ['Ljava/lang/Object;'] -> LZ1/M;
+    @0086 op=0xc
+    @0088 iput-object Landroidx/navigation/c;.i:LZ1/M;
+    @008c new-instance LZ1/z;
+    @0090 invoke-direct LZ1/z;.<init> ['LZ1/M;', 'LW1/u0;'] -> V
+    @0096 iput-object Landroidx/navigation/c;.j:LZ1/z;
+    @009a new-instance Ljava/util/LinkedHashMap;
+    @009e invoke-direct Ljava/util/LinkedHashMap;.<init> [] -> V
+    @00a4 iput-object Landroidx/navigation/c;.k:Ljava/util/LinkedHashMap;
+    @00a8 new-instance Ljava/util/LinkedHashMap;
+    @00ac invoke-direct Ljava/util/LinkedHashMap;.<init> [] -> V
+    @00b2 iput-object Landroidx/navigation/c;.l:Ljava/util/LinkedHashMap;
+    @00b6 new-instance Ljava/util/LinkedHashMap;
+    @00ba invoke-direct Ljava/util/LinkedHashMap;.<init> [] -> V
+    @00c0 iput-object Landroidx/navigation/c;.m:Ljava/util/LinkedHashMap;
+    @00c4 new-instance Ljava/util/LinkedHashMap;
+    @00c8 invoke-direct Ljava/util/LinkedHashMap;.<init> [] -> V
+    @00ce iput-object Landroidx/navigation/c;.n:Ljava/util/LinkedHashMap;
+    @00d2 new-instance Ljava/util/concurrent/CopyOnWriteArrayList;
+    @00d6 invoke-direct Ljava/util/concurrent/CopyOnWriteArrayList;.<init> [] -> V
+    @00dc iput-object Landroidx/navigation/c;.q:Ljava/util/concurrent/CopyOnWriteArrayList;
+    @00e0 sget-object Landroidx/lifecycle/i$b;.INITIALIZED:Landroidx/lifecycle/i$b;
+    @00e4 iput-object Landroidx/navigation/c;.r:Landroidx/lifecycle/i$b;
+    @00e8 new-instance Lh1/e;
+    @00ec invoke-direct Lh1/e;.<init> ['Landroidx/navigation/c;'] -> V
+    @00f2 iput-object Landroidx/navigation/c;.s:Lh1/e;
+    @00f6 new-instance Landroidx/navigation/c$f;
+    @00fa invoke-direct Landroidx/navigation/c$f;.<init> ['Landroidx/navigation/c;'] -> V
+    @0100 iput-object Landroidx/navigation/c;.t:Landroidx/navigation/c$f;
+    @0104 op=0x12
+    @0106 iput-boolean Landroidx/navigation/c;.u:Z
+    @010a new-instance Landroidx/navigation/m;
+    @010e invoke-direct Landroidx/navigation/m;.<init> [] -> V
+    @0114 iput-object Landroidx/navigation/c;.v:Landroidx/navigation/m;
+    @0118 new-instance Ljava/util/LinkedHashMap;
+    @011c invoke-direct Ljava/util/LinkedHashMap;.<init> [] -> V
+    @0122 iput-object Landroidx/navigation/c;.w:Ljava/util/LinkedHashMap;
+    @0126 new-instance Ljava/util/LinkedHashMap;
+    @012a invoke-direct Ljava/util/LinkedHashMap;.<init> [] -> V
+    @0130 iput-object Landroidx/navigation/c;.z:Ljava/util/LinkedHashMap;
+    @0134 new-instance Landroidx/navigation/h;
+    @0138 invoke-direct Landroidx/navigation/h;.<init> ['Landroidx/navigation/m;'] -> V
+    @013e invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @0144 new-instance Landroidx/navigation/a;
+    @0148 iget-object Landroidx/navigation/c;.a:Landroid/content/Context;
+    @014c invoke-direct Landroidx/navigation/a;.<init> ['Landroid/content/Context;'] -> V
+    @0152 invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @0158 new-instance Ljava/util/ArrayList;
+    @015c invoke-direct Ljava/util/ArrayList;.<init> [] -> V
+    @0162 iput-object Landroidx/navigation/c;.B:Ljava/util/ArrayList;
+    @0166 new-instance Landroidx/navigation/c$d;
+    @016a invoke-direct Landroidx/navigation/c$d;.<init> ['Landroidx/navigation/c;'] -> V
+    @0170 new-instance Ly1/j;
+    @0174 invoke-direct Ly1/j;.<init> ['LL1/a;'] -> V
+    @017a sget-object LY1/a;.DROP_OLDEST:LY1/a;
+    @017e op=0x12
+    @0180 invoke-static LZ1/E;.a ['I', 'I', 'LY1/a;'] -> LZ1/C;
+    @0186 op=0xc
+    @0188 iput-object Landroidx/navigation/c;.C:LZ1/C;
+    @018c op=0xe
+
+[3] CREATOR Landroidx/navigation/c;.<init> ['Landroid/content/Context;'] -> V (code=0x172150)
+    class Landroidx/navigation/c; super=Ljava/lang/Object; interfaces=[]
+    @0000 const-string "context"
+    @0004 invoke-static LM1/i;.f ['Ljava/lang/Object;', 'Ljava/lang/String;'] -> V
+    @000a invoke-direct Ljava/lang/Object;.<init> [] -> V
+    @0010 iput-object Landroidx/navigation/c;.a:Landroid/content/Context;
+    @0014 sget-object Landroidx/navigation/c$c;.j:Landroidx/navigation/c$c;
+    @0018 invoke-static LT1/h;.E ['Ljava/lang/Object;', 'LL1/l;'] -> LT1/e;
+    @001e op=0xc
+    @0020 invoke-interface LT1/e;.iterator [] -> Ljava/util/Iterator;
+    @0026 op=0xc
+    @0028 invoke-interface Ljava/util/Iterator;.hasNext [] -> Z
+    @002e op=0xa
+    @0030 op=0x12
+    @0032 if-z v0, +14
+    @0036 invoke-interface Ljava/util/Iterator;.next [] -> Ljava/lang/Object;
+    @003c op=0xc
+    @003e op=0x7
+    @0040 op=0x1f
+    @0044 op=0x20
+    @0048 if-z v2, +-16
+    @004c op=0x28
+    @0050 op=0x1f
+    @0054 iput-object Landroidx/navigation/c;.b:Landroid/app/Activity;
+    @0058 new-instance Lz1/i;
+    @005c invoke-direct Lz1/i;.<init> [] -> V
+    @0062 iput-object Landroidx/navigation/c;.g:Lz1/i;
+    @0066 sget-object Lz1/t;.i:Lz1/t;
+    @006a invoke-static LZ1/N;.a ['Ljava/lang/Object;'] -> LZ1/M;
+    @0070 op=0xc
+    @0072 iput-object Landroidx/navigation/c;.h:LZ1/M;
+    @0076 new-instance LZ1/z;
+    @007a invoke-direct LZ1/z;.<init> ['LZ1/M;', 'LW1/u0;'] -> V
+    @0080 invoke-static LZ1/N;.a ['Ljava/lang/Object;'] -> LZ1/M;
+    @0086 op=0xc
+    @0088 iput-object Landroidx/navigation/c;.i:LZ1/M;
+    @008c new-instance LZ1/z;
+    @0090 invoke-direct LZ1/z;.<init> ['LZ1/M;', 'LW1/u0;'] -> V
+    @0096 iput-object Landroidx/navigation/c;.j:LZ1/z;
+    @009a new-instance Ljava/util/LinkedHashMap;
+    @009e invoke-direct Ljava/util/LinkedHashMap;.<init> [] -> V
+    @00a4 iput-object Landroidx/navigation/c;.k:Ljava/util/LinkedHashMap;
+    @00a8 new-instance Ljava/util/LinkedHashMap;
+    @00ac invoke-direct Ljava/util/LinkedHashMap;.<init> [] -> V
+    @00b2 iput-object Landroidx/navigation/c;.l:Ljava/util/LinkedHashMap;
+    @00b6 new-instance Ljava/util/LinkedHashMap;
+    @00ba invoke-direct Ljava/util/LinkedHashMap;.<init> [] -> V
+    @00c0 iput-object Landroidx/navigation/c;.m:Ljava/util/LinkedHashMap;
+    @00c4 new-instance Ljava/util/LinkedHashMap;
+    @00c8 invoke-direct Ljava/util/LinkedHashMap;.<init> [] -> V
+    @00ce iput-object Landroidx/navigation/c;.n:Ljava/util/LinkedHashMap;
+    @00d2 new-instance Ljava/util/concurrent/CopyOnWriteArrayList;
+    @00d6 invoke-direct Ljava/util/concurrent/CopyOnWriteArrayList;.<init> [] -> V
+    @00dc iput-object Landroidx/navigation/c;.q:Ljava/util/concurrent/CopyOnWriteArrayList;
+    @00e0 sget-object Landroidx/lifecycle/i$b;.INITIALIZED:Landroidx/lifecycle/i$b;
+    @00e4 iput-object Landroidx/navigation/c;.r:Landroidx/lifecycle/i$b;
+    @00e8 new-instance Lh1/e;
+    @00ec invoke-direct Lh1/e;.<init> ['Landroidx/navigation/c;'] -> V
+    @00f2 iput-object Landroidx/navigation/c;.s:Lh1/e;
+    @00f6 new-instance Landroidx/navigation/c$f;
+    @00fa invoke-direct Landroidx/navigation/c$f;.<init> ['Landroidx/navigation/c;'] -> V
+    @0100 iput-object Landroidx/navigation/c;.t:Landroidx/navigation/c$f;
+    @0104 op=0x12
+    @0106 iput-boolean Landroidx/navigation/c;.u:Z
+    @010a new-instance Landroidx/navigation/m;
+    @010e invoke-direct Landroidx/navigation/m;.<init> [] -> V
+    @0114 iput-object Landroidx/navigation/c;.v:Landroidx/navigation/m;
+    @0118 new-instance Ljava/util/LinkedHashMap;
+    @011c invoke-direct Ljava/util/LinkedHashMap;.<init> [] -> V
+    @0122 iput-object Landroidx/navigation/c;.w:Ljava/util/LinkedHashMap;
+    @0126 new-instance Ljava/util/LinkedHashMap;
+    @012a invoke-direct Ljava/util/LinkedHashMap;.<init> [] -> V
+    @0130 iput-object Landroidx/navigation/c;.z:Ljava/util/LinkedHashMap;
+    @0134 new-instance Landroidx/navigation/h;
+    @0138 invoke-direct Landroidx/navigation/h;.<init> ['Landroidx/navigation/m;'] -> V
+    @013e invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @0144 new-instance Landroidx/navigation/a;
+    @0148 iget-object Landroidx/navigation/c;.a:Landroid/content/Context;
+    @014c invoke-direct Landroidx/navigation/a;.<init> ['Landroid/content/Context;'] -> V
+    @0152 invoke-virtual Landroidx/navigation/m;.a ['Landroidx/navigation/l;'] -> V
+    @0158 new-instance Ljava/util/ArrayList;
+    @015c invoke-direct Ljava/util/ArrayList;.<init> [] -> V
+    @0162 iput-object Landroidx/navigation/c;.B:Ljava/util/ArrayList;
+    @0166 new-instance Landroidx/navigation/c$d;
+    @016a invoke-direct Landroidx/navigation/c$d;.<init> ['Landroidx/navigation/c;'] -> V
+    @0170 new-instance Ly1/j;
+    @0174 invoke-direct Ly1/j;.<init> ['LL1/a;'] -> V
+    @017a sget-object LY1/a;.DROP_OLDEST:LY1/a;
+    @017e op=0x12
+    @0180 invoke-static LZ1/E;.a ['I', 'I', 'LY1/a;'] -> LZ1/C;
+    @0186 op=0xc
+    @0188 iput-object Landroidx/navigation/c;.C:LZ1/C;
+    @018c op=0xe
+
+[4] FUNCTION0 DISPATCH SITES on creator classes + neighbors:
+
+[5] rememberSaveable / SaveableHolder strings:
+  string: null cannot be cast to non-null type androidx.compose.runtime.saveable.Saver<T of androidx.compose.runtime.sav
