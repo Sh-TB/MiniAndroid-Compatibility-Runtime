@@ -261,3 +261,36 @@ Work Log:
 
 Stage Summary:
 - PUSH_BLOCKED recorded; both commits ready for push when credential available.
+
+---
+Task ID: S49-HARDENING
+Agent: Super Z (main)
+Task: S49 Phase 1 — post-release hardening: battery restoration + claim verification.
+
+Work Log:
+- Container reset had wiped toolchain + external fixtures: battery rc=2 cascade.
+- Restored via scripts/build/bootstrap_toolchain.sh (aapt2/ecj/r8/android-34.jar all
+  zip-validated) and re-fetched EXT-01/02 fixtures (HelloWorldSelfAware APK + reference
+  screenshot; SHA256 == docs/evidence/EXTERNAL_FIXTURE_HELLOWORLDSELFAWARE.md exactly).
+- BATTERY: ALL PASS (94 stages) at S49 head — full inventory incl. EXT-01/02; zero
+  regressions from the S49 security commits.
+- BATTERY_INDEX.json head refreshed b82b43c5 -> c1c86a9d (S49 generated).
+- CLAIM AUDIT (S49 constitution: accept no prior-session claims without git verification):
+  * c5ae1872 (claimed S46 restore commit): NOT AN OBJECT in the store.
+  * git history between S45 (9d0c32af) and S48 (c2530279): only b82b43c5 + c2530279 —
+    NO S46/S47 commits exist.
+  * R-NEW-362/363/364/365/366: ZERO commits, NOT in registry (348 roots).
+  * R-NEW-361: registry status = OBSERVED-FAIL (S45 registration with honest NEXT probes);
+    no fix commit anywhere.
+  * VERDICT: S46/S47 claimed fixes never landed in the canonical repository (lost to
+    container reset / never committed). Registry + docs/INDEX.json are CONSISTENT and
+    truthful; the session-summary claims were the inaccurate layer.
+  * CONSEQUENCE: the real current frontier = R-NEW-361 (dooz v18+v23 ScatterMap probe
+    arithmetic negative-index), NOT the phantom R-NEW-366/362 of the briefings.
+- docs/releases/RELEASE_v0.0.6-Leghorn.md + docs/maintenance/worklog.md b82b43c5 refs are
+  historical release-time pins — intentionally untouched.
+
+Stage Summary:
+- 94/94 battery restored and re-proven at S49 HEAD.
+- Prior-session claim drift quantified and documented; registry verified as single
+  source of truth. Next: attack R-NEW-361 per its registry NEXT probes.

@@ -1,578 +1,579 @@
 {
- "generated": "S48 2026-09-16",
- "head": "b82b43c5",
- "entrypoint": "scripts/test/run_test_battery.sh",
- "command": "bash scripts/test/run_test_battery.sh",
- "result": "94/94 PASS (BATTERY GATE: ALL PASS)",
- "total": 94,
- "environment_notes": [
-  "EXT-01/EXT-02 fixtures restored 2026-09-16 from Appliberated/HelloWorldSelfAware v1.1.0 (APK SHA256 009b467109c4d48d4b00610b06f37f3a77eed75178fbaae344a111acc848cc41, reference 121d479c5165044943dc45e508de713ec754ed7abb9059c7c1be59eb016e2ba5), cached at /home/z/corpus/external_hello/ per zero-APK law",
-  "fixture toolchain (aapt2 8.13.2-14304508, ECJ 3.33.0, r8 8.13.23, android-34 stubs via robolectric android-all-14) restored by scripts/build/bootstrap_toolchain.sh; build_fixture_apk.sh now compiles stubs on -classpath (robolectric jar carries no java.*)"
- ],
- "stages": [
-  {
-   "stage": 1,
-   "name": "build (make -j)",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 2,
-   "name": "build (make resource_trace)",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 3,
-   "name": "link semantic_long_cmp_conv_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 4,
-   "name": "link semantic_switch_parse_neg_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 5,
-   "name": "link semantic_pass3_bridge_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 6,
-   "name": "semantic long/cmp/conv (expect 14)",
-   "status": "PASS",
-   "category": "semantic"
-  },
-  {
-   "stage": 7,
-   "name": "semantic switch parse-neg (expect 25)",
-   "status": "PASS",
-   "category": "semantic"
-  },
-  {
-   "stage": 8,
-   "name": "semantic pass3 bridge (expect 66)",
-   "status": "PASS",
-   "category": "semantic"
-  },
-  {
-   "stage": 9,
-   "name": "link mutf8_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 10,
-   "name": "mutf8 string-pool battery (expect 14)",
-   "status": "PASS",
-   "category": "semantic"
-  },
-  {
-   "stage": 11,
-   "name": "link resource_config_selection_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 12,
-   "name": "resource-config selection law (expect 48)",
-   "status": "PASS",
-   "category": "resource"
-  },
-  {
-   "stage": 13,
-   "name": "link resource_core_law_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 14,
-   "name": "resource core law (expect 42)",
-   "status": "PASS",
-   "category": "resource"
-  },
-  {
-   "stage": 15,
-   "name": "link resource_hostile_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 16,
-   "name": "resource hostile safety (expect 18)",
-   "status": "PASS",
-   "category": "resource"
-  },
-  {
-   "stage": 17,
-   "name": "link linear_layout_law_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 18,
-   "name": "LinearLayout/MeasureSpec law (expect 24)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 19,
-   "name": "link g10_layout_law_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 20,
-   "name": "G10 measurement/layout law (expect 23)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 21,
-   "name": "link g11_ctor_law_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 22,
-   "name": "G11 ctor/Factory/addView law (expect 37)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 23,
-   "name": "link g04_hostile_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 24,
-   "name": "G04 hostile safety (expect 24)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 25,
-   "name": "link input_pipeline_law_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 26,
-   "name": "G06 input pipeline law (expect 45)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 27,
-   "name": "link lifecycle_law_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 28,
-   "name": "G07 lifecycle law (expect 25)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 29,
-   "name": "link g06g08_hostile_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 30,
-   "name": "G06-G08 hostile safety (expect 16)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 31,
-   "name": "link encoded_value_law_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 32,
-   "name": "encoded_value AOSP law (expect 18)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 33,
-   "name": "link shadow_registry_invariant_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 34,
-   "name": "§6 shadow registry invariant (expect 24)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 35,
-   "name": "helloworld_golden (§28)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 36,
-   "name": "tictactoe_golden (§29 interaction + determinism)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 37,
-   "name": "EXT-01 run (external APK)",
-   "status": "PASS",
-   "category": "external-fixture"
-  },
-  {
-   "stage": 38,
-   "name": "EXT-01 typography golden (9 static checks)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 39,
-   "name": "EXT-02 long-press run (external APK interaction)",
-   "status": "PASS",
-   "category": "external-fixture"
-  },
-  {
-   "stage": 40,
-   "name": "EXT-02 interaction golden (12 static checks)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 41,
-   "name": "density-matrix oracle (G04 §4)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 42,
-   "name": "G06 fixture build (aapt2+ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 43,
-   "name": "G06 interaction golden (21 law checks)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 44,
-   "name": "G06 tap 3-run determinism (frame SHAs identical)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 45,
-   "name": "G07 fixture build (aapt2+ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 46,
-   "name": "G07 lifecycle golden (16 machine checks)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 47,
-   "name": "G07 finish-cascade 3-run determinism (frame SHAs identical)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 48,
-   "name": "G08 fixture build (aapt2+ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 49,
-   "name": "G08 navigation golden (17 law checks)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 50,
-   "name": "G08 navigation 3-run determinism (frame SHAs identical)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 51,
-   "name": "M3 fixture build (aapt2+ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 52,
-   "name": "link m3_arsc_style_law_test",
-   "status": "PASS",
-   "category": "build"
-  },
-  {
-   "stage": 53,
-   "name": "M3 ARSC style law (17 checks)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 54,
-   "name": "M3 fixture run",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 55,
-   "name": "M3 style geometry golden (6 law checks)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 56,
-   "name": "corpus fetch (hash-verified)",
-   "status": "PASS",
-   "category": "corpus"
-  },
-  {
-   "stage": 57,
-   "name": "corpus run omegacentauri.mobi.simplestopwatch_26",
-   "status": "PASS",
-   "category": "corpus"
-  },
-  {
-   "stage": 58,
-   "name": "corpus run de.duenndns.gmdice_8",
-   "status": "PASS",
-   "category": "corpus"
-  },
-  {
-   "stage": 59,
-   "name": "corpus run dubrowgn.microtimer_8",
-   "status": "PASS",
-   "category": "corpus"
-  },
-  {
-   "stage": 60,
-   "name": "M3 F-012 persistence+fresh-state determinism golden",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 61,
-   "name": "GATE H real-APK image pipeline golden",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 62,
-   "name": "F-016 fixture APK build (aapt2+ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 63,
-   "name": "F-016 default-mode honesty (unwind+PARTIAL+crash.log)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 64,
-   "name": "F-016 strict-mode process death (CRASH + dispatch refused)",
-   "status": "PASS",
-   "category": "runtime"
-  },
-  {
-   "stage": 65,
-   "name": "F-020 snapshot-law fixture build (ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 66,
-   "name": "F-020 snapshot-law fixture run (rc=0 SUCCESS)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 67,
-   "name": "F-020 snapshot-law pixel golden (5 bands)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 68,
-   "name": "F-024 EOF-law fixture build (ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 69,
-   "name": "F-024 EOF-law fixture run (rc=0 SUCCESS)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 70,
-   "name": "F-024 EOF-law pixel golden (7 bands)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 71,
-   "name": "F-025 executor fixture build (ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 72,
-   "name": "F-025 executor fixture run (rc=0 SUCCESS)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 73,
-   "name": "F-025 executor pixel golden (4 bands)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 74,
-   "name": "F-026+F-027 Room/SQLite law fixture build (ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 75,
-   "name": "F-026+F-027 Room/SQLite law fixture run (rc=0 SUCCESS)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 76,
-   "name": "F-026+F-027 Room/SQLite pixel golden (7 bands)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 77,
-   "name": "F-028 float-law fixture build (ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 78,
-   "name": "F-028 float-law fixture run (rc=0 SUCCESS)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 79,
-   "name": "F-028 float-law pixel golden (7 bands)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 80,
-   "name": "F-030 zero-law fixture build (ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 81,
-   "name": "F-030 zero-law fixture run (rc=0 SUCCESS)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 82,
-   "name": "F-030 zero-law pixel golden (7 bands)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 83,
-   "name": "F-040 arrays-fill fixture build (ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 84,
-   "name": "F-040 arrays-fill fixture run (rc=0 SUCCESS)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 85,
-   "name": "F-040 arrays-fill pixel golden (7 bands)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 86,
-   "name": "F-044 return-descriptor fixture build (ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 87,
-   "name": "F-044 return-descriptor fixture run (rc=0 SUCCESS)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 88,
-   "name": "F-044 return-descriptor pixel golden (7 bands)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 89,
-   "name": "F-050 frame-pump fixture build (ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 90,
-   "name": "F-050 frame-pump fixture run (rc=0 SUCCESS)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 91,
-   "name": "F-050 frame-pump pixel golden (7 bands)",
-   "status": "PASS",
-   "category": "golden"
-  },
-  {
-   "stage": 92,
-   "name": "F-074 super-run fixture build (ECJ+D8)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 93,
-   "name": "F-074 super-run fixture run (rc=0 SUCCESS)",
-   "status": "PASS",
-   "category": "fixture"
-  },
-  {
-   "stage": 94,
-   "name": "F-074 super-run pixel golden (6 bands)",
-   "status": "PASS",
-   "category": "golden"
-  }
- ]
+  "generated": "S49 2026-09-16",
+  "head": "c1c86a9d",
+  "entrypoint": "scripts/test/run_test_battery.sh",
+  "command": "bash scripts/test/run_test_battery.sh",
+  "result": "94/94 PASS (BATTERY GATE: ALL PASS)",
+  "total": 94,
+  "environment_notes": [
+    "EXT-01/EXT-02 fixtures restored 2026-09-16 from Appliberated/HelloWorldSelfAware v1.1.0 (APK SHA256 009b467109c4d48d4b00610b06f37f3a77eed75178fbaae344a111acc848cc41, reference 121d479c5165044943dc45e508de713ec754ed7abb9059c7c1be59eb016e2ba5), cached at /home/z/corpus/external_hello/ per zero-APK law",
+    "fixture toolchain (aapt2 8.13.2-14304508, ECJ 3.33.0, r8 8.13.23, android-34 stubs via robolectric android-all-14) restored by scripts/build/bootstrap_toolchain.sh; build_fixture_apk.sh now compiles stubs on -classpath (robolectric jar carries no java.*)",
+    "S49 re-verification: toolchain restored via scripts/build/bootstrap_toolchain.sh after container reset; EXT-01/02 external fixtures re-fetched with SHA256 == docs/evidence/EXTERNAL_FIXTURE_HELLOWORLDSELFAWARE.md; battery ALL PASS at S49 head"
+  ],
+  "stages": [
+    {
+      "stage": 1,
+      "name": "build (make -j)",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 2,
+      "name": "build (make resource_trace)",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 3,
+      "name": "link semantic_long_cmp_conv_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 4,
+      "name": "link semantic_switch_parse_neg_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 5,
+      "name": "link semantic_pass3_bridge_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 6,
+      "name": "semantic long/cmp/conv (expect 14)",
+      "status": "PASS",
+      "category": "semantic"
+    },
+    {
+      "stage": 7,
+      "name": "semantic switch parse-neg (expect 25)",
+      "status": "PASS",
+      "category": "semantic"
+    },
+    {
+      "stage": 8,
+      "name": "semantic pass3 bridge (expect 66)",
+      "status": "PASS",
+      "category": "semantic"
+    },
+    {
+      "stage": 9,
+      "name": "link mutf8_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 10,
+      "name": "mutf8 string-pool battery (expect 14)",
+      "status": "PASS",
+      "category": "semantic"
+    },
+    {
+      "stage": 11,
+      "name": "link resource_config_selection_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 12,
+      "name": "resource-config selection law (expect 48)",
+      "status": "PASS",
+      "category": "resource"
+    },
+    {
+      "stage": 13,
+      "name": "link resource_core_law_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 14,
+      "name": "resource core law (expect 42)",
+      "status": "PASS",
+      "category": "resource"
+    },
+    {
+      "stage": 15,
+      "name": "link resource_hostile_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 16,
+      "name": "resource hostile safety (expect 18)",
+      "status": "PASS",
+      "category": "resource"
+    },
+    {
+      "stage": 17,
+      "name": "link linear_layout_law_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 18,
+      "name": "LinearLayout/MeasureSpec law (expect 24)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 19,
+      "name": "link g10_layout_law_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 20,
+      "name": "G10 measurement/layout law (expect 23)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 21,
+      "name": "link g11_ctor_law_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 22,
+      "name": "G11 ctor/Factory/addView law (expect 37)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 23,
+      "name": "link g04_hostile_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 24,
+      "name": "G04 hostile safety (expect 24)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 25,
+      "name": "link input_pipeline_law_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 26,
+      "name": "G06 input pipeline law (expect 45)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 27,
+      "name": "link lifecycle_law_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 28,
+      "name": "G07 lifecycle law (expect 25)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 29,
+      "name": "link g06g08_hostile_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 30,
+      "name": "G06-G08 hostile safety (expect 16)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 31,
+      "name": "link encoded_value_law_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 32,
+      "name": "encoded_value AOSP law (expect 18)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 33,
+      "name": "link shadow_registry_invariant_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 34,
+      "name": "\u00a76 shadow registry invariant (expect 24)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 35,
+      "name": "helloworld_golden (\u00a728)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 36,
+      "name": "tictactoe_golden (\u00a729 interaction + determinism)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 37,
+      "name": "EXT-01 run (external APK)",
+      "status": "PASS",
+      "category": "external-fixture"
+    },
+    {
+      "stage": 38,
+      "name": "EXT-01 typography golden (9 static checks)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 39,
+      "name": "EXT-02 long-press run (external APK interaction)",
+      "status": "PASS",
+      "category": "external-fixture"
+    },
+    {
+      "stage": 40,
+      "name": "EXT-02 interaction golden (12 static checks)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 41,
+      "name": "density-matrix oracle (G04 \u00a74)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 42,
+      "name": "G06 fixture build (aapt2+ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 43,
+      "name": "G06 interaction golden (21 law checks)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 44,
+      "name": "G06 tap 3-run determinism (frame SHAs identical)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 45,
+      "name": "G07 fixture build (aapt2+ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 46,
+      "name": "G07 lifecycle golden (16 machine checks)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 47,
+      "name": "G07 finish-cascade 3-run determinism (frame SHAs identical)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 48,
+      "name": "G08 fixture build (aapt2+ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 49,
+      "name": "G08 navigation golden (17 law checks)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 50,
+      "name": "G08 navigation 3-run determinism (frame SHAs identical)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 51,
+      "name": "M3 fixture build (aapt2+ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 52,
+      "name": "link m3_arsc_style_law_test",
+      "status": "PASS",
+      "category": "build"
+    },
+    {
+      "stage": 53,
+      "name": "M3 ARSC style law (17 checks)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 54,
+      "name": "M3 fixture run",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 55,
+      "name": "M3 style geometry golden (6 law checks)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 56,
+      "name": "corpus fetch (hash-verified)",
+      "status": "PASS",
+      "category": "corpus"
+    },
+    {
+      "stage": 57,
+      "name": "corpus run omegacentauri.mobi.simplestopwatch_26",
+      "status": "PASS",
+      "category": "corpus"
+    },
+    {
+      "stage": 58,
+      "name": "corpus run de.duenndns.gmdice_8",
+      "status": "PASS",
+      "category": "corpus"
+    },
+    {
+      "stage": 59,
+      "name": "corpus run dubrowgn.microtimer_8",
+      "status": "PASS",
+      "category": "corpus"
+    },
+    {
+      "stage": 60,
+      "name": "M3 F-012 persistence+fresh-state determinism golden",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 61,
+      "name": "GATE H real-APK image pipeline golden",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 62,
+      "name": "F-016 fixture APK build (aapt2+ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 63,
+      "name": "F-016 default-mode honesty (unwind+PARTIAL+crash.log)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 64,
+      "name": "F-016 strict-mode process death (CRASH + dispatch refused)",
+      "status": "PASS",
+      "category": "runtime"
+    },
+    {
+      "stage": 65,
+      "name": "F-020 snapshot-law fixture build (ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 66,
+      "name": "F-020 snapshot-law fixture run (rc=0 SUCCESS)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 67,
+      "name": "F-020 snapshot-law pixel golden (5 bands)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 68,
+      "name": "F-024 EOF-law fixture build (ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 69,
+      "name": "F-024 EOF-law fixture run (rc=0 SUCCESS)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 70,
+      "name": "F-024 EOF-law pixel golden (7 bands)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 71,
+      "name": "F-025 executor fixture build (ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 72,
+      "name": "F-025 executor fixture run (rc=0 SUCCESS)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 73,
+      "name": "F-025 executor pixel golden (4 bands)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 74,
+      "name": "F-026+F-027 Room/SQLite law fixture build (ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 75,
+      "name": "F-026+F-027 Room/SQLite law fixture run (rc=0 SUCCESS)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 76,
+      "name": "F-026+F-027 Room/SQLite pixel golden (7 bands)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 77,
+      "name": "F-028 float-law fixture build (ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 78,
+      "name": "F-028 float-law fixture run (rc=0 SUCCESS)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 79,
+      "name": "F-028 float-law pixel golden (7 bands)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 80,
+      "name": "F-030 zero-law fixture build (ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 81,
+      "name": "F-030 zero-law fixture run (rc=0 SUCCESS)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 82,
+      "name": "F-030 zero-law pixel golden (7 bands)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 83,
+      "name": "F-040 arrays-fill fixture build (ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 84,
+      "name": "F-040 arrays-fill fixture run (rc=0 SUCCESS)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 85,
+      "name": "F-040 arrays-fill pixel golden (7 bands)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 86,
+      "name": "F-044 return-descriptor fixture build (ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 87,
+      "name": "F-044 return-descriptor fixture run (rc=0 SUCCESS)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 88,
+      "name": "F-044 return-descriptor pixel golden (7 bands)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 89,
+      "name": "F-050 frame-pump fixture build (ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 90,
+      "name": "F-050 frame-pump fixture run (rc=0 SUCCESS)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 91,
+      "name": "F-050 frame-pump pixel golden (7 bands)",
+      "status": "PASS",
+      "category": "golden"
+    },
+    {
+      "stage": 92,
+      "name": "F-074 super-run fixture build (ECJ+D8)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 93,
+      "name": "F-074 super-run fixture run (rc=0 SUCCESS)",
+      "status": "PASS",
+      "category": "fixture"
+    },
+    {
+      "stage": 94,
+      "name": "F-074 super-run pixel golden (6 bands)",
+      "status": "PASS",
+      "category": "golden"
+    }
+  ]
 }
