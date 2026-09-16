@@ -1,7 +1,7 @@
 {
  "version": "v0.0.6-Leghorn",
  "release_date": "2026-09-16",
- "git_commit": "TO_BE_FILLED_AT_TAG",
+ "git_commit": "22c58a55 (tag v0.0.6-Leghorn; full SHA at tag object)",
  "source_tree_sha": "see SHA256SUMS.txt next to the artifacts",
  "windows_artifact": "MiniAndroid-v0.0.6-Leghorn-windows-x64.zip",
  "windows_artifact_sha256": "934d6edcf1ee32060eef10c7fe0eabb84584a83132795fabcc9b3256594f3267",
