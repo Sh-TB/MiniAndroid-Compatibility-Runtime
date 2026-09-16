@@ -139,3 +139,17 @@ miniandroid/core
 /tools/android-34.jar
 /tools/platform-34-ext*_r0*.zip
 androguard.db
+
+# =============================================================================
+# S48 EVIDENCE TAXONOMY (2026-09-16) — raw campaign exhaust stays external
+# -----------------------------------------------------------------------------
+# Raw run dumps and forensic-session traces live in the EXTERNAL archive
+# (/home/z/archive/miniandroid) with per-file SHA-256 provenance recorded in
+# docs/evidence/ARCHIVE_MANIFEST.json. Compact evidence (report.md,
+# execution_summary.json, screenshot.png, golden artifacts) is the source of
+# truth and lives under docs/evidence/. Never re-add the classes below.
+# =============================================================================
+miniandroid/run/**/*_stderr.txt
+miniandroid/run/**/*_stdout.txt
+gpg_*/
+gpg_lambda_probe.out
