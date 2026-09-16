@@ -208,3 +208,56 @@ Work Log:
 Stage Summary:
 - Six generic laws (353-358), all root->proof->fix->evidence->regression chains closed: dooz23 unblocked through protobuf schema + attach + composition machinery (rc=1 -> rc=0); TicTacToe Classic gone from fully-rendered-but-dead to FULLY PLAYABLE (taps -> DEX listeners -> X/O alternation -> redraws); microtimer's phantom "retry loop" closed as the pc-advance contract violation.
 - Honest frontiers: (1) dooz23 initial composition — content lambda Lrr0; never invoked; Recomposer parks, frame-tick plumbing is the next attack layer; (2) libGDX GL surface (tictactoeemmanuelmess); (3) braincup SEGFAULT; (4) time-bound compose-heavy apps (dooz18/variants/memory/sudoku) need budget classification; (5) EXT-01/02 env fixture gaps (pre-existing).
+
+---
+Task ID: S49-PHASE0
+Agent: Super Z (main — S49 security campaign)
+Task: S49 Phase 0 — SECURITY INCIDENT AUDIT + secret cleanup + permanent fail-closed guard.
+
+Work Log:
+- Recon: main = origin/main = 7967c037, working tree clean; tags v0.0.1..v0.0.6-Leghorn.
+- Full secret scan (5 surfaces): working tree, .git metadata/reflogs, ENTIRE git object
+  store (batch-all-objects), remote-fetched divergent tag objects, all 15 GitHub release
+  assets (downloaded + extracted + scanned both raw and unpacked).
+- RESULT: NO real credential anywhere. 5 flagged blobs all classified public-by-design:
+  Google's own public devsite keys inside android_bytecode_doc.json family (F1/F2/F4),
+  F-Droid changelog URL placeholder (F3), base64-embedded lookalikes in HTML assets (F5).
+- Lineage: early tag divergence (v0.0.1/v0.0.2/v0.0.2-alpha) fully explained via
+  PUSH_BLOCKED.json provenance ("tags_on_remote_only" + 2026-09-05 resolution); remote-only
+  objects fetched to refs/s49-temp and rescanned — zero new findings; temp refs deleted;
+  NO history rewrite needed.
+- Release audit: v0.0.6-Leghorn asset SHA256s independently verified == RELEASE_MANIFEST.json;
+  DEFECT found: GitHub SHA256SUMS.txt asset on v0.0.6 contains v0.0.4 checksums (fix BLOCKED —
+  needs authenticated API; correct content recoverable from manifest).
+- Guard built (scripts/security/check_secrets.sh): 3 modes (--tree/--staged/PATH),
+  fail-closed, never prints values; fixed en route: mawk {20,} mishandle (switched to GNU
+  grep -E), grep single-file -H prefix omission (the value-leak hazard, closed by
+  path:digits-only reporting), base64-embedded FP boundary rules, selftest with 7 synthetic
+  dummy detections + 5 FP sources (all pass).
+- deep_secret_scan.py: permanent full-history forensic scanner (self-exclusion + split-regex
+  so the tooling never self-matches).
+- Integration: check_release_artifacts.sh step 5 runs the guard on staging trees;
+  pre-commit + pre-push hooks installed via install_hooks.sh; E2E probe verified COMMIT
+  BLOCKED (exit 1) on a planted dummy.
+- Report: docs/security/SECURITY_AUDIT.md (no values reproduced; F1-F5 + release defect +
+  remediation record + re-audit protocol).
+
+Stage Summary:
+- Phase 0 COMPLETE: repo history, tree, metadata, release assets all credential-free.
+- Permanent prevention live: guard + hooks + release-pipeline integration, all self-tested.
+- BLOCKED item: v0.0.6 SHA256SUMS.txt asset replacement (needs credential next session).
+- Next: S49 Phase 1 post-release hardening (battery/docs consistency), then next frontier.
+
+---
+Task ID: S49-PUSH-ATTEMPT
+Agent: Super Z (main)
+Task: Push S49 security commits.
+
+Work Log:
+- git push origin main → exit 128 "could not read Username for 'https://github.com'"
+  (no credential in session, per policy none stored). Status: PUSH_BLOCKED.
+- Local main ahead 2: f80c0f89 (feat(security) guard), b2e882c2 (docs(security) audit).
+- Pre-commit hook live-verified on both commits (guard PASS in commit flow).
+
+Stage Summary:
+- PUSH_BLOCKED recorded; both commits ready for push when credential available.
