@@ -5,8 +5,8 @@
 </p>
 <p align="center"><sub>Decorative project mascot — a Silkie hen. Not an Android/Google mark; carries no claim.</sub></p>
 
-**Current Release:** `v0.0.5 — Silkie` (Hello Color real-APK execution milestone, 2026-09-12)
-**Previous:** `v0.0.4-Chantecler` (Choreographer frame-pump family F-050) · `v0.0.3 — Chantecler` (Compose frontier + root-law closure) · `v0.0.2 — Australorp` (real-APK execution proof) · `v0.0.1 — Brahma`
+**Current Release:** `v0.0.6 — Leghorn` (repository recovery + battery restoration 94/94 + evidence compaction, 2026-09-16)
+**Previous:** `v0.0.5 — Silkie` (Hello Color real-APK milestone) · `v0.0.4-Chantecler` (Choreographer frame-pump family F-050) · `v0.0.3 — Chantecler` (Compose frontier + root-law closure) · `v0.0.2 — Australorp` (real-APK execution proof) · `v0.0.1 — Brahma`
 **Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (original project, not a fork)
 **License:** MIT
 
@@ -68,42 +68,35 @@ The interactive demo app (box moving on a 5×4 grid via real DEX click handlers)
 ## Current verified capabilities
 
 Only what the committed evidence supports — each item is machine-checkable at
-this tag. Full detail: [`docs/releases/STATUS_MC4_2026-09-12.md`](docs/releases/STATUS_MC4_2026-09-12.md).
+this tag. Full detail: [`docs/releases/RELEASE_v0.0.6-Leghorn.md`](docs/releases/RELEASE_v0.0.6-Leghorn.md)
+and [`docs/testing/BATTERY_INDEX.json`](docs/testing/BATTERY_INDEX.json).
 
-1. **REAL APK EXECUTION + REAL RUNTIME RENDERING (Hello Color)** — a real
+1. **Real DEX interpreter + real resource stack + real rendering** — a real
    aapt2+ECJ+D8-built APK (`77863f1f…`) executes through the first-party DEX
-   interpreter and renders through the first-party software renderer
-   (`PROVENANCE_FORENSIC.json`); re-verified byte-identical (`11e00563…`) on the
-   R-NEW-302-fixed binary.
-2. **Deterministic rendering** — three independent runs produce the byte-identical
-   framebuffer (PPM `fb9f1df2…` ×3, PNG `11e00563…` ×3).
-3. **Real DEX interpreter execution** — opcode-level trace with pc/opcode/return
-   values and `execution_source=REAL_DALVIK_INTERPRETER`.
-4. **Real Android resource loading** — `setContentView` dispatches with a real
-   resource ID (`2130903040`) resolved from a real binary `resources.arsc`.
-5. **Real View interaction from app bytecode** — `setBackgroundColor`,
-   `setTextColor` ×3, `findViewById` ×4 (real heap objects) invoked by the app's
-   own DEX, not by the host.
-6. **HelloWorld + TicTacToe golden batteries** — §28 (26 checks) and §29
-   (interaction + determinism, X→O→X WINS across a 10-frame golden) PASS;
-   3-run byte-identical (`docs/evidence/tictactoe_golden/`, `docs/evidence/helloworld_golden/`).
-7. **ChessClock (real corpus APK)** — rc=0 ×3 with a deterministic framebuffer
-   screenshot (1080×1920, SHA `e4a2d7c9…` ×3 byte-identical;
-   `docs/evidence/campaign3_chessclock_real_screenshot/`).
-8. **R-NEW-302 FIXED (MC4 self-improvement)** — the demo box MOVES on its declared
-   5×4 grid: AOSP FrameLayout margins+gravity law, root MATCH_PARENT window law,
-   and the requestLayout re-measure law landed as one generic pass;
-   `examples/demo-app/validate_demo_proof.sh` → VALIDATION_PASS, zero regressions.
-9. **REAL TELEGRAM v12.10.1 executed (frontier)** — the official 73 MB
-   `org.telegram.messenger.web` APK (sha256 `f5e11927…`) parses, LAUNCHES, and
-   paints one full-screen themed frame; deeper init stops at the desugared-streams
-   gap (**R-NEW-303**, honestly open). Evidence: `docs/evidence/mc4_telegram/`.
-   NOT claimed usable.
-10. **MC4 corpus sweep (13 real APKs, standard path, zero flags)** — 8 exit rc=0
-    with real rendered frames (gmdice 1.74M px, simplestopwatch 1.94M px,
-    headingcalc 2.05M px keypad, microtimer 1.04M px, unote UI chrome; dooz /
-    tictactoe_gdx / simplekeyboard blank at known GL/Compose/IME boundaries);
-    5 exit rc=1 with honestly-classified causes.
+   interpreter and renders through the first-party software renderer; three
+   independent runs are byte-identical (`PROVENANCE_FORENSIC.json`).
+2. **TicTacToe Classic (real corpus APK) is fully playable** — real taps →
+   DEX click listeners → X/O alternation → board redraws (S44); the §29
+   interaction + determinism golden passes with 10-frame per-frame SHAs.
+3. **Regression battery: 94/94 ALL PASS** — §28 HelloWorld (26 checks), §29
+   TicTacToe (8 checks), EXT-01 typography 9/9, EXT-02 interaction 12/12,
+   G06/G07/G08 3-run frame-SHA determinism, all fixture pixel goldens
+   (`docs/testing/BATTERY_INDEX.json`).
+4. **Real Android lifecycle/input/persistence dispatch** — Activity
+   onCreate→onStart→onResume, click dispatch through app DEX handlers,
+   SharedPreferences/SQLite-backed persistence paths (package-dir law
+   R-NEW-367 VERIFIED-FIXED).
+5. **Real corpus APKs render** — ChessClock deterministic screenshot
+   (`e4a2d7c9…` ×3), gmdice/microtimer/unote byte-stable frames; corpus
+   grades in `docs/compatibility/` and the APPS_EXECUTION_LEDGER.
+6. **REAL TELEGRAM v12.10.1 executed (frontier)** — the official 73 MB APK
+   (`f5e11927…`) parses, LAUNCHES, paints a themed frame; deeper init stops
+   at the desugared-streams gap (**R-NEW-303**, honestly open).
+7. **Current frontier: R-NEW-361** — dooz v18/v23 converge on the compose
+   SlotTable/ScatterMap probe-arithmetic face (refined R-NEW-335). Forensics
+   recorded; NOT fixed yet. dooz has no visible frame yet — claimed nothing
+   beyond the evidence. 2048 executes via the corpus path and is NOT claimed
+   playable.
 
 ## Architecture summary
 
@@ -144,60 +137,71 @@ tar xzf MiniAndroid-v0.0.3-*-linux-x64.tar.gz && cd miniandroid-0.0.3
 ## Verification & evidence
 
 ```bash
-bash scripts/test/run_test_battery.sh   # full regression battery → "BATTERY GATE: ALL PASS"
+bash scripts/test/run_test_battery.sh   # full regression battery → "BATTERY GATE: ALL PASS (94 stages)"
 ```
 
 - **Methodology:** `APK execution → actual view/layout/draw operations → real
   software framebuffer → screenshot artifact → SHA256 + non-white count +
   3-run reproducibility`. A synthetic screenshot, an rc=0, or a method count is
-  NOT evidence. `PROVEN / IMPROVED / REMAINING BOUNDARY` are reported as three
-  separate levels in every release.
-- **Root-law ledger:** [`docs/research/ROOT_LAW_GLOBAL_AUDIT.md`](docs/research/ROOT_LAW_GLOBAL_AUDIT.md)
+  NOT evidence.
+- **Battery inventory:** [`docs/testing/BATTERY_INDEX.json`](docs/testing/BATTERY_INDEX.json)
+  — machine-readable list of all 94 stages and their last verified status.
+- **Upstream law ledger:** [`docs/upstream/INDEX.md`](docs/upstream/INDEX.md)
+  (the semantic contract each fix implements),
+  [`docs/research/ROOT_LAW_GLOBAL_AUDIT.md`](docs/research/ROOT_LAW_GLOBAL_AUDIT.md)
   (full ledger), [`docs/research/ROOT_IMPACT_MATRIX.md`](docs/research/ROOT_IMPACT_MATRIX.md)
-  (per-root impact), [`docs/research/ROOT_DISCOVERY_GUIDE.md`](docs/research/ROOT_DISCOVERY_GUIDE.md)
-  (how a failure becomes a root candidate).
+  (per-root impact).
 - **Registry:** [`root_registry.json`](root_registry.json) — one honest record per
-  root (F-xxx / R-NEW-xxx, P0–P3, OBSERVED-FAIL / IMPLEMENTED / VERIFIED-FIXED).
-- **Evidence tree:** [`docs/evidence/`](docs/evidence/) — machine-verifiable
-  provenance per case (hello_color_golden, tictactoe_golden, mc4_telegram, …).
+  root (348 entries, P0–P3, canonical status vocabulary).
+- **Evidence tree:** [`docs/evidence/`](docs/evidence/) — compact, machine-verifiable
+  provenance per case; raw campaign exhaust is archived externally with SHA-256
+  provenance in [`docs/evidence/ARCHIVE_MANIFEST.json`](docs/evidence/ARCHIVE_MANIFEST.json)
+  and can never re-enter the tree (`.gitignore`-enforced).
 
 ## Current limitations (real, current — nothing hidden)
 
-1. **Compose final UI**: no visible Compose frame yet — **F-077** (initial
-   composition hits a kotlinx TrieNode invariant NPE) is the one remaining break
-   before the first frame request. dooz renders a deterministic BLANK frame and
-   we claim nothing more.
+1. **Compose final UI**: no visible Compose frame yet for dooz — **R-NEW-361**
+   (refined R-NEW-335) is the primary frontier: both dooz variants converge on
+   androidx ScatterMap probe arithmetic producing negative indices (HALT-LOOP
+   → aput-oob). Forensics recorded in `docs/maintenance/s45_session_record.md`;
+   not fixed.
 2. **Telegram frontier**: **R-NEW-303** (desugared-streams builder dispatch) —
    honestly open, evidence committed.
-3. **GLES dispatch hook** (K-25): PortableGL glue exists (standalone golden cube
+3. **2048** executes on the corpus path and renders partially; **not claimed
+   playable** until real UI/gameplay is verified with input evidence.
+4. **GLES dispatch hook** (K-25): PortableGL glue exists (standalone golden cube
    renders) but the GLSurfaceView/EGL loop is not wired into the engine.
-4. **Layout geometry**: weight distribution wrong (simplestopwatch buttons render
+5. **Layout geometry**: weight distribution wrong (simplestopwatch buttons render
    full-height); headingcalc display-row text overlap (open visual gap).
-5. **Fonts**: BitmapFont long-string overlap (SFS-010); the GATE H
+6. **Fonts**: BitmapFont long-string overlap (SFS-010); the GATE H
    glyph-to-framebuffer gap; the FreeType+HarfBuzz+FriBidi RTL pipeline is a
    proven POC (6/6 Persian samples), not yet the TextView path.
-6. **Corpus gaps**: kiss AppCompat theme resolution; openlauncher Fragment-host
+7. **Corpus gaps**: kiss AppCompat theme resolution; openlauncher Fragment-host
    attach; bgclock WebViewAssetLoader builder; stopwatch2 androidx init.
-7. **Canvas matrix composition**: dispatch presence verified; exhaustive
+8. **Canvas matrix composition**: dispatch presence verified; exhaustive
    rotate+scale+clip interplay tests still missing.
-8. **Obfuscated AXML** (`res/0s.xml`-style trees): abort safely (guarded), not
+9. **Obfuscated AXML** (`res/0s.xml`-style trees): abort safely (guarded), not
    inflated.
-9. **JNI/ELF**: boundary classification only; no loader (no corpus APK currently
-   demands it; missing native libs are never reported as Java blockers).
+10. **JNI/ELF**: boundary classification only; no loader (no corpus APK currently
+    demands it; missing native libs are never reported as Java blockers).
 
 ## Documentation
 
-The complete documentation index lives in **[`docs/README.md`](docs/README.md)** —
-architecture, development, build, testing, compatibility, research, evidence,
-demos, releases, decisions, maintenance, and history.
+The complete documentation index lives in **[`docs/INDEX.md`](docs/INDEX.md)**
+(machine-readable twin: `docs/INDEX.json`) — architecture, testing, runtime,
+dex, resources, lifecycle, rendering, input, persistence, upstream laws,
+releases, forensic evidence, maintenance, and history.
 
 ## Release
 
 `source commit == tag commit == binary build commit` — the exact source commit,
 tag, binary, artifact SHA256s and release notes form one traceable chain. See
 [`docs/releases/`](docs/releases/) and the per-release `SHA256SUMS_*.txt` asset.
-Current: **`v0.0.5 — Silkie`** · notes:
-[`docs/releases/RELEASE_v0.0.5-Silkie.md`](docs/releases/RELEASE_v0.0.5-Silkie.md).
+Current: **`v0.0.6 — Leghorn`** · notes:
+[`docs/releases/RELEASE_v0.0.6-Leghorn.md`](docs/releases/RELEASE_v0.0.6-Leghorn.md)
+· manifest: [`docs/releases/RELEASE_MANIFEST.json`](docs/releases/RELEASE_MANIFEST.json).
+Windows packaging is lean by law: only the runtime binary, the first-party demo
+APK, README and LICENSE — enforced by `scripts/release/check_release_artifacts.sh`.
 
 ---
 

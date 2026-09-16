@@ -1,0 +1,34 @@
+{
+ "version": "v0.0.6-Leghorn",
+ "release_date": "2026-09-16",
+ "git_commit": "TO_BE_FILLED_AT_TAG",
+ "source_tree_sha": "see SHA256SUMS.txt next to the artifacts",
+ "windows_artifact": "MiniAndroid-v0.0.6-Leghorn-windows-x64.zip",
+ "windows_artifact_sha256": "934d6edcf1ee32060eef10c7fe0eabb84584a83132795fabcc9b3256594f3267",
+ "windows_artifact_size_bytes": 3925621,
+ "windows_artifact_contents": [
+  "MiniAndroid.exe (PE32+ x86-64, statically linked; UCRT + KERNEL32 only)",
+  "miniandroid-demo.apk (first-party demo proof app)",
+  "README.txt (Windows usage)",
+  "LICENSE (MIT)"
+ ],
+ "linux_artifact": "MiniAndroid-v0.0.6-Leghorn-linux-x64.tar.gz",
+ "linux_artifact_sha256": "20ece9256b052a06839a5124fd64c19bb15512f1ff9de5eb3b6df705898f8780",
+ "battery_result": "94/94 ALL PASS (clean run, no resume cache; docs/testing/BATTERY_INDEX.json)",
+ "anchor_result": {
+  "s28_helloworld_golden": "PASS (26 checks)",
+  "s29_tictactoe_interaction_determinism": "PASS (8 checks)",
+  "ext01_typography_golden": "PASS (9/9)",
+  "ext02_interaction_golden": "PASS (12/12)",
+  "g06_g07_g08_determinism": "PASS (3-run frame SHA identical)"
+ },
+ "windows_runtime_test": "clean-extract static PE check PASS + demo byte-match on Linux artifact; native/wine runtime NOT verified in this environment (honestly labeled)",
+ "known_limitations": [
+  "R-NEW-361 OBSERVED-FAIL (primary frontier): dooz v18/v23 ScatterMap probe arithmetic",
+  "R-NEW-303 OBSERVED-FAIL: desugared-streams builder dispatch (Telegram)",
+  "2048 not claimed playable; dooz Compose frame not yet visible",
+  "Windows runtime not exercised under wine/native Windows here"
+ ],
+ "release_notes": "docs/releases/RELEASE_v0.0.6-Leghorn.md",
+ "linux_artifact_size_bytes": 1607470
+}

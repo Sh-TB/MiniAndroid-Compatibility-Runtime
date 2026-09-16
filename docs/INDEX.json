@@ -1,0 +1,109 @@
+{
+ "generated": "S48 2026-09-16",
+ "entrypoints": {
+  "battery_command": "bash scripts/test/run_test_battery.sh",
+  "battery_index": "docs/testing/BATTERY_INDEX.json",
+  "registry": "root_registry.json",
+  "upstream_law_index": "docs/upstream/INDEX.md",
+  "archive_manifest": "docs/evidence/ARCHIVE_MANIFEST.json",
+  "release_notes": "docs/releases/RELEASE_v0.0.6-Leghorn.md",
+  "release_manifest": "docs/releases/RELEASE_MANIFEST.json",
+  "worklog": "docs/maintenance/worklog.md",
+  "release_guard": "scripts/release/check_release_artifacts.sh",
+  "toolchain_bootstrap": "scripts/build/bootstrap_toolchain.sh"
+ },
+ "current_frontier": {
+  "primary": "R-NEW-361",
+  "status": "OBSERVED-FAIL",
+  "summary": "dooz v18+v23 converge on ScatterMap/probe arithmetic (refined R-NEW-335)"
+ },
+ "issue_concept_index": [
+  {
+   "concept": "Compose placement/draw cascade",
+   "ids": [
+    "R-NEW-329",
+    "R-NEW-332",
+    "R-NEW-333"
+   ],
+   "status": "closed"
+  },
+  {
+   "concept": "Compose attach & traversal ordering",
+   "ids": [
+    "R-NEW-344",
+    "R-NEW-349"
+   ],
+   "status": "closed"
+  },
+  {
+   "concept": "Collections copy/iterator contracts",
+   "ids": [
+    "R-NEW-360"
+   ],
+   "status": "VERIFIED-FIXED"
+  },
+  {
+   "concept": "View.post main-queue law",
+   "ids": [
+    "R-NEW-359"
+   ],
+   "status": "VERIFIED-FIXED"
+  },
+  {
+   "concept": "SharedPreferences package-dir law",
+   "ids": [
+    "R-NEW-367"
+   ],
+   "status": "VERIFIED-FIXED"
+  },
+  {
+   "concept": "ScatterMap probe arithmetic (dooz)",
+   "ids": [
+    "R-NEW-335",
+    "R-NEW-361"
+   ],
+   "status": "OBSERVED-FAIL"
+  },
+  {
+   "concept": "Fragment host attach family",
+   "ids": [
+    "R-NEW-331"
+   ],
+   "status": "OBSERVED-FAIL"
+  },
+  {
+   "concept": "Desugared streams (Telegram)",
+   "ids": [
+    "R-NEW-303"
+   ],
+   "status": "OBSERVED-FAIL"
+  },
+  {
+   "concept": "Navigation back-stack graph entries",
+   "ids": [
+    "R-NEW-323"
+   ],
+   "status": "OBSERVED-FAIL"
+  }
+ ],
+ "status_vocabulary": [
+  "OBSERVED-FAIL",
+  "ROOT-CAUSED-FIXED",
+  "VERIFIED-FIXED",
+  "VERIFIED-CORRECT",
+  "IMPLEMENTED",
+  "PARTIAL",
+  "PARTIAL-FIX",
+  "RESEARCHED-NOT-IMPLEMENTED",
+  "UNPROVEN",
+  "NOT-APPLICABLE",
+  "SUPERSEDED-BY-EVIDENCE"
+ ],
+ "verified_apps": {
+  "TicTacToe Classic (palahsu)": "fully playable (S44; §29 anchor PASS)",
+  "HelloWorld fixtures": "golden batteries PASS (§28/EXT-01/EXT-02)",
+  "dooz v18/v23": "deeper Compose execution; visible frame still open (R-NEW-361)",
+  "2048": "corpus-executed; NOT claimed playable",
+  "Telegram": "launch + themed frame; R-NEW-303 frontier"
+ }
+}

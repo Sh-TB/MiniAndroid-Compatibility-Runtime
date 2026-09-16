@@ -5347,3 +5347,63 @@ Stage Summary:
 - GitHub fully synced at the S45 tip; all old pushes published; zero evidence lost.
 - Both downloaded Dooz models verified UNCHANGED (SHA pins) and advanced to their deepest-ever execution; the pixel frontier is now exactly R-NEW-361 away.
 - TicTacToe golden anchor ALL PASS throughout; TicTacToe Classic (palahsu) remains the S44 fully-playable evidence line (APK lost with legacy cache; SHA + screenshots pinned in the ledger).
+
+---
+Task ID: S48
+Agent: Super Z (main)
+Task: S48 — FULL REPOSITORY RECOVERY + BATTERY RESTORATION + EVIDENCE COMPACTION + RELEASE HYGIENE
+
+Work Log:
+- Lineage reconciled with independent verification: origin/main = b82b43c5 (S45 tip);
+  the S47-report lineage (HEAD fafaa969, S46 restore c5ae1872, R-NEW-363..366) does NOT
+  exist anywhere (local refs, remote refs, filesystem searched; git cat-file negative).
+  Local stale line (12cf043f, 2 UUID commits) had ZERO unique content vs origin (gpg dirs
+  byte-identical, worklog identical) — preserved on archive/local-main-12cf043f, main
+  fast-adopted origin/main. No history rewrite; every blob retained.
+- Battery restored: EXT-01/EXT-02 external fixtures re-fetched from
+  Appliberated/HelloWorldSelfAware v1.1.0 with EXACT SHA-256 match to the frozen fixture
+  record (APK 009b4671…, reference 121d479c…); fixture toolchain re-bootstrapped
+  (aapt2 8.13.2-14304508 / ECJ 3.33.0 / r8 8.13.23 / android-34 stubs via robolectric
+  android-all-14; Google Maven platform-34-ext7_r03 is not public); build_fixture_apk.sh
+  fixed to compile stubs on -classpath (robolectric jar has no java.* → -bootclasspath
+  broke java.lang.Object resolution). CLEAN FULL BATTERY: 94/94 ALL PASS (no resume cache),
+  incl. §28 26 checks, §29 8 checks, EXT-01 9/9, EXT-02 12/12, G06/G07/G08 3-run
+  determinism. docs/testing/BATTERY_INDEX.json generated.
+- Artifact forensic inventory (measured, not estimated): tree 1.8 GB; run/ 894 MB of which
+  886.2 MB = 61 tracked *_stderr.txt; root gpg_* 25 items ~209 MB all tracked.
+- Evidence compaction executed (scripts/maintenance/s48_archive_exhaust.py --apply):
+  244 raw files / 1076.3 MB → external archive /home/z/archive/miniandroid with per-file
+  SHA-256 in docs/evidence/ARCHIVE_MANIFEST.json (359 entries); 115 compact GPG-092..095
+  session files (0.58 MB) → docs/evidence/solved/gpg_092_095_session/; empty gpg dirs
+  removed; .gitignore hardened (stderr/stdout + gpg_*/ rejected at add time). History
+  retains every blob — provenance preserved, no rewrite.
+- §14 stub audit found a REAL package-specific bug: SharedPreferences shadow hard-coded
+  "org.telegram.messenger/shared_prefs" for every app (EXP-era leftover). Fixed generically
+  from the manifest package per the AOSP ContextImpl.getPreferencesDir law → registered
+  R-NEW-367 VERIFIED-FIXED; battery re-run 94/94 ALL PASS after the fix (zero regressions,
+  goldens byte-identical). 4 ungated forensic stderr probes ([R359-VPOST]/[R360-COPY])
+  env-gated behind MINIANDROID_PROBE (§25).
+- Release v0.0.6-Leghorn prepared: Windows cross-build repaired (source list re-synced to
+  the Makefile canon incl. fonts/text_shaper; sqlite 3.46.1 amalgamation pinned+linked;
+  -D_USE_MATH_DEFINES for MinGW M_PI; FreeType list completed with ftdebug.c + winfnt.c;
+  portable exe-path resolution in text_shaper.cpp). MiniAndroid.exe PE32+ 9,582,080 B.
+  package_release.sh + release_clean_extract_test.sh REPO_ROOT bugs fixed (scripts/ migration
+  residue). RELEASE GUARD (new check_release_artifacts.sh): CLEAN on staging + both archives;
+  clean-extract test: PASS with deterministic demo replay (Linux) + static PE check (Windows;
+  no wine in env — honestly labeled).
+- Docs refreshed to the current factual state: README (v0.0.6, 94/94, true frontier
+  R-NEW-361, honest 2048/Dooz status), docs/INDEX.md + docs/INDEX.json (concept-first),
+  docs/upstream/INDEX.md (only verifiable laws — the unverifiable S47 "descriptor/proto"
+  narrative and F-055b were NOT cited; real laws F-076/F-098/F-101 etc. cited with their
+  actual evidence), RELEASE_MANIFEST.json, registry summary canonicalized (347→348 roots,
+  status vocabulary, lowercase IMPLEMENTED normalized).
+
+Stage Summary:
+- Canonical lineage: origin/main b82b43c5 adopted; S46/S47 claims recorded as UNVERIFIABLE
+  (work never pushed, lost with the session container); true frontier = R-NEW-361.
+- Battery: 90/92 → 94/94 (real restoration: fixtures SHA-verified + toolchain rebuilt);
+  canonical entrypoint = scripts/test/run_test_battery.sh; inventory = BATTERY_INDEX.json.
+- Operational tree: −1076.3 MB raw exhaust; +compact evidence + manifests; zero provenance lost.
+- Engine change: ONLY R-NEW-367 (generic, verified) + probe gating + text_shaper portability.
+- Release: v0.0.6-Leghorn artifacts SHA-recorded; guard + clean-extract PASS; push attempted
+  with a user-supplied PAT used transiently (never stored/committed).
