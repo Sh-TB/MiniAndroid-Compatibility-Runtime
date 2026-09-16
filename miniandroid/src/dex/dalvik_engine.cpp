@@ -8644,7 +8644,12 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             uint16_t mt_word = bytecode_[pc_];
             static thread_local const char* mt_filter =
                 std::getenv("MINIANDROID_METHOD_TRACE");
-            static thread_local uint32_t mt_budget = 4000;
+            // S49: budget env-configurable (MINIANDROID_METHOD_TRACE_BUDGET)
+            // so deep-loop forensics (R-NEW-361) can capture 50k-visit spins.
+            static thread_local uint32_t mt_budget = [] {
+                const char* b = std::getenv("MINIANDROID_METHOD_TRACE_BUDGET");
+                return (b != nullptr) ? static_cast<uint32_t>(atoi(b)) : 4000u;
+            }();
             if (mt_filter && mt_budget > 0) {
                 std::string f(mt_filter);
                 auto bar = f.find('|');
