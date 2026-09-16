@@ -49,7 +49,7 @@ export PATH="$MINGW_DIR/bin:$PATH"
 CC=x86_64-w64-mingw32-gcc
 CXX=x86_64-w64-mingw32-g++
 AR=x86_64-w64-mingw32-ar
-CF="-O2 -D_FILE_OFFSET_BITS=64 -DNDEBUG -fno-strict-aliasing"
+CF="-O2 -D_FILE_OFFSET_BITS=64 -DNDEBUG -fno-strict-aliasing -D_USE_MATH_DEFINES"
 
 fetch() { # fetch <url> <file>
   [ -s "$SRC/$2" ] || { echo "[windows-build] GET $1"; curl -sL --max-time 400 -o "$SRC/$2" "$1"; }
@@ -84,7 +84,7 @@ fi
 if [ ! -s "$DEP/lib/libfreetype.a" ]; then
   fetch "$FT_URL" ft.tgz && tar xf "$SRC/ft.tgz" -C "$SRC"
   ( cd "$SRC/$FT_DIR" && \
-    FTL="src/autofit/autofit.c src/base/ftbase.c src/base/ftbbox.c src/base/ftbdf.c src/base/ftbitmap.c src/base/ftcid.c src/base/ftfstype.c src/base/ftgasp.c src/base/ftglyph.c src/base/ftgxval.c src/base/ftinit.c src/base/ftmm.c src/base/ftotval.c src/base/ftpatent.c src/base/ftpfr.c src/base/ftstroke.c src/base/ftsynth.c src/base/ftsystem.c src/base/fttype1.c src/base/ftwinfnt.c src/bdf/bdf.c src/cache/ftcache.c src/cff/cff.c src/cid/type1cid.c src/gzip/ftgzip.c src/lzw/ftlzw.c src/pcf/pcf.c src/pfr/pfr.c src/psaux/psaux.c src/pshinter/pshinter.c src/psnames/psnames.c src/raster/raster.c src/sfnt/sfnt.c src/smooth/smooth.c src/svg/svg.c src/sdf/sdf.c src/truetype/truetype.c src/type1/type1.c src/type42/type42.c" && \
+    FTL="src/autofit/autofit.c src/base/ftbase.c src/base/ftdebug.c src/base/ftbbox.c src/base/ftbdf.c src/base/ftbitmap.c src/base/ftcid.c src/base/ftfstype.c src/base/ftgasp.c src/base/ftglyph.c src/base/ftgxval.c src/base/ftinit.c src/base/ftmm.c src/base/ftotval.c src/base/ftpatent.c src/base/ftpfr.c src/base/ftstroke.c src/base/ftsynth.c src/base/ftsystem.c src/base/fttype1.c src/base/ftwinfnt.c src/bdf/bdf.c src/cache/ftcache.c src/cff/cff.c src/cid/type1cid.c src/gzip/ftgzip.c src/lzw/ftlzw.c src/pcf/pcf.c src/pfr/pfr.c src/psaux/psaux.c src/pshinter/pshinter.c src/psnames/psnames.c src/raster/raster.c src/sfnt/sfnt.c src/smooth/smooth.c src/svg/svg.c src/sdf/sdf.c src/truetype/truetype.c src/type1/type1.c src/type42/type42.c src/winfonts/winfnt.c" && \
     $CC $CF -std=c99 -DFT2_BUILD_LIBRARY -Iinclude -c $FTL && $AR rcs "$DEP/lib/libfreetype.a" *.o && \
     cp -rf include/ft2build.h include/freetype "$DEP/include/" && rm -f *.o )
 fi
@@ -143,7 +143,7 @@ EOV
     FL=$(ls lib/*.c | grep -v fribidi-deprecated) && \
     $CC $CF -DFRIBIDI_NAME='"fribidi"' -DFRIBIDI_VERSION='"1.0.16"' -DFRIBIDI_INTERFACE_VERSION_STRING='"1.0.16"' -I. -Ilib -c $FL && \
     $AR rcs "$DEP/lib/libfribidi.a" *.o && mkdir -p "$DEP/include/fribidi" && \
-    cp -f lib/fribidi.h lib/fribidi-*.h "$DEP/include/fribidi/" && rm -f *.o )
+    cp -f lib/fribidi.h lib/fribidi-*.h fribidi-config.h lib/fribidi-unicode-version.h "$DEP/include/fribidi/" && rm -f *.o )
 fi
 
 # ---- libwebp ---------------------------------------------------------------
@@ -155,18 +155,33 @@ if [ ! -s "$DEP/lib/libwebp.a" ]; then
     cp -rf src/webp "$DEP/include/" && rm -f *.o )
 fi
 
+# ---- sqlite (amalgamation, public domain; version pinned to the Linux
+#      system sqlite the regression battery runs against: 3.46.1) ------------
+if [ ! -s "$DEP/lib/libsqlite3.a" ]; then
+  fetch "https://www.sqlite.org/2024/sqlite-amalgamation-3460100.zip" sqlite.zip \
+    && ( cd "$SRC" && unzip -qo sqlite.zip )
+  ( cd "$SRC/sqlite-amalgamation-3460100" && \
+    $CC $CF -DSQLITE_ENABLE_FTS5=0 -DSQLITE_THREADSAFE=1 -I. -c sqlite3.c && \
+    $AR rcs "$DEP/lib/libsqlite3.a" sqlite3.o && \
+    cp -f sqlite3.h sqlite3ext.h "$DEP/include/" && rm -f sqlite3.o )
+fi
+
 # ---- MiniAndroid runtime -> MiniAndroid.exe --------------------------------
 cd "$RA"
 B="$OUT_DIR/obj"; mkdir -p "$B"
-CXXFLAGS="-std=c++17 -O2 -DNDEBUG -DMINIANDROID_HAVE_WEBP=1 -DMINIANDROID_HAVE_LOTTIE=0 -DWIN32_LEAN_AND_MEAN -DNOMINMAX"
+CXXFLAGS="-std=c++17 -O2 -DNDEBUG -DMINIANDROID_HAVE_WEBP=1 -DMINIANDROID_HAVE_LOTTIE=0 -DWIN32_LEAN_AND_MEAN -DNOMINMAX -D_USE_MATH_DEFINES"
 INC="-Isrc -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Ithird_party/nlohmann_json/include -I$DEP/include"
+# Source enumeration mirrors the Linux Makefile's canonical lists (DEX,
+# RESOURCES, FRAMEWORK are CURATED lists there — e.g. exception_system.cpp is
+# intentionally not in the build — so a blind wildcard would drag dead code in).
 SRCS="src/apk/apk_parser.cpp src/apk/manifest_reader.cpp
-src/dex/dex_parser.cpp src/dex/class_resolver.cpp src/dex/dex_interpreter_batch.cpp src/dex/dalvik_engine.cpp src/dex/trace_exporter.cpp
+src/dex/dex_parser.cpp src/dex/mutf8.cpp src/dex/class_resolver.cpp src/dex/dex_interpreter_batch.cpp src/dex/dalvik_engine.cpp src/dex/trace_exporter.cpp
 src/runtime/execution_engine.cpp src/runtime/application_runtime.cpp
 src/diagnostics/trace_engine.cpp
-src/resources/res_config.cpp src/resources/resource_parser.cpp src/resources/arsc_parser.cpp src/resources/axml_parser.cpp src/resources/layout_inflater.cpp src/resources/resource_runtime.cpp
+src/resources/res_id.cpp src/resources/res_config.cpp src/resources/resource_parser.cpp src/resources/string_pool.cpp src/resources/arsc_parser.cpp src/resources/axml_parser.cpp src/resources/layout_inflater.cpp src/resources/resource_runtime.cpp
 src/renderer/software_renderer.cpp
-src/framework/android_shadows.cpp src/framework/shadow_registry.cpp src/framework/dialog_shadow.cpp src/framework/canvas_shadow.cpp
+src/fonts/text_shaper.cpp
+src/framework/executor_shadow.cpp src/framework/android_shadows.cpp src/framework/shadow_registry.cpp src/framework/choreographer_shadow.cpp src/framework/dialog_shadow.cpp src/framework/clipboard_shadow.cpp src/framework/canvas_shadow.cpp src/framework/touch_dispatcher.cpp src/framework/state_list.cpp src/framework/lifecycle_controller.cpp src/framework/locks_shadow.cpp src/framework/atomic_shadow.cpp src/framework/pending_intent_shadow.cpp
 src/api/application_context.cpp src/api/shared_prefs.cpp"
 SRCS="$SRCS $(ls src/storage/*.cpp)"
 SRCS="$SRCS src/main.cpp"
@@ -178,7 +193,7 @@ done
 
 $CXX $CXXFLAGS -o "$OUT_DIR/MiniAndroid.exe" \
   $(ls "$B"/*.o | grep -v "src_main") "$B/src_main.o" \
-  -L"$DEP/lib" -static -lz -ljpeg -lwebp -lpng16 -lfreetype -lharfbuzz -lfribidi -static -lstdc++ -lm -lpthread
+  -L"$DEP/lib" -static -lz -ljpeg -lwebp -lpng16 -lfreetype -lharfbuzz -lfribidi -lsqlite3 -static -lstdc++ -lm -lpthread -lwsock32 -lws2_32
 
 echo "[windows-build] DONE: $OUT_DIR/MiniAndroid.exe"
 ls -la "$OUT_DIR/MiniAndroid.exe"
