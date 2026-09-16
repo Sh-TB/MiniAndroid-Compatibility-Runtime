@@ -97,7 +97,7 @@ if [ "${#JAVA_FILES[@]}" -eq 0 ]; then
 fi
 if ! java -jar "$ECJ_JAR" \
     -source 8 -target 8 -proc:none \
-    -bootclasspath "$STUBS_JAR" \
+    -cp "$STUBS_JAR" \
     "${RJAVA_ARGS[@]}" \
     -d "$WORK/classes" \
     "${JAVA_FILES[@]}"; then
