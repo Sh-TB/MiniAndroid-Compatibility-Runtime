@@ -1,7 +1,7 @@
 {
  "baseline_head": "5a2b7d99",
  "summary": {
-  "total_roots": 347,
+  "total_roots": 348,
   "open_frontiers": [
    "R-NEW-228",
    "R-NEW-303",
@@ -12,7 +12,7 @@
    "R-NEW-361"
   ],
   "last_updated": "S48 2026-09-16",
-  "note": "S48 repository-recovery campaign: battery restored to 94/94 (EXT-01/02 external fixtures re-fetched SHA-exact; fixture toolchain re-bootstrapped; build_fixture_apk.sh compiles framework stubs on -classpath for robolectric android-all-14). Raw campaign exhaust (1076MB) archived externally with SHA provenance (docs/evidence/ARCHIVE_MANIFEST.json); GPG-092..095 compact session evidence moved to docs/evidence/solved/. Engine source UNCHANGED at S45 state (b82b43c5).",
+  "note": "S48 repository-recovery campaign: battery restored to 94/94 (EXT-01/02 external fixtures re-fetched SHA-exact; fixture toolchain re-bootstrapped; build_fixture_apk.sh compiles framework stubs on -classpath for robolectric android-all-14). Raw campaign exhaust (1076MB) archived externally with SHA provenance (docs/evidence/ARCHIVE_MANIFEST.json); GPG-092..095 compact session evidence moved to docs/ R-NEW-367 VERIFIED-FIXED (S48 §14 stub audit): SharedPreferences shadow no longer hard-codes the EXP-era 'org.telegram.messenger' data dir; prefs resolve from the manifest package per the AOSP ContextImpl law. Battery re-proven 94/94.",
   "total": 344,
   "verified_fixed": 41,
   "by_status": {
@@ -3501,6 +3501,23 @@
    "fixed": "",
    "evidence": "run /tmp logs ephemeral; [R360-COPY]/[R359-VPOST]/[F040-DIAG] lines captured in s45 session record; both dooz variants converge here AFTER R-NEW-359/360 (previous blockers are gone). NEXT: (1) instrument hashCode dispatch on the aput-oob receiver frame ([S44-R351]-style register dump at Lbw0;.a pc=8), (2) verify int-to-long/neg-long/shr-long-2addr metadata slice math against androidx.collection sources, (3) micro-fixture: ScatterMap set/get from a fixture APK (reuse exp052 toolchain).",
    "regression": ""
+  },
+  {
+   "id": "R-NEW-367",
+   "status": "VERIFIED-FIXED",
+   "priority": "P1",
+   "fg": false,
+   "title": "SharedPreferences shadow hard-coded the EXP-era data dir 'org.telegram.messenger/shared_prefs' for EVERY app — any non-Telegram APK's getSharedPreferences loaded from / stored into the wrong package directory",
+   "summary": "S48 §14 obsolete-stub audit hit: dalvik_engine.cpp built prefs paths as app_data_root()/\"org.telegram.messenger\"/shared_prefs — a leftover from the era when Telegram was the only corpus target. AOSP ContextImpl.getPreferencesDir law: prefs live under the RUNNING APPLICATION's package dir. Fix resolves the directory from the manifest-derived package_name_ (the same source Context.getPackageName uses), empty-package falls back to unknown.package.",
+   "root_cause": "hard-coded EXP-era package string in the SharedPreferences load (dalvik_engine.cpp ~20720) and store (~20932) paths",
+   "affected_subsystem": "storage / SharedPreferences shadow",
+   "upstream_law": "AOSP ContextImpl.getPreferencesDir(): <data>/shared_prefs under the calling app's data dir",
+   "fix": "prefs_dir = app_data_root() / <manifest package> / shared_prefs (both sites)",
+   "fix_commit": "S48 (see git log R-NEW-367)",
+   "verification_command": "bash scripts/test/run_test_battery.sh",
+   "verification_result": "BATTERY GATE: ALL PASS (94 stages) — zero regressions; goldens byte-identical",
+   "evidence": "docs/testing/BATTERY_INDEX.json; S48 session worklog",
+   "next": "re-run persistence chain (F-012) on the next dooz session to confirm cross-process restore uses the corrected dir"
   }
  ]
 }

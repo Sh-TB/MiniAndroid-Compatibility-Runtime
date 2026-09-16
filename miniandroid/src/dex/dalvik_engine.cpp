@@ -19431,7 +19431,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     }
                 }
                 if (f101_copied > 0) {
-                    std::cerr << "[R360-COPY] ArrayList(Collection) src="
+                    // S48 §25: forensic probe output is env-gated, never shipped on by default.
+                    if (std::getenv("MINIANDROID_PROBE")) std::cerr << "[R360-COPY] ArrayList(Collection) src="
                               << f101_src << " (" << f101_scls << ")"
                               << " via ITERATOR elems=" << f101_copied
                               << std::endl;
@@ -19473,7 +19474,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         ++f101_copied;
                     }
                     if (f101_copied > 0) {
-                        std::cerr << "[R360-COPY] ArrayList(Collection) src="
+                        if (std::getenv("MINIANDROID_PROBE")) std::cerr << "[R360-COPY] ArrayList(Collection) src="
                                   << f101_src << " (" << f101_scls << ")"
                                   << " backing field=\"" << f360_kv.first
                                   << "\" arr=" << f360_v.object_id
@@ -20716,8 +20717,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         heap_.set_object_field(obj_id, "prefs_name", name_val);
 
         // Try to load existing XML file
+        // R-NEW-367: per AOSP ContextImpl the prefs file lives under the
+        // RUNNING APPLICATION's package dir (<data>/shared_prefs), never a
+        // hard-coded package. Resolves from the manifest-derived package
+        // (same source Context.getPackageName uses).
+        std::string prefs_pkg = package_name_.empty() ? std::string("unknown.package") : package_name_;
         std::string prefs_dir = (std::filesystem::path(Storage::app_data_root()) /
-                               "org.telegram.messenger" / "shared_prefs").string();
+                               prefs_pkg / "shared_prefs").string();
         std::string prefs_file = prefs_dir + "/" + prefs_name + ".xml";
         std::ifstream infile(prefs_file);
         if (infile.is_open()) {
@@ -20928,8 +20934,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         prefs_name = name_val.string_val;
                     }
                     // Write to XML
+                    // R-NEW-367: package dir is the running application's
+                    // manifest package (AOSP ContextImpl.getPreferencesDir law).
+                    std::string prefs_pkg2 = package_name_.empty() ? std::string("unknown.package") : package_name_;
                     std::string prefs_dir = (std::filesystem::path(Storage::app_data_root()) /
-                               "org.telegram.messenger" / "shared_prefs").string();
+                               prefs_pkg2 / "shared_prefs").string();
                     // Create directory
                     std::string mkdir_cmd = "mkdir -p " + prefs_dir;
                     system(mkdir_cmd.c_str());
