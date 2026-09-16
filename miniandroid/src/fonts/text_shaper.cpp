@@ -16,7 +16,11 @@
 
 #include <cmath>
 #include <cstdlib>
+#if defined(_WIN32)
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 #include <cstring>
 #include <cstdio>
 #include <functional>
@@ -91,11 +95,19 @@ TextShaper::TextShaper() {
         // so manual runs from the source tree keep working.)
         auto exe_relative = [](const char* rel) -> std::string {
             char buf[4096];
+#if defined(_WIN32)
+            // Windows: the same §16 law resolves via the module path of the
+            // running executable (GetModuleFileNameA), never the cwd.
+            DWORD n = ::GetModuleFileNameA(nullptr, buf, sizeof(buf) - 1);
+            if (n <= 0 || n >= sizeof(buf)) return "";
+            buf[n] = '\0';
+#else
             ssize_t n = ::readlink("/proc/self/exe", buf, sizeof(buf) - 1);
             if (n <= 0) return "";
             buf[n] = '\0';
+#endif
             std::string dir = buf;
-            size_t slash = dir.find_last_of('/');
+            size_t slash = dir.find_last_of("/\\");
             if (slash == std::string::npos) return "";
             return dir.substr(0, slash) + "/" + rel;
         };
