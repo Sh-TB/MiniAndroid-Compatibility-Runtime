@@ -21,6 +21,7 @@ Machine-readable twin: [`docs/INDEX.json`](docs/INDEX.json).
 | Building (incl. Windows cross-build) | [`docs/build/`](build/) · `miniandroid/scripts/build_windows.sh` |
 | Release packaging & guards | `scripts/release/` (`package_release.sh`, `check_release_artifacts.sh`, `validate_release_content.py`, `release_clean_extract_test.sh`) |
 | Fixture toolchain bootstrap | `scripts/build/bootstrap_toolchain.sh` |
+| Fetched upstream source evidence (pinned per session) | `upstream/` (kotlinx-collections, compose, s43/s44 sources — 961 files, ~15 MB; provenance for the upstream-law index) |
 
 ## Issue index (by concept)
 
