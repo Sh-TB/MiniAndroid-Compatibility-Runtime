@@ -33,6 +33,30 @@ else
     "$AAPT2" version
 fi
 
+# ECJ 3.33.0 — Eclipse Maven (public mirror of the vendored jar)
+ECJ="$TOOLS/ecj/ecj.jar"
+if [ -f "$ECJ" ]; then echo "ok: $ECJ"; else
+    echo "ecj: restoring from Maven Central"
+    curl -sfSL -o "$ECJ" "https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.33.0/ecj-3.33.0.jar"
+fi
+
+# r8 8.13.23 (d8 included) — Google Maven
+R8="$TOOLS/d8/r8.jar"
+if [ -f "$R8" ]; then echo "ok: $R8"; else
+    echo "r8: restoring from Google Maven"
+    curl -sfSL -o "$R8" "https://dl.google.com/dl/android/maven2/com/android/tools/r8/8.13.23/r8-8.13.23.jar"
+fi
+
+# android-34 framework stubs — Google Maven artifact is not public; use the
+# Robolectric android-all-14 (API 34) mirror on Maven Central (-f: fail on 404,
+# never save an HTML error page as a jar).
+A34="$TOOLS/android-34.jar"
+if [ -f "$A34" ] && [ "$(head -c2 "$A34" | xxd -p)" = "504b" ]; then echo "ok: $A34"; else
+    echo "android-34 stubs: restoring from Maven Central (robolectric android-all-14)"
+    curl -sfSL -o "$A34" "https://repo1.maven.org/maven2/org/robolectric/android-all/14-robolectric-10818077-i7/android-all-14-robolectric-10818077-i7.jar" \
+        || curl -sfSL -o "$A34" "https://repo1.maven.org/maven2/org/robolectric/android-all/14-robolectric-10818077/android-all-14-robolectric-10818077.jar"
+fi
+
 for f in "$TOOLS/ecj/ecj.jar" "$TOOLS/d8/r8.jar" "$TOOLS/android-34.jar"; do
     if [ -f "$f" ]; then echo "ok: $f"; else echo "MISSING: $f (vendored asset — restore from backup)" >&2; fi
 done
