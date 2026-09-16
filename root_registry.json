@@ -1,16 +1,18 @@
 {
  "baseline_head": "5a2b7d99",
  "summary": {
-  "total_roots": 321,
+  "total_roots": 347,
   "open_frontiers": [
    "R-NEW-228",
    "R-NEW-303",
    "R-NEW-323",
    "R-NEW-330",
-   "R-NEW-331"
+   "R-NEW-331",
+   "R-NEW-335",
+   "R-NEW-361"
   ],
-  "last_updated": "S44 2026-09-15",
-  "note": "S44: R-NEW-353 charAt result-out contract (unblocked dooz23 protobuf schema — the TRUE R-NEW-351 root); R-NEW-354 framework-class registry (SystemProperties forName — attach completes, composition bootstrap dispatches); R-NEW-355 invoke pc-advance contract (THE REAL R-NEW-352 root — microtimer renders ungated); R-NEW-356 Button clickable-default + R-NEW-357 getIdentifier + R-NEW-358 Array.newInstance (TicTacToe Classic: rendered board -> taps hit cells -> DEX click listeners fire -> X/O alternate -> board redraws — FIRST fully playable game session); chessclock/gmdice/unote goldens byte-identical; battery 90/92 (only pre-existing EXT-01/02); registry 338->344",
+  "last_updated": "S48 2026-09-16",
+  "note": "S48 repository-recovery campaign: battery restored to 94/94 (EXT-01/02 external fixtures re-fetched SHA-exact; fixture toolchain re-bootstrapped; build_fixture_apk.sh compiles framework stubs on -classpath for robolectric android-all-14). Raw campaign exhaust (1076MB) archived externally with SHA provenance (docs/evidence/ARCHIVE_MANIFEST.json); GPG-092..095 compact session evidence moved to docs/evidence/solved/. Engine source UNCHANGED at S45 state (b82b43c5).",
   "total": 344,
   "verified_fixed": 41,
   "by_status": {
@@ -26,7 +28,21 @@
    "PARTIAL-FIX": 1,
    "implemented": 4,
    "SUPERSEDED-BY-EVIDENCE": 1
-  }
+  },
+  "primary_frontier": "R-NEW-361 (dooz v18+v23 converge: ScatterMap/probe arithmetic — refined R-NEW-335)",
+  "status_vocabulary": [
+   "OBSERVED-FAIL",
+   "ROOT-CAUSED-FIXED",
+   "VERIFIED-FIXED",
+   "VERIFIED-CORRECT",
+   "IMPLEMENTED",
+   "PARTIAL",
+   "PARTIAL-FIX",
+   "RESEARCHED-NOT-IMPLEMENTED",
+   "UNPROVEN",
+   "NOT-APPLICABLE",
+   "SUPERSEDED-BY-EVIDENCE"
+  ]
  },
  "roots": [
   {
@@ -3106,7 +3122,8 @@
    "status": "OBSERVED-FAIL",
    "priority": "P0",
    "fg": true,
-   "evidence": "S24 CURRENT FRONTIER: dooz NavHost graph (route=null → NavGraph.id=0) — NavController restore loop c.h reads entry.j.j.o (parent graph id=0) and calls c.e(0) getBackStackEntry(0); the root GRAPH's own NavBackStackEntry was never pushed (upstream pushes ancestor-graph entries during navigate before destination entries; our engine pushed only the destination entry via c.a ← c$e.o with an EMPTY parent list z1/t.i). IAE 'No destination with ID 0 is on the NavController's back stack. The current destination is e$a@2554' uncaught at MainActivity.onCreate → rc=1. Next root: implement the ancestor-graph-entry-push law (upstream navigate-entry-hierarchy) so c.e(0) finds the graph entry. Evidence: run/s24_post_f090i_stderr.txt lines 306566-306612."
+   "evidence": "S24 CURRENT FRONTIER: dooz NavHost graph (route=null → NavGraph.id=0) — NavController restore loop c.h reads entry.j.j.o (parent graph id=0) and calls c.e(0) getBackStackEntry(0); the root GRAPH's own NavBackStackEntry was never pushed (upstream pushes ancestor-graph entries during navigate before destination entries; our engine pushed only the destination entry via c.a ← c$e.o with an EMPTY parent list z1/t.i). IAE 'No destination with ID 0 is on the NavController's back stack. The current destination is e$a@2554' uncaught at MainActivity.onCreate → rc=1. Next root: implement the ancestor-graph-entry-push law (upstream navigate-entry-hierarchy) so c.e(0) finds the graph entry. Evidence: run/s24_post_f090i_stderr.txt lines 306566-306612.",
+   "evidence_note": "raw stderr artifact (run/s24_post_f090i_stderr.txt lines 306566-306612) predates the S48 external-archive law; the first-divergence record above is inline and complete"
   },
   {
    "id": "R-NEW-324",
@@ -3307,7 +3324,7 @@
   {
    "id": "R-NEW-345",
    "title": "runBlocking/BlockingCoroutine joinBlocking livelock — kotlinx event-loop state machine + worker threads never observed their own work; HALT-LOOP destroyed two coroutine frames; dooz theme-load never completed",
-   "status": "implemented",
+   "status": "IMPLEMENTED",
    "priority": "P0",
    "fg": true,
    "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) — general: any app calling runBlocking at startup (ViewModel init, DataStore reads)",
@@ -3323,7 +3340,7 @@
   {
    "id": "R-NEW-347",
    "title": "dooz23 first-frame chain (compose BOM 2026.06.01 / runtime 1.11.4): AndroidComposeView never attached, never DEX-measured, View.measure void, File path/name family missing — content composition started but root stayed 0x0",
-   "status": "implemented",
+   "status": "IMPLEMENTED",
    "priority": "P0",
    "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) — general: any compose app; File/String laws general JVM",
    "observed": "S42 run_a: UC009 attach wave ran BEFORE the AndroidComposeView existed (created lazily during first onMeasure via ensureCompositionCreated -> La72;.a pc=112 addView into the already-attached ComposeView) -> pending onReadyForComposition request (Lt4;->n0) stored but NEVER consumed (Lt4;.onAttachedToWindow pc 640-662 is the ONLY consumer) -> content lambda never ran. Post-attach-fix (run_b): composition started (ComposerImpl Lxk0; live, slot ops), but Lt4; measured 0x0: (1) F10 DEX onMeasure hook skipped containers; (2) overrides_on_measure flag never set on the invoke-direct ctor path; (3) View.measure(I I)V was silent-void so AbstractComposeView.onMeasure's child.measure() never measured AndroidComposeView (DEX Lr;.i: getChildAt(0) -> child.measure(childSpec) -> setMeasuredDimension(child.measuredWidth+padding)); (4) getMeasuredWidth/Height had NO implementation; (5) the DataStore file-name lambda (Lg8;.a) hit File.getName()==null -> uncaught NPE killed the pass (run_i: SIOOBE from lastIndexOf garbage; run_k: File(null, \"datastore/settings.preferences_pb\") path capture empty).",
@@ -3348,7 +3365,7 @@
   {
    "id": "R-NEW-349",
    "title": "dooz23 onCreate death: eager measure inside setContentView(View) dispatched real DEX AbstractComposeView.onMeasure on an UNATTACHED tree — windowRecomposer checkPrecondition(isAttachedToWindow) threw ISE before any composition existed",
-   "status": "implemented",
+   "status": "IMPLEMENTED",
    "priority": "P0",
    "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) — general: every app whose setContentView(View) tree contains DEX onMeasure overrides",
    "observed": "S43 baseline (d5073b4d + R-NEW-347): stderr L242810 [THROWABLE-MSG] ISE \"Cannot locate windowRecomposer; View Lho;@960 is not attached to a window\" thrown from Log0;.b pc=2 (WindowRecomposer.android.kt:288) during the U007 eager measure; L242833 [U007-MEASURE] completes; L242834 APP-BOUNDARY escape at MainActivity.onCreate invoke_pc=306; the S42 attach wave fired only LATER (L242916+). Chain: Ljm;.setContentView -> measure_layout -> custom_view_measure_hook_ -> DEX Lr;.onMeasure (AbstractComposeView) -> Lr;.g ensureCompositionCreated -> Log0;.b windowRecomposer -> require(isAttachedToWindow)=FALSE.",
@@ -3361,7 +3378,7 @@
   {
    "id": "R-NEW-350",
    "title": "protobuf-javalite MessageInfo chain dead: 3-arg Class.forName(String,Z,ClassLoader) silently void + Class.asSubclass unimplemented -> defaultInstanceMap never populated -> UOE 'No factory is available for message type' / bare ISE killed the DataStore theme read",
-   "status": "implemented",
+   "status": "IMPLEMENTED",
    "priority": "P0",
    "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) — general: any DataStore/protobuf-lite app",
    "observed": "S43 baseline: runBlocking{settings.getTheme()} (MainActivity.onCreate) -> DataStore read -> Las0;.<init> Class.forName('androidx.datastore.preferences.protobuf.DescriptorMessageInfoFactory') CNFE (EXPECTED javalite fallback, correctly caught) -> composite factory Lzr0;=[Lyb0;->b(GeneratedMessageInfoFactory), fallback] -> Lyb0;.b isSupported TRUE ([R350-IAA] recv=Lbc0; arg=Ly81; -> TRUE) -> Lyb0;.a asSubclass SILENT-NULL -> Lbc0;.d received NULL Class ([R350-SHAPE] a0k8=NULL_REF) -> forName silent -> defaultInstanceMap.get x2 NULL -> dynamicMethod(GET_DEFAULT_INSTANCE) NULL -> bare ISE -> RuntimeException('Unable to get message info for y81') x23 -> escaped MainActivity.onCreate invoke_pc=0xc1.",
