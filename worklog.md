@@ -294,3 +294,41 @@ Stage Summary:
 - 94/94 battery restored and re-proven at S49 HEAD.
 - Prior-session claim drift quantified and documented; registry verified as single
   source of truth. Next: attack R-NEW-361 per its registry NEXT probes.
+
+---
+Task ID: S49-FRONTIER
+Agent: Super Z (main)
+Task: S49 Phase 2 — attack R-NEW-361 (the TRUE registry frontier after the claim audit).
+
+Work Log:
+- dooz v18 re-fetched cache (d81292cd SHA match) + v23 (299eab21 SHA match, S45-identical).
+- v18 baseline at S49 HEAD: [HALT-LOOP] Lh/r;.c PC=0x1c 50001 visits + aput-oob
+  length=7 index=613985991 LP/v$a;.c pc=28 — R-NEW-361 signature REPRODUCED; the
+  corrupt index VALUE varies run-to-run (identity-hash provenance consistent).
+- Androguard disasm: Lh/r; = androidx.collection ScatterMap (probeMask=capacity,
+  capacity=2^k-1 convention); LP/v$a;.c = set-with-insertion-point (not-int law);
+  Lh/r;.c = findImpl with the branchless group-straddle mask (-(b.toLong()) shr 63).
+- METHOD-TRACE budget made env-configurable (MINIANDROID_METHOD_TRACE_BUDGET) — the
+  4000-line default could not reach the 50k-visit spin; diagnostics-only engine change.
+- Live trace analysis: failing tables' metadata words = 0x00/0xFF bytes at illegal
+  slots, ZERO EMPTY(0x80) bytes -> maskEmpty()==0 forever -> probe can never break
+  (single-group capacity-8 table: probeOffset mathematically cannot advance).
+- Built tests/fixtures/r361_metadata_probe — bit-visualization fixture (64 stripes
+  per row, 28 rows), JVM(OpenJDK 21)-compared ground truth. Multiple fixture-oracle
+  bugs found and fixed en route (hand-arithmetic borrow errors, index collisions,
+  canvas clipping) — final matrix: writeRawMetadata ALL slots JVM-exact, Sentinel
+  word law OK, mirror cloneIndex OK, long[] clone/arraycopy/manual-copy independence
+  OK, full SWAR match/empty chain (mul-long broadcast / xor / sub-borrow / not-long /
+  and / shr) ALL JVM-EXACT.
+- VERDICT: the engine 64-bit arithmetic surface is EXONERATED end-to-end. The dooz
+  ghost-byte corruption originates ABOVE the op layer (rehash path / snapshot array
+  lifecycle / identity-hash stability) — NEXT probes registered in root_registry.json
+  R-NEW-361 (heap dump at HALT; resizeStorage rehash hashCode stability; snapshot
+  copy trigger points).
+- Battery: ALL PASS 94 stages (zero regression from the diagnostics change).
+
+Stage Summary:
+- R-NEW-361: signature reproduced, disasm mapped, op-surface exonerated with a
+  permanent reusable probe fixture; root narrowed to the rehash/snapshot layer.
+- Honest status: OBSERVED-FAIL (unchanged) — but the search space is now
+  evidence-bounded instead of open.
