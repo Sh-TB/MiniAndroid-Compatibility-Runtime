@@ -19,6 +19,8 @@
 # ============================================================================
 set -uo pipefail
 
+SECURITY_GUARD="$(dirname "$0")/../security/check_secrets.sh"
+
 if [ $# -lt 1 ]; then
     echo "usage: $0 <staging-or-dist-dir>..." >&2
     exit 1
@@ -85,6 +87,14 @@ for target in "$@"; do
         report "artifact far above baseline envelope (${total} B): $target"
     elif [ "$total" -gt "$WARN_BYTES" ]; then
         echo "WARNING: artifact above expected envelope (${total} B): $target"
+    fi
+
+    # 5. S49 secret guard — fail closed on ANY credential-shaped string in
+    #    the staging tree. A leaked PAT/key inside a published asset is a
+    #    security incident; the release MUST NOT proceed.
+    echo "== secret-scan $target"
+    if ! bash "$SECURITY_GUARD" "$DIR"; then
+        report "secret-scan FAILED inside: $target"
     fi
 done
 
