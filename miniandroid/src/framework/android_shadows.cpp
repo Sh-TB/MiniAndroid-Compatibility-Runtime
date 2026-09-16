@@ -435,7 +435,8 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                             st->elements.push_back(elem);
                         }
                         if (complete && alen > 0) {
-                            std::cerr << "[R360-COPY] ArrayList(Collection) src="
+                            // S48 §25: forensic probe output is env-gated.
+                            if (std::getenv("MINIANDROID_PROBE")) std::cerr << "[R360-COPY] ArrayList(Collection) src="
                                       << ctx.args[0].object_id
                                       << " via field=\"" << fname
                                       << "\" arr=" << backing_arr
@@ -2967,7 +2968,8 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                                         ? ctx.arg_as_int(1, 0)
                                         : 0;
                     hs->enqueue(r, delay, /*cls=*/"View.post");
-                    std::cerr << "[R359-VPOST] View." << m
+                    // S48 §25: forensic probe output is env-gated.
+                    if (std::getenv("MINIANDROID_PROBE")) std::cerr << "[R359-VPOST] View." << m
                               << " runnable=" << r << " delay=" << delay
                               << " view=" << ctx.receiver_id << std::endl;
                     return CallResult::handled_bool(true);
