@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# pre-commit hook — S49 secret guard (fail closed).
+# Scans STAGED content for credential-shaped strings; blocks the commit.
+# Installed by scripts/security/install_hooks.sh. Never prints secret values.
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+bash "$REPO_ROOT/scripts/security/check_secrets.sh" --staged
+rc=$?
+if [ "$rc" -ne 0 ]; then
+    echo ""
+    echo "COMMIT BLOCKED by secret guard (fail-closed)."
+    echo "Remove the credential from the staged changes, then re-commit."
+fi
+exit "$rc"

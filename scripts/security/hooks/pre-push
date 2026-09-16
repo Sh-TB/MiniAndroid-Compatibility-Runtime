@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# pre-push hook — S49 secret guard (fail closed).
+# Last line of defense before code leaves the machine: scans the working
+# tree (source of the pushed content) for credential-shaped strings.
+# Installed by scripts/security/install_hooks.sh. Never prints secret values.
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+bash "$REPO_ROOT/scripts/security/check_secrets.sh" --tree
+rc=$?
+if [ "$rc" -ne 0 ]; then
+    echo ""
+    echo "PUSH BLOCKED by secret guard (fail-closed)."
+    echo "Remove the credential from the tree, then re-push."
+fi
+exit "$rc"
