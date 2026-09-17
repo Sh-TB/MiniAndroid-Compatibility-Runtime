@@ -1,0 +1,80 @@
+{
+  "schema": "s50_sandbox_evidence/v1",
+  "protocol": "scripts/cleanup/s50_sandbox_test.sh",
+  "fixture": "tests/fixtures/s50_sandbox_probe (package com.miniandroid.s50probe)",
+  "fixture_apk_sha256": "built by scripts/build/build_fixture_apk.sh (aapt2/ECJ/D8, deterministic)",
+  "date": "2026-09-16",
+  "runtime_fixes_introduced_and_verified": {
+    "S50-R1": {
+      "title": "getFilesDir must resolve <app_data_root>/<running-package>/files",
+      "root_cause": "hard-coded literal /tmp/miniandroid/files in get_or_create_singleton (File default path) and a File.getAbsolutePath fallback stub; violated M3 F-012 one-app-data-root law and R-NEW-367 package-dir law",
+      "fix": "getFilesDir bridge sets the singleton path to <app_data_root>/<package>/files and creates it; bogus fallback stub deleted (R-NEW-347 name-component handler is the single source of truth); singleton default made law-conformant",
+      "proof": "run asserts <root>/<pkg>/files dir exists after run; R347-FILE-CTOR assembles <root>/<pkg>/files/s50_marker.txt"
+    },
+    "S50-R2": {
+      "title": "android.graphics.Color.rgb(III)I implemented",
+      "root_cause": "unimplemented (REC-MISS) -> returned 0 -> alpha-0 transparent paints, silently invisible",
+      "fix": "AOSP Color.rgb law: 0xFF000000 | (r<<16) | (g<<8) | b",
+      "proof": "probe bands now render opaque amber/green/blue; pixel assertions exact"
+    },
+    "S50-R3": {
+      "title": "static-field WRITE must trigger class initialization (JLS 12.4.1 / ART ClassLinker law)",
+      "root_cause": "execute_sput/execute_sput_object did not ensure_class_initialized; ensure_class_initialized re-materializes every static default on first init, so app statics written BEFORE render-time first init were silently overwritten with defaults (run2: onCreate wrote b1Persisted=true, render read false)",
+      "fix": "ensure_class_initialized(field_res.class_descriptor) added to both static-write handlers, mirroring execute_sget (EXP-053)",
+      "proof": "run2 band1/band2 render GREEN (persisted state visible on screen); SGET b1Persisted value=1 at draw time"
+    },
+    "S50-R4": {
+      "title": "String.startsWith/endsWith implemented",
+      "root_cause": "unimplemented and SILENTLY default-false through the String bypass (no REC-MISS log possible)",
+      "fix": "OpenJDK law: endsWith(suffix) == startsWith(suffix, len-len(suffix)); startsWith(prefix[,toffset]); bounds law -> false; null receiver -> deferred NPE",
+      "proof": "band3 FILE PATH LAW renders blue (parent-law=true) in every run"
+    }
+  },
+  "runs": {
+    "run1_fresh_rootA": {
+      "screenshot_sha256": "e6031d6a5f8a95d11c3853866ea384954d494f7703af2d63f9a416f1c3ee58dd",
+      "expected": "B1 amber (prefs opens-was=0), B2 amber (db rows-was=0), B3 blue (path law)",
+      "sandbox_after": {
+        "files_dir": "created by getFilesDir (S50-R1)",
+        "shared_prefs/default.xml": "opens=1",
+        "databases/s50.db": "rows=1"
+      }
+    },
+    "run2_reopen_rootA": {
+      "screenshot_sha256": "f62ccb9265388a83fc65b8bbc540d306a7dd280bee6eac667c4f9c15c33a6ecb",
+      "expected": "B1/B2 GREEN (persisted values visible on screen), B3 blue; screenshot != run1",
+      "sandbox_after": {
+        "opens": "2",
+        "rows": "2"
+      }
+    },
+    "run3_reopen_rootA": {
+      "screenshot_sha256": "ba0598d6b1e134d3b11ac4f03a890a013c720b0e364dd2106c04a3b7a5c8c803",
+      "sandbox_after": {
+        "opens": "3",
+        "rows": "3"
+      }
+    },
+    "run4_fresh_rootB": {
+      "screenshot_sha256": "e6031d6a5f8a95d11c3853866ea384954d494f7703af2d63f9a416f1c3ee58dd",
+      "expected": "identical to run1 (fresh state fully sandbox-bound; no global leak)",
+      "sandbox_after": {
+        "rootB/db rows": "1 (independent)"
+      }
+    }
+  },
+  "sandbox_semantics_recorded": {
+    "PROCESS_CLOSE": {
+      "persistent": "package sandbox under <app_data_root>/<package>/ : shared_prefs XML, databases (SQLite), files dir (S50-R1)",
+      "volatile": "process heap, static memory state, all in-memory runtime state dies with the process (C++ process exit after final frame)"
+    },
+    "RUNTIME_RESTART": "each `miniandroid run` invocation IS a fresh runtime process; reopen-without-runtime-restart and runtime-restart are architecturally the same operation from the app's perspective (documented honestly; no daemon). Persistence identical in both cases (proven: 3 sequential processes)",
+    "SANDBOX_IDENTITY": "preserved (same <app_data_root>/<package>/ dir across reopen/restart)",
+    "FILES": "preserved (files dir law fixed by S50-R1); java.io.FileWriter/FileReader API surface itself remains PENDING (unimplemented) \u2014 honest gap",
+    "DATABASE": "preserved",
+    "PREFERENCES": "preserved",
+    "finish_cascade": "apps calling finish() dispatch onPause->onStop->onDestroy (LifecycleController; covered by G07 battery stage). This probe never calls finish(): final_state=RESUMED at process exit"
+  },
+  "battery_regression_gate": "BATTERY GATE: ALL PASS (94 stages) at the fixes-included build; full log kept out of git (raw exhaust law): 94 PASS / 0 FAIL, exit 0",
+  "verdict": "S50 SANDBOX PROTOCOL: ALL PASS (20/20 assertions)"
+}
