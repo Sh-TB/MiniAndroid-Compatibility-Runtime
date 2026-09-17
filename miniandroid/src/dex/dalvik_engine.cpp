@@ -3807,6 +3807,20 @@ bool DalvikExecutionEngine::try_recursive_invoke_on_super(
             const dex::ClassInfo& sup_cls = dex_report_->classes[cit->second];
             for (const auto& m : sup_cls.all_methods()) {
                 if (m.name != method_name || m.bytecode.empty()) continue;
+                // S55: the F-074 forensic trace used to be ALWAYS-ON
+                // stderr — including a heap message lookup per dispatch.
+                // Compose-heavy apps make MILLIONS of inherited calls;
+                // the trace throttled them to ~1.6K instr/s (Dooz v18
+                // could not reach its first frame inside 10 minutes).
+                // The LAW (receiver-identity super dispatch) is the code
+                // below; the TRACE is now env-gated (MINIANDROID_F074_TRACE).
+                static const bool f074_trace =
+                    std::getenv("MINIANDROID_F074_TRACE") != nullptr;
+                if (!f074_trace) {
+                    return try_recursive_invoke(sup, method_name, args,
+                                                return_val, result,
+                                                method_descriptor);
+                }
                 std::cerr << "[F074-SUPER-DISPATCH] " << declaring_class << "."
                           << method_name << " not declared locally → ancestor "
                           << sup << "." << m.name << m.descriptor
@@ -3846,6 +3860,33 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     DalvikExecutionResult& result,
     const std::string& method_descriptor
 ) {
+    // S55 R-NEW-361 dispatch trace (env-gated): every entry for the Kotlin
+    // LongArray-fill helper and the Arrays.fill bridge target — catches a
+    // dropped dispatch (the o5051 map initialized with a garbage metadata
+    // long because Ln/a;->r's fill never executed).
+    if (std::getenv("MINIANDROID_F040_DIAG") &&
+        ((declaring_class == "Ln/a;" && method_name == "r") ||
+         (declaring_class == "Ljava/util/Arrays;" && method_name == "fill") ||
+         // S55 R-NEW-376 hop-trace: the self-recursive constructors that
+         // climb to the depth cap in Dooz v18 Compose init.
+         (declaring_class == "Lj/j0;" && method_name == "<init>") ||
+         (declaring_class == "Lt0/t;" && method_name == "<init>") ||
+         (declaring_class == "LE0/c;" && method_name == "<init>"))) {
+        static thread_local uint64_t tri_f040 = 0;
+        if (tri_f040 < 100000) {
+            tri_f040++;
+            std::cerr << "[TRI-F040] " << declaring_class << "."
+                      << method_name << " argc=" << args.size();
+            for (size_t di = 0; di < args.size() && di < 5; ++di)
+                std::cerr << " a" << di << ":t" << static_cast<int>(args[di].type)
+                          << (args[di].type == DalvikType::OBJECT_REF
+                                  ? ("o" + std::to_string(args[di].object_id))
+                                  : "");
+            std::cerr << " caller=" << current_class_ << "."
+                      << current_method_
+                      << " depth=" << recursion_depth_ << std::endl;
+        }
+    }
     // S24 probe (env-gated, bounded): the addAll NPE — the callee's
     // elements param read null while the caller passed obj#2831; print
     // every addAll entry to catch the path that mislaid the arg.
@@ -4162,6 +4203,16 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 
     // EXP-040: Recursion depth protection
     if (recursion_depth_ >= MAX_RECURSION_DEPTH) {
+        // F-083 (S55, R-NEW-361): a limit-drop is a STATE-CORRUPTING
+        // event — the frame never runs, and a dropped void initializer
+        // (e.g. the Kotlin LongArray fill helper Ln/a;.r behind
+        // ScatterMap metadata init) leaves its object half-built. The
+        // drop must be observable in EVERY run, not only verbose ones.
+        std::cerr << "[RECURSION-LIMIT] frame dropped: "
+                  << declaring_class << "." << method_name
+                  << " depth=" << recursion_depth_
+                  << " caller=" << current_class_ << "."
+                  << current_method_ << std::endl;
         log("⚠️ RECURSION LIMIT: depth=" + std::to_string(recursion_depth_) +
             " for " + declaring_class + "." + method_name + " — falling back to API bridge");
         return false;  // Fall back to API bridge
@@ -8726,6 +8777,21 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         uint16_t opcode = raw_word & 0xFF;  // LOW BYTE only
         trace.opcode_hex = raw_word;        // Keep raw word for trace evidence
 
+        // S55 R-NEW-361 (env-gated): full instruction stream of the Kotlin
+        // LongArray-fill helper Ln/a;.r — one frame ran its body without
+        // ever dispatching the Arrays.fill call at unit pc=12.
+        if (std::getenv("MINIANDROID_F040_DIAG") &&
+            current_class_ == "Ln/a;" && current_method_ == "r") {
+            static thread_local uint64_t r_insns = 0;
+            if (r_insns < 10000) {
+                r_insns++;
+                std::cerr << "[R-INSN] pc=" << pc_ << " op=0x" << std::hex
+                          << opcode << std::dec << " raw=0x" << std::hex
+                          << raw_word << std::dec << " #" << r_insns
+                          << std::endl;
+            }
+        }
+
         // EXP-063: Trace v3 in getString(I) to find where it gets corrupted
         if (current_class_.find("LocaleController") != std::string::npos &&
             current_method_ == "getString" && current_registers_) {
@@ -9234,6 +9300,54 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                             break; \
                         } \
                         heap_.set_object_field(arr_val.object_id, field, src_val); \
+                        /* S55 R-NEW-361 metadata-store trace (env-gated, read-only): \
+                         * every aput-wide/aput landing on a ScatterMap metadata \
+                         * array (the [J stored in field 'a' of an Lh/u; family \
+                         * object) is dumped with its full byte content AFTER the \
+                         * store, so the clone-mirror divergence (upstream \
+                         * writeMetadata law: byte i and byte cloneIndex(i) must \
+                         * always agree) can be caught in the act. */ \
+                        if ((strcmp(op_name, "aput-wide") == 0 || \
+                             strcmp(op_name, "aput") == 0)) { \
+                            for (auto& kv : heap_.all_objects()) { \
+                                if (kv.second.class_descriptor.rfind("Lh/u;", 0) != 0 && \
+                                    kv.second.class_descriptor.rfind("Lh/r;", 0) != 0) \
+                                    continue; \
+                                auto a_f = heap_.get_object_field(kv.first, "a"); \
+                                if (!a_f.has_value() || \
+                                    a_f->type != DalvikType::OBJECT_REF || \
+                                    a_f->object_id != arr_val.object_id) \
+                                    continue; \
+                                std::cerr << "[R361-STORE] map=o" << kv.first \
+                                          << " arr=o" << arr_val.object_id \
+                                          << " idx=" << idx \
+                                          << " store=" << op_name \
+                                          << " v=0x" << std::hex; \
+                                if (src_val.type == DalvikType::INT64) \
+                                    std::cerr << (unsigned long long)src_val.long_val; \
+                                else \
+                                    std::cerr << (unsigned long long)(uint32_t)src_val.int_val; \
+                                std::cerr << std::dec; \
+                                auto al = heap_.get_object_field(arr_val.object_id, "__array_length__"); \
+                                int alen = (al.has_value() && al->type == DalvikType::INT32) ? al->int_val : 0; \
+                                std::cerr << " md=["; \
+                                for (int mi = 0; mi < alen && mi < 4; ++mi) { \
+                                    auto mv = heap_.get_object_field( \
+                                        arr_val.object_id, \
+                                        "array[" + std::to_string(mi) + "]"); \
+                                    if (mv.has_value() && mv->type == DalvikType::INT64) { \
+                                        char hx[32]; \
+                                        snprintf(hx, sizeof(hx), "%016llx", \
+                                                 (unsigned long long)mv->long_val); \
+                                        std::cerr << (mi ? " " : "") << hx; \
+                                    } \
+                                } \
+                                std::cerr << "] caller=" << current_class_ \
+                                          << "." << current_method_ \
+                                          << " pc=" << pc_ << std::endl; \
+                                break; \
+                            } \
+                        } \
                         /* Length immutable — NO auto-grow (AOSP). */ \
                     } else if (arr_on_heap) { \
                         /* Length unknown (0): legacy path — store + record/grow. \
@@ -9371,6 +9485,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 trace.opcode_name = "invoke-direct";
                 break;
             case Opcode::INVOKE_STATIC:
+                if (std::getenv("MINIANDROID_F040_DIAG") &&
+                    current_class_ == "Ln/a;" && current_method_ == "r") {
+                    std::cerr << "[R-INVOKE] entering execute_invoke_static pc="
+                              << pc_ << std::endl;
+                }
                 success = execute_invoke_static(pc_, trace, result);
                 trace.opcode_name = "invoke-static";
                 break;
@@ -11341,6 +11460,15 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
         if (exc_redirect_pending_) {
             exc_redirect_pending_ = false;
             pc_ = exc_redirect_addr_;
+        }
+        // S55 R-NEW-361: post-switch observation for the failing r frame —
+        // which handler consumed the invoke at pc=12 (or didn't).
+        if (std::getenv("MINIANDROID_F040_DIAG") &&
+            current_class_ == "Ln/a;" && current_method_ == "r") {
+            std::cerr << "[R-AFTER] pc=" << pc_ << " op=0x" << std::hex
+                      << opcode << std::dec << " handler=\""
+                      << trace.opcode_name << "\" success=" << success
+                      << std::endl;
         }
         
         // EXP-042 Phase 1: register state AFTER capture (gated).
@@ -13796,6 +13924,26 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
         method_name = resolve_method_name_for_dex(method_idx, current_dex_index_);
         class_name = resolve_method_class_for_dex(method_idx, current_dex_index_);
         method_desc_081 = resolve_method_proto_for_dex(method_idx, current_dex_index_);
+        // S55 R-NEW-376 (env-gated): direct evidence for the j0.<init>
+        // self-recursion — print EVERY invoke-direct dispatched from a
+        // j0/t0/E0 constructor frame with the resolved (class, name, desc).
+        static const bool r376_direct =
+            std::getenv("MINIANDROID_F040_DIAG") != nullptr;
+        if (r376_direct && current_method_ == "<init>" &&
+            (current_class_ == "Lj/j0;" || current_class_ == "Lt0/t;" ||
+             current_class_ == "LE0/c;")) {
+            static thread_local uint64_t r376_n = 0;
+            if (r376_n < 60000) {
+                r376_n++;
+                std::cerr << "[R376-DIRECT] from=" << current_class_
+                          << ".<init> depth=" << recursion_depth_
+                          << " method_idx=" << method_idx
+                          << " dex=" << current_dex_index_
+                          << " resolved=" << class_name << "."
+                          << method_name << method_desc_081
+                          << " argc=" << args.size() << std::endl;
+            }
+        }
         // EXP-081: Debug trace
         if (method_name.find("lambda") != std::string::npos || method_name.find("createView") != std::string::npos) {
             std::cerr << "[EXP081-DESC] method=" << method_name
@@ -13967,6 +14115,21 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
                                                  DalvikExecutionResult& result) {
     // Format similar to invoke-virtual but for static methods
     if (pc + 2 >= bytecode_.size()) return false;
+    // S55 R-NEW-361: entry-level probe — was the function even reached?
+    if (std::getenv("MINIANDROID_F040_DIAG")) {
+        static thread_local uint64_t eis_entry = 0;
+        if (eis_entry < 200000) {
+            eis_entry++;
+            auto mn = resolve_method_name_for_dex(
+                bytecode_[pc + 1], current_dex_index_);
+            if (mn == "fill" || mn == "r") {
+                std::cerr << "[EIS-ENTRY] pc=" << pc
+                          << " method=" << mn
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        }
+    }
 
     // EXP-071 Phase 8: Mark this call as static so try_shadow_dispatch
     // doesn't treat args[0] as `this`. See header comment for details.
@@ -19057,15 +19220,41 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = dst;
         return true;
     }
+    if (class_name == "Ljava/util/Arrays;" && method == "fill") {
+        // S55 R-NEW-361 diag: log EVERY fill entry, including calls whose
+        // argc gate below REJECTS them (a wide-pair marshalling bug would
+        // surface as argc=5 instead of 4 → silent no-op fill → zeroed
+        // ScatterMap metadata → probe spin at Lh/r;.b).
+        if (std::getenv("MINIANDROID_F040_DIAG")) {
+            static thread_local uint64_t f040_entry = 0;
+            if (f040_entry < 400) {
+                f040_entry++;
+                std::cerr << "[F040-ENTRY] fill argc=" << args.size()
+                          << " arr=" << (args.size() > 0 &&
+                                         args[0].type == DalvikType::OBJECT_REF
+                                             ? ("o" + std::to_string(args[0].object_id))
+                                             : "<none>");
+                for (size_t di = 0; di < args.size() && di < 6; ++di) {
+                    std::cerr << " a" << di << ":t" << static_cast<int>(args[di].type);
+                    if (args[di].type == DalvikType::INT64)
+                        std::cerr << "(0x" << std::hex << args[di].long_val << std::dec << ")";
+                    else if (args[di].type == DalvikType::INT32)
+                        std::cerr << "(" << args[di].int_val << ")";
+                }
+                std::cerr << std::endl;
+            }
+        }
+    }
     if (class_name == "Ljava/util/Arrays;" && method == "fill" &&
         (args.size() == 2 || args.size() == 4)) {
         // F-040 WIDE-DIAG (env-gated): expose the packed arg tags for the
         // wide-value overloads (the fill([J I I J)V dooz shape).
         if (std::getenv("MINIANDROID_F040_DIAG")) {
             static thread_local uint64_t f040_diag = 0;
-            if (f040_diag < 24) {
+            if (f040_diag < 400) {
                 f040_diag++;
-                std::cerr << "[F040-DIAG] fill argc=" << args.size();
+                std::cerr << "[F040-DIAG] fill argc=" << args.size()
+                          << " arr=o" << args[0].object_id;
                 for (size_t di = 0; di < args.size(); ++di) {
                     std::cerr << " a" << di << ":t" << static_cast<int>(args[di].type);
                     if (args[di].type == DalvikType::INT64)
