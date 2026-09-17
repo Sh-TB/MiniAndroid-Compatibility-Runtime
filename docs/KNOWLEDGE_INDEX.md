@@ -10,7 +10,20 @@
 
 Snapshot: 745 tracked `.md` files — 441 KEEP (knowledge/process), 185 HISTORY (era records), 111 EVIDENCE (compact, cited), plus 290 tracked `.json` (indexes/fixtures/oracles — classified below).
 
-## 0b. S55 additions (current session)
+## 0b. S56 additions (current session)
+
+| File | Topic | Purpose | Status | Priority | Canonical? | Related |
+|---|---|---|---|---|---|---|
+| F-084 (law) | engine | HALT-RETURN containment: a callee exiting via the loop-detector/budget halt has NO return value — the stale last_invoke_return_ must never reach the caller's move-result; discriminator `halted_ && !halted_on_return_`; escalates as deferred VirtualMachineError (F084-HALT-RETURN) | IMPLEMENTED+TESTED (battery 96/96; first attempt without the discriminator broke stages 59-63, fixed pre-commit) | P0 | YES (dalvik_engine.cpp invoke boundary) | R-NEW-344; dooz v23 garbage-index face |
+| F-085 (model) | framework | Generic WebView content model: ViewShadow dispatches the WebView family (getSettings memoized per-instance, setWebViewClient/load family); WebSettingsShadow = symmetric set/get property bag; load family stores the document; render law = generic HTML→visible-text (no markdown special-casing) | IMPLEMENTED+TESTED (battery 96/96; shadow-count invariant 19→20/22) | P1 | YES (android_shadows.cpp/h + shadow_registry.cpp) | R-NEW-377; Notes content face |
+| R-NEW-368 (verdict) | knowledge | uNote touch-target premise REFUTED: the 16-probe grid (y 300..1780) never covered the bottom-44px button band (y=1876..1920); coordinate-correct tap (270,1898) → G06-TAP DOWN target=13 consumed → UP click_posted → startActivity(NoteEdition) | VERIFIED-FIXED (no engine defect) | P1 | YES (root_registry.json) | docs/evidence/s56_unote/ |
+| R-NEW-344 (refinement) | knowledge | dooz v23 face moved: Recomposer/ControlledComposition reached; blocker = androidx.collection ScatterMap insert into a FULL table (cap 15, size 15, zero EMPTY bytes); the second grow (e==0, size 14) ran the R8-inlined resize at newCap=15 (epilogue e=0 = loaded(15)-14) instead of 31 | OBSERVED-FAIL (refined, crash face contained by F-084) | P0 | YES (root_registry.json) | docs/evidence/s56_dooz23/ |
+| docs/evidence/s56_dooz23/ | evidence | F-084 pre/post-fix faces + the budget-counter (e-field) history + metadata-store timeline; SHA256SUMS | EVIDENCE | P1 | YES | ROADMAP_STATUS §2/§3 |
+| docs/evidence/s56_unote/ | evidence | uNote tap-target refutation: view-tree geometry + canonical tap pipeline + NoteEdition navigation, SHA256SUMS | EVIDENCE | P1 | YES | R-NEW-368 |
+| scripts/s56_dump_v23.py + s56_registry_update*.py | tooling | v23 DEX method disasm probe (diff-chain-correct) + S56 registry updaters | KEEP | P1 | YES | R-NEW-344 evidence |
+| S55 rows below | — | retained for continuity | — | — | — | — |
+
+## 0c. S55 additions (prior session)
 
 | File | Topic | Purpose | Status | Priority | Canonical? | Related |
 |---|---|---|---|---|---|---|

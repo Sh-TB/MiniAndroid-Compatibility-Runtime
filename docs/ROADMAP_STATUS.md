@@ -1,4 +1,4 @@
-# ROADMAP_STATUS — Canonical, Reconciled (S54)
+# ROADMAP_STATUS — Canonical, Reconciled (S56)
 
 > **SINGLE SOURCE OF TRUTH for what is done, what is open, and what is next.**
 > Reconciles ALL historical roadmaps against actual committed evidence: nothing
@@ -31,6 +31,8 @@ S54 rows retained below the S55 rows for continuity.
 
 | ID | Blocker | Root cause (evidence) | Fix | Proof |
 |---|---|---|---|---|
+| **F-085 (S56)** | WebView-family apps: getSettings/setWebViewClient/loadUrl/loadData were REC-MISS silent no-ops → content face blank (Notes read face) | No WebView content model existed — the markdown/WebView pipeline died at its first call | Generic model (app-agnostic): ViewShadow dispatches the WebView family; WebSettingsShadow = symmetric set/get property bag; load family stores the document and the render law extracts visible text via a generic HTML→text pass (no markdown special-casing) into the node text so the standard pipeline paints it | Notes v139 getSettings → settings object identity memoized ([F085-WV] logs); battery ALL PASS 96/96; shadow-count invariant updated 19→20/22 |
+| **F-084 (S56)** | Halted callee (loop-detector) fed a STALE last_invoke_return_ to the caller's move-result → garbage slot index −733270216 → AIOOBE → APP BOUNDARY death (dooz v23) | The invoke boundary blanket-cleared halted_ without discriminating the abnormal-halt signature (halted_ && !halted_on_return_) from a normal return (which also sets halted_) | HALT-RETURN containment law: the halt escalates to the caller as a deferred VirtualMachineError (F084-HALT-RETURN); no return value is fabricated | Battery ALL PASS 96/96 (first attempt without the discriminator broke stages 59-63 and was fixed pre-commit); dooz v23 face changed from garbage-index AIOOBE to honest halt propagation; docs/evidence/s56_dooz23/ |
 | **F-082 (S55)** | Notes v139 read↔edit face swap was a silent no-op (S53 "RENDER_ONLY") | `ViewSwitcher.setDisplayedChild` (the whole ViewAnimator family) was REC-MISS — no displayed-child law in ViewShadow. S55 tree forensics REFUTED the S53 "ListView item paint" hypothesis: v139 has NO ListView | AOSP ViewAnimator law on the ViewShadow node model: setDisplayedChild/getDisplayedChild/showNext/showPrevious (exact AOSP clamp `which≥count→count-1; <0→0`, showOnly visibility walk, requestLayout flag) | law test 18/18 (battery "F-082 ViewAnimator law"); Notes FAB click → face swap **2,057,718 px (99.23%)**, probed=3 changed=1 (was 0/3); frames byte-identical across runs (s55_notes_v2/SHA256SUMS) |
 | **F-083 (S55)** | Dooz v18 R-NEW-361: ScatterMap probe spin (HALT-LOOP → aput-oob) | DOWNSTREAM of a depth-cap drop: 56th `Ln/a;.r` (LongArray-fill helper) entered at depth=80 == MAX_RECURSION_DEPTH → silently dropped → metadata stayed heap-zero → sentinel write made ghost bytes `0xff007f6600000000` (zero EMPTY) → probe never terminates. EXP-053: ~80KB C++ stack/DEX frame → 80-frame cap on the 8MB stack | (1) cmd_run executes on a dedicated 1GB-virtual-stack pthread (ART contract: recursion bounded by thread stack); (2) MAX_RECURSION_DEPTH 80 → 2048 (~164MB worst case); (3) limit-drop is ALWAYS loud (`[RECURSION-LIMIT]` stderr); (4) hygiene: F-074 always-on trace (heap lookup per inherited call, ~1.6K instr/s throttle) now env-gated `MINIANDROID_F074_TRACE` | dispatch trace: 55/56 r calls OK, failing call at depth=80; [R361-STORE] ghost vs healthy metadata words; post-fix: NO HALT-LOOP/aput-oob, metadata `0xff80808080808080`, MainActivity.onStart/onResume dispatched (first time); key traces docs/evidence/s55_dooz/ (SHA256SUMS) |
 | **F-080 (S54)** | ChessClock "2-color dark blank" | `Resources.getColor(I, Theme)` two-arg overload: shadow read a fixed arg slot and resolved the NULL THEME (int 0) as the resid → every lookup black | resid = first INT-typed arg (robust under receiver-included/excluded conventions; AOSP law: references can never be the resid) | `[RES] resid=0x7f050005 → 0xff499ebd`; frame 99.3% nb/2 colors → 187 colors |
@@ -50,22 +52,27 @@ S54 rows retained below the S55 rows for continuity.
    VALUE trace per t0/t↔E0/c hop (constant ⇒ mis-dispatch; varying ⇒
    finite-but-huge chain) → either a ctor-target selection fix or frame-cost
    reduction. *Unblocks Dooz v18 first frame and the Compose family.*
-2. **R-NEW-344 — Recomposer suspension / Job-active law** (OBSERVED-FAIL, P0).
-   First non-blank Compose frame (`31ddd4d5…` covers dooz v23, emmanuelmess
-   tictactoe, RTTT).
-3. **WebView content model** (P1, PRECISELY PINNED at S55, supersedes the
-   old "Notes ListView paint path" entry). Notes' read face is
-   `Lorg.billthefarmer.markdown.MarkdownView; extends Landroid/webkit/WebView;`
-   (runtime dex parser verified); the markdown pipeline dies at REC-MISS
-   `getSettings`. The generic next dependency is a WebView content model;
-   app-specific markdown rendering is forbidden. *Unblocks Notes content
-   L5→L7 + BGClock-class WebView-root apps.*
-4. **R-NEW-368 — uNote touch-target geometry** (P1, unchanged). Paint renders
-   buttons; touch path finds no target on a 16-probe grid. *Unblocks uNote
-   L6–L10 incl. the notes.db persistence ladder.*
-5. **Persistence ladder L10** (P2) for the interactive apps — ChessClock
-   first (start clock → close → reopen → state kept).
-6. **Telegram init chain** (P2). Ranked: REC-MISS static-init surface →
+2. **R-NEW-344 — dooz23 first frame / ScatterMap full-table probe spin**
+   (OBSERVED-FAIL, P0, REFINED at S56). Post-F-083/F-084 the run reaches
+   Recomposer/ControlledComposition; the blocker is an androidx.collection
+   ScatterMap insert into a FULL table (cap 15, size 15, zero EMPTY
+   metadata bytes): the second grow (budget e==0 at size 14) entered the
+   R8-inlined resize but computed newCapacity=15 instead of 31 and
+   re-filled the same arrays after convertMetadataForCleanup. NEXT: trace
+   Lmg1;.b (nextCapacity = cap*2+1) around insert #16; compare the cap-7
+   grow (f(15) ran) vs the cap-15 grow (no f) at the d() pc=128 branch.
+   The crash face is CONTAINED by F-084 (honest halt, no garbage index).
+3. **WebView content model — model SHIPPED (F-085); end-to-end content
+   probe pending** (P1, was R-NEW-377 BLOCKED-PINNED). The WebView call
+   surface (getSettings/setWebViewClient/load family) now dispatches
+   generically and the render law extracts visible text. Remaining for
+   the L5→L7 claim: a full note-create→save→read-face UI flow proving
+   pixels from a real document (needs the multi-step click sequence).
+4. **Persistence ladder L10** (P2) for the interactive apps — ChessClock
+   first (start clock → close → reopen → state kept). uNote ladder
+   continues at NoteEdition (PreferenceManager/getApplicationContext
+   surface).
+5. **Telegram init chain** (P2). Ranked: REC-MISS static-init surface →
    SafeIterableMap iterator law → NativeLoader boundary decision.
 
 ## 4. BLOCKED (external dependency — do not spend runtime sessions)
@@ -89,13 +96,16 @@ S54 rows retained below the S55 rows for continuity.
   foreign HEADs quarantined as unverified), gallery s54_frames (12 JPGs),
   toolchain bootstrap re-proven, EXT fixture re-fetched SHA-verified.
 
-## 6. Direct answers (S54 §12, S55 refresh)
+## 6. Direct answers (S54 §12, S56 refresh)
 
 **What is the biggest runtime blocker?** The Compose first-frame pair —
 now **R-NEW-376** (post-F-083 ctor-climb budget, v18) + **R-NEW-344**
-(recomposer suspension, v23) — it holds the entire modern Compose app class
-(Dooz, RTTT, emmanuelmess tictactoe) below L5. R-NEW-361 itself is FIXED
-(F-083): the probe spin was downstream of a depth-cap frame drop.
+(S56 refinement: androidx.collection ScatterMap full-table probe spin in
+Recomposer/ControlledComposition dirty-scope tracking, v23; the
+garbage-index crash face is contained by F-084) — it holds the entire
+modern Compose app class (Dooz, RTTT, emmanuelmess tictactoe) below L5.
+R-NEW-361 itself is FIXED (F-083): the probe spin was downstream of a
+depth-cap frame drop.
 
 **What prevents complete HelloWorld?** Nothing — HelloWorldSelfAware is
 visually proven end-to-end (L7 via EXT-01/02) at the current HEAD.
@@ -107,10 +117,16 @@ change at this HEAD, and tictactoe_golden proves 9-tap win-state play.
 **What prevents Dooz?** R-NEW-376 (v18, new pinned frontier) / R-NEW-344
 (v23) — see §3. The pre-S55 blocker R-NEW-361 is VERIFIED-FIXED (F-083).
 
-**What prevents Notes content rendering?** The read face is a WebView
-subclass (R-NEW-377 evidence); the generic WebView content model is the next
-dependency. The app's state machine itself is FIXED (F-082) — mode-switch
-input→state→render is proven at 2.06M px.
+**What prevents Notes content rendering?** The WebView content model is
+SHIPPED (F-085): the WebView call surface (getSettings/setWebViewClient/
+load family) dispatches generically and the render law extracts visible
+text. The remaining gap to the L5→L7 claim is the end-to-end content
+probe (a real note-create→save→read-face UI flow with pixel proof). The
+app's state machine itself is FIXED (F-082) — mode-switch input→state→
+render is proven at 2.06M px. uNote's main-menu input chain is PROVEN at
+S56 (R-NEW-368 premise refuted: the old 16-probe grid never covered the
+bottom-44px button band; a coordinate-correct tap consumed and launched
+NoteEdition).
 
 **What prevents Telegram?** Init-chain depth (REC-MISS surface, SafeIterableMap
 stub, NativeLoader boundary) — no frame within the 540 s budget. Note: F-083's
@@ -118,7 +134,7 @@ deep-stack thread directly attacks the depth side of this frontier too.
 
 **What prevents general APK compatibility?** The long tail of framework REC-MISS
 surface plus the Compose P0s; every fixed law transfers (F-080/F-081/F-082/
-F-083 were found in one app and are corpus-generic).
+F-083/F-084/F-085 were found in one app and are corpus-generic).
 
 **What prevents one genuinely fully runnable application?** Nothing —
 HelloWorldSelfAware IS the fully runnable reference application (full chain +
