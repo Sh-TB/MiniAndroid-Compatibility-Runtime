@@ -1,0 +1,36 @@
+scanning surface: WORKING TREE ...
+scanning surface: .git METADATA + REFLOGS ...
+scanning surface: FULL GIT OBJECT STORE (all history) ...
+SECRET SCAN RESULT: FOUND
+  total match events: 28 (values NEVER printed)
+  [GIT-OBJECT:blob] 06138654a9476c062c776792b09017188ed0c22d
+      type=URL_EMBEDDED_CREDENTIAL  value_length=22  value=****MASKED****
+  [GIT-OBJECT:blob] 2427c5c6798d7eff869196cc4740b873432bbd27
+      type=GITHUB_FINEGRAINED_PAT  value_length=31  value=****MASKED****
+  [GIT-OBJECT:blob] 27cf99cf1af62f933eb6134ae9e59f48c504438b
+      type=GITHUB_CLASSIC_TOKEN  value_length=24  value=****MASKED****
+  [GIT-OBJECT:blob] 3944b6a3a55ba664ba2527c2e3822342ff303e11
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+  [GIT-OBJECT:blob] 3bc64b596d2087d3e5e05a03bad39d2bd1e11822
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+  [GIT-OBJECT:blob] 53435a15cd32b8595e9c4f3f2a1db705d2352017
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+  [GIT-OBJECT:blob] 76819507df17da9be1bd69a39ce1aa4fd4ba86ea
+      type=URL_EMBEDDED_CREDENTIAL  value_length=22  value=****MASKED****
+  [GIT-OBJECT:blob] aa9832fcef9195b9ad7bb68719d0c9f790c330ed
+      type=GITHUB_CLASSIC_TOKEN  value_length=24  value=****MASKED****
+  [GIT-OBJECT:blob] b2d52d574170ae48322f6d3e4fd193d4f0fce485
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+  [GIT-OBJECT:blob] cff9e80f793833e585ab35cc83c5f403c1d2f72b
+      type=URL_EMBEDDED_CREDENTIAL  value_length=22  value=****MASKED****
+  [WORKTREE] docs/runtime/research/raw/android_bytecode_doc.json
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****
+      type=GOOGLE_API_KEY  value_length=39  value=****MASKED****

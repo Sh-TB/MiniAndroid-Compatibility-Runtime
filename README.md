@@ -15,12 +15,13 @@
 ## At a glance (30 seconds)
 
 - **What it is:** a from-scratch C++17 compatibility runtime that executes real Android APKs from bytecode to pixels, with every claim pinned to committed evidence.
-- **What really runs today (S53 quality-gated):** **5 real F-Droid APKs render recognizable full GUI** (GM Dice, MicroTimer, Simple Stopwatch, Heading Calculator, uNote) — **4 of them with input→state-change screenshot pairs** (tap/click → visible UI change; GM Dice even renders the app-specific result: a real dice roll `14 · 15 · 15`). 2 more reach their entry screen. **TicTacToe fixture is fully playable** (real taps → win state → deterministic replay, 9/9).
-- **Honesty gate:** a screenshot quality gate (luminance/color/entropy + click-test audit) downgraded 2 earlier "SUCCESS" claims — Chess Clock and Notes render deterministic **blank-class frames** and are recorded `RENDER_ONLY`, with no image stored. No white/black frame is ever presented as an achievement.
+- **What really runs today (S54):** **6 real F-Droid APKs render recognizable full GUI** (Chess Clock, GM Dice, MicroTimer, Simple Stopwatch, Heading Calculator, uNote) — **5 of them with input→state-change screenshot pairs**. GM Dice renders the app-specific result (real dice roll `14 · 15 · 15`); Chess Clock renders the real two-panel clock face and switches the active player on tap (S54 restored it from a blank-class state via two generic engine laws).
+- **HelloWorld is the proven control target:** the real external HelloWorldSelfAware APK (SHA-verified `009b4671…`) executes end-to-end — typography golden 9/9 vs the upstream phone screenshot + interaction 12/12 + committed framebuffer image.
+- **Honesty gate:** the screenshot quality gate (luminance/color/entropy + click-test audit) has downgraded and re-verified claims multiple times — Chess Clock and Notes were recorded `RENDER_ONLY` at S53; Chess Clock was **upgraded back on evidence** (F-080+F-081) at S54; Notes remains `RENDER_ONLY` (open ListView root, precisely characterized). No white/black frame is ever presented as an achievement.
 - **Dooz:** v23 executes the full Hilt/DI/Compose pipeline deterministically but the first frame is still blank (**R-NEW-344**); v18 halts in androidx ScatterMap arithmetic (**R-NEW-361** — ASC-recon candidates ranked).
 - **Telegram v12:** parses + launches + burns 540 s inside real init (no frame yet); startup path fully mapped by ASC recon.
-- **Battery:** 94/94 stages ALL PASS at the current HEAD (`scripts/test/run_test_battery.sh`).
-- **Full per-app truth:** [**Execution Achievements & Evidence**](docs/EXECUTION_ACHIEVEMENTS.md) — the single canonical record of every real APK execution · gate-passing screenshots: [`docs/evidence/s53_frames/`](docs/evidence/s53_frames).
+- **Battery:** "BATTERY GATE: ALL PASS (94 stages)" at the current HEAD (`scripts/test/run_test_battery.sh`; 92 stages when the external EXT fixture is absent — documented count law).
+- **Full per-app truth:** [**Achievements & Evidence**](docs/ACHIEVEMENTS.md) — the single canonical record of every real APK execution · gate-passing screenshots: [`docs/evidence/s54_frames/`](docs/evidence/s54_frames).
 
 ---
 
@@ -87,22 +88,28 @@ and [`docs/testing/BATTERY_INDEX.json`](docs/testing/BATTERY_INDEX.json).
    aapt2+ECJ+D8-built APK (`77863f1f…`) executes through the first-party DEX
    interpreter and renders through the first-party software renderer; three
    independent runs are byte-identical (`PROVENANCE_FORENSIC.json`).
-2. **TicTacToe Classic (real corpus APK) is fully playable** — real taps →
-   DEX click listeners → X/O alternation → board redraws (S44); the §29
-   interaction + determinism golden passes with 10-frame per-frame SHAs.
-3. **Regression battery: 94/94 stages ALL PASS** — §28 HelloWorld (26 checks),
+2. **TicTacToe is fully playable at the fixture gate** — real taps →
+   DEX click listeners → X/O alternation → win state → board redraws
+   (tictactoe_golden, §29 interaction + determinism with 10-frame per-frame
+   SHAs). The real corpus game gate is additionally held by GM Dice and
+   Chess Clock (L7 chains with committed screenshot pairs). The historical
+   "TicTacToe Classic (palahsu) fully playable" record stands at its
+   recorded HEAD; that APK is currently unavailable (BLOCKED, S54).
+3. **Regression battery: "ALL PASS (94 stages)"** — §28 HelloWorld (18 checks),
    §29 TicTacToe interaction 9/9, EXT-01 typography 9/9, EXT-02 interaction
    12/12, G06/G07/G08 3-run frame-SHA determinism, all fixture pixel goldens
-   (`docs/testing/BATTERY_INDEX.json`; historical "94/94" = pre-purge script
-   revision with 2 extra sub-stages — 92 is the canonical count).
+   (`docs/testing/BATTERY_INDEX.json`; 92 stages when the external EXT fixture
+   is absent — the two EXT run gates collapse; count law documented).
 4. **Real Android lifecycle/input/persistence dispatch** — Activity
    onCreate→onStart→onResume, click dispatch through app DEX handlers,
    SharedPreferences/SQLite-backed persistence paths (package-dir law
    R-NEW-367 VERIFIED-FIXED).
-5. **Real corpus APKs render** — ChessClock deterministic screenshot
-   (`e4a2d7c9…` — re-verified exact across sessions, S51→S52),
-   gmdice/microtimer/unote byte-stable frames; per-app ladder + persistence
-   experiments in [`docs/EXECUTION_ACHIEVEMENTS.md`](docs/EXECUTION_ACHIEVEMENTS.md).
+5. **Real corpus APKs render** — **6 apps with recognizable GUI**: Chess Clock
+   (real clock face, active-player switch on tap — S54), GM Dice (dice-roll
+   result rendered), MicroTimer (`00:00:00` display), Simple Stopwatch
+   (Start→Stop/Lap), Heading Calculator (keypad+display), uNote (list UI);
+   per-app ladder + persistence experiments in
+   [`docs/ACHIEVEMENTS.md`](docs/ACHIEVEMENTS.md).
 6. **REAL TELEGRAM v12.10.1 executed (frontier)** — the official 73 MB APK
    (`f5e11927…`) parses, LAUNCHES, paints a themed frame; deeper init stops
    at the desugared-streams gap (**R-NEW-303**, honestly open).
@@ -208,14 +215,14 @@ bash scripts/test/run_test_battery.sh   # full regression battery → "BATTERY G
 
 Canonical files — one per role:
 
-- **[Execution Achievements & Evidence](docs/EXECUTION_ACHIEVEMENTS.md)** —
+- **[Achievements & Evidence](docs/ACHIEVEMENTS.md)** —
   the single source of truth for every real APK execution: per-app ladder,
   persistence experiments, screenshots (SHA256, ≤100 KB JPG, real UI only),
-  ASC reconnaissance ledger. Curated gallery: [`docs/evidence/s51_audit/`](docs/evidence/s51_audit/).
+  ASC reconnaissance ledger. Curated gallery: [`docs/evidence/s54_frames/`](docs/evidence/s54_frames/).
 - **[Knowledge Index](docs/KNOWLEDGE_INDEX.md)** — canonical inventory of all
   knowledge/research files (per-file classification + pipeline knowledge map).
-- **[Roadmap](docs/ROADMAP.md)** — the reconciled canonical roadmap (all
-  historical roadmaps folded in; P0 frontier ranked).
+- **[Roadmap Status](docs/ROADMAP_STATUS.md)** — the reconciled canonical
+  roadmap (all historical roadmaps folded in; P0 frontier ranked).
 - Navigation hub: **[`docs/INDEX.md`](docs/INDEX.md)** (machine-readable twin:
   `docs/INDEX.json`) — architecture, testing, runtime, dex, resources,
   lifecycle, rendering, input, persistence, upstream laws, releases, forensic

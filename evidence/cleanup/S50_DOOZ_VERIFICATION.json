@@ -1,0 +1,32 @@
+{
+  "schema": "s50_dooz_verification/v1",
+  "date": "2026-09-16",
+  "head": "post-c1f4d81c",
+  "dooz_v18": {
+    "apk_sha256": "d81292cd346dcb23b04488bca400ca95af0f6eaa4aefefd31f847fe535cbdc17",
+    "sha_verification": "EXACT MATCH vs tests/corpus/apks.json pin (re-fetched from https://f-droid.org/repo/io.github.yamin8000.dooz_18.apk after container reset)",
+    "run": "timeout 420s real-dalvik",
+    "outcome": "TIMEOUT (exit 124) — never reached first frame",
+    "signature": [
+      "[HALT-LOOP] Infinite loop at PC=0x1c in Lh/r;.c (visited 50001 times in this frame, bytecode_size=264, op_at_pc=0x54)",
+      "[SYNTH-EXC] aput-oob: Ljava/lang/ArrayIndexOutOfBoundsException; (length=7; index=613985991) method=LP/v$a;.c pc=28 -> uncaught (frame unwind + propagate)"
+    ],
+    "registry_comparison": "signature IDENTICAL to R-NEW-361 registry record (S49): Lh/r; ScatterMap probe spin + LP/v$a; SlotTable corrupt identity-hash index",
+    "status": "BLOCKED — R-NEW-361 (OBSERVED-FAIL, primary frontier)"
+  },
+  "dooz_v23": {
+    "apk_sha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+    "sha_verification": "EXACT MATCH vs S45 ledger pin",
+    "run": "timeout 420s real-dalvik",
+    "outcome": "exit 1; blank 1080x1920 frame produced; 7 errors",
+    "signature": [
+      "[HALT-LOOP] Infinite loop at PC=0x1c in Lbw0;.d (visited 50001 times in this frame, bytecode_size=671)",
+      "[SYNTH-EXC] aput-oob: length=15; index=-733270216 method=Lbw0;.a pc=8"
+    ],
+    "registry_comparison": "index=-733270216 EXACTLY matches the corrupt index value recorded in R-NEW-361 (S45 observation) — identity-hash provenance consistent; Lbw0; = v23's obfuscated ScatterMap/SlotTable face",
+    "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+    "screenshot_comparison": "byte-identical SHA to the historical blank-frame record in docs/testing/TEST_MATRIX.md (row: dooz 31ddd4d5b8e6d18e 'blank (pre-existing)')",
+    "status": "BLOCKED — R-NEW-361 (OBSERVED-FAIL, primary frontier)"
+  },
+  "conclusion": "Both dooz variants converge on the SAME R-NEW-361 face at S50 (reproduced at the S50 runtime HEAD including the four S50 fixes): ScatterMap/SlotTable probe spin (HALT-LOOP) -> force-exit -> aput-oob with identity-hash-derived corrupt indices. First frame unreachable (v18) or blank (v23); input/state-transition/agent-playability unreachable. Runtime playable: NO. Agent: PENDING (blocked by R-NEW-361, not by harness absence)."
+}
