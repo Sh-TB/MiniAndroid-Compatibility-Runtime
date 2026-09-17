@@ -872,6 +872,17 @@ public:
         // children ≥1 GONE). setDisplayedChild/showNext/showPrevious
         // mutate this state and re-apply the showOnly visibility walk.
         int displayed_child = 0;
+        // ── S56 F-085: WebView content model ─────────────────────────────
+        // AOSP WebView.java stores the loaded document and renders it via
+        // chromium. This engine's generic WebView content model: the load
+        // family (loadUrl/loadData/loadDataWithBaseURL/postUrl) stores the
+        // document verbatim; the render law extracts visible text (generic
+        // HTML→text — NO app-specific markdown handling) into `text` so
+        // the standard text pipeline paints it. WebView-family nodes only.
+        std::string web_url;      // last loadUrl/postUrl target (or baseURL)
+        std::string web_data;     // last loadData*/raw document (HTML/URL body)
+        std::string web_mime;     // loadData mimeType, empty for loadUrl
+        std::string web_title;    // <title> if the document carried one
         // ── G06 §5: view state model (View.java view-flag laws) ─────────
         // pressed: set by the TouchDispatcher per the View.onTouchEvent law
         // (DOWN non-scrolling → setPressed(true); UP → UnsetPressedState
@@ -1446,10 +1457,47 @@ public:
     size_t node_count() const { return nodes_.size(); }
 
 private:
+    // WebSettings objects memoized per WebView object id (getSettings law:
+    // one settings object per WebView, created at construction in AOSP).
+    std::map<uint32_t, uint32_t> view_settings_;
     std::map<uint32_t, std::unique_ptr<ViewNode>> nodes_;
     // F-062: APK-captured compose_view_saveable_id_tag resource id
     // (set once by the interpreter's sget capture; single-threaded).
     static std::atomic<int32_t> compose_saveable_id_key_;
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// WebSettingsShadow — S56 F-085: generic android.webkit.WebSettings model.
+//
+// The markdown/WebView family (billthefarmer Notes etc.) configures its
+// WebView via WebSettings before any content loads. AOSP WebSettings is a
+// property bag with symmetric accessors (setJavaScriptEnabled(boolean) /
+// getJavaScriptEnabled()). This shadow mirrors that contract GENERICALLY:
+// every setter stores its value under the property name derived from the
+// method name, every getter returns the stored value (or an honest
+// default). No app-specific knowledge.
+// ─────────────────────────────────────────────────────────────────────────
+class WebSettingsShadow : public Shadow {
+public:
+    std::string name() const override { return "WebSettings"; }
+    bool handles_class(const std::string& class_name) const override {
+        return class_name.rfind("Landroid/webkit/WebSettings", 0) == 0;
+    }
+    CallResult dispatch(const CallContext& ctx) override;
+    std::vector<std::string> implemented_methods() const override {
+        return {"getSettings", "setJavaScriptEnabled", "getJavaScriptEnabled",
+                "getUserAgentString", "setLoadWithOverviewMode",
+                "setUseWideViewPort", "setBuiltInZoomControls", "setTextZoom"};
+    }
+
+private:
+    struct Prop {
+        bool b = false;
+        int64_t i = 0;
+        std::string s;
+    };
+    // property bag per WebSettings object id: "JavaScriptEnabled" → value.
+    std::map<uint32_t, std::map<std::string, Prop>> props_;
 };
 
 // ─────────────────────────────────────────────────────────────────────────
