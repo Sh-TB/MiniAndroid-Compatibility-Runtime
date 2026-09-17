@@ -332,3 +332,41 @@ Stage Summary:
   permanent reusable probe fixture; root narrowed to the rehash/snapshot layer.
 - Honest status: OBSERVED-FAIL (unchanged) — but the search space is now
   evidence-bounded instead of open.
+
+---
+Task ID: S51-PURGE
+Agent: Super Z (main)
+Task: Owner directive "remove all old pushes" — forensic purge of bloated history
+(S51 FINALIZATION PHASE 0/1/9) under explicit authorization.
+
+Work Log:
+- PHASE 0: fresh owner PAT loaded via ephemeral shell env only (never written to any
+  file/config/commit; recommend owner revoke+rotate post-session). API probe: HTTP 200,
+  repo public, size 519,916 KB, admin perms. Pre-push secret scan of the 6 unpushed S49
+  commits: 5 pattern hits, ALL classified as scanner-internal regex definitions inside
+  check_secrets.sh / deep_secret_scan.py / SECURITY_AUDIT.md (audited allowlist class).
+  New-token pickaxe over ALL refs + working-tree grep: ZERO hits. Guard --tree: PASS.
+- PHASE 1: per-ref blob audit (rev-list --objects + cat-file batch-check, >1MiB):
+  main = 127 big blobs / 991.0 MiB of 1128.1 MiB total; archive/origin-main-ad95d928 =
+  178 / 972.3 MiB incl. llvm-mingw.tar.xz 80MB, libLLVM.so 78MB, Telegram.apk 78.9MB,
+  telegram_call_graph.json 62.5MB, fdroid_index 53.3MB, miniandroid_asan 28.6MB;
+  other archive branches 99.9-195.7 MiB; v0.0.6 tag mirrors main chain (126/989.6 MiB).
+- History security finding: one TRUNCATED fine-grained-PAT prefix fragment (unusable,
+  literal '...' ending) added in eae90166, redacted in a6958b46; both reachable ONLY
+  from archive/origin-main-ad95d928 — archive decommission removes it from all refs.
+- PHASE 9: docs/forensics/HISTORICAL_BLOAT_REPORT.md + HISTORY_PURGE_PLAN.md written;
+  strip list = 83 EXACT junk paths (56 run stderr logs ~900MiB, 26 gpg_* forensic dumps,
+  miniandroid/core 9.4MB binary); KEEP-set 44 blobs (dalvik_engine.cpp source history,
+  curated evidence, upstream jars); collision gate strip∩tracked = EMPTY.
+- Backup: backup-s51/pre-purge-main-tags.bundle (487,858,487 bytes, sha256
+  2b3bad8da68709578139520c2fc61c8b...) — local only, gitignored, rollback anchor.
+- Pre-purge tree hash pinned: 8b74cb093e06f624cae45c9205dd43bb05570a34. Post-purge
+  invariant: HEAD tree hash MUST be identical (zero content regression).
+- This commit is the LAST commit of the pre-purge chain; git-filter-repo
+  (a40bce548d2c) next rewrites main + tags and archive branches are deleted
+  local+remote, then force-push + fresh-clone verification per plan.
+
+Stage Summary:
+- Old-push purge armed with full forensic documentation, collision-proof strip list,
+  and local bundle backup. No evidence knowledge destroyed: raw-log content already
+  distilled into run reports/registry; raw inventory committed under docs/forensics/.

@@ -153,3 +153,7 @@ miniandroid/run/**/*_stderr.txt
 miniandroid/run/**/*_stdout.txt
 gpg_*/
 gpg_lambda_probe.out
+
+# S51 purge scratch + local backup (never commit)
+/backup-s51/
+/tool-results/
