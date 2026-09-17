@@ -1,0 +1,37 @@
+{
+  "clickable_views": 3,
+  "frame1_sha_note": "screenshot.png (already written by stage_capture_output)",
+  "per_view": [
+    {
+      "changed_px": 2057718,
+      "class": "Landroid/widget/ImageButton;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda7;",
+      "screenshot": "click_frame_0.png",
+      "state_changed": true,
+      "view_id": 19
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/ImageButton;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda5;",
+      "state_changed": false,
+      "view_id": 18
+    },
+    {
+      "changed_px": 0,
+      "class": "Landroid/widget/EditText;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lorg/billthefarmer/notes/Notes$$ExternalSyntheticLambda10;",
+      "state_changed": false,
+      "view_id": 14
+    }
+  ],
+  "views_changed_second_frame": 1,
+  "views_probed": 3,
+  "xml_onclick_views": 0
+}
