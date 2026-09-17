@@ -29,7 +29,7 @@
 
 Reproduce any run: `./build/miniandroid run <apk> -o <dir> [--click-test]` at the
 recorded HEAD (battery gate: `bash scripts/test/run_test_battery.sh` →
-"BATTERY GATE: ALL PASS (94 stages)").
+"BATTERY GATE: ALL PASS (96 stages)").
 
 **Screenshot gate law (S54 refinement, binding).** A frame is BLANK when
 `(near-white ≥ 97% or near-black ≥ 97%) AND colors ≤ 8`, or when `colors ≤ 8`
@@ -57,13 +57,13 @@ fixes legitimately change their frames).
 | 2 | uNote | 30 | `be91103f0e7db443` | F-Droid | **SUCCESS** (real list UI; gate PASS 417 colors) | L5; L6 blocked (R-NEW-368) | PARTIAL (notes.db round-trip; input blocked) |
 | 3 | Bouncy (ball) | 39 | (registry) | F-Droid | **SUCCESS** (S51 era; APK not re-fetched at S53 — corpus SHA mismatch) | L5 (frame `4219c511…`) | NOT TESTED |
 | 4 | Heading Calculator | 1 | `274ec873098eea51` | F-Droid | **SUCCESS — L7**: full keypad UI; digit click → display text changes | L5→**L7** | NOT TESTED |
-| 5 | Notes (billthefarmer) | 139 | `82cf8bc44c163748` | F-Droid | **RENDER_ONLY — near-white blank class** (re-verified post-F-080/F-081): 99.1% near-white, 5 colors; 7 views inflate but ListView content never paints — open root | L4 | NOT TESTED |
+| 5 | Notes (billthefarmer) | 139 | `82cf8bc44c163748` | F-Droid | **SUCCESS — L7 [S55 UPGRADE]**: F-082 restores the ViewSwitcher read↔edit state machine — FAB click → face swap (2,057,718 px, 99.23%); note CONTENT stays blank-class (read face = MarkdownView **extends WebView** — R-NEW-377 next dep) | L4 → **L7** (content face blocked) | NOT TESTED |
 | 6 | MicroTimer | 8 | `79c6f730f64886e7` | F-Droid | **SUCCESS — L7**: keypad UI; click → `00:00:00` timer display appears | L5→**L7** | NOT TESTED |
 | 7 | Simple Stopwatch | 26 | `b3ec1a5ec24ce53b` | F-Droid | **SUCCESS — L7**: Start/Delay → **Stop/Lap** running-state transition | L5→**L7** | NOT TESTED |
 | 8 | GM Dice | 8 | `1621eda11b5dbc0c` | F-Droid | **SUCCESS — L7/L9-quality**: 8/8 clicks state-changed; dialog roll rendered (1.85 M px); post-F-081 base additionally renders the result label | L5→**L7 + app-specific semantic result** | NOT TESTED |
 | 9 | Simple Keyboard | 145 | `d83060833dc2bc97` | F-Droid | SUCCESS (entry screen — IME, no launch UI) | L5 (entry class `eb16ab5c…`) | NOT TESTED |
 | 10 | RTTT (kirkezz) | 1.3 (vc3) | `704fa51869ad7ff4` | F-Droid | SUCCESS (entry screen; Compose frontier) | L5 (entry class) | NOT TESTED |
-| 11 | Dooz v18 | 18 | `d81292cd346dcb23` | F-Droid | **PARTIAL** — R-NEW-361 signature reproduced | L3 (composition halt) | NOT TESTED |
+| 11 | Dooz v18 | 18 | `d81292cd346dcb23` | F-Droid | **PARTIAL [S55]** — R-NEW-361 **ROOT-CAUSED + FIXED (F-083)**: ScatterMap ghost-metadata probe spin eliminated (HALT-LOOP gone; MainActivity.onStart/onResume dispatched for the first time); new frontier **R-NEW-376** pinned (post-F-083 ctor-climb exceeds the 2048-frame budget) | L3 → L4-in-progress (composition runs, first frame not yet reached) | NOT TESTED |
 | 12 | Dooz v23 | 23 | (corpus) | F-Droid | **PARTIAL** — deterministic pipeline completion, blank first frame | L4 (blank `31ddd4d5…`) | NOT TESTED |
 | 13 | TicTacToe (emmanuelmess) | 3 | `760fe5acf7b39435` | F-Droid | PARTIAL — blank first frame | L4 (blank class) | NOT TESTED |
 | 14 | Telegram v12 | 12.10.1 (vc70389) | `f5e1192725772960` | telegram.org | **PARTIAL** — 540 s inside real init, no frame yet | L3-attempt (init depth) | NOT TESTED |
@@ -81,13 +81,14 @@ fixes legitimately change their frames).
 | 26 | Tiny Music Player | 1.0 | `d7bcb24d101b04be` | F-Droid | era record (campaign014) | era record | NOT TESTED |
 | 27 | TicTacToe Classic (palahsu) | ? | `752852c94c980788…` | legacy cache | **BLOCKED — APK unavailable** (cache lost; F-Droid `com.palahsu.ttt` NOT_FOUND at S54); historical S37 full-render + S44 playable record stands at its recorded HEADs | era: L9 | — |
 
-**Count summary (HEAD 8c575f71+F-080/F-081):** SUCCESS with real recognizable
-GUI **6** (Chess Clock restored, GM Dice, MicroTimer, Simple Stopwatch, Heading
-Calculator, uNote) — **5 with proven input→state-change screenshot pairs**
-(GM Dice additionally renders the app-specific dice-roll result; uNote input
-blocked by R-NEW-368) · RENDER_ONLY blank-class **1** (Notes — open root) ·
-entry-class 2 · PARTIAL 14 · BLOCKED 2 (WhatsApp no APK; TicTacToe Classic no
-APK) · persistence storage-round-trip verified 2.
+**Count summary (S55, HEAD 646952b6+F-082/F-083):** SUCCESS with real recognizable
+GUI **6** (Chess Clock, GM Dice, MicroTimer, Simple Stopwatch, Heading
+Calculator, uNote) + **Notes upgraded to L7 mode-switch** (content face still
+blank-class — WebView dependency pinned) — **6 with proven input→state-change
+screenshot pairs** (GM Dice additionally renders the app-specific dice-roll
+result; uNote input blocked by R-NEW-368) · entry-class 2 · PARTIAL 13 ·
+BLOCKED 2 (WhatsApp no APK; TicTacToe Classic no APK) · persistence
+storage-round-trip verified 2.
 
 ## 2. In-repo fixture achievements (strongest ladder proofs)
 
@@ -200,21 +201,56 @@ in the S54 gallery (era evidence).
 
 ### 3.2 RENDER_ONLY / downgraded — open roots
 
-**Notes (billthefarmer)** v139 · APK SHA256 `82cf8bc44c163748…` · F-Droid ·
-re-verified at S54 **after** F-080/F-081 (frame unchanged: 99.1% near-white,
-5 colors).
-- Evidence [S54]: `U007-INFLATE` inflates 7 views, 0 unresolved — the tree
-  EXISTS; the paint path dies below the ListView (adapter item rendering is
-  the suspect layer, same root-cause method as ChessClock now applies).
-- Click-test: 0/3 state changes. Screenshot: NONE stored (blank class).
-- Next: ListView/Adapter paint-path trace (measure→layout→draw of item views),
-  ASC `getclass` on the Notes adapter chain, then the minimal shared law.
+**Notes (billthefarmer) — [S55 UPGRADE: RENDER_ONLY → L7 mode-switch; content
+face still blank-class.]** v139 · APK SHA256 `82cf8bc44c163748…` · F-Droid ·
+Runtime HEAD 646952b6 + F-082/F-083 (S55)
+- **S55 tree forensics REFUTE the S53 "ListView item paint" hypothesis:** the
+  v139 main layout has NO ListView. `U007-INFLATE` inflates 7 views, 0
+  unresolved: FrameLayout → ViewSwitcher [ScrollView+EditText (edit face) |
+  MarkdownView (read face)] + FAB ViewSwitcher [2× ImageButton].
+- **F-082 (generic AOSP ViewAnimator law)** — `setDisplayedChild/
+  getDisplayedChild/showNext/showPrevious` were REC-MISS silent no-ops;
+  now implemented on the ViewShadow node model (clamp + showOnly visibility
+  walk + requestLayout). Regression: `tests/view_animator_law_test.cpp`
+  18 checks ALL PASS (battery stage "F-082 ViewAnimator law").
+- Runtime proof: `--click-test` FAB → `animateAccept` → `setDisplayedChild`
+  → face swap = **2,057,718 px delta (99.23% of frame)**, probed=3
+  state_changed=1 (was 0/3 at S53). Frames byte-identical across two runs
+  (`docs/evidence/s55_notes_v2/SHA256SUMS`: cf521b16… / ae697935…;
+  census + deltas in census_delta.json).
+- **Content face root cause PROVEN (R-NEW-377):** the read face is
+  `Lorg.billthefarmer.markdown.MarkdownView;` which **extends
+  `Landroid/webkit/WebView;`** (verified by the runtime's own dex parser).
+  `getSettings/setWebViewClient` REC-MISS → the markdown load pipeline
+  never starts → honest inline placeholder (C013-CUSTOMVIEW). Editor face
+  (ScrollView+EditText) inflates, measures, renders; fresh data dir =
+  empty note is CORRECT behavior.
+- Next dependency (pinned, P1 shared framework): a generic WebView content
+  model. App-specific markdown rendering is forbidden by the campaign scope
+  laws (§25-family). Screenshot: NONE stored for the content face (blank
+  class, per policy); the mode-switch pair is recorded as SHA256 + census
+  text only (both frames blank-class).
 
 ### 3.3 PARTIAL — open roots (the honest frontier)
 
-**Dooz v18** — PARTIAL: `[HALT-LOOP] Lh/r;.c` + `aput-oob` reproduced at HEAD;
-root **R-NEW-361** (ScatterMap.set group-scan long-metadata arithmetic; ASC
-decompile narrowed candidates a–d). Next: law-probe fixture.
+**Dooz v18** — **[S55: R-NEW-361 ROOT-CAUSED + FIXED by F-083; new frontier
+R-NEW-376 pinned.]** The v18 face (HALT-LOOP `Lh/r;.c` → aput-oob) was
+DOWNSTREAM of the real defect: the 56th `Ln/a;.r` (Kotlin LongArray-fill
+helper) invocation entered `try_recursive_invoke` at depth=80 ==
+MAX_RECURSION_DEPTH and was silently dropped (EXP-053 law: ~80KB C++ stack
+per DEX frame → 80-frame cap under the 8MB process stack). The dropped void
+initializer left map o5051's metadata at heap-zero; the subsequent sentinel
+write produced ghost bytes (`0xff007f6600000000`, zero EMPTY 0x80 —
+[R361-STORE] traces) → the findImpl probe never terminates. **F-083**
+(generic): cmd_run executes on a dedicated 1GB-virtual-stack thread;
+MAX_RECURSION_DEPTH 80 → 2048; the limit-drop is ALWAYS loud
+([RECURSION-LIMIT] stderr). Post-fix: no HALT-LOOP, no aput-oob, metadata
+init correct (`0xff80808080808080` on healthy maps),
+MainActivity.onStart/onResume dispatched for the FIRST time in campaign
+history. Key traces: `docs/evidence/s55_dooz/` (SHA256SUMS). New frontier
+**R-NEW-376**: Compose init ctor chains exceed the 2048-frame budget
+(9 cap-climbs; j0/t0/E0 hop evidence captured) — next steps ranked in the
+registry entry.
 
 **Dooz v23** — PARTIAL: deterministic pipeline completion; first frame = blank
 Compose class `31ddd4d5…` (×4+ runs). Root **R-NEW-344** (Recomposer suspends

@@ -10,7 +10,24 @@
 
 Snapshot: 745 tracked `.md` files — 441 KEEP (knowledge/process), 185 HISTORY (era records), 111 EVIDENCE (compact, cited), plus 290 tracked `.json` (indexes/fixtures/oracles — classified below).
 
-## 0b. S54 additions (current session)
+## 0b. S55 additions (current session)
+
+| File | Topic | Purpose | Status | Priority | Canonical? | Related |
+|---|---|---|---|---|---|---|
+| F-082 (law) | framework | ViewAnimator displayed-child laws on ViewShadow: setDisplayedChild/getDisplayedChild/showNext/showPrevious (AOSP clamp `which≥count→count-1; <0→0` incl. childless, showOnly visibility walk, requestLayout flag) | IMPLEMENTED+TESTED (18-check law test in battery) | P0 | YES (android_shadows.cpp/h) | R-NEW-377; Notes v139 L7 |
+| F-083 (law) | engine | ART contract for app recursion: engine runs on a 1GB-virtual-stack pthread; MAX_RECURSION_DEPTH 2048 (EXP-053 80KB/frame law); limit-drop ALWAYS loud; F-074 trace env-gated (MINIANDROID_F074_TRACE) | IMPLEMENTED+TESTED | P0 | YES (main.cpp + dalvik_engine.h/cpp) | R-NEW-361 → VERIFIED-FIXED |
+| R-NEW-377 (entry) | knowledge | Notes read↔edit state machine (F-082) + content-face root cause: MarkdownView extends WebView → generic WebView content model is the next dependency (app-specific rendering forbidden) | VERIFIED-FIXED (state machine) / BLOCKED-PINNED (content) | P1 | YES (root_registry.json) | ACHIEVEMENTS §3.2 |
+| R-NEW-376 (entry) | knowledge | Post-F-083 Dooz v18 frontier: ctor chains exceed the 2048-frame budget (9 cap-climbs; j0/t0/E0 hop evidence; next steps ranked) | OBSERVED-FAIL (pinned) | P1 | YES (root_registry.json) | ROADMAP_STATUS §3.1 |
+| docs/evidence/s55_notes/ | evidence | S55 Notes click-test evidence (mid-investigation binary): frames + click_test_report.json + run.log + SHA256SUMS | EVIDENCE | P1 | YES | ACHIEVEMENTS §3.2 |
+| docs/evidence/s55_notes_v2/ | evidence | FINAL-binary Notes evidence: frames byte-identical to s55_notes (determinism), census_delta.json (2,057,718 px face-swap delta, 99.23%), SHA256SUMS | EVIDENCE | P1 | YES | ACHIEVEMENTS §3.2 |
+| docs/evidence/s55_dooz/ | evidence | R-NEW-361/376 key dispatch traces: pre-F-083 (ghost metadata, depth=80 drops) vs post-F-083 (healthy init, ctor-climb caps), SHA256SUMS | EVIDENCE | P1 | YES | ROADMAP_STATUS §2/§3 |
+| scripts/s55_notes_evidence.py | tooling | per-frame census + pixel-delta audit for click-test runs (§19/§20) | KEEP | P1 | YES | screenshot gate law |
+| scripts/s55_refetch_corpus.sh | tooling | SHA-verified corpus re-fetch after container reset (zero-APK policy kept) | KEEP | P1 | YES | APK_REGISTRY.json |
+| scripts/s55_dump_methods.py + s55_j0_inits.py | tooling | DEX method disasm probes (ScatterMap face + j0/t0/E0 ctor delegation ground truth) | KEEP | P1 | YES | R-NEW-361/376 evidence |
+| scripts/s55_registry_update.py | tooling | S55 registry updater (R-NEW-361 verdict, R-NEW-376/377 registration) | KEEP | P1 | YES | root_registry.json |
+| S53/S54 rows below | — | retained for continuity | — | — | — | — |
+
+## 0c. S54 additions (prior session)
 
 | File | Topic | Purpose | Status | Priority | Canonical? | Related |
 |---|---|---|---|---|---|---|
