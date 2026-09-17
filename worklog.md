@@ -740,3 +740,78 @@ Work Log:
 
 Stage Summary:
 - S55 code/evidence/docs CLOSED and committed locally; push pending credential. Next session with a token: inject GH_TOKEN env var → git push origin main → fresh-clone verify (build + battery + Notes/Dooz regressions from published source) → S55 fully closed.
+
+---
+Task ID: S56
+Agent: Super Z (main)
+Task: S56 — LEFTOVER CLOSURE (user directive: no new fronts; fix the roadmap-3
+leftovers): push the pending S55 commits, then R-NEW-344/376 (Compose P0s),
+WebView content model (R-NEW-377), R-NEW-368 (uNote), battery, docs, push.
+
+Work Log:
+- PUSHED the S55 queue (855d380d..284ddd58, 6 commits) with the user-supplied
+  token (ephemeral, never stored); secret guard PASS.
+- Toolchain re-bootstrapped + engine rebuilt (container reset had wiped
+  build/); corpus re-fetched SHA-verified (scripts/s55_refetch_corpus.sh, 9/9).
+- DOOZ V23 RE-RUN (R-NEW-344 re-pin, post-F-083): rc=1 PARTIAL in ~3 min
+  (old rc=124/HALT-LOOP era gone). New face: ArrayIndexOutOfBoundsException
+  length=15 index=-733270216 at Lbw0;.a pc=8 -> APP BOUNDARY unwind in
+  MainActivity.onCreate.
+- ROOT-CAUSE CHAIN (S56 diagnostics): Lbw0; = androidx.collection ScatterMap
+  (fields a:[J metadata, b:[Object] values, c capacity, d size, e free-budget;
+  helpers Lmg1;.a=loadedCapacity, Lmg1;.b=nextCapacity cap*2+1); Lnb0; =
+  Recomposer, Lwo; = ControlledComposition (holds two Lbw0; as l/m). Full
+  budget lifecycle traced (MINIANDROID_FIELD_TRACE=e): cap 7 e=6 -> 6 inserts
+  -> grow at e=0 via f(15) (RESIZE #1 CORRECT: new arrays o4644, cap 15,
+  e=loaded(15)-6=8) -> 8 inserts (size 14) -> grow at e=0 entered the
+  R8-inlined resize: convertMetadataForCleanup ran (bit-exact vs upstream:
+  0xfefefefefefe80fe at d pc=235) and 14 entries re-inserted INTO THE SAME
+  ARRAYS (no allocation; epilogue e=0 = loaded(15)-14 -> newCap stayed 15,
+  must be 31) -> 15/15 FULL, zero EMPTY bytes -> probe spin (HALT-LOOP
+  2.4M insns, d pc=28 iget-object). The AIOOBE was DOWNSTREAM: the halted
+  callee delivered a stale last_invoke_return_ (the garbage index) to the
+  caller's move-result.
+- F-084 SHIPPED (HALT-RETURN containment law): discriminator
+  halted_ && !halted_on_return_ (every NORMAL return also sets halted_ —
+  the first attempt without the discriminator broke battery stages 59-63
+  and was fixed pre-commit); the halt escalates as deferred
+  VirtualMachineError (F084-HALT-RETURN). Proof: battery ALL PASS 96/96;
+  simplestopwatch rc=0 zero fires; dooz v23 face = honest halt propagation.
+  S56 diagnostics added (env-gated, budgeted): dump_frame_locals_diag
+  (SPIN/APUT-OOB locals + array elements), [S56-META-STORE] generalized
+  metadata-store trace (was v18-class-hardcoded), PARAM-TRACE budget
+  400->20000.
+- F-085 SHIPPED (generic WebView content model): ViewShadow dispatches the
+  WebView family — getSettings (per-WebView memoized WebSettings object),
+  setWebViewClient/setWebChromeClient/loadUrl/loadData/loadDataWithBaseURL/
+  postUrl/getUrl/getTitle/canGoBack/goBack/reload/evaluateJavascript(honest
+  drop)/clearCache family; WebSettingsShadow = symmetric set/get property
+  bag (registered before ViewShadow); the render law extracts visible text
+  via a generic HTML->text pass (script/style dropped, block tags ->
+  newlines, named+numeric entities; NO app-specific markdown handling) into
+  the node text so the standard pipeline paints it. Notes v139: getSettings
+  now resolves (settings identity memoized); shadow-count invariant
+  19->20 / reduced-registry 21->22.
+- R-NEW-368 CLOSED (premise REFUTED, no engine defect): EXP092-RENDER
+  places uNote's main-menu buttons at y=1876..1920 — the S52-era 16-probe
+  grid (y 300..1780) never covered that band. Coordinate-correct tap
+  (270,1898): G06-TAP DOWN target=13 consumed=1, UP click_posted=1, the
+  app's own addNote ran -> startActivity -> NoteEdition.onCreate
+  dispatched. L6 input->state->navigation PROVEN; evidence
+  docs/evidence/s56_unote/.
+- REGISTRY (353 roots): R-NEW-344 refined (full chain + ranked next:
+  trace Lmg1;.b at insert #16; compare cap-7 vs cap-15 grow at d pc=128);
+  F-084 registered; R-NEW-368 -> VERIFIED-FIXED. Canonical docs synced
+  (ROADMAP_STATUS §2/§3/§6 S56 refresh, KNOWLEDGE_INDEX §0b, ACHIEVEMENTS
+  uNote card + matrix row).
+- EVIDENCE: docs/evidence/s56_dooz23/ (F084_EVIDENCE.md + SHA256SUMS over
+  pre/post stderr captures), docs/evidence/s56_unote/. Battery re-run
+  after every fix: BATTERY GATE: ALL PASS (96 stages).
+
+Stage Summary:
+- Leftover fixes shipped: F-084 (engine, P0) + F-085 (framework model) +
+  R-NEW-368 closed with a refutation + R-NEW-344 refined to a precise,
+  ranked next step. S55 queue published. Honest frontier after S56:
+  R-NEW-376 (v18 ctor-climb, unchanged), R-NEW-344 root (scatter resize
+  newCap=15 bug), WebView end-to-end content probe, persistence L10,
+  Telegram. Battery 96/96 ALL PASS.
