@@ -15,11 +15,12 @@
 ## At a glance (30 seconds)
 
 - **What it is:** a from-scratch C++17 compatibility runtime that executes real Android APKs from bytecode to pixels, with every claim pinned to committed evidence.
-- **What really runs today:** 6 real F-Droid APKs render full UI (ChessClock, uNote, Bouncy, Heading Calculator, Notes, MicroTimer + Simple Stopwatch/GM Dice battery-verified); 2 more reach their entry screen; **TicTacToe is fully playable** (real taps → win state → deterministic replay, 9/9 interaction).
+- **What really runs today (S53 quality-gated):** **5 real F-Droid APKs render recognizable full GUI** (GM Dice, MicroTimer, Simple Stopwatch, Heading Calculator, uNote) — **4 of them with input→state-change screenshot pairs** (tap/click → visible UI change; GM Dice even renders the app-specific result: a real dice roll `14 · 15 · 15`). 2 more reach their entry screen. **TicTacToe fixture is fully playable** (real taps → win state → deterministic replay, 9/9).
+- **Honesty gate:** a screenshot quality gate (luminance/color/entropy + click-test audit) downgraded 2 earlier "SUCCESS" claims — Chess Clock and Notes render deterministic **blank-class frames** and are recorded `RENDER_ONLY`, with no image stored. No white/black frame is ever presented as an achievement.
 - **Dooz:** v23 executes the full Hilt/DI/Compose pipeline deterministically but the first frame is still blank (**R-NEW-344**); v18 halts in androidx ScatterMap arithmetic (**R-NEW-361** — ASC-recon candidates ranked).
 - **Telegram v12:** parses + launches + burns 540 s inside real init (no frame yet); startup path fully mapped by ASC recon.
-- **Battery:** 92/92 stages ALL PASS at the current HEAD (`scripts/test/run_test_battery.sh`).
-- **Full per-app truth:** [**Execution Achievements & Evidence**](docs/EXECUTION_ACHIEVEMENTS.md) — the single canonical record of every real APK execution.
+- **Battery:** 94/94 stages ALL PASS at the current HEAD (`scripts/test/run_test_battery.sh`).
+- **Full per-app truth:** [**Execution Achievements & Evidence**](docs/EXECUTION_ACHIEVEMENTS.md) — the single canonical record of every real APK execution · gate-passing screenshots: [`docs/evidence/s53_frames/`](docs/evidence/s53_frames).
 
 ---
 
@@ -89,7 +90,7 @@ and [`docs/testing/BATTERY_INDEX.json`](docs/testing/BATTERY_INDEX.json).
 2. **TicTacToe Classic (real corpus APK) is fully playable** — real taps →
    DEX click listeners → X/O alternation → board redraws (S44); the §29
    interaction + determinism golden passes with 10-frame per-frame SHAs.
-3. **Regression battery: 92/92 stages ALL PASS** — §28 HelloWorld (26 checks),
+3. **Regression battery: 94/94 stages ALL PASS** — §28 HelloWorld (26 checks),
    §29 TicTacToe interaction 9/9, EXT-01 typography 9/9, EXT-02 interaction
    12/12, G06/G07/G08 3-run frame-SHA determinism, all fixture pixel goldens
    (`docs/testing/BATTERY_INDEX.json`; historical "94/94" = pre-purge script
