@@ -16,7 +16,7 @@ graphs), so the canonical repository is small, auditable, and free of raw-log hi
 | main | history rewrite | strip 83 exact paths (`tool-results/strip_paths.txt` classification in bloat report), 279 commits + S51 prep commit rewritten |
 | tags v0.0.1, v0.0.2, v0.0.2-alpha, v0.0.3-Chantecler, v0.0.4-Chantecler, v0.0.5-Silkie, v0.0.6-Leghorn | remap | filter-repo rewrites tag objects onto purged chain; names preserved; GitHub releases keep tag names |
 | archive/local-main-12cf043f, archive/local-main-167c27fb, archive/local-main-d358a0c9-stale, archive/origin-main-ad95d928 | DELETE | local + origin (old pushes; hold LLVM/APK/fragment history; superseded by main + docs) |
-| Working tree | UNCHANGED | post-purge HEAD tree hash must equal pre-purge `8b74cb093e06f624cae45c9205dd43bb05570a34` |
+| Working tree | UNCHANGED | post-purge HEAD tree hash must equal purge-time tree `89dc0b144127deb7ad2b241eaf41d332a96ea414` (S51 prep commit 61f1b5e7; S49-head tree was `8b74cb093e06f624cae45c9205dd43bb05570a34`) — VERIFIED locally and in fresh clone |
 
 ## Tooling
 
