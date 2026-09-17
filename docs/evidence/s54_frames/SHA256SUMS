@@ -1,0 +1,21 @@
+# S54 canonical gallery — SHA256SUMS + gate numbers
+# HEAD 8c575f71 + F-080/F-081 · gate law: S54 refinement (BLANK needs colors<=8;
+# near-black + colors>8 = DARK-CONTENT, requires independent content check).
+# All frames fresh runs; JPG pipeline = S53 (q88 optimize, <=100KB).
+bee88b1a9d322535e5e90743c95b13d03b089fc0a969f525402a68305086437b  helloworld_ext01_base.jpg  | nw=0.9% nb=98.7% colors=256 | 47235B | L5 HelloWorld real external APK text UI (dark content, battery EXT-01 typography golden 9/9)
+fa99a6406eba016a5e45429d12ff3768df3cdaaabf3b2c3a2e39241347ff96ff  gmdice_base.jpg  | nw=15.9% nb=0.1% colors=3757 | 46678B | L5 GM Dice initial UI incl. result label (post F-081)
+f93523806aae63cd9943017bd6f9a6d058709282352202329a6a56ac02327497  gmdice_after.jpg  | nw=9.9% nb=0.5% colors=2220 | 40466B | L7+result — 8/8 clicks, dialog roll rendered (1,853,871 px delta)
+f139b60a2c82c147f9da400d246763d36b656f7734c63a2ef9f2d613e833a578  microtimer_base.jpg  | nw=49.8% nb=0.0% colors=5107 | 30740B | L5 MicroTimer keypad initial state
+5926a3e8805bf7ec08ee290f199a668fdccc2286cd82826a01bf5569b94ffe5d  microtimer_after.jpg  | nw=49.8% nb=0.0% colors=4908 | 41244B | L7 — click → 00:00:00 timer display appears (31,863 px)
+5d3364d7a59659d4c7fabb1bce2dc46eb1373da2263ff7f2d04854b263e85ab5  simplestopwatch_base.jpg  | nw=6.2% nb=0.0% colors=2323 | 35582B | L5 Simple Stopwatch Start/Delay initial state
+1cdd2a10a0b9e3b2ad962319dab66e9e6b75381a87bfdaa24bafde7be6190c65  simplestopwatch_after.jpg  | nw=6.2% nb=1.8% colors=2395 | 36549B | L7 — Start → Stop/Lap running-state transition (40,915 px)
+177801591acd3bd96246b2b2d2eaf6b578b1b9263c53f450d1ef65eccd10250d  headingcalculator_base.jpg  | nw=1.3% nb=0.4% colors=7839 | 94547B | L5 Heading Calculator full keypad initial state
+6625ce163173a0789e069378330efdf0344f64c5cdae2808337d610c8b285145  headingcalculator_after.jpg  | nw=1.3% nb=0.4% colors=7839 | 93258B | L7 — digit click → display value changes (1,389 px)
+df24dd598dd2392a60a3a9ad6d5bc3d5d1670dd5bd27dacf11cbd050569b277a  unote_base.jpg  | nw=88.6% nb=0.0% colors=5135 | 32192B | L5 uNote real list UI (input blocked by R-NEW-368, honest)
+cd1ca04510680bae25e33991ae56b843634561b9bcaaaf86d7d9f1cd852b487b  chessclock_base.jpg  | nw=1.6% nb=0.0% colors=608 | 39834B | L5 ChessClock REAL face restored by F-080+F-081 — P2 active (blue accent)
+44fa083186c7de3a89fd0d9c21af986783608e0e374cfa7d4f57acf9676378e0  chessclock_after.jpg  | nw=1.6% nb=0.0% colors=202 | 39095B | L7 — click → active player switches P2→P1, accent moves (80,289 px)
+
+# REJECTED (blank-class, recorded as text only — never stored as images)
+# notes: nw=99.1% nb=0.0% colors=5 — near-white blank class; 7 views inflate but
+#   ListView content never paints (open root: S54 evidence local/s54/runs/notes;)
+#   F-080/F-081 do not change its frame (re-verified post-fix).

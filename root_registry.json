@@ -1,7 +1,7 @@
 {
  "baseline_head": "5a2b7d99",
  "summary": {
-  "total_roots": 348,
+  "total_roots": 350,
   "open_frontiers": [
    "R-NEW-228",
    "R-NEW-303",
@@ -11,7 +11,7 @@
    "R-NEW-335",
    "R-NEW-361"
   ],
-  "last_updated": "S48 2026-09-16",
+  "last_updated": "S54 2026-09-17",
   "note": "S48 repository-recovery campaign: battery restored to 94/94 (EXT-01/02 external fixtures re-fetched SHA-exact; fixture toolchain re-bootstrapped; build_fixture_apk.sh compiles framework stubs on -classpath for robolectric android-all-14). Raw campaign exhaust (1076MB) archived externally with SHA provenance (docs/evidence/ARCHIVE_MANIFEST.json); GPG-092..095 compact session evidence moved to docs/ R-NEW-367 VERIFIED-FIXED (S48 §14 stub audit): SharedPreferences shadow no longer hard-codes the EXP-era 'org.telegram.messenger' data dir; prefs resolve from the manifest package per the AOSP ContextImpl law. Battery re-proven 94/94.",
   "total": 349,
   "verified_fixed": 41,
@@ -3534,6 +3534,14 @@
     "head": "bf32dc93"
    },
    "next": "verbose run to capture ViewShadow bounds for view_ids 13/14/15; compare paint rect vs touch rect; check LinearLayout onMeasure/onStoreCanvas geometry laws"
-  }
+  },
+{
+  "id": "R-NEW-375",
+  "status": "VERIFIED-FIXED",
+  "priority": "P0",
+  "fg": false,
+  "title": "ChessClock renders a 2-color near-black blank frame - real clock face invisible (S53 downgrade RENDER_ONLY)",
+  "summary": "S54 root-cause: TWO stacked shared-layer defects. (1) F-080: the app's color() helper compiles to the two-arg overload invoke-virtual {recv, resid, theme} with const/4 null theme; the Resources.getColor shadow read a fixed slot, resolved the NULL THEME as the resid (getColor resid=0x0 -> black), and every setTextColor/setBackgroundColor became black-on-black. Fix: resid = first INT-typed argument (receiver/Theme are references; robust under receiver-included/excluded dispatch conventions). (2) F-081: the M3-19 active-cycle key was name-only, so the legal formatTime(J) overload delegation inside an active formatTime(J Z) frame falsely matched as re-entry and was stubbed to null - the clock text rendered the literal 'null'. Fix: include the method descriptor in the active-invoke key (JVM/ART method identity is (name, descriptor)-exact). Evidence after both fixes: [RES] getColor resid=0x7f050005 -> 0xff499ebd (real ARSC color); setText '10:00' x2; frame 99.3% near-black/2 colors -> 187 colors; click-test probed=8 state_changed=3 with an 80,289 px rendered active-player switch. Verdict upgraded RENDER_ONLY -> SUCCESS/L7. Battery 94/94 ALL PASS after the fixes; microtimer/simplestopwatch/headingcalculator/unote JPGs byte-identical (no regression); gmdice improved (base now renders the result label). Evidence: docs/evidence/s54_frames/{chessclock_base,chessclock_after}.jpg + SHA256SUMS; disasm probe scripts/forensic/s54_chessclock_disasm.py; fresh runs local/s54/runs/."
+ }
  ]
 }

@@ -1,0 +1,28 @@
+{
+  "schema": "release_checksum_verification/v1",
+  "verified_at": "2026-09-16",
+  "release": "v0.0.6-Leghorn",
+  "method": "downloaded all 3 assets from github.com releases/download endpoints (unauthenticated); sha256sum computed locally and compared against the released SHA256SUMS.txt",
+  "assets": {
+    "MiniAndroid-v0.0.6-Leghorn-linux-x64.tar.gz": {
+      "size_bytes": 1607470,
+      "sha256_published": "20ece9256b052a06839a5124fd64c19bb15512f1ff9de5eb3b6df705898f8780",
+      "sha256_computed": "20ece9256b052a06839a5124fd64c19bb15512f1ff9de5eb3b6df705898f8780",
+      "match": true
+    },
+    "MiniAndroid-v0.0.6-Leghorn-windows-x64.zip": {
+      "size_bytes": 3925621,
+      "sha256_published": "934d6edcf1ee32060eef10c7fe0eabb84584a83132795fabcc9b3256594f3267",
+      "sha256_computed": "934d6edcf1ee32060eef10c7fe0eabb84584a83132795fabcc9b3256594f3267",
+      "match": true
+    }
+  },
+  "repo_manifest_consistency": {
+    "file": "docs/releases/RELEASE_MANIFEST.json",
+    "linux_artifact_sha256_matches_live": true,
+    "windows_artifact_sha256_matches_live": true
+  },
+  "verdict": "HEALTHY — published SHA256SUMS.txt matches both live assets byte-for-byte (sha256) and matches docs/releases/RELEASE_MANIFEST.json",
+  "prior_claim_audit": "S49 recorded 'v0.0.6 SHA256SUMS.txt asset defect' as BLOCKED. This re-verification at S50 does NOT reproduce any mismatch: the claim is resolved/non-reproducible at the live release. No asset replacement needed.",
+  "downloaded_binaries": "kept out of git (re-downloadable); verification values recorded here are the permanent evidence"
+}

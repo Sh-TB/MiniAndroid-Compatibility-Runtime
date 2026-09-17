@@ -645,3 +645,42 @@ Work Log:
 Stage Summary:
 - PUSH BLOCKED — no valid credential in environment. Next session: inject GH_TOKEN env var
   (ephemeral only) and push 18053f1b; then fresh-clone verify.
+
+---
+Task ID: S54
+Agent: Super Z (main)
+Task: S54 — FINAL FOUNDATION CLOSURE CAMPAIGN (recon, fresh evidence, HelloWorld visual proof, ChessClock root-cause fix, canonical doc rename, hygiene, push)
+
+Work Log:
+- RECON (independent, per §1): HEAD 8c575f71 (= 18053f1b S53 + push-status record); remote/main at bf32dc93; 3 unpushed commits (ef569eda S52, 18053f1b S53, 8c575f71). 211 untracked residue paths from Sep 9–15 divergent-lineage sessions; 1 tracked file modified mid-session (s53_frames/SHA256SUMS truncated by my own early hardcoded-gate invocation — restored from HEAD, noted as an honest error).
+- DIVERGENT-LINEAGE VERDICT: campaign reports (MASTER4 @8de5382b, PLAYABILITY @d202e43d, GPG f105–f124, F-023 @7dc70e9c) cite commit hashes that are NOT objects in this repo — verified via git cat-file (8/8 MISSING). Their source fixes are NOT assumed present; equivalent laws F-028/028h/029 verified IN this lineage via 52e4a5c5. Reports preserved under docs/history/campaign-reports/*.divergent-lineage.md with quarantine headers; claims treated as unverified unless re-proven here.
+- INFRASTRUCTURE ROOT-CAUSE (blocking everything): disk 100% full (9.9G/0 avail) + un-bootstrapped toolchain. Freed 7 GB (miniandroid/run 3.3G gitignored exhaust, download/ 1.7G stale pre-purge bundles, gpg_* 362M divergent exhaust, foreign workspaces 1.7G; SHA/count manifest: local/s54/RESIDUE_REMOVAL_MANIFEST.txt). Bootstrap: scripts/build/bootstrap_toolchain.sh (aapt2 2.20-14304508, ECJ 3.33.0, r8 8.13.23, android-34 stubs robolectric android-all-14). EXT fixture re-fetched: HelloWorldSelfAware-1.1.0 APK SHA256 009b467109c4d48d… EXACT ledger match + upstream reference screenshot. Battery went 54-fixture-collapse → "BATTERY GATE: ALL PASS (94 stages)".
+- FRESH EVIDENCE (10 runs, scripts/s54_evidence_runs.sh, all rc=0, gate+delta+SHA audited by scripts/s54_evidence_audit.py): 9/9 corpus JPGs byte-identical to S53 gallery pre-fix (cross-HEAD determinism); HelloWorldSelfAware renders its real text UI incl. app-computed device hash (DARK-CONTENT class: 98.7% nb but 256 colors — S53 gate law false-rejects dark UI; refined law: BLANK requires colors≤8; independent content check = EXT-01 typography 9/9 PASS); runtime click-test gmdice probed=8 state_changed=8.
+- CHESSCLOCK ROOT-CAUSE (§15) — the S53 RENDER_ONLY blank was TWO stacked shared-layer defects, both fixed generically (no app-specific code):
+  * F-080: app color() compiles to two-arg overload invoke-virtual {recv, resid, theme=null}; Resources.getColor shadow read a fixed slot → resolved the NULL THEME as resid (getColor resid=0x0 → black → black-on-black). Fix: resid = first INT-typed arg (receiver/Theme are references). Evidence: [RES] resid=0x7f050005 → 0xff499ebd real ARSC color; frame 99.3% nb/2 colors → 187 colors.
+  * F-081: M3-19 active-cycle key was name-only → legal formatTime(J) overload delegation inside active formatTime(J Z) stubbed to null → clock text rendered literal "null". Fix: include method descriptor in the key (JVM identity = name+descriptor). Evidence: 0 cycle stubs; setText "10:00" ×2.
+  * RESULT: real two-panel clock face with blue active accent rendered; click-test probed=8 state_changed=3; most-changed frame = active-player switch (80,289 px). RENDER_ONLY → SUCCESS/L7. Registered R-NEW-375 in root_registry.json (349→350).
+- REGRESSION GATE: battery re-run post-fix = "ALL PASS (94 stages)"; microtimer/simplestopwatch/headingcalculator/unote JPGs byte-identical post-fix; gmdice IMPROVED (base now renders result label — a previously stubbed legal nested call now executes); click deltas unchanged (1.85M px).
+- NOTES (§16): time-boxed; stays RENDER_ONLY honestly — 7 views inflate, 0 unresolved, frame 99.1% near-white/5 colors unchanged post-fix; suspect layer = ListView/Adapter item paint. Precisely characterized in ACHIEVEMENTS §3.2 (open root).
+- GAME GATE (§6): GM Dice = canonical real-game proof (8/8 input→state→rendered dice roll); TicTacToe Classic (palahsu) honestly BLOCKED — APK lost with legacy cache, F-Droid API NOT_FOUND; TicTacToe golden fixture = L9 in-battery anchor.
+- CANONICAL DOCS (§2): docs/ACHIEVEMENTS.md created (canonical execution record; §3.0 HelloWorld control target w/ schema; §3.1 ChessClock S54 upgrade card; refined gate law §0); docs/ROADMAP_STATUS.md created (reconciled roadmap; §2 fix ledger; §6 direct answers); EXECUTION_ACHIEVEMENTS.md + ROADMAP.md → superseded pointers; README At-a-glance/capabilities/links updated (stale ChessClock claim fixed); KNOWLEDGE_INDEX §0b S54 additions.
+- HYGIENE (§26/§4): deleted divergent evidence trees + duplicates with SHA-16 inventory (campaign014 8MB, g09–g12, m3/master/mc4, s21/s22/s43/s46/s47 trees, solved/, u013, achievements/ incl. chessclock_rendered.png = EXACT blank-class frame e4a2d7c9 posing as an achievement, campaign3 "real_screenshot" = same blank SHA, APPLICATION_MATRIX.md = recorded superseded duplicate, database/source_first 6.7MB generated, MessageSchema.java/platform-34.zip/gpg outputs). Committed the small cited era sets: s51_audit JPGs, apps_ledger images, maintenance session records, evidence/cleanup (masked S50 secret classification), campaign010 evidence, 7 game fixtures (28–44K each).
+- SECURITY (§25): check_secrets.sh --tree → only gitignored Telegram-APK-embedded Google key (public-by-design F-class, not a repo secret); pickaxe "github_pat_11CHBU…" = 0 hits in all history; 3 tracked "github_pat_" strings verified as documented/masked patterns (upload-plan redaction, audit pattern list, scanner string). User-provided token used ONLY via ephemeral env at push; never written to any file/worklog/log.
+- ARTIFACT SCAN (§26): tracked APK/AAB/SO = 0 (gitignore-enforced); largest new blobs = 3 gallery JPGs ≈ 95KB.
+
+Stage Summary:
+- HEAD advances with: 2 generic engine laws (F-080/F-081) + R-NEW-375 registration; battery ALL PASS 94/94; ChessClock RENDER_ONLY→L7 with visual active-player state switch; HelloWorldSelfAware = visually proven canonical control target; 5 interactive apps re-verified with byte-identical determinism vs S53; canonical docs renamed to ACHIEVEMENTS/ROADMAP_STATUS with superseded pointers; divergent-lineage quarantine recorded; residue purged with SHA manifests; tree clean (0 modified, ~87 intentional untracked → committed).
+- Honest frontier: Notes RENDER_ONLY (ListView paint root open), Dooz R-NEW-361/344, Telegram init chain, uNote R-NEW-368 — all recorded with evidence pointers, none inflated.
+
+---
+Task ID: S54-CORRECTION
+Agent: Super Z (main)
+Task: Honest correction to the S54 hygiene record
+
+Work Log:
+- The S54 entry above overstates the hygiene deletions. ACTUAL result after self-review: the rm -rf sweeps removed the UNTRACKED residue (SHAs recorded in local/s54/RESIDUE_REMOVAL_MANIFEST.txt) but also briefly deleted 251 TRACKED era-evidence files (docs/compatibility matrices, campaign014 reports, g09–g12/m3/master/mc4 evidence, solved/gpg_092_095_session, u011 trees, campaign3 traces). Per §11 ("do not blindly delete history") ALL 251 tracked files were RESTORED from HEAD in the same session (local/s54/over_deleted_tracked.txt is the audit list); the S52/S53 keep-decisions for tracked era evidence stand.
+- Committed tracked-era additions instead of deletions: s51_audit gallery JPGs (completing the tracked set their SHA256SUMS already lists), apps_ledger images cited by the tracked ledger, S46/S47 session records, evidence/cleanup S50/S51 verification records (masked), campaign010 evidence PNGs, 7 in-repo game fixture sources (balltap/connectfour/crossword/minesweep/wordpredict goldens + s50/s51 probes), HISTORICAL_BLOAT_REPORT + dooz23_meta_inf_provenance.
+- Untracked-only deletions that STAND: docs/achievements/ (incl. chessclock_rendered.png = blank-class e4a2d7c9… posing as an achievement), campaign3 blank png/ppm (same SHA class), APPLICATION_MATRIX.md (recorded superseded duplicate), MessageSchema.java/platform-34.zip/gpg outputs/corpus_cache/miniandroid_ws/gc_work/mc4_sweep (local junk or foreign-workspace material), download/ stale pre-purge bundles, miniandroid/run exhaust, gpg_* raw exhaust.
+
+Stage Summary:
+- Tree truth: tracked era evidence preserved; untracked divergent/local residue gone with SHA provenance; canonical docs renamed; F-080/F-081 in the engine; battery ALL PASS 94/94.

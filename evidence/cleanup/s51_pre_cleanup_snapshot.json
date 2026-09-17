@@ -1,0 +1,47 @@
+{
+  "campaign": "S51",
+  "date": "2026-09-16",
+  "head": "fd51d119",
+  "origin_main": "7967c0370144048d6de0b999c1cbf9ec43c82a12",
+  "ahead_behind": "13/0",
+  "working_tree_clean": true,
+  "sizes": {
+    "repo_total": "907M",
+    "git_dir": "623M",
+    "pack": "492M",
+    "loose_objects": "128.93MiB (5545, prune-packable 1575)",
+    "tracked_files": 3476,
+    "tracked_bytes": 11588260,
+    "worktree_ignored": ["tools/ 160M", "skills/ 61M", "miniandroid/run 6.8M", "miniandroid/download 3.9M", "upload/ 299K"],
+    "full_mirror": "/home/z/archive/s51_full_mirror = 506M packed"
+  },
+  "refs": {
+    "branches_local": ["main", "archive/local-main-12cf043f", "archive/local-main-167c27fb", "archive/local-main-d358a0c9-stale", "archive/origin-main-ad95d928"],
+    "branches_remote_same": true,
+    "tags": ["v0.0.1", "v0.0.2", "v0.0.2-alpha", "v0.0.3-Chantecler", "v0.0.4-Chantecler", "v0.0.5-Silkie", "v0.0.6-Leghorn"],
+    "lfs": "NOT_USED"
+  },
+  "large_blobs": {
+    "main_reachable_gt1mb": "122 blobs, 986.6 MiB uncompressed",
+    "remote_union_gt1mb": "286 blobs, 1993.6 MiB uncompressed (28 refs incl 4 archive branches)",
+    "by_class_main_reachable": {"LOG": "56 files, 884.8 MiB", "TRACE/DUMP/IMG": "30 files, 49.1 MiB", "OTHER": "33 files, 48.8 MiB", "TOOLCHAIN/BIN": "1 file, 1.0 MiB"},
+    "top_historical": ["miniandroid/run/sttt_run1..4_stderr.txt ~30MB each", "s26_*_stderr 17MB each", "miniandroid/build-win/work/llvm-mingw.tar.xz 83.9MB (archive-refs only)", "miniandroid/download/exp038_telegram/Telegram.apk 82.7MB (archive-refs only)", "miniandroid/reports/telegram_call_graph.json 65.5MB (archive-refs only)"],
+    "tracked_now_gt1mb": 2,
+    "tracked_apk_aab": 0
+  },
+  "github_remote_audit": {
+    "releases": ["v0.0.1", "v0.0.2", "v0.0.2-alpha", "v0.0.3-Chantecler", "v0.0.4-Chantecler", "v0.0.5-Silkie", "v0.0.6-Leghorn"],
+    "v0.0.6_assets": ["MiniAndroid-v0.0.6-Leghorn-linux-x64.tar.gz (1607470B)", "MiniAndroid-v0.0.6-Leghorn-windows-x64.zip (3925621B)", "SHA256SUMS.txt (219B)"],
+    "v0.0.6_checksums": "VERIFIED EXACT MATCH (20ece925..., 934d6edc...)",
+    "api_status": "RATE_LIMITED_UNAUTH",
+    "github_attachment_audit": "PARTIALLY-VERIFIED (API rate-limited; issues/PR comments not fully enumerable this session)",
+    "actions_artifacts": "PARTIALLY-VERIFIED (no .github/workflows tracked; API blocked)"
+  },
+  "security": {
+    "tree_scan": "PASS (scripts/security/check_secrets.sh --tree, exit 0)",
+    "selftest": "PASS (exit 0)",
+    "outgoing_diff_scan": "6 hits all FALSE-POSITIVE (scanner regex/doc/selftest dummies)",
+    "push": "BLOCKED (no credentials in environment)",
+    "env": ".env contains DATABASE_URL only"
+  }
+}

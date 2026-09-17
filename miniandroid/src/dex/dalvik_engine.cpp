@@ -5720,6 +5720,19 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     // recursion over fresh argument identities.
     static thread_local std::map<std::string, int> m3_call_counts;  // diagnostics only
     std::string m3_active_key = class_descriptor + "." + method_name;
+    // S54 FIX (F-081) — overload-distinct identity. JVM/ART method identity
+    // is (name, descriptor)-exact; two same-name overloads on the same
+    // receiver are DISTINCT methods. ChessClock evidence: formatTime(J Z)
+    // (size 173) legally delegates to the formatTime(J) overload (size 6)
+    // inside its own active window; the name-only key treated that as a
+    // re-entry cycle, stubbed the nested call to null, and the clock face
+    // rendered the literal string "null". Append the descriptor when the
+    // dispatch path provides one; legacy empty-descriptor paths agree on
+    // the bare-name key both sides, so genuine same-key cycle detection is
+    // preserved (MAX_RECURSION_DEPTH remains the backstop in every case).
+    if (!method_descriptor.empty()) {
+        m3_active_key += method_descriptor;
+    }
     if (!current_invoke_is_static_ && !args.empty() &&
         args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
         m3_active_key += "#" + std::to_string(args[0].object_id);
@@ -21390,7 +21403,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // fallback for values the ARSC cannot answer.
     if (method == "getColor" &&
         class_name.find("Resources") != std::string::npos) {
-        int32_t resid = args.size() >= 1 ? args[0].int_val : 0;
+        // S54 FIX (F-080) — robust resid extraction under BOTH arg conventions.
+        // The two-arg overload Resources.getColor(int, Theme) (API 23+) compiles
+        // to invoke-virtual {receiver, resid, theme}; depending on the dispatch
+        // path the receiver may or may not be included in `args`. Reading a
+        // fixed slot silently resolved the NULL THEME (int 0) as the resid —
+        // chessclock's color() helper passes (resid, null-theme), so every
+        // lookup became resid=0x0 → black text + black buttons on black panels.
+        // AOSP law: the resid is the FIRST int-typed argument; receiver and
+        // Theme are references and can never be the resid (mirror of the
+        // getDrawable receiver-first defensive pattern below).
+        int32_t resid = 0;
+        for (const auto& a : args) {
+            if (a.type == DalvikType::INT32 || a.type == DalvikType::BOOLEAN ||
+                a.type == DalvikType::CHAR) {
+                resid = a.int_val;
+                break;
+            }
+        }
         // M3 FIX-M3-007b: unresolved colors keep the historical black default
         // for GENERIC consumers (zero collateral visual deltas); the
         // setTextColor consumer recognizes "black from an unresolved lookup"

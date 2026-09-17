@@ -10,6 +10,22 @@
 
 Snapshot: 745 tracked `.md` files — 441 KEEP (knowledge/process), 185 HISTORY (era records), 111 EVIDENCE (compact, cited), plus 290 tracked `.json` (indexes/fixtures/oracles — classified below).
 
+## 0b. S54 additions (current session)
+
+| File | Topic | Purpose | Status | Priority | Canonical? | Related |
+|---|---|---|---|---|---|---|
+| docs/ACHIEVEMENTS.md | executions | canonical execution record (renamed from EXECUTION_ACHIEVEMENTS.md) | KEEP | P0 | YES | replaces EXECUTION_ACHIEVEMENTS.md (pointer) |
+| docs/ROADMAP_STATUS.md | roadmap | canonical roadmap (renamed from ROADMAP.md) | KEEP | P0 | YES | replaces ROADMAP.md (pointer) |
+| docs/evidence/s54_frames/ | evidence | 12 gate-passing JPGs + SHA256SUMS (chessclock restored, helloworld dark-content, 5 interactive apps) | EVIDENCE | P0 | YES | ACHIEVEMENTS §6 |
+| scripts/s54_image_audit.py | tooling | generic gate checker (S54 refined law: DARK-CONTENT class) | KEEP | P1 | YES | gate law |
+| scripts/s54_gallery_emit.py | tooling | canonical gallery emit (JPG ≤100KB + SHA256SUMS) | KEEP | P1 | YES | gate law |
+| scripts/s54_evidence_runs.sh | tooling | reproducible fresh-evidence run set (§5/§6/§20) | KEEP | P1 | YES | reproducibility |
+| scripts/s54_evidence_audit.py | tooling | gate+delta+SHA audit over fresh runs | KEEP | P1 | YES | evidence QA |
+| scripts/forensic/s54_chessclock_disasm.py | tooling | ChessClock DEX disasm probe (F-080/F-081 evidence) | KEEP | P1 | YES | root-cause record |
+| F-080 (law) | engine | Resources.getColor(I,Theme) resid = first INT arg | IMPLEMENTED+TESTED | P0 | YES (dalvik_engine.cpp) | ChessClock L7 |
+| F-081 (law) | engine | M3-19 cycle key overload-distinct (name+descriptor) | IMPLEMENTED+TESTED | P0 | YES (dalvik_engine.cpp) | ChessClock L7 |
+| docs/history/campaign-reports/ | history | era campaign reports; DIVERGENT-LINEAGE caution: Sep 9–15 reports cite HEADs that are not objects in this repo | HISTORY | P3 | partial | ACHIEVEMENTS §7 |
+
 ## 1. Status legend
 
 | Status | Meaning |
