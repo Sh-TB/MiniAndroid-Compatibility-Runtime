@@ -2374,6 +2374,108 @@ CallResult LayoutInflaterShadow::dispatch(const CallContext& ctx) {
 // F-062: APK-captured compose_view_saveable_id_tag key (see header).
 std::atomic<int32_t> ViewShadow::compose_saveable_id_key_{0};
 
+// ── S56 F-085: generic HTML→visible-text extraction ─────────────────────
+// The WebView render law for a chromium-less engine: a loaded document is
+// painted through the standard text pipeline after a framework-level
+// visible-text extraction. App-agnostic by construction (the same pass
+// serves ANY WebView family app: markdown viewers, help screens, BGClock-
+// class WebView roots). Laws:
+//   * <script>/<style> blocks are dropped whole (never visible on ART).
+//   * block-closing tags (<br>, </p>, </div>, </hN>, </li>, </tr>, ...)
+//     become a line break; all other tags are dropped.
+//   * the five named entities + decimal/hex numeric entities decode.
+//   * runs of blank lines collapse to one (document whitespace noise).
+static std::string webview_html_to_text(const std::string& html) {
+    std::string out;
+    out.reserve(html.size());
+    auto ieq = [&](size_t pos, const char* lit) {
+        size_t n = std::strlen(lit);
+        if (html.size() - pos < n) return false;
+        for (size_t k = 0; k < n; ++k) {
+            char a = html[pos + k];
+            char b = lit[k];
+            if (a >= 'A' && a <= 'Z') a = char(a - 'A' + 'a');
+            if (b >= 'A' && b <= 'Z') b = char(b - 'A' + 'a');
+            if (a != b) return false;
+        }
+        return true;
+    };
+    bool in_script = false, in_style = false;
+    for (size_t i = 0; i < html.size();) {
+        if (html[i] == '<') {
+            if (ieq(i + 1, "script")) in_script = true;
+            else if (ieq(i + 1, "/script")) in_script = false;
+            else if (ieq(i + 1, "style")) in_style = true;
+            else if (ieq(i + 1, "/style")) in_style = false;
+            // Block-level closers/newlines become a break.
+            if (!in_script && !in_style) {
+                if (ieq(i + 1, "br") || ieq(i + 1, "/p") || ieq(i + 1, "/div") ||
+                    ieq(i + 1, "/h1") || ieq(i + 1, "/h2") || ieq(i + 1, "/h3") ||
+                    ieq(i + 1, "/h4") || ieq(i + 1, "/h5") || ieq(i + 1, "/h6") ||
+                    ieq(i + 1, "/li") || ieq(i + 1, "/tr") || ieq(i + 1, "/blockquote") ||
+                    ieq(i + 1, "/pre") || ieq(i + 1, "/ul") || ieq(i + 1, "/ol")) {
+                    out += '\n';
+                }
+            }
+            // Skip the tag body.
+            size_t end = html.find('>', i);
+            if (end == std::string::npos) break;
+            i = end + 1;
+            continue;
+        }
+        if (in_script || in_style) { ++i; continue; }
+        if (html[i] == '&') {
+            // Named + numeric entity decode (bounded lookahead).
+            if (ieq(i, "&amp;")) { out += '&'; i += 5; continue; }
+            if (ieq(i, "&lt;")) { out += '<'; i += 4; continue; }
+            if (ieq(i, "&gt;")) { out += '>'; i += 4; continue; }
+            if (ieq(i, "&quot;")) { out += '"'; i += 6; continue; }
+            if (ieq(i, "&apos;") || ieq(i, "&#39;")) { out += '\''; i += 6; continue; }
+            if (ieq(i, "&nbsp;")) { out += ' '; i += 6; continue; }
+            if (ieq(i, "&#x") || ieq(i, "&#X")) {
+                size_t j = i + 3;
+                unsigned v = 0; bool any = false;
+                while (j < html.size() && isxdigit((unsigned char)html[j])) {
+                    char c = html[j];
+                    v = v * 16 + unsigned(isdigit((unsigned char)c) ? c - '0'
+                        : (c | 0x20) - 'a' + 10);
+                    ++j; any = true;
+                }
+                if (any && j < html.size() && html[j] == ';') {
+                    out += (v < 128) ? char(v) : ' ';
+                    i = j + 1; continue;
+                }
+            }
+            if (ieq(i, "&#") ) {
+                size_t j = i + 2;
+                unsigned v = 0; bool any = false;
+                while (j < html.size() && isdigit((unsigned char)html[j])) {
+                    v = v * 10 + unsigned(html[j] - '0'); ++j; any = true;
+                }
+                if (any && j < html.size() && html[j] == ';') {
+                    out += (v < 128) ? char(v) : ' ';
+                    i = j + 1; continue;
+                }
+            }
+            out += '&'; ++i; continue;
+        }
+        out += html[i]; ++i;
+    }
+    // Collapse 3+ consecutive newlines to one blank line.
+    std::string tidy;
+    tidy.reserve(out.size());
+    int nl = 0;
+    for (char c : out) {
+        if (c == '\n') { if (nl < 2) tidy += c; ++nl; }
+        else { nl = 0; tidy += c; }
+    }
+    // Trim trailing whitespace-only tail.
+    while (!tidy.empty() && (tidy.back() == '\n' || tidy.back() == ' ' ||
+                             tidy.back() == '\t' || tidy.back() == '\r'))
+        tidy.pop_back();
+    return tidy;
+}
+
 CallResult ViewShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     // View instance methods — receiver_id is the View heap object_id.
@@ -3107,6 +3209,113 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         // dispatched by the runtime today.
         return CallResult::handled_void();
     }
+
+    // ── S56 F-085: WebView content model (generic) ──────────────────────
+    // AOSP WebView.java: getSettings() returns the per-WebView WebSettings
+    // (created in WebView's ctor, one per instance); the load family
+    // (loadUrl/loadData/loadDataWithBaseURL/postUrl) delivers a document;
+    // setWebViewClient/setWebChromeClient attach callback hosts. This
+    // engine has no chromium: the load family stores the document on the
+    // view node and the RENDER LAW extracts visible text via a generic
+    // HTML→text pass (framework-level, app-agnostic — no markdown
+    // special-casing), so the standard text pipeline paints it. Notes
+    // v139's read face is MarkdownView extends WebView: without this
+    // model every WebView call was a REC-MISS silent no-op and the
+    // content face stayed blank (R-NEW-377).
+    if (m == "getSettings" || m == "getWebSettings") {
+        // AOSP: one WebSettings per WebView, created at construction.
+        // Memoize per receiver so repeated getSettings() return the SAME
+        // object (identity law — the app may compare or cache it).
+        auto& s = view_settings_[ctx.receiver_id];
+        if (s == 0) {
+            s = heap_->allocate("Landroid/webkit/WebSettings;");
+            std::cerr << "[F085-WV] getSettings: webview=o" << ctx.receiver_id
+                      << " -> settings=o" << s << std::endl;
+        }
+        return CallResult::handled_object(s, "Landroid/webkit/WebSettings;");
+    }
+    if (m == "setWebViewClient" || m == "setWebChromeClient" ||
+        m == "setDownloadListener" || m == "setFindListener" ||
+        m == "setAccessibilityDelegate" || m == "setPictureListener") {
+        // Clients are stored app-side; the content model does not simulate
+        // page callbacks (onPageFinished etc.) — no fake lifecycle.
+        return CallResult::handled_void();
+    }
+    if (m == "loadUrl" || m == "loadUrlWithHeaders" || m == "postUrl") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->web_url = ctx.arg_as_string(0, std::string());
+        n->web_data.clear();
+        n->web_mime.clear();
+        // Generic render law: an http(s)/file URL has no local document
+        // body in this engine (no network stack); the node renders its
+        // honest placeholder via the standard path (no text). data:/file:
+        // bodies are not fetched either — the URL alone is recorded.
+        layout_dirty = true;
+        std::cerr << "[F085-WV] loadUrl/postUrl: webview=o" << ctx.receiver_id
+                  << " url=\"" << n->web_url.substr(0, 80) << "\"" << std::endl;
+        return CallResult::handled_void();
+    }
+    if (m == "loadData" || m == "loadDataWithBaseURL") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        // loadData(data, mimeType, encoding) — data at arg 0.
+        // loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl)
+        // — data at arg 1.
+        bool with_base = (m == "loadDataWithBaseURL");
+        std::string base = with_base ? ctx.arg_as_string(0, std::string()) : std::string();
+        std::string data = ctx.arg_as_string(with_base ? 1 : 0, std::string());
+        std::string mime = ctx.arg_as_string(with_base ? 2 : 1, std::string());
+        n->web_url = base;
+        n->web_data = data;
+        n->web_mime = mime;
+        // Render law: extract visible text (generic HTML→text) into the
+        // node text so the standard pipeline paints the document body.
+        n->text = webview_html_to_text(data);
+        n->num_lines = 0;  // let the layout pass recount
+        layout_dirty = true;
+        std::cerr << "[F085-WV] loadData: webview=o" << ctx.receiver_id
+                  << " mime=" << (mime.empty() ? "text/html" : mime)
+                  << " bytes=" << data.size()
+                  << " text_chars=" << n->text.size() << std::endl;
+        return CallResult::handled_void();
+    }
+    if (m == "getUrl") {
+        const ViewNode* n = find_node(ctx.receiver_id);
+        return CallResult::handled_string(n ? n->web_url : std::string());
+    }
+    if (m == "getTitle") {
+        const ViewNode* n = find_node(ctx.receiver_id);
+        return CallResult::handled_string(n ? n->web_title : std::string());
+    }
+    if (m == "canGoBack" || m == "canGoForward") {
+        return CallResult::handled_bool(false);
+    }
+    if (m == "goBack" || m == "goForward" || m == "reload" ||
+        m == "stopLoading" || m == "onPause" || m == "onResume" ||
+        m == "clearCache" || m == "clearHistory" || m == "clearFormData" ||
+        m == "clearSslPreferences" || m == "freeMemory" ||
+        m == "saveState" || m == "restoreState" ||
+        m == "addJavascriptInterface" || m == "removeJavascriptInterface" ||
+        m == "pageDown" || m == "pageUp" || m == "zoomIn" || m == "zoomOut" ||
+        m == "setNetworkAvailable" || m == "findAll" || m == "findNext" ||
+        m == "clearView" || m == "destroy") {
+        // Navigation/session calls: honest no-ops in a single-document
+        // model. saveState returns null (no Bundle) via handled_void —
+        // callers that assign the result to a Bundle field keep null,
+        // which is the truthful state.
+        return CallResult::handled_void();
+    }
+    if (m == "evaluateJavascript") {
+        // No JS engine. The callback (ValueCallback) is NOT invoked —
+        // invoking it with a fake result would fabricate app-visible
+        // state. Honest: record + drop.
+        std::cerr << "[F085-WV] evaluateJavascript dropped (no JS engine)"
+                  << std::endl;
+        return CallResult::handled_void();
+    }
+    if (m == "setWebContentsDebuggingEnabled") {
+        return CallResult::handled_void();
+    }
+
     if (m == "onMeasure" || m == "onLayout" || m == "onDraw" ||
         m == "onTouchEvent" || m == "onAttachedToWindow" ||
         m == "onDetachedFromWindow") {
@@ -3152,6 +3361,63 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         if (n == nullptr) return CallResult::not_handled();
         return CallResult::handled_int(static_cast<int32_t>(ctx.receiver_id));
     }
+    return CallResult::not_handled();
+}
+
+// ── S56 F-085: WebSettingsShadow — generic symmetric property bag ───────
+// AOSP WebSettings is a set/get property contract. Law: for method "setX"
+// store the value under "X"; for "getX" return the stored value (or the
+// honest type default when never set). Known-value getters with real
+// framework defaults (getUserAgentString) answer their AOSP default.
+CallResult WebSettingsShadow::dispatch(const CallContext& ctx) {
+    const std::string& m = ctx.method;
+    auto& bag = props_[ctx.receiver_id];
+
+    if (m.rfind("set", 0) == 0 && m.size() > 3) {
+        std::string prop = m.substr(3);
+        Prop p;
+        switch (ctx.args.empty() ? CallContext::Arg::Kind::NULL_REF
+                                 : ctx.args[0].kind) {
+            case CallContext::Arg::Kind::BOOL:
+                p.b = ctx.args[0].bool_val; break;
+            case CallContext::Arg::Kind::INT:
+                p.i = ctx.args[0].int_val; break;
+            case CallContext::Arg::Kind::STRING:
+                p.s = ctx.args[0].string_val; break;
+            case CallContext::Arg::Kind::FLOAT:
+                p.i = (int64_t)ctx.args[0].float_val; break;
+            case CallContext::Arg::Kind::OBJECT:
+                p.i = (int64_t)ctx.args[0].object_id; break;
+            default:
+                break;
+        }
+        bag[prop] = p;
+        return CallResult::handled_void();
+    }
+    if (m.rfind("get", 0) == 0 && m.size() > 3) {
+        std::string prop = m.substr(3);
+        auto it = bag.find(prop);
+        Prop p;
+        if (it != bag.end()) p = it->second;
+        else if (m == "getUserAgentString")
+            p.s = "Mozilla/5.0 (Linux; Android " +
+                  std::to_string(14) + ") AppleWebKit/537.36";
+        // Descriptor decides the return kind: ()Z → bool, ()I/J → int,
+        // ()Ljava/lang/String; → string, else void.
+        const std::string& d = ctx.descriptor;
+        if (d.size() >= 2 && d.compare(d.size() - 2, 2, ")Z") == 0)
+            return CallResult::handled_bool(p.b);
+        if (d.size() >= 3 && (d.compare(d.size() - 3, 3, ")I;") == 0 ||
+                              d.compare(d.size() - 3, 3, ")J;") == 0))
+            return CallResult::handled_int(static_cast<int32_t>(p.i));
+        if (d.size() >= 4 && d.compare(d.size() - 4, 4, ")I;") == 0)
+            return CallResult::handled_int(static_cast<int32_t>(p.i));
+        if (d.find(")Ljava/lang/String;") != std::string::npos)
+            return CallResult::handled_string(p.s);
+        return CallResult::handled_void();
+    }
+    // LayoutAlgorithm/NightMode enum family (set/get pairs handled above);
+    // anything else on WebSettings: honest not-handled → the bridge logs it.
     return CallResult::not_handled();
 }
 
