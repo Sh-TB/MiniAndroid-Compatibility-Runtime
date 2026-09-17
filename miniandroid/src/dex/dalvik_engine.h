@@ -1962,6 +1962,12 @@ public:
     void set_wide_pair(uint8_t reg, const DalvikValue& value);
     DalvikValue get_register(uint8_t reg) const;
     std::string register_name(uint8_t reg) const;
+
+    // S56 frontier diagnostic (env-gated, read-only, M3-law safe): dump the
+    // current frame's registers + receiver heap fields (+ array elements) at
+    // failure sites (HALT-LOOP spin, aput/aget oob). Gated by
+    // MINIANDROID_LOOP_LOCALS_DIAG; thread-local budget so logs stay bounded.
+    void dump_frame_locals_diag(const char* tag);
     
     // API bridge
     // UC-CM-001 (F012): method_idx_hint lets the catch-all STUBBED path
