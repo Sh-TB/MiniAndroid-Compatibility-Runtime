@@ -266,6 +266,11 @@ void register_platform_shadows(ShadowRegistry& reg) {
     // claims only; registered before ViewShadow so the catch-all view
     // path can never capture framework database descriptors.
     reg.register_shadow<storage::DatabaseShadow>();
+    // S56 F-085: WebSettings property-bag shadow — registered BEFORE
+    // ViewShadow so the WebSettings descriptor can never fall through to
+    // the view catch-all (WebSettings getters would otherwise be claimed
+    // by method-name heuristics on the wrong receiver domain).
+    reg.register_shadow<WebSettingsShadow>();
     reg.register_shadow<ViewShadow>();
     reg.register_shadow<DialogShadow>();
     reg.register_shadow<ArrayAdapterShadow>();

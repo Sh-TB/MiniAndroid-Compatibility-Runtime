@@ -350,7 +350,7 @@ fi
 # silently accepted).
 if cached "link shadow_registry_invariant_test"; then
     skip "link shadow_registry_invariant_test"
-    skip "§6 shadow registry invariant (expect 24)"
+    skip "§6 shadow registry invariant (expect 20)"
 else
 g++ -std=c++17 -w -g -O1 -Isrc -o build/shadow_registry_invariant_test \
     tests/shadow_registry_invariant_test.cpp build/apk/*.o build/dex/*.o \
@@ -360,7 +360,7 @@ g++ -std=c++17 -w -g -O1 -Isrc -o build/shadow_registry_invariant_test \
     -lfribidi -lpng -lpthread -lsqlite3 > /tmp/battery_sri.log 2>&1
 gate "link shadow_registry_invariant_test" $?
 ./build/shadow_registry_invariant_test > /tmp/battery_sri.out 2>&1
-gate "§6 shadow registry invariant (expect 24)" $?
+gate "§6 shadow registry invariant (expect 20)" $?
 tail -1 /tmp/battery_sri.out
 fi
 
