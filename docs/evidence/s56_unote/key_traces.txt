@@ -1,0 +1,4 @@
+[G06-TAP] DOWN (270,1898) target=13 consumed=1
+[G06-TAP] UP click_posted=1
+[REC-MISS] Landroid/app/Activity;.startActivity caller=Lapp/varlorg/unote/NoteMain;.addNote
+[REC-MISS] Landroid/content/ContextWrapper;.startActivity caller=Lapp/varlorg/unote/NoteMain;.addNote
