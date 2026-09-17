@@ -1,3 +1,5 @@
+> **[S52 SUPERSEDED]** Current canonical record: [`docs/EXECUTION_ACHIEVEMENTS.md`](../../EXECUTION_ACHIEVEMENTS.md). This file is an era record — verdicts are absorbed there; do not update it.
+
 # SCREENSHOT_INDEX_S51 — ALL-FRONT STATUS AUDIT (curated gallery + per-app truth)
 
 Campaign: S51 FINALIZATION — all-front attack on every work-list app.
