@@ -1849,6 +1849,95 @@ DalvikExecutionResult DalvikExecutionEngine::execute_method(
 // Core Execution Loop
 // ============================================================================
 
+// S56 frontier diagnostic: env-gated (MINIANDROID_LOOP_LOCALS_DIAG) frame
+// locals dump at failure sites. READ-ONLY — pure get_register/heap reads;
+// diagnostics must never change semantics (M3 law). Thread-local budget
+// bounds the log volume. Prints: registers (int/long/obj), the receiver's
+// heap fields, and the first elements of any array-typed field — enough to
+// see probe/hash state (ScatterMap family: metadata longs + mask ints).
+void DalvikExecutionEngine::dump_frame_locals_diag(const char* tag) {
+    static thread_local const bool diag_on =
+        std::getenv("MINIANDROID_LOOP_LOCALS_DIAG") != nullptr;
+    if (!diag_on || !current_registers_) return;
+    static thread_local uint32_t budget = 12;
+    if (budget == 0) return;
+    --budget;
+
+    auto fmt_val = [this](const DalvikValue& v) -> std::string {
+        std::ostringstream oss;
+        switch (v.type) {
+            case DalvikType::INT32: oss << "i=" << v.int_val; break;
+            case DalvikType::INT64: oss << "j=" << v.long_val; break;
+            case DalvikType::BOOLEAN: oss << "z=" << (v.bool_val ? 1 : 0); break;
+            case DalvikType::FLOAT32: oss << "f=" << v.float_val; break;
+            case DalvikType::FLOAT64: oss << "d=" << v.double_val; break;
+            case DalvikType::OBJECT_REF:
+            case DalvikType::STRING_REF: {
+                oss << "(t=" << static_cast<int>(v.type) << ") o" << v.object_id
+                    << " " << v.class_desc;
+                if (v.type == DalvikType::STRING_REF && !v.is_null) {
+                    std::string s = v.string_val.substr(0, 24);
+                    oss << " \"" << s << "\"";
+                }
+                if (v.is_null) oss << " null";
+                break;
+            }
+            case DalvikType::NULL_REF: oss << "null"; break;
+            default: oss << "(t=" << static_cast<int>(v.type) << ")"; break;
+        }
+        return oss.str();
+    };
+
+    const uint32_t nregs = current_registers_->get_size();
+    const uint32_t ins = current_registers_->get_ins_count();
+    std::cerr << "[LOCALS-DIAG] " << tag << " " << current_class_ << "."
+              << current_method_ << " regs=" << nregs << " ins=" << ins
+              << " pc=" << pc_ << std::endl;
+    for (uint32_t r = 0; r < nregs && r < 40; ++r) {
+        DalvikValue v = get_register(static_cast<uint8_t>(r));
+        std::cerr << "  v" << r << ": " << fmt_val(v) << std::endl;
+    }
+    if (nregs < ins) return;
+    DalvikValue recv = get_register(static_cast<uint8_t>(nregs - ins));
+    bool recv_obj =
+        (recv.type == DalvikType::OBJECT_REF || recv.type == DalvikType::STRING_REF) &&
+        !recv.is_null && heap_.has_object(recv.object_id);
+    if (!recv_obj) return;
+    const auto& objs = heap_.all_objects();
+    auto it = objs.find(recv.object_id);
+    if (it == objs.end()) return;
+    std::cerr << "  this=o" << recv.object_id << " " << it->second.class_descriptor
+              << " (" << it->second.fields.size() << " fields):" << std::endl;
+    int fcount = 0;
+    for (const auto& [fname, fval] : it->second.fields) {
+        if (++fcount > 24) { std::cerr << "    ..." << std::endl; break; }
+        std::cerr << "    " << fname << " = " << fmt_val(fval) << std::endl;
+        // Array fields: dump length + first 12 elements (probe state).
+        if (fval.type == DalvikType::OBJECT_REF && !fval.is_null &&
+            heap_.has_object(fval.object_id)) {
+            auto ait = objs.find(fval.object_id);
+            if (ait == objs.end()) continue;
+            std::string acl = ait->second.class_descriptor;
+            // Arrays are heap objects; their desc may be "[J"-style or the
+            // engine's synthetic "Larray;" marker — dump elements for both.
+            bool is_array = (acl.size() > 1 && acl[0] == '[') || acl == "Larray;";
+            if (is_array) {
+                auto lf = ait->second.get_field("__array_length__");
+                auto lnf = ait->second.get_field("__new_array_length__");
+                int alen = -1;
+                if (lf.type == DalvikType::INT32) alen = lf.int_val;
+                else if (lnf.type == DalvikType::INT32) alen = lnf.int_val;
+                std::cerr << "      len=" << alen << " elems:" << std::endl;
+                for (int e = 0; e < alen && e < 12; ++e) {
+                    auto ev = ait->second.get_field("array[" + std::to_string(e) + "]");
+                    if (ev.type == DalvikType::UNINITIALIZED) { std::cerr << "        [" << e << "] <unset>" << std::endl; continue; }
+                    std::cerr << "        [" << e << "] " << fmt_val(ev) << std::endl;
+                }
+            }
+        }
+    }
+}
+
 bool DalvikExecutionEngine::execute_method_internal(
     const std::string& class_name,
     const std::string& method_name,
@@ -2902,7 +2991,7 @@ bool DalvikExecutionEngine::execute_method_internal(
     {
         static thread_local const char* pt_filter =
             std::getenv("MINIANDROID_PARAM_TRACE");
-        static thread_local uint32_t pt_budget = 400;
+        static thread_local uint32_t pt_budget = 20000;
         if (pt_filter && pt_budget > 0) {
             std::string f(pt_filter);
             auto bar = f.find('|');
@@ -6604,14 +6693,48 @@ bool DalvikExecutionEngine::try_recursive_invoke(
             method.tries_data.size()
         );
 
+        // F-084 (S56): HALT-RETURN CONTAMINATION LAW. A callee frame that
+        // exits via the loop-detector/instruction-budget halt has NO defined
+        // return value. The old code blanket-cleared halted_ and handed
+        // last_invoke_return_ (a STALE value from an unrelated earlier
+        // return) to the caller's move-result — dooz v23 observed the
+        // downstream face: Lbw0;.d (androidx.collection ScatterMap probe)
+        // halted after 2.4M instructions and its caller Lbw0;.a consumed
+        // the stale word as a slot index (-733270216) → aput-oob →
+        // ArrayIndexOutOfBoundsException → APP BOUNDARY death. ART law: a
+        // method that cannot complete never returns a value. The halt is
+        // escalated to the caller frame as the synthetic error it
+        // represents (same channel as raise_synthetic_exception), so
+        // enclosing handlers see a REAL exception instead of garbage.
+        // DISCRIMINATOR: halted_ alone is ALSO set by every NORMAL return
+        // (execute_return* sets halted_ + halted_on_return_ as a pair). The
+        // abnormal-halt signature is halted_ WITHOUT halted_on_return_
+        // (HALT-LOOP, instruction budget, invalid goto, ...). Only that
+        // combination lacks a defined return value.
+        bool callee_halted = halted_ && !halted_on_return_;
+        std::string callee_halt_reason = halt_reason_;
+
         halted_on_return_ = false;
         halted_ = false;
         halt_reason_.clear();
 
-        // EXP-055: Propagate the return value from execute_method_internal.
-        // execute_return/execute_return_object stores the return value in
-        // last_invoke_return_. Copy it to return_val BEFORE restoring state.
-        return_val = last_invoke_return_;
+        if (callee_halted) {
+            return_val = DalvikValue::make_null();
+            last_invoke_return_ = DalvikValue::make_null();
+            // Deferred variant: this site sits inside the invoke opcode
+            // handler — the wrapper rewrites pc_ after we return, so the
+            // raise must record a post-switch redirect, not write pc_.
+            throw_deferred(
+                "Ljava/lang/VirtualMachineError;",
+                "F084 interpreter halt in callee (no return value): " +
+                    callee_halt_reason,
+                "F084-HALT-RETURN");
+        } else {
+            // EXP-055: Propagate the return value from execute_method_internal.
+            // execute_return/execute_return_object stores the return value in
+            // last_invoke_return_. Copy it to return_val BEFORE restoring state.
+            return_val = last_invoke_return_;
+        }
 
         // S33 (R-NEW-332 evidence): inside the custom-view draw window, print
         // the RETURN VALUE of every ()Z method (isPlaced-style predicates)
@@ -9292,6 +9415,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                             } \
                             log("⚠️ APUT out of bounds: arr_len=" + std::to_string(arr_len) + \
                                 " idx=" + std::to_string(idx)); \
+                            dump_frame_locals_diag("APUT-OOB"); \
                             std::string oob_msg = "length=" + std::to_string(arr_len) + \
                                                   "; index=" + std::to_string(idx); \
                             raise_synthetic_exception( \
@@ -9300,25 +9424,28 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                             break; \
                         } \
                         heap_.set_object_field(arr_val.object_id, field, src_val); \
-                        /* S55 R-NEW-361 metadata-store trace (env-gated, read-only): \
-                         * every aput-wide/aput landing on a ScatterMap metadata \
-                         * array (the [J stored in field 'a' of an Lh/u; family \
-                         * object) is dumped with its full byte content AFTER the \
-                         * store, so the clone-mirror divergence (upstream \
-                         * writeMetadata law: byte i and byte cloneIndex(i) must \
-                         * always agree) can be caught in the act. */ \
-                        if ((strcmp(op_name, "aput-wide") == 0 || \
+                        /* S56 generalized R-NEW-361/344 metadata-store trace: \
+                         * every aput-wide/aput landing on a [J array that is \
+                         * referenced as field 'a' of ANY heap object (the \
+                         * androidx.collection ScatterMap/ScatterSet metadata \
+                         * layout — v18 Lh/r;/Lh/u; and v23 Lbw0; alike) is \
+                         * dumped with its full byte content AFTER the store, \
+                         * so the writeMetadata byte-lane corruption can be \
+                         * caught in the act. Env-gated + budgeted. */ \
+                        static thread_local const bool s56_meta_trace = \
+                            std::getenv("MINIANDROID_META_STORE_TRACE") != nullptr; \
+                        static thread_local uint32_t s56_meta_budget = 6000; \
+                        if (s56_meta_trace && s56_meta_budget > 0 && \
+                            (strcmp(op_name, "aput-wide") == 0 || \
                              strcmp(op_name, "aput") == 0)) { \
                             for (auto& kv : heap_.all_objects()) { \
-                                if (kv.second.class_descriptor.rfind("Lh/u;", 0) != 0 && \
-                                    kv.second.class_descriptor.rfind("Lh/r;", 0) != 0) \
-                                    continue; \
                                 auto a_f = heap_.get_object_field(kv.first, "a"); \
                                 if (!a_f.has_value() || \
                                     a_f->type != DalvikType::OBJECT_REF || \
                                     a_f->object_id != arr_val.object_id) \
                                     continue; \
-                                std::cerr << "[R361-STORE] map=o" << kv.first \
+                                --s56_meta_budget; \
+                                std::cerr << "[S56-META-STORE] map=o" << kv.first \
                                           << " arr=o" << arr_val.object_id \
                                           << " idx=" << idx \
                                           << " store=" << op_name \
@@ -11545,6 +11672,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                           ", op_at_pc=0x" + to_hex16(op_at_pc) + ").";
             halted_ = true;
             std::cerr << "[HALT-LOOP] " << halt_reason_ << std::endl;
+            dump_frame_locals_diag("SPIN");
             break;
         }
         
