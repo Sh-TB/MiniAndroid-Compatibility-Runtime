@@ -249,6 +249,25 @@ gate "G11 ctor/Factory/addView law (expect 37)" $?
 tail -1 /tmp/battery_g11law.out
 fi
 
+# F-082 (S55): ViewAnimator displayed-child law battery (clamp law,
+# showOnly visibility walk, showNext/showPrevious end clamping, get law,
+# childless hostile surface, dispatch closure). Motivating corpus law:
+# billthefarmer Notes v139 ViewSwitcher read<->edit state machine.
+if cached "link view_animator_law_test"; then
+    skip "link view_animator_law_test"; skip "F-082 ViewAnimator law (expect 15)"
+else
+g++ -std=c++17 -w -g -O1 -Isrc -o build/view_animator_law_test \
+    tests/view_animator_law_test.cpp build/apk/*.o build/dex/*.o build/runtime/*.o \
+    build/diagnostics/*.o build/resources/*.o build/renderer/*.o \
+    build/fonts/*.o build/framework/*.o build/api/*.o build/storage/*.o \
+    -lz -ljpeg -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng -lpthread -lsqlite3 \
+    > /tmp/battery_f082law.log 2>&1
+gate "link view_animator_law_test" $?
+./build/view_animator_law_test > /tmp/battery_f082law.out 2>&1
+gate "F-082 ViewAnimator law (expect 15)" $?
+tail -1 /tmp/battery_f082law.out
+fi
+
 # G04/G05 §16: hostile drawable/image/layout safety battery
 if cached "G04 hostile safety (expect 24)"; then
     skip "link g04_hostile_test"; skip "G04 hostile safety (expect 24)"

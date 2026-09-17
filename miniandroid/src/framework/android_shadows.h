@@ -864,6 +864,14 @@ public:
         bool clickable = false;
         bool enabled = true;
         int visibility = 0;  // VISIBLE=0, INVISIBLE=4, GONE=8
+        // ── S55 F-082: ViewAnimator displayed-child model ────────────────
+        // AOSP ViewAnimator.java mWhichChild: which child of a
+        // ViewAnimator/ViewSwitcher/ViewFlipper is the displayed one.
+        // Inflated trees start at 0 (ViewAnimator.initView → showOnly(0);
+        // the inflater's G10 FIX-G10-002b law mirrors this by marking
+        // children ≥1 GONE). setDisplayedChild/showNext/showPrevious
+        // mutate this state and re-apply the showOnly visibility walk.
+        int displayed_child = 0;
         // ── G06 §5: view state model (View.java view-flag laws) ─────────
         // pressed: set by the TouchDispatcher per the View.onTouchEvent law
         // (DOWN non-scrolling → setPressed(true); UP → UnsetPressedState
@@ -1144,6 +1152,10 @@ public:
                 "getChildAt", "getChildCount",
                 "findViewById", "findViewWithTag",
                 "setVisibility", "getVisibility",
+                // S55 F-082: ViewAnimator displayed-child family
+                // (ViewSwitcher/ViewFlipper/ViewAnimator receivers).
+                "setDisplayedChild", "getDisplayedChild",
+                "showNext", "showPrevious",
                 "setEnabled", "isEnabled",
                 "setClickable", "isClickable",
                 "setText", "getText",

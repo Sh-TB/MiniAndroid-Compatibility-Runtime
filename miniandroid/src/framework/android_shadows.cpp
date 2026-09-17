@@ -2603,6 +2603,77 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_int(n ? n->visibility : 0);
     }
+    // ── S55 F-082: ViewAnimator displayed-child laws (AOSP
+    // ViewAnimator.java, verified against the framework source family:
+    // setDisplayedChild → clamp mWhichChild into [0, count-1] →
+    // showOnly(mWhichChild): child i becomes VISIBLE iff i == whichChild,
+    // every other child GONE → requestLayout() + invalidate(). This is
+    // the mutation half of the G10 FIX-G10-002b inflate law (children
+    // ≥1 start GONE = showOnly(0)); without it every
+    // ViewSwitcher/ViewFlipper/ViewAnimator state machine is a silent
+    // no-op (REC-MISS) and apps like billthefarmer Notes can never swap
+    // their editor/FAB faces (edit↔accept). Generic: applies to ANY
+    // ViewAnimator-family receiver via the view shadow.
+    if (m == "setDisplayedChild") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        int32_t which = ctx.arg_as_int(0, 0);
+        // AOSP clamp (ViewAnimator.java setDisplayedChild): whichChild >=
+        // count → count-1; whichChild < 0 → 0. count=0 gives count-1 = -1
+        // then the <0 clamp lands on 0 — the exact AOSP formula covers the
+        // childless case without a special branch.
+        int32_t count = static_cast<int32_t>(n->children.size());
+        if (which >= count) which = count - 1;
+        if (which < 0) which = 0;
+        n->displayed_child = which;
+        // showOnly(which) law — the exact visibility walk.
+        for (size_t i = 0; i < n->children.size(); i++) {
+            if (auto* cn = find_node(n->children[i]))
+                cn->visibility = (static_cast<int32_t>(i) == which) ? 0 : 8;
+        }
+        // requestLayout() + invalidate() (ViewAnimator.showOnly tail):
+        // flag the dirty chain so the next frame re-measures the newly
+        // visible child (the measure pass skips GONE nodes, so the child
+        // that just became visible has stale/zero geometry until now).
+        layout_dirty = true;  // ViewShadow requestLayout flag (R-NEW-302 law)
+        return CallResult::handled_void();
+    }
+    if (m == "getDisplayedChild") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_int(n ? n->displayed_child : 0);
+    }
+    // AOSP ViewAnimator.showNext/showPrevious: setDisplayedChild(
+    // mWhichChild ± 1) — the clamp inside setDisplayedChild pins the
+    // ends (no wraparound in AOSP).
+    if (m == "showNext") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        // Dispatch-equivalent of setDisplayedChild(displayed_child + 1)
+        // with the EXACT AOSP clamp (see setDisplayedChild above).
+        int32_t which = n->displayed_child + 1;
+        int32_t count = static_cast<int32_t>(n->children.size());
+        if (which >= count) which = count - 1;
+        if (which < 0) which = 0;
+        n->displayed_child = which;
+        for (size_t i = 0; i < n->children.size(); i++) {
+            if (auto* cn = find_node(n->children[i]))
+                cn->visibility = (static_cast<int32_t>(i) == which) ? 0 : 8;
+        }
+        layout_dirty = true;  // ViewShadow requestLayout flag (R-NEW-302 law)
+        return CallResult::handled_void();
+    }
+    if (m == "showPrevious") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        int32_t which = n->displayed_child - 1;
+        int32_t count = static_cast<int32_t>(n->children.size());
+        if (which >= count) which = count - 1;
+        if (which < 0) which = 0;
+        n->displayed_child = which;
+        for (size_t i = 0; i < n->children.size(); i++) {
+            if (auto* cn = find_node(n->children[i]))
+                cn->visibility = (static_cast<int32_t>(i) == which) ? 0 : 8;
+        }
+        layout_dirty = true;  // ViewShadow requestLayout flag (R-NEW-302 law)
+        return CallResult::handled_void();
+    }
     if (m == "setEnabled") {
         auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
         n->enabled = ctx.arg_as_bool(0, true);
