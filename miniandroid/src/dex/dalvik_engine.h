@@ -1483,11 +1483,18 @@ public:
 
     // EXP-040: Recursion depth tracking
     uint32_t recursion_depth_ = 0;
-    // EXP-053: Lowered from 200 to 80 to avoid C++ stack overflow when
-    // running with class init enabled. Each recursive invoke uses ~80KB
-    // of C++ stack (InstructionTrace + vectors + locals). 80 * 80KB = 6.4MB
-    // — within the default 8MB stack limit.
-    static constexpr uint32_t MAX_RECURSION_DEPTH = 80;
+    // EXP-053 measured ~80KB of C++ stack per DEX frame; under the
+    // process's 8MB stack that capped the budget at 80 frames.
+    // F-083 (S55, R-NEW-361): the run entry (main.cpp cmd_run) now
+    // executes the engine on a dedicated 1GB-virtual-stack thread, so
+    // the budget follows the ART contract — app recursion is bounded by
+    // the thread stack, not a fixed frame count. 2048 frames × 80KB =
+    // ~164MB worst-case committed stack, well inside the 1GB reservation
+    // and still bounded against true runaway recursion (25x the deepest
+    // depth any corpus app has legitimately required so far; Dooz v18
+    // Compose init was dropped at 80 = the R-NEW-361 ghost-metadata
+    // trigger).
+    static constexpr uint32_t MAX_RECURSION_DEPTH = 2048;
 
     // M3 FIX-M3-009 (§19 ACTIVE-CYCLE LAW): keys of (class, method) pairs
     // currently ACTIVE somewhere on the interpreter call stack. A key already

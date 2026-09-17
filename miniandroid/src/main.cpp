@@ -12,6 +12,7 @@
 #include <filesystem>
 #include <cstdlib>
 #include <cstring>
+#include <pthread.h>
 
 #include "runtime/execution_engine.h"
 #include "apk/apk_parser.h"
@@ -202,6 +203,63 @@ int cmd_dex(const std::string& apk_path, bool verbose) {
 
 #include "storage/data_root.h"
 
+// ────────────────────────────────────────────────────────────────────
+// F-083 (S55, R-NEW-361): the DEX interpreter recurses once per invoked
+// method (fetch_decode_execute → execute_invoke_* → try_recursive_invoke
+// → fetch_decode_execute). EXP-053 measured ~80KB of C++ stack per DEX
+// frame, which capped MAX_RECURSION_DEPTH at 80 under the process's 8MB
+// stack. Deep-but-LEGITIMATE initialization recursion (Compose node and
+// SlotTable setup, androidx.collection ScatterMap init) exceeded 80 and
+// every frame past the cap was SILENTLY dropped onto the API bridge —
+// the dropped void initializer Ln/a;.r left a ScatterMap with ghost
+// metadata bytes (no EMPTY 0x80) and its probe spun forever (the
+// R-NEW-361 HALT-LOOP face). ART's contract: app recursion is bounded
+// by the THREAD STACK, not a fixed frame count. Restore that contract
+// by running the engine on a dedicated thread whose stack is large
+// (virtual reservation — Linux commits pages on touch) and raising the
+// DEX frame budget to match. No interpreter frame layout is changed.
+// ────────────────────────────────────────────────────────────────────
+namespace {
+struct F083Invoke {
+    runtime::ExecutionEngine* engine;
+    const std::string* apk;
+    const runtime::ExecutionConfig* config;
+    runtime::ExecutionResult result;
+};
+void* f083_tramp(void* arg) {
+    auto* inv = static_cast<F083Invoke*>(arg);
+    inv->result = inv->engine->execute(*inv->apk, *inv->config);
+    return nullptr;
+}
+runtime::ExecutionResult run_on_art_sized_stack(
+    runtime::ExecutionEngine& engine,
+    const std::string& apk_path,
+    const runtime::ExecutionConfig& config) {
+    F083Invoke inv{&engine, &apk_path, &config, {}};
+    pthread_attr_t attr;
+    int rc = pthread_attr_init(&attr);
+    if (rc == 0) {
+        // 1GB VIRTUAL stack ≈ 12k DEX frames at the measured 80KB/frame
+        // (ART main-thread budgets are thousands of frames). Virtual
+        // reservation only; resident cost stays proportional to the
+        // real depth actually reached.
+        rc = pthread_attr_setstacksize(&attr, (size_t)1 << 30);
+    }
+    pthread_t tid;
+    if (rc == 0) rc = pthread_create(&tid, &attr, f083_tramp, &inv);
+    if (rc == 0) {
+        pthread_attr_destroy(&attr);
+        pthread_join(tid, nullptr);
+        return inv.result;
+    }
+    pthread_attr_destroy(&attr);
+    // Deep-stack thread unavailable (rlimit): fall back to the caller
+    // stack — the pre-F-083 behavior — rather than fail the run.
+    inv.result = engine.execute(apk_path, config);
+    return inv.result;
+}
+} // namespace
+
 int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config) {
     std::cout << "[*] Running APK: " << apk_path << std::endl;
     std::cout << "[*] Output directory: " << config.output_directory << std::endl;
@@ -253,7 +311,8 @@ int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config)
     }
     (void)handler_shadow; (void)view_shadow; (void)collection_shadow; (void)dialog_shadow; (void)array_adapter_shadow; (void)canvas_shadow;
     engine.set_shadow_registry(&shadow_registry);
-    auto result = engine.execute(apk_path, config);
+    // F-083: execute on the ART-sized stack (see the runner's comment).
+    auto result = run_on_art_sized_stack(engine, apk_path, config);
     
     std::cout << "\n=== Execution Result ===\n\n";
     
