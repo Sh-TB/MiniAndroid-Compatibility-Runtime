@@ -52,8 +52,11 @@ GitHub-reported repo size at audit time: 519,916 KB (~508 MiB compressed packs).
    bloat unreachable).
 3. archive/* branches (4): decommissioned locally and on origin — they are the "old pushes"
    holding the LLVM/APK/toolchain era.
-4. Post-purge invariant: HEAD tree hash MUST equal pre-purge tree hash
-   `8b74cb093e06f624cae45c9205dd43bb05570a34` (zero content regression).
+4. Post-purge invariant: HEAD tree hash MUST equal the tree at purge time
+   `89dc0b144127deb7ad2b241eaf41d332a96ea414` (tree of S51 prep commit 61f1b5e7;
+   the S49-head tree was `8b74cb093e06f624cae45c9205dd43bb05570a34` before the prep
+   commit added the forensic docs). VERIFIED: post-purge tree == 89dc0b14, zero
+   content regression, confirmed inside a fresh clone of the pushed remote.
 
 Known caveat: after force-push, GitHub may retain now-unreachable objects server-side until
 its internal GC runs; no ref will reach them. Repo-size display may lag until that GC.

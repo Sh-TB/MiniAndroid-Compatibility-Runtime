@@ -370,3 +370,42 @@ Stage Summary:
 - Old-push purge armed with full forensic documentation, collision-proof strip list,
   and local bundle backup. No evidence knowledge destroyed: raw-log content already
   distilled into run reports/registry; raw inventory committed under docs/forensics/.
+
+---
+Task ID: S51-PURGE-DONE
+Agent: Super Z (main)
+Task: Execute + verify the old-push purge; final remote state.
+
+Work Log:
+- Executed 3 filter-repo passes (git-filter-repo a40bce548d2c, --invert-paths):
+  R1 = 83 exact junk paths from main chain; R2 = 250 paths union across ALL refs
+  (llvm-mingw tree, build-win/win_src, build outputs, Telegram.apk era — tags reach a
+  separate 394-commit old lineage, discovered via 658-commit all-refs count);
+  R3 = miniandroid/docs/GITHUB_UPLOAD_PLAN.md (carried a TRUNCATED, unusable 22-char
+  PAT-prefix fragment ending in literal '...' — added c75009ac-era, redacted-era
+  c6e65c40; eliminated from every ref; current docs/runtime/ copy verified clean).
+- Local archive branches deleted (filter-repo resurrects refs it rewrites — deleted
+  again post-pass); origin remote re-added after each filter-repo run (it detaches
+  origin by design).
+- Gates: tree invariant 89dc0b14 PASS after every pass; fsck clean; store fully
+  reachable (in-pack == rev-list --all count); guard --tree PASS; strip∩tracked=∅.
+- Push (user-authorized force): main 7967c037 → 6c96ba96 → c84dfe01; 7 tags
+  force-remapped; 4 remote archive branches DELETED. Credential via ephemeral
+  per-invocation helper (export+use in same shell call — env does NOT persist across
+  tool calls; token never on disk/config/URL/log).
+- Fresh-clone verification ×2: HEAD==local, tree==89dc0b14, 280 commits, 3462 tracked
+  files, clone .git 89-90MiB, guard PASS, post-push pickaxe for token substring EMPTY.
+- Final sizes: local pack 491.47→88.47 MiB; purged main blob total 1128.1→199.8 MiB
+  (45 big blobs = KEEP-set: dalvik_engine.cpp history, curated evidence, upstream
+  jars); fresh clone 89.18 MiB. GitHub size counter 519,916 KB = cached, shrinks
+  after GitHub-side GC (PENDING GITHUB GC caveat documented).
+- Remaining "ghp_" pickaxe hits = S49 scanner pattern definitions only (audited class).
+- Rollback anchor backup-s51/pre-purge-main-tags.bundle (487,858,487 B, sha256
+  2b3bad8d...) retained on disk (gitignored) until owner confirms.
+
+Stage Summary:
+- All old pushes REMOVED: remote = main(c84dfe01) + 7 rewritten tags, nothing else.
+- REMOTE VERIFIED (fresh clone) + REMOTE HISTORY VERIFIED (old junk blobs unreachable
+  from any ref); GitHub-side size display PENDING GITHUB GC.
+- S51 status: PHASE 0/1/9 COMPLETE; remaining S51 phases (roadmap reconcile, app
+  matrix, README landing, new games, final report A–Z) = next sessions.
