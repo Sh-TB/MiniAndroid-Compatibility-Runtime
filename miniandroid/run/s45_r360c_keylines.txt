@@ -1,6 +1,0 @@
-[R360-COPY] ArrayList(Collection) src=4488 (Lzc;) via ITERATOR elems=1
-[HALT-LOOP] Infinite loop at PC=0x1c in Lbw0;.d (visited 50001 times in this frame, bytecode_size=671, op_at_pc=0x0x0054).
-[EXC-PROPAGATE] Ljava/lang/ArrayIndexOutOfBoundsException; uncaught at caller Lio/github/yamin8000/dooz/ui/MainActivity;.onCreate invoke_pc=317 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
-[C013-LEAFCHK] Lho; children=1 own_content=0 img_resid=0 bg=0x0 vis=0 w=0 h=0
-[C013-LEAFCHK] Lt4; children=0 own_content=0 img_resid=0 bg=0x0 vis=0 w=0 h=0
-[EXP092-COPY] fb has 0 non-white pixels out of 2073600 total

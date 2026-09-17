@@ -566,3 +566,64 @@ Stage Summary:
 - Next: R-NEW-361 law-probe fixture (candidates ranked); R-NEW-368 bounds
   forensics; persistence ladder upgrade; Telegram init-chain attack; new game
   fixtures (deferred).
+
+---
+Task ID: S53
+Agent: Super Z (main)
+Task: S53 — EXECUTION EVIDENCE + REPOSITORY PROFESSIONALIZATION (quality gate, honest re-verdicts, image/artifact purge, real GUI evidence)
+
+Work Log:
+- Baseline: HEAD ef569eda (S52), tree clean. F-Droid network reachable; external APK cache was
+  MISSING on this machine -> re-fetched 6 corpus APKs from F-Droid, ALL SHA256-verified against
+  miniandroid/APK_REGISTRY.json (chessclock 5ca6f2c5, unote be91103f, notes 82cf8bc4,
+  headingcalculator 274ec873 exact; microtimer/simplestopwatch/gmdice verified from on-disk copies).
+  Bouncy F-Droid candidate (dozingcatsoftware_39, d1cd7e40) does NOT match corpus SHA -> no new
+  verdict recorded (honest mismatch).
+- NEW screenshot quality gate (scripts/s53_frame_gate.py): near-white/near-black %, color count,
+  entropy proxy, click-test state-change audit. scripts/s53_image_census.py + s53_image_hygiene.py
+  for the retroactive tree-wide sweep.
+- HONEST RE-VERDICTS at HEAD ef569eda+ (all runs rc=0):
+  * DOWNGRADED Chess Clock: SUCCESS -> RENDER_ONLY. Frame e4a2d7c9 (exact-matched S51/S52/S53,
+    2 machines) = 99.3% near-black, 2 COLORS TOTAL, no clock face. --click-test 0/8 state changes;
+    S52 --tap delta (93c3121c, 5,564 px) replicated but sub-perceptual. L6/L7 withdrawn; "real
+    clock-face render" claim withdrawn.
+  * DOWNGRADED Notes (billthefarmer): SUCCESS -> RENDER_ONLY. 99.1% near-white, 5 colors, 0/3.
+  * UPGRADED GM Dice to L7/L9-quality: base UI gate PASS (307 colors); --click-test 8/8
+    state_changed; post-input frame renders real dice roll "14 . 15 . 15" (1,866,750 px delta).
+  * UPGRADED MicroTimer to L7: click -> "00:00:00" timer display APPEARS (32,067 px; view 124
+    honestly state_changed=false).
+  * UPGRADED Simple Stopwatch to L7: Start -> Stop/Lap running-state transition (41,274 px, 4/4).
+  * UPGRADED Heading Calculator to L7: full keypad UI; digit click changes display (1,415 px, 4/12).
+  * uNote: gate PASS real list UI (417 colors); 2/4 small click changes; R-NEW-368 stands.
+- Canonical gallery docs/evidence/s53_frames/: 9 gate-passing JPGs <=100KB (base+after pairs x4
+  + unote base) + SHA256SUMS with per-file gate numbers + REJECTED section (chessclock/notes
+  blank-class refusals recorded as text-only per policy).
+- TREE-WIDE IMAGE CENSUS (591 tracked images): only 151 unique; 431 blank-class; 440
+  byte-identical duplicates; 17 zero-byte; 7 "different app" S51 gallery JPGs were the SAME
+  3632B blank; gpg_f092..f101 gallery = 100% white empty frames (123 copies of one blank
+  propagated); 549 generated files tracked under miniandroid/run/ (212 run dirs).
+- REMOVED (history NOT rewritten, all SHAs recorded): 502 images (485 by gate+dedupe + 6 manual
+  blank leftovers + census dedup) -> docs/evidence/S53_REMOVED_IMAGES_SHA256SUMS.txt;
+  miniandroid/run/ untracked wholesale (272 unique paths after cross-list dedup) ->
+  docs/evidence/S53_REMOVED_RUNDIR_SHA256SUMS.txt; gitignore now covers miniandroid/run/.
+  KEPT: golden/battery oracles (helloworld_golden, external_hello_golden, golden03,
+  hello_color_golden retest determinism proofs), density_matrix/hello_color fixture resources,
+  assets. Invariants verified: 0 APK/AAB/SO tracked; DEX test fixtures + upstream source JARs
+  KEEP-class; 2 small distilled logs (cited) remain.
+- Final image state: 89 tracked (83 unique; 70 meaningful; 19 gate-flags all justified =
+  goldens/oracles/fixture resources; 6 remaining dup pairs = intentional determinism proofs).
+- Battery re-run at post-purge tree: ALL PASS (94 stages) — count corrected 92->94 in README +
+  EXECUTION_ACHIEVEMENTS.
+- docs updated: EXECUTION_ACHIEVEMENTS.md (matrix re-verdicts + section 3.1 rebuilt with
+  input->state-change cards + 3.1b blank-class section + policy section 6 -> s53_frames),
+  README At-a-glance (5 real-GUI apps, 4 screenshot pairs, honesty-gate note),
+  docs/evidence/S53_IMAGE_CENSUS.md (full fraud-class findings + classes + provenance pointers).
+
+Stage Summary:
+- Repository: tracked files 3359 -> 2612 (-747); tracked images 591 -> 89; generated run outputs
+  0; blank-class evidence images 0 (text records only). .git size unchanged (~91MB, no rewrite).
+- Execution truth: 5 apps with real recognizable GUI, 4 with proven input->state-change screenshot
+  pairs (GM Dice = strongest, app-specific dice-roll result rendered), chessclock/notes honestly
+  downgraded to RENDER_ONLY blank-class.
+- Next frontier: chessclock/notes paint-path root cause (why view trees paint empty), R-NEW-361
+  probe fixture, R-NEW-368 bounds forensics, persistence ladder L10 on the 4 interactive apps.

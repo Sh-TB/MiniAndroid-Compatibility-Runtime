@@ -1,0 +1,13 @@
+# S53 frame quality gate + SHA256
+
+ecc056888d83b97f7c4e4ceafc9748465c82a7c95d55bfeb4a638aa49e8b798c  gmdice_base.jpg  41812B  q88  nearWhite=15.9% nearBlack=0.1% colors=307
+20be33050af785a1c1698eb09486411c8a41bddebd97cb0ce7af9bcf7ad00947  gmdice_after.jpg  42542B  q88  nearWhite=9.9% nearBlack=0.7% colors=266
+f139b60a2c82c147f9da400d246763d36b656f7734c63a2ef9f2d613e833a578  microtimer_base.jpg  30740B  q88  nearWhite=49.8% nearBlack=0.0% colors=193
+5926a3e8805bf7ec08ee290f199a668fdccc2286cd82826a01bf5569b94ffe5d  microtimer_after.jpg  41244B  q88  nearWhite=49.8% nearBlack=0.0% colors=343
+5d3364d7a59659d4c7fabb1bce2dc46eb1373da2263ff7f2d04854b263e85ab5  simplestopwatch_base.jpg  35582B  q88  nearWhite=6.2% nearBlack=0.0% colors=256
+1cdd2a10a0b9e3b2ad962319dab66e9e6b75381a87bfdaa24bafde7be6190c65  simplestopwatch_after.jpg  36549B  q88  nearWhite=6.2% nearBlack=1.8% colors=267
+177801591acd3bd96246b2b2d2eaf6b578b1b9263c53f450d1ef65eccd10250d  headingcalculator_base.jpg  94547B  q88  nearWhite=1.3% nearBlack=0.4% colors=416
+6625ce163173a0789e069378330efdf0344f64c5cdae2808337d610c8b285145  headingcalculator_after.jpg  93258B  q88  nearWhite=1.3% nearBlack=0.4% colors=416
+df24dd598dd2392a60a3a9ad6d5bc3d5d1670dd5bd27dacf11cbd050569b277a  unote_base.jpg  32192B  q88  nearWhite=88.6% nearBlack=0.0% colors=417
+REJECTED chessclock_base: BLANK dark class: 99.3% near-black, 2 colors, 0/8 click state changes [gate: {'near_white': 0.0, 'near_black': 99.3, 'colors': 2, 'verdict': 'BLANK'}]
+REJECTED notes_base: BLANK near-white class: 99.1% near-white, 5 colors, 0/3 click state changes [gate: {'near_white': 99.1, 'near_black': 0.0, 'colors': 5, 'verdict': 'BLANK'}]
