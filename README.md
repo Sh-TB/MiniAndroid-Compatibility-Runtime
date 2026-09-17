@@ -15,12 +15,12 @@
 ## At a glance (30 seconds)
 
 - **What it is:** a from-scratch C++17 compatibility runtime that executes real Android APKs from bytecode to pixels, with every claim pinned to committed evidence.
-- **What really runs today (S54):** **6 real F-Droid APKs render recognizable full GUI** (Chess Clock, GM Dice, MicroTimer, Simple Stopwatch, Heading Calculator, uNote) — **5 of them with input→state-change screenshot pairs**. GM Dice renders the app-specific result (real dice roll `14 · 15 · 15`); Chess Clock renders the real two-panel clock face and switches the active player on tap (S54 restored it from a blank-class state via two generic engine laws).
+- **What really runs today (S55):** **6 real F-Droid APKs render recognizable full GUI** (Chess Clock, GM Dice, MicroTimer, Simple Stopwatch, Heading Calculator, uNote) — **6 of them with input→state-change screenshot pairs**. GM Dice renders the app-specific result (real dice roll `14 · 15 · 15`); Chess Clock renders the real two-panel clock face and switches the active player on tap (S54 restored it via F-080/F-081); **Notes joined at S55 (F-082)** — the ViewSwitcher read↔edit state machine works (FAB click → 2.06M px face swap); its note-CONTENT face stays blank-class because it is a WebView subclass (generic WebView content model = pinned next dependency).
 - **HelloWorld is the proven control target:** the real external HelloWorldSelfAware APK (SHA-verified `009b4671…`) executes end-to-end — typography golden 9/9 vs the upstream phone screenshot + interaction 12/12 + committed framebuffer image.
-- **Honesty gate:** the screenshot quality gate (luminance/color/entropy + click-test audit) has downgraded and re-verified claims multiple times — Chess Clock and Notes were recorded `RENDER_ONLY` at S53; Chess Clock was **upgraded back on evidence** (F-080+F-081) at S54; Notes remains `RENDER_ONLY` (open ListView root, precisely characterized). No white/black frame is ever presented as an achievement.
-- **Dooz:** v23 executes the full Hilt/DI/Compose pipeline deterministically but the first frame is still blank (**R-NEW-344**); v18 halts in androidx ScatterMap arithmetic (**R-NEW-361** — ASC-recon candidates ranked).
+- **Honesty gate:** the screenshot quality gate (luminance/color/entropy + click-test audit) has downgraded and re-verified claims multiple times — Chess Clock and Notes were recorded `RENDER_ONLY` at S53; Chess Clock was **upgraded back on evidence** (F-080+F-081) at S54; **Notes was upgraded to L7 mode-switch at S55 (F-082)** while its content face remains honestly blank-class (R-NEW-377: MarkdownView extends WebView). No white/black frame is ever presented as an achievement.
+- **Dooz:** v23 executes the full Hilt/DI/Compose pipeline deterministically but the first frame is still blank (**R-NEW-344**); v18's ScatterMap probe spin was **ROOT-CAUSED + FIXED at S55 (F-083: depth-cap frame drops corrupted metadata init)** — MainActivity.onStart/onResume now dispatch for the first time; the new pinned frontier is **R-NEW-376** (post-F-083 ctor-climb budget).
 - **Telegram v12:** parses + launches + burns 540 s inside real init (no frame yet); startup path fully mapped by ASC recon.
-- **Battery:** "BATTERY GATE: ALL PASS (94 stages)" at the current HEAD (`scripts/test/run_test_battery.sh`; 92 stages when the external EXT fixture is absent — documented count law).
+- **Battery:** "BATTERY GATE: ALL PASS (96 stages)" at the current HEAD (`scripts/test/run_test_battery.sh`; 92 stages when the external EXT fixture is absent — documented count law).
 - **Full per-app truth:** [**Achievements & Evidence**](docs/ACHIEVEMENTS.md) — the single canonical record of every real APK execution · gate-passing screenshots: [`docs/evidence/s54_frames/`](docs/evidence/s54_frames).
 
 ---
@@ -95,7 +95,7 @@ and [`docs/testing/BATTERY_INDEX.json`](docs/testing/BATTERY_INDEX.json).
    Chess Clock (L7 chains with committed screenshot pairs). The historical
    "TicTacToe Classic (palahsu) fully playable" record stands at its
    recorded HEAD; that APK is currently unavailable (BLOCKED, S54).
-3. **Regression battery: "ALL PASS (94 stages)"** — §28 HelloWorld (18 checks),
+3. **Regression battery: "ALL PASS (96 stages)"** — §28 HelloWorld (18 checks),
    §29 TicTacToe interaction 9/9, EXT-01 typography 9/9, EXT-02 interaction
    12/12, G06/G07/G08 3-run frame-SHA determinism, all fixture pixel goldens
    (`docs/testing/BATTERY_INDEX.json`; 92 stages when the external EXT fixture
@@ -113,11 +113,12 @@ and [`docs/testing/BATTERY_INDEX.json`](docs/testing/BATTERY_INDEX.json).
 6. **REAL TELEGRAM v12.10.1 executed (frontier)** — the official 73 MB APK
    (`f5e11927…`) parses, LAUNCHES, paints a themed frame; deeper init stops
    at the desugared-streams gap (**R-NEW-303**, honestly open).
-7. **Current frontier: R-NEW-361** — dooz v18/v23 converge on the compose
-   SlotTable/ScatterMap probe-arithmetic face (refined R-NEW-335). Forensics
-   recorded; NOT fixed yet. dooz has no visible frame yet — claimed nothing
-   beyond the evidence. 2048 executes via the corpus path and is NOT claimed
-   playable.
+7. **Current frontier: R-NEW-376 (S55)** — after F-083 fixed the ScatterMap
+   face (R-NEW-361 was a depth-cap frame drop corrupting metadata init),
+   dooz v18 Compose init now builds constructor chains that exceed the
+   2048-frame budget (9 cap-climbs; hop evidence in docs/evidence/s55_dooz/).
+   dooz has no visible frame yet — claimed nothing beyond the evidence.
+   2048 executes via the corpus path and is NOT claimed playable.
 
 ## Architecture summary
 
@@ -158,7 +159,7 @@ tar xzf MiniAndroid-v0.0.3-*-linux-x64.tar.gz && cd miniandroid-0.0.3
 ## Verification & evidence
 
 ```bash
-bash scripts/test/run_test_battery.sh   # full regression battery → "BATTERY GATE: ALL PASS (94 stages)"
+bash scripts/test/run_test_battery.sh   # full regression battery → "BATTERY GATE: ALL PASS (96 stages)"
 ```
 
 - **Methodology:** `APK execution → actual view/layout/draw operations → real
@@ -166,7 +167,7 @@ bash scripts/test/run_test_battery.sh   # full regression battery → "BATTERY G
   3-run reproducibility`. A synthetic screenshot, an rc=0, or a method count is
   NOT evidence.
 - **Battery inventory:** [`docs/testing/BATTERY_INDEX.json`](docs/testing/BATTERY_INDEX.json)
-  — machine-readable list of all 94 stages and their last verified status.
+  — machine-readable list of all 96 stages and their last verified status.
 - **Upstream law ledger:** [`docs/upstream/INDEX.md`](docs/upstream/INDEX.md)
   (the semantic contract each fix implements),
   [`docs/research/ROOT_LAW_GLOBAL_AUDIT.md`](docs/research/ROOT_LAW_GLOBAL_AUDIT.md)
@@ -182,9 +183,11 @@ bash scripts/test/run_test_battery.sh   # full regression battery → "BATTERY G
 ## Current limitations (real, current — nothing hidden)
 
 1. **Compose final UI**: no visible Compose frame yet for dooz — **R-NEW-344**
-   (Recomposer suspension; blank frame class `31ddd4d5…`) and **R-NEW-361**
-   (ScatterMap long-law; ASC decompile ranked 4 engine-law candidates — see
-   `docs/evidence/s52_asc/README.md`). Forensics recorded; not fixed.
+   (Recomposer suspension; blank frame class `31ddd4d5…`) and **R-NEW-376**
+   (post-F-083 ctor-climb frontier; S55 pinned with hop traces). The S53-era
+   **R-NEW-361** face is VERIFIED-FIXED by **F-083** (ART-sized engine stack +
+   loud limit-drop; evidence in `docs/evidence/s55_dooz/`). Forensics
+   recorded; not fixed.
 2. **Telegram frontier**: 540 s inside real init (REC-MISS static-init surface,
    SafeIterableMap cycle-stub ≥18k calls); **R-NEW-303** (desugared-streams)
    stands at its recorded HEAD — honestly open, evidence committed.
