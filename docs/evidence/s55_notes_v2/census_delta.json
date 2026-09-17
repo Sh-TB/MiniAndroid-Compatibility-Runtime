@@ -1,0 +1,58 @@
+{
+ "baseline": {
+  "path": "/tmp/s55_notes_v2/screenshot.png",
+  "width": 1080,
+  "height": 1920,
+  "unique_colors": 6,
+  "dominant_ratio": 0.9901,
+  "dominant_color": [
+   240,
+   240,
+   240
+  ],
+  "nonbg_sampled": 23560,
+  "nonbg_bbox": [
+   0,
+   0,
+   1078,
+   1918
+  ],
+  "sha256": "cf521b168a9b4ed23b2b56b354ec420ff112cbe5640b151f7af163e5533f2a01"
+ },
+ "click_frames": [
+  {
+   "path": "/tmp/s55_notes_v2/click_frame_0.png",
+   "width": 1080,
+   "height": 1920,
+   "unique_colors": 5,
+   "dominant_ratio": 0.9912,
+   "dominant_color": [
+    255,
+    255,
+    255
+   ],
+   "nonbg_sampled": 20108,
+   "nonbg_bbox": [
+    22,
+    0,
+    1078,
+    1918
+   ],
+   "sha256": "ae697935dbeb6f338ef4147484a0aeb318572af2ea6a150bbc1c23d17f54b586"
+  }
+ ],
+ "deltas": [
+  {
+   "a": "/tmp/s55_notes_v2/screenshot.png",
+   "b": "/tmp/s55_notes_v2/click_frame_0.png",
+   "changed_px": 2057718,
+   "changed_ratio": 0.9923,
+   "changed_bbox": [
+    0,
+    0,
+    1079,
+    1919
+   ]
+  }
+ ]
+}
