@@ -1,5 +1,9 @@
 # SCREENSHOT_INDEX — UNIFIED_011.3 (§39)
 
+> CURRENT-HEAD STATUS: superseded for present-day per-app status by
+> `SCREENSHOT_INDEX_S51.md` (all-front audit at HEAD `1b37afd1`). This file
+> remains the historical record of the UNIFIED_011.3 era.
+
 Every screenshot evidence artifact produced/verified by this campaign, with SHA256
 and interpretation. Files ≤100 KB policy; large run outputs stay external
 (git-ignored), curated copies live under `docs/evidence/u011_3/`.

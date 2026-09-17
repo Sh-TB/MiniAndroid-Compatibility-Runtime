@@ -447,3 +447,53 @@ Stage Summary:
   tests + APPLICATION_MATRIX.md (13-16), README landing + achievements gallery
   (17-18), new games (crossword / Wordle-like / ball or minesweeper),
   S51_FINALIZATION_REPORT.md A-Z, end-condition checklist.
+
+---
+Task ID: S51-ALLFRONT-AUDIT
+Agent: Super Z (main)
+Task: Owner directive "all-out attack on ALL work-list apps; check every app's
+status; update the screenshot MD list" — full per-app audit at current HEAD.
+
+Work Log:
+- Runtime REBUILT from canonical tree at HEAD 1b37afd1 (make -j2; resolves
+  binary-provenance gap: the /tmp binary predated S45/S49 engine commits).
+- Toolchain re-bootstrapped via scripts/build/bootstrap_toolchain.sh (aapt2
+  8.13.2-14304508, ecj 3.33.0, r8 8.13.23, robolectric android-all-14) —
+  fixture-build stages had gone rc=2 after the toolchain was lost.
+- Battery: chunked --resume runs (state /tmp/g09_battery_state) => ALL PASS
+  92/92 stages at 1b37afd1, incl. helloworld_golden, tictactoe_golden (9/9
+  interaction), EXT-01/02 (APK re-fetched, SHA 009b4671/121d479c exact match to
+  EXTERNAL_FIXTURE doc), G06/G07/G08/M3 toolchain fixtures + 3-run
+  determinism, full F-0xx law chain. Reconciliation: current canonical battery
+  = 92 stages (historical 94/94 = pre-purge script revision, 2 extra
+  sub-stages).
+- Fresh per-app runs at HEAD (17 apps): chessclock/unote/bouncy/
+  headingcalculator/notesbillthefarmer/microtimer SUCCESS rc=0;
+  simplekeyboard/rttt SUCCESS rc=0 (entry-screen class); dooz v18 R-NEW-361
+  signature REPRODUCED (HALT-LOOP Lh/r;.c 50001 visits + aput-oob index
+  613985991); dooz v23 deterministic pipeline completion (frame 31ddd4d5
+  exact) with F-016 honesty surfacing 1 uncaught in-flight exception (7 unwind
+  entries = R-NEW-344 refined chain — accounting change, not behavior
+  regression); tictactoe(emmanuelmess) blank-first-frame family; muellerma
+  (no-Activity Tile boundary) + bgclock (WebView boundary, frame 2f85dd74
+  exact u013 match) + itsfrz/dicer/openlauncher/flashlight app-boundary
+  PARTIAL.
+- Frontier (no first frame this session): Telegram v12 (APK SHA f5e11927
+  verified) consumed 540s INSIDE real init (989k log lines, SafeIterableMap
+  cycle-stub 18k+ calls, 400 REC-MISS); antimine 300s kill; secuso
+  memory/sudoku >300s; 2048/lexica not re-run (historical budget-timeout
+  standing); WhatsApp APK not in cache (historical evidence stands).
+- Deliverable: docs/evidence/SCREENSHOT_INDEX_S51.md (per-app truth table +
+  curated gallery docs/evidence/s51_audit/*.jpg, 540x960 q72, all <=100KB,
+  SHA256SUMS committed; generator scripts/s51_audit_jpgs.py). Old indexes
+  (SCREENSHOT_INDEX.md, _013) kept as era records with pointer notes.
+
+Stage Summary:
+- EVERY registry-listed app now has a current-HEAD verdict or an honest
+  frontier entry; two shared deterministic frame classes (31ddd4d5 blank
+  Compose, eb16ab5c entry screen) identified as render-class signatures.
+- Verified successes at HEAD: 6 full-render apps + 2 entry-class + battery
+  92/92. Open roots confirmed live at HEAD: R-NEW-361 (dooz v18), R-NEW-344
+  (dooz v23 composition), Telegram first-frame budget.
+- Next: roadmap reconcile (PHASE 11-12), APPLICATION_MATRIX.md consolidation,
+  README landing, new games, S51_FINALIZATION_REPORT.md A-Z.
