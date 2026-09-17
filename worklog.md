@@ -815,3 +815,29 @@ Stage Summary:
   R-NEW-376 (v18 ctor-climb, unchanged), R-NEW-344 root (scatter resize
   newCap=15 bug), WebView end-to-end content probe, persistence L10,
   Telegram. Battery 96/96 ALL PASS.
+
+---
+Task ID: S56-PUSH-VERIFY
+Agent: Super Z (main)
+Task: Record S56 push + fresh-clone verification
+
+Work Log:
+- Pre-push: working tree clean, secret guard PASS (fail-closed), battery
+  ALL PASS 96/96, 0 tracked APK/AAB/SO, evidence dirs carry SHA256SUMS.
+- PUSH VERIFIED: 284ddd58..83f1b76e main -> main (5 commits: F-084 engine
+  fix + diagnostics, F-085 WebView model + invariant updates, evidence +
+  registry, canonical docs sync, worklog). Credential used via ephemeral
+  env only; unset after push; never written to any tracked file.
+- FRESH-CLONE VERIFIED: clone at 83f1b76e == ls-remote == local HEAD;
+  toolchain bootstrapped from the repo script; make -j clean build;
+  battery ALL PASS (96 stages) from the published source; key
+  regressions reproduce from the clone binary (uNote tap target=13
+  consumed -> NoteEdition launched; dooz v23 F-084 honest-halt face).
+- Clone workspace + temp captures removed after verification.
+
+Stage Summary:
+- S56 CLOSED: leftover-closure session shipped F-084 (HALT-RETURN
+  containment) + F-085 (generic WebView content model), closed R-NEW-368
+  by refutation, refined R-NEW-344 to a precise ranked next step,
+  published the pending S55 queue, and verified everything from a fresh
+  clone. Battery ALL PASS 96/96 at HEAD 83f1b76e.
