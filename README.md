@@ -12,6 +12,17 @@
 
 ---
 
+## At a glance (30 seconds)
+
+- **What it is:** a from-scratch C++17 compatibility runtime that executes real Android APKs from bytecode to pixels, with every claim pinned to committed evidence.
+- **What really runs today:** 6 real F-Droid APKs render full UI (ChessClock, uNote, Bouncy, Heading Calculator, Notes, MicroTimer + Simple Stopwatch/GM Dice battery-verified); 2 more reach their entry screen; **TicTacToe is fully playable** (real taps → win state → deterministic replay, 9/9 interaction).
+- **Dooz:** v23 executes the full Hilt/DI/Compose pipeline deterministically but the first frame is still blank (**R-NEW-344**); v18 halts in androidx ScatterMap arithmetic (**R-NEW-361** — ASC-recon candidates ranked).
+- **Telegram v12:** parses + launches + burns 540 s inside real init (no frame yet); startup path fully mapped by ASC recon.
+- **Battery:** 92/92 stages ALL PASS at the current HEAD (`scripts/test/run_test_battery.sh`).
+- **Full per-app truth:** [**Execution Achievements & Evidence**](docs/EXECUTION_ACHIEVEMENTS.md) — the single canonical record of every real APK execution.
+
+---
+
 ## What is MiniAndroid?
 
 A from-scratch C++17 runtime that:
@@ -78,17 +89,19 @@ and [`docs/testing/BATTERY_INDEX.json`](docs/testing/BATTERY_INDEX.json).
 2. **TicTacToe Classic (real corpus APK) is fully playable** — real taps →
    DEX click listeners → X/O alternation → board redraws (S44); the §29
    interaction + determinism golden passes with 10-frame per-frame SHAs.
-3. **Regression battery: 94/94 ALL PASS** — §28 HelloWorld (26 checks), §29
-   TicTacToe (8 checks), EXT-01 typography 9/9, EXT-02 interaction 12/12,
-   G06/G07/G08 3-run frame-SHA determinism, all fixture pixel goldens
-   (`docs/testing/BATTERY_INDEX.json`).
+3. **Regression battery: 92/92 stages ALL PASS** — §28 HelloWorld (26 checks),
+   §29 TicTacToe interaction 9/9, EXT-01 typography 9/9, EXT-02 interaction
+   12/12, G06/G07/G08 3-run frame-SHA determinism, all fixture pixel goldens
+   (`docs/testing/BATTERY_INDEX.json`; historical "94/94" = pre-purge script
+   revision with 2 extra sub-stages — 92 is the canonical count).
 4. **Real Android lifecycle/input/persistence dispatch** — Activity
    onCreate→onStart→onResume, click dispatch through app DEX handlers,
    SharedPreferences/SQLite-backed persistence paths (package-dir law
    R-NEW-367 VERIFIED-FIXED).
 5. **Real corpus APKs render** — ChessClock deterministic screenshot
-   (`e4a2d7c9…` ×3), gmdice/microtimer/unote byte-stable frames; corpus
-   grades in `docs/compatibility/` and the APPS_EXECUTION_LEDGER.
+   (`e4a2d7c9…` — re-verified exact across sessions, S51→S52),
+   gmdice/microtimer/unote byte-stable frames; per-app ladder + persistence
+   experiments in [`docs/EXECUTION_ACHIEVEMENTS.md`](docs/EXECUTION_ACHIEVEMENTS.md).
 6. **REAL TELEGRAM v12.10.1 executed (frontier)** — the official 73 MB APK
    (`f5e11927…`) parses, LAUNCHES, paints a themed frame; deeper init stops
    at the desugared-streams gap (**R-NEW-303**, honestly open).
@@ -152,7 +165,7 @@ bash scripts/test/run_test_battery.sh   # full regression battery → "BATTERY G
   (full ledger), [`docs/research/ROOT_IMPACT_MATRIX.md`](docs/research/ROOT_IMPACT_MATRIX.md)
   (per-root impact).
 - **Registry:** [`root_registry.json`](root_registry.json) — one honest record per
-  root (348 entries, P0–P3, canonical status vocabulary).
+  root (349 entries, P0–P3, canonical status vocabulary).
 - **Evidence tree:** [`docs/evidence/`](docs/evidence/) — compact, machine-verifiable
   provenance per case; raw campaign exhaust is archived externally with SHA-256
   provenance in [`docs/evidence/ARCHIVE_MANIFEST.json`](docs/evidence/ARCHIVE_MANIFEST.json)
@@ -160,37 +173,52 @@ bash scripts/test/run_test_battery.sh   # full regression battery → "BATTERY G
 
 ## Current limitations (real, current — nothing hidden)
 
-1. **Compose final UI**: no visible Compose frame yet for dooz — **R-NEW-361**
-   (refined R-NEW-335) is the primary frontier: both dooz variants converge on
-   androidx ScatterMap probe arithmetic producing negative indices (HALT-LOOP
-   → aput-oob). Forensics recorded in `docs/maintenance/s45_session_record.md`;
-   not fixed.
-2. **Telegram frontier**: **R-NEW-303** (desugared-streams builder dispatch) —
-   honestly open, evidence committed.
-3. **2048** executes on the corpus path and renders partially; **not claimed
+1. **Compose final UI**: no visible Compose frame yet for dooz — **R-NEW-344**
+   (Recomposer suspension; blank frame class `31ddd4d5…`) and **R-NEW-361**
+   (ScatterMap long-law; ASC decompile ranked 4 engine-law candidates — see
+   `docs/evidence/s52_asc/README.md`). Forensics recorded; not fixed.
+2. **Telegram frontier**: 540 s inside real init (REC-MISS static-init surface,
+   SafeIterableMap cycle-stub ≥18k calls); **R-NEW-303** (desugared-streams)
+   stands at its recorded HEAD — honestly open, evidence committed.
+3. **uNote input**: buttons render but no tap target is hit-testable anywhere
+   (**R-NEW-368**, NEW S52) — paint vs touch geometry divergence.
+4. **Persistence**: storage round-trip VERIFIED for chessclock/unote
+   (`--data-root` experiment); full state-delta ladder pending R-NEW-368 +
+   interactive drivers.
+5. **2048** executes on the corpus path and renders partially; **not claimed
    playable** until real UI/gameplay is verified with input evidence.
-4. **GLES dispatch hook** (K-25): PortableGL glue exists (standalone golden cube
+6. **GLES dispatch hook** (K-25): PortableGL glue exists (standalone golden cube
    renders) but the GLSurfaceView/EGL loop is not wired into the engine.
-5. **Layout geometry**: weight distribution wrong (simplestopwatch buttons render
+7. **Layout geometry**: weight distribution wrong (simplestopwatch buttons render
    full-height); headingcalc display-row text overlap (open visual gap).
-6. **Fonts**: BitmapFont long-string overlap (SFS-010); the GATE H
+8. **Fonts**: BitmapFont long-string overlap (SFS-010); the GATE H
    glyph-to-framebuffer gap; the FreeType+HarfBuzz+FriBidi RTL pipeline is a
    proven POC (6/6 Persian samples), not yet the TextView path.
-7. **Corpus gaps**: kiss AppCompat theme resolution; openlauncher Fragment-host
+9. **Corpus gaps**: kiss AppCompat theme resolution; openlauncher Fragment-host
    attach; bgclock WebViewAssetLoader builder; stopwatch2 androidx init.
-8. **Canvas matrix composition**: dispatch presence verified; exhaustive
-   rotate+scale+clip interplay tests still missing.
-9. **Obfuscated AXML** (`res/0s.xml`-style trees): abort safely (guarded), not
-   inflated.
-10. **JNI/ELF**: boundary classification only; no loader (no corpus APK currently
+10. **Canvas matrix composition**: dispatch presence verified; exhaustive
+    rotate+scale+clip interplay tests still missing.
+11. **Obfuscated AXML** (`res/0s.xml`-style trees): abort safely (guarded), not
+    inflated.
+12. **JNI/ELF**: boundary classification only; no loader (no corpus APK currently
     demands it; missing native libs are never reported as Java blockers).
 
 ## Documentation
 
-The complete documentation index lives in **[`docs/INDEX.md`](docs/INDEX.md)**
-(machine-readable twin: `docs/INDEX.json`) — architecture, testing, runtime,
-dex, resources, lifecycle, rendering, input, persistence, upstream laws,
-releases, forensic evidence, maintenance, and history.
+Canonical files — one per role:
+
+- **[Execution Achievements & Evidence](docs/EXECUTION_ACHIEVEMENTS.md)** —
+  the single source of truth for every real APK execution: per-app ladder,
+  persistence experiments, screenshots (SHA256, ≤100 KB JPG, real UI only),
+  ASC reconnaissance ledger. Curated gallery: [`docs/evidence/s51_audit/`](docs/evidence/s51_audit/).
+- **[Knowledge Index](docs/KNOWLEDGE_INDEX.md)** — canonical inventory of all
+  knowledge/research files (per-file classification + pipeline knowledge map).
+- **[Roadmap](docs/ROADMAP.md)** — the reconciled canonical roadmap (all
+  historical roadmaps folded in; P0 frontier ranked).
+- Navigation hub: **[`docs/INDEX.md`](docs/INDEX.md)** (machine-readable twin:
+  `docs/INDEX.json`) — architecture, testing, runtime, dex, resources,
+  lifecycle, rendering, input, persistence, upstream laws, releases, forensic
+  evidence, maintenance, and history.
 
 ## Release
 

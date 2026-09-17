@@ -497,3 +497,72 @@ Stage Summary:
   (dooz v23 composition), Telegram first-frame budget.
 - Next: roadmap reconcile (PHASE 11-12), APPLICATION_MATRIX.md consolidation,
   README landing, new games, S51_FINALIZATION_REPORT.md A-Z.
+
+---
+Task ID: S52-PROFESSIONALIZATION
+Agent: Super Z (main)
+Task: Owner directive — from HEAD, upgrade MiniAndroid to professional grade
+across runtime + evidence + documentation + repository hygiene; ASC (MG1937/ASC)
+as recon helper; ONE canonical file per role; strict evidence/log/screenshot
+policy; honest runs; push + fresh-clone verify.
+
+Work Log:
+- ASC integrated (recon-only, never committed): droidasc 0.1.1.post1 @ 3279d9dd
+  in gitignored local venv (local/ASC). All 4 commands validated (getmanifest
+  0.29s chessclock / 0.32s on 73MB Telegram; listclass/getclass/findrefs).
+  Evidence cards: docs/evidence/s52_asc/README.md (commands + distilled facts).
+- ASC recon results: (1) Telegram v12 startup path fully mapped
+  (ApplicationLoaderImpl/LaunchActivity; ApplicationLoader.onCreate chain:
+  getSystemService->getFilesDir->registerReceiver->NativeLoader.initNativeLibs
+  ->SharedConfig.loadConfig->SharedPrefsHelper.init; SafeIterableMap consumers =
+  LiveData.<init> + SavedStateRegistry.<init> — matches S51 cycle-stub
+  observation); (2) Dooz v18 Lh/r; = androidx.collection ScatterMap.set —
+  decompiled; 4 engine-law candidates ranked for R-NEW-361 (long-shift sentinel
+  writes / probe mask-wrap / numberOfTrailingZeros / capacity normalization);
+  (3) WhatsApp.apk + Signal.apk in local cache are 0-BYTE placeholders (SHA256
+  of empty string) — BLOCKED — APK unavailable is now PROVEN, no fake evidence.
+- Runtime experiments (all at rebuilt HEAD, battery 92/92 stands):
+  CHESSCLOCK persistence protocol (--data-root shared across 2 runs):
+  shared_prefs/default.xml round-trips; run2 base frame e4a2d7c9 EXACT-matches
+  S51 recorded SHA (cross-session determinism); tap consumed -> frame change
+  (93c3121c) = L6+L7 VERIFIED. UNOTE: databases/notes.db created + round-trips;
+  16-probe tap grid (x{270,540,810,940} x y{300..1780}) ALL "no touch target"
+  -> R-NEW-368 registered (OBSERVED-FAIL P1: paint path renders buttons, touch
+  path finds no target — geometry divergence). Registry 348 -> 349 roots.
+- Canonical files created (one per role):
+  docs/EXECUTION_ACHIEVEMENTS.md — master matrix (26 app rows), per-app detail
+  cards, in-repo fixture ladder (tictactoe L9), persistence section, ASC ledger,
+  binding screenshot policy, superseded pointers.
+  docs/KNOWLEDGE_INDEX.md — generated (scripts/s52_gen_knowledge_index.py):
+  172 per-file knowledge rows (Path/Topic/Subsystem/Status), era-tree summaries,
+  duplicate/merge findings, 15-node knowledge map, subsystem census.
+  docs/ROADMAP.md — full reconcile of FUTURE_ROADMAP + EXP037 roadmap +
+  ROOT_LAW tier ladder + campaign TODOs (every item DONE/PARTIAL/OPEN/BLOCKED/
+  OBSOLETE/REJECTED with evidence); active P0 frontier ranked 1-5; binding laws.
+- Hygiene: 130 residue files REMOVED from tree (history retained, no rewrite):
+  corpus_cache/dooz23_extracted (93, extracted-APK META-INF tree),
+  34 raw api_trace.json (7.7MB), campaign3 screenshot.ppm (6MB), 2 s22 raw
+  traces, 3 raw web-scrape JSONs. SHA256 of everything removed recorded in
+  docs/evidence/S52_RESIDUE_SHA256SUMS.txt + rationale in
+  docs/evidence/S52_RESIDUE_RECORD.md. miniandroid/golden oracle KEPT.
+  Policy classes now: APK/AAB 0, raw api_traces 0, log 2 (small distilled,
+  cited), META-INF 11 (upstream sources trees only).
+- Tools audit: docs/tooling/TOOLS_INVENTORY_S52.md — canonical locations mapped,
+  zero LLVM/toolchain binaries in git, NO byte-identical duplicates proven
+  (dump_method family = era-evolved variants, kept per policy).
+- Superseded pointers added: SCREENSHOT_INDEX{,_013,_S51}.md,
+  FUTURE_ROADMAP/EXP037/ROOT_LAW roadmaps. docs/INDEX.md + README landing
+  updated (At-a-glance 30s section; battery 92 canonical; registry 349;
+  links to the three canonical files; limitations list refreshed).
+- Sizes: tracked files 3482 -> 3350; tracked bytes ~97.8MB -> 80.3MB; .git 90MB
+  (unchanged — no history rewrite).
+
+Stage Summary:
+- Repository now has ONE canonical file per role (EXECUTION_ACHIEVEMENTS /
+  KNOWLEDGE_INDEX / ROADMAP / README landing), evidence policy enforced with a
+  recorded, reversible residue removal, ASC integrated as recon with compact
+  reproducible cards, two new honest runtime records (chessclock L7+persistence
+  round-trip; R-NEW-368 unote), and a fully reconciled roadmap.
+- Next: R-NEW-361 law-probe fixture (candidates ranked); R-NEW-368 bounds
+  forensics; persistence ladder upgrade; Telegram init-chain attack; new game
+  fixtures (deferred).

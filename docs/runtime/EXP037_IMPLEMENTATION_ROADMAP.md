@@ -1,3 +1,5 @@
+> **[S52 RECONCILED]** All items reconciled into the canonical [`docs/ROADMAP.md`](../ROADMAP.md). This file is an era record — do not update it.
+
 # EXP-037 PHASE 1.5 — IMPLEMENTATION ROADMAP
 
 **Date**: 2026-08-14  

@@ -157,3 +157,4 @@ gpg_lambda_probe.out
 # S51 purge scratch + local backup (never commit)
 /backup-s51/
 /tool-results/
+local/

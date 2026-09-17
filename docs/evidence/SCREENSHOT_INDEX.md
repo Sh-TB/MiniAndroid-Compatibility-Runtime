@@ -1,3 +1,5 @@
+> **[S52 SUPERSEDED]** Current canonical record: [`docs/EXECUTION_ACHIEVEMENTS.md`](../../EXECUTION_ACHIEVEMENTS.md). This file is an era record — verdicts are absorbed there; do not update it.
+
 # SCREENSHOT_INDEX — UNIFIED_011.3 (§39)
 
 > CURRENT-HEAD STATUS: superseded for present-day per-app status by

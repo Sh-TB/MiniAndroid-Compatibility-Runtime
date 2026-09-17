@@ -1,3 +1,5 @@
+> **[S52 RECONCILED]** All items reconciled into the canonical [`docs/ROADMAP.md`](../ROADMAP.md). This file is an era record — do not update it.
+
 # ROOT LAW IMPLEMENTATION ROADMAP (MASTER-6 → MASTER CAMPAIGN 4 → MASTER CAMPAIGN 3/M8)
 
 Prioritized implementation order. Priority classes per §5 of the campaign
