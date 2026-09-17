@@ -1,0 +1,60 @@
+[R361-STORE] map=o907 arr=o908 idx=0 store=aput-wide v=0x80808080808080ff md=[80808080808080ff ffffffffffffffff] caller=Lh/h;.<clinit> pc=58
+[R361-STORE] map=o907 arr=o908 idx=0 store=aput-wide v=0x80808080808080ff md=[80808080808080ff ffffffffffffffff] caller=Lh/r;.d pc=48
+[TRI-F040] Ln/a;.r argc=1 a0:t7o1073 caller=Lh/r;.d depth=12
+[R361-STORE] map=o1072 arr=o1073 idx=0 store=aput-wide v=0xff80808080808080 md=[ff80808080808080 8080808080808080] caller=Lh/r;.d pc=48
+[R361-STORE] map=o1072 arr=o1073 idx=0 store=aput-wide v=0xff80806380808080 md=[ff80806380808080 8080808080808080] caller=Lh/r;.c pc=228
+[R361-STORE] map=o1072 arr=o1073 idx=1 store=aput-wide v=0x8080806380808080 md=[ff80806380808080 8080806380808080] caller=Lh/r;.c pc=253
+[TRI-F040] Ln/a;.r argc=1 a0:t7o1095 caller=Lh/r;.d depth=12
+[R361-STORE] map=o1094 arr=o1095 idx=0 store=aput-wide v=0xff80808080808080 md=[ff80808080808080 8080808080808080] caller=Lh/r;.d pc=48
+[R361-STORE] map=o1094 arr=o1095 idx=0 store=aput-wide v=0xff80806380808080 md=[ff80806380808080 8080808080808080] caller=Lh/r;.c pc=228
+[R361-STORE] map=o1094 arr=o1095 idx=1 store=aput-wide v=0x8080806380808080 md=[ff80806380808080 8080806380808080] caller=Lh/r;.c pc=253
+[TRI-F040] Ln/a;.r argc=1 a0:t7o1123 caller=Lh/s;.f depth=9
+[TRI-F040] Ln/a;.r argc=1 a0:t7o1129 caller=Lh/s;.f depth=9
+[TRI-F040] Ln/a;.r argc=1 a0:t7o1144 caller=Lh/s;.f depth=9
+[TRI-F040] Ln/a;.r argc=1 a0:t7o1209 caller=Lh/s;.f depth=16
+[TRI-F040] Ln/a;.r argc=1 a0:t7o1213 caller=Lh/s;.f depth=15
+[TRI-F040] Ln/a;.r argc=1 a0:t7o1217 caller=Lh/t;.g depth=15
+[TRI-F040] Ln/a;.r argc=1 a0:t7o1224 caller=Lh/s;.f depth=16
+[SYNTH-EXC] M3-REFLECT (deferred): Ljava/lang/ClassNotFoundException; (kotlin.reflect.jvm.internal.ReflectionFactoryImpl) method=LM1/u;.<clinit> pc=3 → deferred handler @0x0xe type=Ljava/lang/ClassNotFoundException;
+[TRI-F040] Ln/a;.r argc=1 a0:t7o1745 caller=Lh/r;.d depth=29
+[R361-STORE] map=o1744 arr=o1745 idx=0 store=aput-wide v=0xff80808080808080 md=[ff80808080808080 8080808080808080] caller=Lh/r;.d pc=48
+[R361-STORE] map=o1744 arr=o1745 idx=0 store=aput-wide v=0xff80808080802580 md=[ff80808080802580 8080808080808080] caller=Lh/r;.c pc=228
+[R361-STORE] map=o1744 arr=o1745 idx=1 store=aput-wide v=0x8080808080802580 md=[ff80808080802580 8080808080802580] caller=Lh/r;.c pc=253
+[TRI-F040] Ln/a;.r argc=1 a0:t7o1749 caller=Lh/s;.f depth=29
+[R361-STORE] map=o1744 arr=o1745 idx=0 store=aput-wide v=0xff03808080802580 md=[ff03808080802580 8080808080802580] caller=Lh/r;.c pc=228
+[R361-STORE] map=o1744 arr=o1745 idx=1 store=aput-wide v=0x8003808080802580 md=[ff03808080802580 8003808080802580] caller=Lh/r;.c pc=253
+[TRI-F040] Ln/a;.r argc=1 a0:t7o1926 caller=Lh/r;.d depth=34
+[R361-STORE] map=o1925 arr=o1926 idx=0 store=aput-wide v=0xff80808080808080 md=[ff80808080808080 8080808080808080] caller=Lh/r;.d pc=48
+[R361-STORE] map=o1925 arr=o1926 idx=0 store=aput-wide v=0xff80808080428080 md=[ff80808080428080 8080808080808080] caller=Lh/r;.c pc=228
+[R361-STORE] map=o1925 arr=o1926 idx=1 store=aput-wide v=0x8080808080428080 md=[ff80808080428080 8080808080428080] caller=Lh/r;.c pc=253
+[R361-STORE] map=o1925 arr=o1926 idx=0 store=aput-wide v=0xff80808080428076 md=[ff80808080428076 8080808080428080] caller=Lh/r;.c pc=228
+[R361-STORE] map=o1925 arr=o1926 idx=1 store=aput-wide v=0x8080808080428076 md=[ff80808080428076 8080808080428076] caller=Lh/r;.c pc=253
+[TRI-F040] Ln/a;.r argc=1 a0:t7o2010 caller=Lh/r;.d depth=37
+[R361-STORE] map=o2009 arr=o2010 idx=0 store=aput-wide v=0xff80808080808080 md=[ff80808080808080 8080808080808080] caller=Lh/r;.d pc=48
+[R361-STORE] map=o2009 arr=o2010 idx=0 store=aput-wide v=0xff80808080558080 md=[ff80808080558080 8080808080808080] caller=Lh/r;.c pc=228
+[R361-STORE] map=o2009 arr=o2010 idx=1 store=aput-wide v=0x8080808080558080 md=[ff80808080558080 8080808080558080] caller=Lh/r;.c pc=253
+[SYNTH-EXC] M3-REFLECT (deferred): Ljava/lang/ClassNotFoundException; (java.nio.file.Files) method=Lg2/f;.<clinit> pc=2 → deferred handler @0x0xb type=Ljava/lang/ClassNotFoundException;
+[SYNTH-EXC] M3-REFLECT (deferred): Ljava/lang/ClassNotFoundException; (android.os.Build$VERSION) method=LI1/a$a;.<clinit> pc=3 → deferred handler @0x0x18 type=<catch-all>
+[TRI-F040] Ln/a;.r argc=1 a0:t7o2247 caller=Lh/r;.d depth=40
+[R361-STORE] map=o2246 arr=o2247 idx=0 store=aput-wide v=0xff80808080808080 md=[ff80808080808080 8080808080808080] caller=Lh/r;.d pc=48
+[R361-STORE] map=o2246 arr=o2247 idx=0 store=aput-wide v=0xff801c8080808080 md=[ff801c8080808080 8080808080808080] caller=Lh/r;.c pc=228
+[R361-STORE] map=o2246 arr=o2247 idx=1 store=aput-wide v=0x80801c8080808080 md=[ff801c8080808080 80801c8080808080] caller=Lh/r;.c pc=253
+[R361-STORE] map=o2246 arr=o2247 idx=0 store=aput-wide v=0xff801c8080808017 md=[ff801c8080808017 80801c8080808080] caller=Lh/r;.c pc=228
+[R361-STORE] map=o2246 arr=o2247 idx=1 store=aput-wide v=0x80801c8080808017 md=[ff801c8080808017 80801c8080808017] caller=Lh/r;.c pc=253
+[TRI-F040] Ln/a;.r argc=1 a0:t7o2250 caller=Lh/s;.f depth=43
+[R361-LIMIT-DROP] LE0/c;.<init> depth=80 caller=Lt0/t;.<init>
+[R361-LIMIT-DROP] Lt0/t;.<init> depth=80 caller=Lt0/t;.<init>
+[TRI-F040] Ln/a;.r argc=1 a0:t7o3015 caller=Lh/r;.d depth=51
+[R361-STORE] map=o3014 arr=o3015 idx=0 store=aput-wide v=0xff80808080808080 md=[ff80808080808080 8080808080808080] caller=Lh/r;.d pc=48
+[R361-STORE] map=o3014 arr=o3015 idx=0 store=aput-wide v=0xff4e808080808080 md=[ff4e808080808080 8080808080808080] caller=Lh/r;.c pc=228
+[R361-STORE] map=o3014 arr=o3015 idx=1 store=aput-wide v=0x804e808080808080 md=[ff4e808080808080 804e808080808080] caller=Lh/r;.c pc=253
+[R361-STORE] map=o3014 arr=o3015 idx=0 store=aput-wide v=0xff4e80806f808080 md=[ff4e80806f808080 804e808080808080] caller=Lh/r;.c pc=228
+[R361-STORE] map=o3014 arr=o3015 idx=1 store=aput-wide v=0x804e80806f808080 md=[ff4e80806f808080 804e80806f808080] caller=Lh/r;.c pc=253
+[TRI-F040] Ln/a;.r argc=1 a0:t7o3091 caller=Lh/s;.f depth=50
+[TRI-F040] Ln/a;.r argc=1 a0:t7o3095 caller=Lh/r;.d depth=52
+[R361-STORE] map=o3094 arr=o3095 idx=0 store=aput-wide v=0xff80808080808080 md=[ff80808080808080 8080808080808080] caller=Lh/r;.d pc=48
+[R361-STORE] map=o3094 arr=o3095 idx=0 store=aput-wide v=0xff80808080803380 md=[ff80808080803380 8080808080808080] caller=Lh/r;.c pc=228
+[R361-STORE] map=o3094 arr=o3095 idx=1 store=aput-wide v=0x8080808080803380 md=[ff80808080803380 8080808080803380] caller=Lh/r;.c pc=253
+[R361-STORE] map=o3014 arr=o3015 idx=0 store=aput-wide v=0xff4e80256f808080 md=[ff4e80256f808080 804e80806f808080] caller=Lh/r;.c pc=228
+[R361-STORE] map=o3014 arr=o3015 idx=1 store=aput-wide v=0x804e80256f808080 md=[ff4e80256f808080 804e80256f808080] caller=Lh/r;.c pc=253
+[TRI-F040] Ln/a;.r argc=1 a0:t7o3152 caller=Lh/r;.d depth=54
