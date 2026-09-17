@@ -54,7 +54,7 @@ fixes legitimately change their frames).
 | # | App | Version | APK SHA256-16 | Source | Result | Ladder | Persistence |
 |---|-----|---------|---------------|--------|--------|--------|-------------|
 | 1 | Chess Clock | 2.11.2 (vc29) | `5ca6f2c54c05efe7` | F-Droid | **SUCCESS — L7** **[S54 UPGRADE]**: real clock face restored by F-080+F-081; P1/P2 panels, active-player accent; click → active-player switch (80,289 px) | L4 → **L7** | PARTIAL (prefs round-trip [S52]) |
-| 2 | uNote | 30 | `be91103f0e7db443` | F-Droid | **SUCCESS** (real list UI; gate PASS 417 colors) | L5; L6 blocked (R-NEW-368) | PARTIAL (notes.db round-trip; input blocked) |
+| 2 | uNote | 30 | `be91103f0e7db443` | F-Droid | **SUCCESS [S56 UPGRADE]**: main-menu input chain PROVEN — R-NEW-368 premise REFUTED (old probe grid never covered the bottom-44px button band y=1876..1920); canonical tap (270,1898) → DOWN consumed (target=13 Add note) → UP click → app's own addNote → startActivity **NoteEdition** launched | L5; **L6 input→navigation PROVEN** (persistence ladder next) | PARTIAL (notes.db round-trip; editor input pending) |
 | 3 | Bouncy (ball) | 39 | (registry) | F-Droid | **SUCCESS** (S51 era; APK not re-fetched at S53 — corpus SHA mismatch) | L5 (frame `4219c511…`) | NOT TESTED |
 | 4 | Heading Calculator | 1 | `274ec873098eea51` | F-Droid | **SUCCESS — L7**: full keypad UI; digit click → display text changes | L5→**L7** | NOT TESTED |
 | 5 | Notes (billthefarmer) | 139 | `82cf8bc44c163748` | F-Droid | **SUCCESS — L7 [S55 UPGRADE]**: F-082 restores the ViewSwitcher read↔edit state machine — FAB click → face swap (2,057,718 px, 99.23%); note CONTENT stays blank-class (read face = MarkdownView **extends WebView** — R-NEW-377 next dep) | L4 → **L7** (content face blocked) | NOT TESTED |
@@ -188,7 +188,27 @@ transition (40,915 px, byte-identical to S53). `s54_frames/simplestopwatch_*.jpg
 **Heading Calculator** — L7 re-verified at S54: digit click → display value
 changes (1,389 px, byte-identical to S53). `s54_frames/headingcalculator_*.jpg`.
 
-**uNote** — L5 re-verified at S54 (byte-identical): real list UI (417 colors);
+**uNote** — [S56: R-NEW-368 premise refuted; L6 input→navigation PROVEN]
+
+S56 HEAD (F-084/F-085). The S52-era verdict "buttons unreachable for input"
+was a PROBE-GRID artifact: the 16 probes (y ∈ 300..1780) never covered the
+bottom-44px band where the main-menu buttons actually live (EXP092-RENDER:
+node 13 Add note at (0,1876) 360×44, node 14 Search (360,1876), node 15
+Quit (720,1876); the LinearLayout row is node 12 at (0,1876) 1080×44).
+Paint rect == touch rect — no geometry-law divergence existed.
+
+Proof (`--tap 270,1898`):
+- `[G06-TAP] DOWN (270,1898) target=13 consumed=1` — canonical hit-test
+  + consume on the Add note button.
+- `[G06-TAP] UP click_posted=1` — UP posted the click.
+- The app's own `NoteMain.addNote` ran → `startActivity →
+  Lapp/varlorg/unote/NoteEdition;` — the editor activity was launched and
+  its onCreate dispatched (its own calls logged).
+
+That is the L6 input→state→navigation chain for uNote's main menu. Next
+ladder rung: NoteEdition input + the notes.db persistence round-trip.
+
+Historical (S54): uNote L5 re-verified at S54 (byte-identical): real list UI (417 colors);
 2/4 small click changes (max 2,011 px); input BLOCKED by **R-NEW-368**
 (paint vs touch-hit geometry divergence; 16-probe grid found no target) —
 honestly not called interactive. Persistence [S52]: notes.db round-trips.
