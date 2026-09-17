@@ -28,28 +28,32 @@
 | Next action | the concrete next step |
 
 Reproduce any run: `./build/miniandroid run <apk> -o /tmp/<dir>` at the recorded
-HEAD (battery gate: `bash scripts/test/run_test_battery.sh` → "ALL PASS 92/92").
+HEAD (battery gate: `bash scripts/test/run_test_battery.sh` → "ALL PASS 94/94").
 
 ---
 
 ## 1. Master matrix — current-HEAD verdicts
 
 Verdicts at HEAD `1b37afd1` (S51 all-front audit, runtime rebuilt from canonical
-tree, battery 92/92) unless marked **[S52]** (this session, HEAD bf32dc93).
-Shared-frame honesty: `31ddd4d5…` = deterministic blank Compose frame;
-`eb16ab5c…` = deterministic default/entry screen. Identical SHAs across apps are
-the signature of these two known render classes, not copy errors.
+tree, battery 94/94) unless marked **[S52]** (HEAD bf32dc93) or **[S53]**
+(HEAD ef569eda+ — screenshot quality gate `scripts/s53_frame_gate.py` applied:
+near-white/near-black/color-count/entropy + click-test state-change audit; two
+earlier SUCCESS claims were **downgraded** by the gate, four upgraded with
+input→state-change screenshot pairs). Shared-frame honesty: `31ddd4d5…` =
+deterministic blank Compose frame; `eb16ab5c…` = deterministic default/entry
+screen. Identical SHAs across apps are the signature of these two known render
+classes, not copy errors.
 
 | # | App | Version | APK SHA256-16 | Source | Result | Ladder | Persistence |
 |---|-----|---------|---------------|--------|--------|--------|-------------|
-| 1 | Chess Clock | 2.11.2 (vc29) | `5ca6f2c54c05efe7` | F-Droid | **SUCCESS** | L7 + storage round-trip **[S52]** | PARTIAL (prefs round-trip; no persisted-state scenario) |
-| 2 | uNote | 30 | `be91103f0e7db443` | F-Droid | **SUCCESS** (render) | L5; L6 blocked **[S52]** | PARTIAL (notes.db round-trip; input blocked) |
-| 3 | Bouncy (ball) | 39 | (registry) | F-Droid | **SUCCESS** | L5 | NOT TESTED |
-| 4 | Heading Calculator | 1 | `274ec873098eea51` | F-Droid | **SUCCESS** | L5 | NOT TESTED |
-| 5 | Notes (billthefarmer) | 139 | `82cf8bc44c163748` | F-Droid | **SUCCESS** | L5 | NOT TESTED |
-| 6 | MicroTimer | 8 | `79c6f730f64886e7` | F-Droid | **SUCCESS** | L5 | NOT TESTED |
-| 7 | Simple Stopwatch | 26 | `b3ec1a5ec24ce53b` | F-Droid | **SUCCESS** | L5 | NOT TESTED |
-| 8 | GM Dice | 8 | `1621eda11b5dbc0c` | F-Droid | **SUCCESS** | L5 | NOT TESTED |
+| 1 | Chess Clock | 2.11.2 (vc29) | `5ca6f2c54c05efe7` | F-Droid | **RENDER_ONLY — dark blank class** **[S53 downgrade]**: 99.3% near-black, 2 colors, 0/8 click state changes | L4 (no recognizable UI); tap delta 5.5k px sub-perceptual **[S52+S53]** | PARTIAL (prefs round-trip **[S52]**; no persisted-state scenario) |
+| 2 | uNote | 30 | `be91103f0e7db443` | F-Droid | **SUCCESS** (real list UI; gate PASS 417 colors) | L5; L6 blocked (R-NEW-368) **[S52]** | PARTIAL (notes.db round-trip; input blocked) |
+| 3 | Bouncy (ball) | 39 | (registry) | F-Droid | **SUCCESS** (S51 era; APK not re-fetched at S53 — corpus SHA mismatch) | L5 (frame `4219c511…`) | NOT TESTED |
+| 4 | Heading Calculator | 1 | `274ec873098eea51` | F-Droid | **SUCCESS — L7** **[S53]**: full keypad UI; digit click → display text changes (1,415 px) | L5→**L7** | NOT TESTED |
+| 5 | Notes (billthefarmer) | 139 | `82cf8bc44c163748` | F-Droid | **RENDER_ONLY — near-white blank class** **[S53 downgrade]**: 99.1% near-white, 5 colors, 0/3 click state changes | L4 | NOT TESTED |
+| 6 | MicroTimer | 8 | `79c6f730f64886e7` | F-Droid | **SUCCESS — L7** **[S53]**: keypad UI; click → `00:00:00` timer display appears (32,067 px) | L5→**L7** | NOT TESTED |
+| 7 | Simple Stopwatch | 26 | `b3ec1a5ec24ce53b` | F-Droid | **SUCCESS — L7** **[S53]**: Start/Delay → **Stop/Lap** running-state transition (41,274 px, 4/4 clicks) | L5→**L7** | NOT TESTED |
+| 8 | GM Dice | 8 | `1621eda11b5dbc0c` | F-Droid | **SUCCESS — L7/L9-quality** **[S53]**: 8/8 clicks state-changed; post-input dice roll **"14 · 15 · 15"** rendered (1.87 M px) | L5→**L7 + app-specific semantic result** | NOT TESTED |
 | 9 | Simple Keyboard | 145 | `d83060833dc2bc97` | F-Droid | SUCCESS (entry screen — IME, no launch UI) | L5 (entry class `eb16ab5c…`) | NOT TESTED |
 | 10 | RTTT (kirkezz) | 1.3 (vc3) | `704fa51869ad7ff4` | F-Droid | SUCCESS (entry screen; Compose frontier) | L5 (entry class) | NOT TESTED |
 | 11 | Dooz v18 | 18 | `d81292cd346dcb23` | F-Droid | **PARTIAL** — R-NEW-361 signature reproduced | L3 (composition halt) | NOT TESTED |
@@ -69,9 +73,14 @@ the signature of these two known render classes, not copy errors.
 | 25 | s36/s37 game corpus (solitaire, braincup, minesweepers ×3, word game, puzzle, dice overflow, roll, game2048, yahtzee dicer, droidify) | various | (corpus) | F-Droid | NOT re-run this session — campaign014/u011-era sheets stand | era records | NOT TESTED |
 | 26 | Tiny Music Player | 1.0 | `d7bcb24d101b04be` | F-Droid | era record (campaign014) | era record | NOT TESTED |
 
-**Count summary (current HEAD):** SUCCESS full-render 6 (+2 entry-class) ·
-PARTIAL 14 · BLOCKED 1 (WhatsApp — no APK) · persistence storage-round-trip
-verified 2 · meaningful-UI-frame apps 6.
+**Count summary (current HEAD, after S53 quality gate):** SUCCESS with real
+recognizable GUI **5** (GM Dice, MicroTimer, Simple Stopwatch, Heading
+Calculator, uNote) — of these **4 proven input→state-change** with screenshot
+pairs (GM Dice additionally renders an app-specific semantic result = dice
+values; uNote input blocked by R-NEW-368) · RENDER_ONLY blank-class **2**
+(Chess Clock dark, Notes near-white — downgraded from earlier SUCCESS claims by
+the S53 gate) · entry-class 2 · PARTIAL 14 · BLOCKED 1 (WhatsApp — no APK) ·
+persistence storage-round-trip verified 2.
 
 ## 2. In-repo fixture achievements (strongest ladder proofs)
 
@@ -83,60 +92,107 @@ verified 2 · meaningful-UI-frame apps 6.
 | **hello_smoke** | click → setText state change under LinearLayout | L7 | S38 record |
 | **s38_shift_law** | androidx.collection ScatterMap long-arithmetic law probe (7 laws, 26 checks) | law probe | S38 record |
 | EXT-01/02 HelloWorldSelfAware | external APK re-fetched + SHA-verified (`009b4671…`, `121d479c…`), typography 9 + interaction 12 checks | L7 | `docs/evidence/EXTERNAL_FIXTURE_HELLOWORLDSELFAWARE.md` |
-| density_matrix / G06-G08 / M3 chain | toolchain fixtures, 3-run determinism, ARSC/style chain | — | battery 92/92 |
-| F-0xx law chain | F-012/016/020/024/025/026/027/028/030/040/044/050/074 | — | battery 92/92 |
+| density_matrix / G06-G08 / M3 chain | toolchain fixtures, 3-run determinism, ARSC/style chain | — | battery 94/94 |
+| F-0xx law chain | F-012/016/020/024/025/026/027/028/030/040/044/050/074 | — | battery 94/94 |
 
 ---
 
 ## 3. Per-app detail cards
 
-### 3.1 SUCCESS — full render
+### 3.1 SUCCESS — full render + input→state-change (S53 gate-verified)
 
-**Chess Clock** `com.chessclock.android` v2.11.2 (vc29) · APK SHA256
-`5ca6f2c54c05efe7…` (full in `miniandroid/APK_REGISTRY.json`) · Source F-Droid ·
-Runtime HEAD `1b37afd1` (S51) + `bf32dc93` (S52)
-- Lifecycle: launch→RESUMED real DEX execution, rc=0, 0 errors.
-- UI: real clock-face render. Frame PNG SHA-16 `e4a2d7c90cd2fd26` (S51) —
-  **re-exact-matched in S52 run 2** (cross-session determinism proven).
-- Input **[S52]**: `--tap 540,900` consumed → final frame changed
-  (`93c3121c…` ≠ base `e4a2d7c9…`) → **L6+L7 VERIFIED**.
-- Persistence **[S52]**: with `--data-root` shared across close/reopen, the app
-  created and RE-READ `com.chessclock.android/shared_prefs/default.xml`
-  (package-scoped dir law R-NEW-367). Prefs map empty → no persisted visual
-  state scenario driven → **PARTIAL** (storage round-trip VERIFIED; state
-  persistence NOT VERIFIED).
-- Screenshot: `docs/evidence/s51_audit/chessclock.jpg` (≤100 KB, SHA256SUMS).
-- ASC: manifest decode 294 ms (`.ChessClock` launcher, `.Prefs`, max_aspect
-  2.1, minSdk 21/target 25) + `getclass` on ChessClock (BRONSTEIN/FISCHER delay
-  modes, TICK_LENGTH, P1/P2 click handlers).
-- Next: drive a prefs-changing interaction (menu → settings) → PERSISTENCE VERIFIED upgrade.
+**GM Dice** `de.duenndns.gmdice` v8 · APK SHA256 `1621eda11b5dbc0c…` · F-Droid ·
+Runtime HEAD `ef569eda+` (S53)
+- Lifecycle: launch→RESUMED, rc=0.
+- UI **[S53 gate PASS]**: real dice UI — result card, "Push buttons to roll!",
+  "Long-press buttons to configure dice.", dice bar `1d20 / 1d6 / 1d6+4`.
+  Gate: 15.9% near-white, 307 colors, std 44.
+- Input→state change **[S53]**: `--click-test` dispatched 8 clickable views,
+  **8/8 state_changed**; most-changed frame renders the post-input roll
+  **"14 · 15 · 15"** (1,866,750 px delta = dialog surface + result text).
+- Semantic result: dice values produced by app logic and rendered — the
+  strongest corpus-app record in this ledger (L7 chain + app-specific result).
+- Screenshots: `docs/evidence/s53_frames/gmdice_base.jpg` + `gmdice_after.jpg`
+  (SHA256 in `s53_frames/SHA256SUMS`).
+- Next: persistence (roll state across close/reopen) → L10.
+
+**MicroTimer** `dubrowgn.microtimer` v8 · APK SHA256 `79c6f730f64886e7…` ·
+F-Droid · Runtime HEAD `ef569eda+` (S53)
+- UI **[S53 gate PASS]**: numeric keypad (1–9, 0, 00) + blue button grid,
+  193 colors.
+- Input→state change **[S53]**: click on view 123 → **`00:00:00` timer display
+  appears** in the display row (32,067 px delta, diff bbox 132,951–790,1077);
+  view 124 click honestly recorded `state_changed=false` (0 px).
+- Screenshots: `s53_frames/microtimer_base.jpg` + `microtimer_after.jpg`.
+- Next: type digits via targeted taps → running timer → L8.
+
+**Simple Stopwatch** `omegacentauri.mobi.simplestopwatch` v26 · APK SHA256
+`b3ec1a5ec24ce53b…` · F-Droid · Runtime HEAD `ef569eda+` (S53)
+- UI **[S53 gate PASS]**: gray surface, Start/Delay buttons, gear + list icons.
+- Input→state change **[S53]**: 4/4 clicks state-changed; Start → button row
+  switches to **Stop / Lap** (running state, 41,274 px delta).
+- Screenshots: `s53_frames/simplestopwatch_base.jpg` + `_after.jpg`.
+- Next: lap capture → post-lap frame → L8.
+
+**Heading Calculator** `org.debian.eugen.headingcalculator` v1 · APK SHA256
+`274ec873098eea51…` · F-Droid · Runtime HEAD `ef569eda+` (S53)
+- UI **[S53 gate PASS]**: full keypad UI — TC/TAS/WD/TH/OGS/WS header rows,
+  7-8-9-TC / 4-5-6-TAS / 1-2-3-WD / 0-DEL-CE-WS blue keypad, 416 colors.
+- Input→state change **[S53]**: digit/DEL clicks → display value changes
+  (`654` → `6` in most-changed frame, 1,415 px; 4/12 clicks state-changed).
+- Screenshots: `s53_frames/headingcalculator_base.jpg` + `_after.jpg`.
+- Next: full computation chain (heading from two waypoints) → L9.
 
 **uNote** `app.varlorg.unote` v30 · APK SHA256 `be91103f0e7db443…` · F-Droid ·
-HEAD `1b37afd1` + `bf32dc93`
-- Lifecycle: launch→RESUMED, rc=0, 0 errors.
-- UI: real texts rendered (`Add note` / `Search` / `Quit` Buttons,
-  `Ignore case` / `Search in content` CheckBoxes, view_ids 13/14/15/22/23).
-- Persistence **[S52]**: created `app.varlorg.unote/databases/notes.db`
-  (SQLite) under shared `--data-root`; file survives close/reopen → storage
-  round-trip VERIFIED.
-- Input **[S52]**: **BLOCKED — R-NEW-368**: 16 tap probes on a grid
-  (x∈{270,540,810,940} × y∈{300…1780}) ALL return "no touch target",
-  target_view_id=0; frames byte-identical (`7b30d52201bb22ac…`). Paint path and
-  touch-hit path disagree on geometry → L6 unreachable. Registered
-  `R-NEW-368` (OBSERVED-FAIL, P1).
-- Screenshot: `docs/evidence/s51_audit/unote.jpg`.
-- ASC: manifest + class recon of NoteMain activity family.
-- Next: verbose run → ViewShadow bounds for ids 13-15 → paint-vs-touch rect divergence.
+Runtime HEAD `1b37afd1` + `bf32dc93` + `ef569eda+`
+- UI **[S53 gate PASS]**: real list UI — `Add note` / `Search` / `Quit` buttons,
+  `Ignore case` / `Search in content` checkboxes, title bar; 417 colors.
+- Click-test **[S53]**: 2/4 state changes, max 2,011 px (top-bar accent
+  toggle) — small but real.
+- Persistence **[S52]**: `app.varlorg.unote/databases/notes.db` round-trips
+  under shared `--data-root`.
+- Input **[S52]**: **BLOCKED — R-NEW-368**: 16 tap probes ALL "no touch
+  target" (paint vs touch-hit geometry divergence) → L6 unreachable until fixed.
+- Screenshot: `s53_frames/unote_base.jpg` (era card: `s51_audit/unote.jpg`).
+- Next: ViewShadow bounds forensics for ids 13-15 → fix R-NEW-368 → add-note
+  persistence ladder (L10).
 
-**Bouncy / Heading Calculator / Notes (billthefarmer) / MicroTimer / Simple
-Stopwatch / GM Dice** — all SUCCESS rc=0 full runs at HEAD `1b37afd1` with
-deterministic frame SHAs (`4219c511…`, `293b6761…`, `ae697935…`,
-`c51269309cd14594`, simplestopwatch + gmdice per battery hashes); screenshots in
-the s51_audit gallery. Ladder L5. Persistence NOT TESTED (next-session ladder
-work). Input: gmdice/simplestopwatch have battery-level interaction coverage;
-others not yet driven.
+**Bouncy (ball)** v39 — SUCCESS rc=0 full run at HEAD `1b37afd1` with
+deterministic frame SHA `4219c511…` (s51_audit era). The F-Droid re-fetch at S53
+(`com.dozingcatsoftware.bouncy_39`, SHA `d1cd7e40…`) does NOT match the original
+corpus SHA, so no new verdict was recorded — the S51 record stands at its own
+HEAD. Persistence NOT TESTED.
 
-### 3.2 Entry-class SUCCESS (default screen rendered; no app-specific UI beyond it)
+### 3.1b RENDER_ONLY — blank-class frames (downgraded by the S53 gate)
+
+**Chess Clock** `com.chessclock.android` v2.11.2 (vc29) · APK SHA256
+`5ca6f2c54c05efe7…` · F-Droid · Runtime HEAD `1b37afd1` + `bf32dc93` + `ef569eda+`
+- Lifecycle: launch→RESUMED real DEX execution, rc=0, 0 errors; frame PNG
+  SHA-16 `e4a2d7c90cd2fd26` exact-matched across S51/S52/S53 runs on two
+  machines (cross-session determinism proven).
+- **[S53 gate REJECT]**: frame is 99.3% near-black with **2 colors total** —
+  a dark field with one gray divider, NO recognizable clock face or time text.
+  The earlier "real clock-face render" claim was wrong and is withdrawn.
+- Input **[S52+S53]**: `--tap 540,900` consumed → frame delta `93c3121c…`
+  (5,564 px, sub-perceptual on a black field); `--click-test` 4 clickable
+  views → **0/8 state changes**. Input consumption is real; a *visible UI
+  state change* is NOT proven → L6/L7 claims withdrawn.
+- Persistence **[S52]**: `shared_prefs/default.xml` round-trips (storage-class
+  evidence only — verdict stays PARTIAL, not a UI achievement).
+- Screenshot: **none stored** — blank-frame observed (policy §6); era JPG
+  removed from the gallery at S53.
+- ASC: manifest decode 294 ms (`.ChessClock` launcher, minSdk 21/target 25) +
+  `getclass` (BRONSTEIN/FISCHER delay modes, P1/P2 click handlers).
+- Next: root-cause why the clock-face view tree paints empty (theme/window
+  background vs onDraw path) before any UI claim is re-made.
+
+**Notes (billthefarmer)** v139 · APK SHA256 `82cf8bc44c163748…` · F-Droid ·
+Runtime HEAD `ef569eda+` (S53 re-run)
+- **[S53 gate REJECT]**: frame 99.1% near-white, **5 colors**, 0/3 click state
+  changes → near-white blank class. Earlier SUCCESS/L5 claim withdrawn.
+- Screenshot: **none stored** — blank-frame observed.
+- Next: same paint-path question as chessclock; gate data recorded in
+  `s53_frames/SHA256SUMS` (REJECTED section).
 
 **Simple Keyboard** (`rkr.simplekeyboard.inputmethod` v145): IME — correctly
 renders its entry/settings surface only; full IME experience requires the
@@ -214,10 +270,12 @@ sudoku** — >300 s kills, no first frame this session; registry standings stand
 
 Method: two runs with the SAME `--data-root` (Android `/data/data` analog),
 run 1 with one canonical tap, run 2 fresh; compare data-root tree + frames.
+Both tested apps render blank-class frames (see §3.1b), so these are
+**storage-layer** round-trip proofs only — no visual-state persistence claim.
 
 | App | data-root artifact | Survives reopen? | State delta observable? | Verdict |
 |---|---|---|---|---|
-| Chess Clock | `com.chessclock.android/shared_prefs/default.xml` | YES | no (empty prefs map; tap state in-memory by design) | **PARTIAL** — storage round-trip VERIFIED |
+| Chess Clock | `com.chessclock.android/shared_prefs/default.xml` | YES | no (empty prefs map; tap state in-memory by design; frame itself blank-class) | **PARTIAL** — storage round-trip VERIFIED |
 | uNote | `app.varlorg.unote/databases/notes.db` | YES | no — input blocked (R-NEW-368) | **PARTIAL** — storage round-trip VERIFIED |
 
 Discipline: no persistence claim is inferred from the mere existence of storage
@@ -256,11 +314,18 @@ LOCAL-ONLY (`local/asc_out/`, gitignored).
 
 A screenshot may be committed only if: real recognizable UI · proves something
 text alone cannot · linked to an entry above · SHA256 recorded · deterministic
-name · ≤100 KB JPG. Blank/white/black frames are NEVER committed as images —
-they are recorded as text (`blank-frame observed`, class `31ddd4d5…` /
-`eb16ab5c…`) exactly as done above. Current gallery:
-`docs/evidence/s51_audit/*.jpg` + `SHA256SUMS` (17 curated files). No gallery
-is generated for its own sake.
+name · ≤100 KB JPG · **passes the quality gate** (`scripts/s53_frame_gate.py`:
+near-white < 97 %, near-black < 97 %, colors > 8). Blank/white/black frames are
+NEVER committed as images — they are recorded as text (`blank-frame observed`,
+class `31ddd4d5…` / `eb16ab5c…`) exactly as done in §3.1b.
+
+**Canonical gallery: `docs/evidence/s53_frames/`** (9 gate-passing JPGs +
+`SHA256SUMS` with per-file gate numbers; the REJECTED section of that file
+records the blank-class refusals). Indexed with milestone + why-it-matters in
+§3.1. Era remnants `s51_audit/*.jpg` (6 meaningful files) are superseded-era
+records kept for provenance; every per-campaign gallery and all 502
+blank/duplicate images were removed at S53 — see
+`docs/evidence/S53_IMAGE_CENSUS.md`. No gallery is generated for its own sake.
 
 ## 7. Historical records (superseded pointers)
 
