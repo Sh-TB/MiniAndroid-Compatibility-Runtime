@@ -108,8 +108,18 @@ scan_files() {
 }
 
 collect_tree_files() {
-    find . -path ./.git -prune -o -path ./scripts/security/check_secrets.sh -prune -o -type f -print \
-        | sed 's#^\./##' | sort
+    # S54 FP fix: scan PUBLISHABLE content only — tracked files + untracked
+    # files that are NOT gitignored. The raw `find` over-enumerated ignored
+    # paths (apk_cache/*.apk local caches with app-embedded third-party keys,
+    # classified public-by-design in S49 F1-F5) and failed the pre-push hook
+    # on content that can never be published. Fail-closed semantics are
+    # unchanged for anything that could actually be committed: every tracked
+    # file and every non-ignored untracked file is still scanned. The guard's
+    # own script stays pruned.
+    {
+        git ls-files --cached
+        git ls-files --others --exclude-standard
+    } | grep -vx "scripts/security/check_secrets.sh" | sort -u
 }
 
 main() {
