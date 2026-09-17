@@ -1,3 +1,5 @@
+> **[S52 SUPERSEDED]** Current canonical record: [`docs/EXECUTION_ACHIEVEMENTS.md`](../../EXECUTION_ACHIEVEMENTS.md). This file is an era record — verdicts are absorbed there; do not update it.
+
 # SCREENSHOT_INDEX_013 (§24 evidence standard)
 
 All screenshots produced by the standard pipeline (`stage_capture_output` /

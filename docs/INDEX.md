@@ -7,11 +7,14 @@ Machine-readable twin: [`docs/INDEX.json`](docs/INDEX.json).
 
 | I want… | Go to |
 |---|---|
+| **Every real APK execution, per app (canonical)** | [`EXECUTION_ACHIEVEMENTS.md`](EXECUTION_ACHIEVEMENTS.md) |
+| **Knowledge/research file inventory + pipeline map (canonical)** | [`KNOWLEDGE_INDEX.md`](KNOWLEDGE_INDEX.md) |
+| **The reconciled roadmap + P0 frontier (canonical)** | [`ROADMAP.md`](ROADMAP.md) |
 | The project overview & verified capabilities | [`../README.md`](../README.md) |
 | Architecture / how the runtime works | [`docs/architecture/`](architecture/) · [`docs/runtime/architecture.md`](runtime/architecture.md) |
 | The one regression-battery command | `bash scripts/test/run_test_battery.sh` → “BATTERY GATE: ALL PASS” |
 | Which battery stages exist & their status | [`docs/testing/BATTERY_INDEX.json`](testing/BATTERY_INDEX.json) |
-| Every known root cause & its status | [`../root_registry.json`](../root_registry.json) (348 roots) |
+| Every known root cause & its status | [`../root_registry.json`](../root_registry.json) (349 roots) |
 | The upstream semantic contract behind a fix | [`docs/upstream/INDEX.md`](upstream/INDEX.md) |
 | Per-issue forensic evidence (compact) | [`docs/evidence/`](evidence/) · solved: [`docs/evidence/solved/`](evidence/solved/) |
 | Where raw campaign exhaust went | [`docs/evidence/ARCHIVE_MANIFEST.json`](evidence/ARCHIVE_MANIFEST.json) (external archive, SHA-pinned) |
