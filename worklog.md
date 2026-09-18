@@ -1059,3 +1059,25 @@ Stage Summary:
 - R-NEW-380 CLOSED: the entire dooz creation chain (R-NEW-344 → 376 → 378 → 379 → 380) is now ROOT-CAUSED-FIXED with regression protection; the app's own Hilt/DI machinery runs in the interpreter end-to-end.
 - Remaining pinned frontier: R-NEW-381 (P1, the Compose draw path) + the F-085 commonmark face (P1) + the P2 ladders (uNote NoteEdition, Persistence L10, Telegram init).
 - No new roadmap/branch/campaign; all closures reference existing items; historical evidence untouched.
+
+---
+Task ID: S60-PUSH-VERIFY
+Agent: Super Z (main)
+Task: S60 publish + verification
+
+Work Log:
+- Secret guard: --tree PASS; --staged PASS on the staged set (the earlier
+  --staged FAIL on the gitignored Telegram download cache was the known
+  empty-stage scan artifact documented at S59); pre-push hook PASS at push.
+- PUSH VERIFIED: 2487f5b1..6023f5f1 main -> main (1 logical commit: F-106
+  engine laws + f106 semantic regressions + battery label 26→32 + harness
+  wall-clock budget + trace env-gating + forensic scripts s60_* + evidence
+  s60_r380 + registry R-NEW-380 closed / R-NEW-381 registered + canonical
+  docs S60 + worklog). Credential used via ephemeral env only; unset after
+  push; never written to any tracked file or output.
+- ls-remote confirms remote HEAD = 6023f5f1 = local HEAD.
+
+Stage Summary:
+- S60 CLOSED: R-NEW-380 ROOT-CAUSED-FIXED (F-106 a/b/c); R-NEW-381 honestly
+  registered as the pinned successor (P1, the Compose draw path). The dooz
+  creation chain (R-NEW-344 → 376 → 378 → 379 → 380) is fully closed.
