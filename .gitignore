@@ -159,3 +159,9 @@ gpg_lambda_probe.out
 /tool-results/
 local/
 miniandroid/run/
+
+# S58 hygiene: repo-root session run/ dirs are external artifacts (same law as
+# miniandroid/run/ M9 §41). A root run/ dir was auto-committed with a UUID
+# message at bef5f601 (raw pre-fix traces; commit dropped, SHAs archived on
+# disk). Curated evidence belongs in docs/evidence/<session>/ + SHA256SUMS.
+/run/
