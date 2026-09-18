@@ -879,3 +879,65 @@ Work Log:
 Stage Summary:
 - §36 stop conditions: old debt reconciled with evidence; R-NEW-344 closed; HelloWorld + real-game + full battery pass; docs synced; security clean; remote verified; fresh clone proves the repository is self-contained.
 - Honest remaining frontier (recorded, not hidden): R-NEW-376 (Dooz ctor-climb, P0-for-Dooz) + F-085 end-to-end Notes content probe (P1) + R-NEW-352 exact-dependency BLOCKED.
+
+---
+Task ID: S58
+Agent: Super Z (main)
+Task: ROADMAP 3 CLOSURE — R-NEW-376 closure (F-102), R-NEW-378 cascade (F-103), F-104 io/state law family, R-NEW-352 closure; no new roadmap/branch/campaigns
+
+Work Log:
+- Recon: HEAD fd6ca03e == origin/main; found stray auto-commit bef5f601 (UUID
+  message, 146k lines of raw pre-fix run/ traces) violating the external-
+  artifact law — DROPPED via reset (SHA256 provenance archived at
+  run/s57_r344_probe_DROPPED_SHA256SUMS.txt); hygiene fix: /run/ added to
+  .gitignore (root cause of the auto-commit), committed 5b89d654, pushed
+  fd6ca03e..5b89d654, ls-remote verified.
+- R-NEW-376 (P0-for-Dooz): androground forensic of Lgz1;/Lbp1; (Kotlin
+  default-args ctor ladders; NO self-call in valid DEX) -> ROOT CAUSE: the 3rc
+  invoke path dropped the call-site PROTO at try_recursive_invoke (default "")
+  -> F-023 exact-descriptor law dead -> arity heuristic prefers the LARGEST
+  body -> re-selected the calling overload itself. FIX F-102 (generic):
+  range_proto hoisted + passed on both dispatch attempts. Post-fix:
+  RECURSION-LIMIT 0 on v18 AND v23 (v18 rc=0, 310k+ instr, Choreographer
+  doFrame loop alive). Regression: f102_range_ctor_overload_exact_dispatch
+  (discriminating fixture, byte-level).
+- R-NEW-378 cascade (found past R-NEW-376, fixed same session): saved-state
+  IAE (rememberSaveable ACCEPTABLE_CLASSES) + key-class IAE. ROOT CAUSE
+  F-103 (generic): Class.isInstance/isAssignableFrom unhandled (typed-zero);
+  Class tokens minted from a private counter collided with heap ids; 
+  instance-of trusted a degraded register tag over the heap. FIX: Class
+  type-question laws + HEAP-BACKED Class tokens (__referent_desc) +
+  instance-of heap-authority law. Both IAE faces = 0.
+- R-NEW-352 CLOSED: the recorded blocker (S43 50k forName retry loop) was the
+  R-NEW-355 pc-advance contract, fixed S44 — the S43 A/B was stale. Re-proved
+  A/B at the fixed HEAD: microtimer law-ON vs OFF PIXEL-IDENTICAL (1,041,437
+  nb both, rc=0, 2 forName resolutions). forName law DEFAULT-ON now.
+- F-104 law family (io/state): FileInputStream/FileReader sandbox, Uri
+  file-scheme family, ContentResolver.openInputStream, AsyncTask.execute,
+  EnumSet.of, regex Pattern/Matcher (std::regex), permission-callback
+  dispatch, BufferedInputStream propagation, [EXP093-FNA] env-gated (F-074
+  hygiene). Notes real read chain PROVEN live (10 real readLine lines, 230
+  chars through setText + markdownCheck). Remaining: commonmark parse->render
+  empty body — F-085 stays open at that face (recorded, not hidden).
+- REGRESSION: battery 96/96 ALL PASS, 0 cached, 0 FAIL at the fixed HEAD
+  (fresh state dir; the G09 same-HEAD cache trap was caught and avoided by
+  forcing a fresh state). 3-run determinism: dooz v23 ef47a2d3cdc6929e x3;
+  chessclock ecc001fd8e33519a x3 (== S57); unote 7b30d52201bb22ac x3 (== S57).
+- Registry synced (scripts/s58_registry_update.py): R-NEW-376 ->
+  ROOT-CAUSED-FIXED (F-102); R-NEW-352 -> PROVEN-FIXED; added R-NEW-378
+  (ROOT-CAUSED-FIXED), R-NEW-379 (OBSERVED-FAIL, next pinned frontier),
+  F-102/F-103/F-104. Canonical docs synced (ROADMAP_STATUS S58,
+  KNOWLEDGE_INDEX 0b, ACHIEVEMENTS dooz row); evidence
+  docs/evidence/s58_r376/ (F102_F103_EVIDENCE.md + SHA256SUMS).
+- Tool radar (AI-news): ASC (Apache-2.0, agent-focused decompiler — RESEARCH
+  ONLY now), droidsaw (exists, RESEARCH ONLY), DroidVM (unverifiable this
+  session — NOT RELEVANT), Skydnir (userspace runtime, RESEARCH ONLY),
+  AndroidRecomp (ARMv7 recomp, RESEARCH ONLY), bundletool (AAB pipeline, 
+  NOT RELEVANT now / USEFUL LATER). None integrate now: every current blocker
+  is an in-engine semantic law, not a tooling gap.
+
+Stage Summary:
+- R-NEW-376 CLOSED via F-102; R-NEW-378 closed via F-103; R-NEW-352 closed;
+  F-104 shipped. Dooz advanced past TWO stacked P0 faces into Compose attach;
+  next pinned frontier R-NEW-379 (ViewTreeLifecycleOwner walk). No new
+  roadmap/branch/campaign; all closures reference existing items.

@@ -1635,6 +1635,15 @@ public:
              std::vector<std::pair<std::string,
                                    std::vector<std::pair<std::string, std::string>>>>>
         class_annotations_;
+    // F-103 (S58, R-NEW-378): class descriptor → directly-declared interface
+    // descriptors. Built next to class_to_superclass_; backs the Class
+    // isInstance/isAssignableFrom assignability walk.
+    std::map<std::string, std::vector<std::string>> class_to_interfaces_;
+    // F-103: OpenJDK Class.isAssignableFrom walk over class_to_superclass_
+    // (≤16 hops) + class_to_interfaces_ + java.lang.Object / array
+    // covariance rules. `from` = probe value class, `to` = receiver class.
+    bool dalvik_class_assignable(const std::string& from_desc,
+                                 const std::string& to_desc);
     // G11 FIX-G11-001: view object ids currently inside
     // run_custom_view_constructor — cyclic constructor/inflate chains
     // re-entering the same view must fail loudly instead of recursing.
