@@ -1,4 +1,4 @@
-# ROADMAP_STATUS — Canonical, Reconciled (S58)
+# ROADMAP_STATUS — Canonical, Reconciled (S59)
 
 > **SINGLE SOURCE OF TRUTH for what is done, what is open, and what is next.**
 > Reconciles ALL historical roadmaps against actual committed evidence: nothing
@@ -27,7 +27,14 @@
 
 ## 2. What was fixed THIS session (root cause → law → proof)
 
-S58 rows above the S57 row for continuity.
+S59 rows above the S58 row for continuity.
+
+| ID | Blocker | Root cause (evidence) | Fix | Proof |
+|---|---|---|---|---|
+| **F-105 (S59)** | R-NEW-379 dooz ViewTreeLifecycleOwner ISE "ViewTreeLifecycleOwner not found from Lho;@1074" (Log0;.c) — ×4, APP BOUNDARY unwind at MainActivity.onCreate invoke_pc=317; the themed window paints before death | (D1) The lifecycle 2.8 walk `Lxd1;.g` loops getTag(view, 2131230840=R.id.view_tree_lifecycle_owner, aapt2-verified) → getParent → `instance-of parent, Landroid/view/View;`. ViewShadow node 20 is the F-023 ACTIVITY-AS-VIEW node (its id IS the activity heap id BY DESIGN); heap#20 is the MainActivity, so the F-103 heap-authority classified the VIEW reference as the ACTIVITY → `parent as? View` FALSE → the walk dead-ended at hop 1. (D2) NOBODY ever wrote the owner tag: DEX census (scripts/s59_setfind.py) — ZERO setTag sites for key 2131230840; the install is androidx ComponentActivity library machinery, absent from the APK | Three generic laws: **(a)** `reconcile_class_decl()` shared by instance-of + check-cast — generic declaration → heap wins (F-103 preserved); consistent pair → the MORE SPECIFIC wins; CONTRADICTION → the creation-site declaration wins (re-homing onto proxies was prototyped and REJECTED — the proxy id breaks the next shadow hop, which keys by the shadow node id). **(b)** ActivityShadow setContentView(View) installs the ACTIVITY object (implements LifecycleOwner in the app DEX: Ljm; implements Lvo0;) under the app's OWN view_tree_lifecycle_owner id (name-resolved via arsc find_id — no hardcoded id) on the activity-as-view node BEFORE the attach wave. **(c)** instance-of classifies CLASS_REF values (const-class tokens, F-069/F-103) by the token's heap record — the token's runtime class IS java.lang.Class | Walk success: getTag(1074, key) miss → parent 20 → getTag(20, key) **hit=1** → owner returned; the app's own dialog machinery (Le81;.<init>) propagated it onto the decor (setTag view=308 key=2131230840 obj=20) — the androidx contract cascade runs end-to-end in the app's own DEX. ISE count 0 (was ×4); execution advanced from depth 8 to depth 81. Regressions f105_instanceof_classtoken_is_class + f105_instanceof_classtoken_not_referent (semantic battery 26/26); corpus determinism chessclock ecc001fd8e33519a / notes cf521b168a9b4ed2 / unote 7b30d52201bb22ac — all == the S57/S58 records. Evidence: docs/evidence/s59_r379/ |
+| **R-NEW-380 discovery (S59)** | The dooz frontier PAST F-105: ViewModelProvider create chain falls to the throwing factory fallback — `RuntimeException "Cannot create an instance of "` (class-name portion EMPTY) caller=Leo;.n pc=53 depth=81; chain Lyd0;.b → Ltf1;.b → Lt32;.b → Lt32;.d → Leo;.n while constructing the app GameViewModel | The Lwl0;.containsKey Class-key guard now PASSES (F-105c) and the create chain proceeds to factory selection; the create path itself does not complete — the Class.toString/arg surface for CLASS_REF values renders an empty name in the message, and the getDeclaredConstructor → Constructor.newInstance → real <init> path for the app's GameViewModel does not finish ([M3-REFLECT] surface exists but this chain does not reach it) | Registered as R-NEW-380 (OBSERVED-FAIL, P1) — the honest pinned successor of R-NEW-379. NEXT: trace Leo;.n's exact failure input; Class.toString/getName for CLASS_REF args; Constructor.newInstance → try_recursive_invoke on GameViewModel.<init> | miniandroid/run/s59_f105_post2/ (key lines hashed in docs/evidence/s59_r379/post2_keylines.log) |
+
+S58 rows below the S59 row for continuity.
 
 | ID | Blocker | Root cause (evidence) | Fix | Proof |
 |---|---|---|---|---|
@@ -51,18 +58,19 @@ S55/S56/S57 rows retained below for continuity.
 
 ## 3. Active frontier (P0 first, attack order)
 
-S58 state after R-NEW-376 closure:
+S59 state after R-NEW-379 closure:
 
-1. **R-NEW-379 — Dooz ViewTreeLifecycleOwner frontier (P1, pinned S58)**
-   (OBSERVED-FAIL). Past F-102/F-103, Compose init dies at
-   `ISE "ViewTreeLifecycleOwner not found from Lho;@1074"` (Log0;.c) —
-   uncaught at MainActivity.onCreate invoke_pc=317; the themed window
-   paints (2,073,600 nb) before death. The S24 R-NEW-317 fix covered the
-   ViewShadow routing only; the owner SET law (ComponentActivity.onCreate
-   sets the owner on the decor view) + get-walk extension remain.
-   NEXT: ViewTreeLifecycleOwner.set/get law on the ViewShadow node model
-   → WindowRecomposer law (checkPrecondition isAttachedToWindow).
-   *Unblocks the entire Compose family below the composition bootstrap.*
+1. **R-NEW-380 — Dooz ViewModelProvider create face (P1, pinned S59)**
+   (OBSERVED-FAIL). Past F-105a/b/c, the Lwl0;.containsKey Class-key guard
+   passes and the create chain (Lyd0;.b → Ltf1;.b → Lt32;.b → Lt32;.d →
+   Leo;.n) reaches the throwing factory fallback while constructing the
+   app GameViewModel: `RuntimeException "Cannot create an instance of "`
+   (class-name portion EMPTY — the CLASS_REF arg/toString surface),
+   depth=81. NEXT: trace Leo;.n's exact failure input; Class.toString/
+   getName for CLASS_REF args; Constructor.newInstance →
+   try_recursive_invoke on GameViewModel.<init>. *The Compose attach
+   contract (R-NEW-379) is now live and correct upstream of this face —
+   dooz runs deeper than ever at depth 81.*
 2. **F-085 content probe — chain live, commonmark face remains** (P1).
    The real read chain is PROVEN live end-to-end through the app's own
    code (seeded doc → defaultFile/readNote/ReadTask → openInputStream →
@@ -97,14 +105,16 @@ S58 state after R-NEW-376 closure:
   foreign HEADs quarantined as unverified), gallery s54_frames (12 JPGs),
   toolchain bootstrap re-proven, EXT fixture re-fetched SHA-verified.
 
-## 6. Direct answers (S54 §12, S58 refresh)
+## 6. Direct answers (S54 §12, S59 refresh)
 
-**What is the biggest runtime blocker?** The Compose init chain after the
-F-102/F-103 fixes: **R-NEW-379** (ViewTreeLifecycleOwner owner-tag walk) —
-Dooz v23 now runs past the ctor-climb AND the saved-state/class-key faces
-into Compose attach, and dies at the ViewTreeLifecycleOwner lookup.
-R-NEW-344 (F-086, S57) and R-NEW-376 (F-102, S58) are both
-ROOT-CAUSED-FIXED with regression protection.
+**What is the biggest runtime blocker?** The dooz ViewModelProvider create
+chain: **R-NEW-380** — the Compose attach contract is now live (R-NEW-379
+ROOT-CAUSED-FIXED via F-105: owner install + view-parent reference
+reconciliation + Class-token instance-of), and the run reaches depth 81
+inside the ViewModel create chain before hitting the throwing factory
+fallback. R-NEW-344 (F-086, S57), R-NEW-376 (F-102, S58), R-NEW-378
+(F-103, S58) and R-NEW-379 (F-105, S59) are all ROOT-CAUSED-FIXED with
+regression protection.
 
 **What prevents complete HelloWorld?** Nothing — HelloWorldSelfAware is
 visually proven end-to-end (L7 via EXT-01/02) at the current HEAD.
@@ -113,10 +123,12 @@ visually proven end-to-end (L7 via EXT-01/02) at the current HEAD.
 F-Droid game) and Chess Clock both demonstrate launch→input→state→rendered
 change at this HEAD, and tictactoe_golden proves 9-tap win-state play.
 
-**What prevents Dooz?** R-NEW-379 (ViewTreeLifecycleOwner walk; the pinned
-frontier). R-NEW-376 (ctor-climb) is ROOT-CAUSED-FIXED via F-102: the 3rc
-descriptor-dispatch law, RECURSION-LIMIT 0 on both v18 and v23, regression-
-protected. The saved-state cascade (R-NEW-378) is ROOT-CAUSED-FIXED via F-103.
+**What prevents Dooz?** R-NEW-380 (ViewModelProvider create chain; the
+pinned frontier). R-NEW-379 (ViewTreeLifecycleOwner walk) is
+ROOT-CAUSED-FIXED via F-105: the owner contract runs in the app's own DEX
+(walk hit + dialog-propagation proof), regression-protected. R-NEW-376
+(ctor-climb, F-102) and R-NEW-378 (saved-state cascade, F-103) are
+closed at S58.
 
 **What prevents Notes content rendering?** The WebView content model is
 SHIPPED (F-085) and the real read chain is now PROVEN live through the
@@ -132,7 +144,8 @@ deep-stack thread directly attacks the depth side of this frontier too.
 
 **What prevents general APK compatibility?** The long tail of framework REC-MISS
 surface plus the Compose P0s; every fixed law transfers (F-080/F-081/F-082/
-F-083/F-084/F-085/F-102/F-103/F-104 were found in one app and are corpus-generic).
+F-083/F-084/F-085/F-102/F-103/F-104/F-105 were found in one app and are
+corpus-generic).
 
 **What prevents one genuinely fully runnable application?** Nothing —
 HelloWorldSelfAware IS the fully runnable reference application (full chain +

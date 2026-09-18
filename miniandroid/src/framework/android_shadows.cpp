@@ -1763,6 +1763,68 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                                       << " linked under activity view="
                                       << ctx.receiver_id << std::endl;
                         }
+                        // ────────────────────────────────────────────
+                        // F-105b (S59, R-NEW-379) — AOSP ComponentActivity
+                        // view-tree owner law. androidx.activity.
+                        // ComponentActivity installs the activity as the
+                        // ViewTreeLifecycleOwner of the window decor chain
+                        // (ViewTreeLifecycleOwner.set(decor, this)) BEFORE
+                        // any content attaches; every Compose
+                        // WindowRecomposer depends on it — the walk
+                        // (lifecycle 2.8 ViewTreeLifecycleOwner.get) climbs
+                        // view → parent reading
+                        // getTag(R.id.view_tree_lifecycle_owner) and its
+                        // checkNotNull throws
+                        //   ISE "ViewTreeLifecycleOwner not found from <v>"
+                        // when no ancestor carries the owner (R-NEW-379:
+                        // dooz v23 died at ComposeView.onAttachedToWindow →
+                        // Lr;.k with that ISE — the themed window painted,
+                        // then APP BOUNDARY unwind).
+                        // The app DEX contains NO install site (the set is
+                        // androidx library machinery; R8 keeps no copy in
+                        // dooz v23 — verified by DEX census: zero setTag
+                        // sites for the view_tree_lifecycle_owner key), so
+                        // the engine's Activity — the ComponentActivity
+                        // counterpart — performs the contract here: store
+                        // the ACTIVITY object (it implements LifecycleOwner
+                        // in the app DEX: Ljm; implements Lvo0;) under the
+                        // app's OWN view_tree_lifecycle_owner resource id
+                        // on the activity-as-view node (the F-023 decor
+                        // counterpart, the walk's terminal hop). The KEY is
+                        // name-resolved from the app's resources.arsc —
+                        // no hardcoded id, no package name.
+                        // ────────────────────────────────────────────
+                        {
+                            resources::ResourceRuntime& rt =
+                                resources::ResourceRuntime::instance();
+                            if (!apk_path_.empty()) rt.ensure_loaded(apk_path_);
+                            auto owner_key =
+                                rt.arsc().find_id("", "id",
+                                                  "view_tree_lifecycle_owner");
+                            if (owner_key) {
+                                auto* an = view_shadow->get_or_create_node(
+                                    ctx.receiver_id, "Landroid/view/View;");
+                                ViewShadow::ViewNode::TagValue tv;
+                                tv.kind = ViewShadow::ViewNode::TagValue::OBJECT;
+                                tv.object_id = ctx.receiver_id;
+                                tv.object_class = ctx.receiver_class.empty()
+                                                      ? ctx.class_name
+                                                      : ctx.receiver_class;
+                                an->keyed_tags[static_cast<int32_t>(*owner_key)] = tv;
+                                if (std::getenv("MINIANDROID_TAG_TRACE")) {
+                                    std::cerr << "[F105-OWNER] activity="
+                                              << ctx.receiver_id
+                                              << " installed as ViewTreeLifecycleOwner key="
+                                              << *owner_key
+                                              << " on activity-as-view node"
+                                              << std::endl;
+                                }
+                            } else {
+                                std::cerr << "[F105-OWNER] view_tree_lifecycle_owner id "
+                                             "not in app resources — owner install skipped"
+                                          << std::endl;
+                            }
+                        }
                     }
                 }
                 // GENERIC (tictactoe_golden campaign): programmatic View trees

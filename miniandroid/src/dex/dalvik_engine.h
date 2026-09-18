@@ -25,6 +25,8 @@
 // EXP-051: Shadow registry forward-declarations.
 namespace miniandroid { namespace framework {
 class ShadowRegistry;
+struct CallResult;   // F-105: the reconciliation law documents CallResult's
+                     // (object_id, class) declaration contract
 class HeapAllocator;
 }}
 #include <string>
@@ -1540,6 +1542,12 @@ public:
     // These walk the DEX superclass chain (class_to_superclass_) to determine
     // if a class inherits from a known Android View type.
     bool is_subclass_of(const std::string& class_desc, const std::string& ancestor_desc) const;
+
+    // F-105 (S59, R-NEW-379): declaration↔heap class reconciliation for
+    // object references (shared by instance-of and check-cast). See the
+    // law comment above reconcile_class_decl in dalvik_engine.cpp.
+    std::string reconcile_class_decl(const std::string& declared,
+                                     uint32_t object_id) const;
     bool is_view_class(const std::string& class_desc) const;
     bool is_text_view_class(const std::string& class_desc) const;
     bool is_edit_text_class(const std::string& class_desc) const;
