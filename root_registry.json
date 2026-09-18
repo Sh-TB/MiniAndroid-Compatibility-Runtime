@@ -1,18 +1,12 @@
 {
  "baseline_head": "5a2b7d99",
  "summary": {
-  "total_roots": 352,
+  "total_roots": 354,
   "open_frontiers": [
-   "R-NEW-228",
-   "R-NEW-303",
-   "R-NEW-323",
-   "R-NEW-330",
-   "R-NEW-331",
-   "R-NEW-335",
    "R-NEW-376"
   ],
-  "last_updated": "S55 2026-09-17",
-  "note": "S48 repository-recovery campaign: battery restored to 94/94 (EXT-01/02 external fixtures re-fetched SHA-exact; fixture toolchain re-bootstrapped; build_fixture_apk.sh compiles framework stubs on -classpath for robolectric android-all-14). Raw campaign exhaust (1076MB) archived externally with SHA provenance (docs/evidence/ARCHIVE_MANIFEST.json); GPG-092..095 compact session evidence moved to docs/ R-NEW-367 VERIFIED-FIXED (S48 §14 stub audit): SharedPreferences shadow no longer hard-codes the EXP-era 'org.telegram.messenger' data dir; prefs resolve from the manifest package per the AOSP ContextImpl law. Battery re-proven 94/94. | S55: F-082 (ViewAnimator laws) + F-083 (ART-sized engine stack + loud limit-drop) fixed R-NEW-361 + R-NEW-377; R-NEW-376 pinned (post-F-083 Dooz ctor-climb frontier). R-NEW-361 removed from open frontiers.",
+  "last_updated": "S57 2026-09-18",
+  "note": "S57 ROADMAP-3-CLOSURE: R-NEW-344 ROOT-CAUSED-FIXED (F-086 Long.compare bridge law; 15→31 proven at the runtime boundary; regression-protected). Stale dooz faces R-NEW-025/323/330/333/335/351 closed SUPERSEDED-BY-EVIDENCE / NOT-REPRODUCIBLE against current-face runs. R-NEW-376 is the remaining dooz frontier (v18+v23 alias observations). R-NEW-352 stays BLOCKED on the R-NEW-350 default-ON decision (microtimer retry loop).",
   "total": 349,
   "verified_fixed": 41,
   "by_status": {
@@ -286,13 +280,14 @@
   },
   {
    "id": "R-NEW-025",
-   "status": "OBSERVED-FAIL",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "fg": true,
-   "evidence": "dooz ComposeView children=0, 0/2073600 non-white (run/m9_merge_dooz at CMM)",
+   "evidence": "dooz ComposeView children=0, 0/2073600 non-white (run/m9_merge_dooz at CMM) | S57 CLOSURE: S57: dooz ComposeView children=0 face (m9/CMM era) does not reproduce at any post-S24 face; current v23 face is the R-NEW-376 ctor-climb after R-NEW-344 fix — superseded",
    "missing": "first-frame traversal pipeline",
    "next": "M9 frontier: dispatch pump + lifecycle registry (R-NEW-279/285)",
-   "commit": "0383f19f"
+   "commit": "0383f19f",
+   "last_updated": "S57 2026-09-18"
   },
   {
    "id": "R-NEW-026",
@@ -3118,11 +3113,12 @@
   },
   {
    "id": "R-NEW-323",
-   "status": "OBSERVED-FAIL",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "fg": true,
-   "evidence": "S24 CURRENT FRONTIER: dooz NavHost graph (route=null → NavGraph.id=0) — NavController restore loop c.h reads entry.j.j.o (parent graph id=0) and calls c.e(0) getBackStackEntry(0); the root GRAPH's own NavBackStackEntry was never pushed (upstream pushes ancestor-graph entries during navigate before destination entries; our engine pushed only the destination entry via c.a ← c$e.o with an EMPTY parent list z1/t.i). IAE 'No destination with ID 0 is on the NavController's back stack. The current destination is e$a@2554' uncaught at MainActivity.onCreate → rc=1. Next root: implement the ancestor-graph-entry-push law (upstream navigate-entry-hierarchy) so c.e(0) finds the graph entry. Evidence: run/s24_post_f090i_stderr.txt lines 306566-306612.",
-   "evidence_note": "raw stderr artifact (run/s24_post_f090i_stderr.txt lines 306566-306612) predates the S48 external-archive law; the first-divergence record above is inline and complete"
+   "evidence": "S24 CURRENT FRONTIER: dooz NavHost graph (route=null → NavGraph.id=0) — NavController restore loop c.h reads entry.j.j.o (parent graph id=0) and calls c.e(0) getBackStackEntry(0); the root GRAPH's own NavBackStackEntry was never pushed (upstream pushes ancestor-graph entries during navigate before destination entries; our engine pushed only the destination entry via c.a ← c$e.o with an EMPTY parent list z1/t.i). IAE 'No destination with ID 0 is on the NavController's back stack. The current destination is e$a@2554' uncaught at MainActivity.onCreate → rc=1. Next root: implement the ancestor-graph-entry-push law (upstream navigate-entry-hierarchy) so c.e(0) finds the graph entry. Evidence: run/s24_post_f090i_stderr.txt lines 306566-306612. | S57 CLOSURE: S57: S24 NavHost restore-loop face does not appear in current dooz v23 runs (post-F-086 run reaches Recomposer/ControlledComposition + ctor-climb family) — superseded by the S24-S56 progression",
+   "evidence_note": "raw stderr artifact (run/s24_post_f090i_stderr.txt lines 306566-306612) predates the S48 external-archive law; the first-divergence record above is inline and complete",
+   "last_updated": "S57 2026-09-18"
   },
   {
    "id": "R-NEW-324",
@@ -3168,10 +3164,11 @@
   },
   {
    "id": "R-NEW-330",
-   "status": "OBSERVED-FAIL",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "fg": true,
-   "evidence": "S27 CURRENT FRONTIER (dooz, honest-open): IllegalStateException 'DepthSortedSet.remove called on an unattached node' at m0/m.c (DepthSortedSet.remove, upstream DepthSortedSet.kt:67 check(node.isAttached)) ← i.h (MeasureAndLayoutDelegate.measureAndLayout popEach) ← AndroidComposeView.onLayout. The compose measure/layout/place chains now run (R-NEW-329 closed); measureAndLayout pops a relayoutNodes entry whose LayoutNode.owner == null (attach incomplete for at least one node — nearby trace shows [M3-19-CYCLE] active-cycle stub on m0/T;.a during the same window). NEXT: identify the unattached node (add bounded receiver/arg evidence to the DepthSortedSet.remove dispatch) and close the attach-propagation/active-cycle law."
+   "evidence": "S27 CURRENT FRONTIER (dooz, honest-open): IllegalStateException 'DepthSortedSet.remove called on an unattached node' at m0/m.c (DepthSortedSet.remove, upstream DepthSortedSet.kt:67 check(node.isAttached)) ← i.h (MeasureAndLayoutDelegate.measureAndLayout popEach) ← AndroidComposeView.onLayout. The compose measure/layout/place chains now run (R-NEW-329 closed); measureAndLayout pops a relayoutNodes entry whose LayoutNode.owner == null (attach incomplete for at least one node — nearby trace shows [M3-19-CYCLE] active-cycle stub on m0/T;.a during the same window). NEXT: identify the unattached node (add bounded receiver/arg evidence to the DepthSortedSet.remove dispatch) and close the attach-propagation/active-cycle law. | S57 CLOSURE: S57: S27 DepthSortedSet.remove face does not appear in current dooz v23 runs — superseded by later layout/dispatch laws (F-082/F-083 era)",
+   "last_updated": "S57 2026-09-18"
   },
   {
    "id": "R-NEW-331",
@@ -3189,10 +3186,11 @@
   },
   {
    "id": "R-NEW-333",
-   "status": "OBSERVED-FAIL",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "fg": true,
-   "evidence": "S34 (narrowed, evidence superseded): content-state pairing was NOT the root — the content lambda n1/u.k RUNS; NavHost p.b builds the graph; builder n1/n.o registers game/settings/about via real DEX; p.a inlined graph-set navigates; c$a.a createBackStackEntry + ComposeNavigator push e.d/c$a.e/h1/t.e + flow setValue all execute; sync collectors deliver lists to the remember states. RESIDUAL = p.a never re-runs -> p.a:0e78 gate stays false -> AnimatedContent never invoked -> game screen n1/q.g never composes -> 1 LayoutNode -> 0 canvas ops. Successor = R-NEW-334."
+   "evidence": "S34 (narrowed, evidence superseded): content-state pairing was NOT the root — the content lambda n1/u.k RUNS; NavHost p.b builds the graph; builder n1/n.o registers game/settings/about via real DEX; p.a inlined graph-set navigates; c$a.a createBackStackEntry + ComposeNavigator push e.d/c$a.e/h1/t.e + flow setValue all execute; sync collectors deliver lists to the remember states. RESIDUAL = p.a never re-runs -> p.a:0e78 gate stays false -> AnimatedContent never invoked -> game screen n1/q.g never composes -> 1 LayoutNode -> 0 canvas ops. Successor = R-NEW-334. | S57 CLOSURE: S57: S34 NavHost content-state face does not appear in current dooz v23 runs — superseded (the run is past the NavHost/composition build stage)",
+   "last_updated": "S57 2026-09-18"
   },
   {
    "id": "R-NEW-334",
@@ -3204,11 +3202,12 @@
   },
   {
    "id": "R-NEW-335",
-   "status": "OBSERVED-FAIL",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "fg": true,
-   "evidence": "S37 NARROWED (live-captured, MINIANDROID_S37_TRACE h/r.c return probe, run /tmp/s37_dooz_long, 540s budget): h/r + h/u = androidx.collection ScatterSet/MutableScatterSet storage (compose 1.6.7) — identity proven by upstream constants in real DEX: MurmurHashC1=0xcc9e2d51 (h/r.c const), Empty=0x80, Deleted=0xfe, Sentinel=0xff bytes, GroupWidth=8 (1 metadata byte per slot packed 8/long, a[len=2] = capacity<=16), writeMetadata Mirroring (clone group to end — observed 0x69 mirrored in a[0] byte5 / a[1] byte5). Upstream laws fetched: androidx/androidx androidx-main collection/collection/src/commonMain/kotlin/androidx/collection/ScatterSet.kt + ScatterMap.kt (github.com/androidx/androidx — findKeyIndex/probe loop, isFull=byte<0x80, unloadedCapacity(capacity==7)->8 special case). LIVE RETURNS: 106 h/r.c calls captured — 105 SANE (range -7..+7: found slot 0..6 or not-int(insertion 0..6)); 1 WILD: recv=o5057 d=7 f=0 a=[2]{ff007fe200000000, 0000000000000000-family} ret=-319519149 (0xecf48653) -> caller LP/v$a;.c pc=28 not-int -> aput-oob AIOOBE length=7 index=319519148 (deterministic, matches S36 x2). ROOT NARROWED TO METADATA CORRUPTION: the wild receiver's metadata bytes are INVALID (0xe2/0x7f/0x00 — not Empty(0x80)/Deleted(0xfe)/Sentinel(0xff)/H2(<0x80)); a correct upstream probe on ANY metadata returns slot index < capacity(8); our return implies the group-scan bitmask arithmetic consumed an unmasked mixed hash. The corruption happens EARLIER: writeMetadata/init path (shl-long/or-long variable-shift family — cf F-035) or dual-store divergence (e field unreadable via heap on o5057 — registry-shadow store owns fields, cf F-101 dual-store law). NEXT: (1) unit-probe shl-long/ushr-long/or-long with variable register shifts vs OpenJDK semantics; (2) dump o5057's registry-shadow CollectionState at writeMetadata time; (3) fetch upstream scatterSetOf/initializeTable Kotlin for exact init byte pattern. NO-VISUAL side note: dooz_18 at 540s budget now reaches Status: PARTIAL SUCCESS with framebuffer painted (placeholder view family — R-NEW-334 residual wall gone).",
-   "commit": "S37-NARROWED"
+   "evidence": "S37 NARROWED (live-captured, MINIANDROID_S37_TRACE h/r.c return probe, run /tmp/s37_dooz_long, 540s budget): h/r + h/u = androidx.collection ScatterSet/MutableScatterSet storage (compose 1.6.7) — identity proven by upstream constants in real DEX: MurmurHashC1=0xcc9e2d51 (h/r.c const), Empty=0x80, Deleted=0xfe, Sentinel=0xff bytes, GroupWidth=8 (1 metadata byte per slot packed 8/long, a[len=2] = capacity<=16), writeMetadata Mirroring (clone group to end — observed 0x69 mirrored in a[0] byte5 / a[1] byte5). Upstream laws fetched: androidx/androidx androidx-main collection/collection/src/commonMain/kotlin/androidx/collection/ScatterSet.kt + ScatterMap.kt (github.com/androidx/androidx — findKeyIndex/probe loop, isFull=byte<0x80, unloadedCapacity(capacity==7)->8 special case). LIVE RETURNS: 106 h/r.c calls captured — 105 SANE (range -7..+7: found slot 0..6 or not-int(insertion 0..6)); 1 WILD: recv=o5057 d=7 f=0 a=[2]{ff007fe200000000, 0000000000000000-family} ret=-319519149 (0xecf48653) -> caller LP/v$a;.c pc=28 not-int -> aput-oob AIOOBE length=7 index=319519148 (deterministic, matches S36 x2). ROOT NARROWED TO METADATA CORRUPTION: the wild receiver's metadata bytes are INVALID (0xe2/0x7f/0x00 — not Empty(0x80)/Deleted(0xfe)/Sentinel(0xff)/H2(<0x80)); a correct upstream probe on ANY metadata returns slot index < capacity(8); our return implies the group-scan bitmask arithmetic consumed an unmasked mixed hash. The corruption happens EARLIER: writeMetadata/init path (shl-long/or-long variable-shift family — cf F-035) or dual-store divergence (e field unreadable via heap on o5057 — registry-shadow store owns fields, cf F-101 dual-store law). NEXT: (1) unit-probe shl-long/ushr-long/or-long with variable register shifts vs OpenJDK semantics; (2) dump o5057's registry-shadow CollectionState at writeMetadata time; (3) fetch upstream scatterSetOf/initializeTable Kotlin for exact init byte pattern. NO-VISUAL side note: dooz_18 at 540s budget now reaches Status: PARTIAL SUCCESS with framebuffer painted (placeholder view family — R-NEW-334 residual wall gone). | S57 CLOSURE: S57: S37 ScatterSet storage face is an ALIAS of the R-NEW-344 ScatterMap family — closed into R-NEW-344 (ROOT-CAUSED-FIXED via F-086)",
+   "commit": "S37-NARROWED",
+   "last_updated": "S57 2026-09-18"
   },
   {
    "id": "R-NEW-336",
@@ -3310,15 +3309,17 @@
   },
   {
    "id": "R-NEW-344",
-   "title": "dooz23 first frame blank: post-F-083 the run reaches Recomposer/ControlledComposition; the current face is an androidx.collection ScatterMap insert into a FULL table (capacity 15, size 15, zero EMPTY metadata bytes) whose probe loop never terminates — the second grow (free-budget e==0 at size 14) entered the R8-inlined resize but computed newCapacity=15 instead of nextCapacity(15)=31 and re-filled the same arrays after convertMetadataForCleanup",
-   "status": "OBSERVED-FAIL",
+   "title": "dooz23 ScatterMap full-table probe spin: second grow computed newCapacity=15 instead of nextCapacity(15)=31 — ROOT-CAUSED as missing java.lang.Long bridge (F-086), fixed + regression-tested at S57",
+   "status": "ROOT-CAUSED-FIXED",
    "priority": "P0",
    "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1)",
    "observed": "S56 refinement (post F-083 + F-084): R-NEW-361 no longer appears in v23. MainActivity.onCreate now drives Recomposer (Lnb0;) / ControlledComposition (Lwo;) dirty-scope ScatterMap (Lbw0;) machinery. Full lifecycle traced (MINIANDROID_FIELD_TRACE=e + MINIANDROID_META_STORE_TRACE, obj o2658): <init>(6) -> f(6) cap 7 budget e=6 -> 6 inserts -> grow at e=0 via f(15) (resize #1 CORRECT: new metadata o4644, cap 15, e=loaded(15)-6=8) -> 8 more inserts (size 14) -> grow check at e=0 entered the R8-inlined resize: convertMetadataForCleanup ran (bit-exact vs upstream: 0xfefefefefefe80fe written at d pc=235) and 14 entries were re-inserted INTO THE SAME ARRAYS (no new allocation, all meta-stores arr=o4644) -> resize epilogue wrote e=0 = loaded(15)-14, i.e. newCapacity stayed 15 (must be 31) -> table 15/15 with zero EMPTY bytes -> probe spin (HALT-LOOP 2.4M insns at d pc=28 iget-object).",
    "root_cause_hypothesis": "TWO engine-level laws: (1) PRIMARY (open): the second grow's nextCapacity computation (Lmg1;.b = mul-int/lit8 #2 + add-int/lit8 #1 -> cap*2+1) or its branch into f() mis-executed — the epilogue budget e=loaded(newCap)-14=0 pins newCap=15; cap-7 grow (nextCapacity(7)=15 via f) worked, so the failure is value/branch-specific, not a blanket lit8/2addr break. (2) SECONDARY (FIXED as F-084): the halted callee fed a stale last_invoke_return_ to the caller's move-result — the garbage slot index -733270216 face.",
    "next": "(1) Trace Lmg1;.b invocation + return values around insert #16 (MINIANDROID_FIELD_TRACE scope is insufficient for static helpers with single-letter fields — extend the S56 locals-diag to the Lmg1; frame). (2) Compare the cap-7 grow flow (e==0 -> f(15) RAN) vs the cap-15 grow flow (e==0 -> no f) at the d() pc=128 if-nez branch +531 — the divergence pinpoints the mis-executed op. (3) After the root fix, expect resize(31): new metadata LongArray(5) + values[31], budget e=loaded(31)-14=27-14=13.",
-   "evidence": "docs/evidence/s56_dooz23/F084_EVIDENCE.md (full chain + key traces) + SHA256SUMS over the pre/post-fix stderr captures (s56_dooz23_refix). Deterministic: the pre-fix stderr is byte-stable across runs (same 11712384-byte log reproduced).",
-   "discovered": "S40"
+   "evidence": "S57 chain: (1) repro at HEAD 28b644b7 — HALT-LOOP in Lbw0;.d pc=28 (bytecode_size=671), blank frame 0/2073600, run/s57_r344_repro/; (2) androguard disasm of dooz23 (scripts/s57_andro_lbw0.py): the R8-inlined growth decision at Lbw0;.d pc=170-199 is Long.compare(size*32 ^ Long.MIN_VALUE, capacity*25 ^ Long.MIN_VALUE) + if-gtz → f(Lmg1;.b(nextCapacity)=cap*2+1) at pc=494-506; the fall-through (pc=201-482) is convertMetadataForCleanup + same-cap refill (aput 0xFEFEFEFEFEFEFEFE at pc=235 — bit-exact vs S56); (3) bridge_to_api had NO Long.compare handler → STUBBED typed-zero exit returned 0 → if-gtz false → cleanup path; the cap-7 grow branches at pc=172 (capacity<=8 → pc=491) and never touches the compare, which is why only the SECOND grow failed; (4) fix F-086: Long.compare/compareUnsigned 64-bit law in the F-055 Long block; (5) post-fix: capacity field trace on obj#2658 shows 7 → 15 → 31 (run/s57_r344_proof2/), HALT-LOOP 0, F084-HALT-RETURN 0, aput-oob gone",
+   "discovered": "S40",
+   "next_action": "CLOSED for R-NEW-344. Dooz v23 execution continues into the R-NEW-376 ctor-climb family (Lgz1;.<init> depth=2048 self-delegation face observed post-fix — same root cause as the v18 frontier; no new ID created)",
+   "last_updated": "S57 2026-09-18"
   },
   {
    "id": "R-NEW-345",
@@ -3390,14 +3391,15 @@
   {
    "id": "R-NEW-351",
    "title": "dooz23 FIRST real protobuf schema build dies: MessageSchema table builder Llt0;.w aput-oob 'length=1; index=1' — the int[] field table sized from the parsed MessageInfo is 1 short for the writer loop",
-   "status": "OBSERVED-FAIL",
+   "status": "SUPERSEDED-BY-EVIDENCE",
    "priority": "P0",
    "app": "io.github.yamin8000.dooz_23 (dooz, PRIORITY-1) — general: any DataStore/protobuf-lite app (every read/write needs the schema)",
    "observed": "S43 run (MINIANDROID_R350_LAW=1, post R-NEW-349/350): chain advances past the factory (isSupported TRUE, asSubclass SAME-reference, defaultInstance registered via <clinit>, [R337-UNSAFE] objectFieldOffset Ly81;.preferences_ -> 280) into Llt0;.w (MessageSchema ctor, DEX size 1009B) — aput v1, v11, v7 at byte 0x772 (pc unit 953) throws ArrayIndexOutOfBoundsException length=1 index=1; the exception unwinds 20 frames through the compose-coroutine machinery and escapes MainActivity.onCreate. nonwhite=2 (the first non-white pixels ever recorded for dooz23 — the render stack painted something).",
    "root_cause_hypothesis": "The int[] table at the aput was new-array'd with a size derived from the MessageInfo (Lta1;) contents — the objects array (filled-new-array {v2,v3} [Ljava/lang/Object; = field-name + field-type, LENGTH 2 in DEX law) and/or the schema-string counts. The filled-new-array handler's arg extraction was audited (UNIFIED_011.2 FNA-FIX is correct in HEAD), so the suspicion is upstream: either the info-string counts (MUTF-8 NUL handling verified CORRECT — 0xC0 0x80 decodes to a real 0x00 byte, so split('\\u0000') should work) or a table-builder loop bound vs the objects-array length mismatch inside Llt0;.w needs a per-instruction trace. protobuf MessageSchema.kt/java sources are the next oracle (github.com/protocolbuffers/protobuf + the javalite jar).",
    "next": "(1) Dump Llt0;.w fully (1009B) and the Lta1; ctor to map which array (v11 rebinding) the aput targets and where its size comes from; (2) probe the objects array the engine built at Ly81;.c case 3 (filled-new-array {v2,v3}) — verify heap length == 2; (3) validate against protobuf MessageSchema field-table law (fields_count*3 / *2 sizing visible at 0x2f2/0x2fa); (4) close -> the DataStore theme read completes -> runBlocking unblocks -> the compose content lambda composes for real.",
-   "evidence": "/tmp/s43_sweep/dooz_on.log [SYNTH-EXC] aput-oob method=Llt0;.w pc=953 + [R337-UNSAFE] offset 280 caller=Llt0;.w; crash.log 38 EXC (all one AIOOBE unwind); nonwhite=2/2073600",
-   "discovered": "S43"
+   "evidence": "/tmp/s43_sweep/dooz_on.log [SYNTH-EXC] aput-oob method=Llt0;.w pc=953 + [R337-UNSAFE] offset 280 caller=Llt0;.w; crash.log 38 EXC (all one AIOOBE unwind); nonwhite=2/2073600 | S57 CLOSURE: S57: Llt0;.w aput-oob \"length=1; index=1\" does not reproduce in current dooz v23 runs (grep Llt0 → parser/reflect lines only; the protobuf chain proceeds via honest M3-REFLECT fallbacks) — NOT-REPRODUCIBLE, superseded by the R-NEW-347/349/350 law chain",
+   "discovered": "S43",
+   "last_updated": "S57 2026-09-18"
   },
   {
    "id": "R-NEW-352",
@@ -3551,7 +3553,8 @@
    "title": "Dooz v18 post-F-083 frontier: Compose init builds constructor-invocation chains that exceed the 2048-frame depth budget (9 cap-climbs in one run: Lj/j0;.<init> ×7 [okhttp-family: extends LB/b;, ctor delegation LinkedHashMap,I→Map overload verified in DEX], Lt0/t;.<init>+LE0/c;.<init> ×2 [t0/t↔E0/c alternation: t0/t.<init> invokes LE0/c;.<init>(J)V, E0/c extends LB/b; with an if(j!=0) throw IllegalArgumentException guard on its long field]) — each climb costs 2048 × 80KB committed stack + interpreter work, so the run cannot finish in budget (rc=124 at ~900K instructions; diag tracing ~1.6-5K instr/s); a cap-drop leaves the half-initialized object corrupt (same law as R-NEW-361)",
    "discovered": "S55",
    "fixed": "",
-   "evidence": "miniandroid/run/s55_dooz_hop2/diag_stderr.log (key excerpts in docs/evidence/s55_dooz/). [TRI-F040] hop chain: j/A;.c → j0.<init>(argc=8) depth=49 → j0.<init>(argc=7) depth=50 → j0.<init>(argc=7) depth=51→…∞ same receiver o5197 (cyclic this()-delegation is impossible in valid DEX → engine mis-dispatch or retry loop). [R376-DIRECT]: t0/t.<init> → LE0/c;.<init>(J)V argc=2 alternates with LE0/c.<init> → Object.<init> no-op; every resolved target is LEGAL — the loop driver is NOT a wrong-resolution invoke. LE0/c;.<init>(J)V body (DEX-verified): iput-wide a:J; sget X/r.g:J; if-nez → throw IllegalArgumentException; the runtime shows NO IllegalArgumentException — guard not firing. NEXT (ranked): (1) extend [TRI-F040] to print the wide arg VALUES per t0/t↔E0/c hop — constant long across hops ⇒ self-delegation mis-dispatch; varying ⇒ finite-but-huge chain (raise budget / shrink 80KB frame cost); (2) if mis-dispatch: instrument execute_invoke_direct ctor-target selection for the t0/t overload set (15 ctor overloads observed at one depth); (3) M3-19 active-cycle law exempts <init> from stubbing (correct — stub ctors return garbage) but gives ctor-cycles NO termination — evaluate a bounded synthetic StackOverflowError unwind (ART law) for pure-ctor cycles. REPRO: MINIANDROID_F040_DIAG=1 ./miniandroid/build/miniandroid run apk_cache/io.github.yamin8000.dooz_18.apk; v23 expected to converge (R-NEW-361 face already converged)."
+   "evidence": "miniandroid/run/s55_dooz_hop2/diag_stderr.log (key excerpts in docs/evidence/s55_dooz/). [TRI-F040] hop chain: j/A;.c → j0.<init>(argc=8) depth=49 → j0.<init>(argc=7) depth=50 → j0.<init>(argc=7) depth=51→…∞ same receiver o5197 (cyclic this()-delegation is impossible in valid DEX → engine mis-dispatch or retry loop). [R376-DIRECT]: t0/t.<init> → LE0/c;.<init>(J)V argc=2 alternates with LE0/c.<init> → Object.<init> no-op; every resolved target is LEGAL — the loop driver is NOT a wrong-resolution invoke. LE0/c;.<init>(J)V body (DEX-verified): iput-wide a:J; sget X/r.g:J; if-nez → throw IllegalArgumentException; the runtime shows NO IllegalArgumentException — guard not firing. NEXT (ranked): (1) extend [TRI-F040] to print the wide arg VALUES per t0/t↔E0/c hop — constant long across hops ⇒ self-delegation mis-dispatch; varying ⇒ finite-but-huge chain (raise budget / shrink 80KB frame cost); (2) if mis-dispatch: instrument execute_invoke_direct ctor-target selection for the t0/t overload set (15 ctor overloads observed at one depth); (3) M3-19 active-cycle law exempts <init> from stubbing (correct — stub ctors return garbage) but gives ctor-cycles NO termination — evaluate a bounded synthetic StackOverflowError unwind (ART law) for pure-ctor cycles. REPRO: MINIANDROID_F040_DIAG=1 ./miniandroid/build/miniandroid run apk_cache/io.github.yamin8000.dooz_18.apk; v23 expected to converge (R-NEW-361 face already converged). | S57 ALIAS (v23, post-F-086): [RECURSION-LIMIT] frame dropped: Lgz1;.<init> depth=2048 caller=Lgz1;.<init> (×3) + Lbp1;.<init> ×1 — the same impossible-in-valid-DEX self-delegating ctor face on dooz v23; run/s57_r344_proof2/",
+   "last_updated": "S57 2026-09-18"
   },
   {
    "id": "R-NEW-377",
@@ -3570,6 +3573,15 @@
    "discovered": "S56",
    "fixed": "S56",
    "evidence": "Pre-fix: dooz v23 Lbw0;.d (ScatterMap probe) halted after 2.4M instructions; caller Lbw0;.a pc=8 consumed the stale word as a slot index (-733270216) -> aput-oob -> AIOOBE -> APP BOUNDARY death in MainActivity.onCreate. Fix: discriminate the abnormal halt (halted_ && !halted_on_return_ — every NORMAL return also sets halted_) and escalate as deferred VirtualMachineError (F084-HALT-RETURN). Proof: battery ALL PASS 96/96 (the first attempt without the discriminator broke corpus stages 59-63 and was fixed pre-commit); simplestopwatch rc=0 with zero F084 fires; dooz v23 face changed from garbage-index AIOOBE to the honest halt propagation. docs/evidence/s56_dooz23/."
+  },
+  {
+   "id": "F-086",
+   "status": "IMPLEMENTED+TESTED",
+   "priority": "P0",
+   "title": "java.lang.Long 64-bit comparison bridge family (compare/compareUnsigned, OpenJDK Long.java law) — closes the STUBBED-typed-zero class for wide-arg static invokes",
+   "evidence": "miniandroid/src/dex/dalvik_engine.cpp (F-055 Long block, S57): compare is signed 64-bit (-1/0/+1), compareUnsigned unsigned; regression tests/semantic_long_cmp_conv_test.cpp f086 group 6/6 PASS (battery stage \"semantic long/cmp/conv (expect 20)\"), including the bit-exact dooz23 growth idiom compare(448^MIN, 375^MIN)==+1; post-fix runtime proof: Lbw0;.f capacity 7→15→31 on dooz23 (docs/evidence/s57_dooz23/)",
+   "first_seen": "S57 2026-09-18",
+   "last_updated": "S57 2026-09-18"
   }
  ]
 }
